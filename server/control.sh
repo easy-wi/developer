@@ -17,14 +17,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Easy-WI.  If not, see <http://www.gnu.org/licenses/>.
 #
-#    Diese Datei ist Teil von Fubar.
+#    Diese Datei ist Teil von Easy-WI.
 #
-#    Fubar ist Freie Software: Sie koennen es unter den Bedingungen
+#    Easy-WI ist Freie Software: Sie koennen es unter den Bedingungen
 #    der GNU General Public License, wie von der Free Software Foundation,
 #    Version 3 der Lizenz oder (nach Ihrer Wahl) jeder späteren
 #    veroeffentlichten Version, weiterverbreiten und/oder modifizieren.
 #
-#    Fubar wird in der Hoffnung, dass es nuetzlich sein wird, aber
+#    Easy-WI wird in der Hoffnung, dass es nuetzlich sein wird, aber
 #    OHNE JEDE GEWAEHELEISTUNG, bereitgestellt; sogar ohne die implizite
 #    Gewährleistung der MARKTFAEHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK.
 #    Siehe die GNU General Public License fuer weitere Details.
