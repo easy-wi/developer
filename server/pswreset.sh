@@ -45,7 +45,7 @@ if [[ "$1" == "start" ]]; then
 	su easy-wi -c ./control
 	sleep 30
 	rm control.*
-	STRING=`wget --no-check-certificate -q -O - https://wi.ulrich-block.de/get_password.php | sed 's/^\xef\xbb\xbf//g'`
+	STRING=`wget --no-check-certificate -q -O - https://wi.domain.de/get_password.php | sed 's/^\xef\xbb\xbf//g'`
 	PASSWORD=`echo $STRING | awk -F ':' '{print $1}'`
 	LICENCE=`echo $STRING | awk -F ':' '{print $2}'`
 	if ([[ "$PASSWORD" != "" ]] && [[ "$PASSWORD" != "old" ]]); then
