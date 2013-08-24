@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<about>About</about>
+	<active>Aktivieren</active>
+	<author>Autor</author>
+	<categories>Kategorien</categories>
+    <commentMinLength>Kommentar: minimale Länge</commentMinLength>
+    <commentsModerated>Kommentar: moderiert</commentsModerated>
+    <contact>Kontakt</contact>
+	<date>Datum</date>
+	<defaultpage>Standard Seite</defaultpage>
+    <gallery>Gallery</gallery>
+	<intern>Intern</intern>
+	<keyword>Keyword</keyword>
+	<keywords>Keywords</keywords>
+	<languages>Sprachen</languages>
+    <mailRequired>Kommentar: Mail erfoderlich</mailRequired>
+    <mailSend>Die E-Mail wurde versand.</mailSend>
+	<maxnews>Die letzten X News anzeigen</maxnews>
+    <message>Nachricht</message>
+	<MSIE>Der Internet Explorer hält nach wie vor nicht gänzlich die W3C Spezifikationen zur standardkonformen Darstellungen von Web-Inhalten ein. Deswegen kann es zu Darstellungsfehlern kommen. Es ist nur zu raten, auf einen Browser umzusteigen, der sich an die W3C Standards hält.</MSIE>
+    <moderate>Moderation erforderlich:</moderate>
+    <name>Name</name>
+    <naviDisplay>In der Navi anzeigen</naviDisplay>
+    <newer>Neuere Beiträge</newer>
+	<news_add>News anlegen</news_add>
+    <newssidebar_textlength>Textlänge Sidebar News</newssidebar_textlength>
+	<older>Ältere Beiträge</older>
+	<pages>Beiträge mit</pages>
+	<page_add>Neue Seite anlegen</page_add>
+	<page_dl>Seite löschen</page_dl>
+	<page_mod>Seite editieren</page_mod>
+    <posted>Erstellt von</posted>
+	<preview>Vorschau</preview>
+	<protectioncheck>Protectioncheck</protectioncheck>
+	<public>Öffentlich</public>
+    <register>Registrierung</register>
+    <registerAccountOK>Dein Account wurde erfolgreich angelegt</registerAccountOK>
+    <registerActivated>Dein Account wurde erfolgreich aktiviert.</registerActivated>
+    <registerAdmin>Registration erfolgreich. Bitte warte, bis ein Admin den Account aktiviert.</registerAdmin>
+    <registerBlockIPs>IPs ausschließen</registerBlockIPs>
+    <registerBlockMails>Mails ausschließen</registerBlockMails>
+    <registerByMailActivation>Mail Aktivierung</registerByMailActivation>
+    <registerByMailAdminActivation>Admin Aktivierung</registerByMailAdminActivation>
+    <registerDirectActive>Direkt</registerDirectActive>
+    <registerErrorActivatedFailed>Es konnte kein Account zum aktivieren gefunden werden.</registerErrorActivatedFailed>
+    <registerErrorBot>Falls du kein Bot sein solltest, aktiviere bitte Javascript.</registerErrorBot>
+    <registerErrorCookies>Bitte aktiviere (Session) Cookies.</registerErrorCookies>
+    <registerErrorMail>Bitte eine andere E-Mail Adresse angeben.</registerErrorMail>
+    <registerErrorTou>Bitte Nutzungsbedingung akzeptieren!</registerErrorTou>
+    <registerErrorPassword>Die eingegebenen Passwöter sind nicht gleich.</registerErrorPassword>
+    <registerErrorPassword2>Das angebene Passwort ist unsicher. Bitte ein Passwort mit mindestens 8 Stellen, Klein- und Großbuchstaben, Zahlen und Sonderzeichen wie "AKha%asLsdh12" verwenden.</registerErrorPassword2>
+    <registerErrorPassword3>Bitte ein Passwort angeben.</registerErrorPassword3>
+    <registerErrorUnknown>Es ist zu einem unbekannten Problem gekommen, bitte gib die Daten noch einmal ein.</registerErrorUnknown>
+    <registerMailSend>Die Registrierung war erfolgreich. In Kürze sollte eine E-Mail gesendet werden.</registerMailSend>
+    <registerQuestions>Schutzfragen gegen Bots</registerQuestions>
+	<release>Veröffentlichen</release>
+	<released>Veröffentlicht</released>
+	<rssfeed>RSS Feed aktivieren</rssfeed>
+    <search>Suche</search>
+	<seo>Hübsche Rewrite Urls für SEO</seo>
+    <sitemap>Sitemap</sitemap>
+    <spamBlockLinks>Links in Kommentaren</spamBlockLinks>
+    <spamBlockWords>Wörter Blacklist</spamBlockWords>
+    <spamFilter>Spam Filter</spamFilter>
+    <spamLanguageFilter>Sprach Filter</spamLanguageFilter>
+	<subpage>Unterseite von</subpage>
+	<tag>Tag</tag>
+	<title>Titel</title>
+    <tou>Nutzungsbedingungen</tou>
+	<update>Aktualisieren</update>
+    <rssfeed_fulltext>Volltext im RSS Feed</rssfeed_fulltext>
+    <rssfeed_textlength>RSS Feed Textlänge</rssfeed_textlength>
+    <sort>Sortierung</sort>
+    <sort_new>Neu sortieren</sort_new>
+</sprache>

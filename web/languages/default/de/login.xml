@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<bad_ca>Der eingegebene Wert stimmte nicht mit dem Captcha überein.</bad_ca>
+	<bad_up>Der Benutzer existiert nicht, oder das Passwort war falsch</bad_up>
+	<back>Zurück</back>
+	<banned>Zu viele fehlerhafte Loginversuche. Bitte fordern sie ein neues Passwort an, oder kontaktieren uns.</banned>
+	<captcha>Captcha</captcha>
+	<email>E-Mail oder Username</email>
+	<exp>Ihre Lizenz ist abgelaufen.</exp>
+	<heading>Login</heading>
+    <ipBad>Inkorrekte IP: </ipBad>
+    <ipOK>Erlaubte IP(s) ist/sind </ipOK>
+	<linkexpired>Link ist abgelaufen.</linkexpired>
+	<nouser>Ein Benutzer mit diesem Namen, oder Email existiert nicht.</nouser>
+	<password>Passwort</password>
+	<passwordr>Passwort vergessen?</passwordr>
+	<passwordrepeat>Passwort wiederholen</passwordrepeat>
+	<passwordreset>Passwort zurücksetzen</passwordreset>
+	<passwordreseted>Passwort wurde aktualisiert.</passwordreseted>
+	<pwnomatch>Passwörter stimmen nicht überein.</pwnomatch>
+	<send>Eine E-Mail mit einem Betstätigungslink ist an ihren Account versendet worden.</send>
+	<sus>Ihr Account ist deaktiviert worden. Bitte wenden sie sich an ihren Anbieter.</sus>
+	<sus_heading>Achtung!</sus_heading>
+	<user>Benutzername</user>
+    <urlBad>Inkorrekte URL:</urlBad>
+    <urlOK>Erlaubte URL ist </urlOK>
+</sprache>

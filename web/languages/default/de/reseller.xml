@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Abkürzung</abkuerz>
+	<action>Aktion</action>
+	<active>Aktivieren</active>
+	<all>Alle</all>
+	<attention>Achtung: Bei einer Neuinstallation werden alle Daten unwiderruflich gelöscht! Setzen sie den Vorgang nur fort, wenn sie sicher sind, dass sie dies wollen!</attention>
+	<bitversion>Bitversion</bitversion>
+	<core>Kern</core>
+	<cores>Kerne</cores>
+	<cpu>CPU</cpu>
+	<description>Beschreibung</description>
+	<dhcpsoftware>DHCP Serversoftware</dhcpsoftware>
+	<distro>Distribution</distro>
+	<hdd>Mountpunkte</hdd>
+	<hddsize>Festplattengröße</hddsize>
+    <initialRescuPass>Initiales/Rescue Passwort</initialRescuPass>
+	<imagefile>Imagedatei</imagefile>
+	<imageserver>Imageserver</imageserver>
+	<installing>Installiere</installing>
+	<ip>IP</ip>
+	<ips>IPs und IP Ranges</ips>
+	<keyname>Name der Public Keyfile:</keyname>
+	<keyuse>Public Keyfile benutzen:</keyuse>
+	<mac>Mac Adresse</mac>
+	<maxmhz>Maximum MHz</maxmhz>
+	<maxram>Maximum Ram</maxram>
+	<maxserver>Maximale Vserveranzahl</maxserver>
+	<mhz>MHz</mhz>
+	<minmhz>Minimum MHz</minmhz>
+	<minram>Minimum Ram</minram>
+	<mount>Mountpunkt</mount>
+	<netmask>Netzmaske</netmask>
+	<ok>OK</ok>
+	<os>Betriebssystem</os>
+	<os_bit>Bitversion</os_bit>
+	<paylicence>Kostenpflichtige Lizenz</paylicence>
+	<pxeautorun>PXE Autorundatei</pxeautorun>
+    <PXEFolder>PXE Config Ordner</PXEFolder>
+	<ram>Ram</ram>
+	<reinstall>Reinstall</reinstall>
+	<rescue>Rescue</rescue>
+	<rescue_start>Rescue starten</rescue_start>
+	<rescue_stop>Rescue stoppen</rescue_stop>
+	<restart>(Re)Start</restart>
+	<shown>Ergebnisse pro Seite:</shown>
+	<ssh_ip>SSH2 IP</ssh_ip>
+	<ssh_pass>SSH2 Passwort</ssh_pass>
+	<ssh_port>SSH2 Port</ssh_port>
+	<ssh_user>SSH2 Benutzername</ssh_user>
+	<status>Status</status>
+    <startCmd>Startbefehl</startCmd>
+    <dhcpFile>DHCP Configfile</dhcpFile>
+	<stop>Stop</stop>
+	<stopped>Gestoppt</stopped>
+	<unused_ips>Freie IPs</unused_ips>
+	<user>Benutzername</user>
+    <userAdd>Bitte weise zu erst einen Reseller/User zu!</userAdd>
+    <wwwFolder>Autorun WWW Ordner</wwwFolder>
+</sprache>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<active>Aktivieren</active>
+	<interface>phpMyAdmin</interface>
+	<ips>Erlaubte IPs</ips>
+	<dbname>Datenbankname</dbname>
+	<standards>Standardwerte für neue Datenbanken</standards>
+	<max_databases>Maximale Datenbanken</max_databases>
+	<max_queries_per_hour>Maximale Queries je Stunde</max_queries_per_hour>
+	<max_updates_per_hour>Maximale Updates je Stunde</max_updates_per_hour>
+	<max_connections_per_hour>Maximale Verbindungen je Stunde</max_connections_per_hour>
+	<max_userconnections_per_hour>Maximale User Verbindungen je Stunde</max_userconnections_per_hour>
+	<password>Passwort</password>
+	<usage>Belegung</usage>
+	<user>Benutzername</user>
+</sprache>

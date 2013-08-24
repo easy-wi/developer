@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<about>About</about>
+	<active>Active</active>
+	<author>Author</author>
+	<categories>Categories</categories>
+    <commentMinLength>Comment: minimum Length</commentMinLength>
+    <commentsModerated>Comment: moderated</commentsModerated>
+    <contact>Contact</contact>
+	<date>Date</date>
+	<defaultpage>Default Page</defaultpage>
+    <gallery>Gallery</gallery>
+	<intern>Intern</intern>
+	<keyword>Keyword</keyword>
+	<keywords>Keywords</keywords>
+	<languages>Languages</languages>
+    <mailRequired>Comment: Mail required</mailRequired>
+    <mailSend>The e-mail has been send.</mailSend>
+	<maxnews>Show the last X news</maxnews>
+    <message>Message</message>
+	<MSIE>The Internet Explorer still does not except the W3C specifications. Because of this fact the display of the page can be corrupted. Please use a different browser.</MSIE>
+    <moderate>Moderation required:</moderate>
+    <name>Name</name>
+    <naviDisplay>Display at Navi</naviDisplay>
+    <newer>Newer</newer>
+	<news_add>Add news</news_add>
+    <newssidebar_textlength>Textllength Sidebar News</newssidebar_textlength>
+	<older>Older</older>
+	<pages>Pages with</pages>
+	<page_add>Add new page</page_add>
+	<page_dl>Delete page</page_dl>
+	<page_mod>Edit page</page_mod>
+    <posted>Posted by</posted>
+	<preview>Preview</preview>
+	<protectioncheck>Protectioncheck</protectioncheck>
+	<public>Public</public>
+    <register>Registration</register>
+    <registerAccountOK>Your account has been created.</registerAccountOK>
+    <registerActivated>The account has been activated.</registerActivated>
+    <registerAdmin>Registration successful. An admin need to activate your account.</registerAdmin>
+    <registerBlockIPs>Prevent IPs from register</registerBlockIPs>
+    <registerBlockMails>Prevent mails from register</registerBlockMails>
+    <registerByMailActivation>Mail Activation</registerByMailActivation>
+    <registerByMailAdminActivation>Admin Activation</registerByMailAdminActivation>
+    <registerDirectActive>Direct</registerDirectActive>
+    <registerErrorActivatedFailed>No account could be found to be activated.</registerErrorActivatedFailed>
+    <registerErrorBot>In case you should not be a Bot please activate Javascript.</registerErrorBot>
+    <registerErrorCookies>Please activated (Session) Cookies.</registerErrorCookies>
+    <registerErrorMail>Please use another email.</registerErrorMail>
+    <registerErrorTou>Please accept the terms of use!</registerErrorTou>
+    <registerErrorPassword>The passwords do not match.</registerErrorPassword>
+    <registerErrorPassword2>Please use a safe password with at least 8 cases, down- and upper case letters, numbers and special characters like "AKha%asLsdh12".</registerErrorPassword2>
+    <registerErrorPassword3>Please enter a password.</registerErrorPassword3>
+    <registerErrorUnknown>An unknown error occurred. Please try again.</registerErrorUnknown>
+    <registerMailSend>Registration successful. You should receive an email soon.</registerMailSend>
+    <registerQuestions>Protection question against Bots</registerQuestions>
+	<release>Publish</release>
+	<released>Published</released>
+	<rssfeed>Activated RSS feed</rssfeed>
+    <search>Search</search>
+	<seo>Rewrite Urls für SEO</seo>
+    <sitemap>Sitemap</sitemap>
+    <spamBlockLinks>Links in comments</spamBlockLinks>
+    <spamBlockWords>Word blacklist</spamBlockWords>
+    <spamFilter>Spam Filter</spamFilter>
+    <spamLanguageFilter>Language filter</spamLanguageFilter>
+	<subpage>Subpage of</subpage>
+	<tag>Tag</tag>
+	<title>Titel</title>
+    <tou>Terms Of Use</tou>
+	<update>Update</update>
+    <rssfeed_fulltext>Complete Text at the RSS feed</rssfeed_fulltext>
+    <rssfeed_textlength>RSS feed length</rssfeed_textlength>
+    <sort>Sort</sort>
+    <sort_new>Sort new</sort_new>
+</sprache>

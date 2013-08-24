@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<all>Alles</all>
+	<barin_colour>Eingehender Traffic</barin_colour>
+	<barout_colour>Ausgehender Traffic</barout_colour>
+	<bartotal_colour>Gesamter Traffic</bartotal_colour>
+    <blue>Blau</blue>
+	<bg_colour>Hintergrund</bg_colour>
+	<border_colour>Rand</border_colour>
+	<column_byte>Gesendete Bytes</column_byte>
+	<column_date>Datum</column_date>
+	<column_destip>Destination IP</column_destip>
+	<column_sourceip>Source IP</column_sourceip>
+	<databaseacces>Datenbank Zugangsdaten</databaseacces>
+	<databasestructure>Aufbau der Datenbank (Name der Table und Columns)</databasestructure>
+	<day>Tag</day>
+	<days>Tage</days>
+	<dbname>Name</dbname>
+	<dbpassword>Passwort</dbpassword>
+	<dbuser>User</dbuser>
+	<dmy>Zeitraum</dmy>
+	<graphsettings>RGB (Rot Grün Blau) Einstellungen des Graphens</graphsettings>
+    <green>Grün</green>
+	<ip>IP</ip>
+	<ips>IPs</ips>
+	<kind>Traffik anzeigen von</kind>
+	<line_colour>Trennlinien</line_colour>
+	<months>Monate</months>
+	<multiplier>Multiplikator</multiplier>
+	<range>Zeitspanne</range>
+    <red>Rot</red>
+	<server>Server</server>
+	<statip>Adresse/IP</statip>
+	<subnet>Subnet</subnet>
+	<subnets>Subnetze</subnets>
+	<table_name>Tabellen Name</table_name>
+	<text_colour>Text</text_colour>
+	<total>Insgesamt</total>
+	<type>Typ</type>
+	<unit>Recheneinheit</unit>
+	<user>Benutzer</user>
+	<years>Jahre</years>
+</sprache>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Shorten</abkuerz>
+	<active>Activate</active>
+	<addon2>Menuname</addon2>
+	<addon>Foldername in "masteraddons/mastermaps"</addon>
+	<addons_maps>Mappackages</addons_maps>
+	<addons_tools>Servertools</addons_tools>
+	<addon_add>Addon successfully added</addon_add>
+	<addon_del>Deleting addon</addon_del>
+	<addon_del_from>Addon removed from server: </addon_del_from>
+	<addon_del_from_fail>Could not remove addon from server: </addon_del_from_fail>
+	<addon_inst>Installing addon</addon_inst>
+	<addon_ud>Addon successfully updated</addon_ud>
+	<add_addon>Create Addon</add_addon>
+	<all>ALL</all>
+	<aname>Addonname:</aname>
+	<bin>Binary</bin>
+	<bin_folder>Binaryfolder (for example orangebox)</bin_folder>
+	<configs>Usereditable configs</configs>
+	<configedit>Cvars, which the user should not modify</configedit>
+	<del_temp>Delete template</del_temp>
+	<description>Description</description>
+	<error_exist>Error: Addon already exists</error_exist>
+	<error_id>Error: No server selected!</error_id>
+	<failed>Error: Could not connect to the server.</failed>
+	<folder>Serverfolder</folder>
+	<folders>Folders to be deleted on removal</folders>
+	<fps>Server FPS</fps>
+	<game2>Game or gametype</game2>
+	<game>Gamename</game>
+	<heading_addons>Gameserver Addons</heading_addons>
+	<heading_template>Gameservertemplates</heading_template>
+	<ip>Gameserver IP adresse</ip>
+    <iptables>IP Tables</iptables>
+	<map>Mappackage</map>
+	<maps>Mappackages</maps>
+	<mod>Modfolder (for example cstrike and dod)</mod>
+    <modcmds>Commands regarding Gamemods</modcmds>
+	<mods2>Mod for the game:</mods2>
+	<mods>Modification:</mods>
+	<multi>Plattform</multi>
+	<password>Password</password>
+	<port>Gameserverport</port>
+    <portMax>Port amount</portMax>
+    <portStep>Port steps to next server</portStep>
+	<protect>Protection modus</protect>
+    <protectedSaveCFGs>Files to be kept while switching Protection Mode</protectedSaveCFGs>
+	<qstat>Qstat Parameter</qstat>
+	<qstatpassparam>Qstat passwordparameter</qstatpassparam>
+	<rcon>Remote password (RCON)</rcon>
+	<requires>Requires</requires>
+    <rmcmd>remove from startcommand</rmcmd>
+	<servername>Servername</servername>
+	<showg>Show addons for:</showg>
+	<shown>Results per page:</shown>
+	<single>Game</single>
+	<slots>Serverslots</slots>
+	<start>Startcommand</start>
+	<startmap>Startmap</startmap>
+    <startmapgroup>Startmapgroup</startmapgroup>
+	<steam>Steamgame</steam>
+	<sure2>Attention! If a user have installed this addon it will be removed from their accounts too!</sure2>
+	<sure3>Attention! The user server with this game will be deleted too!</sure3>
+	<tick>Tickrate</tick>
+	<tool>Servertool</tool>
+	<tools>Servertool, Addons, Configpackages</tools>
+	<tvport>SourceTV Port</tvport>
+	<type2>Addon for:</type2>
+	<type>Map, or Servertool</type>
+</sprache>

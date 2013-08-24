@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <int>Number</int>
+    <item>Column for</item>
+    <length>Length</length>
+    <menuname>Menu Name</menuname>
+    <name>technical Name</name>
+    <type>Type</type>
+    <var>String</var>
+</sprache>

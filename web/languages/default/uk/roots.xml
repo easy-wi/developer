@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Shorten</abkuerz>
+	<active>Activate</active>
+	<all>All</all>
+	<all_games>Select all Games</all_games>
+	<all_roots>Select all Rootservers</all_roots>
+	<cfgdir>Config folder</cfgdir>
+	<confirm1>Start update(s)?</confirm1>
+	<desc>Description</desc>
+	<error_root_db>Error: Could not delete the rootserver from the database!</error_root_db>
+	<error_root_dbmasterdel>Error: Could not delete the masterserver from the database!</error_root_dbmasterdel>
+	<error_root_install>Error: Could not start following installation:</error_root_install>
+	<error_root_masterdel2>Error: Could not delete the files from the server</error_root_masterdel2>
+	<error_root_masterdel>Error: The masterserver already has been deleted</error_root_masterdel>
+	<error_root_noselect>Error: No servers have been selected.</error_root_noselect>
+	<error_root_updatemaster>Error: Could not start the update at the IP:</error_root_updatemaster>
+	<ftp_port>FTP Port</ftp_port>
+	<haupt_ip>Main and SSH2 IP</haupt_ip>
+	<header_add>Add masterserver(s)</header_add>
+	<header_del>Delete masterserver(s)</header_del>
+	<header_update>Update masterserver(s)</header_update>
+	<installed>Installed masterserver(s):</installed>
+	<installeds>Installed Slots: </installeds>
+	<ips>IPs</ips>
+	<keyname>Public Keyfile Name:</keyname>
+	<keyuse>Use Public Keyfile:</keyuse>
+	<master_update>The server with following IP have been successfully updated</master_update>
+	<maxserver2>Maximum Server:</maxserver2>
+	<maxserver>server installed</maxserver>
+	<maxslots>Maximum Slots:</maxslots>
+	<os>Operating System</os>
+	<os_bit>Bitversion</os_bit>
+    <password>Password</password>
+	<root_masterdel>Successfully started the remove process.</root_masterdel>
+	<root_masterinstall>The masterserver has been added to the databse and is getting installed now</root_masterinstall>
+	<root_updatemaster>Successfully started updating</root_updatemaster>
+    <show>Show:</show>
+	<showg>Only servers with the game:</showg>
+	<showt>Only servers with the servertype:</showt>
+	<spiele>games</spiele>
+	<ssh_pass>SSH2 password</ssh_pass>
+	<ssh_port>SSH2 port</ssh_port>
+	<ssh_user>SSH2 Username</ssh_user>
+	<steam>Steam Game</steam>
+    <updateMinute>Hourly update at minute</updateMinute>
+	<useds>Used Slots: </useds>
+	<zusatz_ip>Additional IPs</zusatz_ip>
+</sprache>

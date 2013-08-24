@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Abkürzung</abkuerz>
+	<active>Aktivieren</active>
+	<addon2>Bezeichnung im Menu</addon2>
+	<addon>Ordnername in "masteraddons/mastermaps"</addon>
+	<addons_maps>Mappackages</addons_maps>
+	<addons_tools>Servertools</addons_tools>
+	<addon_add>Das Addon wurde erfolgreich eingetragen</addon_add>
+	<addon_del>Addon wird gelöscht</addon_del>
+	<addon_del_from>Das Addon wurde von folgenden Server entfernt: </addon_del_from>
+	<addon_del_from_fail>Das Addon von folgendendem Server nicht entfernt werden: </addon_del_from_fail>
+	<addon_inst>Addon wird installiert</addon_inst>
+	<addon_ud>Das Addon wurde erfolgreich aktualisiert</addon_ud>
+	<add_addon>Addon erstellen</add_addon>
+	<all>Alles</all>
+	<aname>Addonname:</aname>
+	<bin>Binary</bin>
+	<bin_folder>Binaryverzeichnis(z.B. orangebox)</bin_folder>
+	<configs>Configs, die vom User editierbar sein sollen</configs>
+	<configedit>Cvars, die unveränderbar sein sollen</configedit>
+	<del_temp>Template löschen</del_temp>
+	<description>Beschreibung</description>
+	<error_exist>Fehler: Das Addon existiert bereits.</error_exist>
+	<error_id>Fehler: Es wurde kein Server ausgewählt!</error_id>
+	<failed>Fehler: Konnte keine Verbindung zum Server herstellen.</failed>
+	<folder>Serververzeichnis</folder>
+	<folders>Zu löschende Ordner</folders>
+	<fps>Server FPS</fps>
+	<game2>Spiel oder Spieltyp</game2>
+	<game>Spielname</game>
+	<heading_addons>Gameserver Addons</heading_addons>
+	<heading_template>Gameservertemplates</heading_template>
+	<ip>Gameserver IP Adresse</ip>
+    <iptables>IP Tables</iptables>
+	<map>Mappackage</map>
+	<maps>Mappackages</maps>
+	<mod>Modverzeichnis (z.B. cstrike und dod)</mod>
+    <modcmds>Befehle für Gamemods</modcmds>
+	<mods2>Mod zum Spiel:</mods2>
+	<mods>Spielemodifikation:</mods>
+	<multi>Plattform</multi>
+	<password>Passwort</password>
+	<port>Gameserverport</port>
+    <portMax>Portanzahl</portMax>
+    <portStep>Port Schritte zum nächsten Server</portStep>
+	<protect>Protection Modus</protect>
+    <protectedSaveCFGs>Dateien behalten beim Protection Mode Switch</protectedSaveCFGs>
+	<qstat>Qstat Parameter</qstat>
+	<qstatpassparam>Qstat Passwortparameter</qstatpassparam>
+	<rcon>Remote Passwort (RCON)</rcon>
+	<requires>Benötigt</requires>
+    <rmcmd>entferne vom Startbefehl</rmcmd>
+	<servername>Servername</servername>
+	<showg>Zeige Addons zu:</showg>
+	<shown>Ergebnisse pro Seite:</shown>
+	<single>Spiel</single>
+	<slots>Serverslots</slots>
+	<start>Startbefehl</start>
+	<startmap>Startmap</startmap>
+    <startmapgroup>Startmapgroup</startmapgroup>
+	<steam>Steamspiel</steam>
+	<sure2>Achtung! Das Addon wird auch bei den Usern entfernt!</sure2>
+	<sure3>Achtung! Das Spiel wird auch bei den Usern entfernt!</sure3>
+	<tick>Tickrate</tick>
+	<tool>Servertool</tool>
+	<tools>Servertool, Addons, Configpakete</tools>
+	<tvport>SourceTV Port</tvport>
+	<type2>Addon für:</type2>
+	<type>Map, oder Servertool</type>
+</sprache>

@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Aktive</active>
+	<add>Hinzufügen</add>
+	<addon>Addons</addon>
+    <addon2>Addon</addon2>
+    <all>Alles</all>
+    <api>API</api>
+    <apiAuth>Externe Authentifizierung</apiAuth>
+	<backup>Backup</backup>
+    <columns>Custom Columns</columns>
+    <comments>Kommentare</comments>
+	<databases>DB</databases>
+    <dedicated>Dedizierte</dedicated>
+	<del>Löschen</del>
+    <delSafe>Sicheres Löschen</delSafe>
+    <delAny>In jedem Fall Löschen</delAny>
+    <delDB>Aus der Datenbank Löschen</delDB>
+    <feeds>Feeds</feeds>
+	<edit>Bearbeiten</edit>
+	<fastdownload>Fastdownload</fastdownload>
+    <gameroot>Game Rootserver</gameroot>
+	<gameserver>Gameserver</gameserver>
+	<groups>Gruppen</groups>
+	<hostsystem>Hostsystem</hostsystem>
+	<hotline>Hotline</hotline>
+	<imprint>Impressum</imprint>
+    <jobs>Jobs</jobs>
+    <jobPending>Job ausstehend</jobPending>
+	<last>Dein letzter Login war am: </last>
+	<lendserver>Leihserver</lendserver>
+	<licence>Das Lizenzmaximum wurde erreicht.</licence>
+    <licence_version>Sie sind nicht berechtigt diese Version zu nutzen!</licence_version>
+	<logs>Logs</logs>
+	<master>Master</master>
+    <migration>Umzugsservice</migration>
+	<mod>Ändern</mod>
+	<news>News</news>
+	<no>Nein</no>
+	<overview>Übersicht</overview>
+	<page>Seite</page>
+	<pages>Seiten</pages>
+    <registration>Registration</registration>
+    <repair>Reparieren</repair>
+	<reseller>Reseller</reseller>
+	<root>Rootserver</root>
+    <search>Suche</search>
+	<settings>Einstellungen</settings>
+	<shown>Ergebnisse pro Seite:</shown>
+    <start>Starten</start>
+	<stats>Statistiken</stats>
+    <status>Status</status>
+    <stop>Stoppen</stop>
+    <substitutes>Vertreter</substitutes>
+	<support2>Neues Supportticket</support2>
+	<support>Support</support>
+	<sure>Sind Sie sicher?</sure>
+    <sure_delete>Sind Sie sicher? Alle Daten werden beim Zielserver gelöscht!</sure_delete>
+	<template>Template</template>
+	<templates>Images/Templates</templates>
+	<traffic>Traffic</traffic>
+	<update>Aktualisieren</update>
+    <use>Anwenden</use>
+	<user>Benutzer</user>
+    <userImport>Benutzer Import</userImport>
+	<virtual>VServer</virtual>
+	<versioncheck>Versionsüberprüfung</versioncheck>
+	<voiceserver>Voiceserver</voiceserver>
+	<vor>Vor</vor>
+	<welcome>Wilkommen: </welcome>
+	<yes>Ja</yes>
+	<zurueck>Zurück</zurueck>
+</sprache>

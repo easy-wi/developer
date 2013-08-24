@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<all>All</all>
+	<answer>Answer</answer>
+	<answered>Answered</answered>
+	<close_heading>Close ticket</close_heading>
+	<comment>Comment</comment>
+	<date>Date</date>
+	<default>Standard</default>
+	<edit2>Edited by</edit2>
+	<edit>Edited</edit>
+	<heading>Support Category</heading>
+	<name>Name</name>
+	<new>Add Category</new>
+	<none>None</none>
+	<open>Open</open>
+	<priority>Priority</priority>
+    <priority_critical>critical</priority_critical>
+	<priority_high>high</priority_high>
+	<priority_low>low</priority_low>
+	<priority_medium>medium</priority_medium>
+    <priority_very_high>very high</priority_very_high>
+	<problem>Symptoms</problem>
+	<rating>Support rating</rating>
+    <reopen>Reopen</reopen>
+	<shown>Results per page</shown>
+	<status>Ticketstatus</status>
+    <status_author>Author Action</status_author>
+    <status_confirmed>Confirmed</status_confirmed>
+    <status_done>Completed</status_done>
+    <status_new>New</status_new>
+    <status_process>In Process</status_process>
+    <status_reopen>For Review</status_reopen>
+	<subject>Topic</subject>
+	<topic>Subcategory of</topic>
+	<topic_name>Category</topic_name>
+    <topic_name_sub>Subtopic</topic_name_sub>
+	<username>Username</username>
+	<writer>Writer</writer>
+</sprache>

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<active>Aktiv</active>
+	<add>Neu hinzufügen</add>
+	<addtype>Art des Hinzufügens</addtype>
+	<autorestart>Restart bei Serverdown</autorestart>
+	<backup>Backup</backup>
+    <backupname>Backupname</backupname>
+	<date>Datum</date>
+	<defaultdns>Standard DNS</defaultdns>
+	<defaulthostbanner_gfx_url>Standard Hostbanner GFX URL</defaulthostbanner_gfx_url>
+	<defaulthostbanner_url>Standard Hostbanner URL</defaulthostbanner_url>
+	<defaulthostbutton_gfx_url>Standard Hostbutton GFX URL</defaulthostbutton_gfx_url>
+	<defaulthostbutton_tooltip>Standard Hostbutton Tooltip</defaulthostbutton_tooltip>
+	<defaulthostbutton_url>Standard Hostbutton URL</defaulthostbutton_url>
+	<defaultname>Standardname</defaultname>
+	<defaultwelcome>Standard Willkommensnachricht</defaultwelcome>
+    <defaultFlexSlotsFree>Standard Freie Flex Slots</defaultFlexSlotsFree>
+    <defaultFlexSlotsPercent>Standard Plex Slots Prozente</defaultFlexSlotsPercent>
+    <description>Beschreibung</description>
+	<dns>Server DNS</dns>
+	<enter>Eingabe</enter>
+    <externalDefaultDNS>Externe default DNS nutzen</externalDefaultDNS>
+	<filetransferport>Filetransferport</filetransferport>
+    <flexSlots>Flex Slots</flexSlots>
+    <flexSlotsPercent>Flex Slots Prozent</flexSlotsPercent>
+    <flexSlotsFree>Freie Flex Slots</flexSlotsFree>
+	<forcebanner>Hostbanner erzwingen</forcebanner>
+	<forcebutton>Hostbutton erzwingen</forcebutton>
+	<forceservertag>Servertag erzwingen</forceservertag>
+	<forcewelcome>Welcome Message erzwingen</forcewelcome>
+	<ftpport>FTP Port</ftpport>
+	<generate>Generieren</generate>
+	<groupname>Gruppenname</groupname>
+	<hostbanner_gfx_url>Hostbanner GFX Url</hostbanner_gfx_url>
+	<hostbanner_url>Hostbanner Url</hostbanner_url>
+	<hostbutton_gfx_url>Hostbutton GFX Url</hostbutton_gfx_url>
+	<hostbutton_tooltip>Hostbutton Tooltip</hostbutton_tooltip>
+	<hostbutton_url>Hostbutton Url</hostbutton_url>
+	<import>Importieren</import>
+	<initialpassword>Initiales Password</initialpassword>
+	<installedserver>Installierte Server</installedserver>
+	<installedslots>Installierte Slots</installedslots>
+	<ip>IP</ip>
+	<ips>Zusätzliche IPs</ips>
+	<isnot>ist nicht</isnot>
+	<keyname>Name der Public Keyfile</keyname>
+	<keyuse>Public Keyfile benutzen</keyuse>
+	<maxserver>Maximum Server</maxserver>
+	<maxslots>Maximum Slots</maxslots>
+	<maxtraffic>Maximum Traffic</maxtraffic>
+	<max_download_total_bandwidth>Maximale Downloadbandbreite</max_download_total_bandwidth>
+	<max_upload_total_bandwidth>Maximale Uploadbandbreite</max_upload_total_bandwidth>
+	<name>Servername</name>
+	<newuser>Neuer User</newuser>
+	<os_bit>Bitversion</os_bit>
+	<password>Private Server</password>
+	<port>Port</port>
+	<querypassword>Querypasswort</querypassword>
+	<queryport>Queryport</queryport>
+    <reset>Reset</reset>
+	<rootserver>Rootserver</rootserver>
+	<server>Server</server>
+	<serverdir>Pfad zum Server</serverdir>
+	<slots>Serverslots</slots>
+	<ssh_ip>SSH2 IP</ssh_ip>
+	<ssh_pass>SSH2 Passwort</ssh_pass>
+	<ssh_port>SSH2 Port</ssh_port>
+	<ssh_user>SSH2 Benutzername</ssh_user>
+    <tsdnsServerID>Externer TSDNS Server</tsdnsServerID>
+	<token>Token</token>
+	<ts3>Teamspeak 3</ts3>
+	<type>Servertyp</type>
+	<usage>Belegung</usage>
+	<usedns>DNS benutzen</usedns>
+	<usedports>Belegte Ports</usedports>
+	<user>Benutzername</user>
+    <virtualserver_antiflood_points_needed_command_block>Anti-Flood: Punkte um Befehle zu blockieren</virtualserver_antiflood_points_needed_command_block>
+    <virtualserver_antiflood_points_needed_ip_block>Anti-Flood: Punkte um IP zu sperren</virtualserver_antiflood_points_needed_ip_block>
+    <virtualserver_antiflood_points_tick_reduce>Anti-Flood: Reduzierte Punkte pro Tick</virtualserver_antiflood_points_tick_reduce>
+    <virtualserver_hostbanner_gfx_interval>GFX Interval</virtualserver_hostbanner_gfx_interval>
+    <virtualserver_hostmessage_mode>Hostnachricht Modus</virtualserver_hostmessage_mode>
+    <virtualserver_hostmessage_mode_0>Keine Nachricht</virtualserver_hostmessage_mode_0>
+    <virtualserver_hostmessage_mode_1>Nachrichten im Log zeigen</virtualserver_hostmessage_mode_1>
+    <virtualserver_hostmessage_mode_2>Nachricht als Fenster zeigen</virtualserver_hostmessage_mode_2>
+    <virtualserver_hostmessage_mode_3>Nachricht als Fenster zeigen und Verbindung trennen</virtualserver_hostmessage_mode_3>
+    <virtualserver_needed_identity_security_level>Benötigte Sicherheitsstufe</virtualserver_needed_identity_security_level>
+    <virtualserver_reserved_slots>Reservierte Slots</virtualserver_reserved_slots>
+	<welcome>Wilkommensnachicht</welcome>
+</sprache>

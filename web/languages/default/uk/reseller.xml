@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Shorten</abkuerz>
+	<action>Action</action>
+	<active>Activate</active>
+	<all>All</all>
+	<attention>Attention: If you reinstall all data will be lost! Please continue only if you accept data loss!</attention>
+	<bitversion>Bitversion</bitversion>
+	<core>Core</core>
+	<cores>Cores</cores>
+	<cpu>CPU</cpu>
+	<description>Description</description>
+	<dhcpsoftware>DHCP Serversoftware</dhcpsoftware>
+	<distro>Distribution</distro>
+	<hdd>Mountppoints</hdd>
+	<hddsize>HDD size</hddsize>
+    <initialRescuPass>Initial/Rescue Password</initialRescuPass>
+	<imagefile>Imagefile</imagefile>
+	<imageserver>Imageserver</imageserver>
+	<installing>Installing</installing>
+	<ip>IP</ip>
+	<ips>IPs and IP Ranges</ips>
+	<keyname>Keyfile name:</keyname>
+	<keyuse>Use keyfile:</keyuse>
+	<mac>Mac Adresse</mac>
+	<maxmhz>Maximum MHz</maxmhz>
+	<maxram>Maximum Ram</maxram>
+	<maxserver>Maximale Vserveranzahl</maxserver>
+	<mhz>MHz</mhz>
+	<minmhz>Minimum MHz</minmhz>
+	<minram>Minimum Ram</minram>
+	<mount>Mountpoint</mount>
+	<netmask>Netzmask</netmask>
+	<ok>OK</ok>
+	<os>Operating System</os>
+	<os_bit>Bitversion</os_bit>
+	<paylicence>Fee required</paylicence>
+	<pxeautorun>PXE Autorunfile</pxeautorun>
+    <PXEFolder>PXE Config folder</PXEFolder>
+	<ram>Ram</ram>
+	<reinstall>Reinstall</reinstall>
+	<rescue>Rescue</rescue>
+	<rescue_start>Start Rescue </rescue_start>
+	<rescue_stop>Stop Rescue </rescue_stop>
+	<restart>(Re)start</restart>
+	<shown>Results per page:</shown>
+	<ssh_ip>SSH2 IP</ssh_ip>
+	<ssh_pass>SSH2 password</ssh_pass>
+	<ssh_port>SSH2 port</ssh_port>
+	<ssh_user>SSH2 username</ssh_user>
+	<status>Status</status>
+    <startCmd>Startcommand</startCmd>
+    <dhcpFile>DHCP Configfile</dhcpFile>
+	<stop>Stop</stop>
+	<stopped>Stopped</stopped>
+	<unused_ips>free IPs</unused_ips>
+	<user>Username</user>
+    <userAdd>Please add a User/Reseller first!</userAdd>
+    <wwwFolder>Autorun WWW Folder</wwwFolder>
+</sprache>

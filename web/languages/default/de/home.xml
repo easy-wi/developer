@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<gserver_crashed>abgestürzte Gameserver</gserver_crashed>
+	<gserver_removed>Gameserver mit entferntem Password</gserver_removed>
+	<gserver_tag_removed>Gameserver mit entferntem Servertag</gserver_tag_removed>
+	<host_crashed>abgestürzte Hosts</host_crashed>
+	<master_crashed>abgestürzte Masterserver</master_crashed>
+	<tickets>Tickets</tickets>
+	<tickets_open>unbeantwortete Tickets</tickets_open>
+	<ts3master_crashed>abgestürzte TS3 Masterserver</ts3master_crashed>
+	<voice_crashed>abgestürzte Voiceserver</voice_crashed>
+</sprache>

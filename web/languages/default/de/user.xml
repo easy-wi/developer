@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<accounttype>Benutzertyp</accounttype>
+	<accounttype_admin>Admin</accounttype_admin>
+	<accounttype_reseller>Reseller</accounttype_reseller>
+	<accounttype_user>Benutzer</accounttype_user>
+	<active>Aktiviert</active>
+    <activeIn>Deaktiviert</activeIn>
+    <activeRegister>Registration Pending</activeRegister>
+	<addon>Addonverwaltung</addon>
+	<adresse>Serveradresse</adresse>
+	<badlogins>Es wurde die zulässige Anzahl falscher Passworteingaben in Folge erreicht!</badlogins>
+	<badloginsreset>Wert zurücksetzen:</badloginsreset>
+	<bear2>Daten bearbeiten</bear2>
+	<bez>Bezahlart</bez>
+    <birthday>Geburtstag</birthday>
+    <country>Land</country>
+	<einz>Bankeinzug</einz>
+	<email>E-Mail Adresse</email>
+	<error_cname>Es wurde kein, oder ein unzulässiger Kundenname eingegeben.</error_cname>
+	<error_id>Es wurde kein Kunde ausgewählt</error_id>
+	<error_in>Es wurden nicht alle zwingenden Felder ausgefüllt, oder ungültige Zeichen verwendet.</error_in>
+	<error_mail>Es wurde keine, oder ein unzulässige E-Mail Adresse eingegeben.</error_mail>
+    <error_mail_exists>E-Mail wird bereits bei einem anderen User verwendet</error_mail_exists>
+	<error_pass>Es wurde kein, oder ein unzulässiges Passwort eingegeben.</error_pass>
+	<error_passw_succ>Die eingegebenen Passwörter stimmen nicht überein</error_passw_succ>
+	<example>Beispiel:</example>
+	<fastdl2>Fastdownload Zugangsdaten</fastdl2>
+	<fastdl>Fastdownload benutzen</fastdl>
+	<fname>Familienname</fname>
+	<freeips>Ungenutzte IP Adressen</freeips>
+	<ftpaccess>FTP Zugang</ftpaccess>
+	<ftppsw>FTP Passwort</ftppsw>
+	<groupname>Gruppenname</groupname>
+	<gserver>Gameserver</gserver>
+	<han>Handynummer</han>
+	<heading_add>Benutzer hinzufügen</heading_add>
+	<heading_detail>Benutzerdetails</heading_detail>
+	<heading_list>Benutzerübersicht</heading_list>
+	<hnum>Hausnummer</hnum>
+	<inst>Installierte Server</inst>
+	<ips>IP4 Adressen:</ips>
+	<ips_possible1>1.1.1.1</ips_possible1>
+	<ips_possible2>1.1.1.3/6</ips_possible2>
+	<mail_backup>Mail senden bei Backup erstellt/eingespielt</mail_backup>
+	<mail_gsupdate>Mail senden bei Masterserver Update</mail_gsupdate>
+	<mail_securitybreach>Mail senden bei Gameserverdateien manipuliert</mail_securitybreach>
+	<mail_serverdown>Mail senden bei Server nicht erreichbar</mail_serverdown>
+	<mail_ticket>Mail senden bei neuem Supportticket</mail_ticket>
+	<mail_vserver>Mail senden bei Vserver angelegt oder Rescue gestartet</mail_vserver>
+	<max>Maximale</max>
+	<miniroot>Root</miniroot>
+	<modfastdl>Fastdownload Zugangsdaten bearbeiten</modfastdl>
+	<passw>Panelpasswort ändern</passw>
+	<passw_1>Neues Passwort eingeben</passw_1>
+	<passw_2>Passwort wiederholen</passw_2>
+	<passw_succ_ae>Passwort erfolgreich geändert</passw_succ_ae>
+    <password>Passwort</password>
+	<paypal>Paypal</paypal>
+	<plz>Postleitzahl</plz>
+	<rch>Rechnung</rch>
+	<reset>neu installieren</reset>
+	<restart>restarten</restart>
+	<right>Rechte ändern</right>
+	<root>Root</root>
+    <salutation>Anrede</salutation>
+    <salutation2>Herr</salutation2>
+    <salutation3>Frau</salutation3>
+	<server>Server</server>
+	<serverdata>Installierte Server</serverdata>
+	<settings>Panel Einstellungen</settings>
+	<shown>Ergebnisse je Seite:</shown>
+	<stadt>Stadt</stadt>
+	<str>Straße</str>
+	<switch>Zum Benutzer wechseln</switch>
+	<tel>Telefonnummer</tel>
+	<tickets>Supporttickets</tickets>
+	<user>Benutzername</user>
+	<user_users>Userverwaltung</user_users>
+	<user_admins>Adminverwaltung</user_admins>
+	<userdata>Benutzerdaten</userdata>
+	<usersettings>Benutzerdaten</usersettings>
+	<usertickets>Supporttickets</usertickets>
+	<user_create>Folgender User wurde erfolgreich erstellt</user_create>
+	<user_server>Gameserver gelöscht von:</user_server>
+	<vname>Vorname</vname>
+	<wipsw>Webinterface Passwort</wipsw>
+</sprache>

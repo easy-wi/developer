@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <abkuerz>Kürzel</abkuerz>
+    <action>Aktion</action>
+    <active>Aktivieren</active>
+    <all>Alle Spiele auswählen</all>
+    <anticheat>Anticheat</anticheat>
+    <belegt2>Vorhandene Verzeichnisse</belegt2>
+    <belegt>Belegte Ports</belegt>
+    <beschr>Beschreibung</beschr>
+    <bin>Binary</bin>
+    <bin_folder>Binaryverzeichnis(z.B. orangebox)</bin_folder>
+    <brandname>Branding</brandname>
+    <cant_install>Resynchronisation/Reinstall konnte nicht gestartet werden.</cant_install>
+    <config>Configs</config>
+    <confirm_change>Änderungen speichern?</confirm_change>
+    <confirm_delete>Gameserver wirklich löschen?</confirm_delete>
+    <confirm_restart>Gameserver wirklich (re)starten?</confirm_restart>
+    <confirm_stop>Gameserver wirklich stoppen?</confirm_stop>
+    <coreBind>CPU Kerne</coreBind>
+    <create>erstellen</create>
+    <delete_server>Folgende(r) Gameserver werden/wird gelöscht</delete_server>
+    <details>Erweiterte Serveroptionen</details>
+    <easy>Einfach</easy>
+    <error_folder>Fehler: Ein Gameserver mit diesem Spiel und Port existiert bereits bei diesem User</error_folder>
+    <error_id>Fehler: Es konnte kein Server gefunden werden</error_id>
+    <error_notinstalled>Fehler: Es ist noch kein Masterserver für dieses Spiel installiert.</error_notinstalled>
+    <error_id>Fehler: Es konnte kein Server gefunden werden</error_id>
+    <error_port>Fehler: Ein Server mit disem Port existiert bereits bei einem anderen User</error_port>
+    <error_server_install>Resynchronisation/Reinstall konnte nicht gestartet werden.</error_server_install>
+    <error_user>Fehler: Benutzer konnte nicht angelegt werden</error_user>
+    <failed>Fehler: Es konnte keine Verbindung zum Gameserver aufgebaut werden</failed>
+    <folder>Serververzeichnis</folder>
+    <fps>Server FPS</fps>
+    <friday>Freitag</friday>
+    <ftp_adresse>FTP-Adresse</ftp_adresse>
+    <ftp_link>FTP-Link</ftp_link>
+    <ftp_password>FTP-Passwort</ftp_password>
+    <ftp_path>FTP-Pfad</ftp_path>
+    <ftp_port>FTP-Port</ftp_port>
+    <ftp_user>FTP-Benutzername</ftp_user>
+    <full>Full</full>
+    <game>Spiel</game>
+    <games>Spiele</games>
+    <gameswitch>Spiel wählen</gameswitch>
+    <gs_add2>Server Hinzufügen Schritt 2: Serverdetails</gs_add2>
+    <gs_add>Server Hinzufügen Schritt 1: User, Rootserver, Spiele</gs_add>
+    <heading_delete>Gameserver löschen</heading_delete>
+    <heading_template>Gameserver Übersicht</heading_template>
+    <hour>Uhr</hour>
+    <import_corrected>Ist der gefundende Gameserver korrekt?</import_corrected>
+    <import_destination>Zielserver, Spiel und Template des Imports</import_destination>
+    <import_source>Zu importierende Datenquelle</import_source>
+    <import_start>Der Umzugsservice wurde gestartet. Der Vorgang kann einige Zeit in Anspruch nehmen!</import_start>
+    <installAll>Alle Spiele</installAll>
+    <installGames>Spiele vorinstallieren</installGames>
+    <ip>Gameserver IP</ip>
+    <lendserver>Server leihbar</lendserver>
+    <primary>Hauptspiel</primary>
+    <map>Map</map>
+    <mod>Modverzeichnis (z.B. cstrike und dod)</mod>
+    <monday>Montag</monday>
+    <nameremoved>Branding entfernt</nameremoved>
+    <never>Niemals</never>
+    <no_game>Es wurden keine Spiele ausgewählt.</no_game>
+    <no_server_left>Der User hat keine Gameserver mehr auf dem Rootserver. Lösche den user vom Rootserver.</no_server_left>
+    <off2>Aus</off2>
+    <off>Gameserver ist offline</off>
+    <on>An</on>
+    <password>Passwort</password>
+    <player>Spieler</player>
+    <port>Port</port>
+    <port_gs>Gameserverport</port_gs>
+    <premoved>Serverpasswort entfernt</premoved>
+    <protect>Protection Modus</protect>
+    <qstat>QStat Parameter</qstat>
+    <ramMax>Maximaler Ram</ramMax>
+    <ramMin>Minimaler Ram</ramMin>
+    <rcon>RCON Passwort</rcon>
+    <recover>Wiederherstellen</recover>
+    <reinstall>Reinstall</reinstall>
+    <restarts>(Re)start</restarts>
+    <restart_all>Alle Server neustarten</restart_all>
+    <restarttime>Restart-Planer</restarttime>
+    <resync>Resyncronisation</resync>
+    <root>Rootserver</root>
+    <saturday>Samstag</saturday>
+    <server>Gameserver Adresse</server>
+    <serverinstalled>Installierte Gameserver</serverinstalled>
+    <servername>Servername</servername>
+    <serverrestart>Der Gameserver wird neu gestartet</serverrestart>
+    <serverstop>Der Gameserver wird gestoppt</serverstop>
+    <servertype>Spiel</servertype>
+    <server_details>Einstellungen für</server_details>
+    <server_installed>Resynchronisation/Reinstall des Gameservers wurde gestartet.</server_installed>
+    <server_ud>Die Daten des Gameservers wurden aktualisiert.</server_ud>
+    <since>Seit</since>
+    <slots>Slots</slots>
+    <slotsinstalled>Installierte Slots</slotsinstalled>
+    <slotsused>Slots in Gebrauch</slotsused>
+    <start>Startbefehl</start>
+    <startmap>Start-Map</startmap>
+    <startmapgroup>Start-Mapgroup</startmapgroup>
+    <start_own>Eigener Startbefehl</start_own>
+    <stop>Stop</stop>
+    <sunday>Sonntag</sunday>
+    <switch>Zum User wechseln</switch>
+    <thursday>Donnerstag</thursday>
+    <tick>Tickrate</tick>
+    <tuesday>Dienstag</tuesday>
+    <tv>TV erlaubt</tv>
+    <tvport>TV Port</tvport>
+    <updated>Konfigurationsdatei erfolgreich bearbeitet</updated>
+    <updatetime>Status vom</updatetime>
+    <usage>Serverbelegung</usage>
+    <usedports>Benutzte Ports</usedports>
+    <user>Benutzername</user>
+    <useredit>Veränderbar vom User</useredit>
+    <user_add>User auf dem Server erfolgreich angelegt.</user_add>
+    <war>Clanserver</war>
+    <wednesday>Mittwoch</wednesday>
+</sprache>

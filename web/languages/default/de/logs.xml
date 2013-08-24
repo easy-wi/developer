@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<account>Benutzeraccount</account>
+	<action>Benutzeraktion</action>
+	<admin>Admin</admin>
+	<all>Alle</all>
+	<banned_till>Gebannt bis</banned_till>
+    <date>Datum</date>
+    <hostname>Hostname</hostname>
+	<ip>Benutzerip</ip>
+	<shown>Anzahl</shown>
+	<subuser>Subuser</subuser>
+	<topic>Betreff</topic>
+	<user>Benutzer</user>
+    <failcount>Fehlversuche</failcount>
+    <reason>Grund</reason>
+</sprache>

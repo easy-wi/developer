@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<chfdluser>FTP Zugang ändern?</chfdluser>
+	<example>Beispiel: ftp://Deinusername:Deinftppasswort@Adresse/Pfad</example>
+	<fdlfailed>Fastdownload Abgleich fehlgeschlagen</fdlfailed>
+	<fdlstarted>Fastdownload Abgleich gestartet</fdlstarted>
+	<haupt2>Haupt Fastdownload benutzen?</haupt2>
+	<haupt>Haupt Fastdownload</haupt>
+	<neben>FTP Zugang zum Fastdownload Webspace für</neben>
+	<noset>Keine FTP Daten hinterlegt</noset>
+	<own2>Eigener Fastdownloadzugang für den Servers</own2>
+	<own>Haupt FTP nutzen</own>
+	<server>Server</server>
+	<startfdl>Abgleich starten</startfdl>
+	<udsuc>FTP Daten erfolgreich geändert</udsuc>
+</sprache>

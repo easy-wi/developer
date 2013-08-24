@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<active>Aktiv</active>
+    <activeGS>Gameserver Verleih aktivieren für</activeGS>
+    <activeVS>Voiceserver Verleih aktivieren für</activeVS>
+    <all>Alle</all>
+    <anonymous>Anonyme</anonymous>
+	<available>verfügbar</available>
+    <free>Verfügbar in</free>
+	<ftpupload>Demoupload erlauben</ftpupload>
+	<ftpuploadpath>Demo FTP</ftpuploadpath>
+    <ipblock>Jemand mit deiner IP hat bereits einen Server geliehen!</ipblock>
+	<lend>Ausleihen</lend>
+	<lendaccess>Verleih über</lendaccess>
+	<lendhostip>WebhostIP bei XML</lendhostip>
+	<lendhostkey>Key bei XML</lendhostkey>
+	<maxplayer>Maximale Slots</maxplayer>
+	<maxtime>Maximal Ausleihzeit</maxtime>
+	<minplayer>Minimale Slots</minplayer>
+	<mintime>Minimale Ausleihzeit</mintime>
+	<minutes>Minuten</minutes>
+	<nextcheck>Nächste Statusüberprüfung</nextcheck>
+	<nextfree>Nächster Gameserver planmäßig frei in</nextfree>
+	<nextfreevo>Nächster Voiceserver planmäßig frei in</nextfreevo>
+	<playersteps>Slotschritte</playersteps>
+    <ready>verfügbar</ready>
+    <registered>Registrierte</registered>
+    <settingsGsAnonymous>Gameserver Einstellungen anonyme Benutzer</settingsGsAnonymous>
+    <settingsGsGeneral>Generelle Gameserver Einstellungen</settingsGsGeneral>
+    <settingsGsRegistered>Gameserver Einstellungen registrierte Benutzer</settingsGsRegistered>
+    <settingsVsAnonymous>Voiceserver Einstellungen anonyme Benutzer</settingsVsAnonymous>
+    <settingsVsGeneral>Generelle Voiceserver Einstellungen</settingsVsGeneral>
+    <settingsVsRegistered>Voiceserver Einstellungen registrierte Benutzer</settingsVsRegistered>
+	<shutdownempty>Leere Server beenden</shutdownempty>
+	<shutdownemptytime>Minimale Laufzeit</shutdownemptytime>
+	<timesteps>Minutenschritte</timesteps>
+	<timeleft>Verbleibende Zeit</timeleft>
+	<used>belegt</used>
+	<usedserver>Belegte Server</usedserver>
+</sprache>

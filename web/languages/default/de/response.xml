@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <notFound>404: Kein Eintrag zur ID gefunden, oder keine Berechtigung!</notFound>
+    <error_server>Fehler: Es konnte keine Verbindung zum Server aufgebaut werden!</error_server>
+    <error_table2>Fehler: konnte die Tabelle nicht anlegen!</error_table2>
+    <error_table>Fehler: konnte die Tabelle nicht aktualisieren, oder es gab keine Neuerung!</error_table>
+    <error_ts_query>Fehler: Der TS3 Serverquery war nicht erfolgreich. Die Fehlermeldung ist: </error_ts_query>
+    <error_ts_query_connect>Fehler: Konnte nicht zu dem TS3 Serverquery verbinden. Die Fehlermeldung ist: </error_ts_query_connect>
+    <error_username>Fehler: Username ist unzulässig, oder existiert bereits.</error_username>
+    <table_add>Die Daten wurden erfolgreich in die Datenbank eingetragen.</table_add>
+    <table_del>Die Daten wurden erfolgreich aus der Datenbank entfernt.</table_del>
+    <token>Error: CSFR Schutztoken abgelaufen, oder nicht vorhanden.</token>
+    <ts_query_success>TS3 Serverquery erfolgreich. Die Antwort vom TS3 Serverquery ist: </ts_query_success>
+</sprache>

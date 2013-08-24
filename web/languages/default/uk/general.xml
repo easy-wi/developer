@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Active</active>
+	<add>Add</add>
+	<addon>Addons</addon>
+    <addon2>Addon</addon2>
+    <all>All</all>
+    <api>API</api>
+    <apiAuth>External Authentication</apiAuth>
+	<backup>Backup</backup>
+    <columns>Custom Columns</columns>
+    <comments>Comments</comments>
+	<databases>Databases</databases>
+    <dedicated>Dedicated</dedicated>
+	<del>Delete</del>
+    <delSafe>Safe Delete</delSafe>
+    <delAny>Delete in any case</delAny>
+    <delDB>Remove from database</delDB>
+    <feeds>Feeds</feeds>
+	<edit>Edit</edit>
+	<fastdownload>Fastdownload</fastdownload>
+	<gameserver>Gameserver</gameserver>
+    <gameroot>Game Rootserver</gameroot>
+	<groups>Groups</groups>
+	<hostsystem>Hostsystem</hostsystem>
+	<hotline>Hotline</hotline>
+	<imprint>Imprint</imprint>
+    <jobs>Jobs</jobs>
+    <jobPending>Job pending</jobPending>
+	<last>Your last login was: </last>
+	<lendserver>Lendserver</lendserver>
+	<licence>Licencemaximum has been reached.</licence>
+    <licence_version>You are not allowed to run this version!</licence_version>
+	<logs>Logs</logs>
+	<master>Master</master>
+    <migration>Migration Service</migration>
+	<mod>Modify</mod>
+	<news>News</news>
+	<no>No</no>
+	<overview>Overview</overview>
+	<page>Page</page>
+	<pages>Pages</pages>
+    <registration>Registration</registration>
+    <repair>Repair</repair>
+	<reseller>Reseller</reseller>
+	<root>Rootserver</root>
+    <search>Search</search>
+	<settings>Settings</settings>
+	<shown>Results per page:</shown>
+    <start>Start</start>
+	<stats>Statistics</stats>
+    <status>Status</status>
+    <stop>Stop</stop>
+    <substitutes>Substitutes</substitutes>
+	<support2>New Supportticket</support2>
+	<support>Support</support>
+	<sure>Are you sure?</sure>
+    <sure_delete>Are you sure? All Data at the target server will be deleted!</sure_delete>
+	<template>Template</template>
+	<templates>Images/Templates</templates>
+	<traffic>Traffic</traffic>
+	<update>Update</update>
+    <use>Use</use>
+	<user>User</user>
+    <userImport>User Import</userImport>
+	<virtual>Virtuelle Server</virtual>
+	<versioncheck>Version Check</versioncheck>
+	<voiceserver>Voiceserver</voiceserver>
+	<vor>Forward</vor>
+	<welcome>Welcome: </welcome>
+	<yes>Yes</yes>
+	<zurueck>Backwards</zurueck>
+</sprache>

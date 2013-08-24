@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Shorten</abkuerz>
+    <action>Action</action>
+	<active>Activate</active>
+	<all>Select all games</all>
+	<anticheat>Anticheat</anticheat>
+	<belegt2>Existing folders</belegt2>
+	<belegt>Used ports</belegt>
+	<beschr>Description</beschr>
+	<bin>Binary</bin>
+	<bin_folder>Binary folder(orangebox and so on)</bin_folder>
+	<brandname>Servertag</brandname>
+	<cant_install>Could not start installation on the server</cant_install>
+	<config>Serverconfigs</config>
+	<confirm_change>Save Changes?</confirm_change>
+	<confirm_delete>Delete Server?</confirm_delete>
+	<confirm_restart>(Re)start Server?</confirm_restart>
+	<confirm_stop>Stop server?</confirm_stop>
+    <coreBind>CPU Cores</coreBind>
+	<create>create</create>
+	<delete_server>Following server(s) will be deleted</delete_server>
+	<details>Extented Serveroptions</details>
+	<easy>Easy</easy>
+	<error_folder>Error: This user has already this kind of server on the specified port</error_folder>
+	<error_id>Error: No server could be found</error_id>
+	<error_md>Error: Server could not be changed</error_md>
+	<error_notinstalled>Error: You need to install a masterserver for this game on the rootserver.</error_notinstalled>
+	<error_port>Error: A server with the specified port already exists on that server</error_port>
+	<error_server_install>Error: Could not start the installation on the server</error_server_install>
+	<error_user>Error: Could not add the user</error_user>
+	<failed>Error: Could not establish a connection to the server</failed>
+	<folder>Serverfolder</folder>
+	<fps>Server FPS</fps>
+	<friday>Friday</friday>
+	<ftp_adresse>FTP-adresse</ftp_adresse>
+	<ftp_link>FTP-link</ftp_link>
+	<ftp_password>FTP-password</ftp_password>
+    <ftp_path>FTP-Path</ftp_path>
+    <ftp_port>FTP-Port</ftp_port>
+	<ftp_user>FTP-username</ftp_user>
+	<full>Full</full>
+	<game>Game</game>
+	<games>Games</games>
+	<gameswitch>Choose Gametype</gameswitch>
+	<gs_add2>Add server step 2: Serverdetails</gs_add2>
+	<gs_add>Add server step 1: User, Rootserver, games</gs_add>
+	<heading_delete>Delete Gameserver</heading_delete>
+	<heading_template>Gameserver Overview</heading_template>
+	<hour>Hour</hour>
+    <import_corrected>Is the found path correct?</import_corrected>
+    <import_destination>Destination server, game and template of import</import_destination>
+    <import_source>Data source to be imported</import_source>
+    <import_start>Migration service started. This process will take some time!</import_start>
+    <installAll>All Games</installAll>
+    <installGames>Preinstall Games</installGames>
+	<ip>Gameserver IP Adresse</ip>
+	<lendserver>Server lendable</lendserver>
+    <primary>Primary Game</primary>
+	<map>Map</map>
+	<mod>Modfolder (cstrike, tf and so on)</mod>
+	<monday>Monday</monday>
+	<nameremoved>Servertag removed</nameremoved>
+    <never>never</never>
+	<no_game>No game has been selected.</no_game>
+	<no_server_left>No servers left for this user. Deleting user from the rootserver.</no_server_left>
+	<off2>Off</off2>
+	<off>Server is offline</off>
+	<on>On</on>
+	<password>Password</password>
+	<player>Player</player>
+	<port>Port</port>
+	<port_gs>Gameserverport</port_gs>
+	<premoved>Serverpassword removed</premoved>
+	<protect>Protection Mode</protect>
+	<qstat>Qstat parameter</qstat>
+    <ramMax>Maximum Ram</ramMax>
+    <ramMin>Minimum Ram</ramMin>
+	<rcon>Remote password (RCON)</rcon>
+	<recover>recovery</recover>
+	<reinstall>Reinstall</reinstall>
+	<restart_all>Restart all Servers</restart_all>
+	<restarts>Restart Server</restarts>
+	<restarttime>Restart planner</restarttime>
+	<resync>Resyncronisation</resync>
+	<root>Rootserver</root>
+	<saturday>Saturday</saturday>
+	<server>Serveradresse</server>
+	<serverinstalled>Installed servers</serverinstalled>
+	<servername>Servername</servername>
+	<serverrestart>(Re)starting server</serverrestart>
+	<serverstop>Stopping server</serverstop>
+	<servertype>Servertype</servertype>
+	<server_details>Details for</server_details>
+	<server_installed>Successfully started the installation on the server.</server_installed>
+	<server_ud>Updated serverdata</server_ud>
+	<since>Since</since>
+	<slots>Playerslots</slots>
+	<slotsinstalled>Installed slots</slotsinstalled>
+	<slotsused>Used slots</slotsused>
+	<start>Startcommand</start>
+	<startmap>Startmap</startmap>
+    <startmapgroup>Startmapgroup</startmapgroup>
+	<start_own>Own Startcommand</start_own>
+	<stop>Stop server</stop>
+	<sunday>Sunday</sunday>
+	<switch>Switch to user</switch>
+	<thursday>Thursday</thursday>
+	<tick>Tickrate</tick>
+	<tuesday>Tuesday</tuesday>
+	<tv>TV allowed</tv>
+	<tvport>SourceTV</tvport>
+	<updated>The config has been successfully edited</updated>
+	<updatetime>Status at</updatetime>
+	<usage>Server allocation</usage>
+	<usedports>Used ports</usedports>
+	<user>Username</user>
+	<useredit>Editable by user</useredit>
+	<user_add>Successfully added the user on the rootserver.</user_add>
+	<war>Private server</war>
+	<wednesday>Wednesday</wednesday>
+</sprache>

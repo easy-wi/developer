@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<bad_ca>The entered data did not match with the Captcha.</bad_ca>
+	<bad_up>Either the user does not exist or the password was wrong.</bad_up>
+	<back>Back</back>
+	<banned>Too many bad login attemps. Please reaquest a new password or Contact us.</banned>
+	<captcha>Captcha</captcha>
+	<email>E-Mail or username</email>
+	<exp>Your licence is expired.</exp>
+	<heading>User Login</heading>
+    <ipBad>Incorrect IP: </ipBad>
+    <ipOK>Permitted IP(s) is/are </ipOK>
+	<linkexpired>Link is expired.</linkexpired>
+	<nouser>A user with the entered name or email does not exist.</nouser>
+	<password>Password</password>
+	<passwordr>Passwort Recovery</passwordr>
+	<passwordrepeat>Password repeat</passwordrepeat>
+	<passwordreset>reset passwort</passwordreset>
+	<passwordreseted>Password has been updated.</passwordreseted>
+	<pwnomatch>Passwords do not match.</pwnomatch>
+	<send>An E-Mail has been send to your account.</send>
+	<sus>Your account is suspendet. Please contact your hoster.</sus>
+	<sus_heading>Attention!</sus_heading>
+	<user>Username</user>
+    <urlBad>Incorrect URL in use:</urlBad>
+    <urlOK>Correct URL is </urlOK>
+</sprache>

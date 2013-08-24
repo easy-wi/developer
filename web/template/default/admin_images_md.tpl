@@ -1,0 +1,177 @@
+<div class="row-fluid">
+    <div class="span12">
+        <ul class="breadcrumb">
+            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
+            <li><a href="admin.php?w=im"><?php echo $gsprache->template;?></a> <span class="divider">/</span></li>
+            <li><?php echo $gsprache->mod;?> <span class="divider">/</span></li>
+            <li class="active"><?php echo $description;?></li>
+        </ul>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span8">
+        <form class="form-horizontal" action="admin.php?w=im&amp;d=md&amp;id=<?php echo $id;?>&amp;r=im" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+            <input type="hidden" name="token" value="<?php echo token();?>">
+            <input type="hidden" name="action" value="md">
+            <div class="control-group">
+                <label class="control-label" for="inputUpdates">Autoupdate</label>
+                <div class="controls">
+                    <select class="span12" id="inputUpdates" name="updates">
+                        <option value="1">Vendor + Rsync/FTP Sync</option>
+                        <option value="2" <?php if ($updates==2) echo 'selected="selected"'; ?>>Vendor</option>
+                        <option value="4" <?php if ($updates==4) echo 'selected="selected"'; ?>>Rsync/FTP Sync</option>
+                        <option value="3" <?php if ($updates==3) echo 'selected="selected"'; ?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputSteamGame"><?php echo $sprache->steam;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputSteamGame" name="steamgame">
+                        <option value="N"><?php echo $gsprache->no;?></option>
+                        <option value="Y" <?php if ($steamgame=='Y') echo 'selected="selected"'; ?>>HLDSUpdater</option>
+                        <option value="S" <?php if ($steamgame=="S") echo 'selected="selected"'; ?>>SteamCmd</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputSteamAppID">Steam appID</label>
+                <div class="controls"><input class="span12" id="inputSteamAppID" type="text" name="appID" value="<?php echo $appID;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMods"><?php echo $sprache->mods;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputMods" name="gamemod" onchange="textdrop('mods');">
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N" <?php if($gamemod=='N') echo 'selected="selected"'; ?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <div id="mods" class="control-group <?php if($gamemod=='N') echo 'display_none'; ?>">
+                <label class="control-label" for="inputMods2"><?php echo $sprache->mods2;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputMods2" name="gamemod2">
+                        <?php foreach ($table as $table_row) { ?>
+                        <option value="<?php echo $table_row['shorten'];?>" <?php if($table_row['shorten']==$gamemod2) echo 'selected="selected"'; ?>><?php echo $table_row['shorten'];?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputProtect"><?php echo $gssprache->protect;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputProtect" name="protected">
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N" <?php if($protected=="N") echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputShorten"><?php echo $sprache->abkuerz;?></label>
+                <div class="controls"><input class="span12" id="inputShorten" type="text" name="shorten" value="<?php echo $shorten;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputQstat"><?php echo $sprache->qstat;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputQstat" name="qstat">
+                        <?php foreach ($table3 as $table_row3) { echo $table_row3['option'];} ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputDesc"><?php echo $sprache->description;?></label>
+                <div class="controls"><input class="span12" id="inputDesc" type="text" name="description" value="<?php echo $description;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputBin"><?php echo $sprache->bin;?></label>
+                <div class="controls"><input class="span12" id="inputBin" type="text" name="gamebinary" value="<?php echo $gamebinary;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputBinDir"><?php echo $sprache->bin_folder;?>Binary Dir</label>
+                <div class="controls"><input class="span12" id="inputBinDir" type="text" name="binarydir" value="<?php echo $binarydir;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputModfolder"><?php echo $sprache->mod;?></label>
+                <div class="controls"><input class="span12" id="inputModfolder" type="text" name="modfolder" value="<?php echo $modfolder;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMap"><?php echo $sprache->startmap;?></label>
+                <div class="controls"><input class="span12" id="inputMap" type="text" name="map" value="<?php echo $map;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMapgroup"><?php echo $sprache->startmapgroup;?></label>
+                <div class="controls"><input class="span12" id="inputMapgroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputQstatParam"><?php echo $sprache->qstatpassparam;?></label>
+                <div class="controls"><input class="span12" id="inputQstatParam" type="text" name="qstatpassparam" value="<?php echo $qstatpassparam;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPortMax"><?php echo $sprache->portMax;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputPortMax" name="portMax">
+                        <option>1</option>
+                        <option <?php if($portMax==2) echo 'selected="selected"'; ?>>2</option>
+                        <option <?php if($portMax==3) echo 'selected="selected"'; ?>>3</option>
+                        <option <?php if($portMax==4) echo 'selected="selected"'; ?>>4</option>
+                        <option <?php if($portMax==5) echo 'selected="selected"'; ?>>5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPortStep"><?php echo $sprache->portStep;?></label>
+                <div class="controls"><input class="span12" id="inputPortStep" type="text" name="portStep" value="<?php echo $portStep;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPort1"><?php echo $sprache->port;?> 1</label>
+                <div class="controls"><input class="span12" id="inputPort1" type="text" name="portOne" value="<?php echo $portOne;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPort2"><?php echo $sprache->port;?> 2</label>
+                <div class="controls"><input class="span12" id="inputPort2" type="text" name="portTwo" value="<?php echo $portTwo;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPort3"><?php echo $sprache->port;?> 3</label>
+                <div class="controls"><input class="span12" id="inputPort3" type="text" name="portThree" value="<?php echo $portThree;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPort4"><?php echo $sprache->port;?> 4</label>
+                <div class="controls"><input class="span12" id="inputPort4" type="text" name="portFour" value="<?php echo $portFour;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPort5"><?php echo $sprache->port;?> 5</label>
+                <div class="controls"><input class="span12" id="inputPort5" type="text" name="portFive" value="<?php echo $portFive;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputCmd"><?php echo $sprache->start;?></label>
+                <div class="controls"><textarea class="span12" id="inputCmd" rows="5" name="cmd"><?php echo $cmd;?></textarea></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputConfigs"><?php echo $sprache->configs;?></label>
+                <div class="controls"><textarea class="span12" id="inputConfigs" rows="5" name="configs"><?php echo $configs;?></textarea></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputConfigsEdit"><?php echo $sprache->configedit;?></label>
+                <div class="controls"><textarea class="span12" id="inputConfigsEdit" rows="5" name="configedit"><?php echo $configedit;?></textarea></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputModsCmd"><?php echo $sprache->modcmds;?></label>
+                <div class="controls"><textarea class="span12" id="inputModsCmd" rows="5" name="modcmds"><?php echo $modcmds;?></textarea></div>
+            </div>
+            <!--<div class="control-group">
+                <label class="control-label" for="inputIptables"><?php echo $sprache->iptables;?></label>
+                <div class="controls"><textarea class="span12" id="inputIptables" rows="5" name="iptables"><?php echo $iptables;?></textarea></div>
+            </div>-->
+            <div class="control-group">
+                <label class="control-label" for="inputProtectedSaveCFGs"><?php echo $sprache->protectedSaveCFGs;?></label>
+                <div class="controls"><textarea class="span12" id="inputProtectedSaveCFGs" rows="5" name="protectedSaveCFGs"><?php echo $protectedSaveCFGs;?></textarea></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputEdit"></label>
+                <div class="controls">
+                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<brandname>Servertag:</brandname>
+	<confirm_change>Save modifications?</confirm_change>
+	<eachday>Each X days:</eachday>
+	<email2>This email will be used when sending data to the users.</email2>
+	<email>Email:</email>
+	<emaildown>Could not reach server</emaildown>
+	<emaildownrestart>Server is down and could not be restarted</emaildownrestart>
+	<emailfooter2>This text is used at the footer in a Mail send by the panel. For example you can add your legal informations here.</emailfooter2>
+	<emailfooter>E-Mail Footer:</emailfooter>
+	<emailnewticket>New supportticket recieved</emailnewticket>
+	<emailpasswordrecovery>Password recovery</emailpasswordrecovery>
+	<emailregards2>This text is used at the end of a Mail send by the panel. An example: "Kind regards"</emailregards2>
+	<emailregards>E-Mail greatings:</emailregards>
+	<emailsecuritybreach>Server manipulation was detected</emailsecuritybreach>
+	<emailvrescue>Rescue system started</emailvrescue>
+	<faillogins>Possible failed Logins in a row</faillogins>
+	<header>Settings</header>
+	<image_server2>If a masterinstallation is not set up the data will be downloaded from this server.</image_server2>
+	<image_server3>Use an image server:</image_server3>
+	<image_server>Image Server:</image_server>
+	<language>Default language:</language>
+    <lastCronWarnStatus>statuscheck.php warning</lastCronWarnStatus>
+    <lastCronWarnReboot>reboot.php warning</lastCronWarnReboot>
+    <lastCronWarnUpdates>startupdates.php warning</lastCronWarnUpdates>
+    <lastCronWarnJobs>jobs.php warning</lastCronWarnJobs>
+    <lastCronWarnCloud>cloud.php warning</lastCronWarnCloud>
+	<maxbackups>Maximum backupamount:</maxbackups>
+	<nopassword>Password removed</nopassword>
+	<noservertag>Servertag removed</noservertag>
+    <password>Password</password>
+	<prefix1>Define usernames:</prefix1>
+	<prefix2>If you define a username the users unique ids will be appended to the defined name. Only small letters and numbers are allowed. Example: customer will be customer2 and counting</prefix2>
+	<prefix3>Default username:</prefix3>
+    <protocol>Protocol</protocol>
+	<shutdown>Shutdown server</shutdown>
+	<supportnumber>Support phonenumber:</supportnumber>
+	<timezone>Timezone:</timezone>
+	<tohighslots>Slots manipulated</tohighslots>
+	<warn>Warn user</warn>
+    <down_checks>Offline checks</down_checks>
+</sprache>
