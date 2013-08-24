@@ -1,0 +1,21 @@
+Included third party frameworks, tools, and so on:
+
+* Bootstrap v2.3.2
+http://getbootstrap.com/2.3.2/
+Copyright 2013 Twitter, Inc
+Licensed under the Apache License v2.0
+http://www.apache.org/licenses/LICENSE-2.0
+Designed and built with all the love in the world by @mdo and @fat.
+
+
+* FooTable - Awesome Responsive Tables
+http://themergency.com/footable/
+Requires jQuery - http://jquery.com/
+Copyright Steven Usher & Brad Vincent
+Released under the MIT license
+http://opensource.org/licenses/MIT
+
+
+* HTML5 Shiv v3.6.2
+https://github.com/aFarkas/html5shiv
+@afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
