@@ -151,14 +151,14 @@
                 <div class="controls">
                     <?php foreach ($lang_avail as $lg) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inlineCheckbox<?php echo $array['lang'];?>" name="language[]" value="<?php echo $lg;?>" onclick="textdrop('<?php echo $lg;?>');" <?php if($about_text[$lg]!=false) echo 'checked';?>> <img src="images/flags/16_<?php echo $lg;?>.png" alt="Flag: <?php echo $lg;?>.png" class="inline">
+                        <input type="checkbox" id="inlineCheckbox<?php echo $array['lang'];?>" name="language[]" value="<?php echo $lg;?>" onclick="textdrop('<?php echo $lg;?>');" <?php if($about_text[$lg]!=false) echo 'checked';?>> <img src="images/flags/<?php echo $lg;?>.png" alt="Flag: <?php echo $lg;?>.png" class="inline">
                     </label>
                     <?php } ?>
                 </div>
             </div>
             <?php foreach ($lang_avail as $lg) { ?>
             <div id="<?php echo $lg;?>" class="control-group <?php if($about_text[$lg]==false) echo 'display_none';?>">
-                <label class="control-label" for="inputAbout<?php echo $lg;?>"><img src="images/flags/16_<?php echo $lg;?>.png" alt="<?php echo $lg;?>"/></label>
+                <label class="control-label" for="inputAbout<?php echo $lg;?>"><img src="images/flags/<?php echo $lg;?>.png" alt="<?php echo $lg;?>"/></label>
                 <div class="controls">
                     <textarea id="inputAbout<?php echo $lg;?>" name="about[<?php echo $lg;?>]" rows="5"><?php echo $about_text[$lg];?></textarea>
                 </div>
@@ -192,14 +192,14 @@
                 <div class="controls">
                     <?php foreach ($lang_avail as $lg) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inlineCheckboxTou<?php echo $array['lang'];?>" name="touLanguages[]" value="<?php echo $lg;?>" onclick="textdrop('tou_<?php echo $lg;?>');" <?php if($tous[$lg]!=false) echo 'checked';?>> <img src="images/flags/16_<?php echo $lg;?>.png" alt="Flag: <?php echo $lg;?>.png" class="inline">
+                        <input type="checkbox" id="inlineCheckboxTou<?php echo $array['lang'];?>" name="touLanguages[]" value="<?php echo $lg;?>" onclick="textdrop('tou_<?php echo $lg;?>');" <?php if($tous[$lg]!=false) echo 'checked';?>> <img src="images/flags/<?php echo $lg;?>.png" alt="Flag: <?php echo $lg;?>.png" class="inline">
                     </label>
                     <?php } ?>
                 </div>
             </div>
             <?php foreach ($lang_avail as $lg) { ?>
             <div id="tou_<?php echo $lg;?>" class="control-group <?php if($tous[$lg]==false) echo 'display_none';?>">
-                <label class="control-label" for="inputTou<?php echo $lg;?>"><img src="images/flags/16_<?php echo $lg;?>.png" alt="<?php echo $lg;?>"/></label>
+                <label class="control-label" for="inputTou<?php echo $lg;?>"><img src="images/flags/<?php echo $lg;?>.png" alt="<?php echo $lg;?>"/></label>
                 <div class="controls">
                     <input type="text" id="inputTou<?php echo $lg;?>" name="tou[<?php echo $lg;?>]" value="<?php echo $tous[$lg];?>" placeholder="http://domain.tld/tou.pdf">
                 </div>

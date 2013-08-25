@@ -25,7 +25,7 @@
 <hr>
 <?php if(isset($results)) { foreach ($results as $v) { ?>
 <div class="row-fluid">
-    <h2><img src="<?php echo $page_data->pageurl.'/images/flags/16_'.$v['language'];?>.png" alt="" /> <?php echo $v['type'];?>: <?php echo $v['href'];?></h2>
+    <h2><img src="<?php echo $page_data->pageurl.'/images/flags/'.$v['language'];?>.png" alt="" /> <?php echo $v['type'];?>: <?php echo $v['href'];?></h2>
     <div class="span11">
         <?php echo $v['text'];?>
     </div>

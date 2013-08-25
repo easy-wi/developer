@@ -16,14 +16,16 @@
     <delSafe>Sicheres Löschen</delSafe>
     <delAny>In jedem Fall Löschen</delAny>
     <delDB>Aus der Datenbank Löschen</delDB>
+    <edit>Bearbeiten</edit>
+    <export>Exportieren</export>
     <feeds>Feeds</feeds>
-	<edit>Bearbeiten</edit>
 	<fastdownload>Fastdownload</fastdownload>
     <gameroot>Game Rootserver</gameroot>
 	<gameserver>Gameserver</gameserver>
 	<groups>Gruppen</groups>
 	<hostsystem>Hostsystem</hostsystem>
 	<hotline>Hotline</hotline>
+    <import>Importieren</import>
 	<imprint>Impressum</imprint>
     <jobs>Jobs</jobs>
     <jobPending>Job ausstehend</jobPending>

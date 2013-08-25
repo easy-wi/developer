@@ -77,14 +77,14 @@
                 <div class="controls">
                     <?php foreach ($emailbackup_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inlineCheckboxBackupCreate<?php echo $array['lang'];?>" name="languages-emailbackup[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailbackup');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inlineCheckboxBackupCreate<?php echo $array['lang'];?>" name="languages-emailbackup[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailbackup');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailbackup_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailbackup";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputBackupCreate<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputBackupCreate<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputBackupCreate<?php echo $array['lang'];?>" name="emailbackup_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -102,14 +102,14 @@
                 <div class="controls">
                     <?php foreach ($emailbackuprestore_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inlineCheckboxBackupRestore<?php echo $array['lang'];?>" name="languages-emailbackuprestore[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailbackuprestore');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inlineCheckboxBackupRestore<?php echo $array['lang'];?>" name="languages-emailbackuprestore[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailbackuprestore');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailbackuprestore_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailbackuprestore";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputBackupRestore<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputBackupRestore<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputBackupRestore<?php echo $array['lang'];?>" name="emailbackuprestore_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -127,14 +127,14 @@
                 <div class="controls">
                     <?php foreach ($emaildown_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inlineEmailDown<?php echo $array['lang'];?>" name="languages-emaildown[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emaildown');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inlineEmailDown<?php echo $array['lang'];?>" name="languages-emaildown[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emaildown');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emaildown_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emaildown";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputEmailDown<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputEmailDown<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputEmailDown<?php echo $array['lang'];?>" name="emaildown_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -152,14 +152,14 @@
                 <div class="controls">
                     <?php foreach ($emaildownrestart_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inlineEmailDown<?php echo $array['lang'];?>" name="languages-emaildownrestart[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emaildownrestart');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inlineEmailDown<?php echo $array['lang'];?>" name="languages-emaildownrestart[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emaildownrestart');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emaildownrestart_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emaildownrestart";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputEmailDown<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputEmailDown<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputEmailDown<?php echo $array['lang'];?>" name="emaildownrestart_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -177,14 +177,14 @@
                 <div class="controls">
                     <?php foreach ($emailgserverupdate_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inputCheckboxGserverUpdate<?php echo $array['lang'];?>" name="languages-emailgserverupdate[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailgserverupdate');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inputCheckboxGserverUpdate<?php echo $array['lang'];?>" name="languages-emailgserverupdate[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailgserverupdate');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailgserverupdate_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailgserverupdate";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputGserverUpdate<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputGserverUpdate<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputGserverUpdate<?php echo $array['lang'];?>" name="emailgserverupdate_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -202,14 +202,14 @@
                 <div class="controls">
                     <?php foreach ($emailpwrecovery_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inputCheckboxPWDRecovery<?php echo $array['lang'];?>" name="languages-emailpwrecovery[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailpwrecovery');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inputCheckboxPWDRecovery<?php echo $array['lang'];?>" name="languages-emailpwrecovery[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailpwrecovery');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailpwrecovery_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailpwrecovery";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputPWDRecovery<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputPWDRecovery<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputPWDRecovery<?php echo $array['lang'];?>" name="emailpwrecovery_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -227,14 +227,14 @@
                 <div class="controls">
                     <?php foreach ($emailnewticket_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inputCheckboxEmailNewTicket<?php echo $array['lang'];?>" name="languages-emailnewticket[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailnewticket');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inputCheckboxEmailNewTicket<?php echo $array['lang'];?>" name="languages-emailnewticket[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailnewticket');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailnewticket_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailnewticket";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputEmailNewTicket<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputEmailNewTicket<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputEmailNewTicket<?php echo $array['lang'];?>" name="emailnewticket_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -252,14 +252,14 @@
                 <div class="controls">
                     <?php foreach ($emailsecuritybreach_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inputCheckboxEmailSecurityBreach<?php echo $array['lang'];?>" name="languages-emailsecuritybreach[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailsecuritybreach');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inputCheckboxEmailSecurityBreach<?php echo $array['lang'];?>" name="languages-emailsecuritybreach[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailsecuritybreach');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailsecuritybreach_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailsecuritybreach";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputEmailSecurityBreach<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputEmailSecurityBreach<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputEmailSecurityBreach<?php echo $array['lang'];?>" name="emailsecuritybreach_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -277,14 +277,14 @@
                 <div class="controls">
                     <?php foreach ($emailuseradd_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inputCheckboxEmailUserAdd<?php echo $array['lang'];?>" name="languages-emailuseradd[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailuseradd');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inputCheckboxEmailUserAdd<?php echo $array['lang'];?>" name="languages-emailuseradd[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailuseradd');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailuseradd_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailuseradd";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputEmailUserAdd<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputEmailUserAdd<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputEmailUserAdd<?php echo $array['lang'];?>" name="emailuseradd_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -302,14 +302,14 @@
                 <div class="controls">
                     <?php foreach ($emailregister_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inputCheckboxEmailRegister<?php echo $array['lang'];?>" name="languages-emailregister[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailregister');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inputCheckboxEmailRegister<?php echo $array['lang'];?>" name="languages-emailregister[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailregister');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailregister_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailregister";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputEmailRegister<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputEmailRegister<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputEmailRegister<?php echo $array['lang'];?>" name="emailregister_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -327,14 +327,14 @@
                 <div class="controls">
                     <?php foreach ($emailvinstall_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inputCheckboxEmailVinstall<?php echo $array['lang'];?>" name="languages-emailvinstall[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailvinstall');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inputCheckboxEmailVinstall<?php echo $array['lang'];?>" name="languages-emailvinstall[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailvinstall');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailvinstall_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailvinstall";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputEmailVinstall<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputEmailVinstall<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputEmailVinstall<?php echo $array['lang'];?>" name="emailvinstall_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>
@@ -352,14 +352,14 @@
                 <div class="controls">
                     <?php foreach ($emailvrescue_xml as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inputCheckboxEmailVRescue<?php echo $array['lang'];?>" name="languages-emailvrescue[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailvrescue');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inputCheckboxEmailVRescue<?php echo $array['lang'];?>" name="languages-emailvrescue[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailvrescue');" <?php if ($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($emailvrescue_xml as $array) { ?>
             <div id="<?php echo $array['lang']."-emailvrescue";?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputEmailVRescue<?php echo $array['lang'];?>">XML <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputEmailVRescue<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputEmailVRescue<?php echo $array['lang'];?>" name="emailvrescue_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                 </div>

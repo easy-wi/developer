@@ -44,7 +44,7 @@
                 <td><?php echo $table_row['id'];?></td>
                 <td><?php echo $table_row['mTopic'];?></td>
                 <td><?php echo $table_row['priority'];?></td>
-                <td><a href="admin.php?w=ti&amp;d=dt&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=ti&amp;d=dt&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
                 <td><a href="admin.php?w=ti&amp;d=mt&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

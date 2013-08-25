@@ -223,14 +223,14 @@
                 <div class="controls">
                     <?php foreach ($foundlanguages as $array) { ?>
                     <label class="checkbox inline">
-                        <input type="checkbox" id="inlineCheckbox<?php echo $array['lang'];?>" name="languages[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" <?php if ($array['style']!=0) echo 'checked';?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
+                        <input type="checkbox" id="inlineCheckbox<?php echo $array['lang'];?>" name="languages[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" <?php if ($array['style']!=0) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
                     </label>
                     <?php }?>
                 </div>
             </div>
             <?php foreach ($foundlanguages as $array) { ?>
             <div id="<?php echo $array['lang'];?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputImprint<?php echo $array['lang'];?>"><img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                <label class="control-label" for="inputImprint<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
                     <textarea class="span10" id="inputImprint<?php echo $array['lang'];?>" name="description_<?php echo $array['lang'];?>" rows="8"><?php echo $array['imprint'];?></textarea>
                 </div>

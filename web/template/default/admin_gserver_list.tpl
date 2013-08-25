@@ -52,7 +52,7 @@
                 <td><a href="admin.php?w=gs&amp;d=st&amp;id=<?php echo $table_row['serverid'];?>&amp;r=gs"><span class="btn btn-mini btn-danger"><i class="icon-white icon-stop"></i></span></a></td>
                 <td><a href="admin.php?w=gs&amp;d=rs&amp;id=<?php echo $table_row['serverid'];?>&amp;r=gs"><span class="btn btn-mini btn-success"><i class="icon-white icon-play"></i></span></a></td>
                 <td><?php echo $table_row['jobPending'];?></td>
-                <td><a href="admin.php?w=gs&amp;d=dl&amp;id=<?php echo $table_row['serverid'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=gs&amp;d=dl&amp;id=<?php echo $table_row['serverid'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
                 <td><a href="admin.php?w=gs&amp;d=md&amp;id=<?php echo $table_row['serverid'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

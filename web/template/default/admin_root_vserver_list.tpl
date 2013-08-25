@@ -50,7 +50,7 @@
                 <td><?php echo $table_row['status'];?></td>
                 <td><?php echo $table_row['jobPending'];?></td>
                 <td><a href="admin.php?w=vs&amp;d=va&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-primary"><i class="icon-white icon-refresh"></i></span></a></td>
-                <td><a href="admin.php?w=vs&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=vs&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
                 <td><a href="admin.php?w=vs&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

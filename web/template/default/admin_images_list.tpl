@@ -31,6 +31,7 @@
                 <th data-class="expand"><a href="admin.php?w=im&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ad') { echo 'dd'; } else { echo 'ad'; } ?>"><?php echo $sprache->game;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=im&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='di') { echo 'ai'; } else { echo 'di'; } ?>">ID</a></th>
                 <th data-hide="phone"><a href="admin.php?w=im&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='as') { echo 'ds'; } else { echo 'as'; } ?>"><?php echo $sprache->abkuerz;?></a></th>
+                <th><?php echo $gsprache->export;?></a></th>
                 <th><?php echo $gsprache->del;?></a></th>
                 <th><?php echo $gsprache->mod;?></a></th>
             </tr>
@@ -41,7 +42,8 @@
                 <td><img src="images/games/icons/<?php echo $table_row['shorten'];?>.png" alt="<?php echo $table_row['shorten'];?>" width="16"/> <?php echo $table_row['description'];?></td>
                 <td><?php echo $table_row['id'];?></td>
                 <td><?php echo $table_row['shorten'];?></td>
-                <td><a href="admin.php?w=im&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=im&amp;d=ex&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-download"></i></span></a></td>
+                <td><a href="admin.php?w=im&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
                 <td><a href="admin.php?w=im&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

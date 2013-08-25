@@ -1,0 +1,37 @@
+.footable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    border: solid #ccc 1px;
+}
+
+.footable.breakpoint > tbody > tr > td.expand {
+    background-image:url("../../images/footable/plus.png");
+    background-repeat:no-repeat;
+    background-position:5px center;
+    padding-left: 40px;
+}
+
+.footable.breakpoint > tbody > tr.footable-detail-show > td.expand {
+    background-image:url("../../images/footable/minus.png");
+}
+
+.footable.breakpoint > tbody > tr.footable-row-detail {
+    background: #eee;
+}
+
+.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
+    cursor: pointer;
+}
+
+.footable > tbody > tr > td.footable-cell-detail {
+    border-left: none;
+}
+
+.footable > thead > tr > th.footable-first-column, .footable > thead > tr > td.footable-first-column, .footable > tbody > tr > td.footable-first-column {
+    border-left: none;
+}
+
+.footable > tbody img {
+    vertical-align:middle;
+}

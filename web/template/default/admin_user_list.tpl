@@ -58,7 +58,7 @@
                 <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else if($table_row['active']=='R') echo 'icon-warning-sign'; else echo 'icon-ban-circle';?>"></i></td>
                 <td><?php echo $table_row['accounttype'];?></td>
                 <td><?php echo $table_row['jobPending'];?></td>
-                <td><?php if ($table_row['id']!=$admin_id and (($table_row['adminaccount'] and $pa['user']) or (!$table_row['adminaccount'] and ($pa['user_users'] or $pa['user'])))) { ?><a href="admin.php?w=us&amp;d=md&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-remove-sign"></i></span></a><?php } ?></td>
+                <td><?php if ($table_row['id']!=$admin_id and (($table_row['adminaccount'] and $pa['user']) or (!$table_row['adminaccount'] and ($pa['user_users'] or $pa['user'])))) { ?><a href="admin.php?w=us&amp;d=md&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></span></a><?php } ?></td>
                 <td><?php if($pa['userPassword'] and (($table_row['adminaccount'] and $pa['user']) or !$table_row['adminaccount'])){ ?><a href="admin.php?w=us&amp;d=pw&amp;id=<?php echo $table_row['id'];?>" alt="modify"><span class="btn btn-mini btn-primary"><i class="icon-white icon-lock"></i></span></a><?php } ?></td>
                 <td><?php if (($table_row['adminaccount'] and $pa['user']) or (!$table_row['adminaccount'] and ($pa['user_users'] or $pa['user']))) { ?><a href="admin.php?w=us&amp;d=md&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a><?php } ?></td>
             </tr>

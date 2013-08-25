@@ -59,7 +59,7 @@
             <?php if(count($vo)>0){ ?>
             <hr>
             <h4><?php echo $gsprache->voiceserver;?></h4>
-            <?php foreach($gs as $k=>$v){ ?>
+            <?php foreach($vo as $k=>$v){ ?>
             <div class="control-group">
                 <label class="control-label" for="inputVO-<?php echo $k;?>"><?php echo $v;?></label>
                 <div class="controls">

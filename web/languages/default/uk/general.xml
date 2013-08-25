@@ -16,14 +16,16 @@
     <delSafe>Safe Delete</delSafe>
     <delAny>Delete in any case</delAny>
     <delDB>Remove from database</delDB>
+    <edit>Edit</edit>
+    <export>Export</export>
     <feeds>Feeds</feeds>
-	<edit>Edit</edit>
 	<fastdownload>Fastdownload</fastdownload>
 	<gameserver>Gameserver</gameserver>
     <gameroot>Game Rootserver</gameroot>
 	<groups>Groups</groups>
 	<hostsystem>Hostsystem</hostsystem>
 	<hotline>Hotline</hotline>
+    <import>Import</import>
 	<imprint>Imprint</imprint>
     <jobs>Jobs</jobs>
     <jobPending>Job pending</jobPending>

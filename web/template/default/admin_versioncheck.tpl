@@ -18,26 +18,16 @@
         <table class="table table-bordered table-hover table-striped footable">
             <thead>
             <tr>
-                <th data-class="expand"><?php echo $sprache->contractTime;?></th>
-                <th><?php echo $sprache->updates;?>:</th>
-                <th data-hide="phone"><?php echo $sprache->licenceAmount;?></th>
-                <th data-hide="phone,tablet"><?php echo $sprache->installed.' '.$gsprache->gameserver;?></th>
-                <th data-hide="phone,tablet"><?php echo $sprache->installed.' '.$gsprache->voiceserver;?></th>
-                <th data-hide="phone,tablet"><?php echo $sprache->installed.' '.$gsprache->virtual;?></th>
-                <th data-hide="phone,tablet"><?php echo $sprache->type;?></th>
-                <th data-hide="phone,tablet"><?php echo $sprache->contract;?></th>
+                <th><?php echo $sprache->installed.' '.$gsprache->gameserver;?></th>
+                <th><?php echo $sprache->installed.' '.$gsprache->voiceserver;?></th>
+                <th><?php echo $sprache->installed.' '.$gsprache->virtual;?></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td><?php echo $contractTime;?></td>
-                <td><?php echo $updates;?></td>
-                <td><?php echo $licenceDetails['count'].' / '.$licenceDetails['s'];?></td>
                 <td><?php echo $licenceDetails['gsCount'];?></td>
                 <td><?php echo $licenceDetails['voCount'];?></td>
                 <td><?php echo $licenceDetails['vCount'];?></td>
-                <td><?php echo $type;?></td>
-                <td><?php echo $contract;?></td>
             </tr>
             </tbody>
         </table>
@@ -49,9 +39,9 @@
         <table class="table table-bordered table-hover table-striped footable">
             <thead>
             <tr>
-                <th data-class="expand"><?php echo $sprache->licenceAmount.' '.$gsprache->virtual;?></th>
+                <th><?php echo $sprache->licenceAmount.' '.$gsprache->virtual;?></th>
                 <th><?php echo $sprache->licenceAmount.' '.$gsprache->gameserver;?></th>
-                <th data-hide="phone"><?php echo $sprache->licenceAmount.' '.$gsprache->voiceserver;?></th>
+                <th><?php echo $sprache->licenceAmount.' '.$gsprache->voiceserver;?></th>
             </tr>
             </thead>
             <tbody>

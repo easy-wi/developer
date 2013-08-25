@@ -44,14 +44,14 @@
                 <div class="controls">
                     <?php foreach ($foundlanguages as $array) { ?>
                     <label class="checkbox inline">
-                        <input id="checkboxLanguage-<?php echo $array['lang'];?>" type="checkbox" name="language[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" <?php echo $array['checked'];?>> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="<?php echo $array['lang'];?>"/>
+                        <input id="checkboxLanguage-<?php echo $array['lang'];?>" type="checkbox" name="language[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" <?php echo $array['checked'];?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="<?php echo $array['lang'];?>"/>
                     </label>
                     <?php } ?>
                 </div>
             </div>
             <?php foreach ($foundlanguages as $array) { ?>
             <div id="<?php echo $array['lang'];?>" class="control-group <?php echo $array['style']; ?>">
-                <label class="control-label" for="inputName-<?php echo $array['lang'];?>"><?php echo '<img src="images/flags/16_'.$array['lang'].'.png" alt="Flag: '.$array['lang'].'.png"/>'; ?></label>
+                <label class="control-label" for="inputName-<?php echo $array['lang'];?>"><?php echo '<img src="images/flags/'.$array['lang'].'.png" alt="Flag: '.$array['lang'].'.png"/>'; ?></label>
                 <div class="controls">
                     <input id="inputName-<?php echo $array['lang'];?>" type="text" name="subject_<?php echo $array['lang'];?>" value="">
                 </div>

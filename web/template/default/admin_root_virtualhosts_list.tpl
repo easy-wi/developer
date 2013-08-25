@@ -35,7 +35,7 @@
                 <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else echo 'icon-ban-circle';?>"></i></td>
                 <td><?php echo $table_row['description'];?></td>
                 <td><?php echo $table_row['installedserver'];?></td>
-                <td><a href="admin.php?w=vh&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=vh&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
                 <td><a href="admin.php?w=vh&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

@@ -49,7 +49,7 @@
                 <td onclick="textdrop('<?php echo $table_row['commentID'];?>');"><?php echo $table_row['date'];?></td>
                 <td onclick="textdrop('<?php echo $table_row['commentID'];?>');"><?php echo $table_row['moderated'];?></td>
                 <td onclick="textdrop('<?php echo $table_row['commentID'];?>');"><?php echo $table_row['spam'];?></td>
-                <td><a href="admin.php?w=pc&amp;d=dl&amp;r=pc&amp;id=<?php echo $table_row['commentID'];?>"onclick="return confirm('<?php echo $gsprache->sure;?>');"><span class="btn btn-mini btn-primary"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=pc&amp;d=dl&amp;r=pc&amp;id=<?php echo $table_row['commentID'];?>"onclick="return confirm('<?php echo $gsprache->sure;?>');"><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
                 <td><a href="admin.php?w=pc&amp;d=md&amp;id=<?php echo $table_row['commentID'];?>"><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

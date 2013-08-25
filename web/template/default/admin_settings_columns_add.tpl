@@ -60,14 +60,14 @@
                 <div class="controls">
                     <?php foreach ($foundlanguages as $array){ ?>
                     <label class="checkbox inline">
-                        <?php echo $array['checkbox'];?> <img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/>
+                        <?php echo $array['checkbox'];?> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/>
                     </label>
                     <?php } ?>
                 </div>
             </div>
             <?php foreach ($foundlanguages as $array) { ?>
             <div id="<?php echo $array['lang'];?>" class="control-group<?php echo $array['class'];?>">
-                <label class="control-label" for="inputMenuName<?php echo $array['lang'];?>"><img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></label>
+                <label class="control-label" for="inputMenuName<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></label>
                 <div class="controls">
                     <input id="inputMenuName<?php echo $array['lang'];?>" type="text" name="menu[<?php echo $array['lang'];?>]" value="" pattern="^[a-zA-Z0-9-_ ]{1,255}$">
                 </div>

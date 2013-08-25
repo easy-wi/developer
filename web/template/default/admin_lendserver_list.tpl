@@ -52,8 +52,8 @@
                 <td><?php echo $table_row['lenderip'];?></td>
                 <td>
                     <form method="post" action="admin.php?w=le&amp;r=le" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-                        <input type="hidden" name="id" value="<?php echo $table_row['id'];?>"  />
-                        <input type="image" name="delete" src="images/16_delete.png" />
+                        <input type="hidden" name="id" value="<?php echo $table_row['id'];?>">
+                        <button class="btn btn-small btn-primary"><i class="icon-white icon-remove-sign"></i></button>
                     </form>
                 </td>
             </tr>

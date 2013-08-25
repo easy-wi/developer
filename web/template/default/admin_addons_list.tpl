@@ -8,7 +8,7 @@
 </div>
 <div class="row-fluid">
     <div class="span6">
-        <?php echo $gsprache->heading_addons;?> <a href="admin.php?w=ad&amp;d=ad"<span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a>
+        <?php echo $sprache->heading_addons;?> <a href="admin.php?w=ad&amp;d=ad"<span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a>
     </div>
 </div>
 <hr>
@@ -34,6 +34,7 @@
                 <th data-hide="phone"><a href="admin.php?w=ad&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;t=<?php echo $list_type; ?>&amp;g=<?php echo $list_gtype; ?>&amp;o=<?php if ($o=='as') { echo 'ds'; } else { echo 'as'; } ?>"><?php echo $gsprache->status;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=ad&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;t=<?php echo $list_type; ?>&amp;g=<?php echo $list_gtype; ?>&amp;o=<?php if ($o=='at') { echo 'dt'; } else { echo 'at'; } ?>"><?php echo $sprache->type2;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=ad&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;t=<?php echo $list_type; ?>&amp;g=<?php echo $list_gtype; ?>&amp;o=<?php if ($o=='at') { echo 'dt'; } else { echo 'at'; } ?>"><?php echo $sprache->type;?></a></th>
+                <th><?php echo $gsprache->export;?></a></th>
                 <th><?php echo $gsprache->del;?></a></th>
                 <th><?php echo $gsprache->mod;?></a></th>
             </tr>
@@ -46,7 +47,8 @@
                 <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else echo 'icon-ban-circle';?>"></i></td>
                 <td><?php echo $table_row['gametype'];?></td>
                 <td><?php echo $table_row['type'];?></td>
-                <td><a href="admin.php?w=ad&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=ad&amp;d=ex&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-download"></i></span></a></td>
+                <td><a href="admin.php?w=ad&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
                 <td><a href="admin.php?w=ad&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

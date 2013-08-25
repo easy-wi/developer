@@ -35,7 +35,7 @@
                 <span class="icon-bar"></span>
             </button>
             <p class="navbar-text pull-left">
-                <?php foreach ($languages as $language){ if ($seo=='Y'){ $lURL=$page_url.'/'.$language.'/'; } else { $lURL=$page_url.'/index.php?l='.$language; } echo '<a href="'.$lURL.'"><img src="'.$page_data->pageurl.'/images/flags/16_'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
+                <?php foreach ($languages as $language){ if ($seo=='Y'){ $lURL=$page_url.'/'.$language.'/'; } else { $lURL=$page_url.'/index.php?l='.$language; } echo '<a href="'.$lURL.'"><img src="'.$page_data->pageurl.'/images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
             </p>
             <div class="nav-collapse collapse">
                 <ul class="nav">

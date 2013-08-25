@@ -72,11 +72,11 @@
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputDescription"><?php echo $sprache->description;?></label>
-                <div class="controls"><?php foreach ($foundlanguages as $array) echo '<label class="checkbox inline">'.$array['checkbox'].'<img src="images/flags/16_'.$array['lang'].'.png" alt="Flag: '.$array['lang'].'.png"/></label>';?></div>
+                <div class="controls"><?php foreach ($foundlanguages as $array) echo '<label class="checkbox inline">'.$array['checkbox'].'<img src="images/flags/'.$array['lang'].'.png" alt="Flag: '.$array['lang'].'.png"/></label>';?></div>
             </div>
             <?php foreach ($foundlanguages as $array) { ?>
             <div id="<?php echo $array['lang'];?>" class="control-group <?php echo $array['display'];?>">
-                <label class="control-label" for="inputLangs-<?php echo $array['lang'];?>"><img src="images/flags/16_<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></label>
+                <label class="control-label" for="inputLangs-<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></label>
                 <div class="controls"><textarea id="inputLangs-<?php echo $array['lang'];?>" name="description_<?php echo $array['lang'];?>"><?php echo $array['description'];?></textarea></div>
             </div>
             <?php } ?>

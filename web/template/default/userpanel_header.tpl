@@ -38,7 +38,7 @@
                 <span class="icon-bar"></span>
             </button>
             <p class="navbar-text pull-left">
-                <?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/16_'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
+                <?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
             </p>
             <div class="nav-collapse collapse">
                 <ul class="nav">
@@ -60,8 +60,10 @@
                             <li class="divider"></li>
                             <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
                             <li class="divider"></li>
-                            <?php if($pa['usersettings']) { ?><li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li><?php } ?>
+                            <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
+                            <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
                             <li class="divider"></li>
+                            <?php } ?>
                             <li><a href="login.php?w=lo">Logout</a></li>
                         </ul>
                     </li>
@@ -92,7 +94,7 @@
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <li <?php if($w=='da' or $w=='ho') echo 'class="active"';?>><a href="userpanel.php?w=da">Dashboard</a></li>
-                                    <!--<li <?php if($w=='su') echo 'class="active"';?>><a href="userpanel.php?w=su"><?php echo $gsprache->substitutes;?></a></li>-->
+                                    <?php if(!isset($_SESSION['sID'])){ ?><li <?php if($w=='su') echo 'class="active"';?>><a href="userpanel.php?w=su"><?php echo $gsprache->substitutes;?></a></li><?php }?>
                                     <li <?php if($w=='lo') echo 'class="active"';?>><a href="userpanel.php?w=lo"><?php echo $gsprache->logs;?></a></li>
                                     <li <?php if($w=='ip') echo 'class="active"';?>><a href="userpanel.php?w=ip"><?php echo $gsprache->imprint;?></a></li>
                                 </ul>

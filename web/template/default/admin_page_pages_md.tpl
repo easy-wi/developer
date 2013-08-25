@@ -41,7 +41,7 @@
                         <div class="controls">
                             <?php foreach ($lang_avail as $lg) { ?>
                             <label class="checkbox inline">
-                                <input id="checkboxLanguage-<?php echo $lg;?>" type="checkbox" name="language[]" value="<?php echo $lg;?>" onclick="textdrop('<?php echo $lg;?>');" <?php if($table[$lg]['text']!=false) echo 'checked';?>> <img src="images/flags/16_<?php echo $lg;?>.png" alt="<?php echo $lg;?>"/>
+                                <input id="checkboxLanguage-<?php echo $lg;?>" type="checkbox" name="language[]" value="<?php echo $lg;?>" onclick="textdrop('<?php echo $lg;?>');" <?php if($table[$lg]['text']!=false) echo 'checked';?>> <img src="images/flags/<?php echo $lg;?>.png" alt="<?php echo $lg;?>"/>
                             </label>
                             <?php } ?>
                         </div>
@@ -59,7 +59,7 @@
             <div id="<?php echo $lg;?>" class="row-fluid <?php if($table[$lg]['text']==false) echo 'display_none';?>">
                 <div class="span8">
                     <div class="control-group">
-                        <label class="control-label" for="title[<?php echo $lg;?>]"><img src="images/flags/16_<?php echo $lg;?>.png" alt="<?php echo $lg;?>"/></label>
+                        <label class="control-label" for="title[<?php echo $lg;?>]"><img src="images/flags/<?php echo $lg;?>.png" alt="<?php echo $lg;?>"/></label>
                         <div class="controls">
                             <input class="span11" type="text" name="title[<?php echo $lg;?>]" id="title[<?php echo $lg;?>]" value="<?php echo $table[$lg]['title'];?>">
                         </div>
