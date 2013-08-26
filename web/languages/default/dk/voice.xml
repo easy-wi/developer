@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<active>Aktive</active>
+	<add>Tilføj nye</add>
+	<addtype>Tilføj typen</addtype>
+	<autorestart>Genstart serveren som er nede.</autorestart>
+	<backup>Sikkerhedskopi</backup>
+    <backupname>Backupnavn</backupname>
+	<date>Dato</date>
+	<defaultdns>Standard DNS</defaultdns>
+	<defaulthostbanner_gfx_url>Standard Hostbanner GFX URL</defaulthostbanner_gfx_url>
+	<defaulthostbanner_url>Standard Hostbanner URL</defaulthostbanner_url>
+	<defaulthostbutton_gfx_url>Standard Hostbutton GFX URL</defaulthostbutton_gfx_url>
+	<defaulthostbutton_tooltip>Standard Hostbutton Tooltip</defaulthostbutton_tooltip>
+	<defaulthostbutton_url>Standard Hostbutton URL</defaulthostbutton_url>
+	<defaultname>Standardname</defaultname>
+	<defaultwelcome>Standard velkommenbesked</defaultwelcome>
+    <defaultFlexSlotsFree>Standard free Flex Slots</defaultFlexSlotsFree>
+    <defaultFlexSlotsPercent>Standard Flex Slots percent</defaultFlexSlotsPercent>
+    <description>Beskrivelse</description>
+	<dns>Server DNS</dns>
+	<enter>Indtaste</enter>
+    <externalDefaultDNS>Brug eksterne standard DNS</externalDefaultDNS>
+	<filetransferport>File Transfer Port</filetransferport>
+    <flexSlots>Flex Slots</flexSlots>
+    <flexSlotsPercent>Flex Slots Percent</flexSlotsPercent>
+    <flexSlotsFree>Free Flex Slots</flexSlotsFree>
+	<forcebanner>Tving hostbanner</forcebanner>
+	<forcebutton>Tving hostbutton</forcebutton>
+	<forceservertag>Tving servertag</forceservertag>
+	<forcewelcome>Tving velkommen besked</forcewelcome>
+	<ftpport>FTP port</ftpport>
+	<generate>generere</generate>
+	<groupname>Gruppenavn</groupname>
+	<hostbanner_gfx_url>Hostbanner GFX Url</hostbanner_gfx_url>
+	<hostbanner_url>Hostbanner Url</hostbanner_url>
+	<hostbutton_gfx_url>Hostbutton GFX Url</hostbutton_gfx_url>
+	<hostbutton_tooltip>Hostbutton Tooltip</hostbutton_tooltip>
+	<hostbutton_url>Hostbutton Url</hostbutton_url>
+	<import>Importer</import>
+	<initialpassword>indledende adgangskode</initialpassword>
+	<installedserver>Installeret server</installedserver>
+	<installedslots>Installeret antal</installedslots>
+	<ip>IP</ip>
+	<ips>Ekstra IPs</ips>
+	<isnot>er ikke</isnot>
+	<keyname>Offentlig nøgle filnavn</keyname>
+	<keyuse>Brug offentlige nøglefil</keyuse>
+	<maxserver>Maksimal Server</maxserver>
+	<maxslots>Maksimal Slots</maxslots>
+	<maxtraffic>Maksimal Trafik</maxtraffic>
+	<max_download_total_bandwidth>Maksimal downloadbåndbredde</max_download_total_bandwidth>
+	<max_upload_total_bandwidth>Maksimal uploadbåndbredde</max_upload_total_bandwidth>
+	<name>Servernavn</name>
+	<newuser>Ny Bruger</newuser>
+	<os_bit>Bitversion</os_bit>
+	<password>Privat Server</password>
+	<port>Port</port>
+	<querypassword>Forespørgseladgangskode</querypassword>
+	<queryport>Forespørgselport</queryport>
+    <reset>Nulstil</reset>
+	<rootserver>Rootserver</rootserver>
+	<server>Server</server>
+	<serverdir>Sti til server</serverdir>
+	<slots>Serverslots</slots>
+	<ssh_ip>SSH IP</ssh_ip>
+	<ssh_pass>SSH adgangskode</ssh_pass>
+	<ssh_port>SSH port</ssh_port>
+	<ssh_user>SSH brugernavn</ssh_user>
+	<tsdnsServerID>Ekstern TSDNS server</tsdnsServerID>
+    <token>Token</token>
+	<ts3>TeamSpeak 3</ts3>
+	<type>Servertype</type>
+	<usage>Brug</usage>
+	<usedns>Brug DNS</usedns>
+	<usedports>Brugte ports</usedports>
+	<user>Brugernavn</user>
+    <virtualserver_antiflood_points_needed_command_block>Anti-Flood: punkter, der er nødvendige for at blokere kommandoer blive henrettet af klienten</virtualserver_antiflood_points_needed_command_block>
+    <virtualserver_antiflood_points_needed_ip_block>Anti-Flood: punkter, der er nødvendige for at blokere indkommende forbindelser fra klienten</virtualserver_antiflood_points_needed_ip_block>
+    <virtualserver_antiflood_points_tick_reduce>Anti-Flood: punkter fjernet fra en klient til at være god</virtualserver_antiflood_points_tick_reduce>
+    <virtualserver_hostbanner_gfx_interval>GFX Interval</virtualserver_hostbanner_gfx_interval>
+    <virtualserver_hostmessage_mode>Host Besked tilstand</virtualserver_hostmessage_mode>
+    <virtualserver_hostmessage_mode_0>ingen Besked</virtualserver_hostmessage_mode_0>
+    <virtualserver_hostmessage_mode_1>Vis besked i chatlog</virtualserver_hostmessage_mode_1>
+    <virtualserver_hostmessage_mode_2>Vis besked i logik dialog</virtualserver_hostmessage_mode_2>
+    <virtualserver_hostmessage_mode_3>Vis besked i logik dialog og lukke forbindelse</virtualserver_hostmessage_mode_3>
+    <virtualserver_needed_identity_security_level>Minimum klient identitet sikkerhedsniveau der kræves for at forbinde</virtualserver_needed_identity_security_level>
+    <virtualserver_reserved_slots>Reserverede slots</virtualserver_reserved_slots>
+	<welcome>Velkommen besked</welcome>
+</sprache>

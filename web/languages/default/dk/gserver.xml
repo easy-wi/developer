@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Forkort</abkuerz>
+    <action>Handling</action>
+	<active>Aktiver</active>
+	<all>Vælg alle spil</all>
+	<anticheat>AntiSnyd</anticheat>
+	<belegt2>Eksisterende mapper</belegt2>
+	<belegt>Brugt porte</belegt>
+	<beschr>Beskrivelse</beschr>
+	<bin>Binary</bin>
+	<bin_folder>Binary mappe (orangebox og så videre)</bin_folder>
+	<brandname>Servertag</brandname>
+	<cant_install>Kunne ikke starte installationen på serveren</cant_install>
+	<config>Serverconfigs</config>
+	<confirm_change>Gem ændringer?</confirm_change>
+	<confirm_delete>Slet Server?</confirm_delete>
+	<confirm_restart>Genstart Server?</confirm_restart>
+	<confirm_stop>Stop server?</confirm_stop>
+    <coreBind>CPU kerner</coreBind>
+	<create>Opret</create>
+	<delete_server>Følgende servere vil blive slettet</delete_server>
+	<details>Udvidede Server Valg</details>
+	<easy>Nem</easy>
+	<error_folder>Fejl: Denne bruger har allerede denne form for server på den angivne port</error_folder>
+	<error_id>Fejl: Ingen server kunne findes</error_id>
+	<error_md>Fejl: Server kan ikke ændres</error_md>
+	<error_notinstalled>Fejl: Du skal installere en masterserver til dette spil på rootserver.</error_notinstalled>
+	<error_port>Fejl: En server med den angivne port allerede findes på den pågældende server</error_port>
+	<error_server_install>Fejl: Kunne ikke starte installationen på serveren</error_server_install>
+	<error_user>Fejl: Kunne ikke tilføje brugeren</error_user>
+	<failed>Fejl: Kunne ikke oprette en forbindelse til serveren</failed>
+	<folder>Servermapper</folder>
+	<fps>Server FPS</fps>
+	<friday>Fredag</friday>
+	<ftp_adresse>FTP-Adresse</ftp_adresse>
+	<ftp_link>FTP-Link</ftp_link>
+	<ftp_password>FTP-Adgangskode</ftp_password>
+    <ftp_path>FTP-Sti</ftp_path>
+    <ftp_port>FTP-Port</ftp_port>
+	<ftp_user>FTP-Brugernavn</ftp_user>
+	<full>Fuld</full>
+	<game>Spil</game>
+	<games>Alle Spil</games>
+	<gameswitch>Vælg Spiltype</gameswitch>
+	<gs_add2>Tilføj server trin 2: Server detaljer</gs_add2>
+	<gs_add>Tilføj server trin 1: Bruger, Rootserver, spil</gs_add>
+	<heading_delete>Slet spilserver</heading_delete>
+	<heading_template>Spilserver Oversigt</heading_template>
+	<hour>Time</hour>
+    <import_corrected>Er fundet sti korrekte?</import_corrected>
+    <import_destination>Bestemmelsessted server, spil og skabelon for import</import_destination>
+    <import_source>Datakilde skal importeres</import_source>
+    <import_start>Migration tjeneste startet. Denne proces vil tage nogen tid!</import_start>
+    <installAll>Alle spil</installAll>
+    <installGames>Forudinstallationen Spil</installGames>
+	<ip>Spilserver IP Adresse</ip>
+	<lendserver>Server lendable</lendserver>
+    <primary>Primær Spil</primary>
+	<map>Map</map>
+	<mod>Modmappe</mod>
+	<monday>Mandag</monday>
+	<nameremoved>Servertag fjernet</nameremoved>
+    <never>aldrig</never>
+	<no_game>Ingen spil er blevet udvalgt.</no_game>
+	<no_server_left>Ingen servere tilbage for denne bruger. Sletning brugeren fra rootserver.</no_server_left>
+	<off2>sluk</off2>
+	<off>Server er slukket</off>
+	<on>On</on>
+	<password>Adgangskode</password>
+	<player>Spiller</player>
+	<port>Port</port>
+	<port_gs>Spilserverport</port_gs>
+	<premoved>Serveradgangskode fjernet</premoved>
+	<protect>Beskyttelse tilstand</protect>
+	<qstat>Qstat parameter</qstat>
+    <ramMax>Maksimale Hukommelse</ramMax>
+    <ramMin>Minimum Hukommelse</ramMin>
+	<rcon>Fjernbetjening adgangskode (RCON)</rcon>
+	<recover>Genopretning</recover>
+	<reinstall>Geninstaller</reinstall>
+	<restart_all>Genstart alle Servere</restart_all>
+	<restarts>Genstart Server</restarts>
+	<restarttime>Genstart planlægger</restarttime>
+	<resync>Gensynkronisering</resync>
+	<root>Rootserver</root>
+	<saturday>Lørdag</saturday>
+	<server>Serveradresse</server>
+	<serverinstalled>Installerede servere</serverinstalled>
+	<servername>Servernavn</servername>
+	<serverrestart>Genstart Server</serverrestart>
+	<serverstop>Standsning Server</serverstop>
+	<servertype>Servertyper</servertype>
+	<server_details>Detaljer for</server_details>
+	<server_installed>Succesfuld startet installationen på serveren.</server_installed>
+	<server_ud>Opdateret serverdata</server_ud>
+	<since>Siden</since>
+	<slots>Max Anatal Spillere</slots>
+	<slotsinstalled>Installerede antal</slotsinstalled>
+	<slotsused>Brugt antal spillere</slotsused>
+	<start>Startkommado</start>
+	<startmap>Startmap</startmap>
+    <startmapgroup>Startmapgroup</startmapgroup>
+	<start_own>Egen Start Kommando</start_own>
+	<stop>Stop server</stop>
+	<sunday>Søndag</sunday>
+	<switch>Skift til bruger</switch>
+	<thursday>Torsdag</thursday>
+	<tick>Tickrate</tick>
+	<tuesday>Tirsdag</tuesday>
+	<tv>TV tilladt</tv>
+	<tvport>SourceTV</tvport>
+	<updated>Config er blevet redigeret</updated>
+	<updatetime>Status på</updatetime>
+	<usage>Server tildeling</usage>
+	<usedports>Brugt porte</usedports>
+	<user>Brugernavn</user>
+	<useredit>Redigeres af bruger</useredit>
+	<user_add>Succesfuld tilføjet brugeren på rootserver.</user_add>
+	<war>Private server</war>
+	<wednesday>Onsdag</wednesday>
+</sprache>

@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<active>Aktive</active>
+    <activeGS>Aktiver spilserver udlån til</activeGS>
+    <activeVS>Aktiver voiceserver udlån til</activeVS>
+    <all>Alle</all>
+    <anonymous>Anonym</anonymous>
+	<available>tilgængelig</available>
+    <free>Fås i</free>
+	<ftpupload>Tillad demoupload</ftpupload>
+	<ftpuploadpath>Demo FTP</ftpuploadpath>
+    <ipblock>Nogen med din IP, men ikke du allerede har udlånt en server!</ipblock>
+	<lend>Låne</lend>
+	<lendaccess>Ledning via</lendaccess>
+	<lendhostip>Webvært IP XML</lendhostip>
+	<lendhostkey>Nøgle, hvis XML</lendhostkey>
+	<maxplayer>Maksimale slots</maxplayer>
+	<maxtime>Maksimale låne tid</maxtime>
+	<minplayer>Minimale slots</minplayer>
+	<mintime>Minimal låne tid</mintime>
+	<minutes>Minutter</minutes>
+	<nextcheck>Næste Statustjek</nextcheck>
+	<nextfree>Planmæssigt næste spilserver er gratis i</nextfree>
+	<nextfreevo>Planmæssigt næste voiceserver er gratis i</nextfreevo>
+	<playersteps>Slotsteps</playersteps>
+    <ready>klar</ready>
+    <registered>Registrerede</registered>
+    <settingsGsAnonymous>spilserver-indstillinger anonym bruger</settingsGsAnonymous>
+    <settingsGsGeneral>Generelle spilserver indstillinger</settingsGsGeneral>
+    <settingsGsRegistered>Spilserver indstillinger registreret bruger</settingsGsRegistered>
+    <settingsVsAnonymous>Voiceserver indstillinger anonym bruger</settingsVsAnonymous>
+    <settingsVsGeneral>Generelle voiceserver indstillinger</settingsVsGeneral>
+    <settingsVsRegistered>Voiceserver indstillinger registreret bruger</settingsVsRegistered>
+	<shutdownempty>Luk tomme server ned.</shutdownempty>
+	<shutdownemptytime>Minimal driftstid</shutdownemptytime>
+	<timesteps>Minut skridt</timesteps>
+	<timeleft>tid tilbage</timeleft>
+	<used>anvendt</used>
+	<usedserver>bruges server</usedserver>
+</sprache>

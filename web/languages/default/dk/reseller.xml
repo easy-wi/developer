@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Forkort</abkuerz>
+	<action>Handling</action>
+	<active>Aktiver</active>
+	<all>Alle</all>
+	<attention>Vigtigt: Hvis du geninstallere alle data vil blive tabt! Venligst kun fortsætte, hvis du accepterer tab af data!</attention>
+	<bitversion>bit version</bitversion>
+	<core>Kerne</core>
+	<cores>Kerner</cores>
+	<cpu>CPU</cpu>
+	<description>Beskrivelse</description>
+	<dhcpsoftware>DHCP Server Software</dhcpsoftware>
+	<distro>Distribution</distro>
+	<hdd>Mountpoints</hdd>
+	<hddsize>HDD størrelse</hddsize>
+    <initialRescuPass>Initial / redning Adgangskode</initialRescuPass>
+	<imagefile>Image Fil</imagefile>
+	<imageserver>Imageserver</imageserver>
+	<installing>Installation</installing>
+	<ip>IP</ip>
+	<ips>IP og IP-områder</ips>
+	<keyname>Key Filnavn:</keyname>
+	<keyuse>Brug keyfile:</keyuse>
+	<mac>Mac Adresse</mac>
+	<maxmhz>Maksimalt MHz</maxmhz>
+	<maxram>Maksimalt Ram</maxram>
+	<maxserver>Maksimalt antal servere</maxserver>
+	<mhz>MHz</mhz>
+	<minmhz>Minimum MHz</minmhz>
+	<minram>Minimum Ram</minram>
+	<mount>Mountpoint</mount>
+	<netmask>netmaskeoplysninger</netmask>
+	<ok>OK</ok>
+	<os>Operativsystem</os>
+	<os_bit>bit version</os_bit>
+	<paylicence>Gebyr</paylicence>
+	<pxeautorun>PXE Autorun fil</pxeautorun>
+    <PXEFolder>PXE Config mappen</PXEFolder>
+	<ram>Ram</ram>
+	<reinstall>Geninstaller</reinstall>
+	<rescue>Redning</rescue>
+	<rescue_start>Start Redning </rescue_start>
+	<rescue_stop>Stop Redning </rescue_stop>
+	<restart>Genstart</restart>
+	<shown>Resultater pr side:</shown>
+	<ssh_ip>SSH IP Adresse</ssh_ip>
+	<ssh_pass>SSH Adgangskode</ssh_pass>
+	<ssh_port>SSH Port</ssh_port>
+	<ssh_user>SSH Brugernavn</ssh_user>
+	<status>Status</status>
+    <startCmd>Startkommando</startCmd>
+    <dhcpFile>DHCP Configfile</dhcpFile>
+	<stop>Stop</stop>
+	<stopped>Stoppet</stopped>
+	<unused_ips>gratis IP'er</unused_ips>
+	<user>Brugernavn</user>
+    <userAdd>Tilføj en Bruger / forhandler først</userAdd>
+    <wwwFolder>Autorun Web Folder</wwwFolder>
+</sprache>

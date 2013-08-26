@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <notFound>404: Ingen post for dette fundet ID forbudt eller adgang!</notFound>
+    <error_server>Fejl: Kunne ikke oprette en forbindelse til serveren!</error_server>
+    <error_table2>Fejl: Tilføjelse af data til databasen mislykkedes!</error_table2>
+    <error_table>Fejl: Opdatering af databasen mislykkedes eller der var ingen nye data indtastes!</error_table>
+    <error_ts_query>Fejl: Sende kommandoer til TS3 server mislykkedes. Fejlmeddelelse er: </error_ts_query>
+    <error_ts_query_connect>Fejl: Kunne ikke forbinde til TS3 server forespørgsel. Fejlmeddelelse er: </error_ts_query_connect>
+    <error_username>Fejl: Brugernavn er ikke tilladt, eller eksisterer allerede.</error_username>
+    <table_add>Succesfuld tilføjet data til databasen.</table_add>
+    <table_del>Succesfuld fjernet data fra databasen.</table_del>
+    <token>Fejl: CSRF beskyttelse token timeout eller ikke passer.</token>
+    <ts_query_success>TS3 ServerQuery succes. TS3 query svar er: </ts_query_success>
+</sprache>

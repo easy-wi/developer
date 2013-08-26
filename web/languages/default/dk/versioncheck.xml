@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<changelog>Ændringslog:</changelog>
+	<filesoutdated>Du kører en version med forældede filer.</filesoutdated>
+	<latestversion>Den nyeste version er:</latestversion>
+	<newversion>En ny version er tilgængelig: </newversion>
+	<ok>Du kører den nyeste version.</ok>
+	<outdated>Du kører en forældet version: </outdated>
+	<prepare1>Når du kører opdateringer er der altid en mulighed for, at noget kan gå galt. Vær forberedt på at undgå tab af data eller et permanent beskadiget database.</prepare1>
+	<prepare2>At være forberedt du gemmer alle dine data og lave en backup af din database.</prepare2>
+	<prepare3>Venligst kun fortsætte efter at din backup.</prepare3>
+    <releaseNotes>Udgivelsesnoter</releaseNotes>
+	<start>Start opdateringen</start>
+</sprache>
