@@ -39,7 +39,7 @@
 #    Zum enfernen:
 #    update-rc.d -f password remove
 #    rm /etc/init.d/password
-#    bei https --no-check-certificate als zusätzlicher Paramter
+#    bei https --no-check-certificate als zusaetzlicher Paramter
 if [[ "$1" == "start" ]]; then
 	#cd /home/easy-wi
 	#su easy-wi -c ./control
