@@ -9,15 +9,15 @@
 </div>
 <div class="row-fluid">
     <div class="span6">
-        <form class="form-horizontal" action="admin.php?w=my&amp;d=as&amp;id=<?php echo $id;?>&amp;r=my" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+        <form class="form-horizontal" action="admin.php?w=my&amp;d=as&amp;r=my" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ad">
             <div class="control-group">
                 <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" name="active">
-                        <option value="N"><?php echo $gsprache->no;?></option>
                         <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N"><?php echo $gsprache->no;?></option>
                     </select>
                 </div>
             </div>

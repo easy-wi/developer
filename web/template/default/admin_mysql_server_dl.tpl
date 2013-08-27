@@ -10,7 +10,7 @@
 </div>
 <div class="row-fluid">
     <div class="span6">
-        <form class="form-horizontal" action="admin.php?w=my&amp;d=ds&amp;r=my" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+        <form class="form-horizontal" action="admin.php?w=my&amp;d=ds&amp;id=<?php echo $id;?>&amp;r=my" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="dl">
             <dl class="dl-horizontal">

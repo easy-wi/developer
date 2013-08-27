@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <notFound>404: Kein Eintrag zur ID gefunden, oder keine Berechtigung!</notFound>
+    <error_name>Fehler: Name ist unzulässig, oder existiert bereits.</error_name>
     <error_server>Fehler: Es konnte keine Verbindung zum Server aufgebaut werden!</error_server>
     <error_table2>Fehler: konnte die Tabelle nicht anlegen!</error_table2>
     <error_table>Fehler: konnte die Tabelle nicht aktualisieren, oder es gab keine Neuerung!</error_table>

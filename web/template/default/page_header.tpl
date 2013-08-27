@@ -134,6 +134,7 @@
                     <li <?php if($s=='gallery') echo 'class="active"';?>><?php echo $page_data->pages['gallery']['href'];?></li>
                     <li <?php if($s=='imprint') echo 'class="active"';?>><?php echo $page_data->pages['imprint']['href'];?></li>
                     <li <?php if($s=='contact') echo 'class="active"';?>><?php echo $page_data->pages['contact']['href'];?></li>
+                    <li <?php if($s=='downloads') echo 'class="active"';?>><?php echo $page_data->pages['downloads']['href'];?></li>
                     <?php if($page_data->protectioncheck=='Y'){ ?><li <?php if($s=='protectioncheck') echo 'class="active"';?>><?php echo $page_data->pages['protectioncheck']['href'];?></li><?php } ?>
                     <li class="divider"></li>
                     <?php if($page_data->lendactive=='Y'){ ?>

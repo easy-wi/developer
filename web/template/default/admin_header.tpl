@@ -89,7 +89,7 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseOne">Dashboard</a>
                         </div>
-                        <div id="collapseOne" class="accordion-body collapse <?php if(in_array($w,array('da','ho','ib','lo','ml','se','sm','vc','bu','cc','ip'))) echo 'in';?>">
+                        <div id="collapseOne" class="accordion-body collapse <?php if(in_array($w,array('da','ho','ib','lo','ml','ip'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <li <?php if($w=='da' or $w=='ho') echo 'class="active"';?>><a href="admin.php?w=da">Dashboard</a></li>
@@ -98,24 +98,35 @@
                                     <li <?php if($w=='lo') echo 'class="active"';?>><a href="admin.php?w=lo"><?php echo $gsprache->logs;?></a></li>
                                     <li <?php if($w=='ml') echo 'class="active"';?>><a href="admin.php?w=ml">Mail <?php echo $gsprache->logs;?></a></li>
                                     <?php } ?>
+                                    <li <?php if($w=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><?php echo $gsprache->imprint;?></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" href="admin.php?w=sr"><?php echo $gsprache->search;?></a>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSettings">Easy-WI <?php echo $gsprache->settings;?></a>
+                        </div>
+                        <div id="collapseSettings" class="accordion-body collapse <?php if(in_array($w,array('se','sm','vc','cc','bu'))) echo 'in';?>">
+                            <div class="accordion-inner">
+                                <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['settings']) { ?>
                                     <li <?php if($w=='se') echo 'class="active"';?>><a href="admin.php?w=se"><?php echo $gsprache->settings;?></a></li>
                                     <li <?php if($w=='sm') echo 'class="active"';?>><a href="admin.php?w=sm">E-Mail <?php echo $gsprache->settings;?></a></li>
                                     <?php } ?>
                                     <li <?php if($w=='vc') echo 'class="active"';?>><a href="admin.php?w=vc"><?php echo $gsprache->versioncheck;?></a></li>
                                     <?php if($pa['root'] and $reseller_id==0) { ?>
-                                    <li <?php if($w=='bu') echo 'class="active"';?>><a href="admin.php?w=bu"><?php echo $gsprache->databases;?></a></li>
-                                    <?php } ?>
-                                    <?php if($pa['root'] and $reseller_id==0) { ?>
                                     <li <?php if($w=='cc') echo 'class="active"';?>><a href="admin.php?w=cc"><?php echo $gsprache->columns;?></a></li>
                                     <?php } ?>
-                                    <li <?php if($w=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><?php echo $gsprache->imprint;?></a></li>
+                                    <?php if($pa['root'] and $reseller_id==0) { ?>
+                                    <li <?php if($w=='bu') echo 'class="active"';?>><a href="admin.php?w=bu"><?php echo $gsprache->databases;?></a></li>
+                                    <?php } ?>
                                 </ul>
-                            </div>
-                        </div>
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" href="admin.php?w=sr"><?php echo $gsprache->search;?></a>
                             </div>
                         </div>
                     </div>
@@ -159,7 +170,7 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour">CMS</a>
                         </div>
-                        <div id="collapseFour" class="accordion-body collapse <?php if(in_array($w,array('pn','pp','ps','pc'))) echo 'in';?>">
+                        <div id="collapseFour" class="accordion-body collapse <?php if(in_array($w,array('pn','pp','ps','pc','pd'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['cms_news']) { ?>
@@ -168,6 +179,7 @@
                                     <?php } ?>
                                     <?php if($pa['cms_pages']) { ?>
                                     <li <?php if($w=='pp') echo 'class="active"';?>><a href="admin.php?w=pp"><?php echo $gsprache->pages;?></a></li>
+                                    <li <?php if($w=='pd') echo 'class="active"';?>><a href="admin.php?w=pd"><?php echo $gsprache->downloads;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['cms_settings']) { ?>
                                     <li <?php if($w=='ps') echo 'class="active"';?>><a href="admin.php?w=ps"><?php echo $gsprache->settings;?></a></li>

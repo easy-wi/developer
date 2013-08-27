@@ -16,10 +16,12 @@
     <delSafe>Safe Delete</delSafe>
     <delAny>Delete in any case</delAny>
     <delDB>Remove from database</delDB>
+    <downloads>Downloads</downloads>
     <edit>Edit</edit>
     <export>Export</export>
+    <fastdownload>Fastdownload</fastdownload>
     <feeds>Feeds</feeds>
-	<fastdownload>Fastdownload</fastdownload>
+    <file>File</file>
 	<gameserver>Gameserver</gameserver>
     <gameroot>Game Rootserver</gameroot>
 	<groups>Groups</groups>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <notFound>404: No entry for this ID found or access forbidden!</notFound>
+    <error_name>Error: Name is not allowed, or exists already.</error_name>
     <error_server>Error: Could not establish a connection to the server!</error_server>
     <error_table2>Error: Adding the data to the database failed!</error_table2>
     <error_table>Error: Updating the database failed or there where no new data entered!</error_table>

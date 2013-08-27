@@ -2,6 +2,7 @@
 <sprache>
 	<about>About</about>
 	<active>Aktivieren</active>
+    <admin>Admin</admin>
 	<author>Autor</author>
 	<categories>Kategorien</categories>
     <commentMinLength>Kommentar: minimale Länge</commentMinLength>
@@ -69,6 +70,7 @@
 	<title>Titel</title>
     <tou>Nutzungsbedingungen</tou>
 	<update>Aktualisieren</update>
+    <upload>Hochladen</upload>
     <rssfeed_fulltext>Volltext im RSS Feed</rssfeed_fulltext>
     <rssfeed_textlength>RSS Feed Textlänge</rssfeed_textlength>
     <sort>Sortierung</sort>
