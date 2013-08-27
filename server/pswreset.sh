@@ -41,21 +41,21 @@
 #    rm /etc/init.d/password
 #    bei https --no-check-certificate als zusätzlicher Paramter
 if [[ "$1" == "start" ]]; then
-	cd /home/easy-wi
-	su easy-wi -c ./control
-	sleep 30
-	rm control.*
+	#cd /home/easy-wi
+	#su easy-wi -c ./control
+	#rm control.*
+	sleep 60
 	STRING=`wget --no-check-certificate -q -O - https://wi.domain.de/get_password.php | sed 's/^\xef\xbb\xbf//g'`
 	PASSWORD=`echo $STRING | awk -F ':' '{print $1}'`
-	LICENCE=`echo $STRING | awk -F ':' '{print $2}'`
 	if ([[ "$PASSWORD" != "" ]] && [[ "$PASSWORD" != "old" ]]); then
 		/usr/sbin/usermod -p `perl -e 'print crypt("'$PASSWORD'","Sa")'` root
 	fi
-	if ([[ "$LICENCE" != "" ]] && [[ "$LICENCE" != "old" ]]); then
-		echo "$LICENCE" > /path/to/licencefile
-		chmod 000 /path/to/licencefile
-		chown username:gruppe /path/to/licencefile
-	fi	
+	#LICENCE=`echo $STRING | awk -F ':' '{print $2}'`
+	#if ([[ "$LICENCE" != "" ]] && [[ "$LICENCE" != "old" ]]); then
+	#	echo "$LICENCE" > /path/to/licencefile
+	#	chmod 000 /path/to/licencefile
+	#	chown username:gruppe /path/to/licencefile
+	#fi	
 	update-rc.d -f password remove
 	rm /etc/init.d/password
 fi
