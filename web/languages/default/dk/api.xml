@@ -4,7 +4,7 @@
     <active>Aktiv:</active>
     <activeExternal>Activate external authentication:</activeExternal>
     <all>Alle</all>
-    <chunkSize>User chunksize:</chunkSize>
+    <chunkSize>Bruger luns størrelse:</chunkSize>
     <date>Dato:</date>
     <domain>Domæne:</domain>
     <fetchUpdates>Hent opdateringer:</fetchUpdates>
