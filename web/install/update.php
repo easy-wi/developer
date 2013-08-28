@@ -144,7 +144,7 @@ $version=$query->fetchColumn();
 $admin_id=1;
 $main=1;
 $reseller_id=0;
-$error=$easywiversion->errorinfo();
+$error=$query->errorinfo();
 if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) {
 	$response->add("Current database version: 1.9<br />");
 	$version="1.9";
