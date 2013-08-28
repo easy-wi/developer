@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Forkort</abkuerz>
+	<active>Aktiver</active>
+	<all>Alle</all>
+	<all_games>Vælg alle Spil</all_games>
+	<all_roots>Vælg alle Rootservers</all_roots>
+	<cfgdir>Config mapper</cfgdir>
+	<confirm1>Start opdatering?</confirm1>
+	<desc>Beskrivelse</desc>
+	<error_root_db>Fejl: Kunne ikke slette rootserver fra databasen!</error_root_db>
+	<error_root_dbmasterdel>Fejl: Kunne ikke slette masterserver fra databasen!</error_root_dbmasterdel>
+	<error_root_install>Fejl: Kunne ikke starte efter installation:</error_root_install>
+	<error_root_masterdel2>Fejl: Kunne ikke slette filerne fra serveren</error_root_masterdel2>
+	<error_root_masterdel>Fejl: Masterserver er allerede blevet slettet</error_root_masterdel>
+	<error_root_noselect>Fejl: Ingen servere er blevet valgt.</error_root_noselect>
+	<error_root_updatemaster>Fejl: Kunne ikke starte opdateringen ved IP:</error_root_updatemaster>
+	<ftp_port>FTP Port</ftp_port>
+	<haupt_ip>Hoved og SSH IP</haupt_ip>
+	<header_add>Tilføj masterserver</header_add>
+	<header_del>Slet masterserver</header_del>
+	<header_update>Opdatering masterserver</header_update>
+	<installed>Installeret masterserver:</installed>
+	<installeds>Installeret Antal: </installeds>
+	<ips>IP</ips>
+	<keyname>Offentlig keyfile Navn:</keyname>
+	<keyuse>Brug offentlig keyfile:</keyuse>
+	<master_update>Serveren med følgende IP succes er blevet opdateret</master_update>
+	<maxserver2>Maksimalt Server:</maxserver2>
+	<maxserver>server installeret</maxserver>
+	<maxslots>Maksimalt Antal:</maxslots>
+	<os>Operativsystem</os>
+	<os_bit>Bit Version</os_bit>
+    <password>Adgangskode</password>
+	<root_masterdel>Succesfuld startede fjernelse proces.</root_masterdel>
+	<root_masterinstall>Master serveren er blevet tilføjet til databasen, og er ved at blive installeret nu</root_masterinstall>
+	<root_updatemaster>Succes begyndt at opdatere</root_updatemaster>
+    <show>Vis:</show>
+	<showg>Kun servere med spillet:</showg>
+	<showt>Kun servere med servertype:</showt>
+	<spiele>Spil</spiele>
+	<ssh_pass>SSH adgangskode</ssh_pass>
+	<ssh_port>SSH2 port</ssh_port>
+	<ssh_user>SSH2 Brugernavn</ssh_user>
+	<steam>Steam Spil</steam>
+    <updateMinute>Timevis opdatering pr minut</updateMinute>
+	<useds>Brugt Antal: </useds>
+	<zusatz_ip>Yderligere IP'er</zusatz_ip>
+</sprache>

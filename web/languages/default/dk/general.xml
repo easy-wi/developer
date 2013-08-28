@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Aktiver</active>
+	<add>Tilføj</add>
+	<addon>tilføjelsesprogrammer</addon>
+    <addon2>Addon</addon2>
+    <all>Alle</all>
+    <api>API</api>
+    <apiAuth>ekstern godkendelse</apiAuth>
+	<backup>Sikkerhedskopi</backup>
+    <columns>Tilpassede kolonner</columns>
+    <comments>Kommentarer</comments>
+	<databases>Databaser</databases>
+    <dedicated>Dedikeret</dedicated>
+	<del>Slet</del>
+    <delSafe>Sikker Slat</delSafe>
+    <delAny>Slet i hvert fald</delAny>
+    <delDB>Fjern fra database</delDB>
+    <feeds>Feeds</feeds>
+	<edit>Rediger</edit>
+	<fastdownload>Fastdownload</fastdownload>
+	<gameserver>Spilserver</gameserver>
+    <gameroot>Spil Rodenserver</gameroot>
+	<groups>Grupper</groups>
+	<hostsystem>Værtssystem</hostsystem>
+	<hotline>Hotline</hotline>
+	<imprint>Impressum</imprint>
+    <jobs>Job</jobs>
+    <jobPending>Job afventer</jobPending>
+	<last>Din sidste login var: </last>
+	<lendserver>Lendserver</lendserver>
+	<licence>Licence Maximum er nået.</licence>
+    <licence_version>Du har ikke tilladelse til at køre denne version!</licence_version>
+	<logs>Logs</logs>
+	<master>Master</master>
+    <migration>Flytningsservice</migration>
+	<mod>Rediger</mod>
+	<news>Nyheder</news>
+	<no>Nej</no>
+	<overview>Oversigt</overview>
+	<page>Side</page>
+	<pages>Sider</pages>
+    <registration>Registrering</registration>
+    <repair>Reparer</repair>
+	<reseller>Forhandler</reseller>
+	<root>Rootserver</root>
+    <search>Søg</search>
+	<settings>Indstillinger</settings>
+	<shown>Resultater per side:</shown>
+    <start>Start</start>
+	<stats>Statistik</stats>
+    <status>Status</status>
+    <stop>Stop</stop>
+    <substitutes>Suppleanter</substitutes>
+	<support2>Ny Support Billet</support2>
+	<support>Support</support>
+	<sure>Er du sikker?</sure>
+    <sure_delete>Er du sikker? Alle data på målet server vil blive slettet!</sure_delete>
+	<template>Skabelon</template>
+	<templates>Images/Templates</templates>
+	<traffic>Trafik</traffic>
+	<update>Opdater</update>
+    <use>Brug</use>
+	<user>Bruger</user>
+    <userImport>Bruger Importer</userImport>
+	<virtual>Virtuelle Server</virtual>
+	<versioncheck>Version Tjek</versioncheck>
+	<voiceserver>Voiceserver</voiceserver>
+	<vor>Videresend</vor>
+	<welcome>Velkommen: </welcome>
+	<yes>Ja</yes>
+	<zurueck>Baglæns</zurueck>
+</sprache>

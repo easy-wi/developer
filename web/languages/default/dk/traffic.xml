@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<all>Alle</all>
+	<barin_colour>Indgående trafik</barin_colour>
+	<barout_colour>Udgående trafik</barout_colour>
+	<bartotal_colour>Samlet trafik</bartotal_colour>
+	<bg_colour>baggrund</bg_colour>
+    <blue>Blå</blue>
+	<border_colour>Kant</border_colour>
+	<column_byte>bytes sendt</column_byte>
+	<column_date>Dato</column_date>
+	<column_destip>Bestemmelsessted IP</column_destip>
+	<column_sourceip>Source IP</column_sourceip>
+	<databaseacces>Adgang Database data</databaseacces>
+	<databasestructure>Struktur Database (server navn bord og kolonner)</databasestructure>
+	<day>Dag</day>
+	<days>Dage</days>
+	<dbname>Navn</dbname>
+	<dbpassword>Adgangskode</dbpassword>
+	<dbuser>Bruger</dbuser>
+	<dmy>Tidsperiode</dmy>
+	<graphsettings>RGB (rød grøn blå) Værktøjer af grafen</graphsettings>
+    <green>Grøn</green>
+	<ip>IP</ip>
+	<ips>IPs</ips>
+	<kind>Vis trafik</kind>
+	<line_colour>Skillelinjerne</line_colour>
+	<months>Måneder</months>
+	<multiplier>Multiplikator</multiplier>
+	<range>Tidsramme</range>
+    <red>Rød</red>
+	<server>Server</server>
+	<statip>IP/Adresse</statip>
+	<subnet>Undernet</subnet>
+	<subnets>Subnets</subnets>
+	<table_name>Tabelnavn</table_name>
+	<text_colour>Tekst</text_colour>
+	<total>I alt</total>
+	<type>Typer</type>
+	<unit>Regningsenhed</unit>
+	<user>Bruger</user>
+	<years>År</years>
+</sprache>

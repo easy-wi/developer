@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Aktiver Feeds:</active>
+    <displayContent>Vis fuldtekst:</displayContent>
+    <limitDisplay>Begrænset tegn:</limitDisplay>
+    <maxChars>Maksimum tegn:</maxChars>
+    <maxKeep>Maksimal nyhedsfeeds gemt:</maxKeep>
+    <merge>Flet Feeds:</merge>
+    <newsAmount>Mængden af feeds vist:</newsAmount>
+    <pubDate>Udgivet:</pubDate>
+    <orderBy>Rækkefølge:</orderBy>
+    <status>Status:</status>
+    <title>Overskrift:</title>
+    <updateMinutes>Tjek hver X minutter for nye feeds:</updateMinutes>
+    <useLocal>Vis lokale nyheder:</useLocal>
+</sprache>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Forkort</abkuerz>
+	<active>Aktiver</active>
+	<addon2>Menunavn</addon2>
+	<addon>mappenavn i "masteraddons/mastermaps"</addon>
+	<addons_maps>Kort Pakker</addons_maps>
+	<addons_tools>Server værktøjer</addons_tools>
+	<addon_add>Addon succesfuldt tilføjet</addon_add>
+	<addon_del>Sletning addon</addon_del>
+	<addon_del_from>Addon fjernet fra serveren: </addon_del_from>
+	<addon_del_from_fail>Kunne ikke fjerne addon fra server: </addon_del_from_fail>
+	<addon_inst>Installation addon</addon_inst>
+	<addon_ud>Addon blevet opdateret</addon_ud>
+	<add_addon>Opret Addon</add_addon>
+	<all>ALLE</all>
+	<aname>Addonnavn:</aname>
+	<bin>Binary</bin>
+	<bin_folder>Binary mappe (for eksempel orangebox)</bin_folder>
+	<configs>Bruger Redigerbar configs</configs>
+	<configedit>Cvars, som brugeren må ikke ændre</configedit>
+	<del_temp>Slet skabelon</del_temp>
+	<description>Beskrivelse</description>
+	<error_exist>Fejl: Addon allerede eksisterer</error_exist>
+	<error_id>Fejl: Ingen valgt server!</error_id>
+	<failed>Fejl: Kunne ikke forbinde til serveren.</failed>
+	<folder>Server Mappe</folder>
+	<folders>Mapper, der skal slettes ved fjernelse</folders>
+	<fps>Server FPS</fps>
+	<game2>Spil eller spiltype</game2>
+	<game>Spilnavn</game>
+	<heading_addons>Spilserver tilføjelsesprogrammer</heading_addons>
+	<heading_template>Spilserver skabeloner</heading_template>
+	<ip>SpilServer IP-adresse</ip>
+    <iptables>IP Tabeller</iptables>
+	<map>Kort Pakke</map>
+	<maps>Kort Pakker</maps>
+	<mod>Modmappe (for eksempel cstrike and dod)</mod>
+    <modcmds>Kommandoer for Spiltilstande</modcmds>
+	<mods2>Mod for spillet:</mods2>
+	<mods>Modifikation:</mods>
+	<multi>Platform</multi>
+	<password>Adgangskode</password>
+	<port>Spilserverport</port>
+    <portMax>Port beløb</portMax>
+    <portStep>Port skridt til næste server</portStep>
+	<protect>Beskyttelse tilstand</protect>
+    <protectedSaveCFGs>Filer, der skal holdes mens skifte Beskyttet tilstand</protectedSaveCFGs>
+	<qstat>Qstat Parameter</qstat>
+	<qstatpassparam>Qstat adgangskodeparameter</qstatpassparam>
+	<rcon>Fjernbetjening adgangskode (RCON)</rcon>
+	<requires>Kræver</requires>
+    <rmcmd>fjerne fra startkommando</rmcmd>
+	<servername>Servernavn</servername>
+	<showg>Vis addons for:</showg>
+	<shown>Resultater per side:</shown>
+	<single>Spil</single>
+	<slots>Serverantal</slots>
+	<start>Start Kommando</start>
+	<startmap>Startmap</startmap>
+    <startmapgroup>Startmapgroup</startmapgroup>
+	<steam>Steam Spil</steam>
+	<sure2>OBS! Hvis en bruger har installeret denne tilføjelse på det vil blive fjernet fra deres konti for!</sure2>
+	<sure3>OBS! Brugeren server med dette spil vil blive slettet for</sure3>
+	<tick>Tickrate</tick>
+	<tool>Server værktøj</tool>
+	<tools>Serverværktøj, Addons, Configpakker</tools>
+	<tvport>SourceTV Port</tvport>
+	<type2>Addon for:</type2>
+	<type>Kort eller Serverværktøj</type>
+</sprache>

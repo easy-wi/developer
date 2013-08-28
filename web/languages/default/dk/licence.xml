@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <contract>Kontrakt type</contract>
+    <contractTime>Kontrakt levetid indtil</contractTime>
+    <B>Køb</B>
+    <g>Kommercielt</g>
+    <installed>Installeret</installed>
+    <l>Lys</l>
+    <licenceAmount>Udnyttelse af licenser</licenceAmount>
+    <R>Lej</R>
+    <p>Privat</p>
+    <type>Licens type</type>
+    <unlimited>Ubegrænset</unlimited>
+    <updates>Opdateringer indtil</updates>
+</sprache>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<bad_ca>De indtastede data matchede ikke med Captcha.</bad_ca>
+	<bad_up>Enten bruger eksisterer ikke, eller adgangskode var forkert.</bad_up>
+	<back>Tilbage</back>
+	<banned>Alt for mange dårlige login-forsøg. Venligst anmode om en ny adgangskode eller Kontakt os.</banned>
+	<captcha>Captcha</captcha>
+	<email>E-mail eller brugernavn</email>
+	<exp>Din licens er udløbet.</exp>
+	<heading>Bruger logind</heading>
+    <ipBad>Forkert IP: </ipBad>
+    <ipOK>Tilladt IP'er </ipOK>
+	<linkexpired>Link er udløbet.</linkexpired>
+	<nouser>En bruger med det indtastede navn eller email eksisterer ikke.</nouser>
+	<password>Adgangskode</password>
+	<passwordr>Adgangskode genopretning</passwordr>
+	<passwordrepeat>Adgangskode gentag</passwordrepeat>
+	<passwordreset>Nulstille adgangskode</passwordreset>
+	<passwordreseted>Adgangskode er blevet opdateret.</passwordreseted>
+	<pwnomatch>Adgangskoderne stemmer ikke overens.</pwnomatch>
+	<send>En e-mail er blevet sendt til din konto.</send>
+	<sus>Ydin konto er suspenderet. Kontakt venligst din host.</sus>
+	<sus_heading>OBS!</sus_heading>
+	<user>Brugernavn</user>
+    <urlBad>Forkert webadresse i brug:</urlBad>
+    <urlOK>Korrekt URL er </urlOK>
+</sprache>
