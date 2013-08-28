@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<chfdluser>Skift FTP-adgang?</chfdluser>
+	<example>Eksempel: ftp://Dinbrugernavn:dinftpadgangskode@Adresse/sti</example>
+	<fdlfailed>Fastdownload matcher mislykkedes</fdlfailed>
+	<fdlstarted>Fastdownload matcher påbegyndt</fdlstarted>
+	<haupt>Hoved fastdownload server</haupt>
+	<haupt2>Brug hovedserver?</haupt2>
+	<neben>FTP Data anvendt til fastdownload server</neben>
+	<noset>Ingen FTP data tilgængelige</noset>
+	<own>Brug hoved FTP</own>
+	<own2>Egen fastdownloadadgang for serveren</own2>
+	<server>Individuel Server</server>
+	<startfdl>Start matcher</startfdl>
+	<udsuc>Succesfuld ændret FTP Oplysninger</udsuc>
+</sprache>

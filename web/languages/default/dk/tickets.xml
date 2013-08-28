@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<all>Alle</all>
+	<answer>Svar</answer>
+	<answered>Besvarede</answered>
+	<close_heading>Luk billet</close_heading>
+	<comment>Kommentar</comment>
+	<date>Dato</date>
+	<default>Standard</default>
+	<edit2>Redigeret af</edit2>
+	<edit>Redigeret</edit>
+	<heading>Support Kategori</heading>
+	<name>Navn</name>
+	<new>Tilføj kategori</new>
+	<none>Ingen</none>
+	<open>Åbent</open>
+	<priority>Prioritet</priority>
+    <priority_critical>Kritisk</priority_critical>
+	<priority_high>høj</priority_high>
+	<priority_low>lav</priority_low>
+	<priority_medium>mellem</priority_medium>
+    <priority_very_high>meget høj</priority_very_high>
+	<problem>symptomer</problem>
+	<rating>Support bedømmelse</rating>
+    <reopen>Genåbn</reopen>
+	<shown>Resultater per side</shown>
+	<status>Billet-situationen</status>
+    <status_author>Forfatter Handlinger</status_author>
+    <status_confirmed>Bekræftet</status_confirmed>
+    <status_done>Afsluttet</status_done>
+    <status_new>Nyt</status_new>
+    <status_process>I Processen</status_process>
+    <status_reopen>For Anmeldelse</status_reopen>
+	<subject>Emne</subject>
+	<topic>Underkategori af</topic>
+	<topic_name>Kategori</topic_name>
+    <topic_name_sub>Underemne</topic_name_sub>
+	<username>Brugernavn</username>
+	<writer>Skribent</writer>
+</sprache>

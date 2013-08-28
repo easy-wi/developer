@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<accounttype>Konto Type</accounttype>
+	<accounttype_admin>Admin</accounttype_admin>
+	<accounttype_reseller>Forhandler</accounttype_reseller>
+	<accounttype_user>Bruger</accounttype_user>
+	<active>Aktive</active>
+    <activeIn>Deaktiveret</activeIn>
+    <activeRegister>Registrering verserende</activeRegister>
+	<addon>Addonmanagement(Bruger)</addon>
+	<adresse>Serveradress</adresse>
+	<badlogins>Tilladt dårlige logins nåede!</badlogins>
+	<badloginsreset>Nulstil mislykkes tæller:</badloginsreset>
+	<bear2>Skift brugerdata</bear2>
+	<bez>Betaling</bez>
+    <birthday>Fødselsdag</birthday>
+    <country>Land</country>
+	<einz>Automatisk debitering transfer-system</einz>
+	<email>E-Mail adresse</email>
+	<error_cname>Fejl: Dårligt Brugernavn</error_cname>
+	<error_id>Ingen valgte bruger</error_id>
+	<error_in>Ikke alle krævede felter er udfyldt eller dårlige tegn er blevet brugt.</error_in>
+	<error_mail>Dårlig E-mail</error_mail>
+    <error_mail_exists>E-mail allerede i brug med en anden bruger</error_mail_exists>
+	<error_pass>Fejl: Dårlig Adgangskode</error_pass>
+	<error_passw_succ>Kodeordene passer ikke sammen</error_passw_succ>
+	<example>Eksempel:</example>
+	<fastdl2>Fastdownload Adgangdata</fastdl2>
+	<fastdl>Brug Fastdownload</fastdl>
+	<fname>Andet Navn</fname>
+	<freeips>Ubrugte IP adresser</freeips>
+	<ftpaccess>FTP adgang</ftpaccess>
+	<ftppsw>FTP adgangskode</ftppsw>
+	<groupname>Gruppenavn</groupname>
+	<gserver>Spilserver</gserver>
+	<han>Mobiltelefon</han>
+	<heading_add>Tilføj Bruger</heading_add>
+	<heading_detail>Bruger Detaljer</heading_detail>
+	<heading_list>Bruger Oversigt</heading_list>
+	<hnum>Husnummer</hnum>
+	<inst>Installeret Server</inst>
+	<ips>IP4 Adresse:</ips>
+	<ips_possible1>1.1.1.1</ips_possible1>
+	<ips_possible2>1.1.1.3/6</ips_possible2>
+	<mail_backup>Send mail, hvis Backup er oprettet / genoprettes</mail_backup>
+	<mail_gsupdate>Send mail, hvis masterserver er opdateres</mail_gsupdate>
+	<mail_securitybreach>Send mail, hvis gameserverfiles er manipuleret</mail_securitybreach>
+	<mail_serverdown>Send mail, hvis serveren ikke kan nås</mail_serverdown>
+	<mail_ticket>Send mail, hvis nye support billet er skrevet</mail_ticket>
+	<mail_vserver>Send mail, hvis serveren er oprettet eller redning begyndte</mail_vserver>
+	<max>Maksimale</max>
+	<miniroot>Root</miniroot>
+	<modfastdl>Rediger Fastdownload Adgangdata</modfastdl>
+	<passw>Skift paneladgangskode</passw>
+	<passw_1>Indtast ny adgangskode</passw_1>
+	<passw_2>Gentag ny adgangskode</passw_2>
+	<passw_succ_ae>Succesfuld ændret adgangskoden</passw_succ_ae>
+    <password>Adgangskode</password>
+	<paypal>Paypal</paypal>
+	<plz>Postnr</plz>
+	<rch>on account</rch>
+	<reset>Geninstaller</reset>
+	<restart>Genstart</restart>
+	<right>Skift brugertilladelser</right>
+	<root>Root</root>
+    <salutation>Hilsen</salutation>
+    <salutation2>Hr</salutation2>
+    <salutation3>Fru</salutation3>
+	<server>Server</server>
+	<serverdata>Installerede servere</serverdata>
+	<settings>Panelindstillinger</settings>
+	<shown>Resultater pr side:</shown>
+	<stadt>By</stadt>
+	<str>Gade</str>
+	<switch>Skift til bruger</switch>
+	<tel>Telefonnummer</tel>
+	<tickets>Support tickets</tickets>
+	<user>Brugernavn</user>
+	<user_users>Bruger Administration</user_users>
+	<user_admins>Administration</user_admins>
+	<userdata>brugerdata</userdata>
+	<usersettings>Brugerindstillinger</usersettings>
+	<usertickets>Support tickets</usertickets>
+	<user_create>Følgende bruger er blevet oprettet</user_create>
+	<user_server>Spilserver slettet fra:</user_server>
+	<vname>Fornavn</vname>
+	<wipsw>Kontrolpanel adgangskode</wipsw>
+</sprache>

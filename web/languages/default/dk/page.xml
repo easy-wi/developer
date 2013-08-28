@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<about>Om</about>
+	<active>Aktiv</active>
+	<author>Forfatter</author>
+	<categories>Kategorier</categories>
+    <commentMinLength>Kommentar: minimumslængde</commentMinLength>
+    <commentsModerated>Kommentar: modereret</commentsModerated>
+    <contact>Kontakt</contact>
+	<date>Dato</date>
+	<defaultpage>Standardside</defaultpage>
+    <gallery>Galleri</gallery>
+	<intern>Internt</intern>
+	<keyword>Søgeord</keyword>
+	<keywords>nøgleord</keywords>
+	<languages>Sprog</languages>
+    <mailRequired>Kommentar: Mail påkrævet</mailRequired>
+    <mailSend>Den e-mail er blevet sendt.</mailSend>
+	<maxnews>Vis den sidste X nyheder</maxnews>
+    <message>Meddelelse</message>
+	<MSIE>Internet Explorer stadig ikke undtagen W3C specifikationerne. På grund af dette faktum visning af siden kan blive beskadiget. Brug venligst en anden browser.</MSIE>
+    <moderate>Moderation kræves:</moderate>
+    <name>Navn</name>
+    <naviDisplay>Visning på Navi</naviDisplay>
+    <newer>Nyere</newer>
+	<news_add>Tilføj nyheder</news_add>
+    <newssidebar_textlength>Tekst Længde Sidebar Nyheder</newssidebar_textlength>
+	<older>Ældre</older>
+	<pages>Sider med</pages>
+	<page_add>Tilføj ny side</page_add>
+	<page_dl>Slet side</page_dl>
+	<page_mod>Rediger side</page_mod>
+    <posted>Indsendt af</posted>
+	<preview>Eksempel</preview>
+	<protectioncheck>beskyttelsetjek</protectioncheck>
+	<public>Offentlig</public>
+    <register>Registrering</register>
+    <registerAccountOK>Din konto er blevet oprettet.</registerAccountOK>
+    <registerActivated>Kontoen er blevet aktiveret.</registerActivated>
+    <registerAdmin>Registrering succes. En admin mangler for at aktivere din konto.</registerAdmin>
+    <registerBlockIPs>Undgå IP'er fra register</registerBlockIPs>
+    <registerBlockMails>Undgå mails fra register</registerBlockMails>
+    <registerByMailActivation>Mail Aktivering</registerByMailActivation>
+    <registerByMailAdminActivation>Admin Aktivering</registerByMailAdminActivation>
+    <registerDirectActive>Direkte</registerDirectActive>
+    <registerErrorActivatedFailed>Ingen konto kan findes til at blive aktiveret.</registerErrorActivatedFailed>
+    <registerErrorBot>I tilfælde af at du ikke bør være en Bot Aktiver venligst JavaScript.</registerErrorBot>
+    <registerErrorCookies>Aktiver venligst (Session) Cookies.</registerErrorCookies>
+    <registerErrorMail>Brug venligst en anden e-mail.</registerErrorMail>
+    <registerErrorTou>Venligst acceptere betingelserne for brug!</registerErrorTou>
+    <registerErrorPassword>Adgangskoderne er ikke ens.</registerErrorPassword>
+    <registerErrorPassword2>Brug venligst et sikkert password med mindst 8 tilfælde, ned og store bogstaver, tal og specialtegn som "AKha%asLsdh12".</registerErrorPassword2>
+    <registerErrorPassword3>Indtast en adgangskode.</registerErrorPassword3>
+    <registerErrorUnknown>En ukendt fejl opstod. Prøv venligst igen.</registerErrorUnknown>
+    <registerMailSend>Registrering succes. Du vil modtage en e-mail snarest.</registerMailSend>
+    <registerQuestions>Beskyttelse spørgsmål mod Bots</registerQuestions>
+	<release>Udgiv</release>
+	<released>Udgivet</released>
+	<rssfeed>Aktiveret RSS-feed</rssfeed>
+    <search>Søg</search>
+	<seo>Omskrive webadresser for SEO</seo>
+    <sitemap>Sideoversigt</sitemap>
+    <spamBlockLinks>Links i kommentarer</spamBlockLinks>
+    <spamBlockWords>Ord sortliste</spamBlockWords>
+    <spamFilter>Spam Filter</spamFilter>
+    <spamLanguageFilter>Sprog Filter</spamLanguageFilter>
+	<subpage>Underside af</subpage>
+	<tag>Tag</tag>
+	<title>Title</title>
+    <tou>Vilkår for anvendelse</tou>
+	<update>Opdater</update>
+    <rssfeed_fulltext>Komplet tekst på RSS-feed</rssfeed_fulltext>
+    <rssfeed_textlength>RSS feed længde</rssfeed_textlength>
+    <sort>Sorter</sort>
+    <sort_new>Sorter ny</sort_new>
+</sprache>
