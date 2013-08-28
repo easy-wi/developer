@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<aeskey2>La llave AES es requerida para encriptar informacion sensible como contraseñas FTP. Asegurarse de que sea una clave segura.</aeskey2>	
+	<aeskey3>Asegura esta llave. Si lo pierdes, toda la informacion encriptada sera perdida.</aeskey3>
+	<aeskey>Llave AES:</aeskey>
+	<brandname>Nombre del servidor:</brandname>
+	<captcha>Usar palabras al conectarse:</captcha>
+	<confirm_change>Grabar modificaciones?</confirm_change>
+	<data>Por favor llenar los siguientes campos de informacion. Todos son requeridos:</data>
+	<databanktype>Tipo de base de datos:</databanktype>
+	<db>Nombre de base de datos:</db>
+	<domain>Dominio actual:</domain>
+	<email2>Este e-mail sera usado para enviar informacion al usuario.</email2>
+	<email>Email:</email>
+	<error_database>Error: No se ha podido establecer una coneccion a la base de datos:</error_database>
+	<error_htaccess>Notice: El archivo ".htaccess" no se puede encontrar. Asegurar carpetas y archivos de forma correcta.</error_htaccess>
+	<error_keys1>Error: No se puede leer archivos en la carpeta "keys"! Por favor corriga sus permisos primero.</error_keys1>
+	<error_keys2>Error: No se puede crear archivos en la carpeta "keys"! Por favor corriga sus permisos primero.</error_keys2>	
+	<error_quakestat>Error: No se puede encontrar acceso "/usr/bin/quakestat".</error_quakestat>
+	<error_ssh2>Error: Las funciones de SSH2 no estan disponibles. Por favor instalarlas.</error_ssh2>	
+	<error_stuff1>Error: No se puede leer archivos en la carpeta "stuff"! Por favor corriga sus permisos primero.</error_stuff1>
+	<error_stuff2>Error: No se puede crear archivos en la carpeta "stuff"! Por favor corriga sus permisos primero.</error_stuff2>
+	<faillogins>Intentos posibles de conectarse</faillogins>
+	<finished>La instalacion ha sido completada. Porfavor remueva el directorio "instalar".</finished>
+	<header>Configuraciones</header>
+	<host>Base de datos del Host:</host>
+	<image_server2>Si la instalacion maestra no esta configurada la infromacion sera descargada desde este servidor.</image_server2>
+	<image_server3>Usar un servidor de imagen:</image_server3>
+	<image_server>Servidor de imagen:</image_server>
+	<informations>Las siguientes informaciones deberan ser enviadas a license@easy-wi.com para obtener su archivo de licencia:</informations>
+	<install>Instalar</install>
+	<ip>IP de servidor WEB:</ip>
+	<language>Lenguaje por defecto:</language>
+	<no>No</no>
+	<passw_1>Ingresar contraseña nueva:</passw_1>
+	<passw_2>Repetir contraseña nueva:</passw_2>
+	<prefix1>Define nombre de usuario:</prefix1>
+	<prefix2>Si tu defines un nombre de usuario, las ID unicas de usuarios seran anexadas al nombre definido. Solo letras pequeñas y numeros son permitidos. Ejemplo: cliente sera cliente2 y sucesivametne</prefix2>
+	<prefix3>Nombre de usuario por defecto:</prefix3>
+	<pwd>Contraseña de base de datos:</pwd>
+	<step1a>Paso 1</step1a>
+	<step1b>Verificar permisos, funciones y colocar la informacion SQL</step1b>
+	<step2a>Paso 2</step2a>
+	<step2b>Configuraciones, crear la cuenta Administrador</step2b>
+	<step3a>Paso 3</step3a>
+	<step3b>Remueve la carpeta de instalacion</step3b>
+	<title>Titulo de pagina principal</title>
+	<user>Usuario de base de datos:</user>
+	<user2>Nombre de usuario del Administrador:</user2>
+	<yes>Si</yes>
+</sprache>

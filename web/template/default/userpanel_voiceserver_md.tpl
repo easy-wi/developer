@@ -69,12 +69,6 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="hostbutton_tooltip"><?php echo $sprache->hostbutton_tooltip;?></label>
-                <div class="controls">
-                    <input class="span 12" id="hostbutton_tooltip" type="text" name="hostbutton_tooltip" value="<?php echo $hostbutton_tooltip; ?>" <?php if ($forcebutton=='Y') echo 'disabled';?>>
-                </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label" for="hostbutton_url"><?php echo $sprache->hostbutton_url;?></label>
                 <div class="controls">
                     <input class="span 12" id="hostbutton_url" type="text" name="hostbutton_url" value="<?php echo $hostbutton_url; ?>" <?php if ($forcebutton=='Y') echo 'disabled';?>>
@@ -84,6 +78,12 @@
                 <label class="control-label" for="hostbutton_gfx_url"><?php echo $sprache->hostbutton_gfx_url;?></label>
                 <div class="controls">
                     <input class="span 12" id="hostbutton_gfx_url" type="text" name="hostbutton_gfx_url" value="<?php echo $hostbutton_gfx_url; ?>" <?php if ($forcebutton=='Y') echo 'disabled';?>>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="hostbutton_tooltip"><?php echo $sprache->hostbutton_tooltip;?></label>
+                <div class="controls">
+                    <input class="span 12" id="hostbutton_tooltip" type="text" name="hostbutton_tooltip" value="<?php echo $hostbutton_tooltip; ?>" <?php if ($forcebutton=='Y') echo 'disabled';?>>
                 </div>
             </div>
             <div class="control-group">

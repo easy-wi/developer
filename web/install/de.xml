@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<aeskey2>Der AES Schlüssel wird benötigt, um sensible Daten, wie FTP Passwörter zu verschlüsseln. Bitte stellen Sie sicher, dass es ein sehr sicherer String benutzt wird.</aeskey2>
+	<aeskey3>Sichern Sie diesen Schlüssel. Geht er verloren, gibt es keine Möglichkeit an die veschlüsselten Daten zu kommen.</aeskey3>
+	<aeskey>AES Schlüssel:</aeskey>
+	<brandname>Servertag:</brandname>
+	<captcha>Captcha beim Login benutzen:</captcha>
+	<confirm_change>Änderungen speichern?</confirm_change>
+	<data>Bitte füllen Sie alle Formularfelder aus:</data>
+	<databanktype>Art der Datenbank:</databanktype>
+	<db>Datenbankname:</db>
+	<domain>Webadresse:</domain>
+	<email2>Diese Email wird als Absender angegeben, wenn Emails vom Webinterface verschickt werden.</email2>
+	<email>Email:</email>
+	<error_database>Fehler: Es kann keine Verbindung zu der Datenbank aufgebaut werden.</error_database>
+	<error_htaccess>Hinweis: Es konnte keine ".htaccess" Datei gefunden werden. Bitte stellen Sie sicher, dass die Installation abgesichert ist.</error_htaccess>
+	<error_keys1>Fehler: Es kann nicht aus dem Ordner "keys" gelesen werden! Bitte vergeben Sie ausreichende Ordnerrechte.</error_keys1>
+	<error_keys2>Fehler: Kann den Ordner "keys" nicht erstellen! Bitte vergeben Sie ausreichende Ordnerrechte.</error_keys2>
+	<error_quakestat>Fehler: "/usr/bin/quakestat" kann nicht gefunden werden.</error_quakestat>
+	<error_ssh2>Fehler: Die SSH2 Funktionen sind nicht verfügbar. Bitte installieren sie diese.</error_ssh2>
+	<error_stuff1>Fehler: Kann keine Dateien im Ordner "stuff" erstellen! Bitte vergeben Sie ausreichende Ordnerrechte.</error_stuff1>
+	<error_stuff2>Fehler: Kann den Ordner "stuff" nicht erstellen!! Bitte vergeben Sie ausreichende Ordnerrechte.</error_stuff2>
+	<faillogins>Anzahl von erlaubten fehlerhaften Logins am Stück</faillogins>
+	<finished>Die Installation ist abgeschlossen, bitte entfernen Sie den "install" Ordner.</finished>
+	<header>Einstellungen</header>
+	<host>Datenbankhost:</host>
+	<image_server2>Bei der Masterinstallation werden die Daten zuerst von diesem Server heruntergeladen.</image_server2>
+	<image_server3>Imageserver benutzen:</image_server3>
+	<image_server>Imageserver:</image_server>
+	<informations>Folgende Informationen müssen an license@easy-wi.com gesendet werden, um die Lizenzdatei zu erhalten:</informations>
+	<install>Installieren</install>
+	<ip>Webserver IP:</ip>
+	<language>Standardsprache:</language>
+	<no>Nein</no>
+	<passw_1>Passwort eingeben:</passw_1>
+	<passw_2>Passwort wiederhohlen:</passw_2>
+	<prefix1>Benutzername vorgeben:</prefix1>
+	<prefix2>Wird der Benutzername vorgegeben, wird beim Anlegen neuer Benutzer an den vorgegebenen Namen nur noch eine fortzählende Nummer angehängt.Es dürfen nur kleine Buchstaben und zahlen benutzt werden.</prefix2>
+	<prefix3>Benutzername:</prefix3>
+	<pwd>Databankpasswort:</pwd>
+	<step1a>Schritt 1</step1a>
+	<step1b>Ordnerrechte, Funktionen und SQL Zugangsdaten</step1b>
+	<step2a>Schritt 2</step2a>
+	<step2b>Einstellungssetup, Adminaccount anlegen</step2b>
+	<step3a>Schritt 3</step3a>
+	<step3b>"install" Ordner entfernen</step3b>
+	<title>Homepage Titel</title>
+	<user>Databankuser:</user>
+	<user2>Admin Username:</user2>
+	<yes>Ja</yes>
+</sprache>

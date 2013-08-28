@@ -1,0 +1,5 @@
+# Wirkt nur für crawler von google usw. 
+# in dem Beispiel wird es jedem Crawler verboten 
+# das Verzeichnis includes zu durchsuchen. 
+User-agent: *
+Disallow: /includes

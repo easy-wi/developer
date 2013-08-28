@@ -1,0 +1,28 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+        RewriteBase /
+        RewriteRule ^index\.php$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . /index.php [L]
+</IfModule>
+<Files .htaccess>
+    Order deny,allow
+    deny from all
+</Files>
+<Files id_rsa>
+    Order deny,allow
+    deny from all
+</Files>
+<FilesMatch "\.pub$">
+    Order deny,allow
+    deny from all
+</FilesMatch>
+<FilesMatch "\.php$">
+    Order deny,allow
+    deny from all
+</FilesMatch>
+<FilesMatch "^(admin|api|cloud|get_password|images|index|install|jobs|login|protectioncheck|reboot|serverallocation|serverlog|statuscheck|switch|update|userpanel|lend|vorlage)\.php$">
+    Order allow,deny
+    allow from all
+</FilesMatch>

@@ -33,6 +33,26 @@
                             </select>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputNaviDisplay"><?php echo $sprache->naviDisplay;?></label>
+                        <div class="controls">
+                            <select id="inputNaviDisplay" name="naviDisplay">
+                                <option value="Y"><?php echo $gsprache->yes;?></option>
+                                <option value="N"><?php echo $gsprache->no;?></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputSubpage"><?php echo $sprache->subpage;?></label>
+                        <div class="controls">
+                            <select id="inputSubpage" name="subpage">
+                                <option value="0"><?php echo $gsprache->no;?></option>
+                                <?php foreach ($subpages as $key => $value) { ?>
+                                <option value="<?php echo $key;?>"><?php echo $value;?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="span6">
                     <div class="control-group">
