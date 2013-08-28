@@ -101,7 +101,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             if ($query->rowCount()>0) {
                 $template_file=$spracheResponse->error_name;
             } else {
-                $query=$sql->prepare("INSERT INTO `page_downloads` (`show`,`description`,`fileName`,`date`,`resellerID`) VALUES (?,?,NOW(),?)");
+                $query=$sql->prepare("INSERT INTO `page_downloads` (`show`,`description`,`fileName`,`date`,`resellerID`) VALUES (?,?,?,NOW(),?)");
                 $query->execute(array($ui->w('show',1,'post'),$ui->names('description',255,'post'),$ui->names('fileName',255,'post'),$reseller_id));
                 if($query->rowCount()>0) $changed=true;
                 $template_file=$spracheResponse->table_add;
