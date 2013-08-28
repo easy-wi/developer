@@ -138,8 +138,8 @@ function versioncheck ($current,$new,$file,$response,$sql) {
 		return false;
 	}
 }
-$easywiversion=$sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
-$easywiversion->execute();
+$query=$sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
+$query->execute();
 $version=$query->fetchColumn();
 $admin_id=1;
 $main=1;
