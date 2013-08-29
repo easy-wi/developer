@@ -43,11 +43,7 @@ $query2=$sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`=
 $query3=$sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `ftp`,AES_DECRYPT(g.`ppassword`,?) AS `ppasswordftp`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $rdata=serverdata('root',$row['hostID'],$aeskey,$sql);
-    $sship=$rdata['ip'];
-    $sshport=$rdata['port'];
-    $sshuser=$rdata['user'];
-    $sshpass=$rdata['pass'];
+    $cmds=array();
     $query2->execute(array($row['hostID']));
     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
         unset($customer,$i);
@@ -69,33 +65,22 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query4=$sql->prepare("SELECT t.`gamemod`,t.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND t.`gamemod2` IS NOT NULL AND t.`gamemod2`!='' LIMIT 1");
                 $query4->execute(array($row3['serverid']));
                 foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                    if ($row4['gamemod']=='Y') {
-                        $gamestring .= '_'.$row4['shorten'].$row4['gamemod2'];
-                    } else {
-                        $gamestring .= '_'.$row4['shorten'];
-                    }
+                    $gamestring .=($row4['gamemod']=='Y') ?  '_'.$row4['shorten'].$row4['gamemod2'] : '_'.$row4['shorten'];
                 }
             } else {
-                $query5=$sql->prepare("SELECT t.`gamemod`,t.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND t.`gamemod2` IS NOT NULL AND t.`gamemod2`!=''");
-                $query5->execute(array($row2['affectedID']));
-                foreach ($query5->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                    if ($row4['gamemod']=='Y') {
-                        $gamestring .= '_'.$row4['shorten'].$row4['gamemod2'];
-                    } else {
-                        $gamestring .= '_'.$row4['shorten'];
-                    }
+                $query4=$sql->prepare("SELECT t.`gamemod`,t.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND t.`gamemod2` IS NOT NULL AND t.`gamemod2`!=''");
+                $query4->execute(array($row2['affectedID']));
+                foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+                    $gamestring .=($row4['gamemod']=='Y') ?  '_'.$row4['shorten'].$row4['gamemod2'] : '_'.$row4['shorten'];
                 }
             }
             $i=(int) $query4->rowCount();
             $gamestring=$i.$gamestring;
         }
         if (isset($i) and $row2['action']=='dl' and isset($customer)) {
-            $sshcmd="screen -dmS delscreen-$customer ./control.sh delscreen $customer";
-            shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,$sshcmd,$sql);
-            $sshcmd2="screen -dmS delscreen-$customer-p ./control.sh delscreen $customer-p";
-            shell_server($sship,$sshport,$sshuser,$sshpass,"$customer-p",$ftppass2,$sshcmd2,$sql);
-            $sshcmd3="./control.sh delCustomer $customer";
-            exec_server($sship,$sshport,$sshuser,$sshpass,$sshcmd3,$sql);
+            $cmds[]="su -u $customer ./control.sh delscreen $customer";
+            $cmds[]="su -u $customer-p ./control.sh delscreen $customer-p";
+            $cmds[]="./control.sh delCustomer $customer";
             $query4=$sql->prepare("DELETE FROM `gsswitch` WHERE `id`=? LIMIT 1");
             $query4->execute(array($row2['affectedID']));
             customColumns('G',$row2['affectedID'],'del');
@@ -111,10 +96,8 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         } else if (isset($i) and $row2['action']=='ad' and isset($customer)) {
             if ($i>0) {
                 $ftppass2=passwordgenerate(10);
-                ssh2exec($row['hostID'],'root',$aeskey,"./control.sh add $customer $ftppass $sshuser $ftppass2",$sql);
-                if ($installGames!='N') {
-                    shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,'./control.sh addserver "'.$customer.'" "'.$gamestring.'" "'.$gsfolder.'"',$sql);
-                }
+                $cmds[]="./control.sh add $customer $ftppass $sshuser $ftppass2";
+                if ($installGames!='N') $cmds[]='sudo -u '.$customer.' ./control.sh addserver "'.$customer.'" "'.$gamestring.'" "'.$gsfolder.'"';
                 $query4=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
                 $query4->execute(array($row2['jobID']));
                 $command=$gsprache->add.' gsswitchID: '.$row2['affectedID'].' name:'.$row2['name'].' gsswitchID:'.$row2['affectedID'];
@@ -127,23 +110,26 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($active!=$newActive and $newActive=='N') {
                 $ftppass=passwordgenerate(15);
                 $ftppass2=passwordgenerate(15);
-                gsrestart($row2['affectedID'],'so',$aeskey,$sprache,$row['resellerID'],$sql);
+                $tmp=gsrestart($row2['affectedID'],'so',$aeskey,$sprache,$row['resellerID'],$sql);
+                if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
             }
             $newPort=(is_object($extraData) and isset($extraData->newPort)) ? $extraData->newPort : $port;
-            if ($port!=$newPort) shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,"screen -dmS move ./control.sh move ${customer} ${gsfolder} ${gsIP}_${port}",$sql);
-            exec_server($sship,$sshport,$sshuser,$sshpass,'./control.sh mod '.$customer.' '.$ftppass.' '.$ftppass2,$sql);
+            if ($port!=$newPort) $cmds[]="sudo -u ${customer} screen -dmS move ./control.sh move ${customer} ${gsfolder} ${gsIP}_${port}";
+            $cmds[]='./control.sh mod '.$customer.' '.$ftppass.' '.$ftppass2;
             $query4=$sql->prepare("UPDATE `gsswitch` SET `active`=?,`port`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
             $query4->execute(array($newActive,$newPort,$row2['affectedID']));
             $query4=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));
             $command=$gsprache->mod.' gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'].' gsswitchID:'.$row2['affectedID'];
         } else if (isset($i) and $row2['action']=='re' and isset($customer)) {
-            gsrestart($row2['affectedID'],'re',$aeskey,$sprache,$row2['resellerID'],$sql);
+            $tmp=gsrestart($row2['affectedID'],'re',$aeskey,$sprache,$row2['resellerID'],$sql);
+            if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
             $query4=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));
             $command='(Re)Start gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'];
         } else if (isset($i) and $row2['action']=='st' and isset($customer)) {
-            gsrestart($row2['affectedID'],'so',$aeskey,$sprache,$row2['resellerID'],$sql);
+            $tmp=gsrestart($row2['affectedID'],'so',$aeskey,$sprache,$row2['resellerID'],$sql);
+            if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
             $query4=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));
             $command='Stop gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'];
@@ -156,4 +142,5 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         }
         $theOutput->printGraph($command);
     }
+    if (count($cmds)>0) ssh2_execute('gs',$row['hostID'],$cmds);
 }

@@ -587,8 +587,8 @@ class TS3 {
 
 function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notified,$path,$virtualserver_id,$backupid,$reseller_id,$sql,$move=array()) {
 	if ($keyuse=="Y") {
-		$pubkey=EASYWIDIR."keys/".$sshkey.".pub";
-		$key=EASYWIDIR."keys/".$sshkey;
+		$pubkey=EASYWIDIR."/keys/".$sshkey.".pub";
+		$key=EASYWIDIR."/keys/".$sshkey;
 		if (file_exists($pubkey) and file_exists($key)) {
 			$ssh2= @ssh2_connect($sship,$sshport,array('hostkey'=>'ssh-rsa'));
 		} else {
@@ -669,8 +669,8 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 }
 function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notified,$path,$bitversion,$tsip,$tsport,$tsdns,$reseller_id,$sql,$maxnotified=2) {
 	if ($keyuse=="Y") {
-		$pubkey=EASYWIDIR."keys/".$sshkey.".pub";
-		$key=EASYWIDIR."keys/".$sshkey;
+		$pubkey=EASYWIDIR."/keys/".$sshkey.".pub";
+		$key=EASYWIDIR."/keys/".$sshkey;
 		if (file_exists($pubkey) and file_exists($key)) {
 			$ssh2= @ssh2_connect($sship,$sshport,array('hostkey'=>'ssh-rsa'));
 		} else {

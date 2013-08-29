@@ -543,7 +543,10 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
             $ftppass=$row['ftpPWD'];
             $ftppass2=$row['protectedpw'];
             $gsfolder=$serverip.'_'.$port;
-            if ($ui->w('safeDelete',1,'post')!='D') gsrestart($server_id,'so',$aeskey,$sprache,$reseller_id,$sql);
+            if ($ui->w('safeDelete',1,'post')!='D') {
+                $cmds=gsrestart($server_id,'so',$aeskey,$sprache,$reseller_id,$sql);
+                if (is_array($cmds) and count($cmds)>0) ssh2_execute('gs',$row['hostID'],$cmds);
+            }
         }
         $query=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userID));
@@ -599,11 +602,10 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
             $query=$sql->prepare("DELETE FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
             $query->execute(array($server_id,$reseller_id));
         }
+        $cmds=array();
         if (($num3>0 and $newlayout=='N') or ($newlayout=='Y' and $num3_2>0)) {
-            $sshcmd2="./control.sh delserver $server_customer $gamestring $gsfolder";
-            $sshcmd3="./control.sh delserver $server_customer-p $gamestring $gsfolder";
-            if ($ui->w('safeDelete',1,'post')!='D') shell_server($sship,$sshport,$sshuser,$sshpass,$server_customer,$ftppass,$sshcmd2,$sql);
-            if ($ui->w('safeDelete',1,'post')!='D') shell_server($sship,$sshport,$sshuser,$sshpass,"$server_customer-p",$ftppass2,$sshcmd2,$sql);
+            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="sudo -u $server_customer ./control.sh delserver $server_customer $gamestring $gsfolder";;
+            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="sudo -u $server_customer-p ./control.sh delserver $server_customer-p $gamestring $gsfolder";
             $template_file=$sprache->delete_server.": ";
             $template_file .=$description."<br />";
             $query=$sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? AND `resellerid`=? LIMIT 1");
@@ -613,14 +615,12 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
                 $query->execute(array($row['id'],$server_id,$reseller_id));
             }
         } else {
-            $sshcmd="screen -dmS delscreen-$server_customer ./control.sh delscreen $server_customer";
-            if ($ui->w('safeDelete',1,'post')!='D') shell_server($sship,$sshport,$sshuser,$sshpass,$server_customer,$ftppass,$sshcmd,$sql);
-            $sshcmd2="screen -dmS delscreen-$server_customer-p ./control.sh delscreen $server_customer-p";
-            if ($ui->w('safeDelete',1,'post')!='D') shell_server($sship,$sshport,$sshuser,$sshpass,"$server_customer-p",$ftppass2,$sshcmd2,$sql);
-            $sshcmd3="./control.sh delCustomer $server_customer";
+            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="sudo -u $server_customer screen -dmS delscreen-$server_customer ./control.sh delscreen $server_customer" ;
+            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="sudo -u $server_customer-p screen -dmS delscreen-$server_customer-p ./control.sh delscreen $server_customer-p";
+            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="./control.sh delCustomer $server_customer";
             $template_file=$sprache->no_server_left;
-            if ($ui->w('safeDelete',1,'post')!='D') exec_server($sship,$sshport,$sshuser,$sshpass,$sshcmd3,$sql);
         }
+        if (isset($rootID)) ssh2_execute('gs',$rootID,$cmds);
         $loguseraction="%del% %gserver% $serverip:$port";
         $insertlog->execute();
         $template_file=$spracheResponse->table_del;
@@ -883,35 +883,39 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
             if ($num_check_game==0 and $num_check_port2==0 and $num_check_port3==0 and $num_check_port4==0 and $num_check_port5==0) {
                 $updateGo=true;
             }
+            $cmds=array();
             if(($serverip_old!=$serverip_new or $port_old!=$port_new) and isset($updateGo)){
-                gsrestart($server_id,'so',$aeskey,$sprache,$reseller_id,$sql);
+                $tmp=gsrestart($server_id,'so',$aeskey,$sprache,$reseller_id,$sql);
+                if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                 $address_old=$serverip_old.":".$port_old;
                 $gsfolder_old=$serverip_old.'_'.$port_old;
                 $gsfolder_new=$serverip_new.'_'.$port_new;
                 $address_new=$serverip_new.":".$port_new;
                 $alreadystopped=true;
-                $sshcmd2="screen -dmS move ./control.sh move $server_customer $gsfolder_old $gsfolder_new";
-                shell_server($sship,$sshport,$sshuser,$sshpass,$server_customer,$ftppass,$sshcmd2,$sql);
+                $cmds[]="sudo -u ${server_customer} ./control.sh move $server_customer $gsfolder_old $gsfolder_new";
             }
             if (isset($updateGo)) {
                 if ($active_old=='Y' and $active=='N' and !isset($alreadystopped)) {
-                    gsrestart($server_id,'so',$aeskey,$sprache,$reseller_id,$sql);
+                    $tmp=gsrestart($server_id,'so',$aeskey,$sprache,$reseller_id,$sql);
+                    if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                     $alreadystopped=true;
                 }
                 $query=$sql->prepare("UPDATE `gsswitch` SET `active`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`brandname`=?,`lendserver`=?,`serverip`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($active,$taskset,$usedcores,$pallowed,$eacallowed,$brandname,$lendserver,$serverip_new,$tvenable,$port_new,$port2,$port3,$port4,$port5,$minram,$maxram,$slots,$war,$autoRestart,$ftppassword_new,$aeskey,$server_id,$reseller_id));
                 customColumns('G',$server_id,'save');
                 if ($ftppassword_new!=$ftppass_old or ($active_old=='Y' and $active=='N')){
-                    exec_server($sship,$sshport,$sshuser,$sshpass,'./control.sh mod '.$server_customer.' '.$ftppass.' '.$protectedpw,$sql);
+                    $cmds[]='./control.sh mod '.$server_customer.' '.$ftppass.' '.$protectedpw;
                 }
                 if ($slots_old!=$slots and !isset($alreadystopped)) {
-                    gsrestart($server_id,'re',$aeskey,$sprache,$reseller_id,$sql);
+                    $tmp=gsrestart($server_id,'re',$aeskey,$sprache,$reseller_id,$sql);
+                    if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                 }
                 $gamestring_awk=explode('_', $gamestring);
                 $gamecount=$gamestring_awk[0];
             } else {
                 $gamecount=0;
             }
+            if (is_array($cmds) and count($cmds)>0) ssh2_execute('gs',$rootID,$cmds);
             $i=1;
             $num_check=0;
             while ($i <= $gamecount) {
@@ -1027,15 +1031,15 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
                 $ftppass=$row['cftppass'];
                 if ($row['newlayout']=='Y') $customer=$customer.'-'.$row['id'];
                 if ($ui->active('type','post')=='Y') {
-                    gsrestart($row['id'],'so',$aeskey,$sprache,$reseller_id,$sql);
-                    ssh2exec($row['rootID'],'root',$aeskey,"./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10),$sql);
-                    $sshcmd="./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
+                    $cmds=gsrestart($row['id'],'so',$aeskey,$sprache,$reseller_id,$sql);
+                    $cmds[]="sudo -u ${customer} ./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10);
+                    $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
                     $loguseraction="%reinstall% %gserver% ${serverip}:${port}";
                 } else {
-                    $sshcmd="./control.sh addserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
+                    $cmds[]="sudo -u ${customer} ./control.sh addserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
                     $loguseraction="%resync% %gserver% ${serverip}:${port}";
                 }
-                shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,$sshcmd,$sql);
+                if (count($cmds)>0) ssh2_execute('gs',$row['hostID'],$cmds);
                 $template_file=$sprache->server_installed;
                 $insertlog->execute();
             }
@@ -1047,27 +1051,30 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
     }
 } else if (in_array($ui->st('d','get'),array('rs','st','du')) and $ui->id('id',10,'get')) {
     $id=$ui->id('id',10,'get');
-    $query=$sql->prepare("SELECT `serverip`,`port` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query=$sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $gsip=$row['serverip'];
         $port=$row['port'];
+        $port=$row['port'];
+        $rootID=$row['rootID'];
     }
     if (isset($gsip) and isset($port)) {
         include(EASYWIDIR.'/stuff/ssh_exec.php');
         if ($ui->st('d','get')=='rs') {
             $template_file='Restart done';
-            gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
             $loguseraction="%start% %gserver% $gsip:$port";
         } else if ($ui->st('d','get')=='st') {
             $template_file='Stop done';
-            gsrestart($id,'so',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'so',$aeskey,$sprache,$reseller_id,$sql);
             $loguseraction="%stop% %gserver% $gsip:$port";
         } else if ($ui->st('d','get')=='du') {
             $template_file='SourceTV upload started';
-            gsrestart($id,'du',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'du',$aeskey,$sprache,$reseller_id,$sql);
             $loguseraction="%movie% %gserver% $gsip:$port";
         }
+        if (isset($cmds) and is_array($cmds) and count($cmds)>0) ssh2_execute('gs',$rootID,$cmds);
         $insertlog->execute();
     } else {
         $template_file='admin_404.tpl';

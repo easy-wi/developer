@@ -483,6 +483,7 @@ if (!function_exists('passwordgenerate')) {
         }
     }
     function gsrestart($switchID,$action,$aeskey,$sprache,$reseller_id,$sql) {
+        $tempCmds=array();
         $stopped='Y';
         $query=$sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`qstat`,t.`appID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey'=>$aeskey,':serverid'=>$switchID,':reseller_id'=>$reseller_id));
@@ -569,9 +570,7 @@ if (!function_exists('passwordgenerate')) {
                         if (isset($splitline[1])) {
                             $replace=array($gamebinary,$tic,$gsip,$port,$port2,$port2,$port3,$port4,$port5,$slots,$map,$mapGroup,$fps,$minram,$maxram,$maxcores,$folder,$customer,$absolutepath);
                             $cvar=str_replace($cvars,$replace,$splitline[1]);
-                            foreach (customColumns('G',$switchID) as $cu) {
-                                $cvar=str_replace("%${cu['name']}%",$cu['value'],$cvar);
-                            }
+                            foreach (customColumns('G',$switchID) as $cu) $cvar=str_replace("%${cu['name']}%",$cu['value'],$cvar);
                             $cvarprotect[$config]['cvars'][$splitline[0]]=$cvar;
                         }
                     }
@@ -703,26 +702,15 @@ if (!function_exists('passwordgenerate')) {
             }
             if ($action=='so' or $action=='sp') {
                 if ($action=='so') {
-                    $sshcmd="./control.sh gstop $customer \"$serverfolder\" $qstat $protectedString";
-                    if ((isset($ftpupload) and $qstat=='a2s')) {
-                        $sshcmd .=" && ./control.sh demoupload \"$bindir\" \"$ftpupload\" \"$modfolder\"";
-                    }
+                    $tempCmds[]="sudo -u ${customer} ./control.sh gstop $customer \"$serverfolder\" $qstat $protectedString";
+                    if ((isset($ftpupload) and $qstat=='a2s')) $tempCmds[]="sudo -u ${customer} ./control.sh demoupload \"$bindir\" \"$ftpupload\" \"$modfolder\"";
                 } else {
-                    $sshcmd="./control.sh stopall";
+                    $tempCmds[]="sudo -u ${customer} ./control.sh stopall";
                 }
                 $stopped='Y';
             } else if ($action=='re') {
-                if ($protected=='N') {
-                    if (count($installedaddons)>0) {
-                        $installedaddonlist=implode(' ',$installedaddons);
-                        $matchaddons=" && ./control.sh addonmatch $customer \"$serverfolder\" \"$installedaddonlist\"";
-                    } else {
-                        $matchaddons='';
-                    }
-                    $sshcmd="./control.sh grestart $customer \"$serverfolder\" \"$startline\" $protectedString $qstat \"$cores\" $matchaddons";
-                } else {
-                    $sshcmd="./control.sh grestart $customer \"$serverfolder\" \"$startline\" $protectedString $qstat \"$cores\"";
-                }
+                if ($protected=='N' and count($installedaddons)>0) $tempCmds[]="sudo -u ${customer} ./control.sh addonmatch $customer \"$serverfolder\" \"".implode(' ',$installedaddons)."\"";
+                $restartCmd="sudo -u ${customer} ./control.sh grestart $customer \"$serverfolder\" \"$startline\" $protectedString $qstat \"$cores\"";
                 $stopped='N';
             }
             if (!isset($ftpupload) and $qstat=='a2s' and isurl($uploaddir)) {
@@ -735,18 +723,14 @@ if (!function_exists('passwordgenerate')) {
                 } else if ($upload==5) {
                     $uploadcmd="./control.sh demoupload \"$bindir\" \"$uploaddir\" \"$modfolder\" auto keep";
                 }
-                if ($action=='du') {
+                if ($action=='du' and isset($uploadcmd)) {
                     $stopped='N';
-                    $sshcmd=$uploadcmd;
-                } else if ($action!='so' and $action!='sp') {
-                    $sshcmd=$sshcmd.' && '.$uploadcmd;
+                    $sshcmd=array($uploadcmd);
+                } else if ($action!='so' and $action!='sp' and isset($uploadcmd)) {
+                    $tempCmds[]="sudo -u ${customer} $uploadcmd";
                 }
             }
-            foreach ($cvarprotect as $config => $values) {
-                if (count($values['cvars'])==0) {
-                    unset($cvarprotect[$config]);
-                }
-            }
+            foreach ($cvarprotect as $config => $values) if (count($values['cvars'])==0) unset($cvarprotect[$config]);
             if (count($cvarprotect)>0 and $action!='du') {
                 if ($ftpport==21 or $ftpport=="" or $ftpport==null) {
                     $ftp_connect= ftp_connect($sship);
@@ -837,24 +821,14 @@ if (!function_exists('passwordgenerate')) {
                     ftp_close($ftp_connect);
                 }
             }
-            $template_file='';
-            if ($pallowed=='Y' and $protected=='Y') {
-                $shell_server=shell_server($sship,$sshport,$sshuser,$sshpass,$customerUnprotected,$ftppassUnprotected,'./control.sh stopall',$sql);
-            } else if ($pallowed=='Y' and $protected=='N') {
-                $shell_server=shell_server($sship,$sshport,$sshuser,$sshpass,$customerProtected,$ftppassProtected,'./control.sh stopall',$sql);
-            }
-            if(isset($shell_server) and $pallowed=='Y' and ($shell_server=="The login data does not work" or $shell_server=="Could not connect to Server")){
-                $template_file=$sprache->failed.": ".$shell_server;
-            } else if (isset($sshcmd)) {
-                $shell_server=shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,$sshcmd,$sql);
-                if($shell_server=="The login data does not work" or $shell_server=="Could not connect to Server"){
-                    $template_file=$sprache->failed.": ".$shell_server;
-                } else {
-                    $query=$sql->prepare("UPDATE `gsswitch` SET `stopped`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array($stopped,$switchID,$reseller_id));
-                }
-            }
-            if (isset($template_file)) return $template_file;
+            $query=$sql->prepare("UPDATE `gsswitch` SET `stopped`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array($stopped,$switchID,$reseller_id));
+            $cmds=array();
+            if ($pallowed=='Y' and $protected=='Y') $cmds[]="sudo -u ${customerUnprotected} ./control.sh stopall";
+            else if ($pallowed=='Y' and $protected=='N') $cmds[]="sudo -u ${customerProtected} ./control.sh stopall";
+            if (isset($restartCmd)) $cmds[]=$restartCmd;
+            foreach ($tempCmds as $c) $cmds[]=$c;
+            return $cmds;
         }
         return false;
     }

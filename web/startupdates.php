@@ -67,9 +67,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     $query->execute(array($currentMinute));
     echo "Checking for servers to be updated and or synced at hour ${currentHour} and between minutes ${lastUpdateRun} and ${currentMinute}\r\n";
     $currentMinute++;
-    if ($lastUpdateRun!=null and $lastUpdateRun!=0) {
-        $lastUpdateRun--;
-    }
+    if ($lastUpdateRun!=null and $lastUpdateRun!=0) $lastUpdateRun--;
     $query=$sql->prepare("SELECT `id` FROM `rserverdata` WHERE `updates`!=3 AND (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<?");
     $query2=$sql->prepare("UPDATE `rserverdata` SET `alreadyStartedAt`=? WHERE `id`=? LIMIT 1");
     $query->execute(array($currentHour,$lastUpdateRun,($currentMinute+1)));
@@ -79,8 +77,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         echo "Starting updates for ".$rootServer->sship."\r\n";
         $sshcmd=$rootServer->returnCmds();
         if ($rootServer->sshcmd!==null) {
-            $update=exec_server($rootServer->sship,$rootServer->sshport,$rootServer->sshuser,$rootServer->sshpass,$rootServer->sshcmd,$sql);
-            if ($update!="Could not connect to Server" and $update!="The login data does not work") {
+            $update=ssh2_execute('gs',$row['id'],$rootServer->sshcmd);
+            if ($update!==false) {
                 $rootServer->setUpdating();
                 echo "Updater started for ".$rootServer->sship."\r\n";
             } else {

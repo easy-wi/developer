@@ -808,17 +808,6 @@ $aeskey="'.$_POST['aeskey'].'";
 		}
 ?>
 						<tr>
-							<td colspan="2"><br /><?php echo $sprache->informations;?></td>
-						</tr>
-						<tr>
-							<td><?php echo $sprache->domain;?></td>
-							<td><?php echo $_SERVER['SERVER_NAME'];?></td>
-						</tr>
-						<tr>
-							<td><?php echo $sprache->ip;?></td>
-							<td><?php echo $_SERVER['SERVER_ADDR'];?></td>
-						</tr>
-						<tr>
 							<td colspan="2"><br /><?php echo $sprache->data;?></td>
 						</tr>
 						<tr>

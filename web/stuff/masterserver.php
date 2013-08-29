@@ -61,7 +61,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 } else if ($ui->st('d','get')=='ad') {
     if ($ui->smallletters('action',2,'post')=='ad'){
         include(EASYWIDIR.'/stuff/ssh_exec.php');
-        $serverid=$ui->id('id','30','get');
+        $serverid=$ui->id('id',10,'get');
         $rootServer=new masterServer($serverid,$aeskey);
         if($ui->id('id',19,'post')) {
             $template_file='';
@@ -84,9 +84,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $rootServer->collectData($id,true);
             }
             $sshcmd=$rootServer->returnCmds('install','all');
-            if ($rootServer->sshcmd!==null) {
-                $update=exec_server($rootServer->sship,$rootServer->sshport,$rootServer->sshuser,$rootServer->sshpass,$rootServer->sshcmd,$sql);
-            }
+            if ($rootServer->sshcmd!==null) ssh2_execute('gs',$serverid,$rootServer->sshcmd);
         } else {
             $template_file=$sprache->error_root_noselect;
         }
@@ -139,8 +137,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $i++;
             }
             $deletestring=$i.$deletestring;
-            $cmd="./control.sh delete $deletestring";
-            if (exec_server($sship,$sshport,$sshuser,$sshpass,$cmd,$sql)) {
+            if (ssh2_execute('gs',$serverid,"./control.sh delete $deletestring")) {
                 $template_file .=$sprache->root_masterdel;
             } else {
                 $template_file .=$sprache->error_root_masterdel2;
@@ -226,10 +223,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $user=$serverdata['user'];
             $port=$serverdata['port'];
             $pass=$serverdata['pass'];
-            $cmd='./control.sh updatestatus "'.implode(' ',$sshcheck).'"';
-            $check=exec_server($ip,$port,$user,$pass,$cmd,$sql);
-            if ($check=="The login data does not work" or $check=="Could not connect to Server") {
-                $description=$check;
+            $check=ssh2_execute('gs',$id,'./control.sh updatestatus "'.implode(' ',$sshcheck).'"');
+            if ($check===false) {
+                $description="The login data does not work";
             } else if (preg_match('/^[\w\:\-\=]+$/',$check)) {
                 $games=array();
                 $query2=$sql->prepare("SELECT r.`id`,s.`steamgame`,s.`updates`,d.`updates` AS `rupdates` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND r.`resellerid`=? AND d.`ip`=? LIMIT 1");

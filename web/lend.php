@@ -206,6 +206,7 @@ $gslallowed=($gscount>0) ? true : false;
 if(!isset($servertype) and !isset($page_include) and (!isset($get_shorten) or ($get_shorten=='api') and !$ui->st('w','post'))) $servertype=($vocount>$gscount) ? 'v' : 'g';
 if(isset($servertype)) {
     $query=$sql->prepare("SELECT `id`,`serverid`,`rcon`,`password`,`slots`,`started`,`lendtime` FROM `lendedserver` WHERE `lenderip`=? AND `servertype`=? AND `resellerid`=? LIMIT 1");
+    $query1=$sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
     $query2=$sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query3=$sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
     $query4=$sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -219,7 +220,11 @@ if(isset($servertype)) {
             if ($servertype=='g') {
                 unset($_SESSION['lend']['gs']);
                 include(EASYWIDIR.'/stuff/ssh_exec.php');
-                gsrestart($serverid,'so',$aeskey,$gssprache,$reseller_id,$sql);
+                $query1->execute(array($serverid,$reseller_id));
+                foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
+                    $cmds=gsrestart($row1['switchID'],'so',$aeskey,$gssprache,$reseller_id,$sql);
+                    ssh2_execute('gs',$row1['rootID'],$cmds);
+                }
             } else if ($servertype=='v') {
                 unset($_SESSION['lend']['vs']);
                 include(EASYWIDIR.'/stuff/class_voice.php');
@@ -633,18 +638,20 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
                 $query->execute(array($serverid,'g',$rcon,$password,$slots,$lendtime,$loguserip,$ftpuploadpath,$aeskey,$reseller_id));
                 $query=$sql->prepare("INSERT INTO `lendstats` (`lendDate`,`serverID`,`serverType`,`lendtime`,`slots`,`resellerID`) VALUES (NOW(),?,?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
                 $query->execute(array($serverid,'g',$lendtime,$slots,$reseller_id));
-                $query=$sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,t.`description` FROM `gsswitch` g  LEFT JOIN `serverlist` s ON s.`switchID`=g.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+                $query=$sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,g.`rootID`,t.`description` FROM `gsswitch` g  LEFT JOIN `serverlist` s ON s.`switchID`=g.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
                 $query->execute(array($serverid,$reseller_id));
 				foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 					$serverip=$row['serverip'];
 					$port=$row['port'];
 					$description=$row['description'];
                     $updateID=$row['id'];
+                    $rootID=$row['rootID'];
 				}
                 $query=$insert=$sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($serverid,$updateID,$reseller_id));
 				include(EASYWIDIR.'/stuff/ssh_exec.php');
-				gsrestart($updateID,'re',$aeskey,$gssprache,$reseller_id,$sql);
+                $cmds=gsrestart($updateID,'re',$aeskey,$gssprache,$reseller_id,$sql);
+                ssh2_execute('gs',$rootID,$cmds);
 				if (!isset($page_include) and $ui->id('xml',1,'post')==1) {
 					$responsexml=<<<XML
 <?xml version='1.0' encoding='UTF-8'?>

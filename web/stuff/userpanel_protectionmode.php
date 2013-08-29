@@ -129,19 +129,20 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed=='N') or (isset($_S
         $query=$sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',10,'get'),$reseller_id));
         cfgTransfer('',$customerp,$ftppassProtected,$shorten,'server/',$customer,$ftppass,$serverTemplate);
-        gsrestart($ui->id('id',10,'get'),'re',$aeskey,$sprache,$reseller_id,$sql);
+        $cmds=gsrestart($ui->id('id',10,'get'),'re',$aeskey,$sprache,$reseller_id,$sql);
+        ssh2_execute('gs',$rootid,$cmds);
         $loguseraction="%stop% %pmode% $serverip:$port";
         $insertlog->execute();
         $template_file=$sprache->protect.' off';
     } else if (isset($protected,$serverip,$port,$rootid,$customer,$ftppass) and $protected=='N') {
-        gsrestart($ui->id('id',10,'get'),'sp',$aeskey,$sprache,$reseller_id,$sql);
+        $cmds=gsrestart($ui->id('id',10,'get'),'sp',$aeskey,$sprache,$reseller_id,$sql);
         $randompass=passwordgenerate(10);
-        exec_server($sship,$sshport,$sshuser,$sshpass,'./control.sh mod '.$customer.' '.$ftppass.' '.$randompass,$sql);
-        shell_server($sship,$sshport,$sshuser,$sshpass,$customer.'-p',$randompass,'./control.sh reinstserver '.$customer.'-p '.$gamestring.' '.$gsfolder.' protected',$sql);
+        $cmds[]='./control.sh mod '.$customer.' '.$ftppass.' '.$randompass;
+        $cmds[]="sudo -u ${customer}-p ./control.sh reinstserver ${customer}-p ${gamestring} ${gsfolder} protected";
         $query=$sql->prepare("UPDATE `gsswitch` SET `ppassword`=AES_ENCRYPT(?,?),`protected`='Y',`psince`=NOW() WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($randompass,$aeskey,$ui->id('id',10,'get'),$reseller_id));
         cfgTransfer('server/',$customer,$ftppass,$serverTemplate,'',$customerp,$randompass,$shorten);
-        #gsrestart($ui->id('id',10,'get'),'re',$aeskey,$sprache,$reseller_id,$sql);
+        ssh2_execute('gs',$rootid,$cmds);
         $loguseraction="%restart% %pmode% $serverip:$port";
         $insertlog->execute();
         $template_file=$sprache->protect.' on';

@@ -132,11 +132,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$servertype=$row['servertype'];
 		}
 		if ($servertype=='g') {
-            $query=$sql->prepare("SELECT `switchID` FROM `serverlist` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query=$sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
-            $restartID=$query->fetchColumn();
-            if (isid($restartID,10)) {
-                gsrestart($restartID,'so',$aeskey,$gssprache,$reseller_id,$sql);
+            foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $cmds=gsrestart($row['switchID'],'so',$aeskey,$gssprache,$reseller_id,$sql);
+                ssh2_execute('gs',$row['rootID'],$cmds);
             }
 		} else if ($servertype=='v') {
             $query=$sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
@@ -195,7 +195,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $voused=$query->fetchColumn();
         $query=$sql->prepare("SELECT * FROM `lendedserver` WHERE `resellerid`=? ORDER BY `servertype` DESC");
         $query->execute(array($reseller_id));
-        $query2=$sql->prepare("SELECT `switchID` FROM `serverlist` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query2=$sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
         $query3=$sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
         $query4=$sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query5=$sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -216,8 +216,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			if ($timeleft<=0) {
 				if ($servertype=='g') {
                     $query2->execute(array($serverid,$reseller_id));
-                    $restartID=$query2->fetchColumn();
-					gsrestart($restartID,'so',$aeskey,$gssprache,$reseller_id,$sql);
+                    foreach($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                        $cmds=gsrestart($row2['switchID'],'so',$aeskey,$gssprache,$reseller_id,$sql);
+                        ssh2_execute('gs',$row['rootID'],$cmds);
+                    }
 				} else if ($servertype=='v') {
 					$query3->execute(array($aeskey,$serverid,$reseller_id));
 					foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row2) {

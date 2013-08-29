@@ -133,24 +133,25 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
 } else if (($ui->st('d','get')=='rs' or $ui->st('d','get')=='st' or $ui->st('d','get')=='du') and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
-    $query=$sql->prepare("SELECT `serverip`,`port` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
+    $query=$sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $gsip=$row['serverip'];
         $port=$row['port'];
         if ($ui->st('d','get')=='rs') {
             $template_file='Restart done';
-            gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
             $loguseraction="%start% %gserver% $gsip:$port";
         } else if ($ui->st('d','get')=='st') {
             $template_file='Stop done';
-            gsrestart($id,'so',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'so',$aeskey,$sprache,$reseller_id,$sql);
             $loguseraction="%stop% %gserver% $gsip:$port";
         } else if ($ui->st('d','get')=='du') {
             $template_file='SourceTV upload started';
-            gsrestart($id,'du',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'du',$aeskey,$sprache,$reseller_id,$sql);
             $loguseraction="%movie% %gserver% $gsip:$port";
         }
+        if (isset($cmds)) ssh2_execute('gs',$row['rootID'],$cmds);
         $insertlog->execute();
     }
     if (!isset($gsip)) {
@@ -337,7 +338,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $template_file=$spracheResponse->error_table;
         }
         $ftppass=$ui->password('ftppass',100,'post');
-        if (isset($oldID) and $oldID!=$switchID) gsrestart($id,'so',$aeskey,$sprache,$reseller_id,$sql);
+        $cmds=array();
+        if (isset($oldID) and $oldID!=$switchID) {
+            $tmp=gsrestart($id,'so',$aeskey,$sprache,$reseller_id,$sql);
+            if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
+        }
         $query=$sql->prepare("UPDATE `gsswitch` SET `serverid`=?,`ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($switchID,$ftppass,$aeskey,$id,$reseller_id));
         if (isset($oldID) and $oldID!=$switchID or $ftppass!=$oldPass) {
@@ -345,9 +350,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 if (isset($oldProtected) and $oldProtected=='Y') {
                     $query=$sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($id,$reseller_id));
-                    gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+                    $tmp=gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+                    if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                 } else {
-                    gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+                    $tmp=gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+                    if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                 }
             }
             if ($ftppass!=$oldPass) {
@@ -357,9 +364,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $sshuser=$rdata['user'];
                 $sshpass=$rdata['pass'];
                 if ($newlayout=='Y') $servercname=$servercname.'-'.$id;
-                exec_server($sship,$sshport,$sshuser,$sshpass,'./control.sh mod '.$servercname.' '.$ftppass.' '.$poldPass,$sql);
+                $cmds[]='./control.sh mod '.$servercname.' '.$ftppass.' '.$poldPass;
             }
         }
+        if (isset($rootID) and count($cmds)>0)ssh2_execute('gs',$rootID,$cmds);
         $loguseraction="%mod% %gserver% $server";
         $insertlog->execute();
     } else {
