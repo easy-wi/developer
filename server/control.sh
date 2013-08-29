@@ -63,6 +63,10 @@ SCRIPTNAME=`basename $0`
 MASTERUSER=`echo $HOMEFOLDER | awk -F "/" '{print $3}'`
 NOUPDATES=`grep NOUPDATES $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
 IONICEALLOWED=`grep IONICE $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
+if [ "$SCRIPTNAME" == "control" ]; then
+	cp control control.sh
+	chmod +x control.sh
+fi
 if [ "$IONICEALLOWED" == "1" ]; then
 	if ionice -c3 true 2>/dev/null; then IONICE='ionice -n 7 '; fi
 fi
@@ -93,7 +97,7 @@ function updatecheck {
 			if [ "$ISROOT" == "1" ]; then echo "control.sh is outdated fetching update"; fi
 			cd $HOMEFOLDER
 			if [ -f $HOMEFOLDER/control_new.tar ]; then rm $HOMEFOLDER/control_new.tar; fi
-			wget -q --timeout=10 http://update.easy-wi.com/programs/control_new.tar
+			wget -q --timeout=10 http://update.easy-wi.com/programs/bash/control_new.tar
 			if [ -f $HOMEFOLDER/control_new.tar ]; then
 				tar xfp control_new.tar
 				if [ -f $HOMEFOLDER/control_new.sh ]; then
@@ -124,8 +128,8 @@ if [ "$NOUPDATES" != "1" -a "$SCRIPTNAME" != "control_new.sh" -a "$VARIABLE1" !=
 	elif [ "`id -u`" == "0" ]; then
 		ISROOT=1
 		updatecheck
-		if [ "`find -maxdepth 1 -name \"control.*\"`" != "" ]; then
-			rm control.*
+		if [ "`find -maxdepth 1 -name \"control.old.*\"`" != "" ]; then
+			rm control.old.*
 		fi
 	fi
 fi
@@ -392,11 +396,12 @@ echo "
 $INSTALLMASTER ALL = NOPASSWD: /usr/sbin/useradd
 $INSTALLMASTER ALL = NOPASSWD: /usr/sbin/userdel
 $INSTALLMASTER ALL = NOPASSWD: /usr/sbin/deluser
-$INSTALLMASTER ALL = NOPASSWD: /usr/sbin/usermod" >>  /etc/sudoers
+$INSTALLMASTER ALL = NOPASSWD: /usr/sbin/usermod
+$INSTALLMASTER ALL = (ALL, !root:$INSTALLMASTER) NOPASSWD: /home/$INSTALLMASTER/control.sh" >>  /etc/sudoers
 fi
 
-mv $HOMEFOLDER/control /home/$INSTALLMASTER/control
-chmod 770 /home/$INSTALLMASTER/control
+mv $HOMEFOLDER/control.sh /home/$INSTALLMASTER/control.sh
+chmod 770 /home/$INSTALLMASTER/control.sh
 cd /home/$INSTALLMASTER/masterserver
 echo "Downloading hldsupdatetool"
 sleep 1
@@ -1299,13 +1304,13 @@ GAMESTRING="${I}${GAMESTRING}"
 if [ "$VARIABLE5" != "protected" ]; then
 	CLEANFILE=$HOMEFOLDER/temp/cleanup-${VARIABLE2}-${SCREENNAME}.sh
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-${SCREENNAME}.sh
-	SYNCSERVERCMD="cd `dirname $FOLDERCHECK` && ./control addserver ${VARIABLE2} ${GAMESTRING} ${SYNCGSPATH}"
+	SYNCSERVERCMD="cd `dirname $FOLDERCHECK` && ./control.sh addserver ${VARIABLE2} ${GAMESTRING} ${SYNCGSPATH}"
 	CLEANUPDIR="/home/$VARIABLE2/server/"
 else
 	CLEANFILE=$HOMEFOLDER/temp/cleanup-${VARIABLE2}-p-${SCREENNAME}.sh
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-p-${SCREENNAME}.sh
 	CLEANUPDIR="/home/$VARIABLE2/pserver/"
-	SYNCSERVERCMD="cd `dirname $FOLDERCHECK` && ./control addserver ${VARIABLE2}-p ${GAMESTRING} ${SYNCGSPATH} protected"
+	SYNCSERVERCMD="cd `dirname $FOLDERCHECK` && ./control.sh addserver ${VARIABLE2}-p ${GAMESTRING} ${SYNCGSPATH} protected"
 fi
 cd $SERVERDIR
 DONOTTOUCH='*/bin/*.so bin/*.so */cfg/valve.rc srcds_* hlds_* *.sh *.run'
