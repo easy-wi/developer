@@ -452,15 +452,10 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $rootServer=new masterServer($row2['id'],$aeskey);
             $rootServer->collectData();
-            if (4==$stunde) {
-                $sshcmd=$rootServer->returnCmds('update','all');
-            } else {
-                $sshcmd=$rootServer->returnCmds();
-            }
+            $sshcmd=(4==$stunde) ? $rootServer->returnCmds('update','all') : $rootServer->returnCmds();
             if ($rootServer->sshcmd!==null) {
                 echo "Starting updates for ".$rootServer->sship."\r\n";
-                $update=exec_server($rootServer->sship,$rootServer->sshport,$rootServer->sshuser,$rootServer->sshpass,$rootServer->sshcmd,$sql);
-                if ($update!="Could not connect to Server" and $update!="The login data does not work") {
+                if (ssh2_execute('gs',$row2['id'],$rootServer->sshcmd)!==false) {
                     $rootServer->setUpdating();
                     echo "Updater started for ".$rootServer->sship."\r\n";
                 } else {
@@ -475,11 +470,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     print "Check for new news feeds\r\n";
     include('stuff/feeds_function.php');
     if (isset($template_file)) print $template_file."\r\n";
-    if (isset($argv[1]) and is_numeric($argv[1])) {
-        $chunkSize=$argv[1];
-    } else {
-        $chunkSize=500;
-    }
+    $chunkSize=(isset($argv[1]) and is_numeric($argv[1])) ? $argv[1] : 500;
     print "Cleaning Up hourly data. Chunksize is ${chunkSize}\r\n";
     $query=$sql->prepare("DELETE FROM `voice_server_stats` WHERE `date` IS NULL OR `date`='0000-00-00 00:00:00'");
     $query->execute();

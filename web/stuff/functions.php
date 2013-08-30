@@ -454,32 +454,20 @@ if (!function_exists('passwordgenerate')) {
             $anticheat=$row['anticheat'];
             $shorten=$row['shorten'];
         }
-        if ($anticheat==3) {
-            $parameter='';
-        } else if ($anticheat==4) {
-            $parameter='-2';
-        } else if ($anticheat==5) {
-            $parameter='-1';
-        } else if ($anticheat==6) {
-            $parameter='-3';
-        }
-        if ($shorten=='cstrike' or $shorten=='czero') {
-            $subfolder='hl1';
-        } else if ($shorten=='css' or $shorten=='tf') {
-            $subfolder='hl2';
-        } else if ($shorten=='cod4') {
-            $subfolder='cod4';
-        }
+        if ($anticheat==3) $parameter='';
+        else if ($anticheat==4) $parameter='-2';
+        else if ($anticheat==5) $parameter='-1';
+        else if ($anticheat==6) $parameter='-3';
+        if ($shorten=='cstrike' or $shorten=='czero') $subfolder='hl1';
+        else if ($shorten=='css' or $shorten=='tf') $subfolder='hl2';
+        else if ($shorten=='cod4') $subfolder='cod4';
         $file="$cfgdir/$subfolder/$gsip-$gsport";
         $file=preg_replace('/\/\//', '/', $file);
-        if ($what=='change') {
-            $ssh2cmd='echo "'.$gsip.':'.$gsport.'-'.$rcon.$parameter.'" > '.$file;
-        } else if ($what=="remove") {
-            $ssh2cmd='rm -f '.$file;
-        }
+        if ($what=='change') $ssh2cmd='echo "'.$gsip.':'.$gsport.'-'.$rcon.$parameter.'" > '.$file;
+        else if ($what=="remove") $ssh2cmd='rm -f '.$file;
         if (isset($ssh2cmd) and $active=='Y') {
-            if (!function_exists('ssh2exec')) include(EASYWIDIR.'/stuff/ssh_exec.php');
-            ssh2exec($reseller_id,'eac',$aeskey,$ssh2cmd,$sql);
+            if (!function_exists('ssh2_execute')) include(EASYWIDIR.'/stuff/ssh_exec.php');
+            if (isset($ssh2cmd)) ssh2_execute('eac',$reseller_id,$ssh2cmd);
         }
     }
     function gsrestart($switchID,$action,$aeskey,$sprache,$reseller_id,$sql) {

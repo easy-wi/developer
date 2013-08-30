@@ -214,9 +214,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $ftpConnect='ftps://';
         }
         $ftpConnect.=str_replace('//','/',$ftpAddress.':'.$ftpPort.'/'.$ftpPath);
-        $sshcmd='./control.sh migrateserver "'.$customer.'" "1_'.$shorten.'" "'.$gsfolder.'" "'.$template.'" "'.$ftpUser.'" "'.$ftpPassword.'" "'.$ftpConnect.'" "'.$modFolder.'"';
+        ssh2_execute('gs',$rootID,"sudo -u ${customer} ./control.sh migrateserver ${customer} 1_${shorten} ${gsfolder} ${template} ${ftpUser} ${ftpPassword} ${ftpConnect} ${modFolder}");
         $loguseraction="%import% %gserver% ${address}";
-        shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$cftppass,$sshcmd,$sql);
         $template_file=$sprache->import_start;
         $insertlog->execute();
     }

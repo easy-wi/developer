@@ -484,14 +484,12 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
                     $ftppass2=passwordgenerate(10);
                     $webhostdomain=webhostdomain($reseller_id,$sql);
                     $gsuser=$cname.'-'.$switchID;
-                    $reply=ssh2exec($serverid,'root',$aeskey,"./control.sh add $gsuser $ftppass $sshuser $ftppass2",$sql);
-                    if ($ui->id('installGames',1,'post')!=3 and $reply!="Could not connect to Server" and $reply!="The login data does not work") {
-                        if ($ui->id('installGames',1,'post')==2) {
-                            $gamestring=array($ui->escaped('primary','post'));
-                        }
-                        $gamestring=count($gamestring).'_'.implode('_',$gamestring);
-                        $reply=shell_server($sship,$sshport,$sshuser,$sshpass,$gsuser,$ftppass,"./control.sh addserver $gsuser $gamestring $gsfolder",$sql);
-                    }
+                    $cmds=array();
+                    $cmds[]="./control.sh add ${gsuser} ${ftppass} ${sshuser} ${ftppass2}";
+                    if ($ui->id('installGames',1,'post')==2) $gamestring=array($ui->escaped('primary','post'));
+                    $gamestring=count($gamestring).'_'.implode('_',$gamestring);
+                    if ($ui->id('installGames',1,'post')!=3) $cmds[]="sudo -u ${gsuser} ./control.sh addserver ${gsuser} ${gamestring} ${gsfolder}";
+                    ssh2_execute('gs',$serverid,$cmds);
                 } else {
                     $reply="Could not insert data into database";
                 }

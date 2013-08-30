@@ -112,9 +112,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
             $customer=$customer."-p";
         }
         if ($ui->st('action','get')=='ad' and ($protected=="N" or ($protected=="Y" and $paddon=="Y"))) {
-            $sshcmd="./control.sh addaddon $type $addon \"$serverfolder\" \"$modfolder\"";
-            $reply=shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,$sshcmd,$sql);
-            if($reply!="The login data does not work" and $reply!="Could not connect to Server"){
+            if(ssh2_execute('gs',$rootID,"sudo -u $customer ./control.sh addaddon $type $addon \"$serverfolder\" \"$modfolder\"")!==false){
                 $query=$sql->prepare("INSERT INTO `addons_installed` (`userid`,`addonid`,`serverid`,`servertemplate`,`paddon`,`resellerid`) VALUES (?,?,?,?,?,?)");
                 $query->execute(array($user_id,$addonid,$serverid,$servertemplate,$protected,$reseller_id));
                 $template_file=$sprache->addon_inst;
@@ -125,7 +123,8 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
             }
         } else if ($ui->st('action','get')=='dl' and $ui->id('rid',19,'get')) {
             $installedid=$ui->id('rid',19,'get');
-            $sshcmd="./control.sh deladdon $type $addon \"$serverfolder\" \"$modfolder\" \"$folder\"";
+            $cmds=array();
+            $cmds[]="sudo -u $customer ./control.sh deladdon $type $addon \"$serverfolder\" \"$modfolder\" \"$folder\"";
             $delids=$addonid;
             while (isset($delids) and isset($installedid)) {
                 $query=$sql->prepare("SELECT `id`,`folder`,`addon` FROM `addons` WHERE `depending`=? AND `resellerid`=? LIMIT 1");
@@ -135,7 +134,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
                     $query2->execute(array($installedid,$reseller_id));
                     unset($installedid);
                     if (isset($deladdon)) {
-                        $sshcmd .=" && ./control.sh deladdon $type $deladdon \"$serverfolder\" \"$modfolder\" \"$delfolder\"";
+                        $cmds[]="sudo -u $customer ./control.sh deladdon $type $deladdon \"$serverfolder\" \"$modfolder\" \"$delfolder\"";
                         unset($deladdon);
                         unset($delfolder);
                     }
@@ -147,13 +146,10 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
                     $deladdon=$row['addon'];
                     $query2=$sql->prepare("SELECT `id` FROM `addons_installed` WHERE `addonid`=? AND `serverid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($delids,$serverid,$servertemplate,$reseller_id));
-                    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                        $installedid=$row2['id'];
-                    }
+                    $installedid=$query2->fetchColumn();
                 }
             }
-            $reply=shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,$sshcmd,$sql);
-            if($reply!="The login data does not work" and $reply!="Could not connect to Server"){
+            if(ssh2_execute('gs',$rootID,$cmds)!==false){
                 $template_file=$sprache->addon_del;
                 $actionstatus="ok";
             } else {

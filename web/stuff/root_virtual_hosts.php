@@ -124,8 +124,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $pinsert->execute(array(':active'=>$active,':esxi'=>$esxi,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':os'=>$os,':description'=>$description,':publickey'=>$publickey,':keyname'=>$keyname,  ':cpu'=>$cpu,  ':cores'=>$cores,':mhz'=>$mhz,':ram'=>$ram,':maxserver'=>$maxserver,':thin'=>$thin,':thinquota'=>$thinquota,':reseller'=>$reseller));
             $serverid=$sql->lastInsertId();
             include(EASYWIDIR.'/stuff/ssh_exec.php');
-            $uidb=ssh2exec($serverid,'virtualhost',$aeskey,'cd /vmfs/volumes; S=""; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S',$sql);
-            if ($uidb!="" and $uidb!="The login data does not work" and $uidb!="Could not connect to Server") {
+            $uidb=ssh2_execute('vh',$serverid,'cd /vmfs/volumes; S=""; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S');
+            if ($uidb!="" and $uidb!==false) {
                 $uiddata=explode(";",$uidb);
                 $i=0;
                 $count=count($uiddata)-1;

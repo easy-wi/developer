@@ -38,311 +38,66 @@ if (!function_exists('ssh2_execute')) {
     function ssh2_execute($type,$id,$cmds) {
         global $sql,$rSA,$aeskey;
         $return='';
-        if ($type=='vs') {
+        if ($type=='eac') {
+            $query=$sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `eac` WHERE resellerid=:serverID LIMIT 1");
         } else if ($type=='gs') {
             $query=$sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
+        } else if ($type=='vh') {
+            $query=$sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
         }
-        $query->execute(array(':serverID'=>$id,':aeskey'=>$aeskey));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $serverID=$row['id'];
-            $resellerID=$row['resellerid'];
-            $notified=$row['notified'];
-            $ssh2IP=$row['ip'];
-            $ssh2Port=$row['decryptedport'];
-            $ssh2User=$row['decrypteduser'];
-            $ssh2Pass=$row['decryptedpass'];
-            $ssh2Publickey=$row['publickey'];
-            $pubkey=EASYWIDIR."/keys/${row['keyname']}.pub";
-            $key=EASYWIDIR."/keys/${row['keyname']}";
-            $ssh2Socket=($ssh2Publickey=='Y') ? (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($ssh2IP,$ssh2Port,array('hostkey'=>'ssh-rsa')) : false : @ssh2_connect($ssh2IP,$ssh2Port);
-            if ($ssh2Socket==true) {
-                $ssh2Connect=($ssh2Publickey=='Y') ? @ssh2_auth_pubkey_file($ssh2Socket,$ssh2User,$pubkey,$key) : @ssh2_auth_password($ssh2Socket,$ssh2User,$ssh2Pass);
-                if ($ssh2Connect==true) {
-                    if (!is_array($cmds)) $cmds=array($cmds);
-                    foreach ($cmds as $c) {
-                        if (is_string($c) and $c!='') {
-                            $ssh2Stream=@ssh2_exec($ssh2Socket,$c);
-                            stream_set_blocking($ssh2Stream,true);
-                            if ($ssh2Stream) $error=true;
-                            $return.=stream_get_contents($ssh2Stream);
-                            fclose($ssh2Stream);
+        if (isset($query)) {
+            $query->execute(array(':serverID'=>$id,':aeskey'=>$aeskey));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $serverID=$row['id'];
+                $resellerID=$row['resellerid'];
+                $notified=$row['notified'];
+                $ssh2IP=$row['ip'];
+                $ssh2Port=$row['decryptedport'];
+                $ssh2User=$row['decrypteduser'];
+                $ssh2Pass=$row['decryptedpass'];
+                $ssh2Publickey=$row['publickey'];
+                $pubkey=EASYWIDIR."/keys/${row['keyname']}.pub";
+                $key=EASYWIDIR."/keys/${row['keyname']}";
+                $ssh2Socket=($ssh2Publickey=='Y') ? (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($ssh2IP,$ssh2Port,array('hostkey'=>'ssh-rsa')) : false : @ssh2_connect($ssh2IP,$ssh2Port);
+                if ($ssh2Socket==true) {
+                    $ssh2Connect=($ssh2Publickey=='Y') ? @ssh2_auth_pubkey_file($ssh2Socket,$ssh2User,$pubkey,$key) : @ssh2_auth_password($ssh2Socket,$ssh2User,$ssh2Pass);
+                    if ($ssh2Connect==true) {
+                        if (!is_array($cmds)) $cmds=array($cmds);
+                        foreach ($cmds as $c) {
+                            if (is_string($c) and $c!='') {
+                                $ssh2Stream=@ssh2_exec($ssh2Socket,$c);
+                                stream_set_blocking($ssh2Stream,true);
+                                if (!$ssh2Stream) $error=true;
+                                $return.=stream_get_contents($ssh2Stream);
+                                fclose($ssh2Stream);
+                            }
                         }
+                    } else {
+                        $error=true;
                     }
+                    $ssh2Socket=null;
                 } else {
                     $error=true;
                 }
-                $ssh2Socket=null;
-            } else {
-                $error=true;
+                print_r($rSA['down_checks']);
+                if (isset($error)) $notified++;
+                else $notified=0;
+                if ($notified==$rSA['down_checks']) {
+                    $query=($resellerID==0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${resellerID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
+                    $query->execute();
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) if ($row2['mail_serverdown']=='Y') sendmail('emaildown',$row2['id'],$ssh2IP,'',$sql);
+                }
+                if ($type=='gs') {
+                    $query=$sql->prepare("UPDATE `rserverdata` SET `notified`=? WHERE `id`=? LIMIT 1");
+                } else if ($type=="eac") {
+                    $query=$sql->prepare("UPDATE `eac` SET `notified`=? WHERE `id`=? LIMIT 1");
+                } else if ($type=='vh') {
+                    $query=$sql->prepare("UPDATE `virtualhosts` SET `notified`=? WHERE `id`=? LIMIT 1");
+                }
+                $query->execute(array($notified,$serverID));
+                return $return;
             }
-            if (isset($error)) $notified++;
-            else $notified=0;
-            if ($notified==$rSA['down_checks']) {
-                $query=($resellerID==0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`='0' AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${resellerID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
-                $query->execute();
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) if ($row2['mail_serverdown']=='Y') sendmail('emaildown',$row2['id'],$ssh2IP,'',$sql);
-            }
-            if ($type=='gs') {
-                $query=$sql->prepare("UPDATE `rserverdata` SET `notified`=? WHERE `id`=? LIMIT 1");
-            } else if ($type=="vs") {
-                $query=$sql->prepare("UPDATE `virtualhosts` SET `notified`=? WHERE `id`=? LIMIT 1");
-            } else if ($type=="dh") {
-                $query=$sql->prepare("UPDATE `dhcpdata` SET `notified`=? WHERE `id`=? LIMIT 1");
-            } else if ($type=="ea") {
-                $query=$sql->prepare("UPDATE `eac` SET `notified`=? WHERE `resellerid`=? LIMIT 1");
-            }
-            $query->execute(array($notified,$serverID));
-            return $return;
         }
         return false;
-    }
-
-    function exec_server($ssh2ip,$ssh2port,$ssh2user,$ssh2pass,$ssh2cmd,$sql) {
-        if (strpos(strtolower($ssh2cmd), "control.sh") !== false) {
-            $pselect=$sql->prepare("SELECT `publickey`,`keyname`,`notified`,`resellerid` FROM `virtualhosts` WHERE `ip`=? LIMIT 1");
-            $pselect->execute(array($ssh2ip));
-            foreach ($pselect->fetchAll() as $row) {
-                $publickey=$row['publickey'];
-                $keyname=$row['keyname'];
-                $notified=$row['notified'];
-                $resellerid=$row['resellerid'];
-            }
-        } else {
-            $pselect=$sql->prepare("SELECT `publickey`,`keyname`,`notified`,`resellerid` FROM `rserverdata` WHERE `ip`=? LIMIT 1");
-            $pselect->execute(array($ssh2ip));
-            foreach ($pselect->fetchAll() as $row) {
-                $publickey=$row['publickey'];
-                $keyname=$row['keyname'];
-                $notified=$row['notified'];
-                $resellerid=$row['resellerid'];
-            }
-        }
-        if (!isset($notified)) $notified=0;
-        if (!isset($resellerid)) $resellerid=0;
-        $pselect=$sql->prepare("SELECT `down_checks` FROM `settings` WHERE `resellerid`=? LIMIT 1");
-        $pselect->execute(array($resellerid));
-        foreach ($pselect->fetchAll() as $row) {
-            $down_checks=$row['down_checks'];
-        }
-        if (isset($publickey) and $publickey=="Y") {
-            $pubkey="keys/".$keyname.".pub";
-            $key="keys/".$keyname;
-            $ssh2= @ssh2_connect($ssh2ip,$ssh2port,array('hostkey'=>'ssh-rsa'));
-        } else {
-            $ssh2= @ssh2_connect($ssh2ip,$ssh2port);
-        }
-        if ($ssh2==true) {
-            if (isset($publickey) and $publickey=="Y") {
-                $connect_ssh2= @ssh2_auth_pubkey_file($ssh2, $ssh2user, $pubkey, $key);
-            } else {
-                $connect_ssh2= @ssh2_auth_password($ssh2, $ssh2user, $ssh2pass);
-            }
-            if ($connect_ssh2==true) {
-                $shell = ssh2_exec($ssh2, $ssh2cmd);
-                stream_set_blocking($shell,true);
-                $data = '';
-                while($buffer = fread($shell,4096)){
-                    $data .= $buffer;
-                }
-                if (strpos(strtolower($ssh2cmd), "control.sh") !== false and $notified>0) {
-                    $pupdate2=$sql->prepare("UPDATE `virtualhosts` SET `notified`='0' WHERE `ip`=? LIMIT 1");
-                    $pupdate2->execute(array($ssh2ip));
-                } else if ($notified>0) {
-                    $pupdate2=$sql->prepare("UPDATE `rserverdata` SET `notified`='0' WHERE `ip`=? LIMIT 1");
-                    $pupdate2->execute(array($ssh2ip));
-                }
-                ssh2_exec($ssh2,'exit');
-                $connect_ssh2=null;
-                return $data;
-            } else {
-                $bad="The login data does not work";
-            }
-        } else {
-            $bad="Could not connect to Server";
-        }
-        if (isset($bad)) {
-            $notified++;
-            if (strpos(strtolower($ssh2cmd), "control.sh") !== false) {
-                $pupdate2=$sql->prepare("UPDATE `virtualhosts` SET `notified`=? WHERE `ip`=? LIMIT 1");
-                $pupdate2->execute(array($notified,$ssh2ip));
-            } else {
-                $pupdate2=$sql->prepare("UPDATE `rserverdata` SET `notified`=? WHERE `ip`=? LIMIT 1");
-                $pupdate2->execute(array($notified,$ssh2ip));
-            }
-        }
-        if (isset($bad) and ($bad=="Could not connect to Server" or $bad=="The login data does not work") and $notified==$down_checks) {
-            if ($resellerid==0) {
-                $query2=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`='0' AND `accounttype`='a'");
-                $query2->execute();
-            } else {
-                $query2=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR `resellerid`='0' AND `accounttype`='a'");
-                $query2->execute(array($resellerid));
-            }
-            foreach ($query2->fetchAll() as $row2) {
-                if ($row2['mail_serverdown']=='Y') {
-                    sendmail('emaildown',$row2['id'],$ssh2ip,'',$sql);
-                }
-            }
-        }
-        if (isset($bad)) {
-            return $bad;
-        }
-    }
-    function ssh2exec($serverid,$type,$aeskey,$ssh2cmd,$sql) {
-        $serverdata=serverdata($type,$serverid,$aeskey,$sql);
-        $notified=$serverdata['notified'];
-        $resellerid=$serverdata['resellerid'];
-        $ssh2ip=$serverdata['ip'];
-        global $rSA;
-        if ($serverdata['publickey']=="Y") {
-            $pubkey=EASYWIDIR."/keys/".$serverdata['keyname'].".pub";
-            $key=EASYWIDIR."/keys/".$serverdata['keyname'];
-            if (file_exists($pubkey) and file_exists($key)) $ssh2=@ssh2_connect($ssh2ip,$serverdata['port'],array('hostkey'=>'ssh-rsa'));
-        } else {
-            $ssh2=@ssh2_connect($ssh2ip,$serverdata['port']);
-        }
-        if (isset($ssh2) and $ssh2==true) {
-            if ($serverdata['publickey']=="Y") {
-                $connect_ssh2= @ssh2_auth_pubkey_file($ssh2, $serverdata['user'], $pubkey, $key);
-            } else {
-                $connect_ssh2= @ssh2_auth_password($ssh2, $serverdata['user'], $serverdata['pass']);
-            }
-            if ($connect_ssh2==true) {
-                $shell = ssh2_exec($ssh2, $ssh2cmd);
-                stream_set_blocking($shell, true);
-                $data = '';
-                while($buffer = fread($shell,4096)){
-                    $data .= $buffer;
-                }
-                fclose($shell);
-                ssh2_exec($ssh2,'exit');
-                if ($notified>0) {
-                    if ($type=="root") {
-                        $query=$sql->prepare("UPDATE `rserverdata` SET `notified`='0' WHERE `id`=? LIMIT 1");
-                    } else if ($type=="virtualhost") {
-                        $query=$sql->prepare("UPDATE `virtualhosts` SET `notified`='0' WHERE `id`=? LIMIT 1");
-                    } else if ($type=="dhcp") {
-                        $query=$sql->prepare("UPDATE `dhcpdata` SET `notified`='0' WHERE `id`=? LIMIT 1");
-                    } else if ($type=="eac") {
-                        $query=$sql->prepare("UPDATE `eac` SET `notified`='0' WHERE `resellerid`=? LIMIT 1");
-                    }
-                    $query->execute(array($serverid));
-                }
-                return $data;
-            } else {
-                $bad="The login data does not work";
-            }
-        } else {
-            $bad="Could not connect to Server";
-        }
-        if (isset($bad)) {
-            $notified++;
-            if ($type=="root") {
-                $query=$sql->prepare("UPDATE `rserverdata` SET `notified`=? WHERE `id`=? LIMIT 1");
-            } else if ($type=="virtualhost") {
-                $query=$sql->prepare("UPDATE `virtualhosts` SET `notified`=? WHERE `id`=? LIMIT 1");
-            } else if ($type=="dhcp") {
-                $query=$sql->prepare("UPDATE `dhcpdata` SET `notified`=? WHERE `id`=? LIMIT 1");
-            } else if ($type=="eac") {
-                $query=$sql->prepare("UPDATE `eac` SET `notified`=? WHERE `resellerid`=? LIMIT 1");
-            }
-            $query->execute(array($notified,$serverid));
-        }
-        if (isset($bad) and ($bad=="Could not connect to Server" or $bad=="The login data does not work") and $notified==$rSA['down_checks']) {
-            if ($resellerid==0) {
-                $query=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`='0' AND `accounttype`='a'");
-                $query->execute();
-            } else {
-                $query=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`='0' AND `accounttype`='a')");
-                $query->execute(array($resellerid));
-            }
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                if ($row['mail_serverdown']=='Y') {
-                    sendmail('emaildown',$row['id'],$ssh2ip,'',$sql);
-                }
-            }
-        }
-        if (isset($bad)) return $bad;
-    }
-    function shell_server($ssh2ip,$ssh2port,$ssh2user,$ssh2pass,$suuser,$supass,$sucmd,$sql) {
-        $command=array();
-        $command[]="su -c '".$sucmd."' ".$suuser;
-        $command[]=$supass;
-        $command[]='exit';
-        $pselect=$sql->prepare("SELECT `id`,`publickey`,`keyname`,`notified`,`resellerid` FROM `rserverdata` WHERE `ip`=? LIMIT 1");
-        $pselect->execute(array($ssh2ip));
-        foreach ($pselect->fetchAll() as $row) {
-            $publickey=$row['publickey'];
-            $keyname=$row['keyname'];
-            $notified=$row['notified'];
-            $resellerid=$row['resellerid'];
-            $rootID=$row['id'];
-        }
-        $pselect=$sql->prepare("SELECT `down_checks` FROM `settings` WHERE `resellerid`=? LIMIT 1");
-        $pselect->execute(array($resellerid));
-        foreach ($pselect->fetchAll() as $row) {
-            $down_checks=$row['down_checks'];
-        }
-        if ($publickey=="Y") {
-            $pubkey="keys/".$keyname.".pub";
-            $key="keys/".$keyname;
-            $ssh2= @ssh2_connect($ssh2ip,$ssh2port,array('hostkey'=>'ssh-rsa'));
-        } else {
-            $ssh2= @ssh2_connect($ssh2ip,$ssh2port);
-        }
-        if ($ssh2==true) {
-            if ($publickey=="Y") {
-                $connect_ssh2= @ssh2_auth_pubkey_file($ssh2, $ssh2user, $pubkey, $key);
-            } else {
-                $connect_ssh2= @ssh2_auth_password($ssh2, $ssh2user, $ssh2pass);
-            }
-            if ($connect_ssh2==true) {
-                $data = '';
-                $shell = ssh2_shell($ssh2);
-                for($i=0; $i<count($command); $i++) {
-                    fwrite($shell, $command[$i] . PHP_EOL);
-                    #usleep(500000);
-                    sleep(1);
-                    while($buffer = fgets($shell)) {
-                        flush();
-                        $data .= $buffer;
-                    }
-                }
-                #usleep(500000);
-                sleep(1);
-                fclose($shell);
-                if ($notified>0) {
-                    $pupdate2=$sql->prepare("UPDATE `rserverdata` SET `notified`='0' WHERE `ip`=? LIMIT 1");
-                    $pupdate2->execute(array($ssh2ip));
-                }
-                return '';
-            } else {
-                $bad="The login data does not work";
-            }
-        } else {
-            $bad="Could not connect to Server";
-        }
-        if (isset($bad)) {
-            $notified++;
-            $pupdate2=$sql->prepare("UPDATE `rserverdata` SET `notified`=? WHERE `id`=? LIMIT 1");
-            $pupdate2->execute(array($notified,$rootID));
-        }
-        if (isset($bad) and ($bad=="Could not connect to Server" or $bad=="The login data does not work") and $down_checks==$notified) {
-            if ($resellerid==0) {
-                $query2=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`='0' AND `accounttype`='a'");
-                $query2->execute();
-            } else {
-                $query2=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`='0' AND `accounttype`='a')");
-                $query2->execute(array($resellerid));
-            }
-            foreach ($query2->fetchAll() as $row2) {
-                if ($row2['mail_serverdown']=='Y') {
-                    sendmail('emaildown',$row2['id'],$ssh2ip,'',$sql);
-                }
-            }
-        }
-        if (isset($bad)) {
-            return $bad;
-        }
     }
 }

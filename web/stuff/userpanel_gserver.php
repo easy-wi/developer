@@ -101,15 +101,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];
             $sshpass=$rdata['pass'];
+            $cmds=array();
             if ($ui->active('type','post')=='Y') {
-                ssh2exec($rootID,'root',$aeskey,"./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10),$sql);
-                $sshcmd="./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
+                $cmds[]="./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10);
+                $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
                 $loguseraction="%reinstall% %gserver% ${serverip}:${port}";
             } else {
-                $sshcmd="./control.sh addserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
+                $cmds[]="sudo -u ${customer} ./control.sh addserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
                 $loguseraction="%resync% %gserver% ${serverip}:${port}";
             }
-            shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,$sshcmd,$sql);
+            ssh2_execute('gs',$rootID,$cmds);
             $template_file=$sprache->server_installed;
             $insertlog->execute();
         } else {

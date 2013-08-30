@@ -93,13 +93,9 @@ if ($ui->st('d','get')=='ud' and $ui->id('id',19,'get') and (!isset($_SESSION['s
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];
             $sshpass=$rdata['pass'];
-            if ($row['newlayout']=='Y') {
-                $customer=$customer.'-'.$serverid;
-            }
+            if ($row['newlayout']=='Y') $customer=$customer.'-'.$serverid;
             $serverfolder=$serverip."_"."$port/$shorten$servertemplate";
-            $sshcmd="screen -dmS $port.sync ./control.sh fastdl $customer $serverfolder \"$ftpupload\" $modfolder";
-            $reply=shell_server($sship,$sshport,$sshuser,$sshpass,$customer,$ftppass,$sshcmd,$sql);
-            if($reply=="Could not connect to Server" or $reply=="The login data does not work") {
+            if(ssh2_execute('gs',$rootid,"sudo -u ${customer} screen -dmS $port.sync ./control.sh fastdl $customer $serverfolder \"$ftpupload\" $modfolder")===false) {
                 $template_file=$spracheResponse->error_server;
                 $actionstatus="fail";
             } else {
