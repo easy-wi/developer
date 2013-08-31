@@ -52,6 +52,9 @@ if (isset($include) and $include==true) {
 Easy-WI ist mit der Version 4.0 Open Source. Lizenz ist die GNU GPL v3. Das Upgrade von früheren Versionen auf 4.0 liefert auf Grund von Ioncube Restriktionen noch verschlüsselte Dateien aus.
 Die Dateien können jederzeit durch quelloffene ersetzt werden. Die GNU GPL v3 lizensierte Version hat den Funktionsumfang der früheren unbegrenzten gewerblichen Version.
 </p>
+<p>
+Die bearbeiteten Entwickler Tickets können in unserem <a href=\"https://github.com/easy-wi/developer/issues?milestone=1&page=1&state=closed\">Github Repository</a> eingesehen werden.
+</p>
 <ul>
 <li>Generell:
 <ul>
@@ -94,7 +97,7 @@ Easy-WI becomes open source with version 4.0. License is GNU GPL v3. An upgrade 
 All files can be replaced by unencrypted files. The GNU GPL v3 licensed version has the same functions as the previous unlimited commercial version.
 </p>
 <p>
-All processed developer tickets can be seen at <a href=\"'https://github.com/easy-wi/developer/issues?milestone=1&page=1&state=closed\">our github repository</a>
+All processed developer tickets can be seen at <a href=\"https://github.com/easy-wi/developer/issues?milestone=1&page=1&state=closed\">our github repository</a>
 </p>
 <b>Changes:</b><br/>
 <ul>
