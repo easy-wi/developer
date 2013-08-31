@@ -51,9 +51,7 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller=0;
 }
-if ($reseller_id!=0 and $admin_id!=$reseller_id) {
-	$reseller_id=$admin_id;
-}
+if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->st('d','get')=='ad' and $reseller_id==0) {
@@ -299,8 +297,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $query2->execute(array($id,$reseller_id));
 			foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 if ($row2['active']=='N' or $row2['stopped']=='Y') $gsStatus=2;
-                else if ($row2['active']=='Y' and $row2['stopped']=='N' and $row2['queryName']!='OFFLINE') $gsStatus=3;
-                else $gsStatus=1;
+                else if ($row2['active']=='Y' and $row2['stopped']=='N' and $row2['queryName']!='OFFLINE') $gsStatus=1;
+                else $gsStatus=3;
                 $gs[]=array('id'=>$row2['id'],'address'=>$row2['address'],'shorten'=>$row2['shorten'],'name'=>$row2['queryName'],'status'=>$gsStatus);
                 $used+=$row2['queryNumplayers'];
                 $available+=$row2['slots'];
@@ -319,7 +317,6 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$table[]=array('id'=>$id,'names'=>$names,'deleteAllowed'=>$deleteAllowed,'img'=>$imgName,'alt'=>$imgAlt,'ip'=>$row['ip'],'active'=>$row['active'],'os'=>$row['os'],'bit'=>$row['bitversion'],'description'=>$row['description'],'used'=>$used,'max'=>$available,'maxslots'=>$maxslots,'maxserver'=>$maxserver,'installedserver'=>$i,'server'=>$gs);
 		}
 		$next=$start+$amount;
-        $colcount=$query->fetchColumn();
         $vor=($colcount>$next) ? $start+$amount : $start;
         $back=$start-$amount;
         $zur=($back>=0) ? $start-$amount : $start;

@@ -44,7 +44,7 @@
             </thead>
             <tbody>
             <?php foreach ($table as $table_row) { ?>
-            <tr>
+            <tr class="<?php if($table_row['img']=='16_ok') echo 'success'; else if($table_row['img']=='16_bad') echo 'warning'; else echo 'error';?>">
                 <td><?php echo $table_row['server'];?></td>
                 <td><?php echo $table_row['id'];?></td>
                 <td><?php echo $table_row['virtualID'];?></td>

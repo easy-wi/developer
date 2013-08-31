@@ -79,7 +79,6 @@ if (!function_exists('ssh2_execute')) {
                 } else {
                     $error=true;
                 }
-                print_r($rSA['down_checks']);
                 if (isset($error)) $notified++;
                 else $notified=0;
                 if ($notified==$rSA['down_checks']) {

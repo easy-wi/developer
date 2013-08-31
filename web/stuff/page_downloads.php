@@ -137,9 +137,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $extension=$exploded[count($exploded)-1];
                 if(isset($allowedTypes[$extension]) and ((is_array($allowedTypes[$extension]) and in_array($_FILES["upload"]["type"],$allowedTypes[$extension])) or (!is_array($allowedTypes[$extension]) and $_FILES["upload"]["type"]==$allowedTypes[$extension])) ) {
                     if (move_uploaded_file($_FILES["upload"]["tmp_name"],EASYWIDIR.'/downloads/'.$id.'.'.$extension)) {
+                        $changed=true;
                         $query=$sql->prepare("UPDATE `page_downloads` SET `fileExtension`=? WHERE `fileID`=? AND `resellerID`=?");
                         $query->execute(array($extension,$id,$reseller_id));
-                        if($query->rowCount()>0) $changed=true;
                     }
                 }
             }

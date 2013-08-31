@@ -64,9 +64,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
         $table=array();
         $query=$sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table[$row['id']]=trim($row['cname'].' '.$row['vname'].' '.$row['name']);
-        }
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[$row['id']]=trim($row['cname'].' '.$row['vname'].' '.$row['name']);
         $table2=array();
         $query=$sql->prepare("SELECT m.`id`,m.`ssh2ip`,m.`ips`,m.`usedns`,m.`defaultdns`,m.`type`,m.`rootid`,m.`maxserver`,m.`maxslots`,m.`active`,m.`resellerid`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND `active`='Y' AND `resellerid`=?) ORDER BY `slotpercent`,`serverpercent` ASC");
         $query->execute(array($reseller_id));

@@ -35,19 +35,17 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main!=1) or $reseller_id!=0 or !$pa['updateEW']) redirect('admin.php');
+if ((!isset($admin_id) or $main!=1) or $reseller_id!=0 or !$pa['updateEW']) {
+    header('Location: admin.php');
+    die;
+}
 $loguserid=$admin_id;
 $logusername=getusername($admin_id,$sql);
 $sprache=getlanguagefile('licence',$user_language,$reseller_id,$sql);
 $logusertype="admin";
 $logreseller=0;
 $logsubuser=0;
-if ($ui->st('d','get')=='ud' and $reseller_id=='0' and $pa['updateEW'] and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
-	if (version_compare(PHP_VERSION,'5.3.0')>=0) {
-		$phpversion=53;
-	} else {
-		$phpversion=5;
-	}
+if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
 	if (isset($action) and $action=='ud') {
 		$updateinclude=true;
 		class UpdateResponse {
@@ -93,15 +91,15 @@ if ($ui->st('d','get')=='ud' and $reseller_id=='0' and $pa['updateEW'] and ($ewV
 		if (is_dir(EASYWIDIR.'/tmp')) {
 			$response->add('Creating tempfolder <b>tmp/</b>');
 			$opts=stream_context_create(array('http'=>array('method'=>'GET','header'=>"Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
-			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'/'.$phpversion.'.zip','rb',false,$opts);
-			$zip=@fopen(EASYWIDIR.'/tmp/'.$phpversion.'.zip','wb');
+			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'.zip','rb',false,$opts);
+			$zip=@fopen(EASYWIDIR.'/tmp/'.$licenceDetails['v'].'.zip','wb');
 			if ($fp==true and $zip==true) {
 				while (!feof($fp)){
 					fwrite($zip,fread($fp,8192));
 				}
 				fclose($fp);
 				fclose($zip);
-				$zo=@zip_open(EASYWIDIR.'/tmp/'.$phpversion.'.zip');
+				$zo=@zip_open(EASYWIDIR.'/tmp/'.$licenceDetails['v'].'.zip');
 				if (is_resource($zo)) {
 					while ($ze=zip_read($zo)) {
 						$name=zip_entry_name($ze);
@@ -142,16 +140,14 @@ if ($ui->st('d','get')=='ud' and $reseller_id=='0' and $pa['updateEW'] and ($ewV
 					}
 					zip_close($zo);
 				} else {
-					$response->addError('Cannot open the update archive <b>'.$phpversion.'.zip</b>');
+					$response->addError('Cannot open the update archive <b>'.$licenceDetails['v'].'.zip</b>');
 				}
                 $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
                 if (!isset($alreadyRepaired)) {
                     $response->add('Adding tables if needed.');
                     include(EASYWIDIR.'/stuff/tables_add.php');
                 }
-				if ($ewVersions['cVersion']<$ewVersions['version']) {
-					include(EASYWIDIR.'/install/update.php');
-				}
+				if ($ewVersions['cVersion']<$ewVersions['version']) include(EASYWIDIR.'/install/update.php');
                 if (!isset($alreadyRepaired)) {
                     $response->add('Repairing tables if needed.');
                     include(EASYWIDIR.'/stuff/tables_repair.php');
@@ -164,7 +160,7 @@ if ($ui->st('d','get')=='ud' and $reseller_id=='0' and $pa['updateEW'] and ($ewV
 				if ($c!='.' and $c!='..') rmr(EASYWIDIR.'/tmp/'.$c);
 			}
             rmr(EASYWIDIR.'/install/');
-			if (is_file(EASYWIDIR.'/tmp/'.$phpversion.'.zip')) $response->addError('Cannot remove the content from tempfolder <b>tmp/</b>');
+			if (is_file(EASYWIDIR.'/tmp/'.$licenceDetails['v'].'.zip')) $response->addError('Cannot remove the content from tempfolder <b>tmp/</b>');
 			else $response->add('Removed temporary files from tempfolder');
 		} else {
 			$response->addError('Cannot create the tempfolder <b>tmp/</b>');
@@ -173,9 +169,7 @@ if ($ui->st('d','get')=='ud' and $reseller_id=='0' and $pa['updateEW'] and ($ewV
 		if (isset($template_file)) $template_file.=' <br/>'.implode('<br />',$response->printresponse());
         else $template_file=$response->printresponse();
 	} else {
-        if (isset($ewVersions)) {
-            $template_file='admin_versioncheck_ud.tpl';
-        }
+        if (isset($ewVersions)) $template_file='admin_versioncheck_ud.tpl';
 	}
 } else {
 	$table=array();
@@ -190,15 +184,9 @@ if ($ui->st('d','get')=='ud' and $reseller_id=='0' and $pa['updateEW'] and ($ewV
 	$query=$sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
 	$query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		if ($row["$column"]!=null and $row["$column"]!='') {
-			$table[]=array('version'=>$row['version'],'text'=>$row["$column"]);
-		}
+		if ($row["$column"]!=null and $row["$column"]!='') $table[]=array('version'=>$row['version'],'text'=>$row["$column"]);
 	}
-	if ($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW']==true) {
-		$update='<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>';
-	} else {
-		$update='';
-	}
+    $update=($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW']==true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
 	if ($ewVersions['cVersion']<$ewVersions['version']) {
         $state=1;
 		$class='versioncheckbad';

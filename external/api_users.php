@@ -1,29 +1,41 @@
-<?php 
+<?php
 /**
  * File: api_users.php.
  * Author: Ulrich Block
- * Copyright 2010-2013
- * Contact: support@easy-wi.com
- * Page: easy-wi.com
+ * Contact: <ulrich.block@easy-wi.com>
+ *
+ * This file is part of Easy-WI.
+ *
+ * Easy-WI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Easy-WI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Easy-WI.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Diese Datei ist Teil von Easy-WI.
+ *
+ * Easy-WI ist Freie Software: Sie koennen es unter den Bedingungen
+ * der GNU General Public License, wie von der Free Software Foundation,
+ * Version 3 der Lizenz oder (nach Ihrer Wahl) jeder spaeteren
+ * veroeffentlichten Version, weiterverbreiten und/oder modifizieren.
+ *
+ * Easy-WI wird in der Hoffnung, dass es nuetzlich sein wird, aber
+ * OHNE JEDE GEWAEHELEISTUNG, bereitgestellt; sogar ohne die implizite
+ * Gewaehrleistung der MARKTFAEHIGKEIT oder EIGNUNG FUER EINEN BESTIMMTEN ZWECK.
+ * Siehe die GNU General Public License fuer weitere Details.
+ *
+ * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
+ * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
- 
-// Configuring the API. Should be placed in another file and included
- 
-// The database access
-$config['dbHost']='localhost';
-$config['dbName']='database';
-$config['dbUser']='databaseUser';
-$config['dbPwd']='securePassword';
-$config['sourceSystem']='securePassword';
- 
-// Access to the file 
-$config['passwordToken']='myPasswordToken';
-$config['allowedIPs']=array('1.1.1.1','1.1.1.2');
 
-// Type of System allowed are:
-// webspell,teklab
-$config['sourceType']='teklab';
-
+require_once 'api_config.php';
  
 // Initial parameters
 $error=array();
@@ -32,9 +44,9 @@ $error=array();
 // Start looking only for new IDs
 $lastID=(isset($_GET['lastID']) and is_numeric($_GET['lastID'])) ? (int)$_GET['lastID'] : 0;
  
-// this requieres that a column exists which is updated every time the account gets an update:
+// this requires that a column exists which is updated every time the account gets an update:
 // ALTER TABLE `yourUserTable` ADD COLUMN `updatetime` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-// This might lead to false posivives if data like the logintime is stored in that table.
+// This might lead to false positives if data like the login time is stored in that table.
 // The more accurate way would be to fill/update the column only in wanted cases
 // convert to string and back to date so proper format is ensured
 $updateTime=date('Y-m-d H:i:s',strtotime((isset($_GET['updateTime']) and @strtotime($_GET['updateTime'])) ? $_GET['updateTime'] : '0000-00-00 00:00:00'));
@@ -45,11 +57,11 @@ $chunkSize=(isset($_GET['chunkSize']) and is_numeric($_GET['chunkSize'])) ? (int
 // To be able to properly get data in chunks the starting point needs to be defined.
 $start=(isset($_GET['start']) and is_numeric($_GET['start'])) ? (int)$_GET['start'] : 0;
  
-// Check if the IP is whitelisted
+// Check if the IP is white listed
 if(isset($_SERVER['REMOTE_ADDR']) and in_array($_SERVER['REMOTE_ADDR'],$config['allowedIPs'])) {
 	$config['externalIP']=(string)$_SERVER['REMOTE_ADDR'];
 } else {
-	$error[]='Scipt called locally or IP is not whitelisted.';
+	$error[]='Script called locally or IP is not white listed.';
 }
  
 // Check if access token was send and is correct

@@ -43,7 +43,7 @@
             </thead>
             <tbody>
             <?php foreach ($table as $table_row) { ?>
-            <tr>
+            <tr class="<?php if($table_row['img']=='16_ok') echo 'success'; else if($table_row['img']=='16_bad') echo 'warning'; else echo 'error';?>">
                 <td><img src="images/games/icons/<?php echo $table_row['shorten'];?>.png" alt="<?php echo $table_row['shorten'];?>" width="16"/> <?php echo $table_row['server'];?><?php echo $table_row['premoved']." ".$table_row['nameremoved'];?></td>
                 <td><?php echo $table_row['serverid'];?></td>
                 <td><i class="<?php if($table_row['img']=='16_ok') echo 'icon-ok'; else if($table_row['img']=='16_bad') echo 'icon-stop'; else echo 'icon-warning-sign';?>"></i></td>

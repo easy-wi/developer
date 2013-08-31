@@ -1105,6 +1105,13 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
         $orderby='g.`serverip` ASC,g.`port` ASC';
         $o='as';
     }
+    $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `resellerid`=?");
+    $query->execute(array($reseller_id));
+    $colcount=$query->fetchColumn();
+    if ($start>$colcount) {
+        $start=$colcount-$amount;
+        if ($start<0)$start=0;
+    }
     $query=$sql->prepare("SELECT g.*,CONCAT(g.`serverip`,':',g.`port`) AS `server`,t.`shorten`,u.`cname`,u.`name`,u.`vname`,u.`active` AS `useractive` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($reseller_id));
     $table = array();
@@ -1173,40 +1180,15 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
         $table[]=array('serveractive'=>$serveractive,'shorten'=>$row['shorten'],'useractive'=>$row['useractive'],'cname'=>$row['cname'],'names'=>trim($row['name'].' '.$row['vname']),'img'=>$imgName,'alt'=>$imgAlt,'premoved'=>$premoved,'nameremoved'=>$nameremoved,'server'=>$server,'serverid'=>$serverid,'name'=>$name,'type'=>$type,'map'=>$map,'numplayers'=>$numplayers,'maxplayers'=>$maxplayers,'id'=>$userid,'lendserver'=>$lendserver,'active'=>$row['active'],'jobPending'=>$jobPending);
     }
     $next=$start+$amount;
-    $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `resellerid`=?");
-    $query->execute(array($reseller_id));
-    $colcount=$query->fetchColumn();
-    if ($colcount>$next) {
-        $vor=$start+$amount;
-    } else {
-        $vor=$start;
-    }
+    $vor=($colcount>$next) ? $start+$amount : $start;
     $back=$start-$amount;
-    if ($back>=0){
-        $zur=$start-$amount;
-    } else {
-        $zur=$start;
-    }
+    $zur=($back>=0) ? $start-$amount : $start;
     $pageamount=ceil($colcount/$amount);
-    $link='<a href="admin.php?w=gs&amp;d=md&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
-        $amount=20;
-    }
-    $link .=$amount;
-    if ($start==0) {
-        $link .='&amp;p=0" class="bold">1</a>';
-    } else {
-        $link .='&amp;p=0">1</a>';
-    }
-    $pages[]=$link;
+    $pages[]='<a href="admin.php?w=gs&amp;d=md&amp;a=' . (!isset($amount)) ? 20 : $amount . ($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
     $i=2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
-        if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=gs&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
-        } else {
-            $pages[]='<a href="admin.php?w=gs&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
-        }
+        $pages[]=($start==$selectpage) ? '<a href="admin.php?w=gs&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>' : '<a href="admin.php?w=ro&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
         $i++;
     }
     $pages=implode(', ',$pages);
