@@ -42,7 +42,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['gserver'])) {
 $sprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
 $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $loguserid=$admin_id;
-$logusername=getusername($admin_id,$sql);
+$logusername=getusername($admin_id);
 $logusertype="admin";
 $aeskey=$aesfilecvar['aeskey'];
 if ($reseller_id==0) {
@@ -348,7 +348,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
                 include(EASYWIDIR.'/stuff/ssh_exec.php');
                 $gamestring=array();
                 $template_file='';
-                $rdata=serverdata('root',$serverid,$aeskey,$sql);
+                $rdata=serverdata('root',$serverid,$aeskey);
                 $sship=$rdata['ip'];
                 $sshport=$rdata['port'];
                 $sshuser=$rdata['user'];
@@ -549,7 +549,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
         $query=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userID));
         $customer2=$query->fetchColumn();
-        $rdata=serverdata('root',$rootID,$aeskey,$sql);
+        $rdata=serverdata('root',$rootID,$aeskey);
         $sship=$rdata['ip'];
         $sshport=$rdata['port'];
         $sshuser=$rdata['user'];
@@ -613,8 +613,8 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
                 $query->execute(array($row['id'],$server_id,$reseller_id));
             }
         } else {
-            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="sudo -u $server_customer screen -dmS delscreen-$server_customer ./control.sh delscreen $server_customer" ;
-            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="sudo -u $server_customer-p screen -dmS delscreen-$server_customer-p ./control.sh delscreen $server_customer-p";
+            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="sudo -u $server_customer ./control.sh delscreen $server_customer" ;
+            if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="sudo -u $server_customer-p ./control.sh delscreen $server_customer-p";
             if ($ui->w('safeDelete',1,'post')!='D') $cmds[]="./control.sh delCustomer $server_customer";
             $template_file=$sprache->no_server_left;
         }
@@ -815,7 +815,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
                     $server_customer=$server_customer.'-'.$server_id;
                 }
             }
-            $rdata=serverdata('root',$rootID,$aeskey,$sql);
+            $rdata=serverdata('root',$rootID,$aeskey);
             $sship=$rdata['ip'];
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];
@@ -1018,7 +1018,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
         if (count($gamestring)>0 and $ui->active('type','post')) {
             include(EASYWIDIR.'/stuff/ssh_exec.php');
             $gamestring=count($gamestring).'_'.implode('_',$gamestring);
-            $rdata=serverdata('root',$serverid,$aeskey,$sql);
+            $rdata=serverdata('root',$serverid,$aeskey);
             $sship=$rdata['ip'];
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];

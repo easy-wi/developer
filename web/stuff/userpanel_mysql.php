@@ -40,7 +40,7 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['mysql'])) {
 }
 $sprache=getlanguagefile('mysql',$user_language,$reseller_id,$sql);
 $loguserid=$user_id;
-$logusername=getusername($user_id,$sql);
+$logusername=getusername($user_id);
 $logusertype="user";
 $logreseller=0;
 $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");

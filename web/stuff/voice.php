@@ -40,7 +40,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver']
 }
 $sprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
 $loguserid=$admin_id;
-$logusername=getusername($admin_id,$sql);
+$logusername=getusername($admin_id);
 $logusertype="admin";
 if ($reseller_id==0) {
 	$logreseller=0;
@@ -315,7 +315,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
                 if ($active=='N') {
                     $connection->StopServer($virtualserver_id);
                 }
-                $username=strtolower(getusername($customer,$sql));
+                $username=strtolower(getusername($customer));
                 $connection->CloseConnection();
                 $pinsert=$sql->prepare("INSERT INTO `voice_server` (`active`,`backup`,`lendserver`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`dns`,`maxtraffic`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?)");
                 $pinsert->execute(array($active,$backup,$lendserver,$customer,$masterserver,$ip,$port,$slots,$initialpassword,$password,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$max_download_total_bandwidth,$max_upload_total_bandwidth,$virtualserver_id,$dns,$maxtraffic,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$autoRestart,$ui->w('externalID',255,'post'),$reseller_id));

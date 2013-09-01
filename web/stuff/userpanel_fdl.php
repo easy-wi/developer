@@ -40,7 +40,7 @@ if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !$pa['fastdl']))
 }
 $sprache=getlanguagefile('fastdl',$user_language,$reseller_id,$sql);
 $loguserid=$user_id;
-$logusername=getusername($user_id,$sql);
+$logusername=getusername($user_id);
 $logusertype="user";
 $logreseller=0;
 if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) {
@@ -88,14 +88,14 @@ if ($ui->st('d','get')=='ud' and $ui->id('id',19,'get') and (!isset($_SESSION['s
         }
         if ($ftpupload!="") {
             include(EASYWIDIR."/stuff/ssh_exec.php");
-            $rdata=serverdata('root',$rootid,$aeskey,$sql);
+            $rdata=serverdata('root',$rootid,$aeskey);
             $sship=$rdata['ip'];
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];
             $sshpass=$rdata['pass'];
             if ($row['newlayout']=='Y') $customer=$customer.'-'.$serverid;
             $serverfolder=$serverip."_"."$port/$shorten$servertemplate";
-            if(ssh2_execute('gs',$rootid,"sudo -u ${customer} screen -dmS $port.sync ./control.sh fastdl $customer $serverfolder \"$ftpupload\" $modfolder")===false) {
+            if(ssh2_execute('gs',$rootid,"sudo -u ${customer} ./control.sh fastdl ${customer} ${serverfolder} \"${ftpupload}\" ${modfolder}")===false) {
                 $template_file=$spracheResponse->error_server;
                 $actionstatus="fail";
             } else {

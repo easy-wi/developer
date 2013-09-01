@@ -43,7 +43,7 @@ $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $aeskey=$aesfilecvar['aeskey'];
 $sprache=getlanguagefile('roots',$user_language,$reseller_id,$sql);
 $loguserid=$admin_id;
-$logusername=getusername($admin_id,$sql);
+$logusername=getusername($admin_id);
 $logusertype="admin";
 if ($reseller_id==0) {
 	$logreseller=0;
@@ -113,7 +113,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     if ($ui->smallletters('action',2,'post')=='dl'){
         include(EASYWIDIR.'/stuff/ssh_exec.php');
         $serverid=$ui->id('id',19,'get');
-        $rdata=serverdata('root',$serverid,$aeskey,$sql);
+        $rdata=serverdata('root',$serverid,$aeskey);
         $sship=$rdata['ip'];
         $sshport=$rdata['port'];
         $sshuser=$rdata['user'];
@@ -218,7 +218,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
         if (count($sshcheck)>0) {
-            $serverdata=serverdata('root',$id,$aeskey,$sql);
+            $serverdata=serverdata('root',$id,$aeskey);
             $ip=$serverdata['ip'];
             $user=$serverdata['user'];
             $port=$serverdata['port'];

@@ -58,7 +58,7 @@ if (isset($server_id)) {
             $user_id=$row['id'];
 		}
 	} else {
-		$username=getusername($user_id,$sql);
+		$username=getusername($user_id);
 	}
     $query=$sql->prepare("SELECT g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `decryptedftppass`,s.`servertemplate`,t.`binarydir`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey,$aeskey,$server_id,$user_id,$reseller_id));

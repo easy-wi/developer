@@ -13,8 +13,6 @@
             <input type="hidden" name="token" value="<?php echo token();?>">
             <div class="row-fluid">
                 <dl class="dl-horizontal">
-                    <dt><?php echo $sprache->interface;?></dt>
-                    <dd><a href="<?php echo $interface;?>" target="_blank"><?php echo $interface;?></a></dd>
                     <dt>IP</dt>
                     <dd><?php echo $ip;?></dd>
                     <dt>Port</dt>
@@ -23,6 +21,8 @@
                     <dd><?php echo $dbname;?></dd>
                     <dt><?php echo $sprache->dbname;?></dt>
                     <dd><?php echo $dbname;?></dd>
+                    <dt><?php echo $sprache->interface;?></dt>
+                    <dd><a href="<?php echo $interface;?>" target="_blank"><?php echo $interface;?></a></dd>
                 </dl>
             </div>
             <div class="control-group">

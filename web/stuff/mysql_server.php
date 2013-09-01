@@ -44,7 +44,7 @@ $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $aeskey=$aesfilecvar['aeskey'];
 $sprache=getlanguagefile('mysql',$user_language,$reseller_id,$sql);
 $loguserid=$admin_id;
-$logusername=getusername($admin_id,$sql);
+$logusername=getusername($admin_id);
 $logusertype="admin";
 if ($reseller_id==0) {
 	$logreseller=0;
@@ -62,7 +62,7 @@ if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
-} else if ($ui->st('d','get')=='ms' and !$ui->id('id','30','get') and $pa['mysql_settings']) {
+} else if ($ui->st('d','get')=='ms' and !$ui->id('id',10,'get') and $pa['mysql_settings']) {
     $o=$ui->st('o','get');
 	if ($ui->st('o','get')=='ap') {
 		$orderby='`ip` ASC';
@@ -120,9 +120,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 	}
 	$pages=implode(', ',$pages);
 	$template_file="admin_mysql_server_list.tpl";
-} else if ($ui->st('d','get')=='ds' and $ui->id('id','30','get') and $pa['mysql_settings']) {
-    if ($ui->smallletters('action',2,'post')=='dl') {
-        $id=$ui->id('id','30','get');
+} else if ($ui->st('d','get')=='ds' and $ui->id('id',10,'get') and $pa['mysql_settings']) {
+    if ($ui->st('action','post')=='dl') {
+        $id=$ui->id('id',10,'get');
         $pselect=$sql->prepare("SELECT `ip` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
@@ -136,7 +136,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $loguseraction="%del% MYSQL Server $ip";
         $insertlog->execute();
     } else {
-        $id=$ui->id('id','30','get');
+        $id=$ui->id('id',10,'get');
         $pselect=$sql->prepare("SELECT `ip`,`interface` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
@@ -145,9 +145,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $template_file="admin_mysql_server_dl.tpl";
     }
-} else if ($ui->st('d','get')=='ms' and $ui->id('id','30','get') and $pa['mysql_settings']) {
-    if (!isset($action)) {
-        $id=$ui->id('id','30','get');
+} else if ($ui->st('d','get')=='ms' and $ui->id('id',10,'get') and $pa['mysql_settings']) {
+    if (!$ui->st('action','post')) {
+        $id=$ui->id('id',10,'get');
         $pselect=$sql->prepare("SELECT `active`,`ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($aeskey,$id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
@@ -164,7 +164,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $max_userconnections_per_hour=$row['max_userconnections_per_hour'];
         }
         $template_file="admin_mysql_server_md.tpl";
-	} else if ($action=='md') {
+	} else if ($ui->st('action','post')=='md') {
         $errors=array();
         if (!$ui->ip('ip','post')) $errors[]='IP';
         if (!$ui->port('port','post')) $errors[]='Port';
@@ -173,7 +173,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (count($errors)>0) {
             $template_file='Error(s): '.implode(', '.$errors);
 		} else {
-            $id=$ui->id('id','30','get');
+            $id=$ui->id('id',10,'get');
 			$active=$ui->active('active','post');
 			$ip=$ui->ip('ip','post');
 			$port=$ui->port('port','post');
@@ -193,9 +193,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		}
 	}
 } else if ($ui->st('d','get')=='as' and $pa['mysql']) {
-	if (!$ui->smallletters('action',2,'post')) {
+	if (!$ui->st('action','post')) {
 		$template_file="admin_mysql_server_add.tpl";
-	} else if ($ui->smallletters('action',2,'post')=='ad'){
+	} else if ($ui->st('action','post')=='ad'){
         $errors=array();
         if (!$ui->ip('ip','post')) $errors[]='IP';
         if (!$ui->port('port','post')) $errors[]='Port';
@@ -204,7 +204,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (count($errors)>0) {
             $template_file='Error(s): '.implode(', '.$errors);
         } else {
-            $id=$ui->id('id','30','get');
+            $id=$ui->id('id',10,'get');
             $active=$ui->active('active','post');
             $ip=$ui->ip('ip','post');
             $port=$ui->port('port','post');
@@ -224,7 +224,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		}
 	}	
 } else if ($ui->st('d','get')=='ad' and $pa['mysql']) {
-	if (!$ui->smallletters('action',2,'post')) {
+	if (!$ui->st('action','post')) {
 		$table=array();
 		$table2=array();
 		$password=passwordgenerate(20);
@@ -255,15 +255,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$max_userconnections_per_hour=0;
 		}
 		$template_file="admin_mysql_db_add.tpl";
-	} else if ($ui->smallletters('action',2,'post')=='ad' and $ui->password('password',40,'post') and $ui->id('serverid',30,'post') and $ui->id('userid',30,'post') and $ui->active('active','post')) {
+	} else if ($ui->st('action','post')=='ad' and $ui->id('serverid',10,'post') and $ui->id('userid',10,'post')) {
         $errors=array();
         if (!$ui->active('active','post')) $errors[]=$sprache->active;
         if (!$ui->password('password',40,'post')) $errors[]=$sprache->password;
         if (count($errors)>0) {
             $template_file="Error: ".implode('<br>',$errors);
         } else {
-            $sid=$ui->id('serverid',30,'post');
-            $uid=$ui->id('userid',30,'post');
+            $sid=$ui->id('serverid',10,'post');
+            $uid=$ui->id('userid',10,'post');
             $active=$ui->active('active','post');
             $password=$ui->password('password',40,'post');
             $ips=$ui->ips('ips','post');
@@ -274,11 +274,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $max_updates_per_hour=($ui->id('max_updates_per_hour',255,'post')) ? $ui->id('max_updates_per_hour',255,'post') : 0;
             $max_connections_per_hour=($ui->id('max_connections_per_hour',255,'post')) ? $ui->id('max_connections_per_hour',255,'post') : 0;
             $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255,'post')) ? $ui->id('max_userconnections_per_hour',255,'post') : 0;
-            $dbname=$cname.'_'.$password;
 
             #https://github.com/easy-wi/developer/issues/42 column description added
-            $query=$sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`dbname`,`description`,`password`,`ips`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?)");
-            $query->execute(array($active,$sid,$uid,$dbname,$ui->names('description',255,'post'),$password,$aeskey,$ips,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$reseller_id));
+            $query=$sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`description`,`password`,`ips`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?)");
+            $query->execute(array($active,$sid,$uid,$ui->names('description',255,'post'),$password,$aeskey,$ips,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$reseller_id));
             if ($active=='N') $password=passwordgenerate(20);
             $id=$sql->lastInsertId();
             $dbname=$cname.'-'.$id;
@@ -287,35 +286,35 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $strStart=$nameLength-16;
                 $dbname=substr($dbname,$strStart,$nameLength);
             }
-            $query3=$sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query3->execute(array($aeskey,$sid,$reseller_id));
-            foreach ($query3->fetchall(PDO::FETCH_ASSOC)  as $row3) {
-                $ip=$row3['ip'];
-                $port=$row3['port'];
-                $user=$row3['user'];
-                $pwd=$row3['decryptedpassword'];
+            $query=$sql->prepare("UPDATE `mysql_external_dbs` SET `dbname`=?,`password`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array($dbname,$password,$aeskey,$id,$reseller_id));
+            $query=$sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array($aeskey,$sid,$reseller_id));
+            foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+                $ip=$row['ip'];
+                $port=$row['port'];
+                $user=$row['user'];
+                $pwd=$row['decryptedpassword'];
             }
             $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
             if ($remotesql->error=='ok') {
                 $remotesql->AddDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
-                $pupdate=$sql->prepare("UPDATE `mysql_external_dbs` SET `dbname`=?,`password`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $pupdate->execute(array($dbname,$password,$aeskey,$id,$reseller_id));
                 customColumns('D',$id,'save');
                 $template_file=$spracheResponse->table_add;
                 $loguseraction="%add% MYSQL DB $dbname ($ip)";
                 $insertlog->execute();
             } else {
                 $template_file=$remotesql->error;
-                $pdelete=$sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $pdelete->execute(array($id,$reseller_id));
+                $query=$sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($id,$reseller_id));
             }
         }
 	} else {
-		$template_file='Error: '.$sprache->password;
+		$template_file='userpanel_404.tpl';
 	}
-} else if ($ui->st('d','get')=='md' and $ui->id('id','30','get') and $pa['mysql']) {
-    if (!isset($action)) {
-        $id=$ui->id('id','30','get');
+} else if ($ui->st('d','get')=='md' and $ui->id('id',10,'get') and $pa['mysql']) {
+    if (!$ui->st('action','post')) {
+        $id=$ui->id('id',10,'get');
         $query=$sql->prepare("SELECT e.*,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$id,$reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -345,15 +344,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $max_connections_per_hour=$row['max_connections_per_hour'];
             $max_userconnections_per_hour=$row['max_userconnections_per_hour'];
         }
-        $template_file="admin_mysql_db_md.tpl";
-    } else if ($action=='md') {
+        $template_file=(isset($active)) ? 'admin_mysql_db_md.tpl' : 'admin_404.tpl';
+    } else if ($ui->st('action','post')=='md') {
         $errors=array();
         if (!$ui->active('active','post')) $errors[]=$sprache->active;
         if (!$ui->password('password',40,'post')) $errors[]=$sprache->password;
         if (count($errors)>0) {
             $template_file="Error: ".implode('<br>',$errors);
         } else {
-            $id=$ui->id('id','30','get');
+            $id=$ui->id('id',10,'get');
             $active=$ui->active('active','post');
             $password=$ui->password('password',40,'post');
             $ips=$ui->ips('ips','post');
@@ -401,22 +400,22 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file='admin_404.tpl';
     }
-} else if ($ui->st('d','get')=='dd' and $ui->id('id','30','get') and $pa['mysql']) {
-    if (!isset($action)) {
-        $id=$ui->id('id','30','get');
-        $pselect=$sql->prepare("SELECT e.`dbname`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
-        $pselect->execute(array($id,$reseller_id));
-        foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
+} else if ($ui->st('d','get')=='dd' and $ui->id('id',10,'get') and $pa['mysql']) {
+    if (!$ui->st('action','post')) {
+        $id=$ui->id('id',10,'get');
+        $query=$sql->prepare("SELECT e.`dbname`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
+        $query->execute(array($id,$reseller_id));
+        foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
             $ip=$row['ip'];
             $dbname=$row['dbname'];
             $cname=$row['cname'];
         }
-        $template_file="admin_mysql_db_dl.tpl";
-    } else if ($action=='dl') {
-        $id=$ui->id('id','30','get');
-        $pselect=$sql->prepare("SELECT e.`sid`,e.`uid`,e.`dbname`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
-        $pselect->execute(array($aeskey,$id,$reseller_id));
-        foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
+        $template_file=(isset($cname)) ? 'admin_mysql_db_dl.tpl' : 'userpanel_404.tpl';
+    } else if ($ui->st('action','post')=='dl') {
+        $id=$ui->id('id',10,'get');
+        $query=$sql->prepare("SELECT e.`sid`,e.`uid`,e.`dbname`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
+        $query->execute(array($aeskey,$id,$reseller_id));
+        foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
             $sid=$row['sid'];
             $uid=$row['uid'];
             $dbname=$row['dbname'];
@@ -425,19 +424,20 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $port=$row['port'];
             $user=$row['user'];
             $pwd=$row['decryptedpassword2'];
+            $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
+            if ($remotesql->error=='ok') {
+                $remotesql->DelDB($dbname);
+                $query=$sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($id,$reseller_id));
+                customColumns('D',$id,'del');
+                $template_file=$spracheResponse->table_del;
+                $loguseraction="%del% MYSQL DB $dbname ($ip)";
+                $insertlog->execute();
+            } else {
+                $template_file=$remotesql->error;
+            }
         }
-        $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
-        if ($remotesql->error=='ok') {
-            $remotesql->DelDB($dbname);
-            $pupdate=$sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $pupdate->execute(array($id,$reseller_id));
-            customColumns('D',$id,'del');
-            $template_file=$spracheResponse->table_del;
-            $loguseraction="%del% MYSQL DB $dbname ($ip)";
-            $insertlog->execute();
-        } else {
-            $template_file=$remotesql->error;
-        }
+        if (!isset($sid)) $template_file='userpanel_404.tpl';
     } else {
         $template_file='admin_404.tpl';
     }

@@ -938,7 +938,7 @@ function checkDNS ($dns,$id=null,$user_id=null,$type='') {
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ((isset($tsdnsServerID) and $id!=null and $row['id']==$tsdnsServerID) or ($type=='dns' and $id!=null and $row['id']==$masterID)) {
-                $defaultdns=strtolower($id.'-'.getusername($user_id,$sql).'.'.$row['defaultdns']);
+                $defaultdns=strtolower($id.'-'.getusername($user_id).'.'.$row['defaultdns']);
                 $partCount=count(explode('.',$defaultdns));
             }
             unset($temp);

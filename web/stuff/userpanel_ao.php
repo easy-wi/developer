@@ -40,7 +40,7 @@ if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !$pa['useraddons
 }
 $sprache=getlanguagefile('images',$user_language,$reseller_id,$sql);
 $loguserid=$user_id;
-$logusername=getusername($user_id,$sql);
+$logusername=getusername($user_id);
 $logusertype="user";
 $logreseller=0;
 if (isset($admin_id)) {
@@ -96,7 +96,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
             $type=$row['type'];
             $folder=$row['folder'];
         }
-        $rdata=serverdata('root',$rootID,$aeskey,$sql);
+        $rdata=serverdata('root',$rootID,$aeskey);
         $sship=$rdata['ip'];
         $sshport=$rdata['port'];
         $sshuser=$rdata['user'];
@@ -167,7 +167,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
         $template_file=$sprache->failed;
     }
 } else if ($ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
-	$username=getusername($user_id,$sql);
+	$username=getusername($user_id);
     $switchID=$ui->id('id',19,'get');
 	$table=array();
     $query=$sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=? LIMIT 1");

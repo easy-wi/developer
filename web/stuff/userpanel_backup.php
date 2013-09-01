@@ -42,7 +42,7 @@ $sprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
 if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) {
 	$reseller_id=$admin_id;
 }
-$customer=getusername($user_id,$sql);
+$customer=getusername($user_id);
 $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $aeskey=$aesfilecvar['aeskey'];
 if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
@@ -66,7 +66,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
         $template_file="userpanel_gserver_backup.tpl";
     } else if ($ui->w('action',3,'post')=='mb'){
         include(EASYWIDIR.'/stuff/ssh_exec.php');
-        $rdata=serverdata('root',$rootid,$aeskey,$sql);
+        $rdata=serverdata('root',$rootid,$aeskey);
         $sship=$rdata['ip'];
         $sshport=$rdata['port'];
         $sshuser=$rdata['user'];
@@ -97,7 +97,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
         $template_file="userpanel_gserver_backup_rb.tpl";
     } else if ($ui->w('action',3,'post')=='rb2' and $ui->gamestring('template','post')){
         include(EASYWIDIR.'/stuff/ssh_exec.php');
-        $rdata=serverdata('root',$rootid,$aeskey,$sql);
+        $rdata=serverdata('root',$rootid,$aeskey);
         $sship=$rdata['ip'];
         $sshport=$rdata['port'];
         $sshuser=$rdata['user'];

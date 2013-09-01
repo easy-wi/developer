@@ -53,7 +53,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 	} else {
         $query2->execute(array($subuser));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-			if (isanyadmin($subuser,$sql) and !isset($admin_id)) {
+			if (isanyadmin($subuser) and !isset($admin_id)) {
 				$username=$row2['cname'];
 				$ip="";
 			} else {

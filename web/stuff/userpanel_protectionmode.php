@@ -37,7 +37,7 @@
 if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id',10,'get')) redirect('userpanel.php');
 $sprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
 $loguserid=$user_id;
-$logusername=getusername($user_id,$sql);
+$logusername=getusername($user_id);
 $logusertype="user";
 $logreseller=0;
 if (isset($admin_id)) {
@@ -117,7 +117,7 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed=='N') or (isset($_S
             }
         }
     }
-    $rdata=serverdata('root',$rootid,$aeskey,$sql);
+    $rdata=serverdata('root',$rootid,$aeskey);
     $sship=$rdata['ip'];
     $sshport=$rdata['port'];
     $sshuser=$rdata['user'];

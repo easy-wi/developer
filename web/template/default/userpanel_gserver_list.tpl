@@ -42,7 +42,7 @@
             <dt><?php echo $sprache->ramMax;?></dt>
             <dd><?php echo $table_row['maxram'];?> MB</dd>
             <?php } ?>
-            <?php if($table_row['taskset']==Y and $table_row['coreCount']>0) { ?>
+            <?php if($table_row['taskset']=='Y' and $table_row['coreCount']>0) { ?>
             <dt><?php echo $sprache->coreBind;?></dt>
             <dd><?php echo $table_row['cores'].' ('.$table_row['coreCount'].')';?></dd>
             <?php } ?>

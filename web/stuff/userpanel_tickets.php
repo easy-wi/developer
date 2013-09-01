@@ -40,7 +40,7 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usertickets']))
 }
 $sprache=getlanguagefile('tickets',$user_language,$reseller_id,$sql);
 $loguserid=$user_id;
-$logusername=getusername($user_id,$sql);
+$logusername=getusername($user_id);
 $logusertype="admin";
 $logreseller="0";
 $logsubuser="0";

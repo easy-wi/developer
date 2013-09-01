@@ -34,7 +34,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !isanyuser($user_id,$sql))) {
+if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !isanyuser($user_id))) {
 	header('Location: login.php');
 	die('No acces');
 }
@@ -57,7 +57,7 @@ $i_tag_removed=0;
 $crashedArray=array('gsCrashed'=>0,'gsPWD'=>0,'gsTag'=>0,'ticketsOpen'=>0,'tickets'=>0,'ts3'=>0);
 $query=$sql->prepare("SELECT `stopped`,`serverid`,CONCAT(`serverip`,':',`port`) AS `server`,`userid`,`war`,`brandname`,`queryName`,`queryPassword` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
 $query->execute(array($user_id,$reseller_id));
-$customer=getusername($user_id,$sql);
+$customer=getusername($user_id);
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $war=$row['war'];
     $brandname=$row['brandname'];
@@ -73,7 +73,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $crashedArray['gsCrashed']++;
 	}
 	if (isset($name) and $name!="" and $row['stopped']=='N' and $name!="OFFLINE" and $brandname=="Y" and isset($reseller_brandname) and $reseller_brandname!=""  and strpos(strtolower($name), strtolower($reseller_brandname)) === false) {
-		$tag_removed[]=array('userid'=>$row['userid'],'username'=>getusername($row['userid'],$sql),'address'=>$row['server']);
+		$tag_removed[]=array('userid'=>$row['userid'],'username'=>getusername($row['userid']),'address'=>$row['server']);
 		$i_tag_removed++;
         $crashedArray['gsTag']++;
 	}

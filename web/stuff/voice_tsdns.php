@@ -40,7 +40,7 @@
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver'])) redirect('admin.php');
 $sprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
 $loguserid=$admin_id;
-$logusername=getusername($admin_id,$sql);
+$logusername=getusername($admin_id);
 $logusertype="admin";
 if ($reseller_id==0) {
     $logreseller=0;

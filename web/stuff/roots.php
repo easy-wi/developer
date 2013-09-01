@@ -42,7 +42,7 @@ $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $aeskey=$aesfilecvar['aeskey'];
 $sprache=getlanguagefile('roots',$user_language,$reseller_id,$sql);
 $loguserid=$admin_id;
-$logusername=getusername($admin_id,$sql);
+$logusername=getusername($admin_id);
 $logusertype="admin";
 if ($reseller_id==0) {
 	$logreseller=0;

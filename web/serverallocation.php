@@ -51,7 +51,7 @@ if (!isset($admin_id) and !isset($user_id)) {
 } else {
     $die=true;
 }
-if (!isset($pa) or count($pa)==0 or ((!isset($admin_id) and !isset($user_id)) or (((!$pa['gserver']) and !$pa['voiceserver'] and !$pa['voicemasterserver'] and !$pa['traffic'] and !$pa['user'] and !rsellerpermisions($admin_id,$sql) and !$pa['usertickets']) and (!$pa['restart'] and !$pa['usertickets'])))) {
+if (!isset($pa) or count($pa)==0 or ((!isset($admin_id) and !isset($user_id)) or (((!$pa['gserver']) and !$pa['voiceserver'] and !$pa['voicemasterserver'] and !$pa['traffic'] and !$pa['user'] and !rsellerpermisions($admin_id) and !$pa['usertickets']) and (!$pa['restart'] and !$pa['usertickets'])))) {
     $die=true;
 }
 if ($ui->smallletters('w',5,'get')=='check') {

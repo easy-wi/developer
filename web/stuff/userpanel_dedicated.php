@@ -43,7 +43,7 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
 }
 $sprache=getlanguagefile('reseller',$user_language,$reseller_id,$sql);
 $loguserid=$user_id;
-$logusername=getusername($user_id,$sql);
+$logusername=getusername($user_id);
 $logusertype="user";
 $logreseller=0;
 $logsubuser=0;

@@ -114,7 +114,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
             }
             $newPort=(is_object($extraData) and isset($extraData->newPort)) ? $extraData->newPort : $port;
-            if ($port!=$newPort) $cmds[]="sudo -u ${customer} screen -dmS move ./control.sh move ${customer} ${gsfolder} ${gsIP}_${port}";
+            if ($port!=$newPort) $cmds[]="sudo -u ${customer} ./control.sh move ${customer} ${gsfolder} ${gsIP}_${port}";
             $cmds[]='./control.sh mod '.$customer.' '.$ftppass.' '.$ftppass2;
             $query4=$sql->prepare("UPDATE `gsswitch` SET `active`=?,`port`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
             $query4->execute(array($newActive,$newPort,$row2['affectedID']));

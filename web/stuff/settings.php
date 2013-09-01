@@ -180,11 +180,11 @@ if ($loguserip!='localhost') {
         if (isset($elements[3]) and $elements[3]!='') $page_count=strtolower($elements[3]);
     }
     if (!isset($user_language) and isset($user_id) and isset($admin_id)) {
-        $user_language=language($admin_id,$sql);
+        $user_language=language($admin_id);
     } else if(!isset($user_language) and isset($user_id) and !isset($admin_id)) {
-        $user_language=language($user_id,$sql);
+        $user_language=language($user_id);
     } else if (!isset($user_language) and isset($admin_id)) {
-        $user_language=language($admin_id,$sql);
+        $user_language=language($admin_id);
     }
     if (isset($page_detect_language) and preg_match('/^[a-z]{2}+$/',$page_detect_language) and ((isset($_SESSION['language']) and $page_detect_language!=$_SESSION['language']) or !isset($_SESSION['language']))){
         $language_changed=true;

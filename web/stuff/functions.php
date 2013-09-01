@@ -60,27 +60,16 @@ if (!function_exists('passwordgenerate')) {
     function passwordhash($username,$password,$salt=false){
         $passworda = str_split($password,(strlen($password)/2)+1);
         $usernamea = str_split($username,(strlen($username)/2)+1);
-        if ($salt==false) {
-            $hash = hash('sha512',sha1($usernamea[0].md5($passworda[0].$usernamea[1]).$passworda[1]));
-        } else {
-            $hash = hash('sha512',sha1($usernamea[0].md5($passworda[0].$salt.$usernamea[1]).$passworda[1]));
-        }
-        return $hash;
+        return ($salt==false) ? hash('sha512',sha1($usernamea[0].md5($passworda[0].$usernamea[1]).$passworda[1])): hash('sha512',sha1($usernamea[0].md5($passworda[0].$salt.$usernamea[1]).$passworda[1]));
     }
     function createHash ($name,$pwd,$saltOne,$saltTwo='ZPZw$[pkJF!;SHdl',$iterate=1000) {
         $pwdSplit=str_split($pwd,(strlen($pwd)/2)+1);
         $nameSplit=str_split($name,(strlen($name)/2)+1);
         $hash='';
-        if (!isset($nameSplit[1]) and strlen($nameSplit[0])>0) {
-            $nameSplit[1]=$nameSplit[0];
-        }
-        if (!isset($pwdSplit[1]) and strlen($pwdSplit[0])>0) {
-            $pwdSplit[1]=$pwdSplit[0];
-        }
+        if (!isset($nameSplit[1]) and strlen($nameSplit[0])>0) $nameSplit[1]=$nameSplit[0];
+        if (!isset($pwdSplit[1]) and strlen($pwdSplit[0])>0) $pwdSplit[1]=$pwdSplit[0];
         if (isset($nameSplit[1]) and isset($pwdSplit[1])) {
-            for ($i=0;$i<=$iterate;$i++) {
-                $hash=hash('sha512',$nameSplit[0].$saltOne.$pwdSplit[0].$hash.$nameSplit[1].$saltTwo.$pwdSplit[1]);
-            }
+            for ($i=0;$i<=$iterate;$i++) $hash=hash('sha512',$nameSplit[0].$saltOne.$pwdSplit[0].$hash.$nameSplit[1].$saltTwo.$pwdSplit[1]);
             return $hash;
         } else if (!isset($pwdSplit[1])) {
             die ('Fatal Error: No or invalid Password!');
@@ -100,35 +89,24 @@ if (!function_exists('passwordgenerate')) {
         $selectLanguages=array();
         if (is_dir($dir)){
             $dirs=scandir($dir);
-            foreach ($dirs as $row) {
-                if (small_letters_check($row, '2')) {
-                    $selectLanguages[]=$row;
-                }
-            }
+            foreach ($dirs as $row) if (small_letters_check($row,2)) $selectLanguages[]=$row;
         }
         return $selectLanguages;
     }
     function getlanguages ($value) {
         $selectLanguages=listDirs('languages/'.$value.'/');
-        if (count($selectLanguages)<1) {
-            $selectLanguages=listDirs('languages/default/');
-        }
-        if (count($selectLanguages)<1) {
-            $selectLanguages=listDirs('languages/');
-        }
+        if (count($selectLanguages)<1) $selectLanguages=listDirs('languages/default/');
+        if (count($selectLanguages)<1) $selectLanguages=listDirs('languages/');
         return $selectLanguages;
     }
 
     function cleanFsockOpenRequest ($string,$start,$stop) {
-        while(substr($string,0,1)!=$start and strlen($string)>0) {
-            $string=substr($string,1);
-        }
-        while(substr($string,-1)!=$stop and strlen($string)>0) {
-            $string=substr($string,0,-1);
-        }
+        while(substr($string,0,1)!=$start and strlen($string)>0) $string=substr($string,1);
+        while(substr($string,-1)!=$stop and strlen($string)>0) $string=substr($string,0,-1);
         return $string;
     }
-    function serverdata($type,$serverID,$aeskey,$sql) {
+    function serverdata($type,$serverID,$aeskey) {
+        global $sql;
         $serverdata=array();
         if ($type=="root") {
             $query=$sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
@@ -213,31 +191,18 @@ if (!function_exists('passwordgenerate')) {
         }
         return array('left'=>$left,'count'=>$count,'gsCount'=>$gsCount,'vCount'=>$vCount,'voCount'=>$voCount,'dCount'=>$dCount,'mG'=>$mG,'mVs'=>$mVs,'mVo'=>$mVo,'mD'=>$mD,'lG'=>$lG,'lVs'=>$lVs,'lVo'=>$lVo,'lD'=>$lD,'p'=>$json->p,'b'=>$json->b,'t'=>$json->t,'u'=>$json->u,'c'=>$json->c,'v'=>$json->v);
     }
-
-    function getftppass($userNAME,$sql) {
-        $user='';
-        $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-        $aeskey=$aesfilecvar['aeskey'];
-        $pselect=$sql->prepare("SELECT AES_DECRYPT(`ftppass`,?) AS `decryptedftppass` FROM `userdata` WHERE `cname`=? LIMIT 1");
-        $pselect->execute(array($aeskey,$userNAME));
-        foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $user=$row['decryptedftppass'];
-        }
-        return $user;
-    }
-    function getusername($userid,$sql) {
-        $cname='User deleted';
-        $pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
-        $pselect->execute(array($userid));
-        foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $cname=$row['cname'];
-        }
+    function getusername($userid) {
+        global $sql;
+        $query=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query->execute(array($userid));
+        $cname=($query->rowCount()==0) ? 'User deleted' : $query->fetchColumn();
         return $cname;
     }
-    function rsellerpermisions($userid,$sql) {
-        $pselect=$sql->prepare("SELECT `userid` FROM `userpermissions` WHERE `userid`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
-        $pselect->execute(array($userid));
-        $colcount=$pselect->rowCount();
+    function rsellerpermisions($userid) {
+        global $sql;
+        $query=$sql->prepare("SELECT `userid` FROM `userpermissions` WHERE `userid`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
+        $query->execute(array($userid));
+        $colcount=$query->rowCount();
         if ($colcount==0) {
             $u_p_q=$sql->prepare("SELECT g.`id` FROM `userdata_groups` u LEFT JOIN `usergroups` g ON u.`groupID`=g.`id` WHERE u.`userID`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
             $u_p_q->execute(array($userid));
@@ -245,46 +210,38 @@ if (!function_exists('passwordgenerate')) {
         }
         return $colcount;
     }
-    function isanyadmin($userid,$sql) {
+    function isanyadmin($userid) {
+        global $sql;
         $query=$sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-             return ($row['accounttype']=='a' or $row['accounttype']=='r') ?  true : false;
-        }
+        $accountType=$query->fetchColumn();
+        return ($accountType=='a' or $accountType=='r') ?  true : false;
     }
-    function isanyuser($userid,$sql) {
+    function isanyuser($userid) {
+        global $sql;
         $query=$sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if($row['accounttype']=="u") return true;
-        }
+        return ($query->fetchColumn()=='u') ? true : false;
     }
-    function language($user_id,$sql) {
+    function language($user_id) {
+        global $sql,$ui;
         if (!isset($_SESSION['language'])) {
             $query=$sql->prepare("SELECT `language` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($user_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $language=$row['language'];
-                if ($language=="") {
-                    if (isset($ui->server['HTTP_ACCEPT_LANGUAGE'])){
-                        $lang_detect=small_letters_check(substr($ui->server['HTTP_ACCEPT_LANGUAGE'],0,2), 2);
-                    } else {
-                        $lang_detect='uk';
-                    }
-                    if (is_dir(EASYWIDIR."/languages/$lang_detect")) {
-                        $language=$lang_detect;
-                    } else {
-                        $query2="SELECT `language` FROM settings LIMIT 1";
-                        foreach ($sql->query($query2) as $row2) {
-                            $language=$row2['language'];
-                        }
-                    }
-                } else if (!is_dir(EASYWIDIR."/languages/$language")) {
-                    $query2="SELECT `language` FROM settings LIMIT 1";
-                    foreach ($sql->query($query2) as $row2) {
-                        $language=$row2['language'];
-                    }
+            $language=$query->fetchColumn();
+            if ($language=='') {
+                $lang_detect=(isset($ui->server['HTTP_ACCEPT_LANGUAGE'])) ? small_letters_check(substr($ui->server['HTTP_ACCEPT_LANGUAGE'],0,2),2) : 'uk';
+                if (is_dir(EASYWIDIR."/languages/$lang_detect")) {
+                    $language=$lang_detect;
+                } else {
+                    $query=$sql->prepare("SELECT `language` FROM `settings` LIMIT 1");
+                    $query->execute();
+                    $language=$query->fetchColumn();
                 }
+            } else if (!is_dir(EASYWIDIR."/languages/$language")) {
+                $query=$sql->prepare("SELECT `language` FROM `settings` LIMIT 1");
+                $query->execute();
+                $language=$query->fetchColumn();
             }
             $query=$sql->prepare("UPDATE `userdata` SET `language`=? WHERE `id`=? LIMIT 1");
             $query->execute(array($language,$user_id));
@@ -616,7 +573,7 @@ if (!function_exists('passwordgenerate')) {
                 $cmd .=" +host_workshop_collection ${row['workshopCollection']} +workshop_start_map ${map} -authkey ${row['dwebapiAuthkey']}";
                 $cmd=preg_replace('/[\s\s+]{1,}\+map[\s\s+]{1,}[\w-_!%]{1,}/','',$cmd);
             }
-            $rdata=serverdata('root',$rootid,$aeskey,$sql);
+            $rdata=serverdata('root',$rootid,$aeskey);
             $sship=$rdata['ip'];
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];
@@ -1034,13 +991,9 @@ if (!function_exists('passwordgenerate')) {
         $array=$query->fetchAll(PDO::FETCH_ASSOC);
         foreach ($array as $row) {
             if (($accounttype=='u' and $row['miniroot']=='Y')) {
-                foreach ($row as $key => $value) {
-                    $pa["$key"]=true;
-                }
+                foreach ($row as $key => $value) $pa["$key"]=true;
             } else if (($accounttype!='u' and $row['root']=='Y')) {
-                foreach ($row as $key => $value) {
-                    $pa["$key"]=true;
-                }
+                foreach ($row as $key => $value) $pa["$key"]=true;
             } else {
                 foreach ($row as $key => $value) {
                     if ((isset($pa["$key"]) and $pa["$key"]===false) or !isset($pa["$key"])) $pa["$key"]=($value=='Y') ? true : false;
@@ -1050,12 +1003,10 @@ if (!function_exists('passwordgenerate')) {
         return $pa;
     }
     function array_value_exists($key,$value,$array) {
-        if (array_key_exists($key,$array) and $array[$key]==$value) {
-            return true;
-        }
+        if (array_key_exists($key,$array) and $array[$key]==$value) return true;
         return false;
     }
-    function updateJobs ($localID,$resellerID,$sql,$jobPending='Y') {
+    function updateJobs($localID,$resellerID,$sql,$jobPending='Y') {
         $update=$sql->prepare("UPDATE `gsswitch` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
         $update->execute(array($jobPending,$localID,$resellerID));
         $update=$sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`=? WHERE `uid`=? AND `resellerid`=?");
@@ -1068,11 +1019,7 @@ if (!function_exists('passwordgenerate')) {
         $update->execute(array($jobPending,$localID,$resellerID));
     }
     function updateStates($sql,$action,$type=null) {
-        if ($type!=null) {
-            $typeQuery=' AND `type`=\''.$type.'\'';
-        } else {
-            $typeQuery='';
-        }
+        $typeQuery=($type!=null) ? " AND `type`='${type}" : '';
         $query=$sql->prepare("SELECT `type`,`affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`,`affectedID`");
         $query->execute(array($action));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -1090,9 +1037,8 @@ if (!function_exists('passwordgenerate')) {
         }
     }
     function dataExist ($value,$array) {
-        if (isset($array[$value]) and isset($array[$array[$value]]) and !in_array($array[$array[$value]],array(false,null,''))) {
-            return true;
-        }
+        if (isset($array[$value]) and isset($array[$array[$value]]) and !in_array($array[$array[$value]],array(false,null,''))) return true;
+        return false;
     }
     function webhostRequest ($domain,$useragent,$file,$postParams='',$port=80) {
         $domain=str_replace(array('https://','http://'),'',$domain);
@@ -1143,14 +1089,8 @@ if (!function_exists('passwordgenerate')) {
         return 'Error: Could not connect to host '.$domain.' and port '.$port.' ('.$errstr.')';
     }
     function checkPorts ($send,$used) {
-        $success=true;
-        $new=array();
-        foreach ($send as $port) {
-            if (!port($port) or in_array($port,$used) or in_array($port,$new)) {
-                $success=false;
-            }
-        }
-        return $success;
+        foreach ($send as $port) if (!port($port) or in_array($port,$used)) return false;
+        return true;
     }
     function usedPorts ($ips) {
         global $sql;

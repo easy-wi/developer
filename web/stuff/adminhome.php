@@ -35,7 +35,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !isanyadmin($admin_id,$sql) and !rsellerpermisions($admin_id,$sql))) {
+if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !isanyadmin($admin_id) and !rsellerpermisions($admin_id))) {
 	header('Location: login.php');
 	die('No acces');
 }
@@ -58,14 +58,14 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $password=$row['queryPassword'];
     $name=$row['queryName'];
 	if ($name!="OFFLINE" and $row['stopped']=='N' and $war=="Y" and $password=="N") {
-		$removed[]=array('userid'=>$row['userid'],'username'=>getusername($row['userid'],$sql),'address'=>$row['server']);
+		$removed[]=array('userid'=>$row['userid'],'username'=>getusername($row['userid']),'address'=>$row['server']);
         $crashedArray['gsPWD']++;
 	} else if ($name=="OFFLINE" and $row['stopped']=='N') {
-		$crashed[]=array('userid'=>$row['userid'],'username'=>getusername($row['userid'],$sql),'address'=>$row['server']);
+		$crashed[]=array('userid'=>$row['userid'],'username'=>getusername($row['userid']),'address'=>$row['server']);
         $crashedArray['gsCrashed']++;
 	}
 	if (isset($name) and $name!="" and $name!="OFFLINE" and $row['stopped']=='N' and isset($reseller_brandname) and $reseller_brandname!="" and $brandname=="Y" and strpos(strtolower($name), strtolower($reseller_brandname)) === false) {
-		$tag_removed[]=array('userid'=>$row['userid'],'username'=>getusername($row['userid'],$sql),'address'=>$row['server']);
+		$tag_removed[]=array('userid'=>$row['userid'],'username'=>getusername($row['userid']),'address'=>$row['server']);
         $crashedArray['gsTag']++;
 	}
 }

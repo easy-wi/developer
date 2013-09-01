@@ -41,7 +41,7 @@ if ($ui->st('w','get')=='se') {
         die();
     }
     $loguserid=$user_id;
-    $logusername=getusername($user_id,$sql);
+    $logusername=getusername($user_id);
     $logusertype="user";
     $logreseller=0;
     if (isset($admin_id)) {
@@ -58,7 +58,7 @@ if ($ui->st('w','get')=='se') {
         die();
     }
     $loguserid=$admin_id;
-    $logusername=getusername($admin_id,$sql);
+    $logusername=getusername($admin_id);
     $logusertype="admin";
     if ($reseller_id==0) {
         $logreseller=0;

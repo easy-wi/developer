@@ -340,10 +340,10 @@ XML;
             $_SESSION['resellerid']=$resellerid;
             $query=$sql->prepare("DELETE FROM `badips` WHERE `badip`=?");
             $query->execute(array($loguserip));
-			if(isanyadmin($id,$sql) or rsellerpermisions($id,$sql)) {
+			if(isanyadmin($id) or rsellerpermisions($id)) {
 				$_SESSION['adminid']=$id;
 				if(isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) $admin_id=$_SESSION['adminid'];
-			} else if (isanyuser($id,$sql)) {
+			} else if (isanyuser($idl)) {
 				$_SESSION['userid']=$id;
 				if(isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) $user_id=$_SESSION['userid'];
                 if(isset($sID)) $_SESSION['sID']=$sID;
@@ -373,7 +373,7 @@ XML;
                 $query=$sql->prepare("UPDATE `settings` SET `paneldomain`=? WHERE `resellerid`=0 LIMIT 1");
                 $query->execute(array($webhostdomain));
                 $params=@json_decode(licenceRequest(true));
-				if(isanyadmin($admin_id,$sql) or rsellerpermisions($admin_id,$sql)) {
+				if(isanyadmin($admin_id) or rsellerpermisions($admin_id)) {
 					redirect('admin.php');
 				} else {
                     redirect('login.php&r=lo');

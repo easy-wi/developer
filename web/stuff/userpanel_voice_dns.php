@@ -38,7 +38,7 @@
  */
 $sprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
 $loguserid=$user_id;
-$logusername=getusername($user_id,$sql);
+$logusername=getusername($user_id);
 $logusertype='user';
 $logreseller=0;
 if (isset($admin_id)) {
@@ -60,7 +60,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $dns=$row['dns'];
             $ip=$row['ip'];
             $port=$row['port'];
-            $defaultdns=strtolower($row['dnsID'].'-'.getusername($user_id,$sql).$row['defaultdns']);
+            $defaultdns=strtolower($row['dnsID'].'-'.getusername($user_id).$row['defaultdns']);
         }
         if (isset($dns)) {
             $template_file='userpanel_voiceserver_dns_md.tpl';

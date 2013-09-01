@@ -41,7 +41,7 @@ if ((!isset($admin_id) or !isset($reseller_id) or $main!=1) or (isset($admin_id)
     redirect('admin.php');
 }
 $loguserid=$admin_id;
-$logusername=getusername($admin_id,$sql);
+$logusername=getusername($admin_id);
 $logusertype='admin';
 $logreseller=0;
 $logsubuser=0;

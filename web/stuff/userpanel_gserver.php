@@ -40,7 +40,7 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
 }
 $sprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
 $loguserid=$user_id;
-$logusername=getusername($user_id,$sql);
+$logusername=getusername($user_id);
 $logusertype="user";
 $logreseller=0;
 if (isset($admin_id)) {
@@ -96,7 +96,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         if (isset($gsfolder) and count($gamestring)>0 and $ui->active('type','post')) {
             $gamestring=count($gamestring).'_'.implode('_',$gamestring);
-            $rdata=serverdata('root',$rootID,$aeskey,$sql);
+            $rdata=serverdata('root',$rootID,$aeskey);
             $sship=$rdata['ip'];
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];
@@ -359,7 +359,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 }
             }
             if ($ftppass!=$oldPass) {
-                $rdata=serverdata('root',$rootID,$aeskey,$sql);
+                $rdata=serverdata('root',$rootID,$aeskey);
                 $sship=$rdata['ip'];
                 $sshport=$rdata['port'];
                 $sshuser=$rdata['user'];
@@ -413,7 +413,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $configCheck=array();
     $query=$sql->prepare("SELECT g.`protected`,t.`configs`,s.`id` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($id,$user_id,$reseller_id));
-    $customer=getusername($user_id,$sql);
+    $customer=getusername($user_id);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $serverID=$row['id'];
         $protected=$row['protected'];

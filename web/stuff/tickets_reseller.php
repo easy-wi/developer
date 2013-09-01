@@ -40,7 +40,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['usertickets']
 }
 $sprache=getlanguagefile('tickets',$user_language,$reseller_id,$sql);
 $loguserid=$admin_id;
-$logusername=getusername($admin_id,$sql);
+$logusername=getusername($admin_id);
 $logusertype="admin";
 if ($reseller_id==0) {
 	$logreseller=0;
@@ -146,7 +146,7 @@ if ($ui->st('d','get')=='ad') {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query2->execute(array($id,$resellerid));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $table[]=array('writedate'=>($user_language=='de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'],'ticket'=>nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer'=>getusername($row2['userID'],$sql));
+                $table[]=array('writedate'=>($user_language=='de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'],'ticket'=>nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer'=>getusername($row2['userID']));
             }
             if ($row['userPriority']==1) $priority=$sprache->priority_low;
             else if ($row['userPriority']==2) $priority=$sprache->priority_medium;
