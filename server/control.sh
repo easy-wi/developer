@@ -21,12 +21,12 @@
 #
 #    Easy-WI ist Freie Software: Sie koennen es unter den Bedingungen
 #    der GNU General Public License, wie von der Free Software Foundation,
-#    Version 3 der Lizenz oder (nach Ihrer Wahl) jeder späteren
+#    Version 3 der Lizenz oder (nach Ihrer Wahl) jeder spaeteren
 #    veroeffentlichten Version, weiterverbreiten und/oder modifizieren.
 #
 #    Easy-WI wird in der Hoffnung, dass es nuetzlich sein wird, aber
 #    OHNE JEDE GEWAEHELEISTUNG, bereitgestellt; sogar ohne die implizite
-#    Gewährleistung der MARKTFAEHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK.
+#    Gewaehrleistung der MARKTFAEHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK.
 #    Siehe die GNU General Public License fuer weitere Details.
 #
 #    Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
@@ -214,7 +214,6 @@ for LOGFILE in ${LOGFILES[@]}; do
 	touch "/home/$INSTALLMASTER/logs/$LOGFILE.log"
 done
 chmod 660 /home/$INSTALLMASTER/logs/*.log
-chmod 640 /home/$INSTALLMASTER/conf/config.cfg
 if [ -f /etc/debian_version ]; then
 	if [ "$VARIABLE2" == "yesall" ]; then
 		INSTALLPACKAGES="yes"
@@ -481,6 +480,8 @@ IONICE="0"
 # Do not Autoupdate
 NOUPDATES="$UPDATES"
 EOF
+chmod 640 /home/$INSTALLMASTER/conf/config.cfg
+chown $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER/conf/config.cfg
 echo "The setup is finished"
 }
 
