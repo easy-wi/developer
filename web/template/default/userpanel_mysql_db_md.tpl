@@ -8,7 +8,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span6">
         <form class="form-horizontal" action="userpanel.php?w=my&amp;id=<?php echo $id;?>&amp;r=my" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <div class="row-fluid">
@@ -26,15 +26,21 @@
                 </dl>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputDescription"><?php echo $sprache->description;?></label>
+                <div class="controls">
+                    <input class="span12" id=inputDescription type="text" name="description" value="<?php echo $description;?>">
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="password"><?php echo $sprache->password;?></label>
                 <div class="controls">
-                    <input class="span10" id="password" type="text" name="password" value="<?php echo $password;?>">
+                    <input class="span12" id="password" type="text" name="password" value="<?php echo $password;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="ips"><?php echo $sprache->ips;?></label>
                 <div class="controls">
-                    <textarea class="span10" id="ips" name="ips" rows="5"><?php echo $ips?></textarea>
+                    <textarea class="span12" id="ips" name="ips" rows="5"><?php echo $ips?></textarea>
                 </div>
             </div>
             <div class="control-group">

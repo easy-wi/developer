@@ -48,6 +48,12 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputDescription"><?php echo $sprache->description;?></label>
+                <div class="controls">
+                    <input id=inputDescription type="text" name="description" value="">
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputPassword"><?php echo $sprache->password;?></label>
                 <div class="controls">
                     <input id=inputPassword type="text" name="password" value="<?php echo $password;?>" required>

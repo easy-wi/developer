@@ -38,7 +38,9 @@
 class ExternalSQL {
 	function __construct($ip,$port,$user,$password) {
 		try {
+            global $dbConnect;
 			$this->remotesql=new PDO("mysql:host=$ip;port=$port",$user,$password);
+            $this->remotesql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 		}
 		catch(PDOException $error) {
 			$this->error=$error->getMessage();

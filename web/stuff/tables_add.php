@@ -422,6 +422,7 @@ $query="CREATE TABLE IF NOT EXISTS `mail_log` (
 $add=$sql->prepare($query);
 $add->execute();
 
+#https://github.com/easy-wi/developer/issues/42 column description added
 $query="CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
@@ -429,6 +430,7 @@ $query="CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `uid` int(10) unsigned NOT NULL,
   `gsid` int(10) unsigned DEFAULT 0,
   `dbname` varchar(255) NOT NULL,
+  `column` varchar(255) DEFAULT '',
   `password` blob,
   `ips` text COLLATE utf8_unicode_ci,
   `max_databases` bigint(19) unsigned DEFAULT '100',
@@ -504,7 +506,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_downloads_log` (
   `ip` varchar(15) NOT NULL,
   `hostname` varchar(255) NOT NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`fileID`),KEY(`resellerID`)
+  KEY (`fileID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add=$sql->prepare($query);
 $add->execute();

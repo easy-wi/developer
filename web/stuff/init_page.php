@@ -171,17 +171,9 @@ if (isset($page_lookupid)) {
         $great_name=$row['name'];
         $great_vname=$row['vname'];
         if ($row['lastlogin']!=null and $row['lastlogin']!="0000-00-00 00:00:00") {
-            if ($user_language=="de") {
-                $great_last=date('d.m.Y H:m:s',strtotime($row['lastlogin']));
-            } else {
-                $great_last=$row['lastlogin'];
-            }
+            $great_last=($user_language=="de") ? date('d.m.Y H:m:s',strtotime($row['lastlogin'])) : $row['lastlogin'];
         } else {
-            if ($user_language=="de") {
-                $great_last="Niemals";
-            } else {
-                $great_last="Never";
-            }
+            $great_last=($user_language=="de") ? "Niemals" : "Never";
         }
     }
 }

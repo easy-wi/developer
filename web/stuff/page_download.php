@@ -57,8 +57,6 @@ if (isset($downloadID)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (($row['show']=='E' or ($row['show']=='A' and isset($admin_id)) or ($row['show']=='R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}")) {
             if (isset($startDownload)) {
-                $query2=$sql->prepare("UPDATE `page_downloads` SET `count`=(`count`+1) WHERE `fileID`=? LIMIT 1");
-                $query2->execute(array($downloadID));
                 $fileWithPath=EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}";
                 $finfo=finfo_open(FILEINFO_MIME_TYPE);
                 $contentType=finfo_file($finfo,$fileWithPath);
@@ -81,6 +79,8 @@ if (isset($downloadID)) {
                         flush();
                     }
                 }
+                $query2=$sql->prepare("UPDATE `page_downloads` SET `count`=(`count`+1) WHERE `fileID`=? LIMIT 1");
+                $query2->execute(array($downloadID));
                 $query2=$sql->prepare("INSERT INTO `page_downloads_log` (`fileID`,`date`,`ip`,`hostname`) VALUES (?,NOW(),?,?)");
                 $query2->execute(array($downloadID,$loguserip,$userHostname));
                 die;

@@ -100,6 +100,7 @@ if ($w=='lo') {
 } else if ($w=='pr') {
     $token='';
 	if (($ui->ismail('um','post') or $ui->username('um',50,'post')) and !$ui->w('gamestring',32,'get')) {
+        # https://github.com/easy-wi/developer/issues/43
         $send=true;
         $text=$sprache->send;
 		$query=$sql->prepare("SELECT `id`,`cname`,`logintime`,`lastlogin` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
@@ -137,6 +138,7 @@ if ($w=='lo') {
                 $text=$sprache->passwordreseted;
             }
         } else if ($ui->password('password1',255,'post')!=$ui->password('password2',255,'post'))  {
+            # https://github.com/easy-wi/developer/issues/43
             $token='&amp;gamestring='.$ui->w('token',32,'get');
             $text=$sprache->pwnomatch;
         }

@@ -30,6 +30,7 @@
             <thead>
             <tr>
                 <th data-class="expand"><a href="admin.php?w=my&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dn') { echo 'dn'; } else { echo 'dn'; } ?>"><?php echo $sprache->dbname;?></a></th>
+                <th data-hide="phone,tablet"><a href="admin.php?w=my&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dd') { echo 'ad'; } else { echo 'dd'; } ?>"><?php echo $sprache->description;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=my&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='di') { echo 'ai'; } else { echo 'di'; } ?>">ID</a></th>
                 <th data-hide="phone"><a href="admin.php?w=my&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ds') { echo 'as'; } else { echo 'ds'; } ?>"><?php echo $gsprache->status;?></a></th>
                 <th data-hide="phone"><a href="admin.php?w=my&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='du') { echo 'au'; } else { echo 'du'; } ?>"><?php echo $gsprache->user; ?></a></th>
@@ -44,6 +45,7 @@
             <?php foreach ($table as $table_row) { ?>
             <tr>
                 <td><?php echo $table_row['dbname'];?></td>
+                <td><?php echo $table_row['description'];?></td>
                 <td><?php echo $table_row['id'];?></td>
                 <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else echo 'icon-ban-circle';?>"></i></td>
                 <td><a href="switch.php?id=<?php echo $table_row['uid'];?>"><?php echo $table_row['cname'];?></a></td>

@@ -4,6 +4,7 @@
 	<interface>phpMyAdmin</interface>
 	<ips>Allowed IPs</ips>
 	<dbname>Databasename</dbname>
+    <description>Description</description>
 	<standards>Default values for the database user</standards>
 	<max_databases>Maximum datenbases</max_databases>
 	<max_queries_per_hour>Maximum querys per hour</max_queries_per_hour>
