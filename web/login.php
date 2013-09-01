@@ -100,13 +100,11 @@ if ($w=='lo') {
 } else if ($w=='pr') {
     $token='';
 	if (($ui->ismail('um','post') or $ui->username('um',50,'post')) and !$ui->w('gamestring',32,'get')) {
-        $send=false;
-		$text=$sprache->nouser;
+        $send=true;
+        $text=$sprache->send;
 		$query=$sql->prepare("SELECT `id`,`cname`,`logintime`,`lastlogin` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
         $query->execute(array($ui->username('um',50,'post'),$ui->ismail('um','post')));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $send=true;
-			$text=$sprache->send;
 			$userid=$row['id'];
 			$md5=md5($userid.$row['logintime'].$row['cname'].$row['lastlogin'].mt_rand());
             $query2=$sql->prepare("UPDATE `userdata` SET `token`=? WHERE `id`=? LIMIT 1");
@@ -138,7 +136,8 @@ if ($w=='lo') {
                 $query->execute(array($password,$salt,$row['id']));
                 $text=$sprache->passwordreseted;
             }
-        } else {
+        } else if ($ui->password('password1',255,'post')!=$ui->password('password2',255,'post'))  {
+            $token='&amp;gamestring='.$ui->w('token',32,'get');
             $text=$sprache->pwnomatch;
         }
     } else if ($ui->w('gamestring',32,'get')) {
