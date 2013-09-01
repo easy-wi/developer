@@ -319,7 +319,7 @@ if (array_value_exists('action','add',$data)) {
                 $update->execute(array($localID,$resellerID));
                 $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'md',?)");
                 $insert->execute(array($resellerID,$localID,$localID,$name,json_encode(array('newActive'=>$useractive)),$resellerID));
-                updateJobs($localID,$resellerID,$sql);
+                updateJobs($localID,$resellerID);
             }
         } else {
             $success['false'][]='No user can be found to edit';
@@ -348,7 +348,7 @@ if (array_value_exists('action','add',$data)) {
             $update->execute(array($localID,$resellerID));
             $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'dl',?)");
             $insert->execute(array($resellerID,$localID,$localID,$name,$resellerID));
-            updateJobs($localID,$resellerID,$sql);
+            updateJobs($localID,$resellerID);
             $delete=$sql->prepare("DELETE FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
             $delete->execute(array($data[$data['identify_by']],$resellerID));
         } else {

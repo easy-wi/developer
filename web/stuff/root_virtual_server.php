@@ -289,8 +289,8 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if (!isset($firstresellerip)) {
-                if ($row['accounttype']=='u') $checkedips=freeips($reseller_id,$sql);
-                else $checkedips=freeips($row['id'],$sql);
+                if ($row['accounttype']=='u') $checkedips=freeips($reseller_id);
+                else $checkedips=freeips($row['id']);
                 $firstresellerip=current($checkedips);
             }
             $type=($row['accounttype']=='u') ? $gsprache->user : $gsprache->reseller;
@@ -298,7 +298,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
         }
         if (!isset($firstresellerip) or !isip($firstresellerip,'all')) {
             $checkedips=array();
-            $firstresellerip=current(freeips($reseller_id,$sql));
+            $firstresellerip=current(freeips($reseller_id));
         }
         $templates=array();
         $query=$sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` ORDER BY `distro`,`bitversion`,`description`");
@@ -367,7 +367,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
             $maxram=$ui->post['maxram'];
         }
         if (isips($ui->post['ips']) or empty($ui->post['ips'])) {
-            $freeips=($reseller_id==0) ? freeips($reseller_id,$sql) : freeips($userid,$sql);
+            $freeips=($reseller_id==0) ? freeips($reseller_id) : freeips($userid);
             if (isips($ui->post['ips'])) {
                 $posted_ip=ipstoarray($ui->post['ips']);
                 foreach ($posted_ip as $ip_row) {
@@ -620,7 +620,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
             }
         }
         if (isset($userid)) {
-            $checkedips=($reseller_id==0) ? freeips($reseller_id,$sql) : freeips($userid,$sql);
+            $checkedips=($reseller_id==0) ? freeips($reseller_id) : freeips($userid);
             $template_file="admin_root_vserver_md.tpl";
         } else {
             $template_file="admin_404.tpl";
@@ -712,7 +712,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
             }
         }
         if (isip($ui->post['ip'],'all') and isset($oldip)) {
-            $freeips=($reseller_id==0) ? freeips($reseller_id,$sql) : freeips($userid,$sql);
+            $freeips=($reseller_id==0) ? freeips($reseller_id) : freeips($userid);
             $checked_ips=array();
             if (isips($ui->post['ips'])) {
                 $postedips=ipstoarray($ui->post['ips']);

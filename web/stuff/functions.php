@@ -48,12 +48,11 @@ if (!extension_loaded('ssh2')) {
 if (!function_exists('passwordgenerate')) {
     function passwordgenerate ($length) {
         $zeichen = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',1,'2','3','4','5','6','7','8','9');
-        $anzahl=count($zeichen);
-        $anzahlcorrect=$anzahl-1;
+        $anzahl=count($zeichen)-1;
         $password='';
         for($i=1; $i<=$length; $i++){
-            $wuerfeln=mt_rand(0,$anzahlcorrect);
-            $password .= $zeichen["$wuerfeln"];
+            $wuerfeln=mt_rand(0,$anzahl);
+            $password .= $zeichen[$wuerfeln];
         }
         return $password;
     }
@@ -296,7 +295,8 @@ if (!function_exists('passwordgenerate')) {
         natsort($ips_array);
         return $ips_array;
     }
-    function freeips($value,$sql) {
+    function freeips($value) {
+        global $sql;
         $userips=array();
         $usedips=array();
         if ($value==0) {
@@ -396,7 +396,8 @@ if (!function_exists('passwordgenerate')) {
             die("No configdata!");
         }
     }
-    function eacchange($what,$serverid,$rcon,$aeskey,$reseller_id,$sql) {
+    function eacchange($what,$serverid,$rcon,$reseller_id) {
+        global $sql;
         $query=$sql->prepare("SELECT `active`,`cfgdir` FROM `eac` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -427,7 +428,8 @@ if (!function_exists('passwordgenerate')) {
             if (isset($ssh2cmd)) ssh2_execute('eac',$reseller_id,$ssh2cmd);
         }
     }
-    function gsrestart($switchID,$action,$aeskey,$sprache,$reseller_id,$sql) {
+    function gsrestart($switchID,$action,$aeskey,$reseller_id) {
+        global $sql;
         $tempCmds=array();
         $stopped='Y';
         $query=$sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`qstat`,t.`appID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
@@ -595,7 +597,7 @@ if (!function_exists('passwordgenerate')) {
             if ($action!='du' and $eacallowed=='Y' and ($anticheat==3 or $anticheat==4 or $anticheat==5 or $anticheat==6) and ($qstat=='a2s' or $qstat=='hla2s')) {
                 if ($action=='so' or $action=='sp') {
                     $rcon="";
-                    eacchange('remove',$serverid,$rcon,$aeskey,$reseller_id,$sql);
+                    eacchange('remove',$serverid,$rcon,$reseller_id);
                 } else if ($action=='re') {
                     if($gamebinary=="srcds_run") {
                         $config=$modfolder."/cfg/server.cfg";
@@ -633,12 +635,12 @@ if (!function_exists('passwordgenerate')) {
                                 }
                             }
                         }
-                        if (isset($rcon)) eacchange('change',$serverid,$rcon,$aeskey,$reseller_id,$sql);
+                        if (isset($rcon)) eacchange('change',$serverid,$rcon,$reseller_id);
                     }
                 }
             } else if ($action!='du' and $eacallowed=='Y' and ($qstat=='a2s' or $qstat=='hla2s') and ($anticheat==1 or $anticheat==2)) {
                 $rcon="";
-                eacchange('remove',$serverid,$rcon,$aeskey,$reseller_id,$sql);
+                eacchange('remove',$serverid,$rcon,$reseller_id);
             }
             if ($protected=='N') {
                 $protectedString='unprotected';
@@ -777,7 +779,8 @@ if (!function_exists('passwordgenerate')) {
         }
         return false;
     }
-    function webhostdomain($resellerid,$sql) {
+    function webhostdomain($resellerid) {
+        global $sql;
         $query=$sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($resellerid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -1006,7 +1009,8 @@ if (!function_exists('passwordgenerate')) {
         if (array_key_exists($key,$array) and $array[$key]==$value) return true;
         return false;
     }
-    function updateJobs($localID,$resellerID,$sql,$jobPending='Y') {
+    function updateJobs($localID,$resellerID,$jobPending='Y') {
+        global $sql;
         $update=$sql->prepare("UPDATE `gsswitch` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
         $update->execute(array($jobPending,$localID,$resellerID));
         $update=$sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`=? WHERE `uid`=? AND `resellerid`=?");

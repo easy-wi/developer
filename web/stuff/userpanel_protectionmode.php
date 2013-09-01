@@ -129,13 +129,13 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed=='N') or (isset($_S
         $query=$sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',10,'get'),$reseller_id));
         cfgTransfer('',$customerp,$ftppassProtected,$shorten,'server/',$customer,$ftppass,$serverTemplate);
-        $cmds=gsrestart($ui->id('id',10,'get'),'re',$aeskey,$sprache,$reseller_id,$sql);
+        $cmds=gsrestart($ui->id('id',10,'get'),'re',$aeskey,$reseller_id);
         ssh2_execute('gs',$rootid,$cmds);
         $loguseraction="%stop% %pmode% $serverip:$port";
         $insertlog->execute();
         $template_file=$sprache->protect.' off';
     } else if (isset($protected,$serverip,$port,$rootid,$customer,$ftppass) and $protected=='N') {
-        $cmds=gsrestart($ui->id('id',10,'get'),'sp',$aeskey,$sprache,$reseller_id,$sql);
+        $cmds=gsrestart($ui->id('id',10,'get'),'sp',$aeskey,$reseller_id);
         $randompass=passwordgenerate(10);
         $cmds[]='./control.sh mod '.$customer.' '.$ftppass.' '.$randompass;
         $cmds[]="sudo -u ${customer}-p ./control.sh reinstserver ${customer}-p ${gamestring} ${gsfolder} protected";

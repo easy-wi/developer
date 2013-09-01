@@ -135,7 +135,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $query=$sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $cmds=gsrestart($row['switchID'],'so',$aeskey,$gssprache,$reseller_id,$sql);
+                $cmds=gsrestart($row['switchID'],'so',$aeskey,$reseller_id);
                 ssh2_execute('gs',$row['rootID'],$cmds);
             }
 		} else if ($servertype=='v') {
@@ -217,7 +217,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				if ($servertype=='g') {
                     $query2->execute(array($serverid,$reseller_id));
                     foreach($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                        $cmds=gsrestart($row2['switchID'],'so',$aeskey,$gssprache,$reseller_id,$sql);
+                        $cmds=gsrestart($row2['switchID'],'so',$aeskey,$reseller_id);
                         ssh2_execute('gs',$row['rootID'],$cmds);
                     }
 				} else if ($servertype=='v') {

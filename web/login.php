@@ -343,7 +343,7 @@ XML;
 			if(isanyadmin($id) or rsellerpermisions($id)) {
 				$_SESSION['adminid']=$id;
 				if(isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) $admin_id=$_SESSION['adminid'];
-			} else if (isanyuser($idl)) {
+			} else if (isanyuser($id)) {
 				$_SESSION['userid']=$id;
 				if(isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) $user_id=$_SESSION['userid'];
                 if(isset($sID)) $_SESSION['sID']=$sID;

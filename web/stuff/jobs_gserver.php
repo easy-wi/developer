@@ -110,7 +110,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($active!=$newActive and $newActive=='N') {
                 $ftppass=passwordgenerate(15);
                 $ftppass2=passwordgenerate(15);
-                $tmp=gsrestart($row2['affectedID'],'so',$aeskey,$sprache,$row['resellerID'],$sql);
+                $tmp=gsrestart($row2['affectedID'],'so',$aeskey,$row['resellerID']);
                 if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
             }
             $newPort=(is_object($extraData) and isset($extraData->newPort)) ? $extraData->newPort : $port;
@@ -122,13 +122,13 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query4->execute(array($row2['jobID']));
             $command=$gsprache->mod.' gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'].' gsswitchID:'.$row2['affectedID'];
         } else if (isset($i) and $row2['action']=='re' and isset($customer)) {
-            $tmp=gsrestart($row2['affectedID'],'re',$aeskey,$sprache,$row2['resellerID'],$sql);
+            $tmp=gsrestart($row2['affectedID'],'re',$aeskey,$row2['resellerID']);
             if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
             $query4=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));
             $command='(Re)Start gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'];
         } else if (isset($i) and $row2['action']=='st' and isset($customer)) {
-            $tmp=gsrestart($row2['affectedID'],'so',$aeskey,$sprache,$row2['resellerID'],$sql);
+            $tmp=gsrestart($row2['affectedID'],'so',$aeskey,$row2['resellerID']);
             if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
             $query4=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));

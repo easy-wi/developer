@@ -88,7 +88,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             }
         }
     }
-    $webhostdomain=webhostdomain(0,$sql);
+    $webhostdomain=webhostdomain(0);
     $query=$sql->prepare("SELECT `timezone`,`voice_autobackup`,`voice_autobackup_intervall`,`voice_maxbackup`,`down_checks`,`resellerid` FROM `settings`");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -399,7 +399,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                         if ($restart=='Y') {
                             unset($newProtected);
                             if ($protected=='Y' and $protected_old=='N') {
-                                $tmp=gsrestart($gsswitchID,'so',$aeskey,$sprache,$resellerid,$sql);
+                                $tmp=gsrestart($gsswitchID,'so',$aeskey,$resellerid);
                                 if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                                 echo "Stopping unprotected server: $server\r\n";
                                 $gamestring='1_'.$shorten;
@@ -416,14 +416,14 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                             $query3->execute(array($runID,$protected,$gsswitchID,$resellerid));
                             if (!isset($newProtected)) {
                                 echo 'Restarting server: '.$server."\r\n";
-                                $tmp=gsrestart($gsswitchID,'re',$aeskey,$sprache,$resellerid,$sql);
+                                $tmp=gsrestart($gsswitchID,'re',$aeskey,$resellerid);
                                 if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                             }
                         } else if ($restart=='N' and $qstat=='minecraft' and $worldsafe=='Y') {
                             $cmds[]="sudo -u ${SSH2customer} ./control.sh mc_ws $gsfolder";
                             echo "Minecraft worlsafe: $server\r\n";
                         } else if ($restart=='N' and $qstat=='a2s' and ($uploadtype=='2' or $uploadtype=='3') and $upload=='Y') {
-                            $tmp=gsrestart($gsswitchID,'du',$aeskey,$sprache,$resellerid,$sql);
+                            $tmp=gsrestart($gsswitchID,'du',$aeskey,$resellerid);
                             if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                         }
                         if ($backup=='Y') {

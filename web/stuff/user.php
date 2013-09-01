@@ -205,9 +205,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 						$maxuserram=$ui->id('maxuserram',255,'post');
 						$maxusermhz=$ui->id('maxusermhz',255,'post');
 						if ($reseller_id==0 or $reseller_id==$admin_id) {
-							$availableips=freeips($reseller_id,$sql);
+							$availableips=freeips($reseller_id);
 						} else {
-							$availableips=freeips($admin_id,$sql);
+							$availableips=freeips($admin_id);
 						}
 						foreach ($post_ips as $ip) {
 							if (in_array($ip, $availableips) and isset($ips)) {
@@ -313,9 +313,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $groups[$row['grouptype']][$row['id']]=$row['name'];
         }
         if ($reseller_id==0 or $reseller_id==$admin_id) {
-            $availableips=freeips($reseller_id,$sql);
+            $availableips=freeips($reseller_id);
         } else {
-            $availableips=freeips($admin_id,$sql);
+            $availableips=freeips($admin_id);
         }
         $selectlanguages=getlanguages($template_to_use);
         $template_file='admin_user_add.tpl';
@@ -358,7 +358,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $update->execute(array($id,$resellerid));
                 $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('U','us',?,?,?,?,NULL,NOW(),'dl',?)");
                 $insert->execute(array($admin_id,$id,$id,$row['cname'],$resellerid));
-                updateJobs($id,$reseller_id,$sql);
+                updateJobs($id,$reseller_id);
             }
         }
         if($query->rowCount()>0 and isset($deleted)) {
@@ -440,7 +440,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $groupsAssigned[]=$row['groupID'];
             }
             if ($accounttype=='r') {
-                $ips=($reseller_id==0 or $reseller_id==$admin_id) ? freeips($reseller_id,$sql) : freeips($admin_id,$sql);
+                $ips=($reseller_id==0 or $reseller_id==$admin_id) ? freeips($reseller_id) : freeips($admin_id);
                 $ipsAssigned=array();
                 $query=$sql->prepare("SELECT * FROM `resellerdata` WHERE `resellerid`=?");
                 $query->execute(array($id));
@@ -521,11 +521,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $useractive=($ui->active('useractive','post')) ? $ui->active('useractive','post') : 'N';
                 if ($ui->ips('ips','post') or $ui->id('maxuser',10,'post') and $accounttype='r') {
                     if ($reseller_id==0) {
-                        $availableips=freeips($reseller_id,$sql);
+                        $availableips=freeips($reseller_id);
                     } else if ($resellerlockupid==0 or $resellerlockupid==$admin_id) {
-                        $availableips=freeips($resellerlockupid,$sql);
+                        $availableips=freeips($resellerlockupid);
                     } else {
-                        $availableips=freeips($admin_id,$sql);
+                        $availableips=freeips($admin_id);
                     }
                     if ($resellerlockupid==0) {
                         $resellerlockupid=$id;
@@ -556,7 +556,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             $update->execute(array($id,$reseller_id));
                             $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('U','us',?,?,?,?,NULL,NOW(),'md',?,?)");
                             $insert->execute(array($admin_id,$row['id'],$row['id'],$row['cname'],json_encode(array('newActive'=>$useractive)),$id));
-                            updateJobs($row['id'],$reseller_id,$sql);
+                            updateJobs($row['id'],$reseller_id);
                         }
                     }
                     $query=$sql->prepare("UPDATE `resellerdata` SET `useractive`=?,`ips`=?,`maxuser`=?,`maxgserver`=?,`maxvoserver`=?,`maxdedis`=?,`maxvserver`=?,`maxuserram`=?,`maxusermhz`=? WHERE `resellerid`=? LIMIT 1");
@@ -568,7 +568,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $update->execute(array($id,$reseller_id));
                     $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('U','us',?,?,?,?,NULL,NOW(),'md',?,?)");
                     $insert->execute(array($admin_id,$id,$id,$cname,json_encode(array('newActive'=>$active)),$reseller_id));
-                    updateJobs($id,$reseller_id,$sql);
+                    updateJobs($id,$reseller_id);
                 }
                 $query=$sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`salutation`=?,`birthday`=?,`country`=?,`fax`=?,`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`fdlpath`=?,`mail_backup`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_vserver`=?$jobPending WHERE `id`=? and `resellerid`=? LIMIT 1");
                 $query->execute(array($salutation,$birthday,$country,$fax,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$id,$resellerlockupid));

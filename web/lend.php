@@ -222,7 +222,7 @@ if(isset($servertype)) {
                 include(EASYWIDIR.'/stuff/ssh_exec.php');
                 $query1->execute(array($serverid,$reseller_id));
                 foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
-                    $cmds=gsrestart($row1['switchID'],'so',$aeskey,$gssprache,$reseller_id,$sql);
+                    $cmds=gsrestart($row1['switchID'],'so',$aeskey,$reseller_id);
                     ssh2_execute('gs',$row1['rootID'],$cmds);
                 }
             } else if ($servertype=='v') {
@@ -650,7 +650,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
                 $query=$insert=$sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($serverid,$updateID,$reseller_id));
 				include(EASYWIDIR.'/stuff/ssh_exec.php');
-                $cmds=gsrestart($updateID,'re',$aeskey,$gssprache,$reseller_id,$sql);
+                $cmds=gsrestart($updateID,'re',$aeskey,$reseller_id);
                 ssh2_execute('gs',$rootID,$cmds);
 				if (!isset($page_include) and $ui->id('xml',1,'post')==1) {
 					$responsexml=<<<XML

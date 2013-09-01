@@ -73,6 +73,6 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     }
     $update=$sql->prepare("UPDATE `jobs` SET `status`='4' WHERE `jobID`=? LIMIT 1");
     $update->execute(array($row['jobID']));
-    updateJobs($row['affectedID'],$row['resellerID'],$sql,$jobPending='Y');
+    updateJobs($row['affectedID'],$row['resellerID'],$jobPending='Y');
     $theOutput->printGraph($command);
 }

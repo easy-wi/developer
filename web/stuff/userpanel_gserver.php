@@ -141,15 +141,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $port=$row['port'];
         if ($ui->st('d','get')=='rs') {
             $template_file='Restart done';
-            $cmds=gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'re',$aeskey,$reseller_id);
             $loguseraction="%start% %gserver% $gsip:$port";
         } else if ($ui->st('d','get')=='st') {
             $template_file='Stop done';
-            $cmds=gsrestart($id,'so',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'so',$aeskey,$reseller_id);
             $loguseraction="%stop% %gserver% $gsip:$port";
         } else if ($ui->st('d','get')=='du') {
             $template_file='SourceTV upload started';
-            $cmds=gsrestart($id,'du',$aeskey,$sprache,$reseller_id,$sql);
+            $cmds=gsrestart($id,'du',$aeskey,$reseller_id);
             $loguseraction="%movie% %gserver% $gsip:$port";
         }
         if (isset($cmds)) ssh2_execute('gs',$row['rootID'],$cmds);
@@ -341,7 +341,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $ftppass=$ui->password('ftppass',100,'post');
         $cmds=array();
         if (isset($oldID) and $oldID!=$switchID) {
-            $tmp=gsrestart($id,'so',$aeskey,$sprache,$reseller_id,$sql);
+            $tmp=gsrestart($id,'so',$aeskey,$reseller_id);
             if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
         }
         $query=$sql->prepare("UPDATE `gsswitch` SET `serverid`=?,`ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -351,19 +351,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 if (isset($oldProtected) and $oldProtected=='Y') {
                     $query=$sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($id,$reseller_id));
-                    $tmp=gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+                    $tmp=gsrestart($id,'re',$aeskey,$reseller_id);
                     if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                 } else {
-                    $tmp=gsrestart($id,'re',$aeskey,$sprache,$reseller_id,$sql);
+                    $tmp=gsrestart($id,'re',$aeskey,$reseller_id);
                     if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                 }
             }
             if ($ftppass!=$oldPass) {
-                $rdata=serverdata('root',$rootID,$aeskey);
-                $sship=$rdata['ip'];
-                $sshport=$rdata['port'];
-                $sshuser=$rdata['user'];
-                $sshpass=$rdata['pass'];
                 if ($newlayout=='Y') $servercname=$servercname.'-'.$id;
                 $cmds[]='./control.sh mod '.$servercname.' '.$ftppass.' '.$poldPass;
             }
@@ -514,11 +509,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             if ($cvar!="exec") {
                                 if (isset($ui->post["$cvar"])) {
                                     if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post["$cvar"]!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
-                                        eacchange('change',$id,$ui->post["$cvar"],$aeskey,$reseller_id,$sql);
+                                        eacchange('change',$id,$ui->post[$cvar],$reseller_id);
                                     }
                                     $newconfig .=$cvar." \"".$ui->post[$cvar]."\""."\r\n";
                                 } else if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $value!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
-                                    eacchange('change',$id,$value,$aeskey,$reseller_id,$sql);
+                                    eacchange('change',$id,$value,$reseller_id);
                                 } else {
                                     $newconfig .=$singeline."\r\n";
                                 }
@@ -538,11 +533,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
                                 if ($cvar!="exec") {
                                     if (isset($ui->post["$cvar"])) {
                                         if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post["$cvar"]!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
-                                            eacchange('change',$id,$ui->post["$cvar"],$aeskey,$reseller_id,$sql);
+                                            eacchange('change',$id,$ui->post[$cvar],$reseller_id);
                                         }
                                         $newconfig .=$cvar." \"".$ui->post[$cvar]."\""."\r\n";
                                     } else if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $value!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
-                                        eacchange('change',$id,$value,$aeskey,$reseller_id,$sql);
+                                        eacchange('change',$id,$value,$reseller_id);
                                     } else {
                                         $newconfig .=$singeline."\r\n";
                                     }

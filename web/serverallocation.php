@@ -163,7 +163,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_vserver_allocation.tpl');
 } else if ($ui->st('d','get')=="ui" and $ui->id('id',19,'get')) {
-	foreach (freeips($ui->id('id',19,'get'),$sql) as $ip) echo $ip."<br />";
+	foreach (freeips($ui->id('id',19,'get')) as $ip) echo $ip."<br />";
 } else if ($ui->st('d','get')=="my" and $ui->id('id',19,'get')) {
 	$query=$sql->prepare("SELECT s.`ip`,s.`max_databases`,COUNT(d.`id`) AS `installed` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`id`=? AND s.`active`='Y' AND s.`resellerid`=? LIMIT 1");
 	$query->execute(array($ui->id('id',19,'get'),$reseller_id));

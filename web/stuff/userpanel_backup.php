@@ -77,7 +77,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
             if (isset($shortens)) $shortens .=" ".$row['shorten'];
             else $shortens=$row['shorten'];
         }
-        $webhostdomain=webhostdomain($reseller_id,$sql);
+        $webhostdomain=webhostdomain($reseller_id);
         $template_file=(ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh backup $gsfolder \"$shortens\" \"$webhostdomain\" \"$ftpbackup\"")===false) ? "Error: ".$ssh_reply: $template_file=$gsprache->backup." ".$sprache->create;
     } else if ($ui->w('action',3,'post')=='md'){
         $template_file="userpanel_gserver_backup_md.tpl";

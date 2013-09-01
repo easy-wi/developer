@@ -169,7 +169,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     $query->execute(array($serverip,$port));
                 }
                 if (isset($stopserver)) {
-                    $tmp=gsrestart($serverid,'so',$aeskey,$sprache,$resellerid,$sql);
+                    $tmp=gsrestart($serverid,'so',$aeskey,$resellerid);
                     if (is_array($tmp)) foreach($tmp as $t) $returnCmd[]=$t;
                     $numplayers=0;
                     $map='';
@@ -198,7 +198,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                             $query=$sql->prepare("SELECT `switchID` FROM `serverlist` WHERE `id`=? LIMIT 1");
                             $query->execute(array($serverid));
                             $restartID=$query->fetchColumn();
-                            $tmp=gsrestart($restartID,'so',$aeskey,$sprache,$resellerid,$sql);
+                            $tmp=gsrestart($restartID,'so',$aeskey,$resellerid);
                             if (is_array($tmp)) foreach($tmp as $t) $returnCmd[]=$t;
                             print "Stopping server $address before time is up, because it is crashed\r\n";
                             $donotrestart=true;
@@ -211,7 +211,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     $query->execute(array($serverip,$port));
                     if ($query->fetchColumn()=='Y' and $notified>=$resellersettings[$resellerid]['down_checks']) {
                         print "Restarting: $address\r\n";
-                        $tmp=gsrestart($serverid,'re',$aeskey,$sprache,$resellerid,$sql);
+                        $tmp=gsrestart($serverid,'re',$aeskey,$resellerid);
                         if (is_array($tmp)) foreach($tmp as $t) $returnCmd[]=$t;
                     } else {
                         print "Not Restarting: $address\r\n";
@@ -242,7 +242,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             if ($timeleft<=0) {
                 $query2->execute(array($serverid));
                 $rootID=(int)$query2->fetchColumn();
-                $tmp=gsrestart($serverid,'so',$aeskey,$sprache,$resellerid,$sql);
+                $tmp=gsrestart($serverid,'so',$aeskey,$resellerid);
                 if (is_array($tmp)) foreach($tmp as $t) $rtmp[$rootID][]=$t;
                 $query2=$sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query2->execute(array($id,$resellerid));
