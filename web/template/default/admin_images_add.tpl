@@ -71,6 +71,7 @@
                 <label class="control-label" for="inputMods2"><?php echo $sprache->mods2;?></label>
                 <div class="controls">
                     <select class="span12" id="inputMods2" name="gamemod2">
+                        <option></option>
                         <?php foreach ($table as $table_row) { ?>
                         <option value="<?php echo $table_row['shorten'];?>" <?php if($shorten==$table_row['shorten']) echo 'selected="selected"';?>><?php echo $table_row['shorten'];?></option>
                         <?php } ?>

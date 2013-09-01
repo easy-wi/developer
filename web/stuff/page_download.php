@@ -49,6 +49,7 @@ if (isset($page_name) and isid($page_name,10)) {
 } else if ($ui->id('id',10,'get')) {
     $downloadID=$ui->id('id',10,'get');
 }
+if (!isset($user_language) or $user_language=='') $user_language=(isset($page_detect_language)) ? $page_detect_language : $rSA['language'];
 if ((isset($page_name) and $page_name=='get') or $ui->smallletters('action',3,'get')=='get') $startDownload=true;
 if (isset($downloadID)) {
     $query=$sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? WHERE d.`fileID`=? LIMIT 1");

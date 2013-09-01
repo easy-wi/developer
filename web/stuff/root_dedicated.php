@@ -92,11 +92,11 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lDs']) and $licence
             $userID=$row['userID'];
             $useDHCP=$row['useDHCP'];
             $usePXE=$row['usePXE'];
-            if ($row['status'] == 1) {
+            if ($row['status']==1) {
                 $status=$sprache->stopped;
-            } else if ($row['status'] == 2) {
+            } else if ($row['status']==2) {
                 $status=$sprache->installing;
-            } else if ($row['status'] == 3) {
+            } else if ($row['status']==3) {
                 $status=$sprache->rescue;
             } else {
                 $status=$sprache->ok;

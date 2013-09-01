@@ -45,7 +45,7 @@ if (isset($include) and $include==true) {
         $aesfilecvar=getconfigcvars(EASYWIDIR.'/stuff/keyphrasefile.php');
         $aeskey=$aesfilecvar['aeskey'];
     }
-    $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+    $query=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('4.00','<div align=\"right\">31.08.2013</div>
 <b>Änderungen:</b><br/>
 <p>
@@ -137,9 +137,12 @@ All processed developer tickets can be seen at <a href=\"https://github.com/easy
 <li>Receiver and sender flipped at SMTP mode</li>
 </ul>
 ')");
-    $insert_easywi_version->execute();
+    $query->execute();
     $response->add('Action: insert_easywi_version done: ');
-    $insert_easywi_version->closecursor();
+    $query->closecursor();
+
+    $query=$sql->prepare("UPDATE `settings` SET `template`='default' WHERE `template`='twitterbootstrap'");
+    $query->execute();
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
 }

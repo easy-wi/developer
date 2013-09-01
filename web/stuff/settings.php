@@ -168,6 +168,7 @@ if ($loguserip!='localhost') {
             $commentsModerated=$row['commentsModerated'];
             $honeyPotKey=$row['honeyPotKey'];
         }
+        $ewInstallPath=EASYWIDIR;
         $elements=(!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI','server'),$ewInstallPath)===false) ? preg_split('/\//',$ui->escaped('REQUEST_URI','server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI','server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
         if (isset($seo) and $seo=='Y' and isset($elements[0])) {
             $page_detect_language=$elements[0];

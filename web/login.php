@@ -68,8 +68,8 @@ if (is_file(EASYWIDIR."/languages/$template_to_use/$default_language/login.xml")
 	$sprache=simplexml_load_file(EASYWIDIR."/languages/$default_language/login.xml");
 }
 if ($w=='lo') {
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		$refstring=explode('/',substr(str_replace(array('http://'.$ui->domain('HTTP_HOST','server'),'https://'.$ui->domain('HTTP_HOST','server'),'//'),array('','','/'),strtolower($_SERVER['HTTP_REFERER'])),strlen($ewInstallPath)));
+	if (isset($ui->server['HTTP_REFERER'])) {
+		$refstring=explode('/',substr(str_replace(array('http://'.$ui->domain('HTTP_HOST','server'),'https://'.$ui->domain('HTTP_HOST','server'),'//'),array('','','/'),strtolower($ui->server['HTTP_REFERER'])),strlen($ewInstallPath)));
 		$referrer=(isset($refstring[1])) ? explode('?',$refstring[1]) : '';
 	} else {
 		$referrer[0]="login.php";
@@ -111,7 +111,7 @@ if ($w=='lo') {
 			$md5=md5($userid.$row['logintime'].$row['cname'].$row['lastlogin'].mt_rand());
             $query2=$sql->prepare("UPDATE `userdata` SET `token`=? WHERE `id`=? LIMIT 1");
             $query2->execute(array($md5,$userid));
-			$folders=explode("/",$_SERVER['SCRIPT_NAME']);
+			$folders=explode("/",$ui->server['SCRIPT_NAME']);
 			$amount=count($folders)-1;
 			$i=0;
 			$path="";
@@ -119,7 +119,7 @@ if ($w=='lo') {
 				$path .=$folders["$i"]."/";
 				$i++;
 			}
-            $webhostdomain=(isset($_SERVER['HTTPS'])) ? "https://".$_SERVER['HTTP_HOST'].$path : "http://".$_SERVER['HTTP_HOST'].$path;
+            $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;
 			$link=$webhostdomain.'login.php?w=pr&amp;gamestring='.$md5;
 			$htmllink='<a href="'.$link.'">'.$link.'</a>';
 			sendmail('emailpwrecovery',$userid,$htmllink,'',$sql);
@@ -177,7 +177,7 @@ if ($w=='lo') {
 						$text=$sprache->send;
                         $query=$sql->prepare("UPDATE `userdata` SET `token`=?,`mail`=? WHERE `id`=? LIMIT 1");
                         $query->execute(array($md5,$ui->ismail('mail','post'),$row['userid']));
-						$folders=explode("/",$_SERVER['SCRIPT_NAME']);
+						$folders=explode("/",$ui->server['SCRIPT_NAME']);
 						$amount=count($folders)-1;
 						$i=0;
 						$path="";
@@ -185,7 +185,7 @@ if ($w=='lo') {
 							$path .=$folders["$i"]."/";
 							$i++;
 						}
-                        $webhostdomain=(isset($_SERVER['HTTPS'])) ? "https://".$_SERVER['HTTP_HOST'].$path : "http://".$_SERVER['HTTP_HOST'].$path;
+                        $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;
 						$link=$webhostdomain.'login.php?w=pr&amp;gamestring='.$md5;
 						$htmllink='<a href="'.$link.'">'.$link.'</a>';
 						sendmail('emailpwrecovery',$row['userid'],$htmllink,'',$sql);
@@ -360,7 +360,7 @@ XML;
 			} else if(isset($user_id)) {
 				redirect('userpanel.php');
 			} else if(isset($admin_id)) {
-				$folders=explode("/",$_SERVER['SCRIPT_NAME']);
+				$folders=explode("/",$ui->server['SCRIPT_NAME']);
 				$amount=count($folders)-1;
 				$i=0;
 				$path="";
@@ -368,7 +368,7 @@ XML;
 					$path .=$folders["$i"]."/";
 					$i++;
 				}
-                $webhostdomain=(isset($_SERVER['HTTPS'])) ? "https://".$_SERVER['HTTP_HOST'].$path : "http://".$_SERVER['HTTP_HOST'].$path;
+                $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;
                 $query=$sql->prepare("UPDATE `settings` SET `paneldomain`=? WHERE `resellerid`=0 LIMIT 1");
                 $query->execute(array($webhostdomain));
                 $params=@json_decode(licenceRequest(true));
