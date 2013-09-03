@@ -55,54 +55,26 @@ if (isset($admin_id)) {
 }
 
 if ($ui->st('d','get')=='ud' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
-    $serverid=$ui->id('id',19,'get');
-    $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-    $aeskey=$aesfilecvar['aeskey'];
-    $query=$sql->prepare("SELECT g.`rootID`,g.`protected`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,AES_DECRYPT(g.`ppassword`,?) AS `dppassword`,s.`servertemplate`,t.`modfolder`,t.`shorten`,u.`fdlpath`,u.`cname` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
-    $query->execute(array($aeskey,$aeskey,$serverid,$reseller_id));
+    $serverid=(int)$ui->id('id',19,'get');
+    require_once(EASYWIDIR.'/stuff/keyphrasefile.php');
+    $query=$sql->prepare("SELECT g.`rootID`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,g.`newlayout`,s.`servertemplate`,t.`modfolder`,t.`shorten`,u.`fdlpath`,u.`cname` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
+    $query->execute(array($serverid,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $rootid=$row['rootID'];
-        $serverip=$row['serverip'];
-        $port=$row['port'];
-        $masterfdl=$row['masterfdl'];
-        $mfdldata=$row['mfdldata'];
-        $shorten=$row['shorten'];
-        $modfolder=$row['modfolder'];
-        $servertemplate=$row['servertemplate'];
-        $customer=$row['cname'];
-        $ftppass=$row['dftppassword'];
-        if ($row['protected']=='Y') {
-            $customer=$customer.'-p';
-            $ftppass=$row['dppassword'];
-        }
-        if ($servertemplate==1) {
-            $servertemplate="";
-        } else {
-            $servertemplate="-".$servertemplate;
-        }
-        if ($masterfdl=='Y') {
-            $fdlpath=$row['fdlpath'];
-            $ftpupload=$fdlpath;
-        } else {
-            $ftpupload=$mfdldata;
-        }
-        if ($ftpupload!="") {
+        $shorten=$row['shorten'] . ($row['servertemplate']==1) ? '' : '-'.$row['servertemplate'];
+        $customer=($row['newlayout']=='Y') ? $row['cname'].'-'.$serverid : $row['cname'];
+        if ($row['protected']=='Y') $customer=$customer.'-p';
+        $ftpupload=($row['masterfdl']=='Y') ? $row['fdlpath'] : $row['mfdldata'];
+        if ($ftpupload!='') {
             include(EASYWIDIR."/stuff/ssh_exec.php");
-            $rdata=serverdata('root',$rootid,$aeskey);
-            $sship=$rdata['ip'];
-            $sshport=$rdata['port'];
-            $sshuser=$rdata['user'];
-            $sshpass=$rdata['pass'];
-            if ($row['newlayout']=='Y') $customer=$customer.'-'.$serverid;
-            $serverfolder=$serverip."_"."$port/$shorten$servertemplate";
-            if(ssh2_execute('gs',$rootid,"sudo -u ${customer} ./control.sh fastdl ${customer} ${serverfolder} \"${ftpupload}\" ${modfolder}")===false) {
+            $serverfolder="${row['serverip']}_${row['port']}/${shorten}";
+            if(ssh2_execute('gs',$row['rootID'],"sudo -u ${customer} ./control.sh fastdl ${customer} ${serverfolder} \"${ftpupload}\" ${row['modfolder']}")===false) {
                 $template_file=$spracheResponse->error_server;
                 $actionstatus="fail";
             } else {
                 $template_file=$sprache->fdlstarted;
                 $actionstatus="ok";
             }
-            $loguseraction="%start% %fastdl% $serverip:$port %$actionstatus%";
+            $loguseraction="%start% %fastdl% ${row['serverip']}:${row['port']} %${actionstatus}%";
             $insertlog->execute();
         } else {
             $template_file=$sprache->fdlfailed;
@@ -120,14 +92,8 @@ if ($ui->st('d','get')=='ud' and $ui->id('id',19,'get') and (!isset($_SESSION['s
             $masterfdl=$row['masterfdl'];
             $mfdldata=$row['mfdldata'];
         }
-        if (!isset($mfdldata)){
-            $mfdldata="";
-        }
-        if (isset($serverip)) {
-            $template_file="userpanel_gserver_fdl_es.tpl";
-        } else {
-            $template_file='userpanel_404.tpl';
-        }
+        if (!isset($mfdldata)) $mfdldata='';
+        $template_file=(isset($serverip)) ? 'userpanel_gserver_fdl_es.tpl' : 'userpanel_404.tpl';
     } else if ($ui->smallletters('action',2,'post')=='md'){
         if ($ui->active('masterfdl','post')) {
             $query=$sql->prepare("SELECT `serverip`,`port` FROM `gsswitch` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
@@ -155,14 +121,8 @@ if ($ui->st('d','get')=='ud' and $ui->id('id',19,'get') and (!isset($_SESSION['s
     if (!$ui->smallletters('action',2,'post')) {
         $query=$sql->prepare("SELECT `fdlpath` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $fdlpath=$row['fdlpath'];
-        }
-        if ($query->rowCount()>0) {
-            $template_file='userpanel_gserver_fdl_eu.tpl';
-        } else {
-            $template_file='userpanel_404.tpl';
-        }
+        $fdlpath=$query->fetchColumn();
+        $template_file=($query->rowCount()>0) ? 'userpanel_gserver_fdl_eu.tpl' : 'userpanel_404.tpl';
     } else if ($ui->smallletters('action',2,'post')=='md'){
         if ($ui->url('fdlpath','post')) {
             $query=$sql->prepare("UPDATE `userdata` SET `fdlpath`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -181,7 +141,7 @@ if ($ui->st('d','get')=='ud' and $ui->id('id',19,'get') and (!isset($_SESSION['s
         $fdlpath=explode('@',$row['fdlpath']);
         $username=$row['cname'];
     }
-    if (!isset($fdlpath['1'])) $fdlpath['1']=$sprache->noset;
+    if (!isset($fdlpath[1])) $fdlpath[1]=$sprache->noset;
     $table=array();
     $query=$sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
     $query->execute(array($user_id,$reseller_id));

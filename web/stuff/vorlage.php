@@ -196,7 +196,7 @@ function names($value,$laeng) {
         return $value;
     }
 }
-function phone($value,$laeng=null) {
+function phone($value) {
     if (preg_match('/^[0-9\+\(\)\/\-\s]+$/', $value)) {
         return $value;
     }

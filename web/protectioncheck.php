@@ -145,9 +145,9 @@ if ($ui->ipport('serveraddress','post')) {
     if (isset($page_include)) {
         $template_file='page_protectioncheck.tpl';
     } else {
-        if (file_exists(EASYWIDIR."/template/$template_to_use/protectioncheck.tpl")) {
-            include(EASYWIDIR."/template/$template_to_use/protectioncheck.tpl");
-        } else if (file_exists(EASYWIDIR."/template/default/protectioncheck.tpl")) {
+        if (file_exists(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl')) {
+            include(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl');
+        } else if (file_exists(EASYWIDIR.'/template/default/protectioncheck.tpl')) {
             include(EASYWIDIR.'/template/default/protectioncheck.tpl');
         } else {
             include(EASYWIDIR.'/template/protectioncheck.tpl');
@@ -212,9 +212,9 @@ XML;
 } else if (isset($page_include)) {
     $template_file='page_protectioncheck.tpl';
 } else {
-    if (file_exists(EASYWIDIR."/template/$template_to_use/protectioncheck.tpl")) {
-        include(EASYWIDIR."/template/$template_to_use/protectioncheck.tpl");
-    } else if (file_exists(EASYWIDIR."/template/default/protectioncheck.tpl")) {
+    if (file_exists(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl')) {
+        include(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl');
+    } else if (file_exists(EASYWIDIR.'/template/default/protectioncheck.tpl')) {
         include(EASYWIDIR.'/template/default/protectioncheck.tpl');
     } else {
         include(EASYWIDIR.'/template/protectioncheck.tpl');

@@ -677,9 +677,9 @@ XML;
                         $page_data->setCanonicalUrl($s);
 						$template_file='page_lenddata.tpl';
 					} else {
-						if (is_file(EASYWIDIR."/template/$template_to_use/lenddata.tpl")) {
-							include(EASYWIDIR."/template/$template_to_use/lenddata.tpl");
-						} else if (is_file(EASYWIDIR."/template/default/lenddata.tpl")) {
+						if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl')) {
+							include(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl');
+						} else if (is_file(EASYWIDIR.'/template/default/lenddata.tpl')) {
 							include(EASYWIDIR.'/template/default/lenddata.tpl');
 						} else {
 							include(EASYWIDIR.'/template/lenddata.tpl');
@@ -707,9 +707,9 @@ XML;
                 $page_data->setCanonicalUrl($s);
 				$template_file='page_lend.tpl';
 			} else {
-				if (is_file(EASYWIDIR."/template/$template_to_use/lend.tpl")) {
-					include(EASYWIDIR."/template/$template_to_use/lend.tpl");
-				} else if (is_file(EASYWIDIR."/template/default/lend.tpl")) {
+				if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl')) {
+					include(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl');
+				} else if (is_file(EASYWIDIR.'/template/default/lend.tpl')) {
 					include(EASYWIDIR.'/template/default/lend.tpl');
 				} else {
 					include(EASYWIDIR.'/template/lend.tpl');
@@ -921,9 +921,9 @@ XML;
                         $page_data->setCanonicalUrl($s);
 						$template_file='page_lenddata.tpl';
 					} else {
-						if (is_file(EASYWIDIR."/template/$template_to_use/lenddata.tpl")) {
-							include(EASYWIDIR."/template/$template_to_use/lenddata.tpl");
-						} else if (is_file(EASYWIDIR."/template/default/lenddata.tpl")) {
+						if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl')) {
+							include(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl');
+						} else if (is_file(EASYWIDIR.'/template/default/lenddata.tpl')) {
 							include(EASYWIDIR.'/template/default/lenddata.tpl');
 						} else {
 							include(EASYWIDIR.'/template/lenddata.tpl');
@@ -946,9 +946,9 @@ XML;
                     $page_data->setCanonicalUrl($s);
 					$template_file='page_lend.tpl';
 				} else {
-					if (is_file(EASYWIDIR."/template/$template_to_use/lend.tpl")) {
-						include(EASYWIDIR."/template/$template_to_use/lend.tpl");
-					} else if (is_file(EASYWIDIR."/template/default/lend.tpl")) {
+					if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl')) {
+						include(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl');
+					} else if (is_file(EASYWIDIR.'/template/default/lend.tpl')) {
 						include(EASYWIDIR.'/template/default/lend.tpl');
 					} else {
 						include(EASYWIDIR.'/template/lend.tpl');

@@ -341,7 +341,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
             $rootID=$row1['id'];
             $cmds=array();
-            $query2=$sql->prepare("SELECT *,AES_DECRYPT(`ftppassword`,?) AS `decryptedftppass`,AES_DECRYPT(`ppassword`,?) AS `decryptedppassword` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=? ORDER BY `userid`,`serverid`");
+            $query2=$sql->prepare("SELECT *,AES_DECRYPT(`ftppassword`,?) AS `decryptedftppass`,AES_DECRYPT(`ppassword`,?) AS `decryptedppassword` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=? AND `active`='Y' AND `lendserver`='N' ORDER BY `userid`,`serverid`");
             $query2->execute(array($aeskey,$aeskey,$rootID,$resellerid));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 unset($restart);

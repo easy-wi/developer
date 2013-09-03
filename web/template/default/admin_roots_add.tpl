@@ -54,11 +54,11 @@
                     </select>
                 </div>
             </div>
-            <div class="N <?php if ($publickey=='Y') echo 'display_none';?> switch control-group">
+            <div class="N switch control-group">
                 <label class="control-label" for="inputSSH2Pass"><?php echo $sprache->ssh_pass;?>:</label>
                 <div class="controls"><input class="span12" id="inputSSH2Pass" type="password" name="pass" value="" maxlength="50"></div>
             </div>
-            <div class="Y <?php if ($publickey=='N') echo 'display_none';?> switch control-group">
+            <div class="Y switch control-group">
                 <label class="control-label" for="inputSSH2Key"><?php echo $sprache->keyname;?></label>
                 <div class="controls"><input class="span12" id="inputSSH2Key" type="text" name="keyname" maxlength="20" value=""></div>
             </div>

@@ -208,13 +208,12 @@ if ($w=='lo') {
 		} else {
 			$vosprache=simplexml_load_file(EASYWIDIR."/languages/$default_language/voice.xml");
 		}
-		$include="passwordrecovery_vo.tpl";
+		$include='passwordrecovery_vo.tpl';
 	} else {
-		$include="passwordrecovery.tpl";
+		$include='passwordrecovery.tpl';
 	}
 } else {
-    $aesfilecvar=getconfigcvars(EASYWIDIR.'/stuff/keyphrasefile.php');
-    $aeskey=$aesfilecvar['aeskey'];
+    $aeskey=include(EASYWIDIR.'/stuff/keyphrasefile.php');
 	if (!$ui->username('username',255,'post') and !$ui->ismail('username',255,'post') and !$ui->password('password',255,'post') and !isset($_SESSION['sessionid'])) {
 		$include='login.tpl';
 	} else if (($ui->username('username',255,'post') or $ui->ismail('username','post')) and $ui->password('password',255,'post') and !isset($_SESSION['sessionid'])) {

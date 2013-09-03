@@ -49,7 +49,7 @@ if (isset($what_to_be_included_array[$w]) and is_file((EASYWIDIR.'/stuff/'.$what
     unset($dbConnect);
 } else {
     unset($dbConnect);
-    $template_file="admin_home.tpl";
+    $template_file='admin_home.tpl';
 }
 include(IncludeTemplate($template_to_use,'admin_header.tpl'));
 include(IncludeTemplate($template_to_use,(isset($template_file)  and preg_match('/^(.*)\.[\w]{1,}$/',$template_file)) ? $template_file : 'general.tpl'));
