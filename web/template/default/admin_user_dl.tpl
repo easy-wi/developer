@@ -22,7 +22,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputDelete"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputDelete" type="submit"><i class="icon-white icon-remove-sign"></i></button>
+                    <button class="btn btn-danger pull-right" id="inputDelete" type="submit"><i class="icon-white icon-remove-sign"></i></button>
                 </div>
             </div>
         </form>

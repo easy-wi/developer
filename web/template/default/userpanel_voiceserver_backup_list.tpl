@@ -32,7 +32,7 @@
             <td><?php echo $table_row['name']; ?></td>
             <td>
                 <form method="post" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-                    <button class="btn btn-primary btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-remove-sign"></i></button>
+                    <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-remove-sign"></i></button>
                     <input type="hidden" name="action" value="md" />
                     <input type="hidden" name="delete" value="md" />
                     <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />

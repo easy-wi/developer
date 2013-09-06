@@ -47,7 +47,7 @@
                         <div class="controls">
                             <select id="inputSubpage" name="subpage">
                                 <option value="0"><?php echo $gsprache->no;?></option>
-                                <?php foreach ($subpages as $key => $value) { ?>
+                                <?php foreach ($subpage as $key => $value) { ?>
                                 <option value="<?php echo $key;?>"><?php echo $value;?></option>
                                 <?php } ?>
                             </select>
