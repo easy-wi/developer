@@ -40,7 +40,7 @@
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['cms_pages']) or $reseller_id!=0) {
     redirect('admin.php');
 }
-$sprache=getlanguagefile('page',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('page',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype='admin';
@@ -184,7 +184,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if(!isset($titleLanguages[$row['language']])) {
-            $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page',$row['language'],0,$sql),'general'=>getlanguagefile('general',$row['language'],0,$sql));
+            $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page',$row['language'],0),'general'=>getlanguagefile('general',$row['language'],0));
         }
         $commentDate='m.d.Y H:i';
         if ($user_language=='de') $commentDate='d.m.Y H:i';

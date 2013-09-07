@@ -44,7 +44,7 @@ if (!isset($main) or $main!=1 or !isset($user_id) or !isset($user_language) or !
 }
 $aesfilecvar=getconfigcvars(EASYWIDIR.'/stuff/keyphrasefile.php');
 $aeskey=$aesfilecvar['aeskey'];
-$sprache=getlanguagefile('user',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('user',$user_language,$reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->id('id',10,'get') or $ui->st('d','get')=='ad') {

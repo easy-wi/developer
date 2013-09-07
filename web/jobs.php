@@ -75,7 +75,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     include('stuff/mysql_functions.php');
     $aesfilecvar=getconfigcvars("stuff/keyphrasefile.php");
     $aeskey=$aesfilecvar['aeskey'];
-    $gsprache=getlanguagefile('general','uk','0',$sql);
+    $gsprache=getlanguagefile('general','uk',0);
     class runGraph {
         private $jobsDone=0;
         private $startTime=0;

@@ -36,8 +36,7 @@
  */
 
 class PageSettings {
-	private $seo='';
-	public $language,$about,$canurl,$pageurl,$title,$keywords=array(),$lastnews,$tags,$pages,$hiddenPages,$last_news=array(),$MSIE=false,$lendactive,$lendactiveGS,$lendactiveVS,$lendGS=false,$lendVS=false,$protectioncheck,$pages_array=array();
+	public $seo='',$language,$about,$canurl,$pageurl,$title,$keywords=array(),$lastnews,$tags,$pages,$hiddenPages,$last_news=array(),$MSIE=false,$lendactive,$lendactiveGS,$lendactiveVS,$lendGS=false,$lendVS=false,$protectioncheck,$pages_array=array(),$languageLinks=array();
 	function __construct($user_language,$pageurl,$seo) {
 		$this->language=$user_language;
 		$this->pageurl=$pageurl;
@@ -53,9 +52,7 @@ class PageSettings {
 	}
 	function AddData ($var,$value) {
 		if (is_array($this->$var)) {
-			if (!in_array($value,$this->$var,true)) {
-				array_push($this->$var,$value);
-			}
+			if (!in_array($value,$this->$var,true)) array_push($this->$var,$value);
 		} else {
 			$this->$var .=' '.$value;
 		}
@@ -78,9 +75,7 @@ class PageSettings {
 		if ($this->seo=='Y') {
 			if (is_array($request)) {
 				$link='';
-				foreach ($request as $r) {
-					$link .='/'.$this->NameToLink($r);
-				}
+				foreach ($request as $r) $link .='/'.$this->NameToLink($r);
 			} else if ($id==false) {
 				$link = '/'.$this->AddPageToArray('pages',$subid,$this->NameToLink($request));
 			} else {
@@ -91,14 +86,8 @@ class PageSettings {
 			if (is_array($request)) {
 				$getparams='';
 				$i=0;
-				foreach ($request as $key=>$value) {
-                    if ($value!='' and $value!=null) {
-                        if ($i==0) {
-                            $getparams .='?'.$key.'='.$value;
-                        } else {
-                            $getparams .='&amp;'.$key.'='.$value;
-                        }
-                    }
+				foreach ($request as $k=>$v) {
+                    if ($v!='' and $v!=null) $getparams .=($i==0) ? '?'.$k.'='.$v : '&amp;'.$k.'='.$v;
 					$i++;
 				}
 			} else if (is_numeric($request)) {
@@ -122,25 +111,15 @@ class PageSettings {
 	}
     function SetNewsPost ($id,$title,$text,$cutOff) {
         $this->last_news[$id]['title']=$title;
-        if (strlen($text)<=$cutOff) {
-            $this->last_news[$id]['text']=$text;
-        } else {
-            $this->last_news[$id]['text']=substr($text,0,$cutOff).' ...';
-        }
-        if ($this->seo=='Y') {
-            $this->last_news[$id]['link']=$this->pages['news']['link'].$this->NameToLink($title).'/';
-        } else {
-            $this->last_news[$id]['link']=$this->pages['news']['link'].'&amp;id='.$id;
-        }
+        $this->last_news[$id]['text']=(strlen($text)<=$cutOff) ? $text : substr($text,0,$cutOff).' ...';
+        $this->last_news[$id]['link']=($this->seo=='Y') ? $this->pages['news']['link'].$this->NameToLink($title).'/' : $this->pages['news']['link'].'&amp;id='.$id;
         $this->last_news[$id]['href']='<a href="'.$this->last_news[$id]['link'].'" title="'.$title.'">'.$title.'</a>';
     }
 	function SetLinks ($var,$linkname,$request,$id,$date=null) {
 		if ($this->seo=='Y') {
 			if (is_array($request)) {
 				$link='';
-				for ($i=0;$i<(count($request)-1);$i++) {
-					$link .='/'.$this->NameToLink($request[$i]);
-				}
+				for ($i=0;$i<(count($request)-1);$i++) $link .='/'.$this->NameToLink($request[$i]);
 				$link .= '/'.$this->AddPageToArray($var,$id,$this->NameToLink($request[$i]));
 			} else {
 				$link = '/'.$this->AddPageToArray($var,$id,$this->NameToLink($request));
@@ -150,14 +129,8 @@ class PageSettings {
 			if (is_array($request)) {
 				$getparams='';
 				$i=0;
-				foreach ($request as $key=>$value) {
-					if ($value!='' and $value!=null) {
-                        if ($i==0) {
-                            $getparams .='?'.$key.'='.$value;
-                        } else {
-                            $getparams .='&amp;'.$key.'='.$value;
-                        }
-                    }
+				foreach ($request as $k=>$v) {
+                    if ($v!='' and $v!=null) $getparams .=($i==0) ? '?'.$k.'='.$v : '&amp;'.$k.'='.$v;
 					$i++;
 				}
 			} else {
@@ -178,11 +151,7 @@ class PageSettings {
                 $query=$sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `id`=? LIMIT 1");
                 $query->execute(array($ID));
                 $title=$query->fetchColumn();
-                if ($s=='news') {
-                    $addToUrl='/'.$this->language.'/'.$this->NameToLink($gsprache->news).'/'.$this->NameToLink($title).'/';
-                } else {
-                    $addToUrl='/'.$this->language.'/'.$this->NameToLink($title).'/';
-                }
+                $addToUrl=($s=='news') ? '/'.$this->language.'/'.$this->NameToLink($gsprache->news).'/'.$this->NameToLink($title).'/' : '/'.$this->language.'/'.$this->NameToLink($title).'/';
             } else if ($this->seo=='Y' and in_array($s,array('imprint','lendserver','news'))) {
                 $addToUrl='/'.$this->language.'/'.$this->NameToLink($gsprache->$s).'/';
             } else if ($this->seo=='Y') {
@@ -222,6 +191,25 @@ class PageSettings {
         }
         return false;
     }
+
+    // https://github.com/easy-wi/developer/issues/62
+    public function langLinks ($links=array()) {
+        global $languages;
+        foreach ($languages as $l) {
+            if ($this->seo=='Y') {
+                $this->languageLinks[$l]=(isset($links[$l])) ? $this->pageurl.'/'.$l.'/'.$links[$l].'/' : $this->pageurl.'/'.$l.'/';
+            } else {
+                $this->languageLinks[$l]=(isset($links[$l])) ? $this->pageurl.'/index.php'.$links[$l].'&amp;l='.$l : $this->pageurl.'/index.php?l='.$l;
+            }
+        }
+    }
+    public function getLangLinks () {
+        if (count($this->languageLinks)==0) {
+            $this->langLinks();
+        }
+        return $this->languageLinks;
+    }
+
 	function __destruct() {
 		unset($this->seo,$this->language,$this->about,$this->canurl,$this->pageurl,$this->title,$this->keywords,$this->lastnews,$this->tags,$this->pages,$this->hiddenPages,$this->last_news,$this->MSIE);
 	}
@@ -231,6 +219,8 @@ function checkForSpam ($checkURL=null) {
     global $ui,$blockLinks,$languageFilter,$page_data,$user_language,$textID,$blockWords,$honeyPotKey,$tornevall,$sql;
     $spamReason=array();
     $ips=array();
+
+    // Check if IP exists at DB as a spammer
     if ($checkURL==null) {
         $hostByIp='';
         if ($ui->ip4('REMOTE_ADDR','server')) {
@@ -239,68 +229,56 @@ function checkForSpam ($checkURL=null) {
         }
         $query=$sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `markedSpam`='Y' AND (`ip`=? OR `dns`=?) AND `resellerid`=0 LIMIT 1");
         $query->execute(array($ui->ip('REMOTE_ADDR','server'),$hostByIp));
-        if ($query->fetchColumn()>0) {
-            $spamReason[]='IP or Host already known for spam';
-        }
+        if ($query->fetchColumn()>0) $spamReason[]='IP or Host already known for spam';
     } else {
         $check=str_replace(array('https://','http://','ftps://','ftp://'),'',$checkURL);
         $ips=gethostbynamel($check);
         foreach($ips as $ip) {
             $query=$sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `markedSpam`='Y' AND `ip`=? AND `resellerid`=0 LIMIT 1");
             $query->execute(array($ip));
-            if ($query->fetchColumn()>0 and !in_array('IP or Host already known for spam',$spamReason)) {
-                $spamReason[]='IP or Host already known for spam';
-            }
+            if ($query->fetchColumn()>0 and !in_array('IP or Host already known for spam',$spamReason)) $spamReason[]='IP or Host already known for spam';
         }
     }
-    if ($checkURL==null and count($spamReason)==0 and $ui->ip4('REMOTE_ADDR','server') and !in_array($ui->ip4('REMOTE_ADDR','server'),gethostbynamel($hostByIp))) {
-        $spamReason[]='Fake IP';
-    }
-    if($checkURL==null and count($spamReason)==0 and strlen($ui->escaped('mail','post'))>0) {
-        $spamReason[]='XSS: Hidden field';
-    }
-    if($checkURL==null and count($spamReason)==0 and (!isset($_SESSION['news'][$textID]) or $_SESSION['news'][$textID]!=$ui->escaped('token','post'))) {
-        $spamReason[]='XSS: Token';
-    }
+
+    // reverse DNS does not add up
+    if ($checkURL==null and count($spamReason)==0 and $ui->ip4('REMOTE_ADDR','server') and !in_array($ui->ip4('REMOTE_ADDR','server'),gethostbynamel($ips))) $spamReason[]='Fake IP';
+
+    // hidden fields have been filled
+    if ($checkURL==null and count($spamReason)==0 and strlen($ui->escaped('mail','post'))>0) $spamReason[]='XSS: Hidden field';
+
+    // CSFR token does not add up
+    if ($checkURL==null and count($spamReason)==0 and (!isset($_SESSION['news'][$textID]) or $_SESSION['news'][$textID]!=$ui->escaped('token','post'))) $spamReason[]='XSS: Token';
+
+    // Links not allowed in comments
     if ($checkURL==null and count($spamReason)==0 and $blockLinks=='Y') {
-        foreach (array('http://','https://','ftp://','ftps://') as $key) {
-            if (strpos($ui->escaped('comment','post'),$key)!==false and (!in_array('URL',$spamReason))) {
-                $spamReason[]='URL';
-            }
-        }
+        foreach (array('http://','https://','ftp://','ftps://') as $key) if (strpos($ui->escaped('comment','post'),$key)!==false and (!in_array('URL Spam',$spamReason))) $spamReason[]='URL Spam';
     }
+
+    // Post contains blacklisted words
     if ($checkURL==null and count($spamReason)==0) {
         foreach (explode(',',$blockWords) as $word) {
-            if (strlen(trim($word))>0 and strpos($ui->escaped('comment','post'),trim($word))!==false) {
-                if (!in_array('Word Blacklist',$spamReason)) {
-                    $spamReason[]='Word Blacklist';
-                }
-            }
+            if (strlen(trim($word))>0 and strpos($ui->escaped('comment','post'),trim($word))!==false and !in_array('Word Blacklist',$spamReason)) $spamReason[]='Word Blacklist';
         }
     }
+
+    // use google translation REST API for language detection. If the current page contains a different language we likely have a spammer
     if ($checkURL==null and count($spamReason)==0 and $languageFilter=='Y') {
         $raw=webhostRequest('translate.google.com',$page_data->pageurl,'/translate_a/t?client=x&text='.urlencode(htmlentities(substr($ui->escaped('comment','post'),0,200))));
         $json=json_decode($raw);
-        if ($json and isset($json->src) and $json->src!=$user_language) {
-            $spamReason[]='Language';
-        }
+        if ($json and isset($json->src) and $json->src!=$user_language) $spamReason[]='Language';
     }
+
+    // check if the remote address (IP) is known for spamming at the tornevall.org list
     if (count($spamReason)==0 and ($checkURL!=null or $ui->ip4('REMOTE_ADDR','server')) and (($honeyPotKey!=null and $honeyPotKey!='') or $tornevall=='Y')) {
-        if ($checkURL!=null) {
-            $ips=array($ui->ip4('REMOTE_ADDR','server'));
-        }
+        if ($checkURL!=null) $ips=array($ui->ip4('REMOTE_ADDR','server'));
         foreach ($ips as $ip) {
             $ipRevers=implode('.',array_reverse(explode('.',$ip)));
-            if (count($spamReason)==0 and $tornevall=='Y' and (bool)checkdnsrr($ipRevers.'.opm.tornevall.org.','A')) {
-                $spamReason[]='IP is listed at dnsbl.tornevall.org';
-            }
+            if (count($spamReason)==0 and $tornevall=='Y' and (bool)checkdnsrr($ipRevers.'.opm.tornevall.org.','A')) $spamReason[]='IP is listed at dnsbl.tornevall.org';
             if (count($spamReason)==0 and $honeyPotKey!=null and $honeyPotKey!='') {
                 $ex=explode('.',gethostbyname($honeyPotKey.'.'.$ipRevers.'.dnsbl.httpbl.org'));
                 if ($ex[0]==127){
                     $types=array(1=>'Suspicious',2=>'Harvester',3=>'Suspicious & Harvester',4=>'Comment Spammer',5=>'Suspicious & Comment Spammer',6=>'Harvester & Comment Spammer',7=>'Suspicious & Harvester & Comment Spammer');
-                    if ($ex[3]!=0)  {
-                        $spamReason[]='IP seems to be a '.$types[$ex[3]].'. It was last seen '.$ex[1].' day(s) ago and has a threat score of '.$ex[2];
-                    }
+                    if ($ex[3]!=0) $spamReason[]='IP seems to be a '.$types[$ex[3]].'. It was last seen '.$ex[1].' day(s) ago and has a threat score of '.$ex[2];
                 }
             }
         }

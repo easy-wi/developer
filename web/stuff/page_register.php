@@ -50,7 +50,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $registrationBadEmail=$row['registrationBadEmail'];
     $registrationBadIP=$row['registrationBadIP'];
 }
-$langObject=getlanguagefile('user',(isset($user_language)) ? $user_language : $default_language,0,$sql);
+$langObject=getlanguagefile('user',(isset($user_language)) ? $user_language : $default_language,0);
 if (isset($registration) and in_array($registration,array('A','M','D'))) {
     if (isset($page_name) and isset($page_count) and $page_name=='activate' and wpreg_check($page_count,100)) {
 
@@ -64,7 +64,7 @@ if (isset($registration) and in_array($registration,array('A','M','D'))) {
             $_SESSION['userid']=$userID;
             $_SESSION['resellerid']=0;
             $template_file=$page_sprache->registerActivated;
-            $langObjectTemp=getlanguagefile('redirect',(isset($user_language)) ? $user_language : $default_language,0,$sql);
+            $langObjectTemp=getlanguagefile('redirect',(isset($user_language)) ? $user_language : $default_language,0);
             $text=$langObjectTemp->refresh;
             $langObjectTemp=null;
             if (isset($page_data->canurl)) $header='<meta http-equiv="refresh" content="3; URL='.$page_data->canurl.'">';
@@ -182,7 +182,7 @@ if (isset($registration) and in_array($registration,array('A','M','D'))) {
                         $template_file=$page_sprache->registerMailSend;
 
                         // send Mail
-                        sendmail('emailregister',$userID,'',$page_data->pages['register']['link'].'activate/'.$activeHash.'/',$sql);
+                        sendmail('emailregister',$userID,'',$page_data->pages['register']['link'].'activate/'.$activeHash.'/');
                     } else {
                         $_SESSION['userid']=$userID;
                         $_SESSION['resellerid']=0;

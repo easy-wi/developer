@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: imprint.php.
  * Author: Ulrich Block
@@ -35,14 +36,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($reseller_id)) {
-	$reseller_id=0;
-}
-if (isset($user_language)) {
-	$sprache=getlanguagefile('images',$user_language,$reseller_id,$sql);
-} else {
-	$sprache=getlanguagefile('images',$page_language,$reseller_id,$sql);
-}
+if (!isset($reseller_id)) $reseller_id=0;
+$sprache=(isset($user_language)) ? getlanguagefile('images',$user_language,$reseller_id) : getlanguagefile('images',$page_language,$reseller_id);
 if (isset($admin_id) and $admin_id==$reseller_id) {
 	$resellerid=0;
 } else if (isset($reseller_id)) {
@@ -52,25 +47,24 @@ if (isset($admin_id) and $admin_id==$reseller_id) {
 }
 $query=$sql->prepare("SELECT `imprint` FROM `imprints` WHERE language=? AND resellerid=? LIMIT 1");
 $query->execute(array($user_language,$resellerid));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-	$imprint=$row['imprint'];
-}
-if (!isset($imprint)) {
+$imprint=$query->fetchColumn();
+if ($imprint!='') {
     $query=$sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($resellerid));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$defaultlanguage=$row['language'];
-    }
+    $defaultlanguage=$query->fetchColumn();
     $query=$sql->prepare("SELECT `imprint` FROM `imprints` WHERE language=? AND resellerid=? LIMIT 1");
     $query->execute(array($defaultlanguage,$resellerid));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$imprint=$row['imprint'];
-	}
-}
-if (!isset($imprint)) {
-	$imprint='';
+    $imprint=$query->fetchColumn();
 }
 if (isset($page_data)) {
     $page_data->setCanonicalUrl($s);
+
+    // https://github.com/easy-wi/developer/issues/62
+    $langLinks=array();
+    foreach ($languages as $l) {
+        $tempLanguage=getlanguagefile('general',$l,0);
+        $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+    }
+    $page_data->langLinks($langLinks);
 }
 $template_file="imprint.tpl";

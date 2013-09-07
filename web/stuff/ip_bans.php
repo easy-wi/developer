@@ -41,8 +41,8 @@ if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['ipBans']
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('logs',$user_language,$reseller_id,$sql);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('logs',$user_language,$reseller_id);
+$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($action) and $action=='dl') {
     $i=0;
     if ($ui->id('id',30,'post')) {

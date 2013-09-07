@@ -41,7 +41,7 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
     header('Location: userpanel.php');
     die('No acces');
 }
-$sprache=getlanguagefile('reseller',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype="user";

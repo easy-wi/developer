@@ -39,8 +39,8 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and (!isset($pa) or (!$
 	redirect('Location: admin.php');
     die;
 }
-$sprache=getlanguagefile('lendserver',$user_language,$reseller_id,$sql);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('lendserver',$user_language,$reseller_id);
+$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";

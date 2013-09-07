@@ -39,8 +39,8 @@ if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['log'])) 
 	header('Location: admin.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('logs',$user_language,$reseller_id,$sql);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('logs',$user_language,$reseller_id);
+$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $table=array();
 if ($reseller_id==0) {
 	$pselect=$sql->prepare("SELECT `userid`,`subuser`,`reseller`,`username`,`usertype`,`useraction`,`ip`,`hostname`,`logdate` FROM `userlog` WHERE `usertype` LIKE :usertype AND (`resellerid`=:reseller_id OR `resellerid`=`userid`) ORDER BY `id` DESC LIMIT $start,$amount");

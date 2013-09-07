@@ -45,7 +45,7 @@ $logusername=getusername($admin_id);
 $logusertype='admin';
 $logreseller=0;
 $logsubuser=0;
-$sprache=getlanguagefile('columns',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('columns',$user_language,$reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if(in_array($ui->st('d','get'),array('ad','md'))) {

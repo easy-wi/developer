@@ -39,7 +39,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !isanyadmin($admin_
 	header('Location: login.php');
 	die('No acces');
 }
-$sprache_bad=getlanguagefile('home',$user_language,$reseller_id,$sql);
+$sprache_bad=getlanguagefile('home',$user_language,$reseller_id);
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 	$resellerid=$admin_id;
 } else {

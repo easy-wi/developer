@@ -39,7 +39,7 @@ if(!isset($admin_id) or $main!=1 or (isset($admin_id) and !$pa['voiceserver'] an
     header('Location: admin.php');
     die;
 }
-$sprache=getlanguagefile('traffic',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('traffic',$user_language,$reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($d=='se' and $pa['voiceserverSettings']) {

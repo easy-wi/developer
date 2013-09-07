@@ -67,7 +67,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     $now=date('Y-m-d',strtotime("now"));
     $aesfilecvar=getconfigcvars("stuff/keyphrasefile.php");
     $aeskey=$aesfilecvar['aeskey'];
-    $sprache=getlanguagefile('gserver','uk',0,$sql);
+    $sprache=getlanguagefile('gserver','uk',0);
     echo "Fetch version for valves appIDs\r\n";
     $query=$sql->prepare("SELECT t.`appID`,t.`shorten` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
     $query2=$sql->prepare("UPDATE `servertypes` SET `steamVersion`=? WHERE `appID`=?");
@@ -219,7 +219,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                             }
                             foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                                 if ($row3['mail_serverdown']=='Y') {
-                                    sendmail('emaildownrestart',$row3['id'],$queryip.' ('.$restartreturn.')','',$sql);
+                                    sendmail('emaildownrestart',$row3['id'],$queryip.' ('.$restartreturn.')','');
                                 }
                             }
                         }

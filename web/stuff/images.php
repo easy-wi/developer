@@ -39,8 +39,8 @@ if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['gimages'
 	header('Location: admin.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('images',$user_language,$reseller_id,$sql);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('images',$user_language,$reseller_id);
+$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";

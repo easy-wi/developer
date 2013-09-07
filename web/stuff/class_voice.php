@@ -657,7 +657,7 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 		}
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			if ($row['mail_serverdown']=='Y') {
-				sendmail('emaildown',$row['id'],'TS3 Master '.$sship.' ( '.$bad.' )','',$sql);
+				sendmail('emaildown',$row['id'],'TS3 Master '.$sship.' ( '.$bad.' )','');
 			}
 		}
         $query=$sql->prepare("UPDATE `voice_masterserver` SET `notified`='Y' WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
@@ -866,7 +866,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 		}
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			if ($row['mail_serverdown']=='Y') {
-				sendmail('emaildown',$row['id'],'TS3 Master '.$sship.' ( '.$bad.' )','',$sql);
+				sendmail('emaildown',$row['id'],'TS3 Master '.$sship.' ( '.$bad.' )','');
 			}
 		}
         $query=$sql->prepare("UPDATE `voice_masterserver` SET `notified`=`notified`+1 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");

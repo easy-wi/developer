@@ -69,7 +69,7 @@ if ($ui->escaped('email','post')!='') {
     $query->execute(array($fullday,$loguserip));
     die('IP banned');
 }
-$sprache=getlanguagefile('gserver',$user_language,0,$sql);
+$sprache=getlanguagefile('gserver',$user_language,0);
 $ipvalue="111.111.111.111:27015";
 if ($ui->ipport('serveraddress','post') or (isset($server_ip) and isset($server_port))) {
     if ($ui->ipport('serveraddress','post')) {
@@ -210,6 +210,15 @@ XML;
         }
     }
 } else if (isset($page_include)) {
+
+    // https://github.com/easy-wi/developer/issues/62
+    $langLinks=array();
+    foreach ($languages as $l) {
+        $tempLanguage=getlanguagefile('page',$l,0);
+        $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+    }
+    $page_data->langLinks($langLinks);
+
     $template_file='page_protectioncheck.tpl';
 } else {
     if (file_exists(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl')) {

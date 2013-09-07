@@ -36,7 +36,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-$sprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype='user';

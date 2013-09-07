@@ -40,7 +40,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['roots'])) {
 }
 $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $aeskey=$aesfilecvar['aeskey'];
-$sprache=getlanguagefile('roots',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('roots',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";
@@ -240,7 +240,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
     } else {
-        $gsSprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+        $gsSprache=getlanguagefile('gserver',$user_language,$reseller_id);
 		$table = array();
         $o=$ui->st('o','get');
         if ($ui->st('o','get')=='ar') {

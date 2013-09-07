@@ -38,8 +38,8 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usersettings'])
     header('Location: userpanel.php');
     die;
 }
-$sprache=getlanguagefile('logs',$user_language,$reseller_id,$sql);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('logs',$user_language,$reseller_id);
+$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($admin_id) and $reseller_id!=0) $reseller_id=$admin_id;
 $table=array();
 $query=$sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=? ORDER BY `logdate` DESC LIMIT $start,$amount");

@@ -41,8 +41,8 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['userGroups'])
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('user',$user_language,$reseller_id,$sql);
-$rsprache=getlanguagefile('reseller',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('user',$user_language,$reseller_id);
+$rsprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype='admin';

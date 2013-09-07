@@ -38,7 +38,7 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usertickets']))
     header('Location: userpanel.php');
     die;
 }
-$sprache=getlanguagefile('tickets',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('tickets',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype="admin";
@@ -110,7 +110,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $query->execute(array($reseller_id));
         }
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['mail_ticket']=='Y') sendmail('emailnewticket',$row['id'],$ticketText,array($lastID,$user_id),$sql);
+            if ($row['mail_ticket']=='Y') sendmail('emailnewticket',$row['id'],$ticketText,array($lastID,$user_id));
         }
         $template_file=$spracheResponse->table_add;
     } else {
@@ -196,7 +196,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $query=$sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($userid));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if ($row['mail_ticket']=='Y') sendmail('emailnewticket',$userid,$ui->post['ticket'],array($id,$user_id),$sql);
+                    if ($row['mail_ticket']=='Y') sendmail('emailnewticket',$userid,$ui->post['ticket'],array($id,$user_id));
                 }
             }
         } else {

@@ -56,11 +56,20 @@ if ($ui->escaped('email','post')) {
         unset($error);
         $success=true;
         $comments=$name.' ('.$email.'):<br />'.$comments;
-        sendmail('contact',$name,$comments,$rSA['email'],$sql);
+        sendmail('contact',$name,$comments,$rSA['email']);
     }
 } else {
     $token=md5(passwordgenerate(32));
     $_SESSION['token']=$token;
 }
 $page_data->setCanonicalUrl($s);
+
+// https://github.com/easy-wi/developer/issues/62
+$langLinks=array();
+foreach ($languages as $l) {
+    $tempLanguage=getlanguagefile('page',$l,0);
+    $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+}
+$page_data->langLinks($langLinks);
+
 $template_file='contact.tpl';

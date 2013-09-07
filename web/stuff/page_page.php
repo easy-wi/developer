@@ -60,11 +60,7 @@ if (isset($page_id) and is_numeric($page_id)) {
 		$query2->execute(array($row['id']));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			$page_data->AddData('keywords',$row2['name']);
-			if ($seo=='Y') {
-				$tag_tags[]='<a href='.$page_url.'/'.$user_language.'/'.$page_sprache->tag.'/'.strtolower(szrp($row2['name'])).'/>'.$row2['name'].'</a>';
-			} else {
-				$tag_tags[]='<a href='.$page_url.'/index.php?site=tag&amp;tag='.strtolower(szrp($row2['name'])).'/>'.$row2['name'].'</a>';
-			}
+            $tag_tags[]=($seo=='Y') ? '<a href='.$page_url.'/'.$user_language.'/'.$page_sprache->tag.'/'.strtolower(szrp($row2['name'])).'/>'.$row2['name'].'</a>' : '<a href='.$page_url.'/index.php?site=tag&amp;tag='.strtolower(szrp($row2['name'])).'/>'.$row2['name'].'</a>';
 		}
 	}
     $breadcrumbs=array();
@@ -73,29 +69,18 @@ if (isset($page_id) and is_numeric($page_id)) {
         $query->execute(array($breadcrumbID,$user_language));
         unset($breadcrumbID);
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if (isset($seo) and $seo=='Y') {
-                $link=$page_data->pageurl.'/'.$user_language.'/'.szrp($row['title']).'/';
-            } else {
-                $link=$page_data->pageurl.'?s=page&amp;l='.$user_language.'&amp;id='.$row['id'];
-            }
+            $link=(isset($seo) and $seo=='Y') ? $page_data->pageurl.'/'.$user_language.'/'.szrp($row['title']).'/' : $page_data->pageurl.'?s=page&amp;l='.$user_language.'&amp;id='.$row['id'];
             $breadcrumbs[]=array('href'=>'<a href="'.$link.'">'.$row['title'].'</a>','link'=>$link);
             $breadcrumbID=$row['subpage'];
             $breadcrumbPageID=$row['id'];
         }
     }
     $breadcrumbs=array_reverse($breadcrumbs);
-    if (isset($page_title)) {
-        $template_file='page_page.tpl';
-    } else {
-        $template_file='page_404.tpl';
-    }
+    $template_file=(isset($page_title)) ? 'page_page.tpl' : 'page_404.tpl';
 } else if ($s=='about') {
-    $page_text='';
     $query=$sql->prepare("SELECT t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE `type`='about' AND t.`language`=? AND p.`resellerid`='0' LIMIT 1");
     $query->execute(array($user_language));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $page_text=nl2br($row['text']);
-    }
+    $page_text=nl2br($query->fetchColumn());
     $page_title=$page_sprache->about;
     $page_keywords=array();
     $tag_tags=array();
@@ -109,17 +94,13 @@ if (isset($page_id) and is_numeric($page_id)) {
         $searchString=preg_replace("/\s+/",' ',$ui->escaped('search','post'));
         $searchFor['exact'][]=strtolower($searchString);
         if (strpos($searchString,'"')===false) {
-            foreach (preg_split('/\s+/',$searchString,-1,PREG_SPLIT_NO_EMPTY) as $v) {
-                $searchFor['general'][]=strtolower($v);
-            }
+            foreach (preg_split('/\s+/',$searchString,-1,PREG_SPLIT_NO_EMPTY) as $v) $searchFor['general'][]=strtolower($v);
         } else {
             $checkForEnd=false;
             $split=explode('"',$searchString);
             foreach ($split as $v) {
                 if ($v!='' and $checkForEnd==false) {
-                    foreach (preg_split('/\s+/',$v,-1,PREG_SPLIT_NO_EMPTY) as $v2) {
-                        $searchFor['general'][]=strtolower($v2);
-                    }
+                    foreach (preg_split('/\s+/',$v,-1,PREG_SPLIT_NO_EMPTY) as $v2) $searchFor['general'][]=strtolower($v2);
                     $checkForEnd=true;
                 } else if ($v!='' and $checkForEnd==true) {
                     $searchFor['exact'][]=strtolower($v);
@@ -137,7 +118,7 @@ if (isset($page_id) and is_numeric($page_id)) {
             $query->execute(array(':search'=>'%'.$value.'%'));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if(!isset($titleLanguages[$row['language']])) {
-                    $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page',$row['language'],0,$sql),'general'=>getlanguagefile('general',$row['language'],0,$sql));
+                    $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page',$row['language'],0),'general'=>getlanguagefile('general',$row['language'],0));
                 }
                 if (strlen($row['text'])<=$newssidebar_textlength) {
                     $text=$row['text'];
@@ -249,3 +230,19 @@ if (isset($page_id) and is_numeric($page_id)) {
         $template_file='page_404.tpl';
     }
 }
+// https://github.com/easy-wi/developer/issues/62
+$langLinks=array();
+if (isset($s) and $s=='page') {
+    $query=$sql->prepare("SELECT `title`,`language` FROM `page_pages_text` WHERE `pageid`=?");
+    $query->execute(array($page_id));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $langLinks[$row['language']]=($page_data->seo=='Y') ? szrp($row['title'])  : '?s=page&amp;id='.$page_id;
+    }
+
+} else if (isset($s)) {
+    foreach ($languages as $l) {
+        $tempLanguage=getlanguagefile('page',$l,0);
+        $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+    }
+}
+$page_data->langLinks($langLinks);

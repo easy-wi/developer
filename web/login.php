@@ -121,7 +121,7 @@ if ($w=='lo') {
             $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;
 			$link=$webhostdomain.'login.php?w=pr&amp;gamestring='.$md5;
 			$htmllink='<a href="'.$link.'">'.$link.'</a>';
-			sendmail('emailpwrecovery',$userid,$htmllink,'',$sql);
+			sendmail('emailpwrecovery',$userid,$htmllink,'');
 		}
     } else if ($ui->password('password1',255,'post') and $ui->password('password2',255,'post') and $ui->w('token',32,'get')) {
         if ($ui->password('password1',255,'post')==$ui->password('password2',255,'post')) {
@@ -189,7 +189,7 @@ if ($w=='lo') {
                         $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;
 						$link=$webhostdomain.'login.php?w=pr&amp;gamestring='.$md5;
 						$htmllink='<a href="'.$link.'">'.$link.'</a>';
-						sendmail('emailpwrecovery',$row['userid'],$htmllink,'',$sql);
+						sendmail('emailpwrecovery',$row['userid'],$htmllink,'');
 					} else if (!isset($ts3userlist[$dbid])) {
 						$text='Error: '.$sprache->nouser;
 					}
@@ -213,7 +213,7 @@ if ($w=='lo') {
 		$include='passwordrecovery.tpl';
 	}
 } else {
-    $aeskey=include(EASYWIDIR.'/stuff/keyphrasefile.php');
+    include(EASYWIDIR.'/stuff/keyphrasefile.php');
 	if (!$ui->username('username',255,'post') and !$ui->ismail('username',255,'post') and !$ui->password('password',255,'post') and !isset($_SESSION['sessionid'])) {
 		$include='login.tpl';
 	} else if (($ui->username('username',255,'post') or $ui->ismail('username','post')) and $ui->password('password',255,'post') and !isset($_SESSION['sessionid'])) {

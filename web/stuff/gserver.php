@@ -39,7 +39,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['gserver'])) {
     header('Location: admin.php');
     die;
 }
-$sprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);

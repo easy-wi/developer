@@ -63,7 +63,7 @@ if ($ui->st('w','get')=='ms' and $ui->username('shorten','50','get')) {
                 $query=$sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
                 $query->execute(array($row['resellerid'],$row['resellerid']));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    sendmail('emailgserverupdate',$row2['id'],$ip,$ui->username('shorten','50','get'),$sql);
+                    sendmail('emailgserverupdate',$row2['id'],$ip,$ui->username('shorten','50','get'));
                 }
             }
         }
@@ -76,7 +76,7 @@ if ($ui->st('w','get')=='ms' and $ui->username('shorten','50','get')) {
         $query=$sql->prepare("SELECT `mail_backup` FROM `userdata` WHERE `mail_backup`='Y' AND `id`=? LIMIT 1");
         $query->execute(array($row['userid']));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-			sendmail('emailbackup',$row['userid'],$row['server'],'',$sql);
+			sendmail('emailbackup',$row['userid'],$row['server'],'');
 		}
 	}
     echo 'ok';
@@ -89,7 +89,7 @@ if ($ui->st('w','get')=='ms' and $ui->username('shorten','50','get')) {
         $query=$sql->prepare("SELECT `mail_backup` FROM `userdata` WHERE `mail_backup`='Y' AND `id`=? LIMIT 1");
         $query->execute(array($userid));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-			sendmail('emailbackuprestore',$userid,$server,'',$sql);
+			sendmail('emailbackuprestore',$userid,$server,'');
 		}
 	}
     echo 'ok';
@@ -106,7 +106,7 @@ if ($ui->st('w','get')=='ms' and $ui->username('shorten','50','get')) {
         $query->execute(array($userid));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			if ($row2['mail_vserver']=='Y') {
-				sendmail('emailvinstall',$userid,$ip,$pass,$sql);
+				sendmail('emailvinstall',$userid,$ip,$pass);
 			}
 		}
 	}

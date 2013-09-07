@@ -40,8 +40,8 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['user'] and !$
 }
 $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $aeskey=$aesfilecvar['aeskey'];
-$sprache=getlanguagefile('user',$user_language,$reseller_id,$sql);
-$rsprache=getlanguagefile('reseller',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('user',$user_language,$reseller_id);
+$rsprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";
@@ -288,7 +288,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				} else if ($user_accounttype=="r" and $admin_id!=$reseller_id) {
                     $query->execute(array($cnamenew,$security2,$salt,$admin_id,$id));
 				}
-				sendmail('emailuseradd',$id,$cnamenew,$password,$sql);
+				sendmail('emailuseradd',$id,$cnamenew,$password);
 				$template_file=$sprache->user_create .": <b>$cnamenew</b>.";
 				$loguseraction="%add% %user% $cnamenew";				
 				$insertlog->execute();

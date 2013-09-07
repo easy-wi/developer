@@ -38,7 +38,7 @@ if(!isset($admin_id) or !$main == "1" or (isset($admin_id) and !$pa['traffic']))
 	header('Location: admin.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('traffic',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('traffic',$user_language,$reseller_id);
 if ($d=='se' and $reseller_id==0) {
 	$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 	$aeskey=$aesfilecvar['aeskey'];

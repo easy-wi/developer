@@ -51,8 +51,7 @@ if (isset($page_include)) {
     $user_language=$query->fetchColumn();
     if (!small_letters_check($user_language,2)) $user_language='en';
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
+include(EASYWIDIR.'/stuff/keyphrasefile.php');
 $validacces=false;
 if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post') and !isset($page_include)) {
     $query=$sql->prepare("SELECT `active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
@@ -81,9 +80,9 @@ if ($ui->escaped('email','post')!='') {
     $query=($query->rowCount()==0) ? $sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','bot',?)") : $sql->prepare("UPDATE `badips` SET `bantime`=?, `failcount`=failcount+1, `reason`='bot' WHERE `badip`=? LIMIT 1");
     $query->execute(array($fullday,$loguserip));
 }
-$sprache=getlanguagefile('lendserver',$user_language,$reseller_id,$sql);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
-$vosprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('lendserver',$user_language,$reseller_id);
+$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
+$vosprache=getlanguagefile('voice',$user_language,$reseller_id);
 $licenceDetails=serverAmount($reseller_id);
 if (is_numeric($licenceDetails['left']) and (0>$licenceDetails['left'] or 0>$licenceDetails['lG'] or 0>$licenceDetails['lVo'] or $licenceDetails['t']=='l')) {
     header('HTTP/1.1 403 Forbidden');

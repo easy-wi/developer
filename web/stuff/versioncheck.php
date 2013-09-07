@@ -41,7 +41,7 @@ if ((!isset($admin_id) or $main!=1) or $reseller_id!=0 or !$pa['updateEW']) {
 }
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
-$sprache=getlanguagefile('licence',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('licence',$user_language,$reseller_id);
 $logusertype="admin";
 $logreseller=0;
 $logsubuser=0;

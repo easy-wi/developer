@@ -38,7 +38,7 @@
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver'])) {
 	redirect('admin.php');
 }
-$sprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";

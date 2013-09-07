@@ -41,7 +41,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['jobs'])) {
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('api',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('api',$user_language,$reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->w('action',4,'post')=='dl' and !isset($server_id)) {

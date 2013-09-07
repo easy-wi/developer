@@ -39,7 +39,7 @@ if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !$pa['voiceserve
 	header('Location: userpanel.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype='user';

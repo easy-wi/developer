@@ -134,9 +134,9 @@ if (array_value_exists('action','add',$data)) {
         }
         if (isset($data['name']) and names($data['name'],255)) $name=names($data['name'],255);
         if (isset($data['vname']) and names($data['vname'],255)) $vname=names($data['vname'],255);
-        if (isset($data['phone']) and phone($data['phone'],255)) $phone=phone($data['phone'],255);
-        if (isset($data['handy']) and phone($data['handy'],255)) $handy=phone($data['handy'],255);
-        if (isset($data['fax']) and phone($data['fax'],255)) $fax=phone($data['fax'],255);
+        if (isset($data['phone']) and phone($data['phone'])) $phone=phone($data['phone']);
+        if (isset($data['handy']) and phone($data['handy'])) $handy=phone($data['handy']);
+        if (isset($data['fax']) and phone($data['fax'])) $fax=phone($data['fax']);
         if (isset($data['city']) and names($data['city'],50)) $city=names($data['city'],50);
         if (isset($data['cityn']) and is_number($data['cityn'],6)) $cityn=is_number($data['cityn'],6);
         if (isset($data['street']) and names($data['street'],50)) $street=names($data['street'],50);
@@ -219,16 +219,16 @@ if (array_value_exists('action','add',$data)) {
                 $what['vname']=names($data['vname'],255);
                 $vname=$what['vname'];
             }
-            if (isset($data['phone']) and phone($data['phone'],255)) {
-                $what['phone']=phone($data['phone'],255);
+            if (isset($data['phone']) and phone($data['phone'])) {
+                $what['phone']=phone($data['phone']);
                 $phone=$what['phone'];
             }
-            if (isset($data['handy']) and phone($data['handy'],255)) {
-                $what['handy']=phone($data['handy'],255);
+            if (isset($data['handy']) and phone($data['handy'])) {
+                $what['handy']=phone($data['handy']);
                 $handy=$what['handy'];
             }
-            if (isset($data['fax']) and phone($data['fax'],255)) {
-                $what['fax']=phone($data['fax'],255);
+            if (isset($data['fax']) and phone($data['fax'])) {
+                $what['fax']=phone($data['fax']);
                 $fax=$what['fax'];
             }
             if (isset($data['city']) and names($data['city'],50)) {

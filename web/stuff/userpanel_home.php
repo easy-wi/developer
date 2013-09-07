@@ -38,7 +38,7 @@ if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !isanyuser($user
 	header('Location: login.php');
 	die('No acces');
 }
-$sprache_bad=getlanguagefile('home',$user_language,$reseller_id,$sql);
+$sprache_bad=getlanguagefile('home',$user_language,$reseller_id);
 $query_tag=$sql->prepare("SELECT brandname FROM settings WHERE resellerid=? LIMIT 1");
 $query_tag->execute(array($reseller_id));
 foreach ($query_tag->fetchAll(PDO::FETCH_ASSOC) as $row_tag) {

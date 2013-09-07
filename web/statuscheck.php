@@ -74,9 +74,9 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
 	include('stuff/queries.php');
     $dayAndHour=date('Y-m-d H:').'00:00';
     $dayAndZeroHour=date('Y-m-d').' 00:00:00';
-    $ssprache=getlanguagefile('settings','uk','0',$sql);
-    $vosprache=getlanguagefile('voice','uk','0',$sql);
-    $sprache=getlanguagefile('gserver','uk','0',$sql);
+    $ssprache=getlanguagefile('settings','uk',0);
+    $vosprache=getlanguagefile('voice','uk',0);
+    $sprache=getlanguagefile('gserver','uk',0);
     $aesfilecvar=getconfigcvars("stuff/keyphrasefile.php");
     $aeskey=$aesfilecvar['aeskey'];
 
@@ -158,7 +158,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     }
                     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
                         if ($row['mail_securitybreach']=='Y') {
-                            sendmail('emailsecuritybreach',$row['id'],$address,$rulebreak,$sql);
+                            sendmail('emailsecuritybreach',$row['id'],$address,$rulebreak);
                         }
                     }
                     $query=$sql->prepare("UPDATE `gsswitch` SET `secnotified`='Y' WHERE `serverip`=? AND `port`=? LIMIT 1");
@@ -220,7 +220,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                         $query=$sql->prepare("SELECT `mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
                         $query->execute(array($userid));
                         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-                            if ($row['mail_serverdown']=='Y') sendmail('emaildownrestart',$userid,$address,'',$sql);
+                            if ($row['mail_serverdown']=='Y') sendmail('emaildownrestart',$userid,$address,'');
                         }
                     }
                 }
@@ -559,7 +559,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     }
                     foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                         if ($row3['mail_serverdown']=='Y') {
-                            sendmail('emaildownrestart',$row3['id'],$row['ssh2ip'].' (External TSDNS)','',$sql);
+                            sendmail('emaildownrestart',$row3['id'],$row['ssh2ip'].' (External TSDNS)','');
                         }
                     }
                 }
@@ -688,7 +688,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                             $query2->execute(array($resellerid));
                         }
                         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                            if ($row2['mail_serverdown']=='Y') sendmail('emaildownrestart',$row2['id'],$queryip.' ('.$restartreturn.')','',$sql);
+                            if ($row2['mail_serverdown']=='Y') sendmail('emaildownrestart',$row2['id'],$queryip.' ('.$restartreturn.')','');
                         }
                     }
                     $pupdate=$sql->prepare("UPDATE `voice_server` SET `uptime`='0' WHERE `masterserver`=?");
@@ -940,7 +940,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                     }
                                     foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                                         if ($row2['mail_securitybreach']=='Y' or $row2['id']==$userid) {
-                                            sendmail('emailsecuritybreach',$row2['id'],$address,$rulebreak,$sql);
+                                            sendmail('emailsecuritybreach',$row2['id'],$address,$rulebreak);
                                         }
                                     }
                                     $pupdate2=$sql->prepare("UPDATE `voice_server` SET `notified`='1' WHERE `id`=? LIMIT 1");
@@ -995,7 +995,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                         $query2=$sql->prepare("SELECT `mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
                                         $query2->execute(array($userid));
                                         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                                            if ($row2['mail_serverdown']=='Y') sendmail('emaildownrestart',$userid,$address,'',$sql);
+                                            if ($row2['mail_serverdown']=='Y') sendmail('emaildownrestart',$userid,$address,'');
                                         }
                                         $newnotified=$notified;
                                     }

@@ -40,8 +40,8 @@
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['settings'])) {
     redirect('login.php');
 }
-$sprache=getlanguagefile('settings',$user_language,$reseller_id,$sql);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('settings',$user_language,$reseller_id);
+$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";
@@ -138,7 +138,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 } else {
     $query=$sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($aeskey,$reseller_id));
-    $usprache=getlanguagefile('user',$user_language,$reseller_id,$sql);
+    $usprache=getlanguagefile('user',$user_language,$reseller_id);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $emailbackup=@gzuncompress($row['emailbackup']);
         $emailbackuprestore=@gzuncompress($row['emailbackuprestore']);

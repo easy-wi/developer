@@ -40,7 +40,7 @@ if ($ui->id('id',19,'get')) {
     $page_id=$ui->id('id',19,'get');
 } else if (isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($page_name) and $page_name!='' and $page_name!=null and $page_name!=false) {
     $pagesAvailable=array();
-    $query=$sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE `type`='news' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0'");
+    $query=$sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE `type`='news' AND t.`language`=? AND p.`released`=1 AND p.`resellerid`=0");
     $query->execute(array($user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $pagesAvailable[szrp($row['title'])]=$row['id'];
@@ -81,12 +81,19 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
             }
         }
         $pageLanguage=$row['language'];
-        if ($pageLanguage=='de') {
-            $date=date('d.m.Y',strtotime($row['date']));
-        } else {
-            $date=date('m.d.Y',strtotime($row['date']));
-        }
+        $date=($pageLanguage=='de') ? date('d.m.Y',strtotime($row['date'])): date('m.d.Y',strtotime($row['date']));
     }
+
+    // https://github.com/easy-wi/developer/issues/62
+    $langLinks=array();
+    $query=$sql->prepare("SELECT `title`,`language` FROM `page_pages_text` WHERE `pageid`=?");
+    $query->execute(array($page_id));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $tempLanguage=getlanguagefile('general',$row['language'],0);
+        $langLinks[$row['language']]=($page_data->seo=='Y') ? szrp($tempLanguage->news).'/'.szrp($row['title'])  : '?s=news&amp;id='.$page_id;
+    }
+    $page_data->langLinks($langLinks);
+
     if (isset($textID) or isset($comments)) {
         $email='';
         $author='';
@@ -277,6 +284,15 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
     } else {
         $paginationLink=$page_url.'/index.php?site=news&amp;start=';
     }
+
+    // https://github.com/easy-wi/developer/issues/62
+    $langLinks=array();
+    foreach ($languages as $l) {
+        $tempLanguage=getlanguagefile('general',$l,0);
+        $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->news)  : '?s=news';
+    }
+    $page_data->langLinks($langLinks);
+
     $page_data->setCanonicalUrl($s);
     $template_file='page_news.tpl';
 } else {

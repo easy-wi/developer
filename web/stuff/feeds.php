@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-$sprache=getlanguagefile('feeds',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('feeds',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype='admin';

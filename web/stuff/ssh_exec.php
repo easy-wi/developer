@@ -84,7 +84,7 @@ if (!function_exists('ssh2_execute')) {
                 if ($notified==$rSA['down_checks']) {
                     $query=($resellerID==0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${resellerID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
                     $query->execute();
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) if ($row2['mail_serverdown']=='Y') sendmail('emaildown',$row2['id'],$ssh2IP,'',$sql);
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) if ($row2['mail_serverdown']=='Y') sendmail('emaildown',$row2['id'],$ssh2IP,'');
                 }
                 if ($type=='gs') {
                     $query=$sql->prepare("UPDATE `rserverdata` SET `notified`=? WHERE `id`=? LIMIT 1");

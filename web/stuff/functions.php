@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: functions.php.
  * Author: Ulrich Block
@@ -80,7 +81,10 @@ if (!function_exists('passwordgenerate')) {
         $szrm=array('ä'=>'ae','ö'=>'oe','ü'=>'ue','Ä'=>'Ae','Ö'=>'Oe','Ü'=>'Ue','ß'=>'ss','á'=>'a','à'=>'a','Á'=>'A','À'=>'A','é'=>'e','è'=>'e','É'=>'E','È'=>'E','ó'=>'o','ò'=>'o','Ó'=>'O','Ò'=>'O','ú'=>'u','ù'=>'u','Ú'=>'U','Ù'=>'U');
         return strtolower(preg_replace('/[^a-zA-Z0-9]{1}/','-',strtr($value,$szrm)));
     }
-    function redirect ($value) {
+    function redirect($value, $sendHTTP301 = false) {
+        if ($sendHTTP301 == true) {
+            header('HTTP/1.1 301 Moved Permanently');
+        }
         header ('Location: '.$value);
         die('Please allow redirection settings');
     }
@@ -155,7 +159,7 @@ if (!function_exists('passwordgenerate')) {
         $query->execute();
         $dCount=(int)$query->fetchColumn();
         $count=$gsCount+$vCount+$voCount+$dCount;
-        $sprache=getlanguagefile('licence',$user_language,$resellerid,$sql);
+        $sprache=getlanguagefile('licence',$user_language,$resellerid);
         $s=$sprache->unlimited;
         $mG=$s;
         $mVs=$s;
@@ -250,7 +254,8 @@ if (!function_exists('passwordgenerate')) {
         }
         return $language;
     }
-    function getlanguagefile($filename,$user_language,$reseller_id,$sql) {
+    function getlanguagefile($filename,$user_language,$reseller_id) {
+        global $sql;
         $sprache=new stdClass;
         $query=$sql->prepare("SELECT `language`,`template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
@@ -843,7 +848,8 @@ if (!function_exists('passwordgenerate')) {
         }
         return false;
     }
-    function sendmail($template,$userid,$server,$shorten,$sql) {
+    function sendmail($template,$userid,$server,$shorten) {
+        global $sql;
         $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
         $aeskey=$aesfilecvar['aeskey'];
         if ($template=='emailnewticket') {
@@ -867,17 +873,12 @@ if (!function_exists('passwordgenerate')) {
             $query=$sql->prepare("SELECT `vname`,`name`,`cname` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($writerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $username=$row['vname']." ".$row['name'];
-                if ($username==' ' or $username=='') {
-                    $username=$row['cname'];
-                }
+                $username=($row['vname'].' '.$row['name']==' ') ? $row['cname'] : $row['vname'].' '.$row['name'];
             }
         }
         if(!isset($resellerid) or $resellerid==$userid) {
             $resellersid=0;
-            if(!isset($resellerid)) {
-                $resellerid=0;
-            }
+            if(!isset($resellerid)) $resellerid=0;
         } else {
             $resellersid=$resellerid;
         }

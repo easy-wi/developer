@@ -38,7 +38,7 @@
  */
 
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver'])) redirect('admin.php');
-$sprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";
@@ -175,7 +175,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                                 $newuser=2;
                             }
                         }
-                        $usprache=getlanguagefile('user',$user_language,$reseller_id,$sql);
+                        $usprache=getlanguagefile('user',$user_language,$reseller_id);
                         $newArray=array();
                         $maxPost=@ini_get('suhosin.post.max_vars');
                         $maxRequests=@ini_get('suhosin.request.max_vars');
@@ -243,7 +243,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $newuser=2;
                 }
             }
-            $usprache=getlanguagefile('user',$user_language,$reseller_id,$sql);
+            $usprache=getlanguagefile('user',$user_language,$reseller_id);
             $newArray=array();
             $maxPost=@ini_get('suhosin.post.max_vars');
             $maxRequests=@ini_get('suhosin.request.max_vars');
@@ -306,7 +306,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                 $customer=$row['id'];
                                 $cnamenew=$ui->username("${lookUp}-username",50,'post');
-                                sendmail('emailuseradd',$customer,$cnamenew,$initialpassword,$sql);
+                                sendmail('emailuseradd',$customer,$cnamenew,$initialpassword);
                             }
                         }
                     } else {

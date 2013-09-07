@@ -40,7 +40,7 @@
 
 $pages=array();
 if (!isset($user_language)) $user_language=$default_language;
-$page_sprache=getlanguagefile('page',$user_language,0,$sql);
+$page_sprache=getlanguagefile('page',$user_language,0);
 include(EASYWIDIR.'/stuff/class_page_settings.php');
 if (!isurl($pageurl) or (!isdomain($pageurl) and (!isurl($pageurl)))) $pageurl=$page_url;
 $page_data=new PageSettings($user_language,$pageurl,$seo);

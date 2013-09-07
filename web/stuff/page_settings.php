@@ -39,7 +39,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['cms_settings'
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('page',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('page',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";

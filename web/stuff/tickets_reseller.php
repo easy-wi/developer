@@ -38,7 +38,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['usertickets']
     header('Location: userpanel.php');
     die;
 }
-$sprache=getlanguagefile('tickets',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('tickets',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";
@@ -121,7 +121,7 @@ if ($ui->st('d','get')=='ad') {
             $query->execute(array($resellerid));
         }
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['mail_ticket']=='Y') sendmail('emailnewticket',$row['id'],$ticketText,array($lastID,$admin_id),$sql);
+            if ($row['mail_ticket']=='Y') sendmail('emailnewticket',$row['id'],$ticketText,array($lastID,$admin_id));
         }
         $template_file=$spracheResponse->table_add;
     } else {
@@ -201,7 +201,7 @@ if ($ui->st('d','get')=='ad') {
                 $query=$sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($userid));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if ($row['mail_ticket']=='Y') sendmail('emailnewticket',$userid,$ui->post['ticket'],array($id,$admin_id),$sql);
+                    if ($row['mail_ticket']=='Y') sendmail('emailnewticket',$userid,$ui->post['ticket'],array($id,$admin_id));
                 }
             }
             $template_file=$spracheResponse->table_add;

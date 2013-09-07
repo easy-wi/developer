@@ -207,8 +207,8 @@ if ($loguserip!='localhost') {
     $default_language=(!empty($user_language)) ? $user_language : $rSA['language'];
     if (!isset($user_language) or empty($user_language)) $user_language=$default_language;
     $_SESSION['language']=$user_language;
-    $gsprache=(isset($reseller_id)) ? getlanguagefile('general',$default_language,$reseller_id,$sql) : getlanguagefile('general',$default_language,0,$sql);
-    $spracheResponse=(isset($reseller_id)) ? getlanguagefile('response',$default_language,$reseller_id,$sql) : getlanguagefile('response',$default_language,0,$sql);
+    $gsprache=(isset($reseller_id)) ? getlanguagefile('general',$default_language,$reseller_id) : getlanguagefile('general',$default_language,0);
+    $spracheResponse=(isset($reseller_id)) ? getlanguagefile('response',$default_language,$reseller_id) : getlanguagefile('response',$default_language,0);
 }
 if (isset($logininclude) and $logininclude==true) {
     $query=$sql->prepare("DELETE FROM `badips` WHERE `bantime` <= ?");

@@ -99,5 +99,14 @@ if (isset($downloadID)) {
             $table[]=array('id'=>$row['fileID'],'description'=>$row['description'],'link'=>(isset($seo) and $seo=='Y') ? $page_data->pages['downloads']['link'].'get/'.$row['fileID'].'/' : $page_data->pages['downloads']['link'].'&amp;action=get&amp;id='.$row['fileID'],'text'=>$row['text']);
         }
     }
+
+    // https://github.com/easy-wi/developer/issues/62
+    $langLinks=array();
+    foreach ($languages as $l) {
+        $tempLanguage=getlanguagefile('general',$l,0);
+        $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+    }
+    $page_data->langLinks($langLinks);
+
     $template_file='page_downloads_list.tpl';
 }

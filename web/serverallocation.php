@@ -65,7 +65,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 } else if ($die==true) {
     redirect('login.php');
 } else if ($ui->username('mapgroup','50','get')) {
-    $sprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+    $sprache=getlanguagefile('gserver',$user_language,$reseller_id);
     $query=$sql->prepare("SELECT `mapGroup` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($ui->username('mapgroup','50','get'),$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -75,7 +75,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
         }
     }
 } else if ($ui->id('id',19,'get') and $ui->st('d','get')=="vs" and ($pa['addvserver'] or $pa['root'])) {
-	$sprache=getlanguagefile('reseller',$user_language,$reseller_id,$sql);
+	$sprache=getlanguagefile('reseller',$user_language,$reseller_id);
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
         $reseller_id=$admin_id;
         $notexclusive=true;
@@ -297,7 +297,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 </select>
 <?php 
 } else if (($ui->username('short','50','get') or $ui->username('shorten','50','get')) and $pa['restart']) {
-	$sprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+	$sprache=getlanguagefile('gserver',$user_language,$reseller_id);
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}
@@ -339,7 +339,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 </select>
 <?php
 } else if ($ui->username('gamestring','50','get') and $ui->id('id',19,'get') and ($pa['roots'] or $pa['root'])) {
-	$sprache=getlanguagefile('roots',$user_language,$reseller_id,$sql);
+	$sprache=getlanguagefile('roots',$user_language,$reseller_id);
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}
@@ -374,7 +374,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
         }
     }
 } else if (($pa['voiceserver'] or $pa['voiceserver']) and $ui->st('d','get')=="vo" and $ui->id('id',19,'get')) {
-	$sprache=getlanguagefile('voice',$user_language,$reseller_id,$sql);
+	$sprache=getlanguagefile('voice',$user_language,$reseller_id);
 	$query=$sql->prepare("SELECT m.`maxserver`,COUNT(v.`id`) AS `installedserver`,m.`maxslots`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`resellerid`=? LIMIT 1");
 	$query->execute(array($ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -396,7 +396,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
         require_once IncludeTemplate($template_to_use,'ajax_admin_voiceserver_usage.tpl');
 	}
 } else if ($pa['gserver'] and $ui->st('d','get')!="vs" and $ui->st('d','get')!="vo" and ($ui->id('id',19,'get') or $ui->ip('ip','get'))) {
-	$sprache=getlanguagefile('gserver',$user_language,$reseller_id,$sql);
+	$sprache=getlanguagefile('gserver',$user_language,$reseller_id);
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}

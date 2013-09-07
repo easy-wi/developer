@@ -69,7 +69,7 @@ if ($ui->st('w','get')=='se') {
     }
     if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
 }
-$sprache=getlanguagefile('user',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('user',$user_language,$reseller_id);
 $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $aeskey=$aesfilecvar['aeskey'];
 $lookUpID=($ui->st('w','get')=='se') ? $user_id : $admin_id;

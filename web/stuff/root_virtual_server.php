@@ -42,7 +42,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['addvserver'] 
 }
 $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $aeskey=$aesfilecvar['aeskey'];
-$sprache=getlanguagefile('reseller',$user_language,$reseller_id,$sql);
+$sprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";
