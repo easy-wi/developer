@@ -36,9 +36,7 @@
             <dd><?php echo $table_row['map'];?></dd>
             <dt><?php echo $sprache->player;?></dt>
             <dd><?php echo $table_row['numplayers']?>/<?php echo $table_row['maxplayers'];?></dd>
-            <?php if($table_row['minram']>1 and $table_row['maxram']>1) { ?>
-            <dt><?php echo $sprache->ramMin;?></dt>
-            <dd><?php echo $table_row['minram'];?> MB</dd>
+            <?php if($table_row['maxram']>1) { ?>
             <dt><?php echo $sprache->ramMax;?></dt>
             <dd><?php echo $table_row['maxram'];?> MB</dd>
             <?php } ?>

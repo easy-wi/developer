@@ -31,7 +31,6 @@
             <tr>
                 <th data-class="expand"><a href="admin.php?w=vm&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ap') { echo 'dp'; } else { echo 'ap'; } ?>"><?php echo $sprache->ssh_ip;?></a></th>
                 <th data-hide="phone"><a href="admin.php?w=vm&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='di') { echo 'ai'; } else { echo 'di'; } ?>">ID</a></th>
-                <th data-hide="phone,tablet"><a href="admin.php?w=vm&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='aa') { echo 'da'; } else { echo 'aa'; } ?>"><?php echo $gsprache->status;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=vm&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='at') { echo 'dt'; } else { echo 'at'; } ?>"><?php echo $sprache->type;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=vm&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='as') { echo 'ds'; } else { echo 'as'; } ?>"><?php echo $sprache->installedserver;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=vm&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='al') { echo 'dl'; } else { echo 'al'; } ?>"><?php echo $sprache->installedslots;?></a></th>
@@ -43,7 +42,7 @@
             </thead>
             <tbody>
             <?php foreach ($table as $table_row) { ?>
-            <tr>
+            <tr class="<?php if($table_row['img']=='16_ok') echo 'success'; else if($table_row['img']=='16_bad') echo 'warning'; else echo 'error';?>">
                 <td>
                     <a href="#modalID-<?php echo $table_row['id'];?>" role="button" class="btn" data-toggle="modal"><?php echo $table_row['ip'];?></a>
                     <div id="modalID-<?php echo $table_row['id'];?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<?php echo $table_row['id'];?>" aria-hidden="true">
@@ -74,14 +73,13 @@
                     </div>
                 </td>
                 <td><?php echo $table_row['id'];?></td>
-                <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else echo 'icon-ban-circle';?>"></i></td>
                 <td><?php echo $table_row['type'];?></td>
                 <td><?php echo $table_row['installedserver'];?></td>
                 <td><?php echo $table_row['installedslots'];?></td>
                 <td><?php echo $table_row['defaultdns'];?></td>
-                <td><a href="admin.php?w=vm&amp;d=ri&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-refresh"></i></span></a></td>
-                <td><a href="admin.php?w=vm&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
-                <td><a href="admin.php?w=vm&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
+                <td><?php if($table_row['managedServer']!='Y' or $reseller_id==0){ ?><a href="admin.php?w=vm&amp;d=ri&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-refresh"></i></span></a><?php } ?></td>
+                <td><?php if($table_row['managedServer']!='Y' or $reseller_id==0){ ?><a href="admin.php?w=vm&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a><?php } ?></td>
+                <td><?php if($table_row['managedServer']!='Y' or $reseller_id==0){ ?><a href="admin.php?w=vm&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a><?php } ?></td>
             </tr>
             <?php } ?>
             </tbody>

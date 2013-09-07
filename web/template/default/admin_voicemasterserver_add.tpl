@@ -26,6 +26,23 @@
                 <div class="controls"><input id="inputExternalID" type="text" name="externalID" value="" maxlength="255"></div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputManaged">Managed</label>
+                <div class="controls">
+                    <select id="inputManaged" name="managedServer" onchange="textdrop('reseller');">
+                        <option value="N"><?php echo $gsprache->no;?></option>
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group display_none" id="reseller">
+                <label class="control-label" for="inputManagedForID"><?php echo $gsprache->reseller;?></label>
+                <div class="controls">
+                    <select id="inputManagedForID" name="managedForID">
+                        <?php foreach ($resellerIDs as $k=>$v){ ?><option value="<?php echo $k;?>"><?php echo $v;?></option><?php } ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputAutoRestart"><?php echo $sprache->autorestart;?></label>
                 <div class="controls">
                     <select id="inputAutoRestart" name="autorestart">

@@ -38,8 +38,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['user'] and !$
 	header('Location: admin.php');
     die();
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
+include(EASYWIDIR.'/stuff/keyphrasefile.php');
 $sprache=getlanguagefile('user',$user_language,$reseller_id);
 $rsprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$admin_id;
@@ -103,7 +102,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     if ($query->rowCount()>0) unset($cname,$bogus);
                     else {
                         # https://github.com/easy-wi/developer/issues/2 "Substitutes"
-                        $query=$sql->prepare("SELECT `sID` FROM `loginName` WHERE `loginName`=? LIMIT 1");
+                        $query=$sql->prepare("SELECT 1 FROM `userdata_substitutes` WHERE `loginName`=? LIMIT 1");
                         $query->execute(array($cname));
                         if ($query->rowCount()>0) unset($cname,$bogus);
                     }

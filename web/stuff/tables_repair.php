@@ -1074,6 +1074,7 @@ $defined['voice_dns']=array('dnsID'=>array("Type"=>"int(10) unsigned","Null"=>"N
     'resellerID'=>array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
+// https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
 $defined['voice_masterserver']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active'=>array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'type'=>array("Type"=>"varchar(30)","Null"=>"NO","Key"=>"","Default"=>"ts3","Extra"=>""),
@@ -1109,6 +1110,8 @@ $defined['voice_masterserver']=array('id'=>array("Type"=>"int(10) unsigned","Nul
     'notified'=>array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'autorestart'=>array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'externalID'=>array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'managedServer'=>array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'managedForID'=>array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'resellerid'=>array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 

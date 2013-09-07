@@ -1023,8 +1023,9 @@ if (!function_exists('passwordgenerate')) {
         $update=$sql->prepare("UPDATE `voice_dns` SET `jobPending`=? WHERE `userID`=? AND `resellerID`=?");
         $update->execute(array($jobPending,$localID,$resellerID));
     }
-    function updateStates($sql,$action,$type=null) {
-        $typeQuery=($type!=null) ? " AND `type`='${type}" : '';
+    function updateStates($action,$type=null) {
+        global $sql;
+        $typeQuery=($type!=null) ? " AND `type`='${type}'" : '';
         $query=$sql->prepare("SELECT `type`,`affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`,`affectedID`");
         $query->execute(array($action));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

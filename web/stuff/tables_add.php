@@ -1307,6 +1307,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_dns` (
 $add=$sql->prepare($query);
 $add->execute();
 
+// https://github.com/easy-wi/developer/issues/36 managedByUser, managedForID added
 $query="CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
@@ -1343,6 +1344,8 @@ $query="CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `notified` int(11) unsigned DEFAULT '0',
   `autorestart` enum('Y','N') DEFAULT 'Y',
   `externalID` varchar(255) DEFAULT NULL,
+  `managedServer` enum('Y','N') DEFAULT 'Y',
+  `managedForID` int(10) unsigned DEFAULT NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`tsdnsServerID`),KEY(`rootid`),KEY(`resellerid`),KEY(`externalID`)
 ) ENGINE=InnoDB";

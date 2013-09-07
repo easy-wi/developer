@@ -147,10 +147,10 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         $countp->execute();
         $jobCount=$countp->rowCount();
         print 'Total jobs open: '.$jobCount.'. Cleaning up outdated and duplicated entries'."\r\n";
-        updateStates($sql,'dl','us');
-        updateStates($sql,'dl');
-        updateStates($sql,'ad');
-        updateStates($sql,'md');
+        updateStates('dl','us');
+        updateStates('dl');
+        updateStates('ad');
+        updateStates('md');
         $countp->execute();
         $jobCount=$countp->rowCount();
         print "\r\n".'Total jobs open after cleanup: '.$jobCount."\r\n";

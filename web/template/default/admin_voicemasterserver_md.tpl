@@ -23,6 +23,23 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputManaged">Managed</label>
+                <div class="controls">
+                    <select id="inputManaged" name="managedServer" onchange="textdrop('reseller');">
+                        <option value="N"><?php echo $gsprache->no;?></option>
+                        <option value="Y" <?php if($managedServer=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group <?php if($managedServer=='N') echo 'display_none';?>" id="reseller">
+                <label class="control-label" for="inputManagedForID"><?php echo $gsprache->reseller;?></label>
+                <div class="controls">
+                    <select id="inputManagedForID" name="managedForID">
+                        <?php foreach ($resellerIDs as $k=>$v){ ?><option value="<?php echo $k;?>" <?php if($managedForID==$k) echo 'selected="selected"';?>><?php echo $v;?></option><?php } ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputExternalID">externalID</label>
                 <div class="controls"><input id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID?>" maxlength="255"></div>
             </div>
