@@ -14,7 +14,7 @@
             <input type="hidden" name="token" value="<?php echo token();?>">
             <?php if ($pa['ftpaccess']) { ?>
             <div class="control-group">
-                <label class="control-label" for="ftppass">FTP <?php echo $sprache->password;?></label>
+                <label class="control-label" for="ftppass"><?php echo $sprache->ftp_password;?></label>
                 <div class="controls">
                     <input id="ftppass" type="text" name="ftppass" value="<?php echo $ftppass;?>" required>
                 </div>
