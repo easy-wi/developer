@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: api_config.php.
  * Author: Ulrich Block
