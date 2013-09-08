@@ -400,7 +400,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                                 $query->execute(array($virtualserver_id,$values['virtualserver_ip'],$reseller_id));
                                 $colcount=$query->rowCount();
                                 if ($colcount==1 or $i>25) {
-                                    unset($servers["$virtualserver_id"]);
+                                    unset($servers[$virtualserver_id]);
                                 } else {
                                     $i++;
                                 }
@@ -471,9 +471,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                                 $i=0;
                                 while ($i<=$folderfilecount) {
                                     if (isset($folders)) {
-                                        $folders .=$split_config["$i"]."/";
+                                        $folders .=$split_config[$i]."/";
                                     } else {
-                                        $folders='cd '.$split_config["$i"]."/";
+                                        $folders='cd '.$split_config[$i]."/";
                                     }
                                     $i++;
                                 }

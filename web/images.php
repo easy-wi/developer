@@ -163,7 +163,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
                             $ingoing=($multiplier * $row['ingoing']) / $divisor;
                             $outgoing=($multiplier * $row['outgoing']) / $divisor;
                             $total=($multiplier * $row['total']) / $divisor;
-                            $values["$day2"]=array($ingoing,$outgoing,$total);
+                            $values[$day2]=array($ingoing,$outgoing,$total);
                         }
                     }
                     if ($reseller_id==0 and isset($get_shorten)) {
@@ -213,12 +213,12 @@ if (isset($admin_id) and $ui->st('img','get')) {
                         $ingoing=($multiplier * $row2['ingoing']) / $divisor;
                         $outgoing=($multiplier * $row2['outgoing']) / $divisor;
                         $total=($multiplier * $row2['total']) / $divisor;
-                        if (isset($values["$day2"])) {
-                            $ingoing=$ingoing+$values["$day2"]['0'];
-                            $outgoing=$outgoing+$values["$day2"]['1'];
-                            $total=$total+$values["$day2"]['2'];
+                        if (isset($values[$day2])) {
+                            $ingoing=$ingoing+$values[$day2][0];
+                            $outgoing=$outgoing+$values[$day2][1];
+                            $total=$total+$values[$day2][2];
                         }
-                        $values["$day2"]=array($ingoing,$outgoing,$total);
+                        $values[$day2]=array($ingoing,$outgoing,$total);
                     }
                 }
                 $i++;
@@ -401,7 +401,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
                         else $averageused=round($row['averageused']);
                         if (!isset($row['averageinstalled'])) $averageinstalled="0";
                         else $averageinstalled=round($row['averageinstalled']);
-                        $values["$day2"]=array($averageused,$averageinstalled);
+                        $values[$day2]=array($averageused,$averageinstalled);
                     }
                     /*if (isset($get_shorten)) {
                         $pselect=$sql->prepare("SELECT SUM(`used`)/COUNT(`id`) AS `averageused`,SUM(`installed`)/COUNT(`id`) AS `averageinstalled` FROM `voice_server_stats_hours` WHERE `date` LIKE ? AND `sid`=? AND `resellerid`=?");
@@ -421,7 +421,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
                         else $averageused=round($row['averageused']);
                         if (!isset($row['averageinstalled'])) $averageinstalled="0";
                         else $averageinstalled=round($row['averageinstalled']);
-                        $values["$day2"]=array($averageused,$averageinstalled);
+                        $values[$day2]=array($averageused,$averageinstalled);
                     }*/
                 }
                 $i++;

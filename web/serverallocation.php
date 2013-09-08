@@ -101,17 +101,17 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		$hdd_rows=explode("\r\n", $row['hdd']);
 		foreach ($hdd_rows as $hddline) {
 			$data_explode=explode(" ", $hddline);
-			if (isset($data_explode['1'])) {
-				$mountpoint=$data_explode['0'];
-				$mountsize["$mountpoint"]=$data_explode['1'];
-				$mountunused["$mountpoint"]=0;
+			if (isset($data_explode[1])) {
+				$mountpoint=$data_explode[0];
+				$mountsize[$mountpoint]=$data_explode[1];
+				$mountunused[$mountpoint]=0;
 				$hdd[]=$mountpoint;
 			}
 		}
 		$i=1;
 		while ($i<=$cores) {
 			$core[]=$i;
-			$cpucore["$i"]=0;
+			$cpucore[$i]=0;
 			$i++;
 		}
 		$i=1;
@@ -128,24 +128,24 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		$i2=0;
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			$mountpoint=$row2['mountpoint'];
-			$addstracthdd=$mountunused["$mountpoint"]+($row2['hddsize']*($percent/100));
-			$mountunused["$mountpoint"]=$addstracthdd;
+			$addstracthdd=$mountunused[$mountpoint]+($row2['hddsize']*($percent/100));
+			$mountunused[$mountpoint]=$addstracthdd;
 			$addstractram=$ramused+$row2['minram'];
 			$ramused=$addstractram;
 			$cpuhz=$row2['cores']*$row2['minmhz'];
-			$addcpu=$cpucore['1']+$cpuhz;
+			$addcpu=$cpucore[1]+$cpuhz;
 			if ($addcpu<=$mhz) {
-				$cpucore['1']=$addcpu;
+				$cpucore[1]=$addcpu;
 			} else {
-				$cpucore['1']=$mhz;
+				$cpucore[1]=$mhz;
 				$nextcore="2";
 				while ($nextcore<=$cores) {
 					$extra=$addcpu-$mhz;
-					$addcpu=$cpucore["$nextcore"]+$extra;
+					$addcpu=$cpucore[$nextcore]+$extra;
 					if ($addcpu<=$mhz and $addcpu>=0) {
-						$cpucore["$nextcore"]=$addcpu;
+						$cpucore[$nextcore]=$addcpu;
 					} else if ($addcpu>=0) {
-						$cpucore["$nextcore"]=$mhz;
+						$cpucore[$nextcore]=$mhz;
 					}
 					$nextcore++;
 				}
@@ -153,7 +153,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 			$i2++;
 		}
 		foreach ($hdd as $mountpoint) {
-			$freespace["$mountpoint"]=$mountsize["$mountpoint"]-($mountunused["$mountpoint"]*($percent/100));
+			$freespace[$mountpoint]=$mountsize[$mountpoint]-($mountunused[$mountpoint]*($percent/100));
 		}
 		natsort($freespace);
 		$freespace=array_reverse($freespace);
@@ -195,7 +195,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 			$userips=ipstoarray($row['ips']);
 			foreach ($userips as $ip) {
 				$ip_ex=explode(".",$ip);
-				$ips[]=$ip_ex['0'].".".$ip_ex['1'].".".$ip_ex['2'].".";
+				$ips[]=$ip_ex[0].".".$ip_ex[1].".".$ip_ex[2].".";
 			}
 		}
 		$subnets=array_unique($ips);
@@ -353,10 +353,10 @@ if ($ui->smallletters('w',5,'get')=='check') {
     $gamelist=array();
     $count=count($games);
 	while ($i<$count) {
-        if ($games["$i"]!='' and !in_array($games["$i"],$gamelist)) {
-            $gamelist[]=$games["$i"];
+        if ($games[$i]!='' and !in_array($games[$i],$gamelist)) {
+            $gamelist[]=$games[$i];
             $query=$sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($games["$i"],$reseller_id));
+            $query->execute(array($games[$i],$reseller_id));
             $typeID=$query->fetchColumn();
             $rootServer->collectData($typeID,true);
         }

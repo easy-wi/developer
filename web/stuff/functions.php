@@ -284,13 +284,13 @@ if (!function_exists('passwordgenerate')) {
             foreach (explode("\r\n", $value) as $exip) {
                 if (isips($exip)) {
                     $exploded_ip=explode(".", $exip);
-                    if (is_numeric($exploded_ip['3'])){
+                    if (is_numeric($exploded_ip[3])){
                         $ips_array[]=$exip;
                     } else {
-                        $range=explode("/", $exploded_ip['3']);
+                        $range=explode("/", $exploded_ip[3]);
                         $i=$range[0];
                         while ($i <= $range[1]) {
-                            $ips_array[]=$exploded_ip[0].".".$exploded_ip[1].".".$exploded_ip['2'].".".$i;
+                            $ips_array[]=$exploded_ip[0].".".$exploded_ip[1].".".$exploded_ip[2].".".$i;
                             $i++;
                         }
                     }
@@ -393,7 +393,7 @@ if (!function_exists('passwordgenerate')) {
                     $stringlenght=strlen($data2[0]);
                     $stop=$stringlenght-2;
                     $value=substr($data2[0],1,$stop);
-                    $vars["$cvar"]=$value;
+                    $vars[$cvar]=$value;
                 }
             }
             return $vars;
@@ -706,10 +706,10 @@ if (!function_exists('passwordgenerate')) {
                             $i=0;
                             $folders="/$pserver$serverfolder";
                             while ($i<$folderfilecount) {
-                                $folders .="/".$split_config["$i"];
+                                $folders .="/".$split_config[$i];
                                 $i++;
                             }
-                            $uploadfile=$split_config["$i"];
+                            $uploadfile=$split_config[$i];
                             @ftp_chdir($ftp_connect,$folders);
                             if (strlen($uploadfile)>0 and @ftp_fget($ftp_connect,$temp,$uploadfile,FTP_ASCII,0)) {
                                 fseek($temp,0);
@@ -995,12 +995,12 @@ if (!function_exists('passwordgenerate')) {
         $array=$query->fetchAll(PDO::FETCH_ASSOC);
         foreach ($array as $row) {
             if (($accounttype=='u' and $row['miniroot']=='Y')) {
-                foreach ($row as $key => $value) $pa["$key"]=true;
+                foreach ($row as $key => $value) $pa[$key]=true;
             } else if (($accounttype!='u' and $row['root']=='Y')) {
-                foreach ($row as $key => $value) $pa["$key"]=true;
+                foreach ($row as $key => $value) $pa[$key]=true;
             } else {
                 foreach ($row as $key => $value) {
-                    if ((isset($pa["$key"]) and $pa["$key"]===false) or !isset($pa["$key"])) $pa["$key"]=($value=='Y') ? true : false;
+                    if ((isset($pa[$key]) and $pa[$key]===false) or !isset($pa[$key])) $pa[$key]=($value=='Y') ? true : false;
                 }
             }
         }
@@ -1179,16 +1179,16 @@ if (!function_exists('passwordgenerate')) {
             $query2=$sql->prepare("UPDATE `settings` SET `licence`=?,`version`=?,`releasenotesDE`=?,`releasenotesEN`=? WHERE `resellerid`=0 LIMIT 1");
             $query2->execute(array($licencecode,$json->v,$json->de,$json->en));
         }
-        if ($return==true) return $licencecode;
+        return ($return==true) ? $licencecode : false;
     }
     function token ($check=false) {
         global $ui,$_SESSION;
         if ($check==false) {
             $token=md5(mt_rand());
-            if ($ui->id('id',10,'get') and $ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]=array('t'=>$token,'d'=>strtotime("+20 minutes"));
-            else if (!$ui->id('id',10,'get') and $ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')]=array('t'=>$token,'d'=>strtotime("+20 minutes"));
-            else if ($ui->id('id',10,'get') and !$ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id',10,'get')]=array('t'=>$token,'d'=>strtotime("+20 minutes"));
-            else $_SESSION[$ui->smallletters('w',10,'get')]=array('t'=>$token,'d'=>strtotime("+15 minutes"));
+            if ($ui->id('id',10,'get') and $ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
+            else if (!$ui->id('id',10,'get') and $ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
+            else if ($ui->id('id',10,'get') and !$ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
+            else $_SESSION[$ui->smallletters('w',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
             return $token;
         } else {
             if (isset($_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]['t']) and $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]['t']==$ui->w('token',32,'post') and $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]['d']>=strtotime("now")) {
@@ -1203,10 +1203,9 @@ if (!function_exists('passwordgenerate')) {
             } else if (isset($_SESSION[$ui->smallletters('w',10,'get')]['t']) and $_SESSION[$ui->smallletters('w',10,'get')]['t']==$ui->w('token',32,'post') and $_SESSION[$ui->smallletters('w',10,'get')]['d']>=strtotime("now")) {
                 deleteOldToken($ui->smallletters('w',10,'get'));
                 return true;
-            } else {
-                deleteOldToken();
-                return false;
             }
+            deleteOldToken();
+            return false;
         }
     }
     function deleteOldToken ($w='',$d='',$id='') {
@@ -1271,9 +1270,9 @@ if (!function_exists('passwordgenerate')) {
             } else {
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if ($row['type']=='I') {
-                        $var=isid($api["${row['name']}"],$row['length']);
-                    } else if (names($api["${row['name']}"],$row['length'])) {
-                        $var=names($api["${row['name']}"],$row['length']);
+                        $var=isid($api[$row['name']],$row['length']);
+                    } else if (names($api[$row['name']],$row['length'])) {
+                        $var=names($api[$row['name']],$row['length']);
                     } else {
                         $var='';
                     }

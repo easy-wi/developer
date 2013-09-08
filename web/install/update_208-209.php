@@ -63,7 +63,7 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $create_mysql_external_servers=$sql->prepare("CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
@@ -86,7 +86,7 @@ $create_mysql_external_servers->execute();
 $response->add('Action: create_mysql_external_servers done: ');
 $error=$create_mysql_external_servers->errorinfo();
 $create_mysql_external_servers->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $create_mysql_external_dbs=$sql->prepare("CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
@@ -109,7 +109,7 @@ $create_mysql_external_dbs->execute();
 $response->add('Action: create_mysql_external_dbs done: ');
 $error=$create_mysql_external_dbs->errorinfo();
 $create_mysql_external_dbs->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 } else {

@@ -132,9 +132,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     }
                     $typeIDList[]=$row['id'];
                     $shortenToID[$row['id']]=$singleShorten;
-                    $typeIDs["$singleShorten"]=array('id'=>$row['id'],'map'=>$row['map'],'mapGroup'=>$row['mapGroup'],'tic'=>$row['tic'],'cmd'=>$row['cmd'],'gamemod'=>$row['gamemod'],'gamemod2'=>$row['gamemod2']);
+                    $typeIDs[$singleShorten]=array('id'=>$row['id'],'map'=>$row['map'],'mapGroup'=>$row['mapGroup'],'tic'=>$row['tic'],'cmd'=>$row['cmd'],'gamemod'=>$row['gamemod'],'gamemod2'=>$row['gamemod2']);
                 }
-                if (!isset($typeIDs["$singleShorten"])) {
+                if (!isset($typeIDs[$singleShorten])) {
                     $success['false'][]='image with the shorten '.$singleShorten.' does not exists';
                 }
             }

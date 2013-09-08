@@ -2,13 +2,13 @@
         <dt><?php echo $sprache->cpu;?>:</dt>
         <dd><?php echo $besthostcpu;?></dd>
         <dt><?php echo $sprache->cpu." ".$sprache->cores;?>:</dt>
-        <dd><?php foreach ($core as $core_row) { ?><?php echo $sprache->core." ".$core_row.": ".$cpucore["$core_row"]."/".$mhz.$sprache->mhz;?><br /><?php } ?></dd>
+        <dd><?php foreach ($core as $core_row) { ?><?php echo $sprache->core." ".$core_row.": ".$cpucore[$core_row]."/".$mhz.$sprache->mhz;?><br /><?php } ?></dd>
         <dt><?php echo $gsprache->virtual;?>:</dt>
         <dd><?php echo $i2."/".$maxserver;?></dd>
         <dt><?php echo $sprache->ram;?>:</dt>
         <dd><?php echo $ramused."/".$ram;?></dd>
         <dt><?php echo $sprache->hdd;?>:</dt>
-        <dd><?php foreach ($best_hdd as $hdd_row) { ?><?php echo $hdd_row." ".$mountunused["$hdd_row"]."/".$mountsize["$hdd_row"]." GB";?><br /><?php } ?></dd>
+        <dd><?php foreach ($best_hdd as $hdd_row) { ?><?php echo $hdd_row." ".$mountunused[$hdd_row]."/".$mountsize[$hdd_row]." GB";?><br /><?php } ?></dd>
 </dl>
 <div class="control-group">
     <label class="control-label" for="inputMount"><?php echo $sprache->mount;?></label>

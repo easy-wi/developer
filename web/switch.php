@@ -49,9 +49,9 @@ if ($reseller_id!=0 and isset($admin_id) and $admin_id!=$reseller_id) {
 }
 if (isset($server_id)) {
 	$referrer=explode('/', str_replace(array('http://','https://'),'',strtolower($ui->escaped('HTTP_REFERER','server'))));
-    $refstring=explode('?',$referrer['1']);
-    if (isset($refstring['1'])) {
-        $from=explode('&',$refstring['1']);
+    $refstring=explode('?',$referrer[1]);
+    if (isset($refstring[1])) {
+        $from=explode('&',$refstring[1]);
     }
     $query=$sql->prepare("SELECT `resellerid`,`accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($server_id));
@@ -65,13 +65,13 @@ if (isset($server_id)) {
     }
     if (isset($accounttype) and $accounttype=='u') {
         $_SESSION['userid']=$server_id;
-        if (isset($from) and $from['0']=="w=gs") {
+        if (isset($from) and $from[0]=="w=gs") {
             header('Location: userpanel.php?w=gs');
             die('Please allow redirection');
-        } else if (isset($from) and $from['0']=="w=vo") {
+        } else if (isset($from) and $from[0]=="w=vo") {
             header('Location: userpanel.php?w=vo');
             die('Please allow redirection');
-        } else if (isset($from) and $from['0']=="w=my") {
+        } else if (isset($from) and $from[0]=="w=my") {
             header('Location: userpanel.php?w=my');
             die('Please allow redirection');
         } else {

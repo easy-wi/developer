@@ -58,13 +58,13 @@ if (!isset($updateinclude) or $updateinclude==false) {
 			foreach ($lines as $line) {
 				if(strpos(strtolower($line), strtolower("//")) === false and strpos(strtolower($line), strtolower("=")) == true) {
 					$data=explode("=", $line);
-					$cvar=preg_replace('/\s+/', '', $data['0']);
+					$cvar=preg_replace('/\s+/', '', $data[0]);
 					$cvar=str_replace('$', "", $cvar);
-					$data2=explode(";", $data['1']);
-					$stringlenght=strlen($data2['0']);
+					$data2=explode(";", $data[1]);
+					$stringlenght=strlen($data2[0]);
 					$stop=$stringlenght-2;
-					$value=substr($data2['0'],"1",$stop);
-					$vars["$cvar"]=$value;
+					$value=substr($data2[0],"1",$stop);
+					$vars[$cvar]=$value;
 				}
 			}
 			return $vars;
@@ -130,7 +130,7 @@ function versioncheck ($current,$new,$file,$response,$sql) {
 			$response->add('<br />Action: update_easywiversion done: ');
 			$error=$update_easywiversion->errorinfo();
 			$update_easywiversion->closecursor();
-			if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+			if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 			else $response->add('OK<br />');
 		}
 		return true;
@@ -145,7 +145,7 @@ $admin_id=1;
 $main=1;
 $reseller_id=0;
 $error=$query->errorinfo();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) {
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) {
 	$response->add("Current database version: 1.9<br />");
 	$version="1.9";
 } else {

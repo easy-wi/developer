@@ -149,7 +149,7 @@ $query->execute();
 $response->add('Action: Change voice_server table done: ');
 $error=$query->errorinfo();
 $query->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $query=$sql->prepare("UPDATE `voice_server` SET `max_download_total_bandwidth`='' WHERE `max_download_total_bandwidth`='0';

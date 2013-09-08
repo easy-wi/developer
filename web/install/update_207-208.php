@@ -43,7 +43,7 @@ $insert_qstatshorten_gtasamp->execute();
 $response->add('Action: insert_qstatshorten_gtasamp done: ');
 $error=$insert_qstatshorten_gtasamp->errorinfo();
 $insert_qstatshorten_gtasamp->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_servertypes_configedit=$sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `configedit` TEXT AFTER `configs`");
@@ -51,7 +51,7 @@ $alter_servertypes_configedit->execute();
 $response->add('Action: alter_servertypes_configedit done: ');
 $error=$alter_servertypes_configedit->errorinfo();
 $alter_servertypes_configedit->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_rserverdata_hyperthreading_cores=$sql->prepare("ALTER TABLE `rserverdata`
@@ -61,7 +61,7 @@ $alter_rserverdata_hyperthreading_cores->execute();
 $response->add('Action: alter_rserverdata_hyperthreading_cores done: ');
 $error=$alter_rserverdata_hyperthreading_cores->errorinfo();
 $alter_rserverdata_hyperthreading_cores->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_serverlist=$sql->prepare("ALTER TABLE `serverlist`
@@ -77,7 +77,7 @@ $alter_serverlist->execute();
 $response->add('Action: alter_serverlist done: ');
 $error=$alter_serverlist->errorinfo();
 $alter_serverlist->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_gserver_restarts_worldsafe=$sql->prepare("ALTER TABLE `gserver_restarts`
@@ -87,7 +87,7 @@ $alter_gserver_restarts_worldsafe->execute();
 $response->add('Action: alter_gserver_restarts_worldsafe done: ');
 $error=$alter_gserver_restarts_worldsafe->errorinfo();
 $alter_gserver_restarts_worldsafe->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_easywi_version=$sql->prepare("ALTER TABLE `easywi_version`
@@ -97,7 +97,7 @@ $alter_easywi_version->execute();
 $response->add('Action: alter_easywi_version done: ');
 $error=$alter_easywi_version->errorinfo();
 $alter_easywi_version->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_settings=$sql->prepare("ALTER TABLE `settings`
@@ -107,7 +107,7 @@ $alter_settings->execute();
 $response->add('Action: alter_settings done: ');
 $error=$alter_settings->errorinfo();
 $alter_settings->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $pselect=$sql->prepare("SELECT `resellerid` FROM `settings`");
@@ -118,7 +118,7 @@ foreach ($pselect->fetchAll() as $row) {
 	$response->add('Action: inster_servertypes_mc (Resellerid '.$row['resellerid'].') done: ');
 	$error=$inster_servertypes_mc->errorinfo();
 	$inster_servertypes_mc->closecursor();
-	if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+	if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 	else $response->add('OK<br />');
 }
 
@@ -321,7 +321,7 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 } else {

@@ -86,11 +86,11 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
                 $hdd_rows=explode("\r\n", $row['hdd']);
                 foreach ($hdd_rows as $hddline) {
                     $data_explode=explode(" ", $hddline);
-                    if (isset($data_explode['1'])) {
-                        $mountpoint=$data_explode['0'];
+                    if (isset($data_explode[1])) {
+                        $mountpoint=$data_explode[0];
                         $hdd[]=$mountpoint;
-                        $mountsize["$mountpoint"]=$data_explode['1'];
-                        $mountunused["$mountpoint"]=0;
+                        $mountsize[$mountpoint]=$data_explode[1];
+                        $mountunused[$mountpoint]=0;
                     }
                 }
                 $i=1;
@@ -105,20 +105,20 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
                 $i2=0;
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $mountpoint=$row2['mountpoint'];
-                    $addstracthdd=$mountunused["$mountpoint"]+($row2['hddsize']*($percent/100));
-                    $mountunused["$mountpoint"]=$addstracthdd;
+                    $addstracthdd=$mountunused[$mountpoint]+($row2['hddsize']*($percent/100));
+                    $mountunused[$mountpoint]=$addstracthdd;
                     $addstractram=$ramused+$row2['minram'];
                     $ramused=$addstractram;
                     $cpuhz=$row2['cores']*$row2['minmhz'];
-                    $addcpu=$cpucore['1']+$cpuhz;
+                    $addcpu=$cpucore[1]+$cpuhz;
                     if ($addcpu<=$mhz) {
-                        $cpucore['1']=$addcpu;
+                        $cpucore[1]=$addcpu;
                     } else {
-                        $cpucore['1']=$mhz;
+                        $cpucore[1]=$mhz;
                         $nextcore="2";
                         while ($nextcore<=$cores) {
                             $extra=$addcpu-$mhz;
-                            $addcpu=$cpucore["$nextcore"]+$extra;
+                            $addcpu=$cpucore[$nextcore]+$extra;
                             if ($addcpu<=$mhz and $addcpu>=0) $cpucore[$nextcore]=$addcpu;
                             else if ($addcpu>=0) $cpucore[$nextcore]=$mhz;
                             $nextcore++;
@@ -133,10 +133,10 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
                 unset($percentserver);
                 unset($percentusedhdd);
                 while ($i<=$cores) {
-                    if($cpucore["$i"]==0) {
-                        $percentusedcpu["$i"]=0;
+                    if($cpucore[$i]==0) {
+                        $percentusedcpu[$i]=0;
                     } else {
-                        $percentusedcpu["$i"]=$cpucore["$i"]/($mhz/100);
+                        $percentusedcpu[$i]=$cpucore[$i]/($mhz/100);
                     }
                     $i++;
                 }
@@ -188,18 +188,18 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
                     $hdd_rows=explode("\r\n", $row['hdd']);
                     foreach ($hdd_rows as $hddline) {
                         $data_explode=explode(" ", $hddline);
-                        if (isset($data_explode['1'])) {
-                            $mountpoint=$data_explode['0'];
-                            $mountsize["$mountpoint"]=$data_explode['1'];
+                        if (isset($data_explode[1])) {
+                            $mountpoint=$data_explode[0];
+                            $mountsize[$mountpoint]=$data_explode[1];
                         }
                     }
-                    foreach ($serverused["$bestserver"]['freespace'] as $mountpoint => $free) {
+                    foreach ($serverused[$bestserver]['freespace'] as $mountpoint => $free) {
                         $hdd[]=$mountpoint;
                         if (!isset($firstfreespace)) {
                             $firstfreespace=$free;
                         }
                     }
-                    $firstpoint=$hdd['0'];
+                    $firstpoint=$hdd[0];
                 }
             }
             if ($reseller_id!=0 and (!isset($bestserver) or !isid($bestserver,10))) {
@@ -234,18 +234,18 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
                     $hdd_rows=explode("\r\n", $row['hdd']);
                     foreach ($hdd_rows as $hddline) {
                         $data_explode=explode(" ", $hddline);
-                        if (isset($data_explode['1'])) {
-                            $mountpoint=$data_explode['0'];
-                            $mountsize["$mountpoint"]=$data_explode['1'];
+                        if (isset($data_explode[1])) {
+                            $mountpoint=$data_explode[0];
+                            $mountsize[$mountpoint]=$data_explode[1];
                         }
                     }
-                    foreach ($serverused["$bestserver"]['freespace'] as $mountpoint => $free) {
+                    foreach ($serverused[$bestserver]['freespace'] as $mountpoint => $free) {
                         $hdd[]=$mountpoint;
                         if (!isset($firstfreespace)) {
                             $firstfreespace=$free;
                         }
                     }
-                    $firstpoint=$hdd['0'];
+                    $firstpoint=$hdd[0];
                     $table[]=array('id'=>$bestserver,'ip'=>$row['ip']);
                 }
             }
@@ -255,7 +255,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
             $maxserver='';
             $core=array();
             $hdd=array();
-            $serverused['1']=array('ram'=>"",'cpu'=>"",'server'=>"",'hdd'=>"");
+            $serverused[1]=array('ram'=>"",'cpu'=>"",'server'=>"",'hdd'=>"");
             $bestserver=1;
         }
         $reseller=array();
@@ -457,8 +457,8 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
             $hdd_rows=explode("\r\n", $row['hdd']);
             foreach ($hdd_rows as $hddline) {
                 $data_explode=explode(" ", $hddline);
-                if (isset($data_explode['1']) and $data_explode['0']==$mountpoint) {
-                    $mountspace=$data_explode['1'];
+                if (isset($data_explode[1]) and $data_explode[0]==$mountpoint) {
+                    $mountspace=$data_explode[1];
                 }
             }
             $query2->execute(array($hostid,$mountpoint));
@@ -488,37 +488,37 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
             $row=1;
             while ($row==1) {
                 $ex_mac=explode(":", $mac);
-                $ex_mac1=hexdec($ex_mac['3']);
-                $ex_mac2=hexdec($ex_mac['4']);
-                $ex_mac3=hexdec($ex_mac['5']);
-                if (hexdec($ex_mac['5'])=="255") {
+                $ex_mac1=hexdec($ex_mac[3]);
+                $ex_mac2=hexdec($ex_mac[4]);
+                $ex_mac3=hexdec($ex_mac[5]);
+                if (hexdec($ex_mac[5])=="255") {
                     $ex_mac3="00";
-                    if (hexdec($ex_mac['4'])=="255") {
+                    if (hexdec($ex_mac[4])=="255") {
                         $ex_mac2="00";
-                        $ex_mac1=hexdec($ex_mac['3'])+1;
+                        $ex_mac1=hexdec($ex_mac[3])+1;
                         if ($ex_mac1<="15") {
                             $ex_mac1="0".strtolower(dechex($ex_mac1));
                         } else {
                             $ex_mac1=strtolower(dechex($ex_mac1));
                         }
                     } else {
-                        $ex_mac2=hexdec($ex_mac['4'])+1;
+                        $ex_mac2=hexdec($ex_mac[4])+1;
                         if ($ex_mac2<="15") {
                             $ex_mac2="0".strtolower(dechex($ex_mac2));
                         } else {
                             $ex_mac2=strtolower(dechex($ex_mac2));
                         }
-                        $ex_mac1=$ex_mac['3'];
+                        $ex_mac1=$ex_mac[3];
                     }
                 } else {
-                    $ex_mac3=hexdec($ex_mac['5'])+1;
+                    $ex_mac3=hexdec($ex_mac[5])+1;
                     if ($ex_mac3<="15") {
                         $ex_mac3="0".strtolower(dechex($ex_mac3));
                     } else {
                         $ex_mac3=strtolower(dechex($ex_mac3));
                     }
-                    $ex_mac1=$ex_mac['3'];
-                    $ex_mac2=$ex_mac['4'];
+                    $ex_mac1=$ex_mac[3];
+                    $ex_mac2=$ex_mac[4];
                 }
                 $mac="00:50:56:$ex_mac1:$ex_mac2:$ex_mac3";
                 $query=$sql->prepare("SELECT `id` FROM `virtualcontainer` WHERE `mac`=? LIMIT 1");
@@ -733,8 +733,8 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
             }
             if ($ui->post['ip']==$oldip or in_array($ui->post['ip'],$freeips)) {
                 $ip=$ui->post['ip'];
-            } else if(isset($checked_ips['0']) and isip($checked_ips['0'],'all')) {
-                $ip=$checked_ips['0'];
+            } else if(isset($checked_ips[0]) and isip($checked_ips[0],'all')) {
+                $ip=$checked_ips[0];
             }
             if (!isset($ips)) {
                 $ips='';

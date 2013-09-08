@@ -115,7 +115,7 @@ if ($w=='lo') {
 			$i=0;
 			$path="";
 			while ($i<$amount) {
-				$path .=$folders["$i"]."/";
+				$path .=$folders[$i]."/";
 				$i++;
 			}
             $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;
@@ -169,7 +169,7 @@ if ($w=='lo') {
 						$md5=md5($row['userid'].$row['logintime'].$row['cname'].$row['lastlogin'].mt_rand());
 						foreach (explode('|', $row['security']) as $user) {
 							$ex=explode(':',str_replace(array("\r","\n"),"",$user));
-							if (isset($ex['1'])) $ts3userlist[$ex['0']]=$ex['1'];
+							if (isset($ex[1])) $ts3userlist[$ex[0]]=$ex[1];
 						}
 					}
 					$text=$sprache->nouser;
@@ -183,7 +183,7 @@ if ($w=='lo') {
 						$i=0;
 						$path="";
 						while ($i<$amount) {
-							$path .=$folders["$i"]."/";
+							$path .=$folders[$i]."/";
 							$i++;
 						}
                         $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;
@@ -354,7 +354,7 @@ XML;
 				$ref=$ui->domain('HTTP_REFERER','server');
 			}
 			$referrer=explode('/', str_replace(array('http://', 'https://'),'',strtolower($ref)));
-			if (isset($referrer['1']) and $referrer['1']=='login.php') $topanel=true;
+			if (isset($referrer[1]) and $referrer[1]=='login.php') $topanel=true;
 			if (!isset($user_id) and !isset($admin_id)) {
 				header('Location: login.php&r=lo');
 			} else if(isset($user_id)) {
@@ -365,7 +365,7 @@ XML;
 				$i=0;
 				$path="";
 				while ($i<$amount) {
-					$path .=$folders["$i"]."/";
+					$path .=$folders[$i]."/";
 					$i++;
 				}
                 $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;

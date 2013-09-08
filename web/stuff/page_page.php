@@ -47,11 +47,15 @@ if (isset($default_page_id)) {
 	$page_id=$ui->id('id',19,'get');
 }
 if (isset($page_id) and is_numeric($page_id)) {
+    function pre_replace($m) {
+        return str_replace($m[1],htmlentities($m[1]),$m[0]);
+    }
 	$query=$sql->prepare("SELECT t.`title`,t.`text`,t.`id`,p.`subpage` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='page' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
 	$query->execute(array($page_id,$user_language));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$page_title=$row['title'];
 		$page_text=str_replace('%url%',$page_data->pageurl,$row['text']);
+        $page_text=preg_replace_callback('/<pre.*?>(.*?)<\/pre>/imsu','pre_replace',$page_text);
 		$page_keywords=array();
 		$tag_tags=array();
         $breadcrumbID=$row['subpage'];
@@ -235,10 +239,7 @@ $langLinks=array();
 if (isset($s) and $s=='page') {
     $query=$sql->prepare("SELECT `title`,`language` FROM `page_pages_text` WHERE `pageid`=?");
     $query->execute(array($page_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $langLinks[$row['language']]=($page_data->seo=='Y') ? szrp($row['title'])  : '?s=page&amp;id='.$page_id;
-    }
-
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $langLinks[$row['language']]=($page_data->seo=='Y') ? szrp($row['title'])  : '?s=page&amp;id='.$page_id;
 } else if (isset($s)) {
     foreach ($languages as $l) {
         $tempLanguage=getlanguagefile('page',$l,0);

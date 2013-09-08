@@ -133,7 +133,7 @@ if (isset($include) and $include==true) {
         $insert=$sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             foreach ($copy as $k=>$v){
-                $val=$row["${v}"]==null ? '' : $row["${v}"];
+                $val=$row[$v]==null ? '' : $row[$v];
                 $insert->execute(array($k,$row['id'],$val));
             }
         }

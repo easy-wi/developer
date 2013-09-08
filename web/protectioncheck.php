@@ -75,8 +75,8 @@ if ($ui->ipport('serveraddress','post') or (isset($server_ip) and isset($server_
     if ($ui->ipport('serveraddress','post')) {
         $serveraddress=$ui->ipport('serveraddress','post');
         $adresse_awk=explode(":",$serveraddress);
-        $ip=$adresse_awk['0'];
-        $port=$adresse_awk['1'];
+        $ip=$adresse_awk[0];
+        $port=$adresse_awk[1];
     } else if (isset($server_ip) and isset($server_port)) {
         $ip=$server_ip;
         $port=$server_port;
@@ -101,11 +101,11 @@ if ($ui->ipport('serveraddress','post') or (isset($server_ip) and isset($server_
             $query->execute(array($psince,$customer,'%'.$serveraddress.'%'));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $logentry=explode(" ", $row['useraction']);
-                if (($logentry['1']=="%gserver%" or $logentry['1']=="%addon%") and ($logentry['0']!='%resync%' and $logentry['0']!='%mod%')) {
+                if (($logentry[1]=="%gserver%" or $logentry[1]=="%addon%") and ($logentry[0]!='%resync%' and $logentry[0]!='%mod%')) {
                     if ($default_language=="de") {
                         $time=explode(' ', $row['logdate']);
-                        $time2=explode('-', $time['0']);
-                        $time3=$time2['2'].".".$time2['1'].".".$time2['0']." ".$time['1'];
+                        $time2=explode('-', $time[0]);
+                        $time3=$time2[2].".".$time2[1].".".$time2[0]." ".$time[1];
                     } else {
                         $time3=$row['logdate'];
                     }
@@ -116,10 +116,10 @@ if ($ui->ipport('serveraddress','post') or (isset($server_ip) and isset($server_
                     $replacedpics=str_replace($placeholders1,$replace1,$row['useraction']);
                     $replacedwords=str_replace($placeholders2,$replace2,$row['useraction']);
                     if (!empty($replacedpics)) {
-                        if ($logentry['1']=="%gserver%") {
+                        if ($logentry[1]=="%gserver%") {
                             $logs[]="$replacedpics: $time3";
                         }
-                        $xmllogs["$time3"]="$replacedwords";
+                        $xmllogs[$time3]="$replacedwords";
                     }
                 }
             }

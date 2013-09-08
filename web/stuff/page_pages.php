@@ -451,11 +451,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
         $explodedtime=explode(' ', $row['date']);
-        $explodedtime2=explode('-', $explodedtime['0']);
+        $explodedtime2=explode('-', $explodedtime[0]);
         if ($user_language=='de') {
-            $date=$explodedtime2['2'].".".$explodedtime2['1'].".".$explodedtime2['0']." ".$explodedtime['1'];
+            $date=$explodedtime2[2].".".$explodedtime2[1].".".$explodedtime2[0]." ".$explodedtime[1];
         } else {
-            $date=$explodedtime2['1'].".".$explodedtime2['2'].".".$explodedtime2['0']." ".$explodedtime['1'];
+            $date=$explodedtime2[1].".".$explodedtime2[2].".".$explodedtime2[0]." ".$explodedtime[1];
         }
         array_push($table,array('id'=>$row['id'],'author'=>$author,'date'=>$date,'released'=>$released,'title'=>$page_title,'link'=>$link,'languages'=>$p_languages,'sort'=>$row['sort']));
     }

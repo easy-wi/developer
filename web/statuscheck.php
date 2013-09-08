@@ -326,7 +326,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                 foreach ($badxml as $badxml2) {
                     $address=$badxml2['address'];
                     $status=$badxml2['status'];
-                    $badstatus["$address"]=array('status'=>$status);
+                    $badstatus[$address]=array('status'=>$status);
                     if ($badxml2['status']=="UP") {
                         if ($badxml2['type']!="A2S") {
                             $gametype=$badxml2->gametype;
@@ -342,7 +342,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                         $numplayers=$badxml2->numplayers;
                         $maxplayers=$badxml2->maxplayers;
                         $map=$badxml2->map;
-                        $badstatus["$address"]=array('gametype'=>$gametype,'name'=>$name,'numplayers'=>$numplayers,'maxplayers'=>$maxplayers,'map'=>$map,'rules'=>$badxml2->rules->rule);
+                        $badstatus[$address]=array('gametype'=>$gametype,'name'=>$name,'numplayers'=>$numplayers,'maxplayers'=>$maxplayers,'map'=>$map,'rules'=>$badxml2->rules->rule);
                     }
                 }
             }
@@ -353,8 +353,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                 $address=$xml2['address'];
                 $password='';
                 $addressarray=explode(':', $address);
-                $ip=$addressarray['0'];
-                $port=$addressarray['1'];
+                $ip=$addressarray[0];
+                $port=$addressarray[1];
                 $query=$sql->prepare("SELECT g.*,t.`shorten`,t.`qstat` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`serverip`=? AND g.`port`=? LIMIT 1");
                 $query->execute(array($ip,$port));
                 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -390,7 +390,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     $passparams=explode(":", $qstatpassparam);
                 }
                 unset($password,$rulebreak,$maxplayers,$name);
-                if (($xml2['status']=="DOWN" or $xml2['status']=="TIMEOUT") and (!isset($badstatus["$address"]['status']) or $badstatus["$address"]['status']=="DOWN" or $badstatus["$address"]['status']=="TIMEOUT")) {
+                if (($xml2['status']=="DOWN" or $xml2['status']=="TIMEOUT") and (!isset($badstatus[$address]['status']) or $badstatus[$address]['status']=="DOWN" or $badstatus[$address]['status']=="TIMEOUT")) {
                     $status="DOWN";
                     $name='';
                     $numplayers=0;
@@ -398,21 +398,21 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     $map='';
                     $gametype='';
                     print "recheck status for $address is still: $status\r\n";
-                } else if (($xml2['status']=="DOWN" or $xml2['status']=="TIMEOUT") and isset($badstatus["$address"]['status']) and $badstatus["$address"]['status']=="UP") {
+                } else if (($xml2['status']=="DOWN" or $xml2['status']=="TIMEOUT") and isset($badstatus[$address]['status']) and $badstatus[$address]['status']=="UP") {
                     $status="UP";
-                    foreach ($badstatus["$address"]['rules'] as $rule) {
+                    foreach ($badstatus[$address]['rules'] as $rule) {
                         switch((string) $rule['name']) {
-                            case $passparams['0']:
-                                if ($rule==$passparams['1']) $password="Y";
+                            case $passparams[0]:
+                                if ($rule==$passparams[1]) $password="Y";
                                 else $password="N";
                                 break;
                         }
                     }
-                    $name=$status=$badstatus["$address"]['name'];
-                    $numplayers=$status=$badstatus["$address"]['numplayers'];
-                    $maxplayers=$status=$badstatus["$address"]['maxplayers'];
-                    $map=$status=$badstatus["$address"]['map'];
-                    $gametype=$status=$badstatus["$address"]['gametype'];
+                    $name=$status=$badstatus[$address]['name'];
+                    $numplayers=$status=$badstatus[$address]['numplayers'];
+                    $maxplayers=$status=$badstatus[$address]['maxplayers'];
+                    $map=$status=$badstatus[$address]['map'];
+                    $gametype=$status=$badstatus[$address]['gametype'];
                 } else {
                     $status="UP";
                     $name=$xml2->name;
@@ -428,8 +428,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                             case 'gamename':
                                 $gametype=$rule;
                                 break;
-                            case $passparams['0']:
-                                if ($rule==$passparams['1']) $password="Y";
+                            case $passparams[0]:
+                                if ($rule==$passparams[1]) $password="Y";
                                 else $password="N";
                                 break;
                         }
@@ -451,8 +451,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             $address=$array['server'];
             $server=explode(':',$address);
             $qstat=$array['qstat'];
-            $serverip=$server['0'];
-            $port=$server['1'];
+            $serverip=$server[0];
+            $port=$server[1];
             $switchID=$array['switchID'];
             $query=$sql->prepare("SELECT s.`id`,t.`description`,g.`slots`,g.`war`,g.`brandname`,g.`secnotified`,g.`notified`,g.`lendserver`,g.`userid`,g.`resellerid`,g.`rootID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
             $query->execute(array($switchID));
@@ -589,7 +589,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                         $folders=(substr($row['serverdir'],0,1)=='/') ? 'cd  /' : 'cd ';
                         $lastFolder='';
                         while ($i<=$folderfilecount) {
-                            $folders=$folders.$split_config["$i"]."/";
+                            $folders=$folders.$split_config[$i]."/";
                             $lastFolder=$split_config[$i];
                             $i++;
                         }
@@ -719,7 +719,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                     $folders='cd ';
                                 }
                                 while ($i<=$folderfilecount) {
-                                    $folders=$folders.$split_config["$i"]."/";
+                                    $folders=$folders.$split_config[$i]."/";
                                     $i++;
                                 }
                                 if ($folders=='cd ') {
@@ -766,7 +766,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                         $pupdate->execute(array($ts3masterid));
                     }
                     $serverlist=$connection->ServerList();
-                    if (!isset($serverlist['0']['id']) or $serverlist['0']['id']=='0') {
+                    if (!isset($serverlist[0]['id']) or $serverlist[0]['id']=='0') {
                         foreach ($serverlist as $server) {
                             unset($modbadserver);
                             $modbadserver=array();
@@ -868,26 +868,26 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                 }
                                 if (isset($ts3id) and $forcebanner=='Y') {
                                     foreach (array('virtualserver_hostbanner_url','virtualserver_hostbanner_gfx_url') as $param) {
-                                        if ($default["$param"]!='' and $sd["$param"]!=$default["$param"]) {
-                                            $modbadserver["$param"]=$default["$param"];
-                                            print $vrow['type']." server $address $param != ".$default["$param"].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT',$server['virtualserver_name'])."\r\n";
+                                        if ($default[$param]!='' and $sd[$param]!=$default[$param]) {
+                                            $modbadserver[$param]=$default[$param];
+                                            print $vrow['type']." server $address $param != ".$default[$param].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT',$server['virtualserver_name'])."\r\n";
                                             if (isset($rulebreak)) {
-                                                $rulebreak .="<br />".$param." ".$vosprache->isnot." ".$default["$param"];
+                                                $rulebreak .="<br />".$param." ".$vosprache->isnot." ".$default[$param];
                                             } else {
-                                                $rulebreak=$param." ".$vosprache->isnot." ".$default["$param"];
+                                                $rulebreak=$param." ".$vosprache->isnot." ".$default[$param];
                                             }
                                         }
                                     }
                                 }
                                 if (isset($ts3id) and $forcebutton=='Y') {
                                     foreach (array('virtualserver_hostbutton_tooltip','virtualserver_hostbutton_url','virtualserver_hostbutton_gfx_url') as $param) {
-                                        if ($default["$param"]!='' and $sd["$param"]!=$default["$param"]) {
-                                            $modbadserver["$param"]=$default["$param"];
-                                            print $vrow['type']." server $address $param != ".$default["$param"].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT',$server['virtualserver_name'])."\r\n";
+                                        if ($default[$param]!='' and $sd[$param]!=$default[$param]) {
+                                            $modbadserver[$param]=$default[$param];
+                                            print $vrow['type']." server $address $param != ".$default[$param].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT',$server['virtualserver_name'])."\r\n";
                                             if (isset($rulebreak)) {
-                                                $rulebreak .="<br />".$param." ".$vosprache->isnot." ".$default["$param"];
+                                                $rulebreak .="<br />".$param." ".$vosprache->isnot." ".$default[$param];
                                             } else {
-                                                $rulebreak=$param." ".$vosprache->isnot." ".$default["$param"];
+                                                $rulebreak=$param." ".$vosprache->isnot." ".$default[$param];
                                             }
                                         }
                                     }
@@ -1017,7 +1017,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                 }
                             }
                         }
-                    } else print "Error: ".$serverlist['0']['msg']."\r\n";
+                    } else print "Error: ".$serverlist[0]['msg']."\r\n";
                 }
                 if (isset($connection)) {
                     $connection->CloseConnection();

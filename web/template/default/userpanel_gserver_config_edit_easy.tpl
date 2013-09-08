@@ -720,7 +720,7 @@
             <div class="control-group">
                 <label class="control-label" for="<?php echo $key; ?>"><?php echo $key; ?></label>
                 <div class="controls">
-                    <input id="<?php echo $key; ?>" type="text" name="<?php echo $key; ?>" value="<?php echo $unknownarray["$key"]; ?>">
+                    <input id="<?php echo $key; ?>" type="text" name="<?php echo $key; ?>" value="<?php echo $unknownarray[$key]; ?>">
                 </div>
             </div>
             <?php } ?>

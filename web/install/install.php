@@ -244,13 +244,13 @@ function getconfigcvars($file) {
 		foreach ($lines as $line) {
 			if(strpos(strtolower($line), strtolower("//")) === false and strpos(strtolower($line), strtolower("=")) == true) {
 				$data=explode("=", $line);
-				$cvar=preg_replace('/\s+/', '', $data['0']);
+				$cvar=preg_replace('/\s+/', '', $data[0]);
 				$cvar=str_replace('$', "", $cvar);
-				$data2=explode(";", $data['1']);
-				$stringlenght=strlen($data2['0']);
+				$data2=explode(";", $data[1]);
+				$stringlenght=strlen($data2[0]);
 				$stop=$stringlenght-2;
-				$value=substr($data2['0'],"1",$stop);
-				$vars["$cvar"]=$value;
+				$value=substr($data2[0],"1",$stop);
+				$vars[$cvar]=$value;
 			}
 		}
 		return $vars;
@@ -425,7 +425,7 @@ $aeskey="'.$_POST['aeskey'].'";
 	$randompass="";
 	for($i=1; $i<=10; $i++){
 		$wuerfeln = mt_rand(0,$anzahlcorrect);
-		$randompass .= $zeichen["$wuerfeln"];
+		$randompass .= $zeichen[$wuerfeln];
 	}
 ?>
 				<tr>
@@ -804,7 +804,7 @@ $aeskey="'.$_POST['aeskey'].'";
 		$randompass="";
 		for($i=1; $i<=30; $i++){
 			$wuerfeln = mt_rand(0,$anzahlcorrect);
-			$randompass .= $zeichen["$wuerfeln"];
+			$randompass .= $zeichen[$wuerfeln];
 		}
 ?>
 						<tr>

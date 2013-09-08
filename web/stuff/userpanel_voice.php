@@ -120,9 +120,9 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             $connection->StartServer($volocalserverid);
             $rawsnapshot=$connection->Snapshotcreate($volocalserverid);
             $channelSnapshot=$connection->channelList($volocalserverid);
-            if (is_array($rawsnapshot) and isset($rawsnapshot['0']['msg'])) {
-                $template_file=$spracheResponse->error_ts_query.$rawsnapshot['0']['msg'];
-            } else if (is_array($rawsnapshot) and !isset($rawsnapshot['0']['msg'])) {
+            if (is_array($rawsnapshot) and isset($rawsnapshot[0]['msg'])) {
+                $template_file=$spracheResponse->error_ts_query.$rawsnapshot[0]['msg'];
+            } else if (is_array($rawsnapshot) and !isset($rawsnapshot[0]['msg'])) {
                 $template_file='Unknown error';
             } else {
                 $snapshot=gzcompress($rawsnapshot,9);
@@ -169,7 +169,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             } else {
                 $connection->StartServer($volocalserverid);
                 $reply=$connection->Snapshotdeploy($volocalserverid,$snapshot);
-                if (isset($reply['0']['id']) and $reply['0']['id']=='0') {
+                if (isset($reply[0]['id']) and $reply[0]['id']=='0') {
                     $move=array();
                     $channelListOld=@json_decode($row['channels']);
                     $channelListDeployed=@json_decode($connection->channelList($volocalserverid));
@@ -181,7 +181,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                     $loguseraction="%use% %voserver% %backup% ${row['name']} ${address}";
                     $insertlog->execute();
                 }
-                $template_file=$spracheResponse->ts_query_success.$reply['0']['msg'];
+                $template_file=$spracheResponse->ts_query_success.$reply[0]['msg'];
             }
             $connection->CloseConnection();
         }
@@ -237,13 +237,13 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                         $newkey=$connection->AddKey($localserverid,$ui->id('group',255,'post'));
                         $loguseraction="%add% %voserver% Token ${address}";
                         $insertlog->execute();
-                        $template_file=$spracheResponse->ts_query_success.$newkey['0']['token'];
+                        $template_file=$spracheResponse->ts_query_success.$newkey[0]['token'];
                     }
                 } else if ($ui->smallletters('action',2,'post')=='dl') {
                     $loguseraction="%del% %voserver% Token ${address}";
                     $insertlog->execute();
                     $del=$connection->DelKey($localserverid,$ui->post['token']);
-                    $template_file=$spracheResponse->ts_query_success.$del['0']['msg'];
+                    $template_file=$spracheResponse->ts_query_success.$del[0]['msg'];
                 }
             }
             $connection->CloseConnection();
@@ -300,8 +300,8 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             $reply=$connection->PermReset($volocalserverid);
             $loguseraction="%reinstall% %voserver% ${voip}:${voport}";
             $insertlog->execute();
-            if (isset($reply['0']['token'])) {
-                $template_file=$spracheResponse->ts_query_success.$reply['0']['token'];
+            if (isset($reply[0]['token'])) {
+                $template_file=$spracheResponse->ts_query_success.$reply[0]['token'];
                 if ($forcebanner=='Y') {
                     $removelist[]='b_virtualserver_modify_hostbanner';
                     $removelist[]='i_needed_modify_power_virtualserver_modify_hostbanner';
@@ -535,7 +535,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                     $virtualserver_reserved_slots=($ui->id('virtualserver_reserved_slots',4,'post') and $ui->id('virtualserver_reserved_slots',4,'post')<$slots) ? $ui->id('virtualserver_reserved_slots',4,'post') : 0;
 
                     $mod=$connection->ModServer($localserverid,$slots,$ip,$port,$initialpassword,$name,$welcome,$max_download_total_bandwidth,$max_upload_total_bandwidth,$banner_url,$banner_gfx,$button_url,$button_gfx,$tooltip,$virtualserver_reserved_slots,$virtualserver_needed_identity_security_level,$virtualserver_hostmessage_mode,$virtualserver_hostbanner_gfx_interval,$virtualserver_antiflood_points_tick_reduce,$virtualserver_antiflood_points_needed_command_block,$virtualserver_antiflood_points_needed_ip_block);
-                    $template_file=$spracheResponse->table_add.'<br />'.$spracheResponse->ts_query_success.$mod['0']['msg'];
+                    $template_file=$spracheResponse->table_add.'<br />'.$spracheResponse->ts_query_success.$mod[0]['msg'];
                 }
                 $connection->CloseConnection();
                 $query=$sql->prepare("UPDATE `voice_server` SET `dns`=?,`initialpassword`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -589,7 +589,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             if (isset($reply)) {
                 $query=$sql->prepare("UPDATE `voice_server` SET `uptime`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($uptime,$id,$reseller_id));
-                $template_file=$spracheResponse->ts_query_success.$reply['0']['msg'];
+                $template_file=$spracheResponse->ts_query_success.$reply[0]['msg'];
             } else {
                 $template_file='Unknown Error';
             }

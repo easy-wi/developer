@@ -165,7 +165,7 @@ if ($d=='se' and $reseller_id==0) {
 			$userips=ipstoarray($row['ips']);
 			foreach ($userips as $ip) {
 				$ip_ex=explode(".",$ip);
-				$ips[]=$ip_ex['0'].".".$ip_ex['1'].".".$ip_ex['2'].".";
+				$ips[]=$ip_ex[0].".".$ip_ex[1].".".$ip_ex[2].".";
 			}
 		}
 		$subnets=array_unique($ips);

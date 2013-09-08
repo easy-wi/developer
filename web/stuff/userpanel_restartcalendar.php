@@ -62,22 +62,22 @@ if (!isset($rowcount) or $rowcount==0) redirect('userpanel.php');
 if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($port)) {
 	$date2=$ui->gamestring('date','post');
 	$date=explode('_',$date2);
-	if ($date['0']=="mon") {
+	if ($date[0]=="mon") {
 		$day=$sprache->monday;
-	} else if ($date['0']=="tue") {
+	} else if ($date[0]=="tue") {
 		$day=$sprache->tuesday;
-	} else if ($date['0']=="wed") {
+	} else if ($date[0]=="wed") {
 		$day=$sprache->wednesday;
-	} else if ($date['0']=="thu") {
+	} else if ($date[0]=="thu") {
 		$day=$sprache->thursday;
-	} else if ($date['0']=="fri") {
+	} else if ($date[0]=="fri") {
 		$day=$sprache->friday;
-	} else if ($date['0']=="sat") {
+	} else if ($date[0]=="sat") {
 		$day=$sprache->saturday;
-	} else if ($date['0']=="sun") {
+	} else if ($date[0]=="sun") {
 		$day=$sprache->sunday;
 	}
-	$hour=$date['1'].":00";
+	$hour=$date[1].":00";
 	$table=array();
     $query=$sql->prepare("SELECT `id`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
@@ -95,7 +95,7 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$shorten=$row['shorten'];
 		$uploadallowed[]=$row['upload'];
-		$qstat_array["$shorten"]=$row['qstat'];
+		$qstat_array[$shorten]=$row['qstat'];
 		if (!isset($qstat)) {
 			$qstat=$row['qstat'];
 		}
@@ -122,7 +122,7 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		$restart=$row['restart'];
 		$backup=$row['backup'];
 		$worldsafe=$row['worldsafe'];
-		$qstat=$qstat_array["$gsswitch"];
+		$qstat=$qstat_array[$gsswitch];
 		if (in_array('a2s',$qstat_array) and (in_array(2,$uploadallowed) or in_array(3,$uploadallowed))) {
 			$upload=$row['upload'];
 		}
@@ -281,8 +281,8 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
     $query->execute(array($ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$restarttime=explode("_",$row['restarttime']);
-		$day=$restarttime['0'];
-		$hour=$restarttime['1'];
+		$day=$restarttime[0];
+		$hour=$restarttime[1];
 		$shorten=$row['gsswitch'];
 		$template=$row['template'];
 		$restart=$row['restart'];
@@ -340,9 +340,9 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
                 $imgName='16_protected';
                 $imgAlt='Protected';
             }
-            $restarts["$hour"]["$day"]=array('out'=>$routput,'img'=>$imgName,'alt'=>$imgAlt);
+            $restarts[$hour][$day]=array('out'=>$routput,'img'=>$imgName,'alt'=>$imgAlt);
         } else {
-            $restarts["$hour"]["$day"]=array('out'=>$routput);
+            $restarts[$hour][$day]=array('out'=>$routput);
         }
 	}
 	$template_file="userpanel_gserver_calendar_list.tpl";

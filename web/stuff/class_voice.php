@@ -70,7 +70,7 @@ class TS3 {
 							$i=1;
 							$buffered='';
 							while ($i<$count) {
-								$buffered .=$splitted["$i"];
+								$buffered .=$splitted[$i];
 								$i++;
 							}
 							$splitted[1]=$buffered;
@@ -287,9 +287,9 @@ class TS3 {
                     $virtualserver_ip=(isset($serverdetails_query[0]['virtualserver_ip']) and isip($serverdetails_query[0]['virtualserver_ip'],'all')) ? $serverdetails_query[0]['virtualserver_ip'] : $this->ip;
 					$serverdetails_query=$this->SendCommand('serverinfo');
 					$virtualserver_server=$virtualserver_ip.':'.$server['virtualserver_port'];
-                    $virtualserver_dns=(array_key_exists($virtualserver_server,$dnsarray)) ? $dnsarray["$virtualserver_server"] :'';
+                    $virtualserver_dns=(array_key_exists($virtualserver_server,$dnsarray)) ? $dnsarray[$virtualserver_server] :'';
 					if (isset($serverdetails_query[0])) {
-						$serverdetails["$virtualserver_id"]=array(
+						$serverdetails[$virtualserver_id]=array(
 							'virtualserver_ip'=>$virtualserver_ip,
 							'virtualserver_maxclients'=>$serverdetails_query[0]['virtualserver_maxclients'],
 							'virtualserver_port'=>$server['virtualserver_port'],
@@ -306,7 +306,7 @@ class TS3 {
 							'virtualserver_hostbutton_gfx_url'=>$serverdetails_query[0]['virtualserver_hostbutton_gfx_url']
 						);
 					} else {
-						$serverdetails["$virtualserver_id"]=array(
+						$serverdetails[$virtualserver_id]=array(
 							'virtualserver_ip'=>$virtualserver_ip,
 							'virtualserver_maxclients'=>$serverdetails_query[0]['virtualserver_maxclients'],
 							'virtualserver_port'=>$server['virtualserver_port'],
@@ -327,10 +327,10 @@ class TS3 {
 				if ($server['virtualserver_status']=='offline') {
 					$this->StopServer($virtualserver_id);
 				}
-				if (!isset($serverdetails["$virtualserver_id"])) {
+				if (!isset($serverdetails[$virtualserver_id])) {
                     $virtualserver_ip=(isset($virtualserver_ip)) ? $virtualserver_ip :'';
                     $virtualserver_dns=(isset($virtualserver_dns)) ? $virtualserver_dns :'';
-					$serverdetails["$virtualserver_id"]=array(
+					$serverdetails[$virtualserver_id]=array(
 						'virtualserver_ip'=>$virtualserver_ip,
 						'virtualserver_maxclients'=>$server['virtualserver_maxclients'],
 						'virtualserver_port'=>$server['virtualserver_port'],
@@ -457,7 +457,7 @@ class TS3 {
 					$cldbid=$userid['cldbid'];
 					$userdata=$this->SendCommand("clientdbinfo cldbid=".$cldbid);
 					$client_unique_identifier=$this->ReplaceFromTS3($userdata[0]['client_unique_identifier']);
-					$adminlist["$cldbid"]=$client_unique_identifier;
+					$adminlist[$cldbid]=$client_unique_identifier;
 				}
 			} else {
 				$adminlist=array();
@@ -767,7 +767,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 						if (isset($dnsconfig[1])) {
 							$linedns=$dnsconfig[0];
 							$lineserver=$dnsconfig[1];
-							$dnsarray["$lineserver"]=$linedns;
+							$dnsarray[$lineserver]=$linedns;
 						}
 					}
 				}

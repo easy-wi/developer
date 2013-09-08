@@ -507,8 +507,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             $cvar=str_replace(" ", "", $split[0]);
                             $value=$split[1];
                             if ($cvar!="exec") {
-                                if (isset($ui->post["$cvar"])) {
-                                    if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post["$cvar"]!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
+                                if (isset($ui->post[$cvar])) {
+                                    if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post[$cvar]!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
                                         eacchange('change',$id,$ui->post[$cvar],$reseller_id);
                                     }
                                     $newconfig .=$cvar." \"".$ui->post[$cvar]."\""."\r\n";
@@ -531,8 +531,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
                                     $value='';
                                 }
                                 if ($cvar!="exec") {
-                                    if (isset($ui->post["$cvar"])) {
-                                        if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post["$cvar"]!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
+                                    if (isset($ui->post[$cvar])) {
+                                        if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post[$cvar]!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
                                             eacchange('change',$id,$ui->post[$cvar],$reseller_id);
                                         }
                                         $newconfig .=$cvar." \"".$ui->post[$cvar]."\""."\r\n";
@@ -598,10 +598,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         $i=0;
                         $folders=$pserver.$serverip.'_'.$port.'/'.$ftpshorten;
                         while ($i<$folderfilecount) {
-                            $folders .="/".$split_config["$i"];
+                            $folders .="/".$split_config[$i];
                             $i++;
                         }
-                        $uploadfile=$split_config["$i"];
+                        $uploadfile=$split_config[$i];
                         ftp_chdir($ftp_connect,$folders);
                         $checkupload=@ftp_fput($ftp_connect,$uploadfile,$temp,FTP_ASCII);
                         $template_file=($checkupload) ? $sprache->updated." ".$uploadfile : $sprache->failed." ".$folders.'/'.$uploadfile;
@@ -628,9 +628,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             $value=$split[1];
                             if ($cvar!="exec") {
                                 if (in_array($cvar, $general_cvar) or in_array($cvar, $game_cvars)) {
-                                    $linearray["$cvar"]=$value;
+                                    $linearray[$cvar]=$value;
                                 } else {
-                                    $unknownarray["$cvar"]=$value;
+                                    $unknownarray[$cvar]=$value;
                                 }
                             }
                         } else {
@@ -640,9 +640,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                                 $value=(isset($split[1])) ? $split[1] : '';
                                 if ($cvar!="exec") {
                                     if (in_array($cvar, $general_cvar) or in_array($cvar, $game_cvars)) {
-                                        $linearray["$cvar"]=$value;
+                                        $linearray[$cvar]=$value;
                                     } else {
-                                        $unknownarray["$cvar"]=$value;
+                                        $unknownarray[$cvar]=$value;
                                     }
                                 }
                             }

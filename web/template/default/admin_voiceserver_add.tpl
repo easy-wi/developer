@@ -35,9 +35,9 @@
             <div class="control-group">
                 <label class="control-label" for="inputRoot"><?php echo $sprache->usage;?></label>
                 <div id="information" class="controls">
-                    <?php if (isset($table2['0']['uslots'])) { ?>
-                    <?php echo $sprache->installedslots." ".$table2['0']['uslots']."/".$table2['0']['installedslots']."/".$table2['0']['maxslots'];?><br />
-                    <?php echo $sprache->installedserver." ".$table2['0']['installedserver']."/".$table2['0']['maxserver'];?>
+                    <?php if (isset($table2[0]['uslots'])) { ?>
+                    <?php echo $sprache->installedslots." ".$table2[0]['uslots']."/".$table2[0]['installedslots']."/".$table2[0]['maxslots'];?><br />
+                    <?php echo $sprache->installedserver." ".$table2[0]['installedserver']."/".$table2[0]['maxserver'];?>
                     <?php } ?>
                 </div>
             </div>

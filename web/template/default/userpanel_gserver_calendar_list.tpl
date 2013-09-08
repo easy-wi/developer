@@ -28,16 +28,16 @@
 <tr>
     <td><?php if ($i>9) echo $i; else echo "$i";?>:00</td>
     <td>
-        <?php if(!empty($restarts["$i"]['mon'])){ ?>
+        <?php if(!empty($restarts[$i]['mon'])){ ?>
         <div class="row-fluid">
             <div class="span12">
-                <?php echo $restarts["$i"]['mon']['out']; if(isset($restarts["$i"]['mon']['img'])){ ?><br /><img src="images/<?php echo $restarts["$i"]['mon']['img'];?>.png" alt="<?php echo $restarts["$i"]['mon']['alt'];?>" width="16" height="16"/><?php }?>
+                <?php echo $restarts[$i]['mon']['out']; if(isset($restarts[$i]['mon']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['mon']['img'];?>.png" alt="<?php echo $restarts[$i]['mon']['alt'];?>" width="16" height="16"/><?php }?>
             </div>
         </div>
         <?php } ?>
         <div class="row-fluid">
             <div class="span6">
-                <?php if(!empty($restarts["$i"]['mon'])){ ?>
+                <?php if(!empty($restarts[$i]['mon'])){ ?>
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
@@ -55,16 +55,16 @@
         </div>
     </td>
     <td>
-        <?php if(!empty($restarts["$i"]['tue'])){ ?>
+        <?php if(!empty($restarts[$i]['tue'])){ ?>
         <div class="row-fluid">
             <div class="span12">
-                <?php echo $restarts["$i"]['tue']['out']; if(isset($restarts["$i"]['tue']['img'])){ ?><br /><img src="images/<?php echo $restarts["$i"]['tue']['img'];?>.png" alt="<?php echo $restarts["$i"]['tue']['alt'];?>" width="16" height="16"/><?php }?>
+                <?php echo $restarts[$i]['tue']['out']; if(isset($restarts[$i]['tue']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['tue']['img'];?>.png" alt="<?php echo $restarts[$i]['tue']['alt'];?>" width="16" height="16"/><?php }?>
             </div>
         </div>
         <?php } ?>
         <div class="row-fluid">
             <div class="span6">
-                <?php if(!empty($restarts["$i"]['tue'])){ ?>
+                <?php if(!empty($restarts[$i]['tue'])){ ?>
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="tue_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
@@ -82,16 +82,16 @@
         </div>
     </td>
     <td>
-        <?php if(!empty($restarts["$i"]['wed'])){ ?>
+        <?php if(!empty($restarts[$i]['wed'])){ ?>
         <div class="row-fluid">
             <div class="span12">
-                <?php echo $restarts["$i"]['wed']['out']; if(isset($restarts["$i"]['wed']['img'])){ ?><br /><img src="images/<?php echo $restarts["$i"]['wed']['img'];?>.png" alt="<?php echo $restarts["$i"]['wed']['alt'];?>" width="16" height="16"/><?php }?>
+                <?php echo $restarts[$i]['wed']['out']; if(isset($restarts[$i]['wed']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['wed']['img'];?>.png" alt="<?php echo $restarts[$i]['wed']['alt'];?>" width="16" height="16"/><?php }?>
             </div>
         </div>
         <?php } ?>
         <div class="row-fluid">
             <div class="span6">
-                <?php if(!empty($restarts["$i"]['wed'])){ ?>
+                <?php if(!empty($restarts[$i]['wed'])){ ?>
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="wed_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
@@ -109,16 +109,16 @@
         </div>
     </td>
     <td>
-        <?php if(!empty($restarts["$i"]['thu'])){ ?>
+        <?php if(!empty($restarts[$i]['thu'])){ ?>
         <div class="row-fluid">
             <div class="span12">
-                <?php echo $restarts["$i"]['thu']['out']; if(isset($restarts["$i"]['thu']['img'])){ ?><br /><img src="images/<?php echo $restarts["$i"]['thu']['img'];?>.png" alt="<?php echo $restarts["$i"]['thu']['alt'];?>" width="16" height="16"/><?php }?>
+                <?php echo $restarts[$i]['thu']['out']; if(isset($restarts[$i]['thu']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['thu']['img'];?>.png" alt="<?php echo $restarts[$i]['thu']['alt'];?>" width="16" height="16"/><?php }?>
             </div>
         </div>
         <?php } ?>
         <div class="row-fluid">
             <div class="span6">
-                <?php if(!empty($restarts["$i"]['thu'])){ ?>
+                <?php if(!empty($restarts[$i]['thu'])){ ?>
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="thu_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
@@ -136,16 +136,16 @@
         </div>
     </td>
     <td>
-        <?php if(!empty($restarts["$i"]['fri'])){ ?>
+        <?php if(!empty($restarts[$i]['fri'])){ ?>
         <div class="row-fluid">
             <div class="span12">
-                <?php echo $restarts["$i"]['fri']['out']; if(isset($restarts["$i"]['fri']['img'])){ ?><br /><img src="images/<?php echo $restarts["$i"]['fri']['img'];?>.png" alt="<?php echo $restarts["$i"]['fri']['alt'];?>" width="16" height="16"/><?php }?>
+                <?php echo $restarts[$i]['fri']['out']; if(isset($restarts[$i]['fri']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['fri']['img'];?>.png" alt="<?php echo $restarts[$i]['fri']['alt'];?>" width="16" height="16"/><?php }?>
             </div>
         </div>
         <?php } ?>
         <div class="row-fluid">
             <div class="span6">
-                <?php if(!empty($restarts["$i"]['fri'])){ ?>
+                <?php if(!empty($restarts[$i]['fri'])){ ?>
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="fri_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
@@ -163,16 +163,16 @@
         </div>
     </td>
     <td>
-        <?php if(!empty($restarts["$i"]['sat'])){ ?>
+        <?php if(!empty($restarts[$i]['sat'])){ ?>
         <div class="row-fluid">
             <div class="span12">
-                <?php echo $restarts["$i"]['sat']['out']; if(isset($restarts["$i"]['sat']['img'])){ ?><br /><img src="images/<?php echo $restarts["$i"]['sat']['img'];?>.png" alt="<?php echo $restarts["$i"]['sat']['alt'];?>" width="16" height="16"/><?php }?>
+                <?php echo $restarts[$i]['sat']['out']; if(isset($restarts[$i]['sat']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['sat']['img'];?>.png" alt="<?php echo $restarts[$i]['sat']['alt'];?>" width="16" height="16"/><?php }?>
             </div>
         </div>
         <?php } ?>
         <div class="row-fluid">
             <div class="span6">
-                <?php if(!empty($restarts["$i"]['sat'])){ ?>
+                <?php if(!empty($restarts[$i]['sat'])){ ?>
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="sat_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
@@ -190,16 +190,16 @@
         </div>
     </td>
     <td>
-        <?php if(!empty($restarts["$i"]['sun'])){ ?>
+        <?php if(!empty($restarts[$i]['sun'])){ ?>
         <div class="row-fluid">
             <div class="span12">
-                <?php echo $restarts["$i"]['sun']['out']; if(isset($restarts["$i"]['sun']['img'])){ ?><br /><img src="images/<?php echo $restarts["$i"]['sun']['img'];?>.png" alt="<?php echo $restarts["$i"]['sun']['alt'];?>" width="16" height="16"/><?php }?>
+                <?php echo $restarts[$i]['sun']['out']; if(isset($restarts[$i]['sun']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['sun']['img'];?>.png" alt="<?php echo $restarts[$i]['sun']['alt'];?>" width="16" height="16"/><?php }?>
             </div>
         </div>
         <?php } ?>
         <div class="row-fluid">
             <div class="span6">
-                <?php if(!empty($restarts["$i"]['sun'])){ ?>
+                <?php if(!empty($restarts[$i]['sun'])){ ?>
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="sun_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />

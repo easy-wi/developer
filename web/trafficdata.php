@@ -99,7 +99,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
     $query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$ids=$row['resellerid']."-".$row['resellersid'];
-		$userips["$ids"]=ipstoarray($row['ips']);
+		$userips[$ids]=ipstoarray($row['ips']);
 	}
     $query=$sql->prepare("SELECT `id`,`ip`,`ips` FROM `virtualcontainer`");
     $query->execute();
@@ -110,7 +110,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
 		foreach(ipstoarray($row['ips']) as $vip) {
 			$vserverip[]=$vip;
 		}
-		$vserverips["$vserverid"]=$vserverip;
+		$vserverips[$vserverid]=$vserverip;
 	}
     $query=$sql2->prepare("SHOW PROCESSLIST");
     $query->execute();
@@ -146,13 +146,13 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
             unset($trafficData[$id]);
             unset($serverid);
             $data_id=$row['id'];
-            $ip_src=$row["$column_sourceip"];
-            $ip_dst=$row["$column_destip"];
-            $bytes=$row["$column_byte"];
-            $stamp_updated=$row["$column_date"];
-            $date=explode(' ',$row["$column_date"]);
-            $hour=explode(':',$date['1']);
-            $day=$date['0']." ".$hour['0'].":00:00";
+            $ip_src=$row[$column_sourceip];
+            $ip_dst=$row[$column_destip];
+            $bytes=$row[$column_byte];
+            $stamp_updated=$row[$column_date];
+            $date=explode(' ',$row[$column_date]);
+            $hour=explode(':',$date[1]);
+            $day=$date[0]." ".$hour[0].":00:00";
             if (searchinnerarray($ip_src,$vserverips) or searchinnerarray($ip_dst,$vserverips)) {
                 if (searchinnerarray($ip_src,$vserverips)) {
                     $direction="out";
@@ -179,15 +179,15 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
                 $serverid="0";
                 $userids=searchinnerarray($ip_src,$userips);
                 $uids=explode("-",$userids);
-                $userid=$uids['0'];
-                $resellerid=$uids['1'];
+                $userid=$uids[0];
+                $resellerid=$uids[1];
             } else if (searchinnerarray($ip_dst,$userips)) {
                 $direction="in";
                 $serverid="0";
                 $userids=searchinnerarray($ip_dst,$userips);
                 $uids=explode("-",$userids);
-                $userid=$uids['0'];
-                $resellerid=$uids['1'];
+                $userid=$uids[0];
+                $resellerid=$uids[1];
             }
             if (isset($serverid)) {
                 if($direction=="in") {

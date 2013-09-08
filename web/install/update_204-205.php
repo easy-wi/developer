@@ -42,14 +42,14 @@ $alter_lendedserver->execute();
 $response->add('Action: alter_lendedserver done: ');
 $error=$alter_lendedserver->errorinfo();
 $alter_lendedserver->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 $alter_lendsettings=$sql->prepare("ALTER TABLE `lendsettings` CHANGE `lendhostip` `lendhostip` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
 $alter_lendsettings->execute();
 $response->add('Action: alter_lendsettings done: ');
 $error=$alter_lendsettings->errorinfo();
 $alter_lendsettings->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 } else {
 	echo "Error: this file needs to be included by the updater!<br />";

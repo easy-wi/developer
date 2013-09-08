@@ -107,7 +107,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
         $i=0;
         $path='';
         while ($i<$amount) {
-            $path .=$folders["$i"]."/";
+            $path .=$folders[$i]."/";
             $i++;
         }
         $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : $webhostdomain="http://".$ui->server['HTTP_HOST'].$path;

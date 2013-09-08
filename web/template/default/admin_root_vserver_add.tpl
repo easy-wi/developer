@@ -43,13 +43,13 @@
                     <dd><?php echo $firstfreespace." GB";?></dd>
                     <?php } else { ?>
                     <dt><?php echo $gsprache->virtual;?></dt>
-                    <dd><?php echo $serverused["$bestserver"]['server']."/".$maxserver;?></dd>
+                    <dd><?php echo $serverused[$bestserver]['server']."/".$maxserver;?></dd>
                     <dt><?php echo $sprache->ram;?></dt>
-                    <dd><?php echo $serverused["$bestserver"]['ram']."/".$ram;?></dd>
+                    <dd><?php echo $serverused[$bestserver]['ram']."/".$ram;?></dd>
                     <dt><?php echo $sprache->cpu." ".$sprache->cores;?></dt>
-                    <dd><?php foreach ($core as $core_row) { ?><?php echo $sprache->core." ".$core_row." ".$serverused["$bestserver"]['cpu']["$core_row"]."/".$mhz.$sprache->mhz;?><br /><?php } ?></dd>
+                    <dd><?php foreach ($core as $core_row) { ?><?php echo $sprache->core." ".$core_row." ".$serverused[$bestserver]['cpu'][$core_row]."/".$mhz.$sprache->mhz;?><br /><?php } ?></dd>
                     <dt><?php echo $sprache->hdd;?></dt>
-                    <dd><?php foreach ($hdd as $hdd_row) { ?><?php echo $hdd_row." ".$serverused["$bestserver"]['hdd']["$hdd_row"]."/".$mountsize["$hdd_row"]." GB";?><br /><?php } ?></dd>
+                    <dd><?php foreach ($hdd as $hdd_row) { ?><?php echo $hdd_row." ".$serverused[$bestserver]['hdd'][$hdd_row]."/".$mountsize[$hdd_row]." GB";?><br /><?php } ?></dd>
                     <?php } ?>
                 </dl>
                 <div class="control-group">

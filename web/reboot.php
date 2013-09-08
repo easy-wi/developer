@@ -154,7 +154,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                             $folders='cd ';
                         }
                         while ($i<=$folderfilecount) {
-                            $folders=$folders.$split_config["$i"]."/";
+                            $folders=$folders.$split_config[$i]."/";
                             $i++;
                         }
                         if ($folders=='cd ') {

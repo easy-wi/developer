@@ -110,10 +110,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$lendtime=$row['lendtime'];
 		$shorten=$row['shorten'];
 		$slots=$row['slots'];
-		if (isset($statistic["$lenddate"]["$shorten"])) {
-			$statistic["$lenddate"]["$shorten"]++;
+		if (isset($statistic[$lenddate][$shorten])) {
+			$statistic[$lenddate][$shorten]++;
 		} else {
-			$statistic["$lenddate"]["$shorten"]=1;
+			$statistic[$lenddate][$shorten]=1;
 		}
 	}
 	$stats="";
@@ -178,11 +178,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $query2->execute(array($row['id'],$reseller_id));
 			foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
 				$shorten=$row2['shorten'];
-				if (isset($gscounts["$shorten"])) {
-					$gscounts["$shorten"]++;
+				if (isset($gscounts[$shorten])) {
+					$gscounts[$shorten]++;
 				} else {
-					$gscounts["$shorten"]=1;
-					$gsused["$shorten"]=0;
+					$gscounts[$shorten]=1;
+					$gsused[$shorten]=0;
 				}
 			}
 		}
@@ -260,7 +260,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         $query7->execute(array($row2['id'],$reseller_id));
 						foreach ($query7->fetchall(PDO::FETCH_ASSOC) as $row3) {
 							$shortenExists=$row3['shorten'];
-							$gsused["$shortenExists"]++;
+							$gsused[$shortenExists]++;
 						}
 					}
 				} else if ($servertype=='v') {
@@ -281,7 +281,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $nextcheck=$query->fetchColumn();
         $nextcheck=($nextcheck>0) ? ceil($nextcheck) : ceil($nextcheck)*-1;
 		$used[]='Teamspeak 3: '.$voused.'/'.$voTotalCount;
-		foreach ($gscounts as $key=>$value) $used[]=$key.': '.$gsused["$key"].'/'.$value;
+		foreach ($gscounts as $key=>$value) $used[]=$key.': '.$gsused[$key].'/'.$value;
 		$template_file="admin_lendserver_list.tpl";
 	}
 }

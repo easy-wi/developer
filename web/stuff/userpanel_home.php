@@ -143,7 +143,7 @@ if($ui->smallletters('w',2,'get')=='da' or (!$ui->smallletters('w',2,'get') and 
                     if ($row['merge']=='Y'){
                         $feedArray['News'][]=$theNews;
                     } else {
-                        $feedArray["$url"][]=$theNews;
+                        $feedArray[$url][]=$theNews;
                     }
                 }
             }

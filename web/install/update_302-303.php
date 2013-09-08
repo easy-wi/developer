@@ -106,7 +106,7 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 // SteamAppIDs nachtragen
@@ -115,7 +115,7 @@ $alter_servertypes->execute();
 $response->add('Action: alter_servertypes done: ');
 $error=$alter_servertypes->errorinfo();
 $alter_servertypes->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 foreach (array('cstrike'=>10,'tfc'=>20,'dod'=>30,'czero'=>80,'css'=>240,'dods'=>300,'hl2mp'=>360,'tf'=>440,'left4dead'=>500,'left4dead'=>550,'dota2'=>570,'csgo'=>730,'ageofchivalry'=>17510,'insurgency'=>17700,'zps'=>17500) as $key => $value) {
@@ -129,7 +129,7 @@ $alter_serverlist->execute();
 $response->add('Action: alter_serverlist done: ');
 $error=$alter_serverlist->errorinfo();
 $alter_serverlist->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 // Add serverID column to restart table
@@ -138,7 +138,7 @@ $alter_gserver_restarts->execute();
 $response->add('Action: alter_gserver_restarts done: ');
 $error=$alter_gserver_restarts->errorinfo();
 $alter_gserver_restarts->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 // Alter gsswitch table
@@ -172,8 +172,8 @@ $alter_gsswitch->execute();
 $response->add('Action: alter_gsswitch done: ');
 $error=$alter_gsswitch->errorinfo();
 $alter_gsswitch->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) {
-	$response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) {
+	$response->add($error[2].'<br />');
 } else {
 	$response->add('OK<br />');
 	// First get users and their password than get his servers and update tables
@@ -233,5 +233,5 @@ $drop_gsstatus->execute();
 $response->add('Action: drop_gsstatus done: ');
 $error=$drop_gsstatus->errorinfo();
 $drop_gsstatus->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

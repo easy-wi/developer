@@ -435,25 +435,25 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
         $query2->execute(array($row['id'],$reseller_id));
 		foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
 			$shorten=$row2['shorten'];
-			$serverids["$shorten"][]=$row2['id'];
-			if (isset($gscounts["$shorten"])) {
-				$gscounts["$shorten"]++;
+			$serverids[$shorten][]=$row2['id'];
+			if (isset($gscounts[$shorten])) {
+				$gscounts[$shorten]++;
 			} else {
-				$gscounts["$shorten"]=1;
-				$gsused["$shorten"]=0;
+				$gscounts[$shorten]=1;
+				$gsused[$shorten]=0;
 			}
 			$shortens[]=$shorten;
 		}
 		$shortenlist=implode('|',$shortens);
 		foreach ($shortens as $shorten) {
-			if (isset($switchcount["$shortenlist"]["$shorten"]['exist'])) {
-				$switchcount["$shortenlist"]["$shorten"]['exist']++;
+			if (isset($switchcount[$shortenlist][$shorten]['exist'])) {
+				$switchcount[$shortenlist][$shorten]['exist']++;
 			} else {
-				$switchcount["$shortenlist"]["$shorten"]['exist']=1;
-				$switchcount["$shortenlist"]["$shorten"]['used']=0;
+				$switchcount[$shortenlist][$shorten]['exist']=1;
+				$switchcount[$shortenlist][$shorten]['used']=0;
 			}
-			foreach ($serverids["$shorten"] as $id) {
-				$switchcount["$shortenlist"]["$shorten"]['freeids'][]=$id;
+			foreach ($serverids[$shorten] as $id) {
+				$switchcount[$shortenlist][$shorten]['freeids'][]=$id;
 			}
 		}
 	}
@@ -478,17 +478,17 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
             $query3->execute(array($switchID,$reseller_id));
             foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
                 $shorten=$row3['shorten'];
-                $gsused["$shorten"]++;
+                $gsused[$shorten]++;
                 $shortens[]=$shorten;
-                $serverids["$shorten"][]=$row3['id'];
+                $serverids[$shorten][]=$row3['id'];
             }
             $shortenlist=implode('|',$shortens);
             foreach ($shortens as $shorten) {
-                $switchcount["$shortenlist"]["$shorten"]['used']++;
-                foreach ($serverids["$shorten"] as $id) {
-                    $key=array_search($id, $switchcount["$shortenlist"]["$shorten"]['freeids']);
+                $switchcount[$shortenlist][$shorten]['used']++;
+                foreach ($serverids[$shorten] as $id) {
+                    $key=array_search($id, $switchcount[$shortenlist][$shorten]['freeids']);
                     if ($key==0 or isinteger($key)) {
-                        unset($switchcount["$shortenlist"]["$shorten"]['freeids']["$key"]);
+                        unset($switchcount[$shortenlist][$shorten]['freeids'][$key]);
                     }
                 }
             }
@@ -503,8 +503,8 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$description=$row['description'];
 		}
-		$amount=$value-$gsused["$key"];
-		$switchcount["$shortenlist"]["$shorten"];
+		$amount=$value-$gsused[$key];
+		$switchcount[$shortenlist][$shorten];
 		if ($amount>0) {
 			$serveravailable=true;
 			$gameselect[$key]=$description;
@@ -513,7 +513,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 			$gscount=0;
             $text=$sprache->used;
 		}
-        $status["$description"]=array('text'=>$text,'amount'=>$amount,'total'=>$value);
+        $status[$description]=array('text'=>$text,'amount'=>$amount,'total'=>$value);
 	}
 	if ((!isset($nextfree) and $gscount>0) or (isset($nextfree) and $gscount>0)){
 		$nextfree=0;
@@ -559,26 +559,26 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 		if ($fail==0) {
 			if ($ftpupload=='Y' and isurl($postedftpuploadpath) and $postedftpuploadpath!='ftp://username:password@1.1.1.1/demos') {
 				$split=preg_split('/\//', $postedftpuploadpath, -1, PREG_SPLIT_NO_EMPTY);
-				$split2=preg_split('/@/', $split['1'], -1, PREG_SPLIT_NO_EMPTY);
-				if (isset($split2['1'])) {
-					$ftpipport=$split2['1'];
-					$userpass=explode(':',$split2['0']);
-					$ftpuser=$userpass['0'];
-					if (isset($userpass['1'])) {
-						$ftppass=$userpass['1'];
+				$split2=preg_split('/@/', $split[1], -1, PREG_SPLIT_NO_EMPTY);
+				if (isset($split2[1])) {
+					$ftpipport=$split2[1];
+					$userpass=explode(':',$split2[0]);
+					$ftpuser=$userpass[0];
+					if (isset($userpass[1])) {
+						$ftppass=$userpass[1];
 					} else {
 						$ftppass='';
 					}
 				} else {
-					$ftpipport=$split2['0'];
+					$ftpipport=$split2[0];
 					$ftpuser='anonymous';
 					$ftppass='';
 				}
 				$ftpipport=preg_split('/:/', $ftpipport, -1, PREG_SPLIT_NO_EMPTY);
-				if (isset($ftpipport['1'])) {
-					$ftp_connect= @ftp_connect($ftpipport['0'],$ftpipport['1'],5);
+				if (isset($ftpipport[1])) {
+					$ftp_connect= @ftp_connect($ftpipport[0],$ftpipport[1],5);
 				} else {
-					$ftp_connect= @ftp_connect($ftpipport['0'],21,5);
+					$ftp_connect= @ftp_connect($ftpipport[0],21,5);
 				}
 				if ($ftp_connect) {
 					$ftp_login= @ftp_login($ftp_connect,$ftpuser,$ftppass);
@@ -588,31 +588,31 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 				}
 				ftp_close($ftp_connect);
 			}
-			$free=$gscounts["$game"]-$gsused["$game"];
+			$free=$gscounts[$game]-$gsused[$game];
 			if ($free>0) {
-				if (isset($switchcount["$game"]["$game"]['freeids']) and count($switchcount["$game"]["$game"]['freeids'])>0) {
-					$random=array_rand($switchcount["$game"]["$game"]['freeids'],1);
-					$serverid=$switchcount["$game"]["$game"]['freeids']["$random"];
+				if (isset($switchcount[$game][$game]['freeids']) and count($switchcount[$game][$game]['freeids'])>0) {
+					$random=array_rand($switchcount[$game][$game]['freeids'],1);
+					$serverid=$switchcount[$game][$game]['freeids'][$random];
 				} else {
 					$mostleft=array();
 					foreach ($switchcount as $key=>$arrays) {
-						if (isset($switchcount["$key"]["$game"]['freeids']) and count($switchcount["$key"]["$game"]['freeids'])>0) {
+						if (isset($switchcount[$key][$game]['freeids']) and count($switchcount[$key][$game]['freeids'])>0) {
 							foreach ($switchcount as $leftkey=>$leftarrays) {
 								if ($leftkey!=$key) {
 									foreach ($leftarrays as $gametype => $values) {
-										if (isset($leftservers["$gametype"])) {
-											$leftservers["$key"]["$gametype"]=$leftservers["$gametype"]+($values['exist']-$values['used']);
+										if (isset($leftservers[$gametype])) {
+											$leftservers[$key][$gametype]=$leftservers[$gametype]+($values['exist']-$values['used']);
 										} else {
-											$leftservers["$key"]["$gametype"]=$values['exist']-$values['used'];
+											$leftservers[$key][$gametype]=$values['exist']-$values['used'];
 										}
 									}
 								}
 							}
 							foreach ($arrays as $gametype => $values) {
-								if (isset($leftservers["$gametype"])) {
-									$leftservers["$key"]["$gametype"]=$leftservers["$gametype"]+($values['exist']-$values['used']-1);
+								if (isset($leftservers[$gametype])) {
+									$leftservers[$key][$gametype]=$leftservers[$gametype]+($values['exist']-$values['used']-1);
 								} else {
-									$leftservers["$key"]["$gametype"]=$values['exist']-$values['used']-1;
+									$leftservers[$key][$gametype]=$values['exist']-$values['used']-1;
 								}
 							}
 						}
@@ -620,14 +620,14 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 					foreach ($leftservers as $keys=>$arrays) {
 						$percent=0;
 						foreach ($arrays as $key=>$count) {
-							$percent=$percent+((100/$switchcount["$keys"]["$key"]['exist'])*($count));
+							$percent=$percent+((100/$switchcount[$keys][$key]['exist'])*($count));
 						}
-						$mostleft["$keys"]=$percent;
+						$mostleft[$keys]=$percent;
 					}
 					arsort($mostleft);
 					$bestmultigame=key($mostleft);
-					$random=array_rand($switchcount["$bestmultigame"]["$game"]['freeids'],1);
-					$serverid=$switchcount["$bestmultigame"]["$game"]['freeids']["$random"];
+					$random=array_rand($switchcount[$bestmultigame][$game]['freeids'],1);
+					$serverid=$switchcount[$bestmultigame][$game]['freeids'][$random];
 				}
 				$timeleft=$lendtime;
                 if (!$ui->id('xml',1,'post')==1) {
@@ -731,7 +731,7 @@ XML;
 	<password>'.$password.'</password>
 	<games>';
 			foreach ($gscounts as $key=>$value){
-				$amount=$value-$gsused["$key"];
+				$amount=$value-$gsused[$key];
 				$xml .='
 		<'.$key.'>
 			<free>'.$amount.'</free>
@@ -779,7 +779,7 @@ XML;
 					$lendable=false;
 				}
 				if ($lendable==true) {
-					$mastervoiceids["$masterid"][]=$row2['id'];
+					$mastervoiceids[$masterid][]=$row2['id'];
 				}
 				$slots=$slots+$row2['slots'];
 				$vomacount++;
@@ -789,16 +789,16 @@ XML;
                 $nextfree=0;
             }
 			if ($vomacount>0) {
-				$masterservers["$masterid"]=$serverpercent=(100/$vomacount)*$usedvoice;
+				$masterservers[$masterid]=$serverpercent=(100/$vomacount)*$usedvoice;
 			}
 		}
 		asort($masterservers);
 		$bestmaster=key($masterservers);
-		if ($masterservers["$bestmaster"]!='100') {
+		if ($masterservers[$bestmaster]!='100') {
 			$serveravailable=true;
-			$counmaster=count($mastervoiceids["$bestmaster"]);
+			$counmaster=count($mastervoiceids[$bestmaster]);
 			$arrayid=mt_rand(0,$counmaster-1);
-			$tousevoiceid=$mastervoiceids["$bestmaster"]["$arrayid"];
+			$tousevoiceid=$mastervoiceids[$bestmaster][$arrayid];
 		}
 		if ($serveravailable==true and ($lendaccess==1 or $lendaccess==2) and (($ui->id('xml',1,'post') and $ui->w('game',20,'post') or $ui->w('password',20,'post')))) {
 			$fail=0;
@@ -882,7 +882,7 @@ XML;
 						$connection->ModServer($volocalserverid,$slots,$voip,$voport,$password,$name,$welcome,$max_download_total_bandwidth,$max_upload_total_bandwidth,$banner_url,$banner_gfx,$button_url,$button_gfx,$tooltip);
 						$reply=$connection->PermReset($volocalserverid);
 						$connection->CloseConnection();
-						$rcon=$reply['0']['token'];
+						$rcon=$reply[0]['token'];
                         if (!$ui->id('xml',1,'post')) {
                             $_SESSION['lend']['vs']=$tousevoiceid;
                         }

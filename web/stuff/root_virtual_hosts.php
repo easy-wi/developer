@@ -130,7 +130,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $i=0;
                 $count=count($uiddata)-1;
                 while ($i<$count) {
-                    list($uid,$space)=explode(":", $uiddata["$i"]);
+                    list($uid,$space)=explode(":", $uiddata[$i]);
                     if(strpos(strtolower($space), strtolower('TB')) === false) {
                         $hddamount=str_replace('GB,', '', $space);
                     } else {
@@ -322,18 +322,18 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $hdd_rows=explode("\r\n", $row['hdd']);
         foreach ($hdd_rows as $hddline) {
             $data_explode=explode(" ", $hddline);
-            if (isset($data_explode['1'])) {
-                $mountpoint=$data_explode['0'];
+            if (isset($data_explode[1])) {
+                $mountpoint=$data_explode[0];
                 $hdd[]=$mountpoint;
-                $mountsize["$mountpoint"]=$data_explode['1'];
-                $mountunused["$mountpoint"]=0;
+                $mountsize[$mountpoint]=$data_explode[1];
+                $mountunused[$mountpoint]=0;
             }
         }
         $i="1";
         $cpucores="";
         while ($i<=$cores) {
             $cpucores[]=$i;
-            $cpucore["$i"]=0;
+            $cpucore[$i]=0;
             $i++;
         }
         $pselect2=$sql->prepare("SELECT `cores`,`minmhz`,`maxmhz`,`hddsize`,`mountpoint`,`minram` FROM `virtualcontainer` WHERE `hostid`=?");
@@ -341,24 +341,24 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $i2=0;
         foreach ($pselect2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $mountpoint=$row2['mountpoint'];
-            $addstracthdd=$mountunused["$mountpoint"]+$row2['hddsize'];
-            $mountunused["$mountpoint"]=$addstracthdd;
+            $addstracthdd=$mountunused[$mountpoint]+$row2['hddsize'];
+            $mountunused[$mountpoint]=$addstracthdd;
             $addstractram=$ramused+$row2['minram'];
             $ramused=$addstractram;
             $cpuhz=$row2['cores']*$row2['minmhz'];
-            $addcpu=$cpucore['1']+$cpuhz;
+            $addcpu=$cpucore[1]+$cpuhz;
             if ($addcpu<=$mhz) {
-                $cpucore['1']=$addcpu;
+                $cpucore[1]=$addcpu;
             } else {
-                $cpucore['1']=$mhz;
+                $cpucore[1]=$mhz;
                 $nextcore="2";
                 while ($nextcore<=$cores) {
                     $extra=$addcpu-$mhz;
-                    $addcpu=$cpucore["$nextcore"]+$extra;
+                    $addcpu=$cpucore[$nextcore]+$extra;
                     if ($addcpu<=$mhz and $addcpu>=0) {
-                        $cpucore["$nextcore"]=$addcpu;
+                        $cpucore[$nextcore]=$addcpu;
                     } else if ($addcpu>=0) {
-                        $cpucore["$nextcore"]=$mhz;
+                        $cpucore[$nextcore]=$mhz;
                     }
                     $nextcore++;
                 }

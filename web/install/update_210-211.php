@@ -48,7 +48,7 @@ $updateSettings->execute();
 $response->add('Action: updateSettings done: ');
 $error=$updateSettings->errorinfo();
 $updateSettings->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
@@ -113,7 +113,7 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $insert_page_settings=$sql->prepare("INSERT INTO `page_settings` (`resellerid`) VALUES ('0')");
@@ -121,7 +121,7 @@ $insert_page_settings->execute();
 $response->add('Action: insert_page_settings done: ');
 $error=$insert_page_settings->errorinfo();
 $insert_page_settings->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $insert_about_page_pages=$sql->prepare("INSERT INTO `page_pages` (`authorid`,`type`) VALUES ('0','about')");
@@ -129,7 +129,7 @@ $insert_about_page_pages->execute();
 $response->add('Action: insert_about_page_pages done: ');
 $error=$insert_about_page_pages->errorinfo();
 $insert_about_page_pages->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $insert_usergroups=$sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES
@@ -140,7 +140,7 @@ $insert_usergroups->execute();
 $response->add('Action: insert_usergroups done: ');
 $error=$insert_usergroups->errorinfo();
 $insert_usergroups->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $select=$sql->prepare("SELECT `id`,`resellerid` FROM `userdata` WHERE `accounttype`='r'");
@@ -151,7 +151,7 @@ foreach ($select->fetchAll(PDO::FETCH_ASSOC) as $row) {
 	$response->add('Action: insert_usergroups done: ');
 	$error=$insert_usergroups->errorinfo();
 	$insert_usergroups->closecursor();
-	if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !is_numeric($error['2'])) $response->add($error['2'].'<br />');
+	if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !is_numeric($error[2])) $response->add($error[2].'<br />');
 	else $response->add('OK<br />');
 	if ($row['id']==$row['resellerid']) {
 		$select2=$sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
@@ -171,7 +171,7 @@ foreach ($select->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$response->add('Action: insert_usergroups done: ');
 		$error=$insert_usergroups->errorinfo();
 		$insert_usergroups->closecursor();
-		if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !is_numeric($error['2'])) $response->add($error['2'].'<br />');
+		if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !is_numeric($error[2])) $response->add($error[2].'<br />');
 		else $response->add('OK<br />');
 	}
 }
@@ -184,7 +184,7 @@ $alter_userpermissions->execute();
 $response->add('Action: alter_userpermissions done: ');
 $error=$alter_userpermissions->errorinfo();
 $alter_userpermissions->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_userdata=$sql->prepare("ALTER TABLE `userdata` ADD COLUMN `usergroup` INT(30) UNSIGNED DEFAULT '0' NOT NULL AFTER `mail_vserver`");
@@ -192,7 +192,7 @@ $alter_userdata->execute();
 $response->add('Action: alter_userdata done: ');
 $error=$alter_userdata->errorinfo();
 $alter_userdata->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_settings=$sql->prepare("ALTER TABLE `settings` ADD COLUMN `down_checks` INT(1) DEFAULT '2' AFTER `paneldomain`");
@@ -200,7 +200,7 @@ $alter_settings->execute();
 $response->add('Action: alter_settings done: ');
 $error=$alter_settings->errorinfo();
 $alter_settings->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_notified=$sql->prepare("ALTER TABLE `dhcpdata` CHANGE `notified` `notified` INT( 11 ) NULL DEFAULT '0';
@@ -215,7 +215,7 @@ $alter_notified->execute();
 $response->add('Action: alter_notified done: ');
 $error=$alter_notified->errorinfo();
 $alter_notified->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 

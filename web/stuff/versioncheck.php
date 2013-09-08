@@ -180,11 +180,11 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
         $column='en';
         $release='releasenotesEN';
     }
-    $release='<div class="right"><a href="http://forum.easy-wi.com/showthread.php?tid='.$ewVersions["$release"].'" target="_blank">'.$vcsprache->releaseNotes.'</a></div>';
+    $release='<div class="right"><a href="http://forum.easy-wi.com/showthread.php?tid='.$ewVersions[$release].'" target="_blank">'.$vcsprache->releaseNotes.'</a></div>';
 	$query=$sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
 	$query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		if ($row["$column"]!=null and $row["$column"]!='') $table[]=array('version'=>$row['version'],'text'=>$row["$column"]);
+		if ($row[$column]!=null and $row[$column]!='') $table[]=array('version'=>$row['version'],'text'=>$row[$column]);
 	}
     $update=($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW']==true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
 	if ($ewVersions['cVersion']<$ewVersions['version']) {

@@ -82,7 +82,7 @@ class masterServer {
 
             // Get the imageserver if possible and use Easy-WI server as fallback
             $mainip=explode('.',$this->sship);
-            $mainsubnet=$mainip['0'].'.'.$mainip['1'].'.'.$mainip['2'];
+            $mainsubnet=$mainip[0].'.'.$mainip[1].'.'.$mainip[2];
             $query=$sql->prepare("SELECT AES_DECRYPT(`imageserver`,?) AS `decryptedimageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$this->resellerID));
             $splitImageservers=preg_split('/\r\n/',$query->fetchColumn(),-1,PREG_SPLIT_NO_EMPTY);
@@ -92,7 +92,7 @@ class masterServer {
                 if (isurl($server)) {
                     $imageservers[]=$server;
                     $split1=preg_split('/\//',$server,-1,PREG_SPLIT_NO_EMPTY);
-                    if (isset($split1['1'])) {
+                    if (isset($split1[1])) {
                         $split2=preg_split('/\@/',$split1[1],-1,PREG_SPLIT_NO_EMPTY);
                     } else {
                         $split2=preg_split('/\@/',$split1[0],-1,PREG_SPLIT_NO_EMPTY);
@@ -100,7 +100,7 @@ class masterServer {
                 } else if (isRsync($server)) {
                     $imageservers[]=$server;
                     $split1=preg_split('/\//',$server,-1,PREG_SPLIT_NO_EMPTY);
-                    if (isset($split1['1'])) {
+                    if (isset($split1[1])) {
                         $split2=preg_split('/\:/',$split1[1],-1,PREG_SPLIT_NO_EMPTY);
                     } else {
                         $split2=preg_split('/\:/',$split1[0],-1,PREG_SPLIT_NO_EMPTY);
@@ -111,7 +111,7 @@ class masterServer {
                         $noSync=true;
                     } else if (isip($splitip,'all')) {
                         $ipparts=explode('.',$splitip);
-                        $subnet=$ipparts['0'].'.'.$ipparts['1'].'.'.$ipparts['2'];
+                        $subnet=$ipparts[0].'.'.$ipparts[1].'.'.$ipparts[2];
                         if ($mainsubnet==$subnet) {
                             $imageserver=$server;
                         }
@@ -121,7 +121,7 @@ class masterServer {
             if (!isset($imageserver) and count($imageservers)>0) {
                 $imageserver_count=count($imageservers)-1;
                 $arrayentry=rand(0,$imageserver_count);
-                $imageserver=$imageservers["$arrayentry"];
+                $imageserver=$imageservers[$arrayentry];
             }
             if (!isset($imageserver)) {
                 $imageserver='easywi';

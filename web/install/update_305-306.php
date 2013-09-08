@@ -105,7 +105,7 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_servertypes_modcmds=$sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `modcmds` TEXT DEFAULT NULL AFTER `cmd`");
@@ -113,7 +113,7 @@ $alter_servertypes_modcmds->execute();
 $response->add('Action: alter_servertypes_modcmds done: ');
 $error=$alter_servertypes_modcmds->errorinfo();
 $alter_servertypes_modcmds->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $update_servertypes_csgo=$sql->prepare("UPDATE `servertypes` SET `steamgame`='S',`appID`=730,`updates`=1,`description`='Counter-Strike: Global Offensive',`type`='gserver',`gamebinary`='srcds_run',`binarydir`=NULL,`modfolder`='csgo',`fps`=NULL,`slots`=12,`map`='de_dust',`cmd`='./%binary% -game csgo -console -usercon +ip %ip% +port %port% -maxplayers_override %slots% +map %map% +mapgroup %mapgroup%',`modcmds`='[Classic Casual = default]\r\n+game_type 0 +game_mode 0\r\n\r\n[Classic Competitive]\r\n+game_type 0 +game_mode 1\r\n\r\n[Arms Race]\r\n+game_type 1 +game_mode 0\r\n\r\n[Demolition]\r\n+game_type 1 +game_mode 1',`tic`=NULL,`qstat`='a2s',`gamemod`='N',`gamemod2`='css',`configs`='cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes.txt\r\ngamemodes_server.txt',`configedit`=NULL,`qstatpassparam`='password:1',`portStep`=100,`portMax`=5,`portOne`=27015,`portTwo`=27016,`portThree`=27017,`portFour`=27018,`portFive`=27019,`mapGroup`='mg_bomb' WHERE `shorten`='csgo'");
@@ -121,7 +121,7 @@ $update_servertypes_csgo->execute();
 $response->add('Action: update_servertypes_csgo done: ');
 $error=$update_servertypes_csgo->errorinfo();
 $update_servertypes_csgo->closecursor();
-if (isset($error['2']) and $error['2']!="" and $error['2']!=null and !isinteger($error['2'])) $response->add($error['2'].'<br />');
+if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 
