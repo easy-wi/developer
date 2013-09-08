@@ -70,27 +70,11 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
         $query->execute(array($reseller_id,$admin_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ips[]=$row['ssh2ip'];
-            foreach (ipstoarray($row['ips']) as $ip) {
-                $ips[]=$ip;
-            }
-            if ($row['type']=='ts3') {
-                $type=$sprache->ts3;
-            }
-            if ($row['installedserver']==null) {
-                $installedserver=0;
-            } else {
-                $installedserver=$row['installedserver'];
-            }
-            if ($row['installedslots']==null) {
-                $installedslots=0;
-            } else {
-                $installedslots=$row['installedslots'];
-            }
-            if ($row['uslots']==null) {
-                $uslots=0;
-            } else {
-                $uslots=$row['uslots'];
-            }
+            foreach (ipstoarray($row['ips']) as $ip) $ips[]=$ip;
+            if ($row['type']=='ts3') $type=$sprache->ts3;
+            $installedserver=($row['installedserver']==null) ? 0 : $row['installedserver'];
+            $installedslots=($row['installedslots']==null) ? 0 : $row['installedslots'];
+            $uslots=($row['uslots']==null) ? 0 : $row['uslots'];
             $table2[]=array('id'=>$row['id'],'server'=>implode('/',array_unique($ips)),'type'=>$type,'maxserver'=>$row['maxserver'],'maxslots'=>$row['maxslots'],'installedserver'=>$installedserver,'uslots'=>$uslots,'installedslots'=>$installedslots);
         }
         $template_file="admin_voiceserver_add.tpl";
@@ -151,28 +135,16 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
                 $query=$sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? ORDER BY `port`");
                 $query->execute(array($serverIP));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if (is_numeric($row['port'])){
-                        $ports[]=$row['port'];
-                    }
-                    if (is_numeric($row['port2'])){
-                        $ports[]=$row['port2'];
-                    }
-                    if (is_numeric($row['port3'])){
-                        $ports[]=$row['port3'];
-                    }
-                    if (is_numeric($row['port4'])){
-                        $ports[]=$row['port4'];
-                    }
-                    if (is_numeric($row['port5'])){
-                        $ports[]=$row['port5'];
-                    }
+                    if (is_numeric($row['port'])) $ports[]=$row['port'];
+                    if (is_numeric($row['port2'])) $ports[]=$row['port2'];
+                    if (is_numeric($row['port3'])) $ports[]=$row['port3'];
+                    if (is_numeric($row['port4'])) $ports[]=$row['port4'];
+                    if (is_numeric($row['port5'])) $ports[]=$row['port5'];
                 }
                 $query=$sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
-                $query->execute(array($ips['0']));
+                $query->execute(array($ips[0]));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if (is_numeric($row['port'])){
-                        $ports[]=$row['port'];
-                    }
+                    if (is_numeric($row['port']))$ports[]=$row['port'];
                 }
                 $portsArray[count($ports)]=array('ip'=>$serverIP,'ports'=>$ports);
             }
@@ -191,39 +163,32 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
             $template_file='Error: Could not find the masterserver';
         }
     } else if ($ui->w('action',3,'post')=='ad2' and $ui->id('masterserver',19,'post') and $ui->id('customer',19,'post')) {
-        $masterserver=$ui->id('masterserver',19,'post');
-        $customer=$ui->id('customer',19,'post');
-        $fail=0;
-        $error="Error:<br />";
+        $errors=array();
         if ($ui->startparameter('name','post')) {
             $name=$ui->startparameter('name','post');
         } else {
-            $error .=" Name<br />";
-            $fail=1;
+            $errors[]=$sprache->name;
         }
         if ($ui->ip('ip','post')) {
             $ip=$ui->ip('ip','post');
         } else {
-            $error .=" IP<br />";
-            $fail=1;
+            $errors[]=$sprache->ip;
         }
         if ($ui->port('port','post')) {
             $port=$ui->port('port','post');
             if (isset($ip)) {
-                $check_select_game=$sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
-                $check_select_game->execute(array(':port'=>$port,':serverip'=>$ip,':reseller_id'=>$reseller_id));
-                $check_select_game_2=$sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? AND `resellerid`=? LIMIT 1");
-                $check_select_game_2->execute(array($port,$ip,$reseller_id));
-                $num_check_game=$check_select_game->rowcount()+$check_select_game_2->rowcount();
-                if ($num_check_game>0) {
-                    $error .=" Port<br />";
-                    $fail=1;
-                }
+                $query=$sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
+                $query->execute(array(':port'=>$port,':serverip'=>$ip,':reseller_id'=>$reseller_id));
+                $query2=$sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? AND `resellerid`=? LIMIT 1");
+                $query2->execute(array($port,$ip,$reseller_id));
+                $num_check_game=$query->rowCount()+$query2->rowCount();
+                if ($num_check_game>0) $errors[]=$sprache->port;
             }
         } else {
-            $error .=" Port<br />";
-            $fail=1;
+            $errors[]=$sprache->port;
         }
+        $masterserver=$ui->id('masterserver',19,'post');
+        $customer=$ui->id('customer',19,'post');
         $dns=strtolower($ui->domain('dns','post'));
         $welcome=$ui->description('welcome','post');
         $hostbanner_url=$ui->url('hostbanner_url','post');
@@ -248,15 +213,6 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
         $flexSlotsFree=$ui->id('flexSlotsFree',11,'post');
         if ($ui->id('slots',30,'post')) {
             $slots=$ui->id('slots',30,'post');
-        } else {
-            $error .=" Slots<br />";
-            $fail=1;
-        }
-        if ($fail!=1) {
-            $initialpassword="";
-            if ($password=='Y') {
-                $initialpassword=passwordgenerate(10);
-            }
             $query=$sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
             $query->execute(array(':aeskey'=>$aeskey,':id'=>$masterserver,':reseller_id'=>$reseller_id,':managedForID'=>$admin_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -296,6 +252,24 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
                     }
                 }
             }
+            if (isset($maxslots) and isset($maxserver)) {
+                $query=$sql->prepare("SELECT COUNT(`id`) AS `installedserver`,SUM(`slots`) AS `installedslots`  FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($masterserver,$reseller_id));
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $installedserver=($row['installedserver']==null) ? 0 : $row['installedserver'];
+                    $installedslots=($row['installedslots']==null) ? 0 : $row['installedslots'];
+                    if (($installedslots+$slots)>$maxslots) $errors[]=$gsprache->licence.' ('.$sprache->slots.')';
+                    if ($installedserver>=$maxserver) $errors[]=$gsprache->licence;
+                }
+            } else {
+                $errors[]=$sprache->rootserver;
+            }
+        } else {
+            $errors[]=$sprache->slots;
+        }
+        if (count($errors)==0) {
+            $initialpassword='';
+            if ($password=='Y') $initialpassword=passwordgenerate(10);
             $connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
             $errorcode=$connection->errorcode;
             if (strpos($errorcode,'error id=0') === false) {
@@ -304,9 +278,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
                 $virtualserver_id=$connection->AddServer($slots,$ip,$port,$initialpassword,$name,array($forcewelcome,$welcome),$max_download_total_bandwidth,$max_upload_total_bandwidth,array($forcebanner,$hostbanner_url),$hostbanner_gfx_url,array($forcebutton,$hostbutton_url),$hostbutton_gfx_url,$hostbutton_tooltip);
             }
             if (isset($virtualserver_id) and isid($virtualserver_id,'255')) {
-                if ($active=='N') {
-                    $connection->StopServer($virtualserver_id);
-                }
+                if ($active=='N') $connection->StopServer($virtualserver_id);
                 $username=strtolower(getusername($customer));
                 $connection->CloseConnection();
                 $pinsert=$sql->prepare("INSERT INTO `voice_server` (`active`,`backup`,`lendserver`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`dns`,`maxtraffic`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?)");
@@ -342,7 +314,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
                 $template_file='TS errorcode: '.$virtualserver_id;
             }
         } else {
-            $template_file=$error;
+            $template_file='Error: '.implode('<br>',$errors);
         }
     } else {
         $template_file="Error: No User or Server selected";
@@ -532,22 +504,37 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
         }
         if (!isset($template_file)) $template_file='admin_404.tpl';
     } else if ($ui->w('action',2,'post')=='md'){
-        $query=$sql->prepare("SELECT `active`,`ip`,`port`,`dns`,`masterserver`,`localserverid`,`forcebanner`,`forcebutton`,`forcewelcome` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $errors=array();
+        $masterserver=0;
+        $slots=$ui->id('slots',30,'post');
+        $ip=$ui->ip('ip','post');
+        if (!$ui->id('slots',30,'post')) $errors[]=$sprache->slots;
+        if (!$ui->ip('ip','post')) $errors[]=$sprache->ip;
+        if ($ui->password('initialpassword',50,'post') or (isset($ui->post['initialpassword']) and ($ui->post['initialpassword']=='' or $ui->post['initialpassword']==null))) $initialpassword=$ui->post['initialpassword'];
+        else $errors[]=$sprache->password;
+
+        $query=$sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $oldactive=$row['active'];
             $oldip=$row['ip'];
             $oldport=$row['port'];
             $olddns=$row['dns'];
+            $oldslots=$row['slots'];
             $oldforcebanner=$row['forcebanner'];
             $oldforcebutton=$row['forcebutton'];
             $oldforcewelcome=$row['forcewelcome'];
             $masterserver=$row['masterserver'];
             $localserverid=$row['localserverid'];
+            $query2=$sql->prepare("SELECT SUM(`slots`) AS `installedslots`  FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=? LIMIT 1");
+            $query2->execute(array($masterserver,$reseller_id));
+            $futureSlots=(int)$query2->fetchColumn()-$oldslots+$slots;
         }
+        if (!isset($oldslots)) $errors[]=$gsprache->voiceserver.' ID';
         $query=$sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
         $query->execute(array(':aeskey'=>$aeskey,':id'=>$masterserver,':reseller_id'=>$reseller_id,':managedForID'=>$admin_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            if ($futureSlots>$row['maxslots']) $errors[]=$gsprache->licence.' ('.$sprache->slots.')';
             $serverdir=$row['serverdir'];
             $addedby=$row['addedby'];
             $usedns=$row['usedns'];
@@ -573,24 +560,19 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
                 }
             }
         }
-        $fail=0;
-        $error=array();
-        if ($ui->password('initialpassword',50,'post') or (isset($ui->post['initialpassword']) and ($ui->post['initialpassword']=='' or $ui->post['initialpassword']==null))) $initialpassword=$ui->post['initialpassword'];
-        else $error[]="Password";
-        if ($ui->ip('ip','post')) $ip=$ui->ip('ip','post');
-        else $error[]='IP';
+        if (!isset($queryport)) $errors[]=$sprache->rootserver;
         if ($ui->port('port','post')) {
             $port=$ui->port('port','post');
             if (isset($ip) and ($port!=$oldport or $ip!=$oldip)) {
-                $check_select_game=$sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `serverip`=:serverip LIMIT 1");
-                $check_select_game->execute(array(':port'=>$port,':serverip'=>$ip));
-                $check_select_game_2=$sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? LIMIT 1");
-                $check_select_game_2->execute(array($port,$ip));
-                $num_check_game=$check_select_game->rowcount()+$check_select_game_2->rowcount();
-                if ($num_check_game>0) $error[]='Port';
+                $query=$sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `serverip`=:serverip LIMIT 1");
+                $query->execute(array(':port'=>$port,':serverip'=>$ip));
+                $query2=$sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? LIMIT 1");
+                $query2->execute(array($port,$ip));
+                $num_check_game=$query->rowcount()+$query2->rowcount();
+                if ($num_check_game>0) $errors[]=$sprache->port;
             }
         } else {
-            $error[]='Port';
+            $errors[]=$sprache->port;
         }
         $max_download_total_bandwidth=($ui->id('max_download_total_bandwidth',255,'post')) ? $ui->id('max_download_total_bandwidth',255,'post') : 65536;
         $max_upload_total_bandwidth=($ui->id('max_upload_total_bandwidth',255,'post')) ? $ui->id('max_upload_total_bandwidth',255,'post') : 65536;
@@ -605,17 +587,15 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
         $forcebutton=($ui->active('forcebutton','post')) ? $ui->active('forcebutton','post') : 'Y';
         $forceservertag=($ui->active('forceservertag','post')) ? $ui->active('forceservertag','post') : 'Y';
         $forcewelcome=($ui->active('forcewelcome','post')) ? $ui->active('forcewelcome','post') : 'Y';
-        if ($ui->id('slots',30,'post')) $slots=$ui->id('slots',30,'post');
-        else $error[]='Slots';
         $dns=strtolower($ui->domain('dns','post'));
-        if ($dns!=$olddns or $port!=$oldport or $ip!=$oldip) {
+        if (isset($oldport) and ($dns!=$olddns or $port!=$oldport or $ip!=$oldip)) {
             $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `id`!=? AND `dns`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$dns,$reseller_id));
             $query2=$sql->prepare("SELECT COUNT(`tsdnsID`) AS `amount` FROM `voice_dns` WHERE `dnsID`!=? AND `dns`=? AND `resellerID`=? LIMIT 1");
             $query2->execute(array($tsdnsServerID,$dns,$reseller_id));
             if ($query->fetchColumn()>0 or $query2->fetchColumn()>0) {
-                $error[]='DNS already in use';
-            } else if (count($error)==0) {
+                $errors[]='DNS already in use';
+            } else if (count($errors)==0) {
                 if ($usedns=='Y') {
                     if (isid($tsdnsServerID,19)) {
                         $query=$sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `dnsID`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
@@ -644,7 +624,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
         $flexSlots=$ui->active('flexSlots','post');
         $flexSlotsPercent=$ui->id('flexSlotsPercent',3,'post');
         $flexSlotsFree=$ui->id('flexSlotsFree',11,'post');
-        if (count($error)==0) {
+        if (count($errors)==0) {
             $name=$ui->startparameter('name','post');
             $connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
             $errorcode=$connection->errorcode;
@@ -689,7 +669,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licence
             $loguseraction="%mod% %voserver% $ip:$port";
             $insertlog->execute();
         } else {
-            $template_file='Error: '.implode('<br/>',$error);
+            $template_file='Error: '.implode('<br/>',$errors);
         }
     } else {
         $template_file='admin_404.tpl';
