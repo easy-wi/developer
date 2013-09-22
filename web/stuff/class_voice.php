@@ -287,8 +287,10 @@ class TS3 {
                     $virtualserver_ip=(isset($serverdetails_query[0]['virtualserver_ip']) and isip($serverdetails_query[0]['virtualserver_ip'],'all')) ? $serverdetails_query[0]['virtualserver_ip'] : $this->ip;
 					$serverdetails_query=$this->SendCommand('serverinfo');
 					$virtualserver_server=$virtualserver_ip.':'.$server['virtualserver_port'];
-                    $virtualserver_dns=(array_key_exists($virtualserver_server,$dnsarray)) ? $dnsarray[$virtualserver_server] :'';
-					if (isset($serverdetails_query[0])) {
+                    $virtualserver_dns=(array_key_exists($virtualserver_server,$dnsarray)) ? $dnsarray[$virtualserver_server] : '';
+
+                    //https://github.com/easy-wi/developer/issues/74 check if array keys exists
+					if (isset($serverdetails_query[0]) and ($serverdetails_query[0]['virtualserver_maxclients'])) {
 						$serverdetails[$virtualserver_id]=array(
 							'virtualserver_ip'=>$virtualserver_ip,
 							'virtualserver_maxclients'=>$serverdetails_query[0]['virtualserver_maxclients'],
