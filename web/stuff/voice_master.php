@@ -449,8 +449,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     }
                     if (($oldactive=='Y' and $active=='N') or ($oldactive=='N' and $active=='Y')) {
                         if ($row['publickey']=="Y") {
-                            $pubkey=EASYWIDIR."/keys/".$row['keyname'].".pub";
-                            $key=EASYWIDIR."/keys/".$row['keyname'];
+
+                            # https://github.com/easy-wi/developer/issues/70
+                            $sshkey=removePub($row['keyname']);
+                            $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
+                            $key=EASYWIDIR.'/keys/'.$sshkey;
+                            
                             if (file_exists($pubkey) and file_exists($key)) {
                                 $ssh2= @ssh2_connect($queryip,$row['decryptedssh2port'],array('hostkey'=>'ssh-rsa'));
                             } else {

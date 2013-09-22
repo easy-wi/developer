@@ -78,7 +78,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             if ($row['newlayout']=='Y') $customer=$customer.'-'.$row['id'];
         }
         $template=array();
-        foreach($ui->id('template',10,'post') as $id => $tpl) {
+        # https://github.com/easy-wi/developer/issues/69
+        $templates = (array) $ui->id('template',10,'post');
+        foreach($templates as $id => $tpl) {
             if ($tpl>0) {
                 $template[]=$tpl;
                 if ($ui->active('type','post')=='Y') {

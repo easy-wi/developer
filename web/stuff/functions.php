@@ -1336,3 +1336,11 @@ function workAroundForValveChaos ($appID,$shorten,$toApi=true) {
     }
     return $appID;
 }
+
+# https://github.com/easy-wi/developer/issues/70
+function removePub ($string) {
+    if (substr(strtolower($string), -4) == '.pub') {
+        return substr($string, 0, -4);
+    }
+    return $string;
+}

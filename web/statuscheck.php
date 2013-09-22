@@ -568,13 +568,16 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                 } else {
                     $tsdnsbin='tsdnsserver_linux_amd64';
                 }
+                $ssh2_2=false;
                 if ($row['publickey']=='Y') {
-                    $pubkey="keys/".$row['keyname'].".pub";
-                    $key="keys/".$row['keyname'];
+
+                    # https://github.com/easy-wi/developer/issues/70
+                    $sshkey=removePub($row['keyname']);
+                    $pubkey='keys/'.$sshkey.'.pub';
+                    $key='keys/'.$sshkey;
+
                     if (file_exists($pubkey) and file_exists($key)) {
                         $ssh2_2= ssh2_connect($row['ssh2ip'],$row['decryptedssh2port'],array('hostkey'=>'ssh-rsa'));
-                    } else {
-                        $ssh2_2=false;
                     }
                 } else {
                     $ssh2_2=ssh2_connect($row['ssh2ip'],$row['decryptedssh2port']);
@@ -697,8 +700,12 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     $pupdate->execute(array($ts3masternotified,$ts3masterid));
                     if (($autorestart=='Y' and $ts3masternotified>=$resellersettings[$resellerid]['down_checks']) or ($tsdown!=true and $tsdnsdown==true)) {
                         if ($vrow['publickey']=="Y") {
-                            $pubkey="keys/".$vrow['keyname'].".pub";
-                            $key="keys/".$vrow['keyname'];
+
+                            # https://github.com/easy-wi/developer/issues/70
+                            $sshkey=removePub($vrow['keyname']);
+                            $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
+                            $key=EASYWIDIR.'/keys/'.$sshkey;
+
                             $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($queryip,$vrow['decryptedssh2port'],array('hostkey'=>'ssh-rsa')) : false;
                         } else {
                             $ssh2= @ssh2_connect($queryip,$vrow['decryptedssh2port']);

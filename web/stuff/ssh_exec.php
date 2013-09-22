@@ -56,8 +56,12 @@ if (!function_exists('ssh2_execute')) {
                 $ssh2User=$row['decrypteduser'];
                 $ssh2Pass=$row['decryptedpass'];
                 $ssh2Publickey=$row['publickey'];
-                $pubkey=EASYWIDIR."/keys/${row['keyname']}.pub";
-                $key=EASYWIDIR."/keys/${row['keyname']}";
+
+                # https://github.com/easy-wi/developer/issues/70
+                $sshkey=removePub($row['keyname']);
+                $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
+                $key=EASYWIDIR.'/keys/'.$sshkey;
+
                 $ssh2Socket=($ssh2Publickey=='Y') ? (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($ssh2IP,$ssh2Port,array('hostkey'=>'ssh-rsa')) : false : @ssh2_connect($ssh2IP,$ssh2Port);
                 if ($ssh2Socket==true) {
                     $ssh2Connect=($ssh2Publickey=='Y') ? @ssh2_auth_pubkey_file($ssh2Socket,$ssh2User,$pubkey,$key) : @ssh2_auth_password($ssh2Socket,$ssh2User,$ssh2Pass);

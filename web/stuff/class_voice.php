@@ -587,8 +587,11 @@ class TS3 {
 
 function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notified,$path,$virtualserver_id,$backupid,$reseller_id,$sql,$move=array()) {
 	if ($keyuse=="Y") {
-		$pubkey=EASYWIDIR."/keys/".$sshkey.".pub";
-		$key=EASYWIDIR."/keys/".$sshkey;
+        # https://github.com/easy-wi/developer/issues/70
+        $sshkey=removePub($sshkey);
+        $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
+        $key=EASYWIDIR.'/keys/'.$sshkey;
+
 		if (file_exists($pubkey) and file_exists($key)) {
 			$ssh2= @ssh2_connect($sship,$sshport,array('hostkey'=>'ssh-rsa'));
 		} else {

@@ -129,9 +129,14 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                         $tsdnsExternalActive=true;
                     }
                 }
+                $ssh2=false;
                 if ($row2['publickey']=='Y') {
-                    $pubkey="keys/".$row2['keyname'].".pub";
-                    $key="keys/".$row2['keyname'];
+
+                    # https://github.com/easy-wi/developer/issues/70
+                    $sshkey=removePub($row2['keyname']);
+                    $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
+                    $key=EASYWIDIR.'/keys/'.$sshkey;
+
                     if (file_exists($pubkey) and file_exists($key)) {
                         $ssh2= @ssh2_connect($queryip,$row2['decryptedssh2port'],array('hostkey'=>'ssh-rsa'));
                     }
@@ -139,20 +144,12 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     $ssh2= @ssh2_connect($queryip,$row2['decryptedssh2port']);
                 }
                 if ($ssh2) {
-                    if ($row2['publickey']=='Y') {
-                        $connect_ssh2= @ssh2_auth_pubkey_file($ssh2,$row2['decryptedssh2user'],$pubkey,$key);
-                    } else {
-                        $connect_ssh2= @ssh2_auth_password($ssh2,$row2['decryptedssh2user'],$row2['decryptedssh2password']);
-                    }
+                    $connect_ssh2=($row2['publickey']=='Y') ? @ssh2_auth_pubkey_file($ssh2,$row2['decryptedssh2user'],$pubkey,$key) : @ssh2_auth_password($ssh2,$row2['decryptedssh2user'],$row2['decryptedssh2password']);
                     if ($connect_ssh2) {
                         $split_config=preg_split('/\//',$row2['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
                         $folderfilecount=count($split_config)-1;
                         $i=0;
-                        if (substr($row2['serverdir'],0,1)=='/') {
-                            $folders='cd  /';
-                        } else {
-                            $folders='cd ';
-                        }
+                        $folders= (substr($row2['serverdir'],0,1)=='/') ? 'cd  /' : 'cd ';
                         while ($i<=$folderfilecount) {
                             $folders=$folders.$split_config[$i]."/";
                             $i++;
@@ -170,7 +167,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     $badLogin=true;
                     print "Error: Can not connect via ssh2\r\n";
                 }
-                if (!isset($badLogin) and $connect_ssh2) {
+                if (!isset($badLogin) and isset($connect_ssh2) and $connect_ssh2) {
                     $tsdown=false;
                     $tsdnsdown=false;
                     $connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
