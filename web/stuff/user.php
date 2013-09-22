@@ -121,7 +121,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				$city=$ui->names('city',50,'post');
 				$cityn=$ui->id('cityn',6,'post');
 				$street=$ui->names('street',50,'post');
-				$streetn=$ui->w('streetn',6,'post');
+				$streetn=$ui->streetNumber('streetn','post');
 				$password=$ui->password('security',255,'post');
                 $salutation=$ui->id('salutation',1,'post');
                 $birthday=date('Y-m-d',strtotime($ui->isDate('birthday','post')));
@@ -512,7 +512,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $city=$ui->names('city',50,'post');
                 $cityn=$ui->id('cityn',6,'post');
                 $street=$ui->names('street',50,'post');
-                $streetn=$ui->w('streetn',6,'post');
+                $streetn=$ui->streetNumber('streetn','post');
                 $salutation=$ui->id('salutation',1,'post');
                 $birthday=date('Y-m-d',strtotime($ui->isDate('birthday','post')));
                 $country=$ui->st('country','post');

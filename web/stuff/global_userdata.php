@@ -78,19 +78,18 @@ if ($ui->st('d','get')=='pw') {
         $template_file=($logusertype=='user') ? 'userpanel_pass.tpl' : 'admin_user_own_pass.tpl';
     } else if ($ui->smallletters('action',2,'post')=='md'){
         $errors=array();
-        if (!password_check($ui->post['password'],255)) $errors[]=$sprache->error_pass;
-        if (!password_check($ui->post['pass2'],255)) $errors[]=$sprache->error_pas;
-        if (!$ui->post['password']==$ui->post['pass2']) $errors[]=$sprache->error_passw_succ;
+        if (!$ui->password('password', 255, 'post')) $errors[]=$sprache->error_pass;
+        if (!$ui->password('pass2', 255, 'post')) $errors[]=$sprache->error_pas;
+        if ($ui->password('password', 255, 'post')!=$ui->password('pass2', 255, 'post')) $errors[]=$sprache->error_passw_succ;
         if (!token(true)) $errors[]=$spracheResponse->token;
         if (count($errors)>0) {
             $template_file=implode('<br />',$errors);
         } else {
-            $password=password_check($ui->post['pass2'],20);
             $query=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($lookUpID,$reseller_id));
             $cname=$query->fetchColumn();
             $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
-            $security=createHash($cname,$password,$salt,$aeskey);
+            $security=createHash($cname,$ui->password('pass2', 255, 'post'),$salt,$aeskey);
             $query=$sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($security,$salt,$lookUpID,$reseller_id));
             if($query->rowCount()>0) {
@@ -130,19 +129,19 @@ if ($ui->st('d','get')=='pw') {
         foreach ($row as $k=>$v) $oldValues[$k]=$v;
     }
     if ($ui->smallletters('action',2,'post')=='md' and isset($oldValues)){
-        if (ismail($ui->post['mail']) and token(true)) {
+        if ($ui->ismail('mail','post') and token(true)) {
             $mail_backup=($ui->active('mail_backup','post')) ? $ui->active('mail_backup','post') : 'N';
             $mail_serverdown=($ui->active('mail_serverdown','post')) ? $ui->active('mail_serverdown','post') : 'N';
             $mail_ticket=($ui->active('mail_ticket','post')) ? $ui->active('mail_ticket','post') : 'N';
-            $name=names($ui->post['name'],30);
-            $vname=names($ui->post['vname'],30);
-            $mail=ismail($ui->post['mail']);
-            $phone=phone($ui->post['phone'],30);
-            $handy=phone($ui->post['handy'],30);
-            $city=names($ui->post['city'],40);
-            $cityn=is_number($ui->post['cityn'],6);
-            $street=names($ui->post['street'],30);
-            $streetn=wpreg_check($ui->post['streetn'],6);
+            $name=$ui->names('name', 30, 'post');
+            $vname=$ui->phone('phone', 30, 'post');
+            $mail=$ui->ismail('mail','post');
+            $phone=$ui->phone('phone', 30, 'post');
+            $handy=$ui->phone('handy', 30, 'post');
+            $city=$ui->names('city', 40, 'post');
+            $cityn=$ui->isinteger('cityn', 6, 'post');
+            $street=$ui->names('street', 40, 'post');
+            $streetn=$ui->streetNumber('streetn','post');
             if (($ui->st('w','get')=='se')) {
                 $query=$sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$lookUpID,$reseller_id));

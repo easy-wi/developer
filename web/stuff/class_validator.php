@@ -359,6 +359,15 @@ class ValidateUserinput {
             return $this->loop($check,'phone',$type);
         }
     }
+    # https://github.com/easy-wi/developer/issues/73
+    function streetNumber ($value,$type,$object=false) {
+        $check=$this->if_obj_or_str($value,$type,$object);
+        if ($check and is_string($check) and preg_match('/^[\w\.\-\/\ ]+$/',$check)) {
+            return $check;
+        } else if ($check) {
+            return $this->loop($check,'streetNumber',$type);
+        }
+    }
     function id ($value,$length,$type,$object=false){
         $check=$this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\d+]{1,'.$length.'}$/',$check)) {
