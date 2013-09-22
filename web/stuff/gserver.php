@@ -979,7 +979,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
             $template_file='admin_404.tpl';
         }
     } else if ($action=='ri') {
-        $gamestring='';
+        $gamestring=array();
         $template=array();
         $i=0;
         $query=$sql->prepare("SELECT g.`userid`,g.`id`,g.`serverip`,g.`port`,g.`rootID`,u.`cname` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
@@ -991,7 +991,9 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
             $port=$row['port'];
             $gsfolder=$serverip.'_'.$port;
         }
-        foreach($ui->id('template',10,'post') as $id => $tpl) {
+        # https://github.com/easy-wi/developer/issues/69
+        $templates = (array) $ui->id('template',10,'post');
+        foreach($templates as $id => $tpl) {
             if ($tpl>0) {
                 $template[]=$tpl;
                 if ($ui->active('type','post')=='Y') {
