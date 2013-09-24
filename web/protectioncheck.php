@@ -44,13 +44,13 @@ if (isset($page_include)) {
         $protection_link=$page_url.'/'.$user_language.'/'.$page_category.'/';
     }
 } else {
-    define('EASYWIDIR',dirname(__FILE__));
+    define('EASYWIDIR', dirname(__FILE__));
     if (is_dir(EASYWIDIR."/install")) die('Please remove the "install" folder');
     $logininclude=true;
-    include(EASYWIDIR.'/stuff/vorlage.php');
-    include(EASYWIDIR.'/stuff/class_validator.php');
-    include(EASYWIDIR.'/stuff/functions.php');
-    include(EASYWIDIR.'/stuff/settings.php');
+    include(EASYWIDIR . '/stuff/vorlage.php');
+    include(EASYWIDIR . '/stuff/class_validator.php');
+    include(EASYWIDIR . '/stuff/functions.php');
+    include(EASYWIDIR . '/stuff/settings.php');
     $query="SELECT `language` FROM `settings` WHERE `resellerid`=0 LIMIT 1";
     foreach ($sql->query($query) as $row) {
         $default_language=$row['language'];
@@ -139,18 +139,18 @@ if (!isset($protected)) {
     $imgAlt='unprotected';
 } else if ($protected=="Y") {
     $imgName='64_protected';
-    $imgAlt='unprotected';
+    $imgAlt='protected';
 }
 if ($ui->ipport('serveraddress','post')) {
     if (isset($page_include)) {
         $template_file='page_protectioncheck.tpl';
     } else {
-        if (file_exists(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl')) {
-            include(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl');
-        } else if (file_exists(EASYWIDIR.'/template/default/protectioncheck.tpl')) {
-            include(EASYWIDIR.'/template/default/protectioncheck.tpl');
+        if (file_exists(EASYWIDIR . '/template/'.$template_to_use.'/protectioncheck.tpl')) {
+            include(EASYWIDIR . '/template/'.$template_to_use.'/protectioncheck.tpl');
+        } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
+            include(EASYWIDIR . '/template/default/protectioncheck.tpl');
         } else {
-            include(EASYWIDIR.'/template/protectioncheck.tpl');
+            include(EASYWIDIR . '/template/protectioncheck.tpl');
         }
     }
 } else if (!isset($page_include) and isset($server_ip) and isset($server_port)) {
@@ -221,12 +221,12 @@ XML;
 
     $template_file='page_protectioncheck.tpl';
 } else {
-    if (file_exists(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl')) {
-        include(EASYWIDIR.'/template/'.$template_to_use.'/protectioncheck.tpl');
-    } else if (file_exists(EASYWIDIR.'/template/default/protectioncheck.tpl')) {
-        include(EASYWIDIR.'/template/default/protectioncheck.tpl');
+    if (file_exists(EASYWIDIR . '/template/'.$template_to_use.'/protectioncheck.tpl')) {
+        include(EASYWIDIR . '/template/'.$template_to_use.'/protectioncheck.tpl');
+    } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
+        include(EASYWIDIR . '/template/default/protectioncheck.tpl');
     } else {
-        include(EASYWIDIR.'/template/protectioncheck.tpl');
+        include(EASYWIDIR . '/template/protectioncheck.tpl');
     }
 }
 if (!isset($page_include)) {
