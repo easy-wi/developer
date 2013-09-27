@@ -37,6 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $minimumArray=array('action','identify_server_by','server_local_id','server_external_id');
 $editArray=array('active','private','slots','shorten','identify_user_by','user_localid','user_externalid','username');
 foreach ($minimumArray as $key) {
@@ -51,8 +52,6 @@ if (array_key_exists('action',$data) and $data['action']!='gs') {
         }
     }
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 $active='';
 $private='';
 $shorten='';

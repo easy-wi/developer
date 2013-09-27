@@ -39,6 +39,7 @@
 
 ini_set('display_errors',1);
 error_reporting(E_ALL|E_STRICT);
+define('EASYWIDIR', dirname(dirname(__FILE__)));
 ?>
 <!DOCTYPE html> 
 <head>
@@ -229,35 +230,6 @@ function passwordhash($username,$password){
 	$hash = hash('sha512', sha1($usernamea[0].md5($passworda[0].$usernamea[1]).$passworda[1]));
 	return $hash;
 }
-function getconfigcvars($file) {
-	$fp= @fopen($file,'r');
-	if ($fp == true) {
-		$configfile="";
-		while (!feof($fp)){
-			$line=fgets($fp);
-			if(strpos(strtolower($line), strtolower("<?php")) === false and strpos(strtolower($line), strtolower("?>")) === false) {
-				$configfile .="$line\r\n";
-			}
-		}
-		fclose($fp);
-		$lines=explode("\r\n", $configfile);
-		foreach ($lines as $line) {
-			if(strpos(strtolower($line), strtolower("//")) === false and strpos(strtolower($line), strtolower("=")) == true) {
-				$data=explode("=", $line);
-				$cvar=preg_replace('/\s+/', '', $data[0]);
-				$cvar=str_replace('$', "", $cvar);
-				$data2=explode(";", $data[1]);
-				$stringlenght=strlen($data2[0]);
-				$stop=$stringlenght-2;
-				$value=substr($data2[0],"1",$stop);
-				$vars[$cvar]=$value;
-			}
-		}
-		return $vars;
-	} else {
-		die("No configdata!");
-	}
-}
 $lang_detect=strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'],"0","2"));
 if (file_exists("$lang_detect.xml")) {
 	$sprache=simplexml_load_file("$lang_detect.xml");
@@ -354,13 +326,7 @@ $aeskey="'.$_POST['aeskey'].'";
 ?>';
 	@fwrite($config, $configdata) or die("Can not write the configdata");
 	fclose($config);
-	$panelcfgcvars=getconfigcvars('../stuff/config.php');
-	if (!isset($panelcfgcvars['databanktype']) or !isset($panelcfgcvars['host']) or !isset($panelcfgcvars['db']) or !isset($panelcfgcvars['user']) or !isset($panelcfgcvars['pwd'])) die ("Can not read the configdata");
-	$databanktype=$panelcfgcvars['databanktype'];
-	$host=$panelcfgcvars['host'];
-	$db=$panelcfgcvars['db'];
-	$user=$panelcfgcvars['user'];
-	$pwd=$panelcfgcvars['pwd'];
+	include(EASYWIDIR . '/stuff/config.php');
 	try {
 		$sql=new PDO("$databanktype:host=$host;dbname=$db",$user,$pwd,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
     }
@@ -526,13 +492,7 @@ $aeskey="'.$_POST['aeskey'].'";
 		$emessage .="</br>Adminname";
 	}
 	if ($fail!="1") {
-		#include("../stuff/config.php");
-		$panelcfgcvars=getconfigcvars('../stuff/config.php');
-		$databanktype=$panelcfgcvars['databanktype'];
-		$host=$panelcfgcvars['host'];
-		$db=$panelcfgcvars['db'];
-		$user=$panelcfgcvars['user'];
-		$pwd=$panelcfgcvars['pwd'];
+		include(EASYWIDIR . '/stuff/config.php');
 		try {
 			$sql=new PDO("$databanktype:host=$host;dbname=$db", $user, $pwd,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
 			$sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -571,8 +531,7 @@ $aeskey="'.$_POST['aeskey'].'";
 		$imageserver="0";
 		$language=small_letters_check($_POST['language'],'2');
 		$faillogins=isid($_POST['faillogins'],'2');
-		$aesfilecvar=getconfigcvars('../stuff/keyphrasefile.php');
-		$aeskey=$aesfilecvar['aeskey'];
+		include(EASYWIDIR . '/stuff/keyphrasefile.php');
 		$insert_usergroups=$sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES
 ('Y','Admin Default','a','Y','N'),
 ('Y','Reseller Default','r','Y','N'),

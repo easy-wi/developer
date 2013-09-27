@@ -40,6 +40,9 @@
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['settings'])) {
     redirect('login.php');
 }
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('settings',$user_language,$reseller_id);
 $gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$admin_id;
@@ -52,8 +55,6 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller=0;
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
     $reseller_id=$admin_id;
 }

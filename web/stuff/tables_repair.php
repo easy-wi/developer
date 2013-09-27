@@ -395,6 +395,15 @@ $defined['mail_log']=array('id'=>array("Type"=>"bigint(19) unsigned","Null"=>"NO
     'resellerid'=>array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
+#https://github.com/easy-wi/developer/issues/61 add module management
+$defined['modules']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+    'get'=>array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'file'=>array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'sub'=>array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'active'=>array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'type'=>array("Type"=>"enum('A','C','P','U')","Null"=>"YES","Key"=>"","Default"=>"A","Extra"=>"")
+);
+
 #https://github.com/easy-wi/developer/issues/42 column description added
 $defined['mysql_external_dbs']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active'=>array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),

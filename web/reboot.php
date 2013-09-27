@@ -48,15 +48,15 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 }
 set_time_limit($timelimit);
 if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
-    define('EASYWIDIR',dirname(__FILE__));
+    define('EASYWIDIR', dirname(__FILE__));
     echo "Reboot and Updater started\r\n";
-    include('stuff/vorlage.php');
-    include('stuff/class_validator.php');
-    include('stuff/functions.php');
-    include('stuff/settings.php');
-    include('stuff/ssh_exec.php');
-    include('stuff/class_masterserver.php');
-    include('stuff/class_voice.php');
+    include(EASYWIDIR . '/stuff/vorlage.php');
+    include(EASYWIDIR . '/stuff/class_validator.php');
+    include(EASYWIDIR . '/stuff/functions.php');
+    include(EASYWIDIR . '/stuff/settings.php');
+    include(EASYWIDIR . '/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/class_masterserver.php');
+    include(EASYWIDIR . '/stuff/class_voice.php');
     if (version_compare(PHP_VERSION,'5.3.0')>=0){
         $currentTime=new DateTime(date('Y-m-d H:i:s'));
     } else {
@@ -65,8 +65,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         $currentHour=date('G');
     }
     $now=date('Y-m-d',strtotime("now"));
-    $aesfilecvar=getconfigcvars("stuff/keyphrasefile.php");
-    $aeskey=$aesfilecvar['aeskey'];
+	include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $sprache=getlanguagefile('gserver','uk',0);
     echo "Fetch version for valves appIDs\r\n";
     $query=$sql->prepare("SELECT t.`appID`,t.`shorten` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
@@ -465,7 +464,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     $newsInclude=true;
     $printToConsole=true;
     print "Check for new news feeds\r\n";
-    include('stuff/feeds_function.php');
+    include(EASYWIDIR . '/stuff/feeds_function.php');
     if (isset($template_file)) print $template_file."\r\n";
     $chunkSize=(isset($argv[1]) and is_numeric($argv[1])) ? $argv[1] : 500;
     print "Cleaning Up hourly data. Chunksize is ${chunkSize}\r\n";

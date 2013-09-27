@@ -422,6 +422,19 @@ $query="CREATE TABLE IF NOT EXISTS `mail_log` (
 $add=$sql->prepare($query);
 $add->execute();
 
+#https://github.com/easy-wi/developer/issues/61 add module management
+$query="CREATE TABLE IF NOT EXISTS `modules` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `get` varchar(255) NOT NULL,
+  `file` varchar(255) NOT NULL,
+  `sub` varchar(2) NOT NULL,
+  `active` enum('Y','N') DEFAULT 'Y',
+  `type` enum('A','C','P','U') DEFAULT 'A',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1001;";
+$add=$sql->prepare($query);
+$add->execute();
+
 #https://github.com/easy-wi/developer/issues/42 column description added
 $query="CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

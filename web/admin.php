@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: admin.php.
  * Author: Ulrich Block
@@ -36,16 +37,16 @@
  */
 
 $main=1;
-define('EASYWIDIR',dirname(__FILE__));
-if (is_dir(EASYWIDIR.'/install')) die('Please remove the "install" folder');
-include(EASYWIDIR.'/stuff/vorlage.php');
-include(EASYWIDIR.'/stuff/class_validator.php');
-include(EASYWIDIR.'/stuff/functions.php');
-include(EASYWIDIR.'/stuff/settings.php');
-include(EASYWIDIR.'/stuff/init_admin.php');
-include(EASYWIDIR.'/stuff/adminhome.php');
-if (isset($what_to_be_included_array[$w]) and is_file((EASYWIDIR.'/stuff/'.$what_to_be_included_array[$w]))) {
-    include(EASYWIDIR.'/stuff/'.$what_to_be_included_array[$w]);
+define('EASYWIDIR', dirname(__FILE__));
+if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/init_admin.php');
+include(EASYWIDIR . '/stuff/adminhome.php');
+if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui->smallletters('w', 255, 'get')]) and is_file((EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]))) {
+    include(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]);
     unset($dbConnect);
 } else {
     unset($dbConnect);

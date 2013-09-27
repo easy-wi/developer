@@ -152,8 +152,7 @@ if (isset($registration) and in_array($registration,array('A','M','D'))) {
                 // personal Salt and activation md5
                 $userSalt=md5(date('Y-d-m H:i:s u').md5(mt_rand()));
                 $activeHash=uniqid();
-                $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-                $aeskey=$aesfilecvar['aeskey'];
+				include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
                 // insert data
                 $query=$sql->prepare("INSERT INTO `userdata` (`accounttype`,`active`,`mail`,`token`,`creationTime`,`updateTime`,`salutation`,`country`,`name`,`vname`,`birthday`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`) VALUES ('u','R',?,?,NOW(),NOW(),?,?,?,?,?,?,?,?,?,?,?,?)");

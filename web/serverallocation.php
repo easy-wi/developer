@@ -35,12 +35,12 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-define('EASYWIDIR',dirname(__FILE__));
-include(EASYWIDIR."/stuff/functions.php");
-include(EASYWIDIR.'/stuff/class_validator.php');
-include(EASYWIDIR.'/stuff/vorlage.php');
-include(EASYWIDIR."/stuff/config.php");
-include(EASYWIDIR."/stuff/settings.php");
+define('EASYWIDIR', dirname(__FILE__));
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/config.php');
+include(EASYWIDIR . '/stuff/settings.php');
 $die=false;
 if (!isset($admin_id) and !isset($user_id)) {
     redirect('login.php');
@@ -343,10 +343,9 @@ if ($ui->smallletters('w',5,'get')=='check') {
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}
-	include(EASYWIDIR.'/stuff/ssh_exec.php');
-    include(EASYWIDIR.'/stuff/class_masterserver.php');
-	$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-	$aeskey=$aesfilecvar['aeskey'];
+	include(EASYWIDIR . '/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/class_masterserver.php');
+	include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $rootServer=new masterServer($ui->id('id',10,'get'),$aeskey);
     $games=explode("_",$ui->username('gamestring','50','get'));
     $i=1;

@@ -38,8 +38,9 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['roots'])) {
     header('Location: admin.php');
     die('No acces');
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('roots',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);

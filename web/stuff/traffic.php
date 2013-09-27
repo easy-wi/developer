@@ -40,8 +40,9 @@ if(!isset($admin_id) or !$main == "1" or (isset($admin_id) and !$pa['traffic']))
 }
 $sprache=getlanguagefile('traffic',$user_language,$reseller_id);
 if ($d=='se' and $reseller_id==0) {
-	$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-	$aeskey=$aesfilecvar['aeskey'];
+
+	include(EASYWIDIR . '/stuff/keyphrasefile.php');
+	
     if ($ui->w('action',4,'post') and !token(true)) {
         $template_file=$spracheResponse->token;
     } else if (isset($ui->post['type']) and $ui->w('action',4,'post')=='md') {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Aktivieren</active>
+    <description>Beschreibung</description>
+    <error_core>Fehler: Easy-WI Core Module können nicht gelöscht werden</error_core>
+    <file>Datei</file>
+    <get>GET Wert</get>
+    <name>Name</name>
+    <sub>Menüblock</sub>
+    <type>Modul Typ</type>
+    <type_admin>Adminpanel</type_admin>
+    <type_cms>CMS</type_cms>
+    <type_core>Easy-WI Core</type_core>
+    <type_user>Userpanel</type_user>
+</sprache>

@@ -145,12 +145,12 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
                 $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
                 if (!isset($alreadyRepaired)) {
                     $response->add('Adding tables if needed.');
-                    include(EASYWIDIR.'/stuff/tables_add.php');
+                    include(EASYWIDIR . '/stuff/tables_add.php');
                 }
-				if ($ewVersions['cVersion']<$ewVersions['version']) include(EASYWIDIR.'/install/update.php');
+				if ($ewVersions['cVersion']<$ewVersions['version']) include(EASYWIDIR . '/install/update.php');
                 if (!isset($alreadyRepaired)) {
                     $response->add('Repairing tables if needed.');
-                    include(EASYWIDIR.'/stuff/tables_repair.php');
+                    include(EASYWIDIR . '/stuff/tables_repair.php');
                 }
 			} else {
 				$response->add('Error: could not retrieve the update');

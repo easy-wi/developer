@@ -48,16 +48,15 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 }
 set_time_limit($timelimit);
 if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
-    define('EASYWIDIR',dirname(__FILE__));
+    define('EASYWIDIR', dirname(__FILE__));
     echo "Start Syncs and Updates loading...\r\n";
-    include('stuff/vorlage.php');
-    include('stuff/class_validator.php');
-    include('stuff/functions.php');
-    include('stuff/settings.php');
-    include('stuff/ssh_exec.php');
-    include('stuff/class_masterserver.php');
-    $aesfilecvar=getconfigcvars("stuff/keyphrasefile.php");
-    $aeskey=$aesfilecvar['aeskey'];
+    include(EASYWIDIR . '/stuff/vorlage.php');
+    include(EASYWIDIR . '/stuff/class_validator.php');
+    include(EASYWIDIR . '/stuff/functions.php');
+    include(EASYWIDIR . '/stuff/settings.php');
+    include(EASYWIDIR . '/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/class_masterserver.php');
+    include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $currentHour=date('G');
     $currentMinute=(int)date('i');
     $query=$sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");

@@ -37,12 +37,12 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('feeds',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype='admin';
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 if ($reseller_id==0) {
     $logreseller=0;
     $logsubuser=0;
@@ -53,7 +53,7 @@ if ($reseller_id==0) {
 $lookUpID=($reseller_id!=0 and $admin_id!=$reseller_id) ? $admin_id: $reseller_id;
 if ($ui->st('d','get')=='ud') {
     $newsInclude=true;
-    include(EASYWIDIR.'/stuff/feeds_function.php');
+    include(EASYWIDIR . '/stuff/feeds_function.php');
 } else if ($ui->st('d','get')=='md') {
     $ids=(array)$ui->active('ids','post');
     $delete=$sql->prepare("DELETE FROM `feeds_news` WHERE `newsID`=? AND `resellerID`=? LIMIT 1");

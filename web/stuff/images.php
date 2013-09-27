@@ -39,6 +39,7 @@ if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['gimages'
 	header('Location: admin.php');
 	die('No acces');
 }
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache=getlanguagefile('images',$user_language,$reseller_id);
 $gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$admin_id;
@@ -58,8 +59,6 @@ if ($reseller_id=="0") {
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 	$reseller_id=$admin_id;
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->st('d','get')=='ex' and $ui->id('id',10,'get')) {

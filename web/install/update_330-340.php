@@ -37,16 +37,6 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 if (isset($include) and $include==true) {
-    if (@is_file('../stuff/keyphrasefile.php')){
-        $aesfilecvar=getconfigcvars('../stuff/keyphrasefile.php');
-        $aeskey=$aesfilecvar['aeskey'];
-    } else if (@is_file(EASYWIDIR.'/stuff/keyphrasefile.php')){
-        $aesfilecvar=getconfigcvars(EASYWIDIR.'/stuff/keyphrasefile.php');
-        $aeskey=$aesfilecvar['aeskey'];
-    } else if (@is_file(EASYWIDIR.'keyphrasefile.php')){
-        $aesfilecvar=getconfigcvars(EASYWIDIR.'keyphrasefile.php');
-        $aeskey=$aesfilecvar['aeskey'];
-    }
     $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('3.40','<div align=\"right\">09.05.2013</div>
 <b>Änderungen:</b>

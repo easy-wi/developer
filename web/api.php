@@ -38,13 +38,13 @@
  */
 
 
-define('EASYWIDIR',dirname(__FILE__));
+define('EASYWIDIR', dirname(__FILE__));
 if (is_dir(EASYWIDIR.'/install')) die('Please remove the "install" folder');
 $logininclude=true;
-include(EASYWIDIR.'/stuff/vorlage.php');
-include(EASYWIDIR.'/stuff/class_validator.php');
-include(EASYWIDIR.'/stuff/functions.php');
-include(EASYWIDIR.'/stuff/settings.php');
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
 if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post')) {
     $query=$sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR','server')));
@@ -111,19 +111,19 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
     $voModule=(is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo']==0) ? false : true;
     $dModule=(is_numeric($licenceDetails['mD']) and $licenceDetails['mD']==0) ? false : true;
     if ($type=='user') {
-        include(EASYWIDIR.'/stuff/api_users.php');
+        include(EASYWIDIR . '/stuff/api_users.php');
     } else if ($type=='voice') {
         if ($voModule==true) {
-            include(EASYWIDIR.'/stuff/api_voice.php');
+            include(EASYWIDIR . '/stuff/api_voice.php');
         } else {
             header('HTTP/1.1 403 Forbidden');
             die('403 Forbidden: Voice module is inactive');
         }
     } else if ($type=='mysql') {
-        include(EASYWIDIR.'/stuff/api_mysql.php');
+        include(EASYWIDIR . '/stuff/api_mysql.php');
     } else if ($type=='gserver') {
         if ($gsModule==true) {
-            include(EASYWIDIR.'/stuff/api_gserver.php');
+            include(EASYWIDIR . '/stuff/api_gserver.php');
         } else {
             header('HTTP/1.1 403 Forbidden');
             die('403 Forbidden: Gameserver module is inactive');

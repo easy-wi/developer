@@ -38,13 +38,14 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['mysql'])) {
     header('Location: userpanel.php');
     die;
 }
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('mysql',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype="user";
 $logreseller=0;
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 if (isset($admin_id)) {
 	$logsubuser=$admin_id;
 } else if (isset($subuser_id)) {
@@ -74,7 +75,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $template_file=(isset($dbname)) ? 'userpanel_mysql_db_md.tpl' : 'userpanel_404.tpl';
     } else if ($ui->smallletters('action',2,'post')=='md'){
         if ($ui->password('password',40,'post')) {
-            include(EASYWIDIR.'/stuff/mysql_functions.php');
+            include(EASYWIDIR . '/stuff/mysql_functions.php');
             $password=$ui->password('password',40,'post');
             $ips=$ui->ips('ips','post');
             $query=$sql->prepare("SELECT e.`dbname`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");

@@ -39,6 +39,7 @@
 	<master>Master</master>
     <migration>Umzugsservice</migration>
 	<mod>Ändern</mod>
+    <modules>Module</modules>
 	<news>News</news>
 	<no>Nein</no>
 	<overview>Übersicht</overview>

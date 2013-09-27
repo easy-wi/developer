@@ -89,16 +89,16 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseOne">Dashboard</a>
                         </div>
-                        <div id="collapseOne" class="accordion-body collapse <?php if(in_array($w,array('da','ho','ib','lo','ml','ip'))) echo 'in';?>">
+                        <div id="collapseOne" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('da','ho','ib','lo','ml','ip'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <li <?php if($w=='da' or $w=='ho') echo 'class="active"';?>><a href="admin.php?w=da">Dashboard</a></li>
-                                    <?php if($pa['ipBans']) { ?><li <?php if($w=='ib') echo 'class="active"';?>><a href="admin.php?w=ib">IP Bans</a></li><?php } ?>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='da' or $ui->smallletters('w',255,'get')=='ho') echo 'class="active"';?>><a href="admin.php?w=da">Dashboard</a></li>
+                                    <?php if($pa['ipBans']) { ?><li <?php if($ui->smallletters('w',255,'get')=='ib') echo 'class="active"';?>><a href="admin.php?w=ib">IP Bans</a></li><?php } ?>
                                     <?php if($pa['log']) { ?>
-                                    <li <?php if($w=='lo') echo 'class="active"';?>><a href="admin.php?w=lo"><?php echo $gsprache->logs;?></a></li>
-                                    <li <?php if($w=='ml') echo 'class="active"';?>><a href="admin.php?w=ml">Mail <?php echo $gsprache->logs;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='lo') echo 'class="active"';?>><a href="admin.php?w=lo"><?php echo $gsprache->logs;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ml') echo 'class="active"';?>><a href="admin.php?w=ml">Mail <?php echo $gsprache->logs;?></a></li>
                                     <?php } ?>
-                                    <li <?php if($w=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><?php echo $gsprache->imprint;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><?php echo $gsprache->imprint;?></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -112,19 +112,20 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSettings">Easy-WI <?php echo $gsprache->settings;?></a>
                         </div>
-                        <div id="collapseSettings" class="accordion-body collapse <?php if(in_array($w,array('se','sm','vc','cc','bu'))) echo 'in';?>">
+                        <div id="collapseSettings" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('se','sm','vc','cc','bu','mo'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['settings']) { ?>
-                                    <li <?php if($w=='se') echo 'class="active"';?>><a href="admin.php?w=se"><?php echo $gsprache->settings;?></a></li>
-                                    <li <?php if($w=='sm') echo 'class="active"';?>><a href="admin.php?w=sm">E-Mail <?php echo $gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='se') echo 'class="active"';?>><a href="admin.php?w=se"><?php echo $gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='sm') echo 'class="active"';?>><a href="admin.php?w=sm">E-Mail <?php echo $gsprache->settings;?></a></li>
                                     <?php } ?>
-                                    <li <?php if($w=='vc') echo 'class="active"';?>><a href="admin.php?w=vc"><?php echo $gsprache->versioncheck;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='vc') echo 'class="active"';?>><a href="admin.php?w=vc"><?php echo $gsprache->versioncheck;?></a></li>
                                     <?php if($pa['root'] and $reseller_id==0) { ?>
-                                    <li <?php if($w=='cc') echo 'class="active"';?>><a href="admin.php?w=cc"><?php echo $gsprache->columns;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='cc') echo 'class="active"';?>><a href="admin.php?w=cc"><?php echo $gsprache->columns;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['root'] and $reseller_id==0) { ?>
-                                    <li <?php if($w=='bu') echo 'class="active"';?>><a href="admin.php?w=bu"><?php echo $gsprache->databases;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='mo') echo 'class="active"';?>><a href="admin.php?w=mo"><?php echo $gsprache->modules;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='bu') echo 'class="active"';?>><a href="admin.php?w=bu"><?php echo $gsprache->databases;?></a></li>
                                     <?php } ?>
                                 </ul>
                             </div>
@@ -135,14 +136,14 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTwo"><?php echo $gsprache->jobs.'/'.$gsprache->api;?></a>
                         </div>
-                        <div id="collapseTwo" class="accordion-body collapse <?php if(in_array($w,array('ap','aa','jb','ui'))) echo 'in';?>">
+                        <div id="collapseTwo" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('ap','aa','jb','ui'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <?php if($pa['jobs']) { ?><li <?php if($w=='jb') echo 'class="active"';?>><a href="admin.php?w=jb"><?php echo $gsprache->jobs.' '.$gsprache->overview;?></a></li><?php } ?>
+                                    <?php if($pa['jobs']) { ?><li <?php if($ui->smallletters('w',255,'get')=='jb') echo 'class="active"';?>><a href="admin.php?w=jb"><?php echo $gsprache->jobs.' '.$gsprache->overview;?></a></li><?php } ?>
                                     <?php if($pa['apiSettings']) { ?>
-                                    <li <?php if($w=='ap') echo 'class="active"';?>><a href="admin.php?w=ap"><?php echo $gsprache->api.' '.$gsprache->settings;?></a></li>
-                                    <li <?php if($w=='aa') echo 'class="active"';?>><a href="admin.php?w=aa"><?php echo $gsprache->apiAuth;?></a></li>
-                                    <li <?php if($w=='ui') echo 'class="active"';?>><a href="admin.php?w=ui"><?php echo $gsprache->userImport;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ap') echo 'class="active"';?>><a href="admin.php?w=ap"><?php echo $gsprache->api.' '.$gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='aa') echo 'class="active"';?>><a href="admin.php?w=aa"><?php echo $gsprache->apiAuth;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ui') echo 'class="active"';?>><a href="admin.php?w=ui"><?php echo $gsprache->userImport;?></a></li>
                                     <?php }?>
                                 </ul>
                             </div>
@@ -154,12 +155,12 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThree"><?php echo $gsprache->feeds;?></a>
                         </div>
-                        <div id="collapseThree" class="accordion-body collapse <?php if(in_array($w,array('fe','fn'))) echo 'in';?>">
+                        <div id="collapseThree" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('fe','fn'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <li <?php if($w=='fn') echo 'class="active"';?>><a href="admin.php?w=fn"><?php echo $gsprache->feeds.' '.$gsprache->news;?></a></li>
-                                    <li <?php if($w=='fe' and !in_array($d,array('ad','se'))) echo 'class="active"';?>><a href="admin.php?w=fe"><?php echo $gsprache->feeds;?></a></li>
-                                    <li <?php if($w=='fe' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=fe&amp;d=se"><?php echo $gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='fn') echo 'class="active"';?>><a href="admin.php?w=fn"><?php echo $gsprache->feeds.' '.$gsprache->news;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='fe' and !in_array($d,array('ad','se'))) echo 'class="active"';?>><a href="admin.php?w=fe"><?php echo $gsprache->feeds;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='fe' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=fe&amp;d=se"><?php echo $gsprache->settings;?></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -170,53 +171,55 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour">CMS</a>
                         </div>
-                        <div id="collapseFour" class="accordion-body collapse <?php if(in_array($w,array('pn','pp','ps','pc','pd'))) echo 'in';?>">
+                        <div id="collapseFour" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('pn','pp','ps','pc','pd')) or isset($customModules['pa'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['cms_news']) { ?>
-                                    <li <?php if($w=='pn') echo 'class="active"';?>><a href="admin.php?w=pn"><?php echo $gsprache->news;?></a></li>
-                                    <li <?php if($w=='pc') echo 'class="active"';?>><a href="admin.php?w=pc"><?php echo $gsprache->comments;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='pn') echo 'class="active"';?>><a href="admin.php?w=pn"><?php echo $gsprache->news;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='pc') echo 'class="active"';?>><a href="admin.php?w=pc"><?php echo $gsprache->comments;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['cms_pages']) { ?>
-                                    <li <?php if($w=='pp') echo 'class="active"';?>><a href="admin.php?w=pp"><?php echo $gsprache->pages;?></a></li>
-                                    <li <?php if($w=='pd') echo 'class="active"';?>><a href="admin.php?w=pd"><?php echo $gsprache->downloads;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='pp') echo 'class="active"';?>><a href="admin.php?w=pp"><?php echo $gsprache->pages;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='pd') echo 'class="active"';?>><a href="admin.php?w=pd"><?php echo $gsprache->downloads;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['cms_settings']) { ?>
-                                    <li <?php if($w=='ps') echo 'class="active"';?>><a href="admin.php?w=ps"><?php echo $gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ps') echo 'class="active"';?>><a href="admin.php?w=ps"><?php echo $gsprache->settings;?></a></li>
                                     <?php } ?>
+                                    <?php foreach ($customModules['pa'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if(($pa['mysql_settings'] or $pa['mysql'])) { ?>
+                    <?php if($easywiModules['my'] and ($pa['mysql_settings'] or $pa['mysql'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive">MYSQL</a>
                         </div>
-                        <div id="collapseFive" class="accordion-body collapse <?php if($w=='my') echo 'in';?>">
+                        <div id="collapseFive" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='my' or isset($customModules['my'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['mysql']) { ?>
-                                    <li <?php if($w=='my' and !in_array($d,array('ms','as','ds'))) echo 'class="active"';?>><a href="admin.php?w=my"><?php echo $gsprache->databases;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='my' and !in_array($d,array('ms','as','ds'))) echo 'class="active"';?>><a href="admin.php?w=my"><?php echo $gsprache->databases;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['mysql_settings']) { ?>
-                                    <li <?php if($w=='my' and in_array($d,array('ms','as','ds'))) echo 'class="active"';?>><a href="admin.php?w=my&amp;d=ms">Server</a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='my' and in_array($d,array('ms','as','ds'))) echo 'class="active"';?>><a href="admin.php?w=my&amp;d=ms">Server</a></li>
                                     <?php } ?>
+                                    <?php foreach ($customModules['my'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if($pa['usertickets'] and $reseller_id!=0) { ?>
+                    <?php if($easywiModules['ti'] and $pa['usertickets'] and $reseller_id!=0) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSix"><?php echo $gsprache->support;?></a>
                         </div>
-                        <div id="collapseSix" class="accordion-body collapse <?php if($w=='my') echo 'in';?>">
+                        <div id="collapseSix" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='my') echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <li <?php if($w=='tr') echo 'class="active"';?>><a href="admin.php?w=tr"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='tr') echo 'class="active"';?>><a href="admin.php?w=tr"><?php echo $gsprache->overview;?></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -227,144 +230,163 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSeven"><?php echo $gsprache->user;?></a>
                         </div>
-                        <div id="collapseSeven" class="accordion-body collapse <?php if(in_array($w,array('us','ug'))) echo 'in';?>">
+                        <div id="collapseSeven" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('us','ug')) or isset($customModules['us'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['user'] or $pa['user_users']) { ?>
-                                    <li <?php if($w=='us') echo 'class="active"';?>><a href="admin.php?w=us&amp;d=md"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='us') echo 'class="active"';?>><a href="admin.php?w=us&amp;d=md"><?php echo $gsprache->overview;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['userGroups']) { ?>
-                                    <li <?php if($w=='ug') echo 'class="active"';?>><a href="admin.php?w=ug"><?php echo $gsprache->groups;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ug') echo 'class="active"';?>><a href="admin.php?w=ug"><?php echo $gsprache->groups;?></a></li>
                                     <?php } ?>
+                                    <?php foreach ($customModules['us'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if($pa['roots'] or $pa['masterServer']) { ?>
+                    <?php if($easywiModules['gs'] and ($pa['roots'] or $pa['masterServer'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEight"><?php echo $gsprache->gameroot;?></a>
                         </div>
-                        <div id="collapseEight" class="accordion-body collapse <?php if(in_array($w,array('ro','ma'))) echo 'in';?>">
+                        <div id="collapseEight" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('ro','ma'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <li <?php if($w=='ro') echo 'class="active"';?>><a href="admin.php?w=ro&amp;d=md"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ro') echo 'class="active"';?>><a href="admin.php?w=ro&amp;d=md"><?php echo $gsprache->overview;?></a></li>
                                     <?php if($pa['masterServer']) { ?>
-                                    <li <?php if($w=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><?php echo $gsprache->master.' '.$gsprache->overview;?></a></li>
-                                    <li <?php if($w=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><?php echo $gsprache->master.' '.$gsprache->update;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><?php echo $gsprache->master.' '.$gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><?php echo $gsprache->master.' '.$gsprache->update;?></a></li>
                                     <?php } ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if(($pa['gserver'] or $pa['addons'] or $pa['gimages'] or $pa['eac']) and $gserver_module) { ?>
+                    <?php if($easywiModules['gs'] and ($pa['gserver'] or $pa['addons'] or $pa['gimages'] or $pa['eac']) and $gserver_module) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseNine"><?php echo $gsprache->gameserver;?></a>
                         </div>
-                        <div id="collapseNine" class="accordion-body collapse <?php if(in_array($w,array('gs','ea','im','ad'))) echo 'in';?>">
+                        <div id="collapseNine" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('gs','ea','im','ad')) or isset($customModules['gs'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['gserver']) { ?>
-                                    <li <?php if($w=='gs') echo 'class="active"';?>><a href="admin.php?w=gs&amp;d=md"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='gs') echo 'class="active"';?>><a href="admin.php?w=gs&amp;d=md"><?php echo $gsprache->overview;?></a></li>
                                     <?php } ?>
-                                    <?php if($pa['eac']) { ?>
-                                    <li <?php if($w=='ea') echo 'class="active"';?>><a href="admin.php?w=ea">Easy Anti Cheat</a></li>
+                                    <?php if($easywiModules['ea'] and $pa['eac']) { ?>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ea') echo 'class="active"';?>><a href="admin.php?w=ea">Easy Anti Cheat</a></li>
                                     <?php } ?>
                                     <?php if($pa['gimages']) { ?>
-                                    <li <?php if($w=='im') echo 'class="active"';?>><a href="admin.php?w=im&amp;d=md"><?php echo $gsprache->template;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='im') echo 'class="active"';?>><a href="admin.php?w=im&amp;d=md"><?php echo $gsprache->template;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['addons']) { ?>
-                                    <li <?php if($w=='ad') echo 'class="active"';?>><a href="admin.php?w=ad"><?php echo $gsprache->addon;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=ad"><?php echo $gsprache->addon;?></a></li>
                                     <?php } ?>
+                                    <?php foreach ($customModules['gs'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if($pa['voicemasterserver'] or $pa['voiceserver'] or $pa['voiceserverStats'] or $pa['voiceserverSettings']) { ?>
+                    <?php if($easywiModules['vo'] and ($pa['voicemasterserver'] or $pa['voiceserver'] or $pa['voiceserverStats'] or $pa['voiceserverSettings'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTen"><?php echo $gsprache->voiceserver;?></a>
                         </div>
-                        <div id="collapseTen" class="accordion-body collapse <?php if(in_array($w,array('vo','vu','vd','vm','vr'))) echo 'in';?>">
+                        <div id="collapseTen" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('vo','vu','vd','vm','vr')) or isset($customModules['vo'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['voiceserver']) { ?>
-                                    <li <?php if($w=='vo') echo 'class="active"';?>><a href="admin.php?w=vo"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='vo') echo 'class="active"';?>><a href="admin.php?w=vo"><?php echo $gsprache->overview;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['voicemasterserver']) { ?>
-                                    <li <?php if($w=='vm') echo 'class="active"';?>><a href="admin.php?w=vm"><?php echo $gsprache->master;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='vm') echo 'class="active"';?>><a href="admin.php?w=vm"><?php echo $gsprache->master;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['voiceserver']) { ?>
-                                    <li <?php if($w=='vr') echo 'class="active"';?>><a href="admin.php?w=vr">TSDNS <?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='vr') echo 'class="active"';?>><a href="admin.php?w=vr">TSDNS <?php echo $gsprache->overview;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['voicemasterserver']) { ?>
-                                    <li <?php if($w=='vd') echo 'class="active"';?>><a href="admin.php?w=vd">TSDNS <?php echo $gsprache->master;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='vd') echo 'class="active"';?>><a href="admin.php?w=vd">TSDNS <?php echo $gsprache->master;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['voiceserverStats']) { ?>
-                                    <li <?php if($w=='vu' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=vu&amp;d=md"><?php echo $gsprache->stats;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='vu' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=vu&amp;d=md"><?php echo $gsprache->stats;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['voiceserverSettings']) { ?>
-                                    <li <?php if($w=='vu' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=vu&amp;d=se"><?php echo $gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='vu' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=vu&amp;d=se"><?php echo $gsprache->settings;?></a></li>
                                     <?php } ?>
+                                    <?php foreach ($customModules['vo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if($gserver_module and ($pa['lendserver'] or $pa['lendserverSettings'])) { ?>
+                    <?php if($easywiModules['le'] and ($gserver_module and ($pa['lendserver'] or $pa['lendserverSettings']))) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEleven"><?php echo $gsprache->lendserver;?></a>
                         </div>
-                        <div id="collapseEleven" class="accordion-body collapse <?php if($w=='le') echo 'in';?>">
+                        <div id="collapseEleven" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='le') echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['lendserver']) { ?>
-                                    <li <?php if($w=='le' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=le"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='le' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=le"><?php echo $gsprache->overview;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['lendserverSettings']) { ?>
-                                    <li <?php if($w=='le' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=le&amp;d=se"><?php echo $gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='le' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=le&amp;d=se"><?php echo $gsprache->settings;?></a></li>
                                     <?php } ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if($pa['tickets']) { ?>
+                    <?php if($easywiModules['ti'] and $pa['tickets']) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTwelve"><?php echo $gsprache->support;?></a>
                         </div>
-                        <div id="collapseTwelve" class="accordion-body collapse <?php if($w=='ti') echo 'in';?>">
+                        <div id="collapseTwelve" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='ti' or isset($customModules['ti'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <li <?php if($w=='ti' and $d!='mt') echo 'class="active"';?>><a href="admin.php?w=ti"><?php echo $gsprache->overview;?></a></li>
-                                    <li <?php if($w=='ti' and $d=='mt') echo 'class="active"';?>><a href="admin.php?w=ti&amp;d=mt"><?php echo $gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ti' and $d!='mt') echo 'class="active"';?>><a href="admin.php?w=ti"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ti' and $d=='mt') echo 'class="active"';?>><a href="admin.php?w=ti&amp;d=mt"><?php echo $gsprache->settings;?></a></li>
+                                    <?php foreach ($customModules['ti'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if(rsellerpermisions($admin_id,$sql) and $vserver_module) { ?>
+                    <?php if($easywiModules['ro'] and rsellerpermisions($admin_id,$sql) and $vserver_module) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThirteen">Rootserver</a>
                         </div>
-                        <div id="collapseThirteen" class="accordion-body collapse <?php if(in_array($w,array('vs','dp','vh','rd','rp','rh','ot','tf'))) echo 'in';?>">
+                        <div id="collapseThirteen" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('vs','dp','vh','rd','rp','rh','ot','tf')) or isset($customModules['ro'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?><li <?php if($w=='vs') echo 'class="active"';?>><a href="admin.php?w=vs&amp;d=md"><?php echo $gsprache->virtual;?></a></li><?php } ?>
-                                    <?php if($pa['dedicatedServer']) { ?><li <?php if($w=='rh') echo 'class="active"';?>><a href="admin.php?w=rh"><?php echo $gsprache->dedicated;?></a></li><?php } ?>
-                                    <?php if($pa['traffic']) { ?><li <?php if($w=='tf' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=tf"><?php echo $gsprache->traffic;?></a></li><?php } ?>
-                                    <?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($w=='vh') echo 'class="active"';?>><a href="admin.php?w=vh&amp;d=md">ESX(I) Host</a></li><?php } ?>
-                                    <?php if($pa['dhcpServer'] and $reseller_id==0) { ?><li <?php if($w=='rd') echo 'class="active"';?>><a href="admin.php?w=rd">DHCP</a></li><?php } ?>
-                                    <?php if($pa['pxeServer'] and $reseller_id==0) { ?><li <?php if($w=='rp') echo 'class="active"';?>><a href="admin.php?w=rp">PXE</a></li><?php } ?>
-                                    <?php if($pa['resellertemplates'] and $reseller_id==0) { ?><li <?php if($w=='ot') echo 'class="active"';?>><a href="admin.php?w=ot"><?php echo $gsprache->template;?></a></li><?php } ?>
-                                    <?php if($reseller_id=='0' and $pa['trafficsettings']) { ?><li <?php if($w=='tf' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=tf&amp;d=se"><?php echo $gsprache->traffic.' '.$gsprache->settings;?></a></li><?php } ?>
+                                    <?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?><li <?php if($ui->smallletters('w',255,'get')=='vs') echo 'class="active"';?>><a href="admin.php?w=vs&amp;d=md"><?php echo $gsprache->virtual;?></a></li><?php } ?>
+                                    <?php if($pa['dedicatedServer']) { ?><li <?php if($ui->smallletters('w',255,'get')=='rh') echo 'class="active"';?>><a href="admin.php?w=rh"><?php echo $gsprache->dedicated;?></a></li><?php } ?>
+                                    <?php if($pa['traffic']) { ?><li <?php if($ui->smallletters('w',255,'get')=='tf' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=tf"><?php echo $gsprache->traffic;?></a></li><?php } ?>
+                                    <?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='vh') echo 'class="active"';?>><a href="admin.php?w=vh&amp;d=md">ESX(I) Host</a></li><?php } ?>
+                                    <?php if($pa['dhcpServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rd') echo 'class="active"';?>><a href="admin.php?w=rd">DHCP</a></li><?php } ?>
+                                    <?php if($pa['pxeServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rp') echo 'class="active"';?>><a href="admin.php?w=rp">PXE</a></li><?php } ?>
+                                    <?php if($pa['resellertemplates'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='ot') echo 'class="active"';?>><a href="admin.php?w=ot"><?php echo $gsprache->template;?></a></li><?php } ?>
+                                    <?php if($reseller_id=='0' and $pa['trafficsettings']) { ?><li <?php if($ui->smallletters('w',255,'get')=='tf' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=tf&amp;d=se"><?php echo $gsprache->traffic.' '.$gsprache->settings;?></a></li><?php } ?>
+                                    <?php foreach ($customModules['ro'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
+                    <?php if(count($customModules['mo'])>0) { ?>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFourteen"><?php echo $gsprache->modules;?></a>
+                        </div>
+                        <div id="collapseFourteen" class="accordion-body collapse <?php if(isset($customModules['mo'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
+                            <div class="accordion-inner">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <?php foreach ($customModules['mo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>

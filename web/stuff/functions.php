@@ -262,17 +262,17 @@ if (!function_exists('passwordgenerate')) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $default_language=$row['language'];
             $template=$row['template'];
-            if (file_exists(EASYWIDIR.'/languages/'.$template.'/'.$user_language.'/'.$filename.'.xml')) {
+            if (file_exists(EASYWIDIR . '/languages/'.$template.'/'.$user_language.'/'.$filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR.'/languages/'.$template.'/'.$user_language.'/'.$filename.'.xml');
-            } else if (file_exists(EASYWIDIR.'/languages/'.$template.'/'.$default_language.'/'.$filename.'.xml')) {
+            } else if (file_exists(EASYWIDIR . '/languages/'.$template.'/'.$default_language.'/'.$filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR.'/languages/'.$template.'/'.$default_language.'/'.$filename.'.xml');
-            } else if (file_exists(EASYWIDIR.'/languages/default/'.$user_language.'/'.$filename.'.xml')) {
+            } else if (file_exists(EASYWIDIR . '/languages/default/'.$user_language.'/'.$filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR.'/languages/default/'.$user_language.'/'.$filename.'.xml');
-            } else if (file_exists(EASYWIDIR.'/languages/default/'.$default_language.'/'.$filename.'.xml')) {
+            } else if (file_exists(EASYWIDIR . '/languages/default/'.$default_language.'/'.$filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR.'/languages/default/'.$default_language.'/'.$filename.'.xml');
-            } else if (file_exists(EASYWIDIR.'/languages/'.$user_language.'/'.$filename.'.xml')) {
+            } else if (file_exists(EASYWIDIR . '/languages/'.$user_language.'/'.$filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR."/languages/$user_language/$filename.xml");
-            } else if (file_exists(EASYWIDIR.'/languages/'.$default_language.'/'.$filename.'.xml')) {
+            } else if (file_exists(EASYWIDIR . '/languages/'.$default_language.'/'.$filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR."/languages/$default_language/$filename.xml");
             }
         }
@@ -371,36 +371,6 @@ if (!function_exists('passwordgenerate')) {
         natsort($checkedips);
         return $checkedips;
     }
-    function getconfigcvars($file) {
-        $fp= @fopen($file,'rb');
-        if ($fp == true) {
-            $vars=array();
-            $configfile="";
-            while (!feof($fp)){
-                $line=fgets($fp);
-                if(strpos(strtolower($line), strtolower("<?php")) === false and strpos(strtolower($line), strtolower("?>")) === false) {
-                    $configfile .="$line\r\n";
-                }
-            }
-            fclose($fp);
-            $lines=explode("\r\n", $configfile);
-            foreach ($lines as $line) {
-                if(strpos(strtolower($line), strtolower("//")) === false and strpos(strtolower($line), strtolower("=")) == true) {
-                    $data=explode("=", $line);
-                    $cvar=preg_replace('/\s+/', '', $data[0]);
-                    $cvar=str_replace('$', "", $cvar);
-                    $data2=explode(";", $data[1]);
-                    $stringlenght=strlen($data2[0]);
-                    $stop=$stringlenght-2;
-                    $value=substr($data2[0],1,$stop);
-                    $vars[$cvar]=$value;
-                }
-            }
-            return $vars;
-        } else {
-            die("No configdata!");
-        }
-    }
     function eacchange($what,$serverid,$rcon,$reseller_id) {
         global $sql;
         $query=$sql->prepare("SELECT `active`,`cfgdir` FROM `eac` WHERE `resellerid`=? LIMIT 1");
@@ -429,7 +399,7 @@ if (!function_exists('passwordgenerate')) {
         if ($what=='change') $ssh2cmd='echo "'.$gsip.':'.$gsport.'-'.$rcon.$parameter.'" > '.$file;
         else if ($what=="remove") $ssh2cmd='rm -f '.$file;
         if (isset($ssh2cmd) and $active=='Y') {
-            if (!function_exists('ssh2_execute')) include(EASYWIDIR.'/stuff/ssh_exec.php');
+            if (!function_exists('ssh2_execute')) include(EASYWIDIR . '/stuff/ssh_exec.php');
             if (isset($ssh2cmd)) ssh2_execute('eac',$reseller_id,$ssh2cmd);
         }
     }
@@ -850,8 +820,9 @@ if (!function_exists('passwordgenerate')) {
     }
     function sendmail($template,$userid,$server,$shorten) {
         global $sql;
-        $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-        $aeskey=$aesfilecvar['aeskey'];
+		if (!isset($aeskey)) {
+			include(EASYWIDIR . '/stuff/keyphrasefile.php');
+		}
         if ($template=='emailnewticket') {
             $writerid=$shorten[1];
             $shorten=$shorten[0];

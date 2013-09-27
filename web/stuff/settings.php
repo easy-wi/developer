@@ -42,18 +42,15 @@ if (isset($_SERVER['QUERY_STRING'])) {
 }
 $ui=new ValidateUserinput($_GET,$_POST,$_SERVER,array(),$_ENV);
 unset($_GET,$_POST,$_SERVER,$_ENV);
-$panelcfgcvars=getconfigcvars(EASYWIDIR."/stuff/config.php");
-$dbConnect['type']=$panelcfgcvars['databanktype'];
-$dbConnect['host']=$panelcfgcvars['host'];
-$dbConnect['db']=$panelcfgcvars['db'];
-$dbConnect['user']=$panelcfgcvars['user'];
-$dbConnect['pwd']=$panelcfgcvars['pwd'];
-$captcha=$panelcfgcvars['captcha'];
-$title=$panelcfgcvars['title'];
+include(EASYWIDIR . '/stuff/config.php');
 $ewCfg['captcha']=$captcha;
 $ewCfg['title']=$title;
-$dbConnect['debug']=0;
-if (isset($panelcfgcvars['debug']) and $panelcfgcvars['debug']==1) {
+$dbConnect['type']=(!isset($type) or $type == '') ? 'mysql' : $type;
+$dbConnect['host']=$host;
+$dbConnect['user']=$user;
+$dbConnect['pwd']=$pwd;
+$dbConnect['db']=$db;
+if (isset($debug) and $debug==1) {
     $dbConnect['debug']=1;
     ini_set('display_errors',1);
     error_reporting(E_ALL|E_STRICT);
@@ -207,8 +204,8 @@ if ($loguserip!='localhost') {
     $default_language=(!empty($user_language)) ? $user_language : $rSA['language'];
     if (!isset($user_language) or empty($user_language)) $user_language=$default_language;
     $_SESSION['language']=$user_language;
-    $gsprache=(isset($reseller_id)) ? getlanguagefile('general',$default_language,$reseller_id) : getlanguagefile('general',$default_language,0);
-    $spracheResponse=(isset($reseller_id)) ? getlanguagefile('response',$default_language,$reseller_id) : getlanguagefile('response',$default_language,0);
+    $gsprache=(isset($reseller_id)) ? getlanguagefile('general',$user_language,$reseller_id) : getlanguagefile('general',$user_language,0);
+    $spracheResponse=(isset($reseller_id)) ? getlanguagefile('response',$user_language,$reseller_id) : getlanguagefile('response',$user_language,0);
 }
 if (isset($logininclude) and $logininclude==true) {
     $query=$sql->prepare("DELETE FROM `badips` WHERE `bantime` <= ?");
@@ -228,21 +225,8 @@ if($ui->st('r','get')) {
     $r=$ui->st('r','get');
     $pagename=$ui->escaped('SCRIPT_NAME','server');
     $header='<meta http-equiv="refresh" content="3; URL='.$pagename.'?w='.$r.'">';
-    if (!isset($user_language)) {
-        $user_language=$rSA['language'];
-    }
-    if (isset($user_language) and is_file("languages/$template_to_use/$user_language/redirect.xml")) {
-        $rsprache=simplexml_load_file("languages/$template_to_use/$user_language/redirect.xml");
-    } else if (isset($user_language) and is_file("languages/default/$user_language/redirect.xml")) {
-        $rsprache=simplexml_load_file("languages/default/$user_language/redirect.xml");
-    } else if (isset($user_language) and is_file("languages/$user_language/redirect.xml")) {
-        $rsprache=simplexml_load_file("languages/$user_language/redirect.xml");
-    } else if (is_file("languages/default/$default_language/redirect.xml")) {
-        $rsprache=simplexml_load_file("languages/default/$default_language/redirect.xml");
-    } else {
-        $user_language=$default_language;
-        $rsprache=simplexml_load_file("languages/$default_language/redirect.xml");
-    }
+    if (!isset($user_language)) $user_language=$rSA['language'];
+    $rsprache=getlanguagefile('redirect',$user_language,0);
     $text=$rsprache->refresh;
 }
 if($ui->username('distro','50','get')) $get_distro=$ui->username('distro','50','get');

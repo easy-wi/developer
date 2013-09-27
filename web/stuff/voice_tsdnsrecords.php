@@ -37,7 +37,13 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver'])) redirect('admin.php');
+if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver'])) {
+	header('Location: admin.php');
+	die;
+}
+include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
@@ -50,9 +56,6 @@ if ($reseller_id==0) {
     $logreseller=0;
 }
 if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
-include(EASYWIDIR."/stuff/class_voice.php");
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->st('d','get')=='ad' or $ui->st('d','get')=='md') {

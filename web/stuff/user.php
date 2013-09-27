@@ -38,7 +38,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['user'] and !$
 	header('Location: admin.php');
     die();
 }
-include(EASYWIDIR.'/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache=getlanguagefile('user',$user_language,$reseller_id);
 $rsprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$admin_id;

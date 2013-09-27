@@ -39,6 +39,9 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and (!isset($pa) or (!$
 	redirect('Location: admin.php');
     die;
 }
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/class_voice.php');
 $sprache=getlanguagefile('lendserver',$user_language,$reseller_id);
 $gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$admin_id;
@@ -51,10 +54,6 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller=0;
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
-include(EASYWIDIR.'/stuff/ssh_exec.php');
-include(EASYWIDIR.'/stuff/class_voice.php');
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->st('d','get')=="se" and $pa['lendserverSettings']) {

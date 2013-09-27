@@ -42,8 +42,9 @@ if (!isset($main) or $main!=1 or !isset($user_id) or !isset($user_language) or !
     header('Location: userpanel.php');
     die;
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR.'/stuff/keyphrasefile.php');
-$aeskey=$aesfilecvar['aeskey'];
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('user',$user_language,$reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;

@@ -39,8 +39,10 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['masterServer'
 	header('Location: admin.php');
 	die('No acces');
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/class_masterserver.php');
+
 $sprache=getlanguagefile('roots',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
@@ -55,12 +57,11 @@ if ($reseller_id==0) {
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 	$reseller_id=$admin_id;
 }
-include(EASYWIDIR.'/stuff/class_masterserver.php');
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->st('d','get')=='ad') {
     if ($ui->smallletters('action',2,'post')=='ad'){
-        include(EASYWIDIR.'/stuff/ssh_exec.php');
+        include(EASYWIDIR . '/stuff/ssh_exec.php');
         $serverid=$ui->id('id',10,'get');
         $rootServer=new masterServer($serverid,$aeskey);
         if($ui->id('id',19,'post')) {
@@ -111,7 +112,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id',19,'get')) {
     if ($ui->smallletters('action',2,'post')=='dl'){
-        include(EASYWIDIR.'/stuff/ssh_exec.php');
+        include(EASYWIDIR . '/stuff/ssh_exec.php');
         $serverid=$ui->id('id',19,'get');
         $rdata=serverdata('root',$serverid,$aeskey);
         $sship=$rdata['ip'];
@@ -163,7 +164,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
     }
 } else if ($ui->st('d','get')=='md'){
-    include(EASYWIDIR.'/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/ssh_exec.php');
     $o=$ui->st('o','get');
     if ($ui->st('o','get')=='ar') {
         $orderby='`resellerid` ASC';

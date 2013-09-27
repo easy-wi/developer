@@ -57,13 +57,12 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
     print "The memory limit is now: ".ini_get('memory_limit')."\r\n";
 }
 if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
-    define('EASYWIDIR',dirname(__FILE__));
-	include('stuff/vorlage.php');
-	include('stuff/class_validator.php');
-	include("stuff/functions.php");
-	include("stuff/settings.php");
-	$aesfilecvar=getconfigcvars("stuff/keyphrasefile.php");
-	$aeskey=$aesfilecvar['aeskey'];
+    define('EASYWIDIR', dirname(__FILE__));
+	include(EASYWIDIR . '/stuff/vorlage.php');
+	include(EASYWIDIR . '/stuff/class_validator.php');
+	include(EASYWIDIR . '/stuff/functions.php');
+	include(EASYWIDIR . '/stuff/settings.php');
+	include(EASYWIDIR . '/stuff/keyphrasefile.php');
 	$query=$sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date` FROM `traffic_settings` LIMIT 1");
     $query->execute(array(':aeskey'=>$aeskey));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

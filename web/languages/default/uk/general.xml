@@ -39,6 +39,7 @@
 	<master>Master</master>
     <migration>Migration Service</migration>
 	<mod>Modify</mod>
+    <modules>Modules</modules>
 	<news>News</news>
 	<no>No</no>
 	<overview>Overview</overview>

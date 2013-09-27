@@ -37,50 +37,130 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or !isset($reseller_id)) redirect('login.php');
-$pa=User_Permissions($admin_id);
-if (!isanyadmin($admin_id) and count($pa)==0) redirect('login.php');
+if (!isset($admin_id) or !isset($reseller_id)) {
+    header('Location: login.php');
+    die;
+}
+
+$pa = User_Permissions($admin_id);
+if (!isanyadmin($admin_id) and count($pa) == 0) {
+    redirect('login.php');
+}
 $licenceDetails=serverAmount($reseller_id);
-$gserver_module=(is_numeric($licenceDetails['mG']) and $licenceDetails['mG']==0) ? false : true;
-$vserver_module=(is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs']==0) ? false : true;
-$voserver_module=(is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo']==0) ? false : true;
-$dediserver_module=(is_numeric($licenceDetails['mD']) and $licenceDetails['mD']==0) ? false : true;
-$ewVersions['files']='4.00';
+$gserver_module = (is_numeric($licenceDetails['mG']) and $licenceDetails['mG'] == 0) ? false : true;
+$vserver_module = (is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs'] == 0) ? false : true;
+$voserver_module = (is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo'] == 0) ? false : true;
+$dediserver_module = (is_numeric($licenceDetails['mD']) and $licenceDetails['mD'] == 0) ? false : true;
+
+$ewVersions['files'] = '4.00';
+
 $vcsprache=getlanguagefile('versioncheck',$user_language,$reseller_id);
-$query=$sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
+$query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
 $query->execute();
-$ewVersions['cVersion']=$query->fetchColumn();
-$query=$sql->prepare("SELECT `version`,`releasenotesDE`,`releasenotesEN` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+$ewVersions['cVersion'] = $query->fetchColumn();
+
+$query = $sql->prepare("SELECT `version`,`releasenotesDE`,`releasenotesEN` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $ewVersions['version']=$row['version'];
-    $ewVersions['releasenotesDE']=$row['releasenotesDE'];
-    $ewVersions['releasenotesEN']=$row['releasenotesEN'];
+    $ewVersions['version'] = $row['version'];
+    $ewVersions['releasenotesDE'] = $row['releasenotesDE'];
+    $ewVersions['releasenotesEN'] = $row['releasenotesEN'];
 }
-if ($reseller_id==0 and $ui->st('w','get')!='vc' and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) $toooldversion=$vcsprache->newversion.$ewVersions['version'];
-$query=$sql->prepare("SELECT `name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
+
+if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
+    $toooldversion = $vcsprache->newversion.$ewVersions['version'];
+}
+
+$query = $sql->prepare("SELECT `name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
 $query->execute(array($admin_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $great_name=$row['name'];
-    $great_vname=$row['vname'];
-    if ($row['lastlogin']!=null and $row['lastlogin']!='0000-00-00 00:00:00' and $user_language=='de') $great_last=date('d.m.Y H:i:s',strtotime($row['lastlogin']));
-    else if ($row['lastlogin']!=null and $row['lastlogin']!='0000-00-00 00:00:00') $great_last=$row['lastlogin'];
-    else if ($user_language=='de') $great_last='Niemals';
-    else $great_last='Never';
+    $great_name = $row['name'];
+    $great_vname = $row['vname'];
+    if ($row['lastlogin'] != null and $row['lastlogin'] != '0000-00-00 00:00:00' and $user_language == 'de') {
+        $great_last=date('d.m.Y H:i:s',strtotime($row['lastlogin']));
+    } else if ($row['lastlogin'] != null and $row['lastlogin'] != '0000-00-00 00:00:00') {
+        $great_last = $row['lastlogin'];
+    } else if ($user_language == 'de') {
+        $great_last = 'Niemals';
+    } else {
+        $great_last = 'Never';
+    }
 }
-$what_to_be_included_array=array('ro'=>'roots.php',
-    'fe'=>'feeds.php','fn'=>'feeds_entries.php',
-    'ap'=>'api_settings.php','aa'=>'api_external_auth.php','ui'=>'api_import_users.php','jb'=>'jobs_list.php','bu'=>'mysql_root.php',
-    'ma'=>'masterserver.php','gs'=>'gserver.php','ad'=>'addons.php','im'=>'images.php','ea'=>'eac.php',
-    'vc'=>'versioncheck.php','ib'=>'ip_bans.php','se'=>'panel_settings.php','cc'=>'panel_settings_columns.php','sm'=>'panel_settings_email.php','lo'=>'logdata.php','ml'=>'maillog.php','sr'=>'admin_search.php',
-    'us'=>'user.php','ug'=>'user_groups.php',
-    'vu'=>'voice_usage.php','vo'=>'voice.php','vd'=>'voice_tsdns.php','vr'=>'voice_tsdnsrecords.php','vm'=>'voice_master.php',
-    'le'=>'lendserver.php',
-    'ps'=>'page_settings.php','pp'=>'page_pages.php','pn'=>'page_news_edit.php','pc'=>'page_comments.php','pd'=>'page_downloads.php',
-    'ip'=>'imprint.php','su'=>'global_userdata.php',
-    'rh'=>'root_dedicated.php','rd'=>'root_dhcp.php','rp'=>'root_pxe.php','vh'=>'root_virtual_hosts.php','vs'=>'root_virtual_server.php','ot'=>'roots_os_templates.php','tf'=>'traffic.php',
-    'my'=>'mysql_server.php',
-    'ti'=>'tickets.php','tr'=>'tickets_reseller.php'
+
+# https://github.com/easy-wi/developer/issues/61 modules management
+$what_to_be_included_array = array(
+    'fe' => 'feeds.php', 'fn' => 'feeds_entries.php',
+    'ap' => 'api_settings.php', 'aa' => 'api_external_auth.php', 'ui' => 'api_import_users.php', 'jb' => 'jobs_list.php', 'bu' => 'mysql_root.php',
+    'vc' => 'versioncheck.php', 'ib' => 'ip_bans.php', 'se' => 'panel_settings.php', 'cc' => 'panel_settings_columns.php', 'sm' => 'panel_settings_email.php', 'lo' => 'logdata.php', 'ml' => 'maillog.php', 'sr' => 'admin_search.php',
+    'us' => 'user.php', 'ug' => 'user_groups.php',
+    'ip' => 'imprint.php', 'su' => 'global_userdata.php'
 );
 
-# hier dann w = 4 buchstaben custom
+if ($reseller_id == 0) {
+    $what_to_be_included_array['mo'] = 'admin_modules.php';
+    $what_to_be_included_array['ps'] = 'page_settings.php';
+    $what_to_be_included_array['pp'] = 'page_pages.php';
+    $what_to_be_included_array['pn'] = 'page_news_edit.php';
+    $what_to_be_included_array['pc'] = 'page_comments.php';
+    $what_to_be_included_array['pd'] = 'page_downloads.php';
+}
+
+$easywiModules = array('gs' => true, 'ea' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
+$customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
+
+$query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('A','C')");
+$query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
+$query->execute();
+foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR.'/stuff/'.$row['file'])) {
+        $query2->execute(array($row['id'], $user_language));
+        $name = $query2->fetchColumn();
+        if (strlen($name) == 0) {
+            $query2->execute(array($row['id'], $rSA['language']));
+            $name = $query2->fetchColumn();
+        }
+        if (strlen($name) == 0) {
+            $name = $row['file'];
+        }
+        $customModules[$row['sub']][$row['get']] = $name;
+        $what_to_be_included_array[$row['get']] = $row['file'];
+    } else if ($row['type'] == 'C' and $row['active'] == 'N') {
+        $easywiModules[$row['get']] = false;
+    }
+}
+if ($easywiModules['gs'] === true) {
+    $what_to_be_included_array['ro'] = 'roots.php';
+    $what_to_be_included_array['ma'] = 'masterserver.php';
+    $what_to_be_included_array['gs'] = 'gserver.php';
+    $what_to_be_included_array['ad'] = 'addons.php';
+    $what_to_be_included_array['im'] = 'images.php';
+}
+if ($easywiModules['ea'] === true) {
+    $what_to_be_included_array['ea'] = 'eac.php';
+}
+if ($easywiModules['my'] === true) {
+    $what_to_be_included_array['my'] = 'mysql_server.php';
+}
+if ($easywiModules['ro'] === true) {
+    $what_to_be_included_array['rh'] = 'root_dedicated.php';
+    $what_to_be_included_array['rd'] = 'root_dhcp.php';
+    $what_to_be_included_array['rp'] = 'root_pxe.php';
+    $what_to_be_included_array['vh'] = 'root_virtual_hosts.php';
+    $what_to_be_included_array['vs'] = 'root_virtual_server.php';
+    $what_to_be_included_array['ot'] = 'roots_os_templates.php';
+    $what_to_be_included_array['tf'] = 'traffic.php';
+}
+if ($easywiModules['ti'] === true) {
+    $what_to_be_included_array['ti'] = 'tickets.php';
+    $what_to_be_included_array['tr'] = 'tickets_reseller.php';
+}
+if ($easywiModules['le'] === true) {
+    $what_to_be_included_array['le'] = 'lendserver.php';
+}
+if ($easywiModules['vo'] === true) {
+    $what_to_be_included_array['vu'] = 'voice_usage.php';
+    $what_to_be_included_array['vo'] = 'voice.php';
+    $what_to_be_included_array['vd'] = 'voice_tsdns.php';
+    $what_to_be_included_array['vr'] = 'voice_tsdnsrecords.php';
+    $what_to_be_included_array['vm'] = 'voice_master.php';
+}

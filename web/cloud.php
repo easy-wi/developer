@@ -49,7 +49,7 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 }
 set_time_limit($timelimit);
 if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
-    define('EASYWIDIR',dirname(__FILE__));
+    define('EASYWIDIR', dirname(__FILE__));
     function printText ($text) {
         echo $text."\r\n";
     }
@@ -61,10 +61,10 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         return '';
     }
     printText('Cloud jobs started');
-    include('stuff/vorlage.php');
-    include('stuff/functions.php');
-    include('stuff/class_validator.php');
-    include('stuff/settings.php');
+    include(EASYWIDIR . '/stuff/vorlage.php');
+    include(EASYWIDIR . '/stuff/functions.php');
+    include(EASYWIDIR . '/stuff/class_validator.php');
+    include(EASYWIDIR . '/stuff/settings.php');
     printText('File include and parameters fetched. Start connecting to external systems.');
     $query=$sql->prepare("SELECT * FROM `api_import` WHERE `active`='Y'");
     $query2=$sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerid`=? LIMIT 1");

@@ -37,15 +37,11 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 foreach (array('active','action','identify_server_by','server_local_id','server_external_id','identify_user_by','user_localid','user_externalid','username') as $key) {
     if (!array_key_exists($key,$data)) {
         $success['false'][]='Data key does not exist: '.$key;
     }
-}
-if (!isset($success['false'])) {
-    $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-    $aeskey=$aesfilecvar['aeskey'];
 }
 if (!isset($success['false']) and array_value_exists('action','add',$data)) {
     if (dataExist('identify_user_by',$data)) {

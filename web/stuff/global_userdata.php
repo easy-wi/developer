@@ -34,6 +34,8 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+ 
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 if ($ui->st('w','get')=='se') {
     if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usersettings'])) {
@@ -70,8 +72,6 @@ if ($ui->st('w','get')=='se') {
     if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
 }
 $sprache=getlanguagefile('user',$user_language,$reseller_id);
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 $lookUpID=($ui->st('w','get')=='se') ? $user_id : $admin_id;
 if ($ui->st('d','get')=='pw') {
     if (!$ui->smallletters('action',2,'post')) {

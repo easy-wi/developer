@@ -35,11 +35,11 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-define('EASYWIDIR',dirname(__FILE__));
-include(EASYWIDIR."/stuff/functions.php");
-include(EASYWIDIR.'/stuff/class_validator.php');
-include(EASYWIDIR.'/stuff/vorlage.php');
-include(EASYWIDIR."/stuff/settings.php");
+define('EASYWIDIR', dirname(__FILE__));
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/settings.php');
 $pa=User_Permissions($admin_id);
 if ((isset($admin_id) and !$pa['user'] and !$pa['gserver'] and !$pa['root']) or !isset($admin_id)) {
 	die('No access');

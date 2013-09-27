@@ -43,8 +43,7 @@ if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) {
 	$reseller_id=$admin_id;
 }
 $customer=getusername($user_id);
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=(int)$ui->id('id',10,'get');
     $query=$sql->prepare("SELECT g.`serverip`,g.`port`,g.`rootID`,g.`newlayout`,s.`map`,t.`shorten`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,u.`cname`,AES_DECRYPT(u.`ftpbackup`,?) AS `ftp` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
@@ -65,7 +64,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
     if (!$ui->w('action',3,'post')) {
         $template_file="userpanel_gserver_backup.tpl";
     } else if ($ui->w('action',3,'post')=='mb'){
-        include(EASYWIDIR.'/stuff/ssh_exec.php');
+        include(EASYWIDIR . '/stuff/ssh_exec.php');
         $rdata=serverdata('root',$rootid,$aeskey);
         $sship=$rdata['ip'];
         $sshport=$rdata['port'];
@@ -96,7 +95,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
         }
         $template_file="userpanel_gserver_backup_rb.tpl";
     } else if ($ui->w('action',3,'post')=='rb2' and $ui->gamestring('template','post')){
-        include(EASYWIDIR.'/stuff/ssh_exec.php');
+        include(EASYWIDIR . '/stuff/ssh_exec.php');
         $rdata=serverdata('root',$rootid,$aeskey);
         $sship=$rdata['ip'];
         $sshport=$rdata['port'];

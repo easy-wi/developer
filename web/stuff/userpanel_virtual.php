@@ -42,6 +42,9 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
     header('Location: userpanel.php');
     die('No acces');
 }
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
@@ -51,8 +54,6 @@ $logsubuser=0;
 if (isset($admin_id)) $logsubuser=$admin_id;
 else if (isset($subuser_id)) $logsubuser=$subuser_id;
 if (isset($admin_id) and $reseller_id!=0) $reseller_id=$admin_id;
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->st('d','get')=='ri'and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['vs']))) {

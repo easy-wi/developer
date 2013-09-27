@@ -36,8 +36,13 @@
  */
 
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver'])) {
-	redirect('admin.php');
+	header('Location: admin.php');
+	die;
 }
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/class_voice.php');
+
 $sprache=getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
@@ -52,9 +57,6 @@ if ($reseller_id==0) {
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 	$reseller_id=$admin_id;
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
-include(EASYWIDIR."/stuff/class_voice.php");
 if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVo']) and $licenceDetails['lVo']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
     $template_file=$gsprache->licence;
 } else if ($ui->w('action',4,'post') and !token(true)) {

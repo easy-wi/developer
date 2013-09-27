@@ -38,16 +38,6 @@
  */
 
 if (isset($include) and $include==true) {
-    if (@is_file('../stuff/keyphrasefile.php')){
-        $aesfilecvar=getconfigcvars('../stuff/keyphrasefile.php');
-        $aeskey=$aesfilecvar['aeskey'];
-    } else if (@is_file(EASYWIDIR.'/stuff/keyphrasefile.php')){
-        $aesfilecvar=getconfigcvars(EASYWIDIR.'/stuff/keyphrasefile.php');
-        $aeskey=$aesfilecvar['aeskey'];
-    } else if (@is_file(EASYWIDIR.'keyphrasefile.php')){
-        $aesfilecvar=getconfigcvars(EASYWIDIR.'keyphrasefile.php');
-        $aeskey=$aesfilecvar['aeskey'];
-    }
     $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('3.70','<div align=\"right\">18.08.2013</div>
 <b>Änderungen:</b><br/>

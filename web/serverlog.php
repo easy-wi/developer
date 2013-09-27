@@ -35,18 +35,17 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-define('EASYWIDIR',dirname(__FILE__));
-include(EASYWIDIR."/stuff/functions.php");
-include(EASYWIDIR.'/stuff/class_validator.php');
-include(EASYWIDIR.'/stuff/vorlage.php');
-include(EASYWIDIR."/stuff/settings.php");
+define('EASYWIDIR', dirname(__FILE__));
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/settings.php');
 if (!isset($user_id) and !isset($admin_id)) {
 	header('Location: login.php');
 	die('Please allow redirection');
 } 
 if (isset($server_id)) {
-	$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-	$aeskey=$aesfilecvar['aeskey'];
+	include(EASYWIDIR . '/stuff/keyphrasefile.php');
 	if ($reseller_id!="0" and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}

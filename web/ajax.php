@@ -37,13 +37,13 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-define('EASYWIDIR',dirname(__FILE__));
+define('EASYWIDIR', dirname(__FILE__));
 if (is_dir(EASYWIDIR.'/install')) die('Please remove the "install" folder');
-include(EASYWIDIR.'/stuff/functions.php');
-include(EASYWIDIR.'/stuff/class_validator.php');
-include(EASYWIDIR.'/stuff/vorlage.php');
-include(EASYWIDIR.'/stuff/config.php');
-include(EASYWIDIR.'/stuff/settings.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/config.php');
+include(EASYWIDIR . '/stuff/settings.php');
 if (isset($admin_id)) {
     $permissionid=(isset($_SESSION['oldid']))  ? (isset($_SESSION['oldadminid'])) ? $_SESSION['oldadminid'] : $_SESSION['oldid'] : $admin_id;
 	$userpermissionquery=$sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");

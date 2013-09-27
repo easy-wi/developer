@@ -38,14 +38,13 @@
  */
 
 
-define('EASYWIDIR',dirname(__FILE__));
-include(EASYWIDIR."/stuff/vorlage.php");
-include(EASYWIDIR.'/stuff/class_validator.php');
-include(EASYWIDIR."/stuff/config.php");
-include(EASYWIDIR."/stuff/functions.php");
-include(EASYWIDIR."/stuff/settings.php");
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
+define('EASYWIDIR', dirname(__FILE__));
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/config.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $ip=$_SERVER['REMOTE_ADDR'];
 if ($ui->st('w','get')=='ms' and $ui->username('shorten','50','get')) {
 	$query=$sql->prepare("SELECT r.`id`,r.`resellerid`,r.`installing`,r.`updating`,d.`resellerid` AS `userid`,s.`steamVersion`,r.`localVersion` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND (d.`ip`=? OR d.`altips` LIKE ?) LIMIT 1");

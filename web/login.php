@@ -41,13 +41,13 @@ if (count($s)>1) {
     unset($s[(count($s)-1)]);
     $ewInstallPath=implode('/',$s).'/';
 }
-define('EASYWIDIR',dirname(__FILE__));
+define('EASYWIDIR', dirname(__FILE__));
 if (is_dir(EASYWIDIR.'/install')) die('Please remove the "install" folder');
 if ((!isset($ui->get['w']) and isset($ui->post['username'])) or (isset($ui->get['w']) and $ui->get['w']!='pr')) $logininclude=true;
-include(EASYWIDIR.'/stuff/vorlage.php');
-include(EASYWIDIR.'/stuff/class_validator.php');
-include(EASYWIDIR.'/stuff/functions.php');
-include(EASYWIDIR.'/stuff/settings.php');
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
 if ($ui->ismail('email','post')) {
 	$fullday=date('Y-m-d H:i:s',strtotime("+1 day"));
     $query=$sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
@@ -129,8 +129,7 @@ if ($w=='lo') {
             $query->execute(array($ui->w('token',32,'get')));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $username=$row['cname'];
-                $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-                $aeskey=$aesfilecvar['aeskey'];
+				include(EASYWIDIR . '/stuff/keyphrasefile.php');
                 $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
                 $password=createHash($username,$ui->password('password1',255,'post'),$salt,$aeskey);
                 $query=$sql->prepare("UPDATE `userdata` SET `token`='',`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
@@ -213,7 +212,7 @@ if ($w=='lo') {
 		$include='passwordrecovery.tpl';
 	}
 } else {
-    include(EASYWIDIR.'/stuff/keyphrasefile.php');
+    include(EASYWIDIR . '/stuff/keyphrasefile.php');
 	if (!$ui->username('username',255,'post') and !$ui->ismail('username',255,'post') and !$ui->password('password',255,'post') and !isset($_SESSION['sessionid'])) {
 		$include='login.tpl';
 	} else if (($ui->username('username',255,'post') or $ui->ismail('username','post')) and $ui->password('password',255,'post') and !isset($_SESSION['sessionid'])) {

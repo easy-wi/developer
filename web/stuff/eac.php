@@ -39,7 +39,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['eac'])) {
 	header('Location: admin.php');
 	die('No acces');
 }
-include(EASYWIDIR.'/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache=getlanguagefile('roots',$user_language,$reseller_id);
 $gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$admin_id;

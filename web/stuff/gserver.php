@@ -39,12 +39,11 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['gserver'])) {
     header('Location: admin.php');
     die;
 }
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache=getlanguagefile('gserver',$user_language,$reseller_id);
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
 $logusertype="admin";
-$aeskey=$aesfilecvar['aeskey'];
 if ($reseller_id==0) {
 	$logreseller=0;
 	$logsubuser=0;
@@ -345,7 +344,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
             $query=$sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=? AND `serverip`=? AND `port`=? AND `userid`!=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($serverid,$serverip,$port,$customer,$reseller_id));
             if ($query->rowCount()==0) {
-                include(EASYWIDIR.'/stuff/ssh_exec.php');
+                include(EASYWIDIR . '/stuff/ssh_exec.php');
                 $gamestring=array();
                 $template_file='';
                 $rdata=serverdata('root',$serverid,$aeskey);
@@ -790,7 +789,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
             $pallowed=($ui->active('pallowed','post')) ? $ui->active('pallowed','post') : 'N';
             $ftppass=$ui->password('password',50,'post');
             $pallowed=$ui->active('pallowed','post');
-            include(EASYWIDIR.'/stuff/ssh_exec.php');
+            include(EASYWIDIR . '/stuff/ssh_exec.php');
             $query=$sql->prepare("SELECT `newlayout`,`userid`,AES_DECRYPT(`ftppassword`,?) AS `ftp`,AES_DECRYPT(`ppassword`,?) AS `ppass`,`active`,`rootID`,`serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`userid`,`slots` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -1018,7 +1017,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
             }
         }
         if (count($gamestring)>0 and $ui->active('type','post')) {
-            include(EASYWIDIR.'/stuff/ssh_exec.php');
+            include(EASYWIDIR . '/stuff/ssh_exec.php');
             $gamestring=count($gamestring).'_'.implode('_',$gamestring);
             $rdata=serverdata('root',$serverid,$aeskey);
             $sship=$rdata['ip'];
@@ -1060,7 +1059,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
         $rootID=$row['rootID'];
     }
     if (isset($gsip) and isset($port)) {
-        include(EASYWIDIR.'/stuff/ssh_exec.php');
+        include(EASYWIDIR . '/stuff/ssh_exec.php');
         if ($ui->st('d','get')=='rs') {
             $template_file='Restart done';
             $cmds=gsrestart($id,'re',$aeskey,$reseller_id);

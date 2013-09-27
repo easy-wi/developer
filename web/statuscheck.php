@@ -64,21 +64,20 @@ if (isset($checkTypeOfServer)) {
 }
 set_time_limit($timelimit);
 if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
-    define('EASYWIDIR',dirname(__FILE__));
-	include('stuff/vorlage.php');
-	include('stuff/functions.php');
-	include('stuff/class_validator.php');
-	include('stuff/settings.php');
-	include('stuff/ssh_exec.php');
-	include('stuff/class_voice.php');
-	include('stuff/queries.php');
+    define('EASYWIDIR', dirname(__FILE__));
+	include(EASYWIDIR . '/stuff/vorlage.php');
+	include(EASYWIDIR . '/stuff/functions.php');
+	include(EASYWIDIR . '/stuff/class_validator.php');
+	include(EASYWIDIR . '/stuff/settings.php');
+	include(EASYWIDIR . '/stuff/ssh_exec.php');
+	include(EASYWIDIR . '/stuff/class_voice.php');
+	include(EASYWIDIR . '/stuff/queries.php');
+    include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $dayAndHour=date('Y-m-d H:').'00:00';
     $dayAndZeroHour=date('Y-m-d').' 00:00:00';
     $ssprache=getlanguagefile('settings','uk',0);
     $vosprache=getlanguagefile('voice','uk',0);
     $sprache=getlanguagefile('gserver','uk',0);
-    $aesfilecvar=getconfigcvars("stuff/keyphrasefile.php");
-    $aeskey=$aesfilecvar['aeskey'];
 
     # Pick up Reseller and Lend Settings
     $resellersettings=array();

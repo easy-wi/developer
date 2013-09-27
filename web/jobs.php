@@ -64,17 +64,16 @@ if (isset($argv)) {
     if(!isset($sleep)) $sleep=60;
 }
 if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
-    define('EASYWIDIR',dirname(__FILE__));
-    include('stuff/vorlage.php');
-    include('stuff/functions.php');
-    include('stuff/class_validator.php');
-    include('stuff/class_rootserver.php');
-    include('stuff/settings.php');
-    include('stuff/ssh_exec.php');
-    include('stuff/class_voice.php');
-    include('stuff/mysql_functions.php');
-    $aesfilecvar=getconfigcvars("stuff/keyphrasefile.php");
-    $aeskey=$aesfilecvar['aeskey'];
+    define('EASYWIDIR', dirname(__FILE__));
+    include(EASYWIDIR . '/stuff/vorlage.php');
+    include(EASYWIDIR . '/stuff/functions.php');
+    include(EASYWIDIR . '/stuff/class_validator.php');
+    include(EASYWIDIR . '/stuff/class_rootserver.php');
+    include(EASYWIDIR . '/stuff/settings.php');
+    include(EASYWIDIR . '/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/class_voice.php');
+    include(EASYWIDIR . '/stuff/mysql_functions.php');
+	include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $gsprache=getlanguagefile('general','uk',0);
     class runGraph {
         private $jobsDone=0;
@@ -158,43 +157,43 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         $startTime=strtotime('now');
         $theOutput=new runGraph($jobCount,$newLine);
         # us > vo > gs > my > vs
-        include('stuff/jobs_user.php');
+        include(EASYWIDIR . '/stuff/jobs_user.php');
         $countp->execute();
         $jobCount=$countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after user cleanup jobs are done: '.$jobCount."\r\n";
         print 'Executing voice jobs'."\r\n";
-        include('stuff/jobs_voice.php');
+        include(EASYWIDIR . '/stuff/jobs_voice.php');
         $countp->execute();
         $jobCount=$countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after voice jobs are done: '.$jobCount."\r\n";
         print 'Executing TS DNS jobs'."\r\n";
-        include('stuff/jobs_tsdns.php');
+        include(EASYWIDIR . '/stuff/jobs_tsdns.php');
         $countp->execute();
         $jobCount=$countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after TS DNS jobs are done: '.$jobCount."\r\n";
         print 'Executing mysql jobs'."\r\n";
-        include('stuff/jobs_mysql.php');
+        include(EASYWIDIR . '/stuff/jobs_mysql.php');
         $countp->execute();
         $jobCount=$countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after mysql jobs are done: '.$jobCount."\r\n";
         print 'Executing gameserver jobs'."\r\n";
-        include('stuff/jobs_gserver.php');
+        include(EASYWIDIR . '/stuff/jobs_gserver.php');
         $countp->execute();
         $jobCount=$countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after gameserver jobs are done: '.$jobCount."\r\n";
         print 'Executing root server jobs'."\r\n";
-        include('stuff/jobs_roots.php');
+        include(EASYWIDIR . '/stuff/jobs_roots.php');
         $countp->execute();
         $jobCount=$countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after root server jobs are done: '.$jobCount."\r\n";
         print 'Executing user remove jobs'."\r\n";
-        include('stuff/jobs_user_rm.php');
+        include(EASYWIDIR . '/stuff/jobs_user_rm.php');
         print "\n";
         $test='ech';
         if ($deamon==true) {

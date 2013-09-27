@@ -41,8 +41,9 @@ if (!isset($admin_id) or $main!=1 or $reseller_id!=0 or !$pa['vserverhost']) {
     header('Location: admin.php');
     die;
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
@@ -123,7 +124,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $pinsert=$sql->prepare("INSERT INTO `virtualhosts` (`active`,`esxi`,`ip`,`port`,`user`,`pass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid`) VALUES (:active, :esxi, :ip, AES_ENCRYPT(:port, :aeskey),AES_ENCRYPT(:user, :aeskey),AES_ENCRYPT(:pass, :aeskey),:os, :description, :publickey, :keyname, :cpu, :cores, :mhz, :ram, :maxserver, :thin, :thinquota, :reseller)");
             $pinsert->execute(array(':active'=>$active,':esxi'=>$esxi,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':os'=>$os,':description'=>$description,':publickey'=>$publickey,':keyname'=>$keyname,  ':cpu'=>$cpu,  ':cores'=>$cores,':mhz'=>$mhz,':ram'=>$ram,':maxserver'=>$maxserver,':thin'=>$thin,':thinquota'=>$thinquota,':reseller'=>$reseller));
             $serverid=$sql->lastInsertId();
-            include(EASYWIDIR.'/stuff/ssh_exec.php');
+            include(EASYWIDIR . '/stuff/ssh_exec.php');
             $uidb=ssh2_execute('vh',$serverid,'cd /vmfs/volumes; S=""; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S');
             if ($uidb!="" and $uidb!==false) {
                 $uiddata=explode(";",$uidb);

@@ -264,13 +264,13 @@
             </div>
         </div>
         <div class="r display_none switch control-group">
-            <label class="control-label" for="inputMaxUserMHZ"><?php echo $sprache->max." ".$gsprache->mhz;?></label>
+            <label class="control-label" for="inputMaxUserMHZ"><?php echo $sprache->max." ".$rsprache->mhz;?></label>
             <div class="controls">
                 <input id="inputMaxUserMHZ" type="number" name="maxusermhz" value="">
             </div>
         </div>
         <div class="r display_none switch control-group">
-            <label class="control-label" for="inputMaxUserRam"><?php echo $sprache->max." ".$gsprache->ram;?></label>
+            <label class="control-label" for="inputMaxUserRam"><?php echo $sprache->max." ".$rsprache->ram;?></label>
             <div class="controls">
                 <input id="inputMaxUserRam" type="number" name="maxuserram" value="">
             </div>

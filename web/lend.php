@@ -39,19 +39,19 @@
 if (isset($page_include)) {
 	$reseller_id=0;
 } else {
-    define('EASYWIDIR',dirname(__FILE__));
+    define('EASYWIDIR', dirname(__FILE__));
 	if (is_dir(EASYWIDIR."/install")) die('Please remove the "install" folder');
 	if (is_file(EASYWIDIR."update.php")) die('Please remove the file "update.php"');
 	$logininclude=1;
-	include(EASYWIDIR.'/stuff/vorlage.php');
-	include(EASYWIDIR.'/stuff/class_validator.php');
-	include(EASYWIDIR."/stuff/functions.php");
-	include(EASYWIDIR."/stuff/settings.php");
+	include(EASYWIDIR . '/stuff/vorlage.php');
+	include(EASYWIDIR . '/stuff/class_validator.php');
+	include(EASYWIDIR . '/stuff/functions.php');
+	include(EASYWIDIR . '/stuff/settings.php');
     $query=$sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $user_language=$query->fetchColumn();
     if (!small_letters_check($user_language,2)) $user_language='en';
 }
-include(EASYWIDIR.'/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $validacces=false;
 if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post') and !isset($page_include)) {
     $query=$sql->prepare("SELECT `active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
@@ -218,7 +218,7 @@ if(isset($servertype)) {
             $query2->execute(array($row['id'],$reseller_id));
             if ($servertype=='g') {
                 unset($_SESSION['lend']['gs']);
-                include(EASYWIDIR.'/stuff/ssh_exec.php');
+                include(EASYWIDIR . '/stuff/ssh_exec.php');
                 $query1->execute(array($serverid,$reseller_id));
                 foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
                     $cmds=gsrestart($row1['switchID'],'so',$aeskey,$reseller_id);
@@ -226,7 +226,7 @@ if(isset($servertype)) {
                 }
             } else if ($servertype=='v') {
                 unset($_SESSION['lend']['vs']);
-                include(EASYWIDIR.'/stuff/class_voice.php');
+                include(EASYWIDIR . '/stuff/class_voice.php');
                 $query3->execute(array($aeskey,$serverid,$reseller_id));
                 foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row2) {
                     $queryport=$row2['queryport'];
@@ -648,7 +648,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 				}
                 $query=$insert=$sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($serverid,$updateID,$reseller_id));
-				include(EASYWIDIR.'/stuff/ssh_exec.php');
+				include(EASYWIDIR . '/stuff/ssh_exec.php');
                 $cmds=gsrestart($updateID,'re',$aeskey,$reseller_id);
                 ssh2_execute('gs',$rootID,$cmds);
 				if (!isset($page_include) and $ui->id('xml',1,'post')==1) {
@@ -677,11 +677,11 @@ XML;
 						$template_file='page_lenddata.tpl';
 					} else {
 						if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl')) {
-							include(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl');
+							include(EASYWIDIR . '/template/'.$template_to_use.'/lenddata.tpl');
 						} else if (is_file(EASYWIDIR.'/template/default/lenddata.tpl')) {
-							include(EASYWIDIR.'/template/default/lenddata.tpl');
+							include(EASYWIDIR . '/template/default/lenddata.tpl');
 						} else {
-							include(EASYWIDIR.'/template/lenddata.tpl');
+							include(EASYWIDIR . '/template/lenddata.tpl');
 						}
 					}
 				}
@@ -707,11 +707,11 @@ XML;
 				$template_file='page_lend.tpl';
 			} else {
 				if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl')) {
-					include(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl');
+					include(EASYWIDIR . '/template/'.$template_to_use.'/lend.tpl');
 				} else if (is_file(EASYWIDIR.'/template/default/lend.tpl')) {
-					include(EASYWIDIR.'/template/default/lend.tpl');
+					include(EASYWIDIR . '/template/default/lend.tpl');
 				} else {
-					include(EASYWIDIR.'/template/lend.tpl');
+					include(EASYWIDIR . '/template/lend.tpl');
 				}
 			}
 		} else if (!isset($page_include) and ($lendaccess==1 or $lendaccess==3) and $ui->id('xml',1,'post')==1) {
@@ -857,7 +857,7 @@ XML;
 							$queryip=$vrow2['ip'];
 						}
 					}
-					include(EASYWIDIR."/stuff/class_voice.php");
+					include(EASYWIDIR . '/stuff/class_voice.php');
 					$connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
 					$errorcode=$connection->errorcode;
 					if (strpos($errorcode,'error id=0') === false) {
@@ -921,11 +921,11 @@ XML;
 						$template_file='page_lenddata.tpl';
 					} else {
 						if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl')) {
-							include(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl');
+							include(EASYWIDIR . '/template/'.$template_to_use.'/lenddata.tpl');
 						} else if (is_file(EASYWIDIR.'/template/default/lenddata.tpl')) {
-							include(EASYWIDIR.'/template/default/lenddata.tpl');
+							include(EASYWIDIR . '/template/default/lenddata.tpl');
 						} else {
-							include(EASYWIDIR.'/template/lenddata.tpl');
+							include(EASYWIDIR . '/template/lenddata.tpl');
 						}
 					}
 				}
@@ -946,11 +946,11 @@ XML;
 					$template_file='page_lend.tpl';
 				} else {
 					if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl')) {
-						include(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl');
+						include(EASYWIDIR . '/template/'.$template_to_use.'/lend.tpl');
 					} else if (is_file(EASYWIDIR.'/template/default/lend.tpl')) {
-						include(EASYWIDIR.'/template/default/lend.tpl');
+						include(EASYWIDIR . '/template/default/lend.tpl');
 					} else {
-						include(EASYWIDIR.'/template/lend.tpl');
+						include(EASYWIDIR . '/template/lend.tpl');
 					}
 				}
 			} else if (!isset($page_include) and ($lendaccess==1 or $lendaccess==3) and $ui->id('xml',1,'post')==1) {

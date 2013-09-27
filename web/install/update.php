@@ -42,36 +42,7 @@
 if (!isset($updateinclude) or $updateinclude==false) {
 	ini_set('display_errors',1);
 	error_reporting(E_ALL|E_STRICT);
-    define('EASYWIDIR',$_SERVER['DOCUMENT_ROOT'].'/');
-	function getconfigcvars($file) {
-		$fp= @fopen($file, 'rb');
-		if ($fp == true) {
-			$configfile="";
-			while (!feof($fp)){
-				$line=fgets($fp);
-				if(strpos(strtolower($line), strtolower("<?php")) === false and strpos(strtolower($line), strtolower("?>")) === false) {
-					$configfile .="$line\r\n";
-				}
-			}
-			fclose($fp);
-			$lines=explode("\r\n", $configfile);
-			foreach ($lines as $line) {
-				if(strpos(strtolower($line), strtolower("//")) === false and strpos(strtolower($line), strtolower("=")) == true) {
-					$data=explode("=", $line);
-					$cvar=preg_replace('/\s+/', '', $data[0]);
-					$cvar=str_replace('$', "", $cvar);
-					$data2=explode(";", $data[1]);
-					$stringlenght=strlen($data2[0]);
-					$stop=$stringlenght-2;
-					$value=substr($data2[0],"1",$stop);
-					$vars[$cvar]=$value;
-				}
-			}
-			return $vars;
-		} else {
-			die("No configdata!");
-		}
-	}
+	define('EASYWIDIR', dirname(dirname(__FILE__)));
 	function isinteger($value) {
 	  if(preg_match("/^[\d+(.\d+|$)]+$/", $value) or $value=="0") {
 		return true;
@@ -92,14 +63,7 @@ if (!isset($updateinclude) or $updateinclude==false) {
 			unset($this->response);
 		}
 	}
-	$panelcfgcvars=getconfigcvars("../stuff/config.php");
-	$databanktype=$panelcfgcvars['databanktype'];
-	$host=$panelcfgcvars['host'];
-	$db=$panelcfgcvars['db'];
-	$user=$panelcfgcvars['user'];
-	$pwd=$panelcfgcvars['pwd'];
-	$captcha=$panelcfgcvars['captcha'];
-	$title=$panelcfgcvars['title'];
+	include(EASYWIDIR . '/stuff/config.php');
 	try {
 		$sql=new PDO("$databanktype:host=$host;dbname=$db",$user,$pwd,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
 	}
@@ -109,7 +73,7 @@ if (!isset($updateinclude) or $updateinclude==false) {
 	}
 	$response=new UpdateResponse();
 } else if (!defined('EASYWIDIR')) {
-    define('EASYWIDIR',$_SERVER['DOCUMENT_ROOT'].'/');
+    define('EASYWIDIR', dirname(dirname(__FILE__)));
 }
 function versioncheck ($current,$new,$file,$response,$sql) {
     $include=true;
@@ -117,10 +81,10 @@ function versioncheck ($current,$new,$file,$response,$sql) {
 		$response->add("Upgrading Databe from $current to $new<br />");
 		if (is_file(EASYWIDIR.'/'.$file)) {
 			$response->add("Found updaterfile ".$file.". Executing it now<br />");
-			include(EASYWIDIR.'/'.$file);
+			include(EASYWIDIR . '/'.$file);
 		} else if (is_file(EASYWIDIR.'/install/'.$file)) {
 			$response->add("Found updaterfile ".'install/'.$file.". Executing it now<br />");
-			include(EASYWIDIR.'/install/'.$file);
+			include(EASYWIDIR . '/install/'.$file);
 		} else {
 			die("File $file is missing<br />");
 		}
@@ -151,6 +115,7 @@ if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error
 } else {
 	$response->add("Current database version: $version<br />");
 }
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 if (versioncheck ($version,'2.00','update_1x-20.php',$response,$sql)) $version='2.00';
 if (versioncheck ($version,'2.01','update_200-201.php',$response,$sql)) $version='2.01';
 if (versioncheck ($version,'2.02','update_201-202.php',$response,$sql)) $version='2.02';
@@ -162,8 +127,7 @@ if (versioncheck ($version,'2.07','update_206-207.php',$response,$sql)) $version
 if (versioncheck ($version,'2.08','update_207-208.php',$response,$sql)) $version='2.08';
 if (versioncheck ($version,'2.09','update_208-209.php',$response,$sql)) $version='2.09';
 if (versioncheck ($version,'2.10','update_209-210.php',$response,$sql)) $version='2.10';
-if (!isset($updateinclude) or $updateinclude==false) include('../stuff/tables_add.php');
-else include(EASYWIDIR.'/stuff/tables_add.php');
+include(EASYWIDIR . '/stuff/tables_add.php');
 if (versioncheck ($version,'2.11','update_210-211.php',$response,$sql)) $version='2.11';
 if (versioncheck ($version,'3.00','update_211-300.php',$response,$sql)) $version='3.00';
 if (versioncheck ($version,'3.01','update_300-301.php',$response,$sql)) $version='3.01';
@@ -183,8 +147,8 @@ if (versioncheck ($version,'3.60','update_340-360.php',$response,$sql)) $version
 if (versioncheck ($version,'3.70','update_360-370.php',$response,$sql)) $version='3.70';
 if (versioncheck ($version,'4.00','update_370-400.php',$response,$sql)) $version='4.00';
 $response->add('Repairing tables if needed.');
-if (!isset($updateinclude) or $updateinclude==false) include('../stuff/tables_repair.php');
-else include(EASYWIDIR.'/stuff/tables_repair.php');
+
+include(EASYWIDIR . '/stuff/tables_repair.php');
 
 # Ende
 if (!isset($updateinclude) or $updateinclude==false) {

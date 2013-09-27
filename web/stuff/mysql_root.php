@@ -44,7 +44,7 @@ if (!isset($admin_id) or $main!=1 or $reseller_id!=0 or !$pa['root']) {
 
 if ($ui->st('d','get')=='bu' and $ui->st('action','post')=='bu') {
     $createBackup=true;
-    include(EASYWIDIR.'/stuff/mysql_backup_class.php');
+    include(EASYWIDIR . '/stuff/mysql_backup_class.php');
     $theBackup=new createDBDump($dbConnect['db'],$ewVersions['version'],$sql);
     header('Content-type: application/sql; charset=utf-8');
     header('Content-Description: Downloaded File');
@@ -73,11 +73,11 @@ if ($ui->st('d','get')=='bu' and $ui->st('action','post')=='bu') {
     $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
     if (!isset($alreadyRepaired)) {
         $response->add('Adding tables if needed.');
-        include(EASYWIDIR.'/stuff/tables_add.php');
+        include(EASYWIDIR . '/stuff/tables_add.php');
     }
     if (!isset($alreadyRepaired)) {
         $response->add('Repairing tables if needed.');
-        include(EASYWIDIR.'/stuff/tables_repair.php');
+        include(EASYWIDIR . '/stuff/tables_repair.php');
     }
     $template_file=$response->printresponse();
 } else {

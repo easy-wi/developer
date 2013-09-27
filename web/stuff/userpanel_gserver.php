@@ -38,6 +38,10 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
     header('Location: userpanel.php');
     die('No acces');
 }
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
+
 $sprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
@@ -54,9 +58,6 @@ if (isset($admin_id)) {
 if (isset($admin_id) and $reseller_id!=0) {
     $reseller_id=$admin_id;
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
-include(EASYWIDIR.'/stuff/ssh_exec.php');
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->st('d','get')=='ri' and !$ui->id('id',10,'get')) {

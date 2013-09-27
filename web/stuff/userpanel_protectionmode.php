@@ -34,7 +34,13 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id',10,'get')) redirect('userpanel.php');
+if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id',10,'get')) {
+	header('Location: userpanel.php');
+	die;
+}
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
@@ -48,8 +54,6 @@ if (isset($admin_id)) {
 	$logsubuser=0;
 }
 if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 $files=array();
 $query=$sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppassword`,t.`protected` AS `tpallowed`,t.`shorten`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,u.`cname`,s.`servertemplate` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND s.`resellerid`=? LIMIT 1");
 $query->execute(array($aeskey,$aeskey,$ui->id('id',10,'get'),$user_id,$reseller_id));
@@ -78,7 +82,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 if ($query->rowCount()==0 or (isset($pallowed) and $pallowed=='N') or (isset($_SESSION['sID']) and !in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
 	redirect('userpanel.php');
 } else if (isset($rootid)) {
-    include(EASYWIDIR.'/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/ssh_exec.php');
     function cfgTransfer ($pserverRead,$customerRead,$ftppassRead,$readFTPShorten,$pserverWrite,$customerWrite,$ftppassWrite,$writeFTPShorten) {
         global $sship,$ftpport,$gsfolder,$gamePath,$files;
         foreach ($files as $cfg) {

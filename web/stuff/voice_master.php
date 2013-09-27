@@ -52,8 +52,8 @@ if ($reseller_id==0) {
     $logreseller=0;
 }
 if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
-include(EASYWIDIR.'/stuff/keyphrasefile.php');
-include(EASYWIDIR.'/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/class_voice.php');
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if ($ui->st('d','get')=='ad' or (($ui->st('d','get')=='ri' or $ui->st('d','get')=='md')and $id=$ui->id('id',10,'get'))) {
@@ -454,7 +454,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             $sshkey=removePub($row['keyname']);
                             $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
                             $key=EASYWIDIR.'/keys/'.$sshkey;
-                            
+
                             if (file_exists($pubkey) and file_exists($key)) {
                                 $ssh2= @ssh2_connect($queryip,$row['decryptedssh2port'],array('hostkey'=>'ssh-rsa'));
                             } else {
@@ -843,7 +843,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
     $query=$sql->prepare("SELECT m.*,COUNT(s.`id`) AS `installedserver`,SUM(s.`slots`) AS `installedslots`,SUM(s.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `voice_server` s ON m.`id`=s.`masterserver` WHERE (m.`resellerid`=? OR m.`managedForID`=?) GROUP BY m.`id` ORDER BY $orderby LIMIT $start,$amount");
     $query2=$sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query3=$sql->prepare("SELECT `id`,`active`,`uptime`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
+    $query3=$sql->prepare("SELECT `id`,`active`,`uptime`,`queryName`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
     $query->execute(array($reseller_id,$admin_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $id=$row['id'];
@@ -870,11 +870,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $uslots=($row['uslots']==null) ? 0 : $row['uslots'];
             $vs=array();
             $query3->execute(array($id,$row['resellerid']));
-            foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                if ($row2['active']=='N' or $row2['uptime']==1) $vsStatus=2;
-                else if ($row2['active']=='Y' and $row2['uptime']<1) $vsStatus=3;
+            foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                if ($row3['active']=='N' or $row3['uptime']==1) $vsStatus=2;
+                else if ($row3['active']=='Y' and $row3['uptime']<1) $vsStatus=3;
                 else $vsStatus=1;
-                $vs[]=array('id'=>$row2['id'],'address'=>$row2['address'],'name'=>$row2['queryName'],'status'=>$vsStatus);
+                $vs[]=array('id'=>$row3['id'],'address'=>$row3['address'],'name'=>$row3['queryName'],'status'=>$vsStatus);
             }
             $table[]=array('id'=>$id,'active'=>$row['active'],'managedServer'=>$row['managedServer'],'img'=>$imgName,'alt'=>$imgAlt,'ip'=>$ip,'type'=>$type,'defaultdns'=>$defaultdns,'installedserver'=>$row['installedserver']."/".$row['maxserver'],'installedslots'=>$uslots."/".$installedslots."/".$row['maxslots'],'server'=>$vs);
         }

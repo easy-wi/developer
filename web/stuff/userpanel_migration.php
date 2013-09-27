@@ -41,9 +41,10 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
     header('Location: userpanel.php');
     die;
 }
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('gserver',$user_language,$reseller_id);
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype="user";
@@ -202,7 +203,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (!in_array($sprache->ftp_port,$error)) $error[]=$sprache->ftp_port;
     }
     if (count($error)==0 and isset($rootID)) {
-        include(EASYWIDIR.'/stuff/ssh_exec.php');
+        include(EASYWIDIR . '/stuff/ssh_exec.php');
         $rdata=serverdata('root',$rootID,$aeskey);
         $sship=$rdata['ip'];
         $sshport=$rdata['port'];

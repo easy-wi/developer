@@ -36,6 +36,8 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+ 
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $username='';
 $externalID='';
@@ -168,8 +170,6 @@ if (array_value_exists('action','add',$data)) {
         }
         if (!isset($success) and isset($localID) and isset($insert) and $insert==true) {
             if (!isset($data['password']) or in_array($data['password'],$bad)) $password=passwordgenerate(10);
-            $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-            $aeskey=$aesfilecvar['aeskey'];
             $passwordhash=createHash($username,$password,$salt,$aeskey);
             $query=$sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=? WHERE `id`=? LIMIT 1");
             $query->execute(array($username,$passwordhash,$localID));
@@ -200,8 +200,6 @@ if (array_value_exists('action','add',$data)) {
             $what=array();
             if (isset($data['password']) and !in_array($data['password'],$bad)) {
                 $password=$data['password'];
-                $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-                $aeskey=$aesfilecvar['aeskey'];
                 $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
                 $security=createHash($name,$data['password'],$salt,$aeskey);
                 $what['security']=$security;

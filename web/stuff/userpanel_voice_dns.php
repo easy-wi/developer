@@ -48,7 +48,7 @@ if (isset($admin_id)) {
 } else {
     $logsubuser=0;
 }
-include(EASYWIDIR."/stuff/class_voice.php");
+include(EASYWIDIR . '/stuff/class_voice.php');
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
 } else if($ui->st('d','get')=='md' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['vd']))) {
@@ -101,8 +101,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             if (count($error)>0) {
                 $template_file='Error: '.implode('<br />',$error);
             } else {
-                $aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-                $aeskey=$aesfilecvar['aeskey'];
+				include(EASYWIDIR . '/stuff/keyphrasefile.php');
                 $query=$sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                 $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsID,':reseller_id'=>$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

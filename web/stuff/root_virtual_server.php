@@ -40,8 +40,9 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['addvserver'] 
     header('Location: admin.php');
     die;
 }
-$aesfilecvar=getconfigcvars(EASYWIDIR."/stuff/keyphrasefile.php");
-$aeskey=$aesfilecvar['aeskey'];
+
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache=getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$admin_id;
 $logusername=getusername($admin_id);
