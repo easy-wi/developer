@@ -270,8 +270,8 @@ class rootServer {
                 $connect_ssh2=($v['publickey']=='Y' and isset($pubkey,$key)) ? @ssh2_auth_pubkey_file($ssh2,$v['user'],$pubkey,$key) : @ssh2_auth_password($ssh2,$v['user'],$v['pass']);
                 if ($connect_ssh2==true) {
                     $sftp=ssh2_sftp($ssh2);
-                    $file=(substr($v['dhcpFile'],0,1)=='/') ? 'ssh2.sftp://'.$sftp.$v['dhcpFile'] : 'ssh2.sftp://'.$sftp.'/home/'.$v['user'].'/'.$v['dhcpFile'];
-                    $fileErrorOutput=(substr($v['dhcpFile'],0,1)=='/') ? $v['dhcpFile'] : '/home/'.$v['user'].'/'.$v['dhcpFile'];
+                    $file=(substr($v['dhcpFile'],0,1)=='/') ? 'ssh2.sftp://'.$sftp.$v['dhcpFile'] : 'ssh2.sftp://'.$sftp.'/home/'.$v['user'].'/'. $v['dhcpFile'];
+                    $fileErrorOutput=(substr($v['dhcpFile'],0,1)=='/') ? $v['dhcpFile'] : '/home/'.$v['user'].'/'. $v['dhcpFile'];
                     $buffer='';
                     $fp=@fopen($file,'r');
                     if ($fp) {
@@ -335,8 +335,8 @@ class rootServer {
                     foreach($v['actions'] as $a) {
                         $extraSlash=(substr($v['PXEFolder'],-1)!='/' and strlen($v['PXEFolder'])>0) ? '/' : '';
                         $pathWithPXEMac=$v['PXEFolder'].$extraSlash.'01-'.str_replace(':','-',$this->ID[$a['type']][$a['id']]['mac']);
-                        $file=(substr($v['PXEFolder'],0,1)=='/') ? 'ssh2.sftp://'.$sftp.$pathWithPXEMac : 'ssh2.sftp://'.$sftp.'/home/'.$v['user'].'/'.$pathWithPXEMac;
-                        $fileWithPath=(substr($v['PXEFolder'],0,1)=='/') ? $pathWithPXEMac : '/home/'.$v['user'].'/'.$pathWithPXEMac;
+                        $file=(substr($v['PXEFolder'],0,1)=='/') ? 'ssh2.sftp://'.$sftp.$pathWithPXEMac : 'ssh2.sftp://'.$sftp.'/home/'.$v['user'].'/'. $pathWithPXEMac;
+                        $fileWithPath=(substr($v['PXEFolder'],0,1)=='/') ? $pathWithPXEMac : '/home/'.$v['user'].'/'. $pathWithPXEMac;
                         if (in_array($a['action'],array('dl','rt','md'))) {
                             @ssh2_sftp_unlink($sftp,$fileWithPath);
                         } else if (in_array($a['action'],array('ri','rc'))) {
@@ -377,7 +377,7 @@ class rootServer {
             $ex=preg_split("/\//",$apiPath,-1,PREG_SPLIT_NO_EMPTY);
             $i=1;
             while (count($ex)>$i) {
-                $file.='/'.$ex[$i];
+                $file.='/'. $ex[$i];
                 $i++;
             }
             $file.='/';
@@ -469,18 +469,18 @@ class rootServer {
                     $cmd='vim-cmd vmsvc/getallvms | grep \'Skipping\' | while read line; do vim-cmd vmsvc/unregister `echo $line | grep \'Skipping\' |  awk -F "\'" \'{print $2}\'`; done';
                     $this->execCmd($cmd,$ssh2);
                     foreach ($h['actions'] as $v) {
-                        $dir='/vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint'].'/'.$this->ID['vmware'][$v['id']]['hostname'];
+                        $dir='/vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint'].'/'. $this->ID['vmware'][$v['id']]['hostname'];
                         if(in_array($v['action'],array('md','dl','st','ri','re'))) {
                             print "Step 1: Stop and remove if needed\r\n";
                             $cmd="i(){ echo `vim-cmd vmsvc/getallvms 2> /dev/null | grep -v 'Skipping' | grep '".$this->ID['vmware'][$v['id']]['hostname'].".vmx' | awk '{print $1}'`;}; o(){ vim-cmd vmsvc/power.off `i ".$this->ID['vmware'][$v['id']]['hostname']."`; vim-cmd vmsvc/unregister `i ".$this->ID['vmware'][$v['id']]['hostname']."`;}; o;";
-                            if (in_array($v['action'],array('dl','ri','re'))) $cmd.=" rm -rf /vmfs/volumes/".$this->ID['vmware'][$v['id']]['mountpoint'].'/'.$this->ID['vmware'][$v['id']]['hostname'];
+                            if (in_array($v['action'],array('dl','ri','re'))) $cmd.=" rm -rf /vmfs/volumes/".$this->ID['vmware'][$v['id']]['mountpoint'].'/'. $this->ID['vmware'][$v['id']]['hostname'];
                             $this->execCmd($cmd,$ssh2);
                         }
                         if (in_array($v['action'],array('md','ad','ri','re'))) {
                             $harddisk=($this->ID['vmware'][$v['id']]['distro']=='windows7srv-64') ? 'lsisas1068' : 'lsilogic';
                             $sftp=ssh2_sftp($ssh2);
                             ssh2_sftp_mkdir($sftp,rtrim($dir, '/'),0774,true);
-                            $fp=fopen('ssh2.sftp://'.$sftp.'/vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint'].'/'.$this->ID['vmware'][$v['id']]['hostname'].'/'.$this->ID['vmware'][$v['id']]['hostname'].'.vmx','w');
+                            $fp=fopen('ssh2.sftp://'.$sftp.'/vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint'].'/'. $this->ID['vmware'][$v['id']]['hostname'].'/'. $this->ID['vmware'][$v['id']]['hostname'].'.vmx','w');
                              if ($fp) {
                                  $vmxFile='.encoding = "UTF-8"'."\n";
                                  $vmxFile.='config.version = "8"'."\n";
@@ -549,7 +549,7 @@ class rootServer {
                                  }
                                  unset($fp);
                             } else {
-                                 print 'could not open: /vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint'].'/'.$this->ID['vmware'][$v['id']]['hostname'].'/'.$this->ID['vmware'][$v['id']]['hostname'].'.vmx'."\r\n";
+                                 print 'could not open: /vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint'].'/'. $this->ID['vmware'][$v['id']]['hostname'].'/'. $this->ID['vmware'][$v['id']]['hostname'].'.vmx'."\r\n";
                             }
                             if(is_resource($sftp)) fclose($sftp);
                             else unset ($sftp);

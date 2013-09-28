@@ -45,7 +45,7 @@ include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/init_user.php');
 include(EASYWIDIR . '/stuff/userpanel_home.php');
 if (isset($what_to_be_included_array[$w])) {
-    include(EASYWIDIR . '/stuff/'.$what_to_be_included_array[$w]);
+    include(EASYWIDIR . '/stuff/'. $what_to_be_included_array[$w]);
     unset($dbConnect);
 } else {
     unset($dbConnect);

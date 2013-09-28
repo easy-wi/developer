@@ -40,7 +40,7 @@ if ($seo=='Y') {
 	if (!isset($page_count)) {
 		$page_count=1;
 	}
-	$current_page_link='/'.$user_language.'/'.szrp($page_sprache->$s).'/'.$page_name.'/'.$page_count.'/';
+	$current_page_link='/'. $user_language.'/'.szrp($page_sprache->$s).'/'. $page_name.'/'. $page_count.'/';
 } else {
 	$search_tag=strtolower($ui->username('tag','255','get'));
 	if ($ui->id('older','30','get')) {
@@ -75,19 +75,19 @@ if (isset($search_tag) and $search_tag!='' and $search_tag!=null) {
 				$limit=($maxnews*$page_count)-$maxnews.','.($maxnews*$page_count);
 			}
 			if ($max_old>$page_count and $seo=='Y') {
-				$older=$page_url.'/'.$user_language.'/'.$page_sprache->$s.'/'.$search_tag.'/'.($page_count+1).'/';
+				$older=$page_url.'/'. $user_language.'/'. $page_sprache->$s.'/'. $search_tag.'/'.($page_count+1).'/';
 			} else if ($max_old>$page_count and $seo=='N') {
 				$older=$page_url.'/index.php?site='.$s.'&amp;tag='.strtolower(szrp($row2['name'])).'&amp;older='.($page_count+1);
 			}
 		} else if ($page_row_count>$maxnews and !isset($page_count)) {
 			if ($seo=='Y') {
-				$older=$page_url.'/'.$user_language.'/'.$page_sprache->$s.'/'.$search_tag.'/2/';
+				$older=$page_url.'/'. $user_language.'/'. $page_sprache->$s.'/'. $search_tag.'/2/';
 			} else {
 				$older=$page_url.'/index.php?site='.$s.'&amp;tag='.strtolower(szrp($row2['name'])).'&amp;older=2';
 			}
 		}
 		if (isset($page_count) and $page_count>1 and $seo=='Y') {
-			$newer=$page_url.'/'.$user_language.'/'.$page_sprache->$s.'/'.$search_tag.'/'.($page_count-1).'/';
+			$newer=$page_url.'/'. $user_language.'/'. $page_sprache->$s.'/'. $search_tag.'/'.($page_count-1).'/';
 		} else if (isset($page_count) and $page_count>1 and $seo=='N') {
 			$newer=$page_url.'/index.php?site='.$s.'&amp;tag='.strtolower(szrp($row2['name'])).'&amp;older='.($page_count-1);
 		}
@@ -97,7 +97,7 @@ if (isset($search_tag) and $search_tag!='' and $search_tag!=null) {
 			if ($seo=='Y') {
                 $type='';
                 if ($row['type']=='news') $type=szrp($gsprache->news).'/';
-				$row_link=$page_url.'/'.$user_language.'/'.$type.szrp($row['title']).'/';
+				$row_link=$page_url.'/'. $user_language.'/'. $type.szrp($row['title']).'/';
 			} else {
 				$row_link=$page_url.'/index.php?site='.$row['type'].'&amp;id='.$row['id'];
 			}

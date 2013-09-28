@@ -262,17 +262,17 @@ if (!function_exists('passwordgenerate')) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $default_language=$row['language'];
             $template=$row['template'];
-            if (file_exists(EASYWIDIR . '/languages/'.$template.'/'.$user_language.'/'.$filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'.$template.'/'.$user_language.'/'.$filename.'.xml');
-            } else if (file_exists(EASYWIDIR . '/languages/'.$template.'/'.$default_language.'/'.$filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'.$template.'/'.$default_language.'/'.$filename.'.xml');
-            } else if (file_exists(EASYWIDIR . '/languages/default/'.$user_language.'/'.$filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$user_language.'/'.$filename.'.xml');
-            } else if (file_exists(EASYWIDIR . '/languages/default/'.$default_language.'/'.$filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$default_language.'/'.$filename.'.xml');
-            } else if (file_exists(EASYWIDIR . '/languages/'.$user_language.'/'.$filename.'.xml')) {
+            if (file_exists(EASYWIDIR . '/languages/'.$template.'/'. $user_language.'/'. $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'.$template.'/'. $user_language.'/'. $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/'.$template.'/'. $default_language.'/'. $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'.$template.'/'. $default_language.'/'. $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/default/'.$user_language.'/'. $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$user_language.'/'. $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/default/'.$default_language.'/'. $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$default_language.'/'. $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/'.$user_language.'/'. $filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR."/languages/$user_language/$filename.xml");
-            } else if (file_exists(EASYWIDIR . '/languages/'.$default_language.'/'.$filename.'.xml')) {
+            } else if (file_exists(EASYWIDIR . '/languages/'.$default_language.'/'. $filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR."/languages/$default_language/$filename.xml");
             }
         }
@@ -461,7 +461,7 @@ if (!function_exists('passwordgenerate')) {
                 $pserver="server/";
                 $absolutepath="/home/".$customer."/server/".$gsip."_"."$port/$folder";
             }
-            $bindir=$absolutepath.'/'.$binarydir;
+            $bindir=$absolutepath.'/'. $binarydir;
             $cvarprotect=array();
             if ($qstat=='hla2s' and $tvenable=='Y') $slots++;
             $modsCmds=array();
@@ -947,8 +947,8 @@ if (!function_exists('passwordgenerate')) {
         }
     }
     function IncludeTemplate($use,$file) {
-        if (is_file(EASYWIDIR . '/template/'.$use.'/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
-            return EASYWIDIR . '/template/'.$use.'/'.$file;
+        if (is_file(EASYWIDIR . '/template/'.$use.'/'. $file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
+            return EASYWIDIR . '/template/'.$use.'/'. $file;
         } else if (is_file(EASYWIDIR . '/template/default/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
             return EASYWIDIR . '/template/default/'.$file;
         } else if (preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
@@ -1056,7 +1056,7 @@ if (!function_exists('passwordgenerate')) {
             fclose($fp);
             $ex=explode("\r\n\r\n",$buffer);
             if (strpos($ex[0],'404')!==false) {
-                return 'file not found: '.$domain.'/'.$file;
+                return 'file not found: '.$domain.'/'. $file;
             } else if (isset($ex[1])) {
                 return $ex[1];
             } else {

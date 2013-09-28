@@ -64,7 +64,7 @@ if (isset($page_id) and is_numeric($page_id)) {
 		$query2->execute(array($row['id']));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			$page_data->AddData('keywords',$row2['name']);
-            $tag_tags[]=($seo=='Y') ? '<a href='.$page_url.'/'.$user_language.'/'.$page_sprache->tag.'/'.strtolower(szrp($row2['name'])).'/>'.$row2['name'].'</a>' : '<a href='.$page_url.'/index.php?site=tag&amp;tag='.strtolower(szrp($row2['name'])).'/>'.$row2['name'].'</a>';
+            $tag_tags[]=($seo=='Y') ? '<a href='.$page_url.'/'. $user_language.'/'. $page_sprache->tag.'/'.strtolower(szrp($row2['name'])).'/>'.$row2['name'].'</a>' : '<a href='.$page_url.'/index.php?site=tag&amp;tag='.strtolower(szrp($row2['name'])).'/>'.$row2['name'].'</a>';
 		}
 	}
     $breadcrumbs=array();
@@ -73,7 +73,7 @@ if (isset($page_id) and is_numeric($page_id)) {
         $query->execute(array($breadcrumbID,$user_language));
         unset($breadcrumbID);
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $link=(isset($seo) and $seo=='Y') ? $page_data->pageurl.'/'.$user_language.'/'.szrp($row['title']).'/' : $page_data->pageurl.'?s=page&amp;l='.$user_language.'&amp;id='.$row['id'];
+            $link=(isset($seo) and $seo=='Y') ? $page_data->pageurl.'/'. $user_language.'/'.szrp($row['title']).'/' : $page_data->pageurl.'?s=page&amp;l='.$user_language.'&amp;id='.$row['id'];
             $breadcrumbs[]=array('href'=>'<a href="'.$link.'">'.$row['title'].'</a>','link'=>$link);
             $breadcrumbID=$row['subpage'];
             $breadcrumbPageID=$row['id'];
@@ -132,20 +132,20 @@ if (isset($page_id) and is_numeric($page_id)) {
                 $title=$row['title'];
                 if ($row['type']=='news' and isset($seo) and $seo=='Y') {
                     $type=(string)$titleLanguages[$row['language']]['general']->news;
-                    $link=$page_data->pageurl.'/'.$row['language'].'/'.szrp($titleLanguages[$row['language']]['general']->news).'/'.szrp($row['title']).'/';
+                    $link=$page_data->pageurl.'/'. $row['language'].'/'.szrp($titleLanguages[$row['language']]['general']->news).'/'.szrp($row['title']).'/';
                 } else if ($row['type']=='news') {
                     $type=(string)$titleLanguages[$row['language']]['general']->news;
                     $link=$page_data->pageurl.'?s=news&amp;l='.$row['language'].'&amp;id='.$row['pageID'];
                 } else if ($row['type']=='page' and isset($seo) and $seo=='Y') {
                     $type=(string)$titleLanguages[$row['language']]['general']->page;
-                    $link=$page_data->pageurl.'/'.$row['language'].'/'.szrp($row['title']).'/';
+                    $link=$page_data->pageurl.'/'. $row['language'].'/'.szrp($row['title']).'/';
                 } else if ($row['type']=='page') {
                     $type=(string)$titleLanguages[$row['language']]['general']->page;
                     $link=$page_data->pageurl.'?s=page&amp;l='.$row['language'].'&amp;id='.$row['pageID'];
                 } else if ($row['type']=='about' and isset($seo) and $seo=='Y') {
                     $type=(string)$titleLanguages[$row['language']]['page']->about;
                     $title=(string)$titleLanguages[$row['language']]['page']->about;
-                    $link=$page_data->pageurl.'/'.$row['language'].'/'.szrp($titleLanguages[$row['language']]['page']->about).'/';
+                    $link=$page_data->pageurl.'/'. $row['language'].'/'.szrp($titleLanguages[$row['language']]['page']->about).'/';
                 } else if ($row['type']=='about') {
                     $type=(string)$titleLanguages[$row['language']]['page']->about;
                     $title=(string)$titleLanguages[$row['language']]['page']->about;

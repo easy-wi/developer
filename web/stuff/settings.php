@@ -336,15 +336,15 @@ if($ui->id('p',19, 'get')) {
 } else {
     $start=0;
 }
-$dirs=array();
+$dirs = array();
 if (is_dir(EASYWIDIR . '/languages/'. $template_to_use . '/')) {
-    $dirs = array_merge($dir, scandir(EASYWIDIR . '/languages/'. $template_to_use . '/'));
+    $dirs = array_merge($dirs, scandir(EASYWIDIR . '/languages/'. $template_to_use . '/'));
 }
 if (is_dir(EASYWIDIR . '/languages/default/')) {
-    $dirs=array_merge($dir, scandir(EASYWIDIR . '/languages/default/'));
+    $dirs=array_merge($dirs , scandir(EASYWIDIR . '/languages/default/'));
 }
 if (is_dir(EASYWIDIR . '/languages/')) {
-    $dirs=array_merge($dir, scandir(EASYWIDIR . '/languages/'));
+    $dirs=array_merge($dirs , scandir(EASYWIDIR . '/languages/'));
 }
 $dirs = array_unique($dirs);
 $languages = array();

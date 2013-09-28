@@ -153,7 +153,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                     $params='/';
                     $i=1;
                     while ($i<count($ex)) {
-                        $params.='/'.$ex[$i];
+                        $params.='/'. $ex[$i];
                         $i++;
                     }
                    # $xml=webhostRequest($domain,'easy-wi.com',$params,$port);

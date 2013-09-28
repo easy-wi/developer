@@ -58,7 +58,7 @@ class PageSettings {
 		}
 	}
 	function SetCanUrl ($value) {
-		$this->canurl=$this->pageurl.'/'.$value;
+		$this->canurl=$this->pageurl.'/'. $value;
 	}
 	private function AddPageToArray ($type,$pageid,$value) {
 		$i=1;
@@ -75,13 +75,13 @@ class PageSettings {
 		if ($this->seo=='Y') {
 			if (is_array($request)) {
 				$link='';
-				foreach ($request as $r) $link .='/'.$this->NameToLink($r);
+				foreach ($request as $r) $link .='/'. $this->NameToLink($r);
 			} else if ($id==false) {
-				$link = '/'.$this->AddPageToArray('pages',$subid,$this->NameToLink($request));
+				$link = '/'. $this->AddPageToArray('pages',$subid,$this->NameToLink($request));
 			} else {
-				$link = '/'.$this->AddPageToArray('pages',$id,$this->NameToLink($request));
+				$link = '/'. $this->AddPageToArray('pages',$id,$this->NameToLink($request));
 			}
-			$subdata['link']=$this->pageurl.'/'.$this->language.$link.'/';
+			$subdata['link']=$this->pageurl.'/'. $this->language.$link.'/';
 		} else {
 			if (is_array($request)) {
 				$getparams='';
@@ -119,12 +119,12 @@ class PageSettings {
 		if ($this->seo=='Y') {
 			if (is_array($request)) {
 				$link='';
-				for ($i=0;$i<(count($request)-1);$i++) $link .='/'.$this->NameToLink($request[$i]);
-				$link .= '/'.$this->AddPageToArray($var,$id,$this->NameToLink($request[$i]));
+				for ($i=0;$i<(count($request)-1);$i++) $link .='/'. $this->NameToLink($request[$i]);
+				$link .= '/'. $this->AddPageToArray($var,$id,$this->NameToLink($request[$i]));
 			} else {
-				$link = '/'.$this->AddPageToArray($var,$id,$this->NameToLink($request));
+				$link = '/'. $this->AddPageToArray($var,$id,$this->NameToLink($request));
 			}
-			$subdata[$id]['link']=$this->pageurl.'/'.$this->language.$link.'/';
+			$subdata[$id]['link']=$this->pageurl.'/'. $this->language.$link.'/';
 		} else {
 			if (is_array($request)) {
 				$getparams='';
@@ -151,11 +151,11 @@ class PageSettings {
                 $query=$sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `id`=? LIMIT 1");
                 $query->execute(array($ID));
                 $title=$query->fetchColumn();
-                $addToUrl=($s=='news') ? '/'.$this->language.'/'.$this->NameToLink($gsprache->news).'/'.$this->NameToLink($title).'/' : '/'.$this->language.'/'.$this->NameToLink($title).'/';
+                $addToUrl=($s=='news') ? '/'. $this->language.'/'. $this->NameToLink($gsprache->news).'/'. $this->NameToLink($title).'/' : '/'. $this->language.'/'. $this->NameToLink($title).'/';
             } else if ($this->seo=='Y' and in_array($s,array('imprint','lendserver','news'))) {
-                $addToUrl='/'.$this->language.'/'.$this->NameToLink($gsprache->$s).'/';
+                $addToUrl='/'. $this->language.'/'. $this->NameToLink($gsprache->$s).'/';
             } else if ($this->seo=='Y') {
-                $addToUrl='/'.$this->language.'/'.$this->NameToLink($page_sprache->$s).'/';
+                $addToUrl='/'. $this->language.'/'. $this->NameToLink($page_sprache->$s).'/';
             } else if ($ID!=null) {
                 $addToUrl='?s='.$s.'&amp;id='.$ID;
             } else {
@@ -197,7 +197,7 @@ class PageSettings {
         global $languages;
         foreach ($languages as $l) {
             if ($this->seo=='Y') {
-                $this->languageLinks[$l]=(isset($links[$l])) ? $this->pageurl.'/'.$l.'/'.$links[$l].'/' : $this->pageurl.'/'.$l.'/';
+                $this->languageLinks[$l]=(isset($links[$l])) ? $this->pageurl.'/'. $l.'/'. $links[$l].'/' : $this->pageurl.'/'. $l.'/';
             } else {
                 $this->languageLinks[$l]=(isset($links[$l])) ? $this->pageurl.'/index.php'.$links[$l].'&amp;l='.$l : $this->pageurl.'/index.php?l='.$l;
             }

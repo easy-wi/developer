@@ -113,7 +113,7 @@ $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('U','C')");
 $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    if ($row['active'] == 'Y' and $row['type'] == 'U' and is_file(EASYWIDIR . '/stuff/'.$row['file'])) {
+    if ($row['active'] == 'Y' and $row['type'] == 'U' and is_file(EASYWIDIR . '/stuff/'. $row['file'])) {
         $query2->execute(array($row['id'], $user_language));
         $name = $query2->fetchColumn();
         if (strlen($name) == 0) {

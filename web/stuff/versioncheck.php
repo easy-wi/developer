@@ -73,10 +73,10 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
             if (is_dir($dir)) {
                 $dircontent=scandir($dir);
                 foreach ($dircontent as $c) {
-                    if ($c!='.' and $c!='..' and is_dir($dir.'/'.$c)) {
-                        rmr($dir.'/'.$c);
+                    if ($c!='.' and $c!='..' and is_dir($dir.'/'. $c)) {
+                        rmr($dir.'/'. $c);
                     } else if ($c!='.' and $c!='..') {
-                        unlink($dir.'/'.$c);
+                        unlink($dir.'/'. $c);
                     }
                 }
                 rmdir($dir);
@@ -110,20 +110,20 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
 							$i=0;
 							unset($checkfolder);
 							while ($i<$count) {
-								if (isset($checkfolder))$checkfolder .='/'.$folders[$i];
+								if (isset($checkfolder))$checkfolder .='/'. $folders[$i];
                                 else $checkfolder=$folders[$i];
 								$i++;
 							}
-							if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/'.$checkfolder) and !is_file(EASYWIDIR . '/'.$checkfolder)) {
+							if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/'. $checkfolder) and !is_file(EASYWIDIR . '/'. $checkfolder)) {
 								@mkdir($checkfolder);
-                                if (is_dir(EASYWIDIR . '/'.$checkfolder)) $response->add('Creating new folder: '.$checkfolder);
-                                else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/'.$checkfolder.'</b>');
+                                if (is_dir(EASYWIDIR . '/'. $checkfolder)) $response->add('Creating new folder: '.$checkfolder);
+                                else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/'. $checkfolder.'</b>');
                                 
 							}
-						} else if (!is_dir(EASYWIDIR . '/'.$name) and !is_file(EASYWIDIR . '/'.$name)) {
-							@mkdir(EASYWIDIR . '/'.$name);
-                            if (is_dir(EASYWIDIR . '/'.$name)) $response->add('Creating new folder: '.$name);
-                            else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/'.$name.'</b>');
+						} else if (!is_dir(EASYWIDIR . '/'. $name) and !is_file(EASYWIDIR . '/'. $name)) {
+							@mkdir(EASYWIDIR . '/'. $name);
+                            if (is_dir(EASYWIDIR . '/'. $name)) $response->add('Creating new folder: '.$name);
+                            else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/'. $name.'</b>');
 						}
 						if (preg_match('/^(.*)\.[\w]{1,}$/',$name) and $zeo) {
 							$nf=fopen($name,'w');

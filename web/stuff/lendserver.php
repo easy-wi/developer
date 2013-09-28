@@ -279,8 +279,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query->execute(array($reseller_id));
         $nextcheck=$query->fetchColumn();
         $nextcheck=($nextcheck>0) ? ceil($nextcheck) : ceil($nextcheck)*-1;
-		$used[]='Teamspeak 3: '.$voused.'/'.$voTotalCount;
-		foreach ($gscounts as $key=>$value) $used[]=$key.': '.$gsused[$key].'/'.$value;
+		$used[]='Teamspeak 3: '.$voused.'/'. $voTotalCount;
+		foreach ($gscounts as $key=>$value) $used[]=$key.': '.$gsused[$key].'/'. $value;
 		$template_file="admin_lendserver_list.tpl";
 	}
 }

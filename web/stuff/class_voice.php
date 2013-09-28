@@ -740,7 +740,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
             if (substr($path,0,1)=='/') {
                 $file='ssh2.sftp://'.$sftp.$folders.'tsdns_settings.ini';
             } else {
-                $file='ssh2.sftp://'.$sftp.'/home/'.$sshuser.'/'.$folders.'tsdns_settings.ini';
+                $file='ssh2.sftp://'.$sftp.'/home/'.$sshuser.'/'. $folders.'tsdns_settings.ini';
             }
 			if ($action!='rs') {
 				$tsdns_read= @fopen($file,'r');

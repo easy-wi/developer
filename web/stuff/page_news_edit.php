@@ -465,9 +465,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $link=$page_url.'/index.php?site=page&amp;id='.$row['id'];
         } else {
             if ($row['language']==$user_language) {
-                $link=$page_url.'/'.$user_language.'/'.szrp($titleLanguages[$row['language']]['general']->news).'/'.strtolower(szrp($row['title'])).'/';
+                $link=$page_url.'/'. $user_language.'/'.szrp($titleLanguages[$row['language']]['general']->news).'/'.strtolower(szrp($row['title'])).'/';
             } else {
-                $link=$page_url.'/'.$row['language'].'/'.szrp($titleLanguages[$row['language']]['general']->news).'/'.strtolower(szrp($row['title'])).'/';
+                $link=$page_url.'/'. $row['language'].'/'.szrp($titleLanguages[$row['language']]['general']->news).'/'.strtolower(szrp($row['title'])).'/';
             }
         }
         $explodedtime=explode(' ', $row['date']);
