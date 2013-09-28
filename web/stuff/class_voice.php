@@ -591,8 +591,8 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 	if ($keyuse=="Y") {
         # https://github.com/easy-wi/developer/issues/70
         $sshkey=removePub($sshkey);
-        $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
-        $key=EASYWIDIR.'/keys/'.$sshkey;
+        $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
+        $key=EASYWIDIR . '/keys/'.$sshkey;
 
 		if (file_exists($pubkey) and file_exists($key)) {
 			$ssh2= @ssh2_connect($sship,$sshport,array('hostkey'=>'ssh-rsa'));

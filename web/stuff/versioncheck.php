@@ -85,21 +85,21 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
             }
         }
 		$response=new UpdateResponse();
-		if (!is_dir(EASYWIDIR.'/tmp')) {
-			@mkdir(EASYWIDIR.'/tmp');
+		if (!is_dir(EASYWIDIR . '/tmp')) {
+			@mkdir(EASYWIDIR . '/tmp');
 		}
-		if (is_dir(EASYWIDIR.'/tmp')) {
+		if (is_dir(EASYWIDIR . '/tmp')) {
 			$response->add('Creating tempfolder <b>tmp/</b>');
 			$opts=stream_context_create(array('http'=>array('method'=>'GET','header'=>"Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
 			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'.zip','rb',false,$opts);
-			$zip=@fopen(EASYWIDIR.'/tmp/'.$licenceDetails['v'].'.zip','wb');
+			$zip=@fopen(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip','wb');
 			if ($fp==true and $zip==true) {
 				while (!feof($fp)){
 					fwrite($zip,fread($fp,8192));
 				}
 				fclose($fp);
 				fclose($zip);
-				$zo=@zip_open(EASYWIDIR.'/tmp/'.$licenceDetails['v'].'.zip');
+				$zo=@zip_open(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip');
 				if (is_resource($zo)) {
 					while ($ze=zip_read($zo)) {
 						$name=zip_entry_name($ze);
@@ -114,16 +114,16 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
                                 else $checkfolder=$folders[$i];
 								$i++;
 							}
-							if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR.'/'.$checkfolder) and !is_file(EASYWIDIR.'/'.$checkfolder)) {
+							if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/'.$checkfolder) and !is_file(EASYWIDIR . '/'.$checkfolder)) {
 								@mkdir($checkfolder);
-                                if (is_dir(EASYWIDIR.'/'.$checkfolder)) $response->add('Creating new folder: '.$checkfolder);
-                                else $response->addError('Cannot create the folder <b>'.EASYWIDIR.'/'.$checkfolder.'</b>');
+                                if (is_dir(EASYWIDIR . '/'.$checkfolder)) $response->add('Creating new folder: '.$checkfolder);
+                                else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/'.$checkfolder.'</b>');
                                 
 							}
-						} else if (!is_dir(EASYWIDIR.'/'.$name) and !is_file(EASYWIDIR.'/'.$name)) {
-							@mkdir(EASYWIDIR.'/'.$name);
-                            if (is_dir(EASYWIDIR.'/'.$name)) $response->add('Creating new folder: '.$name);
-                            else $response->addError('Cannot create the folder <b>'.EASYWIDIR.'/'.$name.'</b>');
+						} else if (!is_dir(EASYWIDIR . '/'.$name) and !is_file(EASYWIDIR . '/'.$name)) {
+							@mkdir(EASYWIDIR . '/'.$name);
+                            if (is_dir(EASYWIDIR . '/'.$name)) $response->add('Creating new folder: '.$name);
+                            else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/'.$name.'</b>');
 						}
 						if (preg_match('/^(.*)\.[\w]{1,}$/',$name) and $zeo) {
 							$nf=fopen($name,'w');
@@ -155,12 +155,12 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
 			} else {
 				$response->add('Error: could not retrieve the update');
 			}
-			$dircontent=scandir(EASYWIDIR.'/tmp/');
+			$dircontent=scandir(EASYWIDIR . '/tmp/');
 			foreach ($dircontent as $c) {
-				if ($c!='.' and $c!='..') rmr(EASYWIDIR.'/tmp/'.$c);
+				if ($c!='.' and $c!='..') rmr(EASYWIDIR . '/tmp/'.$c);
 			}
-            rmr(EASYWIDIR.'/install/');
-			if (is_file(EASYWIDIR.'/tmp/'.$licenceDetails['v'].'.zip')) $response->addError('Cannot remove the content from tempfolder <b>tmp/</b>');
+            rmr(EASYWIDIR . '/install/');
+			if (is_file(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip')) $response->addError('Cannot remove the content from tempfolder <b>tmp/</b>');
 			else $response->add('Removed temporary files from tempfolder');
 		} else {
 			$response->addError('Cannot create the tempfolder <b>tmp/</b>');

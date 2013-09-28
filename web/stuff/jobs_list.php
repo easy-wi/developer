@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: jobs_list.php.
  * Author: Ulrich Block
@@ -41,10 +42,10 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['jobs'])) {
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('api',$user_language,$reseller_id);
+$sprache=getlanguagefile('api', $user_language, $reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file=$spracheResponse->token;
-} else if ($ui->w('action',4,'post')=='dl' and !isset($server_id)) {
+} else if ($ui->w('action',4,'post')=='dl' and !$ui->id('id', 19, 'get')) {
     $i=0;
     if ($ui->id('id',30,'post')) {
         foreach ($ui->id('id',30,'post') as $id) {
@@ -53,22 +54,22 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $delete->execute(array($id));
             } else {
                 $delete=$sql->prepare("DELETE FROM `jobs` WHERE `jobID`=? AND `resellerID`=? LIMIT 1");
-                $delete->execute(array($id,$reseller_id));
+                $delete->execute(array($id, $reseller_id));
             }
             $i++;
         }
     }
     $template_file=$i.' '.$gsprache->jobs.' deleted';
-} else if (isset($server_id) and isid($server_id,'30')) {
+} else if ($ui->id('id', 19, 'get')) {
     if ($reseller_id==0) {
         $query=$sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? LIMIT 1");
-        $query->execute(array($server_id));
+        $query->execute(array($ui->id('id', 19, 'get')));
     } else if ($reseller_id!=0 and $admin_id!=$reseller_id) {
         $query=$sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($server_id,$admin_id));
+        $query->execute(array($ui->id('id', 19, 'get'), $admin_id));
     } else {
         $query=$sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($server_id,$reseller_id));
+        $query->execute(array($ui->id('id', 19, 'get'), $reseller_id));
     }
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $text= @gzuncompress($row['text']);
@@ -208,6 +209,6 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $i++;
     }
-    $pages=implode(', ',$pages);
+    $pages=implode(', ', $pages);
     $template_file="admin_jobs_list.tpl";
 }

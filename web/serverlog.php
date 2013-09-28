@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: serverlog.php.
  * Author: Ulrich Block
@@ -44,14 +45,14 @@ if (!isset($user_id) and !isset($admin_id)) {
 	header('Location: login.php');
 	die('Please allow redirection');
 } 
-if (isset($server_id)) {
+if ($ui->id('id', 19, 'get')) {
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
 	if ($reseller_id!="0" and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}
 	if(isset($admin_id)) {
         $query=$sql->prepare("SELECT u.`id`,u.`cname` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
-        $query->execute(array($server_id,$reseller_id));
+        $query->execute(array($ui->id('id', 19, 'get'),$reseller_id));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$username=$row['cname'];
             $user_id=$row['id'];

@@ -259,8 +259,8 @@ class rootServer {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($v['keyname']);
-                $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
-                $key=EASYWIDIR.'/keys/'.$sshkey;
+                $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
+                $key=EASYWIDIR . '/keys/'.$sshkey;
 
                 $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'],$v['port'],array('hostkey'=>'ssh-rsa')) : false;
             } else {
@@ -321,8 +321,8 @@ class rootServer {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($v['keyname']);
-                $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
-                $key=EASYWIDIR.'/keys/'.$sshkey;
+                $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
+                $key=EASYWIDIR . '/keys/'.$sshkey;
 
                 $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'],$v['port'],array('hostkey'=>'ssh-rsa')) : false;
             } else {
@@ -455,8 +455,8 @@ class rootServer {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($this->vmwareHosts[$hID['hostID']]['vmIDs']['keyname']);
-                $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
-                $key=EASYWIDIR.'/keys/'.$sshkey;
+                $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
+                $key=EASYWIDIR . '/keys/'.$sshkey;
 
                 $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($this->vmwareHosts[$hID]['vmIDs']['ip'],$this->vmwareHosts[$hID]['vmIDs']['dport'],array('hostkey'=>'ssh-rsa')) : false;
             } else {

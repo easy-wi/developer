@@ -702,8 +702,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
 
                             # https://github.com/easy-wi/developer/issues/70
                             $sshkey=removePub($vrow['keyname']);
-                            $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
-                            $key=EASYWIDIR.'/keys/'.$sshkey;
+                            $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
+                            $key=EASYWIDIR . '/keys/'.$sshkey;
 
                             $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($queryip,$vrow['decryptedssh2port'],array('hostkey'=>'ssh-rsa')) : false;
                         } else {

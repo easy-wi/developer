@@ -263,13 +263,13 @@ if (!function_exists('passwordgenerate')) {
             $default_language=$row['language'];
             $template=$row['template'];
             if (file_exists(EASYWIDIR . '/languages/'.$template.'/'.$user_language.'/'.$filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR.'/languages/'.$template.'/'.$user_language.'/'.$filename.'.xml');
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'.$template.'/'.$user_language.'/'.$filename.'.xml');
             } else if (file_exists(EASYWIDIR . '/languages/'.$template.'/'.$default_language.'/'.$filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR.'/languages/'.$template.'/'.$default_language.'/'.$filename.'.xml');
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'.$template.'/'.$default_language.'/'.$filename.'.xml');
             } else if (file_exists(EASYWIDIR . '/languages/default/'.$user_language.'/'.$filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR.'/languages/default/'.$user_language.'/'.$filename.'.xml');
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$user_language.'/'.$filename.'.xml');
             } else if (file_exists(EASYWIDIR . '/languages/default/'.$default_language.'/'.$filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR.'/languages/default/'.$default_language.'/'.$filename.'.xml');
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$default_language.'/'.$filename.'.xml');
             } else if (file_exists(EASYWIDIR . '/languages/'.$user_language.'/'.$filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR."/languages/$user_language/$filename.xml");
             } else if (file_exists(EASYWIDIR . '/languages/'.$default_language.'/'.$filename.'.xml')) {
@@ -947,12 +947,12 @@ if (!function_exists('passwordgenerate')) {
         }
     }
     function IncludeTemplate($use,$file) {
-        if (is_file(EASYWIDIR.'/template/'.$use.'/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
-            return EASYWIDIR.'/template/'.$use.'/'.$file;
-        } else if (is_file(EASYWIDIR.'/template/default/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
-            return EASYWIDIR.'/template/default/'.$file;
+        if (is_file(EASYWIDIR . '/template/'.$use.'/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
+            return EASYWIDIR . '/template/'.$use.'/'.$file;
+        } else if (is_file(EASYWIDIR . '/template/default/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
+            return EASYWIDIR . '/template/default/'.$file;
         } else if (preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
-            return EASYWIDIR.'/template/'.$file;
+            return EASYWIDIR . '/template/'.$file;
         }
     }
     function User_Permissions($id) {

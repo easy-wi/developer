@@ -56,7 +56,7 @@ if (isset($admin_id)) {
 
 if ($ui->st('d','get')=='ud' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $serverid=(int)$ui->id('id',19,'get');
-    require_once(EASYWIDIR.'/stuff/keyphrasefile.php');
+    require_once(EASYWIDIR . '/stuff/keyphrasefile.php');
     $query=$sql->prepare("SELECT g.`rootID`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,g.`newlayout`,s.`servertemplate`,t.`modfolder`,t.`shorten`,u.`fdlpath`,u.`cname` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($serverid,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

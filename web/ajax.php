@@ -38,7 +38,7 @@
  */
 
 define('EASYWIDIR', dirname(__FILE__));
-if (is_dir(EASYWIDIR.'/install')) die('Please remove the "install" folder');
+if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/vorlage.php');

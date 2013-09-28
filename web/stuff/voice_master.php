@@ -452,8 +452,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
 
                             # https://github.com/easy-wi/developer/issues/70
                             $sshkey=removePub($row['keyname']);
-                            $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
-                            $key=EASYWIDIR.'/keys/'.$sshkey;
+                            $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
+                            $key=EASYWIDIR . '/keys/'.$sshkey;
 
                             if (file_exists($pubkey) and file_exists($key)) {
                                 $ssh2= @ssh2_connect($queryip,$row['decryptedssh2port'],array('hostkey'=>'ssh-rsa'));

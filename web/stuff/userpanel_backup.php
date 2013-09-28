@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: userpanel_backup.php.
  * Author: Ulrich Block
@@ -34,7 +35,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['ftpbackup']) or !isset($server_id)) {
+if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['ftpbackup']) or !$ui->id('id', 10, 'get')) {
     header('Location: userpanel.php');
     die;
 }

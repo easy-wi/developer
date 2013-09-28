@@ -40,51 +40,55 @@ include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
-$pa=User_Permissions($admin_id);
-if ((isset($admin_id) and !$pa['user'] and !$pa['gserver'] and !$pa['root']) or !isset($admin_id)) {
+if (!isset($admin_id) or !isset($reseller_id)) {
+    die('No access');
+}
+$pa = User_Permissions($admin_id);
+if (!$pa['user'] and !$pa['gserver'] and !$pa['root']) {
 	die('No access');
 }
-if ($reseller_id!=0 and isset($admin_id) and $admin_id!=$reseller_id) {
-	$reseller_id=$admin_id;
+if ($reseller_id != 0 and isset($admin_id) and $admin_id != $reseller_id) {
+	$reseller_id = $admin_id;
 }
-if (isset($server_id)) {
-	$referrer=explode('/', str_replace(array('http://','https://'),'',strtolower($ui->escaped('HTTP_REFERER','server'))));
-    $refstring=explode('?',$referrer[1]);
+if ($ui->id('id', 19, 'get')) {
+	$referrer = explode('/', str_replace(array('http://','https://'), '', strtolower($ui->escaped('HTTP_REFERER','server'))));
+    $refstring = explode('?',$referrer[1]);
     if (isset($refstring[1])) {
-        $from=explode('&',$refstring[1]);
+        $from = explode('&',$refstring[1]);
     }
-    $query=$sql->prepare("SELECT `resellerid`,`accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
-    $query->execute(array($server_id));
+    $query = $sql->prepare("SELECT `resellerid`,`accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
+    $query->execute(array($ui->id('id', 19, 'get')));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $resellerid=$row['resellerid'];
-        $accounttype=$row['accounttype'];
+        $resellerid = $row['resellerid'];
+        $accounttype = $row['accounttype'];
     }
-    if ($reseller_id!=0 and $resellerid!=$reseller_id) {
+    $sql=null;
+    if ($reseller_id != 0 and $resellerid != $reseller_id) {
         header('Location: login.php');
         die('Please allow redirection');
     }
-    if (isset($accounttype) and $accounttype=='u') {
-        $_SESSION['userid']=$server_id;
-        if (isset($from) and $from[0]=="w=gs") {
+    if (isset($accounttype) and $accounttype == 'u') {
+        $_SESSION['userid'] = $ui->id('id', 19, 'get');
+        if (isset($from) and $from[0] == "w=gs") {
             header('Location: userpanel.php?w=gs');
             die('Please allow redirection');
-        } else if (isset($from) and $from[0]=="w=vo") {
+        } else if (isset($from) and $from[0] == "w=vo") {
             header('Location: userpanel.php?w=vo');
             die('Please allow redirection');
-        } else if (isset($from) and $from[0]=="w=my") {
+        } else if (isset($from) and $from[0] == "w=my") {
             header('Location: userpanel.php?w=my');
             die('Please allow redirection');
         } else {
             header('Location: userpanel.php');
             die('Please allow redirection');
         }
-    } else if (isset($accounttype) and $accounttype=='r' and isset($resellerid)) {
-        $_SESSION['oldid']=$admin_id;
-        $_SESSION['oldresellerid']=$reseller_id;
-        $_SESSION['adminid']=$server_id;
-        $_SESSION['resellerid']=$resellerid;
-        if ($reseller_id==0) {
-            $_SESSION['oldadminid']=$admin_id;
+    } else if (isset($accounttype) and $accounttype == 'r' and isset($resellerid)) {
+        $_SESSION['oldid'] = $admin_id;
+        $_SESSION['oldresellerid'] = $reseller_id;
+        $_SESSION['adminid'] = $ui->id('id', 19, 'get');
+        $_SESSION['resellerid'] = $resellerid;
+        if ($reseller_id == 0) {
+            $_SESSION['oldadminid'] = $admin_id;
         }
         header('Location: admin.php');
         die('Please allow redirection');
@@ -93,7 +97,7 @@ if (isset($server_id)) {
         die('Please allow redirection');
     }
 } else {
+    $sql=null;
 	header('Location: login.php');
 	die('Please allow redirection');
 }
-$sql=null;

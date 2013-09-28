@@ -59,8 +59,8 @@ if (!function_exists('ssh2_execute')) {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($row['keyname']);
-                $pubkey=EASYWIDIR.'/keys/'.$sshkey.'.pub';
-                $key=EASYWIDIR.'/keys/'.$sshkey;
+                $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
+                $key=EASYWIDIR . '/keys/'.$sshkey;
 
                 $ssh2Socket=($ssh2Publickey=='Y') ? (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($ssh2IP,$ssh2Port,array('hostkey'=>'ssh-rsa')) : false : @ssh2_connect($ssh2IP,$ssh2Port);
                 if ($ssh2Socket==true) {

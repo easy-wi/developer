@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: lend.php.
  * Author: Ulrich Block
@@ -96,11 +97,11 @@ $query=$sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpupl
 $query->execute(array($aeskey,$reseller_id));
 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 	$active=$row['active'];
-    $activeGS=($row['activeGS']=='B' or ($row['activeGS']!='N' and (isset($admin_id) or ($row['activeGS']!='N' and isset($get_shorten) and $get_shorten=='api'))) or ($row['activeGS']=='R' and isset($user_id)) or ($row['activeGS']=='A' and !isset($user_id))) ? 'Y' : 'N';
-    $activeVS=($row['activeVS']=='B' or ($row['activeVS']!='N' and (isset($admin_id) or ($row['activeVS']!='N' and isset($get_shorten) and $get_shorten=='api'))) or ($row['activeVS']=='R' and isset($user_id)) or ($row['activeVS']=='A' and !isset($user_id))) ? 'Y' : 'N';
-    $ftpupload=($row['ftpupload']=='Y' or ($row['ftpupload']!='N' and (isset($admin_id) or ($row['ftpupload']!='N' and isset($get_shorten) and $get_shorten=='api'))) or ($row['ftpupload']=='R' and isset($user_id)) or ($row['ftpupload']=='A' and !isset($user_id))) ? 'Y' : 'N';
+    $activeGS=($row['activeGS']=='B' or ($row['activeGS']!='N' and (isset($admin_id) or ($row['activeGS']!='N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeGS']=='R' and isset($user_id)) or ($row['activeGS']=='A' and !isset($user_id))) ? 'Y' : 'N';
+    $activeVS=($row['activeVS']=='B' or ($row['activeVS']!='N' and (isset($admin_id) or ($row['activeVS']!='N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeVS']=='R' and isset($user_id)) or ($row['activeVS']=='A' and !isset($user_id))) ? 'Y' : 'N';
+    $ftpupload=($row['ftpupload']=='Y' or ($row['ftpupload']!='N' and (isset($admin_id) or ($row['ftpupload']!='N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['ftpupload']=='R' and isset($user_id)) or ($row['ftpupload']=='A' and !isset($user_id))) ? 'Y' : 'N';
     $ftpuploadpath=$row['decyptedftpuploadpath'];
-    if ((isset($get_shorten) and $get_shorten=='api') or (in_array($row['activeGS'],array('B','R')) and (isset($user_id) or isset($admin_id)))) {
+    if (($ui->username('shorten', 50, 'get') == 'api') or (in_array($row['activeGS'],array('B','R')) and (isset($user_id) or isset($admin_id)))) {
         $mintime=(int)$row['mintimeRegistered'];
         $time=(int)$row['mintimeRegistered'];
         $maxtime=(int)$row['maxtimeRegistered'];
@@ -119,7 +120,7 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $player=(int)$row['maxplayer'];
         $playersteps=(int)$row['playersteps'];
     }
-    if ((isset($get_shorten) and $get_shorten=='api') or (in_array($row['activeVS'],array('B','R')) and (isset($user_id) or isset($admin_id)))) {
+    if (($ui->username('shorten', 50, 'get') == 'api') or (in_array($row['activeVS'],array('B','R')) and (isset($user_id) or isset($admin_id)))) {
         $vomintime=(int)$row['vomintimeRegistered'];
         $votime=(int)$row['vomintimeRegistered'];
         $vomaxtime=(int)$row['vomaxtimeRegistered'];
@@ -171,7 +172,7 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         }
     }
 }
-if (isset($get_shorten) and $get_shorten=='api' and ($lendaccess==1 or $lendaccess==3)) $loguserip='';
+if ($ui->username('shorten', 50, 'get') == 'api' and ($lendaccess==1 or $lendaccess==3)) $loguserip='';
 $gsstillrunning=false;
 $vostillrunning=false;
 if (!isset($page_include) and $ui->id('xml',1,'post')==1) {
@@ -202,7 +203,9 @@ if ($activeGS=='Y' and ($w=='gs' or $d=='gs' or $ui->st('w','post')=='gs' or (is
 else if ($activeVS=='Y' and ($w=='vo' or $d=='vo' or $ui->st('w','post')=='vo' or (isset($page_name) and $page_name==strtolower(str_replace(" ",'-',$gsprache->voiceserver))))) $servertype='v';
 $volallowed=($vocount>0) ? true : false;
 $gslallowed=($gscount>0) ? true : false;
-if(!isset($servertype) and !isset($page_include) and (!isset($get_shorten) or ($get_shorten=='api') and !$ui->st('w','post'))) $servertype=($vocount>$gscount) ? 'v' : 'g';
+if(!isset($servertype) and !isset($page_include) and (!$ui->username('shorten', 50, 'get') or ($ui->username('shorten', 50, 'get') == 'api') and !$ui->st('w','post'))) {
+    $servertype=($vocount>$gscount) ? 'v' : 'g';
+}
 if(isset($servertype)) {
     $query=$sql->prepare("SELECT `id`,`serverid`,`rcon`,`password`,`slots`,`started`,`lendtime` FROM `lendedserver` WHERE `lenderip`=? AND `servertype`=? AND `resellerid`=? LIMIT 1");
     $query1=$sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
@@ -676,9 +679,9 @@ XML;
                         $page_data->setCanonicalUrl($s);
 						$template_file='page_lenddata.tpl';
 					} else {
-						if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl')) {
-							include(EASYWIDIR . '/template/'.$template_to_use.'/lenddata.tpl');
-						} else if (is_file(EASYWIDIR.'/template/default/lenddata.tpl')) {
+						if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
+							include(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl');
+						} else if (is_file(EASYWIDIR . '/template/default/lenddata.tpl')) {
 							include(EASYWIDIR . '/template/default/lenddata.tpl');
 						} else {
 							include(EASYWIDIR . '/template/lenddata.tpl');
@@ -706,9 +709,9 @@ XML;
                 $page_data->setCanonicalUrl($s);
 				$template_file='page_lend.tpl';
 			} else {
-				if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl')) {
-					include(EASYWIDIR . '/template/'.$template_to_use.'/lend.tpl');
-				} else if (is_file(EASYWIDIR.'/template/default/lend.tpl')) {
+				if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
+					include(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl');
+				} else if (is_file(EASYWIDIR . '/template/default/lend.tpl')) {
 					include(EASYWIDIR . '/template/default/lend.tpl');
 				} else {
 					include(EASYWIDIR . '/template/lend.tpl');
@@ -920,9 +923,9 @@ XML;
                         $page_data->setCanonicalUrl($s);
 						$template_file='page_lenddata.tpl';
 					} else {
-						if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lenddata.tpl')) {
-							include(EASYWIDIR . '/template/'.$template_to_use.'/lenddata.tpl');
-						} else if (is_file(EASYWIDIR.'/template/default/lenddata.tpl')) {
+						if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
+							include(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl');
+						} else if (is_file(EASYWIDIR . '/template/default/lenddata.tpl')) {
 							include(EASYWIDIR . '/template/default/lenddata.tpl');
 						} else {
 							include(EASYWIDIR . '/template/lenddata.tpl');
@@ -945,9 +948,9 @@ XML;
                     $page_data->setCanonicalUrl($s);
 					$template_file='page_lend.tpl';
 				} else {
-					if (is_file(EASYWIDIR.'/template/'.$template_to_use.'/lend.tpl')) {
-						include(EASYWIDIR . '/template/'.$template_to_use.'/lend.tpl');
-					} else if (is_file(EASYWIDIR.'/template/default/lend.tpl')) {
+					if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
+						include(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl');
+					} else if (is_file(EASYWIDIR . '/template/default/lend.tpl')) {
 						include(EASYWIDIR . '/template/default/lend.tpl');
 					} else {
 						include(EASYWIDIR . '/template/lend.tpl');

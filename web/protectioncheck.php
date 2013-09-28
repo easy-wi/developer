@@ -36,129 +36,123 @@
  */
 
 if (isset($page_include)) {
-    $default_language=$user_language;
-    $reseller_id=0;
-    if ($seo=='N') {
-        $protection_link=$page_url.'/protectioncheck.php';
-    } else {
-        $protection_link=$page_url.'/'.$user_language.'/'.$page_category.'/';
-    }
+    $default_language = $user_language;
+    $reseller_id = 0;
+    $protection_link= ($seo == 'N') ? $page_url . '/protectioncheck.php' : $page_url . '/' . $user_language . '/' . $page_category . '/';
 } else {
     define('EASYWIDIR', dirname(__FILE__));
-    if (is_dir(EASYWIDIR."/install")) die('Please remove the "install" folder');
-    $logininclude=true;
+    if (is_dir(EASYWIDIR."/install")) {
+        die('Please remove the "install" folder');
+    }
+    $logininclude = true;
     include(EASYWIDIR . '/stuff/vorlage.php');
     include(EASYWIDIR . '/stuff/class_validator.php');
     include(EASYWIDIR . '/stuff/functions.php');
     include(EASYWIDIR . '/stuff/settings.php');
-    $query="SELECT `language` FROM `settings` WHERE `resellerid`=0 LIMIT 1";
-    foreach ($sql->query($query) as $row) {
-        $default_language=$row['language'];
+    if (!isset($user_language)) {
+        $user_language = $rSA['language'];
     }
-    if (!isset($user_language)) $user_language=$default_language;
 }
-if ($ui->escaped('email','post')!='') {
+if ($ui->escaped('email', 'post')!='') {
     $fullday=date('Y-m-d H:i:s',strtotime("+1 day"));
-    $query=$sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
     $query->execute(array($loguserip));
     if ($query->rowCount()==0) {
-        $query=$sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','bot',?)");
+        $query = $sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','bot',?)");
     } else {
-        $query=$sql->prepare("UPDATE `badips` SET `bantime`=?,`failcount`=`failcount`+1,`reason`='bot' WHERE `badip`=? LIMIT 1");
+        $query = $sql->prepare("UPDATE `badips` SET `bantime`=?,`failcount`=`failcount`+1,`reason`='bot' WHERE `badip`=? LIMIT 1");
     }
-    $query->execute(array($fullday,$loguserip));
+    $query->execute(array($fullday, $loguserip));
     die('IP banned');
 }
-$sprache=getlanguagefile('gserver',$user_language,0);
-$ipvalue="111.111.111.111:27015";
-if ($ui->ipport('serveraddress','post') or (isset($server_ip) and isset($server_port))) {
-    if ($ui->ipport('serveraddress','post')) {
-        $serveraddress=$ui->ipport('serveraddress','post');
-        $adresse_awk=explode(":",$serveraddress);
-        $ip=$adresse_awk[0];
-        $port=$adresse_awk[1];
-    } else if (isset($server_ip) and isset($server_port)) {
-        $ip=$server_ip;
-        $port=$server_port;
-        $serveraddress=$server_ip.":".$server_port;
+$sprache = getlanguagefile('gserver', $user_language, 0);
+$ipvalue = '111.111.111.111:27015';
+if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port('po', 'get'))) {
+    if ($ui->ipport('serveraddress', 'post')) {
+        $serveraddress = $ui->ipport('serveraddress', 'post');
+        $adresse_awk = explode(':', $serveraddress);
+        $ip = $adresse_awk[0];
+        $port = $adresse_awk[1];
+    } else if ($ui->ip('ip', 'get') and $ui->port('po', 'get')) {
+        $ip = $ui->ip('ip', 'get');
+        $port = $ui->port('po', 'get');
+        $serveraddress = $ip . ':' . $port;
     }
-    if (isset($serveraddress)) $ipvalue=$serveraddress;
-    if(isset($ip)) {
-        $query=$sql->prepare("SELECT g.`protected`,g.`psince`,g.`queryName`,g.`queryNumplayers`,g.`queryMaxplayers`,g.`queryMap`,u.`cname`,t.`description` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`serverip`=? AND g.`port`=? LIMIT 1");
-        $query->execute(array($ip,$port));
-        $logs=array();
-        $xmllogs=array();
+    if (isset($serveraddress)) {
+        $ipvalue = $serveraddress;
+    }
+    if(isset($ip) and isset($port)) {
+        $query = $sql->prepare("SELECT g.`protected`,g.`psince`,g.`queryName`,g.`queryNumplayers`,g.`queryMaxplayers`,g.`queryMap`,u.`cname`,t.`description` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`serverip`=? AND g.`port`=? LIMIT 1");
+        $query->execute(array($ip, $port));
+        $logs = array();
+        $xmllogs = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $protected=$row['protected'];
-            $customer=$row['cname'];
-            $psince=$row['psince'];
-            $name=$row['queryName'];
-            $numplayers=$row['queryNumplayers'];
-            $maxplayers=$row['queryMaxplayers'];
-            $map=$row['queryMap'];
-            $type=$row['description'];
-            $query=$sql->prepare("SELECT `useraction`,`logdate` FROM `userlog` WHERE `logdate`>? AND `username`=? AND `useraction` LIKE ?");
-            $query->execute(array($psince,$customer,'%'.$serveraddress.'%'));
+            $protected = $row['protected'];
+            $customer = $row['cname'];
+            $psince = $row['psince'];
+            $name = $row['queryName'];
+            $numplayers = $row['queryNumplayers'];
+            $maxplayers = $row['queryMaxplayers'];
+            $map = $row['queryMap'];
+            $type = $row['description'];
+            $query = $sql->prepare("SELECT `useraction`,`logdate` FROM `userlog` WHERE `logdate`>? AND `username`=? AND `useraction` LIKE ?");
+            $query->execute(array($psince, $customer,'%'.$serveraddress.'%'));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $logentry=explode(" ", $row['useraction']);
-                if (($logentry[1]=="%gserver%" or $logentry[1]=="%addon%") and ($logentry[0]!='%resync%' and $logentry[0]!='%mod%')) {
-                    if ($default_language=="de") {
+                $logentry = explode(" ", $row['useraction']);
+                if (($logentry[1] == '%gserver%' or $logentry[1] == '%addon%') and ($logentry[0]!='%resync%' and $logentry[0]!='%mod%')) {
+                    if ($default_language == 'de') {
                         $time=explode(' ', $row['logdate']);
                         $time2=explode('-', $time[0]);
                         $time3=$time2[2].".".$time2[1].".".$time2[0]." ".$time[1];
                     } else {
                         $time3=$row['logdate'];
                     }
-                    $placeholders1=array('%start%','%stop%'," $serveraddress",' %gserver%');
-                    $placeholders2=array('%start%','%stop%','%addon%','%del%','%add%',' %ok%'," $serveraddress",' %gserver%');
-                    $replace1=array('<img src="'.$page_url.'/images/16_restart.png" alt="start" />', '<img src="'.$page_url.'/images/16_stop.png" alt="stop" />','','');
-                    $replace2=array('(Re)Start','Stop','Addon','Delete','Add','','','');
-                    $replacedpics=str_replace($placeholders1,$replace1,$row['useraction']);
-                    $replacedwords=str_replace($placeholders2,$replace2,$row['useraction']);
+                    $placeholders1 = array('%start%', '%stop%', ' ' . $serveraddress, ' %gserver%');
+                    $placeholders2 = array('%start%', '%stop%', '%addon%', '%del%', '%add%', ' %ok%', ' ' . $serveraddress,' %gserver%');
+                    $replace1 = array('<img src="'.$page_url.'/images/16_restart.png" alt="start" />', '<img src="'.$page_url.'/images/16_stop.png" alt="stop" />', '', '');
+                    $replace2 = array('(Re)Start', 'Stop', 'Addon', 'Delete', 'Add', '', '', '');
+                    $replacedpics=str_replace($placeholders1, $replace1, $row['useraction']);
+                    $replacedwords=str_replace($placeholders2, $replace2, $row['useraction']);
                     if (!empty($replacedpics)) {
-                        if ($logentry[1]=="%gserver%") {
-                            $logs[]="$replacedpics: $time3";
+                        if ($logentry[1] == '%gserver%') {
+                            $logs[] = $replacedpics . ': ' . $time3;
                         }
-                        $xmllogs[$time3]="$replacedwords";
+                        $xmllogs[$time3] = $replacedwords;
                     }
                 }
             }
-            if ($default_language=="de") {
-                $since=date('d.m.Y H:i:s',strtotime($psince));
-            } else {
-                $since=$psince;
-            }
+            $since = ($default_language == 'de') ? date('d.m.Y H:i:s',strtotime($psince)) : $psince;
         }
     }
 }
 if (!isset($protected)) {
-    $imgName='64_protected_unknown';
-    $imgAlt='unknown';
-} else if ($protected=="N") {
-    $imgName='64_unprotected';
-    $imgAlt='unprotected';
-} else if ($protected=="Y") {
-    $imgName='64_protected';
-    $imgAlt='protected';
+    $imgName = '64_protected_unknown';
+    $imgAlt = 'unknown';
+} else if ($protected == 'N') {
+    $imgName = '64_unprotected';
+    $imgAlt = 'unprotected';
+} else if ($protected == 'Y') {
+    $imgName = '64_protected';
+    $imgAlt = 'protected';
 }
-if ($ui->ipport('serveraddress','post')) {
+if ($ui->ipport('serveraddress', 'post')) {
     if (isset($page_include)) {
-        $template_file='page_protectioncheck.tpl';
+        $template_file = 'page_protectioncheck.tpl';
     } else {
-        if (file_exists(EASYWIDIR . '/template/'.$template_to_use.'/protectioncheck.tpl')) {
-            include(EASYWIDIR . '/template/'.$template_to_use.'/protectioncheck.tpl');
+        if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
+            include(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl');
         } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
             include(EASYWIDIR . '/template/default/protectioncheck.tpl');
         } else {
             include(EASYWIDIR . '/template/protectioncheck.tpl');
         }
     }
-} else if (!isset($page_include) and isset($server_ip) and isset($server_port)) {
-    if (isset($get_gamestring) and $get_gamestring == 'xml') {
+} else if (!isset($page_include) and $ui->ip('ip', 'get') and $ui->port('po', 'get')) {
+    if ($ui->username('gamestring', 50, 'get') == 'xml') {
         if (!isset($protected)) {
-            echo "unknown";
-        } else if ($protected=="N") {
-            $pstatus="no";
+            echo 'unknown';
+        } else if ($protected == 'N') {
+            $pstatus = 'no';
             $xml=<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE status>
@@ -174,7 +168,7 @@ if ($ui->ipport('serveraddress','post')) {
 XML;
             header("Content-type: text/xml; charset=UTF-8");
             echo $xml;
-        } else if ($protected=="Y") {
+        } else if ($protected == 'Y') {
             $pstatus="yes";
             $xml='<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <!DOCTYPE status>
@@ -202,27 +196,27 @@ XML;
         }
     } else {
         if (!isset($protected)) {
-            echo "unknown";
-        } else if ($protected=="N") {
-            echo "no";
-        } else if ($protected=="Y") {
-            echo "yes";
+            echo 'unknown';
+        } else if ($protected == 'N') {
+            echo 'no';
+        } else if ($protected == 'Y') {
+            echo 'yes';
         }
     }
 } else if (isset($page_include)) {
 
     // https://github.com/easy-wi/developer/issues/62
-    $langLinks=array();
+    $langLinks = array();
     foreach ($languages as $l) {
-        $tempLanguage=getlanguagefile('page',$l,0);
-        $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+        $tempLanguage = getlanguagefile('page', $l, 0);
+        $langLinks[$l] = ($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
     }
     $page_data->langLinks($langLinks);
 
-    $template_file='page_protectioncheck.tpl';
+    $template_file = 'page_protectioncheck.tpl';
 } else {
-    if (file_exists(EASYWIDIR . '/template/'.$template_to_use.'/protectioncheck.tpl')) {
-        include(EASYWIDIR . '/template/'.$template_to_use.'/protectioncheck.tpl');
+    if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
+        include(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl');
     } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
         include(EASYWIDIR . '/template/default/protectioncheck.tpl');
     } else {

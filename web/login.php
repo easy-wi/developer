@@ -42,7 +42,7 @@ if (count($s)>1) {
     $ewInstallPath=implode('/',$s).'/';
 }
 define('EASYWIDIR', dirname(__FILE__));
-if (is_dir(EASYWIDIR.'/install')) die('Please remove the "install" folder');
+if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
 if ((!isset($ui->get['w']) and isset($ui->post['username'])) or (isset($ui->get['w']) and $ui->get['w']!='pr')) $logininclude=true;
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
