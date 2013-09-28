@@ -941,7 +941,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lG']) and $licenceD
                 }
                 $query=$sql->prepare("UPDATE `serverlist` SET `fps`=?,`map`=?,`mapGroup`=?,`cmd`=?,`owncmd`=?,`tic`=?,`userfps`=?,`usertick`=?,`usermap`=?,`user_uploaddir`=?,`upload`=?,`uploaddir`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($fps,$map,$mapGroup,$cmd,$owncmd,$tic,$userfps,$usertick,$usermap,$user_uploaddir,$upload,$uploaddir,$aeskey,$id,$reseller_id));
-                $template_file .=$shorten." ".$serverip_new.":".$port_new.": ".$sprache->server_ud."<br />";
+                $template_file .=$shorten . '  ' . $serverip_new.":".$port_new.": ".$sprache->server_ud."<br />";
                 $i++;
             }
             if (isset($updateGo)) {

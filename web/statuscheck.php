@@ -878,9 +878,9 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                             $modbadserver[$param]=$default[$param];
                                             print $vrow['type']." server $address $param != ".$default[$param].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT',$server['virtualserver_name'])."\r\n";
                                             if (isset($rulebreak)) {
-                                                $rulebreak .="<br />".$param." ".$vosprache->isnot." ".$default[$param];
+                                                $rulebreak .="<br />".$param . '  ' . $vosprache->isnot . '  ' . $default[$param];
                                             } else {
-                                                $rulebreak=$param." ".$vosprache->isnot." ".$default[$param];
+                                                $rulebreak=$param . '  ' . $vosprache->isnot . '  ' . $default[$param];
                                             }
                                         }
                                     }
@@ -891,9 +891,9 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                             $modbadserver[$param]=$default[$param];
                                             print $vrow['type']." server $address $param != ".$default[$param].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT',$server['virtualserver_name'])."\r\n";
                                             if (isset($rulebreak)) {
-                                                $rulebreak .="<br />".$param." ".$vosprache->isnot." ".$default[$param];
+                                                $rulebreak .="<br />".$param . '  ' . $vosprache->isnot . '  ' . $default[$param];
                                             } else {
-                                                $rulebreak=$param." ".$vosprache->isnot." ".$default[$param];
+                                                $rulebreak=$param . '  ' . $vosprache->isnot . '  ' . $default[$param];
                                             }
                                         }
                                     }
@@ -902,17 +902,17 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                     $modbadserver['virtualserver_welcomemessage']=$default['defaultwelcome'];
                                     print $vrow['type']." server $address $param != ".$default['defaultwelcome'].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT',$server['virtualserver_name'])."\r\n";
                                     if (isset($rulebreak)) {
-                                        $rulebreak .="<br />virtualserver_welcomemessage ".$vosprache->isnot." ".$default['defaultwelcome'];
+                                        $rulebreak .="<br />virtualserver_welcomemessage ".$vosprache->isnot . '  ' . $default['defaultwelcome'];
                                     } else {
-                                        $rulebreak="virtualserver_welcomemessage ".$vosprache->isnot." ".$default['defaultwelcome'];
+                                        $rulebreak="virtualserver_welcomemessage ".$vosprache->isnot . '  ' . $default['defaultwelcome'];
                                     }
                                 }
                                 if (isset($ts3id,$lendserver) and $lendserver=='N' and $slots<$server['virtualserver_maxclients']) {
                                     print $vrow['type']." server $address virtualserver_maxclients ${sd['virtualserver_maxclients']}!= ".$slots.". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT',$server['virtualserver_name'])."\r\n";
                                     if (isset($rulebreak)) {
-                                        $rulebreak .="<br />virtualserver_maxclients ".$vosprache->isnot." ".$slots;
+                                        $rulebreak .="<br />virtualserver_maxclients ".$vosprache->isnot . '  ' . $slots;
                                     } else {
-                                        $rulebreak="virtualserver_maxclients ".$vosprache->isnot." ".$slots;
+                                        $rulebreak="virtualserver_maxclients ".$vosprache->isnot . '  ' . $slots;
                                     }
                                 }
                                 if (isset($ts3id) and $password=='Y' and $sd['virtualserver_flag_password']!='1') {

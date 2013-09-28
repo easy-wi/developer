@@ -91,7 +91,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		$ram=$row['ram'];
 		$maxserver=$row['maxserver'];
 		$esxi=$row['esxi'];
-		$besthostcpu=$row['cpu']." ".$cores."x".$mhz." MHz";
+		$besthostcpu=$row['cpu'] . '  ' . $cores."x".$mhz." MHz";
 		if ($row['thin']=="Y") {
 			$percent=$row['thinquota'];
 		} else {
@@ -333,8 +333,8 @@ if ($ui->smallletters('w',5,'get')=='check') {
 	}
 ?>
 <select name="anticheat">
-	<option value="1"><?php echo $anticheatsoft." ".$sprache->on;?></option>
-	<?php if (!$ui->username('short','50','get')){ ?><option value="2" <?php if($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft." ".$sprache->off2;?></option><?php } ?>
+	<option value="1"><?php echo $anticheatsoft . '  ' . $sprache->on;?></option>
+	<?php if (!$ui->username('short','50','get')){ ?><option value="2" <?php if($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft . '  ' . $sprache->off2;?></option><?php } ?>
 	<?php echo $eac;?>
 </select>
 <?php

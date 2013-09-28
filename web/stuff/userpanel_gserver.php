@@ -599,7 +599,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         $split_config=preg_split('/\//', $config, -1, PREG_SPLIT_NO_EMPTY);
                         $folderfilecount=count($split_config)-1;
                         $i=0;
-                        $folders=$pserver.$serverip.'_'.$port.'/'. $ftpshorten;
+                        $folders=$pserver.$serverip.'_'.$port. '/'. $ftpshorten;
                         while ($i<$folderfilecount) {
                             $folders .="/".$split_config[$i];
                             $i++;
@@ -607,7 +607,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         $uploadfile=$split_config[$i];
                         ftp_chdir($ftp_connect,$folders);
                         $checkupload=@ftp_fput($ftp_connect,$uploadfile,$temp,FTP_ASCII);
-                        $template_file=($checkupload) ? $sprache->updated." ".$uploadfile : $sprache->failed." ".$folders.'/'. $uploadfile;
+                        $template_file=($checkupload) ? $sprache->updated . '  ' . $uploadfile : $sprache->failed . '  ' . $folders. '/'. $uploadfile;
                     } else {
                         $template_file='Error: Logindata';
                     }

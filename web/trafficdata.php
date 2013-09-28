@@ -151,7 +151,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
             $stamp_updated=$row[$column_date];
             $date=explode(' ',$row[$column_date]);
             $hour=explode(':',$date[1]);
-            $day=$date[0]." ".$hour[0].":00:00";
+            $day=$date[0] . '  ' . $hour[0].":00:00";
             if (searchinnerarray($ip_src,$vserverips) or searchinnerarray($ip_dst,$vserverips)) {
                 if (searchinnerarray($ip_src,$vserverips)) {
                     $direction="out";

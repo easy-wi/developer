@@ -166,7 +166,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $mhz=$row['mhz'];
                     $ram=$row['ram'];
-                    $besthostcpu=$row['cpu']." ".$row['cores']."x".$row['mhz']." MHz";
+                    $besthostcpu=$row['cpu'] . '  ' . $row['cores']."x".$row['mhz']." MHz";
                     $maxserver=$row['maxserver'];
                     $esxi=$row['esxi'];
                     $core='';
@@ -213,7 +213,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
                     $notexclusive=1;
                     $mhz=$row['mhz'];
                     $ram=$row['ram'];
-                    $besthostcpu=$row['cpu']." ".$row['cores']."x".$row['mhz']." MHz";
+                    $besthostcpu=$row['cpu'] . '  ' . $row['cores']."x".$row['mhz']." MHz";
                     $maxserver=$row['maxserver'];
                     $core='';
                     $hdd='';
@@ -305,7 +305,7 @@ if ($ui->st('d','get')=='ad' and is_numeric($licenceDetails['lVs']) and $licence
         $query=$sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $templates[]=array('id'=>$row['id'],'description'=>$row['description']." ".$row['bitversion']." Bit");
+            $templates[]=array('id'=>$row['id'],'description'=>$row['description'] . '  ' . $row['bitversion']." Bit");
         }
         $template_file="admin_root_vserver_add.tpl";
     } else if ($ui->smallletters('action',2,'post')=='ad'){

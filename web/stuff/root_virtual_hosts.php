@@ -138,9 +138,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         $hddamount=str_replace('TB,', '', $space)*1000;
                     }
                     if(isset($hdd)){
-                        $hdd .="\r\n".$uid." ".$hddamount;
+                        $hdd .="\r\n".$uid . '  ' . $hddamount;
                     } else {
-                        $hdd=$uid." ".$hddamount;
+                        $hdd=$uid . '  ' . $hddamount;
                     }
                     $i++;
                 }

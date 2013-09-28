@@ -78,7 +78,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
             else $shortens=$row['shorten'];
         }
         $webhostdomain=webhostdomain($reseller_id);
-        $template_file=(ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh backup $gsfolder \"$shortens\" \"$webhostdomain\" \"$ftpbackup\"")===false) ? "Error: ".$ssh_reply: $template_file=$gsprache->backup." ".$sprache->create;
+        $template_file=(ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh backup $gsfolder \"$shortens\" \"$webhostdomain\" \"$ftpbackup\"")===false) ? "Error: ".$ssh_reply: $template_file=$gsprache->backup . '  ' . $sprache->create;
     } else if ($ui->w('action',3,'post')=='md'){
         $template_file="userpanel_gserver_backup_md.tpl";
     } else if ($ui->w('action',3,'post')=='md2') {
@@ -111,7 +111,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
             $i++;
         }
         $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : $webhostdomain="http://".$ui->server['HTTP_HOST'].$path;
-        $template_file=(ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh restore $gsfolder \"".$ui->gamestring('template','post')."\" \"$webhostdomain\" \"$ftpbackup\"")===false) ? "Error: ".$ssh_reply: $template_file=$gsprache->backup." ".$sprache->recover;
+        $template_file=(ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh restore $gsfolder \"".$ui->gamestring('template','post')."\" \"$webhostdomain\" \"$ftpbackup\"")===false) ? "Error: ".$ssh_reply: $template_file=$gsprache->backup . '  ' . $sprache->recover;
     } else {
         $template_file='userpanel_404.tpl';
     }

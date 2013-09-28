@@ -117,7 +117,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=? AND `resellerid`=? LIMIT 1");
 		$pselect->execute(array($ui->post['what'],$reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			$display=$extra." ".$row['cname'];
+			$display=$extra . '  ' . $row['cname'];
 		}
 	} else if (isid($ui->post['what'],'30') and $ui->st('kind','post')=="se") {
 		$kind='se';
@@ -125,7 +125,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$pselect=$sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
 		$pselect->execute(array($ui->post['what'],$reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			$display=$sprache->server." ".$row['ip'].':'.$row['port'];
+			$display=$sprache->server . '  ' . $row['ip'].':'.$row['port'];
 		}
 		$pselect=$sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
 		$pselect->execute(array($reseller_id));
@@ -143,7 +143,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$pselect=$sql->prepare("SELECT `ssh2ip` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 		$pselect->execute(array($ui->post['what'],$reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			$display=$sprache->server." ".$row['ssh2ip'];
+			$display=$sprache->server . '  ' . $row['ssh2ip'];
 		}
 		$pselect=$sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? ORDER BY `ssh2ip`");
 		$pselect->execute(array($reseller_id));

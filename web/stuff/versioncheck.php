@@ -73,10 +73,10 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
             if (is_dir($dir)) {
                 $dircontent=scandir($dir);
                 foreach ($dircontent as $c) {
-                    if ($c!='.' and $c!='..' and is_dir($dir.'/'. $c)) {
-                        rmr($dir.'/'. $c);
+                    if ($c!='.' and $c!='..' and is_dir($dir. '/'. $c)) {
+                        rmr($dir. '/'. $c);
                     } else if ($c!='.' and $c!='..') {
-                        unlink($dir.'/'. $c);
+                        unlink($dir. '/'. $c);
                     }
                 }
                 rmdir($dir);

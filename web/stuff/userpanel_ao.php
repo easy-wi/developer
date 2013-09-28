@@ -104,9 +104,9 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
             $customer=$customer.'-'.$gameserverid;
         }
         if ($protected=="N") {
-            $serverfolder=$customer.'/server/'.$serverip.'_'.$port.'/'. $shorten;
+            $serverfolder=$customer.'/server/'.$serverip.'_'.$port. '/'. $shorten;
         } else {
-            $serverfolder=$customer.'/pserver/'.$serverip.'_'.$port.'/'. $shorten;
+            $serverfolder=$customer . '/pserver/' . $serverip.'_'.$port. '/'. $shorten;
             $ftppass=$ppassword;
             $customer=$customer."-p";
         }

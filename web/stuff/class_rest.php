@@ -111,7 +111,7 @@ class easyWiRest {
             fclose($this->handle);
             $ex=explode("\r\n\r\n",$buffer);
             if (strpos($ex[0],'404')!==false) {
-                return 'file not found: '.$url.'/'. $file;
+                return 'file not found: '.$url. '/'. $file;
             } else {
                 return true;
             }

@@ -262,17 +262,17 @@ if (!function_exists('passwordgenerate')) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $default_language=$row['language'];
             $template=$row['template'];
-            if (file_exists(EASYWIDIR . '/languages/'.$template.'/'. $user_language.'/'. $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'.$template.'/'. $user_language.'/'. $filename.'.xml');
-            } else if (file_exists(EASYWIDIR . '/languages/'.$template.'/'. $default_language.'/'. $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'.$template.'/'. $default_language.'/'. $filename.'.xml');
-            } else if (file_exists(EASYWIDIR . '/languages/default/'.$user_language.'/'. $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$user_language.'/'. $filename.'.xml');
-            } else if (file_exists(EASYWIDIR . '/languages/default/'.$default_language.'/'. $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$default_language.'/'. $filename.'.xml');
-            } else if (file_exists(EASYWIDIR . '/languages/'.$user_language.'/'. $filename.'.xml')) {
+            if (file_exists(EASYWIDIR . '/languages/'. $template. '/'. $user_language. '/'. $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'. $template. '/'. $user_language. '/'. $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/'. $template. '/'. $default_language. '/'. $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'. $template. '/'. $default_language. '/'. $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/default/'.$user_language. '/'. $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$user_language. '/'. $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/default/'.$default_language. '/'. $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$default_language. '/'. $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/'. $user_language. '/'. $filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR."/languages/$user_language/$filename.xml");
-            } else if (file_exists(EASYWIDIR . '/languages/'.$default_language.'/'. $filename.'.xml')) {
+            } else if (file_exists(EASYWIDIR . '/languages/'. $default_language. '/'. $filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR."/languages/$default_language/$filename.xml");
             }
         }
@@ -461,7 +461,7 @@ if (!function_exists('passwordgenerate')) {
                 $pserver="server/";
                 $absolutepath="/home/".$customer."/server/".$gsip."_"."$port/$folder";
             }
-            $bindir=$absolutepath.'/'. $binarydir;
+            $bindir=$absolutepath. '/'. $binarydir;
             $cvarprotect=array();
             if ($qstat=='hla2s' and $tvenable=='Y') $slots++;
             $modsCmds=array();
@@ -700,9 +700,9 @@ if (!function_exists('passwordgenerate')) {
                                         if ($cfgtype=='cfg' and preg_match("/^(.*)".strtolower($cvar)."\s+(.*)$/",$lline)) {
                                             $splitline=preg_split("/$cvar/",$lline,-1,PREG_SPLIT_NO_EMPTY);
                                             if (isset($splitline[1])) {
-                                                fwrite($temp2,$splitline[0].$cvar." ".$value);
+                                                fwrite($temp2,$splitline[0].$cvar . '  ' . $value);
                                             } else {
-                                                fwrite($temp2,$cvar." ".$value);
+                                                fwrite($temp2,$cvar . '  ' . $value);
                                             }
                                             $edited=true;
                                         } else if ($cfgtype=='ini' and preg_match("/^(.*)".strtolower($cvar)."(\=|\s+\=\s+|\s+\=|\=\s+)(.*)$/",$lline)) {
@@ -833,7 +833,7 @@ if (!function_exists('passwordgenerate')) {
         $query->execute(array($userid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $usermail=$row['mail'];
-            $username=$row['vname']." ".$row['name'];
+            $username=$row['vname'] . '  ' . $row['name'];
             if ($username==' ' or $username=='') {
                 $username=$row['cname'];
             }
@@ -947,12 +947,12 @@ if (!function_exists('passwordgenerate')) {
         }
     }
     function IncludeTemplate($use,$file) {
-        if (is_file(EASYWIDIR . '/template/'.$use.'/'. $file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
-            return EASYWIDIR . '/template/'.$use.'/'. $file;
+        if (is_file(EASYWIDIR . '/template/' . $use. '/'. $file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
+            return EASYWIDIR . '/template/' . $use. '/'. $file;
         } else if (is_file(EASYWIDIR . '/template/default/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
             return EASYWIDIR . '/template/default/'.$file;
         } else if (preg_match('/^(.*)\.[\w]{1,}$/',$file)) {
-            return EASYWIDIR . '/template/'.$file;
+            return EASYWIDIR . '/template/' . $file;
         }
     }
     function User_Permissions($id) {
@@ -1056,7 +1056,7 @@ if (!function_exists('passwordgenerate')) {
             fclose($fp);
             $ex=explode("\r\n\r\n",$buffer);
             if (strpos($ex[0],'404')!==false) {
-                return 'file not found: '.$domain.'/'. $file;
+                return 'file not found: '.$domain. '/'. $file;
             } else if (isset($ex[1])) {
                 return $ex[1];
             } else {

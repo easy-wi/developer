@@ -89,7 +89,7 @@ if ($w=='lo') {
 	} else {
 		session_unset();
 		session_destroy();
-		redirect($page_url.'/'. $ewInstallPath);
+		redirect($page_url. '/'. $ewInstallPath);
 	}
 } else if ($w=='ba') {
 	$sus=$sprache->banned;

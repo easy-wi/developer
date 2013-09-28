@@ -647,7 +647,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                 } else if ($row['flexSlots']=='Y') {
                     $flexSlots=$row['flexSlotsCurrent'].'/';
                 }
-                $usage=$usedSlots.'/'. $flexSlots.$row['slots'];
+                $usage=$usedSlots. '/'. $flexSlots.$row['slots'];
                 if ($row['uptime']==0) {
                     $imgName='16_error';
                     $imgAlt='error';

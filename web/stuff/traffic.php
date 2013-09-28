@@ -147,7 +147,7 @@ if ($d=='se' and $reseller_id==0) {
 		$kind="su";
 		if (isips($ui->post['what'])) {
 			$whichdata="&amp;ips=".$ui->post['what'];
-			$display=$sprache->subnet." ".$ui->post['what'];
+			$display=$sprache->subnet . '  ' . $ui->post['what'];
 		}
 		if ($reseller_id==0) {
 			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata`");
@@ -221,7 +221,7 @@ if ($d=='se' and $reseller_id==0) {
 			$pselect->execute(array(':id'=>$ui->post['what'],':reseller_id'=>$reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$display=$extra." ".$row['cname'];
+			$display=$extra . '  ' . $row['cname'];
 		}
 	} else if ($ui->post['kind']=="se") {
 		$kind="se";
@@ -239,7 +239,7 @@ if ($d=='se' and $reseller_id==0) {
 			$pselect->execute(array(':id' =>$ui->post['what'],':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$display=$sprache->server." ".$row['cname'].'-'.$ui->post['what'];
+			$display=$sprache->server . '  ' . $row['cname'].'-'.$ui->post['what'];
 		}
 		if ($reseller_id==0) {
 			$pselect=$sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` ORDER BY u.`id`,c.`id`");
@@ -262,7 +262,7 @@ if ($d=='se' and $reseller_id==0) {
 		$kind="ip";
 		if (isip($ui->post['what'],'all')) {
 			$whichdata="&amp;ip=".$ui->post['what'];
-			$display=$sprache->ip." ".$ui->post['what'];
+			$display=$sprache->ip . '  ' . $ui->post['what'];
 		}
 		if ($reseller_id==0) {
 			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata`");

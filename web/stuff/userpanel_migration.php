@@ -82,7 +82,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row2['gamebinary']=='hlds_run' or ($row2['gamebinary']=='srcds_run' and ($row2['appID']==740 or $row2['appID']==730))) {
                 $search='/'. $row2['modfolder'];
             } else if ($row2['gamebinary']=='srcds_run' and $row2['appID']!=740 and $row2['appID']!=730) {
-                $search='/'. $row2['binarydir'].'/'. $row2['modfolder'];
+                $search='/'. $row2['binarydir']. '/'. $row2['modfolder'];
             }
             $temp[$row2['shorten']]=array('shorten'=>$row2['shorten'],'description'=>$row2['description'],'searchFor'=>$search,'modfolder'=>$row2['modfolder']);
         }
@@ -214,7 +214,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $ftpConnect='ftps://';
         }
-        $ftpConnect.=str_replace('//','/',$ftpAddress.':'.$ftpPort.'/'. $ftpPath);
+        $ftpConnect.=str_replace('//','/',$ftpAddress.':'.$ftpPort. '/'. $ftpPath);
         ssh2_execute('gs',$rootID,"sudo -u ${customer} ./control.sh migrateserver ${customer} 1_${shorten} ${gsfolder} ${template} ${ftpUser} ${ftpPassword} ${ftpConnect} ${modFolder}");
         $loguseraction="%import% %gserver% ${address}";
         $template_file=$sprache->import_start;
