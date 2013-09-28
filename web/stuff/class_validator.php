@@ -343,9 +343,10 @@ class ValidateUserinput {
             return $this->loop($check,'description',$type);
         }
     }
+    // https://github.com/easy-wi/developer/issues/76 forking l4d(2) servers '#' needed
     function startparameter ($value,$type,$object=false) {
         $check=$this->if_obj_or_str($value,$type,$object);
-        if ($check and is_string($check) and preg_match('/^[\w\r\n\(\)\[\]\{\}\~\=\?\%\:\.\,\"+-\_\|ßöÖäÄüÜ ]+$/',$check)) {
+        if ($check and is_string($check) and preg_match('/^[\w\r\n\#\(\)\[\]\{\}\~\=\?\%\:\.\,\"+-\_\|ßöÖäÄüÜ ]+$/',$check)) {
             return $check;
         } else if ($check) {
             return $this->loop($check,'startparameter',$type);
