@@ -260,7 +260,7 @@ if [ -f /etc/debian_version ]; then
 		else
 			apt-get install proftpd
 		fi
-		if [ "`grep '<Directory ~\/server\/\*\/mc\/\*>' /etc/proftpd/proftpd.conf`" == "" ]; then
+		if [ "`grep '<Directory \/home\/\*\/pserver\/\*>' /etc/proftpd/proftpd.conf`" == "" ]; then
 		echo '
 DefaultRoot ~
 
@@ -488,7 +488,7 @@ echo "The setup is finished"
 }
 
 function publicKeyGenerate {
-	if [ "`id -u`" == "0" -a -z $INSTALLMASTER ]; then
+	if ([ "`id -u`" == "0" ] && [ -z $INSTALLMASTER ]); then
 		INSTALLMASTER=`find /home/*/control.sh -maxdepth 1 | awk -F '/' '{print $3}' | head -n 1`
 	elif [ "`id -u`" != "0"  ]; then
 		INSTALLMASTER=`whoami`
@@ -501,10 +501,15 @@ function publicKeyGenerate {
 			ssh-keygen -t rsa
 		fi
 		cd /home/$INSTALLMASTER/.ssh
-		if [ "`id -u`" == "0" ]; then
-			su -c 'cat id_rsa.pub >> authorized_keys' $INSTALLMASTER
+		KEYNAME=`find -maxdepth 1 -name "*.pub" | head -n 1`
+		if [ "$KEYNAME" != "" ]; then
+			if [ "`id -u`" == "0" ]; then
+				su -c "cat $KEYNAME >> authorized_keys" $INSTALLMASTER
+			else
+				cat $KEYNAME >> authorized_keys
+			fi
 		else
-			cat id_rsa.pub >> authorized_keys
+			echo "Error: could not find a key"
 		fi
 	fi
 }
