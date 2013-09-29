@@ -38,24 +38,24 @@
 
 
 if (isset($page_include)) {
-	$reseller_id=0;
+	$reseller_id = 0;
 } else {
     define('EASYWIDIR', dirname(__FILE__));
 	if (is_dir(EASYWIDIR."/install")) die('Please remove the "install" folder');
 	if (is_file(EASYWIDIR."update.php")) die('Please remove the file "update.php"');
-	$logininclude=1;
+	$logininclude = 1;
 	include(EASYWIDIR . '/stuff/vorlage.php');
 	include(EASYWIDIR . '/stuff/class_validator.php');
 	include(EASYWIDIR . '/stuff/functions.php');
 	include(EASYWIDIR . '/stuff/settings.php');
-    $query=$sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $user_language=$query->fetchColumn();
     if (!small_letters_check($user_language,2)) $user_language='en';
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-$validacces=false;
+$validacces = false;
 if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post') and !isset($page_include)) {
-    $query=$sql->prepare("SELECT `active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
+    $query = $sql->prepare("SELECT `active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR','server')));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $pwd=$row['pwd'];
@@ -63,12 +63,12 @@ if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post') and !isse
         if ($row['active']=='Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) $resellerIDs[]=$row['resellerID'];
         if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd) {
             $reseller_id=$resellerIDs[0];
-            $validacces=true;
+            $validacces= true;
         }
     }
 } else {
-	$reseller_id=0;
-	$validacces=true;
+	$reseller_id = 0;
+	$validacces= true;
 }
 if ($validacces==false) {
     header('HTTP/1.1 403 Forbidden');
@@ -76,24 +76,24 @@ if ($validacces==false) {
 }
 if ($ui->escaped('email','post')!='') {
 	$fullday=date('Y-m-d H:i:s',strtotime("+1 day"));
-    $query=$sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
     $query->execute(array($loguserip));
     $query=($query->rowCount()==0) ? $sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','bot',?)") : $sql->prepare("UPDATE `badips` SET `bantime`=?, `failcount`=failcount+1, `reason`='bot' WHERE `badip`=? LIMIT 1");
     $query->execute(array($fullday,$loguserip));
 }
-$sprache=getlanguagefile('lendserver',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
-$vosprache=getlanguagefile('voice',$user_language,$reseller_id);
+$sprache = getlanguagefile('lendserver',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
+$vosprache = getlanguagefile('voice',$user_language,$reseller_id);
 $licenceDetails=serverAmount($reseller_id);
 if (is_numeric($licenceDetails['left']) and (0>$licenceDetails['left'] or 0>$licenceDetails['lG'] or 0>$licenceDetails['lVo'] or $licenceDetails['t']=='l')) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: '.$gsprache->licence);
 }
-$timeselect=array();
-$slotselect=array();
-$votimeselect=array();
-$voslotselect=array();
-$query=$sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
+$timeselect = array();
+$slotselect = array();
+$votimeselect = array();
+$voslotselect = array();
+$query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
 $query->execute(array($aeskey,$reseller_id));
 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 	$active=$row['active'];
@@ -172,9 +172,9 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         }
     }
 }
-if ($ui->username('shorten', 50, 'get') == 'api' and ($lendaccess==1 or $lendaccess==3)) $loguserip='';
-$gsstillrunning=false;
-$vostillrunning=false;
+if ($ui->username('shorten', 50, 'get') == 'api' and ($lendaccess==1 or $lendaccess==3)) $loguserip = '';
+$gsstillrunning = false;
+$vostillrunning = false;
 if (!isset($page_include) and $ui->id('xml',1,'post')==1) {
 	if ($ui->escaped('game','post'))	{
 		$xml= @simplexml_load_string(base64_decode($ui->escaped('game','post')));
@@ -189,14 +189,14 @@ if (!isset($page_include) and $ui->id('xml',1,'post')==1) {
 			$loguserip=$xml->userip;
 		} else {
 			$error='no userip</br>';
-			$fail=1;
+			$fail = 1;
 		}
 	}
 }
-$query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=?");
+$query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=?");
 $query->execute(array($reseller_id));
 $vocount=$query->fetchColumn();
-$query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `lendserver`='Y' AND `resellerid`=?");
+$query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `lendserver`='Y' AND `resellerid`=?");
 $query->execute(array($reseller_id));
 $gscount=$query->fetchColumn();
 if ($activeGS=='Y' and ($w=='gs' or $d=='gs' or $ui->st('w','post')=='gs' or (isset($page_name) and $page_name==strtolower(str_replace(" ",'-',$gsprache->gameserver))))) $servertype='g';
@@ -207,11 +207,11 @@ if(!isset($servertype) and !isset($page_include) and (!$ui->username('shorten', 
     $servertype=($vocount>$gscount) ? 'v' : 'g';
 }
 if(isset($servertype)) {
-    $query=$sql->prepare("SELECT `id`,`serverid`,`rcon`,`password`,`slots`,`started`,`lendtime` FROM `lendedserver` WHERE `lenderip`=? AND `servertype`=? AND `resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `id`,`serverid`,`rcon`,`password`,`slots`,`started`,`lendtime` FROM `lendedserver` WHERE `lenderip`=? AND `servertype`=? AND `resellerid`=? LIMIT 1");
     $query1=$sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
-    $query2=$sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query3=$sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
-    $query4=$sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query2 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query3 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
+    $query4 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($loguserip,$servertype,$reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $serverid=$row['serverid'];
@@ -257,12 +257,12 @@ if(isset($servertype)) {
             $password=$row['password'];
             $slots=$row['slots'];
             if ($servertype=='g') {
-                if (!$ui->id('xml',1,'post') and (!isset($_SESSION['lend']['gs']) or $_SESSION['lend']['gs']!=$serverid)) $lendIPBlock=true;
-                $gsstillrunning=true;
-                $description='';
-                $serverip='';
-                $port='';
-                $query2=$sql->prepare("SELECT g.`serverip`,g.`port`,t.`description` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`id`=? AND s.`servertype`=t.`id` WHERE s.`resellerid`=? AND t.`description` IS NOT NULL LIMIT 1");
+                if (!$ui->id('xml',1,'post') and (!isset($_SESSION['lend']['gs']) or $_SESSION['lend']['gs']!=$serverid)) $lendIPBlock= true;
+                $gsstillrunning= true;
+                $description = '';
+                $serverip = '';
+                $port = '';
+                $query2 = $sql->prepare("SELECT g.`serverip`,g.`port`,t.`description` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`id`=? AND s.`servertype`=t.`id` WHERE s.`resellerid`=? AND t.`description` IS NOT NULL LIMIT 1");
                 $query2->execute(array($serverid,$reseller_id));
                 foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                     $description=$row2['description'];
@@ -285,10 +285,10 @@ if(isset($servertype)) {
 XML;
             } else if ($servertype=='v') {
                 if (!$ui->id('xml',1,'post') and (!isset($_SESSION['lend']['vs']) or $_SESSION['lend']['vs']!=$serverid)) {
-                    $lendIPBlock=true;
+                    $lendIPBlock= true;
                 }
-                $vostillrunning=true;
-                $query2=$sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
+                $vostillrunning= true;
+                $query2 = $sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
                 $query2->execute(array($serverid,$reseller_id));
                 foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                     $server=($row2['usedns']=='N' or $row2['dns']==null or $row2['dns']=='') ? $row2['ip'].':'.$row2['port'] : $row2['dns'];
@@ -311,16 +311,16 @@ XML;
 </startserver>
 XML;
             }
-            if (!isset($nextfree)) $nextfree=0;
+            if (!isset($nextfree)) $nextfree = 0;
             if (!isset($page_include) and $ui->id('xml',1,'post')==1) {
                 header("Content-type: text/xml; charset=UTF-8");
                 echo $responsexml;
             } else if (isset($page_include)) {
                 $page_data->setCanonicalUrl($s);
                 if (isset($lendIPBlock)) {
-                    $template_file='page_lenddata_ipblock.tpl';
+                    $template_file = 'page_lenddata_ipblock.tpl';
                 } else {
-                    $template_file='page_lenddata.tpl';
+                    $template_file = 'page_lenddata.tpl';
                 }
             } else {
                 if (isset($lendIPBlock)) {
@@ -344,16 +344,16 @@ XML;
 }
 if ($ui->escaped('ipblocked','post') and $ui->id('xml',1,'post')==1 and !isset($responsexml)) die('notblocked');
 if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1) or ($ui->id('xml',1,'post')==1 and !$ui->st('w','post'))){
-    $lendGameServers=array();
-    $lendVoiceServers=array();
-    $query=$sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
-    $query2=$sql->prepare("SELECT t.`shorten`,t.`description`,l.`slots`,l.`started`,l.`lendtime` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `lendedserver` l ON t.`id`=l.`serverid` AND l.`servertype`='g' WHERE s.`switchID`=? AND s.`resellerid`=0");
+    $lendGameServers = array();
+    $lendVoiceServers = array();
+    $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
+    $query2 = $sql->prepare("SELECT t.`shorten`,t.`description`,l.`slots`,l.`started`,l.`lendtime` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `lendedserver` l ON t.`id`=l.`serverid` AND l.`servertype`='g' WHERE s.`switchID`=? AND s.`resellerid`=0");
     $query->execute(array($reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-        $installedShorten=array();
-        $timeleft=0;
+        $installedShorten = array();
+        $timeleft = 0;
         $slots=$row['slots'];
-        $runningGame='';
+        $runningGame = '';
         $free='16_ok.png';
         $query2->execute(array($row['id']));
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
@@ -362,21 +362,21 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
                 $runningGame=$row2['shorten'];
                 $slots=$row2['slots'];
                 $timeleft=round($row2['lendtime']-(strtotime("now")-strtotime($row2['started']))/60);
-                if ($timeleft<0) $timeleft=0;
+                if ($timeleft<0) $timeleft = 0;
                 $free='16_bad.png';
             }
         }
         $lendGameServers[]=array('ip'=>$row['serverip'],'port'=>(int)$row['port'],'queryName'=>htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'queryMap'=>htmlentities($row['queryMap'],ENT_QUOTES,'UTF-8'),'runningGame'=>$runningGame,'games'=>$installedShorten,'slots'=>(int)$slots,'usedslots'=>(int)$row['queryNumplayers'],'timeleft'=>(int)$timeleft,'free'=>$free);
     }
-    $query=$sql->prepare("SELECT v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`slots`,l.`started`,l.`lendtime` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
+    $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`slots`,l.`started`,l.`lendtime` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
     $query->execute(array($reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-        $timeleft=0;
+        $timeleft = 0;
         $slots=$row['availableSlots'];
         $free='16_ok.png';
         if ($row['slots']!=null) {
             $timeleft=round($row['lendtime']-(strtotime("now")-strtotime($row['started']))/60);
-            if ($timeleft<0) $timeleft=0;
+            if ($timeleft<0) $timeleft = 0;
             $free='16_bad.png';
             $slots=$row['slots'];
         }
@@ -424,17 +424,17 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
     </gameserver>
 </serverlist>";
     } else {
-        $template_file='page_lend_list.tpl';
+        $template_file = 'page_lend_list.tpl';
     }
 } else if ($gsstillrunning==false and $active=='Y' and $servertype=='g' and !$ui->escaped('ipblocked','post')) {
-	$query=$sql->prepare("SELECT `id` FROM `gsswitch` WHERE `lendserver`='Y' AND `resellerid`=?");
-    $query2=$sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? ORDER BY t.`shorten`");
+	$query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `lendserver`='Y' AND `resellerid`=?");
+    $query2 = $sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? ORDER BY t.`shorten`");
     $query->execute(array($reseller_id));
-	$gscounts=array();
-    $gsused=array();
+	$gscounts = array();
+    $gsused = array();
 	foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-		$shortens=array();
-		$serverids=array();
+		$shortens = array();
+		$serverids = array();
         $query2->execute(array($row['id'],$reseller_id));
 		foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
 			$shorten=$row2['shorten'];
@@ -442,8 +442,8 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 			if (isset($gscounts[$shorten])) {
 				$gscounts[$shorten]++;
 			} else {
-				$gscounts[$shorten]=1;
-				$gsused[$shorten]=0;
+				$gscounts[$shorten] = 1;
+				$gsused[$shorten] = 0;
 			}
 			$shortens[]=$shorten;
 		}
@@ -452,17 +452,17 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 			if (isset($switchcount[$shortenlist][$shorten]['exist'])) {
 				$switchcount[$shortenlist][$shorten]['exist']++;
 			} else {
-				$switchcount[$shortenlist][$shorten]['exist']=1;
-				$switchcount[$shortenlist][$shorten]['used']=0;
+				$switchcount[$shortenlist][$shorten]['exist'] = 1;
+				$switchcount[$shortenlist][$shorten]['used'] = 0;
 			}
 			foreach ($serverids[$shorten] as $id) {
 				$switchcount[$shortenlist][$shorten]['freeids'][]=$id;
 			}
 		}
 	}
-    $query=$sql->prepare("SELECT `serverid`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip` FROM `lendedserver` WHERE `servertype`='g' AND `resellerid`=?");
-    $query2=$sql->prepare("SELECT `switchID` FROM `serverlist` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query3=$sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? ORDER BY t.`shorten`");
+    $query = $sql->prepare("SELECT `serverid`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip` FROM `lendedserver` WHERE `servertype`='g' AND `resellerid`=?");
+    $query2 = $sql->prepare("SELECT `switchID` FROM `serverlist` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query3 = $sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? ORDER BY t.`shorten`");
     $query->execute(array($reseller_id));
 	foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 		$lendtime=$row['lendtime'];
@@ -473,8 +473,8 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 		$password=$row['password'];
 		$slots=$row['slots'];
 		$lenderip=$row['lenderip'];
-		$serverids=array();
-		$shortens=array();
+		$serverids = array();
+		$shortens = array();
         $query2->execute(array($row['serverid'],$reseller_id));
         $switchID=$query2->fetchColumn();
         if (isid($switchID,10)) {
@@ -497,11 +497,11 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
             }
         }
 	}
-	$status=array();
-	$serveravailable=false;
-	$gameselect=array();
+	$status = array();
+	$serveravailable = false;
+	$gameselect = array();
 	foreach ($gscounts as $key=>$value) {
-        $query=$sql->prepare("SELECT `description` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `description` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($key,$reseller_id));
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$description=$row['description'];
@@ -509,20 +509,20 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 		$amount=$value-$gsused[$key];
 		$switchcount[$shortenlist][$shorten];
 		if ($amount>0) {
-			$serveravailable=true;
+			$serveravailable= true;
 			$gameselect[$key]=$description;
             $text=$sprache->available;
 		} else {
-			$gscount=0;
+			$gscount = 0;
             $text=$sprache->used;
 		}
         $status[$description]=array('text'=>$text,'amount'=>$amount,'total'=>$value);
 	}
 	if ((!isset($nextfree) and $gscount>0) or (isset($nextfree) and $gscount>0)){
-		$nextfree=0;
+		$nextfree = 0;
 	}
 	if ($serveravailable==true and ($lendaccess==1 or $lendaccess==2) and $ui->w('game',20,'post')) {
-		$fail=0;
+		$fail = 0;
 		$error="Error:";
 		if ($ui->id('xml',1,'post')==1) {
 			$game=$xml->game;
@@ -540,24 +540,24 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
             $postedftpuploadpath=$ui->url('ftpuploadpath','post');
 		}
 		if (!wpreg_check($game,20)) {
-			$fail=1;
+			$fail = 1;
 			$error .="Game</br>";
 		}
 		if (!isid($slots,3) or $slots>$maxplayer or $slots<$minplayer) {
-			$fail=1;
+			$fail = 1;
 			$error .="Slots</br>";
 		}
 		if (!isid($lendtime,4) or $lendtime>$maxtime or $lendtime<$mintime) {
-			$fail=1;
+			$fail = 1;
 			$error .="Time</br>";
 		}
 		if (!wpreg_check($rcon,20)) {
 			$error .="Rcon</br>";
-			$fail=1;
+			$fail = 1;
 		}
 		if (!wpreg_check($password,20)) {
 			$error .="Password</br>";
-			$fail=1;
+			$fail = 1;
 		}
 		if ($fail==0) {
 			if ($ftpupload=='Y' and isurl($postedftpuploadpath) and $postedftpuploadpath!='ftp://username:password@1.1.1.1/demos') {
@@ -570,12 +570,12 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 					if (isset($userpass[1])) {
 						$ftppass=$userpass[1];
 					} else {
-						$ftppass='';
+						$ftppass = '';
 					}
 				} else {
 					$ftpipport=$split2[0];
 					$ftpuser='anonymous';
-					$ftppass='';
+					$ftppass = '';
 				}
 				$ftpipport=preg_split('/:/', $ftpipport, -1, PREG_SPLIT_NO_EMPTY);
 				if (isset($ftpipport[1])) {
@@ -597,7 +597,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 					$random=array_rand($switchcount[$game][$game]['freeids'],1);
 					$serverid=$switchcount[$game][$game]['freeids'][$random];
 				} else {
-					$mostleft=array();
+					$mostleft = array();
 					foreach ($switchcount as $key=>$arrays) {
 						if (isset($switchcount[$key][$game]['freeids']) and count($switchcount[$key][$game]['freeids'])>0) {
 							foreach ($switchcount as $leftkey=>$leftarrays) {
@@ -621,7 +621,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 						}
 					}
 					foreach ($leftservers as $keys=>$arrays) {
-						$percent=0;
+						$percent = 0;
 						foreach ($arrays as $key=>$count) {
 							$percent=$percent+((100/$switchcount[$keys][$key]['exist'])*($count));
 						}
@@ -636,11 +636,11 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
                 if (!$ui->id('xml',1,'post')==1) {
                     $_SESSION['lend']['gs']=$serverid;
                 }
-                $query=$sql->prepare("INSERT INTO `lendedserver` (`serverid`,`servertype`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip`,`ftpuploadpath`,`resellerid`) VALUES (?,?,?,?,?,NOW(),?,?,AES_ENCRYPT(?,?),?)");
+                $query = $sql->prepare("INSERT INTO `lendedserver` (`serverid`,`servertype`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip`,`ftpuploadpath`,`resellerid`) VALUES (?,?,?,?,?,NOW(),?,?,AES_ENCRYPT(?,?),?)");
                 $query->execute(array($serverid,'g',$rcon,$password,$slots,$lendtime,$loguserip,$ftpuploadpath,$aeskey,$reseller_id));
-                $query=$sql->prepare("INSERT INTO `lendstats` (`lendDate`,`serverID`,`serverType`,`lendtime`,`slots`,`resellerID`) VALUES (NOW(),?,?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
+                $query = $sql->prepare("INSERT INTO `lendstats` (`lendDate`,`serverID`,`serverType`,`lendtime`,`slots`,`resellerID`) VALUES (NOW(),?,?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
                 $query->execute(array($serverid,'g',$lendtime,$slots,$reseller_id));
-                $query=$sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,g.`rootID`,t.`description` FROM `gsswitch` g  LEFT JOIN `serverlist` s ON s.`switchID`=g.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,g.`rootID`,t.`description` FROM `gsswitch` g  LEFT JOIN `serverlist` s ON s.`switchID`=g.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
                 $query->execute(array($serverid,$reseller_id));
 				foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 					$serverip=$row['serverip'];
@@ -673,11 +673,11 @@ XML;
 					echo $responsexml;
 				} else {
 					if (!isset($nextfree)) {
-						$nextfree=0;
+						$nextfree = 0;
 					}
 					if (isset($page_include)) {
                         $page_data->setCanonicalUrl($s);
-						$template_file='page_lenddata.tpl';
+						$template_file = 'page_lenddata.tpl';
 					} else {
 						if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
 							include(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl');
@@ -689,7 +689,7 @@ XML;
 					}
 				}
 			} else if (isset($page_include)) {
-				$template_file="too slow";
+				$template_file = "too slow";
 			} else {
 				echo "tooslow";
 			}
@@ -697,17 +697,17 @@ XML;
             echo $error;
         }
 	} else if (isset($page_include) and $serveravailable==false and ($lendaccess==1 or $lendaccess==2)) {
-		$template_file="Module deaktivated";
+		$template_file = "Module deaktivated";
 	} else if (!isset($page_include) and $serveravailable==false and ($lendaccess==1 or $lendaccess==2) and (($ui->id('xml',1,'post') and $ui->w('game',20,'post')) or $ui->w('password',20,'post'))) {
 		echo "too slow";
 	} else if ($lendaccess==1 or $lendaccess==2 or $lendaccess==3) {
-        if (!isset($nextfree)) $nextfree=0;
+        if (!isset($nextfree)) $nextfree = 0;
 		$rcon=passwordgenerate(10);
 		$password=passwordgenerate(10);
 		if (($lendaccess==1 or $lendaccess==2) and !$ui->id('xml',1,'post')) {
 			if (isset($page_include)) {
                 $page_data->setCanonicalUrl($s);
-				$template_file='page_lend.tpl';
+				$template_file = 'page_lend.tpl';
 			} else {
 				if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
 					include(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl');
@@ -752,23 +752,23 @@ XML;
 	}
 	# Voiceserver
 } else if ($vostillrunning==false and $active=='Y' and $servertype=='v' and !$ui->escaped('ipblocked','post')) {
-	$serveravailable=false;
+	$serveravailable = false;
 	$freevoice=$vocount;
 	$password=passwordgenerate(10);
 	if ($vocount>0) {
-		$masterservers=array();
-		$mastervoiceids=array();
-		$query=$sql->prepare("SELECT `id`,`maxserver`,`maxslots` FROM `voice_masterserver` WHERE `active`='Y' AND `resellerid`=?");
-        $query2=$sql->prepare("SELECT `id`,`slots` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `masterserver`=? AND `resellerid`=?");
+		$masterservers = array();
+		$mastervoiceids = array();
+		$query = $sql->prepare("SELECT `id`,`maxserver`,`maxslots` FROM `voice_masterserver` WHERE `active`='Y' AND `resellerid`=?");
+        $query2 = $sql->prepare("SELECT `id`,`slots` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `masterserver`=? AND `resellerid`=?");
         $query->execute(array($reseller_id));
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$masterid=$row['id'];
             $query2->execute(array($masterid,$reseller_id));
-			$vomacount=0;
-			$slots=0;
-			$usedvoice=0;
+			$vomacount = 0;
+			$slots = 0;
+			$usedvoice = 0;
 			foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-				$lendable=true;
+				$lendable= true;
 				$select3=$sql->prepare("SELECT `id`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='v' AND `resellerid`=? LIMIT 1");
 				$select3->execute(array($row2['id'],$reseller_id));
 				foreach ($select3->fetchall(PDO::FETCH_ASSOC) as $row3) {
@@ -779,7 +779,7 @@ XML;
 					}
 					$usedvoice++;
 					$freevoice--;
-					$lendable=false;
+					$lendable = false;
 				}
 				if ($lendable==true) {
 					$mastervoiceids[$masterid][]=$row2['id'];
@@ -789,7 +789,7 @@ XML;
 				
 			}
             if ($freevoice<$vocount) {
-                $nextfree=0;
+                $nextfree = 0;
             }
 			if ($vomacount>0) {
 				$masterservers[$masterid]=$serverpercent=(100/$vomacount)*$usedvoice;
@@ -798,13 +798,13 @@ XML;
 		asort($masterservers);
 		$bestmaster=key($masterservers);
 		if ($masterservers[$bestmaster]!='100') {
-			$serveravailable=true;
+			$serveravailable= true;
 			$counmaster=count($mastervoiceids[$bestmaster]);
 			$arrayid=mt_rand(0,$counmaster-1);
 			$tousevoiceid=$mastervoiceids[$bestmaster][$arrayid];
 		}
 		if ($serveravailable==true and ($lendaccess==1 or $lendaccess==2) and (($ui->id('xml',1,'post') and $ui->w('game',20,'post') or $ui->w('password',20,'post')))) {
-			$fail=0;
+			$fail = 0;
 			$error="Error:";
 			if ($ui->id('xml',1,'post')==1) {
 				$password=$xml->password;
@@ -816,16 +816,16 @@ XML;
 				$lendtime=$ui->id('time',4,'post');
 			}
 			if (!isid($slots,3) or $slots>$vomaxplayer or $slots<$vominplayer) {
-				$fail=1;
+				$fail = 1;
 				$error .="Slots</br>";
 			}
 			if (!isid($lendtime,4) or $lendtime>$vomaxtime or $lendtime<$vomintime) {
-				$fail=1;
+				$fail = 1;
 				$error .="Time</br>";
 			}
 			if (!wpreg_check($password,20)) {
 				$error .="Password</br>";
-				$fail=1;
+				$fail = 1;
 			}
 			if ($fail==0 and $freevoice>0) {
 				$timeleft=$lendtime;
@@ -891,7 +891,7 @@ XML;
                         }
 						$insert=$sql->prepare("INSERT INTO `lendedserver` (`serverid`,`servertype`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip`,`resellerid`) VALUES (?,?,?,?,?,NOW(),?,?,?)");
 						$insert->execute(array($tousevoiceid,'v',$rcon,$password,$slots,$lendtime,$loguserip,$reseller_id));
-                        $query=$sql->prepare("INSERT INTO `lendstats` (`lendDate`,`serverID`,`serverType`,`lendtime`,`slots`,`resellerID`) VALUES (NOW(),?,?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
+                        $query = $sql->prepare("INSERT INTO `lendstats` (`lendDate`,`serverID`,`serverType`,`lendtime`,`slots`,`resellerID`) VALUES (NOW(),?,?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
                         $query->execute(array($tousevoiceid,'v',$lendtime,$slots,$reseller_id));
 					}
 				}
@@ -917,11 +917,11 @@ XML;
 					echo $connecterror;
 				} else {
 					if (!isset($nextfree)) {
-						$nextfree=0;
+						$nextfree = 0;
 					}
 					if (isset($page_include)) {
                         $page_data->setCanonicalUrl($s);
-						$template_file='page_lenddata.tpl';
+						$template_file = 'page_lenddata.tpl';
 					} else {
 						if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
 							include(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl');
@@ -933,20 +933,20 @@ XML;
 					}
 				}
 			} else if (isset($page_include)) {
-				$template_file='Too slow';
+				$template_file = 'Too slow';
 			} else {
 				echo "tooslow";
 			}
 		} else if (isset($page_include) and $serveravailable==false and ($lendaccess==1 or $lendaccess==2)) {
-			$template_file="Module deaktivated";
+			$template_file = "Module deaktivated";
 		} else if (!isset($page_include) and $serveravailable==false and ($lendaccess==1 or $lendaccess==2) and (($ui->id('xml',1,'post') and $ui->w('game',20,'post')) or $ui->w('password',20,'post'))) {
 			echo "too slow";
 		} else if ($lendaccess==1 or $lendaccess==2 or $lendaccess==3) {
-            if (!isset($nextfree)) $nextfree=0;
+            if (!isset($nextfree)) $nextfree = 0;
 			if (($lendaccess==1 or $lendaccess==2) and !$ui->id('xml',1,'post')) {
 				if (isset($page_include)) {
                     $page_data->setCanonicalUrl($s);
-					$template_file='page_lend.tpl';
+					$template_file = 'page_lend.tpl';
 				} else {
 					if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
 						include(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl');
@@ -957,7 +957,7 @@ XML;
 					}
 				}
 			} else if (!isset($page_include) and ($lendaccess==1 or $lendaccess==3) and $ui->id('xml',1,'post')==1) {
-				if (!isset($rcon)) $rcon='';
+				if (!isset($rcon)) $rcon = '';
 				$xml=<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE status>
@@ -982,7 +982,7 @@ XML;
                 header("Content-type: text/xml");
                 echo $xml;
 			} else if (isset($page_include)) {
-				$template_file='Module deactivated';
+				$template_file = 'Module deactivated';
 			} else {
 				echo 'Module deactivated';
 			}
@@ -991,7 +991,7 @@ XML;
         }
 	}
 } else if ($active=='N' and isset($page_include))  {
-	$template_file='Module deactivated';
+	$template_file = 'Module deactivated';
 } else if ($active=='N')  {
 	echo 'Module deactivated';
 }

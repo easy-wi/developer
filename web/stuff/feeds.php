@@ -39,20 +39,20 @@
  
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('feeds',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
+$sprache = getlanguagefile('feeds',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
+    $logreseller = 0;
+    $logsubuser = 0;
 } else {
     if (isset($_SESSION['oldid'])) {
         $logsubuser=$_SESSION['oldid'];
     } else {
-        $logsubuser=0;
+        $logsubuser = 0;
     }
-    $logreseller=0;
+    $logreseller = 0;
 }
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
     $lookUpID=$admin_id;
@@ -60,7 +60,7 @@ if ($reseller_id!=0 and $admin_id!=$reseller_id) {
     $lookUpID=$reseller_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=='se') {
     if ($ui->smallletters('action',2,'post')=='md'){
         if ($ui->active('active','post')) {
@@ -118,28 +118,28 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $maxKeep=200;
         }
-        $query=$sql->prepare("SELECT COUNT(`settingsID`) AS `amount` FROM `feeds_settings` WHERE `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT COUNT(`settingsID`) AS `amount` FROM `feeds_settings` WHERE `resellerID`=? LIMIT 1");
         $query->execute(array($lookUpID));
         if ($query->fetchColumn()>0) {
-            $query=$sql->prepare("UPDATE `feeds_settings` SET `active`=?,`displayContent`=?,`limitDisplay`=?,`maxChars`=?,`merge`=?,`newsAmount`=?,`orderBy`=?,`updateMinutes`=?,`useLocal`=?,`maxKeep`=?,`steamFeeds`=? WHERE `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `feeds_settings` SET `active`=?,`displayContent`=?,`limitDisplay`=?,`maxChars`=?,`merge`=?,`newsAmount`=?,`orderBy`=?,`updateMinutes`=?,`useLocal`=?,`maxKeep`=?,`steamFeeds`=? WHERE `resellerID`=? LIMIT 1");
         } else {
-            $query=$sql->prepare("INSERT INTO `feeds_settings` (`active`,`displayContent`,`limitDisplay`,`maxChars`,`merge`,`newsAmount`,`orderBy`,`updateMinutes`,`useLocal`,`maxKeep`,`steamFeeds`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+            $query = $sql->prepare("INSERT INTO `feeds_settings` (`active`,`displayContent`,`limitDisplay`,`maxChars`,`merge`,`newsAmount`,`orderBy`,`updateMinutes`,`useLocal`,`maxKeep`,`steamFeeds`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
         }
         $query->execute(array($active,$displayContent,$limitDisplay,$maxChars,$merge,$newsAmount,$orderBy,$updateMinutes,$useLocal,$maxKeep,$steamFeeds,$lookUpID));
         $loguseraction="%mod% Feed Settings";
         $insertlog->execute();
     } else {
-        $active='';
-        $displayContent='';
-        $limitDisplay='';
-        $maxChars='';
-        $merge='';
-        $newsAmount='';
-        $orderBy='';
-        $updateMinutes='';
-        $useLocal='';
-        $maxKeep='';
-        $query=$sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? LIMIT 1");
+        $active = '';
+        $displayContent = '';
+        $limitDisplay = '';
+        $maxChars = '';
+        $merge = '';
+        $newsAmount = '';
+        $orderBy = '';
+        $updateMinutes = '';
+        $useLocal = '';
+        $maxKeep = '';
+        $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? LIMIT 1");
         $query->execute(array($lookUpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
@@ -155,7 +155,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $steamFeeds=$row['steamFeeds'];
         }
     }
-    $template_file='admin_feeds_settings.tpl';
+    $template_file = 'admin_feeds_settings.tpl';
 } else if ($ui->st('d','get')=='ad') {
     if ($ui->smallletters('action',2,'post')=='ad'){
         $active=$ui->active('active','post');
@@ -164,43 +164,43 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $twitter=$ui->active('twitter','post');
         if ($twitter=='Y') {
             $feedUrl='https://twitter.com/'.$loginName;
-            $query=$sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `loginName`=? AND `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `loginName`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($loginName,$lookUpID));
         } else {
-            $query=$sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `feedUrl`=? AND `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `feedUrl`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($feedUrl,$lookUpID));
         }
         if ($query->fetchColumn()>0) {
-            $template_file='Error: Feed already exists';
+            $template_file = 'Error: Feed already exists';
         } else {
-            $query=$sql->prepare("INSERT INTO `feeds_url` (`active`,`twitter`,`feedUrl`,`loginName`,`resellerID`) VALUES (?,?,?,?,?)");
+            $query = $sql->prepare("INSERT INTO `feeds_url` (`active`,`twitter`,`feedUrl`,`loginName`,`resellerID`) VALUES (?,?,?,?,?)");
             $query->execute(array($active,$twitter,$feedUrl,$loginName,$lookUpID));
             $loguseraction="%add% Feed $feedUrl";
             $insertlog->execute();
-            $template_file=$spracheResponse->table_add;
+            $template_file = $spracheResponse->table_add;
         }
     } else {
-        $template_file='admin_feeds_add.tpl';
+        $template_file = 'admin_feeds_add.tpl';
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id','19','get')) {
     $id=$ui->id('id','19','get');
-    $query=$sql->prepare("SELECT `feedUrl` FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `feedUrl` FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($id,$lookUpID));
     $feedUrl=$query->fetchColumn();
     if ($ui->smallletters('action',2,'post')=='dl'){
-        $query=$sql->prepare("DELETE FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$lookUpID));
         if ($query->rowCount()>0) {
-            $query=$sql->prepare("DELETE FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=?");
+            $query = $sql->prepare("DELETE FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=?");
             $query->execute(array($id,$lookUpID));
             $loguseraction="%del% Feed $feedUrl";
             $insertlog->execute();
-            $template_file=$spracheResponse->table_del;
+            $template_file = $spracheResponse->table_del;
         } else {
-            $template_file='Error: Could not remove the Feed';
+            $template_file = 'Error: Could not remove the Feed';
         }
     } else {
-        $template_file='admin_feeds_dl.tpl';
+        $template_file = 'admin_feeds_dl.tpl';
     }
 } else if ($ui->st('d','get')=='md' and $ui->id('id','19','get')) {
     $id=$ui->id('id','19','get');
@@ -210,24 +210,24 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $twitter=$ui->active('twitter','post');
         if ($twitter=='Y') {
             $feedUrl='https://twitter.com/'.$loginName;
-            $query=$sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `loginName`=? AND `feedID`!=? AND `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `loginName`=? AND `feedID`!=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($loginName,$id,$lookUpID));
         } else {
-            $query=$sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `feedUrl`=? AND `feedID`!=? AND `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `feedUrl`=? AND `feedID`!=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($feedUrl,$id,$lookUpID));
         }
         if ($query->fetchColumn()>0) {
-            $template_file='Error: Feed already exists';
+            $template_file = 'Error: Feed already exists';
         } else {
             $active=$ui->active('active','post');
-            $query=$sql->prepare("UPDATE `feeds_url` SET `active`=?,`twitter`=?,`feedUrl`=?,`loginName`=? WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `feeds_url` SET `active`=?,`twitter`=?,`feedUrl`=?,`loginName`=? WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($active,$twitter,$feedUrl,$loginName,$id,$lookUpID));
             $loguseraction="%mod% Feed $feedUrl";
             $insertlog->execute();
-            $template_file=$spracheResponse->table_add;
+            $template_file = $spracheResponse->table_add;
         }
     } else {
-        $query=$sql->prepare("SELECT `active`,`twitter`,`feedUrl`,`loginName` FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `active`,`twitter`,`feedUrl`,`loginName` FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$lookUpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
@@ -235,7 +235,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $feedUrl=$row['feedUrl'];
             $loginName=$row['loginName'];
         }
-        $template_file='admin_feeds_md.tpl';
+        $template_file = 'admin_feeds_md.tpl';
     }
 } else {
     $table = array();
@@ -258,7 +258,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $orderby='`feedID` DESC';
         $o='di';
     }
-    $query=$sql->prepare("SELECT `feedID`,`active`,`twitter`,`feedUrl` FROM `feeds_url` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
+    $query = $sql->prepare("SELECT `feedID`,`active`,`twitter`,`feedUrl` FROM `feeds_url` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($lookUpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active']=='Y') {
@@ -299,7 +299,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $link .='&p=0">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -310,5 +310,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file='admin_feeds_list.tpl';
+    $template_file = 'admin_feeds_list.tpl';
 }

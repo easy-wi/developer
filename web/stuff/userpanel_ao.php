@@ -38,17 +38,17 @@ if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !$pa['useraddons
 	header('Location: userpanel.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('images',$user_language,$reseller_id);
+$sprache = getlanguagefile('images',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype="user";
-$logreseller=0;
+$logreseller = 0;
 if (isset($admin_id)) {
 	$logsubuser=$admin_id;
 } else if (isset($subuser_id)) {
 	$logsubuser=$subuser_id;
 } else {
-	$logsubuser=0;
+	$logsubuser = 0;
 }
 if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) {
 	$reseller_id=$admin_id;
@@ -58,7 +58,7 @@ if (isset($admin_id)) {
 } else if (isset($subuser_id)) {
 	$logsubuser=$subuser_id;
 } else {
-	$logsubuser=0;
+	$logsubuser = 0;
 }
 if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smallletters('action',2,'get'),array('ad','dl')) and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     include(EASYWIDIR . '/stuff/ssh_exec.php');
@@ -66,7 +66,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
     $gameserverid=$ui->id('id',19,'get');
     $addonid=$ui->id('adid',10,'get');
     $action=$ui->smallletters('action',2,'get');
-    $query=$sql->prepare("SELECT g.`rootID`,g.`newlayout`,g.`serverid`,g.`serverip`,g.`port`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `dftpppassword`,AES_DECRYPT(g.`ppassword`,?) AS `decryptedppassword`, t.`modfolder`,t.`shorten`,s.`servertemplate`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT g.`rootID`,g.`newlayout`,g.`serverid`,g.`serverip`,g.`port`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `dftpppassword`,AES_DECRYPT(g.`ppassword`,?) AS `decryptedppassword`, t.`modfolder`,t.`shorten`,s.`servertemplate`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey,$aeskey,$gameserverid,$user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $protected=$row['protected'];
@@ -87,7 +87,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
         $newlayout=$row['newlayout'];
     }
     if (isset($rootID)) {
-        $query=$sql->prepare("SELECT `addon`,`paddon`,`type`,`folder` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `addon`,`paddon`,`type`,`folder` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($addonid,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $addon=$row['addon'];
@@ -101,7 +101,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
         $sshuser=$rdata['user'];
         $sshpass=$rdata['pass'];
         if ($newlayout=='Y') {
-            $customer=$customer.'-'.$gameserverid;
+            $customer=$customer . '-' . $gameserverid;
         }
         if ($protected=="N") {
             $serverfolder=$customer.'/server/'.$serverip.'_'.$port. '/'. $shorten;
@@ -112,24 +112,24 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
         }
         if ($ui->st('action','get')=='ad' and ($protected=="N" or ($protected=="Y" and $paddon=="Y"))) {
             if(ssh2_execute('gs',$rootID,"sudo -u $customer ./control.sh addaddon $type $addon \"$serverfolder\" \"$modfolder\"")!==false){
-                $query=$sql->prepare("INSERT INTO `addons_installed` (`userid`,`addonid`,`serverid`,`servertemplate`,`paddon`,`resellerid`) VALUES (?,?,?,?,?,?)");
+                $query = $sql->prepare("INSERT INTO `addons_installed` (`userid`,`addonid`,`serverid`,`servertemplate`,`paddon`,`resellerid`) VALUES (?,?,?,?,?,?)");
                 $query->execute(array($user_id,$addonid,$serverid,$servertemplate,$protected,$reseller_id));
-                $template_file=$sprache->addon_inst;
+                $template_file = $sprache->addon_inst;
                 $actionstatus="ok";
             } else {
-                $template_file=$sprache->failed;
+                $template_file = $sprache->failed;
                 $actionstatus="fail";
             }
         } else if ($ui->st('action','get')=='dl' and $ui->id('rid',19,'get')) {
             $installedid=$ui->id('rid',19,'get');
-            $cmds=array();
+            $cmds = array();
             $cmds[]="sudo -u $customer ./control.sh deladdon $type $addon \"$serverfolder\" \"$modfolder\" \"$folder\"";
             $delids=$addonid;
             while (isset($delids) and isset($installedid)) {
-                $query=$sql->prepare("SELECT `id`,`folder`,`addon` FROM `addons` WHERE `depending`=? AND `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `id`,`folder`,`addon` FROM `addons` WHERE `depending`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($delids,$reseller_id));
                 if (isset($installedid)) {
-                    $query2=$sql->prepare("DELETE FROM `addons_installed` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $query2 = $sql->prepare("DELETE FROM `addons_installed` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($installedid,$reseller_id));
                     unset($installedid);
                     if (isset($deladdon)) {
@@ -143,16 +143,16 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
                     $delids=$row['id'];
                     $delfolder=$row['folder'];
                     $deladdon=$row['addon'];
-                    $query2=$sql->prepare("SELECT `id` FROM `addons_installed` WHERE `addonid`=? AND `serverid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
+                    $query2 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `addonid`=? AND `serverid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($delids,$serverid,$servertemplate,$reseller_id));
                     $installedid=$query2->fetchColumn();
                 }
             }
             if(ssh2_execute('gs',$rootID,$cmds)!==false){
-                $template_file=$sprache->addon_del;
+                $template_file = $sprache->addon_del;
                 $actionstatus="ok";
             } else {
-                $template_file=$sprache->failed;
+                $template_file = $sprache->failed;
                 $actionstatus="fail";
             }
         }
@@ -160,25 +160,25 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
             $loguseraction="%$action% %addon% $addon $serverip:$port %$actionstatus%";
             $insertlog->execute();
         } else {
-            $template_file=$sprache->failed;
+            $template_file = $sprache->failed;
         }
     } else {
-        $template_file=$sprache->failed;
+        $template_file = $sprache->failed;
     }
 } else if ($ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
 	$username=getusername($user_id);
     $switchID=$ui->id('id',19,'get');
-	$table=array();
-    $query=$sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+	$table = array();
+    $query = $sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
     $default_language=$query->fetchColumn();
-	$query=$sql->prepare("SELECT g.`serverid`,g.`serverip`,g.`port`,g.`protected`,g.`queryName`,s.`servertemplate`,t.`shorten`,t.`qstat` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`userid`=? AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
+	$query = $sql->prepare("SELECT g.`serverid`,g.`serverip`,g.`port`,g.`protected`,g.`queryName`,s.`servertemplate`,t.`shorten`,t.`qstat` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`userid`=? AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($user_id,$switchID,$reseller_id));
-	$i=0;
+	$i = 0;
 	foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table2=array();
-        $table3=array();
-		$description='';
+        $table2 = array();
+        $table3 = array();
+		$description = '';
         $serverip=$row['serverip'];
 		$serverport=$row['port'];
 		$qstat=$row['qstat'];
@@ -186,38 +186,38 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
         $servershorten=$row['shorten'];
 		$servertemplate=$row['servertemplate'];
         $currentTemplate=$servershorten;
-        if ($servertemplate>1) $currentTemplate=$servershorten.'-'.$servertemplate;
+        if ($servertemplate>1) $currentTemplate=$servershorten . '-' . $servertemplate;
 		$protected=$row['protected'];
         $description=$row['queryName'];
 		if ($protected=='Y') {
-            $query2=$sql->prepare("SELECT `id`,`menudescription`,`depending`,`type` FROM `addons` WHERE `active`='Y' AND (`shorten`=? OR `shorten`=?) AND `paddon`='Y' AND `resellerid`=? ORDER BY `shorten`,`depending`,`menudescription`");
+            $query2 = $sql->prepare("SELECT `id`,`menudescription`,`depending`,`type` FROM `addons` WHERE `active`='Y' AND (`shorten`=? OR `shorten`=?) AND `paddon`='Y' AND `resellerid`=? ORDER BY `shorten`,`depending`,`menudescription`");
 		} else {
-            $query2=$sql->prepare("SELECT `id`,`menudescription`,`depending`,`type` FROM `addons` WHERE `active`='Y' AND (`shorten`=? OR `shorten`=?) AND `resellerid`=? ORDER BY `shorten`,`depending`,`menudescription`");
+            $query2 = $sql->prepare("SELECT `id`,`menudescription`,`depending`,`type` FROM `addons` WHERE `active`='Y' AND (`shorten`=? OR `shorten`=?) AND `resellerid`=? ORDER BY `shorten`,`depending`,`menudescription`");
 		}
         $query2->execute(array($servershorten,$qstat,$reseller_id));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			$adid=$row2['id'];
 			$depending=$row2['depending'];
 			$menudescription=$row2['menudescription'];
-			$descriptionrow='';
-			$lang='';
-			$query3=$sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
+			$descriptionrow = '';
+			$lang = '';
+			$query3 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
             $query3->execute(array($adid,$user_language,$reseller_id));
             $descriptionrow=$query3->fetchColumn();
 			if(empty($descriptionrow)) {
-                $query3=$sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
+                $query3 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
                 $query3->execute(array($adid,$default_language,$reseller_id));
                 $descriptionrow=$query->fetchColumn();
 			}
             $addescription=nl2br($descriptionrow);
             if ($protected=="Y") {
-                $query3=$sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `paddon`='Y' AND `resellerid`=? LIMIT 1");
+                $query3 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `paddon`='Y' AND `resellerid`=? LIMIT 1");
             } else {
-                $query3=$sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
+                $query3 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
             }
             $query3->execute(array($user_id,$serverid,$adid,$servertemplate,$reseller_id));
             $installedid=$query3->fetchColumn();
-            $delete='';
+            $delete = '';
             if (isid($installedid,19)){
                 $imgName='16_delete';
                 $imgAlt='Remove';
@@ -225,7 +225,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
                 $action='dl';
                 $delete='&amp;rid='.$installedid;
             } else {
-                $query3=$sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `servertemplate`=? AND `addonid`=? AND `resellerid`=?");
+                $query3 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `servertemplate`=? AND `addonid`=? AND `resellerid`=?");
                 $query3->execute(array($user_id,$serverid,$servertemplate,$depending,$reseller_id));
                 $colcount=$query3->rowcount();
                 if ($row2['type']=='map' or $depending==0 or ($depending>0 and $colcount>0)) {
@@ -235,7 +235,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
                     $imgAlt='Install';
                 } else {
                     $action='none';
-                    $query3=$sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $query3 = $sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query3->execute(array($depending,$reseller_id));
                     $imgName='16_notice';
                     $bootstrap='icon-warning-sign';
@@ -252,7 +252,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
 		$table=array('id'=>$switchID,'serverip'=>$serverip,'port'=>$serverport,'tools'=>$table2,'maps'=>$table3,'name'=>$description);
         unset($table2,$table3);
 	}			
-	$template_file="userpanel_gserver_addon.tpl";
+	$template_file = "userpanel_gserver_addon.tpl";
 } else {
-    $template_file='userpanel_404.tpl';
+    $template_file = 'userpanel_404.tpl';
 }

@@ -43,7 +43,7 @@ if (!isset($admin_id) or $main!=1 or $reseller_id!=0 or !$pa['root']) {
 }
 
 if ($ui->st('d','get')=='bu' and $ui->st('action','post')=='bu') {
-    $createBackup=true;
+    $createBackup= true;
     include(EASYWIDIR . '/stuff/mysql_backup_class.php');
     $theBackup=new createDBDump($dbConnect['db'],$ewVersions['version'],$sql);
     header('Content-type: application/sql; charset=utf-8');
@@ -53,11 +53,11 @@ if ($ui->st('d','get')=='bu' and $ui->st('action','post')=='bu') {
     echo $theBackup->getDump();
     die();
 } else if ($ui->st('d','get')=='rp' and $ui->st('action','post')=='rp') {
-    $updateinclude=true;
+    $updateinclude= true;
     class UpdateResponse {
-        public $response='';
+        public $response = '';
         function __construct() {
-            $this->response='';
+            $this->response = '';
         }
         function add ($newtext) {
             $this->response .= $newtext;
@@ -79,7 +79,7 @@ if ($ui->st('d','get')=='bu' and $ui->st('action','post')=='bu') {
         $response->add('Repairing tables if needed.');
         include(EASYWIDIR . '/stuff/tables_repair.php');
     }
-    $template_file=$response->printresponse();
+    $template_file = $response->printresponse();
 } else {
-    $template_file='admin_db_operations.tpl';
+    $template_file = 'admin_db_operations.tpl';
 }

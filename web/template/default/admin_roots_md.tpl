@@ -8,6 +8,14 @@
         </ul>
     </div>
 </div>
+<?php if (count($errors)>0){ ?>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4>Error(s)</h4>
+    <?php echo implode(', ',$errors);?>
+</div>
+<?php }?>
+<!--
 <div class="row-fluid">
     <div class="span6">
         <dl class="dl-horizontal">
@@ -16,12 +24,13 @@
         </dl>
     </div>
 </div>
+-->
 <div class="row-fluid">
     <div class="span8">
         <form class="form-horizontal" action="admin.php?w=ro&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ro" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
                 <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select class="span12" id="inputActive" name="active">
@@ -34,7 +43,7 @@
                 <label class="control-label" for="inputExternalID">externalID:</label>
                 <div class="controls"><input class="span12" id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID?>" maxlength="255"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group"<?php if(isset($errors['ip'])) echo ' error';?>>
                 <label class="control-label" for="inputIP"><?php echo $sprache->haupt_ip;?>:</label>
                 <div class="controls"><input class="span12" id="inputIP" type="text" name="ip" value="<?php echo $ip?>" maxlength="15"></div>
             </div>
@@ -46,7 +55,7 @@
                 <label class="control-label" for="inputFTPPort"><?php echo $sprache->ftp_port;?>:</label>
                 <div class="controls"><input class="span12" id="inputFTPPort" type="text" name="ftpport" value="<?php echo $ftpport?>" maxlength="5"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['port'])) echo ' error';?>">
                 <label class="control-label" for="inputSSH2Port"><?php echo $sprache->ssh_port;?>:</label>
                 <div class="controls"><input class="span12" id="inputSSH2Port" type="text" name="port" value="<?php echo $port?>" maxlength="5"></div>
             </div>
@@ -54,7 +63,7 @@
                 <label class="control-label" for="inputSSH2User"><?php echo $sprache->ssh_user;?>:</label>
                 <div class="controls"><input class="span12" id="inputSSH2User" type="text" name="user" value="<?php echo $user?>" maxlength="15"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['publickey'])) echo ' error';?>">
                 <label class="control-label" for="inputKeyUse"><?php echo $sprache->keyuse;?></label>
                 <div class="controls">
                     <select class="span12" id="inputKeyUse" name="publickey" onchange="SwitchShowHideRows(this.value)">
@@ -71,7 +80,7 @@
                 <label class="control-label" for="inputSSH2Key"><?php echo $sprache->keyname;?></label>
                 <div class="controls"><input class="span12" id="inputSSH2Key" type="text" name="keyname" maxlength="20" value="<?php echo $keyname;?>"/></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['bit'])) echo ' error';?>">
                 <label class="control-label" for="inputBit"><?php echo $sprache->os_bit;?>:</label>
                 <div class="controls">
                     <select class="span12" id="inputBit" name="bit">
@@ -92,7 +101,7 @@
                 <label class="control-label" for="inputServer"><?php echo $sprache->maxserver2;?></label>
                 <div class="controls"><input class="span12" id="inputServer" type="text" name="maxserver" value="<?php echo $maxserver;?>" maxlength="4"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['hyperthreading'])) echo ' error';?>">
                 <label class="control-label" for="inputHT">Hyper Threading</label>
                 <div class="controls">
                     <select class="span12" id="inputHT" name="hyperthreading">

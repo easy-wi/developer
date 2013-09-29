@@ -40,13 +40,13 @@
 
 define('EASYWIDIR', dirname(__FILE__));
 if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
-$logininclude=true;
+$logininclude= true;
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post')) {
-    $query=$sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
+    $query = $sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR','server')));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $apiIP=$row['ip'];
@@ -70,7 +70,7 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
         header('HTTP/1.1 403 Forbidden');
         die('403 Forbidden: More servers are stored than allowed!');
     }
-    $data=array();
+    $data = array();
     if ($ui->escaped('json','post')) {
         $apiType='json';
         $data=@json_decode(urldecode(base64_decode($ui->escaped('json','post'))));
@@ -90,7 +90,7 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
         die('403 Forbidden: Neither POST value xml, nor JSON has been send!');
     }
     $data=(array)$data;
-    $tempArray=array();
+    $tempArray = array();
     foreach ($data as $key => $value) {
         if (is_object($value)) {
             $tempArray[$key]=null;

@@ -1236,18 +1236,18 @@ $defined['voice_tsdns']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO
 );
 
 foreach ($defined as $table => $t_p) {
-    $query=$sql->prepare("SHOW TABLE STATUS LIKE '$table'");
+    $query = $sql->prepare("SHOW TABLE STATUS LIKE '$table'");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['Engine']=='MyISAM') {
             $sqlStatement="ALTER TABLE `$table` ENGINE = InnoDB";
-            $query2=$sql->prepare($sqlStatement);
+            $query2 = $sql->prepare($sqlStatement);
             $query2->execute();
             $response->add($sqlStatement.'<br />');
         }
         if ($row['Collation']!='utf8_general_ci') {
             $sqlStatement="ALTER TABLE `$table` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
-            $query2=$sql->prepare($sqlStatement);
+            $query2 = $sql->prepare($sqlStatement);
             $query2->execute();
             $response->add($sqlStatement.'<br />');
         }
@@ -1255,17 +1255,17 @@ foreach ($defined as $table => $t_p) {
     if ($query->rowCount()==0) {
         $response->add('<b>Error: no such Table: '.$table.'</b><br />');
     } else {
-        $query=$sql->prepare("SHOW COLUMNS FROM `$table`");
+        $query = $sql->prepare("SHOW COLUMNS FROM `$table`");
         $query->execute();
-        $key_differ=array();
-        $drop_key=array();
-        $add_keys=array();
-        $change=array();
-        $addIndex=array();
-        $removeIndex=array();
+        $key_differ = array();
+        $drop_key = array();
+        $add_keys = array();
+        $change = array();
+        $addIndex = array();
+        $removeIndex = array();
         $keys_should_exist=array_keys($t_p);
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $array='';
+            $array = '';
             $Field=$row['Field'];
             $unset=array_search($Field,$keys_should_exist);
             if ($unset!==false) {
@@ -1293,16 +1293,16 @@ foreach ($defined as $table => $t_p) {
                 $NULL='NULL';
             }
             if ($t_p[$key]['Default']=='') {
-                $DEFAULT='';
+                $DEFAULT = '';
             } else {
                 $DEFAULT="DEFAULT '".$t_p[$key]['Default']."'";
             }
             if ($t_p[$key]['Extra']=='') {
-                $AUTO_INCREMENT='';
+                $AUTO_INCREMENT = '';
             } else {
                 $AUTO_INCREMENT=" AUTO_INCREMENT";
             }
-            $change[]='CHANGE `'.$key.'` `'.$key.'` '.$t_p[$key]['Type'].' '.$NULL.' '.$DEFAULT.$AUTO_INCREMENT;
+            $change[]='CHANGE `'.$key.'` `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AUTO_INCREMENT;
         }
         if (count($change)>0) {
             $alter_query='ALTER TABLE `'.$table.'` '.implode(', ',$change);
@@ -1317,7 +1317,7 @@ foreach ($defined as $table => $t_p) {
             $drop->execute();
         }
         foreach ($keys_should_exist as $key) {
-            $i=0;
+            $i = 0;
             $current=current($t_p);
             $current_key=array_search($current,$t_p);
             while ($current!==false and $current_key!=$key) {
@@ -1328,7 +1328,7 @@ foreach ($defined as $table => $t_p) {
             if (isset($prev)) {
                 $AFTER=' AFTER `'.$prev.'`';
             } else {
-                $AFTER='';
+                $AFTER = '';
             }
             $next=array_search(next($t_p),$t_p);
             $before=array_search(prev($t_p),$t_p);
@@ -1338,11 +1338,11 @@ foreach ($defined as $table => $t_p) {
                 $NULL='NULL';
             }
             if ($t_p[$key]['Default']=='') {
-                $DEFAULT='';
+                $DEFAULT = '';
             } else {
                 $DEFAULT="DEFAULT '".$t_p[$key]['Default']."'";
             }
-            $add_keys[]='ADD COLUMN `'.$key.'` '.$t_p[$key]['Type'].' '.$NULL.' '.$DEFAULT.$AFTER;
+            $add_keys[]='ADD COLUMN `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AFTER;
         }
         if (count($add_keys)>0) {
             $add_query='ALTER TABLE `'.$table.'` '.implode(', ',$add_keys);
@@ -1363,26 +1363,26 @@ foreach ($defined as $table => $t_p) {
             $remove->execute();
         }
     }
-    $query=$sql->prepare("DELETE p.* FROM `userpermissions` p LEFT JOIN `userdata` u ON p.`userid`=u.`id` WHERE u.`id` IS NULL");
+    $query = $sql->prepare("DELETE p.* FROM `userpermissions` p LEFT JOIN `userdata` u ON p.`userid`=u.`id` WHERE u.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
+    $query = $sql->prepare("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
+    $query = $sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
+    $query = $sql->prepare("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
+    $query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
+    $query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE d.* FROM `mysql_external_dbs` d LEFT JOIN `userdata` u ON d.`uid`=u.`id` WHERE u.`id` IS NULL");
+    $query = $sql->prepare("DELETE d.* FROM `mysql_external_dbs` d LEFT JOIN `userdata` u ON d.`uid`=u.`id` WHERE u.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE v.* FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
+    $query = $sql->prepare("DELETE v.* FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE v.* FROM `voice_dns` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
+    $query = $sql->prepare("DELETE v.* FROM `voice_dns` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
+    $query = $sql->prepare("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
     $query->execute();
-    $query=$sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `userdata` u ON b.`uid`=u.`id` LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE u.`id` IS NULL OR  v.`id` IS NULL");
+    $query = $sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `userdata` u ON b.`uid`=u.`id` LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE u.`id` IS NULL OR  v.`id` IS NULL");
     $query->execute();
 }

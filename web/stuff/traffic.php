@@ -38,56 +38,56 @@ if(!isset($admin_id) or !$main == "1" or (isset($admin_id) and !$pa['traffic']))
 	header('Location: admin.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('traffic',$user_language,$reseller_id);
+$sprache = getlanguagefile('traffic',$user_language,$reseller_id);
 if ($d=='se' and $reseller_id==0) {
 
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
 	
     if ($ui->w('action',4,'post') and !token(true)) {
-        $template_file=$spracheResponse->token;
+        $template_file = $spracheResponse->token;
     } else if (isset($ui->post['type']) and $ui->w('action',4,'post')=='md') {
-		$error=0;
-		if (!isset($ui->post['type']) or (!small_letters_check($ui->post['type'],'30'))) $error=1;
-		if (!isset($ui->post['statip']) or (!isip($ui->post['statip'],'all') and !isurl($ui->post['statip']))) $error=1;
-		if (!isset($ui->post['dbname']) or (!gamestring($ui->post['dbname']))) $error=1;
-		if (!isset($ui->post['dbuser']) or (!gamestring($ui->post['dbuser']))) $error=1;
-		if (!isset($ui->post['dbpassword']) or (!gamestring($ui->post['dbpassword']))) $error=1;
-		if (!isset($ui->post['table_name']) or (!gamestring($ui->post['table_name']))) $error=1;
-		if (!isset($ui->post['column_sourceip']) or (!gamestring($ui->post['column_sourceip']))) $error=1;
-		if (!isset($ui->post['column_destip']) or (!gamestring($ui->post['column_destip']))) $error=1;
-		if (!isset($ui->post['column_byte']) or (!gamestring($ui->post['column_byte']))) $error=1;
-		if (!isset($ui->post['column_date']) or (!gamestring($ui->post['column_date']))) $error=1;
-		if (!isset($ui->post['multiplier']) or (!isinteger($ui->post['multiplier']))) $error=1;
-		if (!isset($ui->post['text_colour_1']) or (!validate_int($ui->post['text_colour_1'],'0','255') and $ui->post['text_colour_1']!=0)) $error=1;
-		if (!isset($ui->post['text_colour_2']) or (!validate_int($ui->post['text_colour_2'],'0','255') and $ui->post['text_colour_2']!=0)) $error=1;
-		if (!isset($ui->post['text_colour_3']) or (!validate_int($ui->post['text_colour_3'],'0','255') and $ui->post['text_colour_3']!=0)) $error=1;
-		if (!isset($ui->post['barin_colour_1']) or (!validate_int($ui->post['barin_colour_1'],'0','255') and $ui->post['barin_colour_1']!=0)) $error=1;
-		if (!isset($ui->post['barin_colour_2']) or (!validate_int($ui->post['barin_colour_2'],'0','255') and $ui->post['barin_colour_2']!=0)) $error=1;
-		if (!isset($ui->post['barin_colour_3']) or (!validate_int($ui->post['barin_colour_3'],'0','255') and $ui->post['barin_colour_3']!=0)) $error=1;
-		if (!isset($ui->post['barout_colour_1']) or (!validate_int($ui->post['barout_colour_1'],'0','255') and $ui->post['barout_colour_1']!=0)) $error=1;
-		if (!isset($ui->post['barout_colour_2']) or (!validate_int($ui->post['barout_colour_2'],'0','255') and $ui->post['barout_colour_2']!=0)) $error=1;
-		if (!isset($ui->post['barout_colour_3']) or (!validate_int($ui->post['barout_colour_3'],'0','255') and $ui->post['barout_colour_3']!=0)) $error=1;
-		if (!isset($ui->post['bartotal_colour_1']) or (!validate_int($ui->post['bartotal_colour_1'],'0','255') and $ui->post['bartotal_colour_1']!=0)) $error=1;
-		if (!isset($ui->post['bartotal_colour_2']) or (!validate_int($ui->post['bartotal_colour_2'],'0','255') and $ui->post['bartotal_colour_2']!=0)) $error=1;
-		if (!isset($ui->post['bartotal_colour_3']) or (!validate_int($ui->post['bartotal_colour_3'],'0','255') and $ui->post['bartotal_colour_3']!=0)) $error=1;
-		if (!isset($ui->post['bg_colour_1']) or (!validate_int($ui->post['bg_colour_1'],'0','255') and $ui->post['bg_colour_1']!=0)) $error=1;
-		if (!isset($ui->post['bg_colour_2']) or (!validate_int($ui->post['bg_colour_2'],'0','255') and $ui->post['bg_colour_2']!=0)) $error=1;
-		if (!isset($ui->post['bg_colour_3']) or (!validate_int($ui->post['bg_colour_3'],'0','255') and $ui->post['bg_colour_3']!=0)) $error=1;
-		if (!isset($ui->post['border_colour_1']) or (!validate_int($ui->post['border_colour_1'],'0','255') and $ui->post['border_colour_1']!=0)) $error=1;
-		if (!isset($ui->post['border_colour_2']) or (!validate_int($ui->post['border_colour_2'],'0','255') and $ui->post['border_colour_2']!=0)) $error=1;
-		if (!isset($ui->post['border_colour_3']) or (!validate_int($ui->post['border_colour_3'],'0','255') and $ui->post['border_colour_3']!=0)) $error=1;
-		if (!isset($ui->post['line_colour_1']) or (!validate_int($ui->post['line_colour_1'],'0','255') and $ui->post['line_colour_1']!=0)) $error=1;
-		if (!isset($ui->post['line_colour_2']) or (!validate_int($ui->post['line_colour_2'],'0','255') and $ui->post['line_colour_2']!=0)) $error=1;
-		if (!isset($ui->post['line_colour_3']) or (!validate_int($ui->post['line_colour_3'],'0','255') and $ui->post['line_colour_3']!=0)) $error=1;
+		$error = 0;
+		if (!isset($ui->post['type']) or (!small_letters_check($ui->post['type'],'30'))) $error = 1;
+		if (!isset($ui->post['statip']) or (!isip($ui->post['statip'],'all') and !isurl($ui->post['statip']))) $error = 1;
+		if (!isset($ui->post['dbname']) or (!gamestring($ui->post['dbname']))) $error = 1;
+		if (!isset($ui->post['dbuser']) or (!gamestring($ui->post['dbuser']))) $error = 1;
+		if (!isset($ui->post['dbpassword']) or (!gamestring($ui->post['dbpassword']))) $error = 1;
+		if (!isset($ui->post['table_name']) or (!gamestring($ui->post['table_name']))) $error = 1;
+		if (!isset($ui->post['column_sourceip']) or (!gamestring($ui->post['column_sourceip']))) $error = 1;
+		if (!isset($ui->post['column_destip']) or (!gamestring($ui->post['column_destip']))) $error = 1;
+		if (!isset($ui->post['column_byte']) or (!gamestring($ui->post['column_byte']))) $error = 1;
+		if (!isset($ui->post['column_date']) or (!gamestring($ui->post['column_date']))) $error = 1;
+		if (!isset($ui->post['multiplier']) or (!isinteger($ui->post['multiplier']))) $error = 1;
+		if (!isset($ui->post['text_colour_1']) or (!validate_int($ui->post['text_colour_1'],'0','255') and $ui->post['text_colour_1']!=0)) $error = 1;
+		if (!isset($ui->post['text_colour_2']) or (!validate_int($ui->post['text_colour_2'],'0','255') and $ui->post['text_colour_2']!=0)) $error = 1;
+		if (!isset($ui->post['text_colour_3']) or (!validate_int($ui->post['text_colour_3'],'0','255') and $ui->post['text_colour_3']!=0)) $error = 1;
+		if (!isset($ui->post['barin_colour_1']) or (!validate_int($ui->post['barin_colour_1'],'0','255') and $ui->post['barin_colour_1']!=0)) $error = 1;
+		if (!isset($ui->post['barin_colour_2']) or (!validate_int($ui->post['barin_colour_2'],'0','255') and $ui->post['barin_colour_2']!=0)) $error = 1;
+		if (!isset($ui->post['barin_colour_3']) or (!validate_int($ui->post['barin_colour_3'],'0','255') and $ui->post['barin_colour_3']!=0)) $error = 1;
+		if (!isset($ui->post['barout_colour_1']) or (!validate_int($ui->post['barout_colour_1'],'0','255') and $ui->post['barout_colour_1']!=0)) $error = 1;
+		if (!isset($ui->post['barout_colour_2']) or (!validate_int($ui->post['barout_colour_2'],'0','255') and $ui->post['barout_colour_2']!=0)) $error = 1;
+		if (!isset($ui->post['barout_colour_3']) or (!validate_int($ui->post['barout_colour_3'],'0','255') and $ui->post['barout_colour_3']!=0)) $error = 1;
+		if (!isset($ui->post['bartotal_colour_1']) or (!validate_int($ui->post['bartotal_colour_1'],'0','255') and $ui->post['bartotal_colour_1']!=0)) $error = 1;
+		if (!isset($ui->post['bartotal_colour_2']) or (!validate_int($ui->post['bartotal_colour_2'],'0','255') and $ui->post['bartotal_colour_2']!=0)) $error = 1;
+		if (!isset($ui->post['bartotal_colour_3']) or (!validate_int($ui->post['bartotal_colour_3'],'0','255') and $ui->post['bartotal_colour_3']!=0)) $error = 1;
+		if (!isset($ui->post['bg_colour_1']) or (!validate_int($ui->post['bg_colour_1'],'0','255') and $ui->post['bg_colour_1']!=0)) $error = 1;
+		if (!isset($ui->post['bg_colour_2']) or (!validate_int($ui->post['bg_colour_2'],'0','255') and $ui->post['bg_colour_2']!=0)) $error = 1;
+		if (!isset($ui->post['bg_colour_3']) or (!validate_int($ui->post['bg_colour_3'],'0','255') and $ui->post['bg_colour_3']!=0)) $error = 1;
+		if (!isset($ui->post['border_colour_1']) or (!validate_int($ui->post['border_colour_1'],'0','255') and $ui->post['border_colour_1']!=0)) $error = 1;
+		if (!isset($ui->post['border_colour_2']) or (!validate_int($ui->post['border_colour_2'],'0','255') and $ui->post['border_colour_2']!=0)) $error = 1;
+		if (!isset($ui->post['border_colour_3']) or (!validate_int($ui->post['border_colour_3'],'0','255') and $ui->post['border_colour_3']!=0)) $error = 1;
+		if (!isset($ui->post['line_colour_1']) or (!validate_int($ui->post['line_colour_1'],'0','255') and $ui->post['line_colour_1']!=0)) $error = 1;
+		if (!isset($ui->post['line_colour_2']) or (!validate_int($ui->post['line_colour_2'],'0','255') and $ui->post['line_colour_2']!=0)) $error = 1;
+		if (!isset($ui->post['line_colour_3']) or (!validate_int($ui->post['line_colour_3'],'0','255') and $ui->post['line_colour_3']!=0)) $error = 1;
 		if ($error==0) {
-			$query=$sql->prepare("UPDATE `traffic_settings` SET `type`=:type,`statip`=:statip,`dbname`=AES_ENCRYPT(:dbname,:aeskey),`dbuser`=AES_ENCRYPT(:dbuser,:aeskey),`dbpassword`=AES_ENCRYPT(:dbpassword,:aeskey),`multiplier`=:multiplier,`table_name`=:table_name,`column_sourceip`=:column_sourceip,`column_destip`=:column_destip,`column_byte`=:column_byte,`column_date`=:column_date,`text_colour_1`=:text_colour_1,`text_colour_2`=:text_colour_2,`text_colour_3`=:text_colour_3,`barin_colour_1`=:barin_colour_1,`barin_colour_2`=:barin_colour_2,`barin_colour_3`=:barin_colour_3,`barout_colour_1`=:barout_colour_1,`barout_colour_2`=:barout_colour_2,`barout_colour_3`=:barout_colour_3,`bartotal_colour_1`=:bartotal_colour_1,`bartotal_colour_2`=:bartotal_colour_2,`bartotal_colour_3`=:bartotal_colour_3,`bg_colour_1`=:bg_colour_1,`bg_colour_2`=:bg_colour_2,`bg_colour_3`=:bg_colour_3,`border_colour_1`=:border_colour_1,`border_colour_2`=:border_colour_2,`border_colour_3`=:border_colour_3,`line_colour_1`=:line_colour_1,`line_colour_2`=:line_colour_2,`line_colour_3`=:line_colour_3 LIMIT 1");
+			$query = $sql->prepare("UPDATE `traffic_settings` SET `type`=:type,`statip`=:statip,`dbname`=AES_ENCRYPT(:dbname,:aeskey),`dbuser`=AES_ENCRYPT(:dbuser,:aeskey),`dbpassword`=AES_ENCRYPT(:dbpassword,:aeskey),`multiplier`=:multiplier,`table_name`=:table_name,`column_sourceip`=:column_sourceip,`column_destip`=:column_destip,`column_byte`=:column_byte,`column_date`=:column_date,`text_colour_1`=:text_colour_1,`text_colour_2`=:text_colour_2,`text_colour_3`=:text_colour_3,`barin_colour_1`=:barin_colour_1,`barin_colour_2`=:barin_colour_2,`barin_colour_3`=:barin_colour_3,`barout_colour_1`=:barout_colour_1,`barout_colour_2`=:barout_colour_2,`barout_colour_3`=:barout_colour_3,`bartotal_colour_1`=:bartotal_colour_1,`bartotal_colour_2`=:bartotal_colour_2,`bartotal_colour_3`=:bartotal_colour_3,`bg_colour_1`=:bg_colour_1,`bg_colour_2`=:bg_colour_2,`bg_colour_3`=:bg_colour_3,`border_colour_1`=:border_colour_1,`border_colour_2`=:border_colour_2,`border_colour_3`=:border_colour_3,`line_colour_1`=:line_colour_1,`line_colour_2`=:line_colour_2,`line_colour_3`=:line_colour_3 LIMIT 1");
             $query->execute(array(':aeskey'=>$aeskey,':type'=>$ui->post['type'],':statip'=>$ui->post['statip'],':dbname'=>$ui->post['dbname'],':dbuser'=>$ui->post['dbuser'],':dbpassword'=>$ui->post['dbpassword'],':table_name'=>$ui->post['table_name'],':multiplier'=>$ui->post['multiplier'],':column_sourceip'=>$ui->post['column_sourceip'],':column_destip'=>$ui->post['column_destip'],':column_byte'=>$ui->post['column_byte'],':column_date'=>$ui->post['column_date'],':text_colour_1'=>$ui->post['text_colour_1'],':text_colour_2'=>$ui->post['text_colour_2'],':text_colour_3'=>$ui->post['text_colour_3'],':barin_colour_1'=>$ui->post['barin_colour_1'],':barin_colour_2'=>$ui->post['barin_colour_2'],':barin_colour_3'=>$ui->post['barin_colour_3'],':barout_colour_1'=>$ui->post['barout_colour_1'],':barout_colour_2'=>$ui->post['barout_colour_2'],':barout_colour_3'=>$ui->post['barout_colour_3'],':bartotal_colour_1'=>$ui->post['bartotal_colour_1'],':bartotal_colour_2'=>$ui->post['bartotal_colour_2'],':bartotal_colour_3'=>$ui->post['bartotal_colour_3'],':bg_colour_1'=>$ui->post['bg_colour_1'],':bg_colour_2'=>$ui->post['bg_colour_2'],':bg_colour_3'=>$ui->post['bg_colour_3'],':border_colour_1'=>$ui->post['border_colour_1'],':border_colour_2'=>$ui->post['border_colour_2'],':border_colour_3'=>$ui->post['border_colour_3'],':line_colour_1'=>$ui->post['line_colour_1'],':line_colour_2'=>$ui->post['line_colour_2'],':line_colour_3'=>$ui->post['line_colour_3']));
-			$template_file=$spracheResponse->table_add;
+			$template_file = $spracheResponse->table_add;
 		} else {
-			$template_file='Error';
+			$template_file = 'Error';
 		}
 	} else {
-        $query=$sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date`,`multiplier`,`text_colour_1`,`text_colour_2`,`text_colour_3`,`barin_colour_1`,`barin_colour_2`,`barin_colour_3`,`barout_colour_1`,`barout_colour_2`,`barout_colour_3`,`bartotal_colour_1`,`bartotal_colour_2`,`bartotal_colour_3`,`bg_colour_1`,`bg_colour_2`,`bg_colour_3`,`border_colour_1`,`border_colour_2`,`border_colour_3`,`line_colour_1`,`line_colour_2`,`line_colour_3` FROM `traffic_settings` LIMIT 1");
+        $query = $sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date`,`multiplier`,`text_colour_1`,`text_colour_2`,`text_colour_3`,`barin_colour_1`,`barin_colour_2`,`barin_colour_3`,`barout_colour_1`,`barout_colour_2`,`barout_colour_3`,`bartotal_colour_1`,`bartotal_colour_2`,`bartotal_colour_3`,`bg_colour_1`,`bg_colour_2`,`bg_colour_3`,`border_colour_1`,`border_colour_2`,`border_colour_3`,`line_colour_1`,`line_colour_2`,`line_colour_3` FROM `traffic_settings` LIMIT 1");
         $query->execute(array(':aeskey'=>$aeskey));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$type=$row['type'];
@@ -123,11 +123,11 @@ if ($d=='se' and $reseller_id==0) {
 			$line_colour_2=$row['line_colour_2'];
 			$line_colour_3=$row['line_colour_3'];
 		}
-		$template_file='admin_traffic_settings.tpl';
+		$template_file = 'admin_traffic_settings.tpl';
 	}
 } else {
 	$display=$sprache->total;
-	$data=array();
+	$data = array();
 	if (!isset($ui->post['unit'])) {
 		$unit="mb";
 	} else if ($ui->post['unit']=="mb") {
@@ -139,10 +139,10 @@ if ($d=='se' and $reseller_id==0) {
 	}
 	if (!isset($ui->post['kind'])) {
 		$kind="al";
-		$whichdata="";
+		$whichdata = "";
 	} else if ($ui->post['kind']=="al") {
 		$kind="al";
-		$whichdata="";
+		$whichdata = "";
 	} else if ($ui->post['kind']=="su") {
 		$kind="su";
 		if (isips($ui->post['what'])) {
@@ -159,14 +159,14 @@ if ($d=='se' and $reseller_id==0) {
 			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=:admin_id AND c.`resellersid`=:reseller_id");
 			$pselect->execute(array(':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}		
-		$ips=array();
-		$userips=array();
+		$ips = array();
+		$userips = array();
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			unset($userips);
 			$userips=ipstoarray($row['ips']);
 			foreach ($userips as $ip) {
 				$ip_ex=explode(".",$ip);
-				$ips[]=$ip_ex[0].".".$ip_ex[1].".".$ip_ex[2].".";
+				$ips[]=$ip_ex[0] . '.' . $ip_ex[1] . '.' . $ip_ex[2].".";
 			}
 		}
 		$subnets=array_unique($ips);
@@ -239,7 +239,7 @@ if ($d=='se' and $reseller_id==0) {
 			$pselect->execute(array(':id' =>$ui->post['what'],':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$display=$sprache->server . '  ' . $row['cname'].'-'.$ui->post['what'];
+			$display=$sprache->server . '  ' . $row['cname'] . '-' . $ui->post['what'];
 		}
 		if ($reseller_id==0) {
 			$pselect=$sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` ORDER BY u.`id`,c.`id`");
@@ -253,9 +253,9 @@ if ($d=='se' and $reseller_id==0) {
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			if ($ui->post['what']==$row['id']) {
-				$data[]='<option value='.$row['id'].' selected="selected">'.$row['cname'].'-'.$row['id'].'</option>';
+				$data[]='<option value='.$row['id'].' selected="selected">'.$row['cname'] . '-' . $row['id'].'</option>';
 			} else {
-				$data[]='<option value='.$row['id'].'>'.$row['cname'].'-'.$row['id'].'</option>';
+				$data[]='<option value='.$row['id'].'>'.$row['cname'] . '-' . $row['id'].'</option>';
 			}
 		}
 	} else if ($ui->post['kind']=="ip") {
@@ -274,8 +274,8 @@ if ($d=='se' and $reseller_id==0) {
 			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=:admin_id AND c.`resellersid`=:reseller_id");
 			$pselect->execute(array(':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}		
-		$ips=array();
-		$user_ips=array();
+		$ips = array();
+		$user_ips = array();
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			unset($user_ips);
 			$user_ips=ipstoarray($row['ips']);
@@ -350,7 +350,7 @@ if ($d=='se' and $reseller_id==0) {
 		}
 	} else if ($ui->post['dmy']=='mo') {
 		$dmy='mo';
-		$day=1;
+		$day = 1;
 		if (validate_int($ui->post['monthstart'],1,12)) {
 			$month=$ui->post['monthstart'];
 		} else {
@@ -376,7 +376,7 @@ if ($d=='se' and $reseller_id==0) {
 		$date1=strtotime("$year-$month-$day");
 		$add=$date1;
 		$date2=strtotime("$yearstop-$monthstop-$daystop");
-		$i=0;
+		$i = 0;
 		while ($add<=$date2) {
 			$newadd=strtotime("+1 months",$add);
 			$add=$newadd;
@@ -387,14 +387,14 @@ if ($d=='se' and $reseller_id==0) {
 			$yearstop=date('Y');
 			$monthstop=date('m');
 			$daystop=date('t', strtotime("$yearstop-$monthstop"));
-			$day='1';
+			$day = 1;
 			$month=date('m',strtotime("-6 months"));
 			$year=date('Y',strtotime("-6 months"));
 			$amount=7;
 		}
 	} else if ($ui->post['dmy']=='ye') {
 		$dmy='ye';
-		$day=1;
+		$day = 1;
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
 			$year=$ui->post['yearstart'];
 		} else {
@@ -405,14 +405,14 @@ if ($d=='se' and $reseller_id==0) {
 		} else {
 			$yearstop=date('Y');
 		}
-		$month=1;
+		$month = 1;
 		$monthstop=12;
 		$daystop=31;
 		$now=date('Y');
 		$date1=strtotime("$year-$month-$day");
 		$date2=strtotime("$yearstop-$monthstop-$daystop");
 		$add=$date1;
-		$i=0;
+		$i = 0;
 		while ($add<=$date2) {
 			$newadd=strtotime("+1 year",$add);
 			$add=$newadd;
@@ -423,10 +423,10 @@ if ($d=='se' and $reseller_id==0) {
 			$yearstop=date('Y');
 			$monthstop=12;
 			$daystop=31;
-			$day=1;
-			$month=1;
+			$day = 1;
+			$month = 1;
 			$year=date('Y',strtotime("-1 year"));
-			$amount=2;
+			$amount = 2;
 		}
 	}
 	if ($user_language="de") {
@@ -437,5 +437,5 @@ if ($d=='se' and $reseller_id==0) {
 		$stopdate="$yearstop-$monthstop-$daystop";
 	}
 	$trafficdata="images.php?img=tr&amp;d=$dmy&amp;w=$unit&amp;p=$year&amp;id=$day&amp;po=$month&amp;m=$amount$whichdata";
-	$template_file="admin_traffic.tpl";
+	$template_file = "admin_traffic.tpl";
 }

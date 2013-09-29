@@ -37,8 +37,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-$main=1;
-$page_include=1;
+$main = 1;
+$page_include = 1;
 define('EASYWIDIR', dirname(__FILE__));
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
@@ -47,15 +47,15 @@ include(EASYWIDIR . '/stuff/settings.php');
 if (isset ($page_active) and $page_active=='Y') {
     include(EASYWIDIR . '/stuff/init_page.php');
     if (isset($throw404)) {
-        $template_file='page_404.tpl';
+        $template_file = 'page_404.tpl';
     } else if (isset($what_to_be_included_array[$s]) and is_file(EASYWIDIR . '/stuff/'. $what_to_be_included_array[$s])) {
         include(EASYWIDIR . '/stuff/'. $what_to_be_included_array[$s]);
     } else if (isset($what_to_be_included_array[$s]) and is_file(EASYWIDIR . '/'. $what_to_be_included_array[$s])) {
         include(EASYWIDIR . '/'. $what_to_be_included_array[$s]);
     } else if (isset($s) and !isset($what_to_be_included_array[$s])) {
-        $template_file='page_404.tpl';
+        $template_file = 'page_404.tpl';
     } else {
-        $template_file='page_home.tpl';
+        $template_file = 'page_home.tpl';
     }
     unset($dbConnect);
     include(IncludeTemplate($template_to_use,'page_header.tpl'));

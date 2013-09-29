@@ -59,16 +59,16 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $currentHour=date('G');
     $currentMinute=(int)date('i');
-    $query=$sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
     $lastUpdateRun=(int)$query->fetchColumn();
-    $query=$sql->prepare("UPDATE `settings` SET `lastUpdateRun`=? WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("UPDATE `settings` SET `lastUpdateRun`=? WHERE `resellerid`=0 LIMIT 1");
     $query->execute(array($currentMinute));
     echo "Checking for servers to be updated and or synced at hour ${currentHour} and between minutes ${lastUpdateRun} and ${currentMinute}\r\n";
     $currentMinute++;
     if ($lastUpdateRun!=null and $lastUpdateRun!=0) $lastUpdateRun--;
-    $query=$sql->prepare("SELECT `id` FROM `rserverdata` WHERE `updates`!=3 AND (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<?");
-    $query2=$sql->prepare("UPDATE `rserverdata` SET `alreadyStartedAt`=? WHERE `id`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `updates`!=3 AND (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<?");
+    $query2 = $sql->prepare("UPDATE `rserverdata` SET `alreadyStartedAt`=? WHERE `id`=? LIMIT 1");
     $query->execute(array($currentHour,$lastUpdateRun,($currentMinute+1)));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $rootServer=new masterServer($row['id'],$aeskey);
@@ -87,6 +87,6 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         $query2->execute(array($currentHour,$row['id']));
         unset($rootServer);
     }
-    $query=$sql->prepare("UPDATE `settings` SET `lastCronUpdates`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("UPDATE `settings` SET `lastCronUpdates`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
 }

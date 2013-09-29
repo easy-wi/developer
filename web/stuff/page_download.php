@@ -50,9 +50,9 @@ if (isset($page_name) and isid($page_name,10)) {
     $downloadID=$ui->id('id',10,'get');
 }
 if (!isset($user_language) or $user_language=='') $user_language=(isset($page_detect_language)) ? $page_detect_language : $rSA['language'];
-if ((isset($page_name) and $page_name=='get') or $ui->smallletters('action',3,'get')=='get') $startDownload=true;
+if ((isset($page_name) and $page_name=='get') or $ui->smallletters('action',3,'get')=='get') $startDownload= true;
 if (isset($downloadID)) {
-    $query=$sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? WHERE d.`fileID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? WHERE d.`fileID`=? LIMIT 1");
     $query->execute(array($user_language,$downloadID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (($row['show']=='E' or ($row['show']=='A' and isset($admin_id)) or ($row['show']=='R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}")) {
@@ -79,20 +79,20 @@ if (isset($downloadID)) {
                         flush();
                     }
                 }
-                $query2=$sql->prepare("UPDATE `page_downloads` SET `count`=(`count`+1) WHERE `fileID`=? LIMIT 1");
+                $query2 = $sql->prepare("UPDATE `page_downloads` SET `count`=(`count`+1) WHERE `fileID`=? LIMIT 1");
                 $query2->execute(array($downloadID));
-                $query2=$sql->prepare("INSERT INTO `page_downloads_log` (`fileID`,`date`,`ip`,`hostname`) VALUES (?,NOW(),?,?)");
+                $query2 = $sql->prepare("INSERT INTO `page_downloads_log` (`fileID`,`date`,`ip`,`hostname`) VALUES (?,NOW(),?,?)");
                 $query2->execute(array($downloadID,$loguserip,$userHostname));
                 die;
             } else {
-                $template_file='page_downloads_detail.tpl';
+                $template_file = 'page_downloads_detail.tpl';
             }
         }
     }
-    $template_file='page_404.tpl';
+    $template_file = 'page_404.tpl';
 } else {
-    $table=array();
-    $query=$sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? ORDER BY d.`order`,d.`fileID`");
+    $table = array();
+    $query = $sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? ORDER BY d.`order`,d.`fileID`");
     $query->execute(array($user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (($row['show']=='E' or ($row['show']=='A' and isset($admin_id)) or ($row['show']=='R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}")) {
@@ -101,12 +101,12 @@ if (isset($downloadID)) {
     }
 
     // https://github.com/easy-wi/developer/issues/62
-    $langLinks=array();
+    $langLinks = array();
     foreach ($languages as $l) {
-        $tempLanguage=getlanguagefile('general',$l,0);
+        $tempLanguage = getlanguagefile('general',$l,0);
         $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
     }
     $page_data->langLinks($langLinks);
 
-    $template_file='page_downloads_list.tpl';
+    $template_file = 'page_downloads_list.tpl';
 }

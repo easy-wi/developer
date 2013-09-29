@@ -50,8 +50,8 @@ if (!function_exists('passwordgenerate')) {
     function passwordgenerate ($length) {
         $zeichen = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',1,'2','3','4','5','6','7','8','9');
         $anzahl=count($zeichen)-1;
-        $password='';
-        for($i=1; $i<=$length; $i++){
+        $password = '';
+        for($i = 1; $i<=$length; $i++){
             $wuerfeln=mt_rand(0,$anzahl);
             $password .= $zeichen[$wuerfeln];
         }
@@ -65,11 +65,11 @@ if (!function_exists('passwordgenerate')) {
     function createHash ($name,$pwd,$saltOne,$saltTwo='ZPZw$[pkJF!;SHdl',$iterate=1000) {
         $pwdSplit=str_split($pwd,(strlen($pwd)/2)+1);
         $nameSplit=str_split($name,(strlen($name)/2)+1);
-        $hash='';
+        $hash = '';
         if (!isset($nameSplit[1]) and strlen($nameSplit[0])>0) $nameSplit[1]=$nameSplit[0];
         if (!isset($pwdSplit[1]) and strlen($pwdSplit[0])>0) $pwdSplit[1]=$pwdSplit[0];
         if (isset($nameSplit[1]) and isset($pwdSplit[1])) {
-            for ($i=0;$i<=$iterate;$i++) $hash=hash('sha512',$nameSplit[0].$saltOne.$pwdSplit[0].$hash.$nameSplit[1].$saltTwo.$pwdSplit[1]);
+            for ($i = 0;$i<=$iterate;$i++) $hash=hash('sha512',$nameSplit[0].$saltOne.$pwdSplit[0].$hash.$nameSplit[1].$saltTwo.$pwdSplit[1]);
             return $hash;
         } else if (!isset($pwdSplit[1])) {
             die ('Fatal Error: No or invalid Password!');
@@ -89,7 +89,7 @@ if (!function_exists('passwordgenerate')) {
         die('Please allow redirection settings');
     }
     function listDirs ($dir) {
-        $selectLanguages=array();
+        $selectLanguages = array();
         if (is_dir($dir)){
             $dirs=scandir($dir);
             foreach ($dirs as $row) if (small_letters_check($row,2)) $selectLanguages[]=$row;
@@ -110,22 +110,22 @@ if (!function_exists('passwordgenerate')) {
     }
     function serverdata($type,$serverID,$aeskey) {
         global $sql;
-        $serverdata=array();
+        $serverdata = array();
         if ($type=="root") {
-            $query=$sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
         } else if ($type=="virtualhost") {
-            $query=$sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`notified`,`resellerid` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`notified`,`resellerid` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
         } else if ($type=="dhcp") {
-            $query=$sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`notified`,`resellerid` FROM `dhcpdata` WHERE `id`=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`notified`,`resellerid` FROM `dhcpdata` WHERE `id`=:serverID LIMIT 1");
         } else {
-            $query=$sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`cfgdir`,`notified`,`resellerid` FROM `eac` WHERE `resellerid`=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`cfgdir`,`notified`,`resellerid` FROM `eac` WHERE `resellerid`=:serverID LIMIT 1");
         }
         $query->execute(array(':serverID'=>$serverID,':aeskey'=>$aeskey));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $cores='';
-            $hyperthreading='';
-            $steamAccount='';
-            $steamPassword='';
+            $cores = '';
+            $hyperthreading = '';
+            $steamAccount = '';
+            $steamPassword = '';
             if ($type=="root") {
                 $ftpport=$row['ftpport'];
                 $cores=$row['cores'];
@@ -135,7 +135,7 @@ if (!function_exists('passwordgenerate')) {
             } else if ($type=="eac") {
                 $ftpport=$row['cfgdir'];
             } else {
-                $ftpport="";
+                $ftpport = "";
             }
             $serverdata=array('ip'=>$row['ip'],'port'=>$row['decryptedport'],'user'=>$row['decrypteduser'],'pass'=>$row['decryptedpass'],'publickey'=>$row['publickey'],'keyname'=>$row['keyname'],'notified'=>$row['notified'],'resellerid'=>$row['resellerid'],'hyperthreading'=>$hyperthreading,'cores'=>$cores,'ftpport'=>$ftpport,'steamAccount'=>$steamAccount,'steamPassword'=>$steamPassword);
         }
@@ -143,23 +143,23 @@ if (!function_exists('passwordgenerate')) {
     }
     function serverAmount($resellerid) {
         global $sql,$user_language;
-        $query=$sql->prepare("SELECT `licence` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+        $query = $sql->prepare("SELECT `licence` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
         $query->execute();
         $json=@json_decode($query->fetchColumn());
-        $query=$sql->prepare("SELECT  COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` LEFT JOIN `userdata` r ON g.`resellerid`= r.`id` WHERE g.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
+        $query = $sql->prepare("SELECT  COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` LEFT JOIN `userdata` r ON g.`resellerid`= r.`id` WHERE g.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
         $query->execute();
         $gsCount=(int)$query->fetchColumn();
-        $query=$sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
+        $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
         $query->execute();
         $vCount=(int)$query->fetchColumn();
-        $query=$sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
+        $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
         $query->execute();
         $voCount=(int)$query->fetchColumn();
-        $query=$sql->prepare("SELECT `dedicatedID` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` LEFT JOIN `userdata` r ON d.`resellerID`= r.`id` WHERE r.`active`!='N' AND u.`active`!='N' AND d.`active`!='N'");
+        $query = $sql->prepare("SELECT `dedicatedID` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` LEFT JOIN `userdata` r ON d.`resellerID`= r.`id` WHERE r.`active`!='N' AND u.`active`!='N' AND d.`active`!='N'");
         $query->execute();
         $dCount=(int)$query->fetchColumn();
         $count=$gsCount+$vCount+$voCount+$dCount;
-        $sprache=getlanguagefile('licence',$user_language,$resellerid);
+        $sprache = getlanguagefile('licence',$user_language,$resellerid);
         $s=$sprache->unlimited;
         $mG=$s;
         $mVs=$s;
@@ -171,7 +171,7 @@ if (!function_exists('passwordgenerate')) {
         $lD=10;
         $left=$s;
         if ($resellerid!=0) {
-            $query=$sql->prepare("SELECT `maxgserver`,`maxvserver`,`maxvoserver`,`maxdedis` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `maxgserver`,`maxvserver`,`maxvoserver`,`maxdedis` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $mG=$row['maxgserver'];
@@ -179,16 +179,16 @@ if (!function_exists('passwordgenerate')) {
                 $mVo=$row['maxvoserver'];
                 $mD=$row['maxdedis'];
             }
-            $query=$sql->prepare("SELECT COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? AND g.`active`='Y' AND u.`active`='Y'");
+            $query = $sql->prepare("SELECT COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? AND g.`active`='Y' AND u.`active`='Y'");
             $query->execute(array($resellerid));
             $gsCount=$query->fetchColumn();
-            $query=$sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`userid`=:resellerid OR v.`resellerid`=:resellerid) AND v.`active`='Y' AND u.`active`='Y'");
+            $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`userid`=:resellerid OR v.`resellerid`=:resellerid) AND v.`active`='Y' AND u.`active`='Y'");
             $query->execute(array(':resellerid'=>$resellerid));
             $vCount=$query->fetchColumn();
-            $query=$sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y'");
+            $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` LEFT JOIN `userdata` r ON v.`resellerid`= r.`id` WHERE v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' AND u.`active`='Y'");
             $query->execute(array($resellerid));
             $voCount=$query->fetchColumn();
-            $query=$sql->prepare("SELECT COUNT(`dedicatedID`) AS `amount` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userid`=u.`id` WHERE (d.`userID`=:resellerid OR d.`resellerID`=:resellerid) AND d.`active`!='N'");
+            $query = $sql->prepare("SELECT COUNT(`dedicatedID`) AS `amount` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userid`=u.`id` WHERE (d.`userID`=:resellerid OR d.`resellerID`=:resellerid) AND d.`active`!='N'");
             $query->execute(array(':resellerid'=>$resellerid));
             $dCount=$query->fetchColumn();
         }
@@ -196,14 +196,14 @@ if (!function_exists('passwordgenerate')) {
     }
     function getusername($userid) {
         global $sql;
-        $query=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
         $cname=($query->rowCount()==0) ? 'User deleted' : $query->fetchColumn();
         return $cname;
     }
     function rsellerpermisions($userid) {
         global $sql;
-        $query=$sql->prepare("SELECT `userid` FROM `userpermissions` WHERE `userid`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
+        $query = $sql->prepare("SELECT `userid` FROM `userpermissions` WHERE `userid`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
         $query->execute(array($userid));
         $colcount=$query->rowCount();
         if ($colcount==0) {
@@ -215,21 +215,21 @@ if (!function_exists('passwordgenerate')) {
     }
     function isanyadmin($userid) {
         global $sql;
-        $query=$sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
         $accountType=$query->fetchColumn();
         return ($accountType=='a' or $accountType=='r') ?  true : false;
     }
     function isanyuser($userid) {
         global $sql;
-        $query=$sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
         return ($query->fetchColumn()=='u') ? true : false;
     }
     function language($user_id) {
         global $sql,$ui;
         if (!isset($_SESSION['language'])) {
-            $query=$sql->prepare("SELECT `language` FROM `userdata` WHERE `id`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `language` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($user_id));
             $language=$query->fetchColumn();
             if ($language=='') {
@@ -237,16 +237,16 @@ if (!function_exists('passwordgenerate')) {
                 if (is_dir(EASYWIDIR."/languages/$lang_detect")) {
                     $language=$lang_detect;
                 } else {
-                    $query=$sql->prepare("SELECT `language` FROM `settings` LIMIT 1");
+                    $query = $sql->prepare("SELECT `language` FROM `settings` LIMIT 1");
                     $query->execute();
                     $language=$query->fetchColumn();
                 }
             } else if (!is_dir(EASYWIDIR."/languages/$language")) {
-                $query=$sql->prepare("SELECT `language` FROM `settings` LIMIT 1");
+                $query = $sql->prepare("SELECT `language` FROM `settings` LIMIT 1");
                 $query->execute();
                 $language=$query->fetchColumn();
             }
-            $query=$sql->prepare("UPDATE `userdata` SET `language`=? WHERE `id`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `userdata` SET `language`=? WHERE `id`=? LIMIT 1");
             $query->execute(array($language,$user_id));
             $_SESSION['language']=$language;
         } else {
@@ -257,7 +257,7 @@ if (!function_exists('passwordgenerate')) {
     function getlanguagefile($filename,$user_language,$reseller_id) {
         global $sql;
         $sprache=new stdClass;
-        $query=$sql->prepare("SELECT `language`,`template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `language`,`template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $default_language=$row['language'];
@@ -279,7 +279,7 @@ if (!function_exists('passwordgenerate')) {
         return $sprache;
     }
     function ipstoarray($value) {
-        $ips_array=array();
+        $ips_array = array();
         if (isips($value)) {
             foreach (explode("\r\n", $value) as $exip) {
                 if (isips($exip)) {
@@ -290,7 +290,7 @@ if (!function_exists('passwordgenerate')) {
                         $range=explode("/", $exploded_ip[3]);
                         $i=$range[0];
                         while ($i <= $range[1]) {
-                            $ips_array[]=$exploded_ip[0].".".$exploded_ip[1].".".$exploded_ip[2].".".$i;
+                            $ips_array[]=$exploded_ip[0] . '.' . $exploded_ip[1] . '.' . $exploded_ip[2] . '.' . $i;
                             $i++;
                         }
                     }
@@ -302,21 +302,21 @@ if (!function_exists('passwordgenerate')) {
     }
     function freeips($value) {
         global $sql;
-        $userips=array();
-        $usedips=array();
+        $userips = array();
+        $usedips = array();
         if ($value==0) {
-            $userips=array();
-            $query=$sql->prepare("SELECT `ips` FROM `rootsDHCP` WHERE `active`='Y' AND `resellerid`=0");
+            $userips = array();
+            $query = $sql->prepare("SELECT `ips` FROM `rootsDHCP` WHERE `active`='Y' AND `resellerid`=0");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 foreach (ipstoarray($row['ips']) as $ip) $userips[]=$ip;
             }
-            $query=$sql->prepare("SELECT `ips` FROM `resellerdata`");
+            $query = $sql->prepare("SELECT `ips` FROM `resellerdata`");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 foreach (ipstoarray($row['ips']) as $usedip) $usedips[]=$usedip;
             }
-            $query=$sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer`");
+            $query = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer`");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usedips[]=$row['ip'];
@@ -324,7 +324,7 @@ if (!function_exists('passwordgenerate')) {
                     $usedips[]=$usedip;
                 }
             }
-            $query=$sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated`");
+            $query = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated`");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usedips[]=$row['ip'];
@@ -333,28 +333,28 @@ if (!function_exists('passwordgenerate')) {
                 }
             }
         } else {
-            $query=$sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($value));
             $resellerid=$query->fetchColumn();
-            $query=$sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $userips=ipstoarray($row['ips']);
             }
-            $query=$sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer` WHERE `resellerid`=?");
+            $query = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer` WHERE `resellerid`=?");
             $query->execute(array($resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usedips[]=$row['ip'];
                 foreach (ipstoarray($row['ips']) as $usedip) $usedips[]=$usedip;
             }
-            $query=$sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated` WHERE `resellerid`=?");
+            $query = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated` WHERE `resellerid`=?");
             $query->execute(array($resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usedips[]=$row['ip'];
                 foreach (ipstoarray($row['ips']) as $usedip) $usedips[]=$usedip;
             }
-            $query=$sql->prepare("SELECT `id` FROM `userdata` WHERE accounttype='r' AND `resellerid`=:id AND `id`!=:id");
-            $query2=$sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE accounttype='r' AND `resellerid`=:id AND `id`!=:id");
+            $query2 = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array(':id'=>$resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query2->execute(array($row['id']));
@@ -363,7 +363,7 @@ if (!function_exists('passwordgenerate')) {
                 }
             }
         }
-        $checkedips=array();
+        $checkedips = array();
         foreach (array_unique($userips) as $userip) {
             if (!in_array($userip, $usedips)) $checkedips[]=$userip;
         }
@@ -373,13 +373,13 @@ if (!function_exists('passwordgenerate')) {
     }
     function eacchange($what,$serverid,$rcon,$reseller_id) {
         global $sql;
-        $query=$sql->prepare("SELECT `active`,`cfgdir` FROM `eac` WHERE `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `active`,`cfgdir` FROM `eac` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $cfgdir=$row['cfgdir'];
             $active=$row['active'];
         }
-        $query=$sql->prepare("SELECT g.`serverip`,g.`port`,s.`anticheat`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT g.`serverip`,g.`port`,s.`anticheat`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($serverid,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $gsip=$row['serverip'];
@@ -387,7 +387,7 @@ if (!function_exists('passwordgenerate')) {
             $anticheat=$row['anticheat'];
             $shorten=$row['shorten'];
         }
-        if ($anticheat==3) $parameter='';
+        if ($anticheat==3) $parameter = '';
         else if ($anticheat==4) $parameter='-2';
         else if ($anticheat==5) $parameter='-1';
         else if ($anticheat==6) $parameter='-3';
@@ -396,7 +396,7 @@ if (!function_exists('passwordgenerate')) {
         else if ($shorten=='cod4') $subfolder='cod4';
         $file="$cfgdir/$subfolder/$gsip-$gsport";
         $file=preg_replace('/\/\//', '/', $file);
-        if ($what=='change') $ssh2cmd='echo "'.$gsip.':'.$gsport.'-'.$rcon.$parameter.'" > '.$file;
+        if ($what=='change') $ssh2cmd='echo "'.$gsip.':'.$gsport . '-' . $rcon.$parameter.'" > '.$file;
         else if ($what=="remove") $ssh2cmd='rm -f '.$file;
         if (isset($ssh2cmd) and $active=='Y') {
             if (!function_exists('ssh2_execute')) include(EASYWIDIR . '/stuff/ssh_exec.php');
@@ -405,9 +405,9 @@ if (!function_exists('passwordgenerate')) {
     }
     function gsrestart($switchID,$action,$aeskey,$reseller_id) {
         global $sql;
-        $tempCmds=array();
+        $tempCmds = array();
         $stopped='Y';
-        $query=$sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`qstat`,t.`appID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`qstat`,t.`appID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey'=>$aeskey,':serverid'=>$switchID,':reseller_id'=>$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $serverid=$row['serverid'];
@@ -443,30 +443,30 @@ if (!function_exists('passwordgenerate')) {
             $modcmd=$row['modcmd'];
             $pallowed=$row['pallowed'];
             $user_id=$row['userid'];
-            $query=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($user_id));
             $customer=$query->fetchColumn();
-            if ($row['newlayout']=='Y') $customer=$customer.'-'.$row['switchID'];
+            if ($row['newlayout']=='Y') $customer=$customer . '-' . $row['switchID'];
             $cores=($row['taskset']=='Y') ? $row['cores'] : '';
             $maxcores=count(preg_split("/\,/",$cores,-1,PREG_SPLIT_NO_EMPTY));
-            if ($maxcores==0) $maxcores=1;
+            if ($maxcores==0) $maxcores = 1;
             $folder=($servertemplate>1 and $protected=='N') ? $shorten."-".$servertemplate : $shorten;
             if ($servertemplate>1 and $protected=='N') {
                 $pserver="server/";
                 $absolutepath="/home/".$customer."/server/".$gsip."_"."$port/$folder";
             } else if ($protected=='Y') {
-                $pserver="";
+                $pserver = "";
                 $absolutepath="/home/".$customer."/pserver/".$gsip."_"."$port/$folder";
             } else {
                 $pserver="server/";
                 $absolutepath="/home/".$customer."/server/".$gsip."_"."$port/$folder";
             }
             $bindir=$absolutepath. '/'. $binarydir;
-            $cvarprotect=array();
+            $cvarprotect = array();
             if ($qstat=='hla2s' and $tvenable=='Y') $slots++;
-            $modsCmds=array();
+            $modsCmds = array();
             $cvars=array('%binary%','%tic%','%ip%','%port%','%tvport%','%port2%','%port3%','%port4%','%port5%','%slots%','%map%','%mapgroup%','%fps%','%minram%','%maxram%','%maxcores%','%folder%','%user%','%absolutepath%');
-            $query2=$sql->prepare("SELECT `cmd`,`modcmds`,`configedit` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+            $query2 = $sql->prepare("SELECT `cmd`,`modcmds`,`configedit` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query2->execute(array($shorten,$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 foreach (explode("\r\n",$row2['configedit']) as $line) {
@@ -499,11 +499,11 @@ if (!function_exists('passwordgenerate')) {
                 }
                 foreach (explode("\r\n",$row2['modcmds']) as $line) {
                     if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/',$line)) {
-                        $name=trim($line,'[]');
+                        $name = trim($line,'[]');
                         $ex=preg_split("/\=/",$name,-1,PREG_SPLIT_NO_EMPTY);
                         if (isset($ex[1]) and trim($ex[1])=='default' and ($modcmd===null or $modcmd==='')) $modcmd=$ex[0];
-                        $name=trim($ex[0]);
-                        if (!isset($modsCmds[$name])) $modsCmds[$name]=array();
+                        $name = trim($ex[0]);
+                        if (!isset($modsCmds[$name])) $modsCmds[$name] = array();
                     } else if (isset($name) and isset ($modsCmds[$name]) and $line!='') {
                         $modsCmds[$name][]=$line;
                     }
@@ -517,11 +517,11 @@ if (!function_exists('passwordgenerate')) {
                 $cmd .=" -insecure";
             }
             $query2=($protected=='Y') ? $sql->prepare("SELECT `addonid` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `paddon`='Y' AND `resellerid`=?") : $sql->prepare("SELECT `addonid` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `paddon`='N' AND `resellerid`=?");
-            $installedaddons=array();
-            $rmarray=array();
+            $installedaddons = array();
+            $rmarray = array();
             $query2->execute(array($user_id,$serverid,$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $query3=$sql->prepare("SELECT `cmd`,`rmcmd`,`addon`,`type` FROM `addons` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
+                $query3 = $sql->prepare("SELECT `cmd`,`rmcmd`,`addon`,`type` FROM `addons` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
                 $query3->execute(array($row2['addonid'],$reseller_id));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                     if ($row3['type']=='tool') $installedaddons[]=$row3['addon'];
@@ -532,7 +532,7 @@ if (!function_exists('passwordgenerate')) {
                 }
             }
             foreach ($rmarray as $rm) $cmd=str_replace($rm,'',$cmd);
-            $query2=$sql->prepare("SELECT `rcon`,`password`,`slots`,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' AND `resellerid`=? LIMIT 1");
+            $query2 = $sql->prepare("SELECT `rcon`,`password`,`slots`,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' AND `resellerid`=? LIMIT 1");
             $query2->execute(array($aeskey,$serverid,$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 $slots=$row2['slots'];
@@ -571,7 +571,7 @@ if (!function_exists('passwordgenerate')) {
             }
             if ($action!='du' and $eacallowed=='Y' and ($anticheat==3 or $anticheat==4 or $anticheat==5 or $anticheat==6) and ($qstat=='a2s' or $qstat=='hla2s')) {
                 if ($action=='so' or $action=='sp') {
-                    $rcon="";
+                    $rcon = "";
                     eacchange('remove',$serverid,$rcon,$reseller_id);
                 } else if ($action=='re') {
                     if($gamebinary=="srcds_run") {
@@ -581,7 +581,7 @@ if (!function_exists('passwordgenerate')) {
                     } else {
                         $config="main/server.cfg";
                     }
-                    $configfile="";
+                    $configfile = "";
                     $fp= @fopen("ftp://$customer:$ftppass@$sship:$ftpport/$pserver$serverfolder/$config",'r');
                     if ($fp==true) {
                         stream_set_timeout($fp,'5');
@@ -614,7 +614,7 @@ if (!function_exists('passwordgenerate')) {
                     }
                 }
             } else if ($action!='du' and $eacallowed=='Y' and ($qstat=='a2s' or $qstat=='hla2s') and ($anticheat==1 or $anticheat==2)) {
-                $rcon="";
+                $rcon = "";
                 eacchange('remove',$serverid,$rcon,$reseller_id);
             }
             if ($protected=='N') {
@@ -673,7 +673,7 @@ if (!function_exists('passwordgenerate')) {
                             }
                             $split_config=preg_split('/\//',$config,-1,PREG_SPLIT_NO_EMPTY);
                             $folderfilecount=count($split_config)-1;
-                            $i=0;
+                            $i = 0;
                             $folders="/$pserver$serverfolder";
                             while ($i<$folderfilecount) {
                                 $folders .="/".$split_config[$i];
@@ -684,7 +684,7 @@ if (!function_exists('passwordgenerate')) {
                             if (strlen($uploadfile)>0 and @ftp_fget($ftp_connect,$temp,$uploadfile,FTP_ASCII,0)) {
                                 fseek($temp,0);
                                 fseek($temp,0);
-                                $configfile='';
+                                $configfile = '';
                                 while (!feof($temp)) {
                                     $configfile .=fread($temp,1024);
                                 }
@@ -692,9 +692,9 @@ if (!function_exists('passwordgenerate')) {
                                 $configfile=str_replace(array("\0","\b","\r","\Z"),"",$configfile);
                                 $lines=explode("\n",$configfile);
                                 $linecount=count($lines)-1;
-                                $i=0;
+                                $i = 0;
                                 foreach ($lines as $singeline) {
-                                    $edited=false;
+                                    $edited = false;
                                     $lline=strtolower($singeline);
                                     foreach ($values['cvars'] as $cvar => $value) {
                                         if ($cfgtype=='cfg' and preg_match("/^(.*)".strtolower($cvar)."\s+(.*)$/",$lline)) {
@@ -704,7 +704,7 @@ if (!function_exists('passwordgenerate')) {
                                             } else {
                                                 fwrite($temp2,$cvar . '  ' . $value);
                                             }
-                                            $edited=true;
+                                            $edited= true;
                                         } else if ($cfgtype=='ini' and preg_match("/^(.*)".strtolower($cvar)."(\=|\s+\=\s+|\s+\=|\=\s+)(.*)$/",$lline)) {
                                             $splitline=preg_split("/$cvar/",$lline,-1,PREG_SPLIT_NO_EMPTY);
                                             if (isset($splitline[1]) and preg_match("/^(.*)".strtolower($cvar)."\s+\=\s+(.*)$/",$splitline[1])) {
@@ -714,7 +714,7 @@ if (!function_exists('passwordgenerate')) {
                                             } else {
                                                 fwrite($temp2,$cvar."=".$value);
                                             }
-                                            $edited=true;
+                                            $edited= true;
                                         } else if ($cfgtype=='xml' and preg_match("/^(.*)<".strtolower($cvar).">(.*)<\/".strtolower($cvar).">$/",$lline)) {
                                             $splitline=preg_split("/\<$cvar/",$lline,-1,PREG_SPLIT_NO_EMPTY);
                                             if (isset($splitline[1])) {
@@ -722,7 +722,7 @@ if (!function_exists('passwordgenerate')) {
                                             } else {
                                                 fwrite($temp2,"<".$cvar.">".$value."</".$cvar.">");
                                             }
-                                            $edited=true;
+                                            $edited= true;
                                         }
                                     }
                                     if ($edited==false) {
@@ -743,9 +743,9 @@ if (!function_exists('passwordgenerate')) {
                     ftp_close($ftp_connect);
                 }
             }
-            $query=$sql->prepare("UPDATE `gsswitch` SET `stopped`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `gsswitch` SET `stopped`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($stopped,$switchID,$reseller_id));
-            $cmds=array();
+            $cmds = array();
             if ($pallowed=='Y' and $protected=='Y') $cmds[]="sudo -u ${customerUnprotected} ./control.sh stopall";
             else if ($pallowed=='Y' and $protected=='N') $cmds[]="sudo -u ${customerProtected} ./control.sh stopall";
             if (isset($restartCmd)) $cmds[]=$restartCmd;
@@ -756,13 +756,13 @@ if (!function_exists('passwordgenerate')) {
     }
     function webhostdomain($resellerid) {
         global $sql;
-        $query=$sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($resellerid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $paneldomain=$row['paneldomain'];
         }
         if (!isset($paneldomain) or (isset($paneldomain) and !filter_var($paneldomain,FILTER_VALIDATE_URL))) {
-            $query=$sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+            $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $paneldomain=$row['paneldomain'];
@@ -827,9 +827,9 @@ if (!function_exists('passwordgenerate')) {
             $writerid=$shorten[1];
             $shorten=$shorten[0];
         }
-        $userLanguage='';
-        $resellerLanguage='';
-        $query=$sql->prepare("SELECT `mail`,`vname`,`name`,`cname`,`language`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $userLanguage = '';
+        $resellerLanguage = '';
+        $query = $sql->prepare("SELECT `mail`,`vname`,`name`,`cname`,`language`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $usermail=$row['mail'];
@@ -841,19 +841,19 @@ if (!function_exists('passwordgenerate')) {
             $resellerid=$row['resellerid'];
         }
         if ($template=='emailnewticket') {
-            $query=$sql->prepare("SELECT `vname`,`name`,`cname` FROM `userdata` WHERE `id`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `vname`,`name`,`cname` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($writerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $username=($row['vname'].' '.$row['name']==' ') ? $row['cname'] : $row['vname'].' '.$row['name'];
+                $username=($row['vname'] . ' ' . $row['name']==' ') ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
             }
         }
         if(!isset($resellerid) or $resellerid==$userid) {
-            $resellersid=0;
-            if(!isset($resellerid)) $resellerid=0;
+            $resellersid = 0;
+            if(!isset($resellerid)) $resellerid = 0;
         } else {
             $resellersid=$resellerid;
         }
-        $query=$sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$resellersid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $emailregards=nl2br($row['emailregards']);
@@ -870,7 +870,7 @@ if (!function_exists('passwordgenerate')) {
             }
         }
         if (isset($email_settings_type) and $email_settings_type!='N') {
-            $query=$sql->prepare("SELECT `email`,`timezone` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `email`,`timezone` FROM `settings` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $resellerstimezone=$row['timezone'];
@@ -883,7 +883,7 @@ if (!function_exists('passwordgenerate')) {
                 } else {
                     $lookupID=$resellerid;
                 }
-                $query=$sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($userLanguage,$template,$lookupID));
                 $sprache=@simplexml_load_string($query->fetchColumn());
                 if (!$sprache) {
@@ -891,17 +891,17 @@ if (!function_exists('passwordgenerate')) {
                     $sprache=@simplexml_load_string($query->fetchColumn());
                 }
                 if (!$sprache) {
-                    $query=$sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `transID`=? AND `resellerID`=? LIMIT 1");
+                    $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `transID`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($template,$lookupID));
                     $sprache=@simplexml_load_string($query->fetchColumn());
                 }
-                $query=$sql->prepare("SELECT `$template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `$template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
                 $query->execute(array($lookupID));
                 $mailtext= @gzuncompress($query->fetchColumn());
             }
             $header='MIME-Version: 1.0' . "\n";
             $header .="Content-type: text/html; charset=utf-8"."\n";
-            if (!isset($resellerstimezone)) $resellerstimezone=0;
+            if (!isset($resellerstimezone)) $resellerstimezone = 0;
             $maildate=date('Y-m-d H:i:s',strtotime("$resellerstimezone hour"));
             if (isset($sprache) and isset($sprache->topic) and $mailtext!='') {
                 $keys=array('%server%','%username%','%date%','%shorten%','%emailregards%','%emailfooter%');
@@ -927,7 +927,7 @@ if (!function_exists('passwordgenerate')) {
                         else $sended=@smtpMail($email_settings_host,$email_settings_port,$email_settings_user,$email_settings_password,$usermail,$resellermail,$topic,$mail,$email_settings_ssl);
                     }
                     if ($sended==true) {
-                        $query=$sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
+                        $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
                         if($resellerid==$userid) {
                             $query->execute(array($userid,$topic,$resellersid));
                         } else {
@@ -957,18 +957,18 @@ if (!function_exists('passwordgenerate')) {
     }
     function User_Permissions($id) {
         global $sql;
-        $pa=array();
-        $query=$sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $pa = array();
+        $query = $sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         $accounttype=$query->fetchColumn();
-        $query=$sql->prepare("SELECT g.* FROM `userdata_groups` a LEFT JOIN `usergroups` g ON g.`id`=a.`groupID` WHERE a.`userID`=?");
+        $query = $sql->prepare("SELECT g.* FROM `userdata_groups` a LEFT JOIN `usergroups` g ON g.`id`=a.`groupID` WHERE a.`userID`=?");
         $query->execute(array($id));
         $array=$query->fetchAll(PDO::FETCH_ASSOC);
         foreach ($array as $row) {
             if (($accounttype=='u' and $row['miniroot']=='Y')) {
-                foreach ($row as $key => $value) $pa[$key]=true;
+                foreach ($row as $key => $value) $pa[$key]= true;
             } else if (($accounttype!='u' and $row['root']=='Y')) {
-                foreach ($row as $key => $value) $pa[$key]=true;
+                foreach ($row as $key => $value) $pa[$key]= true;
             } else {
                 foreach ($row as $key => $value) {
                     if ((isset($pa[$key]) and $pa[$key]===false) or !isset($pa[$key])) $pa[$key]=($value=='Y') ? true : false;
@@ -997,10 +997,10 @@ if (!function_exists('passwordgenerate')) {
     function updateStates($action,$type=null) {
         global $sql;
         $typeQuery=($type!=null) ? " AND `type`='${type}'" : '';
-        $query=$sql->prepare("SELECT `type`,`affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`,`affectedID`");
+        $query = $sql->prepare("SELECT `type`,`affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`,`affectedID`");
         $query->execute(array($action));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $query2=$sql->prepare("SELECT `jobID` FROM `jobs` WHERE `type`=? AND `affectedID`=? AND `action`=? $typeQuery ORDER BY `jobID` DESC LIMIT 1");
+            $query2 = $sql->prepare("SELECT `jobID` FROM `jobs` WHERE `type`=? AND `affectedID`=? AND `action`=? $typeQuery ORDER BY `jobID` DESC LIMIT 1");
             $query2->execute(array($row['type'],$row['affectedID'],$action));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 if ($type==null) {
@@ -1023,8 +1023,8 @@ if (!function_exists('passwordgenerate')) {
         else $errstr=$domain.' is no domain';
         if(isset($fp) and $fp) {
             if(is_array($postParams) and count($postParams)>0) {
-                $postData='';
-                $i=0;
+                $postData = '';
+                $i = 0;
                 foreach ($postParams as $key=>$value) {
                     if ($i==0){
                         $postData .=$key.'='.$value;
@@ -1049,7 +1049,7 @@ if (!function_exists('passwordgenerate')) {
                 $send .= $postData;
             }
             fwrite($fp,$send);
-            $buffer='';
+            $buffer = '';
             while (!feof($fp)) {
                 $buffer.=fgets($fp,4096);
             }
@@ -1071,10 +1071,10 @@ if (!function_exists('passwordgenerate')) {
     }
     function usedPorts ($ips) {
         global $sql;
-        $portsArray=array();
+        $portsArray = array();
         foreach ($ips as $serverIP) {
-            $ports=array();
-            $query=$sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? ORDER BY `port`");
+            $ports = array();
+            $query = $sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? ORDER BY `port`");
             $query->execute(array($serverIP));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (port($row['port'])){
@@ -1093,7 +1093,7 @@ if (!function_exists('passwordgenerate')) {
                     $ports[]=$row['port5'];
                 }
             }
-            $query=$sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
+            $query = $sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
             $query->execute(array($serverIP));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (port($row['port'])){
@@ -1128,7 +1128,7 @@ if (!function_exists('passwordgenerate')) {
         return 'N';
     }
     function returnPlainArray ($arr,$key) {
-        $return=array();
+        $return = array();
         if (is_array($arr) and !is_array($key)) {
             foreach ($arr as $v) {
                 $return[]=$v[$key];
@@ -1142,12 +1142,12 @@ if (!function_exists('passwordgenerate')) {
         $licencecode=cleanFsockOpenRequest($licencecode,'{','}');
         $json=@json_decode($licencecode);
         if ($json and isset($json->v)) {
-            $licencecode=array();
+            $licencecode = array();
             foreach($json as $k=>$v) $licencecode[$k]=$v;
             $time=time();
             $licencecode['lt']="${time}";
             $licencecode=json_encode($licencecode);
-            $query2=$sql->prepare("UPDATE `settings` SET `licence`=?,`version`=?,`releasenotesDE`=?,`releasenotesEN`=? WHERE `resellerid`=0 LIMIT 1");
+            $query2 = $sql->prepare("UPDATE `settings` SET `licence`=?,`version`=?,`releasenotesDE`=?,`releasenotesEN`=? WHERE `resellerid`=0 LIMIT 1");
             $query2->execute(array($licencecode,$json->v,$json->de,$json->en));
         }
         return ($return==true) ? $licencecode : false;
@@ -1201,14 +1201,14 @@ if (!function_exists('passwordgenerate')) {
     }
     function customColumns($item,$id=0,$action=false,$api=false) {
         global $sql,$user_language,$default_language;
-        $return=array();
-        $query=$sql->prepare("SELECT * FROM `custom_columns_settings` WHERE `item`=? AND `active`='Y'");
+        $return = array();
+        $query = $sql->prepare("SELECT * FROM `custom_columns_settings` WHERE `item`=? AND `active`='Y'");
         $query->execute(array($item));
         if ($action==false) {
-            $query2=$sql->prepare("SELECT `text` FROM `translations` WHERE `type`='cc' AND `transID`=? AND `lang`=? LIMIT 1");
-            $query3=$sql->prepare("SELECT `var` FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
+            $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='cc' AND `transID`=? AND `lang`=? LIMIT 1");
+            $query3 = $sql->prepare("SELECT `var` FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $text='';
+                $text = '';
                 $query2->execute(array($row['customID'],$user_language));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $text=$row2['text'];
@@ -1225,7 +1225,7 @@ if (!function_exists('passwordgenerate')) {
                 $return[]=array('customID'=>$row['customID'],'menu'=>$text,'name'=>$row['name'],'length'=>$row['length'],'type'=>$row['type'],'input'=>"<input id='inputCustom-${row['customID']}' type='${type}' name='${row['name']}' maxlength='${row['length']}' value='${value}' >",'value'=>$value);
             }
         } else if ($action=='save') {
-            $query2=$sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
+            $query2 = $sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
             if ($api==false) {
                 global $ui;
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -1234,7 +1234,7 @@ if (!function_exists('passwordgenerate')) {
                     } else if ($ui->names($row['name'],$row['length'],'post')) {
                         $var=$ui->names($row['name'],$row['length'],'post');
                     } else {
-                        $var='';
+                        $var = '';
                     }
                     $query2->execute(array($row['customID'],$id,$var));
                 }
@@ -1245,13 +1245,13 @@ if (!function_exists('passwordgenerate')) {
                     } else if (names($api[$row['name']],$row['length'])) {
                         $var=names($api[$row['name']],$row['length']);
                     } else {
-                        $var='';
+                        $var = '';
                     }
                     $query2->execute(array($row['customID'],$id,$var));
                 }
             }
         } else if ($action=='del') {
-            $query2=$sql->prepare("DELETE FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
+            $query2 = $sql->prepare("DELETE FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query2->execute(array($row['customID'],$id));
             }

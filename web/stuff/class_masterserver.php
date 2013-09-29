@@ -56,7 +56,7 @@ class masterServer {
         $this->aeskey=$aeskey;
 
         // get the current webhost
-        $query=$sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`='0' LIMIT 1");
+        $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`='0' LIMIT 1");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $this->webhost=$row['paneldomain'];
@@ -66,7 +66,7 @@ class masterServer {
         $this->rootID=$rootID;
 
         // fetch rootserverdata
-        $query=$sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id LIMIT 1");
+        $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id LIMIT 1");
         $query->execute(array(':aeskey'=>$aeskey,':id'=>$rootID));
         foreach ($query->fetchAll() as $row) {
             $active=$row['active'];
@@ -83,12 +83,12 @@ class masterServer {
             // Get the imageserver if possible and use Easy-WI server as fallback
             $mainip=explode('.',$this->sship);
             $mainsubnet=$mainip[0].'.'.$mainip[1].'.'.$mainip[2];
-            $query=$sql->prepare("SELECT AES_DECRYPT(`imageserver`,?) AS `decryptedimageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT AES_DECRYPT(`imageserver`,?) AS `decryptedimageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$this->resellerID));
             $splitImageservers=preg_split('/\r\n/',$query->fetchColumn(),-1,PREG_SPLIT_NO_EMPTY);
-            $imageservers=array();
+            $imageservers = array();
             foreach ($splitImageservers as $server) {
-                $split2=array();
+                $split2 = array();
                 if (isurl($server)) {
                     $imageservers[]=$server;
                     $split1=preg_split('/\//',$server,-1,PREG_SPLIT_NO_EMPTY);
@@ -108,7 +108,7 @@ class masterServer {
                 }
                 foreach ($split2 as $splitip) {
                     if ($splitip==$this->sship) {
-                        $noSync=true;
+                        $noSync= true;
                     } else if (isip($splitip,'all')) {
                         $ipparts=explode('.',$splitip);
                         $subnet=$ipparts[0].'.'.$ipparts[1].'.'.$ipparts[2];
@@ -134,9 +134,9 @@ class masterServer {
 
         // In case the rootserver could be found and it is active return true
         if (isset($active) and $active=='Y') {
-            $this->rootOK=true;
+            $this->rootOK= true;
         } else {
-            $this->rootOK=false;
+            $this->rootOK = false;
         }
     }
 
@@ -150,17 +150,17 @@ class masterServer {
         global $sql;
 
         if ($force==true) {
-            $extraSQL='';
+            $extraSQL = '';
         } else {
             $extraSQL='AND t.`updates`!=3 AND s.`updates`!=3';
         }
 
         // if an ID is given collect only data for this ID, else collect all game data for this rootserver
         if ($all===true) {
-            $query=$sql->prepare("SELECT t.`shorten`,t.`qstat`,r.`localVersion`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? ${extraSQL}");
+            $query = $sql->prepare("SELECT t.`shorten`,t.`qstat`,r.`localVersion`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? ${extraSQL}");
             $query->execute(array($this->rootID));
         } else {
-            $query=$sql->prepare("SELECT t.`shorten`,t.`qstat`,r.`localVersion`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? ${extraSQL} LIMIT 1");
+            $query = $sql->prepare("SELECT t.`shorten`,t.`qstat`,r.`localVersion`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? ${extraSQL} LIMIT 1");
             $query->execute(array($this->rootID,$all));
         }
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -172,18 +172,18 @@ class masterServer {
 
                 // Games defined to sync with 2 or 1
             } else if (($row['supdates']==1 or $row['supdates']==2) and ($row['updates']==1 or $row['updates']==2)) {
-                $updateType=0;
+                $updateType = 0;
                 if ($row['supdates']==1 and $row['updates']==1) {
-                    $updateType=1;
+                    $updateType = 1;
                 } else if ($row['supdates']==1 and $row['updates']==2) {
-                    $updateType=2;
+                    $updateType = 2;
                 } else if ($row['supdates']==2) {
-                    $updateType=2;
+                    $updateType = 2;
                 }
 
                 // steamCmd installations
                 if ($row['steamgame']=='S') {
-                    $lookUpAppID=($row['appID']==90) ? $row['appID'].'-'.$row['shorten'] : $row['appID'];
+                    $lookUpAppID=($row['appID']==90) ? $row['appID'] . '-' . $row['shorten'] : $row['appID'];
                     if ($row['localVersion']==null or ($row['localVersion']!=null and $row['localVersion']<$row['steamVersion'])) {
                         if ($updateType==1) {
                             $this->steamCmdOutdated['sync'][$lookUpAppID]=$row['shorten'];
@@ -228,14 +228,14 @@ class masterServer {
 
             if (($row['supdates']==1 or $row['supdates']==4) and ($row['updates']==1 or $row['updates']==4)) {
                 // collect maps
-                $query2=$sql->prepare("SELECT `addon` FROM `addons` WHERE `type`='map' AND `shorten`=? AND `resellerid`=?");
+                $query2 = $sql->prepare("SELECT `addon` FROM `addons` WHERE `type`='map' AND `shorten`=? AND `resellerid`=?");
                 $query2->execute(array($row['shorten'],$this->resellerID));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $this->maps[]=$row2['addon'];
                 }
 
                 // collect addons
-                $query2=$sql->prepare("SELECT `addon` FROM `addons` WHERE `type`='tool' AND (`shorten`=? OR `shorten`=?) AND `resellerid`=?");
+                $query2 = $sql->prepare("SELECT `addon` FROM `addons` WHERE `type`='tool' AND (`shorten`=? OR `shorten`=?) AND `resellerid`=?");
                 $query2->execute(array($row['shorten'],$row['qstat'],$this->resellerID));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $this->addons[]=$row2['addon'];
@@ -278,7 +278,7 @@ class masterServer {
         $addonCount=count($this->maps)+count($this->addons);
 
 
-        $query=$sql->prepare("SELECT r.`id` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` WHERE r.`serverid`=? AND t.`shorten`=? LIMIT 1");
+        $query = $sql->prepare("SELECT r.`id` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` WHERE r.`serverid`=? AND t.`shorten`=? LIMIT 1");
 
         // Nothing to update
         if ($syncCount==0 and $noSteamCount==0 and $steamCmdCount==0 and $hldsCount==0) {
@@ -301,11 +301,11 @@ class masterServer {
                     $this->updateIDs[]=$query->fetchColumn();
                 }
                 if ($this->imageserver=='none') {
-                    $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',array_unique(array_merge($this->noSteam['sync'],$this->noSteam['nosync']))).'" '.$this->webhost.' '.$this->imageserver;
+                    $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',array_unique(array_merge($this->noSteam['sync'],$this->noSteam['nosync']))).'" '.$this->webhost . ' ' . $this->imageserver;
                 } else if (count($this->noSteam['sync'])>0 and count($this->noSteam['nosync'])>0) {
-                    $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['sync']).'" '.$this->webhost.' '.$this->imageserver.' && ./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['nosync']).'" '.$this->webhost.' none';
+                    $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['sync']).'" '.$this->webhost . ' ' . $this->imageserver.' && ./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['nosync']).'" '.$this->webhost.' none';
                 } else if (count($this->noSteam['sync'])>0 and count($this->noSteam['nosync'])==0) {
-                    $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['sync']).'" '.$this->webhost.' '.$this->imageserver;
+                    $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['sync']).'" '.$this->webhost . ' ' . $this->imageserver;
                 } else if (count($this->noSteam['sync'])==0 and count($this->noSteam['nosync'])>0) {
                     $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['nosync']).'" '.$this->webhost.' none';
                 }
@@ -325,16 +325,16 @@ class masterServer {
                     $this->updateIDs[]=$query->fetchColumn();
                 }
                 if ($this->imageserver=='none') {
-                    $combined=array();
+                    $combined = array();
                     foreach ($goFor['sync'] as $k=>$v) $combined[$k]=$v;
                     foreach ($goFor['nosync'] as $k=>$v) $combined[$k]=$v;
-                    $cmd='./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($combined)).'" '.$this->webhost.' '.$this->imageserver.' '.$this->steamAccount.' '.$this->steamPassword;
+                    $cmd='./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($combined)).'" '.$this->webhost . ' ' . $this->imageserver . ' ' . $this->steamAccount . ' ' . $this->steamPassword;
                 } else if (count($goFor['sync'])>0 and count($goFor['nosync'])>0) {
-                    $cmd='./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($goFor['sync'])).'" '.$this->webhost.' '.$this->imageserver.' '.$this->steamAccount.' '.$this->steamPassword.' && ./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($goFor['nosync'])).'" '.$this->webhost.' none '.$this->steamAccount.' '.$this->steamPassword;
+                    $cmd='./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($goFor['sync'])).'" '.$this->webhost . ' ' . $this->imageserver . ' ' . $this->steamAccount . ' ' . $this->steamPassword.' && ./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($goFor['nosync'])).'" '.$this->webhost.' none '.$this->steamAccount . ' ' . $this->steamPassword;
                 } else if (count($goFor['sync'])>0 and count($goFor['nosync'])==0) {
-                    $cmd='./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($goFor['sync'])).'" '.$this->webhost.' '.$this->imageserver.' '.$this->steamAccount.' '.$this->steamPassword;
+                    $cmd='./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($goFor['sync'])).'" '.$this->webhost . ' ' . $this->imageserver . ' ' . $this->steamAccount . ' ' . $this->steamPassword;
                 } else if (count($goFor['sync'])==0 and count($goFor['nosync'])>0) {
-                    $cmd='./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($goFor['nosync'])).'" '.$this->webhost.' none '.$this->steamAccount.' '.$this->steamPassword;
+                    $cmd='./control.sh steamCmd '.$install.' "'.trim($this->makeSteamCmd($goFor['nosync'])).'" '.$this->webhost.' none '.$this->steamAccount . ' ' . $this->steamPassword;
                 }
                 if (isset($sshcmd) and isset($cmd)) {
                     $sshcmd.=' && '.$cmd;
@@ -352,11 +352,11 @@ class masterServer {
                     $this->updateIDs[]=$query->fetchColumn();
                 }
                 if ($this->imageserver=='none') {
-                    $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',array_unique(array_merge($goFor['sync'],$goFor['nosync']))).'" '.$this->webhost.' '.$this->imageserver;
+                    $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',array_unique(array_merge($goFor['sync'],$goFor['nosync']))).'" '.$this->webhost . ' ' . $this->imageserver;
                 } else if (count($goFor['sync'])>0 and count($goFor['nosync'])>0) {
-                    $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['sync']).'" '.$this->webhost.' '.$this->imageserver.' && ./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['nosync']).'" '.$this->webhost.' none';
+                    $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['sync']).'" '.$this->webhost . ' ' . $this->imageserver.' && ./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['nosync']).'" '.$this->webhost.' none';
                 } else if (count($goFor['sync'])>0 and count($goFor['nosync'])==0) {
-                    $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['sync']).'" '.$this->webhost.' '.$this->imageserver;
+                    $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['sync']).'" '.$this->webhost . ' ' . $this->imageserver;
                 } else if (count($goFor['sync'])==0 and count($goFor['nosync'])>0) {
                     $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['nosync']).'" '.$this->webhost.' none';
                 }
@@ -379,19 +379,19 @@ class masterServer {
     }
     public function setUpdating () {
         global $sql;
-        $query=$sql->prepare("UPDATE `rservermasterg` SET `updating`='Y' WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("UPDATE `rservermasterg` SET `updating`='Y' WHERE `id`=? LIMIT 1");
         foreach ($this->updateIDs as $id) {
             $query->execute(array($id));
         }
     }
     private function makeSteamCmd ($array) {
-        $steamCmd='';
+        $steamCmd = '';
         foreach ($array as $key=>$val) {
             if (is_numeric($key)) {
-                $steamCmd.=$val.' '.workAroundForValveChaos($key,$val,false).' ';
+                $steamCmd.=$val . ' ' . workAroundForValveChaos($key,$val,false).' ';
             } else {
                 list($appID)=explode('-',$key);
-                $steamCmd.=$val.' '.workAroundForValveChaos($appID,$val,false).' ';
+                $steamCmd.=$val . ' ' . workAroundForValveChaos($appID,$val,false).' ';
             }
         }
         return $steamCmd;

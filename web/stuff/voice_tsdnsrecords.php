@@ -44,46 +44,46 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver']
 include(EASYWIDIR . '/stuff/class_voice.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('voice',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype="admin";
+$sprache = getlanguagefile('voice',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
+    $logreseller = 0;
+    $logsubuser = 0;
 } else {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
-    $logreseller=0;
+    $logreseller = 0;
 }
 if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=='ad' or $ui->st('d','get')=='md') {
     if ($ui->st('d','get')=='ad' and !$ui->w('action',3,'post')) {
-        $table=array();
-        $query=$sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
+        $table = array();
+        $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table[$row['id']]=trim($row['cname'].' '.$row['vname'].' '.$row['name']);
+            $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
-        $table2=array();
-        $query=$sql->prepare("SELECT `id`,`ssh2ip`,`description` FROM `voice_tsdns` WHERE `resellerid`=? AND `active`='Y' ORDER BY `id` DESC");
+        $table2 = array();
+        $query = $sql->prepare("SELECT `id`,`ssh2ip`,`description` FROM `voice_tsdns` WHERE `resellerid`=? AND `active`='Y' ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table2[$row['id']]=trim($row['ssh2ip'].' '.$row['description']);
+            $table2[$row['id']] = trim($row['ssh2ip'] . ' ' . $row['description']);
         }
-        $template_file='admin_voice_dns_add.tpl';
+        $template_file = 'admin_voice_dns_add.tpl';
     } else if ($ui->st('d','get')=='ad' and $ui->smallletters('action',2,'post')=='ad') {
-        $error=array();
+        $error = array();
         if (!$ui->id('userID',19,'post')) {
             $error[]='UserID';
         } else {
             $userID=$ui->id('userID',19,'post');
-            $query=$sql->prepare("SELECT `cname`,`vname`,`name` FROM `userdata` WHERE `id`=? AND `resellerid`=? AND `accounttype`='u' LIMIT 1");
+            $query = $sql->prepare("SELECT `cname`,`vname`,`name` FROM `userdata` WHERE `id`=? AND `resellerid`=? AND `accounttype`='u' LIMIT 1");
             $query->execute(array($userID,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $user=trim($row['cname'].' '.$row['vname'].' '.$row['name']);
-                $cname=trim($row['cname']);
+                $user = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
+                $cname = trim($row['cname']);
             }
             if (!isset($user)) {
                 $error[]='UserID';
@@ -93,35 +93,35 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $error[]='tsdnsID';
         } else {
             $tsdnsID=$ui->id('tsdnsID',19,'post');
-            $query=$sql->prepare("SELECT `dnsID` FROM `voice_dns` WHERE `resellerid`=? ORDER BY `dnsID` DESC LIMIT 1");
+            $query = $sql->prepare("SELECT `dnsID` FROM `voice_dns` WHERE `resellerid`=? ORDER BY `dnsID` DESC LIMIT 1");
             $query->execute(array($reseller_id));
-            $lastID=1;
+            $lastID = 1;
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $lastID=$row['dnsID']+1;
             }
-            $query=$sql->prepare("SELECT `ssh2ip`,`description`,`defaultdns` FROM `voice_tsdns` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `ssh2ip`,`description`,`defaultdns` FROM `voice_tsdns` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($tsdnsID,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $tsdns=trim($row['ssh2ip'].' '.$row['description']);
-                $dns=strtolower(trim($lastID.'-'.$cname.'.'.$row['defaultdns']));
+                $tsdns = trim($row['ssh2ip'] . ' ' . $row['description']);
+                $dns=strtolower(trim($lastID . '-' . $cname.'.'.$row['defaultdns']));
             }
             if (!isset($tsdns)) {
                 $error[]='tsdnsID';
             }
         }
         if (count($error)>0) {
-            $template_file='Error: '.implode('<br />',$error);
+            $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            $template_file='admin_voice_dns_add2.tpl';
+            $template_file = 'admin_voice_dns_add2.tpl';
         }
     } else if ($ui->st('d','get')=='md' and !$ui->smallletters('action',2,'post') and $ui->id('id',10,'get')) {
         $id=$ui->id('id',10,'get');
-        $query=$sql->prepare("SELECT d.*,t.`ssh2ip`,t.`description`,u.`cname`,u.`vname`,u.`name` FROM `voice_dns` d INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` INNER JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT d.*,t.`ssh2ip`,t.`description`,u.`cname`,u.`vname`,u.`name` FROM `voice_dns` d INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` INNER JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $jobPending=($row['jobPending']=='Y') ? $gsprache->yes : $gsprache->no;
             if ($row['jobPending']=='Y') {
-                $query2=$sql->prepare("SELECT `extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='us' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
+                $query2 = $sql->prepare("SELECT `extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='us' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
                 $query2->execute(array($row['id'],$row['resellerid']));
                 $json=@json_decode($query2->fetchColumn());
                 $active=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
@@ -132,16 +132,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $ip=$row['ip'];
             $port=$row['port'];
             $externalID=$row['externalID'];
-            $tsdns=trim($row['ssh2ip'].' '.$row['description']);
-            $user=trim($row['cname'].' '.$row['vname'].' '.$row['name']);
+            $tsdns = trim($row['ssh2ip'] . ' ' . $row['description']);
+            $user = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
         if (isset($active)) {
-            $template_file='admin_voice_dns_md.tpl';
+            $template_file = 'admin_voice_dns_md.tpl';
         } else {
-            $template_file='Error: unknown ID';
+            $template_file = 'Error: unknown ID';
         }
     } else if ($ui->w('action',3,'post')=='ad2' or $ui->smallletters('action',2,'post')=='md') {
-        $error=array();
+        $error = array();
         if ($ui->active('active','post')) {
             $active=$ui->active('active','post');
         } else {
@@ -166,7 +166,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if ($ui->w('action',3,'post')=='ad2') {
             if ($ui->id('userID',19,'post')) {
                 $userID=$ui->id('userID',19,'post');
-                $query=$sql->prepare("SELECT `cname`,`vname`,`name` FROM `userdata` WHERE `id`=? AND `resellerid`=? AND `accounttype`='u' LIMIT 1");
+                $query = $sql->prepare("SELECT `cname`,`vname`,`name` FROM `userdata` WHERE `id`=? AND `resellerid`=? AND `accounttype`='u' LIMIT 1");
                 $query->execute(array($userID,$reseller_id));
                 if ($query->rowCount()==0) {
                     $error[]='UserID does not exist';
@@ -176,7 +176,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
             if ($ui->id('tsdnsID',19,'post')) {
                 $tsdnsID=$ui->id('tsdnsID',19,'post');
-                $query=$sql->prepare("SELECT `id` FROM `voice_tsdns` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `id` FROM `voice_tsdns` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($tsdnsID,$reseller_id));
                 if ($query->rowCount()==0) {
                     $error[]='tsdnsID does not exist';
@@ -186,7 +186,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         } else {
             $id=$ui->id('id',10,'get');
-            $query=$sql->prepare("SELECT `active`,`dns`,`ip`,`port`,`tsdnsID` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `active`,`dns`,`ip`,`port`,`tsdnsID` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $oldactive=$row['active'];
@@ -200,9 +200,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
         if (count($error)>0) {
-            $template_file='Error: '.implode('<br />',$error);
+            $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            $query=$sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+            $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsID,':reseller_id'=>$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $publickey=$row['publickey'];
@@ -216,27 +216,27 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
             if (isset($queryip) and $ui->w('action',3,'post')=='ad2') {
                 $log='add';
-                $query=$sql->prepare("SELECT COUNT(`dnsID`) AS `amount` FROM `voice_dns` WHERE `dns`=? AND `resellerID`=? LIMIT 1");
+                $query = $sql->prepare("SELECT COUNT(`dnsID`) AS `amount` FROM `voice_dns` WHERE `dns`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($dns,$reseller_id));
-                $query2=$sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
+                $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
                 $query2->execute(array($dns,$reseller_id));
                 if ($query->fetchColumn()==0 and $query2->fetchColumn()==0) {
                     if ($active=='Y') {
-                        $template_file=tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,array($ip),array($port),array($dns),$reseller_id,$sql);
+                        $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,array($ip),array($port),array($dns),$reseller_id,$sql);
                     }
-                    $query=$sql->prepare("INSERT INTO `voice_dns` (`active`,`dns`,`ip`,`port`,`tsdnsID`,`userID`,`externalID`,`resellerID`) VALUES (?,?,?,?,?,?,?,?)");
+                    $query = $sql->prepare("INSERT INTO `voice_dns` (`active`,`dns`,`ip`,`port`,`tsdnsID`,`userID`,`externalID`,`resellerID`) VALUES (?,?,?,?,?,?,?,?)");
                     $query->execute(array($active,$dns,$ip,$port,$tsdnsID,$userID,$externalID,$reseller_id));
                 } else {
-                    $insterfail=true;
+                    $insterfail= true;
                 }
             } else if (isset($queryip) and $ui->smallletters('action',2,'post')=='md') {
                 if ($dns!=$olddns) {
-                    $query=$sql->prepare("SELECT COUNT(`dnsID`) AS `amount` FROM `voice_dns` WHERE `dnsID`!=? AND `dns`=? AND `resellerID`=? LIMIT 1");
+                    $query = $sql->prepare("SELECT COUNT(`dnsID`) AS `amount` FROM `voice_dns` WHERE `dnsID`!=? AND `dns`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($id,$dns,$reseller_id));
-                    $query2=$sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
+                    $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($dns,$reseller_id));
                     if ($query->fetchColumn()!=0 and $query2->fetchColumn()!=0) {
-                        $insterfail=true;
+                        $insterfail= true;
                     }
                 }
                 if ($active!=$oldactive and $active=='N') {
@@ -256,28 +256,28 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $dnsArray=array($dns,$olddns);
                 }
                 if (isset($dnsAction)) {
-                    $template_file=tsdns($dnsAction,$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,$ipArray,$portArray,$dnsArray,$reseller_id,$sql);
+                    $template_file = tsdns($dnsAction,$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,$ipArray,$portArray,$dnsArray,$reseller_id,$sql);
                 }
                 $log='mod';
-                $query=$sql->prepare("UPDATE `voice_dns` SET `active`=?,`dns`=?,`ip`=?,`port`=?,`externalID`=? WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
+                $query = $sql->prepare("UPDATE `voice_dns` SET `active`=?,`dns`=?,`ip`=?,`port`=?,`externalID`=? WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($active,$dns,$ip,$port,$externalID,$id,$reseller_id));
             }
             if (isset($queryip) and !isset($insterfail) and $query->rowCount()>0) {
                 $loguseraction="%$log% %voserver% %dns% $ip";
                 $insertlog->execute();
             } else if (isset($queryip) and isset($insterfail)) {
-                $template_file='Error: DNS already exists';
+                $template_file = 'Error: DNS already exists';
             } else {
-                $template_file=$spracheResponse->error_table;
+                $template_file = $spracheResponse->error_table;
             }
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id',10,'get')) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
-        $query=$sql->prepare("SELECT `dns`,`ip`,`port` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `dns`,`ip`,`port` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
@@ -285,21 +285,21 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $dns=$row['dns'];
         }
         if (isset($ip)) {
-            $template_file='admin_voice_dns_dl.tpl';
+            $template_file = 'admin_voice_dns_dl.tpl';
         } else {
-            $template_file='Error: unknown ID';
+            $template_file = 'Error: unknown ID';
         }
     } else if ($ui->smallletters('action',2,'post')=='dl'){
-        $query=$sql->prepare("SELECT `dns`,`ip`,`port`,`tsdnsID` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `dns`,`ip`,`port`,`tsdnsID` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
             $port=$row['port'];
             $dns=$row['dns'];
             $tsdnsID=$row['tsdnsID'];
-            $deleteDNS=$row['ip'].' '.$row['port'].' '.$row['dns'];
+            $deleteDNS=$row['ip'] . ' ' . $row['port'] . ' ' . $row['dns'];
         }
-        $query=$sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsID,':reseller_id'=>$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $publickey=$row['publickey'];
@@ -312,21 +312,21 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $bitversion=$row['bitversion'];
         }
         if ($query->rowCount()>0) {
-            $query=$sql->prepare("DELETE FROM `voice_dns` WHERE `dnsID`=? AND `resellerid`=?");
+            $query = $sql->prepare("DELETE FROM `voice_dns` WHERE `dnsID`=? AND `resellerid`=?");
             $query->execute(array($id,$reseller_id));
             if ($query->rowCount()>0) {
-                $template_file=tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,array($ip),array($port),array($dns),$reseller_id,$sql);
+                $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,array($ip),array($port),array($dns),$reseller_id,$sql);
                 $loguseraction="%del% %voserver% %dns% $deleteDNS";
                 $insertlog->execute();
-                $template_file=$spracheResponse->table_del;
+                $template_file = $spracheResponse->table_del;
             } else {
-                $template_file=$spracheResponse->error_table;
+                $template_file = $spracheResponse->error_table;
             }
         } else {
-            $template_file='Error: unknown ID';
+            $template_file = 'Error: unknown ID';
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else {
     $o=$ui->st('o','get');
@@ -360,19 +360,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $orderby='d.`dnsID` ASC';
         $o='ai';
     }
-    $query=$sql->prepare("SELECT COUNT(`dnsID`) AS `amount` FROM `voice_dns` WHERE `resellerid`=?");
+    $query = $sql->prepare("SELECT COUNT(`dnsID`) AS `amount` FROM `voice_dns` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));
     $colcount=$query->fetchColumn();
     if ($start>$colcount) {
         $start=$colcount-$amount;
         if ($start<1) {
-            $start=0;
+            $start = 0;
         }
     }
-    $table=array();
-    $query=$sql->prepare("SELECT d.*,u.`cname`,u.`name`,u.`vname`,t.`ssh2ip`,t.`description` FROM `voice_dns` d INNER JOIN `userdata` u ON d.`userID`=u.`id` INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
+    $table = array();
+    $query = $sql->prepare("SELECT d.*,u.`cname`,u.`name`,u.`vname`,t.`ssh2ip`,t.`description` FROM `voice_dns` d INNER JOIN `userdata` u ON d.`userID`=u.`id` INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($reseller_id));
-    $query2=$sql->prepare("SELECT `extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='ds' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
+    $query2 = $sql->prepare("SELECT `extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='ds' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['jobPending']=='Y') {
             $jobPending=$gsprache->yes;
@@ -389,7 +389,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $imgName='16_bad';
             $imgAlt='inactive';
         }
-        $table[]=array('id'=>$row['dnsID'],'active'=>$row['active'],'img'=>$imgName,'alt'=>$imgAlt,'dns'=>$row['dns'],'address'=>$row['ip'].':'.$row['port'],'masterip'=>trim($row['ssh2ip'].' '.$row['description']),'cname'=>$row['cname'],'names'=>trim($row['name'].' '.$row['vname']),'userid'=>$row['userID'],'jobPending'=>$jobPending);
+        $table[]=array('id'=>$row['dnsID'],'active'=>$row['active'],'img'=>$imgName,'alt'=>$imgAlt,'dns'=>$row['dns'],'address'=>$row['ip'].':'.$row['port'],'masterip'=>trim($row['ssh2ip'] . ' ' . $row['description']),'cname'=>$row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'userid'=>$row['userID'],'jobPending'=>$jobPending);
     }
     $next=$start+$amount;
     if ($colcount>$next) {
@@ -416,7 +416,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $link .='&p=0">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -427,5 +427,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file='admin_voice_dns_list.tpl';
+    $template_file = 'admin_voice_dns_list.tpl';
 }

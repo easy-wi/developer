@@ -41,24 +41,24 @@ if ($main!=1 or !isset($admin_id) or (isset($admin_id) and !$pa['apiSettings']))
     die('No acces');
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-$sprache=getlanguagefile('api',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
+$sprache = getlanguagefile('api',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
-    $lookupID=0;
+    $logreseller = 0;
+    $logsubuser = 0;
+    $lookupID = 0;
 } else {
     if (isset($_SESSION['oldid'])) {
         $logsubuser=$_SESSION['oldid'];
     } else {
-        $logsubuser=0;
+        $logsubuser = 0;
     }
-    $logreseller=0;
+    $logreseller = 0;
     if ($admin_id!=$reseller_id) {
         $lookupID=$reseller_id;
     } else {
@@ -66,17 +66,17 @@ if ($reseller_id==0) {
     }
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if (in_array($ui->st('d','get'),array('md','ad'))){
     if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='md') {
         $id=$ui->id('id',19,'get');
-        $groupIDS=array();
-        $query=$sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
+        $groupIDS = array();
+        $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $groupIDS[$row['id']]=$row['name'];
         }
-        $query=$sql->prepare("SELECT * FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT * FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
@@ -91,20 +91,20 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $lastCheck=$row['lastCheck'];
         }
         if (isset($fetchUpdates)) {
-            $template_file='admin_api_import_users_md.tpl';
+            $template_file = 'admin_api_import_users_md.tpl';
         } else {
-            $template_file='admin_404.tpl';
+            $template_file = 'admin_404.tpl';
         }
     } else if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='ad') {
-        $groupIDS=array();
-        $query=$sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
+        $groupIDS = array();
+        $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $groupIDS[$row['id']]=$row['name'];
         }
-        $template_file='admin_api_import_users_add.tpl';
+        $template_file = 'admin_api_import_users_add.tpl';
     } else if (in_array($ui->smallletters('action',2,'post'),array('md','ad'))) {
-        $error=array();
+        $error = array();
         if (!$ui->active('active','post')) {
             $error[]='Active';
         }
@@ -130,44 +130,44 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $error[]='File';
         }
         if (count($error)>0) {
-            $template_file='Error: '.implode('<br />',$error);
+            $template_file = 'Error: '.implode('<br />',$error);
         } else {
             if ($ui->st('d','get')=='md' and $ui->id('id',19,'get')) {
                 $id=$ui->id('id',19,'get');
-                $query=$sql->prepare("SELECT `importID` FROM `api_import` WHERE `importID`!=? AND `domain`=? AND `file`=? AND `resellerID`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `importID` FROM `api_import` WHERE `importID`!=? AND `domain`=? AND `file`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id,$ui->domain('domain','post'),$ui->startparameter('file','post'),$reseller_id));
                 if ($query->rowCount()>0) {
-                    $template_file='Error: Domain and file already existing';
+                    $template_file = 'Error: Domain and file already existing';
                 } else {
-                    $query=$sql->prepare("UPDATE `api_import` SET `active`=?,`fetchUpdates`=?,`token`=?,`groupID`=?,`chunkSize`=?,`ssl`=?,`domain`=?,`file`=? WHERE `importID`=? AND `resellerID`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `api_import` SET `active`=?,`fetchUpdates`=?,`token`=?,`groupID`=?,`chunkSize`=?,`ssl`=?,`domain`=?,`file`=? WHERE `importID`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($ui->active('active','post'),$ui->active('fetchUpdates','post'),$ui->password('accessToken',255,'post'),$ui->id('groupID',19,'post'),$ui->id('chunkSize',19,'post'),$ui->active('ssl','post'),$ui->domain('domain','post'),$ui->startparameter('file','post'),$id,$reseller_id));
                     $loguseraction='%mod% %apiimport% '.$ui->domain('domain','post'). '/'. $ui->startparameter('file','post');
                 }
             } else if ($ui->st('d','get')=='ad') {
-                $query=$sql->prepare("SELECT `importID` FROM `api_import` WHERE `domain`=? AND `file`=? AND `resellerID`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `importID` FROM `api_import` WHERE `domain`=? AND `file`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($ui->domain('domain','post'),$ui->startparameter('file','post'),$reseller_id));
                 if ($query->rowCount()>0) {
-                    $template_file='Error: Domain and file already added';
+                    $template_file = 'Error: Domain and file already added';
                 } else {
-                    $query=$sql->prepare("INSERT INTO `api_import` (`active`,`fetchUpdates`,`token`,`groupID`,`chunkSize`,`ssl`,`domain`,`file`,`lastID`,`lastCheck`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,0,'0000-00-00 00:00:00',?)");
+                    $query = $sql->prepare("INSERT INTO `api_import` (`active`,`fetchUpdates`,`token`,`groupID`,`chunkSize`,`ssl`,`domain`,`file`,`lastID`,`lastCheck`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,0,'0000-00-00 00:00:00',?)");
                     $query->execute(array($ui->active('active','post'),$ui->active('fetchUpdates','post'),$ui->password('accessToken',255,'post'),$ui->id('groupID',19,'post'),$ui->id('chunkSize',19,'post'),$ui->active('ssl','post'),$ui->domain('domain','post'),$ui->startparameter('file','post'),$reseller_id));
                 }
                 $loguseraction='%add% %apiimport% '.$ui->domain('domain','post'). '/'. $ui->startparameter('file','post');
             } else {
-                $template_file='admin_404.tpl';
+                $template_file = 'admin_404.tpl';
             }
             if (!isset($template_file) and $query->rowCount()>0) {
                 $insertlog->execute();
-                $template_file=$spracheResponse->table_add;
+                $template_file = $spracheResponse->table_add;
             } else if (!isset($template_file)) {
-                $template_file=$spracheResponse->error_table;
+                $template_file = $spracheResponse->error_table;
             }
         }
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id','30','get')) {
     $id=$ui->id('id','30','get');
     if (!$ui->smallletters('action',2,'post')) {
-        $query=$sql->prepare("SELECT `ssl`,`domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `ssl`,`domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if($row['ssl']=='Y') {
@@ -179,36 +179,36 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $file=$row['file'];
         }
         if (isset($ssl) and isset($domain) and isset($file)) {
-            $template_file='admin_api_import_users_dl.tpl';
+            $template_file = 'admin_api_import_users_dl.tpl';
         } else {
-            $template_file='Error: no such ID!';
+            $template_file = 'Error: no such ID!';
         }
     } else if ($ui->smallletters('action',2,'post')=='dl') {
-        $query=$sql->prepare("SELECT `domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $domain=$row['domain'];
             $file=$row['file'];
         }
-        $query=$sql->prepare("DELETE FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         if ($query->rowCount()>0) {
             $loguseraction='%del% %apiimport% '.$domain. '/'. $file;
             $insertlog->execute();
-            $template_file=$spracheResponse->table_del;
+            $template_file = $spracheResponse->table_del;
         } else {
-            $template_file=$spracheResponse->error_table;
+            $template_file = $spracheResponse->error_table;
         }
     }
 } else {
-    $table=array();
-    $query=$sql->prepare("SELECT COUNT(`importID`) AS `amount` FROM `api_import` WHERE `resellerID`=?");
+    $table = array();
+    $query = $sql->prepare("SELECT COUNT(`importID`) AS `amount` FROM `api_import` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
     $colcount=$query->fetchColumn();
     if ($start>$colcount) {
         $start=$colcount-$amount;
         if ($start<0) {
-            $start=0;
+            $start = 0;
         }
     }
     $next=$start+$amount;
@@ -245,7 +245,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $orderby='`importID` ASC';
     }
-    $query=$sql->prepare("SELECT * FROM `api_import` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
+    $query = $sql->prepare("SELECT * FROM `api_import` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active']=='Y') {
@@ -275,7 +275,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $link .='&p=0">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -286,5 +286,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file='admin_api_import_users_list.tpl';
+    $template_file = 'admin_api_import_users_list.tpl';
 }

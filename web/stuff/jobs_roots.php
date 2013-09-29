@@ -38,10 +38,10 @@
  */
 
 $rootObject=new rootServer($aeskey);
-$query=$sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `type` IN ('de','vs')");
-$query2=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
-$query3=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
-$query4=$sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
+$query = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `type` IN ('de','vs')");
+$query2 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
+$query3 = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
+$query4 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
 $query->execute();
 print 'Collecting Dedicated and Vmware server changes'."\r\n";
 $removeIDs=array('de'=>array(),'vs'=>array());
@@ -60,7 +60,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $removeIDs[$row['type']][]=$row['affectedID'];
             } else {
                 $query4->execute(array($row['jobID']));
-                $command='Error: '.$gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'].' '.$return;
+                $command='Error: '.$gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'] . ' ' . $return;
             }
         } else if ($row['action']=='ad') {
             $query2->execute(array($row['jobID']));
@@ -71,7 +71,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $command=$gsprache->mod." $type server: ".$row['affectedID'].' name: '.$row['name'];
             } else {
                 $query4->execute(array($row['jobID']));
-                $command="Error modding $type server: ".$row['affectedID'].' name: '.$row['name'].' '.$return;
+                $command="Error modding $type server: ".$row['affectedID'].' name: '.$row['name'] . ' ' . $return;
             }
         } else if ($row['action']=='re') {
             if ($return===true and !isset($extraData->reboot) and strtotime("now")<$extraData->reboot) {
@@ -82,7 +82,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $command="(Re)Start $type server: ".$row['affectedID'].' name: '.$row['name'];
             } else {
                 $query4->execute(array($row['jobID']));
-                $command="Error (Re)starting $type server: ".$row['affectedID'].' name: '.$row['name'].' '.$return;
+                $command="Error (Re)starting $type server: ".$row['affectedID'].' name: '.$row['name'] . ' ' . $return;
             }
         } else if (!isset($customer)) {
             $command="Error: can not find $type server";
@@ -98,9 +98,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 print "\r\nApplyingPXE changes\r\n";
 $rootObject->PXEFiles();
 print "\r\nApplying DHCPchanges\r\n";
-$query=$sql->prepare("INSERT INTO `jobs` (`action`,`date`,`status`,`api`,`type`,`affectedID`,`name`,`hostID`,`userID`,`extraData`,`resellerID`) VALUES ('rp',NOW(),NULL,'J',?,?,?,?,?,?,?)");
-$query2=$sql->prepare("UPDATE `virtualcontainer` SET `imageid`=? WHERE `id`=? LIMIT 1");
-$query3=$sql->prepare("UPDATE `rootsDedicated` SET `imageID`=? WHERE `dedicatedID`=? LIMIT 1");
+$query = $sql->prepare("INSERT INTO `jobs` (`action`,`date`,`status`,`api`,`type`,`affectedID`,`name`,`hostID`,`userID`,`extraData`,`resellerID`) VALUES ('rp',NOW(),NULL,'J',?,?,?,?,?,?,?)");
+$query2 = $sql->prepare("UPDATE `virtualcontainer` SET `imageid`=? WHERE `id`=? LIMIT 1");
+$query3 = $sql->prepare("UPDATE `rootsDedicated` SET `imageID`=? WHERE `dedicatedID`=? LIMIT 1");
 $res=(array)$rootObject->dhcpFiles();
 foreach ($res as $row) {
     if (isset($row['type'])) {
@@ -114,12 +114,12 @@ $rootObject->startStop();
 print "\r\nAdding, Altering, Removing, (Re)starting and Stopping VMWare Virtual Container\r\n";
 $rootObject->VMWare();
 print "\r\nRemoving VMWare Virtual Container/Dedicated Server from DB \r\n";
-$query=$sql->prepare("DELETE FROM `rootsDedicated` WHERE `dedicatedID`=? LIMIT 1");
+$query = $sql->prepare("DELETE FROM `rootsDedicated` WHERE `dedicatedID`=? LIMIT 1");
 foreach ($removeIDs['de'] as $id) {
     customColumns('G',$id,'del');
     $query->execute(array($id));
 }
-$query=$sql->prepare("DELETE FROM `virtualcontainer` WHERE `id`=? LIMIT 1");
+$query = $sql->prepare("DELETE FROM `virtualcontainer` WHERE `id`=? LIMIT 1");
 foreach ($removeIDs['vs'] as $id) {
     customColumns('V',$id,'del');
     $query->execute(array($id));

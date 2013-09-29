@@ -42,11 +42,11 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['jobs'])) {
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('api', $user_language, $reseller_id);
+$sprache = getlanguagefile('api', $user_language, $reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->w('action',4,'post')=='dl' and !$ui->id('id', 19, 'get')) {
-    $i=0;
+    $i = 0;
     if ($ui->id('id',30,'post')) {
         foreach ($ui->id('id',30,'post') as $id) {
             if ($reseller_id==0) {
@@ -59,24 +59,24 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $i++;
         }
     }
-    $template_file=$i.' '.$gsprache->jobs.' deleted';
+    $template_file = $i . ' ' . $gsprache->jobs.' deleted';
 } else if ($ui->id('id', 19, 'get')) {
     if ($reseller_id==0) {
-        $query=$sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? LIMIT 1");
         $query->execute(array($ui->id('id', 19, 'get')));
     } else if ($reseller_id!=0 and $admin_id!=$reseller_id) {
-        $query=$sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id', 19, 'get'), $admin_id));
     } else {
-        $query=$sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id', 19, 'get'), $reseller_id));
     }
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $text= @gzuncompress($row['text']);
     }
-    $template_file=$text;
+    $template_file = $text;
 } else {
-    $table=array();
+    $table = array();
     $o=$ui->st('o','get');
     if ($ui->st('o','get')=='dn') {
         $orderby='`name` DESC';
@@ -117,15 +117,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $orderby='`jobID` DESC';
     }
     if ($reseller_id==0) {
-        $where='';
+        $where = '';
     } else {
         $where='WHERE `resellerID`=?';
     }
     if ($reseller_id==0) {
-        $query=$sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
+        $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
         $query->execute();
     } else {
-        $query=$sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
+        $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
         $query->execute(array($reseller_id));
     }
     $type=array('de'=>$gsprache->dedicated,'ds'=>'TS3 DNS','gs'=>$gsprache->gameserver,'my'=>'MYSQL','us'=>$gsprache->user,'vo'=>$gsprache->voiceserver,'vs'=>$gsprache->virtual);
@@ -161,7 +161,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         else if ($row['action']=='rp') $action='Remove PXE from DHCP';
         else if ($row['action']=='ri') $action='(Re)Install';
         else if ($row['action']=='rc') $action='Recovery Mode';
-        else $action='';
+        else $action = '';
         $table[]=array('jobID'=>$row['jobID'],'date'=>$date,'name'=>$row['name'],'api'=>$api,'status'=>$row['status'],'img'=>$imgName,'alt'=>$imgAlt,'userID'=>$row['userID'],'type'=>$type[$row['type']],'action'=>$action);
     }
     $next=$start+$amount;
@@ -199,7 +199,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $link .='&amp;p=0">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -210,5 +210,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $i++;
     }
     $pages=implode(', ', $pages);
-    $template_file="admin_jobs_list.tpl";
+    $template_file = "admin_jobs_list.tpl";
 }

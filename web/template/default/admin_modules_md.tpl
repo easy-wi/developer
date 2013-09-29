@@ -13,7 +13,6 @@
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <h4>Error(s)</h4>
     <?php echo implode(', ',$errors);?>
-
 </div>
 <?php }?>
 <div class="row-fluid">

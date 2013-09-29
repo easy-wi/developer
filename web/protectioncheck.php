@@ -103,7 +103,7 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
                     if ($default_language == 'de') {
                         $time=explode(' ', $row['logdate']);
                         $time2=explode('-', $time[0]);
-                        $time3=$time2[2].".".$time2[1].".".$time2[0] . '  ' . $time[1];
+                        $time3=$time2[2] . '.' . $time2[1] . '.' . $time2[0] . '  ' . $time[1];
                     } else {
                         $time3=$row['logdate'];
                     }

@@ -39,20 +39,20 @@
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('feeds',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
+$sprache = getlanguagefile('feeds',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
+    $logreseller = 0;
+    $logsubuser = 0;
 } else {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
-    $logreseller=0;
+    $logreseller = 0;
 }
 $lookUpID=($reseller_id!=0 and $admin_id!=$reseller_id) ? $admin_id: $reseller_id;
 if ($ui->st('d','get')=='ud') {
-    $newsInclude=true;
+    $newsInclude= true;
     include(EASYWIDIR . '/stuff/feeds_function.php');
 } else if ($ui->st('d','get')=='md') {
     $ids=(array)$ui->active('ids','post');
@@ -69,7 +69,7 @@ if ($ui->st('d','get')=='ud') {
             }
         }
     }
-    $template_file=$spracheResponse->table_add;
+    $template_file = $spracheResponse->table_add;
 } else {
     $table = array();
     $o=$ui->st('o','get');
@@ -99,7 +99,7 @@ if ($ui->st('d','get')=='ud') {
         $orderby='n.`pubDate` DESC';
         $o='dd';
     }
-    $query=$sql->prepare("SELECT n.`newsID`,n.`active`,n.`title`,n.`link`,n.`pubDate`,n.`description`,u.`twitter`,u.`feedUrl` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
+    $query = $sql->prepare("SELECT n.`newsID`,n.`active`,n.`title`,n.`link`,n.`pubDate`,n.`description`,u.`twitter`,u.`feedUrl` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($lookUpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active']=='Y') {
@@ -115,7 +115,7 @@ if ($ui->st('d','get')=='ud') {
         $table[]=array('id'=>$row['newsID'],'active'=>$row['active'],'img'=>$imgName,'alt'=>$imgAlt,'pubDate'=>$row['pubDate'],'twitter'=>$twitter,'title'=>$title,'link'=>$row['link'],'feedUrl'=>$row['feedUrl']);
     }
     $next=$start+$amount;
-    $query=$sql->prepare("SELECT COUNT(`newsID`) AS `amount` FROM `feeds_news` WHERE `resellerID`=?");
+    $query = $sql->prepare("SELECT COUNT(`newsID`) AS `amount` FROM `feeds_news` WHERE `resellerID`=?");
     $query->execute(array($lookUpID));
     $colcount=$query->fetchColumn();
     if ($colcount>$next) {
@@ -142,7 +142,7 @@ if ($ui->st('d','get')=='ud') {
         $link .='&p=0">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -153,5 +153,5 @@ if ($ui->st('d','get')=='ud') {
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file='admin_feeds_entries_list.tpl';
+    $template_file = 'admin_feeds_entries_list.tpl';
 }

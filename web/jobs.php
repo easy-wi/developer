@@ -45,9 +45,9 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
     $timelimit=600;
 }
 if (isset($argv)) {
-    $args=array();
+    $args = array();
     foreach ($argv as $a) {
-        if ($a=='deamon') $deamon=true;
+        if ($a=='deamon') $deamon= true;
         else if (is_numeric($a)) $sleep=$a;
         else {
             $e=explode(':',$a);
@@ -56,7 +56,7 @@ if (isset($argv)) {
     }
     if(!isset($deamon)) {
         print 'Running job management as cronjob'."\r\n";
-        $deamon=false;
+        $deamon = false;
         set_time_limit($timelimit);
     } else {
         print 'Running job management as Deamon'."\r\n";
@@ -74,16 +74,16 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     include(EASYWIDIR . '/stuff/class_voice.php');
     include(EASYWIDIR . '/stuff/mysql_functions.php');
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
-    $gsprache=getlanguagefile('general','uk',0);
+    $gsprache = getlanguagefile('general','uk',0);
     class runGraph {
-        private $jobsDone=0;
-        private $startTime=0;
+        private $jobsDone = 0;
+        private $startTime = 0;
         private $newLine="\r\n";
-        private $jobCount=0;
-        private $spinnerCount=0;
+        private $jobCount = 0;
+        private $spinnerCount = 0;
         private $spinners=array('-','/','-','\\','|','/','-','\\','|','/');
         private $spinner='-';
-        private $oneJobPercent=1;
+        private $oneJobPercent = 1;
         function __construct($jobCount,$newLine) {
             $this->startTime=strtotime('now');
             $this->jobCount=$jobCount;
@@ -107,7 +107,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             $this->jobsDone=$this->jobsDone+1;
             $percentDone=number_format($this->jobsDone*$this->oneJobPercent,2);
             $elapsedSeconds=strtotime('now')-$this->startTime;
-            print $this->spinner.' '.$percentDone.'%'.' done; '.$elapsedSeconds.' Seconds elapsed; Last job: '.$newCommand.$this->newLine;
+            print $this->spinner . ' ' . $percentDone.'%'.' done; '.$elapsedSeconds.' Seconds elapsed; Last job: '.$newCommand.$this->newLine;
             flush();
             $this->runSpinner();
         }
@@ -116,11 +116,11 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                 if ($this->spinnerCount<9) {
                     $this->spinnerCount++;
                 } else {
-                    $this->spinnerCount=0;
+                    $this->spinnerCount = 0;
                 }
                 $this->spinner=$this->spinners[$this->spinnerCount].' ';
             } else {
-                $this->spinner='';
+                $this->spinner = '';
             }
         }
         function __destruct() {
@@ -135,7 +135,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             unset($this->jobsDone,$this->startTime,$this->newLine,$this->jobCount,$this->spinnerCount,$this->spinners,$this->spinner,$this->oneJobPercent);
         }
     }
-    $runJobs=true;
+    $runJobs= true;
     if (isset($ip)) {
         $newLine="\r\n";
     } else {
@@ -212,9 +212,9 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             print "\r\n".'Deamon run finished. Current memory usage is: '.memory_get_usage().' Bytes. Waiting '.$sleep.' seconds before next job run'."\r\n\r\n";
             sleep($sleep);
         } else {
-            $runJobs=false;
+            $runJobs = false;
         }
-        $query=$sql->prepare("UPDATE `settings` SET `lastCronJobs`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
+        $query = $sql->prepare("UPDATE `settings` SET `lastCronJobs`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
         $query->execute();
     }
 }

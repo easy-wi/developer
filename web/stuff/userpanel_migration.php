@@ -44,12 +44,12 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('gserver',$user_language,$reseller_id);
+$sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype="user";
-$logreseller=0;
-$logsubuser=0;
+$logreseller = 0;
+$logsubuser = 0;
 if (isset($admin_id)) {
     $logsubuser=$admin_id;
 } else if (isset($subuser_id)) {
@@ -58,27 +58,27 @@ if (isset($admin_id)) {
 if (isset($admin_id) and $reseller_id!=0) {
     $reseller_id=$admin_id;
 }
-$ftpAddress='';
+$ftpAddress = '';
 $ftpPort=21;
-$ftpUser='';
-$ftpPassword='';
-$ftpPath='';
-$thisID=0;
-$thisTemplate='';
+$ftpUser = '';
+$ftpPassword = '';
+$ftpPath = '';
+$thisID = 0;
+$thisTemplate = '';
 $ssl=($ui->active('ssl','post')) ? $ui->active('ssl','post') : 'N';
-$error=array();
-$table=array();
-$query=$sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`userid`=? AND g.`resellerid`=?");
-$query2=$sql->prepare("SELECT s.`id`,t.`description`,t.`shorten`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,t.`appID` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? GROUP BY t.`shorten` ORDER BY t.`shorten`");
+$error = array();
+$table = array();
+$query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`userid`=? AND g.`resellerid`=?");
+$query2 = $sql->prepare("SELECT s.`id`,t.`description`,t.`shorten`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,t.`appID` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? GROUP BY t.`shorten` ORDER BY t.`shorten`");
 $query->execute(array($aeskey,$user_id,$reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) {
         $customer=$row['cname'];
-        if ($row['newlayout']=='Y') $customer=$row['cname'].'-'.$row['id'];
-        $temp=array();
+        if ($row['newlayout']=='Y') $customer=$row['cname'] . '-' . $row['id'];
+        $temp = array();
         $query2->execute(array($row['id']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            $search='';
+            $search = '';
             if ($row2['gamebinary']=='hlds_run' or ($row2['gamebinary']=='srcds_run' and ($row2['appID']==740 or $row2['appID']==730))) {
                 $search='/'. $row2['modfolder'];
             } else if ($row2['gamebinary']=='srcds_run' and $row2['appID']!=740 and $row2['appID']!=730) {
@@ -90,7 +90,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     }
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->smallletters('action',2,'post')=='ms') {
     function checkFolders ($dir,$searchFor,$maxDepth=false,$currentDepth=0) {
         global $ftp;
@@ -99,7 +99,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $spl=strlen($searchFor)*(-1);
         $rawList=@ftp_rawlist($ftp,$dir);
         if ($rawList) {
-            $folders=array();
+            $folders = array();
             foreach ($rawList as $d) {
                 $list=preg_split('/(\s|\s+)/',$d,-1,PREG_SPLIT_NO_EMPTY);
                 if (preg_match('/^d[rwx\-]{9}+$/',$list[0]) and !preg_match('/^[\.\/]{0,}Steam[\/]{0,}+$/',$list[count($list)-1]) and !in_array($list[count($list)-1],$donotsearch)) {
@@ -158,11 +158,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
         foreach($table[$ui->id('switchID',10,'post')]['games'] as $game) {
             unset($temp);
             if ($ui->config('template','post',$thisID)==$game['shorten']) {
-                $temp=1;
+                $temp = 1;
             } else if ($ui->config('template','post',$thisID)==$game['shorten'].'-2') {
-                $temp=2;
+                $temp = 2;
             } else if ($ui->config('template','post',$thisID)==$game['shorten'].'-3') {
-                $temp=3;
+                $temp = 3;
             }
             if (isset($temp)) {
                 $template=$temp;
@@ -217,12 +217,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $ftpConnect.=str_replace('//','/',$ftpAddress.':'.$ftpPort. '/'. $ftpPath);
         ssh2_execute('gs',$rootID,"sudo -u ${customer} ./control.sh migrateserver ${customer} 1_${shorten} ${gsfolder} ${template} ${ftpUser} ${ftpPassword} ${ftpConnect} ${modFolder}");
         $loguseraction="%import% %gserver% ${address}";
-        $template_file=$sprache->import_start;
+        $template_file = $sprache->import_start;
         $insertlog->execute();
     }
 }
 if (!isset($template_file) and isset($customer)) {
-    $template_file="userpanel_gserver_migration.tpl";
+    $template_file = "userpanel_gserver_migration.tpl";
 } else if (!isset($template_file)) {
-    $template_file='userpanel_404.tpl';
+    $template_file = 'userpanel_404.tpl';
 }

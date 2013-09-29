@@ -39,39 +39,39 @@ if(!isset($admin_id) or $main!=1 or (isset($admin_id) and !$pa['voiceserver'] an
     header('Location: admin.php');
     die;
 }
-$sprache=getlanguagefile('traffic',$user_language,$reseller_id);
+$sprache = getlanguagefile('traffic',$user_language,$reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($d=='se' and $pa['voiceserverSettings']) {
 	if (isset($ui->post['text_colour_1']) and $ui->w('action',4,'post')=='md') {
-		$error=0;
-		if (!validate_int($ui->post['text_colour_1'],0,255) and $ui->post['text_colour_1']!=0) $error=1;
-		if (!validate_int($ui->post['text_colour_2'],0,255) and $ui->post['text_colour_2']!=0) $error=1;
-		if (!validate_int($ui->post['text_colour_3'],0,255) and $ui->post['text_colour_3']!=0) $error=1;
-		if (!validate_int($ui->post['barin_colour_1'],0,255) and $ui->post['barin_colour_1']!=0) $error=1;
-		if (!validate_int($ui->post['barin_colour_2'],0,255) and $ui->post['barin_colour_2']!=0) $error=1;
-		if (!validate_int($ui->post['barin_colour_3'],0,255) and $ui->post['barin_colour_3']!=0) $error=1;
-		if (!validate_int($ui->post['barout_colour_1'],0,255) and $ui->post['barout_colour_1']!=0) $error=1;
-		if (!validate_int($ui->post['barout_colour_2'],0,255) and $ui->post['barout_colour_2']!=0) $error=1;
-		if (!validate_int($ui->post['barout_colour_3'],0,255) and $ui->post['barout_colour_3']!=0) $error=1;
-		if (!validate_int($ui->post['bg_colour_1'],0,255) and $ui->post['bg_colour_1']!=0) $error=1;
-		if (!validate_int($ui->post['bg_colour_2'],0,255) and $ui->post['bg_colour_2']!=0) $error=1;
-		if (!validate_int($ui->post['bg_colour_3'],0,255) and $ui->post['bg_colour_3']!=0) $error=1;
-		if (!validate_int($ui->post['border_colour_1'],0,255) and $ui->post['border_colour_1']!=0) $error=1;
-		if (!validate_int($ui->post['border_colour_2'],0,255) and $ui->post['border_colour_2']!=0) $error=1;
-		if (!validate_int($ui->post['border_colour_3'],0,255) and $ui->post['border_colour_3']!=0) $error=1;
-		if (!validate_int($ui->post['line_colour_1'],0,255) and $ui->post['line_colour_1']!=0) $error=1;
-		if (!validate_int($ui->post['line_colour_2'],0,255) and $ui->post['line_colour_2']!=0) $error=1;
-		if (!validate_int($ui->post['line_colour_3'],0,255) and $ui->post['line_colour_3']!=0) $error=1;
+		$error = 0;
+		if (!validate_int($ui->post['text_colour_1'],0,255) and $ui->post['text_colour_1']!=0) $error = 1;
+		if (!validate_int($ui->post['text_colour_2'],0,255) and $ui->post['text_colour_2']!=0) $error = 1;
+		if (!validate_int($ui->post['text_colour_3'],0,255) and $ui->post['text_colour_3']!=0) $error = 1;
+		if (!validate_int($ui->post['barin_colour_1'],0,255) and $ui->post['barin_colour_1']!=0) $error = 1;
+		if (!validate_int($ui->post['barin_colour_2'],0,255) and $ui->post['barin_colour_2']!=0) $error = 1;
+		if (!validate_int($ui->post['barin_colour_3'],0,255) and $ui->post['barin_colour_3']!=0) $error = 1;
+		if (!validate_int($ui->post['barout_colour_1'],0,255) and $ui->post['barout_colour_1']!=0) $error = 1;
+		if (!validate_int($ui->post['barout_colour_2'],0,255) and $ui->post['barout_colour_2']!=0) $error = 1;
+		if (!validate_int($ui->post['barout_colour_3'],0,255) and $ui->post['barout_colour_3']!=0) $error = 1;
+		if (!validate_int($ui->post['bg_colour_1'],0,255) and $ui->post['bg_colour_1']!=0) $error = 1;
+		if (!validate_int($ui->post['bg_colour_2'],0,255) and $ui->post['bg_colour_2']!=0) $error = 1;
+		if (!validate_int($ui->post['bg_colour_3'],0,255) and $ui->post['bg_colour_3']!=0) $error = 1;
+		if (!validate_int($ui->post['border_colour_1'],0,255) and $ui->post['border_colour_1']!=0) $error = 1;
+		if (!validate_int($ui->post['border_colour_2'],0,255) and $ui->post['border_colour_2']!=0) $error = 1;
+		if (!validate_int($ui->post['border_colour_3'],0,255) and $ui->post['border_colour_3']!=0) $error = 1;
+		if (!validate_int($ui->post['line_colour_1'],0,255) and $ui->post['line_colour_1']!=0) $error = 1;
+		if (!validate_int($ui->post['line_colour_2'],0,255) and $ui->post['line_colour_2']!=0) $error = 1;
+		if (!validate_int($ui->post['line_colour_3'],0,255) and $ui->post['line_colour_3']!=0) $error = 1;
 		if ($error==0) {
-            $query=$sql->prepare("UPDATE `voice_stats_settings` SET `text_colour_1`=?,`text_colour_2`=?,`text_colour_3`=?,`barin_colour_1`=?,`barin_colour_2`=?,`barin_colour_3`=?,`barout_colour_1`=?,`barout_colour_2`=?,`barout_colour_3`=?,`bg_colour_1`=?,`bg_colour_2`=?,`bg_colour_3`=?,`border_colour_1`=?,`border_colour_2`=?,`border_colour_3`=?,`line_colour_1`=?,`line_colour_2`=?,`line_colour_3`=? WHERE `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `voice_stats_settings` SET `text_colour_1`=?,`text_colour_2`=?,`text_colour_3`=?,`barin_colour_1`=?,`barin_colour_2`=?,`barin_colour_3`=?,`barout_colour_1`=?,`barout_colour_2`=?,`barout_colour_3`=?,`bg_colour_1`=?,`bg_colour_2`=?,`bg_colour_3`=?,`border_colour_1`=?,`border_colour_2`=?,`border_colour_3`=?,`line_colour_1`=?,`line_colour_2`=?,`line_colour_3`=? WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($ui->post['text_colour_1'],$ui->post['text_colour_2'],$ui->post['text_colour_3'],$ui->post['barin_colour_1'],$ui->post['barin_colour_2'],$ui->post['barin_colour_3'],$ui->post['barout_colour_1'],$ui->post['barout_colour_2'],$ui->post['barout_colour_3'],$ui->post['bg_colour_1'],$ui->post['bg_colour_2'],$ui->post['bg_colour_3'],$ui->post['border_colour_1'],$ui->post['border_colour_2'],$ui->post['border_colour_3'],$ui->post['line_colour_1'],$ui->post['line_colour_2'],$ui->post['line_colour_3'],$reseller_id));
-			$template_file=$spracheResponse->table_add;
+			$template_file = $spracheResponse->table_add;
 		} else {
-			$template_file='Error';
+			$template_file = 'Error';
 		}
 	} else {
-		$query=$sql->prepare("SELECT * FROM `voice_stats_settings` WHERE `resellerid`=? LIMIT 1");
+		$query = $sql->prepare("SELECT * FROM `voice_stats_settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$text_colour_1=$row['text_colour_1'];
@@ -93,14 +93,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$line_colour_2=$row['line_colour_2'];
 			$line_colour_3=$row['line_colour_3'];
 		}
-		$template_file='admin_voice_stats_settings.tpl';
+		$template_file = 'admin_voice_stats_settings.tpl';
 	}
 } else if ($pa['voiceserverStats']) {
 	$display=$sprache->total;
-	$data=array();
+	$data = array();
 	if (!$ui->st('kind','post') or $ui->st('kind','post')=='al') {
 		$kind='al';
-		$whichdata='';
+		$whichdata = '';
 	} else if (isid($ui->post['what'],30) and $ui->st('kind','post')=='us') {
 		$kind='us';
 		$whichdata="&amp;distro=".$ui->post['what'];
@@ -109,9 +109,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
 			if ($ui->post['what']==$row['id']) {
-				$data[]='<option value='.$row['id'].' selected="selected">'.trim($row['cname'].' '.$row['vname'].' '.$row['name']).'</option>';
+				$data[]='<option value='.$row['id'].' selected="selected">'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 			} else {
-				$data[]='<option value='.$row['id'].'>'.trim($row['cname'].' '.$row['vname'].' '.$row['name']).'</option>';
+				$data[]='<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 			}
 		}
 		$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=? AND `resellerid`=? LIMIT 1");
@@ -207,7 +207,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$day=date('d');
 			$month=date('m');
 			$year=date('Y');
-			$amount=1;
+			$amount = 1;
 		}
 	} else if ($ui->post['dmy']=='da') {
 		$dmy='da';
@@ -256,7 +256,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		}
 	} else if ($ui->post['dmy']=='mo') {
 		$dmy='mo';
-		$day=1;
+		$day = 1;
 		if (validate_int($ui->post['monthstart'],1,12)) {
 			$month=$ui->post['monthstart'];
 		} else {
@@ -282,7 +282,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$date1=strtotime("$year-$month-$day");
 		$add=$date1;
 		$date2=strtotime("$yearstop-$monthstop-$daystop");
-		$i=0;
+		$i = 0;
 		while ($add<=$date2) {
 			$newadd=strtotime("+1 months",$add);
 			$add=$newadd;
@@ -293,14 +293,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$yearstop=date('Y');
 			$monthstop=date('m');
 			$daystop=date('t', strtotime("$yearstop-$monthstop"));
-			$day='1';
+			$day = 1;
 			$month=date('m',strtotime("-6 months"));
 			$year=date('Y',strtotime("-6 months"));
 			$amount=7;
 		}
 	} else if ($ui->post['dmy']=='ye') {
 		$dmy='ye';
-		$day=1;
+		$day = 1;
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
 			$year=$ui->post['yearstart'];
 		} else {
@@ -311,14 +311,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		} else {
 			$yearstop=date('Y');
 		}
-		$month=1;
+		$month = 1;
 		$monthstop=12;
 		$daystop=31;
 		$now=date('Y');
 		$date1=strtotime("$year-$month-$day");
 		$date2=strtotime("$yearstop-$monthstop-$daystop");
 		$add=$date1;
-		$i=0;
+		$i = 0;
 		while ($add<=$date2) {
 			$newadd=strtotime("+1 year",$add);
 			$add=$newadd;
@@ -329,10 +329,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$yearstop=date('Y');
 			$monthstop=12;
 			$daystop=31;
-			$day=1;
-			$month=1;
+			$day = 1;
+			$month = 1;
 			$year=date('Y',strtotime("-1 year"));
-			$amount=2;
+			$amount = 2;
 		}
 	}
 	if ($user_language="de") {
@@ -343,5 +343,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$stopdate="$yearstop-$monthstop-$daystop";
 	}
 	$getlink="images.php?img=vo&amp;d=$dmy&amp;p=$year&amp;id=$day&amp;po=$month&amp;m=$amount$whichdata";
-	$template_file="admin_voice_stats.tpl";
+	$template_file = "admin_voice_stats.tpl";
 }

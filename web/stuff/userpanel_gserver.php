@@ -42,32 +42,32 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
 
-$sprache=getlanguagefile('gserver',$user_language,$reseller_id);
+$sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype="user";
-$logreseller=0;
+$logreseller = 0;
 if (isset($admin_id)) {
 	$logsubuser=$admin_id;
 } else if (isset($subuser_id)) {
 	$logsubuser=$subuser_id;
 } else {
-	$logsubuser=0;
+	$logsubuser = 0;
 }
 
 if (isset($admin_id) and $reseller_id!=0) {
     $reseller_id=$admin_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=='ri' and !$ui->id('id',10,'get')) {
-    $template_file=$sprache->error_id;
+    $template_file = $sprache->error_id;
 } else if ($ui->st('d','get')=='ri' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
     if ($ui->st('action','post')=='ri') {
-        $i=0;
-        $gamestring=array();
-        $query=$sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+        $i = 0;
+        $gamestring = array();
+        $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$aeskey,$ui->id('id',10,'get'),$user_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $customer=$row['cname'];
@@ -76,19 +76,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $serverip=$row['serverip'];
             $port=$row['port'];
             $gsfolder=$serverip.'_'.$port;
-            if ($row['newlayout']=='Y') $customer=$customer.'-'.$row['id'];
+            if ($row['newlayout']=='Y') $customer=$customer . '-' . $row['id'];
         }
-        $template=array();
+        $template = array();
         # https://github.com/easy-wi/developer/issues/69
         $templates = (array) $ui->id('template',10,'post');
         foreach($templates as $id => $tpl) {
             if ($tpl>0) {
                 $template[]=$tpl;
                 if ($ui->active('type','post')=='Y') {
-                    $query=$sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=? AND `userid`=?");
+                    $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=? AND `userid`=?");
                     $query->execute(array($id,$reseller_id,$user_id));
                 }
-                $query=$sql->prepare("SELECT s.`gamemod`,s.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT s.`gamemod`,s.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
                 $query->execute(array($id,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $shorten=$row['shorten'];
@@ -104,7 +104,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];
             $sshpass=$rdata['pass'];
-            $cmds=array();
+            $cmds = array();
             if ($ui->active('type','post')=='Y') {
                 $cmds[]="./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10);
                 $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
@@ -114,44 +114,44 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $loguseraction="%resync% %gserver% ${serverip}:${port}";
             }
             ssh2_execute('gs',$rootID,$cmds);
-            $template_file=$sprache->server_installed;
+            $template_file = $sprache->server_installed;
             $insertlog->execute();
         } else {
-            $template_file='userpanel_404.tpl';
+            $template_file = 'userpanel_404.tpl';
         }
     } else {
-        $query=$sql->prepare("SELECT `serverid` FROM `gsswitch` WHERE `id`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT `serverid` FROM `gsswitch` WHERE `id`=? AND `resellerid`=?");
         $query->execute(array($id,$reseller_id));
         $currentID=$query->fetchColumn();
-        $query=$sql->prepare("SELECT s.*,t.`description`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
+        $query = $sql->prepare("SELECT s.*,t.`description`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $servertemplate=($currentID==$row['id']) ? $row['servertemplate'] : '';
             $table[]=array('id'=>$row['id'],'description'=>$row['description'],'shorten'=>$row['shorten'],'servertemplate'=>$servertemplate);
         }
         if (count($table)>0) {
-            $template_file="userpanel_gserver_reinstall.tpl";
+            $template_file = "userpanel_gserver_reinstall.tpl";
         } else {
-            $template_file='userpanel_404.tpl';
+            $template_file = 'userpanel_404.tpl';
         }
     }
 } else if (($ui->st('d','get')=='rs' or $ui->st('d','get')=='st' or $ui->st('d','get')=='du') and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
-    $query=$sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
+    $query = $sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $gsip=$row['serverip'];
         $port=$row['port'];
         if ($ui->st('d','get')=='rs') {
-            $template_file='Restart done';
+            $template_file = 'Restart done';
             $cmds=gsrestart($id,'re',$aeskey,$reseller_id);
             $loguseraction="%start% %gserver% $gsip:$port";
         } else if ($ui->st('d','get')=='st') {
-            $template_file='Stop done';
+            $template_file = 'Stop done';
             $cmds=gsrestart($id,'so',$aeskey,$reseller_id);
             $loguseraction="%stop% %gserver% $gsip:$port";
         } else if ($ui->st('d','get')=='du') {
-            $template_file='SourceTV upload started';
+            $template_file = 'SourceTV upload started';
             $cmds=gsrestart($id,'du',$aeskey,$reseller_id);
             $loguseraction="%movie% %gserver% $gsip:$port";
         }
@@ -159,13 +159,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $insertlog->execute();
     }
     if (!isset($gsip)) {
-        $template_file='userpanel_404.tpl';
+        $template_file = 'userpanel_404.tpl';
     }
 } else if ($ui->st('d','get')=='md' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $table = array();
-        $query=$sql->prepare("SELECT `id`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE active='Y' AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `id`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE active='Y' AND `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         $rowcount=$query->rowCount();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -176,7 +176,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $hlds_5=$row['hlds_5'];
             $hlds_6=$row['hlds_6'];
         }
-        $query=$sql->prepare("SELECT `id`,AES_DECRYPT(`ftppassword`,?) AS `cftppass`,CONCAT(`serverip`,':',`port`) AS `server`,`eacallowed`,`serverid` FROM `gsswitch` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `id`,AES_DECRYPT(`ftppassword`,?) AS `cftppass`,CONCAT(`serverip`,':',`port`) AS `server`,`eacallowed`,`serverid` FROM `gsswitch` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$id,$user_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $address=$row['server'];
@@ -185,38 +185,38 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $serverID=$row['serverid'];
             $eacallowed=$row['eacallowed'];
         }
-        $query=$sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,?) AS `dwebapiAuthkey`,t.`description`,t.`qstat`,t.`shorten`,t.`modcmds`,t.`mapGroup` AS `defaultMapGroup`,t.`appID`,t.`map` AS `defaultmap` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
+        $query = $sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,?) AS `dwebapiAuthkey`,t.`description`,t.`qstat`,t.`shorten`,t.`modcmds`,t.`mapGroup` AS `defaultMapGroup`,t.`appID`,t.`map` AS `defaultmap` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
         $query->execute(array($aeskey,$aeskey,$id,$reseller_id));
-        $i=0;
+        $i = 0;
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $gshorten=$row['shorten'];
             $qstat=$row['qstat'];
             $anticheat=$row['anticheat'];
             if ($qstat=='a2s' and $row['user_uploaddir']=='Y' and $row['upload']>1 and $row['upload']<4) {
                 $uploaddir=$row['decypteduploaddir'];
-                $upload=true;
+                $upload= true;
             } else {
-                $upload=false;
-                $uploaddir='';
+                $upload = false;
+                $uploaddir = '';
             }
             if ($qstat=="a2s" or $qstat=="hla2s") {
                 $anticheatsoft="Valve Anti Cheat";
             } else if ($qstat=="cods") {
                 $anticheatsoft="Punkbuster";
             } else {
-                $anticheatsoft='';
+                $anticheatsoft = '';
             }
             if ($row['id']==$serverID) {
                 $currentTemplate=$gshorten;
-                $displayNone='';
+                $displayNone = '';
                 $displayNoneBoot='in';
                 $option='<option value="'.$row['id'].'" selected="selected">'.$gshorten.'</option>';
             } else {
                 $displayNone='display_none';
-                $displayNoneBoot='';
+                $displayNoneBoot = '';
                 $option='<option value="'.$row['id'].'">'.$gshorten.'</option>';
             }
-            $eac=array();
+            $eac = array();
             if ($rowcount>0 and $eacallowed=='Y' and ($gshorten=="css" or $gshorten=="cod4" or $gshorten=="cstrike" or $gshorten=="czero" or $gshorten=="tf")) {
                 if ($gshorten=="cstrike" or $gshorten=="czero") {
                     if($anticheat==3 and $hlds_3=='Y') {
@@ -252,16 +252,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     }
                 }
             }
-            $mods=array();
+            $mods = array();
             $mod=$row['modcmd'];
             foreach (explode("\r\n",$row['modcmds']) as $line) {
                 if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/',$line)) {
-                    $name=trim($line,'[]');
+                    $name = trim($line,'[]');
                     $ex=preg_split("/\=/",$name,-1,PREG_SPLIT_NO_EMPTY);
-                    $mods[]=trim($ex[0]);
+                    $mods[] = trim($ex[0]);
                 }
             }
-            $workshopCollection=false;
+            $workshopCollection = false;
             if (in_array($row['appID'],array(560,730,740))) {
                 $workshopCollection=$row['workshopCollection'];
             }
@@ -270,13 +270,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $i++;
         }
         if ($i>0) {
-            $template_file="userpanel_gserver_md.tpl";
+            $template_file = "userpanel_gserver_md.tpl";
         } else {
-            $template_file='userpanel_404.tpl';
+            $template_file = 'userpanel_404.tpl';
         }
     } else if ($ui->smallletters('action',2,'post')=='md' and $ui->id('shorten',19,'post')) {
         $switchID=$ui->id('shorten',19,'post');
-        $query=$sql->prepare("SELECT `active`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `active`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
@@ -287,7 +287,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $hlds_5=$row['hlds_5'];
             $hlds_6=$row['hlds_6'];
         }
-        $query=$sql->prepare("SELECT g.*,AES_ENCRYPT(g.`ftppassword`,?) AS `encrypted`,AES_ENCRYPT(g.`ppassword`,?) AS `pencrypted`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,AES_ENCRYPT(g.`ftppassword`,?) AS `encrypted`,AES_ENCRYPT(g.`ppassword`,?) AS `pencrypted`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$aeskey,$id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $oldID=$row['serverid'];
@@ -301,7 +301,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $newlayout=$row['newlayout'];
             $server=$serverip.":".$port;
         }
-        $query=$sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$switchID,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $fps=($row['userfps']=='Y' and $ui->id("fps_${switchID}",4,'post')) ? $ui->id("fps_${switchID}",4,'post') : $row['fps'];
@@ -317,42 +317,42 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $anticheat=($ui->id("anticheat_${switchID}",1,'post')>0) ? $ui->id("anticheat_${switchID}",1,'post') : 1;
                 if ($row['shorten']=="cstrike" or $row['shorten']=="czero") {
                     if($anticheat==3 and $hlds_3=='N' and $hlds_5=='Y' and $active=='Y') $anticheat=5;
-                    else if($anticheat==3 and $hlds_3=='N' and $hlds_5=='N' and $active=='Y') $anticheat=1;
-                    else if ($anticheat>1 and $active=='N') $anticheat=1;
+                    else if($anticheat==3 and $hlds_3=='N' and $hlds_5=='N' and $active=='Y') $anticheat = 1;
+                    else if ($anticheat>1 and $active=='N') $anticheat = 1;
                     if($anticheat==4 and $hlds_4=='N' and $hlds_6=='Y' and $active=='Y') $anticheat=6;
-                    else if($anticheat==4 and $hlds_4=='N' and $hlds_6=='N' and $active=='Y') $anticheat=1;
-                    else if ($anticheat>1 and $active=='N') $anticheat=1;
-                    if($anticheat==5 and $hlds_5=='N' and $active=='Y') $anticheat=1;
-                    if($anticheat==6 and $hlds_6=='N' and $active=='Y') $anticheat=1;
-                    if(($anticheat>6 and $active=='Y') or $anticheat>2 and $active=='N') $anticheat=1;
+                    else if($anticheat==4 and $hlds_4=='N' and $hlds_6=='N' and $active=='Y') $anticheat = 1;
+                    else if ($anticheat>1 and $active=='N') $anticheat = 1;
+                    if($anticheat==5 and $hlds_5=='N' and $active=='Y') $anticheat = 1;
+                    if($anticheat==6 and $hlds_6=='N' and $active=='Y') $anticheat = 1;
+                    if(($anticheat>6 and $active=='Y') or $anticheat>2 and $active=='N') $anticheat = 1;
                 } else {
-                    if($anticheat==3 and $normal_3=='N' and $active=='Y') $anticheat=1;
-                    if($anticheat==4 and $normal_4=='N' and $active=='Y') $anticheat=1;
-                    if(($anticheat>4 and $active=='Y') or $anticheat>2 and $active=='N') $anticheat=1;
+                    if($anticheat==3 and $normal_3=='N' and $active=='Y') $anticheat = 1;
+                    if($anticheat==4 and $normal_4=='N' and $active=='Y') $anticheat = 1;
+                    if(($anticheat>4 and $active=='Y') or $anticheat>2 and $active=='N') $anticheat = 1;
                 }
             } else {
-                $anticheat=1;
+                $anticheat = 1;
             }
         }
         if (isset($anticheat)) {
-            $query=$sql->prepare("UPDATE `serverlist` SET `anticheat`=?,`fps`=?,`tic`=?,`map`=?,`workshopCollection`=?,`mapGroup`=?,`modcmd`=?,`servertemplate`=?,`uploaddir`=AES_ENCRYPT(?,?),`webapiAuthkey`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`=?,`fps`=?,`tic`=?,`map`=?,`workshopCollection`=?,`mapGroup`=?,`modcmd`=?,`servertemplate`=?,`uploaddir`=AES_ENCRYPT(?,?),`webapiAuthkey`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($anticheat,$fps,$tic,$map,$workshopCollection,$mapGroup,$modcmd,$servertemplate,$uploaddir,$aeskey,$webapiAuthkey,$aeskey,$switchID,$reseller_id));
-            $template_file=$spracheResponse->table_add;
+            $template_file = $spracheResponse->table_add;
         } else {
-            $template_file=$spracheResponse->error_table;
+            $template_file = $spracheResponse->error_table;
         }
         $ftppass=$ui->password('ftppass',100,'post');
-        $cmds=array();
+        $cmds = array();
         if (isset($oldID) and $oldID!=$switchID) {
             $tmp=gsrestart($id,'so',$aeskey,$reseller_id);
             if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
         }
-        $query=$sql->prepare("UPDATE `gsswitch` SET `serverid`=?,`ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("UPDATE `gsswitch` SET `serverid`=?,`ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($switchID,$ftppass,$aeskey,$id,$reseller_id));
         if (isset($oldID) and $oldID!=$switchID or $ftppass!=$oldPass) {
             if ($oldID!=$switchID) {
                 if (isset($oldProtected) and $oldProtected=='Y') {
-                    $query=$sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($id,$reseller_id));
                     $tmp=gsrestart($id,'re',$aeskey,$reseller_id);
                     if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
@@ -362,24 +362,24 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 }
             }
             if ($ftppass!=$oldPass) {
-                if ($newlayout=='Y') $servercname=$servercname.'-'.$id;
-                $cmds[]='./control.sh mod '.$servercname.' '.$ftppass.' '.$poldPass;
+                if ($newlayout=='Y') $servercname=$servercname . '-' . $id;
+                $cmds[]='./control.sh mod '.$servercname . ' ' . $ftppass . ' ' . $poldPass;
             }
         }
         if (isset($rootID) and count($cmds)>0)ssh2_execute('gs',$rootID,$cmds);
         $loguseraction="%mod% %gserver% $server";
         $insertlog->execute();
     } else {
-        $template_file='Error: No such game!';
+        $template_file = 'Error: No such game!';
     }
 } else if ($ui->st('d','get')=='cf' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
-    $serverID=0;
-    $query=$sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppass`,s.`anticheat`,s.`servertemplate`,t.`shorten`,t.`gamebinary`,t.`modfolder`,t.`binarydir`,t.`qstat`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+    $serverID = 0;
+    $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppass`,s.`anticheat`,s.`servertemplate`,t.`shorten`,t.`gamebinary`,t.`modfolder`,t.`binarydir`,t.`qstat`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey,$aeskey,$id,$user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $username=$row['cname'];
-        if ($row['newlayout']=='Y') $username=$username.'-'.$row['id'];
+        if ($row['newlayout']=='Y') $username=$username . '-' . $row['id'];
         $anticheat=$row['anticheat'];
         $qstat=$row['qstat'];
         $eacallowed=$row['eacallowed'];
@@ -401,15 +401,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $ftpshorten=$row['shorten'];
             $username=$username."-p";
             $ftppass=$row['dpftppass'];
-            $pserver='';
+            $pserver = '';
         } else {
             $ftpshorten=$row['shorten'];
             $pserver="server/";
         }
     }
-    $configs=array();
-    $configCheck=array();
-    $query=$sql->prepare("SELECT g.`protected`,t.`configs`,s.`id` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+    $configs = array();
+    $configCheck = array();
+    $query = $sql->prepare("SELECT g.`protected`,t.`configs`,s.`id` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($id,$user_id,$reseller_id));
     $customer=getusername($user_id);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -425,7 +425,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
     }
-    $query=$sql->prepare("SELECT a.`configs`,a.`paddon` FROM `addons_installed` i INNER JOIN `addons` a ON i.`addonid`=a.`id` WHERE i.`serverid`=? AND i.`userid`=? AND i.`resellerid`=?");
+    $query = $sql->prepare("SELECT a.`configs`,a.`paddon` FROM `addons_installed` i INNER JOIN `addons` a ON i.`addonid`=a.`id` WHERE i.`serverid`=? AND i.`userid`=? AND i.`resellerid`=?");
     $query->execute(array($serverID,$user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (isset($protected) and ($protected=='N' or $row['paddon']=='Y')) {
@@ -451,7 +451,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (in_array($postconfig,$configCheck) and $ui->smallletters('type',4,'get') and ($ui->smallletters('type',4,'get')=='easy' or $ui->smallletters('type',4,'get')=='full')) {
             $explodeconfig=explode("/", $postconfig);
             $configname=$explodeconfig[(count($explodeconfig)-1)];
-            $query=$sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($rootID,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $ftpport=$row['ftpport'];
@@ -462,13 +462,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 if ($configname=="server.cfg" and $qstat=="a2s") {
                     $general_cvar=array('hostname','sv_password','sv_contact','sv_tags','motdfile','mapcyclefile','sv_downloadurl','net_maxfilesize','rcon_password','sv_rcon_minfailures','sv_rcon_maxfailures','sv_rcon_banpenalty','sv_rcon_minfailuretime','sv_pure','sv_pure_kick_clients','sv_timeout','sv_voiceenable','sv_allowdownload','sv_allowupload','sv_region','sv_friction','sv_stopspeed','sv_gravity','sv_accelerate','sv_airaccelerate','sv_wateraccelerate','sv_allow_color_correction','sv_allow_wait_command','mp_flashlight','mp_footsteps','mp_falldamage','mp_limitteams','mp_limitteams','mp_friendlyfire','mp_autokick','mp_forcecamera','mp_fadetoblack','mp_allowspectators','mp_chattime','log','sv_log_onefile','sv_logfile','sv_logbans','sv_logecho','mp_logdetail','mp_timelimit','mp_winlimit','sv_minrate','sv_maxrate','sv_minupdaterate','sv_maxupdaterate','sv_mincmdrate','sv_maxcmdrate','sv_client_cmdrate_difference','sv_client_min_interp_ratio','sv_client_max_interp_ratio','mp_fraglimit','mp_maxrounds');
                 } else {
-                    $general_cvar=array();
+                    $general_cvar = array();
                 }
             } else if($gamebinary=="hlds_run"){
                 $config=$modfolder."/".$postconfig;
-                $general_cvar=array();
+                $general_cvar = array();
             } else {
-                $general_cvar=array();
+                $general_cvar = array();
                 $config=$postconfig;
             }
             if ($shorten=="css" and $configname=="server.cfg") {
@@ -476,17 +476,17 @@ if ($ui->w('action',4,'post') and !token(true)) {
             } else if ($shorten=="dods" and $configname=="server.cfg") {
                 $game_cvars=array('mp_limit_allies_rocket','mp_limit_axis_rocket','mp_limit_axis_mg','mp_limit_axis_sniper','mp_limit_axis_assault','mp_limit_axis_support','mp_limit_axis_rifleman','mp_limit_allies_mg','mp_limit_allies_sniper','mp_limit_allies_assault','mp_limit_allies_support','mp_limit_allies_rifleman','dod_freezecam','dod_enableroundwaittime','dod_bonusroundtime','dod_bonusround');
             } else {
-                $game_cvars=array();
+                $game_cvars = array();
             }
             if ($ui->smallletters('type',4,'get')=='full' and isset($ui->post['update']) and $ui->post['update']==1) {
                 $configfile=stripslashes($ui->post['cleanedconfig']);
-                $fp=true;
+                $fp= true;
             } else {
                 $fp=@fopen("ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip."_"."$port/$ftpshorten/$config",'r');
-                $configfile='';
+                $configfile = '';
             }
             $noConfig=($fp==false) ? true: false;
-            $cleanedconfig='';
+            $cleanedconfig = '';
             if ($noConfig===false and ($ui->smallletters('type',4,'get')=="easy" or ($ui->smallletters('type',4,'get')=="full" and !isset($ui->post['update'])))) {
                 stream_set_timeout($fp,5);
                 while (!feof($fp)) $configfile .=fread($fp,1024);
@@ -494,15 +494,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 fclose($fp);
             }
             if ($noConfig===false and isset($info['timed_out']) and $info['timed_out']!="") {
-                $template_file="Connection timed out!";
+                $template_file = "Connection timed out!";
             } else {
                 $configfile=str_replace(array("\0" , "\b" , "\r", "\Z"),"",$configfile);
                 $lines=explode("\n", $configfile);
             }
             $lines=preg_replace('/\s+/',' ', $lines);
             if (isset($ui->post['update']) and $ui->post['update']==1) {
-                $newconfig='';
-                $setarray=array();
+                $newconfig = '';
+                $setarray = array();
                 foreach ($lines as $singeline) {
                     if (preg_match("/\w/", substr($singeline,0,1))) {
                         if (preg_match("/\"/", $singeline)) {
@@ -531,7 +531,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                                 if (isset($split[1])) {
                                     $value=$split[1];
                                 } else {
-                                    $value='';
+                                    $value = '';
                                 }
                                 if ($cvar!="exec") {
                                     if (isset($ui->post[$cvar])) {
@@ -598,7 +598,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     if ($ftp_login) {
                         $split_config=preg_split('/\//', $config, -1, PREG_SPLIT_NO_EMPTY);
                         $folderfilecount=count($split_config)-1;
-                        $i=0;
+                        $i = 0;
                         $folders=$pserver.$serverip.'_'.$port. '/'. $ftpshorten;
                         while ($i<$folderfilecount) {
                             $folders .="/".$split_config[$i];
@@ -607,21 +607,21 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         $uploadfile=$split_config[$i];
                         ftp_chdir($ftp_connect,$folders);
                         $checkupload=@ftp_fput($ftp_connect,$uploadfile,$temp,FTP_ASCII);
-                        $template_file=($checkupload) ? $sprache->updated . '  ' . $uploadfile : $sprache->failed . '  ' . $folders. '/'. $uploadfile;
+                        $template_file = ($checkupload) ? $sprache->updated . '  ' . $uploadfile : $sprache->failed . '  ' . $folders. '/'. $uploadfile;
                     } else {
-                        $template_file='Error: Logindata';
+                        $template_file = 'Error: Logindata';
                     }
                     ftp_close($ftp_connect);
                 } else {
-                    $template_file='Error: FTP Connect';
+                    $template_file = 'Error: FTP Connect';
                 }
                 fclose($temp);
                 $loguseraction="%cfg% $configname";
                 $insertlog->execute();
             } else {
-                $linearray=array();
-                $unknownarray=array();
-                $cleanedconfig='';
+                $linearray = array();
+                $unknownarray = array();
+                $cleanedconfig = '';
                 foreach ($lines as $singeline) {
                     $cleanedconfig .=$singeline."\r\n";
                     if (preg_match("/\w/", substr($singeline,0,1))) {
@@ -655,22 +655,22 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $array_keys=array_keys($unknownarray);
                 if ($configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') $oldrcon=(array_key_exists('rcon_password', $linearray)) ? $linearray['rcon_password'] : 'unset';
                 if ($ui->smallletters('type',4,'get')=="easy") {
-                    $template_file="userpanel_gserver_config_edit_easy.tpl";
+                    $template_file = "userpanel_gserver_config_edit_easy.tpl";
                 } else if ($ui->smallletters('type',4,'get')=="full") {
-                    $template_file="userpanel_gserver_config_edit_full.tpl";
+                    $template_file = "userpanel_gserver_config_edit_full.tpl";
                 }
             }
         } else {
-            $template_file='userpanel_404.tpl';
+            $template_file = 'userpanel_404.tpl';
         }
     } else {
-        $template_file="userpanel_gserver_config_edit.tpl";
+        $template_file = "userpanel_gserver_config_edit.tpl";
     }
 } else {
-    $table=array();
+    $table = array();
     if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
-    $query=$sql->prepare("SELECT AES_DECRYPT(`ftppassword`,?) AS `cftppass`,g.*,s.`servertemplate`,s.`upload`,t.`shorten`,t.`qstatpassparam`,t.`protected` AS `tp`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=? ORDER BY g.`serverip`,g.`port`");
-    $query2=$sql->prepare("SELECT `ftpport` FROM `rserverdata` WHERE `id`=? LIMIT 1");
+    $query = $sql->prepare("SELECT AES_DECRYPT(`ftppassword`,?) AS `cftppass`,g.*,s.`servertemplate`,s.`upload`,t.`shorten`,t.`qstatpassparam`,t.`protected` AS `tp`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=? ORDER BY g.`serverip`,g.`port`");
+    $query2 = $sql->prepare("SELECT `ftpport` FROM `rserverdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($aeskey,$user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) {
@@ -696,7 +696,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $map=(in_array($row['queryMap'],array(false,null,''))) ? 'Unknown' : $row['queryMap'];
             $ce=explode(',',$row['cores']);
             $coreCount=count($ce);
-            $cores=array();
+            $cores = array();
             if ($row['taskset']=='Y' and $coreCount>0) foreach ($ce as $uc) $cores[]=$uc;
             $cores=implode(', ',$cores);
             $password=$row['queryPassword'];
@@ -707,15 +707,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $updatetime=($user_language=="de") ? ($row['queryUpdatetime']!='') ? date('d.m.Y H:m:s',strtotime($row['queryUpdatetime'])) : $sprache->never : $row['queryUpdatetime'];
             $servertemplate=$row['servertemplate'];
             if ($row['upload']>1 and $row['upload']<4) {
-                $upload=true;
+                $upload= true;
             } else {
                 $colspan--;
-                $upload=false;
+                $upload = false;
             }
             $currentTemplate=(($protected=='N' or $tprotected=='N') and $servertemplate>1) ? $row['shorten']."-".$servertemplate : $row['shorten'];
-            $imgNameP='';
-            $imgAltP='';
-            $pro='';
+            $imgNameP = '';
+            $imgAltP = '';
+            $pro = '';
             $pserver="/server/";
             if ($protected=='N' and ($pallowed=='Y' and $tprotected=='Y')) {
                 $imgNameP='16_unprotected';
@@ -729,27 +729,27 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $pro=$sprache->on;
             }
             if($pa['ftpaccess'] or $pa['miniroot']) {
-                if ($row['newlayout']=='Y') $cname=$cname.'-'.$row['id'];
+                if ($row['newlayout']=='Y') $cname=$cname . '-' . $row['id'];
                 $query2->execute(array($rootid));
                 $ftpport=$query2->fetchColumn();
                 $ftpdata="ftp://".$cname.":".$cftppass."@".$ip.":".$ftpport.$pserver.$ip.'_'.$port."/".$currentTemplate;
             } else {
-                $cftppass='';
-                $ftpport='';
-                $ftpdata='';
+                $cftppass = '';
+                $ftpport = '';
+                $ftpdata = '';
             }
-            $nameremoved='';
-            $premoved='';
+            $nameremoved = '';
+            $premoved = '';
             $imgName='16_ok';
             $imgAlt='Online';
             if ($stopped=='Y') {
-                $numplayers=0;
-                $maxplayers=0;
+                $numplayers = 0;
+                $maxplayers = 0;
                 $imgName='16_bad';
                 $imgAlt='Stopped';
             } else if (($name=='OFFLINE' or $name=='') and $notified>=$rSA['down_checks'] and $stopped=='N') {
-                $numplayers=0;
-                $maxplayers=0;
+                $numplayers = 0;
+                $maxplayers = 0;
                 $imgName='16_error';
                 $imgAlt='Crashed';
             } else {
@@ -778,5 +778,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $table[]=array('id'=>$gameserverid,'premoved'=>$premoved,'nameremoved'=>$nameremoved,'server'=>$address,'name'=>$name,'img'=>$imgName,'alt'=>$imgAlt,'imgp'=>$imgNameP,'altp'=>$imgAltP,'numplayers'=>$numplayers,'maxplayers'=>$maxplayers,'map'=>$map,'cname'=>$cname,'cftppass'=>$cftppass,'ip'=>$ip,'ftpport'=>$ftpport,'port'=>$port,'shorten'=>$currentTemplate,'gameShorten'=>$shorten,'ftpdata'=>$ftpdata,'updatetime'=>$updatetime,'stopped'=>$stopped,'pro'=>$pro,'upload'=>$upload,'minram'=>$row['minram'],'maxram'=>$row['maxram'],'taskset'=>$row['taskset'],'coreCount'=>$coreCount,'cores'=>$cores);
         }
     }
-    $template_file="userpanel_gserver_list.tpl";
+    $template_file = "userpanel_gserver_list.tpl";
 }

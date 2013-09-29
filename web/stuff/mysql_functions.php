@@ -101,7 +101,7 @@ class ExternalSQL {
 			$grantpriviliges=$this->remotesql->prepare("GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,INDEX,ALTER,CREATE TEMPORARY TABLES,LOCK TABLES,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,EXECUTE ON `$dbname`.* TO ?@''");
 			$grantpriviliges->execute(array($dbname));
 			$iparray=ipstoarray($ips);
-			$allowedips=array();
+			$allowedips = array();
 			$select=$this->remotesql->prepare("SELECT `host` FROM `mysql`.`host` WHERE `db`=?");
 			$select->execute(array($dbname));
 			foreach ($select->fetchall() as $row) {

@@ -52,36 +52,36 @@ if (array_key_exists('action',$data) and $data['action']!='gs') {
         }
     }
 }
-$active='';
-$private='';
-$shorten='';
-$slots='';
-$identifyUserBy='';
-$localUserID='';
-$externalUserID='';
-$username='';
-$identifyServerBy='';
-$localServerID='';
-$externalServerID='';
-$taskset='';
-$eacallowed='';
-$brandname='';
-$tvenable='';
-$pallowed='';
-$port='';
-$port2='';
-$port3='';
-$port4='';
-$port5='';
-$minram='';
-$maxram='';
-$hostID='';
-$cores='';
-$customID=0;
-$hostExternalID='';
-$initialpassword='';
+$active = '';
+$private = '';
+$shorten = '';
+$slots = '';
+$identifyUserBy = '';
+$localUserID = '';
+$externalUserID = '';
+$username = '';
+$identifyServerBy = '';
+$localServerID = '';
+$externalServerID = '';
+$taskset = '';
+$eacallowed = '';
+$brandname = '';
+$tvenable = '';
+$pallowed = '';
+$port = '';
+$port2 = '';
+$port3 = '';
+$port4 = '';
+$port5 = '';
+$minram = '';
+$maxram = '';
+$hostID = '';
+$cores = '';
+$customID = 0;
+$hostExternalID = '';
+$initialpassword = '';
 $installGames='A';
-$autoRestart='';
+$autoRestart = '';
 if (!isset($success['false']) and array_value_exists('action','add',$data) and 1>$licenceDetails['lG']) {
     $success['false'][]='licence limit reached';
 } else if (!isset($success['false']) and array_value_exists('action','add',$data) and $licenceDetails['lG']>0) {
@@ -105,7 +105,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
             $localServerID=isid($data['server_local_id'],19);
             $externalServerID=$data['server_external_id'];
             $from=array('user_localid'=>'id','username'=>'cname','user_externalid'=>'externalID','email'=>'mail');
-            $query=$sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_user_by']]."`=? AND `resellerid`=?");
+            $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_user_by']]."`=? AND `resellerid`=?");
             $query->execute(array($data[$data['identify_user_by']],$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $localUserLookupID=$row['id'];
@@ -113,10 +113,10 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
             if (!isset($localUserLookupID)) {
                 $success['false'][]='user does not exist';
             }
-            $query=$sql->prepare("SELECT * FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-            $typeIDs=array();
-            $typeIDList=array();
-            $shortenToID=array();
+            $query = $sql->prepare("SELECT * FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+            $typeIDs = array();
+            $typeIDList = array();
+            $shortenToID = array();
             foreach ($shorten as $singleShorten) {
                 $query->execute(array($singleShorten,$resellerID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -138,7 +138,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                 }
             }
             if (!isset($success['false']) and !in_array($externalServerID,$bad)) {
-                $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `externalID`=? LIMIT 1");
+                $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `externalID`=? LIMIT 1");
                 $query->execute(array($externalServerID));
                 if ($query->fetchColumn()>0) {
                     $success['false'][]='server with external ID already exists';
@@ -152,13 +152,13 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     $implodedQuery='(m.`servertypeid`='.implode(' OR m.`servertypeid`=',$typeIDList).')';
                 }
                 if (isset($data['master_server_id']) and isid($data['master_server_id'],19)) {
-                    $query=$sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (r.`id`=? AND `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
+                    $query = $sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (r.`id`=? AND `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
                     $query->execute(array($data['master_server_id'],$resellerID,$slots,$masterServerCount));
                 } else if (isset($data['master_server_external_id']) and wpreg_check($data['master_server_external_id'],255)) {
-                    $query=$sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (r.`externalID`=? AND `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
+                    $query = $sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (r.`externalID`=? AND `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
                     $query->execute(array($data['master_server_external_id'],$resellerID,$slots,$masterServerCount));
                 } else {
-                    $query=$sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (`hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
+                    $query = $sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (`hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
                     $query->execute(array($resellerID,$slots,$masterServerCount));
                 }
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -174,8 +174,8 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     $ip=$used['ip'];
                     $ports=$used['ports'];
                 } else if (isset($data['master_server_id']) and isid($data['master_server_id'],19)) {
-                    $missing=array();
-                    $query=$sql->prepare("SELECT r.`id` FROM `rserverdata` r LEFT JOIN `rservermasterg` m ON m.`serverid`=r.`id` WHERE r.`id`=? AND r.`active`='Y' AND r.`resellerid`=? AND m.`servertypeid`=? LIMIT 1");
+                    $missing = array();
+                    $query = $sql->prepare("SELECT r.`id` FROM `rserverdata` r LEFT JOIN `rservermasterg` m ON m.`serverid`=r.`id` WHERE r.`id`=? AND r.`active`='Y' AND r.`resellerid`=? AND m.`servertypeid`=? LIMIT 1");
                     foreach ($typeIDList as $ID) {
                         $query->execute(array($data['master_server_id'],$resellerID,$ID));
                         if ($query->rowCount()==0) {
@@ -183,8 +183,8 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                         }
                     }
                 } else if (isset($data['master_server_external_id']) and wpreg_check($data['master_server_external_id'],255)) {
-                    $missing=array();
-                    $query=$sql->prepare("SELECT r.`id` FROM `rserverdata` r LEFT JOIN `rservermasterg` m ON m.`serverid`=r.`id` WHERE r.`externalID`=? AND r.`active`='Y' AND r.`resellerid`=? AND m.`servertypeid`=? LIMIT 1");
+                    $missing = array();
+                    $query = $sql->prepare("SELECT r.`id` FROM `rserverdata` r LEFT JOIN `rservermasterg` m ON m.`serverid`=r.`id` WHERE r.`externalID`=? AND r.`active`='Y' AND r.`resellerid`=? AND m.`servertypeid`=? LIMIT 1");
                     foreach ($typeIDList as $ID) {
                         $query->execute(array($data['master_server_external_id'],$resellerID,$ID));
                         if ($query->rowCount()==0) {
@@ -206,10 +206,10 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     while (in_array($port,$ports)) {
                         $port+=$portStep;
                     }
-                    $port2='';
-                    $port3='';
-                    $port4='';
-                    $port5='';
+                    $port2 = '';
+                    $port3 = '';
+                    $port4 = '';
+                    $port5 = '';
                 } else if ($portMax==2) {
                     if (isset($data['port'],$data['port2']) and checkPorts(array($data['port'],$data['port2']),$ports)===true) {
                         $port=$data['port'];
@@ -219,9 +219,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                         $port+=$portStep;
                         $port2+=$portStep;
                     }
-                    $port3='';
-                    $port4='';
-                    $port5='';
+                    $port3 = '';
+                    $port4 = '';
+                    $port5 = '';
                 } else if ($portMax==3) {
                     if (isset($data['port'],$data['port2'],$data['port3']) and checkPorts(array($data['port'],$data['port2'],$data['port3']),$ports)===true) {
                         $port=$data['port'];
@@ -233,8 +233,8 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                         $port2+=$portStep;
                         $port3+=$portStep;
                     }
-                    $port4='';
-                    $port5='';
+                    $port4 = '';
+                    $port5 = '';
                 } else if ($portMax==4) {
                     if (isset($data['port'],$data['port2'],$data['port3'],$data['port4']) and checkPorts(array($data['port'],$data['port2'],$data['port3'],$data['port4']),$ports)===true) {
                         $port=$data['port'];
@@ -248,7 +248,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                         $port3+=$portStep;
                         $port4+=$portStep;
                     }
-                    $port5='';
+                    $port5 = '';
                 } else {
                     if (isset($data['port'],$data['port2'],$data['port3'],$data['port4'],$data['port5']) and checkPorts(array($data['port'],$data['port2'],$data['port3'],$data['port4'],$data['port5']),$ports)===true) {
                         $port=$data['port'];
@@ -279,13 +279,13 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     $installGames=$data['installGames'];
                 }
                 $json=json_encode(array('installGames'=>$installGames));
-                $query=$sql->prepare("INSERT INTO `gsswitch` (`active`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`serverip`,`rootID`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`externalID`,`serverid`,`stopped`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,?,1,'Y')");
+                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`serverip`,`rootID`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`externalID`,`serverid`,`stopped`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,?,1,'Y')");
                 $query->execute(array($active,$taskset,$cores,$localUserLookupID,$pallowed,$eacallowed,$ip,$hostID,$tvenable,$port,$port2,$port3,$port4,$port5,$minram,$maxram,$slots,$private,$brandname,$autoRestart,$initialpassword,$aeskey,$resellerID,$externalServerID));
                 $localServerID=$sql->lastInsertId();
                 customColumns('G',$localServerID,'save',$data);
                 $customID=$localServerID;
                 if (isid($localServerID,19)) {
-                    $query=$sql->prepare("INSERT INTO `serverlist` (`servertype`,`switchID`,`map`,`mapGroup`,`cmd`,`tic`,`gamemod`,`gamemod2`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?)");
+                    $query = $sql->prepare("INSERT INTO `serverlist` (`servertype`,`switchID`,`map`,`mapGroup`,`cmd`,`tic`,`gamemod`,`gamemod2`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?)");
                     foreach ($typeIDs as $shorten=>$array) {
                         $query->execute(array($array['id'],$localServerID,$array['map'],$array['mapGroup'],$array['cmd'],$array['tic'],$array['gamemod'],$array['gamemod2'],$resellerID));
                         if (!isset($lastServerID) or (isset($data['primary']) and gamestring($data['primary']) and $shorten==$data['primary'])) {
@@ -293,15 +293,15 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                         }
                     }
                     if (!isset($lastServerID) or !isid($lastServerID,19) ) {
-                        $query=$sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
+                        $query = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                         $query->execute(array($localServerID,$resellerID));
                         $lastServerID=$query->fetchColumn();
                     }
-                    $query=$sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($lastServerID,$localServerID,$resellerID));
-                    $query=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
+                    $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
                     $query->execute(array($localServerID,$resellerID));
-                    $query=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'ad',?,?)");
+                    $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'ad',?,?)");
                     $query->execute(array($hostID,$resellerID,$localServerID,$localUserLookupID,$ip.':'.$port,$json,$resellerID));
                 } else {
                     $success['false'][]='Could not write game server to database';
@@ -336,9 +336,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
     $externalServerID=$data['server_external_id'];
     $shorten=$data['shorten'];
     $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
-    $initialpassword='';
+    $initialpassword = '';
     if (dataExist('identify_server_by',$data)) {
-        $query=$sql->prepare("SELECT r.`externalID`,g.`id`,g.`serverip`,g.`port`,g.`userid`,g.`active`,g.`slots`,g.`rootID`,g.`war` FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT r.`externalID`,g.`id`,g.`serverip`,g.`port`,g.`userid`,g.`active`,g.`slots`,g.`rootID`,g.`war` FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localID=$row['id'];
@@ -350,13 +350,13 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
             $usedPorts=usedPorts(array($row['serverip']));
             $oldActive=$row['active'];
             $oldPort=$row['port'];
-            $query=$sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID,$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if($row['amount']>0) $success['false'][]='Server is marked for deletion';
             }
-            $updateArray=array();
-            $eventualUpdate='';
+            $updateArray = array();
+            $eventualUpdate = '';
             if (isset($data['private']) and active_check($data['private'])) {
                 $updateArray[]=$data['private'];
                 $eventualUpdate.=',`war`=?';
@@ -439,12 +439,12 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
             }
             if (isset($data['active']) and active_check($data['active'])) $active=$data['active'];
             if (count($updateArray)>0) {
-                $eventualUpdate=trim($eventualUpdate,',');
+                $eventualUpdate = trim($eventualUpdate,',');
                 $eventualUpdate .=',';
             }
             $updateArray[]=$localID;
             $updateArray[]=$resellerID;
-            $query=$sql->prepare("UPDATE `gsswitch` SET $eventualUpdate`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `gsswitch` SET $eventualUpdate`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute($updateArray);
             customColumns('G',$localID,'save',$data);
             $customID=$localID;
@@ -467,7 +467,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
     $externalServerID=$data['server_external_id'];
     $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
     if (dataExist('identify_server_by',$data)) {
-        $query=$sql->prepare("SELECT r.`externalID`,g.`id`,g.`serverip`,g.`port`,g.`userid`,g.`rootID` FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=?");
+        $query = $sql->prepare("SELECT r.`externalID`,g.`id`,g.`serverip`,g.`port`,g.`userid`,g.`rootID` FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localID=$row['id'];
@@ -477,11 +477,11 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
             $hostExternalID=$row['rootID'];
         }
         if(isset($localID) and isset($name)) {
-            $query=$sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($localID,$resellerID));
-            $query=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
+            $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
             $query->execute(array($localID,$resellerID));
-            $query=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'dl',?)");
+            $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'dl',?)");
             $query->execute(array($hostID,$resellerID,$localID,$userID,$name,$resellerID));
         } else {
             $success['false'][]='No server can be found to delete';
@@ -490,9 +490,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
         $success['false'][]='No data for this method: '.$data['action'];
     }
 } else if (array_value_exists('action','ls',$data)) {
-    $query=$sql->prepare("SELECT r.`id`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(g.`id`) AS `freeserver`,COUNT(g.`id`) AS `installedserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxslots`-SUM(g.`slots`)) AS `leftslots`,SUM(g.`slots`) AS `installedslots` FROM `rserverdata` r LEFT JOIN `gsswitch` g ON g.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`leftslots`>0 OR `leftslots` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
+    $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(g.`id`) AS `freeserver`,COUNT(g.`id`) AS `installedserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxslots`-SUM(g.`slots`)) AS `leftslots`,SUM(g.`slots`) AS `installedslots` FROM `rserverdata` r LEFT JOIN `gsswitch` g ON g.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`leftslots`>0 OR `leftslots` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
     $query->execute(array($resellerID));
-    $list=true;
+    $list= true;
     if ($apiType=='xml') {
         $reply="<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE gserver>
@@ -528,7 +528,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
         $gsRestart=$data['restart'];
         $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
         if (dataExist('identify_server_by',$data)) {
-            $query=$sql->prepare("SELECT `id`,`userid`,`rootID`,`serverip`,`port` FROM `gsswitch` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `id`,`userid`,`rootID`,`serverip`,`port` FROM `gsswitch` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($data[$data['identify_server_by']],$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $hostID=$row['rootID'];
@@ -537,11 +537,11 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                 $name=$row['serverip'].':'.$row['port'];
             }
             if(isset($localID) and isset($userID)) {
-                $query=$sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($localID,$resellerID));
-                $query=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND (`action`='re' OR `action`='st') AND `affectedID`=? and `resellerID`=?");
+                $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND (`action`='re' OR `action`='st') AND `affectedID`=? and `resellerID`=?");
                 $query->execute(array($localID,$resellerID));
-                $query=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),?,?)");
+                $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),?,?)");
                 $query->execute(array($hostID,$resellerID,$localID,$userID,$name,$gsRestart,$resellerID));
             } else {
                 $success['false'][]='No server can be found to edit';
@@ -562,7 +562,7 @@ if ($apiType=='xml' and !isset($list)) {
         $errors=implode(', ',$success['false']);
         $action='fail';
     } else {
-        $errors='';
+        $errors = '';
         $action='success';
     }
     $reply=<<<XML

@@ -41,7 +41,7 @@ include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/config.php');
 include(EASYWIDIR . '/stuff/settings.php');
-$die=false;
+$die = false;
 if (!isset($admin_id) and !isset($user_id)) {
     redirect('login.php');
 } else if(isset($admin_id)) {
@@ -49,10 +49,10 @@ if (!isset($admin_id) and !isset($user_id)) {
 } else if (isset($user_id)) {
     $pa=User_Permissions($user_id);
 } else {
-    $die=true;
+    $die= true;
 }
 if (!isset($pa) or count($pa)==0 or ((!isset($admin_id) and !isset($user_id)) or (((!$pa['gserver']) and !$pa['voiceserver'] and !$pa['voicemasterserver'] and !$pa['traffic'] and !$pa['user'] and !rsellerpermisions($admin_id) and !$pa['usertickets']) and (!$pa['restart'] and !$pa['usertickets'])))) {
-    $die=true;
+    $die= true;
 }
 if ($ui->smallletters('w',5,'get')=='check') {
     $return='bad';
@@ -65,7 +65,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 } else if ($die==true) {
     redirect('login.php');
 } else if ($ui->username('mapgroup','50','get')) {
-    $sprache=getlanguagefile('gserver', $user_language, $reseller_id);
+    $sprache = getlanguagefile('gserver', $user_language, $reseller_id);
     $query = $sql->prepare("SELECT `mapGroup` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($ui->username('mapgroup','50','get'), $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -75,13 +75,13 @@ if ($ui->smallletters('w',5,'get')=='check') {
         }
     }
 } else if ($ui->id('id',19,'get') and $ui->st('d','get')=="vs" and ($pa['addvserver'] or $pa['root'])) {
-	$sprache=getlanguagefile('reseller', $user_language, $reseller_id);
+	$sprache = getlanguagefile('reseller', $user_language, $reseller_id);
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
         $reseller_id=$admin_id;
-        $notexclusive=true;
+        $notexclusive= true;
     }
 	$query = $sql->prepare("SELECT `id`,`cpu`,`active`,`ip`,`esxi`,`description`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota` FROM `virtualhosts` WHERE `id`=?");
-    $query2=$sql->prepare("SELECT `cores`,`minmhz`,`hddsize`,`mountpoint`,`minram` FROM `virtualcontainer` WHERE hostid=?");
+    $query2 = $sql->prepare("SELECT `cores`,`minmhz`,`hddsize`,`mountpoint`,`minram` FROM `virtualcontainer` WHERE hostid=?");
     $query->execute(array($ui->id('id',19,'get')));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$id=$row['id'];
@@ -97,24 +97,24 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		} else {
 			$percent="100";
 		}
-		$ramused=0;
+		$ramused = 0;
 		$hdd_rows=explode("\r\n", $row['hdd']);
 		foreach ($hdd_rows as $hddline) {
 			$data_explode=explode(" ", $hddline);
 			if (isset($data_explode[1])) {
 				$mountpoint=$data_explode[0];
 				$mountsize[$mountpoint]=$data_explode[1];
-				$mountunused[$mountpoint]=0;
+				$mountunused[$mountpoint] = 0;
 				$hdd[]=$mountpoint;
 			}
 		}
-		$i=1;
+		$i = 1;
 		while ($i<=$cores) {
 			$core[]=$i;
-			$cpucore[$i]=0;
+			$cpucore[$i] = 0;
 			$i++;
 		}
-		$i=1;
+		$i = 1;
 		if ($esxi=="Y") {
 			$maxcore="8";
 		} else {
@@ -125,7 +125,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 			$i++;
 		}
         $query2->execute(array($id));
-		$i2=0;
+		$i2 = 0;
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			$mountpoint=$row2['mountpoint'];
 			$addstracthdd=$mountunused[$mountpoint]+($row2['hddsize']*($percent/100));
@@ -138,7 +138,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 				$cpucore[1]=$addcpu;
 			} else {
 				$cpucore[1]=$mhz;
-				$nextcore="2";
+				$nextcore = 2;
 				while ($nextcore<=$cores) {
 					$extra=$addcpu-$mhz;
 					$addcpu=$cpucore[$nextcore]+$extra;
@@ -172,8 +172,8 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		$max_databases=$row['max_databases'];
 	}
 	if (!isset($installed)) {
-		$installed=0;
-		$max_databases=0;
+		$installed = 0;
+		$max_databases = 0;
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_mysql_server.tpl');
 } else if ($ui->st('d','get')=="tr" and $ui->st('w','get')) {
@@ -188,14 +188,14 @@ if ($ui->smallletters('w',5,'get')=='check') {
             $query = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? AND c.`resellersid`=?");
             $query->execute(array($admin_id, $reseller_id));
 		}		
-		$ips=array();
-		$userips=array();
+		$ips = array();
+		$userips = array();
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			unset($userips);
 			$userips=ipstoarray($row['ips']);
 			foreach ($userips as $ip) {
 				$ip_ex=explode(".", $ip);
-				$ips[]=$ip_ex[0].".".$ip_ex[1].".".$ip_ex[2].".";
+				$ips[]=$ip_ex[0] . '.' . $ip_ex[1] . '.' . $ip_ex[2].".";
 			}
 		}
 		$subnets=array_unique($ips);
@@ -231,9 +231,9 @@ if ($ui->smallletters('w',5,'get')=='check') {
             $query = $sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`userid`=? AND c.`resellerid`=? ORDER BY u.`id`,c.`id`");
             $query->execute(array($admin_id, $reseller_id));
 		}
-		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) $data[]='<option value='.$row['id'].'>'.$row['cname'].'-'.$row['id'].'</option>';
+		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) $data[]='<option value='.$row['id'].'>'.$row['cname'] . '-' . $row['id'].'</option>';
 	} else if ($ui->st('w','get')=="ip") {
-		$userips=array();
+		$userips = array();
 		if ($reseller_id==0) {
             $query = $sql->prepare("SELECT `ips` FROM `resellerdata`");
             $query->execute();
@@ -244,7 +244,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
             $query = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? AND c.`resellersid`=?");
             $query->execute(array($admin_id, $reseller_id));
 		}
-		$ips=array();
+		$ips = array();
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			foreach (ipstoarray($row['ips']) as $userip) $userips[]=$userip;
 		}
@@ -257,7 +257,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 	if ($ui->st('w','get')=="us") {
 		$query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
         $query->execute(array($reseller_id));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[]='<option value='.$row['id'].'>'.trim($row['cname'].' '.$row['vname'].' '.$row['name']).'</option>';
+		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[]='<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 	} else if ($ui->st('w','get')=="se") {
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
         $query->execute(array($reseller_id));
@@ -274,11 +274,11 @@ if ($ui->smallletters('w',5,'get')=='check') {
 } else if ($ui->username('distro','50','get') and $ui->id('id',19,'get') and ($pa['vserversettings'] or $pa['root']) and $reseller_id==0) {
 	$pselect=$sql->prepare("SELECT `pxeautorun` FROM `resellerimages` WHERE `bitversion`=? AND `distro`=?");
 	$pselect->execute(array($ui->id('id',19,'get'), $ui->username('distro','50','get')));
-	$usedpxeautorun=array();
+	$usedpxeautorun = array();
 	foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$usedpxeautorun[]=$row['pxeautorun'];
 	}
-	$i=0;
+	$i = 0;
 	while ($i<="9") {
 		if (!in_array($i, $usedpxeautorun)){
 			$pxeautorun[]=$i;
@@ -297,7 +297,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 </select>
 <?php 
 } else if (($ui->username('short','50','get') or $ui->username('shorten','50','get')) and $pa['restart']) {
-	$sprache=getlanguagefile('gserver', $user_language, $reseller_id);
+	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}
@@ -308,7 +308,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
     $query = $sql->prepare("SELECT `id` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
     $count=$query->rowCount();
-    $query2=$sql->prepare("SELECT `qstat` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+    $query2 = $sql->prepare("SELECT `qstat` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
     $query2->execute(array($get_shorten, $reseller_id));
 	foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 		$qstat=$row2['qstat'];
@@ -317,19 +317,19 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		} else if ($qstat=="cods") {
 			$anticheatsoft="Punkbuster";
 		} else {
-			$anticheatsoft='';
+			$anticheatsoft = '';
 		}
 		if ($count>0 and ($get_shorten=="css" or $get_shorten=="cod4" or $get_shorten=="cstrike" or $get_shorten=="czero" or $get_shorten=="tf")) {
 			$eac='<option value="3">Easy Anti Cheat</option>';
 		} else {
-			$eac='';
+			$eac = '';
 		}
 	}
 	if (!isset($anticheatsoft)) {
-		$anticheatsoft='';
+		$anticheatsoft = '';
 	}
 	if (!isset($anticheat)) {
-		$anticheat='';
+		$anticheat = '';
 	}
 ?>
 <select name="anticheat">
@@ -339,7 +339,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 </select>
 <?php
 } else if ($ui->username('gamestring','50','get') and $ui->id('id',19,'get') and ($pa['roots'] or $pa['root'])) {
-	$sprache=getlanguagefile('roots', $user_language, $reseller_id);
+	$sprache = getlanguagefile('roots', $user_language, $reseller_id);
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}
@@ -348,8 +348,8 @@ if ($ui->smallletters('w',5,'get')=='check') {
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $rootServer=new masterServer($ui->id('id',10,'get'), $aeskey);
     $games=explode("_", $ui->username('gamestring','50','get'));
-    $i=1;
-    $gamelist=array();
+    $i = 1;
+    $gamelist = array();
     $count=count($games);
 	while ($i<$count) {
         if ($games[$i]!='' and !in_array($games[$i], $gamelist)) {
@@ -373,38 +373,38 @@ if ($ui->smallletters('w',5,'get')=='check') {
         }
     }
 } else if (($pa['voiceserver'] or $pa['voiceserver']) and $ui->st('d','get')=="vo" and $ui->id('id',19,'get')) {
-	$sprache=getlanguagefile('voice', $user_language, $reseller_id);
+	$sprache = getlanguagefile('voice', $user_language, $reseller_id);
 	$query = $sql->prepare("SELECT m.`maxserver`,COUNT(v.`id`) AS `installedserver`,m.`maxslots`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`resellerid`=? LIMIT 1");
 	$query->execute(array($ui->id('id',19,'get'), $reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		if ($row['installedserver']==null) {
-			$installedserver='0';
+			$installedserver = 0;
 		} else {
 			$installedserver=$row['installedserver'];
 		}
 		if ($row['installedslots']==null) {
-			$installedslots='0';
+			$installedslots = 0;
 		} else {
 			$installedslots=$row['installedslots'];
 		}
 		if ($row['uslots']==null) {
-			$uslots='0';
+			$uslots = 0;
 		} else {
 			$uslots=$row['uslots'];
 		}
         require_once IncludeTemplate($template_to_use,'ajax_admin_voiceserver_usage.tpl');
 	}
 } else if ($pa['gserver'] and $ui->st('d','get')!="vs" and $ui->st('d','get')!="vo" and ($ui->id('id',19,'get') or $ui->ip('ip','get'))) {
-	$sprache=getlanguagefile('gserver', $user_language, $reseller_id);
+	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 		$reseller_id=$admin_id;
 	}
 	if ($ui->id('id',19,'get') and $ui->st('d','get')!="vs") {
-        $used=0;
-        $max=0;
-        $installedserver=0;
-        $maxserver=0;
-        $maxslots=0;
+        $used = 0;
+        $max = 0;
+        $installedserver = 0;
+        $maxserver = 0;
+        $maxslots = 0;
         $query = $sql->prepare("SELECT `maxslots`,`maxserver` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',19,'get'), $reseller_id));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -451,19 +451,19 @@ if ($ui->smallletters('w',5,'get')=='check') {
 			asort($ports);
 			$ports=implode(", ", $ports); 
 		} else {
-			$ports='';
+			$ports = '';
 		}
         require_once IncludeTemplate($template_to_use,'ajax_admin_gserver_ports.tpl');
 	}
 } else if (($pa['usertickets'] or $pa['usertickets']) and $ui->port('po', 'get') and ($ui->st('d','get')=='ut' or $ui->st('d','get')=='rt')) {
 	if ($reseller_id!=0 and $admin_id==$reseller_id and $ui->st('d','get')=='rt') {
-		$resellerid=0;
+		$resellerid = 0;
 	} else if ($reseller_id!=0 and $admin_id!=$reseller_id and $ui->st('d','get')=='rt') {
 		$resellerid=$admin_id;
 	} else if ($ui->st('d','get')=='ut' or $ui->st('d','get')=='rt') {
 		$resellerid=$reseller_id;
     }
-    $table=array();
+    $table = array();
     if (isset($resellerid)) {
         $query = $sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($resellerid));
@@ -471,7 +471,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
         $query = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=? AND `maintopic`!=`id` AND `resellerid`=? ORDER BY `id`");
         $query->execute(array($ui->port('po', 'get'), $resellerid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $topic='';
+            $topic = '';
             $pselect3=$sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
             $pselect3->execute(array($user_language, $row['id'], $resellerid));
             $topic=$pselect3->fetchColumn();

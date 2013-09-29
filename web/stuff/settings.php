@@ -54,7 +54,7 @@ $dbConnect['user'] = $user;
 $dbConnect['pwd'] = $pwd;
 $dbConnect['db'] = $db;
 if (isset($debug) and $debug==1) {
-    $dbConnect['debug']=1;
+    $dbConnect['debug'] = 1;
     ini_set('display_errors',1);
     error_reporting(E_ALL|E_STRICT);
 }
@@ -114,7 +114,7 @@ if ($loguserip != 'localhost') {
         $_SESSION['HTTP_USER_AGENT'] = md5($ui->escaped('HTTP_USER_AGENT','server'));
     }
 }
-$rSA=array();
+$rSA = array();
 if (isset($reseller_id)) {
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
@@ -331,10 +331,10 @@ if($ui->isinteger('a', 'get')) {
 } else {
     $amount = (isset($_SESSION['amount']) and is_int($_SESSION['amount'])) ? $_SESSION['amount'] : 20;
 }
-if($ui->id('p',19, 'get')) {
-    $start = $ui->id('p',19, 'get');
+if($ui->id('p', 19, 'get')) {
+    $start = $ui->id('p', 19, 'get');
 } else {
-    $start=0;
+    $start = 0;
 }
 $dirs = array();
 if (is_dir(EASYWIDIR . '/languages/'. $template_to_use . '/')) {

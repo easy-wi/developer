@@ -35,7 +35,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-$main=1;
+$main = 1;
 define('EASYWIDIR', dirname(__FILE__));
 if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
 include(EASYWIDIR . '/stuff/functions.php');
@@ -49,7 +49,7 @@ if (isset($what_to_be_included_array[$w])) {
     unset($dbConnect);
 } else {
     unset($dbConnect);
-    $template_file="userpanel_home.tpl";
+    $template_file = "userpanel_home.tpl";
 }
 include(IncludeTemplate($template_to_use,'userpanel_header.tpl'));
 if (isset($template_file) and preg_match('/^(.*)\.tpl$/',$template_file)) {

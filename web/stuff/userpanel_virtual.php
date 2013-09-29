@@ -45,32 +45,32 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('reseller',$user_language,$reseller_id);
+$sprache = getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid=$user_id;
 $logusername=getusername($user_id);
 $logusertype="user";
-$logreseller=0;
-$logsubuser=0;
+$logreseller = 0;
+$logsubuser = 0;
 if (isset($admin_id)) $logsubuser=$admin_id;
 else if (isset($subuser_id)) $logsubuser=$subuser_id;
 if (isset($admin_id) and $reseller_id!=0) $reseller_id=$admin_id;
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=='ri'and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['vs']))) {
     $id=$ui->id('id',10,'get');
     if (!$ui->st('action','post')) {
-        $option=array();
-        $query=$sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
+        $option = array();
+        $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
         $query->execute();
         $dhcp=($query->fetchColumn()>0) ? 'Y' : 'N';
-        $query=$sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsPXE` WHERE `active`='Y' LIMIT 1");
+        $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsPXE` WHERE `active`='Y' LIMIT 1");
         $query->execute();
         $pxe=($query->fetchColumn()>0) ? 'Y' : 'N';
-        $query=$sql->prepare("SELECT r.*,v.*,AES_DECRYPT(v.`pass`,?) AS `decryptedpass` FROM `virtualcontainer` v LEFT JOIN `resellerimages` r ON v.`imageid`=r.`id` WHERE v.`userid`=? AND v.`resellerid`=? AND v.`id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT r.*,v.*,AES_DECRYPT(v.`pass`,?) AS `decryptedpass` FROM `virtualcontainer` v LEFT JOIN `resellerimages` r ON v.`imageid`=r.`id` WHERE v.`userid`=? AND v.`resellerid`=? AND v.`id`=? LIMIT 1");
         $query->execute(array($aeskey,$user_id,$reseller_id,$id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
-            $showImages=false;
+            $showImages = false;
             if ($row['status'] == 1) {
                 $status=$sprache->stopped;
             } else if ($row['status'] == 2) {
@@ -86,7 +86,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $option[]='<option value="rs">'.$sprache->restart.'</option>';
                 $option[]='<option value="st">'.$sprache->stop.'</option>';
             } else {
-                $showImages=true;
+                $showImages= true;
                 if ($row['status']==null or $row['status']==2) {
                     $option[]='<option value="rc">'.$sprache->rescue_start.'</option>';
                     $option[]='<option value="ri">'.$sprache->reinstall.'</option>';
@@ -108,15 +108,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $bitversion=$row['bitversion'];
             $pass=$row['decryptedpass'];
         }
-        $templates=array();
-        $query=$sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` WHERE `description` NOT IN ('Rescue 32bit','Rescue 64bit') ORDER BY `distro`,`bitversion`,`description`");
+        $templates = array();
+        $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` WHERE `description` NOT IN ('Rescue 32bit','Rescue 64bit') ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $templates[]=array('id'=>$row['id'],'description'=>$row['description']);
         }
-        $template_file=(isset($ip)) ? 'userpanel_root_virtual_ri.tpl' : 'admin_404.tpl';
+        $template_file = (isset($ip)) ? 'userpanel_root_virtual_ri.tpl' : 'admin_404.tpl';
     } else if (in_array($ui->st('action','post'),array('ri','rc','rs','st'))) {
-        $query=$sql->prepare("SELECT d.`ip`,i.`bitversion` FROM `virtualcontainer` d LEFT JOIN `resellerimages` i ON d.`imageid`=i.`id` WHERE d.`userid`=? AND d.`id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT d.`ip`,i.`bitversion` FROM `virtualcontainer` d LEFT JOIN `resellerimages` i ON d.`imageid`=i.`id` WHERE d.`userid`=? AND d.`id`=? LIMIT 1");
         $query->execute(array($user_id,$id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
@@ -124,29 +124,29 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         if (!isset($bitversion)) $bitversion=64;
         if (isset($ip)) {
-            $extraData=array();
+            $extraData = array();
             if ($ui->st('action','post')=='ri') {
                 $extraData['imageid']=$ui->id('imageid',10,'post');
             } else if ($ui->st('action','post')=='rc') {
-                $query=$sql->prepare("SELECT `id` FROM `resellerimages` WHERE `bitversion`=? AND `active`='Y' AND `distro`='other' AND `description` LIKE 'Rescue %' LIMIT 1");
+                $query = $sql->prepare("SELECT `id` FROM `resellerimages` WHERE `bitversion`=? AND `active`='Y' AND `distro`='other' AND `description` LIKE 'Rescue %' LIMIT 1");
                 $query->execute(array($bitversion));
                 $extraData['imageid']=$query->fetchColumn();
             }
-            $query=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerID`) VALUES ('D','vs',NULL,?,?,NULL,?,NULL,NOW(),?,?,?)");
+            $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerID`) VALUES ('D','vs',NULL,?,?,NULL,?,NULL,NOW(),?,?,?)");
             $query->execute(array($user_id,$id,$ip,$ui->st('action','post'),json_encode($extraData),$reseller_id));
-            $query=$sql->prepare("UPDATE `virtualcontainer` SET `jobPending`='Y' WHERE `id`=? AND `userid`=? AND `resellerid`=?");
+            $query = $sql->prepare("UPDATE `virtualcontainer` SET `jobPending`='Y' WHERE `id`=? AND `userid`=? AND `resellerid`=?");
             $query->execute(array($user_id,$id,$reseller_id));
-            $template_file=$spracheResponse->table_add;
+            $template_file = $spracheResponse->table_add;
         } else {
-            $template_file='admin_404.tpl';
+            $template_file = 'admin_404.tpl';
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else {
-    $table=array();
-    $query=$sql->prepare("SELECT * FROM `virtualcontainer` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
-    $query2=$sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='vs' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
+    $table = array();
+    $query = $sql->prepare("SELECT * FROM `virtualcontainer` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
+    $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='vs' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['vs'])) {
@@ -183,5 +183,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $table[]=array('id'=>$row['id'],'ip'=>$row['ip'],'img'=>$imgName,'alt'=>$imgAlt,'active'=>$active,'jobPending'=>$jobPending);
         }
     }
-    $template_file='userpanel_root_virtual_list.tpl';
+    $template_file = 'userpanel_root_virtual_list.tpl';
 }

@@ -40,37 +40,37 @@
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['cms_pages']) or $reseller_id!=0) {
     redirect('admin.php');
 }
-$sprache=getlanguagefile('page',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
-$logreseller=0;
-$logsubuser=0;
-$logsubuser=0;
+$sprache = getlanguagefile('page',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
+$logreseller = 0;
+$logsubuser = 0;
+$logsubuser = 0;
 
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if($ui->st('d','get')=='md' and $ui->id('id',19,'get') and $ui->smallletters('action',2,'post')=='md'){
     $id=$ui->id('id',19,'get');
-    $url='';
+    $url = '';
     if ($ui->url('url','post')) {
         $url=$ui->url('url','post');
     }
     if ($ui->domain('url','post')) {
         $url='http://'.$ui->domain('url','post');
     }
-    $query=$sql->prepare("UPDATE `page_comments` SET `homepage`=?,`markedSpam`=?,`moderateAccepted`=?,`comment`=? WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
+    $query = $sql->prepare("UPDATE `page_comments` SET `homepage`=?,`markedSpam`=?,`moderateAccepted`=?,`comment`=? WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($url,$ui->active('markedSpam','post'),$ui->active('moderateAccepted','post'),$ui->post['comment'],$id,$reseller_id));
     if ($query->rowCount()>0) {
         $loguseraction='%mod% %comment% '.$ui->id('id',19,'get');
         $insertlog->execute();
-        $template_file=$spracheResponse->table_add;
+        $template_file = $spracheResponse->table_add;
     } else {
-        $template_file=$spracheResponse->error_table;
+        $template_file = $spracheResponse->error_table;
     }
 } else if($ui->st('d','get')=='md' and $ui->id('id',19,'get') and !$ui->smallletters('action',2,'post')){
     $id=$ui->id('id',19,'get');
-    $query=$sql->prepare("SELECT t.`pageid`,t.`title`,c.* FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`commentID`=? AND c.`resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT t.`pageid`,t.`title`,c.* FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`commentID`=? AND c.`resellerID`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $commentDate='m.d.Y H:i';
@@ -87,40 +87,40 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $moderateAccepted=$row['moderateAccepted'];
     }
     if (isset($comment)) {
-        $template_file='admin_page_comments_md.tpl';
+        $template_file = 'admin_page_comments_md.tpl';
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else if($ui->st('d','get')=='dl' and $ui->id('id',19,'get')){
-    $query=$sql->prepare("DELETE FROM `page_comments` WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
+    $query = $sql->prepare("DELETE FROM `page_comments` WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($ui->id('id',19,'get'),$reseller_id));
     if ($query->rowCount()>0) {
         $loguseraction='%del% %comment% '.$ui->id('id',19,'get');
         $insertlog->execute();
-        $template_file=$spracheResponse->table_del;
+        $template_file = $spracheResponse->table_del;
     } else {
-        $template_file=$spracheResponse->error_table;
+        $template_file = $spracheResponse->error_table;
     }
 } else {
-    $query=$sql->prepare("SELECT `seo` FROM `page_settings` WHERE `resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `seo` FROM `page_settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
     $seo=$query->fetchColumn();
-    $table=array();
-    $getParams='';
-    $s=1;
-    $m=1;
+    $table = array();
+    $getParams = '';
+    $s = 1;
+    $m = 1;
     if ($ui->id('spam',1,'get')==1) {
-        $s=0;
+        $s = 0;
         $getParams='&amp;spam=1';
         $AND="AND `markedSpam`='Y'";
     } else if ($ui->id('mod',1,'get')==1) {
-        $m=0;
+        $m = 0;
         $getParams='&amp;mod=1';
         $AND="AND `markedSpam`='N' AND `moderateAccepted`='N'";
     } else {
         $AND="AND `markedSpam`='N' AND `moderateAccepted`='Y'";
     }
-    $query=$sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? $AND");
+    $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? $AND");
     $query->execute(array($reseller_id));
     $colcount=$query->fetchColumn();
     if ($start>$colcount ) {
@@ -130,16 +130,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $start=$colcount-20;
         }
         if ($start<0) {
-            $start=0;
+            $start = 0;
         }
     }
-    $query=$sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=?");
+    $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
     $totalCount=$query->fetchColumn();
-    $query=$sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? AND `markedSpam`='N' AND `moderateAccepted`='N'");
+    $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? AND `markedSpam`='N' AND `moderateAccepted`='N'");
     $query->execute(array($reseller_id));
     $moderationExpectedCount=$query->fetchColumn();
-    $query=$sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? AND `markedSpam`='Y'");
+    $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? AND `markedSpam`='Y'");
     $query->execute(array($reseller_id));
     $spamCount=$query->fetchColumn();
     $next=$start+$amount;
@@ -180,7 +180,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $orderby='c.`commentID` ASC';
     }
-    $query=$sql->prepare("SELECT t.`pageid`,t.`language`,t.`title`,c.`commentID`,c.`date`,c.`authorname`,c.`markedSpam`,c.`spamReason`,c.`moderateAccepted`,c.`comment` FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`resellerID`=? $AND ORDER BY $orderby");
+    $query = $sql->prepare("SELECT t.`pageid`,t.`language`,t.`title`,c.`commentID`,c.`date`,c.`authorname`,c.`markedSpam`,c.`spamReason`,c.`moderateAccepted`,c.`comment` FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`resellerID`=? $AND ORDER BY $orderby");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if(!isset($titleLanguages[$row['language']])) {
@@ -212,7 +212,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $link .='&p=0'.$getParams.'">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -223,5 +223,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file='admin_page_comments_list.tpl';
+    $template_file = 'admin_page_comments_list.tpl';
 }

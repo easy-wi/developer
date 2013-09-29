@@ -36,7 +36,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-$main=1;
+$main = 1;
 define('EASYWIDIR', dirname(__FILE__));
 if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
 include(EASYWIDIR . '/stuff/vorlage.php');
@@ -50,7 +50,7 @@ if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui-
     unset($dbConnect);
 } else {
     unset($dbConnect);
-    $template_file='admin_home.tpl';
+    $template_file = 'admin_home.tpl';
 }
 include(IncludeTemplate($template_to_use,'admin_header.tpl'));
 include(IncludeTemplate($template_to_use,(isset($template_file)  and preg_match('/^(.*)\.[\w]{1,}$/',$template_file)) ? $template_file : 'general.tpl'));

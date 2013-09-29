@@ -40,7 +40,7 @@
 class rootServer {
 
     // Data
-    protected $sql,$aeskey,$httpConnect,$tempID,$netmask,$extraData,$ID=array(),$type=array(),$dhcpData=array(),$PXEData=array(),$startStop=array(),$vmwareHosts=array();
+    protected $sql,$aeskey,$httpConnect,$tempID,$netmask,$extraData,$ID=array(),$type=array(),$dhcpData=array(),$PXEData=array(),$startStop=array(),$vmwareHosts = array();
 
     function __destruct() {
         unset($this->sql,$this->aeskey,$this->netmask,$this->ID,$this->type,$this->httpConnect,$this->dhcpData,$this->startStop,$this->vmwareHosts);
@@ -63,20 +63,20 @@ class rootServer {
 
     public function rootServer ($ID,$action,$type='dedicated',$extraData=null) {
         $this->tempID=$ID;
-        $this->ID[$type][$ID]=array();
+        $this->ID[$type][$ID] = array();
         $this->ID[$type][$ID]['action']=$action;
         $this->type=$type;
         $this->extraData=$extraData;
         $imageID=(isset($extraData['imageID'])) ? $extraData['imageID'] : 0;
-        $hostID=0;
-        $userID=0;
-        $resellerID=0;
+        $hostID = 0;
+        $userID = 0;
+        $resellerID = 0;
         if(isid($imageID,10)) {
             $query=$this->sql->prepare("SELECT `distro`,`bitversion` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
             $query->execute(array($imageID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $distro=$row['distro'];
-                $guestos=($row['bitversion']=='32') ? $row['distro'] : $row['distro'].'-'.$row['bitversion'];
+                $guestos=($row['bitversion']=='32') ? $row['distro'] : $row['distro'] . '-' . $row['bitversion'];
             }
         }
         // get Root Data from DB
@@ -115,7 +115,7 @@ class rootServer {
                 }
                 $this->ID[$type][$ID]['cores']=$row['cores'];
                 $this->ID[$type][$ID]['mountpoint']=$row['mountpoint'];
-                $this->ID[$type][$ID]['hostname']=$row['cname'].'-'.$this->tempID;
+                $this->ID[$type][$ID]['hostname']=$row['cname'] . '-' . $this->tempID;
                 $this->ID[$type][$ID]['ram']=1024*$row['ram'];
                 $this->ID[$type][$ID]['minram']=1024*$row['minram'];
                 $this->ID[$type][$ID]['maxram']=1024*$row['maxram'];
@@ -155,7 +155,7 @@ class rootServer {
                 $query->execute(array(':aeskey'=>$this->aeskey,':ip'=>'%'.$this->ID[$type][$ID]['ip'].'%',':subnet'=>'%'.$searchFor.'%'));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if (!isset($foundDHCP) and in_array($this->ID[$type][$ID]['ip'],ipstoarray($row['ips']))) {
-                        $foundDHCP=true;
+                        $foundDHCP= true;
                         if (!isset($this->dhcpData[$row['id']])) {
                             $this->dhcpData[$row['id']]['ip']=$row['ip'];
                             $this->dhcpData[$row['id']]['port']=$row['dport'];
@@ -215,7 +215,7 @@ class rootServer {
                             $this->PXEData[$row['id']]['keyname']=$row['keyname'];
                             $this->PXEData[$row['id']]['PXEFolder']=$row['PXEFolder'];
                         }
-                        $foundPXE=true;
+                        $foundPXE= true;
                         $this->PXEData[$row['id']]['actions'][]=array('action'=>$action,'id'=>$ID,'type'=>$type,'imageID'=>$imageID);
                         $this->ID[$type][$ID]['pxeIP']=$row['ip'];
                         $this->ID[$type][$ID]['pxeID']=$row['id'];
@@ -234,7 +234,7 @@ class rootServer {
                             $this->PXEData[$row['id']]['keyname']=$row['keyname'];
                             $this->PXEData[$row['id']]['PXEFolder']=$row['PXEFolder'];
                         }
-                        $foundPXE=true;
+                        $foundPXE= true;
                         $this->PXEData[$row['id']]['actions'][]=array('action'=>$action,'id'=>$ID,'type'=>$type,'imageID'=>$imageID);
                         $this->ID[$type][$ID]['pxeIP']=$row['ip'];
                         $this->ID[$type][$ID]['pxeID']=$row['id'];
@@ -251,9 +251,9 @@ class rootServer {
         return true;
     }
     public function dhcpFiles () {
-        $removeArray=array();
+        $removeArray = array();
         foreach ($this->dhcpData as $k=>$v) {
-            $i=0;
+            $i = 0;
             unset($tempBad);
             if ($v['publickey']=="Y") {
 
@@ -272,7 +272,7 @@ class rootServer {
                     $sftp=ssh2_sftp($ssh2);
                     $file=(substr($v['dhcpFile'],0,1)=='/') ? 'ssh2.sftp://'.$sftp.$v['dhcpFile'] : 'ssh2.sftp://'.$sftp.'/home/'.$v['user']. '/'. $v['dhcpFile'];
                     $fileErrorOutput=(substr($v['dhcpFile'],0,1)=='/') ? $v['dhcpFile'] : '/home/'.$v['user']. '/'. $v['dhcpFile'];
-                    $buffer='';
+                    $buffer = '';
                     $fp=@fopen($file,'r');
                     if ($fp) {
                         $filesize=filesize($file);
@@ -370,12 +370,12 @@ class rootServer {
     }
     public function startStop(){
         foreach ($this->startStop as $a) {
-            $postParams=array();
-            $file='';
+            $postParams = array();
+            $file = '';
             $requestString=($a['action']=='re') ? $this->ID['dedicated'][$a['id']]['apiRequestRestart'] : $this->ID['dedicated'][$a['id']]['apiRequestStop'];
             $apiPath=str_replace(array('http://','https://',':8080',':80',':443'),'',$this->ID['dedicated'][$a['id']]['apiURL']);
             $ex=preg_split("/\//",$apiPath,-1,PREG_SPLIT_NO_EMPTY);
-            $i=1;
+            $i = 1;
             while (count($ex)>$i) {
                 $file.='/'. $ex[$i];
                 $i++;
@@ -394,8 +394,8 @@ class rootServer {
         return true;
     }
     private function parseDhcpConfig ($dhcpConfig) {
-        $config=array();
-        $doNotTouch=array();
+        $config = array();
+        $doNotTouch = array();
         $splitConfig=preg_split('/\n/',str_replace("\r",'',$dhcpConfig),-1,PREG_SPLIT_NO_EMPTY);
         foreach ($splitConfig as $split) {
             if (isset($subnetStart) and isset($subnet)){
@@ -415,14 +415,14 @@ class rootServer {
                         }
                     }
                 } else if (preg_match('/^(\s+|)host[\s+]{1,}[\w\-\_]{1,}[\s+]{1,}[\{]$/',$split)) {
-                    $hostStart=true;
+                    $hostStart= true;
                     $host=preg_replace('/\s+/','',preg_replace('/host[\s+]{1,}(.*?)[\s+]{1,}[\{]/','$1',$split,-1));
-                    $config[$subnet][$host]=array();
+                    $config[$subnet][$host] = array();
                 } else if (strpos($split,'}')!==false) {
                     unset($subnetStart,$subnet);
                 }
             } else if (preg_match('/^[\s+]{0,}subnet[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[0][\s+]{1,}netmask[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[0][\s+]{0,}[\{]$/',$split)) {
-                $subnetStart=true;
+                $subnetStart= true;
                 $subnet=preg_replace('/^[\s+]{0,}subnet[\s+]{1,}(.*)[\s+]{1,}netmask[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[0][\s+]{0,}[\{]$/','\1',$split);
             } else {
                 $doNotTouch[]=$split;
@@ -431,7 +431,7 @@ class rootServer {
         return array('raw'=>$doNotTouch,'subnet'=>$config);
     }
     private function assembleDhcpConfig ($array,$id) {
-        $config='';
+        $config = '';
         foreach($array['raw'] as $l) {
             $config.=$l."\r\n";
         }

@@ -37,13 +37,13 @@
 if (!function_exists('ssh2_execute')) {
     function ssh2_execute($type,$id,$cmds) {
         global $sql,$rSA,$aeskey;
-        $return='';
+        $return = '';
         if ($type=='eac') {
-            $query=$sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `eac` WHERE resellerid=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `eac` WHERE resellerid=:serverID LIMIT 1");
         } else if ($type=='gs') {
-            $query=$sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
         } else if ($type=='vh') {
-            $query=$sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
         }
         if (isset($query)) {
             $query->execute(array(':serverID'=>$id,':aeskey'=>$aeskey));
@@ -71,31 +71,31 @@ if (!function_exists('ssh2_execute')) {
                             if (is_string($c) and $c!='') {
                                 $ssh2Stream=@ssh2_exec($ssh2Socket,$c);
                                 stream_set_blocking($ssh2Stream,true);
-                                if (!$ssh2Stream) $error=true;
+                                if (!$ssh2Stream) $error= true;
                                 $return.=stream_get_contents($ssh2Stream);
                                 fclose($ssh2Stream);
                             }
                         }
                     } else {
-                        $error=true;
+                        $error= true;
                     }
                     $ssh2Socket=null;
                 } else {
-                    $error=true;
+                    $error= true;
                 }
                 if (isset($error)) $notified++;
-                else $notified=0;
+                else $notified = 0;
                 if ($notified==$rSA['down_checks']) {
                     $query=($resellerID==0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${resellerID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
                     $query->execute();
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) if ($row2['mail_serverdown']=='Y') sendmail('emaildown',$row2['id'],$ssh2IP,'');
                 }
                 if ($type=='gs') {
-                    $query=$sql->prepare("UPDATE `rserverdata` SET `notified`=? WHERE `id`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `rserverdata` SET `notified`=? WHERE `id`=? LIMIT 1");
                 } else if ($type=="eac") {
-                    $query=$sql->prepare("UPDATE `eac` SET `notified`=? WHERE `id`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `eac` SET `notified`=? WHERE `id`=? LIMIT 1");
                 } else if ($type=='vh') {
-                    $query=$sql->prepare("UPDATE `virtualhosts` SET `notified`=? WHERE `id`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `virtualhosts` SET `notified`=? WHERE `id`=? LIMIT 1");
                 }
                 $query->execute(array($notified,$serverID));
                 return $return;

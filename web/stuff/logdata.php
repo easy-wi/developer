@@ -39,9 +39,9 @@ if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['log'])) 
 	header('Location: admin.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('logs',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
-$table=array();
+$sprache = getlanguagefile('logs',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
+$table = array();
 if ($reseller_id==0) {
 	$pselect=$sql->prepare("SELECT `userid`,`subuser`,`reseller`,`username`,`usertype`,`useraction`,`ip`,`hostname`,`logdate` FROM `userlog` WHERE `usertype` LIKE :usertype AND (`resellerid`=:reseller_id OR `resellerid`=`userid`) ORDER BY `id` DESC LIMIT $start,$amount");
 } else if ($reseller_id!=0 and $admin_id!=$reseller_id) {
@@ -80,15 +80,15 @@ foreach ($pselect->fetchall() as $row) {
 				$ip=$row['ip'];
                 $hostname=$row['hostname'];
 			} else {
-				$ip="";
-                $hostname='';
+				$ip = "";
+                $hostname = '';
 			}
 		} else if ($reseller_id!=0 and $reseller_id!=$admin_id and $subuser==0) {
 			$ip=$row['ip'];
             $hostname=$row['hostname'];
 		} else {
-			$ip="";
-            $hostname='';
+			$ip = "";
+            $hostname = '';
 		}
 	} else {
 		if ($subuser==0) {
@@ -108,7 +108,7 @@ foreach ($pselect->fetchall() as $row) {
     $replace=array('',$gsprache->add.': ',$gsprache->del.': ',$gsprache->del.': ',$gsprache->mod.': ',$gsprache->start.': ',$gsprache->start.': ',$gsprache->stop.': ',$gsprache->update.': ','','',$gssprache->password.': ',$gssprache->config.': ',$gsprache->import.': ',$gssprache->reinstall.': ',$gsprache->backup,$gsprache->use.': ');
 	$replacedpics=str_replace($placeholders,$replace,$useraction);
 	$placeholders=array('%modules%','%voserver%','%gserver%','%user%','%group%','%fastdl%','%master%','%user%','%root%','%addon%','%settings%','%vserver%','%ticket_subject%','%reseller%','%virtual%','%eac%','%resync%','%virtualimage%','%template%','%voserver%','%emailsettings%','%dns%','%tsdns%','%pmode%','%comment%');
-	$replace=array($gsprache->modules,$gsprache->voiceserver,$gsprache->gameserver,$gsprache->user,$gsprache->groups,$gsprache->fastdownload,$gsprache->master,$gsprache->user,$gsprache->root,$gsprache->addon2,$gsprache->settings,$gsprache->virtual,$gsprache->support,$gsprache->reseller,$gsprache->hostsystem,'Easy Anti Cheat',$gssprache->resync,$gsprache->virtual.' '.$gsprache->template,$gsprache->template,$gsprache->voiceserver,'E-Mail '.$gsprache->settings,'TSDNS','TSDNS',$gssprache->protect,$gsprache->comments);
+	$replace=array($gsprache->modules,$gsprache->voiceserver,$gsprache->gameserver,$gsprache->user,$gsprache->groups,$gsprache->fastdownload,$gsprache->master,$gsprache->user,$gsprache->root,$gsprache->addon2,$gsprache->settings,$gsprache->virtual,$gsprache->support,$gsprache->reseller,$gsprache->hostsystem,'Easy Anti Cheat',$gssprache->resync,$gsprache->virtual . ' ' . $gsprache->template,$gsprache->template,$gsprache->voiceserver,'E-Mail '.$gsprache->settings,'TSDNS','TSDNS',$gssprache->protect,$gsprache->comments);
 	$replacedwords=str_replace($placeholders,$replace,$replacedpics);
 	$logdate=explode(' ', $row['logdate']);
 	$table[]=array('logday'=>$logdate[0],'loghour'=>$logdate[1],'ip'=>$ip,'hostname'=>$hostname,'username'=>$username,'useraction'=>$replacedwords);
@@ -156,7 +156,7 @@ if ($start==0) {
     $link .='&amp;p=0">1</a>';
 }
 $pages[]=$link;
-$i=2;
+$i = 2;
 while ($i<=$pageamount) {
     $selectpage=($i-1)*$amount;
     if ($start==$selectpage) {
@@ -167,5 +167,5 @@ while ($i<=$pageamount) {
     $i++;
 }
 $pages=implode(',',$pages);
-$template_file="admin_logs.tpl";
+$template_file = "admin_logs.tpl";
 ?>

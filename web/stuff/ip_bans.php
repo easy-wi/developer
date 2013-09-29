@@ -41,22 +41,22 @@ if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['ipBans']
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('logs',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
+$sprache = getlanguagefile('logs',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($action) and $action=='dl') {
-    $i=0;
+    $i = 0;
     if ($ui->id('id',30,'post')) {
         if (token(true)) {
-            $query=$sql->prepare("DELETE FROM `badips` WHERE `id`=? LIMIT 1");
+            $query = $sql->prepare("DELETE FROM `badips` WHERE `id`=? LIMIT 1");
             foreach ($ui->id('id',30,'post') as $id) {
                 $query->execute(array($id));
                 $i++;
             }
-        } else $template_file=$spracheResponse->token;
+        } else $template_file = $spracheResponse->token;
     }
-    if(!isset($template_file)) $template_file=$i." entries deleted";
+    if(!isset($template_file)) $template_file = $i." entries deleted";
 } else {
-    $table=array();
+    $table = array();
     $o=$ui->st('o','get');
     if ($ui->st('o','get')=='dr') {
         $orderby='`reason` DESC';
@@ -123,7 +123,7 @@ if (isset($action) and $action=='dl') {
         $link .='&amp;p=0">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -134,6 +134,6 @@ if (isset($action) and $action=='dl') {
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file="admin_ip_bans.tpl";
+    $template_file = "admin_ip_bans.tpl";
 }
 ?>

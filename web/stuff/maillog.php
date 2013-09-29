@@ -39,10 +39,10 @@ if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['log'])) 
 	header('Location: admin.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('logs',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
+$sprache = getlanguagefile('logs',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
-	$i=0;
+	$i = 0;
     if ($ui->id('id',30,'post')) {
         $delete=$sql->prepare("DELETE FROM `mail_log` WHERE `id`=? LIMIT 1");
 		foreach ($ui->id('id',30,'post') as $id) {
@@ -50,9 +50,9 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
 			$i++;
 		}
 	}
-	$template_file=$i." logs deleted";
+	$template_file = $i." logs deleted";
 } else {
-	$table=array();
+	$table = array();
     $o=$ui->st('o','get');
 	if ($ui->st('o','get')=='du') {
 		$orderby='u.`cname` DESC';
@@ -134,7 +134,7 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
         $link .='&amp;p=0">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -145,5 +145,5 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
         $i++;
     }
     $pages=implode(', ',$pages);
-	$template_file="admin_logs_mail.tpl";
+	$template_file = "admin_logs_mail.tpl";
 }

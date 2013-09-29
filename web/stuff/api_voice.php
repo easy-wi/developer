@@ -44,36 +44,36 @@ foreach (array('active','action','private','slots','shorten','identify_server_by
     }
 }
 $action='fail';
-$active='';
-$name='';
-$private='';
-$shorten='';
-$slots='';
-$port='';
-$identifyUserBy='';
-$localUserID='';
-$externalUserID='';
-$username='';
-$identifyServerBy='';
-$localServerID='';
-$externalServerID='';
-$max_download_total_bandwidth='';
-$max_upload_total_bandwidth='';
-$maxtraffic='';
-$forcebanner='';
-$forcebutton='';
-$forceservertag='';
-$forcewelcome='';
-$lendserver='';
-$backup='';
-$masterServerID='';
-$masterServerExternalID='';
-$flexSlots='';
-$flexSlotsFree='';
-$flexSlotsPercent='';
-$tsdns='';
-$dns='';
-$autoRestart='';
+$active = '';
+$name = '';
+$private = '';
+$shorten = '';
+$slots = '';
+$port = '';
+$identifyUserBy = '';
+$localUserID = '';
+$externalUserID = '';
+$username = '';
+$identifyServerBy = '';
+$localServerID = '';
+$externalServerID = '';
+$max_download_total_bandwidth = '';
+$max_upload_total_bandwidth = '';
+$maxtraffic = '';
+$forcebanner = '';
+$forcebutton = '';
+$forceservertag = '';
+$forcewelcome = '';
+$lendserver = '';
+$backup = '';
+$masterServerID = '';
+$masterServerExternalID = '';
+$flexSlots = '';
+$flexSlotsFree = '';
+$flexSlotsPercent = '';
+$tsdns = '';
+$dns = '';
+$autoRestart = '';
 if (!isset($success['false']) and array_value_exists('action','add',$data) and $data['shorten']=='ts3' and 1>$licenceDetails['lVo']) {
     $success['false'][]='licence limit reached';
 } else if (!isset($success['false']) and array_value_exists('action','add',$data) and $data['shorten']=='ts3' and $licenceDetails['lVo']>0) {
@@ -90,7 +90,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         $localServerID=isid($data['server_local_id'],21);
         $externalServerID=$data['server_external_id'];
         $from=array('user_localid'=>'id','username'=>'cname','user_externalid'=>'externalID','email'=>'mail');
-        $query=$sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_user_by']]."`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_user_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localUserLookupID=$row['id'];
@@ -100,7 +100,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $success['false'][]='user does not exist';
         }
         if (!isset($success['false']) and !in_array($externalServerID,$bad)) {
-            $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `externalID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `externalID`=? LIMIT 1");
             $query->execute(array($externalServerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if ($row['amount']>0) {
@@ -110,14 +110,14 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         }
         if (!isset($success['false'])) {
             if (isset($data['master_server_id']) and isid($data['master_server_id'],19)) {
-                $query=$sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`resellerid`=? LIMIT 1");
                 $query->execute(array($data['master_server_id'],$resellerID));
             } else if (isset($data['master_server_external_id']) and wpreg_check($data['master_server_external_id'],255)) {
-                $query=$sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`externalID`=? AND m.`resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`externalID`=? AND m.`resellerid`=? LIMIT 1");
                 $query->execute(array($data['master_server_external_id'],$resellerID));
                 $masterServerExternalID=$data['master_server_external_id'];
             } else {
-                $query=$sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND ((`maxslots`-`installedslots`)>? OR `installedslots` IS NULL) AND `active`='Y' AND `resellerid`=?) ORDER BY `slotpercent`,`serverpercent` ASC LIMIT 1");
+                $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND ((`maxslots`-`installedslots`)>? OR `installedslots` IS NULL) AND `active`='Y' AND `resellerid`=?) ORDER BY `slotpercent`,`serverpercent` ASC LIMIT 1");
                 $query->execute(array($slots,$resellerID));
             }
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -136,7 +136,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                     $usedns=$row['usedns'];
                     $defaultdns=$row['defaultdns'];
                     if ($row['externalDefaultDNS']=='Y' and isid($row['tsdnsServerID'],19)) {
-                        $query2=$sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
+                        $query2 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                         $query2->execute(array($tsdnsServerID,$resellerID));
                         $defaultdns=$query2->fetchColumn();
                     }
@@ -146,7 +146,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                             $ips[]=$ip;
                         }
                     } else if ($row['addedby']=='1') {
-                        $query2=$sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                        $query2 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                         $query2->execute(array($row['rootid'],$resellerID));
                         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                             $ips[]=$row2['ip'];
@@ -191,7 +191,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $flexSlotsPercent=(isset($data['flexSlotsPercent']) and isid($data['flexSlotsPercent'],3)) ? $data['flexSlotsPercent'] : $defaultFlexSlotsPercent;
                 $autoRestart=(isset($data['autoRestart']) and active_check($data['autoRestart'])) ? $data['autoRestart'] : 'Y';
                 $initialpassword=passwordgenerate(10);
-                $query=$sql->prepare("INSERT INTO `voice_server` (`active`,`lendserver`,`backup`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`maxtraffic`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`externalID`,`jobPending`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'Y',NOW(),?,?,?,?,?)");
+                $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`lendserver`,`backup`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`maxtraffic`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`externalID`,`jobPending`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'Y',NOW(),?,?,?,?,?)");
                 $query->execute(array($active,$lendserver,$backup,$localUserLookupID,$hostID,$ip,$port,$slots,$initialpassword,$private,$max_download_total_bandwidth,$max_upload_total_bandwidth,$maxtraffic,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$externalServerID,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$autoRestart,$resellerID));
                 $localID=$sql->lastInsertId();
                 $localServerID=$localID;
@@ -209,12 +209,12 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                         } else {
                             $dns=strtolower($localID.'.'.$defaultdns);
                         }
-                        $query=$sql->prepare("UPDATE `voice_server` SET `dns`=? WHERE `id`=? LIMIT 1");
+                        $query = $sql->prepare("UPDATE `voice_server` SET `dns`=? WHERE `id`=? LIMIT 1");
                         $query->execute(array($dns,$localID));
                     }
-                    $query=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
+                    $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
                     $query->execute(array($localID,$resellerID));
-                    $query=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'ad',?)");
+                    $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'ad',?)");
                     $query->execute(array($hostID,$resellerID,$localID,$localUserLookupID,$ip.':'.$port,$resellerID));
                 } else {
                     $success['false'][]='Could not write voice server to database';
@@ -252,7 +252,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
     $externalServerID=$data['server_external_id'];
     $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
     if (dataExist('identify_server_by',$data)) {
-        $query=$sql->prepare("SELECT * FROM `voice_server` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localID=$row['id'];
@@ -263,15 +263,15 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $name=$row['ip'].':'.$row['port'];
             $usedPorts=usedPorts(array($row['ip']));
             $oldActive=$row['active'];
-            $query=$sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID,$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if($row['amount']>0) {
                     $success['false'][]='Server is marked for deletion';
                 }
             }
-            $updateArray=array();
-            $eventualUpdate='';
+            $updateArray = array();
+            $eventualUpdate = '';
             if (isset($data['private']) and active_check($data['private'])) {
                 $updateArray[]=$data['private'];
                 $eventualUpdate.=',`password`=?';
@@ -366,12 +366,12 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $flexSlots=$data['autoRestart'];
             }
             if (count($updateArray)>0) {
-                $eventualUpdate=trim($eventualUpdate,',');
+                $eventualUpdate = trim($eventualUpdate,',');
                 $eventualUpdate .=',';
             }
             $updateArray[]=$localID;
             $updateArray[]=$resellerID;
-            $query=$sql->prepare("UPDATE `voice_server` SET $eventualUpdate `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `voice_server` SET $eventualUpdate `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute($updateArray);
             if (!in_array($active,$bad) and !in_array($slots,$bad) and ($active!=$oldActive or $slots!=$oldSlots)) {
                 $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
@@ -392,7 +392,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
     $externalServerID=$data['server_external_id'];
     $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
     if (dataExist('identify_server_by',$data)) {
-        $query=$sql->prepare("SELECT `id`,`ip`,`port`,`userid`,`masterserver` AS `hostID` FROM `voice_server` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT `id`,`ip`,`port`,`userid`,`masterserver` AS `hostID` FROM `voice_server` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localID=$row['id'];
@@ -401,11 +401,11 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $hostID=$row['hostID'];
         }
         if(isset($localID) and isset($name)) {
-            $query=$sql->prepare("UPDATE `voice_server` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `voice_server` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($localID,$resellerID));
-            $query=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
+            $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
             $query->execute(array($localID,$resellerID));
-            $query=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'dl',?)");
+            $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'dl',?)");
             $query->execute(array($hostID,$resellerID,$localID,$userID,$name,$resellerID));
         } else {
             $success['false'][]='No server can be found to delete';
@@ -419,8 +419,8 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
     $externalServerID=$data['server_external_id'];
     $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
     if (dataExist('identify_server_by',$data)) {
-        $list=true;
-        $query=$sql->prepare("SELECT * FROM `voice_server` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=? LIMIT 1");
+        $list= true;
+        $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         if ($apiType=='xml') {
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -443,9 +443,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         }
     }
 } else if (array_value_exists('action','ls',$data)) {
-    $query=$sql->prepare("SELECT m.`id`,m.`usedns`,m.`ssh2ip`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`maxserver`,m.`maxslots`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`active`='Y' AND m.`resellerid`=? GROUP BY m.`id`");
+    $query = $sql->prepare("SELECT m.`id`,m.`usedns`,m.`ssh2ip`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`maxserver`,m.`maxslots`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`active`='Y' AND m.`resellerid`=? GROUP BY m.`id`");
     $query->execute(array($resellerID));
-    $list=true;
+    $list= true;
     if ($apiType=='xml') {
         $reply="<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE voice>
@@ -490,7 +490,7 @@ if ($apiType=='xml' and !isset($list)) {
     if (isset($success['false'])) {
         $errors=implode(', ',$success['false']);
     } else {
-        $errors='';
+        $errors = '';
         $action='success';
     }
     $reply=<<<XML

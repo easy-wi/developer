@@ -40,15 +40,15 @@
 if (isset($createBackup) and $createBackup==true) {
     class createDBDump {
         private $connection;
-        private $tableList=array();
-        private $count=0;
+        private $tableList = array();
+        private $count = 0;
         private $SQLDump;
         function __construct($db,$version,$sql) {
             $this->connection=$sql;
             $query=$this->connection->prepare("SHOW TABLES");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $table) {
-                $this->tableList[current($table)]='';
+                $this->tableList[current($table)] = '';
             }
             $this->SQLDump='-- Easy-Wi SQL Dump
 -- version '.$version.'
@@ -106,9 +106,9 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
         private function createInserts ($table) {
             $query=$this->connection->prepare("SELECT * FROM `".$table."`");
             $query->execute();
-            $i=1;
+            $i = 1;
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $inserts=array();
+                $inserts = array();
                 foreach($row as $key => $val){
                     if (in_array($this->tableList[$table][$key],array('tinyint','smallint','int','bigint'))) {
                         $inserts[]=$val;

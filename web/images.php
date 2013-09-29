@@ -261,7 +261,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
             imagefilledrectangle($img, 0, 0, $img_width, $img_height, $background_color);
             $lines = 10;
             $vertical_gap = $graph_width/$lines;
-            $i=1;
+            $i = 1;
             while($i <= $lines){
                 if ($max_value >= 10) {
                     $key = round(($max_value / $lines ) * ($lines - $i));
@@ -444,7 +444,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
             imagefilledrectangle($img, 0, 0, $img_width, $img_height, $background_color);
             $lines = 10;
             $vertical_gap = $graph_width/$lines;
-            $i=1;
+            $i = 1;
             while ($i <= $lines) {
                 $key = round(($max_value / $lines ) * ($lines - $i));
                 $x = $img_width - $marginright - $vertical_gap * $i ;

@@ -44,63 +44,63 @@ if (!isset($admin_id) or $main!=1 or $reseller_id!=0 or !$pa['vserverhost']) {
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('reseller',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype="admin";
+$sprache = getlanguagefile('reseller',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
+    $logreseller = 0;
+    $logsubuser = 0;
 } else {
     if (isset($_SESSION['oldid'])) {
         $logsubuser=$_SESSION['oldid'];
     } else {
-        $logsubuser=0;
+        $logsubuser = 0;
     }
-    $logreseller=0;
+    $logreseller = 0;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=='ad') {
     if (!$ui->smallletters('action',2,'post')) {
-        $query=$sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `resellerid`=`id` ORDER BY `id` DESC");
+        $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `resellerid`=`id` ORDER BY `id` DESC");
         $query->execute(array());
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $table[]='<option value="'.$row['id'].'">'.$row['cname'].'</option>';
         }
-        $template_file="admin_root_virtualhosts_add.tpl";
+        $template_file = "admin_root_virtualhosts_add.tpl";
     } else if ($ui->smallletters('action',2,'post')=='ad'){
-        $fail=0;
-        $template_file='admin_404.tpl';
+        $fail = 0;
+        $template_file = 'admin_404.tpl';
         if (!isid($ui->post['reseller'],10) and $ui->post['reseller']!=0) {
-            $fail="1";
+            $fail = 1;
         }
         if (!isip($ui->post['ip'],"all")) {
-            $fail="1";
+            $fail = 1;
             $template_file .="IP <br />";
         }
         if (!isid($ui->post['port'],"5")) {
-            $fail="1";
+            $fail = 1;
             $template_file .="Port <br />";
         }
         if (!uname_check($ui->post['user'],"20")) {
-            $fail="1";
+            $fail = 1;
             $template_file .="User <br />";
         }
         if (!active_check($ui->post['publickey'])) {
-            $fail="1";
+            $fail = 1;
             $template_file .="Key <br />";
         }
         if (!active_check($ui->post['active'])) {
-            $fail="1";
+            $fail = 1;
             $template_file .="Active <br />";
         }
         if (!active_check($ui->post['esxi'])) {
-            $fail="1";
+            $fail = 1;
             $template_file .="ESXi <br />";
         }
         if (!active_check($ui->post['thin'])) {
-            $fail="1";
+            $fail = 1;
         }
         if ($fail!="1") {
             $publickey=$ui->post['publickey'];
@@ -125,10 +125,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $pinsert->execute(array(':active'=>$active,':esxi'=>$esxi,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':os'=>$os,':description'=>$description,':publickey'=>$publickey,':keyname'=>$keyname,  ':cpu'=>$cpu,  ':cores'=>$cores,':mhz'=>$mhz,':ram'=>$ram,':maxserver'=>$maxserver,':thin'=>$thin,':thinquota'=>$thinquota,':reseller'=>$reseller));
             $serverid=$sql->lastInsertId();
             include(EASYWIDIR . '/stuff/ssh_exec.php');
-            $uidb=ssh2_execute('vh',$serverid,'cd /vmfs/volumes; S=""; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S');
+            $uidb=ssh2_execute('vh',$serverid,'cd /vmfs/volumes; S = ""; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S');
             if ($uidb!="" and $uidb!==false) {
                 $uiddata=explode(";",$uidb);
-                $i=0;
+                $i = 0;
                 $count=count($uiddata)-1;
                 while ($i<$count) {
                     list($uid,$space)=explode(":", $uiddata[$i]);
@@ -148,31 +148,31 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $pupdate->execute(array($hdd,$serverid));
                 $loguseraction="%add% %virtual% $ip";
                 $insertlog->execute();
-                $template_file=$spracheResponse->table_add;
+                $template_file = $spracheResponse->table_add;
             } else {
                 $pdelete=$sql->prepare("DELETE FROM `virtualhosts` WHERE `id`=?");
                 $pdelete->execute(array($serverid));
-                $template_file="Error: Could not connect!";
+                $template_file = "Error: Could not connect!";
             }
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id',10,'get')) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
-        $query=$sql->prepare("SELECT `ip`,`description` FROM `virtualhosts` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `ip`,`description` FROM `virtualhosts` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $description=$row['description'];
             $ip=$row['ip'];
         }
-        $template_file="admin_root_virtualhosts_dl.tpl";
+        $template_file = "admin_root_virtualhosts_dl.tpl";
     } else if ($ui->smallletters('action',2,'post')=='dl'){
-        $query=$sql->prepare("SELECT id,ip,userid FROM `virtualcontainer` WHERE `hostid`=?");
-        $query2=$sql->prepare("DELETE FROM `gsswitch` WHERE `serverid`=? AND `resellerid`=?");
-        $query4=$sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
-        $query5=$sql->prepare("DELETE FROM `serverlist` WHERE `id`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT id,ip,userid FROM `virtualcontainer` WHERE `hostid`=?");
+        $query2 = $sql->prepare("DELETE FROM `gsswitch` WHERE `serverid`=? AND `resellerid`=?");
+        $query4 = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
+        $query5 = $sql->prepare("DELETE FROM `serverlist` WHERE `id`=? AND `resellerid`=?");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
@@ -180,23 +180,23 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $query4->execute(array($row['id'],$row['userid']));
             $query5->execute(array($row['id'],$row['userid']));
         }
-        $query=$sql->prepare("SELECT ip FROM `virtualhosts` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT ip FROM `virtualhosts` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         $ip=$query->fetchColumn();
-        $query=$sql->prepare("DELETE FROM `virtualhosts` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `virtualhosts` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
-        $query=$sql->prepare("DELETE FROM `virtualcontainer` WHERE `hostid`=?");
+        $query = $sql->prepare("DELETE FROM `virtualcontainer` WHERE `hostid`=?");
         $query->execute(array($id));
-        $template_file=$spracheResponse->table_del;
+        $template_file = $spracheResponse->table_del;
         $loguseraction="%del% %virtual% $ip";
         $insertlog->execute();
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else if ($ui->st('d','get')=='md' and $ui->id('id',10,'get')) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
-        $query=$sql->prepare("SELECT `active`,`esxi`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid` FROM `virtualhosts` WHERE `id`=:id LIMIT 1");
+        $query = $sql->prepare("SELECT `active`,`esxi`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid` FROM `virtualhosts` WHERE `id`=:id LIMIT 1");
         $query->execute(array(':id'=>$id,':aeskey'=>$aeskey));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
@@ -219,43 +219,43 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $thinquota=$row['thinquota'];
             $resellerid=$row['resellerid'];
         }
-        $query=$sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' ORDER BY `id` DESC");
+        $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' ORDER BY `id` DESC");
         $query->execute(array(':reseller_id'=>$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[]=($resellerid==$row['id']) ? '<option value="'.$row['id'].'" selected="selected">'.$row['cname'].'</option>' : '<option value="'.$row['id'].'">'.$row['cname'].'</option>';
-        $template_file="admin_root_virtualhosts_md.tpl";
+        $template_file = "admin_root_virtualhosts_md.tpl";
     } else if ($ui->smallletters('action',2,'post')=='md'){
-        $fail=0;
-        $template_file='admin_404.tpl';
+        $fail = 0;
+        $template_file = 'admin_404.tpl';
         if (!isid($ui->post['reseller'],10) and $ui->post['reseller']!=0) {
-            $fail="1";
+            $fail = 1;
             echo "test".$ui->post['reseller'];
         }
         if (!isip($ui->post['ip'],"all")) {
-            $fail="1";
+            $fail = 1;
             $template_file .="IP <br />";
         }
         if (!isid($ui->post['port'],"5")) {
-            $fail="1";
+            $fail = 1;
             $template_file .="Port <br />";
         }
         if (!uname_check($ui->post['user'],"20")) {
-            $fail="1";
+            $fail = 1;
             $template_file .="User <br />";
         }
         if (!active_check($ui->post['publickey'])) {
-            $fail="1";
+            $fail = 1;
             $template_file .="Key <br />";
         }
         if (!active_check($ui->post['active'])) {
-            $fail="1";
+            $fail = 1;
             $template_file .="Active <br />";
         }
         if (!active_check($ui->post['esxi'])) {
-            $fail="1";
+            $fail = 1;
             $template_file .="ESXi <br />";
         }
         if (!active_check($ui->post['thin'])) {
-            $fail="1";
+            $fail = 1;
         }
         if ($fail!="1") {
             $publickey=$ui->post['publickey'];
@@ -279,12 +279,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $maxserver=isid($ui->post['maxserver'],"3");
             $pinsert=$sql->prepare("UPDATE `virtualhosts` SET `active`=:active,`esxi`=:esxi,`ip`=:ip,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`os`=:os,`description`=:description,`publickey`=:publickey,`keyname`=:keyname,`cpu`=:cpu,`cores`=:cores,`mhz`=:mhz,`hdd`=:hdd,`ram`=:ram,`maxserver`=:maxserver,`thin`=:thin,`thinquota`=:thinquota,`resellerid`=:reseller WHERE `id`=:id LIMIT 1");
             $pinsert->execute(array(':active'=>$active,':esxi'=>$esxi,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':os'=>$os,':description'=>$description,':publickey'=>$publickey,':keyname'=>$keyname,  ':cpu'=>$cpu,  ':cores'=>$cores,':mhz'=>$mhz,':hdd'=>$hdd,':ram'=>$ram,':maxserver'=>$maxserver,':id'=>$id,':thin'=>$thin,':thinquota'=>$thinquota,':reseller'=>$reseller));
-            $template_file=$spracheResponse->table_add;
+            $template_file = $spracheResponse->table_add;
             $loguseraction="%mod% %virtual% $ip";
             $insertlog->execute();
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else {
     $table = array();
@@ -315,11 +315,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $mhz=$row['mhz'];
         $hddsize=$row['hdd'];
         $ram=$row['ram'];
-        $ramused=0;
-        $mountsize="";
-        $mountunused="";
-        $cpucore=array();
-        $hdd="";
+        $ramused = 0;
+        $mountsize = "";
+        $mountunused = "";
+        $cpucore = array();
+        $hdd = "";
         $hdd_rows=explode("\r\n", $row['hdd']);
         foreach ($hdd_rows as $hddline) {
             $data_explode=explode(" ", $hddline);
@@ -327,19 +327,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $mountpoint=$data_explode[0];
                 $hdd[]=$mountpoint;
                 $mountsize[$mountpoint]=$data_explode[1];
-                $mountunused[$mountpoint]=0;
+                $mountunused[$mountpoint] = 0;
             }
         }
-        $i="1";
-        $cpucores="";
+        $i = 1;
+        $cpucores = "";
         while ($i<=$cores) {
             $cpucores[]=$i;
-            $cpucore[$i]=0;
+            $cpucore[$i] = 0;
             $i++;
         }
         $pselect2=$sql->prepare("SELECT `cores`,`minmhz`,`maxmhz`,`hddsize`,`mountpoint`,`minram` FROM `virtualcontainer` WHERE `hostid`=?");
         $pselect2->execute(array($id));
-        $i2=0;
+        $i2 = 0;
         foreach ($pselect2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $mountpoint=$row2['mountpoint'];
             $addstracthdd=$mountunused[$mountpoint]+$row2['hddsize'];
@@ -352,7 +352,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $cpucore[1]=$addcpu;
             } else {
                 $cpucore[1]=$mhz;
-                $nextcore="2";
+                $nextcore = 2;
                 while ($nextcore<=$cores) {
                     $extra=$addcpu-$mhz;
                     $addcpu=$cpucore[$nextcore]+$extra;
@@ -409,7 +409,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $link .='&p=0">1</a>';
     }
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         if ($start==$selectpage) {
@@ -420,5 +420,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file="admin_root_virtualhosts_list.tpl";
+    $template_file = "admin_root_virtualhosts_list.tpl";
 }

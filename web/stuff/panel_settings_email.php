@@ -43,25 +43,25 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['settings'])) 
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('settings',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype="admin";
+$sprache = getlanguagefile('settings',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
+    $logreseller = 0;
+    $logsubuser = 0;
 } else {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
-    $logreseller=0;
+    $logreseller = 0;
 }
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
     $reseller_id=$admin_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('action','post')=='md') {
-    $changeCount=0;
+    $changeCount = 0;
     $emailbackup=gzcompress($ui->escaped('emailbackup','post'),9);
     $emailbackuprestore=gzcompress($ui->escaped('emailbackuprestore','post'),9);
     $emaildown=gzcompress($ui->escaped('emaildown','post'),9);
@@ -80,14 +80,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $email_settings_ssl=($ui->w('email_settings_ssl',1,'post')) ? $ui->w('email_settings_ssl',1,'post') : 'N';
     $email_settings_type=($ui->w('email_settings_type',1,'post')) ? $ui->w('email_settings_type',1,'post') : 'P';
     $email_settings_user=($ui->ismail('email_settings_user','post')) ? $ui->ismail('email_settings_user','post') : $ui->username('email_settings_user',255,'post');
-    $query=$sql->prepare("UPDATE `settings` SET `emailregister`=?,`emailbackup`=?,`emailbackuprestore`=?,`emaildown`=?,`emaildownrestart`=?,`emailgserverupdate`=?,`emailpwrecovery`=?,`emailsecuritybreach`=?,`emailnewticket`=?,`emailuseradd`=?,`emailvinstall`=?,`emailvrescue`=?,`email_settings_host`=?,`email_settings_password`=AES_ENCRYPT(?,?),`email_settings_port`=?,`email_settings_ssl`=?,`email_settings_type`=?,`email_settings_user`=? WHERE `resellerid`=? LIMIT 1");
+    $query = $sql->prepare("UPDATE `settings` SET `emailregister`=?,`emailbackup`=?,`emailbackuprestore`=?,`emaildown`=?,`emaildownrestart`=?,`emailgserverupdate`=?,`emailpwrecovery`=?,`emailsecuritybreach`=?,`emailnewticket`=?,`emailuseradd`=?,`emailvinstall`=?,`emailvrescue`=?,`email_settings_host`=?,`email_settings_password`=AES_ENCRYPT(?,?),`email_settings_port`=?,`email_settings_ssl`=?,`email_settings_type`=?,`email_settings_user`=? WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($emailregister,$emailbackup,$emailbackuprestore,$emaildown,$emaildownrestart,$emailgserverupdate,$emailpwrecovery,$emailsecuritybreach,$emailnewticket,$emailuseradd,$emailvinstall,$emailvrescue,$email_settings_host,$email_settings_password,$aeskey,$email_settings_port,$email_settings_ssl,$email_settings_type,$email_settings_user,$reseller_id));
     $changeCount+=$query->rowCount();
     function updateemailxml($what,$postarray) {
-        $changeCount=0;
+        $changeCount = 0;
         global $sql,$reseller_id;
         if (isset($postarray["languages-$what"])) {
-            $query=$sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('em',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
+            $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('em',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
             foreach($postarray["languages-$what"] as $language) {
                 if (small_letters_check($language, '2')) {
                     $xml=$postarray[$what.'_xml_'.$language];
@@ -95,9 +95,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $changeCount+=$query->rowCount();
                 }
             }
-            $query=$sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='em' AND `transID`=? AND `resellerID`=?");
+            $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='em' AND `transID`=? AND `resellerID`=?");
             $query->execute(array($what,$reseller_id));
-            $query2=$sql->prepare("DELETE FROM `translations` WHERE `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
+            $query2 = $sql->prepare("DELETE FROM `translations` WHERE `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (!in_array($row['lang'],(array)$postarray["languages-$what"])) {
                     $query2->execute(array($row['lang'],$what,$reseller_id));
@@ -105,7 +105,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 }
             }
         } else {
-            $query=$sql->prepare("DELETE FROM `translations` WHERE `lang`=? AND `resellerID`=?");
+            $query = $sql->prepare("DELETE FROM `translations` WHERE `lang`=? AND `resellerID`=?");
             $query->execute(array($what,$reseller_id));
             $changeCount+=$query->rowCount();
         }
@@ -126,20 +126,20 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $email=$ui->ismail('email','post');
     $emailregards=$ui->escaped('emailregards','post');
     $emailfooter=$ui->escaped('emailfooter','post');
-    $query=$sql->prepare("UPDATE `settings` SET `email`=?,`emailregards`=?,`emailfooter`=? WHERE `resellerid`=? LIMIT 1");
+    $query = $sql->prepare("UPDATE `settings` SET `email`=?,`emailregards`=?,`emailfooter`=? WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($email,$emailregards,$emailfooter,$reseller_id));
     $changeCount+=$query->rowCount();
     if ($changeCount==0) {
-        $template_file=$spracheResponse->error_table;
+        $template_file = $spracheResponse->error_table;
     } else {
         $loguseraction="%mod% %emailsettings%";
         $insertlog->execute();
-        $template_file=$spracheResponse->table_add;
+        $template_file = $spracheResponse->table_add;
     }
 } else {
-    $query=$sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($aeskey,$reseller_id));
-    $usprache=getlanguagefile('user',$user_language,$reseller_id);
+    $usprache = getlanguagefile('user',$user_language,$reseller_id);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $emailbackup=@gzuncompress($row['emailbackup']);
         $emailbackuprestore=@gzuncompress($row['emailbackuprestore']);
@@ -165,23 +165,23 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
     function getemailxml($what,$language) {
         global $sql,$reseller_id;
-        $query=$sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($language,$what,$reseller_id));
         $xml=$query->fetchColumn();
         $style=($query->rowCount()==1) ? 1 : 0;
         return array('style'=>$style,'lang'=>$language,'xml'=>$xml);
     }
-    $emailbackup_xml=array();
-    $emailbackuprestore_xml=array();
-    $emaildown_xml=array();
-    $emaildownrestart_xml=array();
-    $emailgserverupdate_xml=array();
-    $emailpwrecovery_xml=array();
-    $emailsecuritybreach_xml=array();
-    $emailnewticket_xml=array();
-    $emailuseradd_xml=array();
-    $emailvinstall_xml=array();
-    $emailvrescue_xml=array();
+    $emailbackup_xml = array();
+    $emailbackuprestore_xml = array();
+    $emaildown_xml = array();
+    $emaildownrestart_xml = array();
+    $emailgserverupdate_xml = array();
+    $emailpwrecovery_xml = array();
+    $emailsecuritybreach_xml = array();
+    $emailnewticket_xml = array();
+    $emailuseradd_xml = array();
+    $emailvinstall_xml = array();
+    $emailvrescue_xml = array();
     if (isset($template_to_use)) {
         foreach (getlanguages($template_to_use) as $row) {
             $emailbackup_xml[]=getemailxml('emailbackup',$row);
@@ -198,5 +198,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $emailregister_xml[]=getemailxml('emailregister',$row);
         }
     }
-    $template_file="admin_settings_email.tpl";
+    $template_file = "admin_settings_email.tpl";
 }

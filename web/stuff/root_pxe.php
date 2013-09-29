@@ -44,23 +44,23 @@ if (!isset($admin_id) or $main!=1 or  $reseller_id!=0 or !$pa['vserversettings']
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('reseller',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
+$sprache = getlanguagefile('reseller',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
+    $logreseller = 0;
+    $logsubuser = 0;
 } else {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
-    $logreseller=0;
+    $logreseller = 0;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if (in_array($ui->st('d','get'),array('md','ad'))){
     if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='md') {
         $id=$ui->id('id',19,'get');
-        $query=$sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `rootsPXE` WHERE `resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `rootsPXE` WHERE `resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey'=>$aeskey,':reseller_id'=>$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
@@ -73,11 +73,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $PXEFolder=$row['PXEFolder'];
             $description=$row['description'];
         }
-        $template_file=(isset($PXEFolder)) ? 'admin_root_pxe_md.tpl' : 'admin_404.tpl';
+        $template_file = (isset($PXEFolder)) ? 'admin_root_pxe_md.tpl' : 'admin_404.tpl';
     } else if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='ad') {
-        $template_file='admin_root_pxe_ad.tpl';
+        $template_file = 'admin_root_pxe_ad.tpl';
     } else if (in_array($ui->smallletters('action',2,'post'),array('md','ad'))) {
-        $error=array();
+        $error = array();
         if (!$ui->active('publickey','post')) {
             $error[]='Publickey';
         }
@@ -97,7 +97,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $error[]='Username';
         }
         if (count($error)>0) {
-            $template_file='Error: '.implode('<br />',$error);
+            $template_file = 'Error: '.implode('<br />',$error);
         } else {
             $publickey=$ui->active('publickey','post');
             $keyname=$ui->startparameter('keyname','post');
@@ -112,21 +112,21 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $description=$ui->escaped('description','post');
             if ($ui->st('d','get')=='md' and $ui->id('id',19,'get')) {
                 $id=$ui->id('id',19,'get');
-                $query=$sql->prepare("UPDATE `rootsPXE` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`PXEFolder`=:PXEFolder,`description`=:description WHERE `id`=:id AND `resellerid`=:reseller_id");
+                $query = $sql->prepare("UPDATE `rootsPXE` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`PXEFolder`=:PXEFolder,`description`=:description WHERE `id`=:id AND `resellerid`=:reseller_id");
                 $query->execute(array(':active'=>$active,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':publickey'=>$publickey,':keyname'=>$keyname,':PXEFolder'=>$PXEFolder,':description'=>$description,':id'=>$id,':reseller_id'=>$reseller_id));
                 $loguseraction="%mod% PXE";
             } else if ($ui->st('d','get')=='ad') {
-                $query=$sql->prepare("INSERT INTO `rootsPXE` (`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`PXEFolder`,`description`,`resellerid`) VALUES (:active,:ip,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:PXEFolder,:description,:reseller_id)");
+                $query = $sql->prepare("INSERT INTO `rootsPXE` (`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`PXEFolder`,`description`,`resellerid`) VALUES (:active,:ip,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:PXEFolder,:description,:reseller_id)");
                 $query->execute(array(':active'=>$active,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':publickey'=>$publickey,':keyname'=>$keyname,':PXEFolder'=>$PXEFolder,':description'=>$description,':reseller_id'=>$reseller_id));
                 $loguseraction="%add% PXE";
             } else {
-                $template_file='admin_404.tpl';
+                $template_file = 'admin_404.tpl';
             }
             if (!isset($template_file) and $query->rowCount()>0) {
                 $insertlog->execute();
-                $template_file=$spracheResponse->table_add;
+                $template_file = $spracheResponse->table_add;
             } else if (!isset($template_file)) {
-                $template_file=$spracheResponse->error_table;
+                $template_file = $spracheResponse->error_table;
             }
         }
     }
@@ -134,25 +134,25 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $id=$ui->id('id',19,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $id=$ui->id('id',19,'get');
-        $query=$sql->prepare("SELECT `ip`,`description` FROM `rootsPXE` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `ip`,`description` FROM `rootsPXE` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
             $description=$row['description'];
         }
-        $template_file=(isset($ip)) ? 'admin_root_pxe_dl.tpl' : 'admin_404.tpl';
+        $template_file = (isset($ip)) ? 'admin_root_pxe_dl.tpl' : 'admin_404.tpl';
     } else if ($ui->smallletters('action',2,'post')=='dl') {
-        $query=$sql->prepare("DELETE FROM `rootsPXE` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `rootsPXE` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         if ($query->rowCount()>0) {
             $loguseraction="%del% PXE";
             $insertlog->execute();
-            $template_file=$spracheResponse->table_del;
+            $template_file = $spracheResponse->table_del;
         } else {
-            $template_file=$spracheResponse->error_table;
+            $template_file = $spracheResponse->error_table;
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else {
     $o=$ui->st('o','get');
@@ -174,8 +174,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $orderby='`id` ASC';
         $o='ai';
     }
-    $table=array();
-    $query=$sql->prepare("SELECT `active`,`id`,`ip`,`description`,`notified` FROM `rootsPXE` WHERE `resellerid`=? ORDER BY $orderby");
+    $table = array();
+    $query = $sql->prepare("SELECT `active`,`id`,`ip`,`description`,`notified` FROM `rootsPXE` WHERE `resellerid`=? ORDER BY $orderby");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active']=='Y' and $row['notified']>0) {
@@ -190,5 +190,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $table[]=array('id'=>$row['id'],'ip'=>$row['ip'],'description'=>$row['description'],'img'=>$imgName,'alt'=>$imgAlt,'active'=>$row['active']);
     }
-    $template_file='admin_root_pxe_list.tpl';
+    $template_file = 'admin_root_pxe_list.tpl';
 }

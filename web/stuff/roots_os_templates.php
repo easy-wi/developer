@@ -44,27 +44,27 @@ if (!isset($admin_id) or $main!=1 or $reseller_id!=0 or !$pa['resellertemplates'
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache=getlanguagefile('reseller',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
+$sprache = getlanguagefile('reseller',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
+    $logreseller = 0;
+    $logsubuser = 0;
 } else {
     if (isset($_SESSION['oldid'])) {
         $logsubuser=$_SESSION['oldid'];
     } else {
-        $logsubuser=0;
+        $logsubuser = 0;
     }
-    $logreseller=0;
+    $logreseller = 0;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if (in_array($ui->st('d','get'),array('md','ad'))){
     if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='md') {
         $id=$ui->id('id',10,'get');
-        $query=$sql->prepare("SELECT * FROM `resellerimages` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT * FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
@@ -74,12 +74,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $pxelinux=$row['pxelinux'];
         }
         if (isset($bitversion)) {
-            $template_file='admin_root_templates_md.tpl';
+            $template_file = 'admin_root_templates_md.tpl';
         } else {
-            $template_file='admin_404.tpl';
+            $template_file = 'admin_404.tpl';
         }
     } else if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='ad') {
-        $template_file='admin_root_templates_add.tpl';
+        $template_file = 'admin_root_templates_add.tpl';
     } else if (in_array($ui->smallletters('action',2,'post'),array('md','ad'))) {
         $bitversion=($ui->id('bitversion',2,'post')) ? $ui->id('bitversion',2,'post') : 64;
         $active=($ui->active('active','post')) ? $ui->active('active','post') : 'Y';
@@ -87,52 +87,52 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $description=$ui->description('description','post');
         $pxelinux=$ui->escaped('pxelinux','post');
         if ($ui->st('d','get')=='md' and $ui->id('id',10,'get')) {
-            $query=$sql->prepare("UPDATE `resellerimages` SET `active`=?,`description`=?,`distro`=?,`bitversion`=?,`pxelinux`=? WHERE `id`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `resellerimages` SET `active`=?,`description`=?,`distro`=?,`bitversion`=?,`pxelinux`=? WHERE `id`=? LIMIT 1");
             $query->execute(array($active,$description,$distro,$bitversion,$pxelinux,$ui->id('id',10,'get')));
             $loguseraction="%mod% %virtualimage% $description";
         } else if ($ui->st('d','get')=='ad') {
-            $query=$sql->prepare("INSERT INTO `resellerimages` (`active`,`description`,`distro`,`bitversion`,`pxelinux`) VALUES (?,?,?,?,?)");
+            $query = $sql->prepare("INSERT INTO `resellerimages` (`active`,`description`,`distro`,`bitversion`,`pxelinux`) VALUES (?,?,?,?,?)");
             $query->execute(array($active,$description,$distro,$bitversion,$pxelinux));
             $loguseraction="%add% %virtualimage% $description";
         } else {
-            $template_file='admin_404.tpl';
+            $template_file = 'admin_404.tpl';
         }
         if (!isset($template_file) and isset($query) and $query->rowCount()>0) {
             $insertlog->execute();
-            $template_file=$spracheResponse->table_add;
+            $template_file = $spracheResponse->table_add;
         } else if (!isset($template_file)) {
-            $template_file=$spracheResponse->error_table;
+            $template_file = $spracheResponse->error_table;
         }
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id',10,'get')) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
-        $query=$sql->prepare("SELECT `description` FROM `resellerimages` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `description` FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         $description=$query->fetchColumn();
         if ($query->rowCount()>0) {
-            $template_file="admin_root_templates_dl.tpl";
+            $template_file = "admin_root_templates_dl.tpl";
         } else {
-            $template_file='Error: No such ID';
+            $template_file = 'Error: No such ID';
         }
     } else if ($ui->smallletters('action',2,'post')=='dl'){
-        $query=$sql->prepare("SELECT `description` FROM `resellerimages` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `description` FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         $description=$query->fetchColumn();
-        $query=$sql->prepare("DELETE FROM `resellerimages` WHERE `id`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         if ($query->rowCount()>0) {
             $loguseraction="%del% %virtualimage% $description";
             $insertlog->execute();
-            $template_file=$spracheResponse->table_del;
+            $template_file = $spracheResponse->table_del;
         } else {
-            $template_file=$spracheResponse->error_table;
+            $template_file = $spracheResponse->error_table;
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else {
-    $table=array();
+    $table = array();
     $o=$ui->st('o','get');
     if ($ui->st('o','get')=='dd') {
         $orderby='`distro` DESC';
@@ -152,10 +152,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $orderby='`id` ASC';
         $o='ai';
     }
-    $query=$sql->prepare("SELECT * FROM `resellerimages` ORDER BY $orderby");
+    $query = $sql->prepare("SELECT * FROM `resellerimages` ORDER BY $orderby");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $table[]=array('id'=>$row['id'],'distro'=>$row['distro'],'description'=>$row['description'],'bitversion'=>$row['bitversion']);
     }
-    $template_file='admin_root_templates_list.tpl';
+    $template_file = 'admin_root_templates_list.tpl';
 }

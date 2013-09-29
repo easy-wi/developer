@@ -39,8 +39,8 @@
 if ($ui->id('id',19,'get')) {
     $page_id=$ui->id('id',19,'get');
 } else if (isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($page_name) and $page_name!='' and $page_name!=null and $page_name!=false) {
-    $pagesAvailable=array();
-    $query=$sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE `type`='news' AND t.`language`=? AND p.`released`=1 AND p.`resellerid`=0");
+    $pagesAvailable = array();
+    $query = $sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE `type`='news' AND t.`language`=? AND p.`released`=1 AND p.`resellerid`=0");
     $query->execute(array($user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $pagesAvailable[szrp($row['title'])]=$row['id'];
@@ -50,15 +50,15 @@ if ($ui->id('id',19,'get')) {
     }
 }
 if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($page_id) and is_numeric($page_id)) or $ui->id('id',19,'get')) {
-    $query=$sql->prepare("SELECT p.`date`,p.`comments`,p.`authorname`,t.`id` AS `textID`,t.`title`,t.`text`,t.`id`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='news' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
-    $query2=$sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`='0' ORDER BY t.`name` DESC");
+    $query = $sql->prepare("SELECT p.`date`,p.`comments`,p.`authorname`,t.`id` AS `textID`,t.`title`,t.`text`,t.`id`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='news' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
+    $query2 = $sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`='0' ORDER BY t.`name` DESC");
     $query->execute(array($page_id,$user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $page_title=$row['title'];
         $page_text=nl2br($row['text']);
-        $page_keywords=array();
-        $allTags=array();
-        $allCategories=array();
+        $page_keywords = array();
+        $allTags = array();
+        $allCategories = array();
         $comments=$row['comments'];
         $authorname=$row['authorname'];
         $textID=$row['textID'];
@@ -85,37 +85,37 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
     }
 
     // https://github.com/easy-wi/developer/issues/62
-    $langLinks=array();
-    $query=$sql->prepare("SELECT `title`,`language` FROM `page_pages_text` WHERE `pageid`=?");
+    $langLinks = array();
+    $query = $sql->prepare("SELECT `title`,`language` FROM `page_pages_text` WHERE `pageid`=?");
     $query->execute(array($page_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $tempLanguage=getlanguagefile('general',$row['language'],0);
+        $tempLanguage = getlanguagefile('general',$row['language'],0);
         $langLinks[$row['language']]=($page_data->seo=='Y') ? szrp($tempLanguage->news).'/'.szrp($row['title'])  : '?s=news&amp;id='.$page_id;
     }
     $page_data->langLinks($langLinks);
 
     if (isset($textID) or isset($comments)) {
-        $email='';
-        $author='';
-        $url='';
-        $comment='';
+        $email = '';
+        $author = '';
+        $url = '';
+        $comment = '';
         if (isset($comments) and $comments=='Y') {
             if($ui->escaped('comment','post')) {
                 $comment=$ui->escaped('comment','post');
                 if (strlen($ui->escaped('comment','post'))<=$commentMinLength) {
-                    $error=true;
+                    $error= true;
                 }
                 if(!isset($admin_id) and !isset($user_id)){
                     $email=$ui->ismail('email','post');
                     $author=$ui->names('author',255,'post');
                     if ($mailRequired=='Y' and !$ui->ismail('email','post')) {
-                        $error=true;
+                        $error= true;
                     }
                     if (!$ui->names('author',255,'post')) {
-                        $error=true;
+                        $error= true;
                     }
                 } else {
-                    $query=$sql->prepare("SELECT `cname`,`mail` FROM `userdata` WHERE `id`=? LIMIT 1");
+                    $query = $sql->prepare("SELECT `cname`,`mail` FROM `userdata` WHERE `id`=? LIMIT 1");
                     if (isset($admin_id)) {
                         $query->execute(array($admin_id));
                     } else {
@@ -145,22 +145,22 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                         }
                     }
                     $spamReason=implode(', ',$spamArray);
-                    $posted=true;
+                    $posted= true;
                     if ($commentsModerated=='Y' and (!isset($admin_id) and !isset($user_id))) {
-                        $query=$sql->prepare("INSERT INTO `page_comments` (`date`,`moderateAccepted`,`pageTextID`,`replyTo`,`authorname`,`homepage`,`comment`,`ip`,`dns`,`markedSpam`,`spamReason`,`email`) VALUES (NOW(),'N',?,?,?,?,?,?,?,?,?,?)");
+                        $query = $sql->prepare("INSERT INTO `page_comments` (`date`,`moderateAccepted`,`pageTextID`,`replyTo`,`authorname`,`homepage`,`comment`,`ip`,`dns`,`markedSpam`,`spamReason`,`email`) VALUES (NOW(),'N',?,?,?,?,?,?,?,?,?,?)");
                         $query->execute(array($textID,$replyTo,$author,$url,$ui->escaped('comment','post'),$ui->ip('REMOTE_ADDR','server'),gethostbyaddr($ui->ip4('REMOTE_ADDR','server')),$isSpam,$spamReason,$email));
                         $_SESSION['toBeModerated'][]=$sql->lastInsertId();
                     } else {
-                        $query=$sql->prepare("INSERT INTO `page_comments` (`date`,`moderateAccepted`,`pageTextID`,`replyTo`,`authorname`,`homepage`,`comment`,`ip`,`dns`,`markedSpam`,`spamReason`,`email`) VALUES (NOW(),'Y',?,?,?,?,?,?,?,?,?,?)");
+                        $query = $sql->prepare("INSERT INTO `page_comments` (`date`,`moderateAccepted`,`pageTextID`,`replyTo`,`authorname`,`homepage`,`comment`,`ip`,`dns`,`markedSpam`,`spamReason`,`email`) VALUES (NOW(),'Y',?,?,?,?,?,?,?,?,?,?)");
                         $query->execute(array($textID,$replyTo,$author,$url,$ui->escaped('comment','post'),$ui->ip('REMOTE_ADDR','server'),gethostbyaddr($ui->ip4('REMOTE_ADDR','server')),$isSpam,$spamReason,$email));
                     }
-                    $comment='';
+                    $comment = '';
                 }
             }
             $token=md5(passwordgenerate(10));
             $_SESSION['news'][$textID]=$token;
-            $commentArray=array();
-            $OR='';
+            $commentArray = array();
+            $OR = '';
             if (isset($_SESSION['toBeModerated']) and count($_SESSION['toBeModerated'])>0) {
                 foreach ($_SESSION['toBeModerated'] as $id) {
                     if (isid($id,19)) {
@@ -168,7 +168,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                     }
                 }
             }
-            $query=$sql->prepare("SELECT `commentID`,`replyTo`,`date`,`authorname`,`homepage`,`comment` FROM `page_comments` WHERE `pageTextID`=? AND ((`markedSpam`!='Y' AND `moderateAccepted`='Y') $OR) AND `resellerid`=0 ORDER BY `replyTo` DESC,`commentID` DESC");
+            $query = $sql->prepare("SELECT `commentID`,`replyTo`,`date`,`authorname`,`homepage`,`comment` FROM `page_comments` WHERE `pageTextID`=? AND ((`markedSpam`!='Y' AND `moderateAccepted`='Y') $OR) AND `resellerid`=0 ORDER BY `replyTo` DESC,`commentID` DESC");
             $query->execute(array($textID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if ($pageLanguage=='de') {
@@ -180,12 +180,12 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
             }
         }
         $page_data->setCanonicalUrl($s,$textID);
-        $template_file='page_news_single.tpl';
+        $template_file = 'page_news_single.tpl';
     } else {
-        $template_file='page_404.tpl';
+        $template_file = 'page_404.tpl';
     }
 } else if (isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($page_name) and $page_name!='' and $page_name!=null and $page_name!=false and !isset($page_id) and $ui->smallletters('preview',4,'get')!='true') {
-    $template_file='page_404.tpl';
+    $template_file = 'page_404.tpl';
 } else if (isset($admin_id) and $ui->smallletters('preview',4,'get')=='true') {
     if (is_array($ui->escaped('text','post')) or is_object($ui->escaped('text','post'))) {
         foreach ($ui->escaped('text','post') as $key=>$value) {
@@ -196,23 +196,23 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         $page_title=$ui->escaped('title','post');
         $page_text=nl2br($ui->escaped('text','post'));
     }
-    $allTags=array();
-    $allCategories=array();
-    $comments=array();
-    $category_tags=array();
-    $tag_tags=array();
+    $allTags = array();
+    $allCategories = array();
+    $comments = array();
+    $category_tags = array();
+    $tag_tags = array();
     if (isset($page_title)) {
-        $template_file='page_news_single.tpl';
+        $template_file = 'page_news_single.tpl';
     } else {
-        $template_file='page_404.tpl';
+        $template_file = 'page_404.tpl';
     }
 } else if (!$ui->smallletters('preview',4,'get')) {
-    $news=array();
-    $category_tags=array();
-    $tag_tags=array();
-    $allTags=array();
-    $allCategories=array();
-    $query=$sql->prepare("SELECT COUNT(p.`id`) AS `amount` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0");
+    $news = array();
+    $category_tags = array();
+    $tag_tags = array();
+    $allTags = array();
+    $allCategories = array();
+    $query = $sql->prepare("SELECT COUNT(p.`id`) AS `amount` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0");
     $query->execute(array($user_language));
     $totalCount=$query->fetchColumn();
     $pagesCount=ceil($totalCount/$maxnews);
@@ -227,14 +227,14 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         $startLooking=$pageOpen*$maxnews;
     }
     if (!isset($startLooking) or $startLooking<0) {
-        $startLooking=0;
+        $startLooking = 0;
     }
     if (!isset($pageOpen) or $pageOpen<0) {
-        $pageOpen=0;
+        $pageOpen = 0;
     }
-    $query=$sql->prepare("SELECT p.`id`,p.`date`,p.`comments`,p.`authorname`,t.`id` AS `textID`,t.`title`,t.`text`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0 ORDER BY `date` DESC LIMIT $startLooking,$maxnews");
-    $query2=$sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`=0 ORDER BY t.`name` DESC");
-    $query3=$sql->prepare("SELECT COUNT(`commentID`) as `amount` FROM `page_comments` WHERE `pageTextID`=? AND `resellerID`=0");
+    $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`comments`,p.`authorname`,t.`id` AS `textID`,t.`title`,t.`text`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0 ORDER BY `date` DESC LIMIT $startLooking,$maxnews");
+    $query2 = $sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`=0 ORDER BY t.`name` DESC");
+    $query3 = $sql->prepare("SELECT COUNT(`commentID`) as `amount` FROM `page_comments` WHERE `pageTextID`=? AND `resellerID`=0");
     $query->execute(array($user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $page_title=$row['title'];
@@ -275,7 +275,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
             $query3->execute(array($row['textID']));
             $commentCount=$query3->fetchColumn();
         } else {
-            $commentCount=0;
+            $commentCount = 0;
         }
         $news[]=array('date'=>$date,'title'=>$page_title,'text'=>$page_text,'href'=>$href,'link'=>$link,'tags'=>$tag_tags,'categories'=>$category_tags,'comments'=>$row['comments'],'commentCount'=>$commentCount,'authorname'=>$row['authorname']);
     }
@@ -286,15 +286,15 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
     }
 
     // https://github.com/easy-wi/developer/issues/62
-    $langLinks=array();
+    $langLinks = array();
     foreach ($languages as $l) {
-        $tempLanguage=getlanguagefile('general',$l,0);
+        $tempLanguage = getlanguagefile('general',$l,0);
         $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->news)  : '?s=news';
     }
     $page_data->langLinks($langLinks);
 
     $page_data->setCanonicalUrl($s);
-    $template_file='page_news.tpl';
+    $template_file = 'page_news.tpl';
 } else {
-    $template_file='page_404.tpl';
+    $template_file = 'page_404.tpl';
 }

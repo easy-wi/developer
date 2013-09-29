@@ -66,13 +66,13 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     include(EASYWIDIR . '/stuff/class_validator.php');
     include(EASYWIDIR . '/stuff/settings.php');
     printText('File include and parameters fetched. Start connecting to external systems.');
-    $query=$sql->prepare("SELECT * FROM `api_import` WHERE `active`='Y'");
-    $query2=$sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerid`=? LIMIT 1");
-    $query3=$sql->prepare("INSERT INTO `userdata` (`salutation`,`mail`,`cname`,`name`,`vname`,`birthday`,`country`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`,`usergroup`,`sourceSystemID`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-    $query4=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `sourceSystemID`=? AND `externalID`=? LIMIT 1");
-    $query5=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? LIMIT 1");
-    $query6=$sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? AND `resellerid`=? LIMIT 1");
-    $query7=$sql->prepare("UPDATE `api_import` SET `lastCheck`=?,`lastID`=? WHERE `importID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT * FROM `api_import` WHERE `active`='Y'");
+    $query2 = $sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerid`=? LIMIT 1");
+    $query3 = $sql->prepare("INSERT INTO `userdata` (`salutation`,`mail`,`cname`,`name`,`vname`,`birthday`,`country`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`,`usergroup`,`sourceSystemID`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    $query4 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `sourceSystemID`=? AND `externalID`=? LIMIT 1");
+    $query5 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? LIMIT 1");
+    $query6 = $sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? AND `resellerid`=? LIMIT 1");
+    $query7 = $sql->prepare("UPDATE `api_import` SET `lastCheck`=?,`lastID`=? WHERE `importID`=? LIMIT 1");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $resellerID=$row['resellerID'];
@@ -83,7 +83,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             $ssl='http://';
             $port=80;
         }
-        $start=0;
+        $start = 0;
         printText('Connect to: '.$ssl.$row['domain']);
         while (!isset($left) or $left>0) {
             $getRequest='/'. $row['file'].'?passwordToken='.urlencode($row['token']).'&start='.urlencode($start).'&chunkSize='.urlencode($row['chunkSize']).'&lastID='.urlencode($row['lastID']).'&updateTime='.urlencode($row['lastCheck']);
@@ -92,7 +92,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             $decoded=json_decode($response);
             unset($response);
             if ($decoded and isset($decoded->error)) {
-                $left=0;
+                $left = 0;
                 if (is_array($decoded->error)) {
                     printText('Error: '.implode(', ',$decoded->error));
                 } else {
@@ -147,18 +147,18 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                 }
             } else if ($decoded) {
                 printText('JSON Response does not contain expected values');
-                $left=0;
+                $left = 0;
             } else {
                 if (strpos(strtolower($rawResponse),'file not found')===false) {
                     printText('No Json Response. Will retry.');
                 } else {
-                    $left=0;
+                    $left = 0;
                     printText('404: File not found');
                 }
             }
         }
     }
-    $query=$sql->prepare("UPDATE `settings` SET `lastCronCloud`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("UPDATE `settings` SET `lastCronCloud`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
 } else {
     header('Location: login.php');

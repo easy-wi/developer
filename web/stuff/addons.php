@@ -39,24 +39,24 @@ if ((!isset($admin_id) or !$main == 1) or (isset($admin_id) and !$pa['addons']))
 	header('Location: admin.php');
 	die('No acces');
 }
-$sprache=getlanguagefile('images',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype="admin";
+$sprache = getlanguagefile('images',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-	$logreseller=0;
-	$logsubuser=0;
+	$logreseller = 0;
+	$logsubuser = 0;
 } else {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
-	$logreseller=0;
+	$logreseller = 0;
 }
 if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=='ex' and $ui->id('id',10,'get')) {
     $xml=new DOMDocument('1.0','utf-8');
     $element=$xml->createElement('addon');
-    $query=$sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=?");
+    $query = $sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=?");
     $query->execute(array($ui->id('id',10,'get'),$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $addon=$row['addon'];
@@ -74,37 +74,37 @@ if ($ui->w('action',4,'post') and !token(true)) {
         header("Content-Disposition: attachment; filename=${addon}.xml");
         header("Content-Type: text/xml; charset=UTF-8");
         header("Content-Transfer-Encoding: binary");
-        $xml->formatOutput=true;
+        $xml->formatOutput= true;
         echo $xml->saveXML();
         die;
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else if ($ui->st('d','get')=='ad') {
     if ($ui->smallletters('action',2,'post')=='ad' and $ui->id('import',1,'post')!=1) {
-        $fail=0;
-        $template_file='';
+        $fail = 0;
+        $template_file = '';
         if(!$ui->gamestring('shorten','post')) {
             $template_file .="Shorten<br />";
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->smallletters('type',99,'post')) {
             $template_file .="type<br />";
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->gamestring('addon','post')) {
             $template_file .="Addon<br />";
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->description('menudescription','post')) {
             $template_file .="Menuescription<br />";
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->active('paddon','post')) {
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->id('depending',19,'post') and $ui->escaped('depending','post')!=0) {
-            $fail=1;
+            $fail = 1;
         }
         if ($fail!=1){
             $shorten=$ui->gamestring('shorten','post');
@@ -119,17 +119,17 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $cmd=$ui->startparameter('cmd','post');
             $rmcmd=$ui->startparameter('rmcmd','post');
             if ($reseller_id==0) {
-                $query2=$sql->prepare("SELECT `id` FROM `userdata` WHERE `accounttype`='r'");
+                $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE `accounttype`='r'");
                 $query2->execute();
-                $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `addons` WHERE ((`shorten`=? AND `addon`=?) OR `folder`=?) AND `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `addons` WHERE ((`shorten`=? AND `addon`=?) OR `folder`=?) AND `resellerid`=? LIMIT 1");
                 $query->execute(array($shorten,$addon,$folder,$reseller_id));
                 if ($query->fetchColumn()<=0) {
-                    $query=$sql->prepare("INSERT INTO `addons` (`shorten`,`type`,`addon`,`paddon`,`folder`,`active`,`menudescription`,`configs`,`cmd`,`rmcmd`,`depending`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+                    $query = $sql->prepare("INSERT INTO `addons` (`shorten`,`type`,`addon`,`paddon`,`folder`,`active`,`menudescription`,`configs`,`cmd`,`rmcmd`,`depending`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
                     $query->execute(array($shorten,$type,$addon,$paddon,$folder,$active,$menudescription,$configs,$cmd,$rmcmd,$depending,$reseller_id));
-                    $query=$sql->prepare("SELECT `id` FROM `addons` WHERE `shorten`=? AND `addon`=? AND `menudescription`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("SELECT `id` FROM `addons` WHERE `shorten`=? AND `addon`=? AND `menudescription`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($shorten,$addon,$menudescription,$reseller_id));
                     $id=$query->fetchColumn();
-                    $query=$sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
+                    $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
                     if ($ui->smallletters('language',2,'post')) {
                         $array=(array)$ui->smallletters('language',2,'post');
                         foreach($array as $language) {
@@ -138,69 +138,69 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             }
                         }
                     }
-                    $template_file=$sprache->addon_add;
+                    $template_file = $sprache->addon_add;
                 } else {
-                    $template_file='Error: Addon with the same name already exists';
+                    $template_file = 'Error: Addon with the same name already exists';
                 }
             } else {
-                $query2=$sql->prepare("SELECT `id` FROM `userdata` WHERE `accounttype`='r' AND `resellerid`=? LIMIT 1");
+                $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE `accounttype`='r' AND `resellerid`=? LIMIT 1");
                 $query2->execute(array($reseller_id));
             }
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $resellerid=$row['id'];
-                $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `addons` WHERE ((`shorten`=? AND `addon`=?) OR `folder`=?) AND `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `addons` WHERE ((`shorten`=? AND `addon`=?) OR `folder`=?) AND `resellerid`=? LIMIT 1");
                 $query->execute(array($shorten,$addon,$folder,$resellerid));
                 if ($query->fetchColumn()<=0) {
-                    $query=$sql->prepare("INSERT INTO `addons` (`shorten`,`type`,`addon`,`paddon`,`folder`,`active`,`menudescription`,`configs`,`cmd`,`rmcmd`,`depending`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+                    $query = $sql->prepare("INSERT INTO `addons` (`shorten`,`type`,`addon`,`paddon`,`folder`,`active`,`menudescription`,`configs`,`cmd`,`rmcmd`,`depending`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
                     $query->execute(array($shorten,$type,$addon,$paddon,$folder,$active,$menudescription,$configs,$cmd,$rmcmd,$depending,$resellerid));
-                    $query=$sql->prepare("SELECT `id` FROM `addons` WHERE `shorten`=? AND `addon`=? AND `menudescription`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("SELECT `id` FROM `addons` WHERE `shorten`=? AND `addon`=? AND `menudescription`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($shorten,$addon,$menudescription,$resellerid));
                     $id=$query->fetchColumn();
                     if ($ui->smallletters('language',2,'post')) {
                         $array=(array)$ui->smallletters('language',2,'post');
-                        $query=$sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
+                        $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
                         foreach($array as $language) {
                             if (small_letters_check($language, '2')) {
                                 $query->execute(array($id,$language,$ui->description("description_$language",'post'),$resellerid));
                             }
                         }
                     }
-                    $template_file=$sprache->addon_add;
+                    $template_file = $sprache->addon_add;
                 }
             }
             if (!isset($template_file)) {
-                $template_file=$sprache->error_exist;
+                $template_file = $sprache->error_exist;
             }
             $loguseraction="%add% %addon% $addon";
             $insertlog->execute();
         } else {
-            $template_file="Error: ".$template_file;
+            $template_file = "Error: ".$template_file;
         }
     } else {
         $token=token();
-        $table=array();
-        $query=$sql->prepare("SELECT `shorten`,`description` FROM `servertypes` WHERE `resellerid`=?");
+        $table = array();
+        $query = $sql->prepare("SELECT `shorten`,`description` FROM `servertypes` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $table[]=array('shorten'=>$row['shorten'],'description'=>$row['description']);
         }
-        $query=$sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
+        $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
         $query->execute();
-        $table2=array();
+        $table2 = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $exist=$row['qstat'];
-            $query2=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `qstat`=? AND `resellerid`=? LIMIT 1");
+            $query2 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `qstat`=? AND `resellerid`=? LIMIT 1");
             $query2->execute(array($exist,$reseller_id));
             if ($query2->fetchColumn()>0) {
                 $table2[]=array('qstat'=>$row['qstat'],'description'=>$row['description']);
             }
         }
-        $foundlanguages=array();
+        $foundlanguages = array();
         foreach ($languages as $row) {
             if (small_letters_check($row, '2')) {
                 if ($row==$rSA['language']) {
-                    $style='';
-                    $displayNone='';
+                    $style = '';
+                    $displayNone = '';
                     $checkbox='<input type="checkbox" name="language[]" value="'.$row.'" onclick="textdrop('."'".$row."'".');" checked /> ';
                 } else {
                     $style='style="display: none;"';
@@ -210,22 +210,22 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $foundlanguages[]=array('style'=>$style,'lang'=>$row,'checkbox'=>$checkbox,'display'=>$displayNone);
             }
         }
-        $dependings=array();
-        $query=$sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `type`='tool' AND `resellerid`=? ORDER BY `menudescription`");
+        $dependings = array();
+        $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `type`='tool' AND `resellerid`=? ORDER BY `menudescription`");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $dependings[]='<option value="'.$row['id'].'">'.$row['menudescription'].'</option>';
         }
-        $active='';
-        $paddon='';
-        $shorten='';
-        $addon='';
-        $type='';
-        $folder='';
-        $menudescription='';
-        $configs='';
-        $cmd='';
-        $rmcmd='';
+        $active = '';
+        $paddon = '';
+        $shorten = '';
+        $addon = '';
+        $type = '';
+        $folder = '';
+        $menudescription = '';
+        $configs = '';
+        $cmd = '';
+        $rmcmd = '';
         if ($ui->id('import',1,'post')==1 and $_FILES["file"]["error"]==0 and $_FILES["file"]["type"]=='text/xml') {
             $shorten=$_FILES["file"]["name"];
             try {
@@ -246,20 +246,20 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     }
                 }
             } catch(Exception $error) {
-                $active='';
+                $active = '';
             }
         }
-        $template_file="admin_addons_add.tpl";
+        $template_file = "admin_addons_add.tpl";
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id','30','get')) {
     $addonid=$ui->id('id','30','get');
     if (!isset($action)) {
-        $query=$sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($addonid,$reseller_id));
         $menudescription=$query->fetchColumn();
-        $template_file="admin_addons_dl.tpl";
+        $template_file = "admin_addons_dl.tpl";
     } else if ($action=='dl'){
-        $query=$sql->prepare("SELECT menudescription,type,folder,addon FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT menudescription,type,folder,addon FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($addonid,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $menudescription=$row['menudescription'];
@@ -267,29 +267,29 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $folder=$row['folder'];
             $addon=$row['addon'];
         }
-        $query=$sql->prepare("DELETE FROM `addons_installed` WHERE `addonid`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `addonid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($addonid,$reseller_id));
-        $query=$sql->prepare("DELETE FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($addonid,$reseller_id));
-        $query=$sql->prepare("DELETE FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=?");
+        $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=?");
         $query->execute(array($addonid,$reseller_id));
         $loguseraction="%del% %addon% $addon";
         $insertlog->execute();
-        $template_file=$sprache->addon_del;
+        $template_file = $sprache->addon_del;
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else if ($ui->st('d','get')=='md' and $ui->id('id','30','get')) {
     $addonid=$ui->id('id','30','get');
     if (!isset($action)) {
-        $table=array();
-        $table2=array();
-        $query=$sql->prepare("SELECT `shorten`,`description` FROM `servertypes` WHERE `resellerid`=?");
+        $table = array();
+        $table2 = array();
+        $query = $sql->prepare("SELECT `shorten`,`description` FROM `servertypes` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $table[]=array('shorten'=>$row['shorten'],'description'=>$row['description']);
         }
-        $query=$sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
+        $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
         $countp=$sql->prepare("SELECT `id` FROM `servertypes` WHERE `qstat`=? AND `resellerid`=? LIMIT 1");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -300,7 +300,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $table2[]=array('qstat'=>$row['qstat'],'description'=>$row['description']);
             }
         }
-        $query=$sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($addonid,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $shorten=$row['shorten'];
@@ -316,20 +316,20 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $depending=$row['depending'];
         }
         $default_language=$rSA['language'];
-        $foundlanguages=array();
-        $query=$sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
+        $foundlanguages = array();
+        $query = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
         foreach ($languages as $row) {
             if (small_letters_check($row, '2')) {
                 unset($lang);
-                $description='';
+                $description = '';
                 $query->execute(array($addonid,$row,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $lang=$row2['lang'];
                     $description=$row2['text'];
                 }
                 if (isset($lang)) {
-                    $style='';
-                    $displayNone='';
+                    $style = '';
+                    $displayNone = '';
                     $checkbox="<input type=\"checkbox\" name=\"language[]\" value=\"$row\" onclick=\"textdrop('$row');\" checked /> ";
                 } else {
                     $displayNone='display_none';
@@ -339,38 +339,38 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $foundlanguages[]=array('style'=>$style,'lang'=>$row,'checkbox'=>$checkbox,'description'=>$description,'display'=>$displayNone);
             }
         }
-        $dependings=array();
-        $query=$sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `type`='tool' AND `type`=? AND `resellerid`=? ORDER BY `menudescription`");
+        $dependings = array();
+        $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `type`='tool' AND `type`=? AND `resellerid`=? ORDER BY `menudescription`");
         $query->execute(array($type,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if (isset($depending) and $depending==$row['id']) $dependings[]='<option value="'.$row['id'].'" selected="selected">'.$row['menudescription'].'</option>';
             else $dependings[]='<option value="'.$row['id'].'">'.$row['menudescription'].'</option>';
         }
-        $template_file="admin_addons_md.tpl";
+        $template_file = "admin_addons_md.tpl";
     } else if ($action=='md'){
-        $fail=0;
-        $template_file='';
+        $fail = 0;
+        $template_file = '';
         if(!$ui->gamestring('shorten','post')) {
             $template_file .="Shorten<br />";
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->smallletters('type',99,'post')) {
             $template_file .="type<br />";
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->gamestring('addon','post')) {
             $template_file .="Addon<br />";
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->description('menudescription','post')) {
             $template_file .="Menuescription<br />";
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->active('paddon','post')) {
-            $fail=1;
+            $fail = 1;
         }
         if(!$ui->id('depending',19,'post') and $ui->escaped('depending','post')!=0) {
-            $fail=1;
+            $fail = 1;
         }
         if ($fail!=1){
             $shorten=$ui->gamestring('shorten','post');
@@ -384,37 +384,37 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $configs=$ui->startparameter('configs','post');
             $cmd=$ui->startparameter('cmd','post');
             $rmcmd=$ui->startparameter('rmcmd','post');
-            $query=$sql->prepare("UPDATE `addons` SET `shorten`=?,`menudescription`=?,`active`=?,`folder`=?,`addon`=?,`paddon`=?,`type`=?,`configs`=?,`cmd`=?,`rmcmd`=?,`depending`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `addons` SET `shorten`=?,`menudescription`=?,`active`=?,`folder`=?,`addon`=?,`paddon`=?,`type`=?,`configs`=?,`cmd`=?,`rmcmd`=?,`depending`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($shorten,$menudescription,$active,$folder,$addon,$paddon,$type,$configs,$cmd,$rmcmd,$depending,$addonid,$reseller_id));
             if ($ui->smallletters('language',2,'post')) {
                 $array=(array)$ui->smallletters('language',2,'post');
-                $query2=$sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
+                $query2 = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 foreach($array as $language) {
                     if (small_letters_check($language, '2')) {
                         $description=$ui->description("description_$language",'post');
                         $query2->execute(array($addonid,$language,$description,$reseller_id));
                     }
                 }
-                $query=$sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=?");
+                $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=?");
                 $query->execute(array($addonid,$reseller_id));
-                $query2=$sql->prepare("DELETE FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
+                $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     if (!in_array($row2['lang'],$array)) {
                         $query2->execute(array($addonid,$row2['lang'],$reseller_id));
                     }
                 }
             } else {
-                $query=$sql->prepare("DELETE FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=?");
+                $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=?");
                 $query->execute(array($addonid,$reseller_id));
             }
-            $template_file=$sprache->addon_ud;
+            $template_file = $sprache->addon_ud;
             $loguseraction="%mod% %addon% $addon";
             $insertlog->execute();
         } else {
-            $template_file="Error:<br />".$template_file;
+            $template_file = "Error:<br />".$template_file;
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else {
     $o=$ui->st('o','get');
@@ -440,12 +440,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $o='ai';
         $orderby='`id` ASC';
     }
-    $table=array();
+    $table = array();
     $pselect=$sql->prepare("SELECT `id`,`menudescription`,`shorten`,`active`,`type` FROM `addons` $where ORDER BY $orderby LIMIT $start,$amount");
     $pselect->execute(array(':reseller_id'=>$reseller_id));
     foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $atype='';
-        $gtype='';
+        $atype = '';
+        $gtype = '';
         $shorten=$row['shorten'];
         $pselect2=$sql->prepare("SELECT `description` FROM `qstatshorten` WHERE `qstat`=? LIMIT 1");
         $pselect2->execute(array($shorten));
@@ -471,12 +471,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $table[]=array('id'=>$row['id'],'active'=>$row['active'],'img'=>$imgName,'alt'=>$imgAlt,'gametype'=>"${gtype} (${atype})",'description'=>$row['menudescription'],'type'=>$type);
     }
-    $table2=array();
+    $table2 = array();
     $pselect2=$sql->prepare("SELECT DISTINCT(`shorten`) FROM `addons` WHERE `resellerid`=:reseller_id");
     $pselect2->execute(array(':reseller_id'=>$reseller_id));
     foreach ($pselect2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-        $atype='';
-        $gtype='';
+        $atype = '';
+        $gtype = '';
         $shorten=$row2['shorten'];
         $pselect3=$sql->prepare("SELECT `description` FROM `qstatshorten` WHERE `qstat`=:shorten LIMIT 1");
         $pselect3->execute(array(':shorten'=>$shorten));
@@ -523,7 +523,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $link .='&p=0&amp;t='.$list_type.'&amp;g='.$list_gtype.'">1</a>';
     }
-    $i=2;
+    $i = 2;
     $pages[]=$link;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
@@ -535,5 +535,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file="admin_addons_list.tpl";
+    $template_file = "admin_addons_list.tpl";
 }

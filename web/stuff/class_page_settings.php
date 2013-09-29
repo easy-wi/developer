@@ -36,7 +36,7 @@
  */
 
 class PageSettings {
-	public $seo='',$language,$about,$canurl,$pageurl,$title,$keywords=array(),$lastnews,$tags,$pages,$hiddenPages,$last_news=array(),$MSIE=false,$lendactive,$lendactiveGS,$lendactiveVS,$lendGS=false,$lendVS=false,$protectioncheck,$pages_array=array(),$languageLinks=array();
+	public $seo='',$language,$about,$canurl,$pageurl,$title,$keywords=array(),$lastnews,$tags,$pages,$hiddenPages,$last_news=array(),$MSIE=false,$lendactive,$lendactiveGS,$lendactiveVS,$lendGS=false,$lendVS=false,$protectioncheck,$pages_array=array(),$languageLinks = array();
 	function __construct($user_language,$pageurl,$seo) {
 		$this->language=$user_language;
 		$this->pageurl=$pageurl;
@@ -61,20 +61,20 @@ class PageSettings {
 		$this->canurl=$this->pageurl. '/'. $value;
 	}
 	private function AddPageToArray ($type,$pageid,$value) {
-		$i=1;
+		$i = 1;
 		while (isset($this->pages_array[$type]) and in_array($value,$this->pages_array[$type])) {
 			$i++;
-			$value=$value.'-'.$i;
+			$value=$value . '-' . $i;
 		}
 		$this->pages_array[$type][$pageid]=$value;
 		return $value;
 	}
 	function SetMenu ($linkname,$request,$subid,$id=false,$listPage=true) {
 		$linkname=(string)$linkname;
-		$subdata=array();
+		$subdata = array();
 		if ($this->seo=='Y') {
 			if (is_array($request)) {
-				$link='';
+				$link = '';
 				foreach ($request as $r) $link .='/'. $this->NameToLink($r);
 			} else if ($id==false) {
 				$link = '/'. $this->AddPageToArray('pages',$subid,$this->NameToLink($request));
@@ -84,8 +84,8 @@ class PageSettings {
 			$subdata['link']=$this->pageurl. '/'. $this->language.$link.'/';
 		} else {
 			if (is_array($request)) {
-				$getparams='';
-				$i=0;
+				$getparams = '';
+				$i = 0;
 				foreach ($request as $k=>$v) {
                     if ($v!='' and $v!=null) $getparams .=($i==0) ? '?'.$k.'='.$v : '&amp;'.$k.'='.$v;
 					$i++;
@@ -118,8 +118,8 @@ class PageSettings {
 	function SetLinks ($var,$linkname,$request,$id,$date=null) {
 		if ($this->seo=='Y') {
 			if (is_array($request)) {
-				$link='';
-				for ($i=0;$i<(count($request)-1);$i++) $link .='/'. $this->NameToLink($request[$i]);
+				$link = '';
+				for ($i = 0;$i<(count($request)-1);$i++) $link .='/'. $this->NameToLink($request[$i]);
 				$link .= '/'. $this->AddPageToArray($var,$id,$this->NameToLink($request[$i]));
 			} else {
 				$link = '/'. $this->AddPageToArray($var,$id,$this->NameToLink($request));
@@ -127,8 +127,8 @@ class PageSettings {
 			$subdata[$id]['link']=$this->pageurl. '/'. $this->language.$link.'/';
 		} else {
 			if (is_array($request)) {
-				$getparams='';
-				$i=0;
+				$getparams = '';
+				$i = 0;
 				foreach ($request as $k=>$v) {
                     if ($v!='' and $v!=null) $getparams .=($i==0) ? '?'.$k.'='.$v : '&amp;'.$k.'='.$v;
 					$i++;
@@ -148,7 +148,7 @@ class PageSettings {
         } else {
             global $sql,$gsprache,$page_sprache;
             if ($this->seo=='Y' and $ID!=null and ($s=='news' or $s=='page')) {
-                $query=$sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `id`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `id`=? LIMIT 1");
                 $query->execute(array($ID));
                 $title=$query->fetchColumn();
                 $addToUrl=($s=='news') ? '/'. $this->language. '/'. $this->NameToLink($gsprache->news). '/'. $this->NameToLink($title).'/' : '/'. $this->language. '/'. $this->NameToLink($title).'/';
@@ -167,22 +167,22 @@ class PageSettings {
     public function showLend ($admin,$user,$type) {
         global $sql;
         if ($type=='g') {
-            $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `resellerid`=0 AND `active`='Y' AND `lendserver`='Y' LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `resellerid`=0 AND `active`='Y' AND `lendserver`='Y' LIMIT 1");
             $query->execute();
             $count=$query->fetchColumn();
             if ($count>0 and ($this->lendactiveGS=='B' or ($admin===true and $this->lendactiveGS!='N') or ($user===true and $this->lendactiveGS=='R') or ($user===false and $this->lendactiveGS=='A'))) {
-                $this->lendGS=true;
+                $this->lendGS= true;
                 return true;
             } else if ($count>0) {
                 $this->lendGS=null;
                 return null;
             }
         } else {
-            $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `resellerid`=0 AND `active`='Y' AND `lendserver`='Y' LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `resellerid`=0 AND `active`='Y' AND `lendserver`='Y' LIMIT 1");
             $query->execute();
             $count=$query->fetchColumn();
             if ($count>0 and ($this->lendactiveVS=='B' or ($admin===true and $this->lendactiveVS!='N') or ($user===true and $this->lendactiveVS=='R') or ($user===false and $this->lendactiveVS=='A'))) {
-                $this->lendVS=true;
+                $this->lendVS= true;
                 return true;
             } else if ($count>0) {
                 $this->lendVS=null;
@@ -217,24 +217,24 @@ class PageSettings {
 
 function checkForSpam ($checkURL=null) {
     global $ui,$blockLinks,$languageFilter,$page_data,$user_language,$textID,$blockWords,$honeyPotKey,$tornevall,$sql;
-    $spamReason=array();
-    $ips=array();
+    $spamReason = array();
+    $ips = array();
 
     // Check if IP exists at DB as a spammer
     if ($checkURL==null) {
-        $hostByIp='';
+        $hostByIp = '';
         if ($ui->ip4('REMOTE_ADDR','server')) {
             $hostByIp=gethostbyaddr($ui->ip4('REMOTE_ADDR','server'));
             $ips[]=$hostByIp;
         }
-        $query=$sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `markedSpam`='Y' AND (`ip`=? OR `dns`=?) AND `resellerid`=0 LIMIT 1");
+        $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `markedSpam`='Y' AND (`ip`=? OR `dns`=?) AND `resellerid`=0 LIMIT 1");
         $query->execute(array($ui->ip('REMOTE_ADDR','server'),$hostByIp));
         if ($query->fetchColumn()>0) $spamReason[]='IP or Host already known for spam';
     } else {
         $check=str_replace(array('https://','http://','ftps://','ftp://'),'',$checkURL);
         $ips=gethostbynamel($check);
         foreach($ips as $ip) {
-            $query=$sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `markedSpam`='Y' AND `ip`=? AND `resellerid`=0 LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `markedSpam`='Y' AND `ip`=? AND `resellerid`=0 LIMIT 1");
             $query->execute(array($ip));
             if ($query->fetchColumn()>0 and !in_array('IP or Host already known for spam',$spamReason)) $spamReason[]='IP or Host already known for spam';
         }

@@ -37,7 +37,7 @@
 
 class TS3 {
 	private $socket=false,$connected=false,$ip=false,$maxExecutionTime=30,$timeStarted=0,$debug=null;
-	public $errorcode=false;
+	public $errorcode = false;
 	private function ReplaceToTS3 ($value) {
 		$return=str_replace(array('\\','/',' ','|'),array('\\\\','\/','\s','\p'),$value);
 		return $return;
@@ -48,10 +48,10 @@ class TS3 {
 	}
 	public function SendCommand ($value) {
 		if ($this->connected==true) {
-			$return=array();
+			$return = array();
 			if (is_array($value)) fputs($this->socket, $value[0]."\n");
 			else fputs($this->socket, $value."\n");
-			$response='';
+			$response = '';
 			while (strpos($response,'msg=') === false or strpos($response,'error id=') === false) {
 				$new=fgets($this->socket);
                 $response .=$new;
@@ -62,21 +62,21 @@ class TS3 {
 			if ($databody=='' or $databody==null) $databody=$this->errorcode;
 			if (!is_array($value) or (isset($value[1]) and $value[1]=='array')) {
 				foreach (explode('|',$databody) as $data) {
-					$cvars=array();
+					$cvars = array();
 					foreach (explode(' ',$data) as $singleline) {
 						$splitted=preg_split('/=(?!$)/',$singleline, -1, PREG_SPLIT_NO_EMPTY);
 						$count=count($splitted);
 						if ($count>2) {
-							$i=1;
-							$buffered='';
+							$i = 1;
+							$buffered = '';
 							while ($i<$count) {
 								$buffered .=$splitted[$i];
 								$i++;
 							}
 							$splitted[1]=$buffered;
 						}
-						if (!isset($splitted[1])) $splitted[1]='';
-						$index=trim(preg_replace('/\s+/','',$splitted[0]));
+						if (!isset($splitted[1])) $splitted[1] = '';
+						$index = trim(preg_replace('/\s+/','',$splitted[0]));
 						if ($index!='error') $cvars[$index]=(isinteger(trim($splitted[1]))) ? (int)trim($splitted[1]) : trim($splitted[1]);
 					}
 					$return[]=$cvars;
@@ -107,16 +107,16 @@ class TS3 {
 				@fputs($this->socket, "login $admin $querypassword"."\n");
 				$this->errorcode=$this->ReplaceFromTS3(fgets($this->socket, 8192));
 				if (strpos($this->errorcode,'error id=0') === false) {
-					$this->connected=false;
+					$this->connected = false;
 				} else {
-					$this->connected=true;				
+					$this->connected= true;				
 				}
 			} else {
-				$this->connected=false;
+				$this->connected = false;
 			}
 		} else {
 			$this->errorcode=$errstr;
-			$this->connected=false;
+			$this->connected = false;
 		}
 		return $this->connected;
 	}
@@ -235,7 +235,7 @@ class TS3 {
 		$useserver=$this->UseServer($virtualserver_id);
 		if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
 			$servergroups=$this->SendCommand('servergrouplist');
-			$permissioncount=0;
+			$permissioncount = 0;
 			foreach ($servergroups as $servegroups) {
 				if ($this->ReplaceFromTS3($servegroups['type'])==1) {
 					$newcount=count($this->SendCommand("servergrouppermlist sgid=".$servegroups['sgid']));
@@ -274,7 +274,7 @@ class TS3 {
 		}
 	}
 	public function ImportData ($dnsarray) {
-		$serverdetails=array();
+		$serverdetails = array();
 		$serverlist=$this->SendCommand('serverlist');
 		foreach ($serverlist as $server) {
 			if (isset($server['virtualserver_id'])) {
@@ -354,7 +354,7 @@ class TS3 {
 		return $serverdetails;
 	}
 	public function ServerList () {
-		$serverdetails=array();
+		$serverdetails = array();
         $array=$this->SendCommand('serverlist');
         if (is_array($array) or is_object($array)) foreach ($array as $k=>$v) $serverdetails[$k]=$this->ReplaceFromTS3($v);
         if ($this->debug==true){
@@ -418,11 +418,11 @@ class TS3 {
 		return $serverdetails;
 	}
 	public function AdminList ($virtualserver_id) {
-        $adminlist='';
+        $adminlist = '';
 		$useserver=$this->UseServer($virtualserver_id);
 		if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
 			$servergroups=$this->SendCommand('servergrouplist');
-			$permissioncount=0;
+			$permissioncount = 0;
 			unset($admingroupid);
 			foreach ($servergroups as $servegroups) {
 				if (isset ($servegroups['type']) and $servegroups['type']==1 and $servegroups['name']=='Server\sAdmin') {
@@ -462,7 +462,7 @@ class TS3 {
 					$adminlist[$cldbid]=$client_unique_identifier;
 				}
 			} else {
-				$adminlist=array();
+				$adminlist = array();
 			}
 		}
 		return $adminlist;
@@ -470,7 +470,7 @@ class TS3 {
 	public function KeyList ($virtualserver_id) {
 		$useserver=$this->UseServer($virtualserver_id);
 		if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
-			$return=array();
+			$return = array();
 			$servergroups=$this->SendCommand('servergrouplist');
 			foreach ($servergroups as $servergroup) {
 				if ($servergroup['type']==1) $admingroupid[$servergroup['sgid']]=$this->ReplaceFromTS3($servergroup['name']);
@@ -533,7 +533,7 @@ class TS3 {
         return false;
 	}
 	public function ServerGroups($virtualserver_id) {
-        $return=array();
+        $return = array();
 		$useserver=$this->UseServer($virtualserver_id);
 		if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
 			$servergroups=$this->SendCommand('servergrouplist');
@@ -568,7 +568,7 @@ class TS3 {
         $this->StartServer($virtualserver_id);
         $useserver=$this->UseServer($virtualserver_id);
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
-            $channels=array();
+            $channels = array();
             $channelList=$this->SendCommand('channellist');
             if (is_array($channelList)) {
                 foreach ($channelList as $channel) {
@@ -597,7 +597,7 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 		if (file_exists($pubkey) and file_exists($key)) {
 			$ssh2= @ssh2_connect($sship,$sshport,array('hostkey'=>'ssh-rsa'));
 		} else {
-			$ssh2=false;
+			$ssh2 = false;
 		}
 	} else {
 		$ssh2= @ssh2_connect($sship,$sshport);
@@ -611,7 +611,7 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 	    if ($connect_ssh2==true) {
 			$split_config=preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);
 			$folderfilecount=count($split_config)-1;
-			$i=0;
+			$i = 0;
             if (substr($path,0,1)=='/') {
                 $folders='/';
             } else {
@@ -633,14 +633,14 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 				$function='function backup () { nice -n +19 rm -f '.$backupfolder.$backupid.'.tar.bz2; }';
 			} else if ($action=='deploy') {
 				$function='function backup () { nice -n +19 rm -rf '.$filefolder.'* && nice -n +19 tar xfj '.$backupfolder.$backupid.'.tar.bz2 -C /';
-                if (count($move)>0) foreach ($move as $o=>$n) $function.=' && mv '.$o.' '.$n;
+                if (count($move)>0) foreach ($move as $o=>$n) $function.=' && mv '.$o . ' ' . $n;
                 $function.='; }';
 			}
             if (isset($function)) {
                 $ssh2cmd='cd '.$folders.' && '.$function.'; backup& ';
                 ssh2_exec($ssh2,$ssh2cmd);
                 if ($notified=='Y') {
-                    $query=$sql->prepare("UPDATE `voice_masterserver` SET `notified`='N' WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`='N' WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($sship,$reseller_id));
                 }
             } else {
@@ -654,10 +654,10 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 	}
 	if (isset($bad) and $notified!='Y') {
 		if ($reseller_id==0) {
-            $query=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'");
+            $query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'");
             $query->execute();
 		} else {
-            $query=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`=0 AND `accounttype`='a')");
+            $query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`=0 AND `accounttype`='a')");
             $query->execute(array($reseller_id));
 		}
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -665,7 +665,7 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 				sendmail('emaildown',$row['id'],'TS3 Master '.$sship.' ( '.$bad.' )','');
 			}
 		}
-        $query=$sql->prepare("UPDATE `voice_masterserver` SET `notified`='Y' WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`='Y' WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($sship,$reseller_id));
 		return $bad;
 	} else {
@@ -679,7 +679,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 		if (file_exists($pubkey) and file_exists($key)) {
 			$ssh2= @ssh2_connect($sship,$sshport,array('hostkey'=>'ssh-rsa'));
 		} else {
-			$ssh2=false;
+			$ssh2 = false;
 		}
 	} else {
 		$ssh2= @ssh2_connect($sship,$sshport);
@@ -693,13 +693,13 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 	    if ($connect_ssh2==true) {
 			$split_config=preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);
 			$folderfilecount=count($split_config)-1;
-			$i=0;
+			$i = 0;
             if (substr($path,0,1)=='/') {
                 $folders='/';
             } else {
-                $folders='';
+                $folders = '';
             }
-            $lastFolder='';
+            $lastFolder = '';
             while ($i<=$folderfilecount) {
                 $folders .=$split_config[$i]."/";
                 $lastFolder=$split_config[$i];
@@ -719,22 +719,22 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 				if (isset($tsip[1])) {
 					$oldip=$tsip[1];
 				} else {
-					$oldip='';
+					$oldip = '';
 				}
 				$newport=$tsport[0];
 				if (isset($tsport[1])) {
 					$oldport=$tsport[1];
 				} else {
-					$oldport='';
+					$oldport = '';
 				}
 				$newdns=$tsdns[0];
 				if (isset($tsdns[1])) {
 					$olddns=$tsdns[1];
 				} else {
-					$olddns='';
+					$olddns = '';
 				}
 			} else {
-				$dnsarray=array();
+				$dnsarray = array();
 			}
 			$sftp=ssh2_sftp($ssh2);
             if (substr($path,0,1)=='/') {
@@ -745,10 +745,10 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 			if ($action!='rs') {
 				$tsdns_read= @fopen($file,'r');
                 if ($tsdns_read) {
-                    $buffer='';
+                    $buffer = '';
                     $filesize=filesize($file);
                     if ($filesize==0) {
-                        $filesize=1;
+                        $filesize = 1;
                     }
                     while (strlen($buffer)<$filesize) {
                         $buffer.=fread($tsdns_read,$filesize);
@@ -758,13 +758,13 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                 }
 			}
 			if ($action!='rs' and $action!='mw' and $tsdns_read) {
-				$edited=false;
-				$ca=array();
+				$edited = false;
+				$ca = array();
 				foreach (preg_split('/\n/',$data,-1,PREG_SPLIT_NO_EMPTY) as $configLine) {
 					if ($action!='li' and $configLine!="$olddns=$oldip:$oldport" and $configLine!="$newdns=$newip:$newport") {
 						$ca[]=$configLine."\r\n";
 					} else if ($action=='md' and $edited==false and ($configLine=="$olddns=$oldip:$oldport" or $configLine=="$newdns=$newip:$newport")) {
-						$edited=true;
+						$edited= true;
 						$ca[]="$newdns=$newip:$newport\r\n";
 					}
 					if ($action=='li' and $configLine!='' and !preg_match('/^#(|\s+)(.*)$/',$configLine)) {
@@ -782,7 +782,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 				if ($action!='li') {
                     $ca=array_unique($ca);
                     sort($ca);
-					$newcfg='';
+					$newcfg = '';
 					foreach ($ca as $line) {
 						$newcfg .=$line;
 					}
@@ -798,7 +798,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 				}
 			}
 			if ($action=='mw' and isset($data)) {
-                $usedIPs=array();
+                $usedIPs = array();
                 foreach (preg_split('/\n/',$data,-1,PREG_SPLIT_NO_EMPTY) as $configLine) {
                     if ($configLine!='' and !preg_match('/^#(|\s+)(.*)$/',$configLine)) {
                         $splittedLine=preg_split('/\=/',$configLine,-1,PREG_SPLIT_NO_EMPTY);
@@ -818,7 +818,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                     }
                 }
                 function array_multi_dimensional_unique($multi){
-                    $unique=array();
+                    $unique = array();
                     foreach($multi as $sub){
                         if(!in_array($sub,$unique)){
                             $unique[]=$sub;
@@ -828,7 +828,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                 }
                 $usedIPs=array_multi_dimensional_unique($usedIPs);
                 sort($usedIPs);
-				$newCfg='';
+				$newCfg = '';
 				foreach ($usedIPs as $value) {
                     if (isset($value['dns']) and isset($value['address']) and !preg_match('/^#(|\s+)(.*)$/',$value['dns'])) {
                         $newCfg .=$value['dns'].'='.$value['address']."\r\n";
@@ -851,7 +851,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 			if (!isset($bad) and $action!='li') {
 				ssh2_exec($ssh2,$ssh2cmd);
 				if ($notified>0) {
-                    $query=$sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($sship,$reseller_id));
 				}
 			}
@@ -863,10 +863,10 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 	}
 	if (isset($bad) and $notified==$maxnotified) {
 		if ($reseller_id==0) {
-			$query=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'");
+			$query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'");
 			$query->execute();
 		} else {
-			$query=$sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`=0 AND `accounttype`='a')");
+			$query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`=0 AND `accounttype`='a')");
 			$query->execute(array($reseller_id));
 		}
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -874,7 +874,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 				sendmail('emaildown',$row['id'],'TS3 Master '.$sship.' ( '.$bad.' )','');
 			}
 		}
-        $query=$sql->prepare("UPDATE `voice_masterserver` SET `notified`=`notified`+1 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=`notified`+1 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($sship,$reseller_id));
 		return $bad;
     } else if (isset($bad)) {
@@ -889,33 +889,33 @@ function checkDNS ($dns,$id=null,$user_id=null,$type='') {
     global $sql;
     global $reseller_id;
     if ($type=='server') {
-        $query=$sql->prepare("SELECT `masterserver` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `masterserver` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         $masterID=$query->fetchColumn();
-        $query=$sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dns`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dns`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($dns,$reseller_id));
-        $query2=$sql->prepare("SELECT `masterserver` FROM `voice_server` WHERE `id`!=? AND `dns`=? AND `resellerid`=? LIMIT 1");
+        $query2 = $sql->prepare("SELECT `masterserver` FROM `voice_server` WHERE `id`!=? AND `dns`=? AND `resellerid`=? LIMIT 1");
         $query2->execute(array($id,$dns,$reseller_id));
     } else if ($type=='dns') {
-        $query=$sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dnsID`!=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dnsID`!=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         $masterID=$query->fetchColumn();
-        $query=$sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dnsID`!=? AND `dns`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dnsID`!=? AND `dns`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$dns,$reseller_id));
-        $query2=$sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
+        $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
         $query2->execute(array($dns,$reseller_id));
     } else {
-        $query=$sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dns`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dns`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($dns,$reseller_id));
-        $query2=$sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
+        $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
         $query2->execute(array($dns,$reseller_id));
     }
     if ($query->rowCount()>0 or $query2->rowCount()>0) {
         return false;
     }
     if ($user_id!=null) {
-        $serverdnsArray=array();
-        $query=$sql->prepare("SELECT `id`,`defaultdns`,`externalDefaultDNS` FROM `voice_masterserver` WHERE `resellerid`=?");
+        $serverdnsArray = array();
+        $query = $sql->prepare("SELECT `id`,`defaultdns`,`externalDefaultDNS` FROM `voice_masterserver` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row['externalDefaultDNS']=='N') {
@@ -939,11 +939,11 @@ function checkDNS ($dns,$id=null,$user_id=null,$type='') {
                 $tsdnsServerID=$row['tsdnsServerID'];
             }
         }
-        $query=$sql->prepare("SELECT `id`,`defaultdns` FROM `voice_tsdns` WHERE `resellerid`=?");
+        $query = $sql->prepare("SELECT `id`,`defaultdns` FROM `voice_tsdns` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ((isset($tsdnsServerID) and $id!=null and $row['id']==$tsdnsServerID) or ($type=='dns' and $id!=null and $row['id']==$masterID)) {
-                $defaultdns=strtolower($id.'-'.getusername($user_id).'.'.$row['defaultdns']);
+                $defaultdns=strtolower($id . '-' . getusername($user_id).'.'.$row['defaultdns']);
                 $partCount=count(explode('.',$defaultdns));
             }
             unset($temp);

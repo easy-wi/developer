@@ -38,13 +38,13 @@
  */
 
 
-$query=$sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='ds' GROUP BY `hostID`");
-$query2=$sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-$query3=$sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='ds' AND `hostID`=?");
-$query4=$sql->prepare("SELECT `active`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
-$query5=$sql->prepare("DELETE FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
-$query6=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='ds' LIMIT 1");
-$query7=$sql->prepare("UPDATE `voice_dns` SET `active`=?,`jobPending`='N' WHERE  `dnsID`=? LIMIT 1");
+$query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='ds' GROUP BY `hostID`");
+$query2 = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+$query3 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='ds' AND `hostID`=?");
+$query4 = $sql->prepare("SELECT `active`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
+$query5 = $sql->prepare("DELETE FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
+$query6 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='ds' LIMIT 1");
+$query7 = $sql->prepare("UPDATE `voice_dns` SET `active`=?,`jobPending`='N' WHERE  `dnsID`=? LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $query2->execute(array(':aeskey'=>$aeskey,':id'=>$row['hostID'],':reseller_id'=>$row['resellerID']));

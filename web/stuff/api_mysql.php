@@ -54,7 +54,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
         $localServerID=isid($data['server_local_id'],21);
         $externalServerID=$data['server_external_id'];
         $from=array('user_localid'=>'id','username'=>'cname','user_externalid'=>'externalID','email'=>'mail');
-        $query=$sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_user_by']]."`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_user_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localUserLookupID=$row['id'];
@@ -64,7 +64,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $success['false'][]='user does not exist';
         }
         if (!isset($success['false']) and !in_array($externalServerID,$bad)) {
-            $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_dbs` WHERE `externalID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_dbs` WHERE `externalID`=? LIMIT 1");
             $query->execute(array($externalServerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if ($row['amount']>0) {
@@ -73,7 +73,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             }
         }
         if (!isset($success['false'])) {
-            $query=$sql->prepare("SELECT s.`id`,s.`ip`,s.`max_databases`, COUNT(d.`id`) AS `installed`,(s.`max_databases`/100)*COUNT(d.`id`) AS `usedpercent`,s.`max_queries_per_hour`,s.`max_updates_per_hour`,s.`max_connections_per_hour`,s.`max_userconnections_per_hour` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip` HAVING `usedpercent`<100 ORDER BY `usedpercent` ASC LIMIT 1");
+            $query = $sql->prepare("SELECT s.`id`,s.`ip`,s.`max_databases`, COUNT(d.`id`) AS `installed`,(s.`max_databases`/100)*COUNT(d.`id`) AS `usedpercent`,s.`max_queries_per_hour`,s.`max_updates_per_hour`,s.`max_connections_per_hour`,s.`max_userconnections_per_hour` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip` HAVING `usedpercent`<100 ORDER BY `usedpercent` ASC LIMIT 1");
             $query->execute(array($resellerID));
             foreach ($query->fetchall() as $row) {
                 $max_databases=$row['max_databases'];
@@ -92,12 +92,12 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $dbname=$localUserCname.'_'.$password;
             $insert=$sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`dbname`,`password`,`ips`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
             $insert->execute(array($active,$hostID,$localUserLookupID,$dbname,$password,$aeskey,'',$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$externalServerID,$resellerID));
-            $query=$sql->prepare("SELECT `id` FROM `mysql_external_dbs` WHERE `dbname`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
+            $query = $sql->prepare("SELECT `id` FROM `mysql_external_dbs` WHERE `dbname`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
             $query->execute(array($dbname,$resellerID));
             foreach ($query->fetchall() as $row) {
                 $localID=$row['id'];
             }
-            $dbname=$localUserCname.'-'.$localID;
+            $dbname=$localUserCname . '-' . $localID;
             $nameLength=strlen($dbname);
             if ($nameLength>16) {
                 $strStart=$nameLength-16;
@@ -139,7 +139,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
     $externalServerID=$data['server_external_id'];
     $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
     if (dataExist('identify_server_by',$data)) {
-        $query=$sql->prepare("SELECT `id`,`uid`,`active`,`sid`,`dbname` FROM `mysql_external_dbs` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT `id`,`uid`,`active`,`sid`,`dbname` FROM `mysql_external_dbs` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localID=$row['id'];
@@ -147,7 +147,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $hostID=$row['sid'];
             $name=$row['dbname'];
             $oldActive=$row['active'];
-            $query=$sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
+            $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID,$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if($row['amount']>0) {
@@ -155,7 +155,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
                 }
             }
             if (!in_array($active,$bad) and $active!=$oldActive) {
-                $query=$sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($active,$localID,$resellerID));
                 $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='my' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
                 $update->execute(array($localID,$resellerID));
@@ -170,17 +170,17 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
         $success['false'][]='No data for this method';
     }
 } else if (!isset($success['false']) and array_value_exists('action','del',$data)) {
-    $active='';
-    $identifyUserBy='';
-    $localUserID='';
-    $externalUserID='';
-    $username='';
+    $active = '';
+    $identifyUserBy = '';
+    $localUserID = '';
+    $externalUserID = '';
+    $username = '';
     $identifyServerBy=$data['identify_server_by'];
     $localServerID=isid($data['server_local_id'],21);
     $externalServerID=$data['server_external_id'];
     $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
     if (dataExist('identify_server_by',$data)) {
-        $query=$sql->prepare("SELECT `id`,`uid`,`sid`,`dbname` FROM `mysql_external_dbs` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT `id`,`uid`,`sid`,`dbname` FROM `mysql_external_dbs` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localID=$row['id'];
@@ -189,7 +189,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $hostID=$row['sid'];
         }
         if(isset($localID) and isset($name)) {
-            $query=$sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($localID,$resellerID));
             $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
             $update->execute(array($localID,$resellerID));
@@ -202,14 +202,14 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
         $success['false'][]='No data for this method';
     }
 } else {
-    $active='';
-    $identifyUserBy='';
-    $localUserID='';
-    $externalUserID='';
-    $username='';
-    $identifyServerBy='';
-    $localServerID='';
-    $externalServerID='';
+    $active = '';
+    $identifyUserBy = '';
+    $localUserID = '';
+    $externalUserID = '';
+    $username = '';
+    $identifyServerBy = '';
+    $localServerID = '';
+    $externalServerID = '';
     $success['false'][]='Method not allowed';
 }
 
@@ -219,7 +219,7 @@ if ($apiType=='xml') {
         $errors=implode(', ',$success['false']);
         $action='fail';
     } else {
-        $errors='';
+        $errors = '';
         $action='success';
     }
     $reply=<<<XML

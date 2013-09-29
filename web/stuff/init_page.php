@@ -38,13 +38,13 @@
  */
 
 
-$pages=array();
+$pages = array();
 if (!isset($user_language)) $user_language=$default_language;
-$page_sprache=getlanguagefile('page',$user_language,0);
+$page_sprache = getlanguagefile('page',$user_language,0);
 include(EASYWIDIR . '/stuff/class_page_settings.php');
 if (!isurl($pageurl) or (!isdomain($pageurl) and (!isurl($pageurl)))) $pageurl=$page_url;
 $page_data=new PageSettings($user_language,$pageurl,$seo);
-$query=$sql->prepare("SELECT `active`,`activeGS`,`activeVS` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");
+$query = $sql->prepare("SELECT `active`,`activeGS`,`activeVS` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $page_data->SetData('lendactive',$row['active']);
@@ -53,7 +53,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 }
 $page_data->SetData('protectioncheck',$protectioncheck);
 $page_data->SetData('title',$title);
-$query=$sql->prepare("SELECT p.`id`,p.`subpage`,p.`naviDisplay`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='page' AND t.`language`=? AND p.`resellerid`='0' ORDER BY `subpage`,`sort`");
+$query = $sql->prepare("SELECT p.`id`,p.`subpage`,p.`naviDisplay`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='page' AND t.`language`=? AND p.`resellerid`='0' ORDER BY `subpage`,`sort`");
 $query->execute(array($user_language));
 if ($seo=='Y') {
     $page_data->SetMenu($gsprache->news,$gsprache->news,'news');
@@ -79,7 +79,7 @@ if ($seo=='Y') {
         else $page_data->SetMenu($row['title'],$row['title'],$row['subpage'],$row['id'],false);
     }
     if (isset($admin_id) and $ui->smallletters('preview',4,'get')=='true') {
-        $preview=1;
+        $preview = 1;
     } else if (count($ui->get)>0 and isset($s) and isset($page_data->pages[$s])) {
         redirect($page_data->pages[$s]['link']);
     } else if (count($ui->get)>0) {
@@ -111,12 +111,12 @@ if ($seo=='Y') {
         }
     }
 }
-$query=$sql->prepare("SELECT t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='about' AND p.`resellerid`=0 LIMIT 1");
+$query = $sql->prepare("SELECT t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='about' AND p.`resellerid`=0 LIMIT 1");
 $query->execute(array($user_language));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $page_data->SetData('about',$row['text']);
 }
-$query=$sql->prepare("SELECT p.`id`,p.`subpage`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`released`='1' AND p.`type`='news' AND p.`resellerid`=0 ORDER BY `id` DESC LIMIT $maxnews_sidebar");
+$query = $sql->prepare("SELECT p.`id`,p.`subpage`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`released`='1' AND p.`type`='news' AND p.`resellerid`=0 ORDER BY `id` DESC LIMIT $maxnews_sidebar");
 $query->execute(array($user_language));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $page_data->SetNewsPost($row['id'],$row['title'],$row['text'],$newssidebar_textlength);
@@ -165,7 +165,7 @@ if (isset($admin_id)) {
     $page_lookupid=$user_id;
 }
 if (isset($page_lookupid)) {
-    $query=$sql->prepare("SELECT `name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($page_lookupid));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $great_name=$row['name'];
@@ -184,7 +184,7 @@ if (!isset($s) and !isset($page_category) and isset($page_default) and isid($pag
     $s=$page_default;
 } else if (!isset($s) and isset($page_category) and $page_category!='' and $page_category!=null) {
     $s='404';
-    $throw404=true;
+    $throw404= true;
 }
 $what_to_be_included_array=array('news'=>'page_news.php','contact'=>'page_contact.php',
     'page'=>'page_page.php','home'=>'page_page.php','about'=>'page_page.php','gallery'=>'page_page.php','sitemap'=>'page_page.php','search'=>'page_page.php',

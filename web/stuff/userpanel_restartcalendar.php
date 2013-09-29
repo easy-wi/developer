@@ -37,10 +37,10 @@
 if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id',19,'get')) {
 	redirect('userpanel.php');
 }
-$sprache=getlanguagefile('gserver',$user_language,$reseller_id);
+$sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
 if (!isset($_SESSION['sID']) or in_array($ui->id('id',19,'get'),$substituteAccess['gs'])) {
-    $query=$sql->prepare("SELECT g.`serverip`,g.`port`,g.`protected`,s.`anticheat`,g.`pallowed`,g.`eacallowed`,s.`map`,s.`mapGroup`,t.`shorten`,t.`mapGroup` AS `defaultMapGroup` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`protected`,s.`anticheat`,g.`pallowed`,g.`eacallowed`,s.`map`,s.`mapGroup`,t.`shorten`,t.`mapGroup` AS `defaultMapGroup` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($ui->id('id',19,'get'),$user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $serverip=$row['serverip'];
@@ -54,7 +54,7 @@ if (!isset($_SESSION['sID']) or in_array($ui->id('id',19,'get'),$substituteAcces
         $pallowed=$row['pallowed'];
         $eacallowed=$row['eacallowed'];
     }
-    $uploadallowed=array();
+    $uploadallowed = array();
     $rowcount=$query->rowcount();
 
 }
@@ -78,8 +78,8 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		$day=$sprache->sunday;
 	}
 	$hour=$date[1].":00";
-	$table=array();
-    $query=$sql->prepare("SELECT `id`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
+	$table = array();
+    $query = $sql->prepare("SELECT `id`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
 	$rowcount=$query->rowCount();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -90,7 +90,7 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		$hlds_5=$row['hlds_5'];
 		$hlds_6=$row['hlds_6'];
 	}
-    $query=$sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`qstat`,t.`mapGroup` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
+    $query = $sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`qstat`,t.`mapGroup` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
     $query->execute(array($ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$shorten=$row['shorten'];
@@ -101,15 +101,15 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		}
 		$table[$row['shorten']]=array('shorten'=>$shorten,'description'=>$row['description'],'defaultMapGroup'=>$row['mapGroup']);
 	}
-	$template='';
-	$anticheat='';
-	$gsswitch='';
-	$pro='';
+	$template = '';
+	$anticheat = '';
+	$gsswitch = '';
+	$pro = '';
 	$restart='Y';
-	$backup='';
+	$backup = '';
 	$worldsafe='N';
-	$upload='';
-    $query=$sql->prepare("SELECT * FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
+	$upload = '';
+    $query = $sql->prepare("SELECT * FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($date2,$ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$template=$row['template'];
@@ -167,23 +167,23 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 			}
 		}
 	} else if (!isset($eac)) {
-		$eac=array();
+		$eac = array();
 	}
 	if ($qstat=="a2s" or $qstat=="hla2s") {
 		$anticheatsoft="Valve Anti Cheat";
 	} else if ($qstat=="cods") {
 		$anticheatsoft="Punkbuster";
 	} else {
-		$anticheatsoft='';
+		$anticheatsoft = '';
 	}
-	$template_file="userpanel_gserver_calendar_md.tpl";
+	$template_file = "userpanel_gserver_calendar_md.tpl";
 } else if ($ui->smallletters('edit2',4,'post')=='edit' and $ui->gamestring('date','post') and $ui->id('template',1,'post') and $ui->id('anticheat',1,'post') and $ui->gamestring('shorten','post') and $ui->active('backup','post') and $ui->active('restart','post') and isset($serverip) and isset($port)) {
-	$qstat_array=array();
+	$qstat_array = array();
     $date=$ui->gamestring('date','post');
 	$template=$ui->id('template',1,'post');
 	$anticheat=$ui->id('anticheat',1,'post');
 	$gsswitch=$ui->gamestring('shorten','post');
-	$query=$sql->prepare("SELECT `normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
+	$query = $sql->prepare("SELECT `normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
 	$rowcount=$query->rowCount();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -209,29 +209,29 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 			if($anticheat==3 and $hlds_3=='N' and $hlds_5=='Y') {
 				$anticheat=5;
 			} else if($anticheat==3 and $hlds_3=='N' and $hlds_5=='N') {
-				$anticheat=1;
+				$anticheat = 1;
 			} else {
-				$anticheat=1;
+				$anticheat = 1;
 			}
 			if($anticheat==4 and $hlds_4=='N' and $hlds_6=='Y') {
 				$anticheat=6;
 			} else if($anticheat==4 and $hlds_4=='N' and $hlds_6=='N') {
-                $anticheat=1;
+                $anticheat = 1;
 			} else {
-                $anticheat=1;
+                $anticheat = 1;
 			}
 			if($anticheat==5 and $hlds_5=='N') {
-                $anticheat=1;
+                $anticheat = 1;
 			}
 			if($anticheat==6 and $hlds_6=='N') {
-                $anticheat=1;
+                $anticheat = 1;
 			}
 		} else {
 			if($anticheat==3 and $normal_3=='N') {
-                $anticheat=1;
+                $anticheat = 1;
 			}
 			if($anticheat==4 and $normal_4=='N') {
-                $anticheat=1;
+                $anticheat = 1;
 			}
 		}
 	}
@@ -248,7 +248,7 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 	} else {
 		$stvupload='N';
 	}
-	$query=$sql->prepare("SELECT `id` FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
+	$query = $sql->prepare("SELECT `id` FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
 	$query->execute(array($date,$ui->id('id',19,'get'),$reseller_id));
 	$rowcount=$query->rowCount();
 	if ($rowcount==0) {
@@ -258,26 +258,26 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		$pupdate=$sql->prepare("UPDATE `gserver_restarts` SET `template`=?,`anticheat`=?,`protected`=?,`gsswitch`=?,`map`=?,`mapGroup`=?,`restart`=?,`backup`=?,`worldsafe`=?,`upload`=? WHERE `restarttime`=? AND `switchID`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
 		$pupdate->execute(array($template,$anticheat,$protected,$gsswitch,$map,$ui->mapname('mapGroup','post'),$restart,$backup,$worldsafe,$stvupload,$date,$ui->id('id',19,'get'),$user_id,$reseller_id));
 	}
-	$template_file=$spracheResponse->table_add;
+	$template_file = $spracheResponse->table_add;
 } else if ($ui->smallletters('delete',6,'post')=='delete' and $ui->gamestring('date','post') and isset($serverip) and isset($port)) {
 	$date=$ui->gamestring('date','post');
 	$pdelete=$sql->prepare("DELETE FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
 	$pdelete->execute(array($date,$ui->id('id',19,'get'),$reseller_id));
-	$template_file=$spracheResponse->table_del;;
+	$template_file = $spracheResponse->table_del;;
 } else if (isset($serverip) and isset($port)){
-	$i=0;
+	$i = 0;
 	while ($i<24) {
 		$restarts[$i]=array('mon'=>'','tue'=>'','wed'=>'','thu'=>'','fri'=>'','sat'=>'','sun'=>'');
 		$i++;
 	}
-    $query=$sql->prepare("SELECT t.`shorten`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
+    $query = $sql->prepare("SELECT t.`shorten`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
     $query->execute(array($ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$shorten=$row['shorten'];
 		$qstat_array[$shorten]=$row['qstat'];
 	}
 	$backup='N';
-    $query=$sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
+    $query = $sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
     $query->execute(array($ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$restarttime=explode("_",$row['restarttime']);
@@ -292,27 +292,27 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
         if (isset($qstat_array[$shorten])) {
             $qstat=$qstat_array[$shorten];
         } else {
-            $qstat='';
+            $qstat = '';
         }
 		if (isset($qstat) and $qstat=="a2s" or $qstat=="hla2s") {
 			$anticheatsoft="VAC";
 		} else if (isset($qstat) and $qstat=="cods") {
 			$anticheatsoft="PBuster";
 		} else {
-			$anticheatsoft='';
+			$anticheatsoft = '';
 		}
 		$anticheat=$row['anticheat'];
 		if ($anticheat==1) {
-			$anti=$anticheatsoft.' '.$sprache->on;
+			$anti=$anticheatsoft . ' ' . $sprache->on;
 		} else if ($anticheat==2) {
-			$anti=$anticheatsoft.' '.$sprache->off2;
+			$anti=$anticheatsoft . ' ' . $sprache->off2;
 		} else if ($anticheat==3 or $anticheat==4 or $anticheat==5 or $anticheat==6) {
 			$anti='EAC';
 		}
 		if ($template==1) {
-			$template='';
+			$template = '';
 		} else {
-			$template='-'.$template;
+			$template='-' . $template;
 		}
         if ($restart=='Y') {
             $routput=$shorten.$template."<br />".$row['map']."<br />".$anti;
@@ -345,5 +345,5 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
             $restarts[$hour][$day]=array('out'=>$routput);
         }
 	}
-	$template_file="userpanel_gserver_calendar_list.tpl";
+	$template_file = "userpanel_gserver_calendar_list.tpl";
 }

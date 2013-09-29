@@ -41,7 +41,7 @@ class easyWiRest {
 
     // define internal vars
     private $method,$timeout,$connect=false,$handle=null,$ssl,$url;
-    protected $response=array();
+    protected $response = array();
 
     // Constructor that sets defaults which can be overwritten
     function __construct($url,$timeout=10,$ssl='N',$connect='curl') {
@@ -106,7 +106,7 @@ class easyWiRest {
             $send .= "Connection: Close\r\n\r\n";
             if(strlen($postParams)>0) $send .= $params;
             fwrite($this->handle,$send);
-            $buffer='';
+            $buffer = '';
             while (!feof($this->handle)) $buffer.=fgets($this->handle,4096);
             fclose($this->handle);
             $ex=explode("\r\n\r\n",$buffer);

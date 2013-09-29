@@ -74,7 +74,7 @@
                 <?php }?>
                 <?php if($pa['voiceserver'] and $crashedArray['ts3']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></span></a><?php }?>
                 <?php if($pa['voicemasterserver'] and $crashedArray['ts3Master']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3Master'].' '.$sprache_bad->ts3master_crashed; ?></span></a><?php }?>
-                <?php if($pa['roots'] and $crashedArray['masterserver']>0 and $gserver_module) { ?><a href="admin.php?w=ro&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['masterserver'].' '.$sprache_bad->master_crashed; ?></span></a><?php }?>
+                <?php if($pa['roots'] and $crashedArray['masterserver']>0 and $gserver_module) { ?><a href="admin.php?w=ro"><span class="badge badge-important"><?php echo $crashedArray['masterserver'].' '.$sprache_bad->master_crashed; ?></span></a><?php }?>
                 <?php if($pa['vserverhost'] and $crashedArray['virtualHosts']>0 and $vserver_module and $reseller_id==0) { ?><a href="admin.php?w=vh&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['virtualHosts'].' '.$sprache_bad->host_crashed; ?></span></a><?php }?>
             </div>
         </div>
@@ -253,7 +253,7 @@
                         <div id="collapseEight" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('ro','ma'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <li <?php if($ui->smallletters('w',255,'get')=='ro') echo 'class="active"';?>><a href="admin.php?w=ro&amp;d=md"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ro') echo 'class="active"';?>><a href="admin.php?w=ro"><?php echo $gsprache->overview;?></a></li>
                                     <?php if($pa['masterServer']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><?php echo $gsprache->master.' '.$gsprache->overview;?></a></li>
                                     <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><?php echo $gsprache->master.' '.$gsprache->update;?></a></li>

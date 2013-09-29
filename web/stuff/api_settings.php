@@ -41,41 +41,41 @@ if ($main!=1 or !isset($admin_id) or (isset($admin_id) and !$pa['apiSettings']))
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('api',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
+$sprache = getlanguagefile('api',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
-    $lookupID=0;
+    $logreseller = 0;
+    $logsubuser = 0;
+    $lookupID = 0;
 } else {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $lookupID=($admin_id!=$reseller_id) ? $reseller_id : $admin_id;
-    $logreseller=0;
+    $logreseller = 0;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->smallletters('action',2,'post')=='md'){
-    $query=$sql->prepare("SELECT COUNT(`active`) AS `amount` FROM `api_settings` WHERE `resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT COUNT(`active`) AS `amount` FROM `api_settings` WHERE `resellerID`=? LIMIT 1");
     $query->execute(array($lookupID));
     $amount=$query->fetchColumn();
     $salt=md5(date('Y-d-m H:m:s'));
     $user=$ui->names('user',255,'post');
     if ($amount>0) {
-        $query=$sql->prepare("UPDATE `api_settings` SET `active`=?,`user`=? WHERE `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("UPDATE `api_settings` SET `active`=?,`user`=? WHERE `resellerID`=? LIMIT 1");
         $query->execute(array($ui->active('active','post'),$user,$lookupID));
         if ($ui->password('pwd',255,'post')!='encrypted') {
-            $query=$sql->prepare("UPDATE `api_settings` SET `pwd`=?,`salt`=? WHERE `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `api_settings` SET `pwd`=?,`salt`=? WHERE `resellerID`=? LIMIT 1");
             $query->execute(array(passwordhash($ui->password('pwd',255,'post'),$salt),$salt,$lookupID));
         }
     } else {
-        $query=$sql->prepare("INSERT INTO `api_settings` (`active`,`user`,`salt`,`pwd`,`resellerID`) VALUES (?,?,?,?,?)");
+        $query = $sql->prepare("INSERT INTO `api_settings` (`active`,`user`,`salt`,`pwd`,`resellerID`) VALUES (?,?,?,?,?)");
         $query->execute(array($ui->active('active','post'),$user,passwordhash($ui->password('pwd',255,'post'),$salt),$salt,$lookupID));
     }
-    $ips=array();
+    $ips = array();
     $postIPs=(array)$ui->ip4('ip','post');
-    $query=$sql->prepare("SELECT `ip` FROM `api_ips` WHERE `resellerID`=?");
+    $query = $sql->prepare("SELECT `ip` FROM `api_ips` WHERE `resellerID`=?");
     $query->execute(array($lookupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (!in_array($row['ip'],$postIPs)) {
@@ -87,29 +87,29 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
     foreach ($postIPs as $ip) {
         if (!in_array($ip,$ips)) {
-            $query=$sql->prepare("INSERT INTO `api_ips` (`ip`,`resellerID`) VALUES (?,?)");
+            $query = $sql->prepare("INSERT INTO `api_ips` (`ip`,`resellerID`) VALUES (?,?)");
             $query->execute(array($ip,$lookupID));
         }
     }
-    $template_file=$spracheResponse->table_add;
+    $template_file = $spracheResponse->table_add;
     $loguseraction="%mod% API";
     $insertlog->execute();
 } else {
-    $ips=array();
-    $active='';
-    $user='';
-    $pwd='';
-    $query=$sql->prepare("SELECT `ip` FROM `api_ips` WHERE `resellerID`=?");
+    $ips = array();
+    $active = '';
+    $user = '';
+    $pwd = '';
+    $query = $sql->prepare("SELECT `ip` FROM `api_ips` WHERE `resellerID`=?");
     $query->execute(array($lookupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $ips[]=$row['ip'];
     }
-    $query=$sql->prepare("SELECT `active`,`user` FROM `api_settings` WHERE `resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `active`,`user` FROM `api_settings` WHERE `resellerID`=? LIMIT 1");
     $query->execute(array($lookupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $active=$row['active'];
         $user=$row['user'];
         $pwd='encrypted';
     }
-    $template_file="admin_api_settings.tpl";
+    $template_file = "admin_api_settings.tpl";
 }

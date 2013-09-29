@@ -38,7 +38,7 @@ if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !isanyuser($user
 	header('Location: login.php');
 	die('No acces');
 }
-$sprache_bad=getlanguagefile('home',$user_language,$reseller_id);
+$sprache_bad = getlanguagefile('home',$user_language,$reseller_id);
 $query_tag=$sql->prepare("SELECT brandname FROM settings WHERE resellerid=? LIMIT 1");
 $query_tag->execute(array($reseller_id));
 foreach ($query_tag->fetchAll(PDO::FETCH_ASSOC) as $row_tag) {
@@ -48,14 +48,14 @@ if (isset($admin_id) and $reseller_id!="0" and $admin_id!=$reseller_id) {
 	$reseller_id=$admin_id;
 }
 $reseller_brandname=$rSA['brandname'];
-$removed=array();
-$i_removed=0;
-$crashed=array();
-$i_crashed=0;
-$tag_removed=array();
-$i_tag_removed=0;
+$removed = array();
+$i_removed = 0;
+$crashed = array();
+$i_crashed = 0;
+$tag_removed = array();
+$i_tag_removed = 0;
 $crashedArray=array('gsCrashed'=>0,'gsPWD'=>0,'gsTag'=>0,'ticketsOpen'=>0,'tickets'=>0,'ts3'=>0);
-$query=$sql->prepare("SELECT `stopped`,`serverid`,CONCAT(`serverip`,':',`port`) AS `server`,`userid`,`war`,`brandname`,`queryName`,`queryPassword` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
+$query = $sql->prepare("SELECT `stopped`,`serverid`,CONCAT(`serverip`,':',`port`) AS `server`,`userid`,`war`,`brandname`,`queryName`,`queryPassword` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
 $query->execute(array($user_id,$reseller_id));
 $customer=getusername($user_id);
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -78,11 +78,11 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $crashedArray['gsTag']++;
 	}
 }
-$query=$sql->prepare("SELECT `id` FROM `tickets` WHERE `userid`=? AND `state`!='C' AND `resellerid`=?");
-$query2=$sql->prepare("SELECT `userID` FROM `tickets_text` WHERE `ticketID`=? ORDER BY `writeDate` DESC LIMIT 1");
+$query = $sql->prepare("SELECT `id` FROM `tickets` WHERE `userid`=? AND `state`!='C' AND `resellerid`=?");
+$query2 = $sql->prepare("SELECT `userID` FROM `tickets_text` WHERE `ticketID`=? ORDER BY `writeDate` DESC LIMIT 1");
 $query->execute(array($user_id,$reseller_id));
-$counttickets_open=0;
-$counttickets_unanswered=0;
+$counttickets_open = 0;
+$counttickets_unanswered = 0;
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $counttickets_open++;
     $crashedArray['ticketsOpen']++;
@@ -92,18 +92,18 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $crashedArray['tickets']++;
     }
 }
-$query=$sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `active`='Y' AND `uptime`='0' AND `userid`=? AND `resellerid`=?");
+$query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `active`='Y' AND `uptime`='0' AND `userid`=? AND `resellerid`=?");
 $query->execute(array($user_id,$reseller_id));
-$crached_ts3_virtual=0;
-$crashed_ts3=array();
+$crached_ts3_virtual = 0;
+$crashed_ts3 = array();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $crashed_ts3[]=array('address'=>$row['address']);
     $crached_ts3_virtual++;
 }
 $crashedArray['ts3']=$crached_ts3_virtual;
-$feedArray=array();
+$feedArray = array();
 if($ui->smallletters('w',2,'get')=='da' or (!$ui->smallletters('w',2,'get') and !$ui->smallletters('d',2,'get'))) {
-    $query=$sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
+    $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['orderBy']=='I' and $row['merge']=='N'){
@@ -115,14 +115,14 @@ if($ui->smallletters('w',2,'get')=='da' or (!$ui->smallletters('w',2,'get') and 
         }
         $newsAmount=$row['newsAmount'];
         if ($row['merge']=='N') {
-            $query2=$sql->prepare("SELECT `feedID`,`feedUrl`,`feedID`,`twitter`,`loginName` FROM `feeds_url` WHERE `resellerID`=? AND `active`='Y' ORDER BY $orderFeedsBy");
+            $query2 = $sql->prepare("SELECT `feedID`,`feedUrl`,`feedID`,`twitter`,`loginName` FROM `feeds_url` WHERE `resellerID`=? AND `active`='Y' ORDER BY $orderFeedsBy");
             $query2->execute(array($row['resellerID']));
             $object=$query2->fetchAll(PDO::FETCH_ASSOC);
             if ($row['steamFeeds']=='Y') {
                 $object[]=array('feedID'=>0,'feedUrl'=>'http://store.steampowered.com/news/','twitter'=>'N','loginName'=>'');
             }
             foreach ($object as $row2) {
-                $query3=$sql->prepare("SELECT `title`,`link`,`description`,`content` FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=? AND `active`='Y' ORDER BY `pubDate` DESC LIMIT $newsAmount");
+                $query3 = $sql->prepare("SELECT `title`,`link`,`description`,`content` FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=? AND `active`='Y' ORDER BY `pubDate` DESC LIMIT $newsAmount");
                 $query3->execute(array($row2['feedID'],$row['resellerID']));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                     if ($row['displayContent']=='Y' and $row['limitDisplay']=='Y' and $row2['twitter']=='N'){
@@ -150,9 +150,9 @@ if($ui->smallletters('w',2,'get')=='da' or (!$ui->smallletters('w',2,'get') and 
             unset($object);
         } else {
             if ($row['steamFeeds']=='Y') {
-                $query2=$sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND (u.`active`='Y' OR u.`active` IS NULL) ORDER BY $orderFeedsBy LIMIT $newsAmount");
+                $query2 = $sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND (u.`active`='Y' OR u.`active` IS NULL) ORDER BY $orderFeedsBy LIMIT $newsAmount");
             } else {
-                $query2=$sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND u.`active`='Y' ORDER BY $orderFeedsBy LIMIT $newsAmount");
+                $query2 = $sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND u.`active`='Y' ORDER BY $orderFeedsBy LIMIT $newsAmount");
             }
             $query2->execute(array($row['resellerID']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {

@@ -42,21 +42,21 @@ if(!function_exists('removeUser')) {
         global $sql;
         foreach ($tables as $table => $column) {
             if ($reseller==null) {
-                $query=$sql->prepare("DELETE FROM `".$table."` WHERE `".$column."`=?");
+                $query = $sql->prepare("DELETE FROM `".$table."` WHERE `".$column."`=?");
                 $query->execute(array($userID));
             } else {
-                $query=$sql->prepare("DELETE FROM `".$table."` WHERE `".$column."`=? AND `".$reseller['column']."`=?");
+                $query = $sql->prepare("DELETE FROM `".$table."` WHERE `".$column."`=? AND `".$reseller['column']."`=?");
                 $query->execute(array($userID,$reseller['value']));
             }
         }
     }
 }
-$query=$sql->prepare("SELECT * FROM `jobs` j WHERE `status`='4' AND `type`='us' AND `action` IN ('dl','md') AND NOT EXISTS (SELECT 1 FROM `jobs` WHERE `userID`=j.`userID` AND (`status`=1 OR `status` IS NULL) AND `type`!='us' LIMIT 1)");
+$query = $sql->prepare("SELECT * FROM `jobs` j WHERE `status`='4' AND `type`='us' AND `action` IN ('dl','md') AND NOT EXISTS (SELECT 1 FROM `jobs` WHERE `userID`=j.`userID` AND (`status`=1 OR `status` IS NULL) AND `type`!='us' LIMIT 1)");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $ok=true;
+    $ok= true;
     if ($row['action']=='dl') {
-        $query2=$sql->prepare("SELECT `accounttype`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query2 = $sql->prepare("SELECT `accounttype`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             if ($row2['accounttype']=='r') {
@@ -74,51 +74,51 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             }
         }
         customColumns('U',$row['affectedID'],'del');
-        $query2=$sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query2 = $sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         $command=$gsprache->del.' userID: '.$row['affectedID'].' name:'.$row['name'];
     } else {
         $extraData=@json_decode($row['extraData']);
         if (is_object($extraData)) {
-            $query2=$sql->prepare("UPDATE `userdata` SET `active`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
+            $query2 = $sql->prepare("UPDATE `userdata` SET `active`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
             $query2->execute(array($extraData->newActive,$row['affectedID']));
             $command=$gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
         } else {
-            $ok=false;
+            $ok = false;
             $command='Error: '.$gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
         }
     }
     if ($ok==true) {
-        $query2=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
+        $query2 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
         $query2->execute(array($row['jobID']));
     }
     $theOutput->printGraph($command);
 }
-$query=$sql->prepare("DELETE p.* FROM `userpermissions` p LEFT JOIN `userdata` u ON p.`userid`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE p.* FROM `userpermissions` p LEFT JOIN `userdata` u ON p.`userid`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE g.* FROM `userdata_groups` g LEFT JOIN `userdata` u ON g.`userID`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE g.* FROM `userdata_groups` g LEFT JOIN `userdata` u ON g.`userID`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE s.* FROM `userdata_substitutes` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE s.* FROM `userdata_substitutes` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata_substitutes` s ON o.`sID`=s.`sID` WHERE s.`sID` IS NULL");
+$query = $sql->prepare("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata_substitutes` s ON o.`sID`=s.`sID` WHERE s.`sID` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
+$query = $sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
+$query = $sql->prepare("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
+$query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE d.* FROM `mysql_external_dbs` d LEFT JOIN `userdata` u ON d.`uid`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE d.* FROM `mysql_external_dbs` d LEFT JOIN `userdata` u ON d.`uid`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE v.* FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE v.* FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE v.* FROM `voice_dns` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE v.* FROM `voice_dns` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();
-$query=$sql->prepare("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
+$query = $sql->prepare("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
 $query->execute();

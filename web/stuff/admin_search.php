@@ -40,17 +40,17 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !isanyadmin($admin_
     header('Location: login.php');
     die('No acces');
 }
-$sprache=getlanguagefile('search',$user_language,$reseller_id);
-$results=array();
-$gs=false;
-$vs=false;
-$vo=false;
-$ad=false;
-$im=false;
-$ro=false;
-$us=false;
-$q=array();
-$i=0;
+$sprache = getlanguagefile('search',$user_language,$reseller_id);
+$results = array();
+$gs = false;
+$vs = false;
+$vo = false;
+$ad = false;
+$im = false;
+$ro = false;
+$us = false;
+$q = array();
+$i = 0;
 function theName ($a,$b) {
     $name=($a==' ' or $a=='' or $a==null) ? $b : $a.' ('.$b.')';
     return $name;
@@ -62,27 +62,27 @@ function notIN ($a,$c) {
 if (isset($ui->get['q'])) {
     if ($ui->st('type','get')) {
         foreach($ui->st('type','get') as $t) {
-            if ($pa['addons'] and $t=='ad') $ad=true;
-            if ($pa['gserver'] and $t=='gs') $gs=true;
-            if ($pa['gimages'] and $t=='im') $im=true;
-            if ($pa['roots'] and $t=='ro') $ro=true;
-            if ($pa['voiceserver'] and $t=='vo') $vo=true;
-            if (($pa['addvserver'] or $pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) and $t=='vs') $vs=true;
-            if (($pa['user'] or $pa['user_users']) and $t=='us') $us=true;
+            if ($pa['addons'] and $t=='ad') $ad= true;
+            if ($pa['gserver'] and $t=='gs') $gs= true;
+            if ($pa['gimages'] and $t=='im') $im= true;
+            if ($pa['roots'] and $t=='ro') $ro= true;
+            if ($pa['voiceserver'] and $t=='vo') $vo= true;
+            if (($pa['addvserver'] or $pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) and $t=='vs') $vs= true;
+            if (($pa['user'] or $pa['user_users']) and $t=='us') $us= true;
         }
     }
-    $ips=array();
-    $ports=array();
-    $addresses=array();
-    $words=array();
-    $ids=array();
-    $adIDs=array();
-    $gsIDs=array();
-    $imIDs=array();
-    $roIDs=array();
-    $usIDs=array();
-    $voIDs=array();
-    $vsIDs=array();
+    $ips = array();
+    $ports = array();
+    $addresses = array();
+    $words = array();
+    $ids = array();
+    $adIDs = array();
+    $gsIDs = array();
+    $imIDs = array();
+    $roIDs = array();
+    $usIDs = array();
+    $voIDs = array();
+    $vsIDs = array();
     foreach(preg_split("/\s/",$ui->get['q'],-1,PREG_SPLIT_NO_EMPTY) as $s) {
         switch($s) {
             case(isid($s,19)):
@@ -110,7 +110,7 @@ if (isset($ui->get['q'])) {
     $ids=array_unique($ids);
     foreach($ids as $id) {
         if ($ad==true) {
-            $query=$sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? ".notIN($adIDs,'`id`'));
+            $query = $sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? ".notIN($adIDs,'`id`'));
             $query->execute(array($id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $adIDs[]=$id;
@@ -118,19 +118,19 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($im==true) {
-            $query=$sql->prepare("SELECT `description` FROM `servertypes` WHERE `id`=? AND `resellerid`=? ".notIN($imIDs,'`id`'));
+            $query = $sql->prepare("SELECT `description` FROM `servertypes` WHERE `id`=? AND `resellerid`=? ".notIN($imIDs,'`id`'));
             $query->execute(array($id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $imIDs[]=$id;
-                $results["im-${id}"]=array('type'=>$gsprache->gameserver.' '.$gsprache->templates,'id'=>$id,'name'=>$row['description'],'owner'=>'','edit'=>'?w=im&amp;d=md&amp;id='.$id,'delete'=>'?w=im&amp;d=dl&amp;id='.$id);
+                $results["im-${id}"]=array('type'=>$gsprache->gameserver . ' ' . $gsprache->templates,'id'=>$id,'name'=>$row['description'],'owner'=>'','edit'=>'?w=im&amp;d=md&amp;id='.$id,'delete'=>'?w=im&amp;d=dl&amp;id='.$id);
             }
         }
         if ($us==true) {
             if($reseller_id==0) {
-                $query=$sql->prepare("SELECT `cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE (`id`=? OR `externalID`=?) ".notIN($usIDs,'`id`'));
+                $query = $sql->prepare("SELECT `cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE (`id`=? OR `externalID`=?) ".notIN($usIDs,'`id`'));
                 $query->execute(array($id,$id));
             } else {
-                $query=$sql->prepare("SELECT `cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE (`id`=? OR `externalID`=?) AND `resellerid`=? ".notIN($usIDs,'`id`'));
+                $query = $sql->prepare("SELECT `cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE (`id`=? OR `externalID`=?) AND `resellerid`=? ".notIN($usIDs,'`id`'));
                 if ($admin_id==$reseller_id) {
                     $query->execute(array($id,$id,$reseller_id));
                 } else {
@@ -143,7 +143,7 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($gs==true) {
-            $query=$sql->prepare("SELECT g.`serverip`,g.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE (g.`id`=? OR g.`externalID`=?) AND g.`resellerid`=? ".notIN($gsIDs,'g.`id`'));
+            $query = $sql->prepare("SELECT g.`serverip`,g.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE (g.`id`=? OR g.`externalID`=?) AND g.`resellerid`=? ".notIN($gsIDs,'g.`id`'));
             $query->execute(array($id,$id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $gsIDs[]=$id;
@@ -151,7 +151,7 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($vo==true) {
-            $query=$sql->prepare("SELECT v.`ip`,v.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) AND v.`resellerid`=? ".notIN($voIDs,'v.`id`'));
+            $query = $sql->prepare("SELECT v.`ip`,v.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) AND v.`resellerid`=? ".notIN($voIDs,'v.`id`'));
             $query->execute(array($id,$id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $voIDs[]=$id;
@@ -161,10 +161,10 @@ if (isset($ui->get['q'])) {
         if ($ro==true) {
             $notIN=notIN($roIDs,'r.`id`');
             if ($reseller_id==0) {
-                $query=$sql->prepare("SELECT r.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE (r.`id`=? OR r.`externalID`=?) AND r.`hostid`=0 $notIN");
+                $query = $sql->prepare("SELECT r.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE (r.`id`=? OR r.`externalID`=?) AND r.`hostid`=0 $notIN");
                 $query->execute(array($id,$id));
             } else {
-                $query=$sql->prepare("SELECT r.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE (r.`id`=? OR r.`externalID`=?) AND r.`resellerid`=? $notIN");
+                $query = $sql->prepare("SELECT r.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE (r.`id`=? OR r.`externalID`=?) AND r.`resellerid`=? $notIN");
                 $query->execute(array($id,$id,$reseller_id));
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -175,13 +175,13 @@ if (isset($ui->get['q'])) {
         if ($vs==true) {
             $notIN=notIN($vsIDs,'r.`id`');
             if ($reseller_id==0) {
-                $query=$sql->prepare("SELECT v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) $notIN");
+                $query = $sql->prepare("SELECT v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) $notIN");
                 $query->execute(array($id,$id));
             } else if ($reseller_id==$admin_id) {
-                $query=$sql->prepare("SELECT v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) AND v.`userid`=? $notIN");
+                $query = $sql->prepare("SELECT v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) AND v.`userid`=? $notIN");
                 $query->execute(array($id,$id,$reseller_id));
             } else {
-                $query=$sql->prepare("SELECT v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) AND v.`userid`=? AND v.`resellerid`=? $notIN");
+                $query = $sql->prepare("SELECT v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) AND v.`userid`=? AND v.`resellerid`=? $notIN");
                 $query->execute(array($id,$id,$admin_id,$reseller_id));
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -192,7 +192,7 @@ if (isset($ui->get['q'])) {
     }
     foreach($ips as $ip) {
         if ($gs==true) {
-            $query=$sql->prepare("SELECT g.`id`,g.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? ".notIN($gsIDs,' g.`id`')." AND g.`serverip`=?");
+            $query = $sql->prepare("SELECT g.`id`,g.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? ".notIN($gsIDs,' g.`id`')." AND g.`serverip`=?");
             $query->execute(array($reseller_id,$ip));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $gsIDs[]=$row['id'];
@@ -200,7 +200,7 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($vo==true) {
-            $query=$sql->prepare("SELECT v.`id`,v.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`resellerid`=? ".notIN($voIDs,'v.`id`')." AND v.`ip`=?");
+            $query = $sql->prepare("SELECT v.`id`,v.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`resellerid`=? ".notIN($voIDs,'v.`id`')." AND v.`ip`=?");
             $query->execute(array($reseller_id,$ip));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $voIDs[]=$row['id'];
@@ -210,10 +210,10 @@ if (isset($ui->get['q'])) {
         if ($ro==true) {
             $notIN=notIN($roIDs,'r.`id`');
             if ($reseller_id==0) {
-                $query=$sql->prepare("SELECT r.`id`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE r.`hostid`=0 $notIN AND r.`ip`=?");
+                $query = $sql->prepare("SELECT r.`id`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE r.`hostid`=0 $notIN AND r.`ip`=?");
                 $query->execute(array($ip));
             } else {
-                $query=$sql->prepare("SELECT r.`id`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE r.`resellerid`=? $notIN AND r.`ip`=?");
+                $query = $sql->prepare("SELECT r.`id`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE r.`resellerid`=? $notIN AND r.`ip`=?");
                 $query->execute(array($reseller_id,$ip));
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -224,13 +224,13 @@ if (isset($ui->get['q'])) {
         if ($vs==true) {
             $notIN=notIN($vsIDs,'r.`id`');
             if ($reseller_id==0) {
-                $query=$sql->prepare("SELECT v.`id`,v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`ip`=? $notIN");
+                $query = $sql->prepare("SELECT v.`id`,v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`ip`=? $notIN");
                 $query->execute(array($ip));
             } else if ($reseller_id==$admin_id) {
-                $query=$sql->prepare("SELECT v.`id`,v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`userid`=? $notIN AND v.`ip`=?");
+                $query = $sql->prepare("SELECT v.`id`,v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`userid`=? $notIN AND v.`ip`=?");
                 $query->execute(array($reseller_id,$ip));
             } else {
-                $query=$sql->prepare("SELECT v.`id`,v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`userid`=? AND v.`resellerid`=? $notIN AND v.`ip`=?");
+                $query = $sql->prepare("SELECT v.`id`,v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`userid`=? AND v.`resellerid`=? $notIN AND v.`ip`=?");
                 $query->execute(array($admin_id,$reseller_id,$ip));
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -241,7 +241,7 @@ if (isset($ui->get['q'])) {
     }
     foreach($ports as $port) {
         if ($gs==true) {
-            $query=$sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=:id ".notIN($gsIDs,'g.`id`')." AND (g.`port`=:port OR g.`port2`=:port OR g.`port3`=:port OR g.`port4`=:port OR g.`port5`=:port)");
+            $query = $sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=:id ".notIN($gsIDs,'g.`id`')." AND (g.`port`=:port OR g.`port2`=:port OR g.`port3`=:port OR g.`port4`=:port OR g.`port5`=:port)");
             $query->execute(array(':id'=>$reseller_id,':port'=>$port));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $gsIDs[]=$row['id'];
@@ -249,7 +249,7 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($vo==true) {
-            $query=$sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`resellerid`=? ".notIN($voIDs,'v.`id`')." AND v.`port`=?");
+            $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`resellerid`=? ".notIN($voIDs,'v.`id`')." AND v.`port`=?");
             $query->execute(array($reseller_id,$port));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $voIDs[]=$row['id'];
@@ -260,7 +260,7 @@ if (isset($ui->get['q'])) {
     foreach($addresses as $address) {
         list($ip,$port)=explode(':',$address);
         if ($gs==true) {
-            $query=$sql->prepare("SELECT g.`id`,g.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? ".notIN($gsIDs,'g.`id`')." AND g.`serverip`=? AND g.`port`=?");
+            $query = $sql->prepare("SELECT g.`id`,g.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? ".notIN($gsIDs,'g.`id`')." AND g.`serverip`=? AND g.`port`=?");
             $query->execute(array($reseller_id,$ip,$port));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $gsIDs[]=$row['id'];
@@ -268,7 +268,7 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($vo==true) {
-            $query=$sql->prepare("SELECT v.`id`,v.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`resellerid`=? ".notIN($voIDs,'v.`id`')." AND v.`ip`=? AND v.`port`=?");
+            $query = $sql->prepare("SELECT v.`id`,v.`port`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`resellerid`=? ".notIN($voIDs,'v.`id`')." AND v.`ip`=? AND v.`port`=?");
             $query->execute(array($reseller_id,$ip,$port));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $voIDs[]=$row['id'];
@@ -279,7 +279,7 @@ if (isset($ui->get['q'])) {
     foreach($words as $word) {
         $word="%${word}%";
         if ($ad==true) {
-            $query=$sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `resellerid`=? ".notIN($adIDs,'`id`')." AND (LOWER(`menudescription`) LIKE ? OR LOWER(`shorten`) LIKE ?)");
+            $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `resellerid`=? ".notIN($adIDs,'`id`')." AND (LOWER(`menudescription`) LIKE ? OR LOWER(`shorten`) LIKE ?)");
             $query->execute(array($reseller_id,$word,$word));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $adIDs[]=$row['id'];
@@ -287,20 +287,20 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($im==true) {
-            $query=$sql->prepare("SELECT `id`,`description` FROM `servertypes` WHERE `resellerid`=? ".notIN($imIDs,'`id`')." AND (LOWER(`description`) LIKE ? OR `shorten` LIKE ?)");
+            $query = $sql->prepare("SELECT `id`,`description` FROM `servertypes` WHERE `resellerid`=? ".notIN($imIDs,'`id`')." AND (LOWER(`description`) LIKE ? OR `shorten` LIKE ?)");
             $query->execute(array($reseller_id,$word,$word));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $imIDs[]=$row['id'];
-                $results["im-${row['id']}"]=array('type'=>$gsprache->gameserver.' '.$gsprache->templates,'id'=>$row['id'],'name'=>$row['description'],'owner'=>'','edit'=>'?w=im&amp;d=md&amp;id='.$row['id'],'delete'=>'?w=im&amp;d=dl&amp;id='.$row['id']);
+                $results["im-${row['id']}"]=array('type'=>$gsprache->gameserver . ' ' . $gsprache->templates,'id'=>$row['id'],'name'=>$row['description'],'owner'=>'','edit'=>'?w=im&amp;d=md&amp;id='.$row['id'],'delete'=>'?w=im&amp;d=dl&amp;id='.$row['id']);
             }
         }
         if ($us==true) {
             if($reseller_id==0) {
                 $notIN=(count($usIDs)>0) ? '`id` NOT IN('.implode(',',$usIDs).') AND ' : '';
-                $query=$sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE $notIN (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
+                $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE $notIN (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
                 $query->execute(array(':word'=>$word));
             } else {
-                $query=$sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE `resellerid`=? ".notIN($usIDs,'`id`')." AND (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
+                $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE `resellerid`=? ".notIN($usIDs,'`id`')." AND (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
                 if ($admin_id==$reseller_id) {
                     $query->execute(array(':resellerID'=>$reseller_id,':word'=>$word));
                 } else {
@@ -315,4 +315,4 @@ if (isset($ui->get['q'])) {
     }
 }
 $q=implode(' ',$q);
-$template_file='admin_search.tpl';
+$template_file = 'admin_search.tpl';

@@ -41,32 +41,32 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['userGroups'])
     header('Location: admin.php');
     die('No acces');
 }
-$sprache=getlanguagefile('user',$user_language,$reseller_id);
-$rsprache=getlanguagefile('reseller',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype='admin';
+$sprache = getlanguagefile('user',$user_language,$reseller_id);
+$rsprache = getlanguagefile('reseller',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-    $logreseller=0;
-    $logsubuser=0;
+    $logreseller = 0;
+    $logsubuser = 0;
 } else {
     if (isset($_SESSION['oldid'])) {
         $logsubuser=$_SESSION['oldid'];
     } else {
-        $logsubuser=0;
+        $logsubuser = 0;
     }
-    $logreseller=0;
+    $logreseller = 0;
 }
 $lookIpID=$reseller_id;
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
     $lookIpID=$admin_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if (in_array($ui->st('d','get'),array('md','ad'))){
     if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='md') {
         $id=$ui->id('id',19,'get');
-        $query=$sql->prepare("SELECT * FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$lookIpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
@@ -127,14 +127,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $ipBans=$row['ipBans'];
         }
         if (isset($grouptype)) {
-            $template_file='admin_user_groups_md.tpl';
+            $template_file = 'admin_user_groups_md.tpl';
         } else {
-            $template_file='admin_404.tpl';
+            $template_file = 'admin_404.tpl';
         }
     } else if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='ad') {
-        $template_file='admin_user_groups_add.tpl';
+        $template_file = 'admin_user_groups_add.tpl';
     } else if (in_array($ui->smallletters('action',2,'post'),array('md','ad'))) {
-        $error=array();
+        $error = array();
         if (!$ui->active('active','post')) {
             $error[]='Active';
         }
@@ -145,7 +145,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $error[]='Groupname';
         }
         if (count($error)>0) {
-            $template_file='Error: '.implode('<br />',$error);
+            $template_file = 'Error: '.implode('<br />',$error);
         } else {
             $active='N';
             $root='N';
@@ -297,42 +297,42 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $id=$ui->id('id',19,'get');
                 $defaultgroup=$ui->active('defaultgroup','post');
                 if ($defaultgroup=='Y') {
-                    $query=$sql->prepare("UPDATE `usergroups` SET `defaultgroup`='N' WHERE `grouptype`=? AND `id`!=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `usergroups` SET `defaultgroup`='N' WHERE `grouptype`=? AND `id`!=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($ui->smallletters('grouptype',1,'post'),$id,$lookIpID));
                 }
-                $query=$sql->prepare("UPDATE `usergroups` SET `active`=?,`defaultgroup`=?,`name`=?,`root`=?,`user`=?,`user_users`=?,`log`=?,`settings`=?,`cms_comments`=?,`cms_settings`=?,`cms_pages`=?,`cms_news`=?,`gserver`=?,`addons`=?,`gimages`=?,`roots`=?,`restart`=?,`gsResetting`=?,`miniroot`=?,`fastdl`=?,`modfastdl`=?,`useraddons`=?,`usersettings`=?,`ftpaccess`=?,`addvserver`=?,`modvserver`=?,`delvserver`=?,`usevserver`=?,`vserversettings`=?,`vserverhost`=?,`voicemasterserver`=?,`voiceserver`=?,`resellertemplates`=?,`ftpbackup`=?,`traffic`=?,`trafficsettings`=?,`lendserver`=?,`voiceserverSettings`=?,`voiceserverStats`=?,`lendserverSettings`=?,`pxeServer`=?,`dhcpServer`=?,`dedicatedServer`=?,`eac`=?,`masterServer`=?,`userGroups`=?,`userPassword`=?,`apiSettings`=?,`jobs`=?,`updateEW`=?,`ipBans`=?,`mysql`=?,`mysql_settings`=?,`tickets`=?,`usertickets`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("UPDATE `usergroups` SET `active`=?,`defaultgroup`=?,`name`=?,`root`=?,`user`=?,`user_users`=?,`log`=?,`settings`=?,`cms_comments`=?,`cms_settings`=?,`cms_pages`=?,`cms_news`=?,`gserver`=?,`addons`=?,`gimages`=?,`roots`=?,`restart`=?,`gsResetting`=?,`miniroot`=?,`fastdl`=?,`modfastdl`=?,`useraddons`=?,`usersettings`=?,`ftpaccess`=?,`addvserver`=?,`modvserver`=?,`delvserver`=?,`usevserver`=?,`vserversettings`=?,`vserverhost`=?,`voicemasterserver`=?,`voiceserver`=?,`resellertemplates`=?,`ftpbackup`=?,`traffic`=?,`trafficsettings`=?,`lendserver`=?,`voiceserverSettings`=?,`voiceserverStats`=?,`lendserverSettings`=?,`pxeServer`=?,`dhcpServer`=?,`dedicatedServer`=?,`eac`=?,`masterServer`=?,`userGroups`=?,`userPassword`=?,`apiSettings`=?,`jobs`=?,`updateEW`=?,`ipBans`=?,`mysql`=?,`mysql_settings`=?,`tickets`=?,`usertickets`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->active('active','post'),$defaultgroup,$ui->names('groupname',255,'post'),$root,$user,$user_users,$log,$settings,$cms_comments,$cms_settings,$cms_pages,$cms_news,$gserver,$addons,$gimages,$roots,$restart,$reset,$miniroot,$fastdl,$modfastdl,$useraddons,$usersettings,$ftpaccess,$addvserver,$modvserver,$delvserver,$usevserver,$vserversettings,$vserverhost,$voicemasterserver,$voiceserver,$resellertemplates,$ftpbackup,$traffic,$trafficsettings,$lendserver,$voiceserverSettings,$voiceserverStats,$lendserverSettings,$pxeServer,$dhcpServer,$dedicatedServer,$eac,$masterServer,$userGroups,$userPassword,$apiSettings,$jobs,$updateEW,$ipBans,$mysql,$mysql_settings,$tickets,$usertickets,$id,$lookIpID));
                 $loguseraction='%mod% %group% '.$ui->names('groupname',255,'post');
             } else if ($ui->st('d','get')=='ad') {
                 $defaultgroup=$ui->active('defaultgroup','post');
                 if ($defaultgroup=='Y') {
-                    $query=$sql->prepare("UPDATE `usergroups` SET `defaultgroup`='N' WHERE `grouptype`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("UPDATE `usergroups` SET `defaultgroup`='N' WHERE `grouptype`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($ui->smallletters('grouptype',1,'post'),$lookIpID));
                 }
-                $query=$sql->prepare("SELECT `id` FROM `usergroups` WHERE `name`=? AND `resellerid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `name`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->names('groupname',255,'post'),$lookIpID));
                 if ($query->rowcount()>0) {
-                    $template_file='Error: Group already exists';
+                    $template_file = 'Error: Group already exists';
                 } else {
-                    $query=$sql->prepare("INSERT INTO `usergroups` (`active`,`defaultgroup`,`grouptype`,`name`,`root`,`user`,`user_users`,`log`,`settings`,`cms_comments`,`cms_settings`,`cms_pages`,`cms_news`,`gserver`,`addons`,`gimages`,`roots`,`restart`,`gsResetting`,`miniroot`,`fastdl`,`modfastdl`,`useraddons`,`usersettings`,`ftpaccess`,`addvserver`,`modvserver`,`delvserver`,`usevserver`,`vserversettings`,`vserverhost`,`voicemasterserver`,`voiceserver`,`resellertemplates`,`ftpbackup`,`traffic`,`trafficsettings`,`lendserver`,`tickets`,`usertickets`,`voiceserverSettings`,`voiceserverStats`,`lendserverSettings`,`pxeServer`,`dhcpServer`,`dedicatedServer`,`eac`,`masterServer`,`userGroups`,`userPassword`,`apiSettings`,`jobs`,`updateEW`,`ipBans`,`mysql`,`mysql_settings`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    $query = $sql->prepare("INSERT INTO `usergroups` (`active`,`defaultgroup`,`grouptype`,`name`,`root`,`user`,`user_users`,`log`,`settings`,`cms_comments`,`cms_settings`,`cms_pages`,`cms_news`,`gserver`,`addons`,`gimages`,`roots`,`restart`,`gsResetting`,`miniroot`,`fastdl`,`modfastdl`,`useraddons`,`usersettings`,`ftpaccess`,`addvserver`,`modvserver`,`delvserver`,`usevserver`,`vserversettings`,`vserverhost`,`voicemasterserver`,`voiceserver`,`resellertemplates`,`ftpbackup`,`traffic`,`trafficsettings`,`lendserver`,`tickets`,`usertickets`,`voiceserverSettings`,`voiceserverStats`,`lendserverSettings`,`pxeServer`,`dhcpServer`,`dedicatedServer`,`eac`,`masterServer`,`userGroups`,`userPassword`,`apiSettings`,`jobs`,`updateEW`,`ipBans`,`mysql`,`mysql_settings`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                     $query->execute(array($ui->active('active','post'),$defaultgroup,$ui->smallletters('grouptype',1,'post'),$ui->names('groupname',255,'post'),$root,$user,$user_users,$log,$settings,$cms_comments,$cms_settings,$cms_pages,$cms_news,$gserver,$addons,$gimages,$roots,$restart,$reset,$miniroot,$fastdl,$modfastdl,$useraddons,$usersettings,$ftpaccess,$addvserver,$modvserver,$delvserver,$usevserver,$vserversettings,$vserverhost,$voicemasterserver,$voiceserver,$resellertemplates,$ftpbackup,$traffic,$trafficsettings,$lendserver,$tickets,$usertickets,$voiceserverSettings,$voiceserverStats,$lendserverSettings,$pxeServer,$dhcpServer,$dedicatedServer,$eac,$masterServer,$userGroups,$userPassword,$apiSettings,$jobs,$updateEW,$ipBans,$mysql,$mysql_settings,$lookIpID));
                 }
                 $loguseraction='%add% %group% '.$ui->names('groupname',255,'post');
             } else {
-                $template_file='admin_404.tpl';
+                $template_file = 'admin_404.tpl';
             }
             if (!isset($template_file) and $query->rowCount()>0) {
                 $insertlog->execute();
-                $template_file=$spracheResponse->table_add;
+                $template_file = $spracheResponse->table_add;
             } else if (!isset($template_file)) {
-                $template_file=$spracheResponse->error_table;
+                $template_file = $spracheResponse->error_table;
             }
         }
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id','30','get')) {
     $id=$ui->id('id','30','get');
     if (!$ui->smallletters('action',2,'post')) {
-        $query=$sql->prepare("SELECT `active`,`grouptype`,`name` FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `active`,`grouptype`,`name` FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$lookIpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if($row['active']=='Y') {
@@ -351,34 +351,34 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
             $name=$row['name'];
         }
-        $template_file='admin_user_groups_dl.tpl';
+        $template_file = 'admin_user_groups_dl.tpl';
     } else if ($ui->smallletters('action',2,'post')=='dl' and $ui->id('id','30','get')) {
-        $query=$sql->prepare("SELECT c.`id`,g.`name` FROM `usergroups` g LEFT JOIN `usergroups` c ON g.`grouptype`=c.`grouptype` AND c.`defaultgroup`='Y' WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT c.`id`,g.`name` FROM `usergroups` g LEFT JOIN `usergroups` c ON g.`grouptype`=c.`grouptype` AND c.`defaultgroup`='Y' WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($id,$lookIpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $default_id=$row['id'];
             $name=$row['name'];
         }
         if (isset($default_id) and $default_id!=$id and $default_id!=null and $default_id!=0) {
-            $query=$sql->prepare("DELETE FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("DELETE FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$lookIpID));
             if ($query->rowCount()>0) {
-                $query=$sql->prepare("DELETE FROM `userdata_groups` WHERE `groupID`=? AND `resellerID`=?");
+                $query = $sql->prepare("DELETE FROM `userdata_groups` WHERE `groupID`=? AND `resellerID`=?");
                 $query->execute(array($id,$lookIpID));
                 $loguseraction='%del% %group% '.$name;
                 $insertlog->execute();
-                $template_file=$spracheResponse->table_del;
+                $template_file = $spracheResponse->table_del;
             } else {
-                $template_file=$spracheResponse->error_table;
+                $template_file = $spracheResponse->error_table;
             }
         } else if (isset($default_id) and $default_id==$id) {
-            $template_file='Error: Can not remove default group';
+            $template_file = 'Error: Can not remove default group';
         } else {
-            $template_file='Error: No mastergroup to default users belonging to the to be removed group';
+            $template_file = 'Error: No mastergroup to default users belonging to the to be removed group';
         }
     }
 } else {
-    $table=array();
+    $table = array();
     $o=$ui->st('o','get');
     if ($ui->st('o','get')=='da') {
         $orderby='`active` DESC';
@@ -401,7 +401,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $orderby='`id` ASC';
     }
-    $query=$sql->prepare("SELECT * FROM `usergroups` WHERE `resellerid`=? ORDER BY $orderby");
+    $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `resellerid`=? ORDER BY $orderby");
     $query->execute(array($lookIpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if($row['active']=='Y') {
@@ -425,5 +425,5 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $table[]=array('id'=>$row['id'],'img'=>$imgName,'alt'=>$imgAlt,'grouptype'=>$grouptype,'defaultgroup'=>$defaultgroup,'name'=>$row['name'],'active'=>$row['active']);
     }
-    $template_file='admin_user_groups_list.tpl';
+    $template_file = 'admin_user_groups_list.tpl';
 }

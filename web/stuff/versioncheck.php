@@ -39,19 +39,19 @@ if ((!isset($admin_id) or $main!=1) or $reseller_id!=0 or !$pa['updateEW']) {
     header('Location: admin.php');
     die;
 }
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$sprache=getlanguagefile('licence',$user_language,$reseller_id);
-$logusertype="admin";
-$logreseller=0;
-$logsubuser=0;
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$sprache = getlanguagefile('licence',$user_language,$reseller_id);
+$logusertype = 'admin';
+$logreseller = 0;
+$logsubuser = 0;
 if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
 	if (isset($action) and $action=='ud') {
-		$updateinclude=true;
+		$updateinclude= true;
 		class UpdateResponse {
-			public $response=array(),$errors=array();
+			public $response=array(),$errors = array();
 			function __construct() {
-				$this->response=array();
+				$this->response = array();
 			}
 			function add ($newtext) {
 				$this->response[]=$newtext;
@@ -107,7 +107,7 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
 						if (preg_match('/^(.*)\.[\w]{1,}$/',$name)) {
 							$folders=preg_split('/\//',$name,-1,PREG_SPLIT_NO_EMPTY);
 							$count=count($folders)-1;
-							$i=0;
+							$i = 0;
 							unset($checkfolder);
 							while ($i<$count) {
 								if (isset($checkfolder))$checkfolder .='/'. $folders[$i];
@@ -165,14 +165,14 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
 		} else {
 			$response->addError('Cannot create the tempfolder <b>tmp/</b>');
 		}
-        if(count($response->errors)>0) $template_file='Errors: '.implode('<br />',$response->errors);
+        if(count($response->errors)>0) $template_file = 'Errors: '.implode('<br />',$response->errors);
 		if (isset($template_file)) $template_file.=' <br/>'.implode('<br />',$response->printresponse());
-        else $template_file=$response->printresponse();
+        else $template_file = $response->printresponse();
 	} else {
-        if (isset($ewVersions)) $template_file='admin_versioncheck_ud.tpl';
+        if (isset($ewVersions)) $template_file = 'admin_versioncheck_ud.tpl';
 	}
 } else {
-	$table=array();
+	$table = array();
     if ($user_language=='de') {
         $column='de';
         $release='releasenotesDE';
@@ -181,24 +181,24 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
         $release='releasenotesEN';
     }
     $release='<div class="right"><a href="http://forum.easy-wi.com/showthread.php?tid='.$ewVersions[$release].'" target="_blank">'.$vcsprache->releaseNotes.'</a></div>';
-	$query=$sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
+	$query = $sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
 	$query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		if ($row[$column]!=null and $row[$column]!='') $table[]=array('version'=>$row['version'],'text'=>$row[$column]);
 	}
     $update=($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW']==true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
 	if ($ewVersions['cVersion']<$ewVersions['version']) {
-        $state=1;
+        $state = 1;
 		$class='versioncheckbad';
-		$isok=$vcsprache->outdated.' '.$ewVersions['cVersion'].' '.$vcsprache->latestversion.' '.$ewVersions['version'].'.'.$release.' '.$update;
+		$isok=$vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'].'.'.$release . ' ' . $update;
 	} else if ($ewVersions['files']<$ewVersions['version']) {
-        $state=1;
+        $state = 1;
 		$class='versioncheckbad';
-		$isok=$vcsprache->filesoutdated.' '.$ewVersions['cVersion'].'. '.$vcsprache->latestversion.' '.$ewVersions['version'].'.'.$release.' '.$update;
+		$isok=$vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'].'. '.$vcsprache->latestversion . ' ' . $ewVersions['version'].'.'.$release . ' ' . $update;
 	} else {
-        $state=2;
+        $state = 2;
 		$class='versioncheckok';
-		$isok=$vcsprache->ok.' '.$ewVersions['cVersion'].'.';
+		$isok=$vcsprache->ok . ' ' . $ewVersions['cVersion'].'.';
 	}
     if($reseller_id==0){
         $rowspan=8;
@@ -210,7 +210,7 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
         if ($licenceDetails['c']=='R') $updates=$contractTime;
         else if ($licenceDetails['updatesUntil']=='0000-00-00') $updates=$sprache->unlimited;
     } else {
-        $rowspan=4;
+        $rowspan = 4;
     }
-	$template_file='admin_versioncheck.tpl';
+	$template_file = 'admin_versioncheck.tpl';
 }

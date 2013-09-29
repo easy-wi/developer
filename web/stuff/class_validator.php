@@ -36,11 +36,11 @@
  */
 
 class ValidateUserinput {
-    public $get=array();
-    public $post=array();
-    public $server=array();
-    public $request=array();
-    public $env=array();
+    public $get = array();
+    public $post = array();
+    public $server = array();
+    public $request = array();
+    public $env = array();
     private function magic_quotes ($value) {
         if (function_exists('get_magic_quotes_gpc') and get_magic_quotes_gpc()==1) $value=stripcslashes($value);
         return $value;
@@ -160,7 +160,7 @@ class ValidateUserinput {
     }
     function ismail ($value,$type,$object=false) {
         $check=$this->if_obj_or_str($value,$type,$object);
-        if (is_string($check)) $check=trim($check);
+        if (is_string($check)) $check = trim($check);
         if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_EMAIL)) {
             $exploded=explode('@',$check);
             if (!checkdnsrr($exploded[1],'MX') and !checkdnsrr($exploded[1],'A')) return false;

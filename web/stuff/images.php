@@ -40,31 +40,31 @@ if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['gimages'
 	die('No acces');
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-$sprache=getlanguagefile('images',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype="admin";
+$sprache = getlanguagefile('images',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id=="0") {
-	$logreseller="0";
-	$logsubuser="0";
+	$logreseller = 0;
+	$logsubuser = 0;
 } else {
 	if (isset($_SESSION['oldid'])) {
 		$logsubuser=$_SESSION['oldid'];
 	} else {
-		$logsubuser=0;
+		$logsubuser = 0;
 	}
-	$logreseller=0;
+	$logreseller = 0;
 }
 if ($reseller_id!=0 and $admin_id!=$reseller_id) {
 	$reseller_id=$admin_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=='ex' and $ui->id('id',10,'get')) {
     $xml=new DOMDocument('1.0','utf-8');
     $element=$xml->createElement('addon');
-    $query=$sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=?");
+    $query = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=?");
     $query->execute(array($ui->id('id',10,'get'),$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $shorten=$row['shorten'];
@@ -82,16 +82,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
         header("Content-Disposition: attachment; filename=${shorten}.xml");
         header("Content-Type: text/xml; charset=UTF-8");
         header("Content-Transfer-Encoding: binary");
-        $xml->formatOutput=true;
+        $xml->formatOutput= true;
         echo $xml->saveXML();
         die;
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else if ($ui->st('d','get')=='ad' or ($ui->st('d','get')=='md' and $ui->id('id',10,'get'))) {
     if ($ui->id('id',10,'get') and !$ui->smallletters('action',2,'post') and $ui->st('d','get')=='md') {
         $id=$ui->id('id',10,'get');
-        $query=$sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=?");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $steamgame=$row['steamgame'];
@@ -125,11 +125,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $iptables=$row['iptables'];
             $protectedSaveCFGs=$row['protectedSaveCFGs'];
         }
-        $query=$sql->prepare("SELECT distinct(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
+        $query = $sql->prepare("SELECT distinct(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         $table = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[]=array('shorten'=>$row['shorten']);
-        $query=$sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
+        $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
         $query->execute();
         $table3 = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -138,49 +138,49 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $option=(isset ($qstat) and $qstat==$aqstat) ? "<option value=\"$aqstat\" selected=\"selected\">$adescription</option>" : "<option value=\"$aqstat\">$adescription</option>";
             $table3[]=array('option'=>$option);
         }
-        $template_file=(isset($steamgame)) ? "admin_images_md.tpl" : 'admin_404.tpl';
+        $template_file = (isset($steamgame)) ? "admin_images_md.tpl" : 'admin_404.tpl';
     } else if ((!$ui->smallletters('action',2,'post') or $ui->id('import',1,'post')==1) and $ui->st('d','get')=='ad') {
         $token=token();
-        $query=$sql->prepare("SELECT DISTINCT(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
+        $query = $sql->prepare("SELECT DISTINCT(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         $table = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[]=array('shorten'=>$row['shorten']);
-        $query=$sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten` ORDER BY `description`");
+        $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten` ORDER BY `description`");
         $query->execute();
         $table2 = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table2[]=array('qstat'=>$row['qstat'],'description'=>$row['description']);
-        $steamgame='';
-        $appID='';
-        $updates='';
-        $shorten='';
-        $description='';
-        $type='';
-        $gamebinary='';
-        $binarydir='';
-        $modfolder='';
-        $fps='';
-        $slots='';
-        $map='';
-        $cmd='';
-        $modcmds='';
-        $tic='';
-        $qstat='';
-        $gamemod='';
-        $gamemod2='';
-        $configs='';
-        $configedit='';
-        $qstatpassparam='';
-        $portStep='';
-        $portMax='';
-        $portOne='';
-        $portTwo='';
-        $portThree='';
-        $portFour='';
-        $portFive='';
-        $protected='';
-        $protectedSaveCFGs='';
-        $iptables='';
-        $mapGroup='';
+        $steamgame = '';
+        $appID = '';
+        $updates = '';
+        $shorten = '';
+        $description = '';
+        $type = '';
+        $gamebinary = '';
+        $binarydir = '';
+        $modfolder = '';
+        $fps = '';
+        $slots = '';
+        $map = '';
+        $cmd = '';
+        $modcmds = '';
+        $tic = '';
+        $qstat = '';
+        $gamemod = '';
+        $gamemod2 = '';
+        $configs = '';
+        $configedit = '';
+        $qstatpassparam = '';
+        $portStep = '';
+        $portMax = '';
+        $portOne = '';
+        $portTwo = '';
+        $portThree = '';
+        $portFour = '';
+        $portFive = '';
+        $protected = '';
+        $protectedSaveCFGs = '';
+        $iptables = '';
+        $mapGroup = '';
         if ($ui->id('import',1,'post')==1 and $_FILES["file"]["error"]==0 and $_FILES["file"]["type"]=='text/xml') {
             $shorten=$_FILES["file"]["name"];
             try {
@@ -220,10 +220,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     }
                 }
             } catch(Exception $error) {
-                $active='';
+                $active = '';
             }
         }
-        $query=$sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
+        $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
         $query->execute();
         $table3 = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -232,9 +232,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $option=(isset($qstat) and $qstat==$aqstat) ? "<option value=\"$aqstat\" selected=\"selected\">$adescription</option>" : "<option value=\"$aqstat\">$adescription</option>";
             $table3[]=array('option'=>$option);
         }
-        $template_file="admin_images_add.tpl";
+        $template_file = "admin_images_add.tpl";
     } else if ($ui->smallletters('action',2,'post')=='ad' or ($ui->smallletters('action',2,'post')=='md' and $ui->id('id',10,'get'))){
-        $error=array();
+        $error = array();
         if(!$ui->w('steamgame',1,'post')) $error[]='Steamgame';
         if(!$ui->active('gamemod','post')) $error[]='Gamemod';
         if(!$ui->id('updates',1,'post')) $error[]='Updates';
@@ -269,69 +269,69 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $appID=($ui->id('appID',19,'post')) ? $ui->id('appID',19,'post') : null;
         $protected=($ui->active('protected','post')) ? $ui->active('protected','post') : 'N';
         if($ui->gamestring('shorten','post') and $ui->smallletters('action',2,'post')=='ad') {
-            $query=$sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($shorten,$reseller_id));
             if($query->rowCount()>0) $error[]='Shorten';
         } else if ($ui->gamestring('shorten','post') and $ui->smallletters('action',2,'post')=='md') {
-            $query=$sql->prepare("SELECT `id` FROM `servertypes` WHERE `id`!=? AND `shorten`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `id`!=? AND `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($ui->id('id',10,'get'),$shorten,$reseller_id));
             if($query->rowCount()>0) $error[]='Shorten';
         } else {
             $error[]='Shorten';
         }
         if (count($error)>0){
-            $template_file='Error: '.implode(', ',$error);
+            $template_file = 'Error: '.implode(', ',$error);
         } else if ($ui->smallletters('action',2,'post')=='ad') {
             $iptables=$ui->startparameter('iptables','post');
             $protectedSaveCFGs=$ui->startparameter('protectedSaveCFGs','post');
-            $query=$sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`cmd`,`modcmds`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            $query = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`cmd`,`modcmds`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             $query->execute(array($iptables,$protectedSaveCFGs,$steamgame,$updates,$shorten,$description,'gserver',$gamebinary,$binarydir,$modfolder,$map,$mapGroup,$cmd,$modcmds,$qstat,$gamemod,$gamemod2,$configs,$configedit,$qstatpassparam,$appID,$portMax,$portStep,$portOne,$portTwo,$portThree,$portFour,$portFive,$protected,$reseller_id));
             if($query->rowCount()>0) {
-                $template_file=$spracheResponse->table_add;
+                $template_file = $spracheResponse->table_add;
                 $loguseraction="%add% %template% $shorten";
                 $insertlog->execute();
             } else {
-                $template_file='Error could not write to table';
+                $template_file = 'Error could not write to table';
             }
         } else {
             $type='gserver';
-            $query=$sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`cmd`=?,`modcmds`=?,`qstat`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`qstatpassparam`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`protected`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`cmd`=?,`modcmds`=?,`qstat`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`qstatpassparam`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`protected`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($iptables,$protectedSaveCFGs,$steamgame,$updates,$shorten,$description,$gamebinary,$binarydir,$modfolder,$map,$mapGroup,$cmd,$modcmds,$qstat,$gamemod,$gamemod2,$configs,$configedit,$qstatpassparam,$appID,$portMax,$portStep,$portOne,$portTwo,$portThree,$portFour,$portFive,$protected,$ui->id('id',10,'get'),$reseller_id));
             if($query->rowCount()>0) {
-                $template_file=$spracheResponse->table_add;
+                $template_file = $spracheResponse->table_add;
                 $loguseraction="%mod% %template% $shorten";
                 $insertlog->execute();
             } else {
-                $template_file='Error: could not update table or data unchanged!';
+                $template_file = 'Error: could not update table or data unchanged!';
             }
         }
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else if ($ui->st('d','get')=='dl' and $ui->id('id','30','get')) {
     $id=$ui->id('id','30','get');
     if (!isset($action)) {
-        $query=$sql->prepare("SELECT `description` FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `description` FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         $description=$query->fetchColumn();
-        $template_file=(isset($description)) ? "admin_images_dl.tpl" : 'admin_404.tpl';
+        $template_file = (isset($description)) ? "admin_images_dl.tpl" : 'admin_404.tpl';
     } else if ($action=='dl'){
-        $query=$sql->prepare("SELECT `shorten` FROM `servertypes` WHERE id=? AND resellerid=? LIMIT 1");
+        $query = $sql->prepare("SELECT `shorten` FROM `servertypes` WHERE id=? AND resellerid=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         $shorten=$query->fetchColumn();
-        $query=$sql->prepare("DELETE FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         if($query->rowCount()>0) {
             $loguseraction="%del% %template% $shorten";
             $insertlog->execute();
-            $template_file=$spracheResponse->table_del;
+            $template_file = $spracheResponse->table_del;
         } else {
-            $template_file='Error could not edit table';
+            $template_file = 'Error could not edit table';
         }
-        $query=$sql->prepare("DELETE FROM `rservermasterg` WHERE `servertypeid`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `rservermasterg` WHERE `servertypeid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
     } else {
-        $template_file='admin_404.tpl';
+        $template_file = 'admin_404.tpl';
     }
 } else {
     $o=$ui->st('o','get');
@@ -353,12 +353,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $orderby='`id` ASC';
         $o='ai';
     }
-    $query=$sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description`,`type` FROM `servertypes` $where ORDER BY $orderby LIMIT $start,$amount");
+    $query = $sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description`,`type` FROM `servertypes` $where ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array(':reseller_id'=>$reseller_id));
     $table = array();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[]=array('id'=>$row['id'],'shorten'=>$row['shorten'],'steamgame'=>$row['steamgame'],'type'=>$row['type'],'description'=>$row['description']);
     $next=$start+$amount;
-    $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` $where");
+    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` $where");
     $query->execute(array(':reseller_id'=>$reseller_id));
     $colcount=$query->fetchColumn();
     $vor=($colcount>$next) ? $start+$amount : $start;
@@ -369,12 +369,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $link .=(!isset($amount)) ? 20 : $amount;
     $link .=($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
     $pages[]=$link;
-    $i=2;
+    $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$amount;
         $pages[]=($start==$selectpage) ? '<a href="admin.php?w=im&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'&amp;o='.$o.'" class="bold">'.$i.'</a>' : '<a href="admin.php?w=im&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'&amp;o='.$o.'">'.$i.'</a>';
         $i++;
     }
     $pages=implode(', ',$pages);
-    $template_file="admin_images_list.tpl";
+    $template_file = "admin_images_list.tpl";
 }

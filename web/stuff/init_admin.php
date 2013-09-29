@@ -54,7 +54,7 @@ $dediserver_module = (is_numeric($licenceDetails['mD']) and $licenceDetails['mD'
 
 $ewVersions['files'] = '4.00';
 
-$vcsprache=getlanguagefile('versioncheck',$user_language,$reseller_id);
+$vcsprache = getlanguagefile('versioncheck',$user_language,$reseller_id);
 $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
 $query->execute();
 $ewVersions['cVersion'] = $query->fetchColumn();

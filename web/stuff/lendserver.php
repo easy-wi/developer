@@ -42,27 +42,27 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and (!isset($pa) or (!$
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
 include(EASYWIDIR . '/stuff/class_voice.php');
-$sprache=getlanguagefile('lendserver',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype="admin";
+$sprache = getlanguagefile('lendserver',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id==0) {
-	$logreseller=0;
-	$logsubuser=0;
+	$logreseller = 0;
+	$logsubuser = 0;
 } else {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
-	$logreseller=0;
+	$logreseller = 0;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=="se" and $pa['lendserverSettings']) {
 	if ($ui->active('active','post')) {
-        $query=$sql->prepare("UPDATE `lendsettings` SET `active`=?,`activeGS`=?,`activeVS`=?,`mintime`=?,`maxtime`=?,`timesteps`=?,`minplayer`=?,`maxplayer`=?,`playersteps`=?,`mintimeRegistered`=?,`maxtimeRegistered`=?,`timestepsRegistered`=?,`minplayerRegistered`=?,`maxplayerRegistered`=?,`playerstepsRegistered`=?,`vomintime`=?,`vomaxtime`=?,`votimesteps`=?,`vominplayer`=?,`vomaxplayer`=?,`voplayersteps`=?,`vomintimeRegistered`=?,`vomaxtimeRegistered`=?,`votimestepsRegistered`=?,`vominplayerRegistered`=?,`vomaxplayerRegistered`=?,`voplayerstepsRegistered`=?,`shutdownempty`=?,`shutdownemptytime`=?,`ftpupload`=?,`ftpuploadpath`=AES_ENCRYPT(?,?),`lendaccess`=? WHERE `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("UPDATE `lendsettings` SET `active`=?,`activeGS`=?,`activeVS`=?,`mintime`=?,`maxtime`=?,`timesteps`=?,`minplayer`=?,`maxplayer`=?,`playersteps`=?,`mintimeRegistered`=?,`maxtimeRegistered`=?,`timestepsRegistered`=?,`minplayerRegistered`=?,`maxplayerRegistered`=?,`playerstepsRegistered`=?,`vomintime`=?,`vomaxtime`=?,`votimesteps`=?,`vominplayer`=?,`vomaxplayer`=?,`voplayersteps`=?,`vomintimeRegistered`=?,`vomaxtimeRegistered`=?,`votimestepsRegistered`=?,`vominplayerRegistered`=?,`vomaxplayerRegistered`=?,`voplayerstepsRegistered`=?,`shutdownempty`=?,`shutdownemptytime`=?,`ftpupload`=?,`ftpuploadpath`=AES_ENCRYPT(?,?),`lendaccess`=? WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($ui->active('active','post'),$ui->w('activeGS',1,'post'),$ui->w('activeVS',1,'post'),$ui->id('mintime',3,'post'),$ui->id('maxtime',4,'post'),$ui->id('timesteps',3,'post'),$ui->id('minplayer',3,'post'),$maxplayer=$ui->id('maxplayer',3,'post'),$ui->id('playersteps',3,'post'),$ui->id('mintimeRegistered',3,'post'),$ui->id('maxtimeRegistered',4,'post'),$ui->id('timestepsRegistered',3,'post'),$ui->id('minplayerRegistered',3,'post'),$ui->id('maxplayerRegistered',3,'post'),$ui->id('playerstepsRegistered',3,'post'),$vomintime=$ui->id('vomintime',3,'post'),$ui->id('vomaxtime',4,'post'),$ui->id('votimesteps',3,'post'),$ui->id('vominplayer',3,'post'),$ui->id('vomaxplayer',3,'post'),$ui->id('voplayersteps',3,'post'),$ui->id('vomintimeRegistered',3,'post'),$ui->id('vomaxtimeRegistered',4,'post'),$ui->id('votimestepsRegistered',3,'post'),$ui->id('vominplayerRegistered',3,'post'),$ui->id('vomaxplayerRegistered',3,'post'),$ui->id('voplayerstepsRegistered',3,'post'),$ui->active('shutdownempty','post'),$ui->id('shutdownemptytime',4,'post'),$ui->w('ftpupload',1,'post'),$ui->url('ftpuploadpath','post'),$aeskey,$ui->id('lendaccess',1,'post'),$reseller_id));
-        $template_file=($query->rowCount()>0) ? $spracheResponse->table_add : $spracheResponse->error_table;;
+        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_add : $spracheResponse->error_table;;
 	} else {
-		$query=$sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
+		$query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$reseller_id));
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$active=$row['active'];
@@ -98,10 +98,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$ftpuploadpath=$row['decyptedftpuploadpath'];
 			$lendaccess=$row['lendaccess'];
 		}
-		$template_file="admin_lendserver_settings.tpl";
+		$template_file = "admin_lendserver_settings.tpl";
 	}
 } else if ($ui->st('d','get')=="st" and $pa['lendserver']) {
-    $query=$sql->prepare("SELECT * FROM `lendstats` WHERE `resellerID`=?");
+    $query = $sql->prepare("SELECT * FROM `lendstats` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
 	foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 		$lenddate=$row['lenddate'];
@@ -112,33 +112,33 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		if (isset($statistic[$lenddate][$shorten])) {
 			$statistic[$lenddate][$shorten]++;
 		} else {
-			$statistic[$lenddate][$shorten]=1;
+			$statistic[$lenddate][$shorten] = 1;
 		}
 	}
-	$stats="";
+	$stats = "";
 	foreach ($statistic as $key=>$value) {
 		foreach ($value as $key2=>$value2) {
 			$stats .="$key: $value2 ($key2)</br>";
 		}
 	}
-	$template_file=$stats;
+	$template_file = $stats;
 } else if ($pa['lendserver']) {
 	if ($ui->id('id',19,'post')) {
-		$query=$sql->prepare("SELECT `serverid`,`servertype` FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+		$query = $sql->prepare("SELECT `serverid`,`servertype` FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',19,'post'),$reseller_id));
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$id=$row['serverid'];
 			$servertype=$row['servertype'];
 		}
 		if ($servertype=='g') {
-            $query=$sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $cmds=gsrestart($row['switchID'],'so',$aeskey,$reseller_id);
                 ssh2_execute('gs',$row['rootID'],$cmds);
             }
 		} else if ($servertype=='v') {
-            $query=$sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$id,$reseller_id));
 			foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 				$queryport=$row['queryport'];
@@ -148,7 +148,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				if ($addedby=='2') {
 					$queryip=$row['ssh2ip'];
 				} else if ($addedby=='1') {
-                    $query=$sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($row2['rootid'],$reseller_id));
 					foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 						$queryip=$row['ip'];
@@ -162,16 +162,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $connection->CloseConnection();
 			}
 		}
-        $query=$sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',19,'post'),$reseller_id));
 	} else {
-		$table=array();
-		$query=$sql->prepare("SELECT `id` FROM `gsswitch` WHERE `active`='Y' AND `lendserver`='Y' AND `resellerid`=?");
-        $query2=$sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
+		$table = array();
+		$query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `active`='Y' AND `lendserver`='Y' AND `resellerid`=?");
+        $query2 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
         $query->execute(array($reseller_id));
-		$gscount=0;
-		$gscounts=array();
-        $gsused=array();
+		$gscount = 0;
+		$gscounts = array();
+        $gsused = array();
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$gscount++;
             $query2->execute(array($row['id'],$reseller_id));
@@ -180,27 +180,27 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				if (isset($gscounts[$shorten])) {
 					$gscounts[$shorten]++;
 				} else {
-					$gscounts[$shorten]=1;
-					$gsused[$shorten]=0;
+					$gscounts[$shorten] = 1;
+					$gsused[$shorten] = 0;
 				}
 			}
 		}
-        $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `active`='Y' AND `lendserver`='Y' AND `active`='Y' AND `resellerid`=?");
+        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `active`='Y' AND `lendserver`='Y' AND `active`='Y' AND `resellerid`=?");
         $query->execute(array($reseller_id));
         $vocount=$query->fetchColumn();
         $voTotalCount=$vocount;
-        $query=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `lendedserver` WHERE `servertype`='v' AND `resellerid`=?");
+        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `lendedserver` WHERE `servertype`='v' AND `resellerid`=?");
         $query->execute(array($reseller_id));
         $voused=$query->fetchColumn();
-        $query=$sql->prepare("SELECT * FROM `lendedserver` WHERE `resellerid`=? ORDER BY `servertype` DESC");
+        $query = $sql->prepare("SELECT * FROM `lendedserver` WHERE `resellerid`=? ORDER BY `servertype` DESC");
         $query->execute(array($reseller_id));
-        $query2=$sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
-        $query3=$sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
-        $query4=$sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query5=$sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query6=$sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`id`=s.`switchID` LEFT JOIN `servertypes` t ON s.`id`=? AND s.`servertype`=t.`id` WHERE s.`resellerid`=? AND t.`shorten` IS NOT NULL LIMIT 1");
-        $query7=$sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
-        $query8=$sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
+        $query2 = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+        $query3 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
+        $query4 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query5 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query6 = $sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`id`=s.`switchID` LEFT JOIN `servertypes` t ON s.`id`=? AND s.`servertype`=t.`id` WHERE s.`resellerid`=? AND t.`shorten` IS NOT NULL LIMIT 1");
+        $query7 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
+        $query8 = $sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$id=$row['id'];
 			$servertype=$row['servertype'];
@@ -244,8 +244,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				}
                 $query5->execute(array($id,$reseller_id));
 			} else {
-                $server='';
-                $shorten='';
+                $server = '';
+                $shorten = '';
 				$rcon=$row['rcon'];
 				$password=$row['password'];
 				$slots=$row['slots'];
@@ -273,14 +273,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				$table[]=array('id'=>$id,'servertype'=>$servertype,'server'=>$server,'shorten'=>$shorten,'password'=>$password,'rcon'=>$rcon,'slots'=>$slots,'lenderip'=>$lenderip,'lendtime'=>$lendtime,'timeleft'=>$timeleft);
 			}
 		}
-		if (!isset($nextfree) or (isset($nextfree) and $gscount>0))$nextfree=0;
-		if (!isset($vonextfree) or (isset($vonextfree) and $vocount>0))$vonextfree=0;
-        $query=$sql->prepare("SELECT ((UNIX_TIMESTAMP(`lastcheck`)-UNIX_TIMESTAMP(`oldcheck`))/60)-((UNIX_TIMESTAMP()-UNIX_TIMESTAMP(`lastcheck`))/60) AS `nextRunInMinutes` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
+		if (!isset($nextfree) or (isset($nextfree) and $gscount>0))$nextfree = 0;
+		if (!isset($vonextfree) or (isset($vonextfree) and $vocount>0))$vonextfree = 0;
+        $query = $sql->prepare("SELECT ((UNIX_TIMESTAMP(`lastcheck`)-UNIX_TIMESTAMP(`oldcheck`))/60)-((UNIX_TIMESTAMP()-UNIX_TIMESTAMP(`lastcheck`))/60) AS `nextRunInMinutes` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         $nextcheck=$query->fetchColumn();
         $nextcheck=($nextcheck>0) ? ceil($nextcheck) : ceil($nextcheck)*-1;
 		$used[]='Teamspeak 3: '.$voused. '/'. $voTotalCount;
 		foreach ($gscounts as $key=>$value) $used[]=$key.': '.$gsused[$key]. '/'. $value;
-		$template_file="admin_lendserver_list.tpl";
+		$template_file = "admin_lendserver_list.tpl";
 	}
 }

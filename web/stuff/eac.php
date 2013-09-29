@@ -40,24 +40,24 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['eac'])) {
 	die('No acces');
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-$sprache=getlanguagefile('roots',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
-$loguserid=$admin_id;
-$logusername=getusername($admin_id);
-$logusertype="admin";
+$sprache = getlanguagefile('roots',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
+$loguserid = $admin_id;
+$logusername = getusername($admin_id);
+$logusertype = 'admin';
 if ($reseller_id=="0") {
-	$logreseller="0";
-	$logsubuser="0";
+	$logreseller = 0;
+	$logsubuser = 0;
 } else {
 	if (isset($_SESSION['oldid'])) {
 		$logsubuser=$_SESSION['oldid'];
 	} else {
-		$logsubuser="0";
+		$logsubuser = 0;
 	}
-	$logreseller="0";
+	$logreseller = 0;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
-    $template_file=$spracheResponse->token;
+    $template_file = $spracheResponse->token;
 } else if (!$ui->w('action',4,'post')) {
 	$pselect=$sql->prepare("SELECT `active`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,`publickey`,`keyname`,`cfgdir`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE resellerid=:reseller_id LIMIT 1");
 	$pselect->execute(array(':aeskey'=>$aeskey,':reseller_id'=>$reseller_id));
@@ -77,23 +77,23 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$eac_keyname=$row['keyname'];
 		$eac_cfgdir=$row['cfgdir'];
 	}
-	$template_file="admin_eac.tpl";
+	$template_file = "admin_eac.tpl";
 } else if ($ui->w('action',4,'post')=="md") {
-	$fail="0";
+	$fail = 0;
 	if (!active_check($ui->post['publickey'])) {
-		$fail="1";
+		$fail = 1;
 	}
 	if (!active_check($ui->post['active'])) {
-		$fail="1";
+		$fail = 1;
 	}
 	if (!isip($ui->post['ip'],"all")) {
-		$fail="1";
+		$fail = 1;
 	}
 	if (!isid($ui->post['port'],"5")) {
-		$fail="1";
+		$fail = 1;
 	}
 	if (!uname_check($ui->post['user'],"20")) {
-		$fail="1";
+		$fail = 1;
 	}
 	if ($fail!="1") {
 		if (isset($ui->post['normal_3'])) {
@@ -136,10 +136,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$cfgdir=folder($ui->post['cfgdir']);
 		$pupdate=$sql->prepare("UPDATE `eac` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port, :aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`publickey`=:publickey,`keyname`=:keyname,`cfgdir`=:cfgdir,`normal_3`=:normal_3,`normal_4`=:normal_4,`hlds_3`=:hlds_3,`hlds_4`=:hlds_4,`hlds_5`=:hlds_5,`hlds_6`=:hlds_6 WHERE resellerid=:reseller_id");
 		$pupdate->execute(array(':active'=>$active,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':publickey'=>$publickey,':keyname'=>$keyname,':cfgdir'=>$cfgdir,':normal_3'=>$normal_3,':normal_4'=>$normal_4,':hlds_3'=>$hlds_3,':hlds_4'=>$hlds_4,':hlds_5'=>$hlds_5,':hlds_6'=>$hlds_6,':reseller_id'=>$reseller_id));
-		$template_file=$spracheResponse->table_add;
+		$template_file = $spracheResponse->table_add;
 		$loguseraction="%mod% %eac%";
 		$insertlog->execute();
 	} else {
-		$template_file='admin_404.tpl';
+		$template_file = 'admin_404.tpl';
 	}
 }

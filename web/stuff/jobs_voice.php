@@ -37,10 +37,10 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-$query=$sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' GROUP BY `hostID`");
+$query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' GROUP BY `hostID`");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $query2=$sql->prepare("SELECT `active`,`usedns`,`defaultdns`,`bitversion`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`maxserver`,`maxslots`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+    $query2 = $sql->prepare("SELECT `active`,`usedns`,`defaultdns`,`bitversion`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`maxserver`,`maxslots`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
     $query2->execute(array(':aeskey'=>$aeskey,':id'=>$row['hostID'],':reseller_id'=>$row['resellerID']));
     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
         $active=$row2['active'];
@@ -69,7 +69,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $keyname=$row2['keyname'];
             $bitversion=$row2['bitversion'];
         } else if ($addedby==1) {
-            $query3=$sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query3 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($row2['rootid'],$row['resellerID']));
             foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                 $queryip=$row3['ip'];
@@ -84,10 +84,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $update=$sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='vo' AND `hostID`=?");
         $update->execute(array($row['hostID']));
     } else {
-        $query2=$sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' AND `hostID`=?");
+        $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' AND `hostID`=?");
         $query2->execute(array($row['hostID']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            $query3=$sql->prepare("SELECT `localserverid`,`active`,`backup`,`lendserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`dns`,`localserverid`,`maxtraffic`,`filetraffic` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query3 = $sql->prepare("SELECT `localserverid`,`active`,`backup`,`lendserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`dns`,`localserverid`,`maxtraffic`,`filetraffic` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($row2['affectedID'],$row2['resellerID']));
             foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                 $active=$row3['active'];
@@ -117,18 +117,18 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 customColumns('T',$row2['affectedID'],'del');
                 $update=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                 $update->execute(array($row2['jobID']));
-                $template_file=$spracheResponse->table_del;
+                $template_file = $spracheResponse->table_del;
                 if ($usedns=='Y') {
-                    $template_file=tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion,array($ip),array($port),array($dns),$row['resellerID'],$sql);
+                    $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion,array($ip),array($port),array($dns),$row['resellerID'],$sql);
                 }
-                $query3=$sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `resellerid`=?");
+                $query3 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `resellerid`=?");
                 $query3->execute(array($row2['affectedID'],$row['resellerID']));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                     $delete=$sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $delete->execute(array($row3['id'],$row['resellerID']));
                     tsbackup('delete',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$localserverid,$row3['id'],$row['resellerID'],$sql);
                 }
-                $query3=$sql->prepare("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
+                $query3 = $sql->prepare("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
                 $query3->execute();
             } else if ($row2['action']=='ad' and isset($active)) {
                 if(isid($localserverid,30)) {
@@ -145,7 +145,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         $update=$sql->prepare("UPDATE `voice_server` SET `localserverid`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
                         $update->execute(array($virtualserver_id,$row2['affectedID']));
                         if ($usedns=='Y') {
-                            $template_file=tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion,array($ip),array($port),array($dns),$row['resellerID'],$sql);
+                            $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion,array($ip),array($port),array($dns),$row['resellerID'],$sql);
                         }
                         $update=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `affectedID`=? AND `type`='vo' LIMIT 1");
                         $update->execute(array($row2['affectedID']));
@@ -157,7 +157,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 }
             } else if ($row2['action']=='md' and isset($localserverid) and isid($localserverid,30)) {
                 $command=$gsprache->mod.' voiceserverID: '.$row2['affectedID'].' name:'.$row2['name'];
-                $query3=$sql->prepare("SELECT `active`,`slots`,`ip`,`port`,`dns` FROM `voice_server` WHERE `id`=? LIMIT 1");
+                $query3 = $sql->prepare("SELECT `active`,`slots`,`ip`,`port`,`dns` FROM `voice_server` WHERE `id`=? LIMIT 1");
                 $query3->execute(array($row2['affectedID']));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                     $oldip=$row3['ip'];
@@ -201,7 +201,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         $connection->AdminPermissions($localserverid,'del',$removelist);
                     }
                     if ($usedns=='Y') {
-                        $template_file=tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion,array($ip,$oldip),array($port,$oldport),array($dns,$olddns),$row2['resellerID'],$sql);
+                        $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion,array($ip,$oldip),array($port,$oldport),array($dns,$olddns),$row2['resellerID'],$sql);
                     }
                     if ($row3['active']=='N') {
                         $connection->StopServer($localserverid);

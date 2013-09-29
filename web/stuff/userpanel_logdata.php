@@ -38,12 +38,12 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usersettings'])
     header('Location: userpanel.php');
     die;
 }
-$sprache=getlanguagefile('logs',$user_language,$reseller_id);
-$gssprache=getlanguagefile('gserver',$user_language,$reseller_id);
+$sprache = getlanguagefile('logs',$user_language,$reseller_id);
+$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($admin_id) and $reseller_id!=0) $reseller_id=$admin_id;
-$table=array();
-$query=$sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=? ORDER BY `logdate` DESC LIMIT $start,$amount");
-$query2=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
+$table = array();
+$query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=? ORDER BY `logdate` DESC LIMIT $start,$amount");
+$query2 = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
 $query->execute(array($user_id,$reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 	$subuser=$row['subuser'];
@@ -55,7 +55,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			if (isanyadmin($subuser) and !isset($admin_id)) {
 				$username=$row2['cname'];
-				$ip="";
+				$ip = "";
 			} else {
 				$username=$row2['cname'];
 				$ip=$row['ip'];
@@ -67,16 +67,16 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $replace=array('',$gsprache->add.': ',$gsprache->del.': ',$gsprache->del.': ',$gsprache->mod.': ',$gsprache->mod.': ',$gsprache->start.': ',$gsprache->start.': ',$gsprache->stop.': ',$gsprache->update.': ','','',$gssprache->password.': ',$gssprache->config.': ',$gsprache->import.': ',$gssprache->reinstall.': ',$gsprache->backup,$gsprache->use.': ');
     $replacedpics=str_replace($placeholders,$replace,$useraction);
     $placeholders=array('%voserver%','%gserver%','%user%','%fastdl%','%master%','%user%','%root%','%addon%','%settings%','%vserver%','%ticket_subject%','%reseller%','%virtual%','%eac%','%resync%','%virtualimage%','%template%','%voserver%','%emailsettings%','%dns%','%tsdns%','%pmode%');
-    $replace=array($gsprache->voiceserver,$gsprache->gameserver,$gsprache->user,$gsprache->fastdownload,$gsprache->master,$gsprache->user,$gsprache->root,$gsprache->addon2,$gsprache->settings,$gsprache->virtual,$gsprache->support,$gsprache->reseller,$gsprache->hostsystem,'Easy Anti Cheat',$gssprache->resync,$gsprache->virtual.' '.$gsprache->template,$gsprache->template,$gsprache->voiceserver,'E-Mail '.$gsprache->settings,'TSDNS','TSDNS',$gssprache->protect);
+    $replace=array($gsprache->voiceserver,$gsprache->gameserver,$gsprache->user,$gsprache->fastdownload,$gsprache->master,$gsprache->user,$gsprache->root,$gsprache->addon2,$gsprache->settings,$gsprache->virtual,$gsprache->support,$gsprache->reseller,$gsprache->hostsystem,'Easy Anti Cheat',$gssprache->resync,$gsprache->virtual . ' ' . $gsprache->template,$gsprache->template,$gsprache->voiceserver,'E-Mail '.$gsprache->settings,'TSDNS','TSDNS',$gssprache->protect);
     $replacedwords=str_replace($placeholders,$replace,$replacedpics);
     $logdate=explode(' ', $row['logdate']);
     $table[]=array('logday'=>$logdate[0],'loghour'=>$logdate[1],'ip'=>$ip,'username'=>$username,'useraction'=>$replacedwords);
 }
 $next=$start+$amount;
-$query=$sql->prepare("SELECT `id` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=?");
+$query = $sql->prepare("SELECT `id` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=?");
 $query->execute(array($user_id,$reseller_id));
 $colcount=$query->rowCount();
 $vor=($colcount>$next) ? $start+$amount : $start;
 $back=$start-$amount;
 $zur=($back>=0) ? $start-$amount : $start;
-$template_file="userpanel_logs.tpl";
+$template_file = "userpanel_logs.tpl";
