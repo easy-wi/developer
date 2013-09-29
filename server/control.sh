@@ -186,6 +186,8 @@ if [ "`grep \"$INSTALLMASTER:\" /etc/passwd | awk -F ":" '{print $1}'`" != "$INS
 		read READPASSWORD
 		if [ "$READPASSWORD" == "yes" ]; then
 			passwd $INSTALLMASTER
+		else
+			publicKeyGenerate
 		fi
 	elif [ "$VARIABLE4" != "" ]; then
 		/usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE4'","Sa")'` $INSTALLMASTER
@@ -483,6 +485,28 @@ EOF
 chmod 640 /home/$INSTALLMASTER/conf/config.cfg
 chown $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER/conf/config.cfg
 echo "The setup is finished"
+}
+
+function publicKeyGenerate {
+	if [ "`id -u`" == "0" -a -z $INSTALLMASTER ]; then
+		INSTALLMASTER=`find /home/*/control.sh -maxdepth 1 | awk -F '/' '{print $3}' | head -n 1`
+	elif [ "`id -u`" != "0"  ]; then
+		INSTALLMASTER=`whoami`
+	fi
+	if [ "$INSTALLMASTER" != "" ]; then
+		if [ -d /home/$INSTALLMASTER/.ssh ]; then rm -r /home/$INSTALLMASTER/.ssh; fi
+		if [ "`id -u`" == "0" ]; then
+			su -c 'ssh-keygen -t rsa' $INSTALLMASTER
+		else
+			ssh-keygen -t rsa
+		fi
+		cd /home/$INSTALLMASTER/.ssh
+		if [ "`id -u`" == "0" ]; then
+			su -c 'cat id_rsa.pub >> authorized_keys' $INSTALLMASTER
+		else
+			cat id_rsa.pub >> authorized_keys
+		fi
+	fi
 }
 
 function fdlList {
@@ -2170,6 +2194,9 @@ case "$1" in
 	update)
 		ISROOT=1
 		updatecheck
+	;;
+	generateKey)
+		publicKeyGenerate
 	;;
 	*)
 		echo "Current version: $CVERSION"
