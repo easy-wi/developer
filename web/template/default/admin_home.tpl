@@ -6,7 +6,6 @@
         </ul>
     </div>
 </div>
-<h3><?php echo $gsprache->overview; ?></h3>
 <?php if($pa['usertickets'] and $crashedArray['ticketsReseller']>0 and $reseller_id!=0) { ?>
 <div class="row-fluid">
     <div class="span11 alert alert-block alert-info">
@@ -93,9 +92,8 @@
     </div>
 </div>
 <?php }?>
-<hr>
+<?php if(count($feedArray)>0) echo '<hr>';?>
 <?php foreach ($feedArray as $url => $array) { ?>
-<h3><?php if($url=='News') { echo $gsprache->news; } else  { ?><a href="<?php echo $array[0]['url'];?>" target="_blank"><?php echo $array[0]['url'];?></a><?php } ?></h3>
 <?php foreach ($array as $feed) { ?>
 <div class="row-fluid">
     <h4><a href="<?php echo $feed['link'];?>" target="_blank"><?php echo $feed['title'];?></a></h4>
