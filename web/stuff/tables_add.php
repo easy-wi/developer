@@ -566,7 +566,7 @@ $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `active` enum('Y','N') DEFAULT 'N',
+  `active` enum('Y','N') DEFAULT 'Y',
   `seo` enum('Y','N') DEFAULT 'N',
   `rssfeed` enum('Y','N') DEFAULT 'Y',
   `rssfeed_fulltext` enum('Y','N') DEFAULT 'Y',
