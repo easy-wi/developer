@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: userpanel_substitutes.php.
  * Author: Ulrich Block
@@ -95,7 +96,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=? AND `resellerID`=?");
             $query->execute(array($id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $as[$row['oType']][$row['oID']]= true;
+                $as[$row['oType']][$row['oID']] = true;
             }
         }
     } else if ($ui->st('action','post')=='ad' or ($ui->st('action','post')=='md' and $ui->id('id',10,'get'))) {
@@ -114,7 +115,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
                 $query = $sql->prepare("INSERT INTO `userdata_substitutes` (`userID`,`active`,`loginName`,`name`,`vname`,`salt`,`passwordHashed`,`resellerID`) VALUES (?,?,?,?,?,?,?,?)");
                 $query->execute(array($user_id,$ui->active('active','post'),$ui->names('loginName',255,'post'),$ui->names('name',255,'post'),$ui->names('vname',255,'post'),$salt,createHash($ui->names('loginName',255,'post'),$ui->password('security',255,'post'),$salt,$aeskey),$reseller_id));
-                $template_file = $spracheResponse->table_add;
+                if ($query->rowCount()>0) {
+                    $changed = true;
+                }
                 $id=$sql->lastInsertId();
             }
         } else if ($ui->st('action','post')=='md' and $ui->id('id',10,'get')) {
@@ -129,7 +132,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $query = $sql->prepare("UPDATE `userdata_substitutes` SET `active`=?,`name`=?,`vname`=? WHERE `sID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($ui->active('active','post'),$ui->names('name',255,'post'),$ui->names('vname',255,'post'),$id,$user_id,$reseller_id));
             }
-            if ($query->rowCount()>0) $changed= true;
+            if ($query->rowCount()>0) {
+                $changed = true;
+            }
         }
         if ($id) {
             $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=? AND `resellerID`=?");
@@ -138,14 +143,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (!$ui->id($row['oType'],10,'post') or !in_array($row['oID'],(array)$ui->id($row['oType'],10,'post'))) {
                     $query2->execute(array($row['oType'],$row['oID'],$id,$reseller_id));
-                    if ($query2->rowCount()>0) $changed= true;
+                    if ($query2->rowCount()>0) {
+                        $changed = true;
+                    }
                 }
             }
             foreach (array('gs','db','vo','vd','vs','ro') as $v) {
                 if ($ui->id($v,10,'post')) {
                     $query = $sql->prepare("INSERT INTO `userdata_substitutes_servers` (`sID`,`oType`,`oID`,`resellerID`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `sID`=`sID`");
                     foreach ($ui->id($v,10,'post') as $oID) $query->execute(array($id,$v,$oID,$reseller_id));
-                    if ($query->rowCount()>0) $changed= true;
+                    if ($query->rowCount()>0) $changed = true;
                 }
             }
             $template_file = (isset($changed)) ? $spracheResponse->table_add : $spracheResponse->error_table;
