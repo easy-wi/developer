@@ -38,13 +38,16 @@
 
 $main = 1;
 define('EASYWIDIR', dirname(__FILE__));
-if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
+if (is_dir(EASYWIDIR . '/install')) {
+    die('Please remove the "install" folder');
+}
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/init_admin.php');
 include(EASYWIDIR . '/stuff/adminhome.php');
+
 if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui->smallletters('w', 255, 'get')]) and is_file((EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]))) {
     include(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]);
     unset($dbConnect);
@@ -52,7 +55,7 @@ if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui-
     unset($dbConnect);
     $template_file = 'admin_home.tpl';
 }
-include(IncludeTemplate($template_to_use,'admin_header.tpl'));
-include(IncludeTemplate($template_to_use,(isset($template_file)  and preg_match('/^(.*)\.[\w]{1,}$/',$template_file)) ? $template_file : 'general.tpl'));
-include(IncludeTemplate($template_to_use,'admin_footer.tpl'));
+include(IncludeTemplate($template_to_use, 'admin_header.tpl'));
+include(IncludeTemplate($template_to_use, (isset($template_file)  and preg_match('/^(.*)\.[\w]{1,}$/',$template_file)) ? $template_file : 'general.tpl'));
+include(IncludeTemplate($template_to_use, 'admin_footer.tpl'));
 $sql=null;

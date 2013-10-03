@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: userpanel.php.
  * Author: Ulrich Block
@@ -37,7 +38,9 @@
 
 $main = 1;
 define('EASYWIDIR', dirname(__FILE__));
-if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
+if (is_dir(EASYWIDIR . '/install')) {
+    die('Please remove the "install" folder');
+}
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/vorlage.php');
@@ -49,13 +52,13 @@ if (isset($what_to_be_included_array[$w])) {
     unset($dbConnect);
 } else {
     unset($dbConnect);
-    $template_file = "userpanel_home.tpl";
+    $template_file = 'userpanel_home.tpl';
 }
-include(IncludeTemplate($template_to_use,'userpanel_header.tpl'));
-if (isset($template_file) and preg_match('/^(.*)\.tpl$/',$template_file)) {
-    include(IncludeTemplate($template_to_use,$template_file));
+include(IncludeTemplate($template_to_use, 'userpanel_header.tpl'));
+if (isset($template_file) and preg_match('/^(.*)\.tpl$/', $template_file)) {
+    include(IncludeTemplate($template_to_use, $template_file));
 } else {
-    include(IncludeTemplate($template_to_use,'general.tpl'));
+    include(IncludeTemplate($template_to_use, 'general.tpl'));
 }
-include(IncludeTemplate($template_to_use,'userpanel_footer.tpl'));
+include(IncludeTemplate($template_to_use, 'userpanel_footer.tpl'));
 $sql=null;

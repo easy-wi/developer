@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: switch.php.
  * Author: Ulrich Block
@@ -63,7 +64,7 @@ if ($ui->id('id', 19, 'get')) {
         $accounttype = $row['accounttype'];
     }
     $sql=null;
-    if ($reseller_id != 0 and $resellerid != $reseller_id) {
+    if (!isset($resellerid) or ($reseller_id != 0 and $resellerid != $reseller_id)) {
         header('Location: login.php');
         die('Please allow redirection');
     }

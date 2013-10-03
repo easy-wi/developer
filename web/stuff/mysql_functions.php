@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: mysql_functions.php.
  * Author: Ulrich Block
