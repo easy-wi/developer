@@ -54,44 +54,44 @@ if ($reseller_id==0) {
     }
     $logreseller = 0;
 }
-if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $lookUpID=$admin_id;
 } else {
     $lookUpID=$reseller_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get')=='se') {
-    if ($ui->smallletters('action',2,'post')=='md'){
+} else if ($ui->st('d','get') == 'se') {
+    if ($ui->smallletters('action',2,'post') == 'md'){
         if ($ui->active('active','post')) {
             $active=$ui->active('active','post');
         } else {
-            $active='N';
+            $active = 'N';
         }
         if ($ui->active('displayContent','post')) {
             $displayContent=$ui->active('displayContent','post');
         } else {
-            $displayContent='N';
+            $displayContent = 'N';
         }
         if ($ui->active('limitDisplay','post')) {
             $limitDisplay=$ui->active('limitDisplay','post');
         } else {
-            $limitDisplay='N';
+            $limitDisplay = 'N';
         }
         if ($ui->active('useLocal','post')) {
             $useLocal=$ui->active('useLocal','post');
         } else {
-            $useLocal='N';
+            $useLocal = 'N';
         }
         if ($ui->active('merge','post')) {
             $merge=$ui->active('merge','post');
         } else {
-            $merge='N';
+            $merge = 'N';
         }
         if ($ui->active('steamFeeds','post')) {
             $steamFeeds=$ui->active('steamFeeds','post');
         } else {
-            $steamFeeds='N';
+            $steamFeeds = 'N';
         }
         if ($ui->id('maxChars',6,'post')) {
             $maxChars=$ui->id('maxChars',6,'post');
@@ -156,13 +156,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
     }
     $template_file = 'admin_feeds_settings.tpl';
-} else if ($ui->st('d','get')=='ad') {
-    if ($ui->smallletters('action',2,'post')=='ad'){
+} else if ($ui->st('d','get') == 'ad') {
+    if ($ui->smallletters('action',2,'post') == 'ad'){
         $active=$ui->active('active','post');
         $feedUrl=$ui->url('feedUrl','post');
         $loginName=$ui->w('loginName',255,'post');
         $twitter=$ui->active('twitter','post');
-        if ($twitter=='Y') {
+        if ($twitter== 'Y') {
             $feedUrl='https://twitter.com/'.$loginName;
             $query = $sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `loginName`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($loginName,$lookUpID));
@@ -182,12 +182,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_feeds_add.tpl';
     }
-} else if ($ui->st('d','get')=='dl' and $ui->id('id','19','get')) {
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id','19','get')) {
     $id=$ui->id('id','19','get');
     $query = $sql->prepare("SELECT `feedUrl` FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($id,$lookUpID));
     $feedUrl=$query->fetchColumn();
-    if ($ui->smallletters('action',2,'post')=='dl'){
+    if ($ui->smallletters('action',2,'post') == 'dl'){
         $query = $sql->prepare("DELETE FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$lookUpID));
         if ($query->rowCount()>0) {
@@ -202,13 +202,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_feeds_dl.tpl';
     }
-} else if ($ui->st('d','get')=='md' and $ui->id('id','19','get')) {
+} else if ($ui->st('d','get') == 'md' and $ui->id('id','19','get')) {
     $id=$ui->id('id','19','get');
-    if ($ui->smallletters('action',2,'post')=='md'){
+    if ($ui->smallletters('action',2,'post') == 'md'){
         $feedUrl=$ui->url('feedUrl','post');
         $loginName=$ui->w('loginName',255,'post');
         $twitter=$ui->active('twitter','post');
-        if ($twitter=='Y') {
+        if ($twitter== 'Y') {
             $feedUrl='https://twitter.com/'.$loginName;
             $query = $sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `loginName`=? AND `feedID`!=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($loginName,$id,$lookUpID));
@@ -240,19 +240,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
 } else {
     $table = array();
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='au') {
+    if ($ui->st('o','get') == 'au') {
         $orderby='`feedUrl` ASC';
-    } else if ($ui->st('o','get')=='du') {
+    } else if ($ui->st('o','get') == 'du') {
         $orderby='`feedUrl` DESC';
-    } else if ($ui->st('o','get')=='as') {
+    } else if ($ui->st('o','get') == 'as') {
         $orderby='`active` ASC';
-    } else if ($ui->st('o','get')=='ds') {
+    } else if ($ui->st('o','get') == 'ds') {
         $orderby='`active` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='`twitter` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='`twitter` DESC';
-    } else if ($ui->st('o','get')=='ai') {
+    } else if ($ui->st('o','get') == 'ai') {
         $orderby='`feedID` ASC';
     } else {
         $orderby='`feedID` DESC';
@@ -261,14 +261,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $query = $sql->prepare("SELECT `feedID`,`active`,`twitter`,`feedUrl` FROM `feeds_url` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($lookUpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['active']=='Y') {
+        if ($row['active'] == 'Y') {
             $imgName='16_ok';
             $imgAlt='Active';
         } else {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        $twitter=($row['twitter']=='Y') ? $gsprache->yes : $gsprache->no;
+        $twitter=($row['twitter'] == 'Y') ? $gsprache->yes : $gsprache->no;
         $table[]=array('id'=>$row['feedID'],'img'=>$imgName,'alt'=>$imgAlt,'twitter'=>$twitter,'feedUrl'=>$row['feedUrl'],'active'=>$row['active']);
     }
     $next=$start+$amount;
@@ -280,13 +280,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>="0"){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=fe&amp;d=md&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -301,11 +301,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=fe&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=fe&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=fe&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=fe&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

@@ -59,7 +59,7 @@ if ($reseller_id==0) {
         $logsubuser = 0;
     }
     $logreseller = 0;
-    if ($admin_id!=$reseller_id) {
+    if ($admin_id != $reseller_id) {
         $lookupID=$reseller_id;
     } else {
         $lookupID=$admin_id;
@@ -67,8 +67,8 @@ if ($reseller_id==0) {
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if (in_array($ui->st('d','get'),array('md','ad'))){
-    if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='md') {
+} else if (in_array($ui->st('d','get'), array('md','ad'))){
+    if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {
         $id=$ui->id('id',19,'get');
         $groupIDS = array();
         $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
@@ -95,7 +95,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $template_file = 'admin_404.tpl';
         }
-    } else if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='ad') {
+    } else if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'ad') {
         $groupIDS = array();
         $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
         $query->execute(array($reseller_id));
@@ -103,36 +103,36 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $groupIDS[$row['id']]=$row['name'];
         }
         $template_file = 'admin_api_import_users_add.tpl';
-    } else if (in_array($ui->smallletters('action',2,'post'),array('md','ad'))) {
+    } else if (in_array($ui->smallletters('action',2,'post'), array('md','ad'))) {
         $error = array();
         if (!$ui->active('active','post')) {
-            $error[]='Active';
+            $error[] = 'Active';
         }
         if (!$ui->active('fetchUpdates','post')) {
-            $error[]='fetchUpdates';
+            $error[] = 'fetchUpdates';
         }
         if (!$ui->password('accessToken',255,'post')) {
-            $error[]='Token';
+            $error[] = 'Token';
         }
         if (!$ui->id('groupID',19,'post')) {
-            $error[]='File';
+            $error[] = 'File';
         }
         if (!$ui->id('chunkSize',19,'post')) {
-            $error[]='chunkSize';
+            $error[] = 'chunkSize';
         }
         if (!$ui->active('ssl','post')) {
-            $error[]='SSL';
+            $error[] = 'SSL';
         }
         if (!$ui->domain('domain','post')) {
-            $error[]='Domain';
+            $error[] = 'Domain';
         }
         if (!$ui->startparameter('file','post')) {
-            $error[]='File';
+            $error[] = 'File';
         }
         if (count($error)>0) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            if ($ui->st('d','get')=='md' and $ui->id('id',19,'get')) {
+            if ($ui->st('d','get') == 'md' and $ui->id('id',19,'get')) {
                 $id=$ui->id('id',19,'get');
                 $query = $sql->prepare("SELECT `importID` FROM `api_import` WHERE `importID`!=? AND `domain`=? AND `file`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id,$ui->domain('domain','post'),$ui->startparameter('file','post'),$reseller_id));
@@ -141,9 +141,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 } else {
                     $query = $sql->prepare("UPDATE `api_import` SET `active`=?,`fetchUpdates`=?,`token`=?,`groupID`=?,`chunkSize`=?,`ssl`=?,`domain`=?,`file`=? WHERE `importID`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($ui->active('active','post'),$ui->active('fetchUpdates','post'),$ui->password('accessToken',255,'post'),$ui->id('groupID',19,'post'),$ui->id('chunkSize',19,'post'),$ui->active('ssl','post'),$ui->domain('domain','post'),$ui->startparameter('file','post'),$id,$reseller_id));
-                    $loguseraction='%mod% %apiimport% '.$ui->domain('domain','post'). '/'. $ui->startparameter('file','post');
+                    $loguseraction='%mod% %apiimport% '.$ui->domain('domain','post'). '/' . $ui->startparameter('file','post');
                 }
-            } else if ($ui->st('d','get')=='ad') {
+            } else if ($ui->st('d','get') == 'ad') {
                 $query = $sql->prepare("SELECT `importID` FROM `api_import` WHERE `domain`=? AND `file`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($ui->domain('domain','post'),$ui->startparameter('file','post'),$reseller_id));
                 if ($query->rowCount()>0) {
@@ -152,7 +152,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $query = $sql->prepare("INSERT INTO `api_import` (`active`,`fetchUpdates`,`token`,`groupID`,`chunkSize`,`ssl`,`domain`,`file`,`lastID`,`lastCheck`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,0,'0000-00-00 00:00:00',?)");
                     $query->execute(array($ui->active('active','post'),$ui->active('fetchUpdates','post'),$ui->password('accessToken',255,'post'),$ui->id('groupID',19,'post'),$ui->id('chunkSize',19,'post'),$ui->active('ssl','post'),$ui->domain('domain','post'),$ui->startparameter('file','post'),$reseller_id));
                 }
-                $loguseraction='%add% %apiimport% '.$ui->domain('domain','post'). '/'. $ui->startparameter('file','post');
+                $loguseraction='%add% %apiimport% '.$ui->domain('domain','post'). '/' . $ui->startparameter('file','post');
             } else {
                 $template_file = 'admin_404.tpl';
             }
@@ -164,13 +164,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
     }
-} else if ($ui->st('d','get')=='dl' and $ui->id('id','30','get')) {
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id','30','get')) {
     $id=$ui->id('id','30','get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `ssl`,`domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if($row['ssl']=='Y') {
+            if($row['ssl'] == 'Y') {
                 $ssl='https://';
             } else {
                 $ssl='http://';
@@ -181,9 +181,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (isset($ssl) and isset($domain) and isset($file)) {
             $template_file = 'admin_api_import_users_dl.tpl';
         } else {
-            $template_file = 'Error: no such ID!';
+            $template_file = 'admin_404.tpl'; 
         }
-    } else if ($ui->smallletters('action',2,'post')=='dl') {
+    } else if ($ui->smallletters('action',2,'post') == 'dl') {
         $query = $sql->prepare("SELECT `domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -193,7 +193,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query = $sql->prepare("DELETE FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         if ($query->rowCount()>0) {
-            $loguseraction='%del% %apiimport% '.$domain. '/'. $file;
+            $loguseraction='%del% %apiimport% '.$domain. '/' . $file;
             $insertlog->execute();
             $template_file = $spracheResponse->table_del;
         } else {
@@ -217,30 +217,30 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='da') {
+    if ($ui->st('o','get') == 'da') {
         $orderby='`active` DESC';
-    } else if ($ui->st('o','get')=='aa') {
+    } else if ($ui->st('o','get') == 'aa') {
         $orderby='`active` ASC';
-    } else if ($ui->st('o','get')=='dd') {
+    } else if ($ui->st('o','get') == 'dd') {
         $orderby='`domain` DESC';
-    } else if ($ui->st('o','get')=='ad') {
+    } else if ($ui->st('o','get') == 'ad') {
         $orderby='`domain` ASC';
-    } else if ($ui->st('o','get')=='dl') {
+    } else if ($ui->st('o','get') == 'dl') {
         $orderby='`lastID` DESC';
-    } else if ($ui->st('o','get')=='al') {
+    } else if ($ui->st('o','get') == 'al') {
         $orderby='`lastID` ASC';
-    } else if ($ui->st('o','get')=='dc') {
+    } else if ($ui->st('o','get') == 'dc') {
         $orderby='`lastCheck` DESC';
-    } else if ($ui->st('o','get')=='ac') {
+    } else if ($ui->st('o','get') == 'ac') {
         $orderby='`lastCheck` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='`importID` DESC';
     } else {
         $orderby='`importID` ASC';
@@ -248,21 +248,21 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $query = $sql->prepare("SELECT * FROM `api_import` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['active']=='Y') {
+        if ($row['active'] == 'Y') {
             $imgName='16_ok';
             $imgAlt='Active';
         } else {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        if($row['ssl']=='Y') {
+        if($row['ssl'] == 'Y') {
             $ssl='https://';
         } else {
             $ssl='http://';
         }
-        $table[]=array('id'=>$row['importID'],'img'=>$imgName,'alt'=>$imgAlt,'domain'=>$ssl.$row['domain']. '/'. $row['file'],'lastID'=>$row['lastID'],'lastCheck'=>$row['lastCheck'],'active'=>$row['active']);
+        $table[]=array('id'=>$row['importID'],'img'=>$imgName,'alt'=>$imgAlt,'domain'=>$ssl.$row['domain']. '/' . $row['file'],'lastID'=>$row['lastID'],'lastCheck'=>$row['lastCheck'],'active'=>$row['active']);
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ui&amp;o='.$o.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -277,11 +277,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=ui&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ui&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=ui&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ui&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

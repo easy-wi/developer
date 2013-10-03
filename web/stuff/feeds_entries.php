@@ -50,19 +50,19 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
-$lookUpID=($reseller_id!=0 and $admin_id!=$reseller_id) ? $admin_id: $reseller_id;
-if ($ui->st('d','get')=='ud') {
-    $newsInclude= true;
+$lookUpID=($reseller_id != 0 and $admin_id != $reseller_id) ? $admin_id: $reseller_id;
+if ($ui->st('d','get') == 'ud') {
+    $newsInclude = true;
     include(EASYWIDIR . '/stuff/feeds_function.php');
-} else if ($ui->st('d','get')=='md') {
+} else if ($ui->st('d','get') == 'md') {
     $ids=(array)$ui->active('ids','post');
     $delete=$sql->prepare("DELETE FROM `feeds_news` WHERE `newsID`=? AND `resellerID`=? LIMIT 1");
     $update=$sql->prepare("UPDATE `feeds_news` SET `active`=? WHERE `newsID`=? AND `resellerID`=?");
     foreach($ids as $id=>$values) {
-        if (isset($values->dl) and $values->dl=='Y') {
+        if (isset($values->dl) and $values->dl== 'Y') {
             $delete->execute(array($id,$lookUpID));
         } else {
-            if (isset($values->active) and $values->active=='Y') {
+            if (isset($values->active) and $values->active == 'Y') {
                 $update->execute(array('Y',$id,$lookUpID));
             } else {
                 $update->execute(array('N',$id,$lookUpID));
@@ -73,27 +73,27 @@ if ($ui->st('d','get')=='ud') {
 } else {
     $table = array();
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='au') {
+    if ($ui->st('o','get') == 'au') {
         $orderby='u.`feedUrl` ASC';
-    } else if ($ui->st('o','get')=='du') {
+    } else if ($ui->st('o','get') == 'du') {
         $orderby='u.`feedUrl` DESC';
-    } else if ($ui->st('o','get')=='ah') {
+    } else if ($ui->st('o','get') == 'ah') {
         $orderby='n.`title` ASC,n.`description` ASC';
-    } else if ($ui->st('o','get')=='dh') {
+    } else if ($ui->st('o','get') == 'dh') {
         $orderby='n.`title` DESC,n.`description` DESC';
-    } else if ($ui->st('o','get')=='as') {
+    } else if ($ui->st('o','get') == 'as') {
         $orderby='n.`active` ASC';
-    } else if ($ui->st('o','get')=='ds') {
+    } else if ($ui->st('o','get') == 'ds') {
         $orderby='n.`active` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='u.`twitter` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='u.`twitter` DESC';
-    } else if ($ui->st('o','get')=='ai') {
+    } else if ($ui->st('o','get') == 'ai') {
         $orderby='n.`newsID` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='n.`newsID` DESC';
-    } else if ($ui->st('o','get')=='ad') {
+    } else if ($ui->st('o','get') == 'ad') {
         $orderby='n.`pubDate` ASC';
     } else {
         $orderby='n.`pubDate` DESC';
@@ -102,14 +102,14 @@ if ($ui->st('d','get')=='ud') {
     $query = $sql->prepare("SELECT n.`newsID`,n.`active`,n.`title`,n.`link`,n.`pubDate`,n.`description`,u.`twitter`,u.`feedUrl` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($lookUpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['active']=='Y') {
+        if ($row['active'] == 'Y') {
             $imgName='16_ok';
             $imgAlt='Active';
         } else {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        $twitter=($row['twitter']=='Y') ? $gsprache->yes : $gsprache->no;
+        $twitter=($row['twitter'] == 'Y') ? $gsprache->yes : $gsprache->no;
         $title=$row['title'];
         if (strlen($row['title'])<=1) $title=$row['link'];
         $table[]=array('id'=>$row['newsID'],'active'=>$row['active'],'img'=>$imgName,'alt'=>$imgAlt,'pubDate'=>$row['pubDate'],'twitter'=>$twitter,'title'=>$title,'link'=>$row['link'],'feedUrl'=>$row['feedUrl']);
@@ -123,13 +123,13 @@ if ($ui->st('d','get')=='ud') {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=fn&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -144,11 +144,11 @@ if ($ui->st('d','get')=='ud') {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=fn&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=fn&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=fn&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=fn&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

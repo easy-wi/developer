@@ -48,12 +48,12 @@ $removeIDs=array('de'=>array(),'vs'=>array());
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $extraData=@json_decode($row['extraData']);
     $extraData=(array)$extraData;
-    $type=($row['type']=='de') ? 'dedicated' : 'vmware';
+    $type=($row['type'] == 'de') ? 'dedicated' : 'vmware';
     if (!isset($extraData['runAt']) or strtotime("now")>$extraData['runAt']) {
-        $return=$rootObject->rootServer($row['affectedID'],$row['action'],$type,$extraData);
+        $return=$rootObject->rootServer($row['affectedID'], $row['action'],$type,$extraData);
 
         // bei add und mod restart Auftrag schreiben mit extra Data = timestamp
-        if ($row['action']=='dl') {
+        if ($row['action'] == 'dl') {
             if ($return===true) {
                 $query2->execute(array($row['jobID']));
                 $command=$gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'];
@@ -62,10 +62,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query4->execute(array($row['jobID']));
                 $command='Error: '.$gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'] . ' ' . $return;
             }
-        } else if ($row['action']=='ad') {
+        } else if ($row['action'] == 'ad') {
             $query2->execute(array($row['jobID']));
             $command=$gsprache->add." $type server: ".$row['affectedID'].' name:'.$row['name'];
-        } else if (in_array($row['action'],array('md','ri','st','rc','rp'))) {
+        } else if (in_array($row['action'], array('md','ri','st','rc','rp'))) {
             if ($return===true) {
                 $query2->execute(array($row['jobID']));
                 $command=$gsprache->mod." $type server: ".$row['affectedID'].' name: '.$row['name'];
@@ -73,7 +73,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query4->execute(array($row['jobID']));
                 $command="Error modding $type server: ".$row['affectedID'].' name: '.$row['name'] . ' ' . $return;
             }
-        } else if ($row['action']=='re') {
+        } else if ($row['action'] == 're') {
             if ($return===true and !isset($extraData->reboot) and strtotime("now")<$extraData->reboot) {
                 $query2->execute(array($row['jobID']));
                 $command="Skipped (Re)Start $type server: ".$row['affectedID'].' name: '.$row['name'].' will try later';
@@ -104,9 +104,9 @@ $query3 = $sql->prepare("UPDATE `rootsDedicated` SET `imageID`=? WHERE `dedicate
 $res=(array)$rootObject->dhcpFiles();
 foreach ($res as $row) {
     if (isset($row['type'])) {
-        $query->execute(array($row['type'],$row['affectedID'],$row['name'],$row['hostID'],$row['userID'],json_encode($row['extraData']),$row['resellerID']));
-        if ($row['type']=='de') $query2->execute(array($row['imageID'],$row['affectedID']));
-        else $query3->execute(array($row['imageID'],$row['affectedID']));
+        $query->execute(array($row['type'], $row['affectedID'], $row['name'], $row['hostID'], $row['userID'],json_encode($row['extraData']), $row['resellerID']));
+        if ($row['type'] == 'de') $query2->execute(array($row['imageID'], $row['affectedID']));
+        else $query3->execute(array($row['imageID'], $row['affectedID']));
     }
 }
 print "\r\n(Re)starting/Stopping dedicated server\r\n";

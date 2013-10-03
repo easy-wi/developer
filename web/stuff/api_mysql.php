@@ -40,7 +40,7 @@
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 foreach (array('active','action','identify_server_by','server_local_id','server_external_id','identify_user_by','user_localid','user_externalid','username') as $key) {
     if (!array_key_exists($key,$data)) {
-        $success['false'][]='Data key does not exist: '.$key;
+        $success['false'][] = 'Data key does not exist: '.$key;
     }
 }
 if (!isset($success['false']) and array_value_exists('action','add',$data)) {
@@ -61,14 +61,14 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $localUserCname=$row['cname'];
         }
         if (!isset($localUserLookupID)) {
-            $success['false'][]='user does not exist';
+            $success['false'][] = 'user does not exist';
         }
         if (!isset($success['false']) and !in_array($externalServerID,$bad)) {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_dbs` WHERE `externalID`=? LIMIT 1");
             $query->execute(array($externalServerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if ($row['amount']>0) {
-                    $success['false'][]='database with external ID already exists';
+                    $success['false'][] = 'database with external ID already exists';
                 }
             }
         }
@@ -84,12 +84,12 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
                 $hostID=$row['id'];
             }
             if (!isset($hostID)) {
-                $success['false'][]='No free host';
+                $success['false'][] = 'No free host';
             }
         }
         if (!isset($success['false'])) {
             $password=passwordgenerate(10);
-            $dbname=$localUserCname.'_'.$password;
+            $dbname=$localUserCname . '_' . $password;
             $insert=$sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`dbname`,`password`,`ips`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
             $insert->execute(array($active,$hostID,$localUserLookupID,$dbname,$password,$aeskey,'',$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$externalServerID,$resellerID));
             $query = $sql->prepare("SELECT `id` FROM `mysql_external_dbs` WHERE `dbname`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
@@ -104,7 +104,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
                 $dbname=substr($dbname,$strStart,$nameLength);
             }
             if (isset($localID)) {
-                if ($active=='N') {
+                if ($active == 'N') {
                     $password=passwordgenerate(20);
                 }
                 $pupdate=$sql->prepare("UPDATE `mysql_external_dbs` SET `dbname`=?,`password`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -114,7 +114,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
                 $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','my',?,?,?,?,?,NULL,NOW(),'ad',?)");
                 $insert->execute(array($hostID,$resellerID,$localID,$localUserLookupID,$dbname,$resellerID));
             } else {
-                $success['false'][]='Could not write database to database';
+                $success['false'][] = 'Could not write database to database';
             }
         }
     } else if (!isset($success['false'])) {
@@ -126,7 +126,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
         $identifyServerBy=$data['identify_server_by'];
         $localServerID=isid($data['server_local_id'],21);
         $externalServerID=$data['server_external_id'];
-        $success['false'][]='Can not identify user or bad email';
+        $success['false'][] = 'Can not identify user or bad email';
     }
 } else if (!isset($success['false']) and array_value_exists('action','mod',$data)) {
     $active=active_check($data['active']);
@@ -151,10 +151,10 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $query->execute(array($localID,$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if($row['amount']>0) {
-                    $success['false'][]='Database is already marked for deletion';
+                    $success['false'][] = 'Database is already marked for deletion';
                 }
             }
-            if (!in_array($active,$bad) and $active!=$oldActive) {
+            if (!in_array($active,$bad) and $active != $oldActive) {
                 $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($active,$localID,$resellerID));
                 $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='my' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
@@ -164,10 +164,10 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             }
         }
         if(!isset($localID)) {
-            $success['false'][]='No database can be found to edit';
+            $success['false'][] = 'No database can be found to edit';
         }
     } else {
-        $success['false'][]='No data for this method';
+        $success['false'][] = 'No data for this method';
     }
 } else if (!isset($success['false']) and array_value_exists('action','del',$data)) {
     $active = '';
@@ -196,10 +196,10 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','my',?,?,?,?,?,NULL,NOW(),'dl',?)");
             $insert->execute(array($hostID,$resellerID,$localID,$userID,$name,$resellerID));
         } else {
-            $success['false'][]='No database can be found to delete';
+            $success['false'][] = 'No database can be found to delete';
         }
     } else {
-        $success['false'][]='No data for this method';
+        $success['false'][] = 'No data for this method';
     }
 } else {
     $active = '';
@@ -210,10 +210,10 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
     $identifyServerBy = '';
     $localServerID = '';
     $externalServerID = '';
-    $success['false'][]='Method not allowed';
+    $success['false'][] = 'Method not allowed';
 }
 
-if ($apiType=='xml') {
+if ($apiType == 'xml') {
     header("Content-type: text/xml; charset=UTF-8");
     if (isset($success['false'])) {
         $errors=implode(', ',$success['false']);
@@ -239,7 +239,7 @@ if ($apiType=='xml') {
 </mysql>
 XML;
     print $reply;
-} else if ($apiType=='json') {
+} else if ($apiType == 'json') {
     header("Content-type: application/json; charset=UTF-8");
     echo json_encode(array('action'=>$action,'active'=>$active,'identify_server_by'=>$identifyServerBy,'server_external_id'=>$externalServerID,'server_local_id'=>$localServerID,'identify_user_by'=>$identifyUserBy,'user_localid'=>$localUserID,'user_externalid'=>$externalUserID,'username'=>$username,'errors'=>$errors));
 } else {

@@ -51,12 +51,12 @@ if ($reseller_id==0) {
     $lookupID = 0;
 } else {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
-    $lookupID=($admin_id!=$reseller_id) ? $reseller_id : $admin_id;
+    $lookupID=($admin_id != $reseller_id) ? $reseller_id : $admin_id;
     $logreseller = 0;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->smallletters('action',2,'post')=='md'){
+} else if ($ui->smallletters('action',2,'post') == 'md'){
     $query = $sql->prepare("SELECT COUNT(`active`) AS `amount` FROM `api_settings` WHERE `resellerID`=? LIMIT 1");
     $query->execute(array($lookupID));
     $amount=$query->fetchColumn();
@@ -65,7 +65,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     if ($amount>0) {
         $query = $sql->prepare("UPDATE `api_settings` SET `active`=?,`user`=? WHERE `resellerID`=? LIMIT 1");
         $query->execute(array($ui->active('active','post'),$user,$lookupID));
-        if ($ui->password('pwd',255,'post')!='encrypted') {
+        if ($ui->password('pwd',255,'post') != 'encrypted') {
             $query = $sql->prepare("UPDATE `api_settings` SET `pwd`=?,`salt`=? WHERE `resellerID`=? LIMIT 1");
             $query->execute(array(passwordhash($ui->password('pwd',255,'post'),$salt),$salt,$lookupID));
         }

@@ -97,7 +97,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
     $query = $sql->prepare("SELECT `ips`,`resellerid`,`resellersid` FROM `resellerdata`");
     $query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$ids=$row['resellerid']."-".$row['resellersid'];
+		$ids=$row['resellerid'] . '-' . $row['resellersid'];
 		$userips[$ids]=ipstoarray($row['ips']);
 	}
     $query = $sql->prepare("SELECT `id`,`ip`,`ips` FROM `virtualcontainer`");
@@ -115,8 +115,8 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
     $query->execute();
     print "Killing active locks and threads regarding database $stats_db\r\n";
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        list($host)=explode(':',$row['Host']);
-        if ($host=='localhost' and $row['db']==$stats_db) {
+        list($host)=explode(':', $row['Host']);
+        if ($host == 'localhost' and $row['db']==$stats_db) {
             $query2 = $sql2->prepare("KILL ?");
             $query2->execute(array($row['Id']));
         }
@@ -149,7 +149,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
             $ip_dst=$row[$column_destip];
             $bytes=$row[$column_byte];
             $stamp_updated=$row[$column_date];
-            $date=explode(' ',$row[$column_date]);
+            $date=explode(' ', $row[$column_date]);
             $hour=explode(':',$date[1]);
             $day=$date[0] . '  ' . $hour[0].":00:00";
             if (searchinnerarray($ip_src,$vserverips) or searchinnerarray($ip_dst,$vserverips)) {

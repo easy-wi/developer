@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main!=1 or $reseller_id!=0) {
+if (!isset($admin_id) or $main!=1 or $reseller_id != 0) {
     header('Location: admin.php');
     die('No acces');
 }
@@ -1239,13 +1239,13 @@ foreach ($defined as $table => $t_p) {
     $query = $sql->prepare("SHOW TABLE STATUS LIKE '$table'");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['Engine']=='MyISAM') {
+        if ($row['Engine'] == 'MyISAM') {
             $sqlStatement="ALTER TABLE `$table` ENGINE = InnoDB";
             $query2 = $sql->prepare($sqlStatement);
             $query2->execute();
             $response->add($sqlStatement.'<br />');
         }
-        if ($row['Collation']!='utf8_general_ci') {
+        if ($row['Collation'] != 'utf8_general_ci') {
             $sqlStatement="ALTER TABLE `$table` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
             $query2 = $sql->prepare($sqlStatement);
             $query2->execute();
@@ -1274,35 +1274,35 @@ foreach ($defined as $table => $t_p) {
             if (isset($t_p[$Field])) {
                 $properties=$t_p[$Field];
                 foreach ($row as $key=>$value) {
-                    if ($key!='Field' and $key!='Key' and !in_array($Field,$key_differ) and $properties[$key]!=$value) {
+                    if ($key != 'Field' and $key != 'Key' and !in_array($Field,$key_differ) and $properties[$key] != $value) {
                         $key_differ[]=$Field;
-                    } else if ($key=='Key' and $value=='' and $properties['Key']=='MUL') {
+                    } else if ($key == 'Key' and $value == '' and $properties['Key'] == 'MUL') {
                         $addIndex[]=$Field;
-                    } else if ($key=='Key' and $value=='MUL' and $properties['Key']=='') {
+                    } else if ($key == 'Key' and $value == 'MUL' and $properties['Key'] == '') {
                         $removeIndex[]=$Field;
                     }
                 }
             } else {
-                $drop_key[]='DROP `'.$Field.'`';
+                $drop_key[] = 'DROP `'.$Field.'`';
             }
         }
         foreach ($key_differ as $key) {
-            if ($t_p[$key]['Null']=='NO') {
+            if ($t_p[$key]['Null'] == 'NO') {
                 $NULL='NOT NULL';
             } else {
                 $NULL='NULL';
             }
-            if ($t_p[$key]['Default']=='') {
+            if ($t_p[$key]['Default'] == '') {
                 $DEFAULT = '';
             } else {
                 $DEFAULT="DEFAULT '".$t_p[$key]['Default']."'";
             }
-            if ($t_p[$key]['Extra']=='') {
+            if ($t_p[$key]['Extra'] == '') {
                 $AUTO_INCREMENT = '';
             } else {
                 $AUTO_INCREMENT=" AUTO_INCREMENT";
             }
-            $change[]='CHANGE `'.$key.'` `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AUTO_INCREMENT;
+            $change[] = 'CHANGE `'.$key.'` `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AUTO_INCREMENT;
         }
         if (count($change)>0) {
             $alter_query='ALTER TABLE `'.$table.'` '.implode(', ',$change);
@@ -1320,7 +1320,7 @@ foreach ($defined as $table => $t_p) {
             $i = 0;
             $current=current($t_p);
             $current_key=array_search($current,$t_p);
-            while ($current!==false and $current_key!=$key) {
+            while ($current!==false and $current_key != $key) {
                 $prev=$current_key;
                 $current=next($t_p);
                 $current_key=array_search($current,$t_p);
@@ -1332,17 +1332,17 @@ foreach ($defined as $table => $t_p) {
             }
             $next=array_search(next($t_p),$t_p);
             $before=array_search(prev($t_p),$t_p);
-            if ($t_p[$key]['Null']=='NO') {
+            if ($t_p[$key]['Null'] == 'NO') {
                 $NULL='NOT NULL';
             } else {
                 $NULL='NULL';
             }
-            if ($t_p[$key]['Default']=='') {
+            if ($t_p[$key]['Default'] == '') {
                 $DEFAULT = '';
             } else {
                 $DEFAULT="DEFAULT '".$t_p[$key]['Default']."'";
             }
-            $add_keys[]='ADD COLUMN `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AFTER;
+            $add_keys[] = 'ADD COLUMN `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AFTER;
         }
         if (count($add_keys)>0) {
             $add_query='ALTER TABLE `'.$table.'` '.implode(', ',$add_keys);

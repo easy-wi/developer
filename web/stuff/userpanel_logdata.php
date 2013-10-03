@@ -40,7 +40,7 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usersettings'])
 }
 $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($admin_id) and $reseller_id!=0) $reseller_id=$admin_id;
+if (isset($admin_id) and $reseller_id != 0) $reseller_id=$admin_id;
 $table = array();
 $query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=? ORDER BY `logdate` DESC LIMIT $start,$amount");
 $query2 = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
@@ -55,7 +55,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			if (isanyadmin($subuser) and !isset($admin_id)) {
 				$username=$row2['cname'];
-				$ip = "";
+				$ip = '';
 			} else {
 				$username=$row2['cname'];
 				$ip=$row['ip'];
@@ -77,6 +77,6 @@ $query = $sql->prepare("SELECT `id` FROM `userlog` WHERE `usertype`='user' AND `
 $query->execute(array($user_id,$reseller_id));
 $colcount=$query->rowCount();
 $vor=($colcount>$next) ? $start+$amount : $start;
-$back=$start-$amount;
-$zur=($back>=0) ? $start-$amount : $start;
+$back=$start - $amount;
+$zur = ($back >= 0) ? $start - $amount : $start;
 $template_file = "userpanel_logs.tpl";

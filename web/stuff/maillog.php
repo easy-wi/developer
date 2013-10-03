@@ -35,13 +35,13 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['log'])) {
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['log'])) {
 	header('Location: admin.php');
 	die('No acces');
 }
 $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
+if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
 	$i = 0;
     if ($ui->id('id',30,'post')) {
         $delete=$sql->prepare("DELETE FROM `mail_log` WHERE `id`=? LIMIT 1");
@@ -54,15 +54,15 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
 } else {
 	$table = array();
     $o=$ui->st('o','get');
-	if ($ui->st('o','get')=='du') {
+	if ($ui->st('o','get') == 'du') {
 		$orderby='u.`cname` DESC';
-	} else if ($ui->st('o','get')=='au') {
+	} else if ($ui->st('o','get') == 'au') {
 		$orderby='u.`cname` ASC';
-	} else if ($ui->st('o','get')=='dt') {
+	} else if ($ui->st('o','get') == 'dt') {
 		$orderby='l.`topic` DESC';
-	} else if ($ui->st('o','get')=='at') {
+	} else if ($ui->st('o','get') == 'at') {
 		$orderby='l.`topic` ASC';
-	} else if ($ui->st('o','get')=='ad') {
+	} else if ($ui->st('o','get') == 'ad') {
 		$orderby='l.`id` ASC';
 	} else {
 		$o='dd';
@@ -70,7 +70,7 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
 	}
 	if ($reseller_id==0) {
 		$pselect=$sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `mail_log` l LEFT JOIN `userdata` u ON l.`uid`=u.`id` ORDER BY $orderby LIMIT $start,$amount");
-	} else if ($reseller_id!="0" and $admin_id!=$reseller_id) {
+	} else if ($reseller_id != 0 and $admin_id != $reseller_id) {
 		$pselect=$sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `mail_log` l LEFT JOIN `userdata` u ON l.`uid`=u.`id` WHERE l.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
 	} else {
 		$pselect=$sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `userdata` u LEFT JOIN `mail_log` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE u.`resellerid`=? GROUP BY l.`date` ORDER BY $orderby LIMIT $start,$amount");
@@ -78,14 +78,14 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
 	if ($reseller_id==0) {
 		$pselect->execute();
 	} else {
-		if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+		if ($reseller_id != 0 and $admin_id != $reseller_id) {
 			$reseller_id=$admin_id;
 		}
 		$pselect->execute(array($reseller_id));
 	}
 	foreach ($pselect->fetchall() as $row) {
 		$userid=$row['uid'];
-		if ($userid!=$admin_id) {
+		if ($userid != $admin_id) {
 			$username='<a href="switch.php?id='.$userid.'">'.$row['cname'].'</a> ('.$row['mail'].')';
 		} else {
 			$username=$row['cname'].' ('.$row['mail'].')';
@@ -100,7 +100,7 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
 		$countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mail_log`");
 		$countp->execute();
 	} else {
-		if ($reseller_id!="0" and $admin_id!=$reseller_id) {
+		if ($reseller_id != 0 and $admin_id != $reseller_id) {
 			$countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mail_log` WHERE `resellerid`=?");
 		} else {
 			$countp=$sql->prepare("SELECT COUNT(l.`id`) AS `amount` FROM `userdata` u LEFT JOIN `mail_log` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE u.`resellerid`=? GROUP BY l.`date`");
@@ -115,13 +115,13 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
 	} else {
 		$vor=$start;
 	}
-	$back=$start-$amount;
+	$back=$start - $amount;
 	if ($back>=0){
-		$zur=$start-$amount;
+		$zur=$start - $amount;
 	} else {
 		$zur=$start;
 	}
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ml&amp;d='.$d.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -136,11 +136,11 @@ if (isset($action) and $action=='dl' and $ui->id('id',30,'post')) {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=ml&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ml&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=ml&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ml&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

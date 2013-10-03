@@ -49,12 +49,12 @@ if (!isset($admin_id) and !isset($user_id)) {
 } else if (isset($user_id)) {
     $pa=User_Permissions($user_id);
 } else {
-    $die= true;
+    $die = true;
 }
 if (!isset($pa) or count($pa)==0 or ((!isset($admin_id) and !isset($user_id)) or (((!$pa['gserver']) and !$pa['voiceserver'] and !$pa['voicemasterserver'] and !$pa['traffic'] and !$pa['user'] and !rsellerpermisions($admin_id) and !$pa['usertickets']) and (!$pa['restart'] and !$pa['usertickets'])))) {
-    $die= true;
+    $die = true;
 }
-if ($ui->smallletters('w',5,'get')=='check') {
+if ($ui->smallletters('w',5,'get') == 'check') {
     $return='bad';
     if ($ui->w('method',40,'get')) {
         $method=$ui->w('method',40,'get');
@@ -69,16 +69,16 @@ if ($ui->smallletters('w',5,'get')=='check') {
     $query = $sql->prepare("SELECT `mapGroup` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($ui->username('mapgroup','50','get'), $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['mapGroup']!=null) {
+        if ($row['mapGroup'] != null) {
             $mapGroup=$row['mapGroup'];
             require_once IncludeTemplate($template_to_use,'ajax_userpanel_mapgroup.tpl');
         }
     }
 } else if ($ui->id('id',19,'get') and $ui->st('d','get')=="vs" and ($pa['addvserver'] or $pa['root'])) {
 	$sprache = getlanguagefile('reseller', $user_language, $reseller_id);
-	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+	if ($reseller_id != 0 and $admin_id != $reseller_id) {
         $reseller_id=$admin_id;
-        $notexclusive= true;
+        $notexclusive = true;
     }
 	$query = $sql->prepare("SELECT `id`,`cpu`,`active`,`ip`,`esxi`,`description`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota` FROM `virtualhosts` WHERE `id`=?");
     $query2 = $sql->prepare("SELECT `cores`,`minmhz`,`hddsize`,`mountpoint`,`minram` FROM `virtualcontainer` WHERE hostid=?");
@@ -201,14 +201,14 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		$subnets=array_unique($ips);
 		natsort($subnets);
 		foreach ($subnets as $subnet) {
-			$data[]='<option>'.$subnet.'</option>';
+			$data[] = '<option>'.$subnet.'</option>';
 		}
 	} else if ($ui->st('w','get')=="rs") {
 		if ($reseller_id==0) {
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=`resellerid`");
             $query->execute();
 		}
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[]='<option value='.$row['id'].'>'.$row['cname'].'</option>';
+		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['cname'].'</option>';
 	} else if ($ui->st('w','get')=="us") {
 		if ($reseller_id==0) {
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r'");
@@ -218,7 +218,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
             $query->execute(array($reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$data[]='<option value='.$row['id'].'>'.$row['cname'].'</option>';
+			$data[] = '<option value='.$row['id'].'>'.$row['cname'].'</option>';
 		}
 	} else if ($ui->st('w','get')=="se") {
 		if ($reseller_id==0) {
@@ -231,7 +231,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
             $query = $sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`userid`=? AND c.`resellerid`=? ORDER BY u.`id`,c.`id`");
             $query->execute(array($admin_id, $reseller_id));
 		}
-		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) $data[]='<option value='.$row['id'].'>'.$row['cname'] . '-' . $row['id'].'</option>';
+		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['cname'] . '-' . $row['id'].'</option>';
 	} else if ($ui->st('w','get')=="ip") {
 		$userips = array();
 		if ($reseller_id==0) {
@@ -250,25 +250,25 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		}
 		$ips=array_unique($userips);
 		natsort($ips);
-		foreach ($ips as $ip) $data[]='<option>'.$ip.'</option>';
+		foreach ($ips as $ip) $data[] = '<option>'.$ip.'</option>';
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_traffic.tpl');
 } else if ($ui->st('d','get')=="vu" and $ui->st('w','get')) {
 	if ($ui->st('w','get')=="us") {
 		$query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
         $query->execute(array($reseller_id));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[]='<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
+		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 	} else if ($ui->st('w','get')=="se") {
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
         $query->execute(array($reseller_id));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $server=$row['ip'].':'.$row['port'];
-			$data[]='<option value='.$row['id'].'>'.$server.'</option>';
+            $server=$row['ip'] . ':' . $row['port'];
+			$data[] = '<option value='.$row['id'].'>'.$server.'</option>';
 		}
 	} else if ($ui->st('w','get')=="ma") {
         $query = $sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? ORDER BY `ssh2ip`");
         $query->execute(array($reseller_id));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[]='<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';
+		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl');
 } else if ($ui->username('distro','50','get') and $ui->id('id',19,'get') and ($pa['vserversettings'] or $pa['root']) and $reseller_id==0) {
@@ -298,7 +298,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 <?php 
 } else if (($ui->username('short','50','get') or $ui->username('shorten','50','get')) and $pa['restart']) {
 	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
-	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+	if ($reseller_id != 0 and $admin_id != $reseller_id) {
 		$reseller_id=$admin_id;
 	}
     $get_shorten=$ui->username('shorten', 50,'get');
@@ -340,7 +340,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 <?php
 } else if ($ui->username('gamestring','50','get') and $ui->id('id',19,'get') and ($pa['roots'] or $pa['root'])) {
 	$sprache = getlanguagefile('roots', $user_language, $reseller_id);
-	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+	if ($reseller_id != 0 and $admin_id != $reseller_id) {
 		$reseller_id=$admin_id;
 	}
 	include(EASYWIDIR . '/stuff/ssh_exec.php');
@@ -352,7 +352,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
     $gamelist = array();
     $count=count($games);
 	while ($i<$count) {
-        if ($games[$i]!='' and !in_array($games[$i], $gamelist)) {
+        if ($games[$i] != '' and !in_array($games[$i], $gamelist)) {
             $gamelist[]=$games[$i];
             $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($games[$i], $reseller_id));
@@ -396,7 +396,7 @@ if ($ui->smallletters('w',5,'get')=='check') {
 	}
 } else if ($pa['gserver'] and $ui->st('d','get')!="vs" and $ui->st('d','get')!="vo" and ($ui->id('id',19,'get') or $ui->ip('ip','get'))) {
 	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
-	if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+	if ($reseller_id != 0 and $admin_id != $reseller_id) {
 		$reseller_id=$admin_id;
 	}
 	if ($ui->id('id',19,'get') and $ui->st('d','get')!="vs") {
@@ -455,12 +455,12 @@ if ($ui->smallletters('w',5,'get')=='check') {
 		}
         require_once IncludeTemplate($template_to_use,'ajax_admin_gserver_ports.tpl');
 	}
-} else if (($pa['usertickets'] or $pa['usertickets']) and $ui->port('po', 'get') and ($ui->st('d','get')=='ut' or $ui->st('d','get')=='rt')) {
-	if ($reseller_id!=0 and $admin_id==$reseller_id and $ui->st('d','get')=='rt') {
+} else if (($pa['usertickets'] or $pa['usertickets']) and $ui->port('po', 'get') and ($ui->st('d','get') == 'ut' or $ui->st('d','get') == 'rt')) {
+	if ($reseller_id != 0 and $admin_id==$reseller_id and $ui->st('d','get') == 'rt') {
 		$resellerid = 0;
-	} else if ($reseller_id!=0 and $admin_id!=$reseller_id and $ui->st('d','get')=='rt') {
+	} else if ($reseller_id != 0 and $admin_id != $reseller_id and $ui->st('d','get') == 'rt') {
 		$resellerid=$admin_id;
-	} else if ($ui->st('d','get')=='ut' or $ui->st('d','get')=='rt') {
+	} else if ($ui->st('d','get') == 'ut' or $ui->st('d','get') == 'rt') {
 		$resellerid=$reseller_id;
     }
     $table = array();

@@ -49,10 +49,10 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache = getlanguagefile('user',$user_language,$reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->id('id',10,'get') or $ui->st('d','get')=='ad') {
+} else if ($ui->id('id',10,'get') or $ui->st('d','get') == 'ad') {
     $template_file = 'userpanel_404.tpl';
     $id=$ui->id('id',10,'get');
-    if ($ui->st('d','get')=='ad' or $ui->st('d','get')=='md') {
+    if ($ui->st('d','get') == 'ad' or $ui->st('d','get') == 'md') {
         $db = array();
         $gs = array();
         $vo = array();
@@ -78,10 +78,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query->execute(array($user_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $ro[$row['dedicatedID']]=$row['ip'];
     }
-    if (!$ui->st('action','post') and $ui->st('d','get')=='ad') {
+    if (!$ui->st('action','post') and $ui->st('d','get') == 'ad') {
         $randompass=passwordgenerate(10);
         $template_file = 'userpanel_substitutes_add.tpl';
-    } else if (!$ui->st('action','post') and $ui->id('id',10,'get') and ($ui->st('d','get')=='md' or  $ui->st('d','get')=='dl')) {
+    } else if (!$ui->st('action','post') and $ui->id('id',10,'get') and ($ui->st('d','get') == 'md' or  $ui->st('d','get') == 'dl')) {
         $query = $sql->prepare("SELECT `loginName`,`active`,`name`,`vname` FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -89,9 +89,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $active=$row['active'];
             $name=$row['name'];
             $vname=$row['vname'];
-            $template_file = ($ui->st('d','get')=='md') ? 'userpanel_substitutes_mod.tpl' : 'userpanel_substitutes_del.tpl';
+            $template_file = ($ui->st('d','get') == 'md') ? 'userpanel_substitutes_mod.tpl' : 'userpanel_substitutes_del.tpl';
         }
-        if ($ui->st('d','get')=='md') {
+        if ($ui->st('d','get') == 'md') {
             $as = array();
             $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=? AND `resellerID`=?");
             $query->execute(array($id,$reseller_id));
@@ -99,10 +99,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $as[$row['oType']][$row['oID']] = true;
             }
         }
-    } else if ($ui->st('action','post')=='ad' or ($ui->st('action','post')=='md' and $ui->id('id',10,'get'))) {
+    } else if ($ui->st('action','post') == 'ad' or ($ui->st('action','post') == 'md' and $ui->id('id',10,'get'))) {
         $id=$ui->id('id',10,'get');
-        if ($ui->st('action','post')=='ad') {
-            if (!$ui->names('loginName',255,'post') or ($rSA['prefix1']=='Y' and $rSA['prefix2']!='' and preg_match('/^'.$rSA['prefix2'].'[0-9]{0,}+$/',$ui->names('loginName',255,'post')))) $template_file = $spracheResponse->errorUsername;
+        if ($ui->st('action','post') == 'ad') {
+            if (!$ui->names('loginName',255,'post') or ($rSA['prefix1'] == 'Y' and $rSA['prefix2'] != '' and preg_match('/^'.$rSA['prefix2'].'[0-9]{0,}+$/',$ui->names('loginName',255,'post')))) $template_file = $spracheResponse->errorUsername;
             $query = $sql->prepare("SELECT 1 FROM `userdata_substitutes` WHERE `loginName`=? LIMIT 1");
             $query->execute(array($ui->names('loginName',255,'post')));
             if ($query->rowCount()>0) $userError=$spracheResponse->error_username;
@@ -120,8 +120,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 }
                 $id=$sql->lastInsertId();
             }
-        } else if ($ui->st('action','post')=='md' and $ui->id('id',10,'get')) {
-            if ($ui->password('security',255,'post')!='(encrypted)') {
+        } else if ($ui->st('action','post') == 'md' and $ui->id('id',10,'get')) {
+            if ($ui->password('security',255,'post') != '(encrypted)') {
                 $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
                 $query = $sql->prepare("SELECT `loginName` FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id,$reseller_id));
@@ -142,7 +142,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $query->execute(array($id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (!$ui->id($row['oType'],10,'post') or !in_array($row['oID'],(array)$ui->id($row['oType'],10,'post'))) {
-                    $query2->execute(array($row['oType'],$row['oID'],$id,$reseller_id));
+                    $query2->execute(array($row['oType'], $row['oID'],$id,$reseller_id));
                     if ($query2->rowCount()>0) {
                         $changed = true;
                     }
@@ -157,10 +157,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
             $template_file = (isset($changed)) ? $spracheResponse->table_add : $spracheResponse->error_table;
         }
-    } else if ($ui->st('action','post')=='dl' and $ui->id('id',10,'get')) {
+    } else if ($ui->st('action','post') == 'dl' and $ui->id('id',10,'get')) {
         $query = $sql->prepare("DELETE FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_del : $spracheResponse->notFound;
+        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_del : 'userpanel_404.tpl';
         $query = $sql->prepare("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata_substitutes` s ON o.`sID`=s.`sID` WHERE s.`sID` IS NULL");
         $query->execute();
     }

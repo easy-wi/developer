@@ -115,7 +115,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$statistic[$lenddate][$shorten] = 1;
 		}
 	}
-	$stats = "";
+	$stats = '';
 	foreach ($statistic as $key=>$value) {
 		foreach ($value as $key2=>$value2) {
 			$stats .="$key: $value2 ($key2)</br>";
@@ -130,14 +130,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$id=$row['serverid'];
 			$servertype=$row['servertype'];
 		}
-		if ($servertype=='g') {
+		if ($servertype == 'g') {
             $query = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $cmds=gsrestart($row['switchID'],'so',$aeskey,$reseller_id);
-                ssh2_execute('gs',$row['rootID'],$cmds);
+                ssh2_execute('gs', $row['rootID'],$cmds);
             }
-		} else if ($servertype=='v') {
+		} else if ($servertype == 'v') {
             $query = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$id,$reseller_id));
 			foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -145,9 +145,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				$querypassword=$row['decryptedquerypassword'];
 				$addedby=$row['addedby'];
 				$localserverid=$row['localserverid'];
-				if ($addedby=='2') {
+				if ($addedby == '2') {
 					$queryip=$row['ssh2ip'];
-				} else if ($addedby=='1') {
+				} else if ($addedby == '1') {
                     $query = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($row2['rootid'],$reseller_id));
 					foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -207,28 +207,28 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$serverid=$row['serverid'];
 			$lendtime=$row['lendtime'];
 			$timeleft=round($lendtime-(strtotime("now")-strtotime($row['started']))/60);
-			if ($servertype=='g' and (!isset($nextfree) or $timeleft<$nextfree)) {
+			if ($servertype == 'g' and (!isset($nextfree) or $timeleft<$nextfree)) {
 				$nextfree=$timeleft;
-			} else if ($servertype=='v' and (!isset($vonextfree) or $timeleft<$vonextfree)) {
+			} else if ($servertype == 'v' and (!isset($vonextfree) or $timeleft<$vonextfree)) {
                 $vonextfree=$timeleft;
             }
 			if ($timeleft<=0) {
-				if ($servertype=='g') {
+				if ($servertype == 'g') {
                     $query2->execute(array($serverid,$reseller_id));
                     foreach($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                         $cmds=gsrestart($row2['switchID'],'so',$aeskey,$reseller_id);
-                        ssh2_execute('gs',$row['rootID'],$cmds);
+                        ssh2_execute('gs', $row['rootID'],$cmds);
                     }
-				} else if ($servertype=='v') {
+				} else if ($servertype == 'v') {
 					$query3->execute(array($aeskey,$serverid,$reseller_id));
 					foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row2) {
 						$queryport=$row2['queryport'];
 						$querypassword=$row2['decryptedquerypassword'];
 						$addedby=$row2['addedby'];
 						$localserverid=$row2['localserverid'];
-						if ($addedby=='2') {
+						if ($addedby == '2') {
 							$queryip=$row2['ssh2ip'];
-						} else if ($addedby=='1') {
+						} else if ($addedby == '1') {
 							$query4->execute(array($row2['rootid'],$reseller_id));
 							foreach ($query4->fetchall(PDO::FETCH_ASSOC) as $row3) {
 								$queryip=$row3['ip'];
@@ -250,11 +250,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				$password=$row['password'];
 				$slots=$row['slots'];
 				$lenderip=$row['lenderip'];
-				if ($servertype=='g') {
+				if ($servertype == 'g') {
                     $gscount--;
                     $query6->execute(array($serverid,$reseller_id));
 					foreach ($query6->fetchall(PDO::FETCH_ASSOC) as $row2) {
-						$server=$row2['serverip'].":".$row2['port'];
+						$server=$row2['serverip'] . ':' . $row2['port'];
 						$shorten=$row2['shorten'];
                         $query7->execute(array($row2['id'],$reseller_id));
 						foreach ($query7->fetchall(PDO::FETCH_ASSOC) as $row3) {
@@ -262,11 +262,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
 							$gsused[$shortenExists]++;
 						}
 					}
-				} else if ($servertype=='v') {
+				} else if ($servertype == 'v') {
 					$vocount--;
                     $query8->execute(array($serverid,$reseller_id));
 					foreach ($query8->fetchall(PDO::FETCH_ASSOC) as $row2) {
-						$server=$row2['ip'].":".$row2['port'];
+						$server=$row2['ip'] . ':' . $row2['port'];
 						$shorten=$row2['type'];
 					}
 				}
@@ -279,8 +279,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query->execute(array($reseller_id));
         $nextcheck=$query->fetchColumn();
         $nextcheck=($nextcheck>0) ? ceil($nextcheck) : ceil($nextcheck)*-1;
-		$used[]='Teamspeak 3: '.$voused. '/'. $voTotalCount;
-		foreach ($gscounts as $key=>$value) $used[]=$key.': '.$gsused[$key]. '/'. $value;
+		$used[] = 'Teamspeak 3: '.$voused. '/' . $voTotalCount;
+		foreach ($gscounts as $key=>$value) $used[]=$key.': '.$gsused[$key]. '/' . $value;
 		$template_file = "admin_lendserver_list.tpl";
 	}
 }

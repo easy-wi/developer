@@ -76,7 +76,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $resellerID=$row['resellerID'];
-        if($row['ssl']=='Y') {
+        if($row['ssl'] == 'Y') {
             $ssl='https://';
             $port=443;
         } else {
@@ -87,7 +87,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
         printText('Connect to: '.$ssl.$row['domain']);
         while (!isset($left) or $left>0) {
             $getRequest='/'. $row['file'].'?passwordToken='.urlencode($row['token']).'&start='.urlencode($start).'&chunkSize='.urlencode($row['chunkSize']).'&lastID='.urlencode($row['lastID']).'&updateTime='.urlencode($row['lastCheck']);
-            $rawResponse=webhostRequest($row['domain'],'http://easy-wi.com user importer',$getRequest,null,$port);
+            $rawResponse=webhostRequest($row['domain'],'http://easy-wi.com user importer',$getRequest, null,$port);
             $response=cleanFsockOpenRequest($rawResponse,'{','}');
             $decoded=json_decode($response);
             unset($response);
@@ -110,24 +110,24 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     if (isset($value->externalID)) {
                         $query4->execute(array(json_encode(array('I'=>$row['importID'])),$value->externalID));
                         $checkAmount=$query4->fetchColumn();
-                        if($checkAmount>0 and $row['fetchUpdates']=='Y') {
-                            $query2->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),json_encode(array('I'=>$row['importID'])),getParam('externalID'),$row['resellerID']));
+                        if($checkAmount>0 and $row['fetchUpdates'] == 'Y') {
+                            $query2->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),json_encode(array('I'=>$row['importID'])),getParam('externalID'), $row['resellerID']));
                             printText('User updated. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
                         } else if ($checkAmount>0) {
                             printText('User update skipped. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
                         } else {
                             $query5->execute(array(strtolower($value->email),strtolower($value->loginName)));
-                            if ($query5->fetchColumn()>0 and $row['fetchUpdates']=='Y') {
-                                $query6->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),strtolower($value->email),strtolower($value->loginName),$row['resellerID']));
+                            if ($query5->fetchColumn()>0 and $row['fetchUpdates'] == 'Y') {
+                                $query6->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),strtolower($value->email),strtolower($value->loginName), $row['resellerID']));
                                 printText('User updated. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
                             } else if ($checkAmount>0) {
                                 printText('User update skipped because source system differ. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
                             } else {
                                 printText('Import user. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
-                                $query3->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),$row['groupID'],json_encode(array('I'=>$row['importID'])),getParam('externalID'),$row['resellerID']));
+                                $query3->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'), $row['groupID'],json_encode(array('I'=>$row['importID'])),getParam('externalID'), $row['resellerID']));
                             }
                         }
-                        if (getParam('updatetime')!='' and (isset($lastCheck) and strtotime(getParam('updatetime'))>strtotime($lastCheck)) or !isset($lastCheck)) {
+                        if (getParam('updatetime') != '' and (isset($lastCheck) and strtotime(getParam('updatetime'))>strtotime($lastCheck)) or !isset($lastCheck)) {
                             $lastCheck=getParam('updatetime');
                         }
                         $lastID=$value->externalID;
@@ -137,7 +137,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                     if (!isset($lastCheck)) {
                         $lastCheck=date('Y-m-d H:i:s');
                     }
-                    $query7->execute(array($lastCheck,$lastID,$row['importID']));
+                    $query7->execute(array($lastCheck,$lastID, $row['importID']));
                 }
                 if ($left>0){
                     printText('Total amount is: '.$decoded->total.' User left: '.$left.' need to make another run');

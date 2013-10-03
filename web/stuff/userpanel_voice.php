@@ -35,7 +35,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !$pa['voiceserver'])) {
+if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['voiceserver'])) {
 	header('Location: userpanel.php');
 	die('No acces');
 }
@@ -53,15 +53,15 @@ if (isset($admin_id)) {
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/class_voice.php');
-if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
+if ($ui->st('d','get') == 'bu' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
     $id=$ui->id('id',10,'get');
     $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,v.`localserverid`,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,:aeskey) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip`,m.`type`,m.`usedns`,m.`publickey`,m.`ssh2ip`,AES_DECRYPT(m.`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(m.`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(m.`ssh2password`,:aeskey) AS `decryptedssh2password`,m.`serverdir`,m.`keyname`,m.`notified` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`backup`='Y' AND v.`id`=:server_id AND v.`userid`=:user_id AND v.`resellerid`=:reseller_id LIMIT 1");
     $query->execute(array(':aeskey'=>$aeskey,':server_id'=>$id,':user_id'=>$user_id,':reseller_id'=>$reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $dns=$row['dns'];
-        if ($row['type']=='ts3') {
+        if ($row['type'] == 'ts3') {
             $type=$sprache->ts3;
-            $server=($row['usedns']=='N' or $dns==null or $dns=='') ? $row['ip'].':'.$row['port'] : $row['dns'].' ('.$row['ip'].':'.$row['port'].')';
+            $server=($row['usedns'] == 'N' or $dns==null or $dns == '') ? $row['ip'] . ':' . $row['port'] : $row['dns'].' ('.$row['ip'] . ':' . $row['port'].')';
         }
         $serverdir=$row['serverdir'];
         $addedby=$row['addedby'];
@@ -99,7 +99,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
         $template_file = "userpanel_voiceserver_backup_list.tpl";
     } else if (isset($server) and !$ui->smallletters('action',2,'post') and $ui->port('po', 'get') == 1) {
         $template_file = "userpanel_voiceserver_backup_new.tpl";
-    } else if (isset($server) and $ui->smallletters('action',2,'post')=='nb') {
+    } else if (isset($server) and $ui->smallletters('action',2,'post') == 'nb') {
         $name=($ui->names('name',50,'post')) ? $ui->names('name',50,'post') : 'New Backup';
         $toomuch=$backupcount+1-$voice_maxbackup;
         if ($toomuch>0) {
@@ -130,7 +130,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                 $query = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                 $query->execute(array($id, $user_id, $reseller_id));
                 $return=tsbackup('create', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $sql->lastInsertId(), $reseller_id, $sql);
-                $template_file = ($return=='ok') ? $spracheResponse->ts_query_success.$return : $spracheResponse->error_ts_query.$return;
+                $template_file = ($return == 'ok') ? $spracheResponse->ts_query_success.$return : $spracheResponse->error_ts_query.$return;
                 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row);
                 $query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($id, $user_id, $reseller_id));
@@ -140,7 +140,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             }
         }
         $connection->CloseConnection();
-    } else if (isset($server) and $ui->smallletters('action',2,'post')=='md' and isset($ui->post['delete']) and $ui->id('id',10,'post')!=false) {
+    } else if (isset($server) and $ui->smallletters('action',2,'post') == 'md' and isset($ui->post['delete']) and $ui->id('id',10,'post')!=false) {
         $query = $sql->prepare("SELECT `name`,`sid` FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',10,'post'), $user_id, $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -156,7 +156,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
         $address=$query->fetchColumn();
         $loguseraction="%del% %voserver% %backup% ${name} ${address}";
         $insertlog->execute();
-    } else if (isset($server) and $ui->smallletters('action',2,'post')=='md' and isset($ui->post['use']) and $ui->id('id',10,'post')!=false) {
+    } else if (isset($server) and $ui->smallletters('action',2,'post') == 'md' and isset($ui->post['use']) and $ui->id('id',10,'post')!=false) {
         $query = $sql->prepare("SELECT `snapshot`,`name`,`sid`,`channels` FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',10,'post'), $user_id, $reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -168,7 +168,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             } else {
                 $connection->StartServer($volocalserverid);
                 $reply=$connection->Snapshotdeploy($volocalserverid, $snapshot);
-                if (isset($reply[0]['id']) and $reply[0]['id']=='0') {
+                if (isset($reply[0]['id']) and $reply[0]['id'] == '0') {
                     $move = array();
                     $channelListOld=@json_decode($row['channels']);
                     $channelListDeployed=@json_decode($connection->channelList($volocalserverid));
@@ -187,7 +187,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
     } else {
         $template_file = $spracheResponse->token;
     }
-} else if ($ui->st('d','get')=='pk' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
+} else if ($ui->st('d','get') == 'pk' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
     $id=$ui->id('id',10,'get');
     $query = $sql->prepare("SELECT `masterserver`,`localserverid`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id, $user_id, $reseller_id));
@@ -204,9 +204,9 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             $addedby=$row['addedby'];
             $queryport=$row['queryport'];
             $querypassword=$row['decryptedquerypassword'];
-            if ($addedby=='2') {
+            if ($addedby == '2') {
                 $queryip=$row['ssh2ip'];
-            } else if ($addedby=='1') {
+            } else if ($addedby == '1') {
                 $pselect3=$sql->prepare("SELECT `ip`,`bitversion` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $pselect3->execute(array($row['rootid'], $reseller_id));
                 foreach ($pselect3->fetchall(PDO::FETCH_ASSOC) as $row3) {
@@ -214,7 +214,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                 }
             }
         }
-        if (isset($masteractive) and $masteractive=='Y') {
+        if (isset($masteractive) and $masteractive == 'Y') {
             $connection=new TS3($queryip, $queryport,'serveradmin', $querypassword);
             $errorcode=$connection->errorcode;
             if (strpos($errorcode,'error id=0') === false) {
@@ -223,7 +223,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                 if ($ui->port('po', 'get') == 1) {
                     $servergroups = array();
                     foreach($connection->ServerGroups($localserverid) as $servergroup) {
-                        if ($servergroup['type']=='1') {
+                        if ($servergroup['type'] == '1') {
                             $servergroups[$servergroup['id']]=$servergroup['name'];
                         }
                     }
@@ -231,14 +231,14 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                 } else if (!$ui->smallletters('action',2,'post') and !$ui->port('po', 'get')) {
                     $pklist=$connection->KeyList($localserverid);
                     $template_file = (is_array($pklist)) ? "userpanel_voiceserver_key_list.tpl" : $spracheResponse->ts_query_success.$pklist;
-                } else if ($ui->smallletters('action',2,'post')=='ad') {
+                } else if ($ui->smallletters('action',2,'post') == 'ad') {
                     if ($ui->id('group',255,'post')) {
                         $newkey=$connection->AddKey($localserverid, $ui->id('group',255,'post'));
                         $loguseraction="%add% %voserver% Token ${address}";
                         $insertlog->execute();
                         $template_file = $spracheResponse->ts_query_success.$newkey[0]['token'];
                     }
-                } else if ($ui->smallletters('action',2,'post')=='dl') {
+                } else if ($ui->smallletters('action',2,'post') == 'dl') {
                     $loguseraction="%del% %voserver% Token ${address}";
                     $insertlog->execute();
                     $del=$connection->DelKey($localserverid, $ui->post['token']);
@@ -252,7 +252,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
     } else {
         $template_file = 'userpanel_404.tpl';
     }
-} else if ($ui->st('d','get')=='rs' and $ui->id('id',10,'get') and $ui->smallletters('action',2,'post')=='rs' and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
+} else if ($ui->st('d','get') == 'rs' and $ui->id('id',10,'get') and $ui->smallletters('action',2,'post') == 'rs' and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
     $id=$ui->id('id',10,'get');
     $query = $sql->prepare("SELECT v.*,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`id`=? AND v.`userid`=? AND v.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $id, $user_id, $reseller_id));
@@ -278,9 +278,9 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
         $forcebanner=$row['forcebanner'];
         $forcebutton=$row['forcebutton'];
         $forcewelcome=$row['forcewelcome'];
-        if ($addedby=='2') {
+        if ($addedby == '2') {
             $queryip=$row['ssh2ip'];
-        } else if ($addedby=='1') {
+        } else if ($addedby == '1') {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($vrow['rootid'], $reseller_id));
             foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -301,26 +301,26 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             $insertlog->execute();
             if (isset($reply[0]['token'])) {
                 $template_file = $spracheResponse->ts_query_success.$reply[0]['token'];
-                if ($forcebanner=='Y') {
-                    $removelist[]='b_virtualserver_modify_hostbanner';
-                    $removelist[]='i_needed_modify_power_virtualserver_modify_hostbanner';
-                } else if ($forcebanner=='N') {
-                    $addlist[]='b_virtualserver_modify_hostbanner';
-                    $addlist[]='i_needed_modify_power_virtualserver_modify_hostbanner';
+                if ($forcebanner== 'Y') {
+                    $removelist[] = 'b_virtualserver_modify_hostbanner';
+                    $removelist[] = 'i_needed_modify_power_virtualserver_modify_hostbanner';
+                } else if ($forcebanner== 'N') {
+                    $addlist[] = 'b_virtualserver_modify_hostbanner';
+                    $addlist[] = 'i_needed_modify_power_virtualserver_modify_hostbanner';
                 }
-                if ($forcebutton=='Y') {
-                    $removelist[]='b_virtualserver_modify_hostbutton';
-                    $removelist[]='i_needed_modify_power_virtualserver_modify_hostbutton';
-                } else if ($forcebutton=='N') {
-                    $addlist[]='b_virtualserver_modify_hostbutton';
-                    $addlist[]='i_needed_modify_power_virtualserver_modify_hostbutton';
+                if ($forcebutton == 'Y') {
+                    $removelist[] = 'b_virtualserver_modify_hostbutton';
+                    $removelist[] = 'i_needed_modify_power_virtualserver_modify_hostbutton';
+                } else if ($forcebutton == 'N') {
+                    $addlist[] = 'b_virtualserver_modify_hostbutton';
+                    $addlist[] = 'i_needed_modify_power_virtualserver_modify_hostbutton';
                 }
-                if ($forcewelcome=='Y') {
-                    $removelist[]='b_virtualserver_modify_welcomemessage';
-                    $removelist[]='i_needed_modify_power_virtualserver_modify_welcomemessage';
-                } else if ($forcewelcome=='N') {
-                    $addlist[]='b_virtualserver_modify_welcomemessage';
-                    $addlist[]='i_needed_modify_power_virtualserver_modify_welcomemessage';
+                if ($forcewelcome == 'Y') {
+                    $removelist[] = 'b_virtualserver_modify_welcomemessage';
+                    $removelist[] = 'i_needed_modify_power_virtualserver_modify_welcomemessage';
+                } else if ($forcewelcome == 'N') {
+                    $addlist[] = 'b_virtualserver_modify_welcomemessage';
+                    $addlist[] = 'i_needed_modify_power_virtualserver_modify_welcomemessage';
                 }
                 if (isset($addlist)) {
                     $connection->AdminPermissions ($volocalserverid,'add', $addlist);
@@ -336,7 +336,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
     } else {
         $template_file = 'userpanel_404.tpl';
     }
-} else if ($ui->st('d','get')=='md' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
+} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
@@ -354,7 +354,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             $dns=$row['dns'];
             $active=$row['active'];
             $password=$row['password'];
-            if ($active=='Y') {
+            if ($active == 'Y') {
                 $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,?) AS `decryptedquerypassword`  FROM `voice_masterserver` WHERE `id`=? AND (`resellerid`=? OR (`managedServer`='Y' AND `managedForID`=?)) LIMIT 1");
                 $query2->execute(array($aeskey, $row['masterserver'], $reseller_id, $reseller_id));
                 foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
@@ -367,9 +367,9 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                     $addedby=$row2['addedby'];
                     $externalDefaultDNS=$row2['externalDefaultDNS'];
                     $tsdnsServerID=$row2['tsdnsServerID'];
-                    if ($addedby=='2') {
+                    if ($addedby == '2') {
                         $queryip=$row2['ssh2ip'];
-                    } else if ($addedby=='1') {
+                    } else if ($addedby == '1') {
                         $query3 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                         $query3->execute(array($row2['rootid'], $resellerToUse));
                         foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
@@ -381,14 +381,14 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                     $query2 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($tsdnsServerID, $resellerToUse));
                     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                        if ($externalDefaultDNS=='Y') {
+                        if ($externalDefaultDNS== 'Y') {
                             $defaultdns=strtolower($id.'.'.$row2['defaultdns']);
                         }
                     }
                 }
             }
         }
-        if ($masteractive=='Y' and $active=='Y') {
+        if ($masteractive == 'Y' and $active == 'Y') {
             $connection=new TS3($queryip, $queryport,'serveradmin', $querypassword);
             $errorcode=$connection->errorcode;
             if (strpos($errorcode,'error id=0') === false) {
@@ -417,7 +417,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
         } else {
             $template_file = 'userpanel_404.tpl';
         }
-    } else if ($ui->smallletters('action',2,'post')=='md' and token(true)){
+    } else if ($ui->smallletters('action',2,'post') == 'md' and token(true)){
         $query = $sql->prepare("SELECT `active`,`ip`,`port`,`slots`,`dns`,`masterserver`,`localserverid`,`password`,`forceservertag`,`forcebanner`,`forcebutton`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $user_id, $reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -437,7 +437,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             $max_download_total_bandwidth=$row['max_download_total_bandwidth'];
             $max_upload_total_bandwidth=$row['max_upload_total_bandwidth'];
         }
-        if ($active=='Y') {
+        if ($active == 'Y') {
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR (`managedServer`='Y' AND `managedForID`=:reseller_id)) LIMIT 1");
             $query->execute(array(':aeskey'=>$aeskey,':id'=>$masterserver,':reseller_id'=>$reseller_id));
             foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -452,7 +452,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                 $mnotified=$row['notified'];
                 $tsdnsServerID=$row['tsdnsServerID'];
                 $externalDefaultDNS=$row['externalDefaultDNS'];
-                if ($addedby=='2') {
+                if ($addedby == '2') {
                     $publickey=$row['publickey'];
                     $queryip=$row['ssh2ip'];
                     $ssh2port=$row['decryptedssh2port'];
@@ -460,7 +460,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                     $ssh2password=$row['decryptedssh2password'];
                     $keyname=$row['keyname'];
                     $bitversion=$row['bitversion'];
-                } else if ($addedby=='1') {
+                } else if ($addedby == '1') {
                     $query2 = $sql->prepare("SELECT `ip`,`bitversion` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($row['rootid'], $resellerToUse));
                     foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
@@ -471,10 +471,10 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
             }
             $fail = 0;
             $error="Error:<br />";
-            if ($masteractive=='N') $fail = 1;
+            if ($masteractive == 'N') $fail = 1;
             $dns=strtolower($ui->domain('dns','post'));
             $dnsCheck=checkDNS($dns, $id, $user_id, $type='server');
-            if ($fail!=1 and $usedns=='Y' and $dns!=$olddns and $dns!='' and $dnsCheck!==false) {
+            if ($fail!=1 and $usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck!==false) {
                 if (isset($tsdnsServerID) and isid($tsdnsServerID,10) and isset($resellerToUse)) {
                     $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                     $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsServerID,':reseller_id'=>$resellerToUse));
@@ -490,9 +490,9 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                         $slots=$row['slots'];
                     }
                 }
-                $return=tsdns('md', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion,array($ip, $oldip),array($port, $oldport),array($dns, $olddns), $reseller_id, $sql);
-                $template_file = ($return=='ok') ? $spracheResponse->ts_query_success.$return : $spracheResponse->error_ts_query.$return;
-            } else if ($usedns=='Y' and $dns!=$olddns and $dns!='' and $dnsCheck===false) {
+                $return=tsdns('md', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion, array($ip, $oldip), array($port, $oldport), array($dns, $olddns), $reseller_id, $sql);
+                $template_file = ($return == 'ok') ? $spracheResponse->ts_query_success.$return : $spracheResponse->error_ts_query.$return;
+            } else if ($usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck===false) {
                 $error .=" DNS is not allowed<br />";
                 $fail = 1;
             }
@@ -505,15 +505,15 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                     $template_file = $spracheResponse->error_ts_query_connect.$errorcode;
                 } else {
                     $serverdetails=$connection->ServerDetails($localserverid);
-                    if ($forceservertag=="Y" and isset($brandname) and $brandname!="" and strpos(strtolower($name), strtolower($brandname)) === false) $name=$serverdetails['virtualserver_name'];
-                    if ($forcebanner=='Y') {
+                    if ($forceservertag=="Y" and isset($brandname) and $brandname != '' and strpos(strtolower($name), strtolower($brandname)) === false) $name=$serverdetails['virtualserver_name'];
+                    if ($forcebanner== 'Y') {
                         $banner_url=$serverdetails['virtualserver_hostbanner_url'];
                         $banner_gfx=$serverdetails['virtualserver_hostbanner_gfx_url'];
                     } else {
                         $banner_url=$ui->url('hostbanner_url','post');
                         $banner_gfx=$ui->url('hostbanner_gfx_url','post');
                     }
-                    if ($forcebutton=='Y') {
+                    if ($forcebutton == 'Y') {
                         $tooltip=$serverdetails['virtualserver_hostbutton_tooltip'];
                         $button_url=$serverdetails['virtualserver_hostbutton_url'];
                         $button_gfx=$serverdetails['virtualserver_hostbutton_gfx_url'];
@@ -522,7 +522,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                         $button_url=$ui->url('hostbutton_url','post');
                         $button_gfx=$ui->url('hostbutton_gfx_url','post');
                     }
-                    $welcome=(isset($forcewelcome) and $forcewelcome=='Y') ? $serverdetails['virtualserver_welcomemessage'] : $ui->description('welcome','post');
+                    $welcome=(isset($forcewelcome) and $forcewelcome == 'Y') ? $serverdetails['virtualserver_welcomemessage'] : $ui->description('welcome','post');
 
                     # Ticket https://github.com/easy-wi/developer/issues/13 "Bearbeiten von TS3 Servern im Usermodul erweitern"
                     $virtualserver_antiflood_points_needed_command_block=$ui->id('virtualserver_antiflood_points_needed_command_block',255,'post');
@@ -550,7 +550,7 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
     } else {
         $template_file = $spracheResponse->token;
     }
-} else if ($ui->st('d','get')=='st' and $ui->id('id',10,'get') and $ui->smallletters('action',2,'post') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
+} else if ($ui->st('d','get') == 'st' and $ui->id('id',10,'get') and $ui->smallletters('action',2,'post') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
     $id=$ui->id('id',10,'get');
     $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`localserverid`,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`id`=? AND v.`userid`=? AND v.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $id, $user_id, $reseller_id));
@@ -559,9 +559,9 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
         $queryport=$row['queryport'];
         $querypassword=$row['decryptedquerypassword'];
         $volocalserverid=$row['localserverid'];
-        if ($addedby=='2') {
+        if ($addedby == '2') {
             $queryip=$row['ssh2ip'];
-        } else if ($addedby=='1') {
+        } else if ($addedby == '1') {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($row['rootid'], $reseller_id));
             $queryip=$query->fetchColumn();
@@ -573,13 +573,13 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
         if (strpos($errorcode,'error id=0') === false) {
             $template_file = $spracheResponse->error_ts_query_connect.$errorcode;
         } else {
-            if ($ui->smallletters('action',2,'post')=='re') {
+            if ($ui->smallletters('action',2,'post') == 're') {
                 $uptime = 2;
                 $reply=$connection->StopServer($volocalserverid);
                 $reply=$connection->StartServer($volocalserverid);
                 $loguseraction="%start% %voserver% ${row['ip']}:${row['port']}";
                 $insertlog->execute();
-            } else if ($ui->smallletters('action',2,'post')=='so') {
+            } else if ($ui->smallletters('action',2,'post') == 'so') {
                 $uptime = 1;
                 $reply=$connection->StopServer($volocalserverid);
                 $loguseraction="%stop% %voserver% ${row['ip']}:${row['port']}";
@@ -598,27 +598,27 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
     }
 } else {
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='aa') {
+    if ($ui->st('o','get') == 'aa') {
         $orderby='v.`ip` ASC, v.`port` ASC';
-    } else if ($ui->st('o','get')=='da') {
+    } else if ($ui->st('o','get') == 'da') {
         $orderby='v.`ip` DESC, v.`port` DESC';
-    } else if ($ui->st('o','get')=='du') {
+    } else if ($ui->st('o','get') == 'du') {
         $orderby='v.`usedslots` DESC';
-    } else if ($ui->st('o','get')=='au') {
+    } else if ($ui->st('o','get') == 'au') {
         $orderby='v.`usedslots` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='v.`filetraffic` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='v.`filetraffic` ASC';
-    } else if ($ui->st('o','get')=='dr') {
+    } else if ($ui->st('o','get') == 'dr') {
         $orderby='v.`uptime` DESC';
-    } else if ($ui->st('o','get')=='ar') {
+    } else if ($ui->st('o','get') == 'ar') {
         $orderby='v.`uptime` ASC';
-    } else if ($ui->st('o','get')=='ds') {
+    } else if ($ui->st('o','get') == 'ds') {
         $orderby='v.`uptime` DESC';
-    } else if ($ui->st('o','get')=='as') {
+    } else if ($ui->st('o','get') == 'as') {
         $orderby='v.`uptime` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='v.`id` DESC';
     } else{
         $o='ai';
@@ -630,9 +630,9 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['vo'])) {
             $dns=$row['dns'];
-            if ($row['type']=='ts3') {
+            if ($row['type'] == 'ts3') {
                 $type=$sprache->ts3;
-                if ($row['initialpassword']!='' and $row['initialpassword']!=null) {
+                if ($row['initialpassword'] != '' and $row['initialpassword'] != null) {
                     $password='?password='.$row['initialpassword'];
                 } else {
                     $password = '';
@@ -642,12 +642,12 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                     $usedSlots = 0;
                 }
                 $flexSlots = '';
-                if ($row['flexSlots']=='Y' and $row['flexSlotsCurrent']==null) {
+                if ($row['flexSlots'] == 'Y' and $row['flexSlotsCurrent']==null) {
                     $flexSlots=$row['slots'].'/';
-                } else if ($row['flexSlots']=='Y') {
+                } else if ($row['flexSlots'] == 'Y') {
                     $flexSlots=$row['flexSlotsCurrent'].'/';
                 }
-                $usage=$usedSlots. '/'. $flexSlots.$row['slots'];
+                $usage=$usedSlots. '/' . $flexSlots.$row['slots'];
                 if ($row['uptime']==0) {
                     $imgName='16_error';
                     $imgAlt='error';
@@ -655,22 +655,22 @@ if ($ui->st('d','get')=='bu' and $ui->id('id',10,'get') and (!isset($_SESSION['s
                 } else if ($row['uptime']>1) {
                     $imgName='16_ok';
                     $imgAlt='online';
-                    $stopped='N';
+                    $stopped = 'N';
                 } else {
                     $imgName='16_bad';
                     $imgAlt='offline';
-                    $stopped='Y';
+                    $stopped = 'Y';
                 }
                 $days=floor($row['uptime']/86400);
                 $hours=floor(($row['uptime']-($days*86400))/3600);
                 $minutes=floor(($row['uptime']-($days*86400)-($hours*3600))/60);
                 $uptime=$days.'D/'.$hours.'H/'.$minutes.'M';
-                if ($row['usedns']=='N' or $dns==null or $dns=='') {
-                    $server='<a href="ts3server://'.$row['ip'].':'.$row['port'].$password.'">'.$row['ip'].':'.$row['port'].'</a>';
+                if ($row['usedns'] == 'N' or $dns==null or $dns == '') {
+                    $server='<a href="ts3server://'.$row['ip'] . ':' . $row['port'].$password.'">'.$row['ip'] . ':' . $row['port'].'</a>';
                 } else {
-                    $server='<a href="ts3server://'.$row['dns'].$password.'">'.$row['dns'].' ('.$row['ip'].':'.$row['port'].')</a>';
+                    $server='<a href="ts3server://'.$row['dns'].$password.'">'.$row['dns'].' ('.$row['ip'] . ':' . $row['port'].')</a>';
                 }
-                $address=$row['ip'].':'.$row['port'];
+                $address=$row['ip'] . ':' . $row['port'];
                 $filetraffic=round(($row['filetraffic']/1024),2);
                 if ($row['maxtraffic']>=0) {
                     $maxtraffic=round($row['maxtraffic']);

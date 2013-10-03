@@ -37,7 +37,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['cms_pages']) or $reseller_id!=0) {
+if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['cms_pages']) or $reseller_id != 0) {
     header('Location: admin.php');
     die;
 }
@@ -50,7 +50,7 @@ $logsubuser = 0;
 $logsubuser = 0;
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->id('id',10,'get') or $ui->st('d','get')=='ad') {
+} else if ($ui->id('id',10,'get') or $ui->st('d','get') == 'ad') {
     $id=$ui->id('id',10,'get');
     $template_file = 'uadmin_404.tpl';
     $foundLanguages = array();
@@ -60,7 +60,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $description = '';
             unset($lang);
             if($ui->id('id',10,'get')) {
-                $query->execute(array($id,$row,$reseller_id));
+                $query->execute(array($id, $row,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $lang=$row2['lang'];
                     $description=$row2['text'];
@@ -78,9 +78,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $foundLanguages[]=array('style'=>$style,'lang'=>$row,'checkbox'=>$checkbox,'description'=>$description,'display'=>$displayNone);
         }
     }
-    if (!$ui->st('action','post') and $ui->st('d','get')=='ad') {
+    if (!$ui->st('action','post') and $ui->st('d','get') == 'ad') {
         $template_file = 'admin_page_downloads_add.tpl';
-    } else if (!$ui->st('action','post') and $ui->id('id',10,'get') and ($ui->st('d','get')=='md' or  $ui->st('d','get')=='dl')) {
+    } else if (!$ui->st('action','post') and $ui->id('id',10,'get') and ($ui->st('d','get') == 'md' or  $ui->st('d','get') == 'dl')) {
         $query = $sql->prepare("SELECT * FROM `page_downloads` WHERE `fileID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -91,11 +91,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $fileExtension=$row['fileExtension'];
             $fileName=$row['fileName'];
             $date=$row['date'];
-            $template_file = ($ui->st('d','get')=='md') ? 'admin_page_downloads_mod.tpl' : 'admin_page_downloads_del.tpl';
+            $template_file = ($ui->st('d','get') == 'md') ? 'admin_page_downloads_mod.tpl' : 'admin_page_downloads_del.tpl';
         }
-    } else if ($ui->st('action','post')=='ad' or ($ui->st('action','post')=='md' and $ui->id('id',10,'get'))) {
+    } else if ($ui->st('action','post') == 'ad' or ($ui->st('action','post') == 'md' and $ui->id('id',10,'get'))) {
         $id=$ui->id('id',10,'get');
-        if ($ui->st('action','post')=='ad') {
+        if ($ui->st('action','post') == 'ad') {
             $query = $sql->prepare("SELECT 1 FROM `page_downloads` WHERE `fileName`=? LIMIT 1");
             $query->execute(array($ui->names('fileName',255,'post')));
             if ($query->rowCount()>0) {
@@ -103,14 +103,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
             } else {
                 $query = $sql->prepare("INSERT INTO `page_downloads` (`show`,`description`,`fileName`,`date`,`resellerID`) VALUES (?,?,?,NOW(),?)");
                 $query->execute(array($ui->w('show',1,'post'),$ui->names('description',255,'post'),$ui->names('fileName',255,'post'),$reseller_id));
-                if($query->rowCount()>0) $changed= true;
+                if($query->rowCount()>0) $changed = true;
                 $template_file = $spracheResponse->table_add;
                 $id=$sql->lastInsertId();
             }
-        } else if ($ui->st('action','post')=='md' and $ui->id('id',10,'get')) {
+        } else if ($ui->st('action','post') == 'md' and $ui->id('id',10,'get')) {
             $query = $sql->prepare("UPDATE `page_downloads` SET `show`=?,`description`=?,`fileName`=? WHERE `fileID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($ui->w('show',1,'post'),$ui->names('description',255,'post'),$ui->names('fileName',255,'post'),$id,$reseller_id));
-            if ($query->rowCount()>0) $changed= true;
+            if ($query->rowCount()>0) $changed = true;
         }
         if ($id) {
             if ($_FILES["upload"]["error"]===0) {
@@ -137,7 +137,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $extension=$exploded[count($exploded)-1];
                 if(isset($allowedTypes[$extension]) and ((is_array($allowedTypes[$extension]) and in_array($_FILES["upload"]["type"],$allowedTypes[$extension])) or (!is_array($allowedTypes[$extension]) and $_FILES["upload"]["type"]==$allowedTypes[$extension])) ) {
                     if (move_uploaded_file($_FILES["upload"]["tmp_name"],EASYWIDIR . '/downloads/'.$id.'.'.$extension)) {
-                        $changed= true;
+                        $changed = true;
                         $query = $sql->prepare("UPDATE `page_downloads` SET `fileExtension`=? WHERE `fileID`=? AND `resellerID`=?");
                         $query->execute(array($extension,$id,$reseller_id));
                     }
@@ -149,7 +149,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 foreach($array as $language) {
                     if (small_letters_check($language,2)) {
                         $query->execute(array($id,$language,$ui->description('text','post',$language),$reseller_id));
-                        if($query->rowCount()>0) $changed= true;
+                        if($query->rowCount()>0) $changed = true;
                     }
                 }
                 $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
@@ -157,41 +157,41 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='pd' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if (!in_array($row['lang'],$array)) {
-                        $query2->execute(array($addonid,$row['lang'],$reseller_id));
-                        if($query2->rowCount()>0) $changed= true;
+                        $query2->execute(array($addonid, $row['lang'],$reseller_id));
+                        if($query2->rowCount()>0) $changed = true;
                     }
                 }
             } else {
                 $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
                 $query->execute(array($id,$reseller_id));
-                if($query->rowCount()>0) $changed= true;
+                if($query->rowCount()>0) $changed = true;
             }
             $template_file = (isset($changed)) ? $spracheResponse->table_add : $spracheResponse->error_table;
         } else {
             $template_file = $spracheResponse->error_table;
         }
-    } else if ($ui->st('action','post')=='dl' and $ui->id('id',10,'get')) {
+    } else if ($ui->st('action','post') == 'dl' and $ui->id('id',10,'get')) {
         $query = $sql->prepare("DELETE FROM `page_downloads` WHERE `fileID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_del : $spracheResponse->notFound;
+        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_del : 'admin_404.tpl';
         $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
         $query->execute(array($id,$reseller_id));
         unlink(EASYWIDIR."/downloads/${id}/${fileExtension}");
         $template_file = $spracheResponse->table_del;
     }
 } else {
-    if ($ui->w('downloadOrder',4,'post')=='true') {
+    if ($ui->w('downloadOrder',4,'post') == 'true') {
         $query = $sql->prepare("UPDATE `page_downloads` SET `order`=? WHERE `fileID`=? LIMIT 1");
         foreach ($ui->id('downloadID',10,'post') as $id => $order) $query->execute(array($order,$id));
     }
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='dt') $orderby='`description` DESC';
-    else if ($ui->st('o','get')=='at') $orderby='`description` ASC';
-    else if ($ui->st('o','get')=='dc') $orderby='`count` DESC';
-    else if ($ui->st('o','get')=='ac') $orderby='`count` ASC';
-    else if ($ui->st('o','get')=='ds') $orderby='`order` DESC';
-    else if ($ui->st('o','get')=='as') $orderby='`order` ASC';
-    else if ($ui->st('o','get')=='di') $orderby='`fileID` DESC';
+    if ($ui->st('o','get') == 'dt') $orderby='`description` DESC';
+    else if ($ui->st('o','get') == 'at') $orderby='`description` ASC';
+    else if ($ui->st('o','get') == 'dc') $orderby='`count` DESC';
+    else if ($ui->st('o','get') == 'ac') $orderby='`count` ASC';
+    else if ($ui->st('o','get') == 'ds') $orderby='`order` DESC';
+    else if ($ui->st('o','get') == 'as') $orderby='`order` ASC';
+    else if ($ui->st('o','get') == 'di') $orderby='`fileID` DESC';
     else{
         $o='ai';
         $orderby='`fileID` ASC';
@@ -204,9 +204,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $next=$start+$a;
     $vor=($colcount>$next) ? $start+$a : $start;
     $back=$start-$a;
-    $zur=($back>=0) ? $start-$a : $start;
+    $zur = ($back >= 0) ? $start-$a : $start;
     $pageamount=($a>0) ? ceil($colcount/$a) : 1;
-    $pages[]='<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a=' . (!isset($a)) ? 20 : $a . ($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
+    $pages[] = '<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a=' . (!isset($a)) ? 20 : $a . ($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$a;

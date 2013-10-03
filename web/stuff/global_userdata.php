@@ -37,7 +37,7 @@
  
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-if ($ui->st('w','get')=='se') {
+if ($ui->st('w','get') == 'se') {
     if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usersettings'])) {
         header('Location: userpanel.php');
         die();
@@ -53,7 +53,7 @@ if ($ui->st('w','get')=='se') {
     } else {
         $logsubuser = 0;
     }
-    if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
+    if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
 } else {
     if ((!isset($admin_id) or $main!=1)) {
         header('Location: admin.php');
@@ -69,18 +69,18 @@ if ($ui->st('w','get')=='se') {
         $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
         $logreseller = 0;
     }
-    if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
+    if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
 }
 $sprache = getlanguagefile('user',$user_language,$reseller_id);
-$lookUpID=($ui->st('w','get')=='se') ? $user_id : $admin_id;
-if ($ui->st('d','get')=='pw') {
+$lookUpID=($ui->st('w','get') == 'se') ? $user_id : $admin_id;
+if ($ui->st('d','get') == 'pw') {
     if (!$ui->smallletters('action',2,'post')) {
-        $template_file = ($logusertype=='user') ? 'userpanel_pass.tpl' : 'admin_user_own_pass.tpl';
-    } else if ($ui->smallletters('action',2,'post')=='md'){
+        $template_file = ($logusertype == 'user') ? 'userpanel_pass.tpl' : 'admin_user_own_pass.tpl';
+    } else if ($ui->smallletters('action',2,'post') == 'md'){
         $errors = array();
         if (!$ui->password('password', 255, 'post')) $errors[]=$sprache->error_pass;
         if (!$ui->password('pass2', 255, 'post')) $errors[]=$sprache->error_pas;
-        if ($ui->password('password', 255, 'post')!=$ui->password('pass2', 255, 'post')) $errors[]=$sprache->error_passw_succ;
+        if ($ui->password('password', 255, 'post') != $ui->password('pass2', 255, 'post')) $errors[]=$sprache->error_passw_succ;
         if (!token(true)) $errors[]=$spracheResponse->token;
         if (count($errors)>0) {
             $template_file = implode('<br />',$errors);
@@ -128,7 +128,7 @@ if ($ui->st('d','get')=='pw') {
         $oldValues = array();
         foreach ($row as $k=>$v) $oldValues[$k]=$v;
     }
-    if ($ui->smallletters('action',2,'post')=='md' and isset($oldValues)){
+    if ($ui->smallletters('action',2,'post') == 'md' and isset($oldValues)){
         if ($ui->ismail('mail','post') and token(true)) {
             $mail_backup=($ui->active('mail_backup','post')) ? $ui->active('mail_backup','post') : 'N';
             $mail_serverdown=($ui->active('mail_serverdown','post')) ? $ui->active('mail_serverdown','post') : 'N';
@@ -142,7 +142,7 @@ if ($ui->st('d','get')=='pw') {
             $cityn=$ui->isinteger('cityn', 6, 'post');
             $street=$ui->names('street', 40, 'post');
             $streetn=$ui->streetNumber('streetn','post');
-            if (($ui->st('w','get')=='se')) {
+            if (($ui->st('w','get') == 'se')) {
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$lookUpID,$reseller_id));
             } else {
@@ -155,7 +155,7 @@ if ($ui->st('d','get')=='pw') {
             if($query->rowCount()>0) {
                 #https://github.com/easy-wi/developer/issues/5
                 $changed = array();
-                foreach ($oldValues as $k=>$v) if (isset($$k) and "{$$k}"!=$v) $changed[$k]=$v;
+                foreach ($oldValues as $k=>$v) if (isset($$k) and "{$$k}" != $v) $changed[$k]=$v;
                 $query = $sql->prepare("INSERT INTO `userdata_value_log` (`userID`,`date`,`json`,`resellerID`) VALUES (?,NOW(),?,?)");
                 $query->execute(array($lookUpID,json_encode($changed),$reseller_id));
 
@@ -169,6 +169,6 @@ if ($ui->st('d','get')=='pw') {
             $template_file = (!token(true)) ? $spracheResponse->token : $sprache->error_mail;
         }
     } else {
-        $template_file = ($logusertype=='user') ? 'userpanel_user_md.tpl' : 'admin_user_own_md.tpl';
+        $template_file = ($logusertype == 'user') ? 'userpanel_user_md.tpl' : 'admin_user_own_md.tpl';
     }
 }

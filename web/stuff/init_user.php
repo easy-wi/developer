@@ -91,9 +91,9 @@ if (isset($_SESSION['sID'])) {
     $query->execute(array($user_id));
     $virtualcount = $query->fetchColumn();
 }
-if ($lastlogin!=null and $lastlogin!='0000-00-00 00:00:00' and $user_language=='de') {
+if ($lastlogin != null and $lastlogin!='0000-00-00 00:00:00' and $user_language == 'de') {
     $great_last=date('d.m.Y H:m:s',strtotime($lastlogin));
-} else if ($lastlogin!=null and $lastlogin!='0000-00-00 00:00:00') {
+} else if ($lastlogin != null and $lastlogin!='0000-00-00 00:00:00') {
     $great_last = $lastlogin;
 } else if ($user_language == 'de') {
     $great_last='Niemals';

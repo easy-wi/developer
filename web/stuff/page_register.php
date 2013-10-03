@@ -51,8 +51,8 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $registrationBadIP=$row['registrationBadIP'];
 }
 $langObject = getlanguagefile('user',(isset($user_language)) ? $user_language : $default_language,0);
-if (isset($registration) and in_array($registration,array('A','M','D'))) {
-    if (isset($page_name) and isset($page_count) and $page_name=='activate' and wpreg_check($page_count,100)) {
+if (isset($registration) and in_array($registration, array('A','M','D'))) {
+    if (isset($page_name) and isset($page_count) and $page_name == 'activate' and wpreg_check($page_count,100)) {
 
         // Check if a user to the activation ID exists
         $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `token`=? LIMIT 1");
@@ -82,7 +82,7 @@ if (isset($registration) and in_array($registration,array('A','M','D'))) {
         $vname=$ui->names('vname',255,'post');
         $vname=$ui->names('vname',255,'post');
         $bday=date('Y-m-d',strtotime($ui->isDate('birthday','post')));
-        $bdayShow=(isset($user_language) and $user_language=='de') ? date('d.m.Y',strtotime($ui->isDate('birthday','post'))) : date('Y-m-d',strtotime($ui->isDate('birthday','post')));
+        $bdayShow=(isset($user_language) and $user_language == 'de') ? date('d.m.Y',strtotime($ui->isDate('birthday','post'))) : date('Y-m-d',strtotime($ui->isDate('birthday','post')));
         $error = array();
         $alert = array();
         $tous = array();
@@ -96,7 +96,7 @@ if (isset($registration) and in_array($registration,array('A','M','D'))) {
         if (($ui->escaped('mail','post') or $ui->escaped('password','post')) and !$ui->escaped('email','post')) {
 
             // Captcha match?
-            if (!isset($_SESSION['registerToken']) or $ui->w('token',32,'post')!=$_SESSION['registerToken']) $error[]=$page_sprache->registerErrorCookies;
+            if (!isset($_SESSION['registerToken']) or $ui->w('token',32,'post') != $_SESSION['registerToken']) $error[]=$page_sprache->registerErrorCookies;
 
             // E-Mail in use?
             if ($ui->ismail('mail','post')) {
@@ -104,36 +104,36 @@ if (isset($registration) and in_array($registration,array('A','M','D'))) {
                 $query->execute(array($ui->ismail('mail','post')));
                 if ($query->fetchColumn()>0) {
                     $error[]=$page_sprache->registerErrorMail;
-                    $alert['email']= true;
+                    $alert['email'] = true;
                 } else {
                     foreach (explode("\r\n",$registrationBadEmail) as $row) {
                         if (strlen($row)>0 and substr($ui->ismail('mail','post'), -1*strlen($row))===$row and !in_array($page_sprache->registerErrorMail,$error)) {
                             $error[]=$page_sprache->registerErrorMail;
-                            $alert['email']= true;
+                            $alert['email'] = true;
                         }
                     }
                 }
             } else {
                 $error[]=$page_sprache->registerErrorMail;
-                $alert['email']= true;
+                $alert['email'] = true;
             }
 
             // TOU?
-            if (isset($tou) and $ui->active('tou','post')!='Y') {
+            if (isset($tou) and $ui->active('tou','post') != 'Y') {
                 $error[]=$page_sprache->registerErrorTou;
-                $alert['tou']= true;
+                $alert['tou'] = true;
             }
 
             // Password entered and stronger one?
-            if ($ui->password('password',100,'post') and $ui->password('passwordsecond',100,'post') and $ui->password('password',100,'post')!=$ui->password('passwordsecond',100,'post')) {
+            if ($ui->password('password',100,'post') and $ui->password('passwordsecond',100,'post') and $ui->password('password',100,'post') != $ui->password('passwordsecond',100,'post')) {
                 $error[]=$page_sprache->registerErrorPassword;
-                $alert['password2']= true;
+                $alert['password2'] = true;
             } else if ($ui->escaped('password','post') and !$ui->password('password',100,'post')) {
                 $error[]=$page_sprache->registerErrorPassword2;
-                $alert['password']= true;
+                $alert['password'] = true;
             } else if (!$ui->escaped('password','post')) {
                 $error[]=$page_sprache->registerErrorPassword3;
-                $alert['password']= true;
+                $alert['password'] = true;
             }
 
             // IP blocked?
@@ -175,9 +175,9 @@ if (isset($registration) and in_array($registration,array('A','M','D'))) {
 
                 // If is is in DB and mail could be send
                 if ($query->rowCount()>0) {
-                    if($registration=='A') {
+                    if($registration == 'A') {
                         $template_file = $page_sprache->registerAdmin;
-                    } else if($registration=='M') {
+                    } else if($registration == 'M') {
                         $template_file = $page_sprache->registerMailSend;
 
                         // send Mail

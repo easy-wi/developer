@@ -53,7 +53,7 @@ if (isset($page_include)) {
         $user_language = $rSA['language'];
     }
 }
-if ($ui->escaped('email', 'post')!='') {
+if ($ui->escaped('email', 'post') != '') {
     $fullday=date('Y-m-d H:i:s',strtotime("+1 day"));
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
     $query->execute(array($loguserip));
@@ -99,7 +99,7 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
             $query->execute(array($psince, $customer,'%'.$serveraddress.'%'));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $logentry = explode(" ", $row['useraction']);
-                if (($logentry[1] == '%gserver%' or $logentry[1] == '%addon%') and ($logentry[0]!='%resync%' and $logentry[0]!='%mod%')) {
+                if (($logentry[1] == '%gserver%' or $logentry[1] == '%addon%') and ($logentry[0] != '%resync%' and $logentry[0] != '%mod%')) {
                     if ($default_language == 'de') {
                         $time=explode(' ', $row['logdate']);
                         $time2=explode('-', $time[0]);
@@ -209,7 +209,7 @@ XML;
     $langLinks = array();
     foreach ($languages as $l) {
         $tempLanguage = getlanguagefile('page', $l, 0);
-        $langLinks[$l] = ($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+        $langLinks[$l] = ($page_data->seo== 'Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
     }
     $page_data->langLinks($langLinks);
 

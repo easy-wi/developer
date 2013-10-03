@@ -56,8 +56,8 @@ if (isset($newsInclude) and $newsInclude==true) {
             $query2 = $sql->prepare("SELECT t.* FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
             $query2->execute();
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                if (!in_array($row2['appID'],array(null,'',false))) {
-                    $lookUpAppID=workAroundForValveChaos($row2['appID'],$row2['shorten']);
+                if (!in_array($row2['appID'], array(null,'', false))) {
+                    $lookUpAppID=workAroundForValveChaos($row2['appID'], $row2['shorten']);
                     $json=webhostRequest('api.steampowered.com','easy-wi.com','/ISteamNews/GetNewsForApp/v0002/?appid='.$lookUpAppID.'&format=json&count='.$newsAmount);
                     $json=cleanFsockOpenRequest($json,'{','}');
                     $json=@json_decode($json);
@@ -90,7 +90,7 @@ if (isset($newsInclude) and $newsInclude==true) {
         $feedsActive=$row['active'];
         $newsAmount=$row['newsAmount'];
         $diff=round((time()-strtotime($row['lastUpdate']))/60);
-        if (isset($steamNews) and $row['steamFeeds']=='Y') {
+        if (isset($steamNews) and $row['steamFeeds'] == 'Y') {
             foreach ($steamNews as $news) {
                 $i = 0;
                 while ($i<count($news) and $i<=$newsAmount) {
@@ -98,12 +98,12 @@ if (isset($newsInclude) and $newsInclude==true) {
                     $i++;
                 }
             }
-        } else if (isset($lookUpID) and $row['steamFeeds']=='Y') {
+        } else if (isset($lookUpID) and $row['steamFeeds'] == 'Y') {
             $query2 = $sql->prepare("SELECT t.* FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`appID` IS NOT NULL AND t.`resellerID`=? AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
             $query2->execute(array($lookUpID));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                if (!in_array($row2['appID'],array(null,'',false))) {
-                    $lookUpAppID=workAroundForValveChaos($row2['appID'],$row2['shorten']);
+                if (!in_array($row2['appID'], array(null,'', false))) {
+                    $lookUpAppID=workAroundForValveChaos($row2['appID'], $row2['shorten']);
                     $json=webhostRequest('api.steampowered.com','easy-wi.com','/ISteamNews/GetNewsForApp/v0002/?appid='.$lookUpAppID.'&format=json&count='.$newsAmount);
                     $json=cleanFsockOpenRequest($json,'{','}');
                     $json=@json_decode($json);
@@ -123,11 +123,11 @@ if (isset($newsInclude) and $newsInclude==true) {
         $query2->execute(array($lookUpID));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             unset($gZipped);
-            if ($feedsActive=='Y' and $row2['active']=='Y' and ($diff>$row['updateMinutes'] or !isset($jobUpdating))) {
+            if ($feedsActive == 'Y' and $row2['active'] == 'Y' and ($diff>$row['updateMinutes'] or !isset($jobUpdating))) {
                 $modified=date('D, d M Y H:i:s T',strtotime($row2['modified']));
                 $twitter=$row2['twitter'];
                 $feedID=$row2['feedID'];
-                if ($twitter=='Y') {
+                if ($twitter== 'Y') {
                     if (isset($printToConsole)) print "Getting Updates for Twitter Feed ${row2['loginName']}\r\n";
                     $json=webhostRequest('api.twitter.com','easy-wi.com','/1/statuses/user_timeline.json?include_rts=false&exclude_replies=true&screen_name='.$row2['loginName'].'&count='.$newsAmount,443);
                     $json=cleanFsockOpenRequest($json,'[',']');
@@ -147,7 +147,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                     if (isset($printToConsole)) print "Getting Feed Updates for Feed ${row2['feedUrl']}\r\n";
                     $port=80;
                     if (strpos($row2['feedUrl'],'https://')) $port=443;
-                    $domain=str_replace(array('https://','http://'),'',$row2['feedUrl']);
+                    $domain=str_replace(array('https://','http://'),'', $row2['feedUrl']);
                     $ex=explode('/',$domain);
                     $domain=$ex[0];
                     $params='/';
@@ -162,20 +162,20 @@ if (isset($newsInclude) and $newsInclude==true) {
                     if (!empty($row2['feedUrl']) and extension_loaded('zlib')) {
                         $opts=array('http'=>array('header'=>"Accept-Encoding: gzip\r\n"));
                         $context=stream_context_create($opts);
-                        $feed=fopen($row2['feedUrl'],'r',false,$context);
+                        $feed=fopen($row2['feedUrl'],'r', false,$context);
                     } else if (!empty($row2['feedUrl'])) {
                         $feed=fopen($row2['feedUrl'],'r');
                     }
                     if ($feed) {
-                        $lastModified= true;
+                        $lastModified = true;
                         stream_set_timeout($feed,10);
                         $meta=stream_get_meta_data($feed);
                         foreach ($meta['wrapper_data'] as $mrow) {
-                            if(is_string($mrow) and $mrow=='Content-Encoding: gzip') {
-                                $gZipped= true;
-                            } else if (is_string($mrow) and substr($mrow,0,13)=='Last-Modified' and !isset($lastModified)) {
+                            if(is_string($mrow) and $mrow == 'Content-Encoding: gzip') {
+                                $gZipped = true;
+                            } else if (is_string($mrow) and substr($mrow,0,13) == 'Last-Modified' and !isset($lastModified)) {
                                 $lastModified=substr($mrow,16);
-                            } else if (is_string($mrow) and substr($mrow,-12)=='Not Modified') {
+                            } else if (is_string($mrow) and substr($mrow,-12) == 'Not Modified') {
                                 $lastModified = false;
                             }
                         }
@@ -209,7 +209,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                                         }
                                     } else {
                                         $buffer.=$block;
-                                        $cdataStarted= true;
+                                        $cdataStarted = true;
                                     }
                                 } else if ($cdataStarted==true) {
                                     $end=explode(']]>',$block);

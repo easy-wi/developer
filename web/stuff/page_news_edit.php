@@ -35,7 +35,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['cms_news']) or $reseller_id!=0) {
+if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['cms_news']) or $reseller_id != 0) {
 	header('Location: admin.php');
     die;
 }
@@ -81,7 +81,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$query = $sql->prepare("SELECT `cname`,`name`,`vname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 			$query->execute(array($admin_id,$reseller_id));
 			foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $author=(($row['name']=='' or $row['name']==null) and ($row['vname']=='' or $row['vname']==null)) ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
+                $author=(($row['name'] == '' or $row['name']==null) and ($row['vname'] == '' or $row['vname']==null)) ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
 			}
             $query = $sql->prepare("INSERT INTO `page_pages` (`released`,`subpage`,`authorid`,`authorname`,`date`,`type`,`comments`,`resellerid`) VALUES (?,?,?,?,NOW(),'news',?,?)");
             $query->execute(array($ui->id('released','1','post'),$ui->id('subpage',19,'post'),$admin_id,$author,$ui->active('comments','post'),$reseller_id));
@@ -136,13 +136,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
 	} else {
 		$template_file = "Unknown Error";
 	}
-} else if ($ui->st('d','get')=='dl') {
+} else if ($ui->st('d','get') == 'dl') {
 	if (!$ui->st('action','post') and $ui->id('id',19,'get')) {
 		$id=$ui->id('id',19,'get');
 		$pselect=$sql->prepare("SELECT p.`id`,p.`released`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`id`=? AND p.`resellerid`=? LIMIT 1");
 		$pselect->execute(array($user_language,$id,$reseller_id));
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			if ($row['released']=='1') {
+			if ($row['released'] == '1') {
 				$page_active=$gsprache->yes;
 			} else {
 				$page_active=$gsprache->no;
@@ -153,13 +153,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				$p_languages[]=$row2['language'];
 			}
 			$page_title=$row['title'];
-			if (($row['title']==null or $row['title']=='') and isset($p_languages)) {
+			if (($row['title']==null or $row['title'] == '') and isset($p_languages)) {
 				$query3 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
 				$query3->execute(array($row['id'],$p_languages[0],$reseller_id));
 				foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
 					$page_title=$row3['title'];
 				}
-			} else if ($row['title']==null or $row['title']=='') {
+			} else if ($row['title']==null or $row['title'] == '') {
 				$page_title = '';
 				$p_languages = array();
 			}
@@ -169,7 +169,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		} else {
 			$template_file = "Error: No ID";
 		}
-	} else if ($ui->st('action','post')=='dl' and ($ui->id('id',19,'post') or $ui->id('id',19,'get'))) {
+	} else if ($ui->st('action','post') == 'dl' and ($ui->id('id',19,'post') or $ui->id('id',19,'get'))) {
         $id=($ui->id('id',19,'post')) ? $ui->id('id',19,'post') : $ui->id('id',19,'get');
 		$query = $sql->prepare("SELECT t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`resellerid`=?");
 		$query->execute(array($id,$reseller_id));
@@ -209,9 +209,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$query2->execute(array($id,$reseller_id));
 			foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 				$query3 = $sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`language_id`=? AND u.`resellerid`=? ORDER BY t.`name` DESC");
-				$query3->execute(array($id,$row2['id'],$reseller_id));
+				$query3->execute(array($id, $row2['id'],$reseller_id));
 				foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-					if ($row3['type']=='tag') {
+					if ($row3['type'] == 'tag') {
 						$keywords_used[$row2['language']][]=$row3['name'];
 					} else {
 						$categories_used[$row2['language']][]=$row3['name'];
@@ -224,9 +224,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$query4 = $sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`resellerid`=? AND p.`type`='news' ORDER BY t.`title`");
 		$query4->execute(array($user_language,$reseller_id));
 		foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-			if ($row4['id']!=$id) {
+			if ($row4['id'] != $id) {
 				$page_title=$row4['title'];
-				if ($row4['title']==null or $row4['title']=='') {
+				if ($row4['title']==null or $row4['title'] == '') {
 					$query5 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
 					$query5->execute(array($row4['id'],$reseller_id));
 					foreach ($query5->fetchAll(PDO::FETCH_ASSOC) as $row5) {
@@ -257,7 +257,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			}
 		}
 		$template_file = "admin_page_news_md.tpl";
-	} else if ($ui->st('action','post')=='md' and ($ui->id('id',19,'post') or $ui->id('id',19,'get'))) {
+	} else if ($ui->st('action','post') == 'md' and ($ui->id('id',19,'post') or $ui->id('id',19,'get'))) {
 		$id=($ui->id('id',19,'post')) ? $ui->id('id',19,'post') : $ui->id('id',19,'get');
 		if (is_object($ui->st('language','post'))) {
 			foreach ($ui->st('language','post') as $key=>$lg) {
@@ -284,32 +284,32 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 				$lang_exist[]=$row['language'];
 				$keywords = array();
-				foreach (preg_split('/\,/',preg_replace("/\,\s+/",',',preg_replace("/\s+/"," ",$ui->escaped('keywords','post',$row['language']))),-1,PREG_SPLIT_NO_EMPTY) as $keyword) {
+				foreach (preg_split('/\,/',preg_replace("/\,\s+/",',',preg_replace("/\s+/"," ",$ui->escaped('keywords','post', $row['language']))),-1,PREG_SPLIT_NO_EMPTY) as $keyword) {
 					$keywords[]=$keyword;
 				}
 				$categories = array();
-				if (is_object($ui->escaped('categories','post',$row['language']))) {
-					foreach ($ui->escaped('categories','post',$row['language']) as $category) {
+				if (is_object($ui->escaped('categories','post', $row['language']))) {
+					foreach ($ui->escaped('categories','post', $row['language']) as $category) {
 						$categories[]=$category;
 					}
 				}
 				if (in_array($row['language'],$posted_languages)) {
-                    $query2->execute(array($ui->htmlcode('title','post',$row['language']),$ui->escaped('text','post',$row['language']),$row['id'],$reseller_id));
+                    $query2->execute(array($ui->htmlcode('title','post', $row['language']),$ui->escaped('text','post', $row['language']), $row['id'],$reseller_id));
 					$keyword_exist = array();
-					$query3->execute(array($id,$row['id'],$reseller_id));
+					$query3->execute(array($id, $row['id'],$reseller_id));
 					foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
 						$keyword_exist[]=$row3['name'];
 						if (!in_array($row3['name'],$keywords)) {
-                            $query5->execute(array($row3['term_id'],$id,$row['id'],$reseller_id));
+                            $query5->execute(array($row3['term_id'],$id, $row['id'],$reseller_id));
 							$countreduce[]=$row3['name'];
 						}
 					}
 					$category_exist = array();
-					$query4->execute(array($id,$row['id'],$reseller_id));
+					$query4->execute(array($id, $row['id'],$reseller_id));
 					foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
 						$category_exist[]=$row4['name'];
 						if (!in_array($row4['name'],$categories)) {
-                            $query5->execute(array($row4['term_id'],$id,$row['id'],$reseller_id));
+                            $query5->execute(array($row4['term_id'],$id, $row['id'],$reseller_id));
 							$countreduce[]=$row4['name'];
 						}
 					}
@@ -396,25 +396,25 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $query->execute(array($reseller_id));
     $seo=$query->fetchColumn();
     $o=($ui->st('o','get')) ? $ui->st('o','get') : 'di';
-    if ($o=='at') {
+    if ($o== 'at') {
         $orderby='t.`title` ASC';
-    } else if ($o=='dt') {
+    } else if ($o== 'dt') {
         $orderby='t.`title` DESC';
-    } else if ($o=='aa') {
+    } else if ($o== 'aa') {
         $orderby='p.`authorname` ASC, p.`id` ASC, p.`subpage` ASC';
-    } else if ($o=='da') {
+    } else if ($o== 'da') {
         $orderby='p.`authorname` DESC, p.`id` ASC, p.`subpage` ASC';
-    } else if ($o=='ar') {
+    } else if ($o== 'ar') {
         $orderby='p.`released` ASC, p.`id` ASC, p.`subpage` ASC';
-    } else if ($o=='dr') {
+    } else if ($o== 'dr') {
         $orderby='p.`released` DESC, p.`id` ASC, p.`subpage` ASC';
-    } else if ($o=='ad') {
+    } else if ($o== 'ad') {
         $orderby='p.`date` ASC';
-    } else if ($o=='dd') {
+    } else if ($o== 'dd') {
         $orderby='p.`date` DESC';
-    } else if ($o=='ad') {
+    } else if ($o== 'ad') {
         $orderby='p.`subpage`, p.`id` ASC';
-    } else if ($o=='di') {
+    } else if ($o== 'di') {
         $orderby='p.`id` DESC';
     } else {
         $orderby='p.`id` ASC';
@@ -427,9 +427,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $table = array();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if(!isset($titleLanguages[$row['language']])) {
-            $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page',$row['language'],0),'general'=>getlanguagefile('general',$row['language'],0));
+            $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page', $row['language'],0),'general'=>getlanguagefile('general', $row['language'],0));
         }
-        if ($row['released']=='1') {
+        if ($row['released'] == '1') {
             $released=$gsprache->yes;
         } else {
             $released=$gsprache->no;
@@ -437,7 +437,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $author=$row['authorname'];
         $query2->execute(array($row['authorid'],$reseller_id));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            if (($row2['name']=='' or $row2['name']==null) and ($row2['vname']=='' or $row2['vname']==null)) {
+            if (($row2['name'] == '' or $row2['name']==null) and ($row2['vname'] == '' or $row2['vname']==null)) {
                 $author=$row2['cname'];
             } else {
                 $author=$row2['vname'] . ' ' . $row2['name'];
@@ -449,30 +449,30 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $p_languages[]=$row3['language'];
         }
         $page_title=$row['title'];
-        if (($row['title']==null or $row['title']=='') and isset($p_languages[0])) {
+        if (($row['title']==null or $row['title'] == '') and isset($p_languages[0])) {
             $query4->execute(array($row['id'],$p_languages[0],$reseller_id));
             foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
                 $page_title=$row4['title'];
             }
-        } else if ($row['title']==null or $row['title']=='') {
+        } else if ($row['title']==null or $row['title'] == '') {
             $page_title = '';
             $p_languages = array();
         }
-        if ($row['subpage']!=$row['id']) {
+        if ($row['subpage'] != $row['id']) {
             $page_title=' - '.$page_title;
         }
-        if ($seo=='N') {
+        if ($seo== 'N') {
             $link=$page_url.'/index.php?site=page&amp;id='.$row['id'];
         } else {
             if ($row['language']==$user_language) {
-                $link=$page_url. '/'. $user_language.'/'.szrp($titleLanguages[$row['language']]['general']->news).'/'.strtolower(szrp($row['title'])).'/';
+                $link=$page_url. '/' . $user_language . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . strtolower(szrp($row['title'])).'/';
             } else {
-                $link=$page_url. '/'. $row['language'].'/'.szrp($titleLanguages[$row['language']]['general']->news).'/'.strtolower(szrp($row['title'])).'/';
+                $link=$page_url. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . strtolower(szrp($row['title'])).'/';
             }
         }
         $explodedtime=explode(' ', $row['date']);
         $explodedtime2=explode('-', $explodedtime[0]);
-        if ($user_language=='de') {
+        if ($user_language == 'de') {
             $date=$explodedtime2[2] . '.' . $explodedtime2[1] . '.' . $explodedtime2[0] . '  ' . $explodedtime[1];
         } else {
             $date=$explodedtime2[1] . '.' . $explodedtime2[2] . '.' . $explodedtime2[0] . '  ' . $explodedtime[1];
@@ -488,13 +488,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=pn&amp;d=md&amp;o='.$o.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -509,11 +509,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=pn&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=pn&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=pn&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=pn&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

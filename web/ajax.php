@@ -51,12 +51,12 @@ if (isset($admin_id)) {
 	foreach ($userpermissionquery->fetchall() as $userpermissionrow) {
 		if ($userpermissionrow['root']=="Y") {
 			foreach ($userpermissionrow as $key => $value) {
-				$pa[$key]= true;
+				$pa[$key] = true;
 			}
 		} else {
 			foreach ($userpermissionrow as $key => $value) {
 				if ($value=="Y") {
-					$pa[$key]= true;
+					$pa[$key] = true;
 				} else {
 					$pa[$key] = false;
 				}
@@ -70,15 +70,15 @@ if (isset($user_id)) {
 	foreach ($userpermissionquery->fetchall() as $userpermissionrow) {
 		if ($userpermissionrow['miniroot']=="Y") {
 			foreach ($userpermissionrow as $key => $value) {
-				$pau[$key]= true;
+				$pau[$key] = true;
 			}
 		} else {
 			foreach ($userpermissionrow as $key => $value) {
 				if (isset($admin_id)) {
-					$pau[$key]= true;
+					$pau[$key] = true;
 				} else {
 					if ($value=="Y") {
-						$pau[$key]= true;
+						$pau[$key] = true;
 					} else {
 						$pau[$key] = false;
 					}

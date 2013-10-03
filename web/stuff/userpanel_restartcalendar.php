@@ -38,7 +38,7 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !
 	redirect('userpanel.php');
 }
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
+if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
 if (!isset($_SESSION['sID']) or in_array($ui->id('id',19,'get'),$substituteAccess['gs'])) {
     $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`protected`,s.`anticheat`,g.`pallowed`,g.`eacallowed`,s.`map`,s.`mapGroup`,t.`shorten`,t.`mapGroup` AS `defaultMapGroup` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($ui->id('id',19,'get'),$user_id,$reseller_id));
@@ -59,7 +59,7 @@ if (!isset($_SESSION['sID']) or in_array($ui->id('id',19,'get'),$substituteAcces
 
 }
 if (!isset($rowcount) or $rowcount==0) redirect('userpanel.php');
-if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($port)) {
+if ($ui->smallletters('edit',4,'post') == 'edit' and isset($serverip) and isset($port)) {
 	$date2=$ui->gamestring('date','post');
 	$date=explode('_',$date2);
 	if ($date[0]=="mon") {
@@ -105,9 +105,9 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 	$anticheat = '';
 	$gsswitch = '';
 	$pro = '';
-	$restart='Y';
+	$restart = 'Y';
 	$backup = '';
-	$worldsafe='N';
+	$worldsafe = 'N';
 	$upload = '';
     $query = $sql->prepare("SELECT * FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($date2,$ui->id('id',19,'get'),$reseller_id));
@@ -116,7 +116,7 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		$anticheat=$row['anticheat'];
 		$gsswitch=$row['gsswitch'];
         $defaultMapGroup=$table[$row['gsswitch']]['defaultMapGroup'];
-        if($defaultMapGroup!=null) $mapGroup=$row['mapGroup'];
+        if($defaultMapGroup != null) $mapGroup=$row['mapGroup'];
 		$map=$row['map'];
 		$pro=$row['protected'];
 		$restart=$row['restart'];
@@ -127,43 +127,43 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 			$upload=$row['upload'];
 		}
 	}
-	if ($restart=='Y'){
+	if ($restart == 'Y'){
 		$style='style="width:690px;"';
 	} else {
 		$style='style="display:none;border-spacing:0px;"';
 	}
-	if (!isset($eac) and $eacallowed=='Y' and $rowcount>0 and ($gsswitch=="css" or $gsswitch=="cod4" or $gsswitch=="cstrike" or $gsswitch=="czero" or $gsswitch=="tf")) {
+	if (!isset($eac) and $eacallowed== 'Y' and $rowcount>0 and ($gsswitch=="css" or $gsswitch=="cod4" or $gsswitch=="cstrike" or $gsswitch=="czero" or $gsswitch=="tf")) {
 		if ($gsswitch=="cstrike" or $gsswitch=="czero") {
-			if($anticheat=="3" and $hlds_3=='Y') {
-				$eac[]='<option value="3" selected="selected">Easy Anti Cheat</option>';
-			} else if($hlds_3=='Y') {
-				$eac[]='<option value="3">Easy Anti Cheat</option>';
+			if($anticheat=="3" and $hlds_3== 'Y') {
+				$eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
+			} else if($hlds_3== 'Y') {
+				$eac[] = '<option value="3">Easy Anti Cheat</option>';
 			}
-			if($anticheat=="4" and $hlds_4=='Y') {
-				$eac[]='<option value="4" selected="selected">Easy Anti Cheat Public</option>';
-			} else if($hlds_4=='Y') {
-				$eac[]='<option value="4">Easy Anti Cheat Public</option>';
+			if($anticheat=="4" and $hlds_4== 'Y') {
+				$eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
+			} else if($hlds_4== 'Y') {
+				$eac[] = '<option value="4">Easy Anti Cheat Public</option>';
 			}
-			if($anticheat=="5" and $hlds_5=='Y') {
-				$eac[]='<option value="5" selected="selected">Easy Anti Cheat 32Bit</option>';
-			} else if($hlds_5=='Y') {
-				$eac[]='<option value="5">Easy Anti Cheat 32Bit</option>';
+			if($anticheat=="5" and $hlds_5== 'Y') {
+				$eac[] = '<option value="5" selected="selected">Easy Anti Cheat 32Bit</option>';
+			} else if($hlds_5== 'Y') {
+				$eac[] = '<option value="5">Easy Anti Cheat 32Bit</option>';
 			}
-			if($anticheat=="6" and $hlds_6=='Y') {
-				$eac[]='<option value="6" selected="selected">Easy Anti Cheat Public 32Bit</option>';
-			} else if($hlds_6=='Y') {
-				$eac[]='<option value="6">Easy Anti Cheat Public 32Bit</option>';
+			if($anticheat=="6" and $hlds_6== 'Y') {
+				$eac[] = '<option value="6" selected="selected">Easy Anti Cheat Public 32Bit</option>';
+			} else if($hlds_6== 'Y') {
+				$eac[] = '<option value="6">Easy Anti Cheat Public 32Bit</option>';
 			}
 		} else {
-			if($anticheat=="3" and $normal_3=='Y') {
-				$eac[]='<option value="3" selected="selected">Easy Anti Cheat</option>';
-			} else if($normal_3=='Y') {
-				$eac[]='<option value="3">Easy Anti Cheat</option>';
+			if($anticheat=="3" and $normal_3== 'Y') {
+				$eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
+			} else if($normal_3== 'Y') {
+				$eac[] = '<option value="3">Easy Anti Cheat</option>';
 			}
-			if($anticheat=="4" and $normal_4=='Y') {
-				$eac[]='<option value="4" selected="selected">Easy Anti Cheat Public</option>';
-			} else if($normal_4=='Y') {
-				$eac[]='<option value="4">Easy Anti Cheat Public</option>';
+			if($anticheat=="4" and $normal_4== 'Y') {
+				$eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
+			} else if($normal_4== 'Y') {
+				$eac[] = '<option value="4">Easy Anti Cheat Public</option>';
 			}
 		}
 	} else if (!isset($eac)) {
@@ -177,7 +177,7 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		$anticheatsoft = '';
 	}
 	$template_file = "userpanel_gserver_calendar_md.tpl";
-} else if ($ui->smallletters('edit2',4,'post')=='edit' and $ui->gamestring('date','post') and $ui->id('template',1,'post') and $ui->id('anticheat',1,'post') and $ui->gamestring('shorten','post') and $ui->active('backup','post') and $ui->active('restart','post') and isset($serverip) and isset($port)) {
+} else if ($ui->smallletters('edit2',4,'post') == 'edit' and $ui->gamestring('date','post') and $ui->id('template',1,'post') and $ui->id('anticheat',1,'post') and $ui->gamestring('shorten','post') and $ui->active('backup','post') and $ui->active('restart','post') and isset($serverip) and isset($port)) {
 	$qstat_array = array();
     $date=$ui->gamestring('date','post');
 	$template=$ui->id('template',1,'post');
@@ -197,40 +197,40 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 	if ($ui->active('worldsafe','post')) {
 		$worldsafe=$ui->active('worldsafe','post');
 	} else {
-		$worldsafe='N';
+		$worldsafe = 'N';
 	}
 	if ($ui->active('worldsafe','post') and in_array('a2s',$qstat_array) and ($uploadallowed==2 or $uploadallowed==3)) {
 		$worldsafe=$ui->post['worldsafe'];
 	} else {
-		$worldsafe='N';
+		$worldsafe = 'N';
 	}
 	if ($anticheat>2) {
 		if ($gsswitch=="cstrike" or $gsswitch=="czero") {
-			if($anticheat==3 and $hlds_3=='N' and $hlds_5=='Y') {
+			if($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'Y') {
 				$anticheat=5;
-			} else if($anticheat==3 and $hlds_3=='N' and $hlds_5=='N') {
+			} else if($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'N') {
 				$anticheat = 1;
 			} else {
 				$anticheat = 1;
 			}
-			if($anticheat==4 and $hlds_4=='N' and $hlds_6=='Y') {
+			if($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'Y') {
 				$anticheat=6;
-			} else if($anticheat==4 and $hlds_4=='N' and $hlds_6=='N') {
+			} else if($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'N') {
                 $anticheat = 1;
 			} else {
                 $anticheat = 1;
 			}
-			if($anticheat==5 and $hlds_5=='N') {
+			if($anticheat==5 and $hlds_5== 'N') {
                 $anticheat = 1;
 			}
-			if($anticheat==6 and $hlds_6=='N') {
+			if($anticheat==6 and $hlds_6== 'N') {
                 $anticheat = 1;
 			}
 		} else {
-			if($anticheat==3 and $normal_3=='N') {
+			if($anticheat==3 and $normal_3== 'N') {
                 $anticheat = 1;
 			}
-			if($anticheat==4 and $normal_4=='N') {
+			if($anticheat==4 and $normal_4== 'N') {
                 $anticheat = 1;
 			}
 		}
@@ -241,12 +241,12 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 	if ($ui->active('protected','post')) {
 		$protected=$ui->active('protected','post');
 	} else {
-		$protected='N';
+		$protected = 'N';
 	}
 	if ($ui->active('upload','post')) {
 		$stvupload=$ui->active('upload','post');
 	} else {
-		$stvupload='N';
+		$stvupload = 'N';
 	}
 	$query = $sql->prepare("SELECT `id` FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
 	$query->execute(array($date,$ui->id('id',19,'get'),$reseller_id));
@@ -259,7 +259,7 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		$pupdate->execute(array($template,$anticheat,$protected,$gsswitch,$map,$ui->mapname('mapGroup','post'),$restart,$backup,$worldsafe,$stvupload,$date,$ui->id('id',19,'get'),$user_id,$reseller_id));
 	}
 	$template_file = $spracheResponse->table_add;
-} else if ($ui->smallletters('delete',6,'post')=='delete' and $ui->gamestring('date','post') and isset($serverip) and isset($port)) {
+} else if ($ui->smallletters('delete',6,'post') == 'delete' and $ui->gamestring('date','post') and isset($serverip) and isset($port)) {
 	$date=$ui->gamestring('date','post');
 	$pdelete=$sql->prepare("DELETE FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
 	$pdelete->execute(array($date,$ui->id('id',19,'get'),$reseller_id));
@@ -276,11 +276,11 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		$shorten=$row['shorten'];
 		$qstat_array[$shorten]=$row['qstat'];
 	}
-	$backup='N';
+	$backup = 'N';
     $query = $sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
     $query->execute(array($ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$restarttime=explode("_",$row['restarttime']);
+		$restarttime=explode("_", $row['restarttime']);
 		$day=$restarttime[0];
 		$hour=$restarttime[1];
 		$shorten=$row['gsswitch'];
@@ -314,29 +314,29 @@ if ($ui->smallletters('edit',4,'post')=='edit' and isset($serverip) and isset($p
 		} else {
 			$template='-' . $template;
 		}
-        if ($restart=='Y') {
+        if ($restart == 'Y') {
             $routput=$shorten.$template."<br />".$row['map']."<br />".$anti;
         }
-		if ($backup=='Y') {
+		if ($backup == 'Y') {
 			$routput.="<br />".$gsprache->backup.": ".$gsprache->yes;
 		} else {
 			$routput.="<br />".$gsprache->backup.": ".$gsprache->no;
 		}
-		if ($qstat=='minecraft' and $restart=='N' and $worldsafe=='Y') {
+		if ($qstat == 'minecraft' and $restart == 'N' and $worldsafe == 'Y') {
 			$routput .="<br />Worldsafe: ".$gsprache->yes;
-		} else if ($qstat=='minecraft' and $restart=='N') {
+		} else if ($qstat == 'minecraft' and $restart == 'N') {
 			$routput .="<br />Worldsafe: ".$gsprache->no;
 		}
-		if ($qstat=='a2s' and $restart=='N' and $upload=='Y') {
+		if ($qstat == 'a2s' and $restart == 'N' and $upload== 'Y') {
 			$routput .="<br />SourceTV Demo Upload: ".$gsprache->yes.'<br />';
-		} else if ($qstat=='a2s' and $restart=='N') {
+		} else if ($qstat == 'a2s' and $restart == 'N') {
 			$routput .="<br />SourceTV Demo Upload: ".$gsprache->no.'<br />';
 		}
-        if ($pallowed=='Y') {
-            if ($protected=='N') {
+        if ($pallowed== 'Y') {
+            if ($protected== 'N') {
                 $imgName='16_unprotected';
                 $imgAlt='Unprotected';
-            } else if ($protected=='Y') {
+            } else if ($protected== 'Y') {
                 $imgName='16_protected';
                 $imgAlt='Protected';
             }

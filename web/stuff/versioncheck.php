@@ -35,7 +35,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main!=1) or $reseller_id!=0 or !$pa['updateEW']) {
+if ((!isset($admin_id) or $main!=1) or $reseller_id != 0 or !$pa['updateEW']) {
     header('Location: admin.php');
     die;
 }
@@ -45,9 +45,9 @@ $sprache = getlanguagefile('licence',$user_language,$reseller_id);
 $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
-if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
-	if (isset($action) and $action=='ud') {
-		$updateinclude= true;
+if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
+	if (isset($action) and $action == 'ud') {
+		$updateinclude = true;
 		class UpdateResponse {
 			public $response=array(),$errors = array();
 			function __construct() {
@@ -73,10 +73,10 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
             if (is_dir($dir)) {
                 $dircontent=scandir($dir);
                 foreach ($dircontent as $c) {
-                    if ($c!='.' and $c!='..' and is_dir($dir. '/'. $c)) {
-                        rmr($dir. '/'. $c);
-                    } else if ($c!='.' and $c!='..') {
-                        unlink($dir. '/'. $c);
+                    if ($c != '.' and $c != '..' and is_dir($dir. '/' . $c)) {
+                        rmr($dir. '/' . $c);
+                    } else if ($c != '.' and $c != '..') {
+                        unlink($dir. '/' . $c);
                     }
                 }
                 rmdir($dir);
@@ -91,7 +91,7 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
 		if (is_dir(EASYWIDIR . '/tmp')) {
 			$response->add('Creating tempfolder <b>tmp/</b>');
 			$opts=stream_context_create(array('http'=>array('method'=>'GET','header'=>"Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
-			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'.zip','rb',false,$opts);
+			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'.zip','rb', false,$opts);
 			$zip=@fopen(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip','wb');
 			if ($fp==true and $zip==true) {
 				while (!feof($fp)){
@@ -114,16 +114,16 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
                                 else $checkfolder=$folders[$i];
 								$i++;
 							}
-							if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/'. $checkfolder) and !is_file(EASYWIDIR . '/'. $checkfolder)) {
+							if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/' . $checkfolder) and !is_file(EASYWIDIR . '/' . $checkfolder)) {
 								@mkdir($checkfolder);
-                                if (is_dir(EASYWIDIR . '/'. $checkfolder)) $response->add('Creating new folder: '.$checkfolder);
-                                else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/'. $checkfolder.'</b>');
+                                if (is_dir(EASYWIDIR . '/' . $checkfolder)) $response->add('Creating new folder: '.$checkfolder);
+                                else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $checkfolder.'</b>');
                                 
 							}
-						} else if (!is_dir(EASYWIDIR . '/'. $name) and !is_file(EASYWIDIR . '/'. $name)) {
-							@mkdir(EASYWIDIR . '/'. $name);
-                            if (is_dir(EASYWIDIR . '/'. $name)) $response->add('Creating new folder: '.$name);
-                            else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/'. $name.'</b>');
+						} else if (!is_dir(EASYWIDIR . '/' . $name) and !is_file(EASYWIDIR . '/' . $name)) {
+							@mkdir(EASYWIDIR . '/' . $name);
+                            if (is_dir(EASYWIDIR . '/' . $name)) $response->add('Creating new folder: '.$name);
+                            else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $name.'</b>');
 						}
 						if (preg_match('/^(.*)\.[\w]{1,}$/',$name) and $zeo) {
 							$nf=fopen($name,'w');
@@ -157,7 +157,7 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
 			}
 			$dircontent=scandir(EASYWIDIR . '/tmp/');
 			foreach ($dircontent as $c) {
-				if ($c!='.' and $c!='..') rmr(EASYWIDIR . '/tmp/'.$c);
+				if ($c != '.' and $c != '..') rmr(EASYWIDIR . '/tmp/'.$c);
 			}
             rmr(EASYWIDIR . '/install/');
 			if (is_file(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip')) $response->addError('Cannot remove the content from tempfolder <b>tmp/</b>');
@@ -173,7 +173,7 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
 	}
 } else {
 	$table = array();
-    if ($user_language=='de') {
+    if ($user_language == 'de') {
         $column='de';
         $release='releasenotesDE';
     } else {
@@ -184,7 +184,7 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
 	$query = $sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
 	$query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		if ($row[$column]!=null and $row[$column]!='') $table[]=array('version'=>$row['version'],'text'=>$row[$column]);
+		if ($row[$column] != null and $row[$column] != '') $table[]=array('version'=>$row['version'],'text'=>$row[$column]);
 	}
     $update=($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW']==true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
 	if ($ewVersions['cVersion']<$ewVersions['version']) {
@@ -205,10 +205,10 @@ if ($ui->st('d','get')=='ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVer
         $contract=$licenceDetails['c'];
         $contract=$sprache->$contract;
         $contractTime=$licenceDetails['validUntil'];
-        if ($licenceDetails['validUntil']=='0000-00-00') $contractTime=$sprache->unlimited;
+        if ($licenceDetails['validUntil'] == '0000-00-00') $contractTime=$sprache->unlimited;
         $updates=$licenceDetails['updatesUntil'];
-        if ($licenceDetails['c']=='R') $updates=$contractTime;
-        else if ($licenceDetails['updatesUntil']=='0000-00-00') $updates=$sprache->unlimited;
+        if ($licenceDetails['c'] == 'R') $updates=$contractTime;
+        else if ($licenceDetails['updatesUntil'] == '0000-00-00') $updates=$sprache->unlimited;
     } else {
         $rowspan = 4;
     }

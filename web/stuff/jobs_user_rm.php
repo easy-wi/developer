@@ -54,13 +54,13 @@ if(!function_exists('removeUser')) {
 $query = $sql->prepare("SELECT * FROM `jobs` j WHERE `status`='4' AND `type`='us' AND `action` IN ('dl','md') AND NOT EXISTS (SELECT 1 FROM `jobs` WHERE `userID`=j.`userID` AND (`status`=1 OR `status` IS NULL) AND `type`!='us' LIMIT 1)");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $ok= true;
-    if ($row['action']=='dl') {
+    $ok = true;
+    if ($row['action'] == 'dl') {
         $query2 = $sql->prepare("SELECT `accounttype`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            if ($row2['accounttype']=='r') {
-                removeUser($row['affectedID'],array('userdata'=>'id','userpermissions'=>'userid'));
+            if ($row2['accounttype'] == 'r') {
+                removeUser($row['affectedID'], array('userdata'=>'id','userpermissions'=>'userid'));
                 $tables=array('addons'=>'resellerid','addons_installed'=>'resellerid','gsswitch'=>'resellerid','rserverdata'=>'resellerid','rservermasterg'=>'resellerid','serverlist'=>'resellerid',
                     'servertypes'=>'resellerid','settings'=>'resellerid','tickets'=>'resellerid','ticket_topics'=>'resellerid','userdata'=>'resellerid','userpermissions'=>'resellerid','userlog'=>'resellerid','resellerdata'=>'resellerid',
                     'gserver_restarts'=>'resellerid','eac'=>'resellerid','imprints'=>'resellerid','lendedserver'=>'resellerid','lendsettings'=>'resellerid','lendstats'=>'resellerID','voice_server'=>'resellerid','voice_masterserver'=>'resellerid',
@@ -68,12 +68,12 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     'api_ips'=>'resellerID','api_settings'=>'resellerID','voice_tsdns'=>'resellerid','voice_dns'=>'resellerID');
                 removeUser($row['affectedID'],$tables);
                 if ($row2['resellerid']==$row['affectedID']) {
-                    removeUser($row['affectedID'],array('traffic_data'=>'userid','traffic_data_day'=>'userid'));
-                    removeUser($row['affectedID'],array('traffic_data'=>'resellerid','traffic_data_day'=>'resellerid'));
+                    removeUser($row['affectedID'], array('traffic_data'=>'userid','traffic_data_day'=>'userid'));
+                    removeUser($row['affectedID'], array('traffic_data'=>'resellerid','traffic_data_day'=>'resellerid'));
                 }
             }
         }
-        customColumns('U',$row['affectedID'],'del');
+        customColumns('U', $row['affectedID'],'del');
         $query2 = $sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         $command=$gsprache->del.' userID: '.$row['affectedID'].' name:'.$row['name'];
@@ -81,7 +81,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $extraData=@json_decode($row['extraData']);
         if (is_object($extraData)) {
             $query2 = $sql->prepare("UPDATE `userdata` SET `active`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
-            $query2->execute(array($extraData->newActive,$row['affectedID']));
+            $query2->execute(array($extraData->newActive, $row['affectedID']));
             $command=$gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
         } else {
             $ok = false;

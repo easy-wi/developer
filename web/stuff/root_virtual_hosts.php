@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main!=1 or $reseller_id!=0 or !$pa['vserverhost']) {
+if (!isset($admin_id) or $main!=1 or $reseller_id != 0 or !$pa['vserverhost']) {
     header('Location: admin.php');
     die;
 }
@@ -61,18 +61,18 @@ if ($reseller_id==0) {
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get')=='ad') {
+} else if ($ui->st('d','get') == 'ad') {
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `resellerid`=`id` ORDER BY `id` DESC");
         $query->execute(array());
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table[]='<option value="'.$row['id'].'">'.$row['cname'].'</option>';
+            $table[] = '<option value="'.$row['id'].'">'.$row['cname'].'</option>';
         }
         $template_file = "admin_root_virtualhosts_add.tpl";
-    } else if ($ui->smallletters('action',2,'post')=='ad'){
+    } else if ($ui->smallletters('action',2,'post') == 'ad'){
         $fail = 0;
         $template_file = 'admin_404.tpl';
-        if (!isid($ui->post['reseller'],10) and $ui->post['reseller']!=0) {
+        if (!isid($ui->post['reseller'],10) and $ui->post['reseller'] != 0) {
             $fail = 1;
         }
         if (!isip($ui->post['ip'],"all")) {
@@ -125,8 +125,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $pinsert->execute(array(':active'=>$active,':esxi'=>$esxi,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':os'=>$os,':description'=>$description,':publickey'=>$publickey,':keyname'=>$keyname,  ':cpu'=>$cpu,  ':cores'=>$cores,':mhz'=>$mhz,':ram'=>$ram,':maxserver'=>$maxserver,':thin'=>$thin,':thinquota'=>$thinquota,':reseller'=>$reseller));
             $serverid=$sql->lastInsertId();
             include(EASYWIDIR . '/stuff/ssh_exec.php');
-            $uidb=ssh2_execute('vh',$serverid,'cd /vmfs/volumes; S = ""; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S');
-            if ($uidb!="" and $uidb!==false) {
+            $uidb=ssh2_execute('vh',$serverid,'cd /vmfs/volumes; S = ''; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S');
+            if ($uidb != '' and $uidb!==false) {
                 $uiddata=explode(";",$uidb);
                 $i = 0;
                 $count=count($uiddata)-1;
@@ -158,7 +158,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get')=='dl' and $ui->id('id',10,'get')) {
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get')) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `ip`,`description` FROM `virtualhosts` WHERE `id`=? LIMIT 1");
@@ -168,7 +168,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $ip=$row['ip'];
         }
         $template_file = "admin_root_virtualhosts_dl.tpl";
-    } else if ($ui->smallletters('action',2,'post')=='dl'){
+    } else if ($ui->smallletters('action',2,'post') == 'dl'){
         $query = $sql->prepare("SELECT id,ip,userid FROM `virtualcontainer` WHERE `hostid`=?");
         $query2 = $sql->prepare("DELETE FROM `gsswitch` WHERE `serverid`=? AND `resellerid`=?");
         $query4 = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
@@ -176,9 +176,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
-            $query2->execute(array($row['id'],$row['userid']));
-            $query4->execute(array($row['id'],$row['userid']));
-            $query5->execute(array($row['id'],$row['userid']));
+            $query2->execute(array($row['id'], $row['userid']));
+            $query4->execute(array($row['id'], $row['userid']));
+            $query5->execute(array($row['id'], $row['userid']));
         }
         $query = $sql->prepare("SELECT ip FROM `virtualhosts` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
@@ -193,7 +193,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get')=='md' and $ui->id('id',10,'get')) {
+} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get')) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `active`,`esxi`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid` FROM `virtualhosts` WHERE `id`=:id LIMIT 1");
@@ -223,10 +223,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query->execute(array(':reseller_id'=>$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[]=($resellerid==$row['id']) ? '<option value="'.$row['id'].'" selected="selected">'.$row['cname'].'</option>' : '<option value="'.$row['id'].'">'.$row['cname'].'</option>';
         $template_file = "admin_root_virtualhosts_md.tpl";
-    } else if ($ui->smallletters('action',2,'post')=='md'){
+    } else if ($ui->smallletters('action',2,'post') == 'md'){
         $fail = 0;
         $template_file = 'admin_404.tpl';
-        if (!isid($ui->post['reseller'],10) and $ui->post['reseller']!=0) {
+        if (!isid($ui->post['reseller'],10) and $ui->post['reseller'] != 0) {
             $fail = 1;
             echo "test".$ui->post['reseller'];
         }
@@ -289,19 +289,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
 } else {
     $table = array();
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='ap') {
+    if ($ui->st('o','get') == 'ap') {
         $orderby='h.`ip` ASC';
-    } else if ($ui->st('o','get')=='ae') {
+    } else if ($ui->st('o','get') == 'ae') {
         $orderby='h.`description` ASC';
-    } else if ($ui->st('o','get')=='de') {
+    } else if ($ui->st('o','get') == 'de') {
         $orderby='h.`description` DESC';
-    } else if ($ui->st('o','get')=='as') {
+    } else if ($ui->st('o','get') == 'as') {
         $orderby='h.`active` ASC, h.`notified` ASC';
-    } else if ($ui->st('o','get')=='ds') {
+    } else if ($ui->st('o','get') == 'ds') {
         $orderby='h.`active` DESC, h.`notified` DESC';
-    } else if ($ui->st('o','get')=='ai') {
+    } else if ($ui->st('o','get') == 'ai') {
         $orderby='h.`id` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='h.`id` DESC';
     } else {
         $orderby='h.`ip` DESC';
@@ -316,10 +316,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $hddsize=$row['hdd'];
         $ram=$row['ram'];
         $ramused = 0;
-        $mountsize = "";
-        $mountunused = "";
+        $mountsize = '';
+        $mountunused = '';
         $cpucore = array();
-        $hdd = "";
+        $hdd = '';
         $hdd_rows=explode("\r\n", $row['hdd']);
         foreach ($hdd_rows as $hddline) {
             $data_explode=explode(" ", $hddline);
@@ -331,7 +331,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
         $i = 1;
-        $cpucores = "";
+        $cpucores = '';
         while ($i<=$cores) {
             $cpucores[]=$i;
             $cpucore[$i] = 0;
@@ -366,17 +366,17 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
             $i2++;
         }
-        if ($row['notified']>=$downChecks and $row['active']=='Y') {
+        if ($row['notified']>=$downChecks and $row['active'] == 'Y') {
             $imgName='16_error';
             $imgAlt='Offline';
-        } else if ($row['active']=='Y') {
+        } else if ($row['active'] == 'Y') {
             $imgName='16_ok';
             $imgAlt='Online';
         } else {
             $imgName='16_bad';
             $imgAlt='Deactivated';
         }
-        $installedserver=$i2."/".$row['maxserver'];
+        $installedserver=$i2. '/' . $row['maxserver'];
         $table[]=array('id'=>$id,'img'=>$imgName,'alt'=>$imgAlt,'ip'=>$row['ip'],'active'=>$row['active'],'description'=>$row['description'],'cores'=>$cores,'mhz'=>$mhz,'cpus'=>$cpucore,'hdd'=>$hdd,'ram'=>$ram,'ramused'=>$ramused,'mountsize'=>$mountsize,'mountunused'=>$mountunused,'installedserver'=>$installedserver);
     }
     $next=$start+$amount;
@@ -390,13 +390,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=vh&amp;d=md&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -411,11 +411,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=vh&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=vh&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=vh&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=vh&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

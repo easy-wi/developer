@@ -35,7 +35,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['log'])) {
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['log'])) {
 	header('Location: admin.php');
 	die('No acces');
 }
@@ -44,12 +44,12 @@ $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $table = array();
 if ($reseller_id==0) {
 	$pselect=$sql->prepare("SELECT `userid`,`subuser`,`reseller`,`username`,`usertype`,`useraction`,`ip`,`hostname`,`logdate` FROM `userlog` WHERE `usertype` LIKE :usertype AND (`resellerid`=:reseller_id OR `resellerid`=`userid`) ORDER BY `id` DESC LIMIT $start,$amount");
-} else if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+} else if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$pselect=$sql->prepare("SELECT `userid`,`subuser`,`reseller`,`username`,`usertype`,`useraction`,`ip`,`hostname`,`logdate` FROM `userlog` WHERE `usertype` LIKE :usertype AND `resellerid`=:reseller_id GROUP BY `userid`,`subuser`,`reseller`,`username`,`usertype`,`useraction`,`ip`,`logdate` ORDER BY `id` DESC LIMIT $start,$amount");
 } else {
 	$pselect=$sql->prepare("SELECT l.`userid`,l.`subuser`,l.`reseller`,l.`username`,l.`usertype`,l.`useraction`,l.`ip`,l.`hostname`,l.`logdate` FROM `userdata` u LEFT JOIN `userlog` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE l.`usertype` LIKE :usertype AND u.`resellerid`=:reseller_id GROUP BY l.`userid`,l.`subuser`,l.`reseller`,l.`username`,l.`usertype`,l.`useraction`,l.`ip`,l.`logdate` ORDER BY l.`id` DESC LIMIT $start,$amount");
 }
-if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id=$admin_id;
 }
 if (empty($where)) {
@@ -80,14 +80,14 @@ foreach ($pselect->fetchall() as $row) {
 				$ip=$row['ip'];
                 $hostname=$row['hostname'];
 			} else {
-				$ip = "";
+				$ip = '';
                 $hostname = '';
 			}
-		} else if ($reseller_id!=0 and $reseller_id!=$admin_id and $subuser==0) {
+		} else if ($reseller_id != 0 and $reseller_id != $admin_id and $subuser==0) {
 			$ip=$row['ip'];
             $hostname=$row['hostname'];
 		} else {
-			$ip = "";
+			$ip = '';
             $hostname = '';
 		}
 	} else {
@@ -117,7 +117,7 @@ $next=$start+$amount;
 if ($reseller_id==0) {
 	$countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userlog` WHERE `usertype` LIKE :usertype AND (`resellerid`=:reseller_id OR `resellerid`=`userid`)");
 	$requestid=$reseller_id;
-} else if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+} else if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userlog` WHERE `usertype` LIKE :usertype AND `resellerid`=:reseller_id");
 	$requestid=$admin_id;
 } else {
@@ -137,13 +137,13 @@ if ($colcount>$next) {
 } else {
 	$vor=$start;
 }
-$back=$start-$amount;
+$back=$start - $amount;
 if ($back>=0){
-	$zur=$start-$amount;
+	$zur=$start - $amount;
 } else {
 	$zur=$start;
 }
-$pageamount=ceil($colcount/$amount);
+$pageamount = ceil($colcount / $amount);
 $link='<a href="admin.php?w=lo&amp;a=';
 if(!isset($amount)) {
     $link .="20";
@@ -158,11 +158,11 @@ if ($start==0) {
 $pages[]=$link;
 $i = 2;
 while ($i<=$pageamount) {
-    $selectpage=($i-1)*$amount;
+    $selectpage = ($i - 1) * $amount;
     if ($start==$selectpage) {
-        $pages[]='<a href="admin.php?w=lo&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+        $pages[] = '<a href="admin.php?w=lo&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
     } else {
-        $pages[]='<a href="admin.php?w=lo&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+        $pages[] = '<a href="admin.php?w=lo&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
     }
     $i++;
 }

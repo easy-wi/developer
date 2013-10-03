@@ -52,10 +52,10 @@ $logreseller = 0;
 $logsubuser = 0;
 if (isset($admin_id)) $logsubuser=$admin_id;
 else if (isset($subuser_id)) $logsubuser=$subuser_id;
-if (isset($admin_id) and $reseller_id!=0) $reseller_id=$admin_id;
+if (isset($admin_id) and $reseller_id != 0) $reseller_id=$admin_id;
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get')=='ri'and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['ro']))) {
+} else if ($ui->st('d','get') == 'ri'and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['ro']))) {
     $id=$ui->id('id',10,'get');
     if (!$ui->st('action','post')) {
         $option = array();
@@ -81,26 +81,26 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
             if ($row['userID']==null) {
                 $error=$sprache->userAdd;
-            } else if ($dhcp=='N' or $pxe=='N') {
-                $option[]='<option value="rs">'.$sprache->restart.'</option>';
-                $option[]='<option value="st">'.$sprache->stop.'</option>';
+            } else if ($dhcp == 'N' or $pxe == 'N') {
+                $option[] = '<option value="rs">'.$sprache->restart.'</option>';
+                $option[] = '<option value="st">'.$sprache->stop.'</option>';
             } else {
-                $showImages= true;
+                $showImages = true;
                 if ($row['status']==null or $row['status']==2) {
-                    $option[]='<option value="rc">'.$sprache->rescue_start.'</option>';
-                    $option[]='<option value="ri">'.$sprache->reinstall.'</option>';
+                    $option[] = '<option value="rc">'.$sprache->rescue_start.'</option>';
+                    $option[] = '<option value="ri">'.$sprache->reinstall.'</option>';
                 } else if ($row['status']==0) {
-                    $option[]='<option value="rs">'.$sprache->restart.'</option>';
-                    $option[]='<option value="st">'.$sprache->stop.'</option>';
-                    $option[]='<option value="rc">'.$sprache->rescue_start.'</option>';
-                    $option[]='<option value="ri">'.$sprache->reinstall.'</option>';
+                    $option[] = '<option value="rs">'.$sprache->restart.'</option>';
+                    $option[] = '<option value="st">'.$sprache->stop.'</option>';
+                    $option[] = '<option value="rc">'.$sprache->rescue_start.'</option>';
+                    $option[] = '<option value="ri">'.$sprache->reinstall.'</option>';
                 } else if ($row['status']==1) {
-                    $option[]='<option value="rs">'.$sprache->restart.'</option>';
-                    $option[]='<option value="rc">'.$sprache->rescue_start.'</option>';
-                    $option[]='<option value="ri">'.$sprache->reinstall.'</option>';
+                    $option[] = '<option value="rs">'.$sprache->restart.'</option>';
+                    $option[] = '<option value="rc">'.$sprache->rescue_start.'</option>';
+                    $option[] = '<option value="ri">'.$sprache->reinstall.'</option>';
                 } else if ($row['status']==3) {
-                    $option[]='<option value="rt">'.$sprache->rescue_stop.'</option>';
-                    $option[]='<option value="ri">'.$sprache->reinstall.'</option>';
+                    $option[] = '<option value="rt">'.$sprache->rescue_stop.'</option>';
+                    $option[] = '<option value="ri">'.$sprache->reinstall.'</option>';
                 }
             }
             $description=$row['description'];
@@ -114,7 +114,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $templates[]=array('id'=>$row['id'],'description'=>$row['description']);
         }
         $template_file = (isset($ip)) ? 'userpanel_root_dedicated_ri.tpl' : 'admin_404.tpl';
-    } else if (in_array($ui->st('action','post'),array('ri','rc','rs','st'))) {
+    } else if (in_array($ui->st('action','post'), array('ri','rc','rs','st'))) {
         $query = $sql->prepare("SELECT d.`ip`,i.`bitversion` FROM `rootsDedicated` d LEFT JOIN `resellerimages` i ON d.`resellerImageID`=i.`id` WHERE d.`userID`=? AND d.`dedicatedID`=? LIMIT 1");
         $query->execute(array($user_id,$id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -124,9 +124,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (!isset($bitversion)) $bitversion=64;
         if (isset($ip)) {
             $extraData = array();
-            if ($ui->st('action','post')=='ri') {
+            if ($ui->st('action','post') == 'ri') {
                 $extraData['imageID']=$ui->id('imageid',10,'post');
-            } else if ($ui->st('action','post')=='rc') {
+            } else if ($ui->st('action','post') == 'rc') {
                 $query = $sql->prepare("SELECT `id` FROM `resellerimages` WHERE `bitversion`=? AND `active`='Y' AND `distro`='other' AND `description` LIKE 'Rescue %' LIMIT 1");
                 $query->execute(array($bitversion));
                 $extraData['imageID']=$query->fetchColumn();
@@ -150,15 +150,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (!isset($_SESSION['sID']) or in_array($row['dedicatedID'],$substituteAccess['ro'])) {
             $jobPending=$gsprache->no;
-            if ($row['jobPending']=='Y') {
+            if ($row['jobPending'] == 'Y') {
                 $query2->execute(array($row['dedicatedID']));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    if ($row2['action']=='ad') $jobPending=$gsprache->add;
-                    else if ($row2['action']=='dl') $jobPending=$gsprache->del;
-                    else if ($row2['action']=='ri') $jobPending=$sprache->reinstall;
-                    else if ($row2['action']=='rc') $jobPending=$sprache->rescue_start;
-                    else if ($row2['action']=='rs') $jobPending=$sprache->restart;
-                    else if ($row2['action']=='st') $jobPending=$sprache->stop;
+                    if ($row2['action'] == 'ad') $jobPending=$gsprache->add;
+                    else if ($row2['action'] == 'dl') $jobPending=$gsprache->del;
+                    else if ($row2['action'] == 'ri') $jobPending=$sprache->reinstall;
+                    else if ($row2['action'] == 'rc') $jobPending=$sprache->rescue_start;
+                    else if ($row2['action'] == 'rs') $jobPending=$sprache->restart;
+                    else if ($row2['action'] == 'st') $jobPending=$sprache->stop;
                     else $jobPending=$gsprache->mod;
                     $json=@json_decode($row2['extraData']);
                     $tobeActive=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
@@ -166,18 +166,18 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
             $imgName='16_ok';
             $imgAlt='Active';
-            $active='Y';
-            if (($row['active']=='Y' and $row['jobPending']=='N' and $row['notified']<=$rSA['down_checks']) or ($row['jobPending']=='Y') and isset($tobeActive) and $tobeActive=='Y') {
+            $active = 'Y';
+            if (($row['active'] == 'Y' and $row['jobPending'] == 'N' and $row['notified']<=$rSA['down_checks']) or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
                 $imgName='16_ok';
                 $imgAlt='Active';
-            } else if (($row['active']=='Y' and $row['jobPending']=='N' and $row['notified']>$rSA['down_checks']) or ($row['jobPending']=='Y') and isset($tobeActive) and $tobeActive=='Y') {
+            } else if (($row['active'] == 'Y' and $row['jobPending'] == 'N' and $row['notified']>$rSA['down_checks']) or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
                 $imgName='16_error';
                 $imgAlt='Crashed';
                 $active='C';
-            } else if ($row['active']=='N') {
+            } else if ($row['active'] == 'N') {
                 $imgName='16_bad';
                 $imgAlt='Inactive';
-                $active='N';
+                $active = 'N';
             }
             $table[]=array('id'=>$row['dedicatedID'],'ip'=>$row['ip'],'description'=>$row['description'],'img'=>$imgName,'alt'=>$imgAlt,'active'=>$active,'jobPending'=>$jobPending);
         }

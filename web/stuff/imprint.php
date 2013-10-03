@@ -48,7 +48,7 @@ if (isset($admin_id) and $admin_id==$reseller_id) {
 $query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE language=? AND resellerid=? LIMIT 1");
 $query->execute(array($user_language,$resellerid));
 $imprint=$query->fetchColumn();
-if ($imprint!='') {
+if ($imprint != '') {
     $query = $sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($resellerid));
     $defaultlanguage=$query->fetchColumn();
@@ -63,7 +63,7 @@ if (isset($page_data)) {
     $langLinks = array();
     foreach ($languages as $l) {
         $tempLanguage = getlanguagefile('general',$l,0);
-        $langLinks[$l]=($page_data->seo=='Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+        $langLinks[$l]=($page_data->seo== 'Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
     }
     $page_data->langLinks($langLinks);
 }

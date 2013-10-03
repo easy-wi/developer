@@ -123,40 +123,40 @@ if (isset($admin_id) and $ui->st('img','get')) {
                     if ($reseller_id == 0 and $ui->username('shorten', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `serverid`=:get_shorten");
                         $query->execute(array(':like' => $like, ':get_shorten' => $ui->username('shorten', 50, 'get')));
-                    } else if ($reseller_id!=0 and $ui->username('shorten', 50, 'get')) {
+                    } else if ($reseller_id != 0 and $ui->username('shorten', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `serverid`=:get_shorten AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':get_shorten' => $ui->username('shorten', 50, 'get'), ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0 and $ui->username('distro', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `userid`=:resellerid");
                         $query->execute(array(':like' => $like, ':resellerid' => $ui->username('distro', 50, 'get')));
-                    } else if ($reseller_id!=0 and $reseller_id == $admin_id and $ui->username('distro', 50, 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id == $admin_id and $ui->username('distro', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `userid`=:get_distro AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':get_distro' => $ui->username('distro', 50, 'get'), ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0 and $ui->username('short', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `resellerid`=:get_short");
                         $query->execute(array(':like' => $like, ':get_short' => $ui->username('short', 50, 'get')));
-                    } else if ($reseller_id!=0 and $reseller_id != $admin_id and $ui->ips('ips', 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id != $admin_id and $ui->ips('ips', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `ip` LIKE :server_ips AND `userid`=:admin_id AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':server_ips' => $ui->ips('ips', 'get') . '%', ':reseller_id' => $reseller_id, ':admin_id' => $admin_id));
-                    } else if ($reseller_id!=0 and $reseller_id == $admin_id and $ui->ips('ips', 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id == $admin_id and $ui->ips('ips', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `ip` LIKE :server_ips AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':server_ips' => $ui->ips('ips', 'get') . '%', ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0 and $ui->ips('ips', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `ip` LIKE :server_ips");
                         $query->execute(array(':like' => $like, ':server_ips' => $ui->ips('ips', 'get') . '%'));
-                    } else if ($reseller_id!=0 and $reseller_id != $admin_id and $ui->ip('ip', 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id != $admin_id and $ui->ip('ip', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `ip`=:server_ip AND `userid`=:admin_id AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':server_ip' => $ui->ip('ip', 'get'), ':admin_id' => $admin_id, ':reseller_id' => $reseller_id));
-                    } else if ($reseller_id!=0 and $reseller_id == $admin_id and $ui->ip('ip', 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id == $admin_id and $ui->ip('ip', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `ip`=:server_ip AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':server_ip' => $server_ip, ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0 and $ui->ip('ip', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `ip`=:server_ip");
                         $query->execute(array(':like' => $like, ':server_ip' => $ui->ip('ip', 'get')));
-                    } else if ($reseller_id!=0 and $reseller_id != $admin_id) {
+                    } else if ($reseller_id != 0 and $reseller_id != $admin_id) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `userid`=:admin_id AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':admin_id' => $admin_id, ':reseller_id' => $reseller_id));
-                    } else if ($reseller_id!=0 and $reseller_id == $admin_id) {
+                    } else if ($reseller_id != 0 and $reseller_id == $admin_id) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0) {
@@ -174,40 +174,40 @@ if (isset($admin_id) and $ui->st('img','get')) {
                     if ($reseller_id == 0 and $ui->username('shorten', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `serverid`=:get_shorten");
                         $query->execute(array(':like' => $like, ':get_shorten' => $ui->username('shorten', 50, 'get')));
-                    } else if ($reseller_id!=0 and $ui->username('shorten', 50, 'get')) {
+                    } else if ($reseller_id != 0 and $ui->username('shorten', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `serverid`=:get_shorten AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':get_shorten' => $ui->username('shorten', 50, 'get'), ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0 and $ui->username('distro', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `userid`=:resellerid");
                         $query->execute(array(':like' => $like, ':resellerid' => $ui->username('distro', 50, 'get')));
-                    } else if ($reseller_id!=0 and $reseller_id == $admin_id and $ui->username('distro', 50, 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id == $admin_id and $ui->username('distro', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `userid`=:get_distro AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':get_distro' => $ui->username('distro', 50, 'get'), ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0 and $ui->username('short', 50, 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `resellerid`=:get_short");
                         $query->execute(array(':like' => $like, ':get_short' => $ui->username('short', 50, 'get')));
-                    } else if ($reseller_id!=0 and $reseller_id != $admin_id and $ui->ips('ips', 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id != $admin_id and $ui->ips('ips', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `ip` LIKE :server_ips AND `userid`=:admin_id AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':server_ips' => $ui->ips('ips', 'get') . '%', ':reseller_id' => $reseller_id, ':admin_id' => $admin_id));
-                    } else if ($reseller_id!=0 and $reseller_id == $admin_id and $ui->ips('ips', 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id == $admin_id and $ui->ips('ips', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `ip` LIKE :server_ips AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':server_ips' => $ui->ips('ips', 'get') . '%', ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0 and $ui->ips('ips', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `ip` LIKE :server_ips");
                         $query->execute(array(':like' => $like, ':server_ips' => $ui->ips('ips', 'get') . '%'));
-                    } else if ($reseller_id!=0 and $reseller_id != $admin_id and $ui->ip('ip', 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id != $admin_id and $ui->ip('ip', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `ip`=:server_ip AND `userid`=:admin_id AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':server_ip' => $ui->ip('ip', 'get'), ':admin_id' => $admin_id, ':reseller_id' => $reseller_id));
-                    } else if ($reseller_id!=0 and $reseller_id == $admin_id and $ui->ip('ip', 'get')) {
+                    } else if ($reseller_id != 0 and $reseller_id == $admin_id and $ui->ip('ip', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `ip`=:server_ip AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':server_ip' => $ui->ip('ip', 'get'), ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0 and $ui->ip('ip', 'get')) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `ip`=:server_ip");
                         $query->execute(array(':like' => $like, ':server_ip' => $ui->ip('ip', 'get')));
-                    } else if ($reseller_id!=0 and $reseller_id != $admin_id) {
+                    } else if ($reseller_id != 0 and $reseller_id != $admin_id) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `userid`=:admin_id AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':admin_id' => $admin_id, ':reseller_id' => $reseller_id));
-                    } else if ($reseller_id!=0 and $reseller_id == $admin_id) {
+                    } else if ($reseller_id != 0 and $reseller_id == $admin_id) {
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like AND `resellerid`=:reseller_id");
                         $query->execute(array(':like' => $like, ':reseller_id' => $reseller_id));
                     } else if ($reseller_id == 0) {

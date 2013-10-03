@@ -58,13 +58,13 @@ if ($reseller_id==0) {
     $logreseller = 0;
 }
 $lookIpID=$reseller_id;
-if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $lookIpID=$admin_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if (in_array($ui->st('d','get'),array('md','ad'))){
-    if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='md') {
+} else if (in_array($ui->st('d','get'), array('md','ad'))){
+    if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {
         $id=$ui->id('id',19,'get');
         $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$lookIpID));
@@ -131,76 +131,76 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $template_file = 'admin_404.tpl';
         }
-    } else if (!in_array($ui->smallletters('action',2,'post'),array('md','ad')) and $ui->st('d','get')=='ad') {
+    } else if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'ad') {
         $template_file = 'admin_user_groups_add.tpl';
-    } else if (in_array($ui->smallletters('action',2,'post'),array('md','ad'))) {
+    } else if (in_array($ui->smallletters('action',2,'post'), array('md','ad'))) {
         $error = array();
         if (!$ui->active('active','post')) {
-            $error[]='Active';
+            $error[] = 'Active';
         }
         if (!$ui->smallletters('grouptype',1,'post')) {
-            $error[]='Grouptype';
+            $error[] = 'Grouptype';
         }
         if (!$ui->names('groupname',255,'post')) {
-            $error[]='Groupname';
+            $error[] = 'Groupname';
         }
         if (count($error)>0) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            $active='N';
-            $root='N';
-            $user='N';
-            $user_users='N';
-            $log='N';
-            $settings='N';
-            $cms_comments='N';
-            $cms_settings='N';
-            $cms_pages='N';
-            $cms_news='N';
-            $gserver='N';
-            $addons='N';
-            $gimages='N';
-            $roots='N';
-            $restart='N';
-            $miniroot='N';
-            $fastdl='N';
-            $modfastdl='N';
-            $useraddons='N';
-            $usersettings='N';
-            $ftpaccess='N';
-            $addvserver='N';
-            $modvserver='N';
-            $delvserver='N';
-            $usevserver='N';
-            $vserversettings='N';
-            $pxeServer='N';
-            $dhcpServer='N';
-            $dedicatedServer='N';
-            $vserverhost='N';
-            $voicemasterserver='N';
-            $voiceserver='N';
-            $resellertemplates='N';
-            $ftpbackup='N';
-            $traffic='N';
-            $mysql_settings='N';
-            $mysql='N';
-            $trafficsettings='N';
-            $lendserver='N';
-            $tickets='N';
-            $usertickets='N';
-            $voiceserverSettings='N';
-            $voiceserverStats='N';
-            $lendserverSettings='N';
-            $reset='N';
-            $eac='N';
-            $masterServer='N';
-            $userGroups='N';
-            $userPassword='N';
-            $apiSettings='N';
-            $jobs='N';
-            $updateEW='N';
-            $ipBans='N';
-            if ($ui->smallletters('grouptype',1,'post')=='a') {
+            $active = 'N';
+            $root = 'N';
+            $user = 'N';
+            $user_users = 'N';
+            $log = 'N';
+            $settings = 'N';
+            $cms_comments = 'N';
+            $cms_settings = 'N';
+            $cms_pages = 'N';
+            $cms_news = 'N';
+            $gserver = 'N';
+            $addons = 'N';
+            $gimages = 'N';
+            $roots = 'N';
+            $restart = 'N';
+            $miniroot = 'N';
+            $fastdl = 'N';
+            $modfastdl = 'N';
+            $useraddons = 'N';
+            $usersettings = 'N';
+            $ftpaccess = 'N';
+            $addvserver = 'N';
+            $modvserver = 'N';
+            $delvserver = 'N';
+            $usevserver = 'N';
+            $vserversettings = 'N';
+            $pxeServer = 'N';
+            $dhcpServer = 'N';
+            $dedicatedServer = 'N';
+            $vserverhost = 'N';
+            $voicemasterserver = 'N';
+            $voiceserver = 'N';
+            $resellertemplates = 'N';
+            $ftpbackup = 'N';
+            $traffic = 'N';
+            $mysql_settings = 'N';
+            $mysql = 'N';
+            $trafficsettings = 'N';
+            $lendserver = 'N';
+            $tickets = 'N';
+            $usertickets = 'N';
+            $voiceserverSettings = 'N';
+            $voiceserverStats = 'N';
+            $lendserverSettings = 'N';
+            $reset = 'N';
+            $eac = 'N';
+            $masterServer = 'N';
+            $userGroups = 'N';
+            $userPassword = 'N';
+            $apiSettings = 'N';
+            $jobs = 'N';
+            $updateEW = 'N';
+            $ipBans = 'N';
+            if ($ui->smallletters('grouptype',1,'post') == 'a') {
                 $root=yesNo('root');
                 $user=yesNo('user');
                 $user_users=yesNo('user_users');
@@ -243,7 +243,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $ipBans=yesNo('ipBans');
                 $mysql=yesNo('mysql');
                 $mysql_settings=yesNo('mysql_settings');
-            } else if ($ui->smallletters('grouptype',1,'post')=='u') {
+            } else if ($ui->smallletters('grouptype',1,'post') == 'u') {
                 $log=yesNo('ulog');
                 $restart=yesNo('restart');
                 $reset=yesNo('reset');
@@ -293,19 +293,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $mysql=yesNo('rmysql');
                 $mysql_settings=yesNo('rmysql_settings');
             }
-            if ($ui->st('d','get')=='md' and $ui->id('id',19,'get')) {
+            if ($ui->st('d','get') == 'md' and $ui->id('id',19,'get')) {
                 $id=$ui->id('id',19,'get');
                 $defaultgroup=$ui->active('defaultgroup','post');
-                if ($defaultgroup=='Y') {
+                if ($defaultgroup == 'Y') {
                     $query = $sql->prepare("UPDATE `usergroups` SET `defaultgroup`='N' WHERE `grouptype`=? AND `id`!=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($ui->smallletters('grouptype',1,'post'),$id,$lookIpID));
                 }
                 $query = $sql->prepare("UPDATE `usergroups` SET `active`=?,`defaultgroup`=?,`name`=?,`root`=?,`user`=?,`user_users`=?,`log`=?,`settings`=?,`cms_comments`=?,`cms_settings`=?,`cms_pages`=?,`cms_news`=?,`gserver`=?,`addons`=?,`gimages`=?,`roots`=?,`restart`=?,`gsResetting`=?,`miniroot`=?,`fastdl`=?,`modfastdl`=?,`useraddons`=?,`usersettings`=?,`ftpaccess`=?,`addvserver`=?,`modvserver`=?,`delvserver`=?,`usevserver`=?,`vserversettings`=?,`vserverhost`=?,`voicemasterserver`=?,`voiceserver`=?,`resellertemplates`=?,`ftpbackup`=?,`traffic`=?,`trafficsettings`=?,`lendserver`=?,`voiceserverSettings`=?,`voiceserverStats`=?,`lendserverSettings`=?,`pxeServer`=?,`dhcpServer`=?,`dedicatedServer`=?,`eac`=?,`masterServer`=?,`userGroups`=?,`userPassword`=?,`apiSettings`=?,`jobs`=?,`updateEW`=?,`ipBans`=?,`mysql`=?,`mysql_settings`=?,`tickets`=?,`usertickets`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->active('active','post'),$defaultgroup,$ui->names('groupname',255,'post'),$root,$user,$user_users,$log,$settings,$cms_comments,$cms_settings,$cms_pages,$cms_news,$gserver,$addons,$gimages,$roots,$restart,$reset,$miniroot,$fastdl,$modfastdl,$useraddons,$usersettings,$ftpaccess,$addvserver,$modvserver,$delvserver,$usevserver,$vserversettings,$vserverhost,$voicemasterserver,$voiceserver,$resellertemplates,$ftpbackup,$traffic,$trafficsettings,$lendserver,$voiceserverSettings,$voiceserverStats,$lendserverSettings,$pxeServer,$dhcpServer,$dedicatedServer,$eac,$masterServer,$userGroups,$userPassword,$apiSettings,$jobs,$updateEW,$ipBans,$mysql,$mysql_settings,$tickets,$usertickets,$id,$lookIpID));
                 $loguseraction='%mod% %group% '.$ui->names('groupname',255,'post');
-            } else if ($ui->st('d','get')=='ad') {
+            } else if ($ui->st('d','get') == 'ad') {
                 $defaultgroup=$ui->active('defaultgroup','post');
-                if ($defaultgroup=='Y') {
+                if ($defaultgroup == 'Y') {
                     $query = $sql->prepare("UPDATE `usergroups` SET `defaultgroup`='N' WHERE `grouptype`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($ui->smallletters('grouptype',1,'post'),$lookIpID));
                 }
@@ -329,22 +329,22 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
     }
-} else if ($ui->st('d','get')=='dl' and $ui->id('id','30','get')) {
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id','30','get')) {
     $id=$ui->id('id','30','get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `active`,`grouptype`,`name` FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$lookIpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if($row['active']=='Y') {
+            if($row['active'] == 'Y') {
                 $imgName='16_ok';
                 $imgAlt='ok';
             } else {
                 $imgName='16_bad';
                 $imgAlt='bad';
             }
-            if($row['grouptype']=='r') {
+            if($row['grouptype'] == 'r') {
                 $grouptype=$sprache->accounttype_reseller;
-            } else if($row['grouptype']=='a') {
+            } else if($row['grouptype'] == 'a') {
                 $grouptype=$sprache->accounttype_admin;
             } else {
                 $grouptype=$sprache->accounttype_user;
@@ -352,14 +352,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $name=$row['name'];
         }
         $template_file = 'admin_user_groups_dl.tpl';
-    } else if ($ui->smallletters('action',2,'post')=='dl' and $ui->id('id','30','get')) {
+    } else if ($ui->smallletters('action',2,'post') == 'dl' and $ui->id('id','30','get')) {
         $query = $sql->prepare("SELECT c.`id`,g.`name` FROM `usergroups` g LEFT JOIN `usergroups` c ON g.`grouptype`=c.`grouptype` AND c.`defaultgroup`='Y' WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($id,$lookIpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $default_id=$row['id'];
             $name=$row['name'];
         }
-        if (isset($default_id) and $default_id!=$id and $default_id!=null and $default_id!=0) {
+        if (isset($default_id) and $default_id != $id and $default_id != null and $default_id != 0) {
             $query = $sql->prepare("DELETE FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$lookIpID));
             if ($query->rowCount()>0) {
@@ -380,23 +380,23 @@ if ($ui->w('action',4,'post') and !token(true)) {
 } else {
     $table = array();
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='da') {
+    if ($ui->st('o','get') == 'da') {
         $orderby='`active` DESC';
-    } else if ($ui->st('o','get')=='aa') {
+    } else if ($ui->st('o','get') == 'aa') {
         $orderby='`active` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='`grouptype` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='`grouptype` ASC';
-    } else if ($ui->st('o','get')=='dd') {
+    } else if ($ui->st('o','get') == 'dd') {
         $orderby='`defaultgroup` DESC';
-    } else if ($ui->st('o','get')=='ad') {
+    } else if ($ui->st('o','get') == 'ad') {
         $orderby='`defaultgroup` ASC';
-    } else if ($ui->st('o','get')=='dn') {
+    } else if ($ui->st('o','get') == 'dn') {
         $orderby='`name` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='`name` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='`id` DESC';
     } else {
         $orderby='`id` ASC';
@@ -404,21 +404,21 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `resellerid`=? ORDER BY $orderby");
     $query->execute(array($lookIpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if($row['active']=='Y') {
+        if($row['active'] == 'Y') {
             $imgName='16_ok';
             $imgAlt='ok';
         } else {
             $imgName='16_bad';
             $imgAlt='inactive';
         }
-        if($row['grouptype']=='r') {
+        if($row['grouptype'] == 'r') {
             $grouptype=$sprache->accounttype_reseller;
-        } else if($row['grouptype']=='a') {
+        } else if($row['grouptype'] == 'a') {
             $grouptype=$sprache->accounttype_admin;
         } else {
             $grouptype=$sprache->accounttype_user;
         }
-        if($row['defaultgroup']=='Y') {
+        if($row['defaultgroup'] == 'Y') {
             $defaultgroup=$gsprache->yes;
         } else {
             $defaultgroup=$gsprache->no;

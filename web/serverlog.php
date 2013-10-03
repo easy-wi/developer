@@ -41,63 +41,69 @@ include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 if (!isset($user_id) and !isset($admin_id)) {
 	header('Location: login.php');
 	die('Please allow redirection');
 } 
-if ($ui->id('id', 19, 'get')) {
-	include(EASYWIDIR . '/stuff/keyphrasefile.php');
-	if ($reseller_id!="0" and $admin_id!=$reseller_id) {
+if ($ui->id('id', 10, 'get')) {
+    
+	if ($reseller_id != 0 and $admin_id != $reseller_id) {
 		$reseller_id=$admin_id;
 	}
+    
 	if(isset($admin_id)) {
+        
         $query = $sql->prepare("SELECT u.`id`,u.`cname` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('id', 19, 'get'),$reseller_id));
+        $query->execute(array($ui->id('id', 10, 'get'), $reseller_id));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$username=$row['cname'];
-            $user_id=$row['id'];
+			$username = $row['cname'];
+            $user_id = $row['id'];
 		}
+        
 	} else {
-		$username=getusername($user_id);
+		$username = getusername($user_id);
 	}
+    
     $query = $sql->prepare("SELECT g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `decryptedftppass`,s.`servertemplate`,t.`binarydir`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
-    $query->execute(array($aeskey,$aeskey,$server_id,$user_id,$reseller_id));
+    $query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $user_id, $reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$protected=$row['protected'];
-		$servertemplate=$row['servertemplate'];
-		$serverid=$row['rootID'];
-		$serverip=$row['serverip'];
-		$port=$row['port'];
-        if ($row['newlayout']=='Y') $username=$username . '-' . $row['id'];
-		$shorten=$row['shorten'];
-		$binarydir=$row['binarydir'];
-        $ftppass=$row['dftppass'];
-		if ($protected=='N' and $servertemplate>1) {
-			$shorten=$row['shorten']."-".$servertemplate;
-			$pserver="server/";
-		} else if ($protected=='Y') {
-			$shorten=$row['shorten'];
-			$username=$username.'-p';
-			$ftppass=$row['decryptedftppass'];
+		$protected = $row['protected'];
+		$servertemplate = $row['servertemplate'];
+		$rootID = $row['rootID'];
+		$serverip = $row['serverip'];
+		$port = $row['port'];
+        if ($row['newlayout'] == 'Y') {
+            $username .= '-' . $row['id'];
+        }
+		$shorten = $row['shorten'];
+		$binarydir = $row['binarydir'];
+        $ftppass = $row['dftppass'];
+		if ($protected == 'N' and $servertemplate > 1) {
+			$shorten .= '-' . $servertemplate;
+            $pserver = 'server/';
+		} else if ($protected == 'Y') {
+			$username .= '-p';
+			$ftppass = $row['decryptedftppass'];
 			$pserver = '';
 		} else {
-			$shorten=$row['shorten'];
-			$pserver='server/';
+			$pserver = 'server/';
 		}
 	}
-    $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query->execute(array($serverid,$reseller_id));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$ftpport=$row['ftpport'];
-		$ip=$row['ip'];
-	}
-    if (isset($username,$ftpport)) {
-        ini_set('default_socket_timeout',5);
-        #echo "ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip."_"."$port/$shorten/$binarydir/screenlog.0";
-        $fp=@fopen("ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip."_"."$port/$shorten/$binarydir/screenlog.0",'r');
+    if (isset($rootID)) {
+        $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($rootID, $reseller_id));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $ftpport = $row['ftpport'];
+            $ip = $row['ip'];
+        }
+        ini_set('default_socket_timeout', 5);
+        #echo "ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip . '_' . "$port/$shorten/$binarydir/screenlog.0";
+        $fp=@fopen('ftp://' . $username . ':' . $ftppass . '@' . $ip . ':' . $ftpport . '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0','r');
         $screenlog = '';
-        if ($fp == false) {
-            echo "No Logdata!";
+        if ($fp  ==  false) {
+            echo 'No Logdata!';
         } else {
             stream_set_timeout($fp,5);
             $i = 0;

@@ -124,10 +124,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $ownerName = trim($query2->fetchColumn());
                 }
             }
-            $template_file =  ($query->rowCount() > 0) ? 'admin_roots_md.tpl' : $spracheResponse->notFound;
+            $template_file =  ($query->rowCount() > 0) ? 'admin_roots_md.tpl' : 'admin_404.tpl';
 
         } else {
-            $template_file = $spracheResponse->notFound;
+            $template_file = 'admin_404.tpl';
         }
 
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
@@ -191,7 +191,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $desc = $row['description'];
             $ip = $row['ip'];
         }
-        $template_file = ($query->rowCount() > 0) ? 'admin_roots_dl.tpl' : $spracheResponse->notFound;
+        $template_file = ($query->rowCount() > 0) ? 'admin_roots_dl.tpl' : 'admin_404.tpl';
 
     } else if ($ui->st('action', 'post') == 'dl') {
 
@@ -228,7 +228,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $template_file = $spracheResponse->error_table;
         }
     } else {
-        $template_file = $spracheResponse->notFound;
+        $template_file = 'admin_404.tpl';
     }
 
 } else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get')) {
@@ -244,7 +244,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $table[$row['id']] = array('ip' => $row['serverip'], 'port' => $row['port']);
         }
 
-        $template_file = ($query->rowCount() > 0) ? 'admin_roots_ri.tpl' : $spracheResponse->notFound;
+        $template_file = ($query->rowCount() > 0) ? 'admin_roots_ri.tpl' : 'admin_404.tpl';
 
     } else if ($ui->st('action', 'post') == 'ri' and $ui->id('serverID', 10, 'post')) {
         $cmds = array();
@@ -266,11 +266,11 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             ssh2_execute('gs', $id, $cmds);
             $template_file = $gsSprache->reinstall . ': ' . implode('<br>', $started);
         } else {
-            $template_file = $spracheResponse->notFound;
+            $template_file = 'admin_404.tpl';
         }
         
     } else {
-        $template_file = $spracheResponse->notFound;
+        $template_file = 'admin_404.tpl';
     }
 } else {
     $table = array();

@@ -55,13 +55,13 @@ if ($reseller_id==0) {
     $logsubuser= (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
-if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id=$admin_id;
 }
 
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('action','post')=='md') {
+} else if ($ui->st('action','post') == 'md') {
 	$fail = 0;
 	if (!$ui->active('prefix1','post')) $fail = 1;
 	if (!$ui->active('voice_autobackup','post')) $fail = 1;
@@ -87,7 +87,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$prefix2=$ui->w('prefix2',20,'post');
 		$brandname=$ui->description('brandname','post');
 		$licence=$ui->smallletters('licence',20,'post');
-		$imageserver = "";
+		$imageserver = '';
 		foreach (preg_split('/\r\n/', $ui->escaped('imageserver','post'),-1, PREG_SPLIT_NO_EMPTY) as $imgserver) {
 			if (isurl($imgserver) or isRsync($imgserver)) {
 				$imageserver.=$imgserver."\r\n";
@@ -109,7 +109,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $lastCronWarnCloud=($ui->active('lastCronWarnCloud','post')) ? $ui->active('lastCronWarnCloud','post') : 'Y';
 		$query = $sql->prepare("UPDATE `settings` SET `template`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=AES_ENCRYPT(?,?),`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($template,$voice_autobackup,$voice_autobackup_intervall,$voice_maxbackup,$language,$imageserver,$aeskey,$master,$prefix1,$prefix2,$faillogins,$brandname,$timezone,$supportnumber,$noservertag,$nopassword,$tohighslots,$down_checks,$lastCronWarnStatus,$lastCronWarnReboot,$lastCronWarnUpdates,$lastCronWarnJobs,$lastCronWarnCloud,$reseller_id));
-        if ($query->rowCount()>0) $changed= true;
+        if ($query->rowCount()>0) $changed = true;
         $query = $sql->prepare("SELECT `id` FROM `imprints` WHERE `language`=? AND `resellerid`=? LIMIT 1");
         $query2 = $sql->prepare("UPDATE imprints SET `imprint`=? WHERE `language`=? AND `resellerid`=? LIMIT 1");
         $query3 = $sql->prepare("INSERT INTO `imprints` (`language`,`imprint`,`resellerid`) VALUES (?,?,?)");
@@ -122,10 +122,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
 					$num=$query->rowCount();
                     if ($num==1) {
                         $query2->execute(array($description,$language,$reseller_id));
-                        if ($query2->rowCount()>0) $changed= true;
+                        if ($query2->rowCount()>0) $changed = true;
                     } else {
                         $query3->execute(array($language,$description,$reseller_id));
-                        if ($query3->rowCount()>0) $changed= true;
+                        if ($query3->rowCount()>0) $changed = true;
                     }
 				}
 			}
@@ -135,13 +135,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 				if (!in_array($row['language'],$languages)) {
                     $query2->execute(array($row['language'],$reseller_id));
-                    if ($query2->rowCount()>0) $changed= true;
+                    if ($query2->rowCount()>0) $changed = true;
 				}
 			}
 		} else {
             $query = $sql->prepare("DELETE FROM `imprints` WHERE `resellerid`=?");
             $query->execute(array($reseller_id));
-            if ($query->rowCount()>0) $changed= true;
+            if ($query->rowCount()>0) $changed = true;
 		}
 		if (isset($changed)) {
             $loguseraction="%mod% %settings%";
@@ -187,15 +187,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		if (is_dir($dir)){
 			$dirs=scandir($dir);
 			foreach ($dirs as $row) {
-				if (is_dir('template/'.$row) and !preg_match('/^\.(.*)$/',$row)) $templates[]=$row;
+				if (is_dir('template/'.$row) and !preg_match('/^\.(.*)$/', $row)) $templates[]=$row;
 			}
 		}
 		$selectlanguages=getlanguages($template_choosen);
 	}
 	$foundlanguages = array();
 	foreach (getlanguages($template_choosen) as $langrow2) {
-		$imprint = "";
-		$lang = "";
+		$imprint = '';
+		$lang = '';
 		$query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE `language`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($langrow2,$reseller_id));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

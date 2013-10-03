@@ -40,7 +40,7 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['ftpbackup']) or
     die;
 }
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) {
+if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id=$admin_id;
 }
 $customer=getusername($user_id);
@@ -52,19 +52,19 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $serverip=$row['serverip'];
         $port=$row['port'];
-        $gsfolder=$serverip.'_'.$port;
+        $gsfolder=$serverip . '_' . $port;
         $map=$row['map'];
         $gsswitch=$row['shorten'];
         $rootid=$row['rootID'];
         $ftppass=$row['dftppassword'];
         $customer=$row['cname'];
-        if ($row['newlayout']=='Y') $customer=$customer . '-' . $id;
+        if ($row['newlayout'] == 'Y') $customer=$customer . '-' . $id;
         $ftpbackup=$row['ftp'];
     }
     if ($query->rowCount()==0) redirect('userpanel.php');
     if (!$ui->w('action',3,'post')) {
         $template_file = "userpanel_gserver_backup.tpl";
-    } else if ($ui->w('action',3,'post')=='mb'){
+    } else if ($ui->w('action',3,'post') == 'mb'){
         include(EASYWIDIR . '/stuff/ssh_exec.php');
         $rdata=serverdata('root',$rootid,$aeskey);
         $sship=$rdata['ip'];
@@ -74,18 +74,18 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
         $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if (isset($shortens)) $shortens .=" ".$row['shorten'];
+            if (isset($shortens)) $shortens .= ' ' . $row['shorten'];
             else $shortens=$row['shorten'];
         }
         $webhostdomain=webhostdomain($reseller_id);
         $template_file = (ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh backup $gsfolder \"$shortens\" \"$webhostdomain\" \"$ftpbackup\"")===false) ? "Error: ".$ssh_reply: $template_file = $gsprache->backup . '  ' . $sprache->create;
-    } else if ($ui->w('action',3,'post')=='md'){
+    } else if ($ui->w('action',3,'post') == 'md'){
         $template_file = "userpanel_gserver_backup_md.tpl";
-    } else if ($ui->w('action',3,'post')=='md2') {
+    } else if ($ui->w('action',3,'post') == 'md2') {
         $query = $sql->prepare("UPDATE `userdata` SET `ftpbackup`=AES_ENCRYPT(?,?) WHERE `id`=? LIMIT 1");
         $query->execute(array($ui->url('ftpbackup','post'),$aeskey,$user_id));
         $template_file = $spracheResponse->table_add;
-    } else if ($ui->w('action',3,'post')=='rb'){
+    } else if ($ui->w('action',3,'post') == 'rb'){
         $shortens = array();
         $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
         $query->execute(array($id));
@@ -95,7 +95,7 @@ if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id
             $shortens[]=$row['shorten'].'-3';
         }
         $template_file = "userpanel_gserver_backup_rb.tpl";
-    } else if ($ui->w('action',3,'post')=='rb2' and $ui->gamestring('template','post')){
+    } else if ($ui->w('action',3,'post') == 'rb2' and $ui->gamestring('template','post')){
         include(EASYWIDIR . '/stuff/ssh_exec.php');
         $rdata=serverdata('root',$rootid,$aeskey);
         $sship=$rdata['ip'];

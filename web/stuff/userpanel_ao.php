@@ -34,7 +34,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !$pa['useraddons'])) {
+if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['useraddons'])) {
 	header('Location: userpanel.php');
 	die('No acces');
 }
@@ -50,7 +50,7 @@ if (isset($admin_id)) {
 } else {
 	$logsubuser = 0;
 }
-if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) {
+if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id=$admin_id;
 }
 if (isset($admin_id)) {
@@ -60,7 +60,7 @@ if (isset($admin_id)) {
 } else {
 	$logsubuser = 0;
 }
-if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smallletters('action',2,'get'),array('ad','dl')) and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smallletters('action',2,'get'), array('ad','dl')) and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     include(EASYWIDIR . '/stuff/ssh_exec.php');
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $gameserverid=$ui->id('id',19,'get');
@@ -81,7 +81,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
         if ($servertemplate==1) {
             $shorten=$row['shorten'];
         } else {
-            $shorten=$row['shorten']."-".$servertemplate;
+            $shorten=$row['shorten'] . '-' . $servertemplate;
         }
         $customer=$row['cname'];
         $newlayout=$row['newlayout'];
@@ -100,17 +100,17 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
         $sshport=$rdata['port'];
         $sshuser=$rdata['user'];
         $sshpass=$rdata['pass'];
-        if ($newlayout=='Y') {
+        if ($newlayout == 'Y') {
             $customer=$customer . '-' . $gameserverid;
         }
         if ($protected=="N") {
-            $serverfolder=$customer.'/server/'.$serverip.'_'.$port. '/'. $shorten;
+            $serverfolder=$customer.'/server/'.$serverip . '_' . $port. '/' . $shorten;
         } else {
-            $serverfolder=$customer . '/pserver/' . $serverip.'_'.$port. '/'. $shorten;
+            $serverfolder=$customer . '/pserver/' . $serverip . '_' . $port. '/' . $shorten;
             $ftppass=$ppassword;
             $customer=$customer."-p";
         }
-        if ($ui->st('action','get')=='ad' and ($protected=="N" or ($protected=="Y" and $paddon=="Y"))) {
+        if ($ui->st('action','get') == 'ad' and ($protected=="N" or ($protected=="Y" and $paddon=="Y"))) {
             if(ssh2_execute('gs',$rootID,"sudo -u $customer ./control.sh addaddon $type $addon \"$serverfolder\" \"$modfolder\"")!==false){
                 $query = $sql->prepare("INSERT INTO `addons_installed` (`userid`,`addonid`,`serverid`,`servertemplate`,`paddon`,`resellerid`) VALUES (?,?,?,?,?,?)");
                 $query->execute(array($user_id,$addonid,$serverid,$servertemplate,$protected,$reseller_id));
@@ -120,7 +120,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
                 $template_file = $sprache->failed;
                 $actionstatus="fail";
             }
-        } else if ($ui->st('action','get')=='dl' and $ui->id('rid',19,'get')) {
+        } else if ($ui->st('action','get') == 'dl' and $ui->id('rid',19,'get')) {
             $installedid=$ui->id('rid',19,'get');
             $cmds = array();
             $cmds[]="sudo -u $customer ./control.sh deladdon $type $addon \"$serverfolder\" \"$modfolder\" \"$folder\"";
@@ -189,7 +189,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
         if ($servertemplate>1) $currentTemplate=$servershorten . '-' . $servertemplate;
 		$protected=$row['protected'];
         $description=$row['queryName'];
-		if ($protected=='Y') {
+		if ($protected== 'Y') {
             $query2 = $sql->prepare("SELECT `id`,`menudescription`,`depending`,`type` FROM `addons` WHERE `active`='Y' AND (`shorten`=? OR `shorten`=?) AND `paddon`='Y' AND `resellerid`=? ORDER BY `shorten`,`depending`,`menudescription`");
 		} else {
             $query2 = $sql->prepare("SELECT `id`,`menudescription`,`depending`,`type` FROM `addons` WHERE `active`='Y' AND (`shorten`=? OR `shorten`=?) AND `resellerid`=? ORDER BY `shorten`,`depending`,`menudescription`");
@@ -228,7 +228,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
                 $query3 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `servertemplate`=? AND `addonid`=? AND `resellerid`=?");
                 $query3->execute(array($user_id,$serverid,$servertemplate,$depending,$reseller_id));
                 $colcount=$query3->rowcount();
-                if ($row2['type']=='map' or $depending==0 or ($depending>0 and $colcount>0)) {
+                if ($row2['type'] == 'map' or $depending==0 or ($depending>0 and $colcount>0)) {
                     $action='ad';
                     $imgName='16_add';
                     $bootstrap='icon-plus-sign';
@@ -243,9 +243,9 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
                 }
             }
             $link='userpanel.php?w=ao&amp;id='.$switchID.'&amp;adid='.$adid.'&amp;action='.$action.$delete.'&amp;r=gs';
-            if ($row2['type']=='tool') {
+            if ($row2['type'] == 'tool') {
                 $table2[]=array('adid'=>$adid,'menudescription'=>$menudescription,'addescription'=>$addescription,'installedid'=>$installedid,'img'=>$imgName,'bootstrap'=>$bootstrap,'alt'=>$imgAlt,'link'=>$link);
-            } else if ($row2['type']=='map') {
+            } else if ($row2['type'] == 'map') {
                 $table3[]=array('adid'=>$adid,'menudescription'=>$menudescription,'addescription'=>$addescription,'installedid'=>$installedid,'img'=>$imgName,'bootstrap'=>$bootstrap,'alt'=>$imgAlt,'link'=>$link);
             }
 		}

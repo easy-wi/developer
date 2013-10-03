@@ -39,7 +39,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or !isset($reseller_id) or (isset($reseller_id) and $reseller_id!=0) or (isset($admin_id) and isset($pa) and !$pa['root'])) {
+if (!isset($admin_id) or !isset($reseller_id) or (isset($reseller_id) and $reseller_id != 0) or (isset($admin_id) and isset($pa) and !$pa['root'])) {
     header('Location: login.php');
     die;
 }

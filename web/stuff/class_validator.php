@@ -289,7 +289,7 @@ class ValidateUserinput {
         if ($check and is_string($check)) {
             $awk=explode(":",preg_replace('/\s+/','',str_replace(' ', "",$check)));
             if (isset($awk[1]) and filter_var($awk[0],FILTER_VALIDATE_IP,FILTER_FLAG_IPV4) and preg_match("/^(0|([1-9]\d{0,3}|[1-5]\d{4}|[6][0-5][0-5]([0-2]\d|[3][0-5])))$/",$awk[1])) {
-                return $awk[0].':'.$awk[1];
+                return $awk[0] . ':' . $awk[1];
             }
         } else if ($check) {
             return $this->loop($check,'ipport',$type);
@@ -298,7 +298,7 @@ class ValidateUserinput {
     function mapname ($value,$type,$object=false) {
         $check=$this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
-            $replaced=str_replace(array(" ",".bsp"),array("",""),$check);
+            $replaced=str_replace(array(" ",".bsp"), array("",""),$check);
             if (preg_match("/^[\w\-\.\_ \/]+$/",$replaced)) {
                 return $replaced;
             }

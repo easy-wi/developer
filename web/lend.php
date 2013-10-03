@@ -60,21 +60,21 @@ if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post') and !isse
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $pwd=$row['pwd'];
         $salt=$row['salt'];
-        if ($row['active']=='Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) $resellerIDs[]=$row['resellerID'];
+        if ($row['active'] == 'Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) $resellerIDs[]=$row['resellerID'];
         if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd) {
             $reseller_id=$resellerIDs[0];
-            $validacces= true;
+            $validacces = true;
         }
     }
 } else {
 	$reseller_id = 0;
-	$validacces= true;
+	$validacces = true;
 }
 if ($validacces==false) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: Access data not valid');
 }
-if ($ui->escaped('email','post')!='') {
+if ($ui->escaped('email','post') != '') {
 	$fullday=date('Y-m-d H:i:s',strtotime("+1 day"));
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
     $query->execute(array($loguserip));
@@ -85,7 +85,7 @@ $sprache = getlanguagefile('lendserver',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $vosprache = getlanguagefile('voice',$user_language,$reseller_id);
 $licenceDetails=serverAmount($reseller_id);
-if (is_numeric($licenceDetails['left']) and (0>$licenceDetails['left'] or 0>$licenceDetails['lG'] or 0>$licenceDetails['lVo'] or $licenceDetails['t']=='l')) {
+if (is_numeric($licenceDetails['left']) and (0>$licenceDetails['left'] or 0>$licenceDetails['lG'] or 0>$licenceDetails['lVo'] or $licenceDetails['t'] == 'l')) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: '.$gsprache->licence);
 }
@@ -97,11 +97,11 @@ $query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpu
 $query->execute(array($aeskey,$reseller_id));
 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 	$active=$row['active'];
-    $activeGS=($row['activeGS']=='B' or ($row['activeGS']!='N' and (isset($admin_id) or ($row['activeGS']!='N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeGS']=='R' and isset($user_id)) or ($row['activeGS']=='A' and !isset($user_id))) ? 'Y' : 'N';
-    $activeVS=($row['activeVS']=='B' or ($row['activeVS']!='N' and (isset($admin_id) or ($row['activeVS']!='N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeVS']=='R' and isset($user_id)) or ($row['activeVS']=='A' and !isset($user_id))) ? 'Y' : 'N';
-    $ftpupload=($row['ftpupload']=='Y' or ($row['ftpupload']!='N' and (isset($admin_id) or ($row['ftpupload']!='N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['ftpupload']=='R' and isset($user_id)) or ($row['ftpupload']=='A' and !isset($user_id))) ? 'Y' : 'N';
+    $activeGS=($row['activeGS'] == 'B' or ($row['activeGS'] != 'N' and (isset($admin_id) or ($row['activeGS'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeGS'] == 'R' and isset($user_id)) or ($row['activeGS'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
+    $activeVS=($row['activeVS'] == 'B' or ($row['activeVS'] != 'N' and (isset($admin_id) or ($row['activeVS'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeVS'] == 'R' and isset($user_id)) or ($row['activeVS'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
+    $ftpupload=($row['ftpupload'] == 'Y' or ($row['ftpupload'] != 'N' and (isset($admin_id) or ($row['ftpupload'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['ftpupload'] == 'R' and isset($user_id)) or ($row['ftpupload'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
     $ftpuploadpath=$row['decyptedftpuploadpath'];
-    if (($ui->username('shorten', 50, 'get') == 'api') or (in_array($row['activeGS'],array('B','R')) and (isset($user_id) or isset($admin_id)))) {
+    if (($ui->username('shorten', 50, 'get') == 'api') or (in_array($row['activeGS'], array('B','R')) and (isset($user_id) or isset($admin_id)))) {
         $mintime=(int)$row['mintimeRegistered'];
         $time=(int)$row['mintimeRegistered'];
         $maxtime=(int)$row['maxtimeRegistered'];
@@ -120,7 +120,7 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $player=(int)$row['maxplayer'];
         $playersteps=(int)$row['playersteps'];
     }
-    if (($ui->username('shorten', 50, 'get') == 'api') or (in_array($row['activeVS'],array('B','R')) and (isset($user_id) or isset($admin_id)))) {
+    if (($ui->username('shorten', 50, 'get') == 'api') or (in_array($row['activeVS'], array('B','R')) and (isset($user_id) or isset($admin_id)))) {
         $vomintime=(int)$row['vomintimeRegistered'];
         $votime=(int)$row['vomintimeRegistered'];
         $vomaxtime=(int)$row['vomaxtimeRegistered'];
@@ -199,8 +199,8 @@ $vocount=$query->fetchColumn();
 $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `lendserver`='Y' AND `resellerid`=?");
 $query->execute(array($reseller_id));
 $gscount=$query->fetchColumn();
-if ($activeGS=='Y' and ($w=='gs' or $d=='gs' or $ui->st('w','post')=='gs' or (isset($page_name) and $page_name==strtolower(str_replace(" ",'-',$gsprache->gameserver))))) $servertype='g';
-else if ($activeVS=='Y' and ($w=='vo' or $d=='vo' or $ui->st('w','post')=='vo' or (isset($page_name) and $page_name==strtolower(str_replace(" ",'-',$gsprache->voiceserver))))) $servertype='v';
+if ($activeGS== 'Y' and ($w == 'gs' or $d== 'gs' or $ui->st('w','post') == 'gs' or (isset($page_name) and $page_name==strtolower(str_replace(" ",'-',$gsprache->gameserver))))) $servertype='g';
+else if ($activeVS== 'Y' and ($w == 'vo' or $d== 'vo' or $ui->st('w','post') == 'vo' or (isset($page_name) and $page_name==strtolower(str_replace(" ",'-',$gsprache->voiceserver))))) $servertype='v';
 $volallowed=($vocount>0) ? true : false;
 $gslallowed=($gscount>0) ? true : false;
 if(!isset($servertype) and !isset($page_include) and (!$ui->username('shorten', 50, 'get') or ($ui->username('shorten', 50, 'get') == 'api') and !$ui->st('w','post'))) {
@@ -219,15 +219,15 @@ if(isset($servertype)) {
         $timeleft=round($lendtime-(strtotime("now")-strtotime($row['started']))/60);
         if ($timeleft<=0) {
             $query2->execute(array($row['id'],$reseller_id));
-            if ($servertype=='g') {
+            if ($servertype == 'g') {
                 unset($_SESSION['lend']['gs']);
                 include(EASYWIDIR . '/stuff/ssh_exec.php');
                 $query1->execute(array($serverid,$reseller_id));
                 foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
                     $cmds=gsrestart($row1['switchID'],'so',$aeskey,$reseller_id);
-                    ssh2_execute('gs',$row1['rootID'],$cmds);
+                    ssh2_execute('gs', $row1['rootID'],$cmds);
                 }
-            } else if ($servertype=='v') {
+            } else if ($servertype == 'v') {
                 unset($_SESSION['lend']['vs']);
                 include(EASYWIDIR . '/stuff/class_voice.php');
                 $query3->execute(array($aeskey,$serverid,$reseller_id));
@@ -236,9 +236,9 @@ if(isset($servertype)) {
                     $querypassword=$row2['decryptedquerypassword'];
                     $addedby=$row2['addedby'];
                     $localserverid=$row2['localserverid'];
-                    if ($addedby=='2') {
+                    if ($addedby == '2') {
                         $queryip=$row2['ssh2ip'];
-                    } else if ($addedby=='1') {
+                    } else if ($addedby == '1') {
                         $query4->execute(array($row2['rootid'],$reseller_id));
                         foreach ($query4->fetchall(PDO::FETCH_ASSOC) as $row3) {
                             $queryip=$row3['ip'];
@@ -256,9 +256,9 @@ if(isset($servertype)) {
             $rcon=$row['rcon'];
             $password=$row['password'];
             $slots=$row['slots'];
-            if ($servertype=='g') {
-                if (!$ui->id('xml',1,'post') and (!isset($_SESSION['lend']['gs']) or $_SESSION['lend']['gs']!=$serverid)) $lendIPBlock= true;
-                $gsstillrunning= true;
+            if ($servertype == 'g') {
+                if (!$ui->id('xml',1,'post') and (!isset($_SESSION['lend']['gs']) or $_SESSION['lend']['gs'] != $serverid)) $lendIPBlock = true;
+                $gsstillrunning = true;
                 $description = '';
                 $serverip = '';
                 $port = '';
@@ -283,15 +283,15 @@ if(isset($servertype)) {
 	<timeleft>$timeleft</timeleft>
 </startserver>
 XML;
-            } else if ($servertype=='v') {
-                if (!$ui->id('xml',1,'post') and (!isset($_SESSION['lend']['vs']) or $_SESSION['lend']['vs']!=$serverid)) {
-                    $lendIPBlock= true;
+            } else if ($servertype == 'v') {
+                if (!$ui->id('xml',1,'post') and (!isset($_SESSION['lend']['vs']) or $_SESSION['lend']['vs'] != $serverid)) {
+                    $lendIPBlock = true;
                 }
-                $vostillrunning= true;
+                $vostillrunning = true;
                 $query2 = $sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
                 $query2->execute(array($serverid,$reseller_id));
                 foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                    $server=($row2['usedns']=='N' or $row2['dns']==null or $row2['dns']=='') ? $row2['ip'].':'.$row2['port'] : $row2['dns'];
+                    $server=($row2['usedns'] == 'N' or $row2['dns']==null or $row2['dns'] == '') ? $row2['ip'] . ':' . $row2['port'] : $row2['dns'];
                     $serverip=$row2['ip'];
                     $port=$row2['port'];
                 }
@@ -358,7 +358,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
         $query2->execute(array($row['id']));
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
             $installedShorten[$row2['shorten']]=$row2['description'];
-            if ($row2['slots']!=null) {
+            if ($row2['slots'] != null) {
                 $runningGame=$row2['shorten'];
                 $slots=$row2['slots'];
                 $timeleft=round($row2['lendtime']-(strtotime("now")-strtotime($row2['started']))/60);
@@ -374,7 +374,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
         $timeleft = 0;
         $slots=$row['availableSlots'];
         $free='16_ok.png';
-        if ($row['slots']!=null) {
+        if ($row['slots'] != null) {
             $timeleft=round($row['lendtime']-(strtotime("now")-strtotime($row['started']))/60);
             if ($timeleft<0) $timeleft = 0;
             $free='16_bad.png';
@@ -426,7 +426,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
     } else {
         $template_file = 'page_lend_list.tpl';
     }
-} else if ($gsstillrunning==false and $active=='Y' and $servertype=='g' and !$ui->escaped('ipblocked','post')) {
+} else if ($gsstillrunning==false and $active == 'Y' and $servertype == 'g' and !$ui->escaped('ipblocked','post')) {
 	$query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `lendserver`='Y' AND `resellerid`=?");
     $query2 = $sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? ORDER BY t.`shorten`");
     $query->execute(array($reseller_id));
@@ -509,7 +509,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 		$amount=$value-$gsused[$key];
 		$switchcount[$shortenlist][$shorten];
 		if ($amount>0) {
-			$serveravailable= true;
+			$serveravailable = true;
 			$gameselect[$key]=$description;
             $text=$sprache->available;
 		} else {
@@ -560,7 +560,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 			$fail = 1;
 		}
 		if ($fail==0) {
-			if ($ftpupload=='Y' and isurl($postedftpuploadpath) and $postedftpuploadpath!='ftp://username:password@1.1.1.1/demos') {
+			if ($ftpupload== 'Y' and isurl($postedftpuploadpath) and $postedftpuploadpath != 'ftp://username:password@1.1.1.1/demos') {
 				$split=preg_split('/\//', $postedftpuploadpath, -1, PREG_SPLIT_NO_EMPTY);
 				$split2=preg_split('/@/', $split[1], -1, PREG_SPLIT_NO_EMPTY);
 				if (isset($split2[1])) {
@@ -601,7 +601,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 					foreach ($switchcount as $key=>$arrays) {
 						if (isset($switchcount[$key][$game]['freeids']) and count($switchcount[$key][$game]['freeids'])>0) {
 							foreach ($switchcount as $leftkey=>$leftarrays) {
-								if ($leftkey!=$key) {
+								if ($leftkey != $key) {
 									foreach ($leftarrays as $gametype => $values) {
 										if (isset($leftservers[$gametype])) {
 											$leftservers[$key][$gametype]=$leftservers[$gametype]+($values['exist']-$values['used']);
@@ -751,7 +751,7 @@ XML;
 		}
 	}
 	# Voiceserver
-} else if ($vostillrunning==false and $active=='Y' and $servertype=='v' and !$ui->escaped('ipblocked','post')) {
+} else if ($vostillrunning==false and $active == 'Y' and $servertype == 'v' and !$ui->escaped('ipblocked','post')) {
 	$serveravailable = false;
 	$freevoice=$vocount;
 	$password=passwordgenerate(10);
@@ -768,7 +768,7 @@ XML;
 			$slots = 0;
 			$usedvoice = 0;
 			foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-				$lendable= true;
+				$lendable = true;
 				$select3=$sql->prepare("SELECT `id`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='v' AND `resellerid`=? LIMIT 1");
 				$select3->execute(array($row2['id'],$reseller_id));
 				foreach ($select3->fetchall(PDO::FETCH_ASSOC) as $row3) {
@@ -797,8 +797,8 @@ XML;
 		}
 		asort($masterservers);
 		$bestmaster=key($masterservers);
-		if ($masterservers[$bestmaster]!='100') {
-			$serveravailable= true;
+		if ($masterservers[$bestmaster] != '100') {
+			$serveravailable = true;
 			$counmaster=count($mastervoiceids[$bestmaster]);
 			$arrayid=mt_rand(0,$counmaster-1);
 			$tousevoiceid=$mastervoiceids[$bestmaster][$arrayid];
@@ -844,7 +844,7 @@ XML;
 					$button_url=$vrow['defaulthostbutton_url'];
 					$button_gfx=$vrow['defaulthostbutton_gfx_url'];
 					$mnotified=$vrow['notified'];
-					if ($addedby=='2') {
+					if ($addedby == '2') {
 						$serverdir=$vrow['serverdir'];
 						$publickey=$vrow['publickey'];
 						$queryip=$vrow['ssh2ip'];
@@ -853,7 +853,7 @@ XML;
 						$ssh2password=$vrow['decryptedssh2password'];
 						$keyname=$vrow['keyname'];
 						$bitversion=$vrow['bitversion'];
-					} else if ($addedby=='1') {
+					} else if ($addedby == '1') {
 						$vselect2=$sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 						$vselect2->execute(array($vrow['rootid'],$reseller_id));
 						foreach ($vselect2->fetchall(PDO::FETCH_ASSOC) as $vrow2) {
@@ -875,8 +875,8 @@ XML;
 							$max_download_total_bandwidth=$vrow3['max_download_total_bandwidth'];
 							$max_upload_total_bandwidth=$vrow3['max_upload_total_bandwidth'];
 							$volocalserverid=$vrow3['localserverid'];
-							if ($usedns=='N' or $vodns==null or $vodns=='') {
-								$server=$voip.':'.$voport;
+							if ($usedns == 'N' or $vodns==null or $vodns == '') {
+								$server=$voip . ':' . $voport;
 							} else {
 								$server=$vodns;
 							}
@@ -990,8 +990,8 @@ XML;
             echo 'Module deactivated';
         }
 	}
-} else if ($active=='N' and isset($page_include))  {
+} else if ($active == 'N' and isset($page_include))  {
 	$template_file = 'Module deactivated';
-} else if ($active=='N')  {
+} else if ($active == 'N')  {
 	echo 'Module deactivated';
 }

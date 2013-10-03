@@ -43,7 +43,7 @@ if (isset($_SERVER['QUERY_STRING'])) {
         die();
     }
 }
-$ui = new ValidateUserinput($_GET, $_POST, $_SERVER,array(), $_ENV);
+$ui = new ValidateUserinput($_GET, $_POST, $_SERVER, array(), $_ENV);
 unset($_GET, $_POST, $_SERVER, $_ENV);
 include(EASYWIDIR . '/stuff/config.php');
 $ewCfg['captcha'] = $captcha;
@@ -60,7 +60,7 @@ if (isset($debug) and $debug==1) {
 }
 try {
     $dbConnect['connect']="${dbConnect['type']}:host=${dbConnect['host']};dbname=${dbConnect['db']}";
-    $sql = ($dbConnect['type'] == 'mysql') ? new PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd'],array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8")) : new PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd']);
+    $sql = ($dbConnect['type'] == 'mysql') ? new PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd'], array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8")) : new PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd']);
     if ($dbConnect['debug'] == 1) {
         $sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
@@ -132,7 +132,7 @@ if (isset($reseller_id)) {
     } else {
         $check_split = preg_split("/\//", $ui->escaped('SCRIPT_NAME','server'),-1,PREG_SPLIT_NO_EMPTY);
         $which_file = $check_split[count($check_split)-1];
-        if ($which_file=='userpanel.php') {
+        if ($which_file == 'userpanel.php') {
             $lookupid = $reseller_id;
         } else {
             $lookupid = ($reseller_id == $admin_id) ? 0 : $reseller_id;
@@ -180,9 +180,9 @@ if ($loguserip!='localhost') {
         }
         $ewInstallPath = EASYWIDIR;
         $elements=(!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI','server'), $ewInstallPath)===false) ? preg_split('/\//', $ui->escaped('REQUEST_URI','server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI','server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
-        if (isset($seo) and $seo=='Y' and isset($elements[0])) {
+        if (isset($seo) and $seo== 'Y' and isset($elements[0])) {
             $page_detect_language = $elements[0];
-            if (substr($ui->escaped('REQUEST_URI','server'),-1)!='/' and !$ui->w('site',50, 'get')) {
+            if (substr($ui->escaped('REQUEST_URI','server'),-1) != '/' and !$ui->w('site',50, 'get')) {
                 $throw404 = true;
             }
             if (!preg_match('/^[a-z]{2}+$/', $elements[0]) and !$ui->w('site',50, 'get')) {
@@ -206,7 +206,7 @@ if ($loguserip!='localhost') {
     } else if (!isset($user_language) and isset($admin_id)) {
         $user_language=language($admin_id);
     }
-    if (isset($page_detect_language) and preg_match('/^[a-z]{2}+$/', $page_detect_language) and ((isset($_SESSION['language']) and $page_detect_language!=$_SESSION['language']) or !isset($_SESSION['language']))){
+    if (isset($page_detect_language) and preg_match('/^[a-z]{2}+$/', $page_detect_language) and ((isset($_SESSION['language']) and $page_detect_language != $_SESSION['language']) or !isset($_SESSION['language']))){
         $language_changed = true;
         $user_language = $page_detect_language;
     }
@@ -251,8 +251,7 @@ if (isset($logininclude) and $logininclude==true) {
     }
 }
 if($ui->st('r', 'get')) {
-    $pagename = $ui->escaped('SCRIPT_NAME','server');
-    $header = '<meta http-equiv="refresh" content="3; URL='.$pagename.'?w = '.$r.'">';
+    $header = '<meta http-equiv="refresh" content="3; URL=' . $ui->escaped('SCRIPT_NAME','server') . '?w=' . $ui->st('r', 'get') . '">';
     if (!isset($user_language)) {
         $user_language = $rSA['language'];
     }

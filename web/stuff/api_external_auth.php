@@ -60,7 +60,7 @@ if ($reseller_id==0) {
         $logsubuser = 0;
     }
     $logreseller = 0;
-    if ($admin_id!=$reseller_id) {
+    if ($admin_id != $reseller_id) {
         $lookupID=$reseller_id;
     } else {
         $lookupID=$admin_id;
@@ -68,7 +68,7 @@ if ($reseller_id==0) {
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->smallletters('action',2,'post')=='md'){
+} else if ($ui->smallletters('action',2,'post') == 'md'){
     $query = $sql->prepare("SELECT COUNT(`active`) AS `amount` FROM `api_external_auth` LIMIT 1");
     $query->execute();
     $amount=$query->fetchColumn();

@@ -47,7 +47,7 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 if (isset($argv)) {
     $args = array();
     foreach ($argv as $a) {
-        if ($a=='deamon') $deamon= true;
+        if ($a == 'deamon') $deamon = true;
         else if (is_numeric($a)) $sleep=$a;
         else {
             $e=explode(':',$a);
@@ -135,7 +135,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             unset($this->jobsDone,$this->startTime,$this->newLine,$this->jobCount,$this->spinnerCount,$this->spinners,$this->spinner,$this->oneJobPercent);
         }
     }
-    $runJobs= true;
+    $runJobs = true;
     if (isset($ip)) {
         $newLine="\r\n";
     } else {
@@ -200,8 +200,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
             $sql=null;
             $theOutput=null;
             unset($sql,$theOutput);
-            if ($dbConnect['type']=='mysql') {
-                $sql=new PDO($dbConnect['connect'],$dbConnect['user'],$dbConnect['pwd'],array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8") );
+            if ($dbConnect['type'] == 'mysql') {
+                $sql=new PDO($dbConnect['connect'],$dbConnect['user'],$dbConnect['pwd'], array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8") );
             } else {
                 $sql=new PDO($dbConnect['connect'],$dbConnect['user'],$dbConnect['pwd']);
             }

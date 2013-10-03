@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: queries.php.
  * Author: Ulrich Block
@@ -35,23 +36,23 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 function GTASAMP ($ip,$port) {
-	$socket=@fsockopen("udp://".$ip,(int)$port,$errnum,$errstr,5);
-	if ($errnum==111) {
+	$socket = @fsockopen('udp://' . $ip, (int) $port, $errnum, $errstr, 5);
+	if ($errnum == 111) {
         return $errstr;
 	} else if ($socket==false) {
 		usleep(250000);
-		$socket=@fsockopen("udp://".$ip,(int)$port,$errnum,$errstr,5);
+        $socket = @fsockopen('udp://' . $ip, (int) $port, $errnum, $errstr, 5);
 	}
-    if($socket===false) {
+    if($socket === false) {
         return $errstr;
     } else {
-		$ex=explode('.',$ip);
-		$packet='SAMP'.chr($ex[0]).chr($ex[1]).chr($ex[2]).chr($ex[3]).chr($port & 0xFF).chr($port >> 8 & 0xFF).'i';
-		if (@fwrite($socket,$packet)) {
-            @fread($socket,11);
-            $return=array('password'=>ord(fread($socket,1)),'players'=>ord(fread($socket,2)),'slots'=>ord(fread($socket,2)),'hostname'=>htmlentities(fread($socket,ord(fread($socket,4)))),'mode'=>htmlentities(fread($socket,ord(fread($socket,4)))),'map'=>htmlentities(fread($socket,ord(fread($socket,4)))));
+		$ex = explode('.', $ip);
+		$packet = 'SAMP' . chr($ex[0]) . chr($ex[1]) . chr($ex[2]) . chr($ex[3]) . chr($port & 0xFF) . chr($port >> 8 & 0xFF) . 'i';
+		if (@fwrite($socket, $packet)) {
+            @fread($socket, 11);
+            $return = array('password'=>ord(fread($socket,1)), 'players'=>ord(fread($socket,2)), 'slots'=>ord(fread($socket,2)), 'hostname'=>htmlentities(fread($socket,ord(fread($socket,4)))), 'mode'=>htmlentities(fread($socket,ord(fread($socket,4)))), 'map'=>htmlentities(fread($socket,ord(fread($socket,4)))));
         } else {
-            $return='Error: can not write to the socket';
+            $return = 'Error: can not write to the socket';
         }
 	}
 	if (is_resource($socket)) {
@@ -67,7 +68,7 @@ function MineCraft ($ip,$port) {
 		usleep(250000);
 		$socket=@fsockopen($ip,(int)$port,$errnum,$errstr,5);
 	}
-	if($socket===false) {
+	if($socket === false) {
 		return $errstr;
 	} else {
 		$string="\xFE";
@@ -75,16 +76,16 @@ function MineCraft ($ip,$port) {
 		if (@fwrite($socket,$string,$length)) {
             $mc_reply=@fread($socket,4096);
             $mc_reply=substr($mc_reply,3);
-            $mc_reply=iconv('UTF-16BE','UTF-8',$mc_reply);
-            if($mc_reply[1]==="\xA7" and $mc_reply[2]==="\x31") {
+            $mc_reply=iconv('UTF-16BE', 'UTF-8',$mc_reply);
+            if($mc_reply[1] === "\xA7" and $mc_reply[2] === "\x31") {
                 print "New\r\n";
                 $exploded=explode("\x00",$mc_reply);
-                $return=array('hostname'=>$exploded[3],'players'=>intval($exploded[4]),'slots'=>intval($exploded[5]));
+                $return=array('hostname'=>$exploded[3], 'players'=>intval($exploded[4]), 'slots'=>intval($exploded[5]));
             } else {
                 $exploded=explode("\xA7",$mc_reply);
                 $hostname=substr($exploded[0],0,-1);
                 print "Oldname: $hostname\r\n";
-                $return=array('hostname'=>$hostname,'players'=>(int)$exploded[1],'slots'=>(int)$exploded[2]);
+                $return=array('hostname'=>$hostname, 'players'=>(int)$exploded[1], 'slots'=>(int)$exploded[2]);
             }
             if (!isset($exploded[1]) and !isset($exploded[2])) {
                 $return='Error: Can not retrieve data from MC Server';

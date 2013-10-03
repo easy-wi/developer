@@ -153,9 +153,9 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
         $query2->execute(array($user_language));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             if ($row['merge'] == 'N') {
-                $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => ($seo=='Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id='.$row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
+                $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => ($seo== 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id='.$row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
             } else {
-                $feedArray['News'][] = array('title' => $row2['title'], 'link' => ($seo=='Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id='.$row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
+                $feedArray['News'][] = array('title' => $row2['title'], 'link' => ($seo== 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id='.$row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
             }
         }
 
@@ -171,15 +171,15 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
 
             foreach ($object as $row2) {
                 $query3 = $sql->prepare("SELECT `title`,`link`,`description`,`content` FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=? AND `active`='Y' ORDER BY `pubDate` DESC LIMIT $newsAmount");
-                $query3->execute(array($row2['feedID'],$row['resellerID']));
+                $query3->execute(array($row2['feedID'], $row['resellerID']));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
 
                     if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                        $text = substr($row3['content'],0,$row['maxChars']);
+                        $text = substr($row3['content'],0, $row['maxChars']);
                     } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){
                         $text = $row3['content'];
                     } else if ($row['displayContent'] == 'N' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                        $text = substr($row3['description'],0,$row['maxChars']);
+                        $text = substr($row3['description'],0, $row['maxChars']);
                     } else {
                         $text = $row3['description'];
                     }
@@ -201,11 +201,11 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
                 if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                    $text = substr(preg_replace('/<(.*?)>/','',preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1',$row2['content'],-1),-1),0,$row['maxChars']);
+                    $text = substr(preg_replace('/<(.*?)>/','',preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1', $row2['content'],-1),-1),0, $row['maxChars']);
                 } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){
                     $text = $row2['content'];
                 } else if ($row['displayContent'] == 'N' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                    $text = substr(preg_replace('/<(.*?)>/','',preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1',$row2['description'],-1),-1),0,$row['maxChars']);
+                    $text = substr(preg_replace('/<(.*?)>/','',preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1', $row2['description'],-1),-1),0, $row['maxChars']);
                 } else {
                     $text = $row2['description'];
                 }

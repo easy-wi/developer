@@ -8,12 +8,19 @@
         </ul>
     </div>
 </div>
+<?php if (count($errors)>0){ ?>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4>Error(s)</h4>
+    <?php echo implode(', ',$errors);?>
+</div>
+<?php }?>
 <div class="row-fluid">
     <div class="span8">
         <form class="form-horizontal" action="admin.php?w=im&amp;d=md&amp;id=<?php echo $id;?>&amp;r=im" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['updates'])) echo ' error';?>">
                 <label class="control-label" for="inputUpdates">Autoupdate</label>
                 <div class="controls">
                     <select class="span12" id="inputUpdates" name="updates">
@@ -24,7 +31,7 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['steamgame'])) echo ' error';?>">
                 <label class="control-label" for="inputSteamGame"><?php echo $sprache->steam;?></label>
                 <div class="controls">
                     <select class="span12" id="inputSteamGame" name="steamgame">
@@ -38,7 +45,7 @@
                 <label class="control-label" for="inputSteamAppID">Steam appID</label>
                 <div class="controls"><input class="span12" id="inputSteamAppID" type="text" name="appID" value="<?php echo $appID;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['gamemod'])) echo ' error';?>">
                 <label class="control-label" for="inputMods"><?php echo $sprache->mods;?></label>
                 <div class="controls">
                     <select class="span12" id="inputMods" name="gamemod" onchange="textdrop('mods');">
@@ -67,7 +74,7 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['shorten'])) echo ' error';?>">
                 <label class="control-label" for="inputShorten"><?php echo $sprache->abkuerz;?></label>
                 <div class="controls"><input class="span12" id="inputShorten" type="text" name="shorten" value="<?php echo $shorten;?>"></div>
             </div>
@@ -83,12 +90,12 @@
                 <label class="control-label" for="inputDesc"><?php echo $sprache->description;?></label>
                 <div class="controls"><input class="span12" id="inputDesc" type="text" name="description" value="<?php echo $description;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['gamebinary'])) echo ' error';?>">
                 <label class="control-label" for="inputBin"><?php echo $sprache->bin;?></label>
                 <div class="controls"><input class="span12" id="inputBin" type="text" name="gamebinary" value="<?php echo $gamebinary;?>"></div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputBinDir"><?php echo $sprache->bin_folder;?>Binary Dir</label>
+                <label class="control-label" for="inputBinDir"><?php echo $sprache->bin_folder;?></label>
                 <div class="controls"><input class="span12" id="inputBinDir" type="text" name="binarydir" value="<?php echo $binarydir;?>"></div>
             </div>
             <div class="control-group">
@@ -143,7 +150,7 @@
                 <label class="control-label" for="inputPort5"><?php echo $sprache->port;?> 5</label>
                 <div class="controls"><input class="span12" id="inputPort5" type="text" name="portFive" value="<?php echo $portFive;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['cmd'])) echo ' error';?>">
                 <label class="control-label" for="inputCmd"><?php echo $sprache->start;?></label>
                 <div class="controls"><textarea class="span12" id="inputCmd" rows="5" name="cmd"><?php echo $cmd;?></textarea></div>
             </div>

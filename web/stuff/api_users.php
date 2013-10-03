@@ -83,7 +83,7 @@ if (array_value_exists('action','add',$data)) {
             if ($row['amount']>0) {
                 $username=$row['cname'];
                 $email=$row['mail'];
-                $success['false'][]='user with this e-mail already exists: '.$username;
+                $success['false'][] = 'user with this e-mail already exists: '.$username;
             }
         }
         if (!isset($success['false']) and !in_array($externalID,$bad)) {
@@ -94,7 +94,7 @@ if (array_value_exists('action','add',$data)) {
                 if ($row['amount']>0) {
                     $username=$row['cname'];
                     $email=$row['mail'];
-                    $success['false'][]='user with external ID exists: '.$username;
+                    $success['false'][] = 'user with external ID exists: '.$username;
                 }
             }
         }
@@ -156,9 +156,9 @@ if (array_value_exists('action','add',$data)) {
         if (!isset($success['false']) and count($userGroupIDs)>0) {
             $query = $sql->prepare("INSERT INTO `userdata` (`creationTime`,`updateTime`,`accounttype`,`active`,`cname`,`vname`,`name`,`mail`,`salt`,`phone`,`handy`,`fax`,`city`,`cityn`,`street`,`streetn`,`salutation`,`birthday`,`country`,`fdlpath`,`mail_backup`,`mail_gsupdate`,`mail_securitybreach`,`mail_serverdown`,`mail_ticket`,`mail_vserver`,`externalID`,`sourceSystemID`,`resellerid`) VALUES (NOW(),NOW(),'u',?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             $query->execute(array($active,$tmpName,$vname,$name,$email,$salt,$phone,$handy,$fax,$city,$cityn,$street,$streetn,$salutation,$birthday,$country,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$externalID,json_encode(array('A'=>$apiIP)),$resellerID));
-            $insert= true;
+            $insert = true;
         } else if (!isset($success['false'])) {
-            $success['false'][]='No usergroup available';
+            $success['false'][] = 'No usergroup available';
         }
         $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
         $query->execute(array($tmpName,$resellerID));
@@ -176,10 +176,10 @@ if (array_value_exists('action','add',$data)) {
             $query = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?)");
             foreach ($userGroupIDs as $groupID) $query->execute(array($localID,$groupID,$resellerID));
         } else if (!isset($success)) {
-            $success['false'][]='Could not write user to database';
+            $success['false'][] = 'Could not write user to database';
         }
     } else if (!isset($success['false'])) {
-        $success['false'][]='Can not identify user or bad email';
+        $success['false'][] = 'Can not identify user or bad email';
     }
 } else if (array_value_exists('action','mod',$data)) {
     $identifyBy=$data['identify_by'];
@@ -312,7 +312,7 @@ if (array_value_exists('action','add',$data)) {
             }
             $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW() $extraUpdate WHERE `id`=? AND `resellerid`=?");
             $query->execute(array($localID,$resellerID));
-            if (!in_array($active,$bad) and $active!=$oldactive) {
+            if (!in_array($active,$bad) and $active != $oldactive) {
                 $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                 $update->execute(array($localID,$resellerID));
                 $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'md',?)");
@@ -320,10 +320,10 @@ if (array_value_exists('action','add',$data)) {
                 updateJobs($localID,$resellerID);
             }
         } else {
-            $success['false'][]='No user can be found to edit';
+            $success['false'][] = 'No user can be found to edit';
         }
     } else {
-        $success['false'][]='No data for this method';
+        $success['false'][] = 'No data for this method';
     }
 } else if (array_value_exists('action','del',$data)) {
     $email=$data['email'];
@@ -350,10 +350,10 @@ if (array_value_exists('action','add',$data)) {
             $delete=$sql->prepare("DELETE FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
             $delete->execute(array($data[$data['identify_by']],$resellerID));
         } else {
-            $success['false'][]='No user can be found to delete';
+            $success['false'][] = 'No user can be found to delete';
         }
     } else {
-        $success['false'][]='No data for this method';
+        $success['false'][] = 'No data for this method';
     }
 } else if (array_value_exists('action','ls',$data) and isset($data['identify_by']) and isset($data[$data['identify_by']]) and !in_array($data[$data['identify_by']],$bad)) {
     $userArray=array('userdetails'=>array(),'gserver'=>array(),'voice'=>array());
@@ -372,7 +372,7 @@ if (array_value_exists('action','add',$data)) {
             $userArray['userdetails']=$row;
         }
         if($query->rowCount()>0) {
-            $list= true;
+            $list = true;
             $tempArray = array();
             $query = $sql->prepare("SELECT `id`,`active`,`queryUpdatetime`,`queryPassword`,`queryMap`,`queryMaxplayers`,`queryNumplayers`,`queryName`,`port5`,`serverid`,`pallowed`,`eacallowed`,`protected`,`brandname`,`tvenable`,`war`,`psince`,`serverip`,`port`,`port2`,`port3`,`port4`,`minram`,`maxram`,`slots`,`taskset`,`cores`,`lendserver`,`externalID`,`jobPending` FROM `gsswitch` WHERE `userid`=? AND `resellerid`=? ORDER BY `serverip`,`port`");
             $query2 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
@@ -401,24 +401,24 @@ if (array_value_exists('action','add',$data)) {
                 $tempArray[]=$row;
             }
             $userArray['mysql']=$tempArray;
-            if ($apiType=='xml') {
+            if ($apiType == 'xml') {
                 header("Content-type: text/xml; charset=UTF-8");
                 echo array2xml($userArray,new SimpleXMLElement('<user/>'));
-            } else if ($apiType=='json') {
+            } else if ($apiType == 'json') {
                 header("Content-type: application/json; charset=UTF-8");
                 echo json_encode($userArray);
             }
         } else {
-            $success['false'][]='Can not find a user with this data!';
+            $success['false'][] = 'Can not find a user with this data!';
         }
     } else {
-        $success['false'][]='No data for this method';
+        $success['false'][] = 'No data for this method';
     }
 } else {
-    $success['false'][]='No action defined';
+    $success['false'][] = 'No action defined';
 }
 
-if ($apiType=='xml' and !isset($list)) {
+if ($apiType == 'xml' and !isset($list)) {
     header("Content-type: text/xml; charset=UTF-8");
     if (isset($success['false'])) {
         $errors=implode(', ',$success['false']);
@@ -461,7 +461,7 @@ if ($apiType=='xml' and !isset($list)) {
 </users>
 XML;
     print $reply;
-} else if ($apiType=='json' and !isset($list)) {
+} else if ($apiType == 'json' and !isset($list)) {
     header("Content-type: application/json; charset=UTF-8");
     echo json_encode(array('action'=>$action,'username'=>$username,'external_id'=>$externalID,'email'=>$email,'errors'=>$errors,'password'=>$password,'active'=>$active,'localid'=>$localID));
 } else if (!isset($list)) {

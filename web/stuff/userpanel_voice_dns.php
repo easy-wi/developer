@@ -51,7 +51,7 @@ if (isset($admin_id)) {
 include(EASYWIDIR . '/stuff/class_voice.php');
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if($ui->st('d','get')=='md' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['vd']))) {
+} else if($ui->st('d','get') == 'md' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['vd']))) {
     $id=$ui->id('id',19,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
@@ -67,7 +67,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $template_file = 'userpanel_404.tpl';
         }
-    } else if ($ui->smallletters('action',2,'post')=='md') {
+    } else if ($ui->smallletters('action',2,'post') == 'md') {
         $query = $sql->prepare("SELECT d.`tsdnsID`,d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -115,7 +115,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $bitversion=$row['bitversion'];
                 }
                 if (isset($publickey)) {
-                    $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,array($ip,$oldip),array($port,$oldport),array($dns,$olddns),$reseller_id,$sql);
+                    $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip,$oldip), array($port,$oldport), array($dns,$olddns),$reseller_id,$sql);
                     $query = $sql->prepare("UPDATE `voice_dns` SET `dns`=?,`ip`=?,`port`=? WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($dns,$ip,$port,$id,$reseller_id));
                 } else {
@@ -128,15 +128,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
 } else {
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='dd') {
+    if ($ui->st('o','get') == 'dd') {
         $orderby='`dns` DESC';
-    } else if ($ui->st('o','get')=='ad') {
+    } else if ($ui->st('o','get') == 'ad') {
         $orderby='`dns` ASC';
-    } else if ($ui->st('o','get')=='db') {
+    } else if ($ui->st('o','get') == 'db') {
         $orderby='`ip` DESC,`port` DESC';
-    } else if ($ui->st('o','get')=='ab') {
+    } else if ($ui->st('o','get') == 'ab') {
         $orderby='`ip` ASC,`port` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='`dnsID` DESC';
     } else {
         $orderby='`dnsID` ASC';
@@ -146,7 +146,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $query = $sql->prepare("SELECT `dnsID`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `active`='Y' AND `userID`=? AND `resellerID`=? ORDER BY $orderby");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-        if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) $table[]=array('id'=>$row['dnsID'],'dns'=>$row['dns'],'address'=>$row['ip'].':'.$row['port']);
+        if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) $table[]=array('id'=>$row['dnsID'],'dns'=>$row['dns'],'address'=>$row['ip'] . ':' . $row['port']);
     }
     $template_file = 'userpanel_voiceserver_dns_list.tpl';
 }

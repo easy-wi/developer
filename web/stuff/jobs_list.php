@@ -45,7 +45,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['jobs'])) {
 $sprache = getlanguagefile('api', $user_language, $reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->w('action',4,'post')=='dl' and !$ui->id('id', 19, 'get')) {
+} else if ($ui->w('action',4,'post') == 'dl' and !$ui->id('id', 19, 'get')) {
     $i = 0;
     if ($ui->id('id',30,'post')) {
         foreach ($ui->id('id',30,'post') as $id) {
@@ -64,7 +64,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     if ($reseller_id==0) {
         $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? LIMIT 1");
         $query->execute(array($ui->id('id', 19, 'get')));
-    } else if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+    } else if ($reseller_id != 0 and $admin_id != $reseller_id) {
         $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id', 19, 'get'), $admin_id));
     } else {
@@ -78,39 +78,39 @@ if ($ui->w('action',4,'post') and !token(true)) {
 } else {
     $table = array();
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='dn') {
+    if ($ui->st('o','get') == 'dn') {
         $orderby='`name` DESC';
-    } else if ($ui->st('o','get')=='an') {
+    } else if ($ui->st('o','get') == 'an') {
         $orderby='`name` ASC';
-    } else if ($ui->st('o','get')=='ds') {
+    } else if ($ui->st('o','get') == 'ds') {
         $orderby='`status` DESC';
-    } else if ($ui->st('o','get')=='as') {
+    } else if ($ui->st('o','get') == 'as') {
         $orderby='`status` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='`type` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='`type` ASC';
-    } else if ($ui->st('o','get')=='da') {
+    } else if ($ui->st('o','get') == 'da') {
         $orderby='`api` DESC';
-    } else if ($ui->st('o','get')=='aa') {
+    } else if ($ui->st('o','get') == 'aa') {
         $orderby='`api` ASC';
-    } else if ($ui->st('o','get')=='dc') {
+    } else if ($ui->st('o','get') == 'dc') {
         $orderby='`action` DESC';
-    } else if ($ui->st('o','get')=='ac') {
+    } else if ($ui->st('o','get') == 'ac') {
         $orderby='`action` ASC';
-    } else if ($ui->st('o','get')=='dd') {
+    } else if ($ui->st('o','get') == 'dd') {
         $orderby='`date` DESC';
-    } else if ($ui->st('o','get')=='ad') {
+    } else if ($ui->st('o','get') == 'ad') {
         $orderby='`date` ASC';
-    } else if ($ui->st('o','get')=='dn') {
+    } else if ($ui->st('o','get') == 'dn') {
         $orderby='`name` DESC';
-    } else if ($ui->st('o','get')=='an') {
+    } else if ($ui->st('o','get') == 'an') {
         $orderby='`name` ASC';
-    } else if ($ui->st('o','get')=='du') {
+    } else if ($ui->st('o','get') == 'du') {
         $orderby='`userID` DESC';
-    } else if ($ui->st('o','get')=='au') {
+    } else if ($ui->st('o','get') == 'au') {
         $orderby='`userID` ASC';
-    } else if ($ui->st('o','get')=='ai') {
+    } else if ($ui->st('o','get') == 'ai') {
         $orderby='`jobID` ASC';
     } else {
         $o='di';
@@ -130,12 +130,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
     $type=array('de'=>$gsprache->dedicated,'ds'=>'TS3 DNS','gs'=>$gsprache->gameserver,'my'=>'MYSQL','us'=>$gsprache->user,'vo'=>$gsprache->voiceserver,'vs'=>$gsprache->virtual);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($user_language=='de') {
+        if ($user_language == 'de') {
             $date=date('Y-d-m H:m:s',strtotime($row['date']));
         } else {
             $date=$row['date'];
         }
-        if ($row['api']=='A'){
+        if ($row['api'] == 'A'){
             $api=$gsprache->yes;
         } else {
             $api=$gsprache->no;
@@ -153,14 +153,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $imgName='16_check';
             $imgAlt='Done';
         }
-        if ($row['action']=='ad') $action=$gsprache->add;
-        else if ($row['action']=='dl') $action=$gsprache->del;
-        else if ($row['action']=='md') $action=$gsprache->mod;
-        else if ($row['action']=='st') $action='Stop';
-        else if ($row['action']=='re') $action='(Re)Start';
-        else if ($row['action']=='rp') $action='Remove PXE from DHCP';
-        else if ($row['action']=='ri') $action='(Re)Install';
-        else if ($row['action']=='rc') $action='Recovery Mode';
+        if ($row['action'] == 'ad') $action=$gsprache->add;
+        else if ($row['action'] == 'dl') $action=$gsprache->del;
+        else if ($row['action'] == 'md') $action=$gsprache->mod;
+        else if ($row['action'] == 'st') $action='Stop';
+        else if ($row['action'] == 're') $action='(Re)Start';
+        else if ($row['action'] == 'rp') $action='Remove PXE from DHCP';
+        else if ($row['action'] == 'ri') $action='(Re)Install';
+        else if ($row['action'] == 'rc') $action='Recovery Mode';
         else $action = '';
         $table[]=array('jobID'=>$row['jobID'],'date'=>$date,'name'=>$row['name'],'api'=>$api,'status'=>$row['status'],'img'=>$imgName,'alt'=>$imgAlt,'userID'=>$row['userID'],'type'=>$type[$row['type']],'action'=>$action);
     }
@@ -180,13 +180,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=jb&amp;o='.$o.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -201,11 +201,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=jb&amp;o='.$o.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=jb&amp;o='.$o.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=jb&amp;o='.$o.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=jb&amp;o='.$o.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

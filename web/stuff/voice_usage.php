@@ -42,27 +42,27 @@ if(!isset($admin_id) or $main!=1 or (isset($admin_id) and !$pa['voiceserver'] an
 $sprache = getlanguagefile('traffic',$user_language,$reseller_id);
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($d=='se' and $pa['voiceserverSettings']) {
-	if (isset($ui->post['text_colour_1']) and $ui->w('action',4,'post')=='md') {
+} else if ($d== 'se' and $pa['voiceserverSettings']) {
+	if (isset($ui->post['text_colour_1']) and $ui->w('action',4,'post') == 'md') {
 		$error = 0;
-		if (!validate_int($ui->post['text_colour_1'],0,255) and $ui->post['text_colour_1']!=0) $error = 1;
-		if (!validate_int($ui->post['text_colour_2'],0,255) and $ui->post['text_colour_2']!=0) $error = 1;
-		if (!validate_int($ui->post['text_colour_3'],0,255) and $ui->post['text_colour_3']!=0) $error = 1;
-		if (!validate_int($ui->post['barin_colour_1'],0,255) and $ui->post['barin_colour_1']!=0) $error = 1;
-		if (!validate_int($ui->post['barin_colour_2'],0,255) and $ui->post['barin_colour_2']!=0) $error = 1;
-		if (!validate_int($ui->post['barin_colour_3'],0,255) and $ui->post['barin_colour_3']!=0) $error = 1;
-		if (!validate_int($ui->post['barout_colour_1'],0,255) and $ui->post['barout_colour_1']!=0) $error = 1;
-		if (!validate_int($ui->post['barout_colour_2'],0,255) and $ui->post['barout_colour_2']!=0) $error = 1;
-		if (!validate_int($ui->post['barout_colour_3'],0,255) and $ui->post['barout_colour_3']!=0) $error = 1;
-		if (!validate_int($ui->post['bg_colour_1'],0,255) and $ui->post['bg_colour_1']!=0) $error = 1;
-		if (!validate_int($ui->post['bg_colour_2'],0,255) and $ui->post['bg_colour_2']!=0) $error = 1;
-		if (!validate_int($ui->post['bg_colour_3'],0,255) and $ui->post['bg_colour_3']!=0) $error = 1;
-		if (!validate_int($ui->post['border_colour_1'],0,255) and $ui->post['border_colour_1']!=0) $error = 1;
-		if (!validate_int($ui->post['border_colour_2'],0,255) and $ui->post['border_colour_2']!=0) $error = 1;
-		if (!validate_int($ui->post['border_colour_3'],0,255) and $ui->post['border_colour_3']!=0) $error = 1;
-		if (!validate_int($ui->post['line_colour_1'],0,255) and $ui->post['line_colour_1']!=0) $error = 1;
-		if (!validate_int($ui->post['line_colour_2'],0,255) and $ui->post['line_colour_2']!=0) $error = 1;
-		if (!validate_int($ui->post['line_colour_3'],0,255) and $ui->post['line_colour_3']!=0) $error = 1;
+		if (!validate_int($ui->post['text_colour_1'], 0 , 255) and $ui->post['text_colour_1'] != 0) $error = 1;
+		if (!validate_int($ui->post['text_colour_2'], 0 , 255) and $ui->post['text_colour_2'] != 0) $error = 1;
+		if (!validate_int($ui->post['text_colour_3'], 0 , 255) and $ui->post['text_colour_3'] != 0) $error = 1;
+		if (!validate_int($ui->post['barin_colour_1'], 0 , 255) and $ui->post['barin_colour_1'] != 0) $error = 1;
+		if (!validate_int($ui->post['barin_colour_2'], 0 , 255) and $ui->post['barin_colour_2'] != 0) $error = 1;
+		if (!validate_int($ui->post['barin_colour_3'], 0 , 255) and $ui->post['barin_colour_3'] != 0) $error = 1;
+		if (!validate_int($ui->post['barout_colour_1'], 0 , 255) and $ui->post['barout_colour_1'] != 0) $error = 1;
+		if (!validate_int($ui->post['barout_colour_2'], 0 , 255) and $ui->post['barout_colour_2'] != 0) $error = 1;
+		if (!validate_int($ui->post['barout_colour_3'], 0 , 255) and $ui->post['barout_colour_3'] != 0) $error = 1;
+		if (!validate_int($ui->post['bg_colour_1'], 0 , 255) and $ui->post['bg_colour_1'] != 0) $error = 1;
+		if (!validate_int($ui->post['bg_colour_2'], 0 , 255) and $ui->post['bg_colour_2'] != 0) $error = 1;
+		if (!validate_int($ui->post['bg_colour_3'], 0 , 255) and $ui->post['bg_colour_3'] != 0) $error = 1;
+		if (!validate_int($ui->post['border_colour_1'], 0 , 255) and $ui->post['border_colour_1'] != 0) $error = 1;
+		if (!validate_int($ui->post['border_colour_2'], 0 , 255) and $ui->post['border_colour_2'] != 0) $error = 1;
+		if (!validate_int($ui->post['border_colour_3'], 0 , 255) and $ui->post['border_colour_3'] != 0) $error = 1;
+		if (!validate_int($ui->post['line_colour_1'], 0 , 255) and $ui->post['line_colour_1'] != 0) $error = 1;
+		if (!validate_int($ui->post['line_colour_2'], 0 , 255) and $ui->post['line_colour_2'] != 0) $error = 1;
+		if (!validate_int($ui->post['line_colour_3'], 0 , 255) and $ui->post['line_colour_3'] != 0) $error = 1;
 		if ($error==0) {
             $query = $sql->prepare("UPDATE `voice_stats_settings` SET `text_colour_1`=?,`text_colour_2`=?,`text_colour_3`=?,`barin_colour_1`=?,`barin_colour_2`=?,`barin_colour_3`=?,`barout_colour_1`=?,`barout_colour_2`=?,`barout_colour_3`=?,`bg_colour_1`=?,`bg_colour_2`=?,`bg_colour_3`=?,`border_colour_1`=?,`border_colour_2`=?,`border_colour_3`=?,`line_colour_1`=?,`line_colour_2`=?,`line_colour_3`=? WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($ui->post['text_colour_1'],$ui->post['text_colour_2'],$ui->post['text_colour_3'],$ui->post['barin_colour_1'],$ui->post['barin_colour_2'],$ui->post['barin_colour_3'],$ui->post['barout_colour_1'],$ui->post['barout_colour_2'],$ui->post['barout_colour_3'],$ui->post['bg_colour_1'],$ui->post['bg_colour_2'],$ui->post['bg_colour_3'],$ui->post['border_colour_1'],$ui->post['border_colour_2'],$ui->post['border_colour_3'],$ui->post['line_colour_1'],$ui->post['line_colour_2'],$ui->post['line_colour_3'],$reseller_id));
@@ -98,10 +98,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
 } else if ($pa['voiceserverStats']) {
 	$display=$sprache->total;
 	$data = array();
-	if (!$ui->st('kind','post') or $ui->st('kind','post')=='al') {
+	if (!$ui->st('kind','post') or $ui->st('kind','post') == 'al') {
 		$kind='al';
 		$whichdata = '';
-	} else if (isid($ui->post['what'],30) and $ui->st('kind','post')=='us') {
+	} else if (isid($ui->post['what'],30) and $ui->st('kind','post') == 'us') {
 		$kind='us';
 		$whichdata="&amp;distro=".$ui->post['what'];
 		$extra=$sprache->user;
@@ -109,9 +109,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
 			if ($ui->post['what']==$row['id']) {
-				$data[]='<option value='.$row['id'].' selected="selected">'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
+				$data[] = '<option value='.$row['id'].' selected="selected">'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 			} else {
-				$data[]='<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
+				$data[] = '<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 			}
 		}
 		$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=? AND `resellerid`=? LIMIT 1");
@@ -125,19 +125,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$pselect=$sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
 		$pselect->execute(array($ui->post['what'],$reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			$display=$sprache->server . '  ' . $row['ip'].':'.$row['port'];
+			$display=$sprache->server . '  ' . $row['ip'] . ':' . $row['port'];
 		}
 		$pselect=$sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-            $server=$row['ip'].':'.$row['port'];
+            $server=$row['ip'] . ':' . $row['port'];
 			if ($ui->post['what']==$row['id']) {
-				$data[]='<option value='.$row['id'].' selected="selected">'.$server.'</option>';
+				$data[] = '<option value='.$row['id'].' selected="selected">'.$server.'</option>';
 			} else {
-				$data[]='<option value='.$row['id'].'>'.$server.'</option>';
+				$data[] = '<option value='.$row['id'].'>'.$server.'</option>';
 			}
 		}
-	} else if (isid($ui->post['what'],'30') and $ui->st('kind','post')=='ma') {
+	} else if (isid($ui->post['what'],'30') and $ui->st('kind','post') == 'ma') {
 		$kind='ma';
 		$whichdata="&amp;short=".$ui->post['what'];
 		$pselect=$sql->prepare("SELECT `ssh2ip` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -149,9 +149,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
 			if ($ui->post['what']==$row['id']) {
-				$data[]='<option value='.$row['id'].' selected="selected">'.$row['ssh2ip'].'</option>';
+				$data[] = '<option value='.$row['id'].' selected="selected">'.$row['ssh2ip'].'</option>';
 			} else {
-				$data[]='<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';
+				$data[] = '<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';
 			}
 		}
 	}
@@ -164,7 +164,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$monthstop=date('m');
 		$daystop=date('d');
 		$amount=7;
-	} else if ($ui->post['dmy']=='to') {
+	} else if ($ui->post['dmy'] == 'to') {
 		$dmy='to';
 		if (validate_int($ui->post['daystart'],1,31)) {
 			$day=$ui->post['daystart'];
@@ -209,7 +209,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$year=date('Y');
 			$amount = 1;
 		}
-	} else if ($ui->post['dmy']=='da') {
+	} else if ($ui->post['dmy'] == 'da') {
 		$dmy='da';
 		if (validate_int($ui->post['daystart'],1,31)) {
 			$day=$ui->post['daystart'];
@@ -254,7 +254,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$year=date('Y',strtotime("-6 days"));
 			$amount=7;
 		}
-	} else if ($ui->post['dmy']=='mo') {
+	} else if ($ui->post['dmy'] == 'mo') {
 		$dmy='mo';
 		$day = 1;
 		if (validate_int($ui->post['monthstart'],1,12)) {
@@ -298,7 +298,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$year=date('Y',strtotime("-6 months"));
 			$amount=7;
 		}
-	} else if ($ui->post['dmy']=='ye') {
+	} else if ($ui->post['dmy'] == 'ye') {
 		$dmy='ye';
 		$day = 1;
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {

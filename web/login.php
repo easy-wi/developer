@@ -43,7 +43,7 @@ if (count($s)>1) {
 }
 define('EASYWIDIR', dirname(__FILE__));
 if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
-if ((!isset($ui->get['w']) and isset($ui->post['username'])) or (isset($ui->get['w']) and $ui->get['w']!='pr')) $logininclude= true;
+if ((!isset($ui->get['w']) and isset($ui->post['username'])) or (isset($ui->get['w']) and $ui->get['w'] != 'pr')) $logininclude = true;
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/functions.php');
@@ -67,17 +67,17 @@ if (is_file(EASYWIDIR."/languages/$template_to_use/$default_language/login.xml")
 } else {
 	$sprache=simplexml_load_file(EASYWIDIR."/languages/$default_language/login.xml");
 }
-if ($w=='lo') {
+if ($w == 'lo') {
 	if (isset($ui->server['HTTP_REFERER'])) {
-		$refstring=explode('/',substr(str_replace(array('http://'.$ui->domain('HTTP_HOST','server'),'https://'.$ui->domain('HTTP_HOST','server'),'//'),array('','','/'),strtolower($ui->server['HTTP_REFERER'])),strlen($ewInstallPath)));
+		$refstring=explode('/',substr(str_replace(array('http://'.$ui->domain('HTTP_HOST','server'),'https://'.$ui->domain('HTTP_HOST','server'),'//'), array('','','/'),strtolower($ui->server['HTTP_REFERER'])),strlen($ewInstallPath)));
 		$referrer=(isset($refstring[1])) ? explode('?',$refstring[1]) : '';
 	} else {
 		$referrer[0]="login.php";
 	}
-	if (isset($_SESSION['resellerid']) and isset($_SESSION['adminid']) and isset($_SESSION['oldid']) and isset($_SESSION['oldresellerid']) and !isset($_SESSION['userid']) and $_SESSION['resellerid']!=0 and $referrer[0]=='admin.php') {
+	if (isset($_SESSION['resellerid']) and isset($_SESSION['adminid']) and isset($_SESSION['oldid']) and isset($_SESSION['oldresellerid']) and !isset($_SESSION['userid']) and $_SESSION['resellerid'] != 0 and $referrer[0] == 'admin.php') {
 		$_SESSION['adminid']=$_SESSION['oldid'];
 		$_SESSION['resellerid']=$_SESSION['oldresellerid'];
-		if ($_SESSION['oldresellerid']!=0 and $_SESSION['oldid']==$_SESSION['oldresellerid']) {
+		if ($_SESSION['oldresellerid'] != 0 and $_SESSION['oldid']==$_SESSION['oldresellerid']) {
 			$_SESSION['oldresellerid'] = 0;
 			$_SESSION['oldid']=$_SESSION['oldadminid'];
 			unset($_SESSION['oldadminid']);
@@ -89,19 +89,19 @@ if ($w=='lo') {
 	} else {
 		session_unset();
 		session_destroy();
-		redirect($page_url. '/'. $ewInstallPath);
+		redirect($page_url. '/' . $ewInstallPath);
 	}
-} else if ($w=='ba') {
+} else if ($w == 'ba') {
 	$sus=$sprache->banned;
 	$include='login.tpl';
-} else if ($w=='up') {
+} else if ($w == 'up') {
     $sus=($ui->escaped('error','get')) ? 'External Auth failed: '.htmlentities(base64_decode(urldecode($ui->escaped('error','get')))) : $sprache->bad_up;
 	$include='login.tpl';
-} else if ($w=='pr') {
+} else if ($w == 'pr') {
     $token = '';
 	if (($ui->ismail('um','post') or $ui->username('um',50,'post')) and !$ui->w('gamestring',32,'get')) {
         # https://github.com/easy-wi/developer/issues/43
-        $send= true;
+        $send = true;
         $text=$sprache->send;
 		$query = $sql->prepare("SELECT `id`,`cname`,`logintime`,`lastlogin` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
         $query->execute(array($ui->username('um',50,'post'),$ui->ismail('um','post')));
@@ -113,7 +113,7 @@ if ($w=='lo') {
 			$folders=explode("/",$ui->server['SCRIPT_NAME']);
 			$amount=count($folders)-1;
 			$i = 0;
-			$path = "";
+			$path = '';
 			while ($i<$amount) {
 				$path .=$folders[$i]."/";
 				$i++;
@@ -133,10 +133,10 @@ if ($w=='lo') {
                 $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
                 $password=createHash($username,$ui->password('password1',255,'post'),$salt,$aeskey);
                 $query = $sql->prepare("UPDATE `userdata` SET `token`='',`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
-                $query->execute(array($password,$salt,$row['id']));
+                $query->execute(array($password,$salt, $row['id']));
                 $text=$sprache->passwordreseted;
             }
-        } else if ($ui->password('password1',255,'post')!=$ui->password('password2',255,'post'))  {
+        } else if ($ui->password('password1',255,'post') != $ui->password('password2',255,'post'))  {
             # https://github.com/easy-wi/developer/issues/43
             $token='&amp;gamestring='.$ui->w('token',32,'get');
             $text=$sprache->pwnomatch;
@@ -148,10 +148,10 @@ if ($w=='lo') {
         $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `token`=? LIMIT 1");
         $query->execute(array($ui->w('gamestring',32,'get')));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $recover= true;
+            $recover = true;
         }
     }
-	if ($d=='vo') {
+	if ($d== 'vo') {
 		if ($ui->ips('ip','post') and $ui->port('port','post') and $ui->ismail('mail','post')) {
 			$checkmail=$sql->prepare("SELECT `id` FROM `userdata` WHERE `mail`=? LIMIT 1");
 			$checkmail->execute(array($ui->ismail('mail','post')));
@@ -176,11 +176,11 @@ if ($w=='lo') {
 					if (isset($ts3userlist[$dbid]) and isset($md5) and $ts3userlist[$dbid]==$ui->id('dbid',255,'post')) {
 						$text=$sprache->send;
                         $query = $sql->prepare("UPDATE `userdata` SET `token`=?,`mail`=? WHERE `id`=? LIMIT 1");
-                        $query->execute(array($md5,$ui->ismail('mail','post'),$row['userid']));
+                        $query->execute(array($md5,$ui->ismail('mail','post'), $row['userid']));
 						$folders=explode("/",$ui->server['SCRIPT_NAME']);
 						$amount=count($folders)-1;
 						$i = 0;
-						$path = "";
+						$path = '';
 						while ($i<$amount) {
 							$path .=$folders[$i]."/";
 							$i++;
@@ -188,7 +188,7 @@ if ($w=='lo') {
                         $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : "http://".$ui->server['HTTP_HOST'].$path;
 						$link=$webhostdomain.'login.php?w=pr&amp;gamestring='.$md5;
 						$htmllink='<a href="'.$link.'">'.$link.'</a>';
-						sendmail('emailpwrecovery',$row['userid'],$htmllink,'');
+						sendmail('emailpwrecovery', $row['userid'],$htmllink,'');
 					} else if (!isset($ts3userlist[$dbid])) {
 						$text='Error: '.$sprache->nouser;
 					}
@@ -218,7 +218,7 @@ if ($w=='lo') {
 	} else if (($ui->username('username',255,'post') or $ui->ismail('username','post')) and $ui->password('password',255,'post') and !isset($_SESSION['sessionid'])) {
 		$password=$ui->password('password',255,'post');
 		if ($ewCfg['captcha']==1) {
-			if (md5($ui->w('captcha',4,'post'))!=$_SESSION['captcha']) {
+			if (md5($ui->w('captcha',4,'post')) != $_SESSION['captcha']) {
 				$halfhour=date('Y-m-d H:i:s',strtotime("+30 minutes"));
 				$query = $sql->prepare("SELECT id FROM badips WHERE badip=? LIMIT 1");
                 $query->execute(array($loguserip));
@@ -241,7 +241,7 @@ if ($w=='lo') {
 			$security=$row['security'];
 			$resellerid=$row['resellerid'];
             $userpassNew=createHash($username,$password,$salt,$aeskey);
-            if (isset($security) and $security!=$userpassNew) {
+            if (isset($security) and $security != $userpassNew) {
                 $userpassOld=passwordhash($username,$password);
                 if (isset($id) and $userpassOld==$security) {
                     $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
@@ -272,13 +272,13 @@ if ($w=='lo') {
                 $userpass=createHash($username,$password,$salt,$aeskey);
             }
         }
-        if (isset($active) and $active=='Y' and $security!=$userpass) {
+        if (isset($active) and $active == 'Y' and $security != $userpass) {
             $authLookupID=($resellerid==$id) ? 0 : $resellerid;
             $query = $sql->prepare("SELECT `active`,`ssl`,`user`,`domain`,AES_DECRYPT(`pwd`,?) AS `decryptedPWD`,`file` FROM `api_external_auth` WHERE `resellerID`=? LIMIT 1");
             $query->execute(array($aeskey,$authLookupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $activeAuth=$row['active'];
-                $portAuth=($row['ssl']=='Y') ? 433 : 80;
+                $portAuth=($row['ssl'] == 'Y') ? 433 : 80;
                 $userAuth=urlencode($row['user']);
                 $pwdAuth=urlencode($row['decryptedPWD']);
                 $domainAuth=$row['domain'];
@@ -295,8 +295,8 @@ if ($w=='lo') {
 XML;
                 $postXML=urlencode(base64_encode($XML));
             }
-            if (isset($activeAuth) and $activeAuth=='Y') {
-                $reply=webhostRequest($domainAuth,$ui->escaped('HTTP_HOST','server'),$fileAuth,array('authPWD'=>$pwdAuth,'userAuth'=>$userAuth,'postXML'=>$postXML),$portAuth);
+            if (isset($activeAuth) and $activeAuth== 'Y') {
+                $reply=webhostRequest($domainAuth,$ui->escaped('HTTP_HOST','server'),$fileAuth, array('authPWD'=>$pwdAuth,'userAuth'=>$userAuth,'postXML'=>$postXML),$portAuth);
                 $xmlReply= @simplexml_load_string($reply);
                 if ($xmlReply and isset($xmlReply->success) and $xmlReply->success==1 and $xmlReply->user==$username) {
                     $externalOK = 1;
@@ -305,12 +305,12 @@ XML;
                     $query->execute(array(createHash($username,$password,$salt,$aeskey),$salt,$id));
                 } else if ($xmlReply and isset($xmlReply->error)) {
                     $externalAuthError=$xmlReply->error;
-                } else if ($reply!=null and $reply!=false) {
+                } else if ($reply != null and $reply!=false) {
                     $externalAuthError=$reply;
                 }
             }
         }
-		if (isset($active) and $active=='Y' and ($security==$userpass or (isset($externalOK) and $externalOK==1))) {
+		if (isset($active) and $active == 'Y' and ($security==$userpass or (isset($externalOK) and $externalOK==1))) {
 			session_unset();
 			session_destroy();
 			session_start();
@@ -353,7 +353,7 @@ XML;
 				$ref=$ui->domain('HTTP_REFERER','server');
 			}
 			$referrer=explode('/', str_replace(array('http://', 'https://'),'',strtolower($ref)));
-			if (isset($referrer[1]) and $referrer[1]=='login.php') $topanel= true;
+			if (isset($referrer[1]) and $referrer[1] == 'login.php') $topanel = true;
 			if (!isset($user_id) and !isset($admin_id)) {
 				header('Location: login.php&r=lo');
 			} else if(isset($user_id)) {
@@ -362,7 +362,7 @@ XML;
 				$folders=explode("/",$ui->server['SCRIPT_NAME']);
 				$amount=count($folders)-1;
 				$i = 0;
-				$path = "";
+				$path = '';
 				while ($i<$amount) {
 					$path .=$folders[$i]."/";
 					$i++;
@@ -377,7 +377,7 @@ XML;
                     redirect('login.php&r=lo');
 				}
 			}
-		} else if (!isset($security) or $security!=$userpass) {
+		} else if (!isset($security) or $security != $userpass) {
 			$halfhour=date('Y-m-d H:i:s',strtotime("+30 minutes"));
             $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
             $query->execute(array($loguserip));
@@ -386,7 +386,7 @@ XML;
             $query->execute(array($halfhour,$loguserip));
             if (isset($externalAuthError)) redirect('login.php?w=up&error='.urlencode(base64_encode($externalAuthError)).'&r=lo');
             else redirect('login.php?w=up&r=lo');
-		} else if (isset($active) and $active=='N') {
+		} else if (isset($active) and $active == 'N') {
             redirect('login.php?w=su&r=lo');
 		} else {
             redirect('login.php?w=up&r=lo');

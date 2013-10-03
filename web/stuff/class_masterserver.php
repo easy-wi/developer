@@ -108,7 +108,7 @@ class masterServer {
                 }
                 foreach ($split2 as $splitip) {
                     if ($splitip==$this->sship) {
-                        $noSync= true;
+                        $noSync = true;
                     } else if (isip($splitip,'all')) {
                         $ipparts=explode('.',$splitip);
                         $subnet=$ipparts[0].'.'.$ipparts[1].'.'.$ipparts[2];
@@ -133,8 +133,8 @@ class masterServer {
         }
 
         // In case the rootserver could be found and it is active return true
-        if (isset($active) and $active=='Y') {
-            $this->rootOK= true;
+        if (isset($active) and $active == 'Y') {
+            $this->rootOK = true;
         } else {
             $this->rootOK = false;
         }
@@ -182,9 +182,9 @@ class masterServer {
                 }
 
                 // steamCmd installations
-                if ($row['steamgame']=='S') {
+                if ($row['steamgame'] == 'S') {
                     $lookUpAppID=($row['appID']==90) ? $row['appID'] . '-' . $row['shorten'] : $row['appID'];
-                    if ($row['localVersion']==null or ($row['localVersion']!=null and $row['localVersion']<$row['steamVersion'])) {
+                    if ($row['localVersion']==null or ($row['localVersion'] != null and $row['localVersion']<$row['steamVersion'])) {
                         if ($updateType==1) {
                             $this->steamCmdOutdated['sync'][$lookUpAppID]=$row['shorten'];
                         } else if ($updateType==2) {
@@ -200,8 +200,8 @@ class masterServer {
                     }
 
                     // hlds installations
-                } else if ($row['steamgame']=='Y') {
-                    if ($row['localVersion']==null or ($row['localVersion']!=null and $row['localVersion']<$row['steamVersion'])) {
+                } else if ($row['steamgame'] == 'Y') {
+                    if ($row['localVersion']==null or ($row['localVersion'] != null and $row['localVersion']<$row['steamVersion'])) {
                         if ($updateType==1) {
                             $this->hldsOutdated['sync'][]=$row['shorten'];
                         } else if ($updateType==2) {
@@ -217,7 +217,7 @@ class masterServer {
                     }
 
                     // not shipped by valve tools
-                } else if ($row['steamgame']=='N') {
+                } else if ($row['steamgame'] == 'N') {
                     if ($row['updates']==1) {
                         $this->noSteam['sync'][]=$row['shorten'];
                     } else if ($updateType==2) {
@@ -236,7 +236,7 @@ class masterServer {
 
                 // collect addons
                 $query2 = $sql->prepare("SELECT `addon` FROM `addons` WHERE `type`='tool' AND (`shorten`=? OR `shorten`=?) AND `resellerid`=?");
-                $query2->execute(array($row['shorten'],$row['qstat'],$this->resellerID));
+                $query2->execute(array($row['shorten'], $row['qstat'],$this->resellerID));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $this->addons[]=$row2['addon'];
                 }
@@ -300,8 +300,8 @@ class masterServer {
                     $query->execute(array($this->rootID,$k));
                     $this->updateIDs[]=$query->fetchColumn();
                 }
-                if ($this->imageserver=='none') {
-                    $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',array_unique(array_merge($this->noSteam['sync'],$this->noSteam['nosync']))).'" '.$this->webhost . ' ' . $this->imageserver;
+                if ($this->imageserver== 'none') {
+                    $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ', array_unique(array_merge($this->noSteam['sync'],$this->noSteam['nosync']))).'" '.$this->webhost . ' ' . $this->imageserver;
                 } else if (count($this->noSteam['sync'])>0 and count($this->noSteam['nosync'])>0) {
                     $cmd='./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['sync']).'" '.$this->webhost . ' ' . $this->imageserver.' && ./control.sh noSteamCmd '.$install.' "'.implode(' ',$this->noSteam['nosync']).'" '.$this->webhost.' none';
                 } else if (count($this->noSteam['sync'])>0 and count($this->noSteam['nosync'])==0) {
@@ -324,7 +324,7 @@ class masterServer {
                     $query->execute(array($this->rootID,$k));
                     $this->updateIDs[]=$query->fetchColumn();
                 }
-                if ($this->imageserver=='none') {
+                if ($this->imageserver== 'none') {
                     $combined = array();
                     foreach ($goFor['sync'] as $k=>$v) $combined[$k]=$v;
                     foreach ($goFor['nosync'] as $k=>$v) $combined[$k]=$v;
@@ -351,8 +351,8 @@ class masterServer {
                     $query->execute(array($this->rootID,$k));
                     $this->updateIDs[]=$query->fetchColumn();
                 }
-                if ($this->imageserver=='none') {
-                    $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',array_unique(array_merge($goFor['sync'],$goFor['nosync']))).'" '.$this->webhost . ' ' . $this->imageserver;
+                if ($this->imageserver== 'none') {
+                    $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ', array_unique(array_merge($goFor['sync'],$goFor['nosync']))).'" '.$this->webhost . ' ' . $this->imageserver;
                 } else if (count($goFor['sync'])>0 and count($goFor['nosync'])>0) {
                     $cmd='./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['sync']).'" '.$this->webhost . ' ' . $this->imageserver.' && ./control.sh hldsCmd '.$install.' "'.implode(' ',$goFor['nosync']).'" '.$this->webhost.' none';
                 } else if (count($goFor['sync'])>0 and count($goFor['nosync'])==0) {
@@ -388,10 +388,10 @@ class masterServer {
         $steamCmd = '';
         foreach ($array as $key=>$val) {
             if (is_numeric($key)) {
-                $steamCmd.=$val . ' ' . workAroundForValveChaos($key,$val,false).' ';
+                $steamCmd.=$val . ' ' . workAroundForValveChaos($key,$val, false).' ';
             } else {
                 list($appID)=explode('-',$key);
-                $steamCmd.=$val . ' ' . workAroundForValveChaos($appID,$val,false).' ';
+                $steamCmd.=$val . ' ' . workAroundForValveChaos($appID,$val, false).' ';
             }
         }
         return $steamCmd;

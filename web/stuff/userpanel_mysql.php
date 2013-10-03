@@ -73,7 +73,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $password=$row['decryptedpassword'];
         }
         $template_file = (isset($dbname)) ? 'userpanel_mysql_db_md.tpl' : 'userpanel_404.tpl';
-    } else if ($ui->smallletters('action',2,'post')=='md'){
+    } else if ($ui->smallletters('action',2,'post') == 'md'){
         if ($ui->password('password',40,'post')) {
             include(EASYWIDIR . '/stuff/mysql_functions.php');
             $password=$ui->password('password',40,'post');
@@ -93,9 +93,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $max_userconnections_per_hour=$row['max_userconnections_per_hour'];
                 $old_password=$row['decryptedpassword'];
                 $old_ips=$row['ips'];
-                if ($old_password!=$password or $old_ips!=$ips) {
+                if ($old_password != $password or $old_ips != $ips) {
                     $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
-                    if ($remotesql->error=='ok') {
+                    if ($remotesql->error== 'ok') {
 
                         #https://github.com/easy-wi/developer/issues/42 column description added
                         $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `description`=?,`password`=AES_ENCRYPT(?,?),`ips`=? WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
@@ -119,15 +119,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
 } else {
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='ap') {
+    if ($ui->st('o','get') == 'ap') {
         $orderby='s.`ip` ASC';
-    } else if ($ui->st('o','get')=='dp') {
+    } else if ($ui->st('o','get') == 'dp') {
         $orderby='s.`ip` DESC';
-    } else if ($ui->st('o','get')=='dn') {
+    } else if ($ui->st('o','get') == 'dn') {
         $orderby='e.`dbname` DESC';
-    } else if ($ui->st('o','get')=='an') {
+    } else if ($ui->st('o','get') == 'an') {
         $orderby='e.`dbname` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='e.`id` DESC';
     } else{
         $o='ai';

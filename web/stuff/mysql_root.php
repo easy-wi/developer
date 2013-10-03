@@ -37,13 +37,13 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main!=1 or $reseller_id!=0 or !$pa['root']) {
+if (!isset($admin_id) or $main!=1 or $reseller_id != 0 or !$pa['root']) {
     header('Location: admin.php');
     die('No acces');
 }
 
-if ($ui->st('d','get')=='bu' and $ui->st('action','post')=='bu') {
-    $createBackup= true;
+if ($ui->st('d','get') == 'bu' and $ui->st('action','post') == 'bu') {
+    $createBackup = true;
     include(EASYWIDIR . '/stuff/mysql_backup_class.php');
     $theBackup=new createDBDump($dbConnect['db'],$ewVersions['version'],$sql);
     header('Content-type: application/sql; charset=utf-8');
@@ -52,8 +52,8 @@ if ($ui->st('d','get')=='bu' and $ui->st('action','post')=='bu') {
     $theBackup->createDump();
     echo $theBackup->getDump();
     die();
-} else if ($ui->st('d','get')=='rp' and $ui->st('action','post')=='rp') {
-    $updateinclude= true;
+} else if ($ui->st('d','get') == 'rp' and $ui->st('action','post') == 'rp') {
+    $updateinclude = true;
     class UpdateResponse {
         public $response = '';
         function __construct() {

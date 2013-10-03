@@ -55,28 +55,28 @@ if (isset($admin_id)) {
 	$logsubuser = 0;
 }
 
-if (isset($admin_id) and $reseller_id!=0) {
+if (isset($admin_id) and $reseller_id != 0) {
     $reseller_id=$admin_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get')=='ri' and !$ui->id('id',10,'get')) {
+} else if ($ui->st('d','get') == 'ri' and !$ui->id('id',10,'get')) {
     $template_file = $sprache->error_id;
-} else if ($ui->st('d','get')=='ri' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+} else if ($ui->st('d','get') == 'ri' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
-    if ($ui->st('action','post')=='ri') {
+    if ($ui->st('action','post') == 'ri') {
         $i = 0;
         $gamestring = array();
         $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$aeskey,$ui->id('id',10,'get'),$user_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $customer=$row['cname'];
-            $ftppass=($row['pallowed']=='Y' and $row['protected']=='Y') ? $row['pftppass'] : $row['cftppass'];
+            $ftppass=($row['pallowed'] == 'Y' and $row['protected'] == 'Y') ? $row['pftppass'] : $row['cftppass'];
             $rootID=$row['rootID'];
             $serverip=$row['serverip'];
             $port=$row['port'];
-            $gsfolder=$serverip.'_'.$port;
-            if ($row['newlayout']=='Y') $customer=$customer . '-' . $row['id'];
+            $gsfolder=$serverip . '_' . $port;
+            if ($row['newlayout'] == 'Y') $customer=$customer . '-' . $row['id'];
         }
         $template = array();
         # https://github.com/easy-wi/developer/issues/69
@@ -84,7 +84,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         foreach($templates as $id => $tpl) {
             if ($tpl>0) {
                 $template[]=$tpl;
-                if ($ui->active('type','post')=='Y') {
+                if ($ui->active('type','post') == 'Y') {
                     $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=? AND `userid`=?");
                     $query->execute(array($id,$reseller_id,$user_id));
                 }
@@ -93,19 +93,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $shorten=$row['shorten'];
                     $gamemod2=$row['gamemod2'];
-                    $gamestring[]=($row['gamemod']=='Y') ? $shorten.$gamemod2 : $shorten;
+                    $gamestring[]=($row['gamemod'] == 'Y') ? $shorten.$gamemod2 : $shorten;
                 }
             }
         }
         if (isset($gsfolder) and count($gamestring)>0 and $ui->active('type','post')) {
-            $gamestring=count($gamestring).'_'.implode('_',$gamestring);
+            $gamestring=count($gamestring) . '_' . implode('_',$gamestring);
             $rdata=serverdata('root',$rootID,$aeskey);
             $sship=$rdata['ip'];
             $sshport=$rdata['port'];
             $sshuser=$rdata['user'];
             $sshpass=$rdata['pass'];
             $cmds = array();
-            if ($ui->active('type','post')=='Y') {
+            if ($ui->active('type','post') == 'Y') {
                 $cmds[]="./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10);
                 $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
                 $loguseraction="%reinstall% %gserver% ${serverip}:${port}";
@@ -135,33 +135,33 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $template_file = 'userpanel_404.tpl';
         }
     }
-} else if (($ui->st('d','get')=='rs' or $ui->st('d','get')=='st' or $ui->st('d','get')=='du') and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+} else if (($ui->st('d','get') == 'rs' or $ui->st('d','get') == 'st' or $ui->st('d','get') == 'du') and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
     $query = $sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $gsip=$row['serverip'];
         $port=$row['port'];
-        if ($ui->st('d','get')=='rs') {
+        if ($ui->st('d','get') == 'rs') {
             $template_file = 'Restart done';
             $cmds=gsrestart($id,'re',$aeskey,$reseller_id);
             $loguseraction="%start% %gserver% $gsip:$port";
-        } else if ($ui->st('d','get')=='st') {
+        } else if ($ui->st('d','get') == 'st') {
             $template_file = 'Stop done';
             $cmds=gsrestart($id,'so',$aeskey,$reseller_id);
             $loguseraction="%stop% %gserver% $gsip:$port";
-        } else if ($ui->st('d','get')=='du') {
+        } else if ($ui->st('d','get') == 'du') {
             $template_file = 'SourceTV upload started';
             $cmds=gsrestart($id,'du',$aeskey,$reseller_id);
             $loguseraction="%movie% %gserver% $gsip:$port";
         }
-        if (isset($cmds)) ssh2_execute('gs',$row['rootID'],$cmds);
+        if (isset($cmds)) ssh2_execute('gs', $row['rootID'],$cmds);
         $insertlog->execute();
     }
     if (!isset($gsip)) {
         $template_file = 'userpanel_404.tpl';
     }
-} else if ($ui->st('d','get')=='md' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $table = array();
@@ -192,9 +192,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $gshorten=$row['shorten'];
             $qstat=$row['qstat'];
             $anticheat=$row['anticheat'];
-            if ($qstat=='a2s' and $row['user_uploaddir']=='Y' and $row['upload']>1 and $row['upload']<4) {
+            if ($qstat == 'a2s' and $row['user_uploaddir'] == 'Y' and $row['upload']>1 and $row['upload']<4) {
                 $uploaddir=$row['decypteduploaddir'];
-                $upload= true;
+                $upload = true;
             } else {
                 $upload = false;
                 $uploaddir = '';
@@ -217,44 +217,44 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $option='<option value="'.$row['id'].'">'.$gshorten.'</option>';
             }
             $eac = array();
-            if ($rowcount>0 and $eacallowed=='Y' and ($gshorten=="css" or $gshorten=="cod4" or $gshorten=="cstrike" or $gshorten=="czero" or $gshorten=="tf")) {
+            if ($rowcount>0 and $eacallowed== 'Y' and ($gshorten=="css" or $gshorten=="cod4" or $gshorten=="cstrike" or $gshorten=="czero" or $gshorten=="tf")) {
                 if ($gshorten=="cstrike" or $gshorten=="czero") {
-                    if($anticheat==3 and $hlds_3=='Y') {
-                        $eac[]='<option value="3" selected="selected">Easy Anti Cheat</option>';
-                    } else if($hlds_3=='Y') {
-                        $eac[]='<option value="3">Easy Anti Cheat</option>';
+                    if($anticheat==3 and $hlds_3== 'Y') {
+                        $eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
+                    } else if($hlds_3== 'Y') {
+                        $eac[] = '<option value="3">Easy Anti Cheat</option>';
                     }
-                    if($anticheat==4 and $hlds_4=='Y') {
-                        $eac[]='<option value="4" selected="selected">Easy Anti Cheat Public</option>';
-                    } else if($hlds_4=='Y') {
-                        $eac[]='<option value="4">Easy Anti Cheat Public</option>';
+                    if($anticheat==4 and $hlds_4== 'Y') {
+                        $eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
+                    } else if($hlds_4== 'Y') {
+                        $eac[] = '<option value="4">Easy Anti Cheat Public</option>';
                     }
-                    if($anticheat==5 and $hlds_5=='Y') {
-                        $eac[]='<option value="5" selected="selected">Easy Anti Cheat 32Bit</option>';
-                    } else if($hlds_5=='Y') {
-                        $eac[]='<option value="5">Easy Anti Cheat 32Bit</option>';
+                    if($anticheat==5 and $hlds_5== 'Y') {
+                        $eac[] = '<option value="5" selected="selected">Easy Anti Cheat 32Bit</option>';
+                    } else if($hlds_5== 'Y') {
+                        $eac[] = '<option value="5">Easy Anti Cheat 32Bit</option>';
                     }
-                    if($anticheat==6 and $hlds_6=='Y') {
-                        $eac[]='<option value="6" selected="selected">Easy Anti Cheat Public 32Bit</option>';
-                    } else if($hlds_6=='Y') {
-                        $eac[]='<option value="6">Easy Anti Cheat Public 32Bit</option>';
+                    if($anticheat==6 and $hlds_6== 'Y') {
+                        $eac[] = '<option value="6" selected="selected">Easy Anti Cheat Public 32Bit</option>';
+                    } else if($hlds_6== 'Y') {
+                        $eac[] = '<option value="6">Easy Anti Cheat Public 32Bit</option>';
                     }
                 } else {
-                    if($anticheat==3 and $normal_3=='Y') {
-                        $eac[]='<option value="3" selected="selected">Easy Anti Cheat</option>';
-                    } else if($normal_3=='Y') {
-                        $eac[]='<option value="3">Easy Anti Cheat</option>';
+                    if($anticheat==3 and $normal_3== 'Y') {
+                        $eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
+                    } else if($normal_3== 'Y') {
+                        $eac[] = '<option value="3">Easy Anti Cheat</option>';
                     }
-                    if($anticheat==4 and $normal_4=='Y') {
-                        $eac[]='<option value="4" selected="selected">Easy Anti Cheat Public</option>';
-                    } else if($normal_4=='Y') {
-                        $eac[]='<option value="4">Easy Anti Cheat Public</option>';
+                    if($anticheat==4 and $normal_4== 'Y') {
+                        $eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
+                    } else if($normal_4== 'Y') {
+                        $eac[] = '<option value="4">Easy Anti Cheat Public</option>';
                     }
                 }
             }
             $mods = array();
             $mod=$row['modcmd'];
-            foreach (explode("\r\n",$row['modcmds']) as $line) {
+            foreach (explode("\r\n", $row['modcmds']) as $line) {
                 if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/',$line)) {
                     $name = trim($line,'[]');
                     $ex=preg_split("/\=/",$name,-1,PREG_SPLIT_NO_EMPTY);
@@ -262,10 +262,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 }
             }
             $workshopCollection = false;
-            if (in_array($row['appID'],array(560,730,740))) {
+            if (in_array($row['appID'], array(560,730,740))) {
                 $workshopCollection=$row['workshopCollection'];
             }
-            $map=(!in_array($row['defaultmap'],array('',null))) ? $row['map'] : null;
+            $map=(!in_array($row['defaultmap'], array('', null))) ? $row['map'] : null;
             $table[]=array('id'=>$row['id'],'cmd'=>$row['cmd'],'fps' =>$row['fps'],'tic'=>$row['tic'],'map'=>$map,'workshopCollection'=>$workshopCollection,'webapiAuthkey'=>$row['dwebapiAuthkey'],'mapGroup'=>$row['mapGroup'],'defaultMapGroup'=>$row['defaultMapGroup'],'servertemplate'=>$row['servertemplate'],'userfps'=>$row['userfps'],'usertick'=>$row['usertick'],'usermap'=>$row['usermap'],'description'=>$row['description'],'option'=>$option,'qstat'=>$qstat,'upload'=>$upload,'uploaddir'=>$uploaddir,'anticheat'=>$anticheat,'anticheatsoft'=>$anticheatsoft,'eac'=>$eac,'shorten'=>$gshorten,'mod'=>$mod,'mods'=>$mods,'displayNone'=>$displayNone,'displayNoneBoot'=>$displayNoneBoot);
             $i++;
         }
@@ -274,7 +274,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $template_file = 'userpanel_404.tpl';
         }
-    } else if ($ui->smallletters('action',2,'post')=='md' and $ui->id('shorten',19,'post')) {
+    } else if ($ui->smallletters('action',2,'post') == 'md' and $ui->id('shorten',19,'post')) {
         $switchID=$ui->id('shorten',19,'post');
         $query = $sql->prepare("SELECT `active`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
@@ -299,16 +299,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $rootID=$row['rootID'];
             $servercname=$row['cname'];
             $newlayout=$row['newlayout'];
-            $server=$serverip.":".$port;
+            $server=$serverip . ':' . $port;
         }
         $query = $sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$switchID,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $fps=($row['userfps']=='Y' and $ui->id("fps_${switchID}",4,'post')) ? $ui->id("fps_${switchID}",4,'post') : $row['fps'];
-            $tic=($row['usertick']=='Y' and $ui->id("tic_${switchID}",4,'post')) ? $ui->id("tic_${switchID}",4,'post') : $row['tic'];
-            $map=($row['usermap']=='Y' and $ui->mapname("map_${switchID}",'post')) ? $ui->mapname("map_${switchID}",'post') : $row['map'];
-            $mapGroup=($row['usermap']=='Y' and $ui->mapname("mapGroup_${switchID}",'post')) ? $ui->mapname("mapGroup_${switchID}",'post') : $row['mapGroup'];
-            $uploaddir=($row['user_uploaddir']=='Y' and $row['upload']>1 and $row['upload']<4) ? $ui->url("uploaddir_${switchID}",'post') : $row['decypteduploaddir'];
+            $fps=($row['userfps'] == 'Y' and $ui->id("fps_${switchID}",4,'post')) ? $ui->id("fps_${switchID}",4,'post') : $row['fps'];
+            $tic=($row['usertick'] == 'Y' and $ui->id("tic_${switchID}",4,'post')) ? $ui->id("tic_${switchID}",4,'post') : $row['tic'];
+            $map=($row['usermap'] == 'Y' and $ui->mapname("map_${switchID}",'post')) ? $ui->mapname("map_${switchID}",'post') : $row['map'];
+            $mapGroup=($row['usermap'] == 'Y' and $ui->mapname("mapGroup_${switchID}",'post')) ? $ui->mapname("mapGroup_${switchID}",'post') : $row['mapGroup'];
+            $uploaddir=($row['user_uploaddir'] == 'Y' and $row['upload']>1 and $row['upload']<4) ? $ui->url("uploaddir_${switchID}",'post') : $row['decypteduploaddir'];
             $servertemplate=($ui->id("servertemplate_${switchID}",1,'post')) ? $ui->id("servertemplate_${switchID}",1,'post') : 1;
             $modcmd=$ui->escaped("mod_${switchID}",'post');
             $workshopCollection=$ui->id("workshopCollection_${switchID}",10,'post');
@@ -316,19 +316,19 @@ if ($ui->w('action',4,'post') and !token(true)) {
             if ($ui->id("anticheat_${switchID}",1,'post')) {
                 $anticheat=($ui->id("anticheat_${switchID}",1,'post')>0) ? $ui->id("anticheat_${switchID}",1,'post') : 1;
                 if ($row['shorten']=="cstrike" or $row['shorten']=="czero") {
-                    if($anticheat==3 and $hlds_3=='N' and $hlds_5=='Y' and $active=='Y') $anticheat=5;
-                    else if($anticheat==3 and $hlds_3=='N' and $hlds_5=='N' and $active=='Y') $anticheat = 1;
-                    else if ($anticheat>1 and $active=='N') $anticheat = 1;
-                    if($anticheat==4 and $hlds_4=='N' and $hlds_6=='Y' and $active=='Y') $anticheat=6;
-                    else if($anticheat==4 and $hlds_4=='N' and $hlds_6=='N' and $active=='Y') $anticheat = 1;
-                    else if ($anticheat>1 and $active=='N') $anticheat = 1;
-                    if($anticheat==5 and $hlds_5=='N' and $active=='Y') $anticheat = 1;
-                    if($anticheat==6 and $hlds_6=='N' and $active=='Y') $anticheat = 1;
-                    if(($anticheat>6 and $active=='Y') or $anticheat>2 and $active=='N') $anticheat = 1;
+                    if($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'Y' and $active == 'Y') $anticheat=5;
+                    else if($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'N' and $active == 'Y') $anticheat = 1;
+                    else if ($anticheat>1 and $active == 'N') $anticheat = 1;
+                    if($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'Y' and $active == 'Y') $anticheat=6;
+                    else if($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'N' and $active == 'Y') $anticheat = 1;
+                    else if ($anticheat>1 and $active == 'N') $anticheat = 1;
+                    if($anticheat==5 and $hlds_5== 'N' and $active == 'Y') $anticheat = 1;
+                    if($anticheat==6 and $hlds_6== 'N' and $active == 'Y') $anticheat = 1;
+                    if(($anticheat>6 and $active == 'Y') or $anticheat>2 and $active == 'N') $anticheat = 1;
                 } else {
-                    if($anticheat==3 and $normal_3=='N' and $active=='Y') $anticheat = 1;
-                    if($anticheat==4 and $normal_4=='N' and $active=='Y') $anticheat = 1;
-                    if(($anticheat>4 and $active=='Y') or $anticheat>2 and $active=='N') $anticheat = 1;
+                    if($anticheat==3 and $normal_3== 'N' and $active == 'Y') $anticheat = 1;
+                    if($anticheat==4 and $normal_4== 'N' and $active == 'Y') $anticheat = 1;
+                    if(($anticheat>4 and $active == 'Y') or $anticheat>2 and $active == 'N') $anticheat = 1;
                 }
             } else {
                 $anticheat = 1;
@@ -343,15 +343,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $ftppass=$ui->password('ftppass',100,'post');
         $cmds = array();
-        if (isset($oldID) and $oldID!=$switchID) {
+        if (isset($oldID) and $oldID != $switchID) {
             $tmp=gsrestart($id,'so',$aeskey,$reseller_id);
             if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
         }
         $query = $sql->prepare("UPDATE `gsswitch` SET `serverid`=?,`ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($switchID,$ftppass,$aeskey,$id,$reseller_id));
-        if (isset($oldID) and $oldID!=$switchID or $ftppass!=$oldPass) {
-            if ($oldID!=$switchID) {
-                if (isset($oldProtected) and $oldProtected=='Y') {
+        if (isset($oldID) and $oldID != $switchID or $ftppass != $oldPass) {
+            if ($oldID != $switchID) {
+                if (isset($oldProtected) and $oldProtected== 'Y') {
                     $query = $sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($id,$reseller_id));
                     $tmp=gsrestart($id,'re',$aeskey,$reseller_id);
@@ -361,9 +361,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
                 }
             }
-            if ($ftppass!=$oldPass) {
-                if ($newlayout=='Y') $servercname=$servercname . '-' . $id;
-                $cmds[]='./control.sh mod '.$servercname . ' ' . $ftppass . ' ' . $poldPass;
+            if ($ftppass != $oldPass) {
+                if ($newlayout == 'Y') $servercname=$servercname . '-' . $id;
+                $cmds[] = './control.sh mod '.$servercname . ' ' . $ftppass . ' ' . $poldPass;
             }
         }
         if (isset($rootID) and count($cmds)>0)ssh2_execute('gs',$rootID,$cmds);
@@ -372,14 +372,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'Error: No such game!';
     }
-} else if ($ui->st('d','get')=='cf' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+} else if ($ui->st('d','get') == 'cf' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',10,'get');
     $serverID = 0;
     $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppass`,s.`anticheat`,s.`servertemplate`,t.`shorten`,t.`gamebinary`,t.`modfolder`,t.`binarydir`,t.`qstat`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey,$aeskey,$id,$user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $username=$row['cname'];
-        if ($row['newlayout']=='Y') $username=$username . '-' . $row['id'];
+        if ($row['newlayout'] == 'Y') $username=$username . '-' . $row['id'];
         $anticheat=$row['anticheat'];
         $qstat=$row['qstat'];
         $eacallowed=$row['eacallowed'];
@@ -394,10 +394,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $servertemplate=$row['servertemplate'];
         $ftppass=$row['dftppass'];
         $pallowed=$row['pallowed'];
-        if ($protected=='N' and $servertemplate>1) {
-            $ftpshorten=$row['shorten']."-".$servertemplate;
+        if ($protected== 'N' and $servertemplate>1) {
+            $ftpshorten=$row['shorten'] . '-' . $servertemplate;
             $pserver="server/";
-        } else if ($protected=='Y' and $pallowed=='Y') {
+        } else if ($protected== 'Y' and $pallowed== 'Y') {
             $ftpshorten=$row['shorten'];
             $username=$username."-p";
             $ftppass=$row['dpftppass'];
@@ -419,7 +419,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         foreach ($config_rows as $configline) {
             $data_explode=explode(" ", $configline);
             $permission=(isset($data_explode[1])) ? $data_explode[1] : 'full';
-            if ($data_explode[0]!='') {
+            if ($data_explode[0] != '') {
                 $configs[]=array('permission'=>$permission,'line'=>$data_explode[0]);
                 $configCheck[]=$data_explode[0];
             }
@@ -428,12 +428,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $query = $sql->prepare("SELECT a.`configs`,a.`paddon` FROM `addons_installed` i INNER JOIN `addons` a ON i.`addonid`=a.`id` WHERE i.`serverid`=? AND i.`userid`=? AND i.`resellerid`=?");
     $query->execute(array($serverID,$user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (isset($protected) and ($protected=='N' or $row['paddon']=='Y')) {
+        if (isset($protected) and ($protected== 'N' or $row['paddon'] == 'Y')) {
             $config_rows=explode("\r\n", $row['configs']);
             foreach ($config_rows as $configline) {
                 $data_explode=explode(" ", $configline);
                 $permission=(isset($data_explode[1])) ? $data_explode[1] : 'full';
-                if ($data_explode[0]!='') {
+                if ($data_explode[0] != '') {
                     $configs[]=array('permission'=>$permission,'line'=>$data_explode[0]);
                     $configCheck[]=$data_explode[0];
                 }
@@ -448,7 +448,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $postconfig=null;
         }
-        if (in_array($postconfig,$configCheck) and $ui->smallletters('type',4,'get') and ($ui->smallletters('type',4,'get')=='easy' or $ui->smallletters('type',4,'get')=='full')) {
+        if (in_array($postconfig,$configCheck) and $ui->smallletters('type',4,'get') and ($ui->smallletters('type',4,'get') == 'easy' or $ui->smallletters('type',4,'get') == 'full')) {
             $explodeconfig=explode("/", $postconfig);
             $configname=$explodeconfig[(count($explodeconfig)-1)];
             $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -457,15 +457,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $ftpport=$row['ftpport'];
                 $ip=$row['ip'];
             }
-            if($gamebinary=="srcds_run"){
-                $config=$binarydir."/".$modfolder."/".$postconfig;
+            if($gamebinary == 'srcds_run'){
+                $config=$binarydir. '/' . $modfolder. '/' . $postconfig;
                 if ($configname=="server.cfg" and $qstat=="a2s") {
                     $general_cvar=array('hostname','sv_password','sv_contact','sv_tags','motdfile','mapcyclefile','sv_downloadurl','net_maxfilesize','rcon_password','sv_rcon_minfailures','sv_rcon_maxfailures','sv_rcon_banpenalty','sv_rcon_minfailuretime','sv_pure','sv_pure_kick_clients','sv_timeout','sv_voiceenable','sv_allowdownload','sv_allowupload','sv_region','sv_friction','sv_stopspeed','sv_gravity','sv_accelerate','sv_airaccelerate','sv_wateraccelerate','sv_allow_color_correction','sv_allow_wait_command','mp_flashlight','mp_footsteps','mp_falldamage','mp_limitteams','mp_limitteams','mp_friendlyfire','mp_autokick','mp_forcecamera','mp_fadetoblack','mp_allowspectators','mp_chattime','log','sv_log_onefile','sv_logfile','sv_logbans','sv_logecho','mp_logdetail','mp_timelimit','mp_winlimit','sv_minrate','sv_maxrate','sv_minupdaterate','sv_maxupdaterate','sv_mincmdrate','sv_maxcmdrate','sv_client_cmdrate_difference','sv_client_min_interp_ratio','sv_client_max_interp_ratio','mp_fraglimit','mp_maxrounds');
                 } else {
                     $general_cvar = array();
                 }
-            } else if($gamebinary=="hlds_run"){
-                $config=$modfolder."/".$postconfig;
+            } else if($gamebinary == 'hlds_run'){
+                $config=$modfolder. '/' . $postconfig;
                 $general_cvar = array();
             } else {
                 $general_cvar = array();
@@ -478,11 +478,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
             } else {
                 $game_cvars = array();
             }
-            if ($ui->smallletters('type',4,'get')=='full' and isset($ui->post['update']) and $ui->post['update']==1) {
+            if ($ui->smallletters('type',4,'get') == 'full' and isset($ui->post['update']) and $ui->post['update']==1) {
                 $configfile=stripslashes($ui->post['cleanedconfig']);
-                $fp= true;
+                $fp = true;
             } else {
-                $fp=@fopen("ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip."_"."$port/$ftpshorten/$config",'r');
+                $fp=@fopen("ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip . '_' . "$port/$ftpshorten/$config",'r');
                 $configfile = '';
             }
             $noConfig=($fp==false) ? true: false;
@@ -493,7 +493,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $info=stream_get_meta_data($fp);
                 fclose($fp);
             }
-            if ($noConfig===false and isset($info['timed_out']) and $info['timed_out']!="") {
+            if ($noConfig===false and isset($info['timed_out']) and $info['timed_out'] != '') {
                 $template_file = "Connection timed out!";
             } else {
                 $configfile=str_replace(array("\0" , "\b" , "\r", "\Z"),"",$configfile);
@@ -511,11 +511,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             $value=$split[1];
                             if ($cvar!="exec") {
                                 if (isset($ui->post[$cvar])) {
-                                    if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post[$cvar]!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
+                                    if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post[$cvar] != $ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed== 'Y') {
                                         eacchange('change',$id,$ui->post[$cvar],$reseller_id);
                                     }
                                     $newconfig .=$cvar." \"".$ui->post[$cvar]."\""."\r\n";
-                                } else if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $value!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
+                                } else if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $value != $ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed== 'Y') {
                                     eacchange('change',$id,$value,$reseller_id);
                                 } else {
                                     $newconfig .=$singeline."\r\n";
@@ -535,11 +535,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
                                 }
                                 if ($cvar!="exec") {
                                     if (isset($ui->post[$cvar])) {
-                                        if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post[$cvar]!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
+                                        if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post[$cvar] != $ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed== 'Y') {
                                             eacchange('change',$id,$ui->post[$cvar],$reseller_id);
                                         }
                                         $newconfig .=$cvar." \"".$ui->post[$cvar]."\""."\r\n";
-                                    } else if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $value!=$ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') {
+                                    } else if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $value != $ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed== 'Y') {
                                         eacchange('change',$id,$value,$reseller_id);
                                     } else {
                                         $newconfig .=$singeline."\r\n";
@@ -578,7 +578,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         $post_lines[]="\r\n";
                         $post_lines[]="\r\n";
                         foreach ($post_lines as $line) {
-                            if ($line=='\r\n') {
+                            if ($line == '\r\n') {
                                 fwrite($temp, $line,16384);
                             } else {
                                 fwrite($temp, $line."\r\n",16384);
@@ -588,7 +588,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 }
                 fseek($temp,0);
                 fseek($temp,0);
-                if ($ftpport==21 or $ftpport=="" or $ftpport==null) {
+                if ($ftpport==21 or $ftpport == '' or $ftpport==null) {
                     $ftp_connect= @ftp_connect($ip);
                 } else {
                     $ftp_connect= @ftp_connect($ip,$ftpport);
@@ -599,15 +599,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         $split_config=preg_split('/\//', $config, -1, PREG_SPLIT_NO_EMPTY);
                         $folderfilecount=count($split_config)-1;
                         $i = 0;
-                        $folders=$pserver.$serverip.'_'.$port. '/'. $ftpshorten;
+                        $folders=$pserver.$serverip . '_' . $port. '/' . $ftpshorten;
                         while ($i<$folderfilecount) {
-                            $folders .="/".$split_config[$i];
+                            $folders .= '/' . $split_config[$i];
                             $i++;
                         }
                         $uploadfile=$split_config[$i];
                         ftp_chdir($ftp_connect,$folders);
                         $checkupload=@ftp_fput($ftp_connect,$uploadfile,$temp,FTP_ASCII);
-                        $template_file = ($checkupload) ? $sprache->updated . '  ' . $uploadfile : $sprache->failed . '  ' . $folders. '/'. $uploadfile;
+                        $template_file = ($checkupload) ? $sprache->updated . '  ' . $uploadfile : $sprache->failed . '  ' . $folders. '/' . $uploadfile;
                     } else {
                         $template_file = 'Error: Logindata';
                     }
@@ -653,7 +653,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     }
                 }
                 $array_keys=array_keys($unknownarray);
-                if ($configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed=='Y') $oldrcon=(array_key_exists('rcon_password', $linearray)) ? $linearray['rcon_password'] : 'unset';
+                if ($configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($qstat=="a2s" or $qstat=="hla2s") and $eacallowed== 'Y') $oldrcon=(array_key_exists('rcon_password', $linearray)) ? $linearray['rcon_password'] : 'unset';
                 if ($ui->smallletters('type',4,'get')=="easy") {
                     $template_file = "userpanel_gserver_config_edit_easy.tpl";
                 } else if ($ui->smallletters('type',4,'get')=="full") {
@@ -668,7 +668,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
 } else {
     $table = array();
-    if (isset($admin_id) and $reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
+    if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
     $query = $sql->prepare("SELECT AES_DECRYPT(`ftppassword`,?) AS `cftppass`,g.*,s.`servertemplate`,s.`upload`,t.`shorten`,t.`qstatpassparam`,t.`protected` AS `tp`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=? ORDER BY g.`serverip`,g.`port`");
     $query2 = $sql->prepare("SELECT `ftpport` FROM `rserverdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($aeskey,$user_id,$reseller_id));
@@ -690,49 +690,49 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $name=$row['queryName'];
             $ip=$row['serverip'];
             $port=$row['port'];
-            $address=$ip.':'.$port;
+            $address=$ip . ':' . $port;
             $numplayers=$row['queryNumplayers'];
             $maxplayers=$row['queryMaxplayers'];
-            $map=(in_array($row['queryMap'],array(false,null,''))) ? 'Unknown' : $row['queryMap'];
-            $ce=explode(',',$row['cores']);
+            $map=(in_array($row['queryMap'], array(false, null,''))) ? 'Unknown' : $row['queryMap'];
+            $ce=explode(',', $row['cores']);
             $coreCount=count($ce);
             $cores = array();
-            if ($row['taskset']=='Y' and $coreCount>0) foreach ($ce as $uc) $cores[]=$uc;
+            if ($row['taskset'] == 'Y' and $coreCount>0) foreach ($ce as $uc) $cores[]=$uc;
             $cores=implode(', ',$cores);
             $password=$row['queryPassword'];
             $stopped=$row['stopped'];
             $notified=$row['notified'];
             $cftppass=$row['cftppass'];
-            if ($stopped=='Y') $name="OFFLINE";
-            $updatetime=($user_language=="de") ? ($row['queryUpdatetime']!='') ? date('d.m.Y H:m:s',strtotime($row['queryUpdatetime'])) : $sprache->never : $row['queryUpdatetime'];
+            if ($stopped== 'Y') $name="OFFLINE";
+            $updatetime=($user_language=="de") ? ($row['queryUpdatetime'] != '') ? date('d.m.Y H:m:s',strtotime($row['queryUpdatetime'])) : $sprache->never : $row['queryUpdatetime'];
             $servertemplate=$row['servertemplate'];
             if ($row['upload']>1 and $row['upload']<4) {
-                $upload= true;
+                $upload = true;
             } else {
                 $colspan--;
                 $upload = false;
             }
-            $currentTemplate=(($protected=='N' or $tprotected=='N') and $servertemplate>1) ? $row['shorten']."-".$servertemplate : $row['shorten'];
+            $currentTemplate=(($protected== 'N' or $tprotected== 'N') and $servertemplate>1) ? $row['shorten'] . '-' . $servertemplate : $row['shorten'];
             $imgNameP = '';
             $imgAltP = '';
             $pro = '';
             $pserver="/server/";
-            if ($protected=='N' and ($pallowed=='Y' and $tprotected=='Y')) {
+            if ($protected== 'N' and ($pallowed== 'Y' and $tprotected== 'Y')) {
                 $imgNameP='16_unprotected';
                 $imgAltP=$sprache->off2;
                 $pro=$sprache->off2;
                 $pserver="/server/";
-            } else if ($protected=='Y' and $tprotected=='Y' and $pallowed=='Y') {
+            } else if ($protected== 'Y' and $tprotected== 'Y' and $pallowed== 'Y') {
                 $imgNameP='16_protected';
                 $imgAltP=$sprache->on;
                 $pserver="/pserver/";
                 $pro=$sprache->on;
             }
             if($pa['ftpaccess'] or $pa['miniroot']) {
-                if ($row['newlayout']=='Y') $cname=$cname . '-' . $row['id'];
+                if ($row['newlayout'] == 'Y') $cname=$cname . '-' . $row['id'];
                 $query2->execute(array($rootid));
                 $ftpport=$query2->fetchColumn();
-                $ftpdata="ftp://".$cname.":".$cftppass."@".$ip.":".$ftpport.$pserver.$ip.'_'.$port."/".$currentTemplate;
+                $ftpdata="ftp://".$cname . ':' . $cftppass."@".$ip . ':' . $ftpport.$pserver.$ip . '_' . $port. '/' . $currentTemplate;
             } else {
                 $cftppass = '';
                 $ftpport = '';
@@ -742,23 +742,23 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $premoved = '';
             $imgName='16_ok';
             $imgAlt='Online';
-            if ($stopped=='Y') {
+            if ($stopped== 'Y') {
                 $numplayers = 0;
                 $maxplayers = 0;
                 $imgName='16_bad';
                 $imgAlt='Stopped';
-            } else if (($name=='OFFLINE' or $name=='') and $notified>=$rSA['down_checks'] and $stopped=='N') {
+            } else if (($name == 'OFFLINE' or $name == '') and $notified>=$rSA['down_checks'] and $stopped== 'N') {
                 $numplayers = 0;
                 $maxplayers = 0;
                 $imgName='16_error';
                 $imgAlt='Crashed';
             } else {
-                if ($war=='Y' and $password=='N') {
+                if ($war== 'Y' and $password== 'N') {
                     $imgName='16_error';
                     $imgAlt='No Password';
                     $premoved=$sprache->premoved;
                 }
-                if ($brandname=='Y' and $rSA['brandname']!=null and $rSA['brandname']!='' and strpos(strtolower($name), strtolower($rSA['brandname'])) === false) {
+                if ($brandname == 'Y' and $rSA['brandname'] != null and $rSA['brandname'] != '' and strpos(strtolower($name), strtolower($rSA['brandname'])) === false) {
                     $imgName='16_error';
                     $imgAlt='No Servertag';
                     $nameremoved=$sprache->nameremoved;

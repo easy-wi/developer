@@ -55,7 +55,7 @@ if (isset($admin_id)) {
 } else if (isset($subuser_id)) {
     $logsubuser=$subuser_id;
 }
-if (isset($admin_id) and $reseller_id!=0) {
+if (isset($admin_id) and $reseller_id != 0) {
     $reseller_id=$admin_id;
 }
 $ftpAddress = '';
@@ -74,24 +74,24 @@ $query->execute(array($aeskey,$user_id,$reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) {
         $customer=$row['cname'];
-        if ($row['newlayout']=='Y') $customer=$row['cname'] . '-' . $row['id'];
+        if ($row['newlayout'] == 'Y') $customer=$row['cname'] . '-' . $row['id'];
         $temp = array();
         $query2->execute(array($row['id']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $search = '';
-            if ($row2['gamebinary']=='hlds_run' or ($row2['gamebinary']=='srcds_run' and ($row2['appID']==740 or $row2['appID']==730))) {
+            if ($row2['gamebinary'] == 'hlds_run' or ($row2['gamebinary'] == 'srcds_run' and ($row2['appID']==740 or $row2['appID']==730))) {
                 $search='/'. $row2['modfolder'];
-            } else if ($row2['gamebinary']=='srcds_run' and $row2['appID']!=740 and $row2['appID']!=730) {
-                $search='/'. $row2['binarydir']. '/'. $row2['modfolder'];
+            } else if ($row2['gamebinary'] == 'srcds_run' and $row2['appID']!=740 and $row2['appID']!=730) {
+                $search='/'. $row2['binarydir']. '/' . $row2['modfolder'];
             }
             $temp[$row2['shorten']]=array('shorten'=>$row2['shorten'],'description'=>$row2['description'],'searchFor'=>$search,'modfolder'=>$row2['modfolder']);
         }
-        $table[$row['id']]=array('id'=>$row['id'],'address'=>$row['serverip'].':'.$row['port'],'games'=>$temp,'rootID'=>$row['rootID'],'gsfolder'=>$row['serverip'].'_'.$row['port'],'customer'=>$customer,'cftppass'=>$row['cftppass']);
+        $table[$row['id']]=array('id'=>$row['id'],'address'=>$row['serverip'] . ':' . $row['port'],'games'=>$temp,'rootID'=>$row['rootID'],'gsfolder'=>$row['serverip'] . '_' . $row['port'],'customer'=>$customer,'cftppass'=>$row['cftppass']);
     }
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->smallletters('action',2,'post')=='ms') {
+} else if ($ui->smallletters('action',2,'post') == 'ms') {
     function checkFolders ($dir,$searchFor,$maxDepth=false,$currentDepth=0) {
         global $ftp;
         $donotsearch=array('bin','cfg','cl_dlls','dlls','gfx','hl2','manual','maps','materials','models','particles','recource','scenes','scripts','sound','sounds','textures','valve','reslists');
@@ -178,12 +178,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
     }
     if ($ui->anyPath('ftpPath','post')) $ftpPath=$ui->anyPath('ftpPath','post');
-    $ftp=($ssl=='N') ? @ftp_connect($ftpAddress,$ftpPort,5) : @ftp_ssl_connect($ftpAddress,$ftpPort,5);
+    $ftp=($ssl== 'N') ? @ftp_connect($ftpAddress,$ftpPort,5) : @ftp_ssl_connect($ftpAddress,$ftpPort,5);
     if ($ftp) {
         $login=@ftp_login($ftp,$ftpUser,$ftpPassword);
         if ($login) {
             if (isset($searchFor)) {
-                if ($ftpPath!='') @ftp_chdir($ftp,$ftpPath);
+                if ($ftpPath != '') @ftp_chdir($ftp,$ftpPath);
                 $currentPath=@ftp_pwd($ftp);
                 if (substr($currentPath,strlen($searchFor)*(-1))==$searchFor) {
                     $ftpPath=$currentPath;
@@ -209,12 +209,12 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $sshport=$rdata['port'];
         $sshuser=$rdata['user'];
         $sshpass=$rdata['pass'];
-        if ($ssl=='N') {
+        if ($ssl== 'N') {
             $ftpConnect='ftp://';
         } else {
             $ftpConnect='ftps://';
         }
-        $ftpConnect.=str_replace('//','/',$ftpAddress.':'.$ftpPort. '/'. $ftpPath);
+        $ftpConnect.=str_replace('//','/',$ftpAddress . ':' . $ftpPort. '/' . $ftpPath);
         ssh2_execute('gs',$rootID,"sudo -u ${customer} ./control.sh migrateserver ${customer} 1_${shorten} ${gsfolder} ${template} ${ftpUser} ${ftpPassword} ${ftpConnect} ${modFolder}");
         $loguseraction="%import% %gserver% ${address}";
         $template_file = $sprache->import_start;

@@ -54,13 +54,13 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
-if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id=$admin_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get')=='ad') {
-    if ($ui->smallletters('action',2,'post')=='ad'){
+} else if ($ui->st('d','get') == 'ad') {
+    if ($ui->smallletters('action',2,'post') == 'ad'){
         include(EASYWIDIR . '/stuff/ssh_exec.php');
         $serverid=$ui->id('id',10,'get');
         $rootServer=new masterServer($serverid,$aeskey);
@@ -110,8 +110,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $template_file = "admin_master_add.tpl";
     }
-} else if ($ui->st('d','get')=='dl' and $ui->id('id',19,'get')) {
-    if ($ui->smallletters('action',2,'post')=='dl'){
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id',19,'get')) {
+    if ($ui->smallletters('action',2,'post') == 'dl'){
         include(EASYWIDIR . '/stuff/ssh_exec.php');
         $serverid=$ui->id('id',19,'get');
         $rdata=serverdata('root',$serverid,$aeskey);
@@ -163,26 +163,26 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $template_file = "Error: No such ID!";
         }
     }
-} else if ($ui->st('d','get')=='md'){
+} else if ($ui->st('d','get') == 'md'){
     include(EASYWIDIR . '/stuff/ssh_exec.php');
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='ar') {
+    if ($ui->st('o','get') == 'ar') {
         $orderby='`resellerid` ASC';
-    } else if ($ui->st('o','get')=='dr') {
+    } else if ($ui->st('o','get') == 'dr') {
         $orderby='`resellerid` DESC';
-    } else if ($ui->st('o','get')=='ap') {
+    } else if ($ui->st('o','get') == 'ap') {
         $orderby='`ip` ASC';
-    } else if ($ui->st('o','get')=='dp') {
+    } else if ($ui->st('o','get') == 'dp') {
         $orderby='`ip` DESC';
-    } else if ($ui->st('o','get')=='as') {
+    } else if ($ui->st('o','get') == 'as') {
         $orderby='`active` ASC';
-    } else if ($ui->st('o','get')=='ds') {
+    } else if ($ui->st('o','get') == 'ds') {
         $orderby='`active` DESC';
-    } else if ($ui->st('o','get')=='ad') {
+    } else if ($ui->st('o','get') == 'ad') {
         $orderby='`description` ASC';
-    } else if ($ui->st('o','get')=='dd') {
+    } else if ($ui->st('o','get') == 'dd') {
         $orderby='`description` DESC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='`id` DESC';
     } else {
         $orderby='`id` ASC';
@@ -193,7 +193,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $table = array();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $id=$row['id'];
-        if ($row['active']=='Y') {
+        if ($row['active'] == 'Y') {
             $imgName='16_ok';
             $imgAlt='Active';
         } else {
@@ -207,14 +207,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $pselect2->execute(array($id,$reseller_id));
         foreach ($pselect2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $shorten=$row2['shorten'];
-            if ($row['active']=='N' or ($row2['installing']=='N' and $row2['updating']=='N')) {
-                $statusList[$row2['shorten']]='16_ok';
+            if ($row['active'] == 'N' or ($row2['installing'] == 'N' and $row2['updating'] == 'N')) {
+                $statusList[$row2['shorten']] = '16_ok';
             } else {
                 $toolong=date($row2['installstarted'],strtotime("+15 minutes"));
-                if (strtotime($logdate)>strtotime($toolong) or $row2['updating']=='Y') {
+                if (strtotime($logdate)>strtotime($toolong) or $row2['updating'] == 'Y') {
                     $sshcheck[]=$row2['shorten'];
                 } else {
-                    $statusList[$row2['shorten']]='16_installing';
+                    $statusList[$row2['shorten']] = '16_installing';
                 }
             }
         }
@@ -238,11 +238,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     }
                 }
                 foreach ($games as $k=>$v) {
-                    if (!in_array($k,array('steamcmd','sync'))) {
+                    if (!in_array($k, array('steamcmd','sync'))) {
                         $query2->execute(array($k,$reseller_id,$ip));
                         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                            if (($v==0 and $row2['rupdates']!=4 and $row2['updates']!=4 and $row2['steamgame']!='S') or ($row2['steamgame']=='S' and (!isset($games['steamcmd']) or $games['steamcmd']==0)) or (($row2['rupdates']==4 or $row2['updates']==4) and (!isset($games['sync']) or $games['sync']==0))) {
-                                $statusList[$k]='16_ok';
+                            if (($v==0 and $row2['rupdates']!=4 and $row2['updates']!=4 and $row2['steamgame'] != 'S') or ($row2['steamgame'] == 'S' and (!isset($games['steamcmd']) or $games['steamcmd']==0)) or (($row2['rupdates']==4 or $row2['updates']==4) and (!isset($games['sync']) or $games['sync']==0))) {
+                                $statusList[$k] = '16_ok';
                                 $query3->execute(array($row2['id']));
                                 unset($sshcheck[array_search($k,$sshcheck)]);
                             }
@@ -251,7 +251,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 }
             }
             foreach ($sshcheck as $shorten) {
-                $statusList[$shorten]='16_installing';
+                $statusList[$shorten] = '16_installing';
             }
         }
         $table[]=array('id'=>$row['id'],'img'=>$imgName,'alt'=>$imgAlt,'ip'=>$row['ip'],'os'=>$row['os'],'bit'=>$row['bitversion'],'description'=>$description,'statusList'=>$statusList,'active'=>$row['active']);
@@ -267,13 +267,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ma&amp;d=md&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -288,17 +288,17 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=ma&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ma&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=ma&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ma&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }
     $pages=implode(', ',$pages);
     $template_file = "admin_master_list.tpl";
-} else if ($ui->st('d','get')=='ud' and $ui->smallletters('action',2,'post')=='ud'){
+} else if ($ui->st('d','get') == 'ud' and $ui->smallletters('action',2,'post') == 'ud'){
     if (is_object($ui->id('id',19,'post')) or is_array($ui->id('id',19,'post'))) {
         foreach($ui->id('id',19,'post') as $id) {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -334,7 +334,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $table3 = array();
     foreach ($query5->fetchAll(PDO::FETCH_ASSOC) as $row5) {
         $shorten=$row5['shorten'];
-        $table3[]='<a href="admin.php?w=ma&amp;d=ud&amp;m='.$shorten.'">'.$shorten.'</a>';
+        $table3[] = '<a href="admin.php?w=ma&amp;d=ud&amp;m='.$shorten.'">'.$shorten.'</a>';
     }
     $query6 = $sql->prepare("SELECT s.`qstat`,q.`description` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` INNER JOIN `qstatshorten` q ON s.`qstat`=q.`qstat` WHERE r.`resellerid`=? GROUP BY s.`qstat` ORDER BY s.`qstat` ASC");
     $query6->execute(array($reseller_id));
@@ -342,7 +342,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     foreach ($query6->fetchAll(PDO::FETCH_ASSOC) as $row6) {
         $shorten=$row6['qstat'];
         $type=$row6['description'];
-        $table4[]='<a href="admin.php?w=ma&amp;d=ud&amp;m='.$shorten.'">'.$type.'</a>';
+        $table4[] = '<a href="admin.php?w=ma&amp;d=ud&amp;m='.$shorten.'">'.$type.'</a>';
     }
     $template_file = "admin_master_ud.tpl";
 }

@@ -134,3 +134,6 @@ function isid($value,$count){
 function isDate ($value) {
     return (is_string($value) and @strtotime($value)) ? $value : false;
 }
+function gamestring($value){
+    return (preg_match("/^[\w\.\-\_]+$/", $value)) ? $value : false;
+}

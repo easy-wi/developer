@@ -53,8 +53,8 @@ if ($reseller_id==0) {
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get')=='ad') {
-	if ($ui->smallletters('action',2,'post')=='ad') {
+} else if ($ui->st('d','get') == 'ad') {
+	if ($ui->smallletters('action',2,'post') == 'ad') {
 		$error = array();
 		if (!$ui->ismail('mail','post')){
             $error[]=$sprache->error_mail;
@@ -82,20 +82,20 @@ if ($ui->w('action',4,'post') and !token(true)) {
 				$prefix1=$row['prefix1'];
 				$prefix2=$row['prefix2'];
 			}
-			if ($prefix1=='Y' and $accounttype!='a') {
+			if ($prefix1== 'Y' and $accounttype!='a') {
 				$cname=$prefix2;
 				$bogus=$cname.$ui->ismail('mail','post');
 			} else {
-                if ($accounttype=='a' and $ui->username('acname',255,'post')) {
+                if ($accounttype == 'a' and $ui->username('acname',255,'post')) {
                     $cname=$ui->username('acname',255,'post');
-                } else if ($accounttype=='r' and $ui->username('rcname',255,'post')) {
+                } else if ($accounttype == 'r' and $ui->username('rcname',255,'post')) {
                     $cname=$ui->username('rcname',255,'post');
-                } else if ($accounttype=='u' and $ui->username('cname',255,'post')) {
+                } else if ($accounttype == 'u' and $ui->username('cname',255,'post')) {
                     $cname=$ui->username('cname',255,'post');
                 } else {
-                    $error[]='Entered Username not valid!';
+                    $error[] = 'Entered Username not valid!';
                 }
-                if ($cname!='' and $cname!=null and $cname!=false) {
+                if ($cname!='' and $cname != null and $cname!=false) {
                     $bogus=$cname;
                     $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? LIMIT 1");
                     $query->execute(array($cname));
@@ -107,7 +107,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                         if ($query->rowCount()>0) unset($cname,$bogus);
                     }
                 } else {
-                    $error[]='Username transmitted empty!';
+                    $error[] = 'Username transmitted empty!';
                 }
 			}
 			if (isset($cname) and isset($bogus)) {
@@ -133,14 +133,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $mail_serverdown=yesNo('mail_serverdown');
                 $mail_ticket=yesNo('mail_ticket');
                 $mail_vserver=yesNo('mail_vserver');
-                if ($accounttype=='r') {
+                if ($accounttype == 'r') {
                     $usergroup=$ui->id('groups_r',19,'post');
                     $mail_backup=yesNo('mail_backup');
                     $mail_gsupdate=yesNo('rmail_gsupdate');
                     $mail_securitybreach=yesNo('rmail_securitybreach');
                     $mail_vserver=yesNo('rmail_vserver');
                     $useractive=yesNo('useractive');
-				} else if ($accounttype=='a') {
+				} else if ($accounttype == 'a') {
                     $usergroup=$ui->id('groups_a',19,'post');
                 } else {
                     $usergroup=$ui->id('groups_u',19,'post');
@@ -148,31 +148,31 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $query = $sql->prepare("INSERT INTO `userdata` (`creationTime`,`updateTime`,`active`,`salutation`,`birthday`,`country`,`fax`,`cname`,`security`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`fdlpath`,`accounttype`,`mail_backup`,`mail_gsupdate`,`mail_securitybreach`,`mail_serverdown`,`mail_ticket`,`mail_vserver`) VALUES (NOW(),NOW(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 $query->execute(array($active,$salutation,$birthday,$country,$fax,$bogus,$security,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$accounttype,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver));
                 $id=$sql->lastInsertId();
-                $query=($accounttype=='r' and $reseller_id==0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
+                $query=($accounttype == 'r' and $reseller_id==0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
                 $query2 = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `groupID`=VALUES(`groupID`)");
                 foreach ($usergroup as $gid) {
-                    if ($accounttype=='r' and $reseller_id==0) $query->execute(array($gid,$accounttype));
+                    if ($accounttype == 'r' and $reseller_id==0) $query->execute(array($gid,$accounttype));
                     else $query->execute(array($gid,$accounttype,$reseller_id));
                     if(isid($query->fetchColumn(),10)) $query2->execute(array($id,$gid,$reseller_id));
                 }
                 customColumns('U',$id,'save');
                 $cnamenew=$ui->username('cname',255,'post');
-				if($prefix1=='Y' and $accounttype!='a') {
+				if($prefix1== 'Y' and $accounttype!='a') {
 					$cnamenew=$cname.$id;
 				} else if ($accounttype!='a') {
 					$cnamenew=$cname;
-				} else if ($accounttype=='a' and $ui->username('acname',255,'post')) {
+				} else if ($accounttype == 'a' and $ui->username('acname',255,'post')) {
                     $cnamenew=$ui->username('acname',255,'post');
                 } else {
                     die('Fatal Error 2: Username transmitted empty!');
                 }
-				if ($accounttype=='a') {
+				if ($accounttype == 'a') {
 					$resellerid=$reseller_id;
-					$ips = "";
-				} else if ($accounttype=='u') {
+					$ips = '';
+				} else if ($accounttype == 'u') {
 					$resellerid=$reseller_id;
-					$ips = "";
-				} else if ($accounttype=='r') {
+					$ips = '';
+				} else if ($accounttype == 'r') {
 					$resellerid=$id;
                     if (!$ui->id('maxuser',10,'post')) {
                         $maxuser = 0;
@@ -216,7 +216,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 							}
 						}
 						if (!isset($ips)) {
-							$ips = "";
+							$ips = '';
 						}
 					} else {
 						$ips = '';
@@ -233,15 +233,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
                             $questionmarks = array();
                             $intos = array();
                             foreach ($row as $key=>$value) {
-                                if ($key!='id' and $key!='resellerid'){
+                                if ($key != 'id' and $key != 'resellerid'){
                                     $keys[]="`".$key."`";
-                                    $questionmarks[]='?';
+                                    $questionmarks[] = '?';
                                     $intos[]=$value;
                                 }
                             }
                             $keys[]="`resellerid`";
                             $intos[]=$id;
-                            $questionmarks[]='?';
+                            $questionmarks[] = '?';
                             $into='INSERT INTO `'.$tablename.'` ('.implode(',',$keys).') VALUES ('.implode(',',$questionmarks).')';
                             $query = $sql->prepare("$into");
                             $query->execute($intos);
@@ -253,10 +253,10 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $query4 = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`text`,`transID`,`resellerID`) VALUES ('ad',?,?,?,?)");
                     $query->execute(array($reseller_id));
 					foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                        $query2->execute(array($row['active'],$row['shorten'],$row['addon'],$row['type'],$row['folder'],$row['menudescription'],$row['configs'],$row['cmd'],$row['paddon'],$id));
+                        $query2->execute(array($row['active'], $row['shorten'], $row['addon'], $row['type'], $row['folder'], $row['menudescription'], $row['configs'], $row['cmd'], $row['paddon'],$id));
                         $newID=$sql->lastInsertId();
                         $query3->execute(array($row['id'],$reseller_id));
-						foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) $query4->execute(array($row3['lang'],$row3['text'],$newID,$id));
+						foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) $query4->execute(array($row3['lang'], $row3['text'],$newID,$id));
 					}
                     CopyAdminTable('servertypes',$id,$reseller_id,'',$sql);
                     CopyAdminTable('settings',$id,$reseller_id,'LIMIT 1',$sql);
@@ -265,11 +265,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $query = $sql->prepare("SELECT * FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
                     $query2 = $sql->prepare("INSERT INTO `lendsettings` (`active`,`mintime`,`maxtime`,`timesteps`,`minplayer`,`maxplayer`,`playersteps`,`vomintime`,`vomaxtime`,`votimesteps`,`vominplayer`,`vomaxplayer`,`voplayersteps`,`shutdownempty`,`shutdownemptytime`,`ftpupload`,`ftpuploadpath`,`lendaccess`,`lastcheck`,`oldcheck`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'0xe4bca9cd69b8488c9c5ee5b7d32c12f3a3cdae349a54edbe6659fc2817ccc86489b12864ebbb43eff607be85611da6c4','3',?,?,?)");
                     $query->execute(array($reseller_id));
-					foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $query2->execute(array($row['active'],$row['mintime'],$row['maxtime'],$row['timesteps'],$row['minplayer'],$row['maxplayer'],$row['playersteps'],$row['vomintime'],$row['vomaxtime'],$row['votimesteps'],$row['vominplayer'],$row['vomaxplayer'],$row['voplayersteps'],$row['shutdownempty'],$row['shutdownemptytime'],$row['ftpupload'],$row['lastcheck'],$row['oldcheck'],$id));
+					foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $query2->execute(array($row['active'], $row['mintime'], $row['maxtime'], $row['timesteps'], $row['minplayer'], $row['maxplayer'], $row['playersteps'], $row['vomintime'], $row['vomaxtime'], $row['votimesteps'], $row['vominplayer'], $row['vomaxplayer'], $row['voplayersteps'], $row['shutdownempty'], $row['shutdownemptytime'], $row['ftpupload'], $row['lastcheck'], $row['oldcheck'],$id));
                     $query = $sql->prepare("SELECT * FROM `translations` WHERE `type`='em' AND `resellerID`=?");
                     $query2 = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('em',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                     $query->execute(array($reseller_id));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $query2->execute(array($row['transID'],$row['lang'],$row['text'],$id));
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $query2->execute(array($row['transID'], $row['lang'], $row['text'],$id));
                     $resellersid=($reseller_id==0) ? $resellerid : $reseller_id;
                     $query = $sql->prepare("INSERT INTO `resellerdata` (`useractive`,`ips`,`maxuser`,`maxgserver`,`maxvoserver`,`maxdedis`,`maxvserver`,`maxuserram`,`maxusermhz`,`resellerid`,`resellersid`) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
                     $query->execute(array($useractive,$ips,$maxuser,$maxgserver,$maxvoserver,$maxdedis,$maxvserver,$maxuserram,$maxusermhz,$resellerid,$resellersid));
@@ -284,7 +284,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $query->execute(array($cnamenew,$security2,$salt,$resellerid,$id));
 				} else if ($user_accounttype=="r" and $admin_id==$reseller_id) {
                     $query->execute(array($cnamenew,$security2,$salt,$reseller_id,$id));
-				} else if ($user_accounttype=="r" and $admin_id!=$reseller_id) {
+				} else if ($user_accounttype=="r" and $admin_id != $reseller_id) {
                     $query->execute(array($cnamenew,$security2,$salt,$admin_id,$id));
 				}
 				sendmail('emailuseradd',$id,$cnamenew,$password);
@@ -302,13 +302,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query->execute(array($reseller_id));
         $prefix1=$query->fetchColumn();
         $groups = array();
-        $lookUpID=($reseller_id!=0) ? $reseller_id: 0;
+        $lookUpID=($reseller_id != 0) ? $reseller_id: 0;
         $groups=array('a'=>array(),'r'=>array(),'u'=>array());
         $defaultGroups = array();
         $query = $sql->prepare("SELECT `id`,`grouptype`,`name`,`defaultgroup` FROM `usergroups` WHERE `active`='Y' AND `resellerid`=?");
         $query->execute(array($lookUpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['defaultgroup']=='Y') $defaultGroups[$row['grouptype']][$row['id']]=$row['name'];
+            if ($row['defaultgroup'] == 'Y') $defaultGroups[$row['grouptype']][$row['id']]=$row['name'];
             $groups[$row['grouptype']][$row['id']]=$row['name'];
         }
         if ($reseller_id==0 or $reseller_id==$admin_id) {
@@ -319,7 +319,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $selectlanguages=getlanguages($template_to_use);
         $template_file = 'admin_user_add.tpl';
     }
-} else if ($ui->st('d','get')=='dl' and $ui->id('id',10,'get')!=$admin_id and ($pa['user'] or $pa['user_users'])) {
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get') != $admin_id and ($pa['user'] or $pa['user_users'])) {
     $id=$ui->id('id',10,'get');
     if (!$ui->smallletters('action',2,'post')) {
         if($reseller_id==0) {
@@ -329,7 +329,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if (($row['accounttype']=='a' and $pa['user']) or  ($row['accounttype']!='a') and ($pa['user'] or $pa['user_users'])) {
+            if (($row['accounttype'] == 'a' and $pa['user']) or  ($row['accounttype'] != 'a') and ($pa['user'] or $pa['user_users'])) {
                 $cname=$row['cname'];
                 $name=$row['name'];
             }
@@ -339,8 +339,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $template_file = 'admin_404.tpl';
         }
-    } else if ($ui->smallletters('action',2,'post')=='dl') {
-        if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
+    } else if ($ui->smallletters('action',2,'post') == 'dl') {
+        if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
         $template_file = '';
         if($reseller_id==0) {
             $query = $sql->prepare("SELECT `cname`,`resellerid`,`accounttype` FROM `userdata` WHERE `id`=? AND (`resellerid`=? OR `id`=resellerid) LIMIT 1");
@@ -349,14 +349,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if (($row['accounttype']=='a' and $pa['user']) or  ($row['accounttype']!='a') and ($pa['user'] or $pa['user_users'])) {
-                $deleted= true;
+            if (($row['accounttype'] == 'a' and $pa['user']) or  ($row['accounttype'] != 'a') and ($pa['user'] or $pa['user_users'])) {
+                $deleted = true;
                 $cname=$row['cname'];
                 $resellerid=$row['resellerid'];
                 $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                 $update->execute(array($id,$resellerid));
                 $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('U','us',?,?,?,?,NULL,NOW(),'dl',?)");
-                $insert->execute(array($admin_id,$id,$id,$row['cname'],$resellerid));
+                $insert->execute(array($admin_id,$id,$id, $row['cname'],$resellerid));
                 updateJobs($id,$reseller_id);
             }
         }
@@ -372,20 +372,20 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get')=='md' and $ui->id('id',10,'get')) {
+} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get')) {
     $id=$ui->id('id',10,'get');
-    $resellerid=($reseller_id!=0 and $admin_id!=$reseller_id) ? $admin_id : $reseller_id;
+    $resellerid=($reseller_id != 0 and $admin_id != $reseller_id) ? $admin_id : $reseller_id;
     if (!$ui->smallletters('action',2,'post')) {
         $query=($reseller_id==0) ? $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND (`resellerid`=? OR `id`=resellerid) LIMIT 1") : $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$resellerid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $active='N';
-            if ($row['jobPending']=='Y') {
+            $active = 'N';
+            if ($row['jobPending'] == 'Y') {
                 $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='us' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
-                $query2->execute(array($row['id'],$row['resellerid']));
+                $query2->execute(array($row['id'], $row['resellerid']));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    if ($row2['action']=='ad') $jobPending=$gsprache->add;
-                    else if ($row2['action']=='dl') $jobPending=$gsprache->del;
+                    if ($row2['action'] == 'ad') $jobPending=$gsprache->add;
+                    else if ($row2['action'] == 'dl') $jobPending=$gsprache->del;
                     else $jobPending=$gsprache->mod;
                     $json=@json_decode($row2['extraData']);
                     $active=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
@@ -418,27 +418,27 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $mail_vserver=$row['mail_vserver'];
             $creationTime=$row['creationTime'];
             $updateTime=$row['updateTime'];
-            if ($user_language=='de') {
+            if ($user_language == 'de') {
                 $creationTime=date('d-m-Y H:i:s',strtotime($row['creationTime']));
                 $updateTime=date('d-m-Y H:i:s',strtotime($row['updateTime']));
             }
         }
-        if (isset($accounttype) and (($accounttype=='a' and $pa['user']) or ($accounttype!='a') and ($pa['user'] or $pa['user_users']))){
+        if (isset($accounttype) and (($accounttype == 'a' and $pa['user']) or ($accounttype!='a') and ($pa['user'] or $pa['user_users']))){
             $groups = array();
             $groupsAssigned = array();
-            $lookUpID=($reseller_id!=0) ? $reseller_id : 0;
+            $lookUpID=($reseller_id != 0) ? $reseller_id : 0;
             $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`=? AND `resellerid`=?");
             $query->execute(array($accounttype,$lookUpID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $groups[$row['id']]=$row['name'];
             }
-            if ($accounttype=='r' and $reseller_id==0) $lookUpID=$id;
+            if ($accounttype == 'r' and $reseller_id==0) $lookUpID=$id;
             $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=? AND `resellerID`=?");
             $query->execute(array($id,$lookUpID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $groupsAssigned[]=$row['groupID'];
             }
-            if ($accounttype=='r') {
+            if ($accounttype == 'r') {
                 $ips=($reseller_id==0 or $reseller_id==$admin_id) ? freeips($reseller_id) : freeips($admin_id);
                 $ipsAssigned = array();
                 $query = $sql->prepare("SELECT * FROM `resellerdata` WHERE `resellerid`=?");
@@ -465,7 +465,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $selectlanguages=getlanguages($template_to_use);
             $template_file = 'admin_user_md.tpl';
         } else $template_file = 'admin_404.tpl';
-    } else if ($ui->smallletters('action',2,'post')=='md') {
+    } else if ($ui->smallletters('action',2,'post') == 'md') {
         $errors = array();
         if (!$ui->ismail('mail','post')){
             $errors[]=$sprache->error_mail;
@@ -474,8 +474,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $query->execute(array($ui->ismail('mail','post'),$id));
             if ($query->fetchColumn()>0) $error[]=$sprache->error_mail;
         }
-        if (!$ui->id('groups',30,'post') and $id!=$admin_id){
-            $errors[]='Error: Group';
+        if (!$ui->id('groups',30,'post') and $id != $admin_id){
+            $errors[] = 'Error: Group';
         }
         if (count($errors)>0) {
             $template_file = implode('<br />',$errors);
@@ -496,7 +496,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
             if (isset($oldactive)) {
                 $fdlpath=$ui->url('fdlpath','post');
-                $active=(in_array($ui->escaped('active','post'),array('N','Y','R'))) ? $ui->escaped('active','post') : 'N';
+                $active=(in_array($ui->escaped('active','post'), array('N','Y','R'))) ? $ui->escaped('active','post') : 'N';
                 $mail_backup=yesNo('mail_backup');
                 $mail_gsupdate=yesNo('mail_gsupdate');
                 $mail_securitybreach=yesNo('mail_securitybreach');
@@ -547,21 +547,21 @@ if ($ui->w('action',4,'post') and !token(true)) {
                     $maxusermhz=$ui->id('maxusermhz',255,'post');
                     $query = $sql->prepare("SELECT `useractive` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
                     $query->execute(array($id));
-                    if($query->fetchColumn()!=$useractive) {
+                    if($query->fetchColumn() != $useractive) {
                         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `resellerid`=?");
                         $query->execute(array($id));
                         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row){
                             $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                             $update->execute(array($id,$reseller_id));
                             $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('U','us',?,?,?,?,NULL,NOW(),'md',?,?)");
-                            $insert->execute(array($admin_id,$row['id'],$row['id'],$row['cname'],json_encode(array('newActive'=>$useractive)),$id));
+                            $insert->execute(array($admin_id, $row['id'], $row['id'], $row['cname'],json_encode(array('newActive'=>$useractive)),$id));
                             updateJobs($row['id'],$reseller_id);
                         }
                     }
                     $query = $sql->prepare("UPDATE `resellerdata` SET `useractive`=?,`ips`=?,`maxuser`=?,`maxgserver`=?,`maxvoserver`=?,`maxdedis`=?,`maxvserver`=?,`maxuserram`=?,`maxusermhz`=? WHERE `resellerid`=? LIMIT 1");
                     $query->execute(array($useractive,$ips,$maxuser,$maxgserver,$maxvoserver,$maxdedis,$maxvserver,$maxuserram,$maxusermhz,$id));
                 }
-                if ($oldactive!=$active) {
+                if ($oldactive != $active) {
                     $jobPending=",`jobPending`='Y'";
                     $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                     $update->execute(array($id,$reseller_id));
@@ -572,13 +572,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`salutation`=?,`birthday`=?,`country`=?,`fax`=?,`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`fdlpath`=?,`mail_backup`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_vserver`=?$jobPending WHERE `id`=? and `resellerid`=? LIMIT 1");
                 $query->execute(array($salutation,$birthday,$country,$fax,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$id,$resellerlockupid));
                 customColumns('U',$id,'save');
-                if ($id!=$admin_id) {
+                if ($id != $admin_id) {
                     $tempArray = array();
-                    $query=($accounttype=='r' and $reseller_id==0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
+                    $query=($accounttype == 'r' and $reseller_id==0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
                     $query2 = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `groupID`=VALUES(`groupID`)");
                     foreach ($ui->id('groups',10,'post') as $gid) {
                         $tempArray[]=$gid;
-                        if ($accounttype=='r' and $reseller_id==0) $query->execute(array($gid,$accounttype));
+                        if ($accounttype == 'r' and $reseller_id==0) $query->execute(array($gid,$accounttype));
                         else $query->execute(array($gid,$accounttype,$resellerlockupid));
                         if(isid($query->fetchColumn(),10)) $query2->execute(array($id,$gid,$resellerlockupid));
                     }
@@ -596,30 +596,30 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $loguseraction="%mod% %user% $cname";
                 $insertlog->execute();
             } else {
-                $template_file = $spracheResponse->notFound;
+                $template_file = 'userpanel_404.tpl';
             }
         }
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get')=='pw' and $ui->id('id',10,'get') and $pa['userPassword']) {
+} else if ($ui->st('d','get') == 'pw' and $ui->id('id',10,'get') and $pa['userPassword']) {
     $id=$ui->id('id',10,'get');
     $query=($reseller_id==0) ? $sql->prepare("SELECT `cname`,`accounttype` FROM `userdata` WHERE `id`=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("SELECT `cname`,`accounttype` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (($row['accounttype']=='a' and $pa['user']) or ($row['accounttype']!='a') and ($pa['user'] or $pa['user_users'])) $cname=$row['cname'];
+        if (($row['accounttype'] == 'a' and $pa['user']) or ($row['accounttype'] != 'a') and ($pa['user'] or $pa['user_users'])) $cname=$row['cname'];
     }
     if (!$ui->smallletters('action',2,'post') and isset($cname)) {
         $template_file = 'admin_user_pass.tpl';
-    } else if ($ui->smallletters('action',2,'post')=='pw' and isset($cname)) {
+    } else if ($ui->smallletters('action',2,'post') == 'pw' and isset($cname)) {
         $errors = array();
         if (!$ui->password('password',20,'post')) $errors[]=$sprache->error_pass;
         if (!$ui->password('pass2',20,'post'))$errors[]=$sprache->error_pass;
-        if ($ui->password('password',20,'post')!=$ui->password('pass2',20,'post')) $errors[]=$sprache->error_passw_succ;
+        if ($ui->password('password',20,'post') != $ui->password('pass2',20,'post')) $errors[]=$sprache->error_passw_succ;
         if (count($errors)>0) {
             $template_file = implode('<br />',$errors);
         } else {
-            if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
+            if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
             $password=$ui->password('password',20,'post');
             $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
             $security=createHash($cname,$password,$salt,$aeskey);
@@ -633,27 +633,27 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $ticketLinks['Y']='admin.php?w=us&amp;a='.$ui->id('a',3,'get');
-    $ticketLinks['N']='admin.php?w=us&amp;a='.$ui->id('a',3,'get');
-    $ticketLinks['R']='admin.php?w=us&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['Y'] = 'admin.php?w=us&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['N'] = 'admin.php?w=us&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['R'] = 'admin.php?w=us&amp;a='.$ui->id('a',3,'get');
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='da') {
+    if ($ui->st('o','get') == 'da') {
         $orderby='`active` DESC';
-    } else if ($ui->st('o','get')=='aa') {
+    } else if ($ui->st('o','get') == 'aa') {
         $orderby='`active` ASC';
-    } else if ($ui->st('o','get')=='dn') {
+    } else if ($ui->st('o','get') == 'dn') {
         $orderby='`name` DESC';
-    } else if ($ui->st('o','get')=='an') {
+    } else if ($ui->st('o','get') == 'an') {
         $orderby='`name` ASC';
-    } else if ($ui->st('o','get')=='du') {
+    } else if ($ui->st('o','get') == 'du') {
         $orderby='`cname` DESC';
-    } else if ($ui->st('o','get')=='au') {
+    } else if ($ui->st('o','get') == 'au') {
         $orderby='`cname` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='`accounttype` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='`accounttype` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='`id` DESC';
     } else {
         $orderby='`id` ASC';
@@ -671,7 +671,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
     foreach ($ticketLinks as $k=>$v) {
         foreach (array('Y','N','R') as $s) {
-            if ((in_array($s,$selected) and $k!=$s) or (!in_array($s,$selected) and $k==$s)) $ticketLinks[$k].='&amp;state[]='.$s;
+            if ((in_array($s,$selected) and $k != $s) or (!in_array($s,$selected) and $k==$s)) $ticketLinks[$k].='&amp;state[] = '.$s;
         }
     }
     if(count($selected)==1) $and.=" AND `active`='${selected[0]}'";
@@ -692,18 +692,18 @@ if ($ui->w('action',4,'post') and !token(true)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $adminaccount = false;
         if ($row['accounttype']=="a") {
-            $adminaccount= true;
+            $adminaccount = true;
             $accounttype=$sprache->accounttype_admin;
         } else if ($row['accounttype']=="r") {
             $accounttype=$sprache->accounttype_reseller;
         } else {
             $accounttype=$sprache->accounttype_user;
         }
-        if ($row['jobPending']=='Y') {
-            $query2->execute(array($row['id'],$row['resellerid']));
+        if ($row['jobPending'] == 'Y') {
+            $query2->execute(array($row['id'], $row['resellerid']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                if ($row2['action']=='ad') $jobPending=$gsprache->add;
-                else if ($row2['action']=='dl') $jobPending=$gsprache->del;
+                if ($row2['action'] == 'ad') $jobPending=$gsprache->add;
+                else if ($row2['action'] == 'dl') $jobPending=$gsprache->del;
                 else $jobPending=$gsprache->mod;
                 $json=@json_decode($row2['extraData']);
                 $tobeActive=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
@@ -711,7 +711,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $jobPending=$gsprache->no;
         }
-        if (($row['active']=='Y' and $row['jobPending']=='N') or ($row['jobPending']=='Y') and isset($tobeActive) and $tobeActive=='Y') {
+        if (($row['active'] == 'Y' and $row['jobPending'] == 'N') or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
             $imgName='16_ok';
             $imgAlt='Active';
         } else {
@@ -735,13 +735,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=us&amp;d=md&amp;o='.$o.'&amp;a=';
     if(!isset($amount)) {
         $amount=20;
@@ -755,11 +755,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $pages[]=$link;
     $i = 1;
     while ($i<$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=us&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=us&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=us&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=us&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

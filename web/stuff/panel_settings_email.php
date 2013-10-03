@@ -55,12 +55,12 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
-if ($reseller_id!=0 and $admin_id!=$reseller_id) {
+if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $reseller_id=$admin_id;
 }
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('action','post')=='md') {
+} else if ($ui->st('action','post') == 'md') {
     $changeCount = 0;
     $emailbackup=gzcompress($ui->escaped('emailbackup','post'),9);
     $emailbackuprestore=gzcompress($ui->escaped('emailbackuprestore','post'),9);
@@ -184,18 +184,18 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $emailvrescue_xml = array();
     if (isset($template_to_use)) {
         foreach (getlanguages($template_to_use) as $row) {
-            $emailbackup_xml[]=getemailxml('emailbackup',$row);
-            $emailbackuprestore_xml[]=getemailxml('emailbackuprestore',$row);
-            $emaildown_xml[]=getemailxml('emaildown',$row);
-            $emaildownrestart_xml[]=getemailxml('emaildownrestart',$row);
-            $emailgserverupdate_xml[]=getemailxml('emailgserverupdate',$row);
-            $emailpwrecovery_xml[]=getemailxml('emailpwrecovery',$row);
-            $emailsecuritybreach_xml[]=getemailxml('emailsecuritybreach',$row);
-            $emailnewticket_xml[]=getemailxml('emailnewticket',$row);
-            $emailuseradd_xml[]=getemailxml('emailuseradd',$row);
-            $emailvinstall_xml[]=getemailxml('emailvinstall',$row);
-            $emailvrescue_xml[]=getemailxml('emailvrescue',$row);
-            $emailregister_xml[]=getemailxml('emailregister',$row);
+            $emailbackup_xml[]=getemailxml('emailbackup', $row);
+            $emailbackuprestore_xml[]=getemailxml('emailbackuprestore', $row);
+            $emaildown_xml[]=getemailxml('emaildown', $row);
+            $emaildownrestart_xml[]=getemailxml('emaildownrestart', $row);
+            $emailgserverupdate_xml[]=getemailxml('emailgserverupdate', $row);
+            $emailpwrecovery_xml[]=getemailxml('emailpwrecovery', $row);
+            $emailsecuritybreach_xml[]=getemailxml('emailsecuritybreach', $row);
+            $emailnewticket_xml[]=getemailxml('emailnewticket', $row);
+            $emailuseradd_xml[]=getemailxml('emailuseradd', $row);
+            $emailvinstall_xml[]=getemailxml('emailvinstall', $row);
+            $emailvrescue_xml[]=getemailxml('emailvrescue', $row);
+            $emailregister_xml[]=getemailxml('emailregister', $row);
         }
     }
     $template_file = "admin_settings_email.tpl";

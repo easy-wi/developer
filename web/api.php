@@ -40,7 +40,7 @@
 
 define('EASYWIDIR', dirname(__FILE__));
 if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
-$logininclude= true;
+$logininclude = true;
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/functions.php');
@@ -52,7 +52,7 @@ if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post')) {
         $apiIP=$row['ip'];
         $pwd=$row['pwd'];
         $salt=$row['salt'];
-        if ($row['active']=='Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) {
+        if ($row['active'] == 'Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) {
             $resellerIDs[]=$row['resellerID'];
         }
     }
@@ -60,7 +60,7 @@ if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post')) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: No valid access data');
 }
-if ($ui->smallletters('type',10,'post') and ($ui->smallletters('type',4,'post')=='user' or $ui->smallletters('type',5,'post')=='voice' or $ui->smallletters('type',7,'post')=='gserver' or $ui->smallletters('type',5,'post')=='mysql')) {
+if ($ui->smallletters('type',10,'post') and ($ui->smallletters('type',4,'post') == 'user' or $ui->smallletters('type',5,'post') == 'voice' or $ui->smallletters('type',7,'post') == 'gserver' or $ui->smallletters('type',5,'post') == 'mysql')) {
     $type=$ui->smallletters('type',7,'post');
 }
 if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and isset($type)) {
@@ -100,7 +100,7 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
     }
     $data=$tempArray;
     unset($tempArray);
-    $bad=array(false,null,'');
+    $bad=array(false, null,'');
     $licenceDetails=serverAmount($resellerID);
     if (is_numeric($licenceDetails['left']) and (0>$licenceDetails['left'] or 0>$licenceDetails['lG'] or 0>$licenceDetails['lVo'] or 0>$licenceDetails['lVs'] or 0>$licenceDetails['lD'])) {
         header('HTTP/1.1 403 Forbidden');
@@ -110,18 +110,18 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
     $vModule=(is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs']==0) ? false : true;
     $voModule=(is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo']==0) ? false : true;
     $dModule=(is_numeric($licenceDetails['mD']) and $licenceDetails['mD']==0) ? false : true;
-    if ($type=='user') {
+    if ($type == 'user') {
         include(EASYWIDIR . '/stuff/api_users.php');
-    } else if ($type=='voice') {
+    } else if ($type == 'voice') {
         if ($voModule==true) {
             include(EASYWIDIR . '/stuff/api_voice.php');
         } else {
             header('HTTP/1.1 403 Forbidden');
             die('403 Forbidden: Voice module is inactive');
         }
-    } else if ($type=='mysql') {
+    } else if ($type == 'mysql') {
         include(EASYWIDIR . '/stuff/api_mysql.php');
-    } else if ($type=='gserver') {
+    } else if ($type == 'gserver') {
         if ($gsModule==true) {
             include(EASYWIDIR . '/stuff/api_gserver.php');
         } else {

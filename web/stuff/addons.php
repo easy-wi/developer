@@ -50,10 +50,10 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
-if ($reseller_id!=0 and $admin_id!=$reseller_id) $reseller_id=$admin_id;
+if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
 if ($ui->w('action',4,'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get')=='ex' and $ui->id('id',10,'get')) {
+} else if ($ui->st('d','get') == 'ex' and $ui->id('id',10,'get')) {
     $xml=new DOMDocument('1.0','utf-8');
     $element=$xml->createElement('addon');
     $query = $sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=?");
@@ -61,7 +61,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $addon=$row['addon'];
         foreach ($row as $k=>$v) {
-            if (!in_array($k,array('id','resellerid','depending'))) {
+            if (!in_array($k, array('id','resellerid','depending'))) {
                 $key=$xml->createElement($k,$v);
                 $element->appendChild($key);
             }
@@ -74,14 +74,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
         header("Content-Disposition: attachment; filename=${addon}.xml");
         header("Content-Type: text/xml; charset=UTF-8");
         header("Content-Transfer-Encoding: binary");
-        $xml->formatOutput= true;
+        $xml->formatOutput = true;
         echo $xml->saveXML();
         die;
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get')=='ad') {
-    if ($ui->smallletters('action',2,'post')=='ad' and $ui->id('import',1,'post')!=1) {
+} else if ($ui->st('d','get') == 'ad') {
+    if ($ui->smallletters('action',2,'post') == 'ad' and $ui->id('import',1,'post')!=1) {
         $fail = 0;
         $template_file = '';
         if(!$ui->gamestring('shorten','post')) {
@@ -103,7 +103,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if(!$ui->active('paddon','post')) {
             $fail = 1;
         }
-        if(!$ui->id('depending',19,'post') and $ui->escaped('depending','post')!=0) {
+        if(!$ui->id('depending',19,'post') and $ui->escaped('depending','post') != 0) {
             $fail = 1;
         }
         if ($fail!=1){
@@ -214,7 +214,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `type`='tool' AND `resellerid`=? ORDER BY `menudescription`");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $dependings[]='<option value="'.$row['id'].'">'.$row['menudescription'].'</option>';
+            $dependings[] = '<option value="'.$row['id'].'">'.$row['menudescription'].'</option>';
         }
         $active = '';
         $paddon = '';
@@ -226,23 +226,23 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $configs = '';
         $cmd = '';
         $rmcmd = '';
-        if ($ui->id('import',1,'post')==1 and $_FILES["file"]["error"]==0 and $_FILES["file"]["type"]=='text/xml') {
+        if ($ui->id('import',1,'post')==1 and $_FILES["file"]["error"]==0 and $_FILES["file"]["type"] == 'text/xml') {
             $shorten=$_FILES["file"]["name"];
             try {
                 $xml=new DOMDocument();
                 if (@$xml->load($_FILES["file"]["tmp_name"])!==false) {
                     $childNodes=$xml->documentElement;
                     foreach ($childNodes->childNodes AS $node) {
-                        if($node->nodeName=='active') $active=$node->nodeValue;
-                        if($node->nodeName=='paddon ') $paddon=$node->nodeValue;
-                        if($node->nodeName=='shorten') $shorten=$node->nodeValue;
-                        if($node->nodeName=='addon') $addon=$node->nodeValue;
-                        if($node->nodeName=='type') $type=$node->nodeValue;
-                        if($node->nodeName=='folder') $folder=$node->nodeValue;
-                        if($node->nodeName=='menudescription') $menudescription=$node->nodeValue;
-                        if($node->nodeName=='configs') $configs=$node->configs;
-                        if($node->nodeName=='cmd') $cmd=$node->nodeValue;
-                        if($node->nodeName=='rmcmd') $rmcmd=$node->nodeValue;
+                        if($node->nodeName == 'active') $active=$node->nodeValue;
+                        if($node->nodeName == 'paddon ') $paddon=$node->nodeValue;
+                        if($node->nodeName == 'shorten') $shorten=$node->nodeValue;
+                        if($node->nodeName == 'addon') $addon=$node->nodeValue;
+                        if($node->nodeName == 'type') $type=$node->nodeValue;
+                        if($node->nodeName == 'folder') $folder=$node->nodeValue;
+                        if($node->nodeName == 'menudescription') $menudescription=$node->nodeValue;
+                        if($node->nodeName == 'configs') $configs=$node->configs;
+                        if($node->nodeName == 'cmd') $cmd=$node->nodeValue;
+                        if($node->nodeName == 'rmcmd') $rmcmd=$node->nodeValue;
                     }
                 }
             } catch(Exception $error) {
@@ -251,14 +251,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $template_file = "admin_addons_add.tpl";
     }
-} else if ($ui->st('d','get')=='dl' and $ui->id('id','30','get')) {
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id','30','get')) {
     $addonid=$ui->id('id','30','get');
     if (!isset($action)) {
         $query = $sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($addonid,$reseller_id));
         $menudescription=$query->fetchColumn();
         $template_file = "admin_addons_dl.tpl";
-    } else if ($action=='dl'){
+    } else if ($action == 'dl'){
         $query = $sql->prepare("SELECT menudescription,type,folder,addon FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($addonid,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -279,7 +279,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get')=='md' and $ui->id('id','30','get')) {
+} else if ($ui->st('d','get') == 'md' and $ui->id('id','30','get')) {
     $addonid=$ui->id('id','30','get');
     if (!isset($action)) {
         $table = array();
@@ -322,7 +322,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             if (small_letters_check($row, '2')) {
                 unset($lang);
                 $description = '';
-                $query->execute(array($addonid,$row,$reseller_id));
+                $query->execute(array($addonid, $row,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $lang=$row2['lang'];
                     $description=$row2['text'];
@@ -343,11 +343,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `type`='tool' AND `type`=? AND `resellerid`=? ORDER BY `menudescription`");
         $query->execute(array($type,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if (isset($depending) and $depending==$row['id']) $dependings[]='<option value="'.$row['id'].'" selected="selected">'.$row['menudescription'].'</option>';
-            else $dependings[]='<option value="'.$row['id'].'">'.$row['menudescription'].'</option>';
+            if (isset($depending) and $depending==$row['id']) $dependings[] = '<option value="'.$row['id'].'" selected="selected">'.$row['menudescription'].'</option>';
+            else $dependings[] = '<option value="'.$row['id'].'">'.$row['menudescription'].'</option>';
         }
         $template_file = "admin_addons_md.tpl";
-    } else if ($action=='md'){
+    } else if ($action == 'md'){
         $fail = 0;
         $template_file = '';
         if(!$ui->gamestring('shorten','post')) {
@@ -369,7 +369,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if(!$ui->active('paddon','post')) {
             $fail = 1;
         }
-        if(!$ui->id('depending',19,'post') and $ui->escaped('depending','post')!=0) {
+        if(!$ui->id('depending',19,'post') and $ui->escaped('depending','post') != 0) {
             $fail = 1;
         }
         if ($fail!=1){
@@ -400,7 +400,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     if (!in_array($row2['lang'],$array)) {
-                        $query2->execute(array($addonid,$row2['lang'],$reseller_id));
+                        $query2->execute(array($addonid, $row2['lang'],$reseller_id));
                     }
                 }
             } else {
@@ -418,23 +418,23 @@ if ($ui->w('action',4,'post') and !token(true)) {
     }
 } else {
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='ds') {
+    if ($ui->st('o','get') == 'ds') {
         $orderby='`active` DESC';
-    } else if ($ui->st('o','get')=='as') {
+    } else if ($ui->st('o','get') == 'as') {
         $orderby='`active` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='`type` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='`type` ASC';
-    } else if ($ui->st('o','get')=='dn') {
+    } else if ($ui->st('o','get') == 'dn') {
         $orderby='`menudescription` DESC';
-    } else if ($ui->st('o','get')=='an') {
+    } else if ($ui->st('o','get') == 'an') {
         $orderby='`menudescription` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='`shorten` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='`shorten` ASC';
-    } else if ($ui->st('o','get')=='di') {
+    } else if ($ui->st('o','get') == 'di') {
         $orderby='`id` DESC';
     } else{
         $o='ai';
@@ -453,18 +453,18 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $atype=$sprache->multi;
             $gtype=$exrow['description'];
         }
-        if ($atype=='') {
+        if ($atype == '') {
             $atype=$sprache->single;
             $gtype=$shorten;
         }
-        if ($row['active']=='Y') {
+        if ($row['active'] == 'Y') {
             $imgName='16_ok';
             $imgAlt='Active';
         } else {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        if ($row['type']=='map') {
+        if ($row['type'] == 'map') {
             $type=$sprache->map;
         } else {
             $type=$sprache->tool;
@@ -484,7 +484,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $atype=$sprache->multi;
             $gtype=$row3['description'];
         }
-        if ($atype=="") {
+        if ($atype == '') {
             $atype=$sprache->single;
             $gtype=$shorten;
         }
@@ -502,16 +502,16 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    if (!isset($list_gtype) or $list_gtype=="") {
+    if (!isset($list_gtype) or $list_gtype == '') {
         $list_gtype='all';
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ad&amp;d=md&amp;o='.$o.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -526,11 +526,11 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $i = 2;
     $pages[]=$link;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=ad&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'&amp;t='.$list_type.'&amp;g='.$list_gtype.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ad&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'&amp;t='.$list_type.'&amp;g='.$list_gtype.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=ad&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'&amp;t='.$list_type.'&amp;g='.$list_gtype.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ad&amp;d=md&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'&amp;t='.$list_type.'&amp;g='.$list_gtype.'">'.$i.'</a>';
         }
         $i++;
     }

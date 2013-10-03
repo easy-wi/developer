@@ -47,22 +47,22 @@ $page_data=new PageSettings($user_language,$pageurl,$seo);
 $query = $sql->prepare("SELECT `active`,`activeGS`,`activeVS` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $page_data->SetData('lendactive',$row['active']);
-    $page_data->SetData('lendactiveGS',$row['activeGS']);
-    $page_data->SetData('lendactiveVS',$row['activeVS']);
+    $page_data->SetData('lendactive', $row['active']);
+    $page_data->SetData('lendactiveGS', $row['activeGS']);
+    $page_data->SetData('lendactiveVS', $row['activeVS']);
 }
 $page_data->SetData('protectioncheck',$protectioncheck);
 $page_data->SetData('title',$title);
 $query = $sql->prepare("SELECT p.`id`,p.`subpage`,p.`naviDisplay`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='page' AND t.`language`=? AND p.`resellerid`='0' ORDER BY `subpage`,`sort`");
 $query->execute(array($user_language));
-if ($seo=='Y') {
+if ($seo== 'Y') {
     $page_data->SetMenu($gsprache->news,$gsprache->news,'news');
-    if ($protectioncheck=='Y') {
+    if ($protectioncheck== 'Y') {
         $page_data->SetMenu($page_sprache->protectioncheck,$page_sprache->protectioncheck,'protectioncheck');
     }
-    if ($page_data->lendactive=='Y') {
-        if ($page_data->showLend((isset($admin_id)) ? true : false,(isset($user_id)) ? true : false,'g')) $page_data->SetMenu($gsprache->gameserver,array($gsprache->lendserver,$gsprache->gameserver),'lendservergs');
-        if ($page_data->showLend((isset($admin_id)) ? true : false,(isset($user_id)) ? true : false,'v')) $page_data->SetMenu($gsprache->voiceserver,array($gsprache->lendserver,$gsprache->voiceserver),'lendservervoice');
+    if ($page_data->lendactive == 'Y') {
+        if ($page_data->showLend((isset($admin_id)) ? true : false,(isset($user_id)) ? true : false,'g')) $page_data->SetMenu($gsprache->gameserver, array($gsprache->lendserver,$gsprache->gameserver),'lendservergs');
+        if ($page_data->showLend((isset($admin_id)) ? true : false,(isset($user_id)) ? true : false,'v')) $page_data->SetMenu($gsprache->voiceserver, array($gsprache->lendserver,$gsprache->voiceserver),'lendservervoice');
         if ($page_data->lendGS!==false or $page_data->lendVS!==false) $page_data->SetMenu($gsprache->lendserver,$gsprache->lendserver,'lendserver');
         else $page_data->SetData('lendactive','N');
     }
@@ -75,10 +75,10 @@ if ($seo=='Y') {
     $page_data->SetMenu($page_sprache->search,$page_sprache->search,'search');
     $page_data->SetMenu($page_sprache->register,$page_sprache->register,'register');
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['naviDisplay']=='Y') $page_data->SetMenu($row['title'],$row['title'],$row['subpage'],$row['id']);
-        else $page_data->SetMenu($row['title'],$row['title'],$row['subpage'],$row['id'],false);
+        if ($row['naviDisplay'] == 'Y') $page_data->SetMenu($row['title'], $row['title'], $row['subpage'], $row['id']);
+        else $page_data->SetMenu($row['title'], $row['title'], $row['subpage'], $row['id'], false);
     }
-    if (isset($admin_id) and $ui->smallletters('preview',4,'get')=='true') {
+    if (isset($admin_id) and $ui->smallletters('preview',4,'get') == 'true') {
         $preview = 1;
     } else if (count($ui->get)>0 and isset($s) and isset($page_data->pages[$s])) {
         redirect($page_data->pages[$s]['link']);
@@ -86,40 +86,40 @@ if ($seo=='Y') {
         redirect('/');
     }
 } else {
-    $page_data->SetMenu($gsprache->news,array('site'=>'news'),'news');
-    if ($protectioncheck=='Y') {
-        $page_data->SetMenu($page_sprache->protectioncheck,array('site'=>'protectioncheck'),'protectioncheck');
+    $page_data->SetMenu($gsprache->news, array('site'=>'news'),'news');
+    if ($protectioncheck== 'Y') {
+        $page_data->SetMenu($page_sprache->protectioncheck, array('site'=>'protectioncheck'),'protectioncheck');
     }
-    if ($page_data->lendactive=='Y') {
-        $page_data->SetMenu($gsprache->lendserver,array('site'=>'lendserver'),'lendserver');
-        $page_data->SetMenu($gsprache->gameserver,array('site'=>'lendserver','d'=>'gs'),'lendservergs');
-        $page_data->SetMenu($gsprache->voiceserver,array('site'=>'lendserver','d'=>'vo'),'lendservervoice');
+    if ($page_data->lendactive == 'Y') {
+        $page_data->SetMenu($gsprache->lendserver, array('site'=>'lendserver'),'lendserver');
+        $page_data->SetMenu($gsprache->gameserver, array('site'=>'lendserver','d'=>'gs'),'lendservergs');
+        $page_data->SetMenu($gsprache->voiceserver, array('site'=>'lendserver','d'=>'vo'),'lendservervoice');
     }
-    $page_data->SetMenu($gsprache->downloads,array('site'=>'downloads'),'downloads');
-    $page_data->SetMenu($page_sprache->about,array('site'=>'about'),'about');
-    $page_data->SetMenu($page_sprache->sitemap,array('site'=>'sitemap'),'sitemap');
-    $page_data->SetMenu($page_sprache->gallery,array('site'=>'gallery'),'gallery');
-    $page_data->SetMenu($gsprache->imprint,array('site'=>'imprint'),'imprint');
-    $page_data->SetMenu($page_sprache->contact,array('site'=>'contact'),'contact');
-    $page_data->SetMenu($page_sprache->search,array('site'=>'search'),'search');
-    $page_data->SetMenu($page_sprache->register,array('site'=>'register'),'register');
+    $page_data->SetMenu($gsprache->downloads, array('site'=>'downloads'),'downloads');
+    $page_data->SetMenu($page_sprache->about, array('site'=>'about'),'about');
+    $page_data->SetMenu($page_sprache->sitemap, array('site'=>'sitemap'),'sitemap');
+    $page_data->SetMenu($page_sprache->gallery, array('site'=>'gallery'),'gallery');
+    $page_data->SetMenu($gsprache->imprint, array('site'=>'imprint'),'imprint');
+    $page_data->SetMenu($page_sprache->contact, array('site'=>'contact'),'contact');
+    $page_data->SetMenu($page_sprache->search, array('site'=>'search'),'search');
+    $page_data->SetMenu($page_sprache->register, array('site'=>'register'),'register');
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['naviDisplay']=='Y') {
-            $page_data->SetMenu($row['title'],$row['id'],$row['subpage'],$row['id']);
+        if ($row['naviDisplay'] == 'Y') {
+            $page_data->SetMenu($row['title'], $row['id'], $row['subpage'], $row['id']);
         } else {
-            $page_data->SetMenu($row['title'],$row['id'],$row['subpage'],$row['id'],false);
+            $page_data->SetMenu($row['title'], $row['id'], $row['subpage'], $row['id'], false);
         }
     }
 }
 $query = $sql->prepare("SELECT t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='about' AND p.`resellerid`=0 LIMIT 1");
 $query->execute(array($user_language));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $page_data->SetData('about',$row['text']);
+    $page_data->SetData('about', $row['text']);
 }
 $query = $sql->prepare("SELECT p.`id`,p.`subpage`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`released`='1' AND p.`type`='news' AND p.`resellerid`=0 ORDER BY `id` DESC LIMIT $maxnews_sidebar");
 $query->execute(array($user_language));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $page_data->SetNewsPost($row['id'],$row['title'],$row['text'],$newssidebar_textlength);
+    $page_data->SetNewsPost($row['id'], $row['title'], $row['text'],$newssidebar_textlength);
 }
 if (strpos($ui->escaped('HTTP_USER_AGENT','server'),' MSIE ')!==false) {
     $page_data->SetData('MSIE',(string)$page_sprache->MSIE);
@@ -170,7 +170,7 @@ if (isset($page_lookupid)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $great_name=$row['name'];
         $great_vname=$row['vname'];
-        if ($row['lastlogin']!=null and $row['lastlogin']!="0000-00-00 00:00:00") {
+        if ($row['lastlogin'] != null and $row['lastlogin']!="0000-00-00 00:00:00") {
             $great_last=($user_language=="de") ? date('d.m.Y H:m:s',strtotime($row['lastlogin'])) : $row['lastlogin'];
         } else {
             $great_last=($user_language=="de") ? "Niemals" : "Never";
@@ -182,9 +182,9 @@ if (!isset($s) and !isset($page_category) and isset($page_default) and isid($pag
     $default_page_id=$page_default;
 } else if (!isset($s) and !isset($page_category) and isset($page_default)) {
     $s=$page_default;
-} else if (!isset($s) and isset($page_category) and $page_category!='' and $page_category!=null) {
+} else if (!isset($s) and isset($page_category) and $page_category != '' and $page_category != null) {
     $s='404';
-    $throw404= true;
+    $throw404 = true;
 }
 $what_to_be_included_array=array('news'=>'page_news.php','contact'=>'page_contact.php',
     'page'=>'page_page.php','home'=>'page_page.php','about'=>'page_page.php','gallery'=>'page_page.php','sitemap'=>'page_page.php','search'=>'page_page.php',

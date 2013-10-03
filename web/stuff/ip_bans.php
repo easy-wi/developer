@@ -37,13 +37,13 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or !$main == "1") or (isset($admin_id) and !$pa['ipBans'] and $reseller_id!=0)) {
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['ipBans'] and $reseller_id != 0)) {
     header('Location: admin.php');
     die('No acces');
 }
 $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($action) and $action=='dl') {
+if (isset($action) and $action == 'dl') {
     $i = 0;
     if ($ui->id('id',30,'post')) {
         if (token(true)) {
@@ -58,23 +58,23 @@ if (isset($action) and $action=='dl') {
 } else {
     $table = array();
     $o=$ui->st('o','get');
-    if ($ui->st('o','get')=='dr') {
+    if ($ui->st('o','get') == 'dr') {
         $orderby='`reason` DESC';
-    } else if ($ui->st('o','get')=='ar') {
+    } else if ($ui->st('o','get') == 'ar') {
         $orderby='`reason` ASC';
-    } else if ($ui->st('o','get')=='df') {
+    } else if ($ui->st('o','get') == 'df') {
         $orderby='`failcount` DESC';
-    } else if ($ui->st('o','get')=='af') {
+    } else if ($ui->st('o','get') == 'af') {
         $orderby='`failcount` ASC';
-    } else if ($ui->st('o','get')=='dt') {
+    } else if ($ui->st('o','get') == 'dt') {
         $orderby='`bantime` DESC';
-    } else if ($ui->st('o','get')=='at') {
+    } else if ($ui->st('o','get') == 'at') {
         $orderby='`bantime` ASC';
-    } else if ($ui->st('o','get')=='db') {
+    } else if ($ui->st('o','get') == 'db') {
         $orderby='`badip` DESC';
-    } else if ($ui->st('o','get')=='ab') {
+    } else if ($ui->st('o','get') == 'ab') {
         $orderby='`badip` ASC';
-    } else if ($ui->st('o','get')=='ai') {
+    } else if ($ui->st('o','get') == 'ai') {
         $orderby='`id` ASC';
     } else {
         $o='ai';
@@ -104,13 +104,13 @@ if (isset($action) and $action=='dl') {
     } else {
         $vor=$start;
     }
-    $back=$start-$amount;
+    $back=$start - $amount;
     if ($back>=0){
-        $zur=$start-$amount;
+        $zur=$start - $amount;
     } else {
         $zur=$start;
     }
-    $pageamount=ceil($colcount/$amount);
+    $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ib&amp;d='.$d.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
@@ -125,11 +125,11 @@ if (isset($action) and $action=='dl') {
     $pages[]=$link;
     $i = 2;
     while ($i<=$pageamount) {
-        $selectpage=($i-1)*$amount;
+        $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[]='<a href="admin.php?w=ib&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ib&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
         } else {
-            $pages[]='<a href="admin.php?w=ib&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ib&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
         }
         $i++;
     }

@@ -46,17 +46,17 @@ class easyWiRest {
     // Constructor that sets defaults which can be overwritten
     function __construct($url,$timeout=10,$ssl='N',$connect='curl') {
         $this->ssl=$ssl;
-        $this->port=($this->ssl=='Y') ? 443 : 80;
+        $this->port=($this->ssl== 'Y') ? 443 : 80;
         $this->url=$url;
         $this->timeout=$timeout;
         // check if curl is choosen and available and initiate cURL-Session
-        if ($connect=='curl' and function_exists('curl_init')) {
+        if ($connect == 'curl' and function_exists('curl_init')) {
             if ($this->startCurl($url,$ssl,$this->port)===true) {
                 $this->connect='curl';
             }
 
         // Use and or fallback to fsockopen if possible and create socket
-        } else if (($connect=='fsockopen' or !function_exists('curl_init')) and function_exists('fsockopen')) {
+        } else if (($connect == 'fsockopen' or !function_exists('curl_init')) and function_exists('fsockopen')) {
             if ($this->startSocket($url,$ssl,$this->port)===true) {
                 $this->connect='fsockopen';
             }
@@ -71,7 +71,7 @@ class easyWiRest {
     }
     public function execRequest($type,$params) {
         $params=str_replace('&amp;','',$params);
-        if ($this->connect=='curl') {
+        if ($this->connect == 'curl') {
             $this->setbasicCurlOpts();
             $this->execCurl($type,$params);
         } else {
@@ -92,7 +92,7 @@ class easyWiRest {
 
     private function execSocket ($type,$params,$url) {
         if($this->handle) {
-            if($type=='P') {
+            if($type == 'P') {
                 $send="POST /".$file." HTTP/1.1\r\n";
             } else {
                 $send="GET $file HTTP/1.1\r\n";
@@ -111,7 +111,7 @@ class easyWiRest {
             fclose($this->handle);
             $ex=explode("\r\n\r\n",$buffer);
             if (strpos($ex[0],'404')!==false) {
-                return 'file not found: '.$url. '/'. $file;
+                return 'file not found: '.$url. '/' . $file;
             } else {
                 return true;
             }
@@ -123,11 +123,11 @@ class easyWiRest {
     //
     private function startCurl ($url,$ssl) {
         // create the URL to call
-        if (substr($url,-1)=='/') {
+        if (substr($url,-1) == '/') {
             $url=substr($url,0,-1);
         }
         $url=str_replace(array('http://','https://',':8080',':80',':443'),'',$url);
-        if ($ssl=='Y') {
+        if ($ssl== 'Y') {
             $url='https://'.$url;
         } else {
             $url='http://'.$url;
@@ -146,7 +146,7 @@ class easyWiRest {
         curl_setopt($this->handle,CURLOPT_CONNECTTIMEOUT,$this->timeout);
         curl_setopt($this->handle,CURLOPT_USERAGENT,"cURL (Easy-WI; 1.0; Linux)");
         curl_setopt($this->handle,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($this->handle,CURLOPT_FOLLOWLOCATION,1);
         curl_setopt($this->handle,CURLOPT_HEADER,1);
         //curl_setopt($this->handle,CURLOPT_ENCODING,'deflate');
@@ -173,7 +173,7 @@ class easyWiRest {
     // This will be picked up if fsockopen is used.
     // So there is a need to strip this data.
     private function convertRawData ($rawdata) {
-        if ($this->method=='json') {
+        if ($this->method== 'json') {
             $checkStart='{';
             $checkStop='}';
         } else {
@@ -181,15 +181,15 @@ class easyWiRest {
             $checkStop='>';
         }
         $response=$rawdata;
-        while (substr($response,0,1)!=$checkStart and strlen($response)>0) {
+        while (substr($response,0,1) != $checkStart and strlen($response)>0) {
             $response=substr($response,1);
         }
-        while (substr($response,-1)!=$checkStop and strlen($response)>0) {
+        while (substr($response,-1) != $checkStop and strlen($response)>0) {
             $response=substr($response,0,-1);
         }
 
         // Decode the rest of the response string into an object.
-        if ($this->method=='json') {
+        if ($this->method== 'json') {
             $decoded=@json_decode($response);
         } else {
             $decoded=@simplexml_load_string($response);
@@ -199,7 +199,7 @@ class easyWiRest {
         if ($decoded) {
             unset($rawdata);
             return $decoded;
-        } else if ($this->connect=='fsockopen') {
+        } else if ($this->connect == 'fsockopen') {
             return substr($rawdata,4,-3);
         } else {
             return $rawdata;
