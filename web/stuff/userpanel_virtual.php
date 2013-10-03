@@ -54,10 +54,10 @@ $logsubuser = 0;
 if (isset($admin_id)) $logsubuser=$admin_id;
 else if (isset($subuser_id)) $logsubuser=$subuser_id;
 if (isset($admin_id) and $reseller_id != 0) $reseller_id=$admin_id;
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get') == 'ri'and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['vs']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'ri'and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['vs']))) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->st('action','post')) {
         $option = array();
         $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
@@ -80,14 +80,14 @@ if ($ui->w('action',4,'post') and !token(true)) {
             } else {
                 $status=$sprache->ok;
             }
-            if ($row['userid']==null) {
+            if ($row['userid'] == null) {
                 $error=$sprache->userAdd;
             } else if ($dhcp == 'N' or $pxe == 'N') {
                 $option[] = '<option value="rs">'.$sprache->restart.'</option>';
                 $option[] = '<option value="st">'.$sprache->stop.'</option>';
             } else {
                 $showImages = true;
-                if ($row['status']==null or $row['status']==2) {
+                if ($row['status'] == null or $row['status']==2) {
                     $option[] = '<option value="rc">'.$sprache->rescue_start.'</option>';
                     $option[] = '<option value="ri">'.$sprache->reinstall.'</option>';
                 } else if ($row['status']==0) {

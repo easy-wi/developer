@@ -51,13 +51,13 @@ if ($reseller_id==0) {
 	$logreseller = 0;
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get') == 'ex' and $ui->id('id',10,'get')) {
+} else if ($ui->st('d','get') == 'ex' and $ui->id('id', 10, 'get')) {
     $xml=new DOMDocument('1.0','utf-8');
     $element=$xml->createElement('addon');
     $query = $sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=?");
-    $query->execute(array($ui->id('id',10,'get'),$reseller_id));
+    $query->execute(array($ui->id('id', 10, 'get'),$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $addon=$row['addon'];
         foreach ($row as $k=>$v) {

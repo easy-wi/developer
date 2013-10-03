@@ -53,8 +53,8 @@ if (isset($admin_id)) {
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/class_voice.php');
-if ($ui->st('d','get') == 'bu' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
-    $id=$ui->id('id',10,'get');
+if ($ui->st('d','get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
+    $id=$ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,v.`localserverid`,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,:aeskey) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip`,m.`type`,m.`usedns`,m.`publickey`,m.`ssh2ip`,AES_DECRYPT(m.`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(m.`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(m.`ssh2password`,:aeskey) AS `decryptedssh2password`,m.`serverdir`,m.`keyname`,m.`notified` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`backup`='Y' AND v.`id`=:server_id AND v.`userid`=:user_id AND v.`resellerid`=:reseller_id LIMIT 1");
     $query->execute(array(':aeskey'=>$aeskey,':server_id'=>$id,':user_id'=>$user_id,':reseller_id'=>$reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -187,8 +187,8 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id',10,'get') and (!isset($_SESSION[
     } else {
         $template_file = $spracheResponse->token;
     }
-} else if ($ui->st('d','get') == 'pk' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'pk' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
+    $id=$ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `masterserver`,`localserverid`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id, $user_id, $reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -252,8 +252,8 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id',10,'get') and (!isset($_SESSION[
     } else {
         $template_file = 'userpanel_404.tpl';
     }
-} else if ($ui->st('d','get') == 'rs' and $ui->id('id',10,'get') and $ui->smallletters('action',2,'post') == 'rs' and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'rs' and $ui->id('id', 10, 'get') and $ui->smallletters('action',2,'post') == 'rs' and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
+    $id=$ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT v.*,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`id`=? AND v.`userid`=? AND v.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $id, $user_id, $reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -336,8 +336,8 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id',10,'get') and (!isset($_SESSION[
     } else {
         $template_file = 'userpanel_404.tpl';
     }
-} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $user_id, $reseller_id));
@@ -550,8 +550,8 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id',10,'get') and (!isset($_SESSION[
     } else {
         $template_file = $spracheResponse->token;
     }
-} else if ($ui->st('d','get') == 'st' and $ui->id('id',10,'get') and $ui->smallletters('action',2,'post') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'), $substituteAccess['vo']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'st' and $ui->id('id', 10, 'get') and $ui->smallletters('action',2,'post') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
+    $id=$ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`localserverid`,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`id`=? AND v.`userid`=? AND v.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $id, $user_id, $reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -638,11 +638,11 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id',10,'get') and (!isset($_SESSION[
                     $password = '';
                 }
                 $usedSlots=$row['usedslots'];
-                if ($row['usedslots']==null) {
+                if ($row['usedslots'] == null) {
                     $usedSlots = 0;
                 }
                 $flexSlots = '';
-                if ($row['flexSlots'] == 'Y' and $row['flexSlotsCurrent']==null) {
+                if ($row['flexSlots'] == 'Y' and $row['flexSlotsCurrent'] == null) {
                     $flexSlots=$row['slots'].'/';
                 } else if ($row['flexSlots'] == 'Y') {
                     $flexSlots=$row['flexSlotsCurrent'].'/';

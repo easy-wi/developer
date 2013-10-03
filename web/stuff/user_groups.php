@@ -61,7 +61,7 @@ $lookIpID=$reseller_id;
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $lookIpID=$admin_id;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if (in_array($ui->st('d','get'), array('md','ad'))){
     if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {

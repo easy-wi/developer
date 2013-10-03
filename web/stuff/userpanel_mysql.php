@@ -53,10 +53,10 @@ if (isset($admin_id)) {
 } else {
 	$logsubuser = 0;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['db']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['db']))) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
 
         #https://github.com/easy-wi/developer/issues/42 column description added

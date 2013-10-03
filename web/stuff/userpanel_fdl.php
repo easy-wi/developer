@@ -54,7 +54,7 @@ if (isset($admin_id)) {
 	$logsubuser = 0;
 }
 
-if ($ui->st('d','get') == 'ud' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+if ($ui->st('d','get') == 'ud' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
     $serverid=(int)$ui->id('id',19,'get');
     require_once(EASYWIDIR . '/stuff/keyphrasefile.php');
     $query = $sql->prepare("SELECT g.`rootID`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,g.`newlayout`,s.`servertemplate`,t.`modfolder`,t.`shorten`,u.`fdlpath`,u.`cname` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
@@ -81,7 +81,7 @@ if ($ui->st('d','get') == 'ud' and $ui->id('id',19,'get') and (!isset($_SESSION[
             $actionstatus="fail";
         }
     }
-} else if ($ui->st('d','get') == 'es' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+} else if ($ui->st('d','get') == 'es' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
     $id=$ui->id('id',19,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `serverip`,`port`,`mfdldata`,`masterfdl` FROM `gsswitch` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");

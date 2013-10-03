@@ -40,10 +40,10 @@ if(!isset($admin_id) or $main!=1 or (isset($admin_id) and !$pa['voiceserver'] an
     die;
 }
 $sprache = getlanguagefile('traffic',$user_language,$reseller_id);
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($d== 'se' and $pa['voiceserverSettings']) {
-	if (isset($ui->post['text_colour_1']) and $ui->w('action',4,'post') == 'md') {
+	if (isset($ui->post['text_colour_1']) and $ui->w('action', 4, 'post') == 'md') {
 		$error = 0;
 		if (!validate_int($ui->post['text_colour_1'], 0 , 255) and $ui->post['text_colour_1'] != 0) $error = 1;
 		if (!validate_int($ui->post['text_colour_2'], 0 , 255) and $ui->post['text_colour_2'] != 0) $error = 1;

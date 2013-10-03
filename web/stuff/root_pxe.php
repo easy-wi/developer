@@ -55,7 +55,7 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if (in_array($ui->st('d','get'), array('md','ad'))){
     if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {

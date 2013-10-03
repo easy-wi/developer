@@ -258,8 +258,8 @@ if($ui->st('r', 'get')) {
     $rsprache = getlanguagefile('redirect', $user_language, 0);
     $text = $rsprache->refresh;
 }
-if ($ui->w('action',4,'post')) {
-    $action=$ui->w('action',4,'post');
+if ($ui->w('action', 4, 'post')) {
+    $action=$ui->w('action', 4, 'post');
 }
 if($ui->smallletters('site','50', 'get')) {
     $s = $ui->smallletters('site','50', 'get');
@@ -369,7 +369,7 @@ if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->descript
         }
         if ($i>0) {
             $posted_gamestring = $i . $gamestring_buf;
-            $ajaxonload .= "onloaddata('serverallocation.php?gamestring=$posted_gamestring&id = ','$id','$id');";
+            $ajaxonload .= "onloaddata('serverallocation.php?gamestring=$posted_gamestring&id=','$id','$id');";
         }
     }
     $ajaxonload .='}</script>';

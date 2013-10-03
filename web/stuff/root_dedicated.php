@@ -57,7 +57,7 @@ if ($reseller_id==0) {
 }
 if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licenceDetails['lDs']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
     $template_file = $gsprache->licence;
-} else if ($ui->w('action',4,'post') and !token(true)) {
+} else if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if (in_array($ui->st('d','get'), array('md','ad'))){
     $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
@@ -74,7 +74,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
             $type=($row['accounttype'] == 'u') ? $gsprache->user : $gsprache->reseller;
             $table[$row['id']]=$type . ' ' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT * FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -126,7 +126,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
         if (count($error)>0) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            $id=$ui->id('id',10,'get');
+            $id=$ui->id('id', 10, 'get');
             $active=yesNo('active');
             $https=yesNo('https');
             $useDHCP=yesNo('useDHCP');
@@ -144,7 +144,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
             $userID=$ui->id('userID',19,'post');
             $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='de' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
             $query->execute(array($id,$reseller_id));
-            if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get')) {
+            if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
                 $query = $sql->prepare("SELECT `active`,`ip`,`mac`,`useDHCP`,`usePXE` FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -172,8 +172,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
             }
         }
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get') and $reseller_id==0) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get') and $reseller_id==0) {
+    $id=$ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `ip`,`description`,`restart`,`useDHCP`,`usePXE` FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -221,8 +221,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'ri' and $ui->id('id',10,'get')) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'ri' and $ui->id('id', 10, 'get')) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->st('action','post')) {
         $option = array();
         $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
@@ -236,14 +236,14 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
             $showImages = false;
-            if ($row['userID']==null) {
+            if ($row['userID'] == null) {
                 $error=$sprache->userAdd;
             } else if ($dhcp == 'N' or $pxe == 'N') {
                     $option[] = '<option value="rs">'.$sprache->restart.'</option>';
                     $option[] = '<option value="st">'.$sprache->stop.'</option>';
             } else {
                 $showImages = true;
-                if ($row['status']==null or $row['status']==2) {
+                if ($row['status'] == null or $row['status']==2) {
                     $option[] = '<option value="rc">'.$sprache->rescue_start.'</option>';
                     $option[] = '<option value="ri">'.$sprache->reinstall.'</option>';
                 } else if ($row['status']==0) {

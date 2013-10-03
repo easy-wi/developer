@@ -43,9 +43,9 @@ if ($d== 'se' and $reseller_id==0) {
 
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
 	
-    if ($ui->w('action',4,'post') and !token(true)) {
+    if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = $spracheResponse->token;
-    } else if (isset($ui->post['type']) and $ui->w('action',4,'post') == 'md') {
+    } else if (isset($ui->post['type']) and $ui->w('action', 4, 'post') == 'md') {
 		$error = 0;
 		if (!isset($ui->post['type']) or (!small_letters_check($ui->post['type'],'30'))) $error = 1;
 		if (!isset($ui->post['statip']) or (!isip($ui->post['statip'],'all') and !isurl($ui->post['statip']))) $error = 1;

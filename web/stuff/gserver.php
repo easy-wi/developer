@@ -57,7 +57,7 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 }
 if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenceDetails['lG']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
     $template_file = $gsprache->licence;
-} else if ($ui->w('action',4,'post') and !token(true)) {
+} else if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
     if (!$ui->w('action',3,'post')) {
@@ -508,8 +508,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get')) {
-    $server_id = $ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get')) {
+    $server_id = $ui->id('id', 10, 'get');
     if (!isset($action)) {
         $table = array();
         $query = $sql->prepare("SELECT `serverip`,`port`,`serverid` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -625,8 +625,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get')) {
-    $server_id = $ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
+    $server_id = $ui->id('id', 10, 'get');
     if (!isset($action)) {
         $table = array();
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ftppassword`,?) AS `ftp` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -957,8 +957,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'ri' and $ui->id('id',10,'get')) {
-    $server_id = $ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'ri' and $ui->id('id', 10, 'get')) {
+    $server_id = $ui->id('id', 10, 'get');
     if (!isset($action)) {
         $table = array();
         $query = $sql->prepare("SELECT `serverip`,`port`,`serverid` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -1048,8 +1048,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if (in_array($ui->st('d','get'), array('rs','st','du')) and $ui->id('id',10,'get')) {
-    $id = $ui->id('id',10,'get');
+} else if (in_array($ui->st('d','get'), array('rs','st','du')) and $ui->id('id', 10, 'get')) {
+    $id = $ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

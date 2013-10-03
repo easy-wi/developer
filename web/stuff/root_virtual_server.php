@@ -55,7 +55,7 @@ if ($reseller_id != 0) {
 }
 if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licenceDetails['lVs']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
     $template_file = $gsprache->licence;
-} else if ($ui->w('action',4,'post') and !token(true)) {
+} else if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad' and ($reseller_id==0 or $admin_id==$reseller_id) and $pa['addvserver'] and (!is_numeric($licenceDetails['lVs']) or $licenceDetails['lVs']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
     if (!$ui->smallletters('action',2,'post')) {
@@ -539,8 +539,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get') and $pa['delvserver']) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get') and $pa['delvserver']) {
+    $id=$ui->id('id', 10, 'get');
     if ($reseller_id==0) {
         $query = $sql->prepare("SELECT c.`ip`,c.`hostid`,c.`userid`,r.`description`,r.`bitversion` FROM `virtualcontainer` c LEFT JOIN `resellerimages` r ON c.`imageid`=r.`id` WHERE c.`id`=? LIMIT 1");
         $query->execute(array($id));
@@ -576,8 +576,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get') and $pa['modvserver']) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get') and $pa['modvserver']) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         if ($reseller_id==0) {
             $query = $sql->prepare("SELECT c.`active`,c.`ip`,c.`ips`,c.`mac`,c.`cores`,c.`minmhz`,c.`maxmhz`,c.`hddsize`,c.`mountpoint`,c.`ram`,c.`minram`,c.`maxram`,AES_DECRYPT(c.`pass`, :aeskey) AS `decryptedpass`,r.`description`,r.`bitversion`,u.`cname`,h.`cores` AS `hcore`,h.`esxi`,u.`id` AS `userid` FROM `virtualcontainer` c LEFT JOIN `resellerimages` r ON c.`imageid`=r.`id` LEFT JOIN `userdata` u ON c.`userid`=u.`id` LEFT JOIN `virtualhosts` h ON c.`hostid`=h.`id` WHERE c.`id`=:id LIMIT 1");
@@ -783,8 +783,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'va' and $ui->id('id',10,'get') and $pa['usevserver']) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'va' and $ui->id('id', 10, 'get') and $pa['usevserver']) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         $option = array();
         if ($reseller_id==0) {
@@ -799,7 +799,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
         }
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip=$row['ip'];
-            if ($row['status']==null or $row['status']==2) {
+            if ($row['status'] == null or $row['status']==2) {
                 $option[] = '<option value="rc">'.$sprache->rescue_start.'</option>';
                 $option[] = '<option value="ri">'.$sprache->reinstall.'</option>';
             } else if ($row['status']==0) {

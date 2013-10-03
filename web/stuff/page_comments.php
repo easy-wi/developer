@@ -48,7 +48,7 @@ $logreseller = 0;
 $logsubuser = 0;
 $logsubuser = 0;
 
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if($ui->st('d','get') == 'md' and $ui->id('id',19,'get') and $ui->smallletters('action',2,'post') == 'md'){
     $id=$ui->id('id',19,'get');

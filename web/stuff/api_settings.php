@@ -54,7 +54,7 @@ if ($reseller_id==0) {
     $lookupID=($admin_id != $reseller_id) ? $reseller_id : $admin_id;
     $logreseller = 0;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->smallletters('action',2,'post') == 'md'){
     $query = $sql->prepare("SELECT COUNT(`active`) AS `amount` FROM `api_settings` WHERE `resellerID`=? LIMIT 1");

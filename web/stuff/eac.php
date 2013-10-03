@@ -56,9 +56,9 @@ if ($reseller_id == 0) {
 	}
 	$logreseller = 0;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if (!$ui->w('action',4,'post')) {
+} else if (!$ui->w('action', 4, 'post')) {
 	$pselect=$sql->prepare("SELECT `active`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,`publickey`,`keyname`,`cfgdir`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE resellerid=:reseller_id LIMIT 1");
 	$pselect->execute(array(':aeskey'=>$aeskey,':reseller_id'=>$reseller_id));
 	foreach ($pselect->fetchAll() as $row) {
@@ -78,7 +78,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$eac_cfgdir=$row['cfgdir'];
 	}
 	$template_file = "admin_eac.tpl";
-} else if ($ui->w('action',4,'post')=="md") {
+} else if ($ui->w('action', 4, 'post')=="md") {
 	$fail = 0;
 	if (!active_check($ui->post['publickey'])) {
 		$fail = 1;

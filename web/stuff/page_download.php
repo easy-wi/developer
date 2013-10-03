@@ -46,8 +46,8 @@ if (isset($page_name) and isid($page_name,10)) {
     $downloadID=(int)$page_name;
 } else if (isset($page_count) and isid($page_count,10)) {
     $downloadID=(int)$page_count;
-} else if ($ui->id('id',10,'get')) {
-    $downloadID=$ui->id('id',10,'get');
+} else if ($ui->id('id', 10, 'get')) {
+    $downloadID=$ui->id('id', 10, 'get');
 }
 if (!isset($user_language) or $user_language == '') $user_language=(isset($page_detect_language)) ? $page_detect_language : $rSA['language'];
 if ((isset($page_name) and $page_name == 'get') or $ui->smallletters('action',3,'get') == 'get') $startDownload = true;

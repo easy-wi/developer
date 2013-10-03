@@ -346,7 +346,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 	include(EASYWIDIR . '/stuff/ssh_exec.php');
     include(EASYWIDIR . '/stuff/class_masterserver.php');
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
-    $rootServer=new masterServer($ui->id('id',10,'get'), $aeskey);
+    $rootServer=new masterServer($ui->id('id', 10, 'get'), $aeskey);
     $games=explode("_", $ui->username('gamestring','50','get'));
     $i = 1;
     $gamelist = array();
@@ -365,7 +365,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
     if ($rootServer->sshcmd===null) {
         echo 'Nothing to update/sync!';
     } else {
-        if (ssh2_execute('gs', $ui->id('id',10,'get'), $rootServer->sshcmd)===false) {
+        if (ssh2_execute('gs', $ui->id('id', 10, 'get'), $rootServer->sshcmd)===false) {
             echo $sprache->error_root_updatemaster." ( ".implode(", ", $gamelist)." ) ( $start )";
         } else {
             $rootServer->setUpdating();
@@ -377,17 +377,17 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 	$query = $sql->prepare("SELECT m.`maxserver`,COUNT(v.`id`) AS `installedserver`,m.`maxslots`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`resellerid`=? LIMIT 1");
 	$query->execute(array($ui->id('id',19,'get'), $reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		if ($row['installedserver']==null) {
+		if ($row['installedserver'] == null) {
 			$installedserver = 0;
 		} else {
 			$installedserver=$row['installedserver'];
 		}
-		if ($row['installedslots']==null) {
+		if ($row['installedslots'] == null) {
 			$installedslots = 0;
 		} else {
 			$installedslots=$row['installedslots'];
 		}
-		if ($row['uslots']==null) {
+		if ($row['uslots'] == null) {
 			$uslots = 0;
 		} else {
 			$uslots=$row['uslots'];

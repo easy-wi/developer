@@ -49,9 +49,9 @@ if (isset($admin_id)) {
     $logsubuser = 0;
 }
 include(EASYWIDIR . '/stuff/class_voice.php');
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if($ui->st('d','get') == 'md' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['vd']))) {
+} else if($ui->st('d','get') == 'md' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['vd']))) {
     $id=$ui->id('id',19,'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");

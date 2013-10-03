@@ -89,7 +89,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $table[$row['id']]=array('id'=>$row['id'],'address'=>$row['serverip'] . ':' . $row['port'],'games'=>$temp,'rootID'=>$row['rootID'],'gsfolder'=>$row['serverip'] . '_' . $row['port'],'customer'=>$customer,'cftppass'=>$row['cftppass']);
     }
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->smallletters('action',2,'post') == 'ms') {
     function checkFolders ($dir,$searchFor,$maxDepth=false,$currentDepth=0) {

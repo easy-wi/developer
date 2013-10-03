@@ -59,11 +59,11 @@ if ($reseller_id==0) {
     }
     $logreseller = 0;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if (in_array($ui->st('d','get'), array('md','ad'))){
     if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT * FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -86,9 +86,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $distro=$ui->names('distro',255,'post');
         $description=$ui->description('description','post');
         $pxelinux=$ui->escaped('pxelinux','post');
-        if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get')) {
+        if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
             $query = $sql->prepare("UPDATE `resellerimages` SET `active`=?,`description`=?,`distro`=?,`bitversion`=?,`pxelinux`=? WHERE `id`=? LIMIT 1");
-            $query->execute(array($active,$description,$distro,$bitversion,$pxelinux,$ui->id('id',10,'get')));
+            $query->execute(array($active,$description,$distro,$bitversion,$pxelinux,$ui->id('id', 10, 'get')));
             $loguseraction="%mod% %virtualimage% $description";
         } else if ($ui->st('d','get') == 'ad') {
             $query = $sql->prepare("INSERT INTO `resellerimages` (`active`,`description`,`distro`,`bitversion`,`pxelinux`) VALUES (?,?,?,?,?)");
@@ -104,8 +104,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $template_file = $spracheResponse->error_table;
         }
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get')) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get')) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `description` FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));

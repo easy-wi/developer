@@ -50,7 +50,7 @@ if ($reseller_id==0) {
 	$logreseller = 0;
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'at') {
     if (!$ui->smallletters('action',2,'post')) {

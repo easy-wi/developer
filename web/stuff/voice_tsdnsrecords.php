@@ -56,7 +56,7 @@ if ($reseller_id==0) {
     $logreseller = 0;
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad' or $ui->st('d','get') == 'md') {
     if ($ui->st('d','get') == 'ad' and !$ui->w('action',3,'post')) {
@@ -114,8 +114,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $template_file = 'admin_voice_dns_add2.tpl';
         }
-    } else if ($ui->st('d','get') == 'md' and !$ui->smallletters('action',2,'post') and $ui->id('id',10,'get')) {
-        $id=$ui->id('id',10,'get');
+    } else if ($ui->st('d','get') == 'md' and !$ui->smallletters('action',2,'post') and $ui->id('id', 10, 'get')) {
+        $id=$ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT d.*,t.`ssh2ip`,t.`description`,u.`cname`,u.`vname`,u.`name` FROM `voice_dns` d INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` INNER JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -185,7 +185,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $error[] = 'tsdnsID';
             }
         } else {
-            $id=$ui->id('id',10,'get');
+            $id=$ui->id('id', 10, 'get');
             $query = $sql->prepare("SELECT `active`,`dns`,`ip`,`port`,`tsdnsID` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -274,8 +274,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get')) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get')) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `dns`,`ip`,`port` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));

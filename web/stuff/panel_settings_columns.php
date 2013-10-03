@@ -46,10 +46,10 @@ $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
 $sprache = getlanguagefile('columns',$user_language,$reseller_id);
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if(in_array($ui->st('d','get'), array('ad','md'))) {
-    $id=$ui->id('id',10,'get');
+    $id=$ui->id('id', 10, 'get');
     if (in_array($ui->st('action','post'), array('ad','md'))) {
         $error = array();
         if (!$ui->active('active','post')) {
@@ -76,7 +76,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $query->execute(array($ui->active('active','post'),$ui->w('item',1,'post'),$ui->w('type',1,'post'),$ui->id('length',10,'post'),$name));
                 $id=$sql->lastInsertId();
                 $loguseraction="%add% Custom Column ${name}";
-            } else if ($ui->id('id',10,'get') and $ui->st('d','get') == 'md') {
+            } else if ($ui->id('id', 10, 'get') and $ui->st('d','get') == 'md') {
                 $query = $sql->prepare("UPDATE `custom_columns_settings` SET `active`=?,`item`=?,`type`=?,`length`=?,`name`=? WHERE `customID`=? LIMIT 1");
                 $query->execute(array($ui->active('active','post'),$ui->w('item',1,'post'),$ui->w('type',1,'post'),$ui->id('length',10,'post'),$name,$id));
                 $loguseraction="%mod% Custom Column ${name}";
@@ -122,7 +122,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
         $template_file = 'admin_settings_columns_add.tpl';
-    } else if ($ui->id('id',10,'get') and $ui->st('d','get') == 'md') {
+    } else if ($ui->id('id', 10, 'get') and $ui->st('d','get') == 'md') {
         $query = $sql->prepare("SELECT * FROM `custom_columns_settings` WHERE `customID`=? LIMIT 1");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -154,8 +154,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $template_file = (isset($active)) ? 'admin_settings_columns_md.tpl' : 'admin_404.tpl';
     }
-} else if ($ui->id('id',10,'get') and $ui->st('d','get') == 'dl') {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->id('id', 10, 'get') and $ui->st('d','get') == 'dl') {
+    $id=$ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `name` FROM `custom_columns_settings` WHERE `customID`=? LIMIT 1");
     $query->execute(array($id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

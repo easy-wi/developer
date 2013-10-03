@@ -46,7 +46,7 @@ $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
 $logsubuser = 0;
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->smallletters('action',2,'post') == 'md' and $ui->id('maxnews',19,'post')) {
     if ($ui->smallletters('defaultpage','255','post')) {
@@ -177,7 +177,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
     $query->execute(array($user_language,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $page_title=$row['title'];
-        if ($row['title']==null or $row['title'] == '') {
+        if ($row['title'] == null or $row['title'] == '') {
             $query2->execute(array($row['id'],$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) $page_title=$row2['title'];
         }

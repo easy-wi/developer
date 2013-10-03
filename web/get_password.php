@@ -50,15 +50,15 @@ if ($ui->st('w','get') == 'ms' and $ui->username('shorten','50','get')) {
 	$query = $sql->prepare("SELECT r.`id`,r.`resellerid`,r.`installing`,r.`updating`,d.`resellerid` AS `userid`,s.`steamVersion`,r.`localVersion` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND (d.`ip`=? OR d.`altips` LIKE ?) LIMIT 1");
 	$query->execute(array($ui->username('shorten','50','get'),$ip,'%'.$ip.'%'));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['installing'] == 'Y' or $row['updating'] == 'Y' or $row['installing']==null or $row['steamVersion']>$row['localVersion'] or $row['steamVersion']==null or $row['steamVersion'] == '') {
-            if ($row['steamVersion']==null) {
+        if ($row['installing'] == 'Y' or $row['updating'] == 'Y' or $row['installing'] == null or $row['steamVersion']>$row['localVersion'] or $row['steamVersion'] == null or $row['steamVersion'] == '') {
+            if ($row['steamVersion'] == null) {
                 $query = $sql->prepare("UPDATE `rservermasterg` SET `installing`='N',`updating`='N' WHERE `id`=? LIMIT 1");
                 $query->execute(array($row['id']));
             } else {
                 $query = $sql->prepare("UPDATE `rservermasterg` SET `localVersion`=?,`installing`='N',`updating`='N' WHERE `id`=? LIMIT 1");
                 $query->execute(array($row['steamVersion'], $row['id']));
             }
-            if ($row['installing'] == 'Y' or $row['installing']==null or $row['steamVersion']>$row['localVersion'] or $row['steamVersion']==null or $row['steamVersion'] == '') {
+            if ($row['installing'] == 'Y' or $row['installing'] == null or $row['steamVersion']>$row['localVersion'] or $row['steamVersion'] == null or $row['steamVersion'] == '') {
                 $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
                 $query->execute(array($row['resellerid'], $row['resellerid']));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {

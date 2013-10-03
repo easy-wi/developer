@@ -51,7 +51,7 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad') {
 	if ($ui->smallletters('action',2,'post') == 'ad') {
@@ -319,8 +319,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $selectlanguages=getlanguages($template_to_use);
         $template_file = 'admin_user_add.tpl';
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get') != $admin_id and ($pa['user'] or $pa['user_users'])) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get') != $admin_id and ($pa['user'] or $pa['user_users'])) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         if($reseller_id==0) {
             $query = $sql->prepare("SELECT `cname`,`name`,`accounttype` FROM `userdata` WHERE `id`=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1");
@@ -372,8 +372,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get')) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
+    $id=$ui->id('id', 10, 'get');
     $resellerid=($reseller_id != 0 and $admin_id != $reseller_id) ? $admin_id : $reseller_id;
     if (!$ui->smallletters('action',2,'post')) {
         $query=($reseller_id==0) ? $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND (`resellerid`=? OR `id`=resellerid) LIMIT 1") : $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND `resellerid`=? LIMIT 1");
@@ -602,8 +602,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'pw' and $ui->id('id',10,'get') and $pa['userPassword']) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'pw' and $ui->id('id', 10, 'get') and $pa['userPassword']) {
+    $id=$ui->id('id', 10, 'get');
     $query=($reseller_id==0) ? $sql->prepare("SELECT `cname`,`accounttype` FROM `userdata` WHERE `id`=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("SELECT `cname`,`accounttype` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

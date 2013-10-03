@@ -277,13 +277,13 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             $port = $row['port'];
             $server = $serverip . ':' . $port;
             if (!in_array($qstat, array('', null, false))) {
-                if ($qstat != 'minecraft' and $qstat != 'tm' and $qstat != 'gtasamp'){
+                if (in_array($qstat, array('minecraft', 'tm', 'gtasamp', 'teeworlds'))) {
+                    $other[] = array('qstat' => $qstat,'server' => $server, 'switchID' => $row['id']);
+                } else {
                     $queries[] = '-' . $qstat . ' ' . $server;
                     $i++;
-                } else if ($qstat == 'minecraft' or $qstat == 'tm' or $qstat == 'gtasamp') {
-                    $other[] = array('qstat' => $qstat,'server' => $server, 'switchID' => $row['id']);
                 }
-                if ($i==50) {
+                if ($i == 50) {
                     $querry_array[] = implode(' ', $queries);
                     $queries = array();
                     $i = 1;
@@ -502,16 +502,16 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             }
             if (isset($userid) and isset($serverid)) {
                 $status = 'UP';
-                if ($qstat == 'gtasamp' or $qstat == 'minecraft') {
-                    $query = ($qstat == 'gtasamp') ? GTASAMP($serverip, $port) : MineCraft($serverip, $port);
+                if ($qstat == 'gtasamp' or $qstat == 'minecraft' or $qstat == 'teeworlds') {
+                    $query = serverQuery($serverip, $port, $qstat);
                     if (is_array($query)) {
                         $name = $query['hostname'];
-                        $password=($query['password'] == '1') ? 'Y' : 'N';
+                        $password = ($query['password'] == 1) ? 'Y' : 'N';
                         $numplayers = $query['players'];
                         $maxplayers = $query['slots'];
                         $map = $query['map'];
                     } else {
-                        $status='DOWN';
+                        $status = 'DOWN';
                         $name = $gametype . 'OFFLINE';
                         $numplayers = 0;
                         $maxplayers = 0;
@@ -821,8 +821,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                 $initialpassword = $vrow2['initialpassword'];
                                 $maxtrafficmb = $vrow2['maxtraffic'];
                                 $maxtraffic = $maxtrafficmb*1024;
-                                $filetraffic=($vrow2['filetraffic']==null) ? 0 : $vrow2['filetraffic'];
-                                $lastfiletraffic=($vrow2['lastfiletraffic']==null) ? 0 : $vrow2['lastfiletraffic'];
+                                $filetraffic=($vrow2['filetraffic'] == null) ? 0 : $vrow2['filetraffic'];
+                                $lastfiletraffic=($vrow2['lastfiletraffic'] == null) ? 0 : $vrow2['lastfiletraffic'];
                                 $newtrafficdata = $lastfiletraffic;
                                 $newtraffic = $filetraffic;
                             }

@@ -311,6 +311,12 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
                 AllowAll
         </Limit>
 </Directory>
+<Directory ~/server/*/teeworlds*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
 <Directory ~/server/*/*/orangebox/*/*>
 	Umask 077 077
 	<Limit RNFR RNTO STOR DELE MKD RMD>

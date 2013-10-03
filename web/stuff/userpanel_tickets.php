@@ -47,7 +47,7 @@ $logsubuser = 0;
 if (isset($admin_id) and $reseller_id != 0 ) {
 	$reseller_id=$admin_id;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad') {
     if (!$ui->smallletters('action',2,'post')) {

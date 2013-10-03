@@ -350,7 +350,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                 $ftppass=$row2['decryptedftppass'];
                 $decryptedftppass=$row2['decryptedppassword'];
                 $protected_old=$row2['protected'];
-                if ($row2['serverid']==null) {
+                if ($row2['serverid'] == null) {
                     $query3 = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? LIMIT 1");
                     $query3->execute(array($gsswitchID));
                     $runID_old=$query3->fetchColumn();

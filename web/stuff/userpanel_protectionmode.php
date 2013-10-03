@@ -34,7 +34,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id',10,'get')) {
+if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id', 10, 'get')) {
 	header('Location: userpanel.php');
 	die;
 }
@@ -56,7 +56,7 @@ if (isset($admin_id)) {
 if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
 $files = array();
 $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppassword`,t.`protected` AS `tpallowed`,t.`shorten`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,u.`cname`,s.`servertemplate` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND s.`resellerid`=? LIMIT 1");
-$query->execute(array($aeskey,$aeskey,$ui->id('id',10,'get'),$user_id,$reseller_id));
+$query->execute(array($aeskey,$aeskey,$ui->id('id', 10, 'get'),$user_id,$reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $currentID=$row['serverid'];
 	$serverip=$row['serverip'];
@@ -66,7 +66,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 	$protected=$row['protected'];
     $pallowed=($row['pallowed'] == 'Y' and $row['tpallowed'] == 'Y') ? 'Y' : 'N';
 	$rootid=$row['rootID'];
-    $customer=($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $ui->id('id',10,'get') : $row['cname'];
+    $customer=($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $ui->id('id', 10, 'get') : $row['cname'];
     $customerp=$customer.'-p';
     $ftppass=$row['dftppassword'];
     $ftppassProtected=$row['dpftppassword'];
@@ -79,7 +79,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $gamePath=str_replace(array('//','///','////'),'/',$gamePath);
 }
 
-if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_SESSION['sID']) and !in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_SESSION['sID']) and !in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
 	redirect('userpanel.php');
 } else if (isset($rootid)) {
     include(EASYWIDIR . '/stuff/ssh_exec.php');
@@ -131,20 +131,20 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
         $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`='1' WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($currentID,$reseller_id));
         $query = $sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('id',10,'get'),$reseller_id));
+        $query->execute(array($ui->id('id', 10, 'get'),$reseller_id));
         cfgTransfer('',$customerp,$ftppassProtected,$shorten,'server/',$customer,$ftppass,$serverTemplate);
-        $cmds=gsrestart($ui->id('id',10,'get'),'re',$aeskey,$reseller_id);
+        $cmds=gsrestart($ui->id('id', 10, 'get'),'re',$aeskey,$reseller_id);
         ssh2_execute('gs',$rootid,$cmds);
         $loguseraction="%stop% %pmode% $serverip:$port";
         $insertlog->execute();
         $template_file = $sprache->protect.' off';
     } else if (isset($protected,$serverip,$port,$rootid,$customer,$ftppass) and $protected== 'N') {
-        $cmds=gsrestart($ui->id('id',10,'get'),'sp',$aeskey,$reseller_id);
+        $cmds=gsrestart($ui->id('id', 10, 'get'),'sp',$aeskey,$reseller_id);
         $randompass=passwordgenerate(10);
         $cmds[] = './control.sh mod '.$customer . ' ' . $ftppass . ' ' . $randompass;
         $cmds[]="sudo -u ${customer}-p ./control.sh reinstserver ${customer}-p ${gamestring} ${gsfolder} protected";
         $query = $sql->prepare("UPDATE `gsswitch` SET `ppassword`=AES_ENCRYPT(?,?),`protected`='Y',`psince`=NOW() WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($randompass,$aeskey,$ui->id('id',10,'get'),$reseller_id));
+        $query->execute(array($randompass,$aeskey,$ui->id('id', 10, 'get'),$reseller_id));
         cfgTransfer('server/',$customer,$ftppass,$serverTemplate,'',$customerp,$randompass,$shorten);
         ssh2_execute('gs',$rootid,$cmds);
         $loguseraction="%restart% %pmode% $serverip:$port";

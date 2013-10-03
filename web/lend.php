@@ -291,7 +291,7 @@ XML;
                 $query2 = $sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
                 $query2->execute(array($serverid,$reseller_id));
                 foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                    $server=($row2['usedns'] == 'N' or $row2['dns']==null or $row2['dns'] == '') ? $row2['ip'] . ':' . $row2['port'] : $row2['dns'];
+                    $server=($row2['usedns'] == 'N' or $row2['dns'] == null or $row2['dns'] == '') ? $row2['ip'] . ':' . $row2['port'] : $row2['dns'];
                     $serverip=$row2['ip'];
                     $port=$row2['port'];
                 }

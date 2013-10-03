@@ -57,12 +57,12 @@ if ($reseller_id==0) {
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id=$admin_id;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad') {
     if ($ui->smallletters('action',2,'post') == 'ad'){
         include(EASYWIDIR . '/stuff/ssh_exec.php');
-        $serverid=$ui->id('id',10,'get');
+        $serverid=$ui->id('id', 10, 'get');
         $rootServer=new masterServer($serverid,$aeskey);
         if($ui->id('id',19,'post')) {
             $template_file = '';

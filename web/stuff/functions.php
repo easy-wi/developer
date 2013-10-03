@@ -1245,20 +1245,20 @@ if (!function_exists('passwordgenerate')) {
         global $ui, $_SESSION;
         if ($check==false) {
             $token=md5(mt_rand());
-            if ($ui->id('id',10,'get') and $ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
-            else if (!$ui->id('id',10,'get') and $ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
-            else if ($ui->id('id',10,'get') and !$ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
+            if ($ui->id('id', 10, 'get') and $ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id', 10, 'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
+            else if (!$ui->id('id', 10, 'get') and $ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
+            else if ($ui->id('id', 10, 'get') and !$ui->smallletters('d',10,'get')) $_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id', 10, 'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
             else $_SESSION[$ui->smallletters('w',10,'get')]=array('t'=>$token,'d'=>strtotime("+40 minutes"));
             return $token;
         } else {
-            if (isset($_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]['t']) and $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]['t']==$ui->w('token',32,'post') and $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id',10,'get')]['d']>=strtotime("now")) {
-                deleteOldToken($ui->smallletters('w',10,'get'), $ui->smallletters('d',10,'get'), $ui->id('id',10,'get'));
+            if (isset($_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id', 10, 'get')]['t']==$ui->w('token',32,'post') and $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')][$ui->id('id', 10, 'get')]['d']>=strtotime("now")) {
+                deleteOldToken($ui->smallletters('w',10,'get'), $ui->smallletters('d',10,'get'), $ui->id('id', 10, 'get'));
                 return true;
             } else if (isset($_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')]['t']) and $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')]['t']==$ui->w('token',32,'post') and $_SESSION[$ui->smallletters('w',10,'get')][$ui->smallletters('d',10,'get')]['d']>=strtotime("now")) {
                 deleteOldToken($ui->smallletters('w',10,'get'), $ui->smallletters('d',10,'get'));
                 return true;
-            } else if (isset($_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id',10,'get')]['t']) and $_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id',10,'get')]['t']==$ui->w('token',32,'post') and $_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id',10,'get')]['d']>=strtotime("now")) {
-                deleteOldToken($ui->smallletters('w',10,'get'),'', $ui->id('id',10,'get'));
+            } else if (isset($_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id', 10, 'get')]['t']==$ui->w('token',32,'post') and $_SESSION[$ui->smallletters('w',10,'get')][$ui->id('id', 10, 'get')]['d']>=strtotime("now")) {
+                deleteOldToken($ui->smallletters('w',10,'get'),'', $ui->id('id', 10, 'get'));
                 return true;
             } else if (isset($_SESSION[$ui->smallletters('w',10,'get')]['t']) and $_SESSION[$ui->smallletters('w',10,'get')]['t']==$ui->w('token',32,'post') and $_SESSION[$ui->smallletters('w',10,'get')]['d']>=strtotime("now")) {
                 deleteOldToken($ui->smallletters('w',10,'get'));

@@ -60,7 +60,7 @@ if (isset($admin_id)) {
 } else {
 	$logsubuser = 0;
 }
-if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smallletters('action',2,'get'), array('ad','dl')) and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+if ($ui->id('id', 10, 'get') and $ui->id('adid',10,'get') and in_array($ui->smallletters('action',2,'get'), array('ad','dl')) and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
     include(EASYWIDIR . '/stuff/ssh_exec.php');
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $gameserverid=$ui->id('id',19,'get');
@@ -165,7 +165,7 @@ if ($ui->id('id',10,'get') and $ui->id('adid',10,'get') and in_array($ui->smalll
     } else {
         $template_file = $sprache->failed;
     }
-} else if ($ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
+} else if ($ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
 	$username=getusername($user_id);
     $switchID=$ui->id('id',19,'get');
 	$table = array();

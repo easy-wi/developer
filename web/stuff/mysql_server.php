@@ -61,9 +61,9 @@ if ($reseller_id==0) {
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id=$admin_id;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get') == 'ms' and !$ui->id('id',10,'get') and $pa['mysql_settings']) {
+} else if ($ui->st('d','get') == 'ms' and !$ui->id('id', 10, 'get') and $pa['mysql_settings']) {
     $o=$ui->st('o','get');
 	if ($ui->st('o','get') == 'ap') {
 		$orderby='`ip` ASC';
@@ -121,9 +121,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 	}
 	$pages=implode(', ',$pages);
 	$template_file = "admin_mysql_server_list.tpl";
-} else if ($ui->st('d','get') == 'ds' and $ui->id('id',10,'get') and $pa['mysql_settings']) {
+} else if ($ui->st('d','get') == 'ds' and $ui->id('id', 10, 'get') and $pa['mysql_settings']) {
     if ($ui->st('action','post') == 'dl') {
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $pselect=$sql->prepare("SELECT `ip` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
@@ -137,7 +137,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $loguseraction="%del% MYSQL Server $ip";
         $insertlog->execute();
     } else {
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $pselect=$sql->prepare("SELECT `ip`,`interface` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
@@ -146,9 +146,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $template_file = "admin_mysql_server_dl.tpl";
     }
-} else if ($ui->st('d','get') == 'ms' and $ui->id('id',10,'get') and $pa['mysql_settings']) {
+} else if ($ui->st('d','get') == 'ms' and $ui->id('id', 10, 'get') and $pa['mysql_settings']) {
     if (!$ui->st('action','post')) {
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $pselect=$sql->prepare("SELECT `active`,`ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($aeskey,$id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
@@ -174,7 +174,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (count($errors)>0) {
             $template_file = 'Error(s): '.implode(', '.$errors);
 		} else {
-            $id=$ui->id('id',10,'get');
+            $id=$ui->id('id', 10, 'get');
 			$active=$ui->active('active','post');
 			$ip=$ui->ip('ip','post');
 			$port=$ui->port('port','post');
@@ -205,7 +205,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (count($errors)>0) {
             $template_file = 'Error(s): '.implode(', '.$errors);
         } else {
-            $id=$ui->id('id',10,'get');
+            $id=$ui->id('id', 10, 'get');
             $active=$ui->active('active','post');
             $ip=$ui->ip('ip','post');
             $port=$ui->port('port','post');
@@ -313,9 +313,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
 	} else {
 		$template_file = 'userpanel_404.tpl';
 	}
-} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get') and $pa['mysql']) {
+} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get') and $pa['mysql']) {
     if (!$ui->st('action','post')) {
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT e.*,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$id,$reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -353,7 +353,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (count($errors)>0) {
             $template_file = "Error: ".implode('<br>',$errors);
         } else {
-            $id=$ui->id('id',10,'get');
+            $id=$ui->id('id', 10, 'get');
             $active=$ui->active('active','post');
             $password=$ui->password('password',40,'post');
             $ips=$ui->ips('ips','post');
@@ -401,9 +401,9 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'dd' and $ui->id('id',10,'get') and $pa['mysql']) {
+} else if ($ui->st('d','get') == 'dd' and $ui->id('id', 10, 'get') and $pa['mysql']) {
     if (!$ui->st('action','post')) {
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT e.`dbname`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
@@ -413,7 +413,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         }
         $template_file = (isset($cname)) ? 'admin_mysql_db_dl.tpl' : 'userpanel_404.tpl';
     } else if ($ui->st('action','post') == 'dl') {
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT e.`sid`,e.`uid`,e.`dbname`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$id,$reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {

@@ -46,7 +46,7 @@ $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
 $logsubuser = 0;
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get')=="ad") {
 	if (!$ui->smallletters('action',2,'post')) {
@@ -56,7 +56,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		$subpage = array();
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$page_title=$row['title'];
-			if ($row['title']==null or $row['title'] == '') {
+			if ($row['title'] == null or $row['title'] == '') {
 				$query2 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
 				$query2->execute(array($row['id'],$reseller_id));
 				foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
@@ -88,7 +88,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 			$query = $sql->prepare("SELECT `cname`,`name`,`vname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 			$query->execute(array($admin_id,$reseller_id));
 			foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-				if (($row['name'] == '' or $row['name']==null) and ($row['vname'] == '' or $row['vname']==null)) {
+				if (($row['name'] == '' or $row['name'] == null) and ($row['vname'] == '' or $row['vname'] == null)) {
 					$author=$row['cname'];
 				} else {
 					$author=$row['vname'] . ' ' . $row['name'];
@@ -231,7 +231,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 			if ($row['id'] != $id) {
 				$page_title=$row['title'];
-				if ($row['title']==null or $row['title'] == '') {
+				if ($row['title'] == null or $row['title'] == '') {
                     $query2->execute(array($row['id'],$reseller_id));
 					foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
 						$page_title=$row2['title'];
@@ -415,7 +415,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $query2 = $sql->prepare("SELECT `cname`,`name`,`vname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query2->execute(array($row['authorid'],$reseller_id));
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-            if (($row2['name'] == '' or $row2['name']==null) and ($row2['vname'] == '' or $row2['vname']==null)) {
+            if (($row2['name'] == '' or $row2['name'] == null) and ($row2['vname'] == '' or $row2['vname'] == null)) {
                 $author=$row2['cname'];
             } else {
                 $author=$row2['vname'] . ' ' . $row2['name'];
@@ -428,13 +428,13 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $p_languages[]=$row3['language'];
         }
         $page_title=$row['title'];
-        if (($row['title']==null or $row['title'] == '') and isset($p_languages[0])) {
+        if (($row['title'] == null or $row['title'] == '') and isset($p_languages[0])) {
             $query4 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
             $query4->execute(array($row['id'],$p_languages[0],$reseller_id));
             foreach ($query4->fetchall(PDO::FETCH_ASSOC) as $row4) {
                 $page_title=$row4['title'];
             }
-        } else if ($row['title']==null or $row['title'] == '') {
+        } else if ($row['title'] == null or $row['title'] == '') {
             $page_title = '';
             $p_languages = array();
         }

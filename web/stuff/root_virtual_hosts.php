@@ -59,7 +59,7 @@ if ($reseller_id==0) {
     }
     $logreseller = 0;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad') {
     if (!$ui->smallletters('action',2,'post')) {
@@ -158,8 +158,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get')) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get')) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `ip`,`description` FROM `virtualhosts` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
@@ -193,8 +193,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get')) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `active`,`esxi`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid` FROM `virtualhosts` WHERE `id`=:id LIMIT 1");
         $query->execute(array(':id'=>$id,':aeskey'=>$aeskey));

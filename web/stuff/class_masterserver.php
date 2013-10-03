@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: class_masterserver.php.
  * Author: Ulrich Block
@@ -142,7 +143,7 @@ class masterServer {
 
     // collect data regarding installed games
     public function collectData ($all=true,$force=false) {
-        if ($this->rootOK!=true) {
+        if ($this->rootOK != true) {
             return null;
         }
 
@@ -152,11 +153,11 @@ class masterServer {
         if ($force==true) {
             $extraSQL = '';
         } else {
-            $extraSQL='AND t.`updates`!=3 AND s.`updates`!=3';
+            $extraSQL = 'AND t.`updates`!=3 AND s.`updates`!=3';
         }
 
         // if an ID is given collect only data for this ID, else collect all game data for this rootserver
-        if ($all===true) {
+        if ($all === true) {
             $query = $sql->prepare("SELECT t.`shorten`,t.`qstat`,r.`localVersion`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? ${extraSQL}");
             $query->execute(array($this->rootID));
         } else {
@@ -184,7 +185,7 @@ class masterServer {
                 // steamCmd installations
                 if ($row['steamgame'] == 'S') {
                     $lookUpAppID=($row['appID']==90) ? $row['appID'] . '-' . $row['shorten'] : $row['appID'];
-                    if ($row['localVersion']==null or ($row['localVersion'] != null and $row['localVersion']<$row['steamVersion'])) {
+                    if ($row['localVersion'] == null or ($row['localVersion'] != null and $row['localVersion']<$row['steamVersion'])) {
                         if ($updateType==1) {
                             $this->steamCmdOutdated['sync'][$lookUpAppID]=$row['shorten'];
                         } else if ($updateType==2) {
@@ -201,7 +202,7 @@ class masterServer {
 
                     // hlds installations
                 } else if ($row['steamgame'] == 'Y') {
-                    if ($row['localVersion']==null or ($row['localVersion'] != null and $row['localVersion']<$row['steamVersion'])) {
+                    if ($row['localVersion'] == null or ($row['localVersion'] != null and $row['localVersion']<$row['steamVersion'])) {
                         if ($updateType==1) {
                             $this->hldsOutdated['sync'][]=$row['shorten'];
                         } else if ($updateType==2) {
@@ -251,11 +252,11 @@ class masterServer {
 
         global $sql;
 
-        if ($this->rootOK!=true) {
+        if ($this->rootOK != true) {
             $this->sshcmd=null;
         }
         // Update if needed
-        if ($update===true) {
+        if ($update === true) {
             $steamCmdCount=count($this->steamCmdOutdated['sync'])+count($this->steamCmdOutdated['nosync']);
             $hldsCount=count($this->hldsOutdated['sync'])+count($this->hldsOutdated['nosync']);
             $steam='steamCmdOutdated';
@@ -374,7 +375,7 @@ class masterServer {
                 $this->sshcmd=$sshcmd;
             }
         }
-        #die ($this->sshcmd);
+        #die ('Command: ' . $this->sshcmd);
         return $this->sshcmd;
     }
     public function setUpdating () {

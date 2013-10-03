@@ -58,17 +58,17 @@ if (isset($admin_id)) {
 if (isset($admin_id) and $reseller_id != 0) {
     $reseller_id=$admin_id;
 }
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get') == 'ri' and !$ui->id('id',10,'get')) {
+} else if ($ui->st('d','get') == 'ri' and !$ui->id('id', 10, 'get')) {
     $template_file = $sprache->error_id;
-} else if ($ui->st('d','get') == 'ri' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'ri' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
+    $id=$ui->id('id', 10, 'get');
     if ($ui->st('action','post') == 'ri') {
         $i = 0;
         $gamestring = array();
         $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
-        $query->execute(array($aeskey,$aeskey,$ui->id('id',10,'get'),$user_id,$reseller_id));
+        $query->execute(array($aeskey,$aeskey,$ui->id('id', 10, 'get'),$user_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $customer=$row['cname'];
             $ftppass=($row['pallowed'] == 'Y' and $row['protected'] == 'Y') ? $row['pftppass'] : $row['cftppass'];
@@ -135,8 +135,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
             $template_file = 'userpanel_404.tpl';
         }
     }
-} else if (($ui->st('d','get') == 'rs' or $ui->st('d','get') == 'st' or $ui->st('d','get') == 'du') and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
-    $id=$ui->id('id',10,'get');
+} else if (($ui->st('d','get') == 'rs' or $ui->st('d','get') == 'st' or $ui->st('d','get') == 'du') and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
+    $id=$ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -161,8 +161,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
     if (!isset($gsip)) {
         $template_file = 'userpanel_404.tpl';
     }
-} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         $table = array();
         $query = $sql->prepare("SELECT `id`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE active='Y' AND `resellerid`=? LIMIT 1");
@@ -372,8 +372,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
     } else {
         $template_file = 'Error: No such game!';
     }
-} else if ($ui->st('d','get') == 'cf' and $ui->id('id',10,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id',10,'get'),$substituteAccess['gs']))) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'cf' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
+    $id=$ui->id('id', 10, 'get');
     $serverID = 0;
     $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppass`,s.`anticheat`,s.`servertemplate`,t.`shorten`,t.`gamebinary`,t.`modfolder`,t.`binarydir`,t.`qstat`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey,$aeskey,$id,$user_id,$reseller_id));

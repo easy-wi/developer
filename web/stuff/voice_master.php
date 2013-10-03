@@ -54,9 +54,9 @@ if ($reseller_id==0) {
 if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/class_voice.php');
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get') == 'ad' or (($ui->st('d','get') == 'ri' or $ui->st('d','get') == 'md')and $id=$ui->id('id',10,'get'))) {
+} else if ($ui->st('d','get') == 'ad' or (($ui->st('d','get') == 'ri' or $ui->st('d','get') == 'md')and $id=$ui->id('id', 10, 'get'))) {
 
     // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
     if(!$ui->w('action',3,'post') and ($ui->st('d','get') == 'ad' or $ui->st('d','get') == 'md')) {
@@ -96,7 +96,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $externalDNS[$row['id']]=$row['ssh2ip'].': '.$row['description'];
         $template_file = 'admin_voicemasterserver_add.tpl';
     } else if ($ui->st('d','get') == 'md' and !$ui->w('action',3,'post') and $ui->id('id',19,'get')) {
-        $id=$ui->id('id',10,'get');
+        $id=$ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey'=>$aeskey,':id'=>$id,':reseller_id'=>$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -159,7 +159,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $template_file = 'admin_404.tpl'; 
         }
-    } else if ($ui->w('action',3,'post') == 'ad' or $ui->w('action',3,'post') == 'md' or ($ui->st('d','get') == 'ri' and $id=$ui->id('id',10,'get')) and $ui->w('action',3,'post') != 'ad2') {
+    } else if ($ui->w('action',3,'post') == 'ad' or $ui->w('action',3,'post') == 'md' or ($ui->st('d','get') == 'ri' and $id=$ui->id('id', 10, 'get')) and $ui->w('action',3,'post') != 'ad2') {
         $error = array();
         if ($ui->st('d','get') == 'ad' or $ui->st('d','get') == 'md') {
             if ($ui->active('active','post')) {
@@ -291,8 +291,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $usedns = 'N';
                 $fail = 1;
             }
-        } else if ($ui->st('d','get') == 'ri' and $id=$ui->id('id',10,'get')) {
-            $masterid=$id=$ui->id('id',10,'get');
+        } else if ($ui->st('d','get') == 'ri' and $id=$ui->id('id', 10, 'get')) {
+            $masterid=$id=$ui->id('id', 10, 'get');
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':aeskey'=>$aeskey,':id'=>$masterid,':reseller_id'=>$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -350,7 +350,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         if (count($error)>0) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            if ($ui->w('action',3,'post') == 'ad' or ($ui->st('d','get') == 'ri' and $id=$ui->id('id',10,'get') and $ui->w('action',3,'post') != 'ad2')) {
+            if ($ui->w('action',3,'post') == 'ad' or ($ui->st('d','get') == 'ri' and $id=$ui->id('id', 10, 'get') and $ui->w('action',3,'post') != 'ad2')) {
                 $usprache = getlanguagefile('user',$user_language,$reseller_id);
                 $connected = false;
                 if ($addtype==2) {
@@ -524,8 +524,8 @@ if ($ui->w('action',4,'post') and !token(true)) {
             }
         }
     } else if ($ui->w('action',3,'post') == 'ad2') {
-        if ($ui->id('id',10,'get')) {
-            $masterid=$ui->id('id',10,'get');
+        if ($ui->id('id', 10, 'get')) {
+            $masterid=$ui->id('id', 10, 'get');
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':aeskey'=>$aeskey,':id'=>$masterid,':reseller_id'=>$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -755,7 +755,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         $template_file = 'Unknown Error 4';
     }
 } else if ($ui->st('d','get') == 'dl' and $ui->id('id',19,'get')) {
-    $id=$ui->id('id',10,'get');
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->w('action',2,'post')) {
         $query = $sql->prepare("SELECT `ssh2ip`,`rootid`,`type` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
@@ -859,15 +859,15 @@ if ($ui->w('action',4,'post') and !token(true)) {
                 $imgName='16_bad';
                 $imgAlt='inactive';
             }
-            if ($row['ssh2ip']==null) {
+            if ($row['ssh2ip'] == null) {
                 $query2->execute(array($row['rootid'], $row['resellerid']));
                 $ip=$query2->fetchColumn();
             } else {
                 $ip=$row['ssh2ip'];
             }
             $defaultdns=($row['usedns'] == 'Y') ? $row['defaultdns'] : null;
-            $installedslots=($row['installedslots']==null) ? 0 : $row['installedslots'];
-            $uslots=($row['uslots']==null) ? 0 : $row['uslots'];
+            $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
+            $uslots=($row['uslots'] == null) ? 0 : $row['uslots'];
             $vs = array();
             $query3->execute(array($id, $row['resellerid']));
             foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {

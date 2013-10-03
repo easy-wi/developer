@@ -43,9 +43,9 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['jobs'])) {
     die('No acces');
 }
 $sprache = getlanguagefile('api', $user_language, $reseller_id);
-if ($ui->w('action',4,'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->w('action',4,'post') == 'dl' and !$ui->id('id', 19, 'get')) {
+} else if ($ui->w('action', 4, 'post') == 'dl' and !$ui->id('id', 19, 'get')) {
     $i = 0;
     if ($ui->id('id',30,'post')) {
         foreach ($ui->id('id',30,'post') as $id) {
@@ -140,7 +140,7 @@ if ($ui->w('action',4,'post') and !token(true)) {
         } else {
             $api=$gsprache->no;
         }
-        if ($row['status']==null or $row['status']==4) {
+        if ($row['status'] == null or $row['status']==4) {
             $imgName='16_ok';
             $imgAlt='Running';
         } else if ($row['status']==1) {

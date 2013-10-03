@@ -59,7 +59,7 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 }
 if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licenceDetails['lVo']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
     $template_file = $gsprache->licence;
-} else if ($ui->w('action',4,'post') and !token(true)) {
+} else if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad' and (!is_numeric($licenceDetails['lVo']) or $licenceDetails['lVo']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
     if (!$ui->w('action',3,'post')) {
@@ -74,9 +74,9 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $ips[]=$row['ssh2ip'];
             foreach (ipstoarray($row['ips']) as $ip) $ips[]=$ip;
             if ($row['type'] == 'ts3') $type=$sprache->ts3;
-            $installedserver=($row['installedserver']==null) ? 0 : $row['installedserver'];
-            $installedslots=($row['installedslots']==null) ? 0 : $row['installedslots'];
-            $uslots=($row['uslots']==null) ? 0 : $row['uslots'];
+            $installedserver=($row['installedserver'] == null) ? 0 : $row['installedserver'];
+            $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
+            $uslots=($row['uslots'] == null) ? 0 : $row['uslots'];
             $table2[]=array('id'=>$row['id'],'server'=>implode('/', array_unique($ips)),'type'=>$type,'maxserver'=>$row['maxserver'],'maxslots'=>$row['maxslots'],'installedserver'=>$installedserver,'uslots'=>$uslots,'installedslots'=>$installedslots);
         }
         $template_file = "admin_voiceserver_add.tpl";
@@ -89,8 +89,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $query2 = $sql->prepare("SELECT m.*,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`  FROM `voice_masterserver` m LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND (m.`resellerid`=? OR m.`managedForID`=?) LIMIT 1");
         $query2->execute(array($masterserver,$reseller_id,$admin_id));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            $installedserver=($row2['installedserver']==null) ? 0 : $row2['installedserver'];
-            $installedslots=($row2['installedslots']==null) ? 0 : $row2['installedslots'];
+            $installedserver=($row2['installedserver'] == null) ? 0 : $row2['installedserver'];
+            $installedslots=($row2['installedslots'] == null) ? 0 : $row2['installedslots'];
             if ($row2['usedns'] == 'Y') {
                 $dns=strtolower($cname.'.'.$row2['defaultdns']);
                 if ($row2['externalDefaultDNS'] == 'Y' and isid($row2['tsdnsServerID'],19)) {
@@ -258,8 +258,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 $query = $sql->prepare("SELECT COUNT(`id`) AS `installedserver`,SUM(`slots`) AS `installedslots`  FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($masterserver,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $installedserver=($row['installedserver']==null) ? 0 : $row['installedserver'];
-                    $installedslots=($row['installedslots']==null) ? 0 : $row['installedslots'];
+                    $installedserver=($row['installedserver'] == null) ? 0 : $row['installedserver'];
+                    $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
                     if (($installedslots+$slots)>$maxslots) $errors[]=$gsprache->licence.' ('.$sprache->slots.')';
                     if ($installedserver>=$maxserver) $errors[]=$gsprache->licence;
                 }
@@ -321,12 +321,12 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
     } else {
         $template_file = "Error: No User or Server selected";
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',10,'get')) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get')) {
+    $id=$ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `ip`,`port`,`dns`,`masterserver`,`localserverid` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $server=($row['dns']==null or $row['dns'] == '') ? $row['ip'] . ':' . $row['port'] : $row['dns'].' ('.$row['ip'] . ':' . $row['port'].')';
+        $server=($row['dns'] == null or $row['dns'] == '') ? $row['ip'] . ':' . $row['port'] : $row['dns'].' ('.$row['ip'] . ':' . $row['port'].')';
         $dns=$row['dns'];
         $ip=$row['ip'];
         $port=$row['port'];
@@ -410,8 +410,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'md' and $ui->id('id',10,'get')) {
-    $id=$ui->id('id',10,'get');
+} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
+    $id=$ui->id('id', 10, 'get');
     if (!$ui->w('action',2,'post')) {
         $ips = array();
         $query = $sql->prepare("SELECT v.*,u.`cname` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
@@ -446,8 +446,8 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $query2 = $sql->prepare("SELECT m.`ssh2ip`,m.`ips`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,m.`maxserver`,m.`maxslots`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`  FROM `voice_masterserver` m LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND (m.`resellerid`=? OR m.`managedForID`=?) LIMIT 1");
             $query2->execute(array($aeskey, $row['masterserver'],$reseller_id,$admin_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $installedserver=($row2['installedserver']==null) ? 0 : $row2['installedserver'];
-                $installedslots=($row2['installedslots']==null) ? 0 : $row2['installedslots'];
+                $installedserver=($row2['installedserver'] == null) ? 0 : $row2['installedserver'];
+                $installedslots=($row2['installedslots'] == null) ? 0 : $row2['installedslots'];
                 $queryport=$row2['queryport'];
                 $querypassword=$row2['decryptedquerypassword'];
                 $maxserver=$row2['maxserver'];
@@ -512,7 +512,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $ip=$ui->ip('ip','post');
         if (!$ui->id('slots',30,'post')) $errors[]=$sprache->slots;
         if (!$ui->ip('ip','post')) $errors[]=$sprache->ip;
-        if ($ui->password('initialpassword',50,'post') or (isset($ui->post['initialpassword']) and ($ui->post['initialpassword'] == '' or $ui->post['initialpassword']==null))) $initialpassword=$ui->post['initialpassword'];
+        if ($ui->password('initialpassword',50,'post') or (isset($ui->post['initialpassword']) and ($ui->post['initialpassword'] == '' or $ui->post['initialpassword'] == null))) $initialpassword=$ui->post['initialpassword'];
         else $errors[]=$sprache->password;
 
         $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -741,9 +741,9 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $server=($row['usedns'] == 'Y' and $dns != null or $dns != '') ? '<a href="ts3server://'.$row['dns'].$password.'">'.$row['ip'] . ':' . $row['port'].'</a><br />( '.$row['dns'].' )' : '<a href="ts3server://'.$row['ip'] . ':' . $row['port'].$password.'">'.$row['ip'] . ':' . $row['port'].'</a>';
         }
         $usedSlots=$row['usedslots'];
-        if ($row['usedslots']==null) $usedSlots = 0;
+        if ($row['usedslots'] == null) $usedSlots = 0;
         $flexSlots = '';
-        if ($row['flexSlots'] == 'Y' and $row['flexSlotsCurrent']==null) $flexSlots=$row['slots'].'/';
+        if ($row['flexSlots'] == 'Y' and $row['flexSlotsCurrent'] == null) $flexSlots=$row['slots'].'/';
         else if ($row['flexSlots'] == 'Y') $flexSlots=$row['flexSlotsCurrent'].'/';
         $usage=$usedSlots. '/' . $flexSlots.$row['slots'];
         $days=floor($row['uptime']/86400);
