@@ -77,7 +77,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         echo 'Retrieving Version for ' . $row['shorten'] . "\r\n";
-        $reply = ($row['shorten'] == 'bukkit') ? getCraftBukkitVersion ('http://dl.bukkit.org/latest-rb/craftbukkit.jar', false) : getMinecraftVersion();
+        $reply = ($row['shorten'] == 'bukkit') ? getCraftBukkitVersion () : getMinecraftVersion();
 
         if (is_array($reply)) {
             echo 'Version for ' . $row['shorten'] . ' is: ' . $reply['version'] . "\r\n";

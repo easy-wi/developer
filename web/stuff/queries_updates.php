@@ -39,7 +39,7 @@
  */
 
 function getHttpHeaders ($url) {
-    
+
     $url = str_replace('http://', '', $url);
     $splitUrl = preg_split('/\//', $url, -1, PREG_SPLIT_NO_EMPTY);
     $domain = $splitUrl[0];
@@ -78,7 +78,7 @@ function getHttpHeaders ($url) {
 
             return array('code' => 200, 'url' => $url);
 
-        } else if (strpos(strtolower($buffer), 'http/1.1 302') !== false or strpos(strtolower($buffer), 'http/1.0 302') ==! false or strpos(strtolower($buffer), 'http/1.1 301') !== false or strpos(strtolower($buffer), 'http/1.0 301') ==! false) {
+        } else if (strpos(strtolower($buffer), 'http/1.1 302') !== false or strpos(strtolower($buffer), 'http/1.0 302') !== false or strpos(strtolower($buffer), 'http/1.1 301') !== false or strpos(strtolower($buffer), 'http/1.0 301') !== false) {
 
             // Header parsing, the Location attribute is what we want
             foreach (explode("\r\n", $buffer) as $info) {
