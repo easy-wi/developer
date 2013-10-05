@@ -177,11 +177,7 @@ class ExternalSQL {
             $query = $this->remotesql->prepare("DELETE FROM `mysql`.`host` WHERE `db`=?");
             $query->execute(array($dbname));
 
-            $query = $this->remotesql->prepare("DROP USER ?@''");
-            $query->execute(array($dbname));
-
-            $query = $this->remotesql->prepare("DROP USER ?@'localhost'");
-            $query->execute(array($dbname));
+            $this->remotesql->exec("DROP DATABASE `$dbname`");
 
             $this->remotesql->exec("FLUSH PRIVILEGES; FLUSH HOSTS;");
 

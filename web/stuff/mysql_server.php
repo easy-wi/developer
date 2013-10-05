@@ -428,6 +428,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
             if ($remotesql->error== 'ok') {
                 $remotesql->DelDB($dbname);
+                $remotesql->DelUser($dbname);
                 $query = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($id,$reseller_id));
                 customColumns('D',$id,'del');
