@@ -41,7 +41,7 @@ $query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status`
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $query2 = $sql->prepare("SELECT `active`,`usedns`,`defaultdns`,`bitversion`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`maxserver`,`maxslots`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-    $query2->execute(array(':aeskey'=>$aeskey,':id'=>$row['hostID'],':reseller_id'=>$row['resellerID']));
+    $query2->execute(array(':aeskey' => $aeskey,':id' => $row['hostID'],':reseller_id' => $row['resellerID']));
     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
         $active=$row2['active'];
         $addedby=$row2['addedby'];

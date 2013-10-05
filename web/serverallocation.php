@@ -103,14 +103,14 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 			$data_explode=explode(" ", $hddline);
 			if (isset($data_explode[1])) {
 				$mountpoint=$data_explode[0];
-				$mountsize[$mountpoint]=$data_explode[1];
+				$mountsize[$mountpoint] = $data_explode[1];
 				$mountunused[$mountpoint] = 0;
-				$hdd[]=$mountpoint;
+				$hdd[] = $mountpoint;
 			}
 		}
 		$i = 1;
 		while ($i<=$cores) {
-			$core[]=$i;
+			$core[] = $i;
 			$cpucore[$i] = 0;
 			$i++;
 		}
@@ -121,7 +121,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 			$maxcore=$cores;
 		}
 		while ($i<=$cores and $i<=$maxcore) {
-			$add_core[]=$i;
+			$add_core[] = $i;
 			$i++;
 		}
         $query2->execute(array($id));
@@ -129,23 +129,23 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			$mountpoint=$row2['mountpoint'];
 			$addstracthdd=$mountunused[$mountpoint]+($row2['hddsize']*($percent/100));
-			$mountunused[$mountpoint]=$addstracthdd;
+			$mountunused[$mountpoint] = $addstracthdd;
 			$addstractram=$ramused+$row2['minram'];
 			$ramused=$addstractram;
 			$cpuhz=$row2['cores']*$row2['minmhz'];
 			$addcpu=$cpucore[1]+$cpuhz;
 			if ($addcpu<=$mhz) {
-				$cpucore[1]=$addcpu;
+				$cpucore[1] = $addcpu;
 			} else {
-				$cpucore[1]=$mhz;
+				$cpucore[1] = $mhz;
 				$nextcore = 2;
 				while ($nextcore<=$cores) {
 					$extra=$addcpu-$mhz;
 					$addcpu=$cpucore[$nextcore]+$extra;
 					if ($addcpu<=$mhz and $addcpu>=0) {
-						$cpucore[$nextcore]=$addcpu;
+						$cpucore[$nextcore] = $addcpu;
 					} else if ($addcpu>=0) {
-						$cpucore[$nextcore]=$mhz;
+						$cpucore[$nextcore] = $mhz;
 					}
 					$nextcore++;
 				}
@@ -153,12 +153,12 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 			$i2++;
 		}
 		foreach ($hdd as $mountpoint) {
-			$freespace[$mountpoint]=$mountsize[$mountpoint]-($mountunused[$mountpoint]*($percent/100));
+			$freespace[$mountpoint] = $mountsize[$mountpoint]-($mountunused[$mountpoint]*($percent/100));
 		}
 		natsort($freespace);
 		$freespace=array_reverse($freespace);
 		foreach ($freespace as $mountpoint => $free) {
-			$best_hdd[]=$mountpoint;
+			$best_hdd[] = $mountpoint;
 		}
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_vserver_allocation.tpl');
@@ -195,7 +195,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 			$userips=ipstoarray($row['ips']);
 			foreach ($userips as $ip) {
 				$ip_ex=explode(".", $ip);
-				$ips[]=$ip_ex[0] . '.' . $ip_ex[1] . '.' . $ip_ex[2].".";
+				$ips[] = $ip_ex[0] . '.' . $ip_ex[1] . '.' . $ip_ex[2].".";
 			}
 		}
 		$subnets=array_unique($ips);
@@ -246,7 +246,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 		}
 		$ips = array();
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			foreach (ipstoarray($row['ips']) as $userip) $userips[]=$userip;
+			foreach (ipstoarray($row['ips']) as $userip) $userips[] = $userip;
 		}
 		$ips=array_unique($userips);
 		natsort($ips);
@@ -276,12 +276,12 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 	$pselect->execute(array($ui->id('id',19,'get'), $ui->username('distro','50','get')));
 	$usedpxeautorun = array();
 	foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$usedpxeautorun[]=$row['pxeautorun'];
+		$usedpxeautorun[] = $row['pxeautorun'];
 	}
 	$i = 0;
 	while ($i<="9") {
 		if (!in_array($i, $usedpxeautorun)){
-			$pxeautorun[]=$i;
+			$pxeautorun[] = $i;
 		}
 		$i++;
 	}
@@ -353,7 +353,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
     $count=count($games);
 	while ($i<$count) {
         if ($games[$i] != '' and !in_array($games[$i], $gamelist)) {
-            $gamelist[]=$games[$i];
+            $gamelist[] = $games[$i];
             $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($games[$i], $reseller_id));
             $typeID=$query->fetchColumn();
@@ -424,26 +424,26 @@ if ($ui->smallletters('w',5,'get') == 'check') {
         $query->execute(array($ui->ip('ip','get'), $reseller_id));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if (port($row['port'])){
-                $ports[]=$row['port'];
+                $ports[] = $row['port'];
             }
             if (port($row['port2'])){
-                $ports[]=$row['port2'];
+                $ports[] = $row['port2'];
             }
             if (port($row['port3'])){
-                $ports[]=$row['port3'];
+                $ports[] = $row['port3'];
             }
             if (port($row['port4'])){
-                $ports[]=$row['port4'];
+                $ports[] = $row['port4'];
             }
             if (port($row['port5'])){
-                $ports[]=$row['port5'];
+                $ports[] = $row['port5'];
             }
 		}
         $query = $sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
         $query->execute(array($ui->ip('ip','get')));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			if (port($row['port'])){
-				$ports[]=$row['port'];
+				$ports[] = $row['port'];
 			}
 		}
 		if (isset($ports)) {
@@ -480,7 +480,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
                 $topic=$pselect3->fetchColumn();
             }
             if (empty($topic)) $topic=$row['topic'];
-            $table[]=array('id'=>$row['id'],'topic'=>$topic);
+            $table[]=array('id' => $row['id'],'topic' => $topic);
         }
         $ticketTemplate=($ui->id('r',1,'get')!=1) ? 'ajax_userpanel_ticket_category.tpl' : 'ajax_admin_reseller_ticket_category.tpl';
         require_once IncludeTemplate($template_to_use, $ticketTemplate);

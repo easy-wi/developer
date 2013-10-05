@@ -47,7 +47,7 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
     $timelimit=600;
 }
 set_time_limit($timelimit);
-if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
+if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     define('EASYWIDIR', dirname(__FILE__));
     echo "Start Syncs and Updates loading...\r\n";
     include(EASYWIDIR . '/stuff/vorlage.php');

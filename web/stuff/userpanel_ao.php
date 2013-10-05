@@ -244,12 +244,12 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10,'get') and in_array($ui->smal
             }
             $link='userpanel.php?w=ao&amp;id='.$switchID.'&amp;adid='.$adid.'&amp;action='.$action.$delete.'&amp;r=gs';
             if ($row2['type'] == 'tool') {
-                $table2[]=array('adid'=>$adid,'menudescription'=>$menudescription,'addescription'=>$addescription,'installedid'=>$installedid,'img'=>$imgName,'bootstrap'=>$bootstrap,'alt'=>$imgAlt,'link'=>$link);
+                $table2[]=array('adid' => $adid,'menudescription' => $menudescription,'addescription' => $addescription,'installedid' => $installedid,'img' => $imgName,'bootstrap' => $bootstrap,'alt' => $imgAlt,'link' => $link);
             } else if ($row2['type'] == 'map') {
-                $table3[]=array('adid'=>$adid,'menudescription'=>$menudescription,'addescription'=>$addescription,'installedid'=>$installedid,'img'=>$imgName,'bootstrap'=>$bootstrap,'alt'=>$imgAlt,'link'=>$link);
+                $table3[]=array('adid' => $adid,'menudescription' => $menudescription,'addescription' => $addescription,'installedid' => $installedid,'img' => $imgName,'bootstrap' => $bootstrap,'alt' => $imgAlt,'link' => $link);
             }
 		}
-		$table=array('id'=>$switchID,'serverip'=>$serverip,'port'=>$serverport,'tools'=>$table2,'maps'=>$table3,'name'=>$description);
+		$table=array('id' => $switchID,'serverip' => $serverip,'port' => $serverport,'tools' => $table2,'maps' => $table3,'name' => $description);
         unset($table2,$table3);
 	}			
 	$template_file = "userpanel_gserver_addon.tpl";

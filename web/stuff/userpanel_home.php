@@ -36,7 +36,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($user_id) or !$main  ==  "1") or (isset($user_id) and !isanyuser($user_id))) {
+if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !isanyuser($user_id))) {
 	header('Location: login.php');
 	die('No acces');
 }
@@ -106,7 +106,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $crached_ts3_virtual++;
 }
 
-$crashedArray['ts3']=$crached_ts3_virtual;
+$crashedArray['ts3'] = $crached_ts3_virtual;
 $feedArray = array();
 
 if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') and !$ui->smallletters('d',2,'get'))) {
@@ -126,7 +126,7 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
         $query2 = $sql->prepare("SELECT p.`id`,t.`id` AS `textID`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0 ORDER BY `date` DESC LIMIT 0,$newsAmount");
         $query2->execute(array($user_language));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            if ($row['merge']  ==  'N') {
+            if ($row['merge'] == 'N') {
                 $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => ($seo == 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id='.$row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
             } else {
                 $feedArray['News'][] = array('title' => $row2['title'], 'link' => ($seo == 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id='.$row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
@@ -160,9 +160,9 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
                     }
                     $theNews = array('title' => $row3['title'],'link' => $row3['link'],'text' => $text,'url' => $url);
                     if ($row['merge'] == 'Y'){
-                        $feedArray['News'][]=$theNews;
+                        $feedArray['News'][] = $theNews;
                     } else {
-                        $feedArray[$url][]=$theNews;
+                        $feedArray[$url][] = $theNews;
                     }
                 }
             }
@@ -194,7 +194,7 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
                     $title=$row2['link'];
                 }
                 $theNews = array('title' => $title,'link' => $row2['link'],'text' => $text,'url' => $url);
-                $feedArray['News'][]=$theNews;
+                $feedArray['News'][] = $theNews;
             }
         }
     }

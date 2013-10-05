@@ -57,6 +57,8 @@ if (isset($debug) and $debug==1) {
     $dbConnect['debug'] = 1;
     ini_set('display_errors',1);
     error_reporting(E_ALL|E_STRICT);
+} else {
+    $dbConnect['debug'] = 0;
 }
 try {
     $dbConnect['connect']="${dbConnect['type']}:host=${dbConnect['host']};dbname=${dbConnect['db']}";
@@ -74,9 +76,11 @@ try {
     $insertlog->bindParam(':ip', $loguserip);
     $insertlog->bindParam(':hostname', $userHostname);
     $insertlog->bindParam(':reseller_id', $reseller_id);
+
     if ($ui->ip('REMOTE_ADDR','server')) {
         $loguserip = $ui->ip('REMOTE_ADDR','server');
         $userHostname = @gethostbyaddr($ui->ip('REMOTE_ADDR','server'));
+
     } else {
         $loguserip = 'localhost';
         $userHostname = 'localhost';
@@ -85,22 +89,31 @@ try {
 catch(PDOException $error) {
     die($error->getMessage());
 }
+
 $page_url=($ui->escaped ('HTTPS','server')) ? 'https://'.$ui->domain('HTTP_HOST','server') : 'http://'.$ui->domain('HTTP_HOST','server');
+
 if ($loguserip != 'localhost') {
+
     session_start();
+
     if (isset($_SESSION['userid']) and is_numeric($_SESSION['userid']) and isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) {
         $user_id = $_SESSION['userid'];
         $admin_id = $_SESSION['adminid'];
+
     } else if(isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) {
         $user_id = $_SESSION['userid'];
+
     } else if (isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) {
         $admin_id = $_SESSION['adminid'];
     }
+
     if (isset($_SESSION['resellerid']) and is_numeric($_SESSION['resellerid'])) {
         $reseller_id = $_SESSION['resellerid'];
     }
+
     if (isset($_SESSION['HTTP_USER_AGENT']) and isset($_SESSION['REMOTE_ADDR'])){
-        if ($_SESSION['HTTP_USER_AGENT']!=md5($ui->escaped('HTTP_USER_AGENT','server')) or $_SESSION['REMOTE_ADDR']!=md5($ui->ip('REMOTE_ADDR','server'))){
+
+        if ($_SESSION['HTTP_USER_AGENT'] != md5($ui->escaped('HTTP_USER_AGENT','server')) or $_SESSION['REMOTE_ADDR'] != md5($ui->ip('REMOTE_ADDR','server'))){
             session_unset();
             session_destroy();
             if (isset($page_include)) {
@@ -114,7 +127,9 @@ if ($loguserip != 'localhost') {
         $_SESSION['HTTP_USER_AGENT'] = md5($ui->escaped('HTTP_USER_AGENT','server'));
     }
 }
+
 $rSA = array();
+
 if (isset($reseller_id)) {
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
@@ -123,24 +138,31 @@ if (isset($reseller_id)) {
             $rSA[$k] = $v;
         }
     }
+
     $resellerstimezone = $rSA['timezone'];
     $template_to_use = $rSA['template'];
     $downChecks = $rSA['down_checks'];
     $logdate = date('Y-m-d H:i:s', strtotime($resellerstimezone .' hour'));
+
     if (isset($user_id) and !isset($admin_id)) {
         $lookupid = $reseller_id;
+
     } else {
         $check_split = preg_split("/\//", $ui->escaped('SCRIPT_NAME','server'),-1,PREG_SPLIT_NO_EMPTY);
         $which_file = $check_split[count($check_split)-1];
+
         if ($which_file == 'userpanel.php') {
             $lookupid = $reseller_id;
+
         } else {
             $lookupid = ($reseller_id == $admin_id) ? 0 : $reseller_id;
         }
     }
+
     $query = $sql->prepare("SELECT `supportnumber` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($lookupid));
     $support_phonenumber = $query->fetchColumn();
+
 } else {
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
@@ -149,13 +171,20 @@ if (isset($reseller_id)) {
             $rSA[$k] = $v;
         }
     }
+
     $template_to_use = $rSA['template'];
     $support_phonenumber = $rSA['supportnumber'];
     $logdate = date('Y-m-d H:i:s');
 }
+
 if ($loguserip!='localhost') {
-    if (isset($_SESSION['language'])) $user_language = $_SESSION['language'];
+
+    if (isset($_SESSION['language'])) {
+        $user_language = $_SESSION['language'];
+    }
+
     if (isset($page_include)) {
+
         $query = $sql->prepare("SELECT * FROM `page_settings` WHERE `resellerid`='0' LIMIT 1");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -178,25 +207,34 @@ if ($loguserip!='localhost') {
             $commentsModerated = $row['commentsModerated'];
             $honeyPotKey = $row['honeyPotKey'];
         }
+
         $ewInstallPath = EASYWIDIR;
+
         $elements=(!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI','server'), $ewInstallPath)===false) ? preg_split('/\//', $ui->escaped('REQUEST_URI','server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI','server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
+
         if (isset($seo) and $seo== 'Y' and isset($elements[0])) {
+
             $page_detect_language = $elements[0];
+
             if (substr($ui->escaped('REQUEST_URI','server'),-1) != '/' and !$ui->w('site',50, 'get')) {
                 $throw404 = true;
             }
+
             if (!preg_match('/^[a-z]{2}+$/', $elements[0]) and !$ui->w('site',50, 'get')) {
                 $throw404 = true;
             }
         }
+
         if (isset($elements[1]) and $elements[1] != '') {
-            $page_category=strtolower($elements[1]);
+            $page_category = strtolower($elements[1]);
         }
+
         if (isset($elements[2]) and $elements[2] != '') {
-            $page_name=strtolower($elements[2]);
+            $page_name = strtolower($elements[2]);
         }
+
         if (isset($elements[3]) and $elements[3] != '') {
-            $page_count=strtolower($elements[3]);
+            $page_count = strtolower($elements[3]);
         }
     }
     if (!isset($user_language) and isset($user_id) and isset($admin_id)) {

@@ -65,7 +65,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $style='display_none';
                 $checkbox="<input type=\"checkbox\" name=\"language[]\" value=\"$row\" onclick=\"textdrop('$row');\" /> ";
             }
-            $foundlanguages[]=array('style'=>$style,'lang'=>$row,'checkbox'=>$checkbox,'checked'=>$checked);
+            $foundlanguages[]=array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'checked' => $checked);
         }
         $query = $sql->prepare("SELECT `id`,`topic` FROM `ticket_topics` WHERE `id`=maintopic AND `resellerid`=?");
         $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
@@ -100,7 +100,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $id=$sql->lastInsertId();
                 if ($maintopic=="none") {
                     $query = $sql->prepare("UPDATE `ticket_topics` SET `maintopic`=:id, priority='NULL' WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                    $query->execute(array(':id'=> $id,':reseller_id'=>$reseller_id));
+                    $query->execute(array(':id'=> $id,':reseller_id' => $reseller_id));
                 }
                 if (isset($ui->post['language'])) {
                     $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
@@ -184,7 +184,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if (empty($topics)) {
                 $topics=$row['topic'];
             }
-            if ($row['id']==$maintopic) {
+            if ($row['id'] == $maintopic) {
                 $options[]="<option value=\"".$row['id']."\" selected=\"selected\">".$topics."</option>";
             } else {
                 $options[]="<option value=\"".$row['id']."\">".$topics."</option>";
@@ -209,7 +209,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $checked = '';
                 $checkbox="<input type=\"checkbox\" name=\"language[]\" value=\"$langrow2\" onclick=\"textdrop('$langrow2');\" /> ";
             }
-            $foundlanguages[]=array('style'=>$style,'lang'=>$langrow2,'checkbox'=>$checkbox,'checked'=>$checked,'subject' => stripslashes($subject));
+            $foundlanguages[]=array('style' => $style,'lang' => $langrow2,'checkbox' => $checkbox,'checked' => $checked,'subject' => stripslashes($subject));
         }
         $template_file = "admin_ticket_topic_md.tpl";
     } else if ($ui->smallletters('action',2,'post') == 'md' and $ui->id('id',19,'get')){
@@ -223,7 +223,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $priority = '';
             }
             $query = $sql->prepare("UPDATE `ticket_topics` SET `topic`=:topic,`maintopic`=:maintopic,`priority`=:priority WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-            $query->execute(array(':topic'=> $topic_name, ':maintopic'=> $maintopic, ':priority'=> $priority, ':id'=> $id, ':reseller_id'=>$reseller_id));
+            $query->execute(array(':topic'=> $topic_name, ':maintopic'=> $maintopic, ':priority'=> $priority, ':id'=> $id, ':reseller_id' => $reseller_id));
             if (isset($ui->post['language'])) {
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 foreach($ui->post['language'] as $language) {
@@ -291,7 +291,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $topic=$row2['topic'];
             }
-            if ($row2['id']==$row2['maintopic']) {
+            if ($row2['id'] == $row2['maintopic']) {
                 $maintopic = '';
                 $mTopic = '';
             } else {
@@ -308,7 +308,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
                 $maintopic=' - ';
             }
-            $table[]=array('id'=>$row2['id'],'topic'=>$topic,'maintopic'=>$maintopic,'mTopic'=>$mTopic,'priority'=>$priority);
+            $table[]=array('id' => $row2['id'],'topic' => $topic,'maintopic' => $maintopic,'mTopic' => $mTopic,'priority' => $priority);
         }
         $next=$start+$amount;
         $countp=$sql->prepare("SELECT `id` FROM `ticket_topics` WHERE `resellerid`=?");
@@ -337,7 +337,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $link .='&p=0">1</a>';
         }
-        $pages[]=$link;
+        $pages[] = $link;
         $i = 2;
         while ($i<=$pageamount) {
             $selectpage = ($i - 1) * $amount;
@@ -457,7 +457,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $where='WHERE t.`resellerid`=?';
     if (isset($ui->get['ts'])) {
         foreach ($ui->get['ts'] as $get) {
-            if (preg_match('/[ACDNPR]/',$get)) $selected[]=$get;
+            if (preg_match('/[ACDNPR]/',$get)) $selected[] = $get;
         }
     } else {
         $selected=array('N','P','R');
@@ -467,7 +467,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($selected as $get) {
         if ($i==0) $temp.="`state`='${get}'";
         else $temp.=" OR `state`='${get}'";
-        if (!in_array($get,$selected)) $selected[]=$get;
+        if (!in_array($get,$selected)) $selected[] = $get;
         $i++;
     }
     $temp.=')';
@@ -584,7 +584,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $status=$sprache->status_reopen;
         }
-        $table[]=array('id'=>$row['id'],'priority'=>$priority,'userPriority'=>$userPriority,'writedate'=>$writedate,'supporter'=>(trim($row['supportername']) != '') ? trim($row['supportername']) : $row['supporter'],'user'=>(trim($row['username']) != '') ? trim($row['username']) : $row['cname'],'subject'=>$topic,'status'=>$status,'rawState'=>$row['state'],'statusClass'=>$statusClass);
+        $table[]=array('id' => $row['id'],'priority' => $priority,'userPriority' => $userPriority,'writedate' => $writedate,'supporter'=>(trim($row['supportername']) != '') ? trim($row['supportername']) : $row['supporter'],'user'=>(trim($row['username']) != '') ? trim($row['username']) : $row['cname'],'subject' => $topic,'status' => $status,'rawState' => $row['state'],'statusClass' => $statusClass);
     }
     $template_file = "admin_tickets_list.tpl";
 }

@@ -118,7 +118,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $style='class="display_none"';
                     $checkbox='<input id="inputCheckbox'.$row.'" type="checkbox" name="language[]" value="'.$row.'" onclick="textdrop('."'".$row."'".');" /> ';
                 }
-                $foundlanguages[]=array('style'=>$style,'class'=>$class,'lang'=>$row,'checkbox'=>$checkbox);
+                $foundlanguages[]=array('style' => $style,'class' => $class,'lang' => $row,'checkbox' => $checkbox);
             }
         }
         $template_file = 'admin_settings_columns_add.tpl';
@@ -150,7 +150,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $class = '';
                 $checkbox="<input id=\"inputCheckbox$ln\" type=\"checkbox\" name=\"language[]\" value=\"$ln\" onclick=\"textdrop('$ln');\" checked /> ";
             }
-            $foundlanguages[]=array('style'=>$style,'class'=>$class,'lang'=>$ln,'checkbox'=>$checkbox,'text'=>$text);
+            $foundlanguages[]=array('style' => $style,'class' => $class,'lang' => $ln,'checkbox' => $checkbox,'text' => $text);
         }
         $template_file = (isset($active)) ? 'admin_settings_columns_md.tpl' : 'admin_404.tpl';
     }
@@ -233,7 +233,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgAlt='Inactive';
         }
         $type=($row['type'] == 'I') ? $sprache->int : $sprache->var;
-        $table[]=array('id'=>$row['customID'],'img'=>$imgName,'alt'=>$imgAlt,'name'=>$row['name'],'type'=>$type,'active'=>$row['active']);
+        $table[]=array('id' => $row['customID'],'img' => $imgName,'alt' => $imgAlt,'name' => $row['name'],'type' => $type,'active' => $row['active']);
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=cc&amp;o='.$o.'&amp;a=';
@@ -247,7 +247,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

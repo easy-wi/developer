@@ -105,7 +105,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT r.`id` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? AND s.`shorten`=?");
             $query->execute(array($id,$reseller_id,$shorten));
             if ($query->rowCount()<1) {
-                $table[]=array('id'=>$gameid,'shorten'=>$shorten,'description'=>$description);
+                $table[]=array('id' => $gameid,'shorten' => $shorten,'description' => $description);
             }
         }
         $template_file = "admin_master_add.tpl";
@@ -155,7 +155,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT r.`id`,s.`shorten`,s.`description` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? ORDER BY `description`");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table[]=array('id'=>$row['id'],'shorten'=>$row['shorten'],'description'=>$row['description']);
+            $table[]=array('id' => $row['id'],'shorten' => $row['shorten'],'description' => $row['description']);
         }
         if (count($table)>0) {
             $template_file = "admin_master_dl.tpl";
@@ -212,7 +212,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $toolong=date($row2['installstarted'],strtotime("+15 minutes"));
                 if (strtotime($logdate)>strtotime($toolong) or $row2['updating'] == 'Y') {
-                    $sshcheck[]=$row2['shorten'];
+                    $sshcheck[] = $row2['shorten'];
                 } else {
                     $statusList[$row2['shorten']] = '16_installing';
                 }
@@ -234,7 +234,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 foreach (preg_split('/\:/',$check,-1,PREG_SPLIT_NO_EMPTY) as $status) {
                     $ex=explode('=',$status);
                     if (isset($ex[1])) {
-                        $games[$ex[0]]=$ex[1];
+                        $games[$ex[0]] = $ex[1];
                     }
                 }
                 foreach ($games as $k=>$v) {
@@ -254,7 +254,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $statusList[$shorten] = '16_installing';
             }
         }
-        $table[]=array('id'=>$row['id'],'img'=>$imgName,'alt'=>$imgAlt,'ip'=>$row['ip'],'os'=>$row['os'],'bit'=>$row['bitversion'],'description'=>$description,'statusList'=>$statusList,'active'=>$row['active']);
+        $table[]=array('id' => $row['id'],'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ip'],'os' => $row['os'],'bit' => $row['bitversion'],'description' => $description,'statusList' => $statusList,'active' => $row['active']);
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
@@ -285,7 +285,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
@@ -304,7 +304,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $ips[$id]=$row['ip'];
+                $ips[$id] = $row['ip'];
             }
         }
     }
@@ -315,18 +315,18 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
     $query = $sql->prepare("SELECT s.`description`,s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` $where GROUP BY s.`description` ORDER BY s.`description` ASC");
-    $query->execute(array(':reseller_id'=>$reseller_id));
+    $query->execute(array(':reseller_id' => $reseller_id));
     $table = array();
     $i = 0;
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[$i]['game']=array('shorten'=>$row['shorten'],'description'=>$row['description']);
+        $table[$i]['game']=array('shorten' => $row['shorten'],'description' => $row['description']);
         $i++;
     }
     $query = $sql->prepare("SELECT d.`id`,d.`ip` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` $where GROUP BY d.`id` ASC");
-    $query->execute(array(':reseller_id'=>$reseller_id));
+    $query->execute(array(':reseller_id' => $reseller_id));
     $i2 = 0;
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[$i2]['server']=array('id'=>$row['id'],'ip'=>$row['ip']);
+        $table[$i2]['server']=array('id' => $row['id'],'ip' => $row['ip']);
         $i2++;
     }
     $query5 = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`resellerid`=? GROUP BY s.`shorten` ORDER BY s.`shorten` ASC");

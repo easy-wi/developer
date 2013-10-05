@@ -187,7 +187,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		if (is_dir($dir)){
 			$dirs=scandir($dir);
 			foreach ($dirs as $row) {
-				if (is_dir('template/'.$row) and !preg_match('/^\.(.*)$/', $row)) $templates[]=$row;
+				if (is_dir('template/'.$row) and !preg_match('/^\.(.*)$/', $row)) $templates[] = $row;
 			}
 		}
 		$selectlanguages=getlanguages($template_choosen);
@@ -201,7 +201,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$imprint=$row['imprint'];
 		}
-		$foundlanguages[]=array('style'=>$query->rowCount(),'lang'=>$langrow2,'imprint'=>$imprint);
+		$foundlanguages[]=array('style' => $query->rowCount(),'lang' => $langrow2,'imprint' => $imprint);
 	}
 	$template_file = "admin_settings.tpl";
 }

@@ -169,7 +169,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($language,$what,$reseller_id));
         $xml=$query->fetchColumn();
         $style=($query->rowCount()==1) ? 1 : 0;
-        return array('style'=>$style,'lang'=>$language,'xml'=>$xml);
+        return array('style' => $style,'lang' => $language,'xml' => $xml);
     }
     $emailbackup_xml = array();
     $emailbackuprestore_xml = array();

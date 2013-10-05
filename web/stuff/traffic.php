@@ -81,14 +81,14 @@ if ($d== 'se' and $reseller_id==0) {
 		if (!isset($ui->post['line_colour_3']) or (!validate_int($ui->post['line_colour_3'], 0 , 255) and $ui->post['line_colour_3'] != 0)) $error = 1;
 		if ($error==0) {
 			$query = $sql->prepare("UPDATE `traffic_settings` SET `type`=:type,`statip`=:statip,`dbname`=AES_ENCRYPT(:dbname,:aeskey),`dbuser`=AES_ENCRYPT(:dbuser,:aeskey),`dbpassword`=AES_ENCRYPT(:dbpassword,:aeskey),`multiplier`=:multiplier,`table_name`=:table_name,`column_sourceip`=:column_sourceip,`column_destip`=:column_destip,`column_byte`=:column_byte,`column_date`=:column_date,`text_colour_1`=:text_colour_1,`text_colour_2`=:text_colour_2,`text_colour_3`=:text_colour_3,`barin_colour_1`=:barin_colour_1,`barin_colour_2`=:barin_colour_2,`barin_colour_3`=:barin_colour_3,`barout_colour_1`=:barout_colour_1,`barout_colour_2`=:barout_colour_2,`barout_colour_3`=:barout_colour_3,`bartotal_colour_1`=:bartotal_colour_1,`bartotal_colour_2`=:bartotal_colour_2,`bartotal_colour_3`=:bartotal_colour_3,`bg_colour_1`=:bg_colour_1,`bg_colour_2`=:bg_colour_2,`bg_colour_3`=:bg_colour_3,`border_colour_1`=:border_colour_1,`border_colour_2`=:border_colour_2,`border_colour_3`=:border_colour_3,`line_colour_1`=:line_colour_1,`line_colour_2`=:line_colour_2,`line_colour_3`=:line_colour_3 LIMIT 1");
-            $query->execute(array(':aeskey'=>$aeskey,':type'=>$ui->post['type'],':statip'=>$ui->post['statip'],':dbname'=>$ui->post['dbname'],':dbuser'=>$ui->post['dbuser'],':dbpassword'=>$ui->post['dbpassword'],':table_name'=>$ui->post['table_name'],':multiplier'=>$ui->post['multiplier'],':column_sourceip'=>$ui->post['column_sourceip'],':column_destip'=>$ui->post['column_destip'],':column_byte'=>$ui->post['column_byte'],':column_date'=>$ui->post['column_date'],':text_colour_1'=>$ui->post['text_colour_1'],':text_colour_2'=>$ui->post['text_colour_2'],':text_colour_3'=>$ui->post['text_colour_3'],':barin_colour_1'=>$ui->post['barin_colour_1'],':barin_colour_2'=>$ui->post['barin_colour_2'],':barin_colour_3'=>$ui->post['barin_colour_3'],':barout_colour_1'=>$ui->post['barout_colour_1'],':barout_colour_2'=>$ui->post['barout_colour_2'],':barout_colour_3'=>$ui->post['barout_colour_3'],':bartotal_colour_1'=>$ui->post['bartotal_colour_1'],':bartotal_colour_2'=>$ui->post['bartotal_colour_2'],':bartotal_colour_3'=>$ui->post['bartotal_colour_3'],':bg_colour_1'=>$ui->post['bg_colour_1'],':bg_colour_2'=>$ui->post['bg_colour_2'],':bg_colour_3'=>$ui->post['bg_colour_3'],':border_colour_1'=>$ui->post['border_colour_1'],':border_colour_2'=>$ui->post['border_colour_2'],':border_colour_3'=>$ui->post['border_colour_3'],':line_colour_1'=>$ui->post['line_colour_1'],':line_colour_2'=>$ui->post['line_colour_2'],':line_colour_3'=>$ui->post['line_colour_3']));
+            $query->execute(array(':aeskey' => $aeskey,':type' => $ui->post['type'],':statip' => $ui->post['statip'],':dbname' => $ui->post['dbname'],':dbuser' => $ui->post['dbuser'],':dbpassword' => $ui->post['dbpassword'],':table_name' => $ui->post['table_name'],':multiplier' => $ui->post['multiplier'],':column_sourceip' => $ui->post['column_sourceip'],':column_destip' => $ui->post['column_destip'],':column_byte' => $ui->post['column_byte'],':column_date' => $ui->post['column_date'],':text_colour_1' => $ui->post['text_colour_1'],':text_colour_2' => $ui->post['text_colour_2'],':text_colour_3' => $ui->post['text_colour_3'],':barin_colour_1' => $ui->post['barin_colour_1'],':barin_colour_2' => $ui->post['barin_colour_2'],':barin_colour_3' => $ui->post['barin_colour_3'],':barout_colour_1' => $ui->post['barout_colour_1'],':barout_colour_2' => $ui->post['barout_colour_2'],':barout_colour_3' => $ui->post['barout_colour_3'],':bartotal_colour_1' => $ui->post['bartotal_colour_1'],':bartotal_colour_2' => $ui->post['bartotal_colour_2'],':bartotal_colour_3' => $ui->post['bartotal_colour_3'],':bg_colour_1' => $ui->post['bg_colour_1'],':bg_colour_2' => $ui->post['bg_colour_2'],':bg_colour_3' => $ui->post['bg_colour_3'],':border_colour_1' => $ui->post['border_colour_1'],':border_colour_2' => $ui->post['border_colour_2'],':border_colour_3' => $ui->post['border_colour_3'],':line_colour_1' => $ui->post['line_colour_1'],':line_colour_2' => $ui->post['line_colour_2'],':line_colour_3' => $ui->post['line_colour_3']));
 			$template_file = $spracheResponse->table_add;
 		} else {
 			$template_file = 'Error';
 		}
 	} else {
         $query = $sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date`,`multiplier`,`text_colour_1`,`text_colour_2`,`text_colour_3`,`barin_colour_1`,`barin_colour_2`,`barin_colour_3`,`barout_colour_1`,`barout_colour_2`,`barout_colour_3`,`bartotal_colour_1`,`bartotal_colour_2`,`bartotal_colour_3`,`bg_colour_1`,`bg_colour_2`,`bg_colour_3`,`border_colour_1`,`border_colour_2`,`border_colour_3`,`line_colour_1`,`line_colour_2`,`line_colour_3` FROM `traffic_settings` LIMIT 1");
-        $query->execute(array(':aeskey'=>$aeskey));
+        $query->execute(array(':aeskey' => $aeskey));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$type=$row['type'];
 			$statip=$row['statip'];
@@ -166,13 +166,13 @@ if ($d== 'se' and $reseller_id==0) {
 			$userips=ipstoarray($row['ips']);
 			foreach ($userips as $ip) {
 				$ip_ex=explode(".",$ip);
-				$ips[]=$ip_ex[0] . '.' . $ip_ex[1] . '.' . $ip_ex[2].".";
+				$ips[] = $ip_ex[0] . '.' . $ip_ex[1] . '.' . $ip_ex[2].".";
 			}
 		}
 		$subnets=array_unique($ips);
 		natsort($subnets);
 		foreach ($subnets as $subnet) {
-			if ($ui->post['what']==$subnet) {
+			if ($ui->post['what'] == $subnet) {
 				$data[] = '<option selected="selected">'.$subnet.'</option>';
 			} else {
 				$data[] = '<option>'.$subnet.'</option>';
@@ -188,7 +188,7 @@ if ($d== 'se' and $reseller_id==0) {
 				$pselect->execute();
 			}
 			foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-				if ($ui->post['what']==$row['id']) {
+				if ($ui->post['what'] == $row['id']) {
 					$data[] = '<option value='.$row['id'].' selected="selected">'.$row['cname'].'</option>';
 				} else {
 					$data[] = '<option value='.$row['id'].'>'.$row['cname'].'</option>';
@@ -206,7 +206,7 @@ if ($d== 'se' and $reseller_id==0) {
 				$pselect->execute(array(':reseller_id' => $reseller_id));
 			}
 			foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-				if ($ui->post['what']==$row['id']) {
+				if ($ui->post['what'] == $row['id']) {
 					$data[] = '<option value='.$row['id'].' selected="selected">'.$row['cname'].'</option>';
 				} else {
 					$data[] = '<option value='.$row['id'].'>'.$row['cname'].'</option>';
@@ -215,10 +215,10 @@ if ($d== 'se' and $reseller_id==0) {
 		}
 		if ($reseller_id==0) {
 			$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=:id LIMIT 1");
-			$pselect->execute(array(':id'=>$ui->post['what']));
+			$pselect->execute(array(':id' => $ui->post['what']));
 		} else if ($reseller_id==$admin_id) {
 			$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-			$pselect->execute(array(':id'=>$ui->post['what'],':reseller_id'=>$reseller_id));
+			$pselect->execute(array(':id' => $ui->post['what'],':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$display=$extra . '  ' . $row['cname'];
@@ -252,7 +252,7 @@ if ($d== 'se' and $reseller_id==0) {
 			$pselect->execute(array(':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			if ($ui->post['what']==$row['id']) {
+			if ($ui->post['what'] == $row['id']) {
 				$data[] = '<option value='.$row['id'].' selected="selected">'.$row['cname'] . '-' . $row['id'].'</option>';
 			} else {
 				$data[] = '<option value='.$row['id'].'>'.$row['cname'] . '-' . $row['id'].'</option>';
@@ -280,13 +280,13 @@ if ($d== 'se' and $reseller_id==0) {
 			unset($user_ips);
 			$user_ips=ipstoarray($row['ips']);
 			foreach ($user_ips as $userip) {
-				$userips[]=$userip;
+				$userips[] = $userip;
 			}
 		}
 		$ips=array_unique($userips);
 		natsort($ips);
 		foreach ($ips as $ip) {
-			if ($ui->post['what']==$ip) {
+			if ($ui->post['what'] == $ip) {
 				$data[] = '<option selected="selected">'.$ip.'</option>';
 			} else {
 				$data[] = '<option>'.$ip.'</option>';

@@ -70,7 +70,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $customerp=$customer.'-p';
     $ftppass=$row['dftppassword'];
     $ftppassProtected=$row['dpftppassword'];
-    foreach (explode("\r\n", $row['protectedSaveCFGs']) as $cfg) if ($cfg != '') $files[]=$cfg;
+    foreach (explode("\r\n", $row['protectedSaveCFGs']) as $cfg) if ($cfg != '') $files[] = $cfg;
     $shorten=$row['shorten'];
     $serverTemplate=($row['servertemplate']!=1) ? $row['shorten'] . '-' . $row['servertemplate'] : $row['shorten'];
     if($row['gamebinary'] == 'srcds_run') $gamePath="${row['binarydir']}/${row['modfolder']}";

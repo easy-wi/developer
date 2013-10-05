@@ -57,13 +57,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	if ($ui->smallletters('action',2,'post') == 'ad') {
 		$error = array();
 		if (!$ui->ismail('mail','post')){
-            $error[]=$sprache->error_mail;
+            $error[] = $sprache->error_mail;
 		} else {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `mail`=? LIMIT 1");
             $query->execute(array($ui->ismail('mail','post')));
-            if ($query->fetchColumn()>0) $error[]=$sprache->error_mail_exists;
+            if ($query->fetchColumn()>0) $error[] = $sprache->error_mail_exists;
         }
-		if (!$ui->password('security',20,'post'))$error[]=$sprache->error_pass;
+		if (!$ui->password('security',20,'post'))$error[] = $sprache->error_pass;
 		if (!$ui->smallletters('accounttype',1,'post')){
             $error[] = '';
 		} else {
@@ -236,11 +236,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                 if ($key != 'id' and $key != 'resellerid'){
                                     $keys[]="`".$key."`";
                                     $questionmarks[] = '?';
-                                    $intos[]=$value;
+                                    $intos[] = $value;
                                 }
                             }
                             $keys[]="`resellerid`";
-                            $intos[]=$id;
+                            $intos[] = $id;
                             $questionmarks[] = '?';
                             $into='INSERT INTO `'.$tablename.'` ('.implode(',',$keys).') VALUES ('.implode(',',$questionmarks).')';
                             $query = $sql->prepare("$into");
@@ -308,8 +308,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `id`,`grouptype`,`name`,`defaultgroup` FROM `usergroups` WHERE `active`='Y' AND `resellerid`=?");
         $query->execute(array($lookUpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['defaultgroup'] == 'Y') $defaultGroups[$row['grouptype']][$row['id']]=$row['name'];
-            $groups[$row['grouptype']][$row['id']]=$row['name'];
+            if ($row['defaultgroup'] == 'Y') $defaultGroups[$row['grouptype']][$row['id']] = $row['name'];
+            $groups[$row['grouptype']][$row['id']] = $row['name'];
         }
         if ($reseller_id==0 or $reseller_id==$admin_id) {
             $availableips=freeips($reseller_id);
@@ -430,13 +430,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`=? AND `resellerid`=?");
             $query->execute(array($accounttype,$lookUpID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $groups[$row['id']]=$row['name'];
+                $groups[$row['id']] = $row['name'];
             }
             if ($accounttype == 'r' and $reseller_id==0) $lookUpID=$id;
             $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=? AND `resellerID`=?");
             $query->execute(array($id,$lookUpID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $groupsAssigned[]=$row['groupID'];
+                $groupsAssigned[] = $row['groupID'];
             }
             if ($accounttype == 'r') {
                 $ips=($reseller_id==0 or $reseller_id==$admin_id) ? freeips($reseller_id) : freeips($admin_id);
@@ -446,8 +446,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $useractive=$row['useractive'];
                     foreach(ipstoarray($row['ips']) as $ip) {
-                        $ipsAssigned[]=$ip;
-                        $ips[]=$ip;
+                        $ipsAssigned[] = $ip;
+                        $ips[] = $ip;
                     }
                     $maxuser=$row['maxuser'];
                     $maxgserver=$row['maxgserver'];
@@ -468,11 +468,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($ui->smallletters('action',2,'post') == 'md') {
         $errors = array();
         if (!$ui->ismail('mail','post')){
-            $errors[]=$sprache->error_mail;
+            $errors[] = $sprache->error_mail;
         } else {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `mail`=? AND `id`!=? LIMIT 1");
             $query->execute(array($ui->ismail('mail','post'),$id));
-            if ($query->fetchColumn()>0) $error[]=$sprache->error_mail;
+            if ($query->fetchColumn()>0) $error[] = $sprache->error_mail;
         }
         if (!$ui->id('groups',30,'post') and $id != $admin_id){
             $errors[] = 'Error: Group';
@@ -535,7 +535,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $oldips=ipstoarray($query->fetchColumn());
                     $ips = array();
                     foreach ($post_ips2 as $ip) {
-                        if (in_array($ip,$availableips) or in_array($ip,$oldips)) $ips[]=$ip;
+                        if (in_array($ip,$availableips) or in_array($ip,$oldips)) $ips[] = $ip;
                     }
                     $ips=implode("\r\n",$ips);
                     $maxuser=$ui->id('maxuser',10,'post');
@@ -554,7 +554,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                             $update->execute(array($id,$reseller_id));
                             $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('U','us',?,?,?,?,NULL,NOW(),'md',?,?)");
-                            $insert->execute(array($admin_id, $row['id'], $row['id'], $row['cname'],json_encode(array('newActive'=>$useractive)),$id));
+                            $insert->execute(array($admin_id, $row['id'], $row['id'], $row['cname'],json_encode(array('newActive' => $useractive)),$id));
                             updateJobs($row['id'],$reseller_id);
                         }
                     }
@@ -566,7 +566,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                     $update->execute(array($id,$reseller_id));
                     $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('U','us',?,?,?,?,NULL,NOW(),'md',?,?)");
-                    $insert->execute(array($admin_id,$id,$id,$cname,json_encode(array('newActive'=>$active)),$reseller_id));
+                    $insert->execute(array($admin_id,$id,$id,$cname,json_encode(array('newActive' => $active)),$reseller_id));
                     updateJobs($id,$reseller_id);
                 }
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`salutation`=?,`birthday`=?,`country`=?,`fax`=?,`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`fdlpath`=?,`mail_backup`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_vserver`=?$jobPending WHERE `id`=? and `resellerid`=? LIMIT 1");
@@ -577,7 +577,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query=($accounttype == 'r' and $reseller_id==0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
                     $query2 = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `groupID`=VALUES(`groupID`)");
                     foreach ($ui->id('groups',10,'post') as $gid) {
-                        $tempArray[]=$gid;
+                        $tempArray[] = $gid;
                         if ($accounttype == 'r' and $reseller_id==0) $query->execute(array($gid,$accounttype));
                         else $query->execute(array($gid,$accounttype,$resellerlockupid));
                         if(isid($query->fetchColumn(),10)) $query2->execute(array($id,$gid,$resellerlockupid));
@@ -613,9 +613,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_user_pass.tpl';
     } else if ($ui->smallletters('action',2,'post') == 'pw' and isset($cname)) {
         $errors = array();
-        if (!$ui->password('password',20,'post')) $errors[]=$sprache->error_pass;
-        if (!$ui->password('pass2',20,'post'))$errors[]=$sprache->error_pass;
-        if ($ui->password('password',20,'post') != $ui->password('pass2',20,'post')) $errors[]=$sprache->error_passw_succ;
+        if (!$ui->password('password',20,'post')) $errors[] = $sprache->error_pass;
+        if (!$ui->password('pass2',20,'post'))$errors[] = $sprache->error_pass;
+        if ($ui->password('password',20,'post') != $ui->password('pass2',20,'post')) $errors[] = $sprache->error_passw_succ;
         if (count($errors)>0) {
             $template_file = implode('<br />',$errors);
         } else {
@@ -664,7 +664,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $selected = array();
     if (isset($ui->get['state'])) {
         foreach ($ui->get['state'] as $get) {
-            if (preg_match('/[YNR]/',$get)) $selected[]=$get;
+            if (preg_match('/[YNR]/',$get)) $selected[] = $get;
         }
     } else {
         $selected=array('Y','N','R');
@@ -718,7 +718,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        $table[]=array('id'=>$row['id'],'img'=>$imgName,'alt'=>$imgAlt,'adminaccount'=>$adminaccount,'accounttype'=>$accounttype,'cname'=>$row['cname'],'name'=>$row['name'],'jobPending'=>$jobPending,'active'=>$row['active']);
+        $table[]=array('id' => $row['id'],'img' => $imgName,'alt' => $imgAlt,'adminaccount' => $adminaccount,'accounttype' => $accounttype,'cname' => $row['cname'],'name' => $row['name'],'jobPending' => $jobPending,'active' => $row['active']);
     }
     $next=$start+$amount;
     if ($reseller_id==0) {
@@ -752,7 +752,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 1;
     while ($i<$pageamount) {
         $selectpage = ($i - 1) * $amount;

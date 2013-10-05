@@ -71,13 +71,13 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $query = $sql->prepare("SELECT m.`id`,m.`ssh2ip`,m.`ips`,m.`usedns`,m.`defaultdns`,m.`type`,m.`rootid`,m.`maxserver`,m.`maxslots`,m.`active`,m.`resellerid`,m.`managedForID`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND `active`='Y' AND (`resellerid`=? OR m.`managedForID`=?)) ORDER BY `slotpercent`,`serverpercent` ASC");
         $query->execute(array($reseller_id,$admin_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $ips[]=$row['ssh2ip'];
-            foreach (ipstoarray($row['ips']) as $ip) $ips[]=$ip;
+            $ips[] = $row['ssh2ip'];
+            foreach (ipstoarray($row['ips']) as $ip) $ips[] = $ip;
             if ($row['type'] == 'ts3') $type=$sprache->ts3;
             $installedserver=($row['installedserver'] == null) ? 0 : $row['installedserver'];
             $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
             $uslots=($row['uslots'] == null) ? 0 : $row['uslots'];
-            $table2[]=array('id'=>$row['id'],'server'=>implode('/', array_unique($ips)),'type'=>$type,'maxserver'=>$row['maxserver'],'maxslots'=>$row['maxslots'],'installedserver'=>$installedserver,'uslots'=>$uslots,'installedslots'=>$installedslots);
+            $table2[]=array('id' => $row['id'],'server'=>implode('/', array_unique($ips)),'type' => $type,'maxserver' => $row['maxserver'],'maxslots' => $row['maxslots'],'installedserver' => $installedserver,'uslots' => $uslots,'installedslots' => $installedslots);
         }
         $template_file = "admin_voiceserver_add.tpl";
     } else if ($ui->w('action',3,'post') == 'ad' and $ui->id('masterserver',19,'post') and $ui->id('customer',19,'post')) {
@@ -92,12 +92,12 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $installedserver=($row2['installedserver'] == null) ? 0 : $row2['installedserver'];
             $installedslots=($row2['installedslots'] == null) ? 0 : $row2['installedslots'];
             if ($row2['usedns'] == 'Y') {
-                $dns=strtolower($cname.'.'.$row2['defaultdns']);
+                $dns=strtolower($cname . '.' . $row2['defaultdns']);
                 if ($row2['externalDefaultDNS'] == 'Y' and isid($row2['tsdnsServerID'],19)) {
                     $query3 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                     $query3->execute(array($row2['tsdnsServerID'],$reseller_id));
                     foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                        $dns=strtolower($cname.'.'.$row3['defaultdns']);
+                        $dns=strtolower($cname . '.' . $row3['defaultdns']);
                     }
                 }
             } else {
@@ -117,17 +117,17 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $defaultFlexSlotsFree=$row2['defaultFlexSlotsFree'];
             $defaultFlexSlotsPercent=$row2['defaultFlexSlotsPercent'];
             if ($addedby == '2') {
-                $ips[]=$row2['ssh2ip'];
+                $ips[] = $row2['ssh2ip'];
                 foreach (preg_split('/\r\n/', $row2['ips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) {
-                    $ips[]=$ip;
+                    $ips[] = $ip;
                 }
             } else if ($addedby == '1') {
                 $query3 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query3->execute(array($row2['rootid'],$reseller_id));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                    $ips[]=$row3['ip'];
+                    $ips[] = $row3['ip'];
                     foreach (preg_split('/\r\n/', $row3['altips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) {
-                        $ips[]=$ip;
+                        $ips[] = $ip;
                     }
                 }
             }
@@ -137,18 +137,18 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 $query = $sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? ORDER BY `port`");
                 $query->execute(array($serverIP));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if (is_numeric($row['port'])) $ports[]=$row['port'];
-                    if (is_numeric($row['port2'])) $ports[]=$row['port2'];
-                    if (is_numeric($row['port3'])) $ports[]=$row['port3'];
-                    if (is_numeric($row['port4'])) $ports[]=$row['port4'];
-                    if (is_numeric($row['port5'])) $ports[]=$row['port5'];
+                    if (is_numeric($row['port'])) $ports[] = $row['port'];
+                    if (is_numeric($row['port2'])) $ports[] = $row['port2'];
+                    if (is_numeric($row['port3'])) $ports[] = $row['port3'];
+                    if (is_numeric($row['port4'])) $ports[] = $row['port4'];
+                    if (is_numeric($row['port5'])) $ports[] = $row['port5'];
                 }
                 $query = $sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
                 $query->execute(array($ips[0]));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if (is_numeric($row['port']))$ports[]=$row['port'];
+                    if (is_numeric($row['port']))$ports[] = $row['port'];
                 }
-                $portsArray[count($ports)]=array('ip'=>$serverIP,'ports'=>$ports);
+                $portsArray[count($ports)]=array('ip' => $serverIP,'ports' => $ports);
             }
             $bestIP=current($portsArray);
             $ip=$bestIP['ip'];
@@ -169,25 +169,25 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         if ($ui->startparameter('name','post')) {
             $name=$ui->startparameter('name','post');
         } else {
-            $errors[]=$sprache->name;
+            $errors[] = $sprache->name;
         }
         if ($ui->ip('ip','post')) {
             $ip=$ui->ip('ip','post');
         } else {
-            $errors[]=$sprache->ip;
+            $errors[] = $sprache->ip;
         }
         if ($ui->port('port','post')) {
             $port=$ui->port('port','post');
             if (isset($ip)) {
                 $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':port'=>$port,':serverip'=>$ip,':reseller_id'=>$reseller_id));
+                $query->execute(array(':port' => $port,':serverip' => $ip,':reseller_id' => $reseller_id));
                 $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? AND `resellerid`=? LIMIT 1");
                 $query2->execute(array($port,$ip,$reseller_id));
                 $num_check_game=$query->rowCount()+$query2->rowCount();
-                if ($num_check_game>0) $errors[]=$sprache->port;
+                if ($num_check_game>0) $errors[] = $sprache->port;
             }
         } else {
-            $errors[]=$sprache->port;
+            $errors[] = $sprache->port;
         }
         $masterserver=$ui->id('masterserver',19,'post');
         $customer=$ui->id('customer',19,'post');
@@ -216,7 +216,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         if ($ui->id('slots',30,'post')) {
             $slots=$ui->id('slots',30,'post');
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
-            $query->execute(array(':aeskey'=>$aeskey,':id'=>$masterserver,':reseller_id'=>$reseller_id,':managedForID'=>$admin_id));
+            $query->execute(array(':aeskey' => $aeskey,':id' => $masterserver,':reseller_id' => $reseller_id,':managedForID' => $admin_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $active=$row['active'];
                 $defaultname=$row['defaultname'];
@@ -260,14 +260,14 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $installedserver=($row['installedserver'] == null) ? 0 : $row['installedserver'];
                     $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
-                    if (($installedslots+$slots)>$maxslots) $errors[]=$gsprache->licence.' ('.$sprache->slots.')';
-                    if ($installedserver>=$maxserver) $errors[]=$gsprache->licence;
+                    if (($installedslots+$slots)>$maxslots) $errors[] = $gsprache->licence.' ('.$sprache->slots.')';
+                    if ($installedserver>=$maxserver) $errors[] = $gsprache->licence;
                 }
             } else {
-                $errors[]=$sprache->rootserver;
+                $errors[] = $sprache->rootserver;
             }
         } else {
-            $errors[]=$sprache->slots;
+            $errors[] = $sprache->slots;
         }
         if (count($errors)==0) {
             $initialpassword = '';
@@ -289,14 +289,14 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 customColumns('T',$ts3LocalID,'save');
                 $template_file = $spracheResponse->table_add;
                 if ($usedns == 'Y') {
-                    if ($dns==strtolower($username.'.'.$defaultdns)) {
-                        $dns=strtolower($ts3LocalID.'.'.$defaultdns);
+                    if ($dns==strtolower($username . '.' . $defaultdns)) {
+                        $dns=strtolower($ts3LocalID . '.' . $defaultdns);
                         $query = $sql->prepare("UPDATE `voice_server` SET `dns`=? WHERE `id`=? LIMIT 1");
                         $query->execute(array($dns,$ts3LocalID));
                     }
                     if (isid($tsdnsServerID,19)) {
                         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                        $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsServerID,':reseller_id'=>$reseller_id));
+                        $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $reseller_id));
                         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                             $publickey=$row['publickey'];
                             $queryip=$row['ssh2ip'];
@@ -337,7 +337,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $template_file = 'admin_voiceserver_dl.tpl';
     } else if ($ui->w('action',2,'post') == 'dl' and isset($server)) {
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
-        $query->execute(array(':aeskey'=>$aeskey,':id'=>$masterserver,':reseller_id'=>$reseller_id,':managedForID'=>$admin_id));
+        $query->execute(array(':aeskey' => $aeskey,':id' => $masterserver,':reseller_id' => $reseller_id,':managedForID' => $admin_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $defaultdns=$row['defaultdns'];
             $serverdir=$row['serverdir'];
@@ -385,7 +385,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             if (isset($usedns) and $usedns == 'Y') {
                 if (isset($tsdnsServerID) and isid($tsdnsServerID,19)) {
                     $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
-                    $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsServerID,':reseller_id'=>$reseller_id,':managedForID'=>$admin_id));
+                    $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $reseller_id,':managedForID' => $admin_id));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         $publickey=$row['publickey'];
                         $queryip=$row['ssh2ip'];
@@ -455,31 +455,31 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 $addedby=$row2['addedby'];
                 if ($addedby == '2') {
                     $queryip=$row2['ssh2ip'];
-                    $ips[]=$row2['ssh2ip'];
-                    foreach (preg_split('/\r\n/', $row2['ips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) $ips[]=$ip;
+                    $ips[] = $row2['ssh2ip'];
+                    foreach (preg_split('/\r\n/', $row2['ips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) $ips[] = $ip;
                 } else if ($addedby == '1') {
                     $query3 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query3->execute(array($row2['rootid'],$reseller_id));
                     foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                         $queryip=$row3['ip'];
-                        $ips[]=$row3['ip'];
-                        foreach (preg_split('/\r\n/', $row3['altips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) $ips[]=$ip;
+                        $ips[] = $row3['ip'];
+                        foreach (preg_split('/\r\n/', $row3['altips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) $ips[] = $ip;
                     }
                 }
                 $ports = array();
                 $query3 = $sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? ORDER BY `port`");
                 $query3->execute(array($ips[0]));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                    if (is_numeric($row3['port'])) $ports[]=$row3['port'];
-                    if (is_numeric($row3['port2'])) $ports[]=$row3['port2'];
-                    if (is_numeric($row3['port3'])) $ports[]=$row3['port3'];
-                    if (is_numeric($row3['port4'])) $ports[]=$row3['port4'];
-                    if (is_numeric($row3['port5'])) $ports[]=$row3['port5'];
+                    if (is_numeric($row3['port'])) $ports[] = $row3['port'];
+                    if (is_numeric($row3['port2'])) $ports[] = $row3['port2'];
+                    if (is_numeric($row3['port3'])) $ports[] = $row3['port3'];
+                    if (is_numeric($row3['port4'])) $ports[] = $row3['port4'];
+                    if (is_numeric($row3['port5'])) $ports[] = $row3['port5'];
                 }
                 $query3 = $sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
                 $query3->execute(array($ips[0]));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                    if (is_numeric($row3['port'])) $ports[]=$row3['port'];
+                    if (is_numeric($row3['port'])) $ports[] = $row3['port'];
                 }
                 asort($ports);
                 $ports=implode(", ", $ports);
@@ -510,10 +510,10 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $masterserver = 0;
         $slots=$ui->id('slots',30,'post');
         $ip=$ui->ip('ip','post');
-        if (!$ui->id('slots',30,'post')) $errors[]=$sprache->slots;
-        if (!$ui->ip('ip','post')) $errors[]=$sprache->ip;
+        if (!$ui->id('slots',30,'post')) $errors[] = $sprache->slots;
+        if (!$ui->ip('ip','post')) $errors[] = $sprache->ip;
         if ($ui->password('initialpassword',50,'post') or (isset($ui->post['initialpassword']) and ($ui->post['initialpassword'] == '' or $ui->post['initialpassword'] == null))) $initialpassword=$ui->post['initialpassword'];
-        else $errors[]=$sprache->password;
+        else $errors[] = $sprache->password;
 
         $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
@@ -532,11 +532,11 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $query2->execute(array($masterserver,$reseller_id));
             $futureSlots=(int)$query2->fetchColumn()-$oldslots+$slots;
         }
-        if (!isset($oldslots)) $errors[]=$gsprache->voiceserver.' ID';
+        if (!isset($oldslots)) $errors[] = $gsprache->voiceserver.' ID';
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
-        $query->execute(array(':aeskey'=>$aeskey,':id'=>$masterserver,':reseller_id'=>$reseller_id,':managedForID'=>$admin_id));
+        $query->execute(array(':aeskey' => $aeskey,':id' => $masterserver,':reseller_id' => $reseller_id,':managedForID' => $admin_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($futureSlots>$row['maxslots']) $errors[]=$gsprache->licence.' ('.$sprache->slots.')';
+            if ($futureSlots>$row['maxslots']) $errors[] = $gsprache->licence.' ('.$sprache->slots.')';
             $serverdir=$row['serverdir'];
             $addedby=$row['addedby'];
             $usedns=$row['usedns'];
@@ -562,19 +562,19 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 }
             }
         }
-        if (!isset($queryport)) $errors[]=$sprache->rootserver;
+        if (!isset($queryport)) $errors[] = $sprache->rootserver;
         if ($ui->port('port','post')) {
             $port=$ui->port('port','post');
             if (isset($ip) and ($port != $oldport or $ip != $oldip)) {
                 $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `serverip`=:serverip LIMIT 1");
-                $query->execute(array(':port'=>$port,':serverip'=>$ip));
+                $query->execute(array(':port' => $port,':serverip' => $ip));
                 $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? LIMIT 1");
                 $query2->execute(array($port,$ip));
                 $num_check_game=$query->rowcount()+$query2->rowcount();
-                if ($num_check_game>0) $errors[]=$sprache->port;
+                if ($num_check_game>0) $errors[] = $sprache->port;
             }
         } else {
-            $errors[]=$sprache->port;
+            $errors[] = $sprache->port;
         }
         $max_download_total_bandwidth=($ui->id('max_download_total_bandwidth',255,'post')) ? $ui->id('max_download_total_bandwidth',255,'post') : 65536;
         $max_upload_total_bandwidth=($ui->id('max_upload_total_bandwidth',255,'post')) ? $ui->id('max_upload_total_bandwidth',255,'post') : 65536;
@@ -601,7 +601,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 if ($usedns == 'Y') {
                     if (isid($tsdnsServerID,19)) {
                         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `dnsID`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
-                        $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsServerID,':reseller_id'=>$reseller_id,':managedForID'=>$admin_id));
+                        $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $reseller_id,':managedForID' => $admin_id));
                         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                             $publickey=$row['publickey'];
                             $queryip=$row['ssh2ip'];
@@ -751,7 +751,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $minutes=floor(($row['uptime']-($days*86400)-($hours*3600))/60);
         $uptime=$days.'D '.$hours.'H '.$minutes.'M';
         $userid=$row['userid'];
-        $table[]=array('id'=>$row['id'],'active'=>$row['active'],'virtualID'=>$row['localserverid'],'img'=>$imgName,'alt'=>$imgAlt,'usage'=>$usage,'uptime'=>$uptime,'server'=>$server,'cname'=>$row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'userid'=>$userid,'lendserver'=>$lendserver,'type'=>$type,'jobPending'=>$jobPending);
+        $table[]=array('id' => $row['id'],'active' => $row['active'],'virtualID' => $row['localserverid'],'img' => $imgName,'alt' => $imgAlt,'usage' => $usage,'uptime' => $uptime,'server' => $server,'cname' => $row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'userid' => $userid,'lendserver' => $lendserver,'type' => $type,'jobPending' => $jobPending);
     }
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));

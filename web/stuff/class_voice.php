@@ -73,13 +73,13 @@ class TS3 {
 								$buffered .=$splitted[$i];
 								$i++;
 							}
-							$splitted[1]=$buffered;
+							$splitted[1] = $buffered;
 						}
 						if (!isset($splitted[1])) $splitted[1] = '';
 						$index = trim(preg_replace('/\s+/','',$splitted[0]));
 						if ($index!='error') $cvars[$index]=(isinteger(trim($splitted[1]))) ? (int)trim($splitted[1]) : trim($splitted[1]);
 					}
-					$return[]=$cvars;
+					$return[] = $cvars;
 				}
 			} else {
 				$return=$databody;
@@ -244,7 +244,7 @@ class TS3 {
 						$permissioncount=$newcount;
 					} else if ($newcount==$permissioncount) {
 						if (isset($admingroupid) and is_array($admingroupid)) {
-							$admingroupid[]=$servegroups['sgid'];
+							$admingroupid[] = $servegroups['sgid'];
 						} else {
 							if (isset($admingroupid)) $admingroupid=array($admingroupid,$servegroups['sgid']);
 						}
@@ -292,37 +292,37 @@ class TS3 {
                     //https://github.com/easy-wi/developer/issues/74 check if array keys exists
 					if (isset($serverdetails_query[0]) and ($serverdetails_query[0]['virtualserver_maxclients'])) {
 						$serverdetails[$virtualserver_id]=array(
-							'virtualserver_ip'=>$virtualserver_ip,
-							'virtualserver_maxclients'=>$serverdetails_query[0]['virtualserver_maxclients'],
-							'virtualserver_port'=>$server['virtualserver_port'],
-							'virtualserver_dns'=>$virtualserver_dns,
-							'virtualserver_name'=>$this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_name']),
-							'virtualserver_welcomemessage'=>$serverdetails_query[0]['virtualserver_welcomemessage'],
-							'virtualserver_flag_password'=>$serverdetails_query[0]['virtualserver_flag_password'],
-							'virtualserver_max_download_total_bandwidth'=>$serverdetails_query[0]['virtualserver_max_download_total_bandwidth'],
-							'virtualserver_max_upload_total_bandwidth'=>$serverdetails_query[0]['virtualserver_max_upload_total_bandwidth'],
-							'virtualserver_hostbanner_url'=>$serverdetails_query[0]['virtualserver_hostbanner_url'],
-							'virtualserver_hostbanner_gfx_url'=>$serverdetails_query[0]['virtualserver_hostbanner_gfx_url'],
-							'virtualserver_hostbutton_tooltip'=>$serverdetails_query[0]['virtualserver_hostbutton_tooltip'],
-							'virtualserver_hostbutton_url'=>$serverdetails_query[0]['virtualserver_hostbutton_url'],
-							'virtualserver_hostbutton_gfx_url'=>$serverdetails_query[0]['virtualserver_hostbutton_gfx_url']
+							'virtualserver_ip' => $virtualserver_ip,
+							'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
+							'virtualserver_port' => $server['virtualserver_port'],
+							'virtualserver_dns' => $virtualserver_dns,
+							'virtualserver_name' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_name']),
+							'virtualserver_welcomemessage' => $serverdetails_query[0]['virtualserver_welcomemessage'],
+							'virtualserver_flag_password' => $serverdetails_query[0]['virtualserver_flag_password'],
+							'virtualserver_max_download_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_download_total_bandwidth'],
+							'virtualserver_max_upload_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_upload_total_bandwidth'],
+							'virtualserver_hostbanner_url' => $serverdetails_query[0]['virtualserver_hostbanner_url'],
+							'virtualserver_hostbanner_gfx_url' => $serverdetails_query[0]['virtualserver_hostbanner_gfx_url'],
+							'virtualserver_hostbutton_tooltip' => $serverdetails_query[0]['virtualserver_hostbutton_tooltip'],
+							'virtualserver_hostbutton_url' => $serverdetails_query[0]['virtualserver_hostbutton_url'],
+							'virtualserver_hostbutton_gfx_url' => $serverdetails_query[0]['virtualserver_hostbutton_gfx_url']
 						);
 					} else {
 						$serverdetails[$virtualserver_id]=array(
-							'virtualserver_ip'=>$virtualserver_ip,
-							'virtualserver_maxclients'=>$serverdetails_query[0]['virtualserver_maxclients'],
-							'virtualserver_port'=>$server['virtualserver_port'],
-							'virtualserver_dns'=>$virtualserver_dns,
-							'virtualserver_name'=>'',
-							'virtualserver_welcomemessage'=>'',
-							'virtualserver_flag_password'=>'',
-							'virtualserver_max_download_total_bandwidth'=>'',
-							'virtualserver_max_upload_total_bandwidth'=>'',
-							'virtualserver_hostbanner_url'=>'',
-							'virtualserver_hostbanner_gfx_url'=>'',
-							'virtualserver_hostbutton_tooltip'=>'',
-							'virtualserver_hostbutton_url'=>'',
-							'virtualserver_hostbutton_gfx_url'=>''
+							'virtualserver_ip' => $virtualserver_ip,
+							'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
+							'virtualserver_port' => $server['virtualserver_port'],
+							'virtualserver_dns' => $virtualserver_dns,
+							'virtualserver_name' => '',
+							'virtualserver_welcomemessage' => '',
+							'virtualserver_flag_password' => '',
+							'virtualserver_max_download_total_bandwidth' => '',
+							'virtualserver_max_upload_total_bandwidth' => '',
+							'virtualserver_hostbanner_url' => '',
+							'virtualserver_hostbanner_gfx_url' => '',
+							'virtualserver_hostbutton_tooltip' => '',
+							'virtualserver_hostbutton_url' => '',
+							'virtualserver_hostbutton_gfx_url' => ''
 						);
 					}
 				}
@@ -333,20 +333,20 @@ class TS3 {
                     $virtualserver_ip=(isset($virtualserver_ip)) ? $virtualserver_ip :'';
                     $virtualserver_dns=(isset($virtualserver_dns)) ? $virtualserver_dns :'';
 					$serverdetails[$virtualserver_id]=array(
-						'virtualserver_ip'=>$virtualserver_ip,
-						'virtualserver_maxclients'=>$server['virtualserver_maxclients'],
-						'virtualserver_port'=>$server['virtualserver_port'],
-						'virtualserver_dns'=>$virtualserver_dns,
-						'virtualserver_name'=>'',
-						'virtualserver_welcomemessage'=>'',
-						'virtualserver_flag_password'=>'',
-						'virtualserver_max_download_total_bandwidth'=>'',
-						'virtualserver_max_upload_total_bandwidth'=>'',
-						'virtualserver_hostbanner_url'=>'',
-						'virtualserver_hostbanner_gfx_url'=>'',
-						'virtualserver_hostbutton_tooltip'=>'',
-						'virtualserver_hostbutton_url'=>'',
-						'virtualserver_hostbutton_gfx_url'=>''
+						'virtualserver_ip' => $virtualserver_ip,
+						'virtualserver_maxclients' => $server['virtualserver_maxclients'],
+						'virtualserver_port' => $server['virtualserver_port'],
+						'virtualserver_dns' => $virtualserver_dns,
+						'virtualserver_name' => '',
+						'virtualserver_welcomemessage' => '',
+						'virtualserver_flag_password' => '',
+						'virtualserver_max_download_total_bandwidth' => '',
+						'virtualserver_max_upload_total_bandwidth' => '',
+						'virtualserver_hostbanner_url' => '',
+						'virtualserver_hostbanner_gfx_url' => '',
+						'virtualserver_hostbutton_tooltip' => '',
+						'virtualserver_hostbutton_url' => '',
+						'virtualserver_hostbutton_gfx_url' => ''
 					);
 				}
 			}
@@ -356,7 +356,7 @@ class TS3 {
 	public function ServerList () {
 		$serverdetails = array();
         $array=$this->SendCommand('serverlist');
-        if (is_array($array) or is_object($array)) foreach ($array as $k=>$v) $serverdetails[$k]=$this->ReplaceFromTS3($v);
+        if (is_array($array) or is_object($array)) foreach ($array as $k=>$v) $serverdetails[$k] = $this->ReplaceFromTS3($v);
         if ($this->debug==true){
             print "ServerList:";
             print_r($serverdetails);
@@ -365,39 +365,39 @@ class TS3 {
 		return $serverdetails;
 	}
 	public function ServerDetails ($virtualserver_id) {
-		$serverdetails=array('virtualserver_name'=>'','virtualserver_welcomemessage'=>'','virtualserver_hostbanner_url'=>'','virtualserver_hostbanner_gfx_url'=>'','virtualserver_hostbutton_tooltip'=>'','virtualserver_hostbutton_url'=>'','virtualserver_hostbutton_gfx_url'=>'','virtualserver_maxclients'=>'','virtualserver_flag_password'=>'','virtualserver_max_download_total_bandwidth'=>'','virtualserver_max_upload_total_bandwidth'=>'','virtualserver_clientsonline'=>0,'virtualserver_queryclientsonline'=>0,'virtualserver_uptime'=>20,'virtualserver_status'=>'','connection_filetransfer_bytes_sent_total'=>'','connection_filetransfer_bytes_received_total'=>'','connection_bytes_sent_total'=>'','connection_bytes_received_total'=>'');
+		$serverdetails=array('virtualserver_name' => '','virtualserver_welcomemessage' => '','virtualserver_hostbanner_url' => '','virtualserver_hostbanner_gfx_url' => '','virtualserver_hostbutton_tooltip' => '','virtualserver_hostbutton_url' => '','virtualserver_hostbutton_gfx_url' => '','virtualserver_maxclients' => '','virtualserver_flag_password' => '','virtualserver_max_download_total_bandwidth' => '','virtualserver_max_upload_total_bandwidth' => '','virtualserver_clientsonline'=>0,'virtualserver_queryclientsonline'=>0,'virtualserver_uptime'=>20,'virtualserver_status' => '','connection_filetransfer_bytes_sent_total' => '','connection_filetransfer_bytes_received_total' => '','connection_bytes_sent_total' => '','connection_bytes_received_total' => '');
         $useserver=$this->UseServer($virtualserver_id);
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
 			$serverdetails_query=$this->SendCommand('serverinfo');
 			$serverdetails=array(
-				'virtualserver_name'=>$this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_name']),
-				'virtualserver_welcomemessage'=>$this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_welcomemessage']),
-				'virtualserver_hostbanner_url'=>$this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbanner_url']),
-				'virtualserver_hostbanner_gfx_url'=>$this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbanner_gfx_url']),
-				'virtualserver_hostbutton_tooltip'=>$this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_tooltip']),
-				'virtualserver_hostbutton_url'=>$this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_url']),
-				'virtualserver_hostbutton_gfx_url'=>$this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_gfx_url']),
-				'virtualserver_maxclients'=>$serverdetails_query[0]['virtualserver_maxclients'],
-				'virtualserver_flag_password'=>$serverdetails_query[0]['virtualserver_flag_password'],
-				'virtualserver_max_download_total_bandwidth'=>$serverdetails_query[0]['virtualserver_max_download_total_bandwidth'],
-				'virtualserver_max_upload_total_bandwidth'=>$serverdetails_query[0]['virtualserver_max_upload_total_bandwidth'],
-				'virtualserver_clientsonline'=>$serverdetails_query[0]['virtualserver_clientsonline'],
-				'virtualserver_queryclientsonline'=>$serverdetails_query[0]['virtualserver_queryclientsonline'],
-				'virtualserver_uptime'=>$serverdetails_query[0]['virtualserver_uptime'],
-				'virtualserver_status'=>$serverdetails_query[0]['virtualserver_status'],
-				'connection_filetransfer_bytes_sent_total'=>$serverdetails_query[0]['connection_filetransfer_bytes_sent_total'],
-				'connection_filetransfer_bytes_received_total'=>$serverdetails_query[0]['connection_filetransfer_bytes_received_total'],
-				'connection_bytes_sent_total'=>$serverdetails_query[0]['connection_bytes_sent_total'],
-				'connection_bytes_received_total'=>$serverdetails_query[0]['connection_bytes_received_total'],
+				'virtualserver_name' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_name']),
+				'virtualserver_welcomemessage' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_welcomemessage']),
+				'virtualserver_hostbanner_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbanner_url']),
+				'virtualserver_hostbanner_gfx_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbanner_gfx_url']),
+				'virtualserver_hostbutton_tooltip' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_tooltip']),
+				'virtualserver_hostbutton_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_url']),
+				'virtualserver_hostbutton_gfx_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_gfx_url']),
+				'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
+				'virtualserver_flag_password' => $serverdetails_query[0]['virtualserver_flag_password'],
+				'virtualserver_max_download_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_download_total_bandwidth'],
+				'virtualserver_max_upload_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_upload_total_bandwidth'],
+				'virtualserver_clientsonline' => $serverdetails_query[0]['virtualserver_clientsonline'],
+				'virtualserver_queryclientsonline' => $serverdetails_query[0]['virtualserver_queryclientsonline'],
+				'virtualserver_uptime' => $serverdetails_query[0]['virtualserver_uptime'],
+				'virtualserver_status' => $serverdetails_query[0]['virtualserver_status'],
+				'connection_filetransfer_bytes_sent_total' => $serverdetails_query[0]['connection_filetransfer_bytes_sent_total'],
+				'connection_filetransfer_bytes_received_total' => $serverdetails_query[0]['connection_filetransfer_bytes_received_total'],
+				'connection_bytes_sent_total' => $serverdetails_query[0]['connection_bytes_sent_total'],
+				'connection_bytes_received_total' => $serverdetails_query[0]['connection_bytes_received_total'],
 
                 # Ticket https://github.com/easy-wi/developer/issues/13 "Bearbeiten von TS3 Servern im Usermodul erweitern"
-                'virtualserver_reserved_slots'=>$serverdetails_query[0]['virtualserver_reserved_slots'],
-                'virtualserver_needed_identity_security_level'=>$serverdetails_query[0]['virtualserver_needed_identity_security_level'],
-                'virtualserver_hostmessage_mode'=>$serverdetails_query[0]['virtualserver_hostmessage_mode'],
-                'virtualserver_hostbanner_gfx_interval'=>$serverdetails_query[0]['virtualserver_hostbanner_gfx_interval'],
-                'virtualserver_antiflood_points_tick_reduce'=>$serverdetails_query[0]['virtualserver_antiflood_points_tick_reduce'],
-                'virtualserver_antiflood_points_needed_command_block'=>$serverdetails_query[0]['virtualserver_antiflood_points_needed_command_block'],
-                'virtualserver_antiflood_points_needed_ip_block'=>$serverdetails_query[0]['virtualserver_antiflood_points_needed_ip_block']
+                'virtualserver_reserved_slots' => $serverdetails_query[0]['virtualserver_reserved_slots'],
+                'virtualserver_needed_identity_security_level' => $serverdetails_query[0]['virtualserver_needed_identity_security_level'],
+                'virtualserver_hostmessage_mode' => $serverdetails_query[0]['virtualserver_hostmessage_mode'],
+                'virtualserver_hostbanner_gfx_interval' => $serverdetails_query[0]['virtualserver_hostbanner_gfx_interval'],
+                'virtualserver_antiflood_points_tick_reduce' => $serverdetails_query[0]['virtualserver_antiflood_points_tick_reduce'],
+                'virtualserver_antiflood_points_needed_command_block' => $serverdetails_query[0]['virtualserver_antiflood_points_needed_command_block'],
+                'virtualserver_antiflood_points_needed_ip_block' => $serverdetails_query[0]['virtualserver_antiflood_points_needed_ip_block']
 			);
             if ($this->debug==true){
                 print "Serverdetails:";
@@ -438,7 +438,7 @@ class TS3 {
 							$permissioncount=$newcount;
 						} else if ($newcount==$permissioncount) {
 							if (isset($admingroupid) and is_array($admingroupid)) {
-								$admingroupid[]=$servegroups['sgid'];
+								$admingroupid[] = $servegroups['sgid'];
 							} else {
 								if (isset($admingroupid)) $admingroupid=array($admingroupid,$servegroups['sgid']);
 							}
@@ -459,7 +459,7 @@ class TS3 {
 					$cldbid=$userid['cldbid'];
 					$userdata=$this->SendCommand("clientdbinfo cldbid=".$cldbid);
 					$client_unique_identifier=$this->ReplaceFromTS3($userdata[0]['client_unique_identifier']);
-					$adminlist[$cldbid]=$client_unique_identifier;
+					$adminlist[$cldbid] = $client_unique_identifier;
 				}
 			} else {
 				$adminlist = array();
@@ -473,11 +473,11 @@ class TS3 {
 			$return = array();
 			$servergroups=$this->SendCommand('servergrouplist');
 			foreach ($servergroups as $servergroup) {
-				if ($servergroup['type']==1) $admingroupid[$servergroup['sgid']]=$this->ReplaceFromTS3($servergroup['name']);
+				if ($servergroup['type']==1) $admingroupid[$servergroup['sgid']] = $this->ReplaceFromTS3($servergroup['name']);
 			}
 			$this->SendCommand("privilegekeylist");
 			foreach ($this->SendCommand("privilegekeylist") as $key) {
-				if (isset($key['token_type']) and $key['token_type']==0 and isset($admingroupid)) $return[]=array('token'=>$key['token'],'groupname'=>$this->ReplaceFromTS3($admingroupid[$key['token_id1']]));
+				if (isset($key['token_type']) and $key['token_type']==0 and isset($admingroupid)) $return[]=array('token' => $key['token'],'groupname' => $this->ReplaceFromTS3($admingroupid[$key['token_id1']]));
 			}
 		} else {
 			$return=$useserver[0]['msg'];
@@ -538,7 +538,7 @@ class TS3 {
 		if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
 			$servergroups=$this->SendCommand('servergrouplist');
 			foreach ($servergroups as $servergroup) {
-				$return[]=array('id'=>$servergroup['sgid'],'name'=>$this->ReplaceFromTS3($servergroup['name']),'type'=>$servergroup['type']);
+				$return[]=array('id' => $servergroup['sgid'],'name' => $this->ReplaceFromTS3($servergroup['name']),'type' => $servergroup['type']);
 			}
 			return $return;
 		}
@@ -574,7 +574,7 @@ class TS3 {
                 foreach ($channelList as $channel) {
                     if (isset($channel['cid']) and isid($channel['cid'],30)) {
                         $props=$this->SendCommand('channelinfo cid='.$channel['cid']);
-                        if (isset($props[0]['channel_name'])) $channels[$this->ReplaceFromTS3($props[0]['channel_name'])]=$this->ReplaceFromTS3($props[0]['channel_filepath']);
+                        if (isset($props[0]['channel_name'])) $channels[$this->ReplaceFromTS3($props[0]['channel_name'])] = $this->ReplaceFromTS3($props[0]['channel_filepath']);
                     }
                 }
             }
@@ -595,7 +595,7 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
         $key=EASYWIDIR . '/keys/'.$sshkey;
 
 		if (file_exists($pubkey) and file_exists($key)) {
-			$ssh2= @ssh2_connect($sship,$sshport, array('hostkey'=>'ssh-rsa'));
+			$ssh2= @ssh2_connect($sship,$sshport, array('hostkey' => 'ssh-rsa'));
 		} else {
 			$ssh2 = false;
 		}
@@ -677,7 +677,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 		$pubkey=EASYWIDIR."/keys/".$sshkey.".pub";
 		$key=EASYWIDIR."/keys/".$sshkey;
 		if (file_exists($pubkey) and file_exists($key)) {
-			$ssh2= @ssh2_connect($sship,$sshport, array('hostkey'=>'ssh-rsa'));
+			$ssh2= @ssh2_connect($sship,$sshport, array('hostkey' => 'ssh-rsa'));
 		} else {
 			$ssh2 = false;
 		}
@@ -762,7 +762,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 				$ca = array();
 				foreach (preg_split('/\n/',$data,-1,PREG_SPLIT_NO_EMPTY) as $configLine) {
 					if ($action!='li' and $configLine!="$olddns=$oldip:$oldport" and $configLine!="$newdns=$newip:$newport") {
-						$ca[]=$configLine."\r\n";
+						$ca[] = $configLine."\r\n";
 					} else if ($action == 'md' and $edited==false and ($configLine=="$olddns=$oldip:$oldport" or $configLine=="$newdns=$newip:$newport")) {
 						$edited = true;
 						$ca[]="$newdns=$newip:$newport\r\n";
@@ -772,7 +772,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 						if (isset($dnsconfig[1])) {
 							$linedns=$dnsconfig[0];
 							$lineserver=$dnsconfig[1];
-							$dnsarray[$lineserver]=$linedns;
+							$dnsarray[$lineserver] = $linedns;
 						}
 					}
 				}
@@ -803,25 +803,25 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                     if ($configLine!='' and !preg_match('/^#(|\s+)(.*)$/',$configLine)) {
                         $splittedLine=preg_split('/\=/',$configLine,-1,PREG_SPLIT_NO_EMPTY);
                         if (isset($splittedLine[1])) {
-                            $usedIPs[]=array('dns'=>$splittedLine[0],'address'=>$splittedLine[1]);
+                            $usedIPs[]=array('dns' => $splittedLine[0],'address' => $splittedLine[1]);
                         } else {
-                            $usedIPs[]=$configLine;
+                            $usedIPs[] = $configLine;
                         }
                     } else {
-                        $usedIPs[]=$configLine;
+                        $usedIPs[] = $configLine;
                     }
                 }
                 foreach ($tsip as $newLine) {
                     $splittedLine=preg_split('/\=/',strtolower($newLine),-1,PREG_SPLIT_NO_EMPTY);
                     if (isset($splittedLine[1]) and !array_key_exists($splittedLine[1],$usedIPs)) {
-                        $usedIPs[]=array('dns'=>$splittedLine[0],'address'=>$splittedLine[1]);
+                        $usedIPs[]=array('dns' => $splittedLine[0],'address' => $splittedLine[1]);
                     }
                 }
                 function array_multi_dimensional_unique($multi){
                     $unique = array();
                     foreach($multi as $sub){
                         if(!in_array($sub,$unique)){
-                            $unique[]=$sub;
+                            $unique[] = $sub;
                         }
                     }
                     return $unique;
@@ -919,8 +919,8 @@ function checkDNS ($dns,$id=null,$user_id=null,$type='') {
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row['externalDefaultDNS'] == 'N') {
-                if ($type == 'server' and $id != null and $row['id']==$masterID) {
-                    $defaultdns=strtolower($id.'.'.$row['defaultdns']);
+                if ($type == 'server' and $id != null and $row['id'] == $masterID) {
+                    $defaultdns=strtolower($id . '.' . $row['defaultdns']);
                     $partCount=count(explode('.',$defaultdns));
                 }
                 unset($temp);
@@ -928,22 +928,22 @@ function checkDNS ($dns,$id=null,$user_id=null,$type='') {
                 $i=count($ex)-1;
                 while ($i>=0) {
                     if (isset($temp)) {
-                        $temp=$ex[$i].'.'.$temp;
+                        $temp=$ex[$i] . '.' . $temp;
                     } else {
                         $temp=$ex[$i];
                     }
-                    $serverdnsArray[]=$temp;
+                    $serverdnsArray[] = $temp;
                     $i--;
                 }
-            } else if ($type == 'server' and $row['externalDefaultDNS'] == 'Y' and $id != null and $row['id']==$masterID) {
+            } else if ($type == 'server' and $row['externalDefaultDNS'] == 'Y' and $id != null and $row['id'] == $masterID) {
                 $tsdnsServerID=$row['tsdnsServerID'];
             }
         }
         $query = $sql->prepare("SELECT `id`,`defaultdns` FROM `voice_tsdns` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ((isset($tsdnsServerID) and $id != null and $row['id']==$tsdnsServerID) or ($type == 'dns' and $id != null and $row['id']==$masterID)) {
-                $defaultdns=strtolower($id . '-' . getusername($user_id).'.'.$row['defaultdns']);
+            if ((isset($tsdnsServerID) and $id != null and $row['id'] == $tsdnsServerID) or ($type == 'dns' and $id != null and $row['id'] == $masterID)) {
+                $defaultdns=strtolower($id . '-' . getusername($user_id) . '.' . $row['defaultdns']);
                 $partCount=count(explode('.',$defaultdns));
             }
             unset($temp);
@@ -951,11 +951,11 @@ function checkDNS ($dns,$id=null,$user_id=null,$type='') {
             $i=count($ex)-1;
             while ($i>=0) {
                 if (isset($temp)) {
-                    $temp=$ex[$i].'.'.$temp;
+                    $temp=$ex[$i] . '.' . $temp;
                 } else {
                     $temp=$ex[$i];
                 }
-                $serverdnsArray[]=$temp;
+                $serverdnsArray[] = $temp;
                 $i--;
             }
         }

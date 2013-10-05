@@ -53,7 +53,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
         $identifyServerBy=$data['identify_server_by'];
         $localServerID=isid($data['server_local_id'],21);
         $externalServerID=$data['server_external_id'];
-        $from=array('user_localid'=>'id','username'=>'cname','user_externalid'=>'externalID','email'=>'mail');
+        $from=array('user_localid' => 'id','username' => 'cname','user_externalid' => 'externalID','email' => 'mail');
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_user_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -137,7 +137,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
     $identifyServerBy=$data['identify_server_by'];
     $localServerID=isid($data['server_local_id'],21);
     $externalServerID=$data['server_external_id'];
-    $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
+    $from=array('server_local_id' => 'id','server_external_id' => 'externalID');
     if (dataExist('identify_server_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`uid`,`active`,`sid`,`dbname` FROM `mysql_external_dbs` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
@@ -178,7 +178,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
     $identifyServerBy=$data['identify_server_by'];
     $localServerID=isid($data['server_local_id'],21);
     $externalServerID=$data['server_external_id'];
-    $from=array('server_local_id'=>'id','server_external_id'=>'externalID');
+    $from=array('server_local_id' => 'id','server_external_id' => 'externalID');
     if (dataExist('identify_server_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`uid`,`sid`,`dbname` FROM `mysql_external_dbs` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
@@ -241,7 +241,7 @@ XML;
     print $reply;
 } else if ($apiType == 'json') {
     header("Content-type: application/json; charset=UTF-8");
-    echo json_encode(array('action'=>$action,'active'=>$active,'identify_server_by'=>$identifyServerBy,'server_external_id'=>$externalServerID,'server_local_id'=>$localServerID,'identify_user_by'=>$identifyUserBy,'user_localid'=>$localUserID,'user_externalid'=>$externalUserID,'username'=>$username,'errors'=>$errors));
+    echo json_encode(array('action' => $action,'active' => $active,'identify_server_by' => $identifyServerBy,'server_external_id' => $externalServerID,'server_local_id' => $localServerID,'identify_user_by' => $identifyUserBy,'user_localid' => $localUserID,'user_externalid' => $externalUserID,'username' => $username,'errors' => $errors));
 } else {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden');

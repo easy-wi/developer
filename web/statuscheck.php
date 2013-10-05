@@ -196,7 +196,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                     $query = $sql->prepare("SELECT `started`,`lendtime` FROM `lendedserver` WHERE `id`=? LIMIT 1");
                     $query->execute(array($lid));
                     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-                        $timeleft=round($row['lendtime']-(strtotime("now")-strtotime($row['started']))/60);
+                        $timeleft=round($row['lendtime']-(strtotime('now')-strtotime($row['started']))/60);
                         if ($timeleft>=$shutdownemptytime) {
                             $query = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                             $query->execute(array($lid, $resellerid));
@@ -322,9 +322,9 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 $qstat = $query->fetchColumn();
                 if ($xml2['status'] == 'DOWN' or $xml2['status'] == 'TIMEOUT') {
                     if (isset($badquery)) {
-                        $badquery .=" -$qstat $address";
+                        $badquery .= ' -' . $qstat . ' ' . $address;
                     } else {
-                        $badquery="-$qstat $address";
+                        $badquery = ' -' . $qstat . ' ' . $address;
                     }
                 }
             }
@@ -337,25 +337,27 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 ob_end_clean();
                 $badxml=simplexml_load_string($badquerystring);
                 foreach ($badxml as $badxml2) {
-                    $address = $badxml2['address'];
-                    $status = $badxml2['status'];
-                    $badstatus[$address] = array('status' => $status);
-                    if ($badxml2['status'] == 'UP') {
-                        if ($badxml2['type'] != 'A2S') {
-                            $gametype = $badxml2->gametype;
-                        }
-                        foreach ($badxml2->rules->rule as $rule) {
-                            switch((string) $rule['name']) {
-                                case 'gamename':
-                                    $gametype = $rule;
-                                    break;
+                    if (isset($badxml2['address']) and isip($badxml2['address'],'ipx')) {
+                        $address = $badxml2['address'];
+                        $status = $badxml2['status'];
+                        $badstatus[$address] = array('status' => $status);
+                        if ($badxml2['status'] == 'UP') {
+                            if ($badxml2['type'] != 'A2S') {
+                                $gametype = $badxml2->gametype;
                             }
+                            foreach ($badxml2->rules->rule as $rule) {
+                                switch((string) $rule['name']) {
+                                    case 'gamename':
+                                        $gametype = $rule;
+                                        break;
+                                }
+                            }
+                            $name = $badxml2->name;
+                            $numplayers = $badxml2->numplayers;
+                            $maxplayers = $badxml2->maxplayers;
+                            $map = $badxml2->map;
+                            $badstatus[$address] = array('gametype' => $gametype,'name' => $name,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'map' => $map,'rules' => $badxml2->rules->rule);
                         }
-                        $name = $badxml2->name;
-                        $numplayers = $badxml2->numplayers;
-                        $maxplayers = $badxml2->maxplayers;
-                        $map = $badxml2->map;
-                        $badstatus[$address] = array('gametype' => $gametype,'name' => $name,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'map' => $map,'rules' => $badxml2->rules->rule);
                     }
                 }
             }
@@ -392,7 +394,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                         $query2->execute(array($serverid));
                         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                             $lid = $row2['id'];
-                            $elapsed=round((strtotime("now")-strtotime($row2['started']))/60);
+                            $elapsed=round((strtotime('now')-strtotime($row2['started']))/60);
                         }
                     }
                 }
@@ -403,7 +405,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                     $passparams = explode(':', $qstatpassparam);
                 }
                 unset($password, $rulebreak, $maxplayers, $name);
-                if (($xml2['status'] == 'DOWN' or $xml2['status'] == 'TIMEOUT') and (!isset($badstatus[$address]['status']) or $badstatus[$address]['status'] == 'DOWN' or $badstatus[$address]['status'] == 'TIMEOUT')) {
+                if ((!isset($xml2['status']) or $xml2['status'] == 'DOWN' or $xml2['status'] == 'TIMEOUT') and (!isset($badstatus[$address]['status']) or $badstatus[$address]['status'] == 'DOWN' or $badstatus[$address]['status'] == 'TIMEOUT')) {
                     $status='DOWN';
                     $name = '';
                     $numplayers = 0;
@@ -411,7 +413,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                     $map = '';
                     $gametype = '';
                     print "recheck status for $address is still: $status\r\n";
-                } else if (($xml2['status'] == 'DOWN' or $xml2['status'] == 'TIMEOUT') and isset($badstatus[$address]['status']) and $badstatus[$address]['status'] == 'UP') {
+                } else if ((!$xml2['status'] or $xml2['status'] == 'DOWN' or $xml2['status'] == 'TIMEOUT') and isset($badstatus[$address]['status']) and $badstatus[$address]['status'] == 'UP') {
                     $status = 'UP';
                     foreach ($badstatus[$address]['rules'] as $rule) {
                         switch((string) $rule['name']) {
@@ -976,7 +978,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                         $dataloss = false;
                                         $lid = $erow['id'];
                                         $runtime = $erow['lendtime'];
-                                        $elapsed=round((strtotime("now")-strtotime($erow['started']))/60);
+                                        $elapsed=round((strtotime('now')-strtotime($erow['started']))/60);
                                         if ($elapsed>$shutdownemptytime and $usedslots == '0') {
                                             print "Will stop server $address before time is up, because it is empty\r\n";
                                             $stop = true;

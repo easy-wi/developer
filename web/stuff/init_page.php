@@ -86,23 +86,23 @@ if ($seo== 'Y') {
         redirect('/');
     }
 } else {
-    $page_data->SetMenu($gsprache->news, array('site'=>'news'),'news');
+    $page_data->SetMenu($gsprache->news, array('site' => 'news'),'news');
     if ($protectioncheck== 'Y') {
-        $page_data->SetMenu($page_sprache->protectioncheck, array('site'=>'protectioncheck'),'protectioncheck');
+        $page_data->SetMenu($page_sprache->protectioncheck, array('site' => 'protectioncheck'),'protectioncheck');
     }
     if ($page_data->lendactive == 'Y') {
-        $page_data->SetMenu($gsprache->lendserver, array('site'=>'lendserver'),'lendserver');
-        $page_data->SetMenu($gsprache->gameserver, array('site'=>'lendserver','d'=>'gs'),'lendservergs');
-        $page_data->SetMenu($gsprache->voiceserver, array('site'=>'lendserver','d'=>'vo'),'lendservervoice');
+        $page_data->SetMenu($gsprache->lendserver, array('site' => 'lendserver'),'lendserver');
+        $page_data->SetMenu($gsprache->gameserver, array('site' => 'lendserver','d' => 'gs'),'lendservergs');
+        $page_data->SetMenu($gsprache->voiceserver, array('site' => 'lendserver','d' => 'vo'),'lendservervoice');
     }
-    $page_data->SetMenu($gsprache->downloads, array('site'=>'downloads'),'downloads');
-    $page_data->SetMenu($page_sprache->about, array('site'=>'about'),'about');
-    $page_data->SetMenu($page_sprache->sitemap, array('site'=>'sitemap'),'sitemap');
-    $page_data->SetMenu($page_sprache->gallery, array('site'=>'gallery'),'gallery');
-    $page_data->SetMenu($gsprache->imprint, array('site'=>'imprint'),'imprint');
-    $page_data->SetMenu($page_sprache->contact, array('site'=>'contact'),'contact');
-    $page_data->SetMenu($page_sprache->search, array('site'=>'search'),'search');
-    $page_data->SetMenu($page_sprache->register, array('site'=>'register'),'register');
+    $page_data->SetMenu($gsprache->downloads, array('site' => 'downloads'),'downloads');
+    $page_data->SetMenu($page_sprache->about, array('site' => 'about'),'about');
+    $page_data->SetMenu($page_sprache->sitemap, array('site' => 'sitemap'),'sitemap');
+    $page_data->SetMenu($page_sprache->gallery, array('site' => 'gallery'),'gallery');
+    $page_data->SetMenu($gsprache->imprint, array('site' => 'imprint'),'imprint');
+    $page_data->SetMenu($page_sprache->contact, array('site' => 'contact'),'contact');
+    $page_data->SetMenu($page_sprache->search, array('site' => 'search'),'search');
+    $page_data->SetMenu($page_sprache->register, array('site' => 'register'),'register');
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['naviDisplay'] == 'Y') {
             $page_data->SetMenu($row['title'], $row['id'], $row['subpage'], $row['id']);
@@ -186,11 +186,11 @@ if (!isset($s) and !isset($page_category) and isset($page_default) and isid($pag
     $s='404';
     $throw404 = true;
 }
-$what_to_be_included_array=array('news'=>'page_news.php','contact'=>'page_contact.php',
-    'page'=>'page_page.php','home'=>'page_page.php','about'=>'page_page.php','gallery'=>'page_page.php','sitemap'=>'page_page.php','search'=>'page_page.php',
-    'tag'=>'page_tag.php','categories'=>'page_tag.php','downloads'=>'page_download.php',
-    'lendserver'=>'lend.php',
-    'protectioncheck'=>'protectioncheck.php',
-    'imprint'=>'imprint.php',
-    'register'=>'page_register.php'
+$what_to_be_included_array=array('news' => 'page_news.php','contact' => 'page_contact.php',
+    'page' => 'page_page.php','home' => 'page_page.php','about' => 'page_page.php','gallery' => 'page_page.php','sitemap' => 'page_page.php','search' => 'page_page.php',
+    'tag' => 'page_tag.php','categories' => 'page_tag.php','downloads' => 'page_download.php',
+    'lendserver' => 'lend.php',
+    'protectioncheck' => 'protectioncheck.php',
+    'imprint' => 'imprint.php',
+    'register' => 'page_register.php'
 );

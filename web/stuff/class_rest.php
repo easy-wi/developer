@@ -159,8 +159,8 @@ class easyWiRest {
     private function execCurl($type,$send) {
 
         // Setting up POST data and add it to the opts
-        $postArray['type']=$type;
-        $postArray['xmlstring']=$send;
+        $postArray['type'] = $type;
+        $postArray['xmlstring'] = $send;
         curl_setopt($this->handle,CURLOPT_POSTFIELDS,$postArray);
 
         // Execute request, get the response and return it.

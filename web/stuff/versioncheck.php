@@ -54,10 +54,10 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 				$this->response = array();
 			}
 			function add ($newtext) {
-				$this->response[]=$newtext;
+				$this->response[] = $newtext;
 			}
             function addError ($newtext) {
-                $this->errors[]=$newtext;
+                $this->errors[] = $newtext;
             }
 			function printresponse () {
 				return $this->response;
@@ -90,7 +90,7 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 		}
 		if (is_dir(EASYWIDIR . '/tmp')) {
 			$response->add('Creating tempfolder <b>tmp/</b>');
-			$opts=stream_context_create(array('http'=>array('method'=>'GET','header'=>"Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
+			$opts=stream_context_create(array('http'=>array('method' => 'GET','header'=>"Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
 			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'.zip','rb', false,$opts);
 			$zip=@fopen(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip','wb');
 			if ($fp==true and $zip==true) {
@@ -184,17 +184,17 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 	$query = $sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
 	$query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		if ($row[$column] != null and $row[$column] != '') $table[]=array('version'=>$row['version'],'text'=>$row[$column]);
+		if ($row[$column] != null and $row[$column] != '') $table[]=array('version' => $row['version'],'text' => $row[$column]);
 	}
     $update=($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW']==true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
 	if ($ewVersions['cVersion']<$ewVersions['version']) {
         $state = 1;
 		$class='versioncheckbad';
-		$isok=$vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'].'.'.$release . ' ' . $update;
+		$isok=$vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
 	} else if ($ewVersions['files']<$ewVersions['version']) {
         $state = 1;
 		$class='versioncheckbad';
-		$isok=$vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'].'. '.$vcsprache->latestversion . ' ' . $ewVersions['version'].'.'.$release . ' ' . $update;
+		$isok=$vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'].'. '.$vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
 	} else {
         $state = 2;
 		$class='versioncheckok';

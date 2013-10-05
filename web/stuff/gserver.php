@@ -96,20 +96,20 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             } else {
                 $percenserver = 0;
             }
-            $serverusage[$rootid]=array('slots'=>$percentslots,'server'=>$percenserver);
+            $serverusage[$rootid]=array('slots' => $percentslots,'server' => $percenserver);
             if (!isset($i)) $i = 0;
             if (!isset($available)) $available = 0;
             $ips=array($row['ip']);
             foreach (ipstoarray($row['altips']) as $ip) {
                 $ips[] = $ip;
             }
-            $table2[]=array('id'=>$rootid,'ip'=>implode(' / ', array_unique($ips)));
+            $table2[]=array('id' => $rootid,'ip'=>implode(' / ', array_unique($ips)));
         }
         $query = $sql->prepare("SELECT s.`description`,s.`shorten` FROM `servertypes` s WHERE s.`resellerid`=? AND EXISTS (SELECT m.`id` FROM `rservermasterg` m WHERE m.`servertypeid`=s.`id` LIMIT 1) ORDER BY s.`description` ASC");
         $query->execute(array($reseller_id));
         $table3 = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table3[]=array('shorten'=>$row['shorten'],'description'=>$row['description']);
+            $table3[]=array('shorten' => $row['shorten'],'description' => $row['description']);
         }
         $installedserver = 0;
         $maxserver = 0;
@@ -183,7 +183,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                             } else {
                                 $upload = 0;
                             }
-                            $table[]=array('description'=>$row['description'],'id'=>$row['id'],'steamgame'=>$row['steamgame'],'shorten'=>$shorten,'gamebinary'=>$row['gamebinary'],'binarydir'=>$row['binarydir'],'modfolder'=>$row['modfolder'],'fps'=>$row['fps'],'slots'=>$row['slots'],'map'=>$row['map'],'mapGroup'=>$row['mapGroup'],'cmd'=>$cmd,'tic'=>$row['tic'],'upload'=>$upload,'qstat'=>$qstat,'installing'=>$installing);
+                            $table[]=array('description' => $row['description'],'id' => $row['id'],'steamgame' => $row['steamgame'],'shorten' => $shorten,'gamebinary' => $row['gamebinary'],'binarydir' => $row['binarydir'],'modfolder' => $row['modfolder'],'fps' => $row['fps'],'slots' => $row['slots'],'map' => $row['map'],'mapGroup' => $row['mapGroup'],'cmd' => $cmd,'tic' => $row['tic'],'upload' => $upload,'qstat' => $qstat,'installing' => $installing);
                             $i++;
                         }
                         if ($query->rowcount()==0) {
@@ -521,7 +521,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
         $query = $sql->prepare("SELECT s.`id`,t.`description`,t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
         $query->execute(array($server_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table[]=array('id'=>$row['id'],'description'=>$row['description'],'shorten'=>$row['shorten']);
+            $table[]=array('id' => $row['id'],'description' => $row['description'],'shorten' => $row['shorten']);
         }
         if (isset($serverip) and isset($port)) {
             $template_file = 'admin_gserver_dl.tpl';
@@ -682,7 +682,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 }
                 $gamestringtemp .= "_$shorten";
                 $cmd=stripslashes($row2['cmd']);
-                $table[]=array('id'=>$row2['id'],'shorten'=>$row2['shorten'],'description'=>$row2['description'],'gamebinary'=>$row2['gamebinary'],'binarydir'=>$row2['binarydir'],'modfolder'=>$row2['modfolder'],'fps'=>$row2['fps'],'map'=>$row2['map'],'mapGroup'=>$row2['mapGroup'],'cmd'=>$cmd,'tic'=>$row2['tic'],'qstat'=>$qstat,'upload'=>$upload,'uploaddir'=>$uploaddir,'userfps'=>$row2['userfps'],'usertick'=>$row2['usertick'],'usermap'=>$row2['usermap'],'user_uploaddir'=>$row2['user_uploaddir'],'owncmd'=>$row2['owncmd'],'style'=>$style);
+                $table[]=array('id' => $row2['id'],'shorten' => $row2['shorten'],'description' => $row2['description'],'gamebinary' => $row2['gamebinary'],'binarydir' => $row2['binarydir'],'modfolder' => $row2['modfolder'],'fps' => $row2['fps'],'map' => $row2['map'],'mapGroup' => $row2['mapGroup'],'cmd' => $cmd,'tic' => $row2['tic'],'qstat' => $qstat,'upload' => $upload,'uploaddir' => $uploaddir,'userfps' => $row2['userfps'],'usertick' => $row2['usertick'],'usermap' => $row2['usermap'],'user_uploaddir' => $row2['user_uploaddir'],'owncmd' => $row2['owncmd'],'style' => $style);
                 $i++;
             }
             $gamestring = $i.$gamestringtemp;
@@ -833,14 +833,14 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $usedcores=implode(',',$usedcores);
             $template_file = '';
             $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `id`!=:switchID AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
-            $query->execute(array(':port'=>$port_new,':switchID'=>$server_id,':serverip'=>$serverip_new,':reseller_id'=>$reseller_id));
+            $query->execute(array(':port' => $port_new,':switchID' => $server_id,':serverip' => $serverip_new,':reseller_id' => $reseller_id));
             $num_check_game = $query->rowcount();
             $query = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($port_new,$serverip_new,$reseller_id));
             $num_check_game += $query->rowCount();
             if ($port2_old != $port2) {
                 $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `id`!=:switchID AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':port'=>$port2,':switchID'=>$server_id,':serverip'=>$serverip_new,':reseller_id'=>$reseller_id));
+                $query->execute(array(':port' => $port2,':switchID' => $server_id,':serverip' => $serverip_new,':reseller_id' => $reseller_id));
                 $num_check_port2 = $query->rowCount();
                 $query = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($port2,$serverip_new,$reseller_id));
@@ -850,7 +850,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             }
             if ($port3_old != $port3) {
                 $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `id`!=:switchID AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':port'=>$port3,':switchID'=>$server_id,':serverip'=>$serverip_new,':reseller_id'=>$reseller_id));
+                $query->execute(array(':port' => $port3,':switchID' => $server_id,':serverip' => $serverip_new,':reseller_id' => $reseller_id));
                 $num_check_port3 = $query->rowCount();
                 $query = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($port3,$serverip_new,$reseller_id));
@@ -860,7 +860,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             }
             if ($port4_old != $port4) {
                 $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `id`!=:switchID AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':port'=>$port4,':switchID'=>$server_id,':serverip'=>$serverip_new,':reseller_id'=>$reseller_id));
+                $query->execute(array(':port' => $port4,':switchID' => $server_id,':serverip' => $serverip_new,':reseller_id' => $reseller_id));
                 $num_check_port4 = $query->rowCount();
                 $check_select_port4_2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? AND `resellerid`=? LIMIT 1");
                 $check_select_port4_2->execute(array($port4,$serverip_new,$reseller_id));
@@ -870,7 +870,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             }
             if ($port5_old != $port5) {
                 $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `id`!=:switchID AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':port'=>$port5,':switchID'=>$server_id,':serverip'=>$serverip_new,':reseller_id'=>$reseller_id));
+                $query->execute(array(':port' => $port5,':switchID' => $server_id,':serverip' => $serverip_new,':reseller_id' => $reseller_id));
                 $num_check_port5 = $query->rowCount();
                 $check_select_port4_2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `port`=? AND `ip`=? AND `resellerid`=? LIMIT 1");
                 $check_select_port4_2->execute(array($port5,$serverip_new,$reseller_id));
@@ -970,7 +970,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $query2->execute(array($server_id,$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 $servertemplate=($row['serverid'] == $row2['id']) ? $row2['servertemplate'] : '';
-                $table[]=array('id'=>$row2['id'],'description'=>$row2['description'],'shorten'=>$row2['shorten'],'servertemplate'=>$servertemplate);
+                $table[]=array('id' => $row2['id'],'description' => $row2['description'],'shorten' => $row2['shorten'],'servertemplate' => $servertemplate);
             }
         }
         if (isset($serverip) and isset($port)) {
@@ -1178,7 +1178,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $nameremoved="<div class=\"error\">".$sprache->nameremoved."</div>";
             }
         }
-        $table[]=array('serveractive'=>$serveractive,'shorten'=>$row['shorten'],'useractive'=>$row['useractive'],'cname'=>$row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'img'=>$imgName,'alt'=>$imgAlt,'premoved'=>$premoved,'nameremoved'=>$nameremoved,'server'=>$server,'serverid'=>$serverid,'name'=>$name,'type'=>$type,'map'=>$map,'numplayers'=>$numplayers,'maxplayers'=>$maxplayers,'id'=>$userid,'lendserver'=>$lendserver,'active'=>$row['active'],'jobPending'=>$jobPending);
+        $table[]=array('serveractive' => $serveractive,'shorten' => $row['shorten'],'useractive' => $row['useractive'],'cname' => $row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'img' => $imgName,'alt' => $imgAlt,'premoved' => $premoved,'nameremoved' => $nameremoved,'server' => $server,'serverid' => $serverid,'name' => $name,'type' => $type,'map' => $map,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'id' => $userid,'lendserver' => $lendserver,'active' => $row['active'],'jobPending' => $jobPending);
     }
     $next = $start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;

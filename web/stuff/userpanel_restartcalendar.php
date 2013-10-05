@@ -94,12 +94,12 @@ if ($ui->smallletters('edit',4,'post') == 'edit' and isset($serverip) and isset(
     $query->execute(array($ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$shorten=$row['shorten'];
-		$uploadallowed[]=$row['upload'];
-		$qstat_array[$shorten]=$row['qstat'];
+		$uploadallowed[] = $row['upload'];
+		$qstat_array[$shorten] = $row['qstat'];
 		if (!isset($qstat)) {
 			$qstat=$row['qstat'];
 		}
-		$table[$row['shorten']]=array('shorten'=>$shorten,'description'=>$row['description'],'defaultMapGroup'=>$row['mapGroup']);
+		$table[$row['shorten']]=array('shorten' => $shorten,'description' => $row['description'],'defaultMapGroup' => $row['mapGroup']);
 	}
 	$template = '';
 	$anticheat = '';
@@ -267,14 +267,14 @@ if ($ui->smallletters('edit',4,'post') == 'edit' and isset($serverip) and isset(
 } else if (isset($serverip) and isset($port)){
 	$i = 0;
 	while ($i<24) {
-		$restarts[$i]=array('mon'=>'','tue'=>'','wed'=>'','thu'=>'','fri'=>'','sat'=>'','sun'=>'');
+		$restarts[$i]=array('mon' => '','tue' => '','wed' => '','thu' => '','fri' => '','sat' => '','sun' => '');
 		$i++;
 	}
     $query = $sql->prepare("SELECT t.`shorten`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
     $query->execute(array($ui->id('id',19,'get'),$reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$shorten=$row['shorten'];
-		$qstat_array[$shorten]=$row['qstat'];
+		$qstat_array[$shorten] = $row['qstat'];
 	}
 	$backup = 'N';
     $query = $sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
@@ -340,9 +340,9 @@ if ($ui->smallletters('edit',4,'post') == 'edit' and isset($serverip) and isset(
                 $imgName='16_protected';
                 $imgAlt='Protected';
             }
-            $restarts[$hour][$day]=array('out'=>$routput,'img'=>$imgName,'alt'=>$imgAlt);
+            $restarts[$hour][$day]=array('out' => $routput,'img' => $imgName,'alt' => $imgAlt);
         } else {
-            $restarts[$hour][$day]=array('out'=>$routput);
+            $restarts[$hour][$day]=array('out' => $routput);
         }
 	}
 	$template_file = "userpanel_gserver_calendar_list.tpl";

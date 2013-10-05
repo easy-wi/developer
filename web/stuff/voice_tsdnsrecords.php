@@ -103,7 +103,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query->execute(array($tsdnsID,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $tsdns = trim($row['ssh2ip'] . ' ' . $row['description']);
-                $dns=strtolower(trim($lastID . '-' . $cname.'.'.$row['defaultdns']));
+                $dns=strtolower(trim($lastID . '-' . $cname . '.' . $row['defaultdns']));
             }
             if (!isset($tsdns)) {
                 $error[] = 'tsdnsID';
@@ -203,7 +203,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-            $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsID,':reseller_id'=>$reseller_id));
+            $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsID,':reseller_id' => $reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $publickey=$row['publickey'];
                 $queryip=$row['ssh2ip'];
@@ -300,7 +300,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $deleteDNS=$row['ip'] . ' ' . $row['port'] . ' ' . $row['dns'];
         }
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-        $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsID,':reseller_id'=>$reseller_id));
+        $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsID,':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $publickey=$row['publickey'];
             $queryip=$row['ssh2ip'];
@@ -389,7 +389,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_bad';
             $imgAlt='inactive';
         }
-        $table[]=array('id'=>$row['dnsID'],'active'=>$row['active'],'img'=>$imgName,'alt'=>$imgAlt,'dns'=>$row['dns'],'address'=>$row['ip'] . ':' . $row['port'],'masterip'=>trim($row['ssh2ip'] . ' ' . $row['description']),'cname'=>$row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'userid'=>$row['userID'],'jobPending'=>$jobPending);
+        $table[]=array('id' => $row['dnsID'],'active' => $row['active'],'img' => $imgName,'alt' => $imgAlt,'dns' => $row['dns'],'address' => $row['ip'] . ':' . $row['port'],'masterip'=>trim($row['ssh2ip'] . ' ' . $row['description']),'cname' => $row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'userid' => $row['userID'],'jobPending' => $jobPending);
     }
     $next=$start+$amount;
     if ($colcount>$next) {
@@ -415,7 +415,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

@@ -84,9 +84,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             } else if ($row2['gamebinary'] == 'srcds_run' and $row2['appID']!=740 and $row2['appID']!=730) {
                 $search='/'. $row2['binarydir']. '/' . $row2['modfolder'];
             }
-            $temp[$row2['shorten']]=array('shorten'=>$row2['shorten'],'description'=>$row2['description'],'searchFor'=>$search,'modfolder'=>$row2['modfolder']);
+            $temp[$row2['shorten']]=array('shorten' => $row2['shorten'],'description' => $row2['description'],'searchFor' => $search,'modfolder' => $row2['modfolder']);
         }
-        $table[$row['id']]=array('id'=>$row['id'],'address'=>$row['serverip'] . ':' . $row['port'],'games'=>$temp,'rootID'=>$row['rootID'],'gsfolder'=>$row['serverip'] . '_' . $row['port'],'customer'=>$customer,'cftppass'=>$row['cftppass']);
+        $table[$row['id']]=array('id' => $row['id'],'address' => $row['serverip'] . ':' . $row['port'],'games' => $temp,'rootID' => $row['rootID'],'gsfolder' => $row['serverip'] . '_' . $row['port'],'customer' => $customer,'cftppass' => $row['cftppass']);
     }
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
@@ -104,13 +104,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $list=preg_split('/(\s|\s+)/',$d,-1,PREG_SPLIT_NO_EMPTY);
                 if (preg_match('/^d[rwx\-]{9}+$/',$list[0]) and !preg_match('/^[\.\/]{0,}Steam[\/]{0,}+$/',$list[count($list)-1]) and !in_array($list[count($list)-1],$donotsearch)) {
                     if (substr($dir.$list[count($list)-1],$spl)==$searchFor) return $dir.$list[count($list)-1];
-                    $folders[]=$dir.$list[count($list)-1];
+                    $folders[] = $dir.$list[count($list)-1];
                     if (is_numeric($maxDepth) and $currentDepth<($maxDepth+1)) {
                         $array=checkFolders($dir.$list[count($list)-1],$searchFor,$maxDepth,$currentDepth+1);
                         if (is_array($array)) {
                             foreach ($array as $f){
                                 if (substr($f,$spl)==$searchFor) return $f;
-                                $folders[]=$f;
+                                $folders[] = $f;
                             }
                         } else if (substr($array,$spl)==$searchFor) {
                             return $array;
@@ -123,27 +123,27 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         return $dir;
     }
     if (!$ui->domain('ftpAddress','post') and !$ui->ip('ftpAddress','post')) {
-        $error[]=$sprache->ftp_adresse;
+        $error[] = $sprache->ftp_adresse;
     } else {
         $ftpAddress=$ui->post['ftpAddress'];
     }
     if (!$ui->port('ftpPort','post')) {
-        $error[]=$sprache->ftp_port;
+        $error[] = $sprache->ftp_port;
     } else {
         $ftpPort=$ui->port('ftpPort','post');
     }
     if (!$ui->config('ftpUser','post')) {
-        $error[]=$sprache->ftp_user;
+        $error[] = $sprache->ftp_user;
     } else {
         $ftpUser=$ui->config('ftpUser','post');
     }
     if (!$ui->config('ftpPassword','post')) {
-        $error[]=$sprache->ftp_password;
+        $error[] = $sprache->ftp_password;
     } else {
         $ftpPassword=$ui->config('ftpPassword','post');
     }
     if (!$ui->id('switchID',10,'post') or !isset($table[$ui->id('switchID',10,'post')])) {
-        $error[]=$sprache->server;
+        $error[] = $sprache->server;
     } else {
         $thisID=$ui->id('switchID',10,'post');
         $address=$table[$ui->id('switchID',10,'post')]['address'];
@@ -153,7 +153,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $cftppass=$table[$ui->id('switchID',10,'post')]['cftppass'];
     }
     if (!$ui->config('template','post',$thisID) or !isset($table[$ui->id('switchID',10,'post')]['games'])) {
-        $error[]=$gsprache->template;
+        $error[] = $gsprache->template;
     } else if (isset($table[$ui->id('switchID',10,'post')]['games'])) {
         foreach($table[$ui->id('switchID',10,'post')]['games'] as $game) {
             unset($temp);
@@ -174,7 +174,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (isset($shorten)) {
             $thisTemplate=$ui->config('template','post',$thisID);
         } else if (!in_array($gsprache->template,$error)) {
-            $error[]=$gsprache->template;
+            $error[] = $gsprache->template;
         }
     }
     if ($ui->anyPath('ftpPath','post')) $ftpPath=$ui->anyPath('ftpPath','post');
@@ -188,19 +188,19 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if (substr($currentPath,strlen($searchFor)*(-1))==$searchFor) {
                     $ftpPath=$currentPath;
                 } else {
-                    $error[]=$sprache->ftp_path.'. '.$sprache->import_corrected;
+                    $error[] = $sprache->ftp_path.'. '.$sprache->import_corrected;
                     $foundPath=checkFolders($currentPath,$searchFor,5);
                     $ftpPath=(is_array($foundPath)) ? '' : $foundPath;
                 }
             }
         } else {
-            $error[]=$sprache->ftp_user;
-            $error[]=$sprache->ftp_password;
+            $error[] = $sprache->ftp_user;
+            $error[] = $sprache->ftp_password;
         }
         ftp_close($ftp);
     } else {
-        if (!in_array($sprache->ftp_adresse,$error)) $error[]=$sprache->ftp_adresse;
-        if (!in_array($sprache->ftp_port,$error)) $error[]=$sprache->ftp_port;
+        if (!in_array($sprache->ftp_adresse,$error)) $error[] = $sprache->ftp_adresse;
+        if (!in_array($sprache->ftp_port,$error)) $error[] = $sprache->ftp_port;
     }
     if (count($error)==0 and isset($rootID)) {
         include(EASYWIDIR . '/stuff/ssh_exec.php');

@@ -197,7 +197,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $link=$page_url. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']).'/';
         }
-        $table[]=array('pageid'=>$row['pageid'],'title'=>htmlentities($row['title']),'comment'=>htmlentities($row['comment']),'commentID'=>$row['commentID'],'date'=>date($commentDate,strtotime($row['date'])),'authorname'=>htmlentities($row['authorname']),'moderated'=>$moderated,'spam'=>$spam,'spamReason'=>$row['spamReason'],'link'=>$link);
+        $table[]=array('pageid' => $row['pageid'],'title'=>htmlentities($row['title']),'comment'=>htmlentities($row['comment']),'commentID' => $row['commentID'],'date'=>date($commentDate,strtotime($row['date'])),'authorname'=>htmlentities($row['authorname']),'moderated' => $moderated,'spam' => $spam,'spamReason' => $row['spamReason'],'link' => $link);
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=pc&amp;o='.$o.'&amp;a=';
@@ -211,7 +211,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0'.$getParams.'">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

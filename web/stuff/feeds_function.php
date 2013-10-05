@@ -66,7 +66,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                         $theCount = 0;
                         foreach ($json->appnews->newsitems as $item) {
                             if ($item->is_external_url==false and $theCount<$newsAmount) {
-                                $steamNews[$lookUpAppID][]=array('title'=>$item->title,'description'=>$item->contents,'link'=>$item->url,'pubDate'=>date('Y-m-d H:i:s',$item->date),'content'=>$lookUpAppID,'author'=>$item->author,'creator'=>$item->author);
+                                $steamNews[$lookUpAppID][]=array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate'=>date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
                                 $theCount++;
                             }
                         }
@@ -94,7 +94,7 @@ if (isset($newsInclude) and $newsInclude==true) {
             foreach ($steamNews as $news) {
                 $i = 0;
                 while ($i<count($news) and $i<=$newsAmount) {
-                    $feedsArray[0][]=$news[$i];
+                    $feedsArray[0][] = $news[$i];
                     $i++;
                 }
             }
@@ -111,7 +111,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                         $theCount = 0;
                         foreach ($json->appnews->newsitems as $item) {
                             if ($item->is_external_url==false and $theCount<$newsAmount) {
-                                $feedsArray[0][]=array('title'=>$item->title,'description'=>$item->contents,'link'=>$item->url,'pubDate'=>date('Y-m-d H:i:s',$item->date),'content'=>$lookUpAppID,'author'=>$item->author,'creator'=>$item->author);
+                                $feedsArray[0][]=array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate'=>date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
                                 $theCount++;
                             }
                         }
@@ -140,7 +140,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                             $content = '';
                             $author=$tweet->user->name;
                             $creator=$tweet->user->name;
-                            $feedsArray[$feedID][]=array('title'=>$feedTitle,'description'=>$description,'link'=>$link,'pubDate'=>$pubDate,'content'=>$content,'author'=>$author,'creator'=>$creator);
+                            $feedsArray[$feedID][]=array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
                         }
                     }
                 } else {
@@ -259,7 +259,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                                         $description=base64_decode($description);
                                     }
                                     if($theCount<$newsAmount) {
-                                        $feedsArray[$feedID][]=array('title'=>$feedTitle,'description'=>$description,'link'=>$link,'pubDate'=>$pubDate,'content'=>$content,'author'=>$author,'creator'=>$creator);
+                                        $feedsArray[$feedID][]=array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
                                     }
                                     $theCount++;
                                 }

@@ -43,7 +43,7 @@ if ($ui->id('id',19,'get')) {
     $query = $sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE `type`='news' AND t.`language`=? AND p.`released`=1 AND p.`resellerid`=0");
     $query->execute(array($user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $pagesAvailable[szrp($row['title'])]=$row['id'];
+        $pagesAvailable[szrp($row['title'])] = $row['id'];
     }
     if (array_key_exists(strtolower($page_name),$pagesAvailable)) {
         $page_id=$pagesAvailable[strtolower($page_name)];
@@ -75,9 +75,9 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                 $categoryLink=$page_url.'/index.php?site=categories&amp;tag='.szrp($row2['name']);
             }
             if ($row2['type'] == 'tag') {
-                $allTags[]=array('name'=>$row2['name'],'link'=>$tagLink,'href'=>'<a href="'.$tagLink.'">'.$row2['name'].'</a>');
+                $allTags[]=array('name' => $row2['name'],'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
             } else if ($row2['type'] == 'category') {
-                $allCategories[]=array('name'=>$row2['name'],'link'=>$categoryLink,'href'=>'<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
+                $allCategories[]=array('name' => $row2['name'],'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
             }
         }
         $pageLanguage=$row['language'];
@@ -149,7 +149,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                     if ($commentsModerated== 'Y' and (!isset($admin_id) and !isset($user_id))) {
                         $query = $sql->prepare("INSERT INTO `page_comments` (`date`,`moderateAccepted`,`pageTextID`,`replyTo`,`authorname`,`homepage`,`comment`,`ip`,`dns`,`markedSpam`,`spamReason`,`email`) VALUES (NOW(),'N',?,?,?,?,?,?,?,?,?,?)");
                         $query->execute(array($textID,$replyTo,$author,$url,$ui->escaped('comment','post'),$ui->ip('REMOTE_ADDR','server'),gethostbyaddr($ui->ip4('REMOTE_ADDR','server')),$isSpam,$spamReason,$email));
-                        $_SESSION['toBeModerated'][]=$sql->lastInsertId();
+                        $_SESSION['toBeModerated'][] = $sql->lastInsertId();
                     } else {
                         $query = $sql->prepare("INSERT INTO `page_comments` (`date`,`moderateAccepted`,`pageTextID`,`replyTo`,`authorname`,`homepage`,`comment`,`ip`,`dns`,`markedSpam`,`spamReason`,`email`) VALUES (NOW(),'Y',?,?,?,?,?,?,?,?,?,?)");
                         $query->execute(array($textID,$replyTo,$author,$url,$ui->escaped('comment','post'),$ui->ip('REMOTE_ADDR','server'),gethostbyaddr($ui->ip4('REMOTE_ADDR','server')),$isSpam,$spamReason,$email));
@@ -158,7 +158,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                 }
             }
             $token=md5(passwordgenerate(10));
-            $_SESSION['news'][$textID]=$token;
+            $_SESSION['news'][$textID] = $token;
             $commentArray = array();
             $OR = '';
             if (isset($_SESSION['toBeModerated']) and count($_SESSION['toBeModerated'])>0) {
@@ -176,7 +176,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                 } else {
                     $commentDate=date('m.d.Y H:i',strtotime($row['date']));
                 }
-                $commentArray[]=array('commentID'=>$row['commentID'],'replyTo'=>$row['replyTo'],'homepage'=>$row['homepage'],'date'=>$commentDate,'author'=>htmlentities($row['authorname']),'comment'=>htmlentities($row['comment']));
+                $commentArray[]=array('commentID' => $row['commentID'],'replyTo' => $row['replyTo'],'homepage' => $row['homepage'],'date' => $commentDate,'author'=>htmlentities($row['authorname']),'comment'=>htmlentities($row['comment']));
             }
         }
         $page_data->setCanonicalUrl($s,$textID);
@@ -259,11 +259,11 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
             }
             $page_data->AddData('keywords', $row2['name']);
             if ($row2['type'] == 'tag') {
-                $allTags[]=array('name'=>$row2['name'],'link'=>$tagLink,'href'=>'<a href="'.$tagLink.'">'.$row2['name'].'</a>');
-                $tag_tags[]=array('name'=>$row2['name'],'link'=>$tagLink,'href'=>'<a href="'.$tagLink.'">'.$row2['name'].'</a>');
+                $allTags[]=array('name' => $row2['name'],'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
+                $tag_tags[]=array('name' => $row2['name'],'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
             } else if ($row2['type'] == 'category') {
-                $allCategories[]=array('name'=>$row2['name'],'link'=>$categoryLink,'href'=>'<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
-                $category_tags[]=array('name'=>$row2['name'],'link'=>$categoryLink,'href'=>'<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
+                $allCategories[]=array('name' => $row2['name'],'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
+                $category_tags[]=array('name' => $row2['name'],'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
             }
         }
         if ($row['language'] == 'de') {
@@ -277,7 +277,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         } else {
             $commentCount = 0;
         }
-        $news[]=array('date'=>$date,'title'=>$page_title,'text'=>$page_text,'href'=>$href,'link'=>$link,'tags'=>$tag_tags,'categories'=>$category_tags,'comments'=>$row['comments'],'commentCount'=>$commentCount,'authorname'=>$row['authorname']);
+        $news[]=array('date' => $date,'title' => $page_title,'text' => $page_text,'href' => $href,'link' => $link,'tags' => $tag_tags,'categories' => $category_tags,'comments' => $row['comments'],'commentCount' => $commentCount,'authorname' => $row['authorname']);
     }
     if ($seo== 'Y') {
         $paginationLink=$page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($page_sprache->older).'/';

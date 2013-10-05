@@ -67,7 +67,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $queryAffected+=$query->rowCount();
     $posted_languages = array();
     if (is_object($ui->st('language','post'))) {
-        foreach ($ui->st('language','post') as $key=>$lg) $posted_languages[$key]=$lg;
+        foreach ($ui->st('language','post') as $key=>$lg) $posted_languages[$key] = $lg;
     }
     $query = $sql->prepare("SELECT `id` FROM `page_pages` WHERE `type`='about' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
@@ -79,7 +79,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($about_id,$reseller_id));
         $lang_exist = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $lang_exist[]=$row['language'];
+            $lang_exist[] = $row['language'];
             if (in_array($row['language'],$posted_languages)) {
                 $query2->execute(array($ui->escaped('about','post', $row['language']),$about_id, $row['language'],$reseller_id));
             } else {
@@ -99,7 +99,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $posted_touLanguages = array();
     if (is_object($ui->st('touLanguages','post'))) {
-        foreach ($ui->st('touLanguages','post') as $key=>$lg) $posted_touLanguages[$key]=$lg;
+        foreach ($ui->st('touLanguages','post') as $key=>$lg) $posted_touLanguages[$key] = $lg;
     }
     if (count($posted_touLanguages)>0) {
         $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='to' AND `resellerID`=?");
@@ -108,7 +108,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($reseller_id));
         $lang_exist = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $lang_exist[]=$row['lang'];
+            $lang_exist[] = $row['lang'];
             if (in_array($row['lang'],$posted_touLanguages)) {
                 $query2->execute(array($ui->escaped('tou','post', $row['lang']), $row['lang'],$reseller_id));
             } else {
@@ -170,7 +170,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $about_id=$query->fetchColumn();
     $query = $sql->prepare("SELECT `language`,`text` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=?");
     $query->execute(array($about_id,$reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $about_text[$row['language']]=$row['text'];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $about_text[$row['language']] = $row['text'];
     $subpage = array();
     $query = $sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`resellerid`=? AND p.`type`='page' ORDER BY t.`title`");
     $query2 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
@@ -181,7 +181,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query2->execute(array($row['id'],$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) $page_title=$row2['title'];
         }
-        $subpage[$row['id']]=$page_title;
+        $subpage[$row['id']] = $page_title;
     }
     $default_language=$rSA['language'];
     $tous = array();
@@ -189,7 +189,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($languages as $row) {
         if (small_letters_check($row,2)) {
             $query->execute(array(1, $row,$reseller_id));
-            $tous[$row]=$query->fetchColumn();
+            $tous[$row] = $query->fetchColumn();
         }
     }
     $template_file = "admin_page_settings.tpl";

@@ -74,7 +74,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $groupIDS[$row['id']]=$row['name'];
+            $groupIDS[$row['id']] = $row['name'];
         }
         $query = $sql->prepare("SELECT * FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
@@ -100,7 +100,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $groupIDS[$row['id']]=$row['name'];
+            $groupIDS[$row['id']] = $row['name'];
         }
         $template_file = 'admin_api_import_users_add.tpl';
     } else if (in_array($ui->smallletters('action',2,'post'), array('md','ad'))) {
@@ -260,7 +260,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $ssl='http://';
         }
-        $table[]=array('id'=>$row['importID'],'img'=>$imgName,'alt'=>$imgAlt,'domain'=>$ssl.$row['domain']. '/' . $row['file'],'lastID'=>$row['lastID'],'lastCheck'=>$row['lastCheck'],'active'=>$row['active']);
+        $table[]=array('id' => $row['importID'],'img' => $imgName,'alt' => $imgAlt,'domain' => $ssl.$row['domain']. '/' . $row['file'],'lastID' => $row['lastID'],'lastCheck' => $row['lastCheck'],'active' => $row['active']);
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ui&amp;o='.$o.'&amp;a=';
@@ -274,7 +274,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

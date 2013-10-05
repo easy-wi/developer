@@ -63,7 +63,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 					$page_title=$row2['title'];
 				}
 			}
-			$subpage[$row['id']]=$page_title;
+			$subpage[$row['id']] = $page_title;
 		}
 		$keywords = array();
 		foreach ($lang_avail as $lg) {
@@ -71,14 +71,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$query3 = $sql->prepare("SELECT `name` FROM `page_terms` WHERE `type`='tag' AND `language`=? AND `resellerid`=? GROUP BY `name` ORDER BY `count` DESC LIMIT 10");
 			$query3->execute(array($lg,$reseller_id));
 			foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
-				$keywords[$lg][]=$row3['name'];
+				$keywords[$lg][] = $row3['name'];
 			}
 		}
 		$template_file = "admin_page_pages_add.tpl";
 	} else if ($ui->smallletters('action',2,'post')=="ad" and $ui->id('released','1','post') and ($ui->id('subpage',19,'post') or $ui->id('subpage',19,'post')==0)) {
 		if (is_object($ui->st('language','post'))) {
 			foreach ($ui->st('language','post') as $key=>$lg) {
-				$posted_languages[$key]=$lg;
+				$posted_languages[$key] = $lg;
 			}
 		} else {
 			$posted_languages = array();
@@ -112,7 +112,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 					$newpageid=$row3['id'];
 				}
 				foreach (preg_split('/\,/',$ui->escaped('keywords','post',$lg),-1,PREG_SPLIT_NO_EMPTY) as $keyword) {
-					$addkeywords[]=array('lid'=>$newpageid,'keyword'=>$keyword);
+					$addkeywords[]=array('lid' => $newpageid,'keyword' => $keyword);
 				}
 			}
             $query = $sql->prepare("SELECT `id` FROM `page_terms` WHERE `type`='tag' AND `name`=? AND `resellerid`=? LIMIT 1");
@@ -159,7 +159,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT `language` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language`");
             $query->execute(array($id,$reseller_id));
 			foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-				$p_languages[]=$row['language'];
+				$p_languages[] = $row['language'];
 			}
 			if (($page_title==null or $page_title == '') and isset($p_languages)) {
                 $query = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
@@ -218,10 +218,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				$keywords = array();
 				$query3->execute(array($id, $row2['id'],$reseller_id));
 				foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
-					$keywords[]=$row3['name'];
-					$keywords_used[$row2['language']][]=$row3['name'];
+					$keywords[] = $row3['name'];
+					$keywords_used[$row2['language']][] = $row3['name'];
 				}
-				$table[$row2['language']]=array('title'=>$row2['title'],'keywords'=>implode(', ',$keywords),'text'=>$row2['text']);
+				$table[$row2['language']]=array('title' => $row2['title'],'keywords'=>implode(', ',$keywords),'text' => $row2['text']);
 			}
 		}
 		$subpages = array();
@@ -237,7 +237,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 						$page_title=$row2['title'];
 					}
 				}
-				$subpages[$row['id']]=$page_title;
+				$subpages[$row['id']] = $page_title;
 			}
 		}
 		$keywords = array();
@@ -247,7 +247,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$query->execute(array($lg,$reseller_id));
 			foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 				if (!in_array($row['name'],$keywords_used[$lg])) {
-					$keywords[$lg][]=$row['name'];
+					$keywords[$lg][] = $row['name'];
 				}
 			}
 		}
@@ -255,7 +255,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	} else if (isset($action) and $action == 'md' and ($ui->id('subpage',19,'post') or $ui->id('subpage','30','post')==0)) {
 		if (is_object($ui->st('language','post'))) {
 			foreach ($ui->st('language','post') as $key=>$lg) {
-				$posted_languages[$key]=$lg;
+				$posted_languages[$key] = $lg;
 			}
 		} else {
 			$posted_languages = array();
@@ -274,10 +274,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$query->execute(array($id,$reseller_id));
 			$lang_exist = array();
 			foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-				$lang_exist[]=$row['language'];
+				$lang_exist[] = $row['language'];
 				$keywords = array();
 				foreach (preg_split('/\,/',preg_replace("/\,\s+/",',',preg_replace("/\s+/"," ",$ui->escaped('keywords','post', $row['language']))),-1,PREG_SPLIT_NO_EMPTY) as $keyword) {
-					$keywords[]=$keyword;
+					$keywords[] = $keyword;
 				}
 				if (in_array($row['language'],$posted_languages)) {
                     $query2 = $sql->prepare("UPDATE `page_pages_text` SET `title`=?,`text`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -286,16 +286,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 					$query2 = $sql->prepare("SELECT u.`term_id`,t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`language_id`=? AND u.`resellerid`=?");
 					$query2->execute(array($id, $row['id'],$reseller_id));
 					foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-						$keyword_exist[]=$row2['name'];
+						$keyword_exist[] = $row2['name'];
 						if (!in_array($row2['name'],$keywords)) {
                             $query2 = $sql->prepare("DELETE FROM `page_terms_used` WHERE `term_id`=? AND `page_id`=? AND `language_id`=? AND `resellerid`=? LIMIT 1");
                             $query2->execute(array($row2['term_id'],$id, $row['id'],$reseller_id));
-							$countreduce[]=$row2['name'];
+							$countreduce[] = $row2['name'];
 						}
 					}
 					foreach ($keywords as $keyword) {
 						if (!in_array($keyword,$keyword_exist)) {
-							$addkeywords[]=array('lid'=>$row['id'],'keyword'=>$keyword);
+							$addkeywords[]=array('lid' => $row['id'],'keyword' => $keyword);
 						}
 					}
 				} else {
@@ -310,13 +310,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				if (!in_array($lg,$lang_exist)) {
                     $query = $sql->prepare("INSERT INTO `page_pages_text` (`pageid`,`language`,`title`,`text`,`resellerid`) VALUES (?,?,?,?,?)");
                     $query->execute(array($id,$lg,$ui->htmlcode('title','post',$lg),$ui->escaped('text','post',$lg),$reseller_id));
-                    $query = $sql->prepare("SELECT `id` FROM `page_pages_text` WHERE `pageid`=? `language`=? AND `resellerid`=? LIMIT 1");
+                    $query = $sql->prepare("SELECT `id` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($id,$lg,$reseller_id));
 					foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 						$newpageid=$row['id'];
 					}
 					foreach (preg_split('/\,/',$ui->escaped('keywords','post',$lg),-1,PREG_SPLIT_NO_EMPTY) as $keyword) {
-						$addkeywords[]=array('lid'=>$newpageid,'keyword'=>$keyword);
+						$addkeywords[]=array('lid' => $newpageid,'keyword' => $keyword);
 					}
 				}
 			}
@@ -346,7 +346,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$query = $sql->prepare("SELECT t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`resellerid`=?");
 			$query->execute(array($id,$reseller_id));
 			foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-				$countreduce[]=$row['name'];
+				$countreduce[] = $row['name'];
 			}
             $query = $sql->prepare("DELETE FROM `page_page` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
@@ -425,7 +425,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query3 = $sql->prepare("SELECT `language` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language`");
         $query3->execute(array($row['id'],$reseller_id));
         foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
-            $p_languages[]=$row3['language'];
+            $p_languages[] = $row3['language'];
         }
         $page_title=$row['title'];
         if (($row['title'] == null or $row['title'] == '') and isset($p_languages[0])) {
@@ -444,7 +444,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if ($seo== 'N') {
             $link=$page_url.'/index.php?site=page&amp;id='.$row['id'];
         } else {
-            if ($row['language']==$user_language) {
+            if ($row['language'] == $user_language) {
                 $link=$page_url. '/' . $user_language . '/' . strtolower(szrp($row['title'])).'/';
             } else {
                 $link=$page_url. '/' . $row['language'] . '/' . strtolower(szrp($row['title'])).'/';
@@ -457,7 +457,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $date=$explodedtime2[1] . '.' . $explodedtime2[2] . '.' . $explodedtime2[0] . '  ' . $explodedtime[1];
         }
-        array_push($table, array('id'=>$row['id'],'author'=>$author,'date'=>$date,'released'=>$released,'title'=>$page_title,'link'=>$link,'languages'=>$p_languages,'sort'=>$row['sort']));
+        array_push($table, array('id' => $row['id'],'author' => $author,'date' => $date,'released' => $released,'title' => $page_title,'link' => $link,'languages' => $p_languages,'sort' => $row['sort']));
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `page_pages` WHERE `resellerid`=?");
@@ -488,7 +488,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

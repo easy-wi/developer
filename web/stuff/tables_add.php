@@ -696,7 +696,7 @@ $query="CREATE TABLE IF NOT EXISTS `rservermasterg` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `serverid` varchar(11) NOT NULL,
   `servertypeid` int(10) unsigned DEFAULT NULL,
-  `localVersion` varchar(20) NULL,
+  `localVersion` varchar(255) NULL,
   `installing` enum('Y','N') DEFAULT 'N',
   `updating` enum('Y','N') DEFAULT 'N',
   `installstarted` datetime NOT NULL,
@@ -842,6 +842,7 @@ $query="CREATE TABLE IF NOT EXISTS `servertypes` (
   `portFour` smallint(5) unsigned DEFAULT 27018,
   `portFive` smallint(5) unsigned DEFAULT 27019,
   `protected` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `downloadPath` text,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`appID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";

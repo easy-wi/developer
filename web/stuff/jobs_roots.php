@@ -49,7 +49,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $extraData=@json_decode($row['extraData']);
     $extraData=(array)$extraData;
     $type=($row['type'] == 'de') ? 'dedicated' : 'vmware';
-    if (!isset($extraData['runAt']) or strtotime("now")>$extraData['runAt']) {
+    if (!isset($extraData['runAt']) or strtotime('now')>$extraData['runAt']) {
         $return=$rootObject->rootServer($row['affectedID'], $row['action'],$type,$extraData);
 
         // bei add und mod restart Auftrag schreiben mit extra Data = timestamp
@@ -57,7 +57,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($return===true) {
                 $query2->execute(array($row['jobID']));
                 $command=$gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'];
-                $removeIDs[$row['type']][]=$row['affectedID'];
+                $removeIDs[$row['type']][] = $row['affectedID'];
             } else {
                 $query4->execute(array($row['jobID']));
                 $command='Error: '.$gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'] . ' ' . $return;
@@ -74,10 +74,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $command="Error modding $type server: ".$row['affectedID'].' name: '.$row['name'] . ' ' . $return;
             }
         } else if ($row['action'] == 're') {
-            if ($return===true and !isset($extraData->reboot) and strtotime("now")<$extraData->reboot) {
+            if ($return===true and !isset($extraData->reboot) and strtotime('now')<$extraData->reboot) {
                 $query2->execute(array($row['jobID']));
                 $command="Skipped (Re)Start $type server: ".$row['affectedID'].' name: '.$row['name'].' will try later';
-            } else if ($return===true and (!isset($extraData->reboot) or strtotime("now")>$extraData->reboot)) {
+            } else if ($return===true and (!isset($extraData->reboot) or strtotime('now')>$extraData->reboot)) {
                 $query2->execute(array($row['jobID']));
                 $command="(Re)Start $type server: ".$row['affectedID'].' name: '.$row['name'];
             } else {

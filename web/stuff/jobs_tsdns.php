@@ -47,7 +47,7 @@ $query6 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `typ
 $query7 = $sql->prepare("UPDATE `voice_dns` SET `active`=?,`jobPending`='N' WHERE  `dnsID`=? LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $query2->execute(array(':aeskey'=>$aeskey,':id'=>$row['hostID'],':reseller_id'=>$row['resellerID']));
+    $query2->execute(array(':aeskey' => $aeskey,':id' => $row['hostID'],':reseller_id' => $row['resellerID']));
     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
         $publickey=$row2['publickey'];
         $queryip=$row2['ssh2ip'];

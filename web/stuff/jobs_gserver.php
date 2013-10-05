@@ -114,7 +114,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $tmp = gsrestart($row2['affectedID'],'so',$aeskey, $row['resellerID']);
                 if (is_array($tmp)) {
                     foreach($tmp as $t) {
-                        $cmds[]=$t;
+                        $cmds[] = $t;
                     }
                 }
             }
@@ -132,7 +132,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $tmp = gsrestart($row2['affectedID'],'re',$aeskey, $row2['resellerID']);
             if (is_array($tmp)) {
                 foreach($tmp as $t) {
-                    $cmds[]=$t;
+                    $cmds[] = $t;
                 }
             }
             $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
@@ -140,7 +140,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $command='(Re)Start gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'];
         } else if (isset($i) and $row2['action'] == 'st' and isset($customer)) {
             $tmp = gsrestart($row2['affectedID'],'so',$aeskey, $row2['resellerID']);
-            if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
+            if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
             $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));
             $command='Stop gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'];

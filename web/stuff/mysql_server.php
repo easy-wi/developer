@@ -102,10 +102,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $ds = array();
         $query2->execute(array($row['id'],$reseller_id));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            $ds[]=array('id'=>$row2['id'],'address'=>$row2['dbname'],'status'=>($row2['active'] == 'N') ? 2 : 1);
+            $ds[]=array('id' => $row2['id'],'address' => $row2['dbname'],'status'=>($row2['active'] == 'N') ? 2 : 1);
             $i++;
         }
-		$table[]=array('id'=>$row['id'],'img'=>$imgName,'alt'=>$imgAlt,'max_databases'=>$row['max_databases'],'dbcount'=>$i,'ip'=>$row['ip'],'interface'=>$row['interface'],'active'=>$row['active'],'server'=>$ds);
+		$table[]=array('id' => $row['id'],'img' => $imgName,'alt' => $imgAlt,'max_databases' => $row['max_databases'],'dbcount' => $i,'ip' => $row['ip'],'interface' => $row['interface'],'active' => $row['active'],'server' => $ds);
 	}
 	$next=$start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;
@@ -245,7 +245,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				$max_connections_per_hour=$row2['max_connections_per_hour'];
 				$max_userconnections_per_hour=$row2['max_userconnections_per_hour'];
 			}
-			$table2[]=array('id'=>$row2['id'],'ip'=>$row2['ip']);
+			$table2[]=array('id' => $row2['id'],'ip' => $row2['ip']);
 		}
 		if (!isset($installed)) {
 			$installed = 0;
@@ -258,8 +258,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$template_file = "admin_mysql_db_add.tpl";
 	} else if ($ui->st('action','post') == 'ad' and $ui->id('serverid',10,'post') and $ui->id('userid',10,'post')) {
         $errors = array();
-        if (!$ui->active('active','post')) $errors[]=$sprache->active;
-        if (!$ui->password('password',40,'post')) $errors[]=$sprache->password;
+        if (!$ui->active('active','post')) $errors[] = $sprache->active;
+        if (!$ui->password('password',40,'post')) $errors[] = $sprache->password;
         if (count($errors)>0) {
             $template_file = "Error: ".implode('<br>',$errors);
         } else {
@@ -348,8 +348,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = (isset($active)) ? 'admin_mysql_db_md.tpl' : 'admin_404.tpl';
     } else if ($ui->st('action','post') == 'md') {
         $errors = array();
-        if (!$ui->active('active','post')) $errors[]=$sprache->active;
-        if (!$ui->password('password',40,'post')) $errors[]=$sprache->password;
+        if (!$ui->active('active','post')) $errors[] = $sprache->active;
+        if (!$ui->password('password',40,'post')) $errors[] = $sprache->password;
         if (count($errors)>0) {
             $template_file = "Error: ".implode('<br>',$errors);
         } else {
@@ -506,7 +506,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $dbname=$row['dbname'];
         $jobPending=($row['jobPending'] == 'Y') ? $gsprache->yes: $gsprache->no;
         #https://github.com/easy-wi/developer/issues/42 column description added
-        $table[]=array('id'=>$row['id'],'uid'=>$row['uid'],'img'=>$imgName,'description'=>$row['description'],'alt'=>$imgAlt,'dbname'=>$dbname,'cname'=>$row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'ip'=>$row['ip'],'interface'=>$row['interface'],'jobPending'=>$jobPending,'active'=>$row['active']);
+        $table[]=array('id' => $row['id'],'uid' => $row['uid'],'img' => $imgName,'description' => $row['description'],'alt' => $imgAlt,'dbname' => $dbname,'cname' => $row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'ip' => $row['ip'],'interface' => $row['interface'],'jobPending' => $jobPending,'active' => $row['active']);
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_dbs` WHERE `resellerid`=?");
@@ -537,7 +537,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

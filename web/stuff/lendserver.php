@@ -206,7 +206,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$servertype=$row['servertype'];
 			$serverid=$row['serverid'];
 			$lendtime=$row['lendtime'];
-			$timeleft=round($lendtime-(strtotime("now")-strtotime($row['started']))/60);
+			$timeleft=round($lendtime-(strtotime('now')-strtotime($row['started']))/60);
 			if ($servertype == 'g' and (!isset($nextfree) or $timeleft<$nextfree)) {
 				$nextfree=$timeleft;
 			} else if ($servertype == 'v' and (!isset($vonextfree) or $timeleft<$vonextfree)) {
@@ -270,7 +270,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 						$shorten=$row2['type'];
 					}
 				}
-				$table[]=array('id'=>$id,'servertype'=>$servertype,'server'=>$server,'shorten'=>$shorten,'password'=>$password,'rcon'=>$rcon,'slots'=>$slots,'lenderip'=>$lenderip,'lendtime'=>$lendtime,'timeleft'=>$timeleft);
+				$table[]=array('id' => $id,'servertype' => $servertype,'server' => $server,'shorten' => $shorten,'password' => $password,'rcon' => $rcon,'slots' => $slots,'lenderip' => $lenderip,'lendtime' => $lendtime,'timeleft' => $timeleft);
 			}
 		}
 		if (!isset($nextfree) or (isset($nextfree) and $gscount>0))$nextfree = 0;
@@ -280,7 +280,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $nextcheck=$query->fetchColumn();
         $nextcheck=($nextcheck>0) ? ceil($nextcheck) : ceil($nextcheck)*-1;
 		$used[] = 'Teamspeak 3: '.$voused. '/' . $voTotalCount;
-		foreach ($gscounts as $key=>$value) $used[]=$key.': '.$gsused[$key]. '/' . $value;
+		foreach ($gscounts as $key=>$value) $used[] = $key.': '.$gsused[$key]. '/' . $value;
 		$template_file = "admin_lendserver_list.tpl";
 	}
 }

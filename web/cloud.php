@@ -48,7 +48,7 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
     $timelimit=600;
 }
 set_time_limit($timelimit);
-if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
+if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     define('EASYWIDIR', dirname(__FILE__));
     function printText ($text) {
         echo $text."\r\n";
@@ -108,10 +108,10 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                 unset($lastID);
                 foreach ($decoded->users as $value) {
                     if (isset($value->externalID)) {
-                        $query4->execute(array(json_encode(array('I'=>$row['importID'])),$value->externalID));
+                        $query4->execute(array(json_encode(array('I' => $row['importID'])),$value->externalID));
                         $checkAmount=$query4->fetchColumn();
                         if($checkAmount>0 and $row['fetchUpdates'] == 'Y') {
-                            $query2->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),json_encode(array('I'=>$row['importID'])),getParam('externalID'), $row['resellerID']));
+                            $query2->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),json_encode(array('I' => $row['importID'])),getParam('externalID'), $row['resellerID']));
                             printText('User updated. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
                         } else if ($checkAmount>0) {
                             printText('User update skipped. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
@@ -124,7 +124,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
                                 printText('User update skipped because source system differ. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
                             } else {
                                 printText('Import user. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
-                                $query3->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'), $row['groupID'],json_encode(array('I'=>$row['importID'])),getParam('externalID'), $row['resellerID']));
+                                $query3->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'), $row['groupID'],json_encode(array('I' => $row['importID'])),getParam('externalID'), $row['resellerID']));
                             }
                         }
                         if (getParam('updatetime') != '' and (isset($lastCheck) and strtotime(getParam('updatetime'))>strtotime($lastCheck)) or !isset($lastCheck)) {

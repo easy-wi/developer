@@ -128,7 +128,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
         $query->execute(array($reseller_id));
     }
-    $type=array('de'=>$gsprache->dedicated,'ds'=>'TS3 DNS','gs'=>$gsprache->gameserver,'my'=>'MYSQL','us'=>$gsprache->user,'vo'=>$gsprache->voiceserver,'vs'=>$gsprache->virtual);
+    $type=array('de' => $gsprache->dedicated,'ds' => 'TS3 DNS','gs' => $gsprache->gameserver,'my' => 'MYSQL','us' => $gsprache->user,'vo' => $gsprache->voiceserver,'vs' => $gsprache->virtual);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($user_language == 'de') {
             $date=date('Y-d-m H:m:s',strtotime($row['date']));
@@ -162,7 +162,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         else if ($row['action'] == 'ri') $action='(Re)Install';
         else if ($row['action'] == 'rc') $action='Recovery Mode';
         else $action = '';
-        $table[]=array('jobID'=>$row['jobID'],'date'=>$date,'name'=>$row['name'],'api'=>$api,'status'=>$row['status'],'img'=>$imgName,'alt'=>$imgAlt,'userID'=>$row['userID'],'type'=>$type[$row['type']],'action'=>$action);
+        $table[]=array('jobID' => $row['jobID'],'date' => $date,'name' => $row['name'],'api' => $api,'status' => $row['status'],'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'],'type' => $type[$row['type']],'action' => $action);
     }
     $next=$start+$amount;
     if ($reseller_id==0) {
@@ -198,7 +198,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&amp;p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

@@ -51,6 +51,9 @@ function serverQuery ($ip, $port, $type) {
         
     } else {
 
+        //5 seconds read timeout
+        stream_set_timeout($socket, 5);
+
         if ($type == 'gtasamp') {
             $ex = explode('.', $ip);
             $packet = 'SAMP' . chr($ex[0]) . chr($ex[1]) . chr($ex[2]) . chr($ex[3]) . chr($port & 0xFF) . chr($port >> 8 & 0xFF) . 'i';

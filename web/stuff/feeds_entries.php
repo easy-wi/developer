@@ -112,7 +112,7 @@ if ($ui->st('d','get') == 'ud') {
         $twitter=($row['twitter'] == 'Y') ? $gsprache->yes : $gsprache->no;
         $title=$row['title'];
         if (strlen($row['title'])<=1) $title=$row['link'];
-        $table[]=array('id'=>$row['newsID'],'active'=>$row['active'],'img'=>$imgName,'alt'=>$imgAlt,'pubDate'=>$row['pubDate'],'twitter'=>$twitter,'title'=>$title,'link'=>$row['link'],'feedUrl'=>$row['feedUrl']);
+        $table[]=array('id' => $row['newsID'],'active' => $row['active'],'img' => $imgName,'alt' => $imgAlt,'pubDate' => $row['pubDate'],'twitter' => $twitter,'title' => $title,'link' => $row['link'],'feedUrl' => $row['feedUrl']);
     }
     $next=$start+$amount;
     $query = $sql->prepare("SELECT COUNT(`newsID`) AS `amount` FROM `feeds_news` WHERE `resellerID`=?");
@@ -141,7 +141,7 @@ if ($ui->st('d','get') == 'ud') {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

@@ -92,7 +92,7 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
 		}
 		$logdate=explode(' ', $row['date']);
 		if (isset($row['id']) and isid($row['id'],'30') and isset($logdate[1])) {
-            $table[]=array('id'=>$row['id'],'logday'=>$logdate[0],'loghour'=>$logdate[1],'username'=>$username,'topic'=>$row['topic']);
+            $table[]=array('id' => $row['id'],'logday' => $logdate[0],'loghour' => $logdate[1],'username' => $username,'topic' => $row['topic']);
 		}
 	}
 	$next=$start+$amount;
@@ -133,7 +133,7 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
     } else {
         $link .='&amp;p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

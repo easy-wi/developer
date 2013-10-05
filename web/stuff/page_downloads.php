@@ -75,7 +75,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $displayNone='display_none';
                 $checkbox='<input type="checkbox" name="language[]" value="'.$row.'" onclick="textdrop('."'".$row."'".');" /> ';
             }
-            $foundLanguages[]=array('style'=>$style,'lang'=>$row,'checkbox'=>$checkbox,'description'=>$description,'display'=>$displayNone);
+            $foundLanguages[]=array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'description' => $description,'display' => $displayNone);
         }
     }
     if (!$ui->st('action','post') and $ui->st('d','get') == 'ad') {
@@ -115,28 +115,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if ($id) {
             if ($_FILES["upload"]["error"]===0) {
                 $allowedTypes=array('pdf'=>array('application/pdf','application/x-download'),'xls'=>array('application/excel','application/vnd.ms-excel'),
-                    'ppt'=>'application/powerpoint',
-                    'gz'=>'application/x-gzip',
-                    'tar'=>'application/x-tar',
-                    'tgz'=>'application/x-tar',
+                    'ppt' => 'application/powerpoint',
+                    'gz' => 'application/x-gzip',
+                    'tar' => 'application/x-tar',
+                    'tgz' => 'application/x-tar',
                     'zip'=>array('application/x-zip','application/zip','application/x-zip-compressed','application/octet-stream'),
-                    'xml'=>'text/xml',
-                    'xsl'=>'text/xml',
-                    'mpeg'=>'video/mpeg',
-                    'mpg'=>'video/mpeg',
-                    'mpe'=>'video/mpeg',
-                    'qt'=>'video/quicktime',
-                    'mov'=>'video/quicktime',
-                    'avi'=>'video/x-msvideo',
-                    'movie'=>'video/x-sgi-movie',
-                    'doc'=>'application/msword',
+                    'xml' => 'text/xml',
+                    'xsl' => 'text/xml',
+                    'mpeg' => 'video/mpeg',
+                    'mpg' => 'video/mpeg',
+                    'mpe' => 'video/mpeg',
+                    'qt' => 'video/quicktime',
+                    'mov' => 'video/quicktime',
+                    'avi' => 'video/x-msvideo',
+                    'movie' => 'video/x-sgi-movie',
+                    'doc' => 'application/msword',
                     'word'=>array('application/msword','application/octet-stream'),
-                    'xl'=>'application/excel',
-                    'rar'=>'application/x-rar-compressed');
+                    'xl' => 'application/excel',
+                    'rar' => 'application/x-rar-compressed');
                 $exploded=explode('.',$_FILES["upload"]["name"]);
                 $extension=$exploded[count($exploded)-1];
-                if(isset($allowedTypes[$extension]) and ((is_array($allowedTypes[$extension]) and in_array($_FILES["upload"]["type"],$allowedTypes[$extension])) or (!is_array($allowedTypes[$extension]) and $_FILES["upload"]["type"]==$allowedTypes[$extension])) ) {
-                    if (move_uploaded_file($_FILES["upload"]["tmp_name"],EASYWIDIR . '/downloads/'.$id.'.'.$extension)) {
+                if(isset($allowedTypes[$extension]) and ((is_array($allowedTypes[$extension]) and in_array($_FILES["upload"]["type"],$allowedTypes[$extension])) or (!is_array($allowedTypes[$extension]) and $_FILES["upload"]["type"] == $allowedTypes[$extension])) ) {
+                    if (move_uploaded_file($_FILES["upload"]["tmp_name"],EASYWIDIR . '/downloads/'.$id . '.' . $extension)) {
                         $changed = true;
                         $query = $sql->prepare("UPDATE `page_downloads` SET `fileExtension`=? WHERE `fileID`=? AND `resellerID`=?");
                         $query->execute(array($extension,$id,$reseller_id));
@@ -218,7 +218,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `fileID`,`description`,`order`,`count` FROM `page_downloads` WHERE `resellerID`=? ORDER BY ${orderby}");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[]=array('id'=>$row['fileID'],'description'=>$row['description'],'order'=>$row['order'],'count'=>$row['count']);
+        $table[]=array('id' => $row['fileID'],'description' => $row['description'],'order' => $row['order'],'count' => $row['count']);
     }
     $template_file = 'admin_page_downloads_list.tpl';
 }

@@ -146,7 +146,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $dbname .=' ( '.$row2['server'].' ) ';
                 }
             }
-            $table[]=array('id'=>$row['id'],'dbname'=>$dbname,'ip'=>$row['ip'],'interface'=>$row['interface']);
+            $table[]=array('id' => $row['id'],'dbname' => $dbname,'ip' => $row['ip'],'interface' => $row['interface']);
         }
     }
     $template_file = "userpanel_mysql_db_list.tpl";

@@ -94,7 +94,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $error[]="DNS";
             }
             if (count($error)==0 and $ip==$oldip and $dns==$olddns and $port==$oldport) {
-                $error[]=$spracheResponse->error_table;
+                $error[] = $spracheResponse->error_table;
             } else if (count($error)==0 and checkDNS($dns,$id,$user_id,$type='dns')===false) {
                 $error[]="DNS";
             }
@@ -103,7 +103,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
 				include(EASYWIDIR . '/stuff/keyphrasefile.php');
                 $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':aeskey'=>$aeskey,':id'=>$tsdnsID,':reseller_id'=>$reseller_id));
+                $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsID,':reseller_id' => $reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $publickey=$row['publickey'];
                     $queryip=$row['ssh2ip'];
@@ -146,7 +146,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `dnsID`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `active`='Y' AND `userID`=? AND `resellerID`=? ORDER BY $orderby");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-        if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) $table[]=array('id'=>$row['dnsID'],'dns'=>$row['dns'],'address'=>$row['ip'] . ':' . $row['port']);
+        if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) $table[]=array('id' => $row['dnsID'],'dns' => $row['dns'],'address' => $row['ip'] . ':' . $row['port']);
     }
     $template_file = 'userpanel_voiceserver_dns_list.tpl';
 }

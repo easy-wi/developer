@@ -59,7 +59,7 @@ if (in_array($ui->st('d','get'), array('md','ad'))){
     if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {
         $id=$ui->id('id',19,'get');
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `rootsDHCP` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-        $query->execute(array(':aeskey'=>$aeskey,':id'=>$id,':reseller_id'=>$reseller_id));
+        $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
             $ip=$row['ip'];
@@ -117,11 +117,11 @@ if (in_array($ui->st('d','get'), array('md','ad'))){
             if ($ui->st('d','get') == 'md' and $ui->id('id',19,'get')) {
                 $id=$ui->id('id',19,'get');
                 $query = $sql->prepare("UPDATE `rootsDHCP` SET `active`=:active,`ip`=:ip,`ips`=:ips,`netmask`=:netmask,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`startCmd`=:startCmd,`dhcpFile`=:dhcpFile,`description`=:description,`subnetOptions`=:subnetOptions WHERE `id`=:id AND `resellerid`=:reseller_id");
-                $query->execute(array(':active'=>$active,':ip'=>$ip,':ips'=>$ips,':netmask'=>$netmask,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':publickey'=>$publickey,':keyname'=>$keyname,':startCmd'=>$startCmd,':dhcpFile'=>$dhcpFile,':description'=>$description,':subnetOptions'=>$subnetOptions,':id'=>$id,':reseller_id'=>$reseller_id));
+                $query->execute(array(':active' => $active,':ip' => $ip,':ips' => $ips,':netmask' => $netmask,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':startCmd' => $startCmd,':dhcpFile' => $dhcpFile,':description' => $description,':subnetOptions' => $subnetOptions,':id' => $id,':reseller_id' => $reseller_id));
                 $loguseraction="%mod% DHCP";
             } else if ($ui->st('d','get') == 'ad') {
                 $query = $sql->prepare("INSERT INTO `rootsDHCP` (`active`,`ip`,`ips`,`netmask`,`port`,`user`,`pass`,`publickey`,`keyname`,`startCmd`,`dhcpFile`,`description`,`subnetOptions`,`resellerid`) VALUES (:active,:ip,:ips,:netmask,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:startCmd,:dhcpFile,:description,:subnetOptions,:reseller_id)");
-                $query->execute(array(':active'=>$active,':ip'=>$ip,':ips'=>$ips,':netmask'=>$netmask,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':publickey'=>$publickey,':keyname'=>$keyname,':startCmd'=>$startCmd,':dhcpFile'=>$dhcpFile,':description'=>$description,':subnetOptions'=>$subnetOptions,':reseller_id'=>$reseller_id));
+                $query->execute(array(':active' => $active,':ip' => $ip,':ips' => $ips,':netmask' => $netmask,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':startCmd' => $startCmd,':dhcpFile' => $dhcpFile,':description' => $description,':subnetOptions' => $subnetOptions,':reseller_id' => $reseller_id));
                 $loguseraction="%add% DHCP";
             } else {
                 $template_file = 'admin_404.tpl';
@@ -192,7 +192,7 @@ if (in_array($ui->st('d','get'), array('md','ad'))){
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        $table[]=array('id'=>$row['id'],'active'=>$row['active'],'ip'=>$row['ip'],'description'=>$row['description'],'img'=>$imgName,'alt'=>$imgAlt);
+        $table[]=array('id' => $row['id'],'active' => $row['active'],'ip' => $row['ip'],'description' => $row['description'],'img' => $imgName,'alt' => $imgAlt);
     }
     $template_file = 'admin_root_dhcp_list.tpl';
 }

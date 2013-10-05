@@ -53,7 +53,7 @@ if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post')) {
         $pwd=$row['pwd'];
         $salt=$row['salt'];
         if ($row['active'] == 'Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) {
-            $resellerIDs[]=$row['resellerID'];
+            $resellerIDs[] = $row['resellerID'];
         }
     }
 } else {
@@ -95,7 +95,7 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
         if (is_object($value)) {
             $tempArray[$key]=null;
         } else {
-            $tempArray[$key]=$value;
+            $tempArray[$key] = $value;
         }
     }
     $data=$tempArray;

@@ -106,7 +106,7 @@ class ExternalSQL {
 			$select=$this->remotesql->prepare("SELECT `host` FROM `mysql`.`host` WHERE `db`=?");
 			$select->execute(array($dbname));
 			foreach ($select->fetchall() as $row) {
-				$allowedips[]=$row['host'];
+				$allowedips[] = $row['host'];
 			}
 			foreach ($iparray as $ip) {
 				if (!in_array($ip,$allowedips)) {

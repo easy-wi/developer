@@ -61,7 +61,7 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
         if (isid($userID,10)) {
             $query = $sql->prepare("UPDATE `userdata` SET `active`='Y',`token`=null,`updateTime`=NOW() WHERE `id`=? LIMIT 1");
             $query->execute(array($userID));
-            $_SESSION['userid']=$userID;
+            $_SESSION['userid'] = $userID;
             $_SESSION['resellerid'] = 0;
             $template_file = $page_sprache->registerActivated;
             $langObjectTemp = getlanguagefile('redirect',(isset($user_language)) ? $user_language : $default_language,0);
@@ -88,7 +88,7 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
         $tous = array();
         $query = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='to'");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $tous[$row['lang']]=$row['text'];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $tous[$row['lang']] = $row['text'];
         if (isset($user_language) and isset($tous[$user_language])) $tou=$tous[$user_language];
         else if (isset($default_language) and isset($tous[$default_language])) $tou=$tous[$default_language];
         else if (count($tous)>0) $tou=key($tous);
@@ -96,57 +96,57 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
         if (($ui->escaped('mail','post') or $ui->escaped('password','post')) and !$ui->escaped('email','post')) {
 
             // Captcha match?
-            if (!isset($_SESSION['registerToken']) or $ui->w('token',32,'post') != $_SESSION['registerToken']) $error[]=$page_sprache->registerErrorCookies;
+            if (!isset($_SESSION['registerToken']) or $ui->w('token',32,'post') != $_SESSION['registerToken']) $error[] = $page_sprache->registerErrorCookies;
 
             // E-Mail in use?
             if ($ui->ismail('mail','post')) {
                 $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `mail`=? LIMIT 1");
                 $query->execute(array($ui->ismail('mail','post')));
                 if ($query->fetchColumn()>0) {
-                    $error[]=$page_sprache->registerErrorMail;
+                    $error[] = $page_sprache->registerErrorMail;
                     $alert['email'] = true;
                 } else {
                     foreach (explode("\r\n",$registrationBadEmail) as $row) {
                         if (strlen($row)>0 and substr($ui->ismail('mail','post'), -1*strlen($row))===$row and !in_array($page_sprache->registerErrorMail,$error)) {
-                            $error[]=$page_sprache->registerErrorMail;
+                            $error[] = $page_sprache->registerErrorMail;
                             $alert['email'] = true;
                         }
                     }
                 }
             } else {
-                $error[]=$page_sprache->registerErrorMail;
+                $error[] = $page_sprache->registerErrorMail;
                 $alert['email'] = true;
             }
 
             // TOU?
             if (isset($tou) and $ui->active('tou','post') != 'Y') {
-                $error[]=$page_sprache->registerErrorTou;
+                $error[] = $page_sprache->registerErrorTou;
                 $alert['tou'] = true;
             }
 
             // Password entered and stronger one?
             if ($ui->password('password',100,'post') and $ui->password('passwordsecond',100,'post') and $ui->password('password',100,'post') != $ui->password('passwordsecond',100,'post')) {
-                $error[]=$page_sprache->registerErrorPassword;
+                $error[] = $page_sprache->registerErrorPassword;
                 $alert['password2'] = true;
             } else if ($ui->escaped('password','post') and !$ui->password('password',100,'post')) {
-                $error[]=$page_sprache->registerErrorPassword2;
+                $error[] = $page_sprache->registerErrorPassword2;
                 $alert['password'] = true;
             } else if (!$ui->escaped('password','post')) {
-                $error[]=$page_sprache->registerErrorPassword3;
+                $error[] = $page_sprache->registerErrorPassword3;
                 $alert['password'] = true;
             }
 
             // IP blocked?
             if (count($error)>0) {
                 foreach (explode("\r\n",$registrationBadIP) as $row) {
-                    if (strlen($row)>0 and substr($ui->ip('REMOTE_ADDR','server'),0,strlen($row))===$row and !in_array($page_sprache->registerErrorIP,$error)) $error[]=$page_sprache->registerErrorBot;
+                    if (strlen($row)>0 and substr($ui->ip('REMOTE_ADDR','server'),0,strlen($row))===$row and !in_array($page_sprache->registerErrorIP,$error)) $error[] = $page_sprache->registerErrorBot;
                 }
             }
 
             // If no error occurred go on otherwise display form again
             if(count($error)>0) {
                 $token=md5(date('Y-d-m H:i:s u').md5(mt_rand()));
-                $_SESSION['registerToken']=$token;
+                $_SESSION['registerToken'] = $token;
                 $template_file = 'page_register.tpl';
             } else {
                 // personal Salt and activation md5
@@ -183,14 +183,14 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
                         // send Mail
                         sendmail('emailregister',$userID,'',$page_data->pages['register']['link'].'activate/'.$activeHash.'/');
                     } else {
-                        $_SESSION['userid']=$userID;
+                        $_SESSION['userid'] = $userID;
                         $_SESSION['resellerid'] = 0;
                         $template_file = $page_sprache->registerAccountOK;
                     }
                 } else {
-                    $error[]=$page_sprache->registerErrorUnknown;
+                    $error[] = $page_sprache->registerErrorUnknown;
                     $token=md5(date('Y-d-m H:i:s u').md5(mt_rand()));
-                    $_SESSION['registerToken']=$token;
+                    $_SESSION['registerToken'] = $token;
                     $template_file = 'page_register.tpl';
                 }
             }
@@ -198,7 +198,7 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
             $template_file = $page_sprache->registerErrorBot;
         } else {
             $token=md5(date('Y-d-m H:i:s u').md5(mt_rand()));
-            $_SESSION['registerToken']=$token;
+            $_SESSION['registerToken'] = $token;
             $template_file = 'page_register.tpl';
         }
     }

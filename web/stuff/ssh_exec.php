@@ -46,7 +46,7 @@ if (!function_exists('ssh2_execute')) {
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
         }
         if (isset($query)) {
-            $query->execute(array(':serverID'=>$id,':aeskey'=>$aeskey));
+            $query->execute(array(':serverID' => $id,':aeskey' => $aeskey));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $serverID=$row['id'];
                 $resellerID=$row['resellerid'];
@@ -62,7 +62,7 @@ if (!function_exists('ssh2_execute')) {
                 $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
                 $key=EASYWIDIR . '/keys/'.$sshkey;
 
-                $ssh2Socket=($ssh2Publickey == 'Y') ? (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($ssh2IP,$ssh2Port, array('hostkey'=>'ssh-rsa')) : false : @ssh2_connect($ssh2IP,$ssh2Port);
+                $ssh2Socket=($ssh2Publickey == 'Y') ? (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($ssh2IP,$ssh2Port, array('hostkey' => 'ssh-rsa')) : false : @ssh2_connect($ssh2IP,$ssh2Port);
                 if ($ssh2Socket==true) {
                     $ssh2Connect=($ssh2Publickey == 'Y') ? @ssh2_auth_pubkey_file($ssh2Socket,$ssh2User,$pubkey,$key) : @ssh2_auth_password($ssh2Socket,$ssh2User,$ssh2Pass);
                     if ($ssh2Connect==true) {

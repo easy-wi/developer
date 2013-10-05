@@ -88,7 +88,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $column) {
                 $columnName=$column['Field'];
                 $inserts[] = '`'.$columnName.'`';
-                $this->tableList[$table][$columnName]=$column['Type'];
+                $this->tableList[$table][$columnName] = $column['Type'];
             }
             $query=$this->connection->prepare("SELECT COUNT(*) AS `amount` FROM `".$table."`");
             $query->execute();
@@ -111,7 +111,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
                 $inserts = array();
                 foreach($row as $key => $val){
                     if (in_array($this->tableList[$table][$key], array('tinyint','smallint','int','bigint'))) {
-                        $inserts[]=$val;
+                        $inserts[] = $val;
                     } else if ($this->tableList[$table][$key] != 'blob') {
                         $inserts[]="'".str_replace("\r\n",'\r\n',$val)."'";
                     } else {

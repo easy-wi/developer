@@ -122,7 +122,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $mhz=isid($ui->post['mhz'],"5");
             $ram=isinteger($ui->post['ram']);
             $pinsert=$sql->prepare("INSERT INTO `virtualhosts` (`active`,`esxi`,`ip`,`port`,`user`,`pass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid`) VALUES (:active, :esxi, :ip, AES_ENCRYPT(:port, :aeskey),AES_ENCRYPT(:user, :aeskey),AES_ENCRYPT(:pass, :aeskey),:os, :description, :publickey, :keyname, :cpu, :cores, :mhz, :ram, :maxserver, :thin, :thinquota, :reseller)");
-            $pinsert->execute(array(':active'=>$active,':esxi'=>$esxi,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':os'=>$os,':description'=>$description,':publickey'=>$publickey,':keyname'=>$keyname,  ':cpu'=>$cpu,  ':cores'=>$cores,':mhz'=>$mhz,':ram'=>$ram,':maxserver'=>$maxserver,':thin'=>$thin,':thinquota'=>$thinquota,':reseller'=>$reseller));
+            $pinsert->execute(array(':active' => $active,':esxi' => $esxi,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':os' => $os,':description' => $description,':publickey' => $publickey,':keyname' => $keyname,  ':cpu' => $cpu,  ':cores' => $cores,':mhz' => $mhz,':ram' => $ram,':maxserver' => $maxserver,':thin' => $thin,':thinquota' => $thinquota,':reseller' => $reseller));
             $serverid=$sql->lastInsertId();
             include(EASYWIDIR . '/stuff/ssh_exec.php');
             $uidb=ssh2_execute('vh',$serverid,'cd /vmfs/volumes; S = ''; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S');
@@ -197,7 +197,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $id=$ui->id('id', 10, 'get');
     if (!$ui->smallletters('action',2,'post')) {
         $query = $sql->prepare("SELECT `active`,`esxi`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid` FROM `virtualhosts` WHERE `id`=:id LIMIT 1");
-        $query->execute(array(':id'=>$id,':aeskey'=>$aeskey));
+        $query->execute(array(':id' => $id,':aeskey' => $aeskey));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
             $esxi=$row['esxi'];
@@ -220,7 +220,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $resellerid=$row['resellerid'];
         }
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' ORDER BY `id` DESC");
-        $query->execute(array(':reseller_id'=>$reseller_id));
+        $query->execute(array(':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[]=($resellerid==$row['id']) ? '<option value="'.$row['id'].'" selected="selected">'.$row['cname'].'</option>' : '<option value="'.$row['id'].'">'.$row['cname'].'</option>';
         $template_file = "admin_root_virtualhosts_md.tpl";
     } else if ($ui->smallletters('action',2,'post') == 'md'){
@@ -278,7 +278,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $hdd=startparameter($ui->post['hdd']);
             $maxserver=isid($ui->post['maxserver'],"3");
             $pinsert=$sql->prepare("UPDATE `virtualhosts` SET `active`=:active,`esxi`=:esxi,`ip`=:ip,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`os`=:os,`description`=:description,`publickey`=:publickey,`keyname`=:keyname,`cpu`=:cpu,`cores`=:cores,`mhz`=:mhz,`hdd`=:hdd,`ram`=:ram,`maxserver`=:maxserver,`thin`=:thin,`thinquota`=:thinquota,`resellerid`=:reseller WHERE `id`=:id LIMIT 1");
-            $pinsert->execute(array(':active'=>$active,':esxi'=>$esxi,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':os'=>$os,':description'=>$description,':publickey'=>$publickey,':keyname'=>$keyname,  ':cpu'=>$cpu,  ':cores'=>$cores,':mhz'=>$mhz,':hdd'=>$hdd,':ram'=>$ram,':maxserver'=>$maxserver,':id'=>$id,':thin'=>$thin,':thinquota'=>$thinquota,':reseller'=>$reseller));
+            $pinsert->execute(array(':active' => $active,':esxi' => $esxi,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':os' => $os,':description' => $description,':publickey' => $publickey,':keyname' => $keyname,  ':cpu' => $cpu,  ':cores' => $cores,':mhz' => $mhz,':hdd' => $hdd,':ram' => $ram,':maxserver' => $maxserver,':id' => $id,':thin' => $thin,':thinquota' => $thinquota,':reseller' => $reseller));
             $template_file = $spracheResponse->table_add;
             $loguseraction="%mod% %virtual% $ip";
             $insertlog->execute();
@@ -325,15 +325,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $data_explode=explode(" ", $hddline);
             if (isset($data_explode[1])) {
                 $mountpoint=$data_explode[0];
-                $hdd[]=$mountpoint;
-                $mountsize[$mountpoint]=$data_explode[1];
+                $hdd[] = $mountpoint;
+                $mountsize[$mountpoint] = $data_explode[1];
                 $mountunused[$mountpoint] = 0;
             }
         }
         $i = 1;
         $cpucores = '';
         while ($i<=$cores) {
-            $cpucores[]=$i;
+            $cpucores[] = $i;
             $cpucore[$i] = 0;
             $i++;
         }
@@ -343,23 +343,23 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         foreach ($pselect2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $mountpoint=$row2['mountpoint'];
             $addstracthdd=$mountunused[$mountpoint]+$row2['hddsize'];
-            $mountunused[$mountpoint]=$addstracthdd;
+            $mountunused[$mountpoint] = $addstracthdd;
             $addstractram=$ramused+$row2['minram'];
             $ramused=$addstractram;
             $cpuhz=$row2['cores']*$row2['minmhz'];
             $addcpu=$cpucore[1]+$cpuhz;
             if ($addcpu<=$mhz) {
-                $cpucore[1]=$addcpu;
+                $cpucore[1] = $addcpu;
             } else {
-                $cpucore[1]=$mhz;
+                $cpucore[1] = $mhz;
                 $nextcore = 2;
                 while ($nextcore<=$cores) {
                     $extra=$addcpu-$mhz;
                     $addcpu=$cpucore[$nextcore]+$extra;
                     if ($addcpu<=$mhz and $addcpu>=0) {
-                        $cpucore[$nextcore]=$addcpu;
+                        $cpucore[$nextcore] = $addcpu;
                     } else if ($addcpu>=0) {
-                        $cpucore[$nextcore]=$mhz;
+                        $cpucore[$nextcore] = $mhz;
                     }
                     $nextcore++;
                 }
@@ -377,7 +377,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgAlt='Deactivated';
         }
         $installedserver=$i2. '/' . $row['maxserver'];
-        $table[]=array('id'=>$id,'img'=>$imgName,'alt'=>$imgAlt,'ip'=>$row['ip'],'active'=>$row['active'],'description'=>$row['description'],'cores'=>$cores,'mhz'=>$mhz,'cpus'=>$cpucore,'hdd'=>$hdd,'ram'=>$ram,'ramused'=>$ramused,'mountsize'=>$mountsize,'mountunused'=>$mountunused,'installedserver'=>$installedserver);
+        $table[]=array('id' => $id,'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ip'],'active' => $row['active'],'description' => $row['description'],'cores' => $cores,'mhz' => $mhz,'cpus' => $cpucore,'hdd' => $hdd,'ram' => $ram,'ramused' => $ramused,'mountsize' => $mountsize,'mountunused' => $mountunused,'installedserver' => $installedserver);
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `virtualhosts`");
@@ -408,7 +408,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

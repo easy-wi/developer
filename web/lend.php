@@ -60,7 +60,7 @@ if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post') and !isse
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $pwd=$row['pwd'];
         $salt=$row['salt'];
-        if ($row['active'] == 'Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) $resellerIDs[]=$row['resellerID'];
+        if ($row['active'] == 'Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) $resellerIDs[] = $row['resellerID'];
         if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd) {
             $reseller_id=$resellerIDs[0];
             $validacces = true;
@@ -142,32 +142,32 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 	$lendaccess=$row['lendaccess'];
 	$lastcheck=$row['lastcheck'];
 	$timebetweenchecks=(strtotime($lastcheck)-strtotime($row['oldcheck']))/60;
-	$timebetweenlastandnow=(strtotime("now")-strtotime($lastcheck))/60;
+	$timebetweenlastandnow=(strtotime('now')-strtotime($lastcheck))/60;
 	$nextcheck=ceil($timebetweenchecks-$timebetweenlastandnow);
     if ($nextcheck<0) $nextcheck=$nextcheck*(-1);
     if($time>0 and $maxtime>0) {
         while ($time<=$maxtime) {
-            $timeselect[]=$time;
+            $timeselect[] = $time;
             $time=$time+$timesteps;
         }
     }
 	$gsstart=$minplayer;
     if($player>0 and $gsstart>0) {
         while ($gsstart<=$player) {
-            $slotselect[]=$gsstart;
+            $slotselect[] = $gsstart;
             $gsstart=$gsstart+$playersteps;
         }
     }
     if($votime>0 and $vomaxtime>0) {
         while ($votime<=$vomaxtime) {
-            $votimeselect[]=$votime;
+            $votimeselect[] = $votime;
             $votime=$votime+$votimesteps;
         }
     }
 	$vstart=$vominplayer;
     if($voplayer>0 and $vstart>0) {
         while ($vstart<=$voplayer) {
-            $voslotselect[]=$vstart;
+            $voslotselect[] = $vstart;
             $vstart=$vstart+$voplayersteps;
         }
     }
@@ -216,7 +216,7 @@ if(isset($servertype)) {
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $serverid=$row['serverid'];
         $lendtime=$row['lendtime'];
-        $timeleft=round($lendtime-(strtotime("now")-strtotime($row['started']))/60);
+        $timeleft=round($lendtime-(strtotime('now')-strtotime($row['started']))/60);
         if ($timeleft<=0) {
             $query2->execute(array($row['id'],$reseller_id));
             if ($servertype == 'g') {
@@ -357,16 +357,16 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
         $free='16_ok.png';
         $query2->execute(array($row['id']));
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-            $installedShorten[$row2['shorten']]=$row2['description'];
+            $installedShorten[$row2['shorten']] = $row2['description'];
             if ($row2['slots'] != null) {
                 $runningGame=$row2['shorten'];
                 $slots=$row2['slots'];
-                $timeleft=round($row2['lendtime']-(strtotime("now")-strtotime($row2['started']))/60);
+                $timeleft=round($row2['lendtime']-(strtotime('now')-strtotime($row2['started']))/60);
                 if ($timeleft<0) $timeleft = 0;
                 $free='16_bad.png';
             }
         }
-        $lendGameServers[]=array('ip'=>$row['serverip'],'port'=>(int)$row['port'],'queryName'=>htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'queryMap'=>htmlentities($row['queryMap'],ENT_QUOTES,'UTF-8'),'runningGame'=>$runningGame,'games'=>$installedShorten,'slots'=>(int)$slots,'usedslots'=>(int)$row['queryNumplayers'],'timeleft'=>(int)$timeleft,'free'=>$free);
+        $lendGameServers[]=array('ip' => $row['serverip'],'port'=>(int)$row['port'],'queryName'=>htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'queryMap'=>htmlentities($row['queryMap'],ENT_QUOTES,'UTF-8'),'runningGame' => $runningGame,'games' => $installedShorten,'slots'=>(int)$slots,'usedslots'=>(int)$row['queryNumplayers'],'timeleft'=>(int)$timeleft,'free' => $free);
     }
     $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`slots`,l.`started`,l.`lendtime` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
     $query->execute(array($reseller_id));
@@ -375,12 +375,12 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
         $slots=$row['availableSlots'];
         $free='16_ok.png';
         if ($row['slots'] != null) {
-            $timeleft=round($row['lendtime']-(strtotime("now")-strtotime($row['started']))/60);
+            $timeleft=round($row['lendtime']-(strtotime('now')-strtotime($row['started']))/60);
             if ($timeleft<0) $timeleft = 0;
             $free='16_bad.png';
             $slots=$row['slots'];
         }
-        $lendVoiceServers[]=array('ip'=>$row['ip'],'port'=>(int)$row['port'],'queryName'=>htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'connect'=>$row['dns'],'slots'=>(int)$slots,'usedslots'=>(int)$row['usedslots'],'timeleft'=>(int)$timeleft,'free'=>$free);
+        $lendVoiceServers[]=array('ip' => $row['ip'],'port'=>(int)$row['port'],'queryName'=>htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'connect' => $row['dns'],'slots'=>(int)$slots,'usedslots'=>(int)$row['usedslots'],'timeleft'=>(int)$timeleft,'free' => $free);
     }
     if ($ui->id('xml',1,'post')==1) {
         header("Content-type: text/xml; charset=UTF-8");
@@ -438,14 +438,14 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
         $query2->execute(array($row['id'],$reseller_id));
 		foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
 			$shorten=$row2['shorten'];
-			$serverids[$shorten][]=$row2['id'];
+			$serverids[$shorten][] = $row2['id'];
 			if (isset($gscounts[$shorten])) {
 				$gscounts[$shorten]++;
 			} else {
 				$gscounts[$shorten] = 1;
 				$gsused[$shorten] = 0;
 			}
-			$shortens[]=$shorten;
+			$shortens[] = $shorten;
 		}
 		$shortenlist=implode('|',$shortens);
 		foreach ($shortens as $shorten) {
@@ -456,7 +456,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 				$switchcount[$shortenlist][$shorten]['used'] = 0;
 			}
 			foreach ($serverids[$shorten] as $id) {
-				$switchcount[$shortenlist][$shorten]['freeids'][]=$id;
+				$switchcount[$shortenlist][$shorten]['freeids'][] = $id;
 			}
 		}
 	}
@@ -466,7 +466,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
     $query->execute(array($reseller_id));
 	foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 		$lendtime=$row['lendtime'];
-		$timeleft=round($lendtime-(strtotime("now")-strtotime($row['started']))/60);
+		$timeleft=round($lendtime-(strtotime('now')-strtotime($row['started']))/60);
 		if (!isset($nextfree) or $timeleft<$nextfree) $nextfree=$timeleft;
 		$gscount--;
 		$rcon=$row['rcon'];
@@ -482,8 +482,8 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
             foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
                 $shorten=$row3['shorten'];
                 $gsused[$shorten]++;
-                $shortens[]=$shorten;
-                $serverids[$shorten][]=$row3['id'];
+                $shortens[] = $shorten;
+                $serverids[$shorten][] = $row3['id'];
             }
             $shortenlist=implode('|',$shortens);
             foreach ($shortens as $shorten) {
@@ -510,13 +510,13 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 		$switchcount[$shortenlist][$shorten];
 		if ($amount>0) {
 			$serveravailable = true;
-			$gameselect[$key]=$description;
+			$gameselect[$key] = $description;
             $text=$sprache->available;
 		} else {
 			$gscount = 0;
             $text=$sprache->used;
 		}
-        $status[$description]=array('text'=>$text,'amount'=>$amount,'total'=>$value);
+        $status[$description]=array('text' => $text,'amount' => $amount,'total' => $value);
 	}
 	if ((!isset($nextfree) and $gscount>0) or (isset($nextfree) and $gscount>0)){
 		$nextfree = 0;
@@ -604,18 +604,18 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 								if ($leftkey != $key) {
 									foreach ($leftarrays as $gametype => $values) {
 										if (isset($leftservers[$gametype])) {
-											$leftservers[$key][$gametype]=$leftservers[$gametype]+($values['exist']-$values['used']);
+											$leftservers[$key][$gametype] = $leftservers[$gametype]+($values['exist']-$values['used']);
 										} else {
-											$leftservers[$key][$gametype]=$values['exist']-$values['used'];
+											$leftservers[$key][$gametype] = $values['exist']-$values['used'];
 										}
 									}
 								}
 							}
 							foreach ($arrays as $gametype => $values) {
 								if (isset($leftservers[$gametype])) {
-									$leftservers[$key][$gametype]=$leftservers[$gametype]+($values['exist']-$values['used']-1);
+									$leftservers[$key][$gametype] = $leftservers[$gametype]+($values['exist']-$values['used']-1);
 								} else {
-									$leftservers[$key][$gametype]=$values['exist']-$values['used']-1;
+									$leftservers[$key][$gametype] = $values['exist']-$values['used']-1;
 								}
 							}
 						}
@@ -625,7 +625,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 						foreach ($arrays as $key=>$count) {
 							$percent=$percent+((100/$switchcount[$keys][$key]['exist'])*($count));
 						}
-						$mostleft[$keys]=$percent;
+						$mostleft[$keys] = $percent;
 					}
 					arsort($mostleft);
 					$bestmultigame=key($mostleft);
@@ -634,7 +634,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
 				}
 				$timeleft=$lendtime;
                 if (!$ui->id('xml',1,'post')==1) {
-                    $_SESSION['lend']['gs']=$serverid;
+                    $_SESSION['lend']['gs'] = $serverid;
                 }
                 $query = $sql->prepare("INSERT INTO `lendedserver` (`serverid`,`servertype`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip`,`ftpuploadpath`,`resellerid`) VALUES (?,?,?,?,?,NOW(),?,?,AES_ENCRYPT(?,?),?)");
                 $query->execute(array($serverid,'g',$rcon,$password,$slots,$lendtime,$loguserip,$ftpuploadpath,$aeskey,$reseller_id));
@@ -773,7 +773,7 @@ XML;
 				$select3->execute(array($row2['id'],$reseller_id));
 				foreach ($select3->fetchall(PDO::FETCH_ASSOC) as $row3) {
 					$lendtime=$row3['lendtime'];
-					$timeleft=round($lendtime-(strtotime("now")-strtotime($row3['started']))/60);
+					$timeleft=round($lendtime-(strtotime('now')-strtotime($row3['started']))/60);
 					if (!isset($nextfree) or $timeleft<$nextfree) {
 						$nextfree=$timeleft;
 					}
@@ -782,7 +782,7 @@ XML;
 					$lendable = false;
 				}
 				if ($lendable==true) {
-					$mastervoiceids[$masterid][]=$row2['id'];
+					$mastervoiceids[$masterid][] = $row2['id'];
 				}
 				$slots=$slots+$row2['slots'];
 				$vomacount++;
@@ -792,7 +792,7 @@ XML;
                 $nextfree = 0;
             }
 			if ($vomacount>0) {
-				$masterservers[$masterid]=$serverpercent=(100/$vomacount)*$usedvoice;
+				$masterservers[$masterid] = $serverpercent=(100/$vomacount)*$usedvoice;
 			}
 		}
 		asort($masterservers);
@@ -830,7 +830,7 @@ XML;
 			if ($fail==0 and $freevoice>0) {
 				$timeleft=$lendtime;
 				$vselect=$sql->prepare("SELECT `bitversion`,`type`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`usedns` FROM `voice_masterserver` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-				$vselect->execute(array(':aeskey'=>$aeskey,':id'=>$bestmaster,':reseller_id'=>$reseller_id));
+				$vselect->execute(array(':aeskey' => $aeskey,':id' => $bestmaster,':reseller_id' => $reseller_id));
 				foreach ($vselect->fetchall(PDO::FETCH_ASSOC) as $vrow) {
 					$addedby=$vrow['addedby'];
 					$queryport=$vrow['queryport'];
@@ -887,7 +887,7 @@ XML;
 						$connection->CloseConnection();
 						$rcon=$reply[0]['token'];
                         if (!$ui->id('xml',1,'post')) {
-                            $_SESSION['lend']['vs']=$tousevoiceid;
+                            $_SESSION['lend']['vs'] = $tousevoiceid;
                         }
 						$insert=$sql->prepare("INSERT INTO `lendedserver` (`serverid`,`servertype`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip`,`resellerid`) VALUES (?,?,?,?,?,NOW(),?,?,?)");
 						$insert->execute(array($tousevoiceid,'v',$rcon,$password,$slots,$lendtime,$loguserip,$reseller_id));

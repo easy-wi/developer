@@ -60,16 +60,16 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $query2->execute(array($row['affectedID']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             if ($row2['accounttype'] == 'r') {
-                removeUser($row['affectedID'], array('userdata'=>'id','userpermissions'=>'userid'));
-                $tables=array('addons'=>'resellerid','addons_installed'=>'resellerid','gsswitch'=>'resellerid','rserverdata'=>'resellerid','rservermasterg'=>'resellerid','serverlist'=>'resellerid',
-                    'servertypes'=>'resellerid','settings'=>'resellerid','tickets'=>'resellerid','ticket_topics'=>'resellerid','userdata'=>'resellerid','userpermissions'=>'resellerid','userlog'=>'resellerid','resellerdata'=>'resellerid',
-                    'gserver_restarts'=>'resellerid','eac'=>'resellerid','imprints'=>'resellerid','lendedserver'=>'resellerid','lendsettings'=>'resellerid','lendstats'=>'resellerID','voice_server'=>'resellerid','voice_masterserver'=>'resellerid',
-                    'translations'=>'resellerID','voice_server_stats'=>'resellerid','voice_server_stats_hours'=>'resellerid','voice_stats_settings'=>'resellerid','mysql_external_servers'=>'resellerid','mysql_external_dbs'=>'resellerid','usergroups'=>'resellerid',
-                    'api_ips'=>'resellerID','api_settings'=>'resellerID','voice_tsdns'=>'resellerid','voice_dns'=>'resellerID');
+                removeUser($row['affectedID'], array('userdata' => 'id','userpermissions' => 'userid'));
+                $tables=array('addons' => 'resellerid','addons_installed' => 'resellerid','gsswitch' => 'resellerid','rserverdata' => 'resellerid','rservermasterg' => 'resellerid','serverlist' => 'resellerid',
+                    'servertypes' => 'resellerid','settings' => 'resellerid','tickets' => 'resellerid','ticket_topics' => 'resellerid','userdata' => 'resellerid','userpermissions' => 'resellerid','userlog' => 'resellerid','resellerdata' => 'resellerid',
+                    'gserver_restarts' => 'resellerid','eac' => 'resellerid','imprints' => 'resellerid','lendedserver' => 'resellerid','lendsettings' => 'resellerid','lendstats' => 'resellerID','voice_server' => 'resellerid','voice_masterserver' => 'resellerid',
+                    'translations' => 'resellerID','voice_server_stats' => 'resellerid','voice_server_stats_hours' => 'resellerid','voice_stats_settings' => 'resellerid','mysql_external_servers' => 'resellerid','mysql_external_dbs' => 'resellerid','usergroups' => 'resellerid',
+                    'api_ips' => 'resellerID','api_settings' => 'resellerID','voice_tsdns' => 'resellerid','voice_dns' => 'resellerID');
                 removeUser($row['affectedID'],$tables);
-                if ($row2['resellerid']==$row['affectedID']) {
-                    removeUser($row['affectedID'], array('traffic_data'=>'userid','traffic_data_day'=>'userid'));
-                    removeUser($row['affectedID'], array('traffic_data'=>'resellerid','traffic_data_day'=>'resellerid'));
+                if ($row2['resellerid'] == $row['affectedID']) {
+                    removeUser($row['affectedID'], array('traffic_data' => 'userid','traffic_data_day' => 'userid'));
+                    removeUser($row['affectedID'], array('traffic_data' => 'resellerid','traffic_data_day' => 'resellerid'));
                 }
             }
         }

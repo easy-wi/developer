@@ -75,11 +75,11 @@ if ($w == 'lo') {
 		$referrer[0]="login.php";
 	}
 	if (isset($_SESSION['resellerid']) and isset($_SESSION['adminid']) and isset($_SESSION['oldid']) and isset($_SESSION['oldresellerid']) and !isset($_SESSION['userid']) and $_SESSION['resellerid'] != 0 and $referrer[0] == 'admin.php') {
-		$_SESSION['adminid']=$_SESSION['oldid'];
-		$_SESSION['resellerid']=$_SESSION['oldresellerid'];
-		if ($_SESSION['oldresellerid'] != 0 and $_SESSION['oldid']==$_SESSION['oldresellerid']) {
+		$_SESSION['adminid'] = $_SESSION['oldid'];
+		$_SESSION['resellerid'] = $_SESSION['oldresellerid'];
+		if ($_SESSION['oldresellerid'] != 0 and $_SESSION['oldid'] == $_SESSION['oldresellerid']) {
 			$_SESSION['oldresellerid'] = 0;
-			$_SESSION['oldid']=$_SESSION['oldadminid'];
+			$_SESSION['oldid'] = $_SESSION['oldadminid'];
 			unset($_SESSION['oldadminid']);
 		}
 		redirect('admin.php');
@@ -168,12 +168,12 @@ if ($w == 'lo') {
 						$md5=md5($row['userid'].$row['logintime'].$row['cname'].$row['lastlogin'].mt_rand());
 						foreach (explode('|', $row['security']) as $user) {
 							$ex=explode(':',str_replace(array("\r","\n"),"",$user));
-							if (isset($ex[1])) $ts3userlist[$ex[0]]=$ex[1];
+							if (isset($ex[1])) $ts3userlist[$ex[0]] = $ex[1];
 						}
 					}
 					$text=$sprache->nouser;
 					$dbid=$ui->id('dbid',255,'post');
-					if (isset($ts3userlist[$dbid]) and isset($md5) and $ts3userlist[$dbid]==$ui->id('dbid',255,'post')) {
+					if (isset($ts3userlist[$dbid]) and isset($md5) and $ts3userlist[$dbid] == $ui->id('dbid',255,'post')) {
 						$text=$sprache->send;
                         $query = $sql->prepare("UPDATE `userdata` SET `token`=?,`mail`=? WHERE `id`=? LIMIT 1");
                         $query->execute(array($md5,$ui->ismail('mail','post'), $row['userid']));
@@ -296,7 +296,7 @@ XML;
                 $postXML=urlencode(base64_encode($XML));
             }
             if (isset($activeAuth) and $activeAuth== 'Y') {
-                $reply=webhostRequest($domainAuth,$ui->escaped('HTTP_HOST','server'),$fileAuth, array('authPWD'=>$pwdAuth,'userAuth'=>$userAuth,'postXML'=>$postXML),$portAuth);
+                $reply=webhostRequest($domainAuth,$ui->escaped('HTTP_HOST','server'),$fileAuth, array('authPWD' => $pwdAuth,'userAuth' => $userAuth,'postXML' => $postXML),$portAuth);
                 $xmlReply= @simplexml_load_string($reply);
                 if ($xmlReply and isset($xmlReply->success) and $xmlReply->success==1 and $xmlReply->user==$username) {
                     $externalOK = 1;
@@ -321,7 +321,7 @@ XML;
                 $query->execute(array($sID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $logintime=$row['logintime'];
-                    $_SESSION['language']=$row['language'];
+                    $_SESSION['language'] = $row['language'];
                 }
                 $query = $sql->prepare("UPDATE `userdata_substitutes` SET `lastlogin`=?,`logintime`=? WHERE `sID`=? LIMIT 1");
                 $query->execute(array($logintime,$logdate,$sID));
@@ -330,21 +330,21 @@ XML;
                 $query->execute(array($id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $logintime=$row['logintime'];
-                    $_SESSION['language']=$row['language'];
+                    $_SESSION['language'] = $row['language'];
                 }
                 $query = $sql->prepare("UPDATE `userdata` SET `lastlogin`=?,`logintime`=? WHERE `id`=? LIMIT 1");
                 $query->execute(array($logintime,$logdate,$id));
             }
-            $_SESSION['resellerid']=$resellerid;
+            $_SESSION['resellerid'] = $resellerid;
             $query = $sql->prepare("DELETE FROM `badips` WHERE `badip`=?");
             $query->execute(array($loguserip));
 			if(isanyadmin($id) or rsellerpermisions($id)) {
-				$_SESSION['adminid']=$id;
+				$_SESSION['adminid'] = $id;
 				if(isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) $admin_id=$_SESSION['adminid'];
 			} else if (isanyuser($id)) {
-				$_SESSION['userid']=$id;
+				$_SESSION['userid'] = $id;
 				if(isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) $user_id=$_SESSION['userid'];
-                if(isset($sID)) $_SESSION['sID']=$sID;
+                if(isset($sID)) $_SESSION['sID'] = $sID;
 			}
             $ref = '';
 			if ($ui->url('HTTP_REFERER','server')) {

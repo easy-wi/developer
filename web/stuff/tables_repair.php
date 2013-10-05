@@ -604,7 +604,7 @@ $defined['rserverdata']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO
 $defined['rservermasterg']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'serverid'=>array("Type"=>"varchar(11)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'servertypeid'=>array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
-    'localVersion'=>array("Type"=>"varchar(20)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'localVersion'=>array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'installing'=>array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'updating'=>array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'installstarted'=>array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -639,7 +639,7 @@ $defined['serverlist']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO"
 $defined['servertypes']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'steamgame'=>array("Type"=>"enum('Y','N','S')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'appID'=>array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
-    'steamVersion'=>array("Type"=>"varchar(20)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'steamVersion'=>array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'updates'=>array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),
     'shorten'=>array("Type"=>"varchar(20)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'description'=>array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -670,6 +670,7 @@ $defined['servertypes']=array('id'=>array("Type"=>"int(10) unsigned","Null"=>"NO
     'portFour'=>array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"27018","Extra"=>""),
     'portFive'=>array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"27019","Extra"=>""),
     'protected'=>array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
+    'downloadPath'=>array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerid'=>array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
@@ -1275,11 +1276,11 @@ foreach ($defined as $table => $t_p) {
                 $properties=$t_p[$Field];
                 foreach ($row as $key=>$value) {
                     if ($key != 'Field' and $key != 'Key' and !in_array($Field,$key_differ) and $properties[$key] != $value) {
-                        $key_differ[]=$Field;
+                        $key_differ[] = $Field;
                     } else if ($key == 'Key' and $value == '' and $properties['Key'] == 'MUL') {
-                        $addIndex[]=$Field;
+                        $addIndex[] = $Field;
                     } else if ($key == 'Key' and $value == 'MUL' and $properties['Key'] == '') {
-                        $removeIndex[]=$Field;
+                        $removeIndex[] = $Field;
                     }
                 }
             } else {

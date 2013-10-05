@@ -61,7 +61,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {
         $id=$ui->id('id',19,'get');
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `rootsPXE` WHERE `resellerid`=:reseller_id LIMIT 1");
-        $query->execute(array(':aeskey'=>$aeskey,':reseller_id'=>$reseller_id));
+        $query->execute(array(':aeskey' => $aeskey,':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $active=$row['active'];
             $ip=$row['ip'];
@@ -113,11 +113,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($ui->st('d','get') == 'md' and $ui->id('id',19,'get')) {
                 $id=$ui->id('id',19,'get');
                 $query = $sql->prepare("UPDATE `rootsPXE` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`PXEFolder`=:PXEFolder,`description`=:description WHERE `id`=:id AND `resellerid`=:reseller_id");
-                $query->execute(array(':active'=>$active,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':publickey'=>$publickey,':keyname'=>$keyname,':PXEFolder'=>$PXEFolder,':description'=>$description,':id'=>$id,':reseller_id'=>$reseller_id));
+                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':PXEFolder' => $PXEFolder,':description' => $description,':id' => $id,':reseller_id' => $reseller_id));
                 $loguseraction="%mod% PXE";
             } else if ($ui->st('d','get') == 'ad') {
                 $query = $sql->prepare("INSERT INTO `rootsPXE` (`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`PXEFolder`,`description`,`resellerid`) VALUES (:active,:ip,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:PXEFolder,:description,:reseller_id)");
-                $query->execute(array(':active'=>$active,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':publickey'=>$publickey,':keyname'=>$keyname,':PXEFolder'=>$PXEFolder,':description'=>$description,':reseller_id'=>$reseller_id));
+                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':PXEFolder' => $PXEFolder,':description' => $description,':reseller_id' => $reseller_id));
                 $loguseraction="%add% PXE";
             } else {
                 $template_file = 'admin_404.tpl';
@@ -188,7 +188,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        $table[]=array('id'=>$row['id'],'ip'=>$row['ip'],'description'=>$row['description'],'img'=>$imgName,'alt'=>$imgAlt,'active'=>$row['active']);
+        $table[]=array('id' => $row['id'],'ip' => $row['ip'],'description' => $row['description'],'img' => $imgName,'alt' => $imgAlt,'active' => $row['active']);
     }
     $template_file = 'admin_root_pxe_list.tpl';
 }

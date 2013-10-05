@@ -423,7 +423,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $defaultgroup=$gsprache->no;
         }
-        $table[]=array('id'=>$row['id'],'img'=>$imgName,'alt'=>$imgAlt,'grouptype'=>$grouptype,'defaultgroup'=>$defaultgroup,'name'=>$row['name'],'active'=>$row['active']);
+        $table[]=array('id' => $row['id'],'img' => $imgName,'alt' => $imgAlt,'grouptype' => $grouptype,'defaultgroup' => $defaultgroup,'name' => $row['name'],'active' => $row['active']);
     }
     $template_file = 'admin_user_groups_list.tpl';
 }

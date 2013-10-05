@@ -269,7 +269,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgAlt='Inactive';
         }
         $twitter=($row['twitter'] == 'Y') ? $gsprache->yes : $gsprache->no;
-        $table[]=array('id'=>$row['feedID'],'img'=>$imgName,'alt'=>$imgAlt,'twitter'=>$twitter,'feedUrl'=>$row['feedUrl'],'active'=>$row['active']);
+        $table[]=array('id' => $row['feedID'],'img' => $imgName,'alt' => $imgAlt,'twitter' => $twitter,'feedUrl' => $row['feedUrl'],'active' => $row['active']);
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `resellerID`=?");
@@ -298,7 +298,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $link .='&p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

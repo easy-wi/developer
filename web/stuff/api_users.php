@@ -111,12 +111,12 @@ if (array_value_exists('action','add',$data)) {
         $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
         if (isset($data['groupID']) and isid($data['groupID'],19)) {
             $query->execute(array($data['groupID'],$resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $userGroupIDs[]=$row['id'];
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $userGroupIDs[] = $row['id'];
         } else if (isset($data['groupID']) and (is_array($data['groupID'])) or is_object($data['groupID'])) {
             foreach ($data['groupID'] as $groupID) {
                 if (isid($groupID,19)) {
                     $query->execute(array($groupID,$resellerID));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $userGroupIDs[]=$row['id'];
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $userGroupIDs[] = $row['id'];
                 }
             }
         }
@@ -124,13 +124,13 @@ if (array_value_exists('action','add',$data)) {
             $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `grouptype`='u' AND `active`='Y' AND `defaultgroup`='Y' AND `resellerid`=? LIMIT 1");
             $query->execute(array($resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $userGroupIDs[]=$row['id'];
+                $userGroupIDs[] = $row['id'];
             }
             if (count($userGroupIDs)==0) {
                 $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `grouptype`='u' AND `active`='Y' AND `resellerid`=? LIMIT 1");
                 $query->execute(array($resellerID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $userGroupIDs[]=$row['id'];
+                    $userGroupIDs[] = $row['id'];
                 }
             }
         }
@@ -155,7 +155,7 @@ if (array_value_exists('action','add',$data)) {
         $mail_vserver=(isset($data['mail_vserver']) and active_check($data['mail_vserver'])) ? $data['mail_vserver'] : 'Y';
         if (!isset($success['false']) and count($userGroupIDs)>0) {
             $query = $sql->prepare("INSERT INTO `userdata` (`creationTime`,`updateTime`,`accounttype`,`active`,`cname`,`vname`,`name`,`mail`,`salt`,`phone`,`handy`,`fax`,`city`,`cityn`,`street`,`streetn`,`salutation`,`birthday`,`country`,`fdlpath`,`mail_backup`,`mail_gsupdate`,`mail_securitybreach`,`mail_serverdown`,`mail_ticket`,`mail_vserver`,`externalID`,`sourceSystemID`,`resellerid`) VALUES (NOW(),NOW(),'u',?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            $query->execute(array($active,$tmpName,$vname,$name,$email,$salt,$phone,$handy,$fax,$city,$cityn,$street,$streetn,$salutation,$birthday,$country,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$externalID,json_encode(array('A'=>$apiIP)),$resellerID));
+            $query->execute(array($active,$tmpName,$vname,$name,$email,$salt,$phone,$handy,$fax,$city,$cityn,$street,$streetn,$salutation,$birthday,$country,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$externalID,json_encode(array('A' => $apiIP)),$resellerID));
             $insert = true;
         } else if (!isset($success['false'])) {
             $success['false'][] = 'No usergroup available';
@@ -187,7 +187,7 @@ if (array_value_exists('action','add',$data)) {
     $externalID=$data['external_id'];
     $active=active_check($data['active']);
     $localID=$data['localid'];
-    $from=array('localid'=>'id','username'=>'cname','external_id'=>'externalID','email'=>'mail');
+    $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail');
     if (dataExist('identify_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`cname`,`active` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_by']],$resellerID));
@@ -202,11 +202,11 @@ if (array_value_exists('action','add',$data)) {
                 $password=$data['password'];
                 $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
                 $security=createHash($name,$data['password'],$salt,$aeskey);
-                $what['security']=$security;
-                $what['salt']=$salt;
+                $what['security'] = $security;
+                $what['salt'] = $salt;
             }
             if (isset($data['email']) and ismail($data['email'])) {
-                $what['mail']=$data['email'];
+                $what['mail'] = $data['email'];
                 $mail=$what['mail'];
             }
             if (isset($data['name']) and names($data['name'],255)) {
@@ -258,47 +258,47 @@ if (array_value_exists('action','add',$data)) {
                 $country=$what['country'];
             }
             if (isset($data['mail_backup']) and active_check($data['mail_backup'])) {
-                $what['mail_backup']=$data['mail_backup'];
+                $what['mail_backup'] = $data['mail_backup'];
                 $mail_backup=$what['mail_backup'];
             }
             if (isset($data['mail_gsupdate']) and active_check($data['mail_gsupdate'])) {
-                $what['mail_gsupdate']=$data['mail_gsupdate'];
+                $what['mail_gsupdate'] = $data['mail_gsupdate'];
                 $mail_gsupdate=$what['mail_gsupdate'];
             }
             if (isset($data['mail_securitybreach']) and active_check($data['mail_securitybreach'])) {
-                $what['mail_securitybreach']=$data['mail_securitybreach'];
+                $what['mail_securitybreach'] = $data['mail_securitybreach'];
                 $mail_securitybreach=$what['mail_securitybreach'];
             }
             if (isset($data['mail_serverdown']) and active_check($data['mail_serverdown'])) {
-                $what['mail_serverdown']=$data['mail_serverdown'];
+                $what['mail_serverdown'] = $data['mail_serverdown'];
                 $mail_serverdown=$what['mail_serverdown'];
             }
             if (isset($data['mail_ticket']) and active_check($data['mail_ticket'])) {
-                $what['mail_ticket']=$data['mail_ticket'];
+                $what['mail_ticket'] = $data['mail_ticket'];
                 $mail_ticket=$what['mail_ticket'];
             }
             if (isset($data['mail_vserver']) and active_check($data['mail_vserver'])) {
-                $what['mail_vserver']=$data['mail_vserver'];
+                $what['mail_vserver'] = $data['mail_vserver'];
                 $mail_vserver=$what['mail_vserver'];
             }
             if (isset($data['fdlpath']) and isurl($data['fdlpath'])) {
-                $what['fdlpath']=$data['fdlpath'];
+                $what['fdlpath'] = $data['fdlpath'];
                 $fdlpath=$what['fdlpath'];
             }
             $foundGroupIDs = array();
             $userGroupIDs = array();
             $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=? AND `resellerID`=?");
             $query->execute(array($localID,$resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $foundGroupIDs[]=$row['id'];
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $foundGroupIDs[] = $row['id'];
             $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
             if (isset($data['groupID']) and isid($data['groupID'],19)) {
                 $query->execute(array($data['groupID'],$resellerID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $userGroupIDs[]=$row['id'];
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $userGroupIDs[] = $row['id'];
             } else if (isset($data['groupID']) and (is_array($data['groupID'])) or is_object($data['groupID'])) {
                 foreach ($data['groupID'] as $groupID) {
                     if (isid($groupID,19)) {
                         $query->execute(array($groupID,$resellerID));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $userGroupIDs[]=$row['id'];
+                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $userGroupIDs[] = $row['id'];
                     }
                 }
             }
@@ -316,7 +316,7 @@ if (array_value_exists('action','add',$data)) {
                 $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                 $update->execute(array($localID,$resellerID));
                 $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'md',?)");
-                $insert->execute(array($resellerID,$localID,$localID,$name,json_encode(array('newActive'=>$useractive)),$resellerID));
+                $insert->execute(array($resellerID,$localID,$localID,$name,json_encode(array('newActive' => $useractive)),$resellerID));
                 updateJobs($localID,$resellerID);
             }
         } else {
@@ -333,7 +333,7 @@ if (array_value_exists('action','add',$data)) {
     $externalID=$data['external_id'];
     $active=active_check($data['active']);
     $localID=$data['localid'];
-    $from=array('localid'=>'id','username'=>'cname','external_id'=>'externalID','email'=>'mail');
+    $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail');
     if (dataExist('identify_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_by']],$resellerID));
@@ -364,12 +364,12 @@ if (array_value_exists('action','add',$data)) {
     $externalID=$data['external_id'];
     $active=active_check($data['active']);
     $localID=$data['localid'];
-    $from=array('localid'=>'id','username'=>'cname','external_id'=>'externalID','email'=>'mail','mysql'=>array());
+    $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail','mysql'=>array());
     if (dataExist('identify_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`active`,`cname`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`usergroup`,`externalID`,`jobPending` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $userArray['userdetails']=$row;
+            $userArray['userdetails'] = $row;
         }
         if($query->rowCount()>0) {
             $list = true;
@@ -381,26 +381,26 @@ if (array_value_exists('action','add',$data)) {
                 $query2->execute(array($row['id'],$resellerID));
                  $shorten = array();
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    $shorten[]=$row2['shorten'];
+                    $shorten[] = $row2['shorten'];
                 }
                 $row['shorten']=implode(',',$shorten);
-                $tempArray[]=$row;
+                $tempArray[] = $row;
             }
-            $userArray['gserver']=$tempArray;
+            $userArray['gserver'] = $tempArray;
             $tempArray = array();
             $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `userid`=? AND `resellerid`=?");
             $query->execute(array($userArray['userdetails']['id'],$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $tempArray[]=$row;
+                $tempArray[] = $row;
             }
-            $userArray['voice']=$tempArray;
+            $userArray['voice'] = $tempArray;
             $tempArray = array();
             $query = $sql->prepare("SELECT `active`,`sid`,`gsid`,`dbname`,`ips`,`max_databases`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`jobPending` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=?");
             $query->execute(array($userArray['userdetails']['id'],$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $tempArray[]=$row;
+                $tempArray[] = $row;
             }
-            $userArray['mysql']=$tempArray;
+            $userArray['mysql'] = $tempArray;
             if ($apiType == 'xml') {
                 header("Content-type: text/xml; charset=UTF-8");
                 echo array2xml($userArray,new SimpleXMLElement('<user/>'));
@@ -463,7 +463,7 @@ XML;
     print $reply;
 } else if ($apiType == 'json' and !isset($list)) {
     header("Content-type: application/json; charset=UTF-8");
-    echo json_encode(array('action'=>$action,'username'=>$username,'external_id'=>$externalID,'email'=>$email,'errors'=>$errors,'password'=>$password,'active'=>$active,'localid'=>$localID));
+    echo json_encode(array('action' => $action,'username' => $username,'external_id' => $externalID,'email' => $email,'errors' => $errors,'password' => $password,'active' => $active,'localid' => $localID));
 } else if (!isset($list)) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden');

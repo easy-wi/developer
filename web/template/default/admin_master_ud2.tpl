@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span6">
+    <div class="span10">
         <dl class="dl-horizontal">
             <?php foreach($ips as $id=>$ip) { ?>
             <dt><?php echo $ip;?></dt>

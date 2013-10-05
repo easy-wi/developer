@@ -108,7 +108,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$pselect=$sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			if ($ui->post['what']==$row['id']) {
+			if ($ui->post['what'] == $row['id']) {
 				$data[] = '<option value='.$row['id'].' selected="selected">'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 			} else {
 				$data[] = '<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
@@ -131,7 +131,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
             $server=$row['ip'] . ':' . $row['port'];
-			if ($ui->post['what']==$row['id']) {
+			if ($ui->post['what'] == $row['id']) {
 				$data[] = '<option value='.$row['id'].' selected="selected">'.$server.'</option>';
 			} else {
 				$data[] = '<option value='.$row['id'].'>'.$server.'</option>';
@@ -148,7 +148,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$pselect=$sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? ORDER BY `ssh2ip`");
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			if ($ui->post['what']==$row['id']) {
+			if ($ui->post['what'] == $row['id']) {
 				$data[] = '<option value='.$row['id'].' selected="selected">'.$row['ssh2ip'].'</option>';
 			} else {
 				$data[] = '<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';

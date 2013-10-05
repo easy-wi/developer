@@ -64,7 +64,7 @@ class rootServer {
     public function rootServer ($ID,$action,$type='dedicated',$extraData=null) {
         $this->tempID=$ID;
         $this->ID[$type][$ID] = array();
-        $this->ID[$type][$ID]['action']=$action;
+        $this->ID[$type][$ID]['action'] = $action;
         $this->type=$type;
         $this->extraData=$extraData;
         $imageID=(isset($extraData['imageID'])) ? $extraData['imageID'] : 0;
@@ -84,18 +84,18 @@ class rootServer {
             $query=$this->sql->prepare("SELECT d.*,u.`cname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`dedicatedID`=? LIMIT 1");
             $query->execute(array($this->tempID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $this->ID[$type][$ID]['useDHCP']=$row['useDHCP'];
+                $this->ID[$type][$ID]['useDHCP'] = $row['useDHCP'];
                 $this->ID[$type][$ID]['hostname'] = 'dedi-'.$ID;
-                $this->ID[$type][$ID]['usePXE']=$row['usePXE'];
-                $this->ID[$type][$ID]['pxeID']=$row['pxeID'];
-                $this->ID[$type][$ID]['mac']=$row['mac'];
-                $this->ID[$type][$ID]['ip']=$row['ip'];
-                $this->ID[$type][$ID]['restart']=$row['restart'];
-                $this->ID[$type][$ID]['apiRequestType']=$row['apiRequestType'];
-                $this->ID[$type][$ID]['apiRequestRestart']=$row['apiRequestRestart'];
-                $this->ID[$type][$ID]['apiRequestStop']=$row['apiRequestStop'];
-                $this->ID[$type][$ID]['https']=$row['https'];
-                $this->ID[$type][$ID]['apiURL']=$row['apiURL'];
+                $this->ID[$type][$ID]['usePXE'] = $row['usePXE'];
+                $this->ID[$type][$ID]['pxeID'] = $row['pxeID'];
+                $this->ID[$type][$ID]['mac'] = $row['mac'];
+                $this->ID[$type][$ID]['ip'] = $row['ip'];
+                $this->ID[$type][$ID]['restart'] = $row['restart'];
+                $this->ID[$type][$ID]['apiRequestType'] = $row['apiRequestType'];
+                $this->ID[$type][$ID]['apiRequestRestart'] = $row['apiRequestRestart'];
+                $this->ID[$type][$ID]['apiRequestStop'] = $row['apiRequestStop'];
+                $this->ID[$type][$ID]['https'] = $row['https'];
+                $this->ID[$type][$ID]['apiURL'] = $row['apiURL'];
                 $userID=$row['userID'];
                 $resellerID=$row['resellerID'];
             }
@@ -103,30 +103,30 @@ class rootServer {
             // Get VMware Data
         } else if ($this->type == 'vmware') {
             $query=$this->sql->prepare("SELECT c.*,u.`id` AS `userID`,u.`cname`,h.`cores` AS `hcore`,h.`esxi`,h.`id` AS `hostID`,h.`ip` AS `hip`,AES_DECRYPT(h.`port`,:aeskey) AS `dport`,AES_DECRYPT(h.`user`,:aeskey) AS `duser`,AES_DECRYPT(h.`pass`,:aeskey) AS `dpass`,h.`publickey`,h.`keyname` FROM `virtualcontainer` c INNER JOIN `userdata` u ON c.`userid`=u.`id` INNER JOIN `virtualhosts` h ON c.`hostid`=h.`id` WHERE c.`id`=:vmID LIMIT 1");
-            $query->execute(array(':aeskey'=>$this->aeskey,':vmID'=>$this->tempID));
+            $query->execute(array(':aeskey' => $this->aeskey,':vmID' => $this->tempID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (!isset($this->vmwareHosts[$row['hostID']])) {
-                    $this->vmwareHosts[$row['hostID']]['vmIDs']['ip']=$row['hip'];
-                    $this->vmwareHosts[$row['hostID']]['vmIDs']['dport']=$row['dport'];
-                    $this->vmwareHosts[$row['hostID']]['vmIDs']['duser']=$row['duser'];
-                    $this->vmwareHosts[$row['hostID']]['vmIDs']['dpass']=$row['dpass'];
-                    $this->vmwareHosts[$row['hostID']]['vmIDs']['publickey']=$row['publickey'];
-                    $this->vmwareHosts[$row['hostID']]['vmIDs']['keyname']=$row['keyname'];
+                    $this->vmwareHosts[$row['hostID']]['vmIDs']['ip'] = $row['hip'];
+                    $this->vmwareHosts[$row['hostID']]['vmIDs']['dport'] = $row['dport'];
+                    $this->vmwareHosts[$row['hostID']]['vmIDs']['duser'] = $row['duser'];
+                    $this->vmwareHosts[$row['hostID']]['vmIDs']['dpass'] = $row['dpass'];
+                    $this->vmwareHosts[$row['hostID']]['vmIDs']['publickey'] = $row['publickey'];
+                    $this->vmwareHosts[$row['hostID']]['vmIDs']['keyname'] = $row['keyname'];
                 }
-                $this->ID[$type][$ID]['cores']=$row['cores'];
-                $this->ID[$type][$ID]['mountpoint']=$row['mountpoint'];
-                $this->ID[$type][$ID]['hostname']=$row['cname'] . '-' . $this->tempID;
+                $this->ID[$type][$ID]['cores'] = $row['cores'];
+                $this->ID[$type][$ID]['mountpoint'] = $row['mountpoint'];
+                $this->ID[$type][$ID]['hostname'] = $row['cname'] . '-' . $this->tempID;
                 $this->ID[$type][$ID]['ram']=1024*$row['ram'];
                 $this->ID[$type][$ID]['minram']=1024*$row['minram'];
                 $this->ID[$type][$ID]['maxram']=1024*$row['maxram'];
-                $this->ID[$type][$ID]['minmhz']=$row['cores']*$row['minmhz'];
-                $this->ID[$type][$ID]['maxmhz']=$row['cores']*$row['maxmhz'];
-                $this->ID[$type][$ID]['hddsize']=$row['hddsize'].'GB';
-                $this->ID[$type][$ID]['mac']=$row['mac'];
-                $this->ID[$type][$ID]['pxeID']=$row['pxeID'];
+                $this->ID[$type][$ID]['minmhz'] = $row['cores']*$row['minmhz'];
+                $this->ID[$type][$ID]['maxmhz'] = $row['cores']*$row['maxmhz'];
+                $this->ID[$type][$ID]['hddsize'] = $row['hddsize'].'GB';
+                $this->ID[$type][$ID]['mac'] = $row['mac'];
+                $this->ID[$type][$ID]['pxeID'] = $row['pxeID'];
                 $this->ID[$type][$ID]['hostname'] = 'vmware-'.$ID;
-                $this->ID[$type][$ID]['mac']=$row['mac'];
-                $this->ID[$type][$ID]['ip']=$row['ip'];
+                $this->ID[$type][$ID]['mac'] = $row['mac'];
+                $this->ID[$type][$ID]['ip'] = $row['ip'];
                 $this->ID[$type][$ID]['usePXE'] = 'Y';
                 $this->ID[$type][$ID]['restart'] = 'Y';
                 $this->ID[$type][$ID]['distro']=(isset($distro)) ? $distro : '';
@@ -134,7 +134,7 @@ class rootServer {
                 $hostID=$row['hostid'];
                 $userID=$row['userid'];
                 $resellerID=$row['resellerid'];
-                $this->vmwareHosts[$row['hostID']]['actions'][]=array('action'=>$action,'id'=>$ID);
+                $this->vmwareHosts[$row['hostID']]['actions'][]=array('action' => $action,'id' => $ID);
             }
         }
         if (!isset($row['ip'])) return 'Database Error: Could not find VM or ESX(i) host for ID: '.$this->tempID;
@@ -148,50 +148,50 @@ class rootServer {
             // get DHCP Data from DB
             if ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['useDHCP'] == 'Y')) {
                 $ex=explode('.',$this->ID[$type][$ID]['ip']);
-                $subnet=$ex[0].'.'.$ex[1].'.'.$ex[2].'.0';
-                $this->ID[$type][$ID]['subnet']=$subnet;
-                $searchFor=$ex[0].'.'.$ex[1].'.'.$ex[2].'.';
+                $subnet=$ex[0] . '.' . $ex[1] . '.' . $ex[2].'.0';
+                $this->ID[$type][$ID]['subnet'] = $subnet;
+                $searchFor=$ex[0] . '.' . $ex[1] . '.' . $ex[2].'.';
                 $query=$this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsDHCP` WHERE `active`='Y' AND (`ips` LIKE :ip OR `ips` LIKE :subnet)");
-                $query->execute(array(':aeskey'=>$this->aeskey,':ip'=>'%'.$this->ID[$type][$ID]['ip'].'%',':subnet'=>'%'.$searchFor.'%'));
+                $query->execute(array(':aeskey' => $this->aeskey,':ip' => '%'.$this->ID[$type][$ID]['ip'].'%',':subnet' => '%'.$searchFor.'%'));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if (!isset($foundDHCP) and in_array($this->ID[$type][$ID]['ip'],ipstoarray($row['ips']))) {
                         $foundDHCP = true;
                         if (!isset($this->dhcpData[$row['id']])) {
-                            $this->dhcpData[$row['id']]['ip']=$row['ip'];
-                            $this->dhcpData[$row['id']]['port']=$row['dport'];
-                            $this->dhcpData[$row['id']]['user']=$row['duser'];
-                            $this->dhcpData[$row['id']]['pass']=$row['dpass'];
-                            $this->dhcpData[$row['id']]['publickey']=$row['publickey'];
-                            $this->dhcpData[$row['id']]['keyname']=$row['keyname'];
-                            $this->dhcpData[$row['id']]['netmask']=$row['netmask'];
-                            $this->dhcpData[$row['id']]['startCmd']=$row['startCmd'];
-                            $this->dhcpData[$row['id']]['dhcpFile']=$row['dhcpFile'];
-                            $this->dhcpData[$row['id']]['subnetOptions']=$row['subnetOptions'];
+                            $this->dhcpData[$row['id']]['ip'] = $row['ip'];
+                            $this->dhcpData[$row['id']]['port'] = $row['dport'];
+                            $this->dhcpData[$row['id']]['user'] = $row['duser'];
+                            $this->dhcpData[$row['id']]['pass'] = $row['dpass'];
+                            $this->dhcpData[$row['id']]['publickey'] = $row['publickey'];
+                            $this->dhcpData[$row['id']]['keyname'] = $row['keyname'];
+                            $this->dhcpData[$row['id']]['netmask'] = $row['netmask'];
+                            $this->dhcpData[$row['id']]['startCmd'] = $row['startCmd'];
+                            $this->dhcpData[$row['id']]['dhcpFile'] = $row['dhcpFile'];
+                            $this->dhcpData[$row['id']]['subnetOptions'] = $row['subnetOptions'];
                         }
-                        $this->dhcpData[$row['id']]['actions'][]=array('action'=>$action,'id'=>$ID,'type'=>$type,'imageID'=>$imageID,'hostID'=>$hostID,'userID'=>$userID,'resellerID'=>$resellerID);
+                        $this->dhcpData[$row['id']]['actions'][]=array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
                         $modID=$row['id'];
                     }
                 }
                 if (isset($foundDHCP) and $action == 'md' and isset($this->extraData['oldip']) and $this->extraData['oldip'] != $this->ID[$type][$ID]['ip']) {
                     $ex=explode('.',$this->extraData['oldip']);
-                    $searchForOld=$ex[0].'.'.$ex[1].'.'.$ex[2].'.';
+                    $searchForOld=$ex[0] . '.' . $ex[1] . '.' . $ex[2].'.';
                     $query=$this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsDHCP` WHERE `active`='Y' AND (`ips` LIKE :ip OR `ips` LIKE :subnet)");
-                    $query->execute(array(':aeskey'=>$this->aeskey,':ip'=>'%'.$this->extraData['oldip'].'%',':subnet'=>'%'.$searchForOld.'%'));
+                    $query->execute(array(':aeskey' => $this->aeskey,':ip' => '%'.$this->extraData['oldip'].'%',':subnet' => '%'.$searchForOld.'%'));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         if (in_array($this->extraData['oldip'],ipstoarray($row['ips']))) {
                             if (!isset($this->dhcpData[$row['id']])) {
-                                $this->dhcpData[$row['id']]['ip']=$row['ip'];
-                                $this->dhcpData[$row['id']]['port']=$row['dport'];
-                                $this->dhcpData[$row['id']]['user']=$row['duser'];
-                                $this->dhcpData[$row['id']]['pass']=$row['dpass'];
-                                $this->dhcpData[$row['id']]['publickey']=$row['publickey'];
-                                $this->dhcpData[$row['id']]['keyname']=$row['keyname'];
-                                $this->dhcpData[$row['id']]['netmask']=$row['netmask'];
-                                $this->dhcpData[$row['id']]['startCmd']=$row['startCmd'];
-                                $this->dhcpData[$row['id']]['dhcpFile']=$row['dhcpFile'];
-                                $this->dhcpData[$row['id']]['subnetOptions']=$row['subnetOptions'];
+                                $this->dhcpData[$row['id']]['ip'] = $row['ip'];
+                                $this->dhcpData[$row['id']]['port'] = $row['dport'];
+                                $this->dhcpData[$row['id']]['user'] = $row['duser'];
+                                $this->dhcpData[$row['id']]['pass'] = $row['dpass'];
+                                $this->dhcpData[$row['id']]['publickey'] = $row['publickey'];
+                                $this->dhcpData[$row['id']]['keyname'] = $row['keyname'];
+                                $this->dhcpData[$row['id']]['netmask'] = $row['netmask'];
+                                $this->dhcpData[$row['id']]['startCmd'] = $row['startCmd'];
+                                $this->dhcpData[$row['id']]['dhcpFile'] = $row['dhcpFile'];
+                                $this->dhcpData[$row['id']]['subnetOptions'] = $row['subnetOptions'];
                             }
-                            if (isset($modID) and $modID != $row['id']) $this->dhcpData[$row['id']]['actions'][]=array('action'=>'del','id'=>$ID,'type'=>$type,'imageID'=>$imageID,'hostID'=>$hostID,'userID'=>$userID,'resellerID'=>$resellerID);
+                            if (isset($modID) and $modID != $row['id']) $this->dhcpData[$row['id']]['actions'][]=array('action' => 'del','id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
                         }
                     }
                 }
@@ -204,40 +204,40 @@ class rootServer {
             if (!in_array($action, array('md','ad','rp')) and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['usePXE'] == 'Y')) and isid($imageID,10)) {
                 if (isid($this->ID[$type][$ID]['pxeID'],10)) {
                     $query=$this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' AND `id`=:pxeID LIMIT 1");
-                    $query->execute(array(':aeskey'=>$this->aeskey,':pxeID'=>$this->ID[$type][$ID]['pxeID']));
+                    $query->execute(array(':aeskey' => $this->aeskey,':pxeID' => $this->ID[$type][$ID]['pxeID']));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         if(!isset($this->PXEData[$row['id']])){
-                            $this->PXEData[$row['id']]['ip']=$row['ip'];
-                            $this->PXEData[$row['id']]['port']=$row['dport'];
-                            $this->PXEData[$row['id']]['user']=$row['duser'];
-                            $this->PXEData[$row['id']]['pass']=$row['dpass'];
-                            $this->PXEData[$row['id']]['publickey']=$row['publickey'];
-                            $this->PXEData[$row['id']]['keyname']=$row['keyname'];
-                            $this->PXEData[$row['id']]['PXEFolder']=$row['PXEFolder'];
+                            $this->PXEData[$row['id']]['ip'] = $row['ip'];
+                            $this->PXEData[$row['id']]['port'] = $row['dport'];
+                            $this->PXEData[$row['id']]['user'] = $row['duser'];
+                            $this->PXEData[$row['id']]['pass'] = $row['dpass'];
+                            $this->PXEData[$row['id']]['publickey'] = $row['publickey'];
+                            $this->PXEData[$row['id']]['keyname'] = $row['keyname'];
+                            $this->PXEData[$row['id']]['PXEFolder'] = $row['PXEFolder'];
                         }
                         $foundPXE = true;
-                        $this->PXEData[$row['id']]['actions'][]=array('action'=>$action,'id'=>$ID,'type'=>$type,'imageID'=>$imageID);
-                        $this->ID[$type][$ID]['pxeIP']=$row['ip'];
-                        $this->ID[$type][$ID]['pxeID']=$row['id'];
+                        $this->PXEData[$row['id']]['actions'][]=array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID);
+                        $this->ID[$type][$ID]['pxeIP'] = $row['ip'];
+                        $this->ID[$type][$ID]['pxeID'] = $row['id'];
                     }
                 }
                 if (!isset($foundPXE) and $action!='dl') {
                     $query=$this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' ORDER BY RAND() LIMIT 1");
-                    $query->execute(array(':aeskey'=>$this->aeskey));
+                    $query->execute(array(':aeskey' => $this->aeskey));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         if(!isset($this->PXEData[$row['id']])){
-                            $this->PXEData[$row['id']]['ip']=$row['ip'];
-                            $this->PXEData[$row['id']]['port']=$row['dport'];
-                            $this->PXEData[$row['id']]['user']=$row['duser'];
-                            $this->PXEData[$row['id']]['pass']=$row['dpass'];
-                            $this->PXEData[$row['id']]['publickey']=$row['publickey'];
-                            $this->PXEData[$row['id']]['keyname']=$row['keyname'];
-                            $this->PXEData[$row['id']]['PXEFolder']=$row['PXEFolder'];
+                            $this->PXEData[$row['id']]['ip'] = $row['ip'];
+                            $this->PXEData[$row['id']]['port'] = $row['dport'];
+                            $this->PXEData[$row['id']]['user'] = $row['duser'];
+                            $this->PXEData[$row['id']]['pass'] = $row['dpass'];
+                            $this->PXEData[$row['id']]['publickey'] = $row['publickey'];
+                            $this->PXEData[$row['id']]['keyname'] = $row['keyname'];
+                            $this->PXEData[$row['id']]['PXEFolder'] = $row['PXEFolder'];
                         }
                         $foundPXE = true;
-                        $this->PXEData[$row['id']]['actions'][]=array('action'=>$action,'id'=>$ID,'type'=>$type,'imageID'=>$imageID);
-                        $this->ID[$type][$ID]['pxeIP']=$row['ip'];
-                        $this->ID[$type][$ID]['pxeID']=$row['id'];
+                        $this->PXEData[$row['id']]['actions'][]=array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID);
+                        $this->ID[$type][$ID]['pxeIP'] = $row['ip'];
+                        $this->ID[$type][$ID]['pxeID'] = $row['id'];
                     }
                 }
                 if (!isset($foundPXE) and $action!='dl') {
@@ -246,7 +246,7 @@ class rootServer {
                 }
             }
         }
-        if ($this->ID[$type][$ID]['restart'] == 'A' and $this->type == 'dedicated' and $action!='rp') $this->startStop[]=array('action'=>((isset($this->extraData['oldactive']) and $this->extraData['oldactive'] == 'Y') or in_array($action, array('ad','st','dl'))) ? 'st' : 're','id'=>$ID and $action!='rp');
+        if ($this->ID[$type][$ID]['restart'] == 'A' and $this->type == 'dedicated' and $action!='rp') $this->startStop[]=array('action'=>((isset($this->extraData['oldactive']) and $this->extraData['oldactive'] == 'Y') or in_array($action, array('ad','st','dl'))) ? 'st' : 're','id' => $ID and $action!='rp');
         else if ($this->type == 'dedicated' and $action!='rp') return 'Restart not allowed for Server with ID: '.$this->tempID;
         return true;
     }
@@ -262,7 +262,7 @@ class rootServer {
                 $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
                 $key=EASYWIDIR . '/keys/'.$sshkey;
 
-                $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'],$v['port'], array('hostkey'=>'ssh-rsa')) : false;
+                $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'],$v['port'], array('hostkey' => 'ssh-rsa')) : false;
             } else {
                 $ssh2= @ssh2_connect($v['ip'],$v['port']);
             }
@@ -284,12 +284,12 @@ class rootServer {
                                 if ($a['action'] == 'del' and isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
                                     unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
                                 } else if (isset($this->ID[$a['type']][$a['id']])) {
-                                    $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet']=$this->ID[$a['type']][$a['id']]['mac'].';';
-                                    $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address']=$this->ID[$a['type']][$a['id']]['ip'].';';
+                                    $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'].';';
+                                    $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'].';';
                                     if ($this->ID[$a['type']][$a['id']]['usePXE'] == 'Y' and (in_array($a['action'], array('ad','ri','rc')))) {
-                                        $removeArray[]=array('type'=>($a['type'] == 'dedicated') ? 'de' : 'vs','affectedID'=>$a['id'],'name'=>$this->ID[$a['type']][$a['id']]['ip'],'imageID'=>$a['imageID'],'hostID'=>$a['hostID'],'userID'=>$a['userID'],'resellerID'=>$a['resellerID'],'extraData'=>array('runAt'=>strtotime("+5 minutes")));
+                                        $removeArray[]=array('type'=>($a['type'] == 'dedicated') ? 'de' : 'vs','affectedID' => $a['id'],'name' => $this->ID[$a['type']][$a['id']]['ip'],'imageID' => $a['imageID'],'hostID' => $a['hostID'],'userID' => $a['userID'],'resellerID' => $a['resellerID'],'extraData'=>array('runAt' => strtotime("+5 minutes")));
                                         $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
-                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']=$this->ID[$a['type']][$a['id']]['pxeIP'].';';
+                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'].';';
                                     } else {
                                         unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename']);
                                         unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']);
@@ -324,7 +324,7 @@ class rootServer {
                 $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
                 $key=EASYWIDIR . '/keys/'.$sshkey;
 
-                $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'],$v['port'], array('hostkey'=>'ssh-rsa')) : false;
+                $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'],$v['port'], array('hostkey' => 'ssh-rsa')) : false;
             } else {
                 $ssh2= @ssh2_connect($v['ip'],$v['port']);
             }
@@ -386,7 +386,7 @@ class rootServer {
             } else {
                 foreach (explode('&',str_replace(array('&amp;','?'), array('&',''),$requestString)) as $param) {
                     $ex=explode('=',$param);
-                    if (isset($ex[1])) $postParams[$ex[0]]=$ex[1];
+                    if (isset($ex[1])) $postParams[$ex[0]] = $ex[1];
                 }
             }
             webhostRequest($ex[0],'easy-wi.com',$file,$postParams,($this->ID['dedicated'][$a['id']]['https'] == 'Y') ? 443 : 80);
@@ -405,13 +405,13 @@ class rootServer {
                     } else {
                         $cleanedLine=preg_replace('/^[\s+]{1,}(.*?)$/','$1',preg_replace('/\s+/',' ',$split));
                         if (strpos($split,'#')!==false) {
-                            $config[$subnet][$host]['comment'][]=$cleanedLine;
+                            $config[$subnet][$host]['comment'][] = $cleanedLine;
                         } else {
                             $ex=explode(' ',$cleanedLine);
                             $v=$ex[count($ex)-1];
                             unset($ex[count($ex)-1]);
                             $k=implode(' ',$ex);
-                            $config[$subnet][$host][$k]=$v;
+                            $config[$subnet][$host][$k] = $v;
                         }
                     }
                 } else if (preg_match('/^(\s+|)host[\s+]{1,}[\w\-\_]{1,}[\s+]{1,}[\{]$/',$split)) {
@@ -425,10 +425,10 @@ class rootServer {
                 $subnetStart = true;
                 $subnet=preg_replace('/^[\s+]{0,}subnet[\s+]{1,}(.*)[\s+]{1,}netmask[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[0][\s+]{0,}[\{]$/','\1',$split);
             } else {
-                $doNotTouch[]=$split;
+                $doNotTouch[] = $split;
             }
         }
-        return array('raw'=>$doNotTouch,'subnet'=>$config);
+        return array('raw' => $doNotTouch,'subnet' => $config);
     }
     private function assembleDhcpConfig ($array,$id) {
         $config = '';
@@ -458,7 +458,7 @@ class rootServer {
                 $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
                 $key=EASYWIDIR . '/keys/'.$sshkey;
 
-                $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($this->vmwareHosts[$hID]['vmIDs']['ip'],$this->vmwareHosts[$hID]['vmIDs']['dport'], array('hostkey'=>'ssh-rsa')) : false;
+                $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($this->vmwareHosts[$hID]['vmIDs']['ip'],$this->vmwareHosts[$hID]['vmIDs']['dport'], array('hostkey' => 'ssh-rsa')) : false;
             } else {
                 $ssh2=@ssh2_connect($this->vmwareHosts[$hID]['vmIDs']['ip'],$this->vmwareHosts[$hID]['vmIDs']['dport']);
             }

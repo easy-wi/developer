@@ -85,7 +85,7 @@ if (isset($action) and $action == 'dl') {
     foreach ($pselect->fetchall() as $row) {
         $logdate=explode(' ', $row['bantime']);
         if (isset($row['id']) and isid($row['id'],'30') and isset($logdate[1])) {
-            $table[]=array('id'=>$row['id'],'logday'=>$logdate[0],'loghour'=>$logdate[0],'badip'=>$row['badip'],'failcount'=>$row['failcount'],'reason'=>$row['reason']);
+            $table[]=array('id' => $row['id'],'logday' => $logdate[0],'loghour' => $logdate[0],'badip' => $row['badip'],'failcount' => $row['failcount'],'reason' => $row['reason']);
         }
     }
     $pselect=$sql->prepare("SELECT `faillogins` FROM `settings` WHERE `resellerid`='0' LIMIT 1");
@@ -122,7 +122,7 @@ if (isset($action) and $action == 'dl') {
     } else {
         $link .='&amp;p=0">1</a>';
     }
-    $pages[]=$link;
+    $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;

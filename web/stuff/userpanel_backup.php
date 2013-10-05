@@ -90,9 +90,9 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
         $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $shortens[]=$row['shorten'];
-            $shortens[]=$row['shorten'].'-2';
-            $shortens[]=$row['shorten'].'-3';
+            $shortens[] = $row['shorten'];
+            $shortens[] = $row['shorten'].'-2';
+            $shortens[] = $row['shorten'].'-3';
         }
         $template_file = "userpanel_gserver_backup_rb.tpl";
     } else if ($ui->w('action',3,'post') == 'rb2' and $ui->gamestring('template','post')){

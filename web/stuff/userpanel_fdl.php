@@ -141,12 +141,12 @@ if ($ui->st('d','get') == 'ud' and $ui->id('id',19,'get') and (!isset($_SESSION[
         $fdlpath=explode('@', $row['fdlpath']);
         $username=$row['cname'];
     }
-    if (!isset($fdlpath[1])) $fdlpath[1]=$sprache->noset;
+    if (!isset($fdlpath[1])) $fdlpath[1] = $sprache->noset;
     $table = array();
     $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) $table[]=array('id'=>$row['id'],'serverip'=>$row['serverip'],'port'=>$row['port']);
+        if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) $table[]=array('id' => $row['id'],'serverip' => $row['serverip'],'port' => $row['port']);
     }
     $template_file = "userpanel_gserver_fdl_list.tpl";
 }

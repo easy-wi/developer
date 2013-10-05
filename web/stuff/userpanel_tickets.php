@@ -69,7 +69,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if (empty($topic)) {
                 $topic=$row['topic'];
             }
-            $table[]=array('id'=>$row['id'],'topic'=>$topic);
+            $table[]=array('id' => $row['id'],'topic' => $topic);
             if ($i==1) {
                 $query2 = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=? AND `maintopic`!=`id` AND `resellerid`=? ORDER BY `id`");
                 $query2->execute(array($row['id'],$reseller_id));
@@ -84,7 +84,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     if (empty($topic)) {
                         $topic=$row2['topic'];
                     }
-                    $table2[]=array('id'=>$row2['id'],'topic'=>$topic);
+                    $table2[]=array('id' => $row2['id'],'topic' => $topic);
                 }
             }
             $i++;
@@ -220,7 +220,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $where='WHERE t.`userid`=? AND t.`resellerid`=?';
     if (isset($ui->get['ts'])) {
         foreach ($ui->get['ts'] as $get) {
-            if (preg_match('/[ACDNPR]/',$get)) $selected[]=$get;
+            if (preg_match('/[ACDNPR]/',$get)) $selected[] = $get;
         }
     } else {
         $selected=array('A','D','N','P','R');
@@ -230,7 +230,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($selected as $get) {
         if ($i==0) $temp.="`state`='${get}'";
         else $temp.=" OR `state`='${get}'";
-        $selected[]=$get;
+        $selected[] = $get;
         $i++;
     }
     $temp.=')';
@@ -342,7 +342,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $status=$sprache->status_reopen;
         }
-        $table[]=array('id'=>$row['id'],'priority'=>$priority,'writedate'=>$writedate,'supporter'=>(trim($row['vname'] . ' ' . $row['name']) != '') ? trim($row['vname'] . ' ' . $row['name']) : $row['cname'],'subject'=>$topic,'status'=>$status,'rawState'=>$row['state'],'statusClass'=>$statusClass);
+        $table[]=array('id' => $row['id'],'priority' => $priority,'writedate' => $writedate,'supporter'=>(trim($row['vname'] . ' ' . $row['name']) != '') ? trim($row['vname'] . ' ' . $row['name']) : $row['cname'],'subject' => $topic,'status' => $status,'rawState' => $row['state'],'statusClass' => $statusClass);
     }
     $template_file = "userpanel_tickets_list.tpl";
 }

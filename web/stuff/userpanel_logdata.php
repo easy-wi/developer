@@ -63,14 +63,14 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		}			
 	}
 	$useraction=$row['useraction'];
-    $placeholders=array('%%','%add%','%dl%','%del%','%md%','%mod%','%start%','%restart%','%stop%','%upd%','%fail%','%ok%','%psw%','%cfg%','%import%','%reinstall%','%backup%','%use%');
+    $placeholders=array('%%', '%add%', '%dl%', '%del%', '%md%', '%mod%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
     $replace=array('',$gsprache->add.': ',$gsprache->del.': ',$gsprache->del.': ',$gsprache->mod.': ',$gsprache->mod.': ',$gsprache->start.': ',$gsprache->start.': ',$gsprache->stop.': ',$gsprache->update.': ','','',$gssprache->password.': ',$gssprache->config.': ',$gsprache->import.': ',$gssprache->reinstall.': ',$gsprache->backup,$gsprache->use.': ');
     $replacedpics=str_replace($placeholders,$replace,$useraction);
-    $placeholders=array('%voserver%','%gserver%','%user%','%fastdl%','%master%','%user%','%root%','%addon%','%settings%','%vserver%','%ticket_subject%','%reseller%','%virtual%','%eac%','%resync%','%virtualimage%','%template%','%voserver%','%emailsettings%','%dns%','%tsdns%','%pmode%');
+    $placeholders=array('%voserver%', '%gserver%', '%user%', '%fastdl%', '%master%', '%user%', '%root%', '%addon%', '%settings%', '%vserver%', '%ticket_subject%', '%reseller%', '%virtual%', '%eac%', '%resync%', '%virtualimage%', '%template%', '%voserver%', '%emailsettings%', '%dns%', '%tsdns%', '%pmode%');
     $replace=array($gsprache->voiceserver,$gsprache->gameserver,$gsprache->user,$gsprache->fastdownload,$gsprache->master,$gsprache->user,$gsprache->root,$gsprache->addon2,$gsprache->settings,$gsprache->virtual,$gsprache->support,$gsprache->reseller,$gsprache->hostsystem,'Easy Anti Cheat',$gssprache->resync,$gsprache->virtual . ' ' . $gsprache->template,$gsprache->template,$gsprache->voiceserver,'E-Mail '.$gsprache->settings,'TSDNS','TSDNS',$gssprache->protect);
     $replacedwords=str_replace($placeholders,$replace,$replacedpics);
     $logdate=explode(' ', $row['logdate']);
-    $table[]=array('logday'=>$logdate[0],'loghour'=>$logdate[1],'ip'=>$ip,'username'=>$username,'useraction'=>$replacedwords);
+    $table[]=array('logday' => $logdate[0],'loghour' => $logdate[1],'ip' => $ip,'username' => $username,'useraction' => $replacedwords);
 }
 $next=$start+$amount;
 $query = $sql->prepare("SELECT `id` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=?");

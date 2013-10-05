@@ -51,7 +51,7 @@ if (isset($argv)) {
         else if (is_numeric($a)) $sleep=$a;
         else {
             $e=explode(':',$a);
-            if (isset($e[1])) $args[$e[0]]=$e[1];
+            if (isset($e[1])) $args[$e[0]] = $e[1];
         }
     }
     if(!isset($deamon)) {
@@ -63,7 +63,7 @@ if (isset($argv)) {
     }
     if(!isset($sleep)) $sleep=60;
 }
-if (!isset($ip) or $_SERVER['SERVER_ADDR']==$ip) {
+if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     define('EASYWIDIR', dirname(__FILE__));
     include(EASYWIDIR . '/stuff/vorlage.php');
     include(EASYWIDIR . '/stuff/functions.php');

@@ -102,7 +102,7 @@ if ($ui->id('id', 10, 'get')) {
         #echo "ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip . '_' . "$port/$shorten/$binarydir/screenlog.0";
         $fp=@fopen('ftp://' . $username . ':' . $ftppass . '@' . $ip . ':' . $ftpport . '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0','r');
         $screenlog = '';
-        if ($fp  ==  false) {
+        if ($fp == false) {
             echo 'No Logdata!';
         } else {
             stream_set_timeout($fp,5);

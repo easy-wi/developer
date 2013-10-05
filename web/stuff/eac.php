@@ -60,7 +60,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if (!$ui->w('action', 4, 'post')) {
 	$pselect=$sql->prepare("SELECT `active`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,`publickey`,`keyname`,`cfgdir`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE resellerid=:reseller_id LIMIT 1");
-	$pselect->execute(array(':aeskey'=>$aeskey,':reseller_id'=>$reseller_id));
+	$pselect->execute(array(':aeskey' => $aeskey,':reseller_id' => $reseller_id));
 	foreach ($pselect->fetchAll() as $row) {
 		$eac_active=$row['active'];
 		$eac_ip=$row['ip'];
@@ -135,7 +135,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$pass=startparameter($ui->post['pass']);
 		$cfgdir=folder($ui->post['cfgdir']);
 		$pupdate=$sql->prepare("UPDATE `eac` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port, :aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`publickey`=:publickey,`keyname`=:keyname,`cfgdir`=:cfgdir,`normal_3`=:normal_3,`normal_4`=:normal_4,`hlds_3`=:hlds_3,`hlds_4`=:hlds_4,`hlds_5`=:hlds_5,`hlds_6`=:hlds_6 WHERE resellerid=:reseller_id");
-		$pupdate->execute(array(':active'=>$active,':ip'=>$ip,':port'=>$port,':aeskey'=>$aeskey,':user'=>$user,':pass'=>$pass,':publickey'=>$publickey,':keyname'=>$keyname,':cfgdir'=>$cfgdir,':normal_3'=>$normal_3,':normal_4'=>$normal_4,':hlds_3'=>$hlds_3,':hlds_4'=>$hlds_4,':hlds_5'=>$hlds_5,':hlds_6'=>$hlds_6,':reseller_id'=>$reseller_id));
+		$pupdate->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':cfgdir' => $cfgdir,':normal_3' => $normal_3,':normal_4' => $normal_4,':hlds_3' => $hlds_3,':hlds_4' => $hlds_4,':hlds_5' => $hlds_5,':hlds_6' => $hlds_6,':reseller_id' => $reseller_id));
 		$template_file = $spracheResponse->table_add;
 		$loguseraction="%mod% %eac%";
 		$insertlog->execute();

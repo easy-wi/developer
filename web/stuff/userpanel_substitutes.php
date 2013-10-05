@@ -61,22 +61,22 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $ro = array();
         $query = $sql->prepare("SELECT `id`,`dbname` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $db[$row['id']]=$row['dbname'];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $db[$row['id']] = $row['dbname'];
         $query = $sql->prepare("SELECT `id`,CONCAT(`serverip`,':',`port`) AS `address` FROM `gsswitch` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $gs[$row['id']]=$row['address'];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $gs[$row['id']] = $row['address'];
         $query = $sql->prepare("SELECT `id`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $vo[$row['id']]=$row['address'];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $vo[$row['id']] = $row['address'];
         $query = $sql->prepare("SELECT `dnsID`,`dns` FROM `voice_dns` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $vd[$row['dnsID']]=$row['dns'];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $vd[$row['dnsID']] = $row['dns'];
         $query = $sql->prepare("SELECT `id`,`ip` FROM `virtualcontainer` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $vs[$row['id']]=$row['ip'];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $vs[$row['id']] = $row['ip'];
         $query = $sql->prepare("SELECT `dedicatedID`,`ip` FROM `rootsDedicated` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $ro[$row['dedicatedID']]=$row['ip'];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $ro[$row['dedicatedID']] = $row['ip'];
     }
     if (!$ui->st('action','post') and $ui->st('d','get') == 'ad') {
         $randompass=passwordgenerate(10);
@@ -169,7 +169,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `sID`,`loginName`,`active` FROM `userdata_substitutes` WHERE `userID`=? AND `resellerID`=?");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[]=array('id'=>$row['sID'],'loginName'=>$row['loginName'],'active'=>$row['active']);
+        $table[]=array('id' => $row['sID'],'loginName' => $row['loginName'],'active' => $row['active']);
     }
     $template_file = 'userpanel_substitutes_list.tpl';
 }

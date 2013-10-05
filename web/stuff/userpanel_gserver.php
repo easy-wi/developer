@@ -83,7 +83,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $templates = (array) $ui->id('template',10,'post');
         foreach($templates as $id => $tpl) {
             if ($tpl>0) {
-                $template[]=$tpl;
+                $template[] = $tpl;
                 if ($ui->active('type','post') == 'Y') {
                     $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=? AND `userid`=?");
                     $query->execute(array($id,$reseller_id,$user_id));
@@ -127,7 +127,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $servertemplate=($currentID==$row['id']) ? $row['servertemplate'] : '';
-            $table[]=array('id'=>$row['id'],'description'=>$row['description'],'shorten'=>$row['shorten'],'servertemplate'=>$servertemplate);
+            $table[]=array('id' => $row['id'],'description' => $row['description'],'shorten' => $row['shorten'],'servertemplate' => $servertemplate);
         }
         if (count($table)>0) {
             $template_file = "userpanel_gserver_reinstall.tpl";
@@ -206,7 +206,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $anticheatsoft = '';
             }
-            if ($row['id']==$serverID) {
+            if ($row['id'] == $serverID) {
                 $currentTemplate=$gshorten;
                 $displayNone = '';
                 $displayNoneBoot='in';
@@ -266,7 +266,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $workshopCollection=$row['workshopCollection'];
             }
             $map=(!in_array($row['defaultmap'], array('', null))) ? $row['map'] : null;
-            $table[]=array('id'=>$row['id'],'cmd'=>$row['cmd'],'fps' =>$row['fps'],'tic'=>$row['tic'],'map'=>$map,'workshopCollection'=>$workshopCollection,'webapiAuthkey'=>$row['dwebapiAuthkey'],'mapGroup'=>$row['mapGroup'],'defaultMapGroup'=>$row['defaultMapGroup'],'servertemplate'=>$row['servertemplate'],'userfps'=>$row['userfps'],'usertick'=>$row['usertick'],'usermap'=>$row['usermap'],'description'=>$row['description'],'option'=>$option,'qstat'=>$qstat,'upload'=>$upload,'uploaddir'=>$uploaddir,'anticheat'=>$anticheat,'anticheatsoft'=>$anticheatsoft,'eac'=>$eac,'shorten'=>$gshorten,'mod'=>$mod,'mods'=>$mods,'displayNone'=>$displayNone,'displayNoneBoot'=>$displayNoneBoot);
+            $table[]=array('id' => $row['id'],'cmd' => $row['cmd'],'fps' =>$row['fps'],'tic' => $row['tic'],'map' => $map,'workshopCollection' => $workshopCollection,'webapiAuthkey' => $row['dwebapiAuthkey'],'mapGroup' => $row['mapGroup'],'defaultMapGroup' => $row['defaultMapGroup'],'servertemplate' => $row['servertemplate'],'userfps' => $row['userfps'],'usertick' => $row['usertick'],'usermap' => $row['usermap'],'description' => $row['description'],'option' => $option,'qstat' => $qstat,'upload' => $upload,'uploaddir' => $uploaddir,'anticheat' => $anticheat,'anticheatsoft' => $anticheatsoft,'eac' => $eac,'shorten' => $gshorten,'mod' => $mod,'mods' => $mods,'displayNone' => $displayNone,'displayNoneBoot' => $displayNoneBoot);
             $i++;
         }
         if ($i>0) {
@@ -345,7 +345,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $cmds = array();
         if (isset($oldID) and $oldID != $switchID) {
             $tmp=gsrestart($id,'so',$aeskey,$reseller_id);
-            if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
+            if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
         }
         $query = $sql->prepare("UPDATE `gsswitch` SET `serverid`=?,`ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($switchID,$ftppass,$aeskey,$id,$reseller_id));
@@ -355,10 +355,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query = $sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($id,$reseller_id));
                     $tmp=gsrestart($id,'re',$aeskey,$reseller_id);
-                    if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
+                    if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
                 } else {
                     $tmp=gsrestart($id,'re',$aeskey,$reseller_id);
-                    if (is_array($tmp)) foreach($tmp as $t) $cmds[]=$t;
+                    if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
                 }
             }
             if ($ftppass != $oldPass) {
@@ -420,8 +420,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $data_explode=explode(" ", $configline);
             $permission=(isset($data_explode[1])) ? $data_explode[1] : 'full';
             if ($data_explode[0] != '') {
-                $configs[]=array('permission'=>$permission,'line'=>$data_explode[0]);
-                $configCheck[]=$data_explode[0];
+                $configs[]=array('permission' => $permission,'line' => $data_explode[0]);
+                $configCheck[] = $data_explode[0];
             }
         }
     }
@@ -434,8 +434,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $data_explode=explode(" ", $configline);
                 $permission=(isset($data_explode[1])) ? $data_explode[1] : 'full';
                 if ($data_explode[0] != '') {
-                    $configs[]=array('permission'=>$permission,'line'=>$data_explode[0]);
-                    $configCheck[]=$data_explode[0];
+                    $configs[]=array('permission' => $permission,'line' => $data_explode[0]);
+                    $configCheck[] = $data_explode[0];
                 }
             }
         }
@@ -631,9 +631,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             $value=$split[1];
                             if ($cvar!="exec") {
                                 if (in_array($cvar, $general_cvar) or in_array($cvar, $game_cvars)) {
-                                    $linearray[$cvar]=$value;
+                                    $linearray[$cvar] = $value;
                                 } else {
-                                    $unknownarray[$cvar]=$value;
+                                    $unknownarray[$cvar] = $value;
                                 }
                             }
                         } else {
@@ -643,9 +643,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                 $value=(isset($split[1])) ? $split[1] : '';
                                 if ($cvar!="exec") {
                                     if (in_array($cvar, $general_cvar) or in_array($cvar, $game_cvars)) {
-                                        $linearray[$cvar]=$value;
+                                        $linearray[$cvar] = $value;
                                     } else {
-                                        $unknownarray[$cvar]=$value;
+                                        $unknownarray[$cvar] = $value;
                                     }
                                 }
                             }
@@ -697,7 +697,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $ce=explode(',', $row['cores']);
             $coreCount=count($ce);
             $cores = array();
-            if ($row['taskset'] == 'Y' and $coreCount>0) foreach ($ce as $uc) $cores[]=$uc;
+            if ($row['taskset'] == 'Y' and $coreCount>0) foreach ($ce as $uc) $cores[] = $uc;
             $cores=implode(', ',$cores);
             $password=$row['queryPassword'];
             $stopped=$row['stopped'];
@@ -764,18 +764,18 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $nameremoved=$sprache->nameremoved;
                 }
             }
-            $initalize[]=$gameserverid.'-start';
-            $initalize[]=$gameserverid.'-stop';
-            $initalize[]=$gameserverid.'-settings';
-            $initalize[]=$gameserverid.'-config';
-            $initalize[]=$gameserverid.'-reinstall';
-            $initalize[]=$gameserverid.'-planer';
-            $initalize[]=$gameserverid.'-logs';
-            $initalize[]=$gameserverid.'-backup';
-            $initalize[]=$gameserverid.'-addons';
-            $initalize[]=$gameserverid.'-protect';
-            $initalize[]=$gameserverid.'-sourcetv';
-            $table[]=array('id'=>$gameserverid,'premoved'=>$premoved,'nameremoved'=>$nameremoved,'server'=>$address,'name'=>$name,'img'=>$imgName,'alt'=>$imgAlt,'imgp'=>$imgNameP,'altp'=>$imgAltP,'numplayers'=>$numplayers,'maxplayers'=>$maxplayers,'map'=>$map,'cname'=>$cname,'cftppass'=>$cftppass,'ip'=>$ip,'ftpport'=>$ftpport,'port'=>$port,'shorten'=>$currentTemplate,'gameShorten'=>$shorten,'ftpdata'=>$ftpdata,'updatetime'=>$updatetime,'stopped'=>$stopped,'pro'=>$pro,'upload'=>$upload,'minram'=>$row['minram'],'maxram'=>$row['maxram'],'taskset'=>$row['taskset'],'coreCount'=>$coreCount,'cores'=>$cores);
+            $initalize[] = $gameserverid.'-start';
+            $initalize[] = $gameserverid.'-stop';
+            $initalize[] = $gameserverid.'-settings';
+            $initalize[] = $gameserverid.'-config';
+            $initalize[] = $gameserverid.'-reinstall';
+            $initalize[] = $gameserverid.'-planer';
+            $initalize[] = $gameserverid.'-logs';
+            $initalize[] = $gameserverid.'-backup';
+            $initalize[] = $gameserverid.'-addons';
+            $initalize[] = $gameserverid.'-protect';
+            $initalize[] = $gameserverid.'-sourcetv';
+            $table[]=array('id' => $gameserverid,'premoved' => $premoved,'nameremoved' => $nameremoved,'server' => $address,'name' => $name,'img' => $imgName,'alt' => $imgAlt,'imgp' => $imgNameP,'altp' => $imgAltP,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'map' => $map,'cname' => $cname,'cftppass' => $cftppass,'ip' => $ip,'ftpport' => $ftpport,'port' => $port,'shorten' => $currentTemplate,'gameShorten' => $shorten,'ftpdata' => $ftpdata,'updatetime' => $updatetime,'stopped' => $stopped,'pro' => $pro,'upload' => $upload,'minram' => $row['minram'],'maxram' => $row['maxram'],'taskset' => $row['taskset'],'coreCount' => $coreCount,'cores' => $cores);
         }
     }
     $template_file = "userpanel_gserver_list.tpl";

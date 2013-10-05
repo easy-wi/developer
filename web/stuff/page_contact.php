@@ -50,7 +50,7 @@ if ($ui->escaped('email','post')) {
     if (isset($_SESSION['token'])) unset($_SESSION['token']);
     if (count($error)>0) {
         $token=md5(passwordgenerate(32));
-        $_SESSION['token']=$token;
+        $_SESSION['token'] = $token;
         $comments=str_replace('<br />','',$comments);
     } else {
         unset($error);
@@ -60,7 +60,7 @@ if ($ui->escaped('email','post')) {
     }
 } else {
     $token=md5(passwordgenerate(32));
-    $_SESSION['token']=$token;
+    $_SESSION['token'] = $token;
 }
 $page_data->setCanonicalUrl($s);
 

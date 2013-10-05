@@ -56,7 +56,7 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
     print "The time is now: ".ini_get('max_execution_time')."\r\n";
     print "The memory limit is now: ".ini_get('memory_limit')."\r\n";
 }
-if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
+if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
     define('EASYWIDIR', dirname(__FILE__));
 	include(EASYWIDIR . '/stuff/vorlage.php');
 	include(EASYWIDIR . '/stuff/class_validator.php');
@@ -64,7 +64,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
 	include(EASYWIDIR . '/stuff/settings.php');
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
 	$query = $sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date` FROM `traffic_settings` LIMIT 1");
-    $query->execute(array(':aeskey'=>$aeskey));
+    $query->execute(array(':aeskey' => $aeskey));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$stats_databanktype=$row['type'];
 		$stats_host=$row['statip'];
@@ -104,19 +104,19 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
     $query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		unset($vserverip);
-		$vserverip[]=$row['ip'];
+		$vserverip[] = $row['ip'];
 		$vserverid=$row['id'];
 		foreach(ipstoarray($row['ips']) as $vip) {
-			$vserverip[]=$vip;
+			$vserverip[] = $vip;
 		}
-		$vserverips[$vserverid]=$vserverip;
+		$vserverips[$vserverid] = $vserverip;
 	}
     $query = $sql2->prepare("SHOW PROCESSLIST");
     $query->execute();
     print "Killing active locks and threads regarding database $stats_db\r\n";
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         list($host)=explode(':', $row['Host']);
-        if ($host == 'localhost' and $row['db']==$stats_db) {
+        if ($host == 'localhost' and $row['db'] == $stats_db) {
             $query2 = $sql2->prepare("KILL ?");
             $query2->execute(array($row['Id']));
         }
@@ -169,8 +169,8 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR']==$remoteip) {
                     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         $userid=$row['userid'];
                         $resellerid=$row['resellerid'];
-                        $serverIDs[$serverid]['userid']=$userid;
-                        $serverIDs[$serverid]['resellerid']=$resellerid;
+                        $serverIDs[$serverid]['userid'] = $userid;
+                        $serverIDs[$serverid]['resellerid'] = $resellerid;
                     }
                 }
             } else if (searchinnerarray($ip_src,$userips)) {

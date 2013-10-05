@@ -44,7 +44,7 @@ class PageSettings {
 		$this->canurl=$this->pageurl.'/';
 	}
 	private function NameToLink ($value) {
-        $szrm=array('ä'=>'ae','ö'=>'oe','ü'=>'ue','Ä'=>'Ae','Ö'=>'Oe','Ü'=>'Ue','ß'=>'ss','á'=>'a','à'=>'a','Á'=>'A','À'=>'A','é'=>'e','è'=>'e','É'=>'E','È'=>'E','ó'=>'o','ò'=>'o','Ó'=>'O','Ò'=>'O','ú'=>'u','ù'=>'u','Ú'=>'U','Ù'=>'U');
+        $szrm=array('ä' => 'ae','ö' => 'oe','ü' => 'ue','Ä' => 'Ae','Ö' => 'Oe','Ü' => 'Ue','ß' => 'ss','á' => 'a','à' => 'a','Á' => 'A','À' => 'A','é' => 'e','è' => 'e','É' => 'E','È' => 'E','ó' => 'o','ò' => 'o','Ó' => 'O','Ò' => 'O','ú' => 'u','ù' => 'u','Ú' => 'U','Ù' => 'U');
         return strtolower(preg_replace('/[^a-zA-Z0-9]{1}/','-',strtr($value,$szrm)));
 	}
 	function SetData ($var,$value) {
@@ -66,7 +66,7 @@ class PageSettings {
 			$i++;
 			$value=$value . '-' . $i;
 		}
-		$this->pages_array[$type][$pageid]=$value;
+		$this->pages_array[$type][$pageid] = $value;
 		return $value;
 	}
 	function SetMenu ($linkname,$request,$subid,$id=false,$listPage=true) {
@@ -81,7 +81,7 @@ class PageSettings {
 			} else {
 				$link = '/'. $this->AddPageToArray('pages',$id,$this->NameToLink($request));
 			}
-			$subdata['link']=$this->pageurl. '/' . $this->language.$link.'/';
+			$subdata['link'] = $this->pageurl. '/' . $this->language.$link.'/';
 		} else {
 			if (is_array($request)) {
 				$getparams = '';
@@ -95,22 +95,22 @@ class PageSettings {
 			} else {
                 $getparams='?site='.$request;
             }
-			$subdata['link']=$this->pageurl.'/index.php'.$getparams;
+			$subdata['link'] = $this->pageurl.'/index.php'.$getparams;
 		}
 		$subdata['href'] = '<a href="'.$subdata['link'].'" title="'.$linkname.'">'.$linkname.'</a>';
-		$subdata['linkname']=$linkname;
+		$subdata['linkname'] = $linkname;
 		if ($id==false and $listPage==true) {
-			$this->pages[$subid]=$subdata;
+			$this->pages[$subid] = $subdata;
 		} else if ($listPage==true) {
-			$this->pages[$subid][$id]=$subdata;
+			$this->pages[$subid][$id] = $subdata;
 		} else if ($id==false and $listPage==false) {
-            $this->hiddenPages[$subid]=$subdata;
+            $this->hiddenPages[$subid] = $subdata;
         } else if ($listPage==false) {
-            $this->hiddenPages[$subid][$id]=$subdata;
+            $this->hiddenPages[$subid][$id] = $subdata;
         }
 	}
     function SetNewsPost ($id,$title,$text,$cutOff) {
-        $this->last_news[$id]['title']=$title;
+        $this->last_news[$id]['title'] = $title;
         $this->last_news[$id]['text']=(strlen($text)<=$cutOff) ? $text : substr($text,0,$cutOff).' ...';
         $this->last_news[$id]['link']=($this->seo== 'Y') ? $this->pages['news']['link'].$this->NameToLink($title).'/' : $this->pages['news']['link'].'&amp;id='.$id;
         $this->last_news[$id]['href'] = '<a href="'.$this->last_news[$id]['link'].'" title="'.$title.'">'.$title.'</a>';
@@ -124,7 +124,7 @@ class PageSettings {
 			} else {
 				$link = '/'. $this->AddPageToArray($var,$id,$this->NameToLink($request));
 			}
-			$subdata[$id]['link']=$this->pageurl. '/' . $this->language.$link.'/';
+			$subdata[$id]['link'] = $this->pageurl. '/' . $this->language.$link.'/';
 		} else {
 			if (is_array($request)) {
 				$getparams = '';
@@ -136,10 +136,10 @@ class PageSettings {
 			} else {
 				$getparams='?site='.$request;
 			}
-			$subdata[$id]['link']=$this->pageurl.'/index.php'.$getparams;
+			$subdata[$id]['link'] = $this->pageurl.'/index.php'.$getparams;
 		}
 		$subdata[$id]['href'] = '<a href="'.$subdata[$id]['link'].'" title="'.$linkname.'">'.$linkname.'</a>';
-		$subdata[$id]['linkname']=$linkname;
+		$subdata[$id]['linkname'] = $linkname;
 		$this->$var=$subdata;
 	}
     function setCanonicalUrl($s=null,$ID=null) {
@@ -225,7 +225,7 @@ function checkForSpam ($checkURL=null) {
         $hostByIp = '';
         if ($ui->ip4('REMOTE_ADDR','server')) {
             $hostByIp=gethostbyaddr($ui->ip4('REMOTE_ADDR','server'));
-            $ips[]=$hostByIp;
+            $ips[] = $hostByIp;
         }
         $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `markedSpam`='Y' AND (`ip`=? OR `dns`=?) AND `resellerid`=0 LIMIT 1");
         $query->execute(array($ui->ip('REMOTE_ADDR','server'),$hostByIp));
@@ -275,7 +275,7 @@ function checkForSpam ($checkURL=null) {
             $ipRevers=implode('.', array_reverse(explode('.',$ip)));
             if (count($spamReason)==0 and $tornevall== 'Y' and (bool)checkdnsrr($ipRevers.'.opm.tornevall.org.','A')) $spamReason[] = 'IP is listed at dnsbl.tornevall.org';
             if (count($spamReason)==0 and $honeyPotKey != null and $honeyPotKey != '') {
-                $ex=explode('.',gethostbyname($honeyPotKey.'.'.$ipRevers.'.dnsbl.httpbl.org'));
+                $ex=explode('.',gethostbyname($honeyPotKey . '.' . $ipRevers.'.dnsbl.httpbl.org'));
                 if ($ex[0]==127){
                     $types=array(1=>'Suspicious',2=>'Harvester',3=>'Suspicious & Harvester',4=>'Comment Spammer',5=>'Suspicious & Comment Spammer',6=>'Harvester & Comment Spammer',7=>'Suspicious & Harvester & Comment Spammer');
                     if ($ex[3] != 0) $spamReason[] = 'IP seems to be a '.$types[$ex[3]].'. It was last seen '.$ex[1].' day(s) ago and has a threat score of '.$ex[2];
