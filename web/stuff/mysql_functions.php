@@ -180,6 +180,9 @@ class ExternalSQL {
             $query = $this->remotesql->prepare("DROP USER ?@''");
             $query->execute(array($dbname));
 
+            $query = $this->remotesql->prepare("DROP USER ?@'localhost'");
+            $query->execute(array($dbname));
+
             $this->remotesql->exec("FLUSH PRIVILEGES; FLUSH HOSTS;");
 
         } catch (PDOException $error) {
@@ -198,6 +201,9 @@ class ExternalSQL {
         try {
 
             $query = $this->remotesql->prepare("DROP USER ?@''");
+            $query->execute(array($username));
+
+            $query = $this->remotesql->prepare("DROP USER ?@'localhost'");
             $query->execute(array($username));
 
             $this->remotesql->exec("FLUSH PRIVILEGES; FLUSH HOSTS;");
