@@ -146,6 +146,7 @@ if (versioncheck ($version,'3.40','update_330-340.php',$response,$sql)) $version
 if (versioncheck ($version,'3.60','update_340-360.php',$response,$sql)) $version='3.60';
 if (versioncheck ($version,'3.70','update_360-370.php',$response,$sql)) $version='3.70';
 if (versioncheck ($version,'4.00','update_370-400.php',$response,$sql)) $version='4.00';
+if (versioncheck ($version,'4.10','update_400-410.php',$response,$sql)) $version='4.10';
 $response->add('Repairing tables if needed.');
 
 include(EASYWIDIR . '/stuff/tables_repair.php');

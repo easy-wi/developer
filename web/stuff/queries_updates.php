@@ -38,13 +38,10 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-function getCraftBukkitVersion ($follow = 'http://dl.bukkit.org/latest-rb/craftbukkit.jar', $start = false) {
-
-    // CaftBukkit does not offer an API where we can retrieve the current version
-    // But they have redirect in place. So lets follow them and cut out the version
-
-    $follow = str_replace('http://', '', $follow);
-    $splitUrl = preg_split('/\//', $follow, -1, PREG_SPLIT_NO_EMPTY);
+function getHttpHeaders ($url) {
+    
+    $url = str_replace('http://', '', $url);
+    $splitUrl = preg_split('/\//', $url, -1, PREG_SPLIT_NO_EMPTY);
     $domain = $splitUrl[0];
 
     $path = '';
@@ -79,28 +76,35 @@ function getCraftBukkitVersion ($follow = 'http://dl.bukkit.org/latest-rb/craftb
         // finally a 200 instead of 301 or 302
         if (strpos(strtolower($buffer), 'http/1.1 200') !== false or strpos(strtolower($buffer), 'http/1.0 200') ==! false) {
 
-            $split = preg_split('/\//', $follow, -1, PREG_SPLIT_NO_EMPTY);
-            return array('version' => $split[count($split) - 2], 'downloadPath' => 'http://' . $follow);
+            return array('code' => 200, 'url' => $url);
 
-        } else {
+        } else if (strpos(strtolower($buffer), 'http/1.1 302') !== false or strpos(strtolower($buffer), 'http/1.0 302') ==! false or strpos(strtolower($buffer), 'http/1.1 301') !== false or strpos(strtolower($buffer), 'http/1.0 301') ==! false) {
 
             // Header parsing, the Location attribute is what we want
             foreach (explode("\r\n", $buffer) as $info) {
-
                 @list($key, $value) = explode(': ', $info);
-
                 if ($key == 'Location') {
-                    $redirectedTo = getCraftBukkitVersion($value);
-                    if (is_array($redirectedTo)) {
-                        return $redirectedTo;
-                    } else if ($start == false) {
-                        return $value;
-                    }
+                    return array('code' => 300, 'url' => $value);
                 }
             }
         }
     }
-    return false;
+
+    return array('code' => 600, 'url' => $url);
+}
+
+function getCraftBukkitVersion () {
+
+    // CaftBukkit does not offer an API where we can retrieve the current version
+    // But they have redirect in place. So lets follow them and cut out the version
+
+    $response = getHttpHeaders('dl.bukkit.org/latest-rb/craftbukkit.jar');
+    while (isset($response['code']) and $response['code'] == 300) {
+        $response = getHttpHeaders($response['url']);
+    }
+
+    $split = preg_split('/\//', $response['url'], -1, PREG_SPLIT_NO_EMPTY);
+    return array('version' => $split[count($split) - 2], 'downloadPath' => 'http://' . $response['url']);
 }
 
 function getMinecraftVersion($release = 'release') {
@@ -109,9 +113,5 @@ function getMinecraftVersion($release = 'release') {
 
     $json = @json_decode(cleanFsockOpenRequest($responseBody, '{', '}'));
 
-    if ($json) {
-        return array('version' => $json->latest->$release, 'downloadPath' => 'http://s3.amazonaws.com/Minecraft.Download/versions/' . $json->latest->$release . '/minecraft_server.' . $json->latest->$release . '.jar');
-    }
-
-    return array('version' => '', 'downloadPath' => '');
+    return ($json) ? array('version' => $json->latest->$release, 'downloadPath' => 'http://s3.amazonaws.com/Minecraft.Download/versions/' . $json->latest->$release . '/minecraft_server.' . $json->latest->$release . '.jar') : array('version' => '', 'downloadPath' => '');
 }
