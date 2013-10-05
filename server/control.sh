@@ -703,6 +703,9 @@ if [ "$VARIABLE5" == "" -o  "$VARIABLE4" == "easywi" ]; then
 	VARIABLE4="ftp://imageuser:BMpRP4HEORkKGj@84.200.78.232"
 fi
 for UPDATE in $VARIABLE3; do
+	SAVEAS=`echo "$UPDATE" | awk -F ';' '{print $2}'`
+	DOWNLOADURL=`echo "$UPDATE" | awk -F ';' '{print $3}'`
+	UPDATE=`echo "$UPDATE" | awk -F ';' '{print $1}'`
 	if [[ ! `screen -ls | grep $UPDATE.update` ]]; then
 cat > $TEMPFOLDER/update_$UPDATE.sh << EOF
 #!/bin/bash
@@ -737,6 +740,12 @@ EOF
 			echo 'cd `dirname $PBUSTER`' >> $TEMPFOLDER/update_$UPDATE.sh
 			echo './pbsetup.run -u --i-accept-the-pb-eula >> $LOGDIR/update-$UPDATE.log' >> $TEMPFOLDER/update_$UPDATE.sh
 			echo 'TEXT="needs to be updated."' >> $TEMPFOLDER/update_$UPDATE.sh
+		
+		# Minecraft
+		elif [ "$VARIABLE1" == "mcUpdate" ]; then
+			echo 'cd $UPDATE' >> $TEMPFOLDER/update_$UPDATE.sh
+			echo "wget $DOWNLOADURL --output-document $SAVEAS" >> $TEMPFOLDER/update_$UPDATE.sh
+			echo "chmod 750 $SAVEAS" >> $TEMPFOLDER/update_$UPDATE.sh
 		# HLDS
 		elif [ "$VARIABLE1" == "hldsCmd" ]; then
 		
@@ -2117,6 +2126,11 @@ case "$1" in
 		wget_remove &
 	;;
 	hldsCmd)
+		rsyncExists
+		noSteamCmdUpdate
+		wget_remove &
+	;;
+	mcUpdate)
 		rsyncExists
 		noSteamCmdUpdate
 		wget_remove &
