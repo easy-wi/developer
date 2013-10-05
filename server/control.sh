@@ -244,7 +244,9 @@ if [ -f /etc/debian_version ]; then
 					dpkg --add-architecture i386
 					apt-get update
 				fi
-				apt-get install ia32-libs
+				apt-get install ia32-libs lib32readline5 lib32ncursesw5
+			else
+				apt-get install libreadline5 libncursesw5
 			fi
 		fi
 	fi
@@ -306,6 +308,12 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
         </Limit>
 </Directory>
 <Directory ~/server/*/samp*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/mtasa*/*>
         Umask 077 077
         <Limit RNFR RNTO STOR DELE MKD RMD>
                 AllowAll
