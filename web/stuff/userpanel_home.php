@@ -43,7 +43,7 @@ if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !isanyuser($user
 $sprache_bad = getlanguagefile('home', $user_language, $reseller_id);
 
 if (isset($admin_id) and $reseller_id != "0" and $admin_id != $reseller_id) {
-	$reseller_id=$admin_id;
+	$reseller_id = $admin_id;
 }
 
 $reseller_brandname = $rSA['brandname'];

@@ -373,34 +373,34 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($settings->fetchall(PDO::FETCH_ASSOC) as $row) {
         $seo=$row['seo'];
     }
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'at') {
-        $orderby='t.`title` ASC';
+        $orderby = 't.`title` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='t.`title` DESC';
+        $orderby = 't.`title` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='p.`authorname` ASC, p.`id` ASC, p.`subpage` ASC';
+        $orderby = 'p.`authorname` ASC, p.`id` ASC, p.`subpage` ASC';
     } else if ($ui->st('o','get') == 'da') {
-        $orderby='p.`authorname` DESC, p.`id` ASC, p.`subpage` ASC';
+        $orderby = 'p.`authorname` DESC, p.`id` ASC, p.`subpage` ASC';
     } else if ($ui->st('o','get') == 'ar') {
-        $orderby='p.`released` ASC, p.`id` ASC, p.`subpage` ASC';
+        $orderby = 'p.`released` ASC, p.`id` ASC, p.`subpage` ASC';
     } else if ($ui->st('o','get') == 'dr') {
-        $orderby='p.`released` DESC, p.`id` ASC, p.`subpage` ASC';
+        $orderby = 'p.`released` DESC, p.`id` ASC, p.`subpage` ASC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='p.`sort` ASC';
+        $orderby = 'p.`sort` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='p.`date` DESC';
+        $orderby = 'p.`date` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='p.`date` ASC';
+        $orderby = 'p.`date` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='p.`date` DESC';
+        $orderby = 'p.`date` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='p.`subpage`, p.`id` ASC';
+        $orderby = 'p.`subpage`, p.`id` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='p.`id` DESC';
+        $orderby = 'p.`id` DESC';
     } else {
-        $orderby='p.`id` ASC';
-        $o='ai';
+        $orderby = 'p.`id` ASC';
+        $o = 'ai';
     }
     $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`released`,p.`subpage`,p.`authorid`,p.`authorname`,p.`sort`,t.`title`,t.`shortlink`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='page' AND p.`resellerid`=? GROUP BY p.`id` ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($user_language,$reseller_id));

@@ -397,27 +397,27 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $seo=$query->fetchColumn();
     $o=($ui->st('o','get')) ? $ui->st('o','get') : 'di';
     if ($o== 'at') {
-        $orderby='t.`title` ASC';
+        $orderby = 't.`title` ASC';
     } else if ($o== 'dt') {
-        $orderby='t.`title` DESC';
+        $orderby = 't.`title` DESC';
     } else if ($o== 'aa') {
-        $orderby='p.`authorname` ASC, p.`id` ASC, p.`subpage` ASC';
+        $orderby = 'p.`authorname` ASC, p.`id` ASC, p.`subpage` ASC';
     } else if ($o== 'da') {
-        $orderby='p.`authorname` DESC, p.`id` ASC, p.`subpage` ASC';
+        $orderby = 'p.`authorname` DESC, p.`id` ASC, p.`subpage` ASC';
     } else if ($o== 'ar') {
-        $orderby='p.`released` ASC, p.`id` ASC, p.`subpage` ASC';
+        $orderby = 'p.`released` ASC, p.`id` ASC, p.`subpage` ASC';
     } else if ($o== 'dr') {
-        $orderby='p.`released` DESC, p.`id` ASC, p.`subpage` ASC';
+        $orderby = 'p.`released` DESC, p.`id` ASC, p.`subpage` ASC';
     } else if ($o== 'ad') {
-        $orderby='p.`date` ASC';
+        $orderby = 'p.`date` ASC';
     } else if ($o== 'dd') {
-        $orderby='p.`date` DESC';
+        $orderby = 'p.`date` DESC';
     } else if ($o== 'ad') {
-        $orderby='p.`subpage`, p.`id` ASC';
+        $orderby = 'p.`subpage`, p.`id` ASC';
     } else if ($o== 'di') {
-        $orderby='p.`id` DESC';
+        $orderby = 'p.`id` DESC';
     } else {
-        $orderby='p.`id` ASC';
+        $orderby = 'p.`id` ASC';
     }
     $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`released`,p.`subpage`,p.`authorid`,p.`authorname`,t.`title`,t.`shortlink`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='news' AND p.`resellerid`=? GROUP BY p.`id` ORDER BY $orderby LIMIT $start,$amount");
     $query2 = $sql->prepare("SELECT `cname`,`name`,`vname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");

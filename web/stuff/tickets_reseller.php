@@ -246,33 +246,33 @@ if ($ui->st('d','get') == 'ad') {
             if ((in_array($s,$selected) and $k != $s) or (!in_array($s,$selected) and $k==$s)) $ticketLinks[$k].='&amp;ts[] = '.$s;
         }
     }
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'di') {
-        $orderby='t.`id` DESC';
+        $orderby = 't.`id` DESC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='t.`id` ASC';
+        $orderby = 't.`id` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='t.`writedate` DESC';
+        $orderby = 't.`writedate` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='t.`writedate` ASC';
+        $orderby = 't.`writedate` ASC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='u.`cname` DESC';
+        $orderby = 'u.`cname` DESC';
     } else if ($ui->st('o','get') == 'au') {
-        $orderby='u.`cname` ASC';
+        $orderby = 'u.`cname` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='t.`state` DESC';
+        $orderby = 't.`state` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='t.`state` ASC';
+        $orderby = 't.`state` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='l.`text` DESC';
+        $orderby = 'l.`text` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='l.`text` ASC';
+        $orderby = 'l.`text` ASC';
     } else if ($ui->st('o','get') == 'dp') {
-        $orderby='t.`userPriority` DESC';
+        $orderby = 't.`userPriority` DESC';
     } else if ($ui->st('o','get') == 'ap') {
-        $orderby='t.`userPriority` ASC';
+        $orderby = 't.`userPriority` ASC';
     } else {
-        $orderby='t.`userPriority` DESC, t.`writedate` ASC';
+        $orderby = 't.`userPriority` DESC, t.`writedate` ASC';
     }
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `tickets` t $where");
     $query->execute(array($admin_id,$resellerid));

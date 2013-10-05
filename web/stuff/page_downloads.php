@@ -184,17 +184,17 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("UPDATE `page_downloads` SET `order`=? WHERE `fileID`=? LIMIT 1");
         foreach ($ui->id('downloadID',10,'post') as $id => $order) $query->execute(array($order,$id));
     }
-    $o=$ui->st('o','get');
-    if ($ui->st('o','get') == 'dt') $orderby='`description` DESC';
-    else if ($ui->st('o','get') == 'at') $orderby='`description` ASC';
-    else if ($ui->st('o','get') == 'dc') $orderby='`count` DESC';
-    else if ($ui->st('o','get') == 'ac') $orderby='`count` ASC';
-    else if ($ui->st('o','get') == 'ds') $orderby='`order` DESC';
-    else if ($ui->st('o','get') == 'as') $orderby='`order` ASC';
-    else if ($ui->st('o','get') == 'di') $orderby='`fileID` DESC';
+    $o = $ui->st('o','get');
+    if ($ui->st('o','get') == 'dt') $orderby = '`description` DESC';
+    else if ($ui->st('o','get') == 'at') $orderby = '`description` ASC';
+    else if ($ui->st('o','get') == 'dc') $orderby = '`count` DESC';
+    else if ($ui->st('o','get') == 'ac') $orderby = '`count` ASC';
+    else if ($ui->st('o','get') == 'ds') $orderby = '`order` DESC';
+    else if ($ui->st('o','get') == 'as') $orderby = '`order` ASC';
+    else if ($ui->st('o','get') == 'di') $orderby = '`fileID` DESC';
     else{
-        $o='ai';
-        $orderby='`fileID` ASC';
+        $o = 'ai';
+        $orderby = '`fileID` ASC';
     }
     $query = $sql->prepare("SELECT COUNT(`fileID`) AS `amount` FROM `page_downloads` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));

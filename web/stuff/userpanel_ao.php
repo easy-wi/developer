@@ -51,7 +51,7 @@ if (isset($admin_id)) {
 	$logsubuser = 0;
 }
 if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id=$admin_id;
+	$reseller_id = $admin_id;
 }
 if (isset($admin_id)) {
 	$logsubuser=$admin_id;

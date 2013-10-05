@@ -288,24 +288,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
     $table = array();
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'ap') {
-        $orderby='h.`ip` ASC';
+        $orderby = 'h.`ip` ASC';
     } else if ($ui->st('o','get') == 'ae') {
-        $orderby='h.`description` ASC';
+        $orderby = 'h.`description` ASC';
     } else if ($ui->st('o','get') == 'de') {
-        $orderby='h.`description` DESC';
+        $orderby = 'h.`description` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='h.`active` ASC, h.`notified` ASC';
+        $orderby = 'h.`active` ASC, h.`notified` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='h.`active` DESC, h.`notified` DESC';
+        $orderby = 'h.`active` DESC, h.`notified` DESC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='h.`id` ASC';
+        $orderby = 'h.`id` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='h.`id` DESC';
+        $orderby = 'h.`id` DESC';
     } else {
-        $orderby='h.`ip` DESC';
-        $o='ap';
+        $orderby = 'h.`ip` DESC';
+        $o = 'ap';
     }
     $pselect=$sql->prepare("SELECT h.`active`,h.`id`,h.`ip`,h.`description`,h.`cores`,h.`mhz`,h.`hdd`,h.`ram`,h.`maxserver`,h.`notified` FROM `virtualhosts` h LEFT JOIN `virtualcontainer` v ON v.`hostid`=h.`id` GROUP BY h.`id` ORDER BY $orderby LIMIT $start,$amount");
     $pselect->execute();

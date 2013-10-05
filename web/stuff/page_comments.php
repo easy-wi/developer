@@ -154,31 +154,31 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $zur=$start;
     }
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'dt') {
-        $orderby='t.`title` DESC';
+        $orderby = 't.`title` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='t.`title` ASC';
+        $orderby = 't.`title` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='c.`date` DESC';
+        $orderby = 'c.`date` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='c.`date` ASC';
+        $orderby = 'c.`date` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='c.`authorname` DESC';
+        $orderby = 'c.`authorname` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='c.`authorname` ASC';
+        $orderby = 'c.`authorname` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='c.`markedSpam` DESC';
+        $orderby = 'c.`markedSpam` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='c.`markedSpam` ASC';
+        $orderby = 'c.`markedSpam` ASC';
     } else if ($ui->st('o','get') == 'dm') {
-        $orderby='c.`moderateAccepted` DESC';
+        $orderby = 'c.`moderateAccepted` DESC';
     } else if ($ui->st('o','get') == 'am') {
-        $orderby='c.`moderateAccepted` ASC';
+        $orderby = 'c.`moderateAccepted` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='c.`commentID` DESC';
+        $orderby = 'c.`commentID` DESC';
     } else {
-        $orderby='c.`commentID` ASC';
+        $orderby = 'c.`commentID` ASC';
     }
     $query = $sql->prepare("SELECT t.`pageid`,t.`language`,t.`title`,c.`commentID`,c.`date`,c.`authorname`,c.`markedSpam`,c.`spamReason`,c.`moderateAccepted`,c.`comment` FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`resellerID`=? $AND ORDER BY $orderby");
     $query->execute(array($reseller_id));

@@ -159,24 +159,24 @@ if (in_array($ui->st('d','get'), array('md','ad'))){
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'dd') {
-        $orderby='`description` DESC';
+        $orderby = '`description` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='`description` ASC';
+        $orderby = '`description` ASC';
     } else if ($ui->st('o','get') == 'dp') {
-        $orderby='`ip` DESC';
+        $orderby = '`ip` DESC';
     } else if ($ui->st('o','get') == 'ap') {
-        $orderby='`ip` ASC';
+        $orderby = '`ip` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='`active` DESC,`notified` DESC';
+        $orderby = '`active` DESC,`notified` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='`active` ASC,`notified` ASC';
+        $orderby = '`active` ASC,`notified` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`id` DESC';
+        $orderby = '`id` DESC';
     } else {
-        $orderby='`id` ASC';
-        $o='ai';
+        $orderby = '`id` ASC';
+        $o = 'ai';
     }
     $table = array();
     $query = $sql->prepare("SELECT `active`,`id`,`ip`,`description`,`notified` FROM `rootsDHCP` WHERE `resellerid`=? ORDER BY $orderby");

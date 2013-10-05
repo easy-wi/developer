@@ -239,24 +239,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
     $table = array();
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'au') {
-        $orderby='`feedUrl` ASC';
+        $orderby = '`feedUrl` ASC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='`feedUrl` DESC';
+        $orderby = '`feedUrl` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='`active` ASC';
+        $orderby = '`active` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='`active` DESC';
+        $orderby = '`active` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`twitter` ASC';
+        $orderby = '`twitter` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='`twitter` DESC';
+        $orderby = '`twitter` DESC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='`feedID` ASC';
+        $orderby = '`feedID` ASC';
     } else {
-        $orderby='`feedID` DESC';
-        $o='di';
+        $orderby = '`feedID` DESC';
+        $o = 'di';
     }
     $query = $sql->prepare("SELECT `feedID`,`active`,`twitter`,`feedUrl` FROM `feeds_url` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($lookUpID));

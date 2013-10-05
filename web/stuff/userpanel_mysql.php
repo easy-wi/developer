@@ -118,20 +118,20 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'userpanel_404.tpl';
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'ap') {
-        $orderby='s.`ip` ASC';
+        $orderby = 's.`ip` ASC';
     } else if ($ui->st('o','get') == 'dp') {
-        $orderby='s.`ip` DESC';
+        $orderby = 's.`ip` DESC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='e.`dbname` DESC';
+        $orderby = 'e.`dbname` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='e.`dbname` ASC';
+        $orderby = 'e.`dbname` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='e.`id` DESC';
+        $orderby = 'e.`id` DESC';
     } else{
-        $o='ai';
-        $orderby='e.`id` ASC';
+        $o = 'ai';
+        $orderby = 'e.`id` ASC';
     }
     $table = array();
     $query = $sql->prepare("SELECT e.`id`,e.`dbname`,e.`gsid`,s.`ip`,s.`interface`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? ORDER BY $orderby");

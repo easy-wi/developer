@@ -223,27 +223,27 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $zur=$start;
     }
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'da') {
-        $orderby='`active` DESC';
+        $orderby = '`active` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='`active` ASC';
+        $orderby = '`active` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='`domain` DESC';
+        $orderby = '`domain` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='`domain` ASC';
+        $orderby = '`domain` ASC';
     } else if ($ui->st('o','get') == 'dl') {
-        $orderby='`lastID` DESC';
+        $orderby = '`lastID` DESC';
     } else if ($ui->st('o','get') == 'al') {
-        $orderby='`lastID` ASC';
+        $orderby = '`lastID` ASC';
     } else if ($ui->st('o','get') == 'dc') {
-        $orderby='`lastCheck` DESC';
+        $orderby = '`lastCheck` DESC';
     } else if ($ui->st('o','get') == 'ac') {
-        $orderby='`lastCheck` ASC';
+        $orderby = '`lastCheck` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`importID` DESC';
+        $orderby = '`importID` DESC';
     } else {
-        $orderby='`importID` ASC';
+        $orderby = '`importID` ASC';
     }
     $query = $sql->prepare("SELECT * FROM `api_import` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($reseller_id));

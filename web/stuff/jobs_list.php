@@ -77,44 +77,44 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $text;
 } else {
     $table = array();
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'dn') {
-        $orderby='`name` DESC';
+        $orderby = '`name` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='`name` ASC';
+        $orderby = '`name` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='`status` DESC';
+        $orderby = '`status` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='`status` ASC';
+        $orderby = '`status` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='`type` DESC';
+        $orderby = '`type` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`type` ASC';
+        $orderby = '`type` ASC';
     } else if ($ui->st('o','get') == 'da') {
-        $orderby='`api` DESC';
+        $orderby = '`api` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='`api` ASC';
+        $orderby = '`api` ASC';
     } else if ($ui->st('o','get') == 'dc') {
-        $orderby='`action` DESC';
+        $orderby = '`action` DESC';
     } else if ($ui->st('o','get') == 'ac') {
-        $orderby='`action` ASC';
+        $orderby = '`action` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='`date` DESC';
+        $orderby = '`date` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='`date` ASC';
+        $orderby = '`date` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='`name` DESC';
+        $orderby = '`name` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='`name` ASC';
+        $orderby = '`name` ASC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='`userID` DESC';
+        $orderby = '`userID` DESC';
     } else if ($ui->st('o','get') == 'au') {
-        $orderby='`userID` ASC';
+        $orderby = '`userID` ASC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='`jobID` ASC';
+        $orderby = '`jobID` ASC';
     } else {
-        $o='di';
-        $orderby='`jobID` DESC';
+        $o = 'di';
+        $orderby = '`jobID` DESC';
     }
     if ($reseller_id==0) {
         $where = '';

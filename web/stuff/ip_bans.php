@@ -57,28 +57,28 @@ if (isset($action) and $action == 'dl') {
     if(!isset($template_file)) $template_file = $i." entries deleted";
 } else {
     $table = array();
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'dr') {
-        $orderby='`reason` DESC';
+        $orderby = '`reason` DESC';
     } else if ($ui->st('o','get') == 'ar') {
-        $orderby='`reason` ASC';
+        $orderby = '`reason` ASC';
     } else if ($ui->st('o','get') == 'df') {
-        $orderby='`failcount` DESC';
+        $orderby = '`failcount` DESC';
     } else if ($ui->st('o','get') == 'af') {
-        $orderby='`failcount` ASC';
+        $orderby = '`failcount` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='`bantime` DESC';
+        $orderby = '`bantime` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`bantime` ASC';
+        $orderby = '`bantime` ASC';
     } else if ($ui->st('o','get') == 'db') {
-        $orderby='`badip` DESC';
+        $orderby = '`badip` DESC';
     } else if ($ui->st('o','get') == 'ab') {
-        $orderby='`badip` ASC';
+        $orderby = '`badip` ASC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='`id` ASC';
+        $orderby = '`id` ASC';
     } else {
-        $o='ai';
-        $orderby='`id` DESC';
+        $o = 'ai';
+        $orderby = '`id` DESC';
     }
     $pselect=$sql->prepare("SELECT * FROM `badips` ORDER BY $orderby LIMIT $start,$amount");
     $pselect->execute();

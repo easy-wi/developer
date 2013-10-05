@@ -60,7 +60,7 @@ if ($reseller_id==0) {
     $logreseller = 0;
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
-    $reseller_id=$admin_id;
+    $reseller_id = $admin_id;
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
@@ -379,28 +379,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'da') {
-        $orderby='`active` DESC';
+        $orderby = '`active` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='`active` ASC';
+        $orderby = '`active` ASC';
     } else if ($ui->st('o','get') == 'dp') {
-        $orderby='`ssh2ip` DESC';
+        $orderby = '`ssh2ip` DESC';
     } else if ($ui->st('o','get') == 'ap') {
-        $orderby='`ssh2ip` ASC';
+        $orderby = '`ssh2ip` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='`defaultdns` DESC';
+        $orderby = '`defaultdns` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='`defaultdns` ASC';
+        $orderby = '`defaultdns` ASC';
     } else if ($ui->st('o','get') == 'db') {
-        $orderby='`description` DESC';
+        $orderby = '`description` DESC';
     } else if ($ui->st('o','get') == 'ab') {
-        $orderby='`description` ASC';
+        $orderby = '`description` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`id` DESC';
+        $orderby = '`id` DESC';
     } else {
-        $orderby='`id` ASC';
-        $o='ai';
+        $orderby = '`id` ASC';
+        $o = 'ai';
     }
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_tsdns` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));

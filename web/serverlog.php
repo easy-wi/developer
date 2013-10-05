@@ -50,7 +50,7 @@ if (!isset($user_id) and !isset($admin_id)) {
 if ($ui->id('id', 10, 'get')) {
     
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {
-		$reseller_id=$admin_id;
+		$reseller_id = $admin_id;
 	}
     
 	if(isset($admin_id)) {

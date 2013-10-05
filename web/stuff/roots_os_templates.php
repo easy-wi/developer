@@ -133,24 +133,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
     $table = array();
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'dd') {
-        $orderby='`distro` DESC';
+        $orderby = '`distro` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='`distro` ASC';
+        $orderby = '`distro` ASC';
     } else if ($ui->st('o','get') == 'de') {
-        $orderby='`description` DESC';
+        $orderby = '`description` DESC';
     } else if ($ui->st('o','get') == 'ae') {
-        $orderby='`description` ASC';
+        $orderby = '`description` ASC';
     } else if ($ui->st('o','get') == 'db') {
-        $orderby='`bitversion` DESC';
+        $orderby = '`bitversion` DESC';
     } else if ($ui->st('o','get') == 'ab') {
-        $orderby='`bitversion` ASC';
+        $orderby = '`bitversion` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`id` DESC';
+        $orderby = '`id` DESC';
     } else {
-        $orderby='`id` ASC';
-        $o='ai';
+        $orderby = '`id` ASC';
+        $o = 'ai';
     }
     $query = $sql->prepare("SELECT * FROM `resellerimages` ORDER BY $orderby");
     $query->execute();

@@ -42,8 +42,8 @@
                 <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" name="active">
-                        <option value="N"><?php echo $gsprache->no;?></option>
                         <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N"><?php echo $gsprache->no;?></option>
                     </select>
                 </div>
             </div>
@@ -100,7 +100,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
                 </div>
             </div>
         </form>

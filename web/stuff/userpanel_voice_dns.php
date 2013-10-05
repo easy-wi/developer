@@ -127,20 +127,20 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'dd') {
-        $orderby='`dns` DESC';
+        $orderby = '`dns` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='`dns` ASC';
+        $orderby = '`dns` ASC';
     } else if ($ui->st('o','get') == 'db') {
-        $orderby='`ip` DESC,`port` DESC';
+        $orderby = '`ip` DESC,`port` DESC';
     } else if ($ui->st('o','get') == 'ab') {
-        $orderby='`ip` ASC,`port` ASC';
+        $orderby = '`ip` ASC,`port` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`dnsID` DESC';
+        $orderby = '`dnsID` DESC';
     } else {
-        $orderby='`dnsID` ASC';
-        $o='ai';
+        $orderby = '`dnsID` ASC';
+        $o = 'ai';
     }
     $table = array();
     $query = $sql->prepare("SELECT `dnsID`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `active`='Y' AND `userID`=? AND `resellerID`=? ORDER BY $orderby");

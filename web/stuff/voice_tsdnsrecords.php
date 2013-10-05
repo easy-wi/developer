@@ -55,7 +55,7 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
-if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
+if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad' or $ui->st('d','get') == 'md') {
@@ -329,36 +329,36 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'da') {
-        $orderby='d.`active` DESC';
+        $orderby = 'd.`active` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='d.`active` ASC';
+        $orderby = 'd.`active` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='t.`ssh2ip` DESC';
+        $orderby = 't.`ssh2ip` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='t.`ssh2ip` ASC';
+        $orderby = 't.`ssh2ip` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='d.`dns` DESC';
+        $orderby = 'd.`dns` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='d.`dns` ASC';
+        $orderby = 'd.`dns` ASC';
     } else if ($ui->st('o','get') == 'db') {
-        $orderby='d.`ip` DESC,d.`port` DESC';
+        $orderby = 'd.`ip` DESC,d.`port` DESC';
     } else if ($ui->st('o','get') == 'ab') {
-        $orderby='d.`ip` ASC,d.`port` ASC';
+        $orderby = 'd.`ip` ASC,d.`port` ASC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='u.`cname` DESC';
+        $orderby = 'u.`cname` DESC';
     } else if ($ui->st('o','get') == 'au') {
-        $orderby='u.`cname` ASC';
+        $orderby = 'u.`cname` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='u.`name` DESC,u.`vname` DESC';
+        $orderby = 'u.`name` DESC,u.`vname` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='u.`name` ASC,u.`vname` ASC';
+        $orderby = 'u.`name` ASC,u.`vname` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='d.`dnsID` DESC';
+        $orderby = 'd.`dnsID` DESC';
     } else {
-        $orderby='d.`dnsID` ASC';
-        $o='ai';
+        $orderby = 'd.`dnsID` ASC';
+        $o = 'ai';
     }
     $query = $sql->prepare("SELECT COUNT(`dnsID`) AS `amount` FROM `voice_dns` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));

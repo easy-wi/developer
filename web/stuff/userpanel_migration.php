@@ -56,7 +56,7 @@ if (isset($admin_id)) {
     $logsubuser=$subuser_id;
 }
 if (isset($admin_id) and $reseller_id != 0) {
-    $reseller_id=$admin_id;
+    $reseller_id = $admin_id;
 }
 $ftpAddress = '';
 $ftpPort=21;

@@ -597,32 +597,32 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSIO
         $template_file = 'userpanel_404.tpl';
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'aa') {
-        $orderby='v.`ip` ASC, v.`port` ASC';
+        $orderby = 'v.`ip` ASC, v.`port` ASC';
     } else if ($ui->st('o','get') == 'da') {
-        $orderby='v.`ip` DESC, v.`port` DESC';
+        $orderby = 'v.`ip` DESC, v.`port` DESC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='v.`usedslots` DESC';
+        $orderby = 'v.`usedslots` DESC';
     } else if ($ui->st('o','get') == 'au') {
-        $orderby='v.`usedslots` ASC';
+        $orderby = 'v.`usedslots` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='v.`filetraffic` DESC';
+        $orderby = 'v.`filetraffic` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='v.`filetraffic` ASC';
+        $orderby = 'v.`filetraffic` ASC';
     } else if ($ui->st('o','get') == 'dr') {
-        $orderby='v.`uptime` DESC';
+        $orderby = 'v.`uptime` DESC';
     } else if ($ui->st('o','get') == 'ar') {
-        $orderby='v.`uptime` ASC';
+        $orderby = 'v.`uptime` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='v.`uptime` DESC';
+        $orderby = 'v.`uptime` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='v.`uptime` ASC';
+        $orderby = 'v.`uptime` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='v.`id` DESC';
+        $orderby = 'v.`id` DESC';
     } else{
-        $o='ai';
-        $orderby='v.`id` ASC';
+        $o = 'ai';
+        $orderby = 'v.`id` ASC';
     }
     $table = array();
     $query = $sql->prepare("SELECT v.*,m.`type`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`userid`=? AND v.`resellerid`=? ORDER BY $orderby");

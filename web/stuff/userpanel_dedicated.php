@@ -52,7 +52,7 @@ $logreseller = 0;
 $logsubuser = 0;
 if (isset($admin_id)) $logsubuser=$admin_id;
 else if (isset($subuser_id)) $logsubuser=$subuser_id;
-if (isset($admin_id) and $reseller_id != 0) $reseller_id=$admin_id;
+if (isset($admin_id) and $reseller_id != 0) $reseller_id = $admin_id;
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ri'and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['ro']))) {

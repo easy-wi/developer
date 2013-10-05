@@ -203,24 +203,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $zur=$start;
     }
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'da') {
-        $orderby='`active` DESC';
+        $orderby = '`active` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='`active` ASC';
+        $orderby = '`active` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='`name` DESC';
+        $orderby = '`name` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='`name`';
+        $orderby = '`name`';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='`type` DESC';
+        $orderby = '`type` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`type` ASC';
+        $orderby = '`type` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`customID` DESC';
+        $orderby = '`customID` DESC';
     } else {
-        $orderby='`customID` ASC';
-        $o='ai';
+        $orderby = '`customID` ASC';
+        $o = 'ai';
     }
     $query = $sql->prepare("SELECT * FROM `custom_columns_settings` ORDER BY $orderby LIMIT $start,$amount");
     $query->execute();

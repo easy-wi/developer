@@ -55,7 +55,7 @@ if ($reseller_id==0) {
 	$logreseller = 0;
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id=$admin_id;
+	$reseller_id = $admin_id;
 }
 if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licenceDetails['lVo']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
     $template_file = $gsprache->licence;
@@ -677,44 +677,44 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'da') {
-        $orderby='u.`cname` DESC';
+        $orderby = 'u.`cname` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='u.`cname` ASC';
+        $orderby = 'u.`cname` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='u.`name` DESC,u.`vname` DESC';
+        $orderby = 'u.`name` DESC,u.`vname` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='u.`name` ASC,u.`vname` ASC';
+        $orderby = 'u.`name` ASC,u.`vname` ASC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='v.`uptime` DESC';
+        $orderby = 'v.`uptime` DESC';
     } else if ($ui->st('o','get') == 'au') {
-        $orderby='v.`uptime` ASC';
+        $orderby = 'v.`uptime` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='v.`id` DESC';
+        $orderby = 'v.`id` DESC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='v.`id` ASC';
+        $orderby = 'v.`id` ASC';
     } else if ($ui->st('o','get') == 'dv') {
-        $orderby='v.`localserverid` DESC';
+        $orderby = 'v.`localserverid` DESC';
     } else if ($ui->st('o','get') == 'av') {
-        $orderby='v.`localserverid` ASC';
+        $orderby = 'v.`localserverid` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='v.`active` DESC';
+        $orderby = 'v.`active` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='v.`active` ASC';
+        $orderby = 'v.`active` ASC';
     } else if ($ui->st('o','get') == 'dp') {
-        $orderby='v.`jobPending` DESC';
+        $orderby = 'v.`jobPending` DESC';
     } else if ($ui->st('o','get') == 'ap') {
-        $orderby='v.`jobPending` ASC';
+        $orderby = 'v.`jobPending` ASC';
     } else if ($ui->st('o','get') == 'dl') {
-        $orderby='v.`lendserver` DESC';
+        $orderby = 'v.`lendserver` DESC';
     } else if ($ui->st('o','get') == 'al') {
-        $orderby='v.`lendserver` ASC';
+        $orderby = 'v.`lendserver` ASC';
     } else if ($ui->st('o','get') == 'dm') {
-        $orderby='v.`ip`,v.`port` DESC';
+        $orderby = 'v.`ip`,v.`port` DESC';
     } else {
-        $orderby='v.`ip`,v.`port` ASC';
-        $o='am';
+        $orderby = 'v.`ip`,v.`port` ASC';
+        $o = 'am';
     }
     $table = array();
     $query = $sql->prepare("SELECT v.*,m.`type`,m.`usedns`,u.`cname`,u.`name`,u.`vname` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");

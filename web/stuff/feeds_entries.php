@@ -72,32 +72,32 @@ if ($ui->st('d','get') == 'ud') {
     $template_file = $spracheResponse->table_add;
 } else {
     $table = array();
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'au') {
-        $orderby='u.`feedUrl` ASC';
+        $orderby = 'u.`feedUrl` ASC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='u.`feedUrl` DESC';
+        $orderby = 'u.`feedUrl` DESC';
     } else if ($ui->st('o','get') == 'ah') {
-        $orderby='n.`title` ASC,n.`description` ASC';
+        $orderby = 'n.`title` ASC,n.`description` ASC';
     } else if ($ui->st('o','get') == 'dh') {
-        $orderby='n.`title` DESC,n.`description` DESC';
+        $orderby = 'n.`title` DESC,n.`description` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='n.`active` ASC';
+        $orderby = 'n.`active` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='n.`active` DESC';
+        $orderby = 'n.`active` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='u.`twitter` ASC';
+        $orderby = 'u.`twitter` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='u.`twitter` DESC';
+        $orderby = 'u.`twitter` DESC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='n.`newsID` ASC';
+        $orderby = 'n.`newsID` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='n.`newsID` DESC';
+        $orderby = 'n.`newsID` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='n.`pubDate` ASC';
+        $orderby = 'n.`pubDate` ASC';
     } else {
-        $orderby='n.`pubDate` DESC';
-        $o='dd';
+        $orderby = 'n.`pubDate` DESC';
+        $o = 'dd';
     }
     $query = $sql->prepare("SELECT n.`newsID`,n.`active`,n.`title`,n.`link`,n.`pubDate`,n.`description`,u.`twitter`,u.`feedUrl` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($lookUpID));

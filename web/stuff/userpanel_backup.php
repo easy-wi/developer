@@ -41,7 +41,7 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['ftpbackup']) or
 }
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id=$admin_id;
+	$reseller_id = $admin_id;
 }
 $customer=getusername($user_id);
 include(EASYWIDIR . '/stuff/keyphrasefile.php');

@@ -340,7 +340,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = 'admin_404.tpl';
         }
     } else if ($ui->smallletters('action',2,'post') == 'dl') {
-        if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
+        if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
         $template_file = '';
         if($reseller_id==0) {
             $query = $sql->prepare("SELECT `cname`,`resellerid`,`accounttype` FROM `userdata` WHERE `id`=? AND (`resellerid`=? OR `id`=resellerid) LIMIT 1");
@@ -619,7 +619,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (count($errors)>0) {
             $template_file = implode('<br />',$errors);
         } else {
-            if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
+            if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
             $password=$ui->password('password',20,'post');
             $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
             $security=createHash($cname,$password,$salt,$aeskey);
@@ -636,28 +636,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $ticketLinks['Y'] = 'admin.php?w=us&amp;a='.$ui->id('a',3,'get');
     $ticketLinks['N'] = 'admin.php?w=us&amp;a='.$ui->id('a',3,'get');
     $ticketLinks['R'] = 'admin.php?w=us&amp;a='.$ui->id('a',3,'get');
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'da') {
-        $orderby='`active` DESC';
+        $orderby = '`active` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='`active` ASC';
+        $orderby = '`active` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='`name` DESC';
+        $orderby = '`name` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='`name` ASC';
+        $orderby = '`name` ASC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='`cname` DESC';
+        $orderby = '`cname` DESC';
     } else if ($ui->st('o','get') == 'au') {
-        $orderby='`cname` ASC';
+        $orderby = '`cname` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='`accounttype` DESC';
+        $orderby = '`accounttype` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`accounttype` ASC';
+        $orderby = '`accounttype` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`id` DESC';
+        $orderby = '`id` DESC';
     } else {
-        $orderby='`id` ASC';
-        $o='ai';
+        $orderby = '`id` ASC';
+        $o = 'ai';
     }
     $and = '';
     if (!$pa['user']) $and=" AND `accounttype` IN ('u','r')";

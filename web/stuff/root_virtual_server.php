@@ -857,32 +857,32 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'da') {
-        $orderby='u.`cname` DESC';
+        $orderby = 'u.`cname` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='u.`cname` ASC';
+        $orderby = 'u.`cname` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='c.`status` DESC';
+        $orderby = 'c.`status` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='c.`status` ASC';
+        $orderby = 'c.`status` ASC';
     } else if ($ui->st('o','get') == 'dp') {
-        $orderby='c.`ip` DESC';
+        $orderby = 'c.`ip` DESC';
     } else if ($ui->st('o','get') == 'ap') {
-        $orderby='c.`ip` ASC';
+        $orderby = 'c.`ip` ASC';
     } else if ($ui->st('o','get') == 'dh') {
-        $orderby='h.`id` DESC';
+        $orderby = 'h.`id` DESC';
     } else if ($ui->st('o','get') == 'ah') {
-        $orderby='h.`id` ASC';
+        $orderby = 'h.`id` ASC';
     } else if ($ui->st('o','get') == 'de') {
-        $orderby='u.`cname` DESC, c.`id` DESC';
+        $orderby = 'u.`cname` DESC, c.`id` DESC';
     } else if ($ui->st('o','get') == 'ae') {
-        $orderby='u.`cname` ASC, c.`id` ASC';
+        $orderby = 'u.`cname` ASC, c.`id` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='c.`id` DESC';
+        $orderby = 'c.`id` DESC';
     } else {
-        $orderby='c.`id` ASC';
-        $o='ai';
+        $orderby = 'c.`id` ASC';
+        $o = 'ai';
     }
     $table = array();
     if ($reseller_id==0) {

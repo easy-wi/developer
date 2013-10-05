@@ -50,7 +50,7 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
-if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
+if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ex' and $ui->id('id', 10, 'get')) {
@@ -417,28 +417,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'ds') {
-        $orderby='`active` DESC';
+        $orderby = '`active` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='`active` ASC';
+        $orderby = '`active` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='`type` DESC';
+        $orderby = '`type` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`type` ASC';
+        $orderby = '`type` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='`menudescription` DESC';
+        $orderby = '`menudescription` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='`menudescription` ASC';
+        $orderby = '`menudescription` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='`shorten` DESC';
+        $orderby = '`shorten` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`shorten` ASC';
+        $orderby = '`shorten` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`id` DESC';
+        $orderby = '`id` DESC';
     } else{
-        $o='ai';
-        $orderby='`id` ASC';
+        $o = 'ai';
+        $orderby = '`id` ASC';
     }
     $table = array();
     $pselect=$sql->prepare("SELECT `id`,`menudescription`,`shorten`,`active`,`type` FROM `addons` $where ORDER BY $orderby LIMIT $start,$amount");

@@ -53,7 +53,7 @@ if ($ui->st('w','get') == 'se') {
     } else {
         $logsubuser = 0;
     }
-    if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
+    if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
 } else {
     if ((!isset($admin_id) or $main!=1)) {
         header('Location: admin.php');
@@ -69,7 +69,7 @@ if ($ui->st('w','get') == 'se') {
         $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
         $logreseller = 0;
     }
-    if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
+    if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
 }
 $sprache = getlanguagefile('user',$user_language,$reseller_id);
 $lookUpID=($ui->st('w','get') == 'se') ? $user_id : $admin_id;

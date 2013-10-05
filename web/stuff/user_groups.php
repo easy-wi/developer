@@ -379,27 +379,27 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
     $table = array();
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'da') {
-        $orderby='`active` DESC';
+        $orderby = '`active` DESC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='`active` ASC';
+        $orderby = '`active` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='`grouptype` DESC';
+        $orderby = '`grouptype` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`grouptype` ASC';
+        $orderby = '`grouptype` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='`defaultgroup` DESC';
+        $orderby = '`defaultgroup` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='`defaultgroup` ASC';
+        $orderby = '`defaultgroup` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='`name` DESC';
+        $orderby = '`name` DESC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='`name` ASC';
+        $orderby = '`name` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`id` DESC';
+        $orderby = '`id` DESC';
     } else {
-        $orderby='`id` ASC';
+        $orderby = '`id` ASC';
     }
     $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `resellerid`=? ORDER BY $orderby");
     $query->execute(array($lookIpID));

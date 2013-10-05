@@ -38,7 +38,7 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !
 	redirect('userpanel.php');
 }
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id=$admin_id;
+if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
 if (!isset($_SESSION['sID']) or in_array($ui->id('id',19,'get'),$substituteAccess['gs'])) {
     $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`protected`,s.`anticheat`,g.`pallowed`,g.`eacallowed`,s.`map`,s.`mapGroup`,t.`shorten`,t.`mapGroup` AS `defaultMapGroup` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($ui->id('id',19,'get'),$user_id,$reseller_id));

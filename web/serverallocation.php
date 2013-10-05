@@ -77,7 +77,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 } else if ($ui->id('id',19,'get') and $ui->st('d','get')=="vs" and ($pa['addvserver'] or $pa['root'])) {
 	$sprache = getlanguagefile('reseller', $user_language, $reseller_id);
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {
-        $reseller_id=$admin_id;
+        $reseller_id = $admin_id;
         $notexclusive = true;
     }
 	$query = $sql->prepare("SELECT `id`,`cpu`,`active`,`ip`,`esxi`,`description`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota` FROM `virtualhosts` WHERE `id`=?");
@@ -299,7 +299,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 } else if (($ui->username('short','50','get') or $ui->username('shorten','50','get')) and $pa['restart']) {
 	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {
-		$reseller_id=$admin_id;
+		$reseller_id = $admin_id;
 	}
     $get_shorten=$ui->username('shorten', 50,'get');
 	if ($ui->username('short', 50,'get')) {
@@ -341,7 +341,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 } else if ($ui->username('gamestring','50','get') and $ui->id('id',19,'get') and ($pa['roots'] or $pa['root'])) {
 	$sprache = getlanguagefile('roots', $user_language, $reseller_id);
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {
-		$reseller_id=$admin_id;
+		$reseller_id = $admin_id;
 	}
 	include(EASYWIDIR . '/stuff/ssh_exec.php');
     include(EASYWIDIR . '/stuff/class_masterserver.php');
@@ -397,7 +397,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
 } else if ($pa['gserver'] and $ui->st('d','get')!="vs" and $ui->st('d','get')!="vo" and ($ui->id('id',19,'get') or $ui->ip('ip','get'))) {
 	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {
-		$reseller_id=$admin_id;
+		$reseller_id = $admin_id;
 	}
 	if ($ui->id('id',19,'get') and $ui->st('d','get')!="vs") {
         $used = 0;

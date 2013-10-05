@@ -55,7 +55,7 @@ if ($reseller_id==0) {
 	$logreseller = 0;
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id=$admin_id;
+	$reseller_id = $admin_id;
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
@@ -165,28 +165,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else if ($ui->st('d','get') == 'md'){
     include(EASYWIDIR . '/stuff/ssh_exec.php');
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'ar') {
-        $orderby='`resellerid` ASC';
+        $orderby = '`resellerid` ASC';
     } else if ($ui->st('o','get') == 'dr') {
-        $orderby='`resellerid` DESC';
+        $orderby = '`resellerid` DESC';
     } else if ($ui->st('o','get') == 'ap') {
-        $orderby='`ip` ASC';
+        $orderby = '`ip` ASC';
     } else if ($ui->st('o','get') == 'dp') {
-        $orderby='`ip` DESC';
+        $orderby = '`ip` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='`active` ASC';
+        $orderby = '`active` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='`active` DESC';
+        $orderby = '`active` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='`description` ASC';
+        $orderby = '`description` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='`description` DESC';
+        $orderby = '`description` DESC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`id` DESC';
+        $orderby = '`id` DESC';
     } else {
-        $orderby='`id` ASC';
-        $o='ai';
+        $orderby = '`id` ASC';
+        $o = 'ai';
     }
     $query = $sql->prepare("SELECT `id`,`ip`,`os`,`bitversion`,`description`,`active` FROM `rserverdata` WHERE `active`='Y' AND `resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($reseller_id));

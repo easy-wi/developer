@@ -47,38 +47,38 @@ $sprache = getlanguagefile('mysql',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
+
 if ($reseller_id==0) {
 	$logreseller = 0;
 	$logsubuser = 0;
 } else {
-	if (isset($_SESSION['oldid'])) {
-		$logsubuser=$_SESSION['oldid'];
-	} else {
-		$logsubuser = 0;
-	}
+    $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid']: 0;
 	$logreseller = 0;
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id=$admin_id;
+	$reseller_id = $admin_id;
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
+
 } else if ($ui->st('d','get') == 'ms' and !$ui->id('id', 10, 'get') and $pa['mysql_settings']) {
-    $o=$ui->st('o','get');
+
+    $o = $ui->st('o','get');
 	if ($ui->st('o','get') == 'ap') {
-		$orderby='`ip` ASC';
+		$orderby = '`ip` ASC';
 	} else if ($ui->st('o','get') == 'af') {
-		$orderby='`interface` ASC';
+		$orderby = '`interface` ASC';
 	} else if ($ui->st('o','get') == 'df') {
-        $orderby='`interface` DESC';
+        $orderby = '`interface` DESC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='`id` ASC';
+        $orderby = '`id` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='`id` DESC';
+        $orderby = '`id` DESC';
 	} else {
-		$orderby='`ip` DESC';
-        $o='ap';
+		$orderby = '`ip` DESC';
+        $o = 'ap';
 	}
+
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_servers` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));
     $colcount=$query->fetchColumn();
@@ -299,7 +299,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
             $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
             if ($remotesql->error== 'ok') {
-                $remotesql->AddDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
+                $reply = $remotesql->AddDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
                 customColumns('D',$id,'save');
                 $template_file = $spracheResponse->table_add;
                 $loguseraction="%add% MYSQL DB $dbname ($ip)";
@@ -443,40 +443,40 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else if ($pa['mysql']) {
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'as') {
-        $orderby='e.`active` ASC';
+        $orderby = 'e.`active` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='e.`active` DESC';
+        $orderby = 'e.`active` DESC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='e.`id` ASC';
+        $orderby = 'e.`id` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='e.`id` DESC';
+        $orderby = 'e.`id` DESC';
     } else if ($ui->st('o','get') == 'ad') {
-        $orderby='e.`description` ASC';
+        $orderby = 'e.`description` ASC';
     } else if ($ui->st('o','get') == 'dd') {
-        $orderby='e.`description` DESC';
+        $orderby = 'e.`description` DESC';
     } else if ($ui->st('o','get') == 'ap') {
-        $orderby='s.`ip` ASC';
+        $orderby = 's.`ip` ASC';
     } else if ($ui->st('o','get') == 'dp') {
-        $orderby='s.`ip` DESC';
+        $orderby = 's.`ip` DESC';
     } else if ($ui->st('o','get') == 'aj') {
-        $orderby='`jobPending` ASC';
+        $orderby = '`jobPending` ASC';
     } else if ($ui->st('o','get') == 'dj') {
-        $orderby='`jobPending` DESC';
+        $orderby = '`jobPending` DESC';
     } else if ($ui->st('o','get') == 'au') {
-        $orderby='u.`cname` ASC';
+        $orderby = 'u.`cname` ASC';
     } else if ($ui->st('o','get') == 'du') {
-        $orderby='u.`cname` DESC';
+        $orderby = 'u.`cname` DESC';
     } else if ($ui->st('o','get') == 'af') {
-        $orderby='u.`name` ASC,u.`vname` ASC';
+        $orderby = 'u.`name` ASC,u.`vname` ASC';
     } else if ($ui->st('o','get') == 'df') {
-        $orderby='u.`name` DESC,u.`vname` DESC';
+        $orderby = 'u.`name` DESC,u.`vname` DESC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='e.`dbname` DESC';
+        $orderby = 'e.`dbname` DESC';
     } else {
-        $orderby='e.`dbname` ASC';
-        $o='an';
+        $orderby = 'e.`dbname` ASC';
+        $o = 'an';
     }
     $table = array();
     #https://github.com/easy-wi/developer/issues/42 column description added

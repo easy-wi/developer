@@ -319,30 +319,30 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
     $vor=($colcount>$next) ? $start+$amount : $start;
     $back=$start - $amount;
     $zur = ($back >= 0) ? $start - $amount : $start;
-    $o=$ui->st('o','get');
+    $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'dp') {
-        $orderby='d.`ip` DESC';
+        $orderby = 'd.`ip` DESC';
     } else if ($ui->st('o','get') == 'ap') {
-        $orderby='d.`ip` ASC';
+        $orderby = 'd.`ip` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='d.`active` DESC,`notified` DESC';
+        $orderby = 'd.`active` DESC,`notified` DESC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='d.`active` ASC,`notified` ASC';
+        $orderby = 'd.`active` ASC,`notified` ASC';
     } else if ($ui->st('o','get') == 'dc') {
-        $orderby='u.`cname` DESC';
+        $orderby = 'u.`cname` DESC';
     } else if ($ui->st('o','get') == 'ac') {
-        $orderby='u.`cname` ASC';
+        $orderby = 'u.`cname` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='u.`name` DESC,u.`vname` DESC';
+        $orderby = 'u.`name` DESC,u.`vname` DESC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='u.`name` ASC,u.`vname` ASC';
+        $orderby = 'u.`name` ASC,u.`vname` ASC';
     } else if ($ui->st('o','get') == 'as') {
-        $orderby='d.`active` ASC,`notified` ASC';
+        $orderby = 'd.`active` ASC,`notified` ASC';
     } else if ($ui->st('o','get') == 'di') {
-        $orderby='d.`dedicatedID` DESC';
+        $orderby = 'd.`dedicatedID` DESC';
     } else {
-        $orderby='d.`dedicatedID` ASC';
-        $o='ai';
+        $orderby = 'd.`dedicatedID` ASC';
+        $o = 'ai';
     }
     $query=($reseller_id==0) ? $sql->prepare("SELECT d.*,u.`cname`,u.`name`,u.`vname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`resellerID`=? OR u.`id`=u.`resellerid` ORDER BY $orderby LIMIT $start,$amount") : $sql->prepare("SELECT d.*,u.`cname`,u.`name`,u.`vname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='de' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");

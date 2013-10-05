@@ -1081,30 +1081,30 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
 } else {
     $o = $ui->st('o','get');
     if ($ui->st('o','get') == 'di') {
-        $orderby='g.`id` DESC';
+        $orderby = 'g.`id` DESC';
     } else if ($ui->st('o','get') == 'ai') {
-        $orderby='g.`id` ASC';
+        $orderby = 'g.`id` ASC';
     } else if ($ui->st('o','get') == 'dt') {
-        $orderby='g.`active` ASC';
+        $orderby = 'g.`active` ASC';
     } else if ($ui->st('o','get') == 'at') {
-        $orderby='g.`active` ASC';
+        $orderby = 'g.`active` ASC';
     } else if ($ui->st('o','get') == 'da') {
-        $orderby='u.`cname` DESC,g.`serverip` ASC,g.`port` ASC';
+        $orderby = 'u.`cname` DESC,g.`serverip` ASC,g.`port` ASC';
     } else if ($ui->st('o','get') == 'aa') {
-        $orderby='u.`cname` ASC,g.`serverip` ASC,g.`port` ASC';
+        $orderby = 'u.`cname` ASC,g.`serverip` ASC,g.`port` ASC';
     } else if ($ui->st('o','get') == 'dn') {
-        $orderby='u.`name` DESC,u.`vname` DESC,g.`serverip` ASC,g.`port` ASC';
+        $orderby = 'u.`name` DESC,u.`vname` DESC,g.`serverip` ASC,g.`port` ASC';
     } else if ($ui->st('o','get') == 'an') {
-        $orderby='u.`name` ASC,u.`vname` ASC,g.`serverip` ASC,g.`port` ASC';
+        $orderby = 'u.`name` ASC,u.`vname` ASC,g.`serverip` ASC,g.`port` ASC';
     } else if ($ui->st('o','get') == 'dl') {
-        $orderby='g.`lendserver` DESC';
+        $orderby = 'g.`lendserver` DESC';
     } else if ($ui->st('o','get') == 'al') {
-        $orderby='g.`lendserver` ASC';
+        $orderby = 'g.`lendserver` ASC';
     } else if ($ui->st('o','get') == 'ds') {
-        $orderby='g.`serverip` DESC,g.`port` DESC';
+        $orderby = 'g.`serverip` DESC,g.`port` DESC';
     } else {
-        $orderby='g.`serverip` ASC,g.`port` ASC';
-        $o='as';
+        $orderby = 'g.`serverip` ASC,g.`port` ASC';
+        $o = 'as';
     }
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));

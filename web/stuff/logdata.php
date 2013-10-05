@@ -50,7 +50,7 @@ if ($reseller_id==0) {
 	$pselect=$sql->prepare("SELECT l.`userid`,l.`subuser`,l.`reseller`,l.`username`,l.`usertype`,l.`useraction`,l.`ip`,l.`hostname`,l.`logdate` FROM `userdata` u LEFT JOIN `userlog` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE l.`usertype` LIKE :usertype AND u.`resellerid`=:reseller_id GROUP BY l.`userid`,l.`subuser`,l.`reseller`,l.`username`,l.`usertype`,l.`useraction`,l.`ip`,l.`logdate` ORDER BY l.`id` DESC LIMIT $start,$amount");
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id=$admin_id;
+	$reseller_id = $admin_id;
 }
 if (empty($where)) {
 	$pselect->execute(array(':usertype'=> "%", ':reseller_id'=> $reseller_id));
