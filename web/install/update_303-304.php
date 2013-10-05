@@ -51,7 +51,7 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 

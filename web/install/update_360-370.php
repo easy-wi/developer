@@ -130,21 +130,21 @@ if (isset($include) and $include==true) {
     $insert_easywi_version->execute();
     $response->add('Action: insert_easywi_version done: ');
     $insert_easywi_version->closecursor();
-    $query=$sql->prepare("ALTER TABLE `settings` ADD COLUMN `emailregister` blob NULL");
+    $query = $sql->prepare("ALTER TABLE `settings` ADD COLUMN `emailregister` blob NULL");
     $query->execute();
 
-    $query=$sql->prepare("UPDATE `settings` SET `emailregister`=0x78dae5554d8fd330103d77a5fd0fc628b75649535a8a7022ad4a7b854339704293649258ebd8c1710be5d733f95ab6d54a5be08010b978de7c3cdba337b178f1eefd66ffe9c39695ae5231bbbd11254216dfde4c84934e61ec3953cbd4137e0fdb40850e28dfd533fc7290c7886f8c76a8dd6c7faa91b3b4471177f8cdf92def5b9696601b24dfc7fd6eb6e64423fc61239198ecc4922235cad888bfdc751f670a7357812da48e78c0191de311eacdaf327325e1687494288bd275194aea7b620b97abe55dc8d9f102c38037dd47f4745682017d8b05efef0f894296189ba1ed2887ede641e0d12d51a91ab24ceaa20bb6b8a9211d70cb3061c2d9ce98303233361e2f7c4446543fefbe99afeec21d8fa9dbd933856fd66795dbe5abe53cbcaaf2992d1959f6dca2b5edc5af7665fe076d097eb72febf34a9252b05d7582cb49972c8714230e56829a96a88ee8640ad323da0c344c1d94a602ce1af99db24807a271d6e8629c02e635682999c6610808bfa58d4562fd4ecbdde235a00e0e9c349a4a0e54a3a1426f7a91d56a6eee8d4e1a298b79c4bda634960688aee148d4edd07c4e14e87b1e3f84840ff11364a1f7847371e9c40aa4b25880cd1aefc13d46b5b158abd345d1b0f48dbf4262c1951afba795b57a1dd0be7d3f73635ca78bbfde9bffe65f24fcf6e5e89f92f6f1fa01c9a9e3c7");
+    $query = $sql->prepare("UPDATE `settings` SET `emailregister`=0x78dae5554d8fd330103d77a5fd0fc628b75649535a8a7022ad4a7b854339704293649258ebd8c1710be5d733f95ab6d54a5be08010b978de7c3cdba337b178f1eefd66ffe9c39695ae5231bbbd11254216dfde4c84934e61ec3953cbd4137e0fdb40850e28dfd533fc7290c7886f8c76a8dd6c7faa91b3b4471177f8cdf92def5b9696601b24dfc7fd6eb6e64423fc61239198ecc4922235cad888bfdc751f670a7357812da48e78c0191de311eacdaf327325e1687494288bd275194aea7b620b97abe55dc8d9f102c38037dd47f4745682017d8b05efef0f894296189ba1ed2887ede641e0d12d51a91ab24ceaa20bb6b8a9211d70cb3061c2d9ce98303233361e2f7c4446543fefbe99afeec21d8fa9dbd933856fd66795dbe5abe53cbcaaf2992d1959f6dca2b5edc5af7665fe076d097eb72febf34a9252b05d7582cb49972c8714230e56829a96a88ee8640ad323da0c344c1d94a602ce1af99db24807a271d6e8629c02e635682999c6610808bfa58d4562fd4ecbdde235a00e0e9c349a4a0e54a3a1426f7a91d56a6eee8d4e1a298b79c4bda634960688aee148d4edd07c4e14e87b1e3f84840ff11364a1f7847371e9c40aa4b25880cd1aefc13d46b5b158abd345d1b0f48dbf4262c1951afba795b57a1dd0be7d3f73635ca78bbfde9bffe65f24fcf6e5e89f92f6f1fa01c9a9e3c7");
     $query->execute();
 
-    $query=$sql->prepare("INSERT INTO `translations` (`type`, `lang`, `transID`, `text`, `resellerID`) VALUES
+    $query = $sql->prepare("INSERT INTO `translations` (`type`, `lang`, `transID`, `text`, `resellerID`) VALUES
     ('em', 'de', 'emailregister', '<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n<sprache>\r\n	<topic>Account Aktivierung</topic>\r\n	<salutation>Sehr geehrte(r)</salutation>\r\n	<text1>bitte aktivieren Sie Ihren Account indem sie auf folgenden Link klicken:</text1>\r\n	<text2>Bei Fragen nutzen Sie bitte das Ticketsystem, oder nehmen telefonisch Kontakt auf.</text2>\r\n	<text3>Die entsprechende Nummer finden Sie im Panel.</text3>\r\n	<noreply>(Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht darauf, weil dieses E-Mail Konto nicht in der Lage ist, E-Mails zu empfangen.)</noreply>\r\n</sprache>', 0),
     ('em', 'uk', 'emailregister', '<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n<sprache>\r\n	<topic>Account Activation</topic>\r\n	<salutation>Dear</salutation>\r\n	<text1>please activate your account by clicking following link:</text1>\r\n	<text2>If you have any questions feel free to use our supportsystem or give us a call.</text2>\r\n	<text3>You will find the phonenumber in our panel.</text3>\r\n	<noreply>(This is an automated mail. Please do not reply to it since the account is configured to send only.)</noreply>\r\n</sprache>', 0)");
     $query->execute();
 
 
-    $query=$sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `protectedSaveCFGs` text NULL");
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `protectedSaveCFGs` text NULL");
     $query->execute();
-    $query=$sql->prepare("UPDATE `servertypes` SET `protectedSaveCFGs`='cfg/server.cfg'");
+    $query = $sql->prepare("UPDATE `servertypes` SET `protectedSaveCFGs`='cfg/server.cfg'");
     $query->execute();
 
 } else {

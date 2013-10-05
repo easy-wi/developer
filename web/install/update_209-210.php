@@ -65,7 +65,7 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_gsswitch=$sql->prepare("ALTER TABLE `gsswitch` ADD COLUMN `newlayout` ENUM('Y','N') DEFAULT 'Y' AFTER `secnotified`");
@@ -73,7 +73,7 @@ $alter_gsswitch->execute();
 $response->add('Action: alter_gsswitch done: ');
 $error=$alter_gsswitch->errorinfo();
 $alter_gsswitch->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $update_gsswitch=$sql->prepare("UPDATE `gsswitch` SET `newlayout`='N'");
@@ -81,7 +81,7 @@ $update_gsswitch->execute();
 $response->add('Action: update_gsswitch done: ');
 $error=$update_gsswitch->errorinfo();
 $update_gsswitch->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 } else {

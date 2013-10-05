@@ -103,28 +103,28 @@ if (isset($include) and $include==true) {
 
     $insert=$sql->prepare("INSERT INTO `custom_columns_settings` (`active`,`item`,`type`,`length`,`name`) VALUES (?,?,?,?,?)");
     $insert2=$sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('cc',?,?,?,0) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
-    $copy=array();
-    $opts=array();
-    foreach(array('opt1'=>'Opt 1','opt2'=>'Opt 2','opt3'=>'Opt 3','opt4'=>'Opt 4','opt5'=>'Opt 5') as $opt=>$trans) {
-        $query=$sql->prepare("SELECT COUNT(`id`) AS `a` FROM `gsswitch` WHERE `$opt` IS NOT NULL AND `$opt`!='' LIMIT 1");
+    $copy = array();
+    $opts = array();
+    foreach(array('opt1' => 'Opt 1','opt2' => 'Opt 2','opt3' => 'Opt 3','opt4' => 'Opt 4','opt5' => 'Opt 5') as $opt=>$trans) {
+        $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `gsswitch` WHERE `$opt` IS NOT NULL AND `$opt`!='' LIMIT 1");
         $query->execute();
         if ($query->fetchColumn()>0) {
             $insert->execute(array('Y','G','V',255,$opt));
             $id=$sql->lastInsertId();
             $insert2->execute(array($id,'de',$trans));
             $insert2->execute(array($id,'en',$trans));
-            $copy[$id]=$opt;
+            $copy[$id] = $opt;
             $opts[]="`${opt}`";
         }
     }
     if (count($copy)>0) {
-        $query=$sql->prepare("SELECT `id`,".implode(',',$opts)." FROM `gsswitch`");
+        $query = $sql->prepare("SELECT `id`,".implode(',',$opts)." FROM `gsswitch`");
         $query->execute();
         $insert=$sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             foreach ($copy as $k=>$v){
-                $val=$row[$v]==null ? '' : $row[$v];
-                $insert->execute(array($k,$row['id'],$val));
+                $val=$row[$v] == null ? '' : $row[$v];
+                $insert->execute(array($k, $row['id'],$val));
             }
         }
     }

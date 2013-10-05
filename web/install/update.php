@@ -44,14 +44,14 @@ if (!isset($updateinclude) or $updateinclude==false) {
 	error_reporting(E_ALL|E_STRICT);
 	define('EASYWIDIR', dirname(dirname(__FILE__)));
 	function isinteger($value) {
-	  if(preg_match("/^[\d+(.\d+|$)]+$/", $value) or $value=="0") {
+	  if(preg_match("/^[\d+(.\d+|$)]+$/", $value) or $value == 0) {
 		return true;
 	  }
 	}
 	class UpdateResponse {
-		public $response='';
+		public $response = '';
 		function __construct() {
-			$this->response='';
+			$this->response = '';
 		}
 		function add ($newtext) {
 			$this->response .= $newtext;
@@ -65,7 +65,7 @@ if (!isset($updateinclude) or $updateinclude==false) {
 	}
 	include(EASYWIDIR . '/stuff/config.php');
 	try {
-		$sql=new PDO("$databanktype:host=$host;dbname=$db",$user,$pwd,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
+		$sql=new PDO("$databanktype:host=$host;dbname=$db",$user,$pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
 	}
 	catch(PDOException $error) {
 		echo $error->getMessage();
@@ -76,13 +76,13 @@ if (!isset($updateinclude) or $updateinclude==false) {
     define('EASYWIDIR', dirname(dirname(__FILE__)));
 }
 function versioncheck ($current,$new,$file,$response,$sql) {
-    $include=true;
+    $include = true;
 	if ($current<$new) {
 		$response->add("Upgrading Databe from $current to $new<br />");
-		if (is_file(EASYWIDIR.'/'.$file)) {
+		if (is_file(EASYWIDIR . '/' . $file)) {
 			$response->add("Found updaterfile ".$file.". Executing it now<br />");
-			include(EASYWIDIR . '/'.$file);
-		} else if (is_file(EASYWIDIR.'/install/'.$file)) {
+			include(EASYWIDIR . '/' . $file);
+		} else if (is_file(EASYWIDIR . '/install/'.$file)) {
 			$response->add("Found updaterfile ".'install/'.$file.". Executing it now<br />");
 			include(EASYWIDIR . '/install/'.$file);
 		} else {
@@ -94,7 +94,7 @@ function versioncheck ($current,$new,$file,$response,$sql) {
 			$response->add('<br />Action: update_easywiversion done: ');
 			$error=$update_easywiversion->errorinfo();
 			$update_easywiversion->closecursor();
-			if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+			if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 			else $response->add('OK<br />');
 		}
 		return true;
@@ -102,14 +102,14 @@ function versioncheck ($current,$new,$file,$response,$sql) {
 		return false;
 	}
 }
-$query=$sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
+$query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
 $query->execute();
 $version=$query->fetchColumn();
-$admin_id=1;
-$main=1;
-$reseller_id=0;
+$admin_id = 1;
+$main = 1;
+$reseller_id = 0;
 $error=$query->errorinfo();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) {
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) {
 	$response->add("Current database version: 1.9<br />");
 	$version="1.9";
 } else {

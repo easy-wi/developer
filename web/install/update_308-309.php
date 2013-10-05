@@ -132,18 +132,18 @@ $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server` CHANGE `max_download_total_bandwidth` `max_download_total_bandwidth` BIGINT(19),
+$query = $sql->prepare("ALTER TABLE `voice_server` CHANGE `max_download_total_bandwidth` `max_download_total_bandwidth` BIGINT(19),
 CHANGE `max_upload_total_bandwidth` `max_upload_total_bandwidth` BIGINT(19),
 CHANGE `maxtraffic` `maxtraffic` BIGINT(19)");
 $query->execute();
 $response->add('Action: Change voice_server table done: ');
 $error=$query->errorinfo();
 $query->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$query=$sql->prepare("UPDATE `voice_server` SET `max_download_total_bandwidth`='' WHERE `max_download_total_bandwidth`='0';
-UPDATE `voice_server` SET `max_upload_total_bandwidth`='' WHERE `max_upload_total_bandwidth`='0';
+$query = $sql->prepare("UPDATE `voice_server` SET `max_download_total_bandwidth`='' WHERE `max_download_total_bandwidth` = 0;
+UPDATE `voice_server` SET `max_upload_total_bandwidth`='' WHERE `max_upload_total_bandwidth` = 0;
 UPDATE `voice_server` SET `maxtraffic`='' WHERE `maxtraffic`='0'");
 $query->execute();
 $error=$query->errorinfo();

@@ -55,7 +55,7 @@ $drop_rootstatus->execute();
 $response->add('Action: drop_rootstatus done: ');
 $error=$drop_rootstatus->errorinfo();
 $drop_rootstatus->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_voice_masterserver=$sql->prepare("ALTER TABLE `voice_masterserver` ADD COLUMN `autorestart` ENUM('Y','N') DEFAULT 'Y' AFTER `notified`");
@@ -63,7 +63,7 @@ $alter_voice_masterserver->execute();
 $response->add('Action: alter_voice_masterserver done: ');
 $error=$alter_voice_masterserver->errorinfo();
 $alter_voice_masterserver->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 } else {
 	echo "Error: this file needs to be included by the updater!<br />";

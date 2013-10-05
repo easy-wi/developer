@@ -69,15 +69,15 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 
-$query=$sql->prepare("SELECT `id`,`maxtraffic`,`filetraffic`,`lastfiletraffic` FROM `voice_server`");
-$query2=$sql->prepare("UPDATE `voice_server` SET `maxtraffic`=?,`filetraffic`=?,`lastfiletraffic`=? WHERE `id`=? LIMIT 1");
+$query = $sql->prepare("SELECT `id`,`maxtraffic`,`filetraffic`,`lastfiletraffic` FROM `voice_server`");
+$query2 = $sql->prepare("UPDATE `voice_server` SET `maxtraffic`=?,`filetraffic`=?,`lastfiletraffic`=? WHERE `id`=? LIMIT 1");
 $query->execute(array());
 foreach ($query->fetchall() as $row) {
-	$query2->execute(array(($row['maxtraffic']/1048576),($row['filetraffic']/1048576),($row['lastfiletraffic']/1048576),$row['id']));
+	$query2->execute(array(($row['maxtraffic']/1048576),($row['filetraffic']/1048576),($row['lastfiletraffic']/1048576), $row['id']));
 }
 } else {
 	echo "Error: this file needs to be included by the updater!<br />";

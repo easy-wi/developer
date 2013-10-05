@@ -51,7 +51,7 @@ $create_voice_server_backup->execute();
 $response->add('Action: create_voice_server_backup done: ');
 $error=$create_voice_server_backup->errorinfo();
 $create_voice_server_backup->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $alter_settings=$sql->prepare("ALTER TABLE `settings`
@@ -62,7 +62,7 @@ $alter_settings->execute();
 $response->add('Action: alter_settings done: ');
 $error=$alter_settings->errorinfo();
 $alter_settings->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 } else {
 	echo "Error: this file needs to be included by the updater!<br />";

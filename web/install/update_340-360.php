@@ -195,26 +195,26 @@ All template files have been altered and hidden fields for CSFR token added!
 
     $add=$sql->prepare("CREATE TABLE IF NOT EXISTS `tickets_text` (`ticketID` bigint(19) unsigned DEFAULT NULL,`userID` int(10) unsigned NOT NULL,`writedate` datetime DEFAULT NULL,`message` text,`resellerID` int(10) unsigned DEFAULT '0',KEY(`ticketID`),KEY(`userID`),KEY(`resellerID`)) ENGINE=InnoDB");
     $add->execute();
-    $query=$sql->prepare("ALTER TABLE `tickets` ADD COLUMN `state` enum('A','C','D','N','P','R') NULL DEFAULT 'N' AFTER `id`");
+    $query = $sql->prepare("ALTER TABLE `tickets` ADD COLUMN `state` enum('A','C','D','N','P','R') NULL DEFAULT 'N' AFTER `id`");
     $query->execute();
-    $query=$sql->prepare("SELECT * FROM `tickets`");
+    $query = $sql->prepare("SELECT * FROM `tickets`");
     $query->execute();
-    $query2=$sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`userID`,`writeDate`,`message`,`resellerID`) VALUES (?,?,?,?,?)");
-    $query3=$sql->prepare("UPDATE `tickets` SET `state`=? WHERE `id`=? LIMIT 1");
+    $query2 = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`userID`,`writeDate`,`message`,`resellerID`) VALUES (?,?,?,?,?)");
+    $query3 = $sql->prepare("UPDATE `tickets` SET `state`=? WHERE `id`=? LIMIT 1");
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $state=($row['open']=='N') ? 'C' : 'P';
-        $query2->execute(array($row['id'],$row['writerid'],$row['writedate'],$row['ticket'],$row['resellerid']));
-        $query3->execute(array($state,$row['id']));
+        $state=($row['open'] == 'N') ? 'C' : 'P';
+        $query2->execute(array($row['id'], $row['writerid'], $row['writedate'], $row['ticket'], $row['resellerid']));
+        $query3->execute(array($state, $row['id']));
     }
-    $query=$sql->prepare("DELETE FROM `tickets` WHERE `mainticket` IS NOT NULL");
+    $query = $sql->prepare("DELETE FROM `tickets` WHERE `mainticket` IS NOT NULL");
     $query->execute();
-    $query=$sql->prepare("SELECT `id`,`usergroup`,`resellerid` FROM `userdata`");
-    $query2=$sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?)");
+    $query = $sql->prepare("SELECT `id`,`usergroup`,`resellerid` FROM `userdata`");
+    $query2 = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?)");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $query2->execute(array($row['id'],$row['usergroup'],$row['resellerid']));
-    $query=$sql->prepare("UPDATE `settings` SET `template`='twitterbootstrap' WHERE `template`='default'");
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $query2->execute(array($row['id'], $row['usergroup'], $row['resellerid']));
+    $query = $sql->prepare("UPDATE `settings` SET `template`='twitterbootstrap' WHERE `template`='default'");
     $query->execute();
-    $query=$sql->prepare("INSERT INTO `resellerimages` (`distro`, `description`, `bitversion`, `pxelinux`) VALUES
+    $query = $sql->prepare("INSERT INTO `resellerimages` (`distro`, `description`, `bitversion`, `pxelinux`) VALUES
 ('other', 'Rescue 64bit', 64, 'DISPLAY boot.txt\r\nDEFAULT rescue\r\nTIMEOUT 10\r\n\r\nLABEL default\r\n        kernel /rescue/vmlinuz-rescue\r\n        append initrd=/rescue/initram.igz setkmap=de dodhcp rootpass=%rescuepass% scandelay=5 boothttp=http://1.1.1.1/rescue/64/sysrcd.dat'),
 ('other', 'Rescue 32bit', 32, 'DISPLAY boot.txt\r\nDEFAULT rescue\r\nTIMEOUT 10\r\n\r\nLABEL default\r\n        kernel /rescue/vmlinuz-rescue\r\n        append initrd=/rescue/initram.igz setkmap=de dodhcp rootpass=%rescuepass% scandelay=5 boothttp=http://1.1.1.1/rescue/32/sysrcd.dat')");
     $query->execute();

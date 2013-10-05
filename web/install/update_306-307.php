@@ -158,7 +158,7 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $error=$insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $update_servertypes_csgo=$sql->prepare("UPDATE `servertypes` SET `steamgame`='S' WHERE `shorten`='csgo'");
@@ -166,7 +166,7 @@ $update_servertypes_csgo->execute();
 $response->add('Action: update_servertypes_csgo done: ');
 $error=$update_servertypes_csgo->errorinfo();
 $update_servertypes_csgo->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 } else {

@@ -139,10 +139,10 @@ if (isset($include) and $include==true) {
     $response->add('Action: insert_easywi_version done: ');
     $insert_easywi_version->closecursor();
 
-    $query=$sql->prepare("ALTER TABLE `resellerimages` ADD COLUMN `active` enum('Y','N') NOT NULL DEFAULT 'Y' AFTER `id`, ADD COLUMN `pxelinux` text NULL AFTER `bitversion`");
+    $query = $sql->prepare("ALTER TABLE `resellerimages` ADD COLUMN `active` enum('Y','N') NOT NULL DEFAULT 'Y' AFTER `id`, ADD COLUMN `pxelinux` text NULL AFTER `bitversion`");
     $query->execute();
 
-    $query=$sql->prepare("INSERT INTO `resellerimages` (`distro`, `description`, `bitversion`, `pxelinux`) VALUES
+    $query = $sql->prepare("INSERT INTO `resellerimages` (`distro`, `description`, `bitversion`, `pxelinux`) VALUES
 ('other', 'Rescue 64bit', 64, 'DISPLAY boot.txt\r\nDEFAULT rescue\r\nTIMEOUT 10\r\n\r\nLABEL default\r\n        kernel /rescue/vmlinuz-rescue\r\n        append initrd=/rescue/initram.igz setkmap=de dodhcp rootpass=%rescuepass% scandelay=5 boothttp=http://1.1.1.1/rescue/64/sysrcd.dat'),
 ('other', 'Rescue 32bit', 32, 'DISPLAY boot.txt\r\nDEFAULT rescue\r\nTIMEOUT 10\r\n\r\nLABEL default\r\n        kernel /rescue/vmlinuz-rescue\r\n        append initrd=/rescue/initram.igz setkmap=de dodhcp rootpass=%rescuepass% scandelay=5 boothttp=http://1.1.1.1/rescue/32/sysrcd.dat')");
     $query->execute();

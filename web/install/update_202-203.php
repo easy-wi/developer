@@ -97,7 +97,7 @@ $instert_voice_stats_settings->execute();
 $response->add('Action: instert_voice_stats_settings done: ');
 $error=$instert_voice_stats_settings->errorinfo();
 $instert_voice_stats_settings->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 $pselect=$sql->prepare("SELECT `resellerid` FROM `resellerdata`");
 $pselect->execute(array());
@@ -107,7 +107,7 @@ foreach ($pselect->fetchall() as $row) {
 	$response->add('Action: instert_voice_stats_settings done: ');
 	$error=$instert_voice_stats_settings->errorinfo();
 	$instert_voice_stats_settings->closecursor();
-	if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+	if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 	else $response->add('OK<br />');
 }
 } else {

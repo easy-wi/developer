@@ -127,35 +127,35 @@ $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
 $insert_easywi_version->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server_stats_hours` DROP `id`");
+$query = $sql->prepare("ALTER TABLE `voice_server_stats_hours` DROP `id`");
 $query->execute();
 $query->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server_stats_hours` DROP KEY `sid`");
+$query = $sql->prepare("ALTER TABLE `voice_server_stats_hours` DROP KEY `sid`");
 $query->execute();
 $query->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server_stats_hours` DROP KEY `date`");
+$query = $sql->prepare("ALTER TABLE `voice_server_stats_hours` DROP KEY `date`");
 $query->execute();
 $query->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server_stats_hours` ADD PRIMARY KEY(`sid`,`date`)");
+$query = $sql->prepare("ALTER TABLE `voice_server_stats_hours` ADD PRIMARY KEY(`sid`,`date`)");
 $query->execute();
 $query->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server_stats` DROP `id`");
+$query = $sql->prepare("ALTER TABLE `voice_server_stats` DROP `id`");
 $query->execute();
 $query->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server_stats` DROP KEY `sid`");
+$query = $sql->prepare("ALTER TABLE `voice_server_stats` DROP KEY `sid`");
 $query->execute();
 $query->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server_stats` DROP KEY `date`");
+$query = $sql->prepare("ALTER TABLE `voice_server_stats` DROP KEY `date`");
 $query->execute();
 $query->closecursor();
 
-$query=$sql->prepare("ALTER TABLE `voice_server_stats` ADD PRIMARY KEY(`sid`,`date`)");
+$query = $sql->prepare("ALTER TABLE `voice_server_stats` ADD PRIMARY KEY(`sid`,`date`)");
 $query->execute();
 $query->closecursor();
 
@@ -183,29 +183,29 @@ $query="CREATE TABLE IF NOT EXISTS `translations` (
 $add=$sql->prepare($query);
 $add->execute();
 
-$query=$sql->prepare("SELECT * FROM `addons_desc`");
+$query = $sql->prepare("SELECT * FROM `addons_desc`");
 $query->execute();
 $insert=$sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-	$insert->execute(array($row['language'],$row['addonid'],$row['description'],$row['resellerid']));
+	$insert->execute(array($row['language'], $row['addonid'], $row['description'], $row['resellerid']));
 }
-$query=$sql->prepare("DROP TABLE `addons_desc`");
+$query = $sql->prepare("DROP TABLE `addons_desc`");
 $query->execute();
-$query=$sql->prepare("SELECT * FROM `ticket_language`");
+$query = $sql->prepare("SELECT * FROM `ticket_language`");
 $query->execute();
 $insert=$sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-	$insert->execute(array($row['language'],$row['topicid'],$row['subject'],$row['resellerid']));
+	$insert->execute(array($row['language'], $row['topicid'], $row['subject'], $row['resellerid']));
 }
-$query=$sql->prepare("DROP TABLE `ticket_language`");
+$query = $sql->prepare("DROP TABLE `ticket_language`");
 $query->execute();
-$query=$sql->prepare("SELECT * FROM `email_languages`");
+$query = $sql->prepare("SELECT * FROM `email_languages`");
 $query->execute();
 $insert=$sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('em',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-	$insert->execute(array($row['language'],$row['content'],@gzuncompress($row['xml']),$row['resellerid']));
+	$insert->execute(array($row['language'], $row['content'],@gzuncompress($row['xml']), $row['resellerid']));
 }
-$query=$sql->prepare("DROP TABLE `email_languages`");
+$query = $sql->prepare("DROP TABLE `email_languages`");
 $query->execute();
 
 } else {

@@ -20,13 +20,13 @@
             <div class="control-group">
                 <label class="control-label" for="inputPass1"><?php echo $sprache->passw_1;?></label>
                 <div class="controls">
-                    <input id="inputPass1" type="text" name="password" value="" required>
+                    <input id="inputPass1" type="password" name="password" value="" required>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputName"><?php echo $sprache->passw_2;?></label>
                 <div class="controls">
-                    <input id="inputPass2" type="text" name="pass2" value="" required>
+                    <input id="inputPass2" type="password" name="pass2" value="" required>
                 </div>
             </div>
             <div class="control-group">

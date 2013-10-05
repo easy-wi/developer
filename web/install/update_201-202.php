@@ -43,7 +43,7 @@ $drop_voice_masterserver_ftpport->execute();
 $response->add('Action: drop_voice_masterserver_ftpport done: ');
 $error=$drop_voice_masterserver_ftpport->errorinfo();
 $drop_voice_masterserver_ftpport->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 $update_easywiversion=$sql->prepare("UPDATE `easywi_version` SET `version`='2.02'");
@@ -51,7 +51,7 @@ $update_easywiversion->execute();
 $response->add('Action: update_easywiversion done: ');
 $error=$update_easywiversion->errorinfo();
 $update_easywiversion->closecursor();
-if (isset($error[2]) and $error[2]!="" and $error[2]!=null and !isinteger($error[2])) $response->add($error[2].'<br />');
+if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 } else {
 	echo "Error: this file needs to be included by the updater!<br />";
