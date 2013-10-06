@@ -56,7 +56,7 @@ function getHttpHeaders ($url) {
 
     if ($fp) {
 
-        $send = "GET $path HTTP/1.1\r\n";
+        $send = "HEAD $path HTTP/1.1\r\n";
         $send .= "Host: $domain\r\n";
         $send .= "User-Agent: easy-wi.com\r\n";
         $send .= "Connection: Close\r\n\r\n";
