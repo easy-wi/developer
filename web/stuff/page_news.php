@@ -176,7 +176,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                 } else {
                     $commentDate=date('m.d.Y H:i',strtotime($row['date']));
                 }
-                $commentArray[]=array('commentID' => $row['commentID'],'replyTo' => $row['replyTo'],'homepage' => $row['homepage'],'date' => $commentDate,'author'=>htmlentities($row['authorname']),'comment'=>htmlentities($row['comment']));
+                $commentArray[]=array('commentID' => $row['commentID'],'replyTo' => $row['replyTo'],'homepage' => $row['homepage'],'date' => $commentDate,'author' => htmlentities($row['authorname']),'comment' => htmlentities($row['comment']));
             }
         }
         $page_data->setCanonicalUrl($s,$textID);

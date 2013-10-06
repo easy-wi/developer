@@ -387,7 +387,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
         } else {
             $status=$sprache->ok;
         }
-        $table[]=array('id' => $row['dedicatedID'],'ip' => $row['ip'],'description' => $row['description'],'status' => $status,'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'],'cname' => $row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'active' => $active,'jobPending' => $jobPending);
+        $table[]=array('id' => $row['dedicatedID'],'ip' => $row['ip'],'description' => $row['description'],'status' => $status,'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'],'cname' => $row['cname'],'names' => trim($row['name'] . ' ' . $row['vname']),'active' => $active,'jobPending' => $jobPending);
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=rp&amp;o='.$o.'&amp;a=';

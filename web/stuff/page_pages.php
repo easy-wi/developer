@@ -202,7 +202,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$lang_avail=getlanguages($template_to_use);
 		$table = array();
 		foreach ($lang_avail as $lg) {
-			$table[$lg]=array('title'=>false,'keywords'=>false,'text'=>false);
+			$table[$lg]=array('title' => false,'keywords' => false,'text' => false);
 			$keywords_used[$lg] = array();
 		}
 		$query = $sql->prepare("SELECT `released`,`subpage`,`naviDisplay` FROM `page_pages` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -221,7 +221,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 					$keywords[] = $row3['name'];
 					$keywords_used[$row2['language']][] = $row3['name'];
 				}
-				$table[$row2['language']]=array('title' => $row2['title'],'keywords'=>implode(', ',$keywords),'text' => $row2['text']);
+				$table[$row2['language']]=array('title' => $row2['title'],'keywords' => implode(', ',$keywords),'text' => $row2['text']);
 			}
 		}
 		$subpages = array();

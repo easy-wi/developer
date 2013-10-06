@@ -94,7 +94,7 @@ if (isset($page_id) and is_numeric($page_id)) {
     $searchStringValue=htmlentities($ui->escaped('search','post'),ENT_QUOTES,'UTF-8');
     if ($ui->escaped('search','post')) {
         $results = array();
-        $searchFor=array('general'=>array(),'exact'=>array());
+        $searchFor=array('general' => array(),'exact' => array());
         $searchString=preg_replace("/\s+/",' ',$ui->escaped('search','post'));
         $searchFor['exact'][]=strtolower($searchString);
         if (strpos($searchString,'"')===false) {
@@ -122,7 +122,7 @@ if (isset($page_id) and is_numeric($page_id)) {
             $query->execute(array(':search' => '%'.$value.'%'));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if(!isset($titleLanguages[$row['language']])) {
-                    $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page', $row['language'],0),'general'=>getlanguagefile('general', $row['language'],0));
+                    $titleLanguages[$row['language']]=array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
                 }
                 if (strlen($row['text'])<=$newssidebar_textlength) {
                     $text=$row['text'];
@@ -172,7 +172,7 @@ if (isset($page_id) and is_numeric($page_id)) {
                 } else {
                     $hits=array($value);
                 }
-                $results[$row['id']]=array('textID' => $row['id'],'pageID' => $row['pageID'],'language' => $row['language'],'type' => $type,'worth' => $worth,'href' => $href,'title' => $title,'link' => $link,'text'=>str_replace('%url%',$page_data->pageurl,$text),'hits' => $hits);
+                $results[$row['id']]=array('textID' => $row['id'],'pageID' => $row['pageID'],'language' => $row['language'],'type' => $type,'worth' => $worth,'href' => $href,'title' => $title,'link' => $link,'text' => str_replace('%url%',$page_data->pageurl,$text),'hits' => $hits);
             }
             return $results;
         }

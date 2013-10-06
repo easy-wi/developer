@@ -277,8 +277,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             $port = $row['port'];
             $server = $serverip . ':' . $port;
             if (!in_array($qstat, array('', null, false))) {
-                if (in_array($qstat, array('minecraft', 'tm', 'gtasamp', 'teeworlds'))) {
-                    $other[] = array('qstat' => $qstat,'server' => $server, 'switchID' => $row['id']);
+                if (in_array($qstat, array('minecraft', 'tm', 'gtasamp', 'teeworlds', 'mtasa'))) {
+                    $other[] = array('qstat' => $qstat, 'switchID' => $row['id']);
                 } else {
                     $queries[] = '-' . $qstat . ' ' . $server;
                     $i++;
@@ -473,16 +473,15 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         foreach ($other as $array) {
             unset($userid, $serverid);
             $lid = 0;
-            $address = $array['server'];
-            $server = explode(':', $address);
             $qstat = $array['qstat'];
-            $serverip = $server[0];
-            $port = $server[1];
             $serverid = $array['switchID'];
-            $query = $sql->prepare("SELECT s.`id`,t.`description`,g.`slots`,g.`war`,g.`brandname`,g.`secnotified`,g.`notified`,g.`lendserver`,g.`userid`,g.`resellerid`,g.`rootID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
+            $query = $sql->prepare("SELECT s.`id`,t.`description`,g.`serverip`,g.`port`,g.`port2`,g.`slots`,g.`war`,g.`brandname`,g.`secnotified`,g.`notified`,g.`lendserver`,g.`userid`,g.`resellerid`,g.`rootID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
             $query2=$sql->prepare("SELECT `id`,`started` FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
             $query->execute(array($serverid));
             foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                $serverip = $row['serverip'];
+                $port = $row['port'];
+                $address = $row['serverip'] . ':' . $row['port'];
                 $gametype = $row['description'];
                 $notified = $row['notified'];
                 $secnotified = $row['secnotified'];
@@ -502,10 +501,11 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                     }
                 }
             }
-            if (isset($userid) and isset($serverid)) {
+            if (isset($userid) and isset($serverid) and isset($port) and isset($qstat) and isset($serverip)) {
                 $status = 'UP';
-                if ($qstat == 'gtasamp' or $qstat == 'minecraft' or $qstat == 'teeworlds') {
-                    $query = serverQuery($serverip, $port, $qstat);
+                if (in_array($qstat, array('gtasamp', 'minecraft', 'teeworlds', 'mtasa'))) {
+                    echo "$qstat\r\n";
+                    $query = ($qstat == 'mtasa') ? serverQuery($serverip, ($port + 123), $qstat) : serverQuery($serverip, $port, $qstat);
                     if (is_array($query)) {
                         $name = $query['hostname'];
                         $password = ($query['password'] == 1) ? 'Y' : 'N';

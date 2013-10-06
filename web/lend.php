@@ -366,7 +366,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
                 $free='16_bad.png';
             }
         }
-        $lendGameServers[]=array('ip' => $row['serverip'],'port'=>(int)$row['port'],'queryName'=>htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'queryMap'=>htmlentities($row['queryMap'],ENT_QUOTES,'UTF-8'),'runningGame' => $runningGame,'games' => $installedShorten,'slots'=>(int)$slots,'usedslots'=>(int)$row['queryNumplayers'],'timeleft'=>(int)$timeleft,'free' => $free);
+        $lendGameServers[]=array('ip' => $row['serverip'],'port' => (int)$row['port'],'queryName' => htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'queryMap' => htmlentities($row['queryMap'],ENT_QUOTES,'UTF-8'),'runningGame' => $runningGame,'games' => $installedShorten,'slots' => (int)$slots,'usedslots' => (int)$row['queryNumplayers'],'timeleft' => (int)$timeleft,'free' => $free);
     }
     $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`slots`,l.`started`,l.`lendtime` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
     $query->execute(array($reseller_id));
@@ -380,7 +380,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml',1,'post')!=1)
             $free='16_bad.png';
             $slots=$row['slots'];
         }
-        $lendVoiceServers[]=array('ip' => $row['ip'],'port'=>(int)$row['port'],'queryName'=>htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'connect' => $row['dns'],'slots'=>(int)$slots,'usedslots'=>(int)$row['usedslots'],'timeleft'=>(int)$timeleft,'free' => $free);
+        $lendVoiceServers[]=array('ip' => $row['ip'],'port' => (int)$row['port'],'queryName' => htmlentities($row['queryName'],ENT_QUOTES,'UTF-8'),'connect' => $row['dns'],'slots' => (int)$slots,'usedslots' => (int)$row['usedslots'],'timeleft' => (int)$timeleft,'free' => $free);
     }
     if ($ui->id('xml',1,'post')==1) {
         header("Content-type: text/xml; charset=UTF-8");

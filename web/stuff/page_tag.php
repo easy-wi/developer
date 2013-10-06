@@ -101,7 +101,7 @@ if (isset($search_tag) and $search_tag != '' and $search_tag != null) {
 			} else {
 				$row_link=$page_url.'/index.php?site='.$row['type'].'&amp;id='.$row['id'];
 			}
-			$table[]=array('title' => $row['title'],'text'=>nl2br($row['text']),'link' => $row_link,'date' => $row['date']);
+			$table[]=array('title' => $row['title'],'text' => nl2br($row['text']),'link' => $row_link,'date' => $row['date']);
 		}
 		$template_file = 'page_tag.tpl';
 	}

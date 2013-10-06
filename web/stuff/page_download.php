@@ -96,7 +96,7 @@ if (isset($downloadID)) {
     $query->execute(array($user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}")) {
-            $table[]=array('id' => $row['fileID'],'description' => $row['description'],'link'=>(isset($seo) and $seo== 'Y') ? $page_data->pages['downloads']['link'].'get/'.$row['fileID'].'/' : $page_data->pages['downloads']['link'].'&amp;action=get&amp;id='.$row['fileID'],'text' => $row['text']);
+            $table[]=array('id' => $row['fileID'],'description' => $row['description'],'link' => (isset($seo) and $seo== 'Y') ? $page_data->pages['downloads']['link'].'get/'.$row['fileID'].'/' : $page_data->pages['downloads']['link'].'&amp;action=get&amp;id='.$row['fileID'],'text' => $row['text']);
         }
     }
 

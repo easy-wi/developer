@@ -45,7 +45,7 @@ $pa=User_Permissions($user_id);
 
 # https://github.com/easy-wi/developer/issues/2
 if (isset($_SESSION['sID'])) {
-    $substituteAccess = array('gs'=>array(),'db'=>array(),'vo'=>array(),'vd'=>array(),'vs'=>array(),'ro'=>array());
+    $substituteAccess = array('gs' => array(),'db' => array(),'vo' => array(),'vd' => array(),'vs' => array(),'ro' => array());
     $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=?");
     $query->execute(array($_SESSION['sID']));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

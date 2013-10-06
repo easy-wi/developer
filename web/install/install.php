@@ -561,7 +561,7 @@ $aeskey="'.$_POST['aeskey'].'";
 		('efs', 'Star Trek: Elite Force'),
 		('fcs', 'FarCry'),
 		('grs', 'Ghost Recon'),
-		('gtasamp', 'GTA San Andreas'),
+		('gtasamp', 'San Andreas Multiplayer'),
 		('h2s', 'Hexen II'),
 		('hla2s', 'Half-Life'),
 		('hrs', 'Heretic II'),
@@ -571,6 +571,7 @@ $aeskey="'.$_POST['aeskey'].'";
 		('maqs', 'MoH: Allied Assault (Q/maqs)'),
 		('mas', 'MoH: Allied Assault (mas)'),
 		('mhs', 'MoH: Allied Assault (mhs)'),
+		('mtasa', 'Multi Theft Auto San Andreas'),
 		('minecraft', 'Minecraft'),
 		('netp', 'NetPanzer'),
 		('nexuizs', 'Nexuiz'),
@@ -620,7 +621,8 @@ $aeskey="'.$_POST['aeskey'].'";
 ('S',740,1,'csgo','Counter-Strike: Global Offensive','gserver','srcds_run',NULL,'csgo',NULL,0,'de_dust','./%binary% -game csgo -console -usercon +ip %ip% +port %port% -maxplayers_override %slots% +map %map%  +mapgroup %mapgroup%','[Classic Casual = default]\r\n+game_type 0 +game_mode 0\r\n\r\n[Classic Competitive]\r\n+game_type 0 +game_mode 1\r\n\r\n[Arms Race]\r\n+game_type 1 +game_mode 0\r\n\r\n[Demolition]\r\n+game_type 1 +game_mode 1',NULL,'a2s','N','css','cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes.txt\r\ngamemodes_server.txt',NULL,'password:1',100,4,27015,27016,27017,27018,27019,0,'mg_bomb'),
 ('N',NULL,1,'mc','Minecraft','gserver','minecraft_server.jar',NULL,NULL,NULL,0,NULL,'java -Xmx%maxram%M -Xms%minram%M -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=%maxcores% -XX:+AggressiveOpts -jar %binary% nogui',NULL,NULL,'minecraft','N','css','server.properties','[server.properties] ini\r\nserver-port=%port%\r\nquery.port=%port%\r\nrcon.port=%port2%\r\nserver-ip=%ip%\r\nmax-players=%slots%',NULL,100,2,25565,25566,NULL,NULL,NULL,0,NULL),
 ('N',NULL,1,'bukkit','MC Bukkit','gserver','craftbukkit.jar',NULL,NULL,NULL,0,NULL,'java -Xincgc -Xmx%maxram%M -Xms%minram%M -jar %binary%',NULL,NULL,'minecraft','N','','server.properties','[server.properties] ini\r\nserver-port=%port%\r\nquery.port=%port%\r\nrcon.port=%port2%\r\nserver-ip=%ip%\r\nmax-players=%slots%',NULL,100,2,25565,25566,NULL,NULL,NULL,0,NULL),
-('N',NULL,1,'samp','GTA San Andreas','gserver','samp03svr',NULL,NULL,NULL,0,NULL,'./%binary%',NULL,NULL,'gtasamp','N','','server.cfg','[server.cfg] cfg\r\nmaxplayers %slots%\r\nport %port%','',10,1,7777,NULL,NULL,NULL,NULL,0,NULL)
+('N',NULL,1,'samp','GTA San Andreas','gserver','samp03svr',NULL,NULL,NULL,0,NULL,'./%binary%',NULL,NULL,'gtasamp','N','','server.cfg','[server.cfg] cfg\r\nmaxplayers %slots%\r\nport %port%','',10,1,7777,NULL,NULL,NULL,NULL,0,NULL),
+('N',NULL,1,'mtasa','Multi Theft Auto San Andreas','gserver','mta-server',NULL,NULL,NULL,0,NULL,'./%binary%',NULL,NULL,'mtasa','N','','[mods/deathmatch/mtaserver.conf] xml\r\n<serverip>%ip%</serverip>\r\n<serverport>%port%</serverport> \r\n<httpport>%port2%</httpport>\r\n<maxplayers>%slots%</maxplayers>\r\n<httpserver>0</httpserver>','',10,3,22003,22005,22126,NULL,NULL,0,NULL),
 ('N',NULL,1,'teeworlds','Teeworlds','gserver','teeworlds_srv',NULL,NULL,NULL,0,NULL,'./%binary%','[Capture the Flag = default]\r\n-f config_ctf.cfg\r\n\r\n[Deathmatch]\r\n-f config_dm.cfg\r\n\r\n[Team Deathmatch]\r\n-f config_tdm.cfg',NULL,'teeworlds','N','','config_ctf.cfg\r\nconfig_dm.cfg\r\nconfig_tdm.cfg', '[autoexec.cfg] cfg\r\nsv_max_clients %slots%\r\nsv_bindaddr %ip%\r\nsv_port %port%\r\n\r\n[config_ctf.cfg] cfg\r\nsv_max_clients %slots%\r\nsv_bindaddr %ip%\r\nsv_port %port%\r\n\r\n[config_dm.cfg] cfg\r\nsv_max_clients %slots%\r\nsv_bindaddr %ip%\r\nsv_port %port%\r\n\r\n[config_tdm.cfg] cfg\r\nsv_max_clients %slots%\r\nsv_bindaddr %ip%\r\nsv_port %port%','',10,1,8303,NULL,NULL,NULL,NULL,0,NULL)
 ");
 		$query->execute();

@@ -184,7 +184,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if(!isset($titleLanguages[$row['language']])) {
-            $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page', $row['language'],0),'general'=>getlanguagefile('general', $row['language'],0));
+            $titleLanguages[$row['language']]=array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
         }
         $commentDate='m.d.Y H:i';
         if ($user_language == 'de') $commentDate='d.m.Y H:i';
@@ -197,7 +197,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $link=$page_url. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']).'/';
         }
-        $table[]=array('pageid' => $row['pageid'],'title'=>htmlentities($row['title']),'comment'=>htmlentities($row['comment']),'commentID' => $row['commentID'],'date'=>date($commentDate,strtotime($row['date'])),'authorname'=>htmlentities($row['authorname']),'moderated' => $moderated,'spam' => $spam,'spamReason' => $row['spamReason'],'link' => $link);
+        $table[]=array('pageid' => $row['pageid'],'title' => htmlentities($row['title']),'comment' => htmlentities($row['comment']),'commentID' => $row['commentID'],'date' => date($commentDate,strtotime($row['date'])),'authorname' => htmlentities($row['authorname']),'moderated' => $moderated,'spam' => $spam,'spamReason' => $row['spamReason'],'link' => $link);
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=pc&amp;o='.$o.'&amp;a=';

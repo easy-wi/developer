@@ -77,7 +77,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $installedserver=($row['installedserver'] == null) ? 0 : $row['installedserver'];
             $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
             $uslots=($row['uslots'] == null) ? 0 : $row['uslots'];
-            $table2[]=array('id' => $row['id'],'server'=>implode('/', array_unique($ips)),'type' => $type,'maxserver' => $row['maxserver'],'maxslots' => $row['maxslots'],'installedserver' => $installedserver,'uslots' => $uslots,'installedslots' => $installedslots);
+            $table2[]=array('id' => $row['id'],'server' => implode('/', array_unique($ips)),'type' => $type,'maxserver' => $row['maxserver'],'maxslots' => $row['maxslots'],'installedserver' => $installedserver,'uslots' => $uslots,'installedslots' => $installedslots);
         }
         $template_file = "admin_voiceserver_add.tpl";
     } else if ($ui->w('action',3,'post') == 'ad' and $ui->id('masterserver',19,'post') and $ui->id('customer',19,'post')) {
@@ -751,7 +751,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $minutes=floor(($row['uptime']-($days*86400)-($hours*3600))/60);
         $uptime=$days.'D '.$hours.'H '.$minutes.'M';
         $userid=$row['userid'];
-        $table[]=array('id' => $row['id'],'active' => $row['active'],'virtualID' => $row['localserverid'],'img' => $imgName,'alt' => $imgAlt,'usage' => $usage,'uptime' => $uptime,'server' => $server,'cname' => $row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'userid' => $userid,'lendserver' => $lendserver,'type' => $type,'jobPending' => $jobPending);
+        $table[]=array('id' => $row['id'],'active' => $row['active'],'virtualID' => $row['localserverid'],'img' => $imgName,'alt' => $imgAlt,'usage' => $usage,'uptime' => $uptime,'server' => $server,'cname' => $row['cname'],'names' => trim($row['name'] . ' ' . $row['vname']),'userid' => $userid,'lendserver' => $lendserver,'type' => $type,'jobPending' => $jobPending);
     }
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));

@@ -36,6 +36,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+
 function serverQuery ($ip, $port, $type) {
 	$socket = @fsockopen('udp://' . $ip, (int) $port, $errnum, $errstr, 5);
 	if ($errnum == 111) {
@@ -54,17 +55,64 @@ function serverQuery ($ip, $port, $type) {
         //5 seconds read timeout
         stream_set_timeout($socket, 5);
 
+        stream_set_blocking($socket, true);
+
         if ($type == 'gtasamp') {
             $ex = explode('.', $ip);
             $packet = 'SAMP' . chr($ex[0]) . chr($ex[1]) . chr($ex[2]) . chr($ex[3]) . chr($port & 0xFF) . chr($port >> 8 & 0xFF) . 'i';
             
             if (@fwrite($socket, $packet)) {
                 @fread($socket, 11);
-                return array('password'=>ord(fread($socket,1)), 'players'=>ord(fread($socket,2)), 'slots'=>ord(fread($socket,2)), 'hostname'=>htmlentities(fread($socket,ord(fread($socket,4)))), 'mode'=>htmlentities(fread($socket,ord(fread($socket,4)))), 'map'=>htmlentities(fread($socket,ord(fread($socket,4)))));
+                return array(
+                    'password' => ord(fread($socket, 1)),
+                    'players' => ord(fread($socket, 2)),
+                    'slots' => ord(fread($socket, 2)),
+                    'hostname' => htmlentities(fread($socket, ord(fread($socket, 4)))),
+                    'mode' => htmlentities(fread($socket, ord(fread($socket, 4)))),
+                    'map' => htmlentities(fread($socket, ord(fread($socket, 4))))
+                );
             } else {
                 return 'Error: can not write to the socket';
             }
             
+        } else if ($type == 'mtasa') {
+
+
+            fwrite($socket, 's');
+
+            $reply = fread($socket, 4096);
+
+            if (substr($reply, 0, 4) == 'EYE1') {
+
+                // Reply will have format like (without spaces):
+                // EYE1 EOT mta ACK 22003 DC3 Default MTA Server BEL MTA:SA ENQ None EOT 1.3 STX 0 STX 0 STX 12 SOH
+
+                // Remove EYE1
+                $reply = substr($reply,4);
+
+                // We do not need player details
+                @list($reply) = explode(chr(1), $reply);
+
+                $i = 0;
+                $parts = array();
+                while($reply != '') {
+                    $length = ord(substr($reply, 0, 1));
+                    $parts[$i] = substr($reply, 1, $length - 1);
+                    $reply = substr($reply, $length);
+                    $i++;
+                }
+
+                return array(
+                    'password' => $parts[6],
+                    'players' => $parts[7],
+                    'slots' => $parts[8],
+                    'hostname' => htmlentities($parts[2]),
+                    'mode' => htmlentities($parts[3]),
+                    'map' => htmlentities($parts[4])
+                );
+            }
+
+
         } else if ($type == 'minecraft') {
 
             $string="\xFE";

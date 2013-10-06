@@ -114,12 +114,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         if ($id) {
             if ($_FILES["upload"]["error"]===0) {
-                $allowedTypes=array('pdf'=>array('application/pdf','application/x-download'),'xls'=>array('application/excel','application/vnd.ms-excel'),
+                $allowedTypes=array('pdf' => array('application/pdf','application/x-download'),'xls' => array('application/excel','application/vnd.ms-excel'),
                     'ppt' => 'application/powerpoint',
                     'gz' => 'application/x-gzip',
                     'tar' => 'application/x-tar',
                     'tgz' => 'application/x-tar',
-                    'zip'=>array('application/x-zip','application/zip','application/x-zip-compressed','application/octet-stream'),
+                    'zip' => array('application/x-zip','application/zip','application/x-zip-compressed','application/octet-stream'),
                     'xml' => 'text/xml',
                     'xsl' => 'text/xml',
                     'mpeg' => 'video/mpeg',
@@ -130,7 +130,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     'avi' => 'video/x-msvideo',
                     'movie' => 'video/x-sgi-movie',
                     'doc' => 'application/msword',
-                    'word'=>array('application/msword','application/octet-stream'),
+                    'word' => array('application/msword','application/octet-stream'),
                     'xl' => 'application/excel',
                     'rar' => 'application/x-rar-compressed');
                 $exploded=explode('.',$_FILES["upload"]["name"]);

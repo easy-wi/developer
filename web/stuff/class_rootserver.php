@@ -246,7 +246,7 @@ class rootServer {
                 }
             }
         }
-        if ($this->ID[$type][$ID]['restart'] == 'A' and $this->type == 'dedicated' and $action!='rp') $this->startStop[]=array('action'=>((isset($this->extraData['oldactive']) and $this->extraData['oldactive'] == 'Y') or in_array($action, array('ad','st','dl'))) ? 'st' : 're','id' => $ID and $action!='rp');
+        if ($this->ID[$type][$ID]['restart'] == 'A' and $this->type == 'dedicated' and $action!='rp') $this->startStop[]=array('action' => ((isset($this->extraData['oldactive']) and $this->extraData['oldactive'] == 'Y') or in_array($action, array('ad','st','dl'))) ? 'st' : 're','id' => $ID and $action!='rp');
         else if ($this->type == 'dedicated' and $action!='rp') return 'Restart not allowed for Server with ID: '.$this->tempID;
         return true;
     }
@@ -287,7 +287,7 @@ class rootServer {
                                     $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'].';';
                                     $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'].';';
                                     if ($this->ID[$a['type']][$a['id']]['usePXE'] == 'Y' and (in_array($a['action'], array('ad','ri','rc')))) {
-                                        $removeArray[]=array('type'=>($a['type'] == 'dedicated') ? 'de' : 'vs','affectedID' => $a['id'],'name' => $this->ID[$a['type']][$a['id']]['ip'],'imageID' => $a['imageID'],'hostID' => $a['hostID'],'userID' => $a['userID'],'resellerID' => $a['resellerID'],'extraData'=>array('runAt' => strtotime("+5 minutes")));
+                                        $removeArray[]=array('type' => ($a['type'] == 'dedicated') ? 'de' : 'vs','affectedID' => $a['id'],'name' => $this->ID[$a['type']][$a['id']]['ip'],'imageID' => $a['imageID'],'hostID' => $a['hostID'],'userID' => $a['userID'],'resellerID' => $a['resellerID'],'extraData' => array('runAt' => strtotime("+5 minutes")));
                                         $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
                                         $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'].';';
                                     } else {

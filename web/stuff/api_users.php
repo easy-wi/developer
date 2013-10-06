@@ -356,7 +356,7 @@ if (array_value_exists('action','add',$data)) {
         $success['false'][] = 'No data for this method';
     }
 } else if (array_value_exists('action','ls',$data) and isset($data['identify_by']) and isset($data[$data['identify_by']]) and !in_array($data[$data['identify_by']],$bad)) {
-    $userArray=array('userdetails'=>array(),'gserver'=>array(),'voice'=>array());
+    $userArray=array('userdetails' => array(),'gserver' => array(),'voice' => array());
     $email=$data['email'];
     $identifyBy=$data['identify_by'];
     $username=$data['username'];
@@ -364,7 +364,7 @@ if (array_value_exists('action','add',$data)) {
     $externalID=$data['external_id'];
     $active=active_check($data['active']);
     $localID=$data['localid'];
-    $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail','mysql'=>array());
+    $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail','mysql' => array());
     if (dataExist('identify_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`active`,`cname`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`usergroup`,`externalID`,`jobPending` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_by']],$resellerID));

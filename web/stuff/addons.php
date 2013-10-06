@@ -469,7 +469,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $type=$sprache->tool;
         }
-        $table[]=array('id' => $row['id'],'active' => $row['active'],'img' => $imgName,'alt' => $imgAlt,'gametype'=>"${gtype} (${atype})",'description' => $row['menudescription'],'type' => $type);
+        $table[]=array('id' => $row['id'],'active' => $row['active'],'img' => $imgName,'alt' => $imgAlt,'gametype' => "${gtype} (${atype})",'description' => $row['menudescription'],'type' => $type);
     }
     $table2 = array();
     $pselect2=$sql->prepare("SELECT DISTINCT(`shorten`) FROM `addons` WHERE `resellerid`=:reseller_id");

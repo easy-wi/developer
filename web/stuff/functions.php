@@ -662,10 +662,10 @@ if (!function_exists('passwordgenerate')) {
                         } else if($cvarprotect[$config]['type'] == 'ini') {
                             $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
                         } else if($cvarprotect[$config]['type'] == 'xml') {
-                            $ex1 = explode(">", $line);
+                            $ex1 = explode('>', $line);
                             if (isset($ex1[1])) {
                                 $c = str_replace('<', '', $ex1[0]);
-                                list($v) = explode("<", $ex1[1]);
+                                list($v) = explode('<', $ex1[1]);
                                 $splitline= array($c, $v);
                             }
                         }
@@ -896,7 +896,7 @@ if (!function_exists('passwordgenerate')) {
                     unset($cvarprotect[$config]);
                 }
             }
-            if (count($cvarprotect)>0 and $action != 'du') {
+            if (count($cvarprotect) > 0 and $action != 'du') {
 
                 $ftp_connect =  ($ftpport == 21 or $ftpport == '' or $ftpport == null) ? ftp_connect($sship) : ftp_connect($sship, $ftpport);
 
@@ -965,7 +965,7 @@ if (!function_exists('passwordgenerate')) {
                                                 fwrite($temp2, $cvar . '=' . $value);
                                             }
                                             
-                                        } else if ($cfgtype == 'xml' and preg_match("/^(.*)<".strtolower($cvar).">(.*)<\/".strtolower($cvar).">$/", $lline)) {
+                                        } else if ($cfgtype == 'xml' and preg_match("/^(.*)<".strtolower($cvar).">(.*)<\/".strtolower($cvar).">(.*)$/", $lline)) {
                                             
                                             $edited = true;
                                             $splitline = preg_split("/\<$cvar/", $lline, -1,PREG_SPLIT_NO_EMPTY);

@@ -389,7 +389,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_bad';
             $imgAlt='inactive';
         }
-        $table[]=array('id' => $row['dnsID'],'active' => $row['active'],'img' => $imgName,'alt' => $imgAlt,'dns' => $row['dns'],'address' => $row['ip'] . ':' . $row['port'],'masterip'=>trim($row['ssh2ip'] . ' ' . $row['description']),'cname' => $row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'userid' => $row['userID'],'jobPending' => $jobPending);
+        $table[]=array('id' => $row['dnsID'],'active' => $row['active'],'img' => $imgName,'alt' => $imgAlt,'dns' => $row['dns'],'address' => $row['ip'] . ':' . $row['port'],'masterip' => trim($row['ssh2ip'] . ' ' . $row['description']),'cname' => $row['cname'],'names' => trim($row['name'] . ' ' . $row['vname']),'userid' => $row['userID'],'jobPending' => $jobPending);
     }
     $next=$start+$amount;
     if ($colcount>$next) {

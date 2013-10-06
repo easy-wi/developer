@@ -256,7 +256,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
             $maxserver = '';
             $core = array();
             $hdd = array();
-            $serverused[1]=array('ram'=>"",'cpu'=>"",'server'=>"",'hdd'=>"");
+            $serverused[1]=array('ram' => "",'cpu' => "",'server' => "",'hdd' => "");
             $bestserver = 1;
         }
         $reseller = array();

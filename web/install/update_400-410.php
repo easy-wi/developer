@@ -65,12 +65,23 @@ if (isset($include) and $include==true) {
     $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='samp' AND `resellerid`=0 LIMIT 1");
     $query->execute();
     if ($query->rowCount() == 0) {
-        $query = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`resellerid`,`mapGroup`) VALUES ('N',NULL,1,'samp','GTA San Andreas','gserver','samp03svr',NULL,NULL,NULL,0,NULL,'./%binary%',NULL,NULL,'gtasamp','N','','server.cfg','[server.cfg] cfg\r\nmaxplayers %slots%\r\nport %port%','',10,1,7777,NULL,NULL,NULL,NULL,0,NULL)");
+        $query = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`resellerid`,`mapGroup`) VALUES ('N',NULL,1,'samp','San Andreas Multiplayer','gserver','samp03svr',NULL,NULL,NULL,0,NULL,'./%binary%',NULL,NULL,'gtasamp','N','','server.cfg','[server.cfg] cfg\r\nmaxplayers %slots%\r\nport %port%','',10,1,7777,NULL,NULL,NULL,NULL,0,NULL)");
         $query->execute();
     }
 
-    $query = $sql->prepare("INSERT INTO `qstatshorten` (`qstat`,`description`) VALUES ('teeworlds', 'Teeworlds')");
+    $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='mtasa' AND `resellerid`=0 LIMIT 1");
     $query->execute();
+    if ($query->rowCount() == 0) {
+        $query = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`resellerid`,`mapGroup`) VALUES ('N',NULL,1,'mtasa','Multi Theft Auto San Andreas','gserver','mta-server',NULL,NULL,NULL,0,NULL,'./%binary%',NULL,NULL,'mtasa','N','','[mods/deathmatch/mtaserver.conf] xml\r\n<serverip>%ip%</serverip>\r\n<serverport>%port%</serverport> \r\n<httpport>%port2%</httpport>\r\n<maxplayers>%slots%</maxplayers>\r\n<httpserver>0</httpserver>','',10,3,22003,22005,22126,NULL,NULL,0,NULL)");
+        $query->execute();
+    }
+
+    $query = $sql->prepare("INSERT INTO `qstatshorten` (`qstat`,`description`) VALUES ('teeworlds', 'Teeworlds'),('mtasa', 'Multi Theft Auto San Andreas')");
+    $query->execute();
+
+    $query = $sql->prepare("UPDATE `qstatshorten` SET `description`='San Andreas Multiplayer' WHERE `qstat`='gtasamp'");
+    $query->execute();
+
     $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='teeworlds' AND `resellerid`=0 LIMIT 1");
     $query->execute();
     if ($query->rowCount() == 0) {

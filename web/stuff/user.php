@@ -303,7 +303,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $prefix1=$query->fetchColumn();
         $groups = array();
         $lookUpID=($reseller_id != 0) ? $reseller_id: 0;
-        $groups=array('a'=>array(),'r'=>array(),'u'=>array());
+        $groups=array('a' => array(),'r' => array(),'u' => array());
         $defaultGroups = array();
         $query = $sql->prepare("SELECT `id`,`grouptype`,`name`,`defaultgroup` FROM `usergroups` WHERE `active`='Y' AND `resellerid`=?");
         $query->execute(array($lookUpID));

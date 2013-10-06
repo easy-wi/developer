@@ -44,7 +44,7 @@ $query3 = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `typ
 $query4 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
 $query->execute();
 print 'Collecting Dedicated and Vmware server changes'."\r\n";
-$removeIDs=array('de'=>array(),'vs'=>array());
+$removeIDs=array('de' => array(),'vs' => array());
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $extraData=@json_decode($row['extraData']);
     $extraData=(array)$extraData;

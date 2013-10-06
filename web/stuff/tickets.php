@@ -100,7 +100,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $id=$sql->lastInsertId();
                 if ($maintopic=="none") {
                     $query = $sql->prepare("UPDATE `ticket_topics` SET `maintopic`=:id, priority='NULL' WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                    $query->execute(array(':id'=> $id,':reseller_id' => $reseller_id));
+                    $query->execute(array(':id' => $id,':reseller_id' => $reseller_id));
                 }
                 if (isset($ui->post['language'])) {
                     $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
@@ -223,7 +223,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $priority = '';
             }
             $query = $sql->prepare("UPDATE `ticket_topics` SET `topic`=:topic,`maintopic`=:maintopic,`priority`=:priority WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-            $query->execute(array(':topic'=> $topic_name, ':maintopic'=> $maintopic, ':priority'=> $priority, ':id'=> $id, ':reseller_id' => $reseller_id));
+            $query->execute(array(':topic' => $topic_name, ':maintopic' => $maintopic, ':priority' => $priority, ':id' => $id, ':reseller_id' => $reseller_id));
             if (isset($ui->post['language'])) {
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 foreach($ui->post['language'] as $language) {
@@ -374,7 +374,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $state=$row['state'];
             $query2->execute(array($id,$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $table[]=array('writedate'=>($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'],'ticket'=>nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer'=>(trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
+                $table[]=array('writedate' => ($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'],'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
             }
             if ($row['priority']==1) $priority=$sprache->priority_low;
             else if ($row['priority']==2) $priority=$sprache->priority_medium;
@@ -584,7 +584,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $status=$sprache->status_reopen;
         }
-        $table[]=array('id' => $row['id'],'priority' => $priority,'userPriority' => $userPriority,'writedate' => $writedate,'supporter'=>(trim($row['supportername']) != '') ? trim($row['supportername']) : $row['supporter'],'user'=>(trim($row['username']) != '') ? trim($row['username']) : $row['cname'],'subject' => $topic,'status' => $status,'rawState' => $row['state'],'statusClass' => $statusClass);
+        $table[]=array('id' => $row['id'],'priority' => $priority,'userPriority' => $userPriority,'writedate' => $writedate,'supporter' => (trim($row['supportername']) != '') ? trim($row['supportername']) : $row['supporter'],'user' => (trim($row['username']) != '') ? trim($row['username']) : $row['cname'],'subject' => $topic,'status' => $status,'rawState' => $row['state'],'statusClass' => $statusClass);
     }
     $template_file = "admin_tickets_list.tpl";
 }

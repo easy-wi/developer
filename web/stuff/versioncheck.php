@@ -90,7 +90,7 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 		}
 		if (is_dir(EASYWIDIR . '/tmp')) {
 			$response->add('Creating tempfolder <b>tmp/</b>');
-			$opts=stream_context_create(array('http'=>array('method' => 'GET','header'=>"Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
+			$opts=stream_context_create(array('http' => array('method' => 'GET','header' => "Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
 			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'.zip','rb', false,$opts);
 			$zip=@fopen(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip','wb');
 			if ($fp==true and $zip==true) {

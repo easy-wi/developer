@@ -53,9 +53,9 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id = $admin_id;
 }
 if (empty($where)) {
-	$pselect->execute(array(':usertype'=> "%", ':reseller_id'=> $reseller_id));
+	$pselect->execute(array(':usertype' => "%", ':reseller_id' => $reseller_id));
 } else {
-	$pselect->execute(array(':usertype'=> $where, ':reseller_id'=> $reseller_id));
+	$pselect->execute(array(':usertype' => $where, ':reseller_id' => $reseller_id));
 }
 foreach ($pselect->fetchall() as $row) {
 	$usertype=$row['usertype'];
@@ -125,9 +125,9 @@ if ($reseller_id==0) {
 	$requestid=$reseller_id;
 }
 if (empty($where)) {
-	$countp->execute(array(':usertype'=> "%", ':reseller_id'=> $requestid));
+	$countp->execute(array(':usertype' => "%", ':reseller_id' => $requestid));
 } else {
-	$countp->execute(array(':usertype'=> $where, ':reseller_id'=> $requestid));
+	$countp->execute(array(':usertype' => $where, ':reseller_id' => $requestid));
 }
 foreach ($countp->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $colcount=$row['amount'];

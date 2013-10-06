@@ -108,7 +108,7 @@ $alter_servertypes->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-foreach (array('cstrike'=>10,'tfc'=>20,'dod'=>30,'czero'=>80,'css'=>240,'dods'=>300,'hl2mp'=>360,'tf'=>440,'left4dead'=>500,'left4dead'=>550,'dota2'=>570,'csgo'=>730,'ageofchivalry'=>17510,'insurgency'=>17700,'zps'=>17500) as $key => $value) {
+foreach (array('cstrike' => 10,'tfc' => 20,'dod' => 30,'czero' => 80,'css' => 240,'dods' => 300,'hl2mp' => 360,'tf' => 440,'left4dead' => 500,'left4dead' => 550,'dota2' => 570,'csgo' => 730,'ageofchivalry' => 17510,'insurgency' => 17700,'zps' => 17500) as $key => $value) {
 	$query = $sql->prepare("UPDATE `servertypes` SET `appID`=? WHERE `shorten`=?");
 	$query->execute(array($value,$key));
 }

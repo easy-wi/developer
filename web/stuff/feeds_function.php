@@ -66,7 +66,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                         $theCount = 0;
                         foreach ($json->appnews->newsitems as $item) {
                             if ($item->is_external_url==false and $theCount<$newsAmount) {
-                                $steamNews[$lookUpAppID][]=array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate'=>date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
+                                $steamNews[$lookUpAppID][]=array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate' => date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
                                 $theCount++;
                             }
                         }
@@ -111,7 +111,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                         $theCount = 0;
                         foreach ($json->appnews->newsitems as $item) {
                             if ($item->is_external_url==false and $theCount<$newsAmount) {
-                                $feedsArray[0][]=array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate'=>date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
+                                $feedsArray[0][]=array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate' => date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
                                 $theCount++;
                             }
                         }
@@ -160,7 +160,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                    # $xml=cleanFsockOpenRequest($xml,'<','>');
                     $feed = false;
                     if (!empty($row2['feedUrl']) and extension_loaded('zlib')) {
-                        $opts=array('http'=>array('header'=>"Accept-Encoding: gzip\r\n"));
+                        $opts=array('http' => array('header' => "Accept-Encoding: gzip\r\n"));
                         $context=stream_context_create($opts);
                         $feed=fopen($row2['feedUrl'],'r', false,$context);
                     } else if (!empty($row2['feedUrl'])) {

@@ -195,7 +195,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$id=$ui->id('id',19,'get');
 		$table = array();
 		foreach ($lang_avail as $lg) {
-			$table[$lg]=array('title'=>false,'keywords'=>false,'text'=>false,'categories'=>array());
+			$table[$lg]=array('title' => false,'keywords' => false,'text' => false,'categories' => array());
 			$keywords_used[$lg] = array();
 			$categories_used[$lg] = array();
 		}
@@ -217,7 +217,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 						$categories_used[$row2['language']][] = $row3['name'];
 					}
 				}
-				$table[$row2['language']]=array('title' => $row2['title'],'keywords'=>implode(', ',$keywords_used[$row2['language']]),'categories'=>(is_array($categories_used[$row2['language']])) ? $categories_used[$row2['language']] : array(),'text' => $row2['text']);
+				$table[$row2['language']]=array('title' => $row2['title'],'keywords' => implode(', ',$keywords_used[$row2['language']]),'categories' => (is_array($categories_used[$row2['language']])) ? $categories_used[$row2['language']] : array(),'text' => $row2['text']);
 			}
 		}
 		$subpages = array();
@@ -427,7 +427,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $table = array();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if(!isset($titleLanguages[$row['language']])) {
-            $titleLanguages[$row['language']]=array('page'=>getlanguagefile('page', $row['language'],0),'general'=>getlanguagefile('general', $row['language'],0));
+            $titleLanguages[$row['language']]=array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
         }
         if ($row['released'] == '1') {
             $released=$gsprache->yes;

@@ -49,7 +49,7 @@ if ($reseller_id==0) {
 	$logreseller = 0;
 	$logsubuser = 0;
 } else {
-    $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
+    $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
@@ -60,18 +60,22 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
 } else if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d','get') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
+
     if (!$ui->w('action',3,'post')) {
+
         $table = array();
         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
-        $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(DISTINCT s.`id`) AS `freeserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid` FROM `rserverdata` r LEFT JOIN `gsswitch` s ON s.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
-        $query->execute(array($reseller_id));
+
         $table2 = array();
         $i = 0;
         $available = 0;
+
+        $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(DISTINCT s.`id`) AS `freeserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid` FROM `rserverdata` r LEFT JOIN `gsswitch` s ON s.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
+        $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $used = 0;
             $available = 0;
@@ -103,19 +107,22 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             foreach (ipstoarray($row['altips']) as $ip) {
                 $ips[] = $ip;
             }
-            $table2[]=array('id' => $rootid,'ip'=>implode(' / ', array_unique($ips)));
+            $table2[]=array('id' => $rootid,'ip' => implode(' / ', array_unique($ips)));
         }
+
         $query = $sql->prepare("SELECT s.`description`,s.`shorten` FROM `servertypes` s WHERE s.`resellerid`=? AND EXISTS (SELECT m.`id` FROM `rservermasterg` m WHERE m.`servertypeid`=s.`id` LIMIT 1) ORDER BY s.`description` ASC");
         $query->execute(array($reseller_id));
         $table3 = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $table3[]=array('shorten' => $row['shorten'],'description' => $row['description']);
         }
+
         $installedserver = 0;
         $maxserver = 0;
         $max = 0;
         $maxslots = 0;
         $used = 0;
+
         if (isset($serverusage)){
             asort($serverusage);
             $bestserver=key($serverusage);
@@ -133,7 +140,9 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $installedserver++;
             }
         }
-        $template_file = "admin_gserver_add.tpl";
+
+        $template_file = 'admin_gserver_add.tpl';
+
     } else if ($ui->w('action',3,'post') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
         if($ui->escaped('shorten','post') and $ui->id('customer',19,'post')) {
             $customer = $ui->id('customer',19,'post');
@@ -166,12 +175,9 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                                 $port4 = $row['portFour'];
                                 $port5 = $row['portFive'];
                             }
-                            if ($gamemod== 'Y') {
-                                $gamestring .= "_$shorten.$gamemod2";
-                            } else {
-                                $gamestring .= "_$shorten";
-                            }
-                            $cmd=stripslashes($row['cmd']);
+                            $gamestring .= '_';
+                            $gamestring .= ($gamemod == 'Y' and $row['gamemod2'] != '') ? $shorten . '.' . $row['gamemod2']: $shorten;
+                            $cmd = stripslashes($row['cmd']);
                             if ($row['installing'] == 'N') {
                                 $installing = false;
                             } else {
@@ -187,7 +193,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                             $i++;
                         }
                         if ($query->rowcount()==0) {
-                            $table[]=array('installing'=>true);
+                            $table[]=array('installing' => true);
                         }
                     }
                 }
@@ -322,15 +328,15 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $serverid = $ui->id('id',19,'post');
             $slots = $ui->id('slots',3,'post');
             $serverip = $ui->ip('ip','post');
-            $autoRestart=($ui->active('autoRestart','post')) ? $ui->active('autoRestart','post') : 'N';
-            $active=($ui->active('active','post')) ? $ui->active('active','post') : 'Y';
-            $taskset=($ui->active('taskset','post')) ? $ui->active('taskset','post') : 'N';
-            $eacallowed=($ui->active('eacallowed','post')) ? $ui->active('eacallowed','post') : 'N';
-            $brandname=($ui->active('brandname','post')) ? $ui->active('brandname','post') : 'Y';
-            $war=($ui->active('war','post')) ? $ui->active('war','post') : 'N';
-            $tvenable=($ui->active('tvenable','post')) ? $ui->active('tvenable','post') : 'N';
-            $lendserver=($ui->active('lendserver','post')) ? $ui->active('lendserver','post') : 'N';
-            $pallowed=($ui->active('pallowed','post')) ? $ui->active('pallowed','post') : 'N';
+            $autoRestart = ($ui->active('autoRestart','post')) ? $ui->active('autoRestart','post') : 'N';
+            $active = ($ui->active('active','post')) ? $ui->active('active','post') : 'Y';
+            $taskset = ($ui->active('taskset','post')) ? $ui->active('taskset','post') : 'N';
+            $eacallowed = ($ui->active('eacallowed','post')) ? $ui->active('eacallowed','post') : 'N';
+            $brandname = ($ui->active('brandname','post')) ? $ui->active('brandname','post') : 'Y';
+            $war = ($ui->active('war','post')) ? $ui->active('war','post') : 'N';
+            $tvenable = ($ui->active('tvenable','post')) ? $ui->active('tvenable','post') : 'N';
+            $lendserver = ($ui->active('lendserver','post')) ? $ui->active('lendserver','post') : 'N';
+            $pallowed = ($ui->active('pallowed','post')) ? $ui->active('pallowed','post') : 'N';
             $customer = $ui->id('customer',19,'post');
             $port = $ui->port('port','post');
             $gsfolder = $serverip . '_' . $port;
@@ -416,10 +422,10 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                     $cmd = $ui->startparameter("cmd_$shorten",'post');
                     $owncmd = $ui->active("owncmd_$shorten",'post');
                     $tic = $ui->id("tic_$shorten",5,'post');
-                    $userfps=($ui->active("user_fps_$shorten",'post')) ? $ui->active("user_fps_$shorten",'post') : 'N';
-                    $usertick=($ui->active("user_tick_$shorten",'post')) ? $ui->active("user_tick_$shorten",'post') : 'N';
-                    $usermap=($ui->active("user_map_$shorten",'post')) ? $ui->active("user_map_$shorten",'post') : 'N';
-                    $user_uploaddir=($ui->active("user_uploaddir_$shorten",'post')) ? $ui->active("user_uploaddir_$shorten",'post') : 'N';
+                    $userfps = ($ui->active("user_fps_$shorten",'post')) ? $ui->active("user_fps_$shorten",'post') : 'N';
+                    $usertick = ($ui->active("user_tick_$shorten",'post')) ? $ui->active("user_tick_$shorten",'post') : 'N';
+                    $usermap = ($ui->active("user_map_$shorten",'post')) ? $ui->active("user_map_$shorten",'post') : 'N';
+                    $user_uploaddir = ($ui->active("user_uploaddir_$shorten",'post')) ? $ui->active("user_uploaddir_$shorten",'post') : 'N';
                     if ($ui->id("upload_$shorten",1,'post')) {
                         $upload = $ui->id("upload_$shorten",1,'post');
                         if ($upload>1) {
@@ -618,7 +624,10 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             if ($ui->w('safeDelete',1,'post') != 'D') $cmds[]="./control.sh delCustomer $server_customer";
             $template_file = $sprache->no_server_left;
         }
-        if (isset($rootID)) ssh2_execute('gs',$rootID,$cmds);
+        if (isset($rootID)) {
+            include (EASYWIDIR . '/stuff/ssh_exec.php');
+            ssh2_execute('gs', $rootID, $cmds);
+        }
         $loguseraction="%del% %gserver% $serverip:$port";
         $insertlog->execute();
         $template_file = $spracheResponse->table_del;
@@ -779,15 +788,15 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $port5 = $ui->port('port5','post');
             $minram = $ui->id('minram',10,'post');
             $maxram = $ui->id('maxram',10,'post');
-            $tvenable=($ui->active('tvenable','post')) ? $ui->active('tvenable','post') : 'N';
-            $autoRestart=($ui->active('autoRestart','post')) ? $ui->active('autoRestart','post') : 'N';
-            $active=($ui->active('active','post')) ? $ui->active('active','post') : 'Y';
-            $taskset=($ui->active('taskset','post')) ? $ui->active('taskset','post') : 'N';
-            $eacallowed=($ui->active('eacallowed','post')) ? $ui->active('eacallowed','post') : 'N';
-            $brandname=($ui->active('brandname','post')) ? $ui->active('brandname','post') : 'Y';
-            $war=($ui->active('war','post')) ? $ui->active('war','post') : 'N';
-            $lendserver=($ui->active('lendserver','post')) ? $ui->active('lendserver','post') : 'N';
-            $pallowed=($ui->active('pallowed','post')) ? $ui->active('pallowed','post') : 'N';
+            $tvenable = ($ui->active('tvenable','post')) ? $ui->active('tvenable','post') : 'N';
+            $autoRestart = ($ui->active('autoRestart','post')) ? $ui->active('autoRestart','post') : 'N';
+            $active = ($ui->active('active','post')) ? $ui->active('active','post') : 'Y';
+            $taskset = ($ui->active('taskset','post')) ? $ui->active('taskset','post') : 'N';
+            $eacallowed = ($ui->active('eacallowed','post')) ? $ui->active('eacallowed','post') : 'N';
+            $brandname = ($ui->active('brandname','post')) ? $ui->active('brandname','post') : 'Y';
+            $war = ($ui->active('war','post')) ? $ui->active('war','post') : 'N';
+            $lendserver = ($ui->active('lendserver','post')) ? $ui->active('lendserver','post') : 'N';
+            $pallowed = ($ui->active('pallowed','post')) ? $ui->active('pallowed','post') : 'N';
             $ftppass = $ui->password('password',50,'post');
             $pallowed = $ui->active('pallowed','post');
             include(EASYWIDIR . '/stuff/ssh_exec.php');
@@ -925,10 +934,10 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $cmd = $ui->startparameter("cmd_$shorten",'post');
                 $owncmd = $ui->active("owncmd_$shorten",'post');
                 $tic = $ui->id("tic_$shorten",5,'post');
-                $userfps=($ui->active("user_fps_$shorten",'post')) ? $ui->active("user_fps_$shorten",'post') : 'N';
-                $usertick=($ui->active("user_tick_$shorten",'post')) ? $ui->active("user_tick_$shorten",'post') : 'N';
-                $usermap=($ui->active("user_map_$shorten",'post')) ? $ui->active("user_map_$shorten",'post') : 'N';
-                $user_uploaddir=($ui->active("user_uploaddir_$shorten",'post')) ? $ui->active("user_uploaddir_$shorten",'post') : 'N';
+                $userfps = ($ui->active("user_fps_$shorten",'post')) ? $ui->active("user_fps_$shorten",'post') : 'N';
+                $usertick = ($ui->active("user_tick_$shorten",'post')) ? $ui->active("user_tick_$shorten",'post') : 'N';
+                $usermap = ($ui->active("user_map_$shorten",'post')) ? $ui->active("user_map_$shorten",'post') : 'N';
+                $user_uploaddir = ($ui->active("user_uploaddir_$shorten",'post')) ? $ui->active("user_uploaddir_$shorten",'post') : 'N';
                 if ($ui->id("upload_$shorten",1,'post')) {
                     $upload = $ui->id("upload_$shorten",1,'post');
                     if ($upload>1) {
@@ -1178,7 +1187,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $nameremoved="<div class=\"error\">".$sprache->nameremoved."</div>";
             }
         }
-        $table[]=array('serveractive' => $serveractive,'shorten' => $row['shorten'],'useractive' => $row['useractive'],'cname' => $row['cname'],'names'=>trim($row['name'] . ' ' . $row['vname']),'img' => $imgName,'alt' => $imgAlt,'premoved' => $premoved,'nameremoved' => $nameremoved,'server' => $server,'serverid' => $serverid,'name' => $name,'type' => $type,'map' => $map,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'id' => $userid,'lendserver' => $lendserver,'active' => $row['active'],'jobPending' => $jobPending);
+        $table[]=array('serveractive' => $serveractive,'shorten' => $row['shorten'],'useractive' => $row['useractive'],'cname' => $row['cname'],'names' => trim($row['name'] . ' ' . $row['vname']),'img' => $imgName,'alt' => $imgAlt,'premoved' => $premoved,'nameremoved' => $nameremoved,'server' => $server,'serverid' => $serverid,'name' => $name,'type' => $type,'map' => $map,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'id' => $userid,'lendserver' => $lendserver,'active' => $row['active'],'jobPending' => $jobPending);
     }
     $next = $start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;
