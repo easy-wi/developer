@@ -15,9 +15,9 @@
 	<lendhostip>WebhostIP bei XML</lendhostip>
 	<lendhostkey>Key bei XML</lendhostkey>
 	<maxplayer>Maximale Slots</maxplayer>
-	<maxtime>Maximal Ausleihzeit</maxtime>
+	<maxtime>Maximal Ausleihzeit (Minuten)</maxtime>
 	<minplayer>Minimale Slots</minplayer>
-	<mintime>Minimale Ausleihzeit</mintime>
+	<mintime>Minimale Ausleihzeit (Minuten)</mintime>
 	<minutes>Minuten</minutes>
 	<nextcheck>Nächste Statusüberprüfung</nextcheck>
 	<nextfree>Nächster Gameserver planmäßig frei in</nextfree>
@@ -32,7 +32,7 @@
     <settingsVsGeneral>Generelle Voiceserver Einstellungen</settingsVsGeneral>
     <settingsVsRegistered>Voiceserver Einstellungen registrierte Benutzer</settingsVsRegistered>
 	<shutdownempty>Leere Server beenden</shutdownempty>
-	<shutdownemptytime>Minimale Laufzeit</shutdownemptytime>
+	<shutdownemptytime>Minimale Laufzeit (Minuten)</shutdownemptytime>
 	<timesteps>Minutenschritte</timesteps>
 	<timeleft>Verbleibende Zeit</timeleft>
 	<used>belegt</used>
