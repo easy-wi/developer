@@ -190,7 +190,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`message`,`writeDate`,`userID`,`resellerid`) VALUES (?,?,?,?,?)");
                 $query->execute(array($id,$ui->post['ticket'],$logdate,$user_id,$reseller_id));
                 $count=$query->rowCount();
-                $template_file = ((!isset($template_file) & $count>0) or (isset($template_file) & $template_file == $spracheResponse->error_table & $count>0)) ? $spracheResponse->table_add : $spracheResponse->error_table;
+                $template_file = ((!isset($template_file) and $count > 0) or (isset($template_file) & $template_file == $spracheResponse->error_table & $count>0)) ? $spracheResponse->table_add : $spracheResponse->error_table;
             }
             if(isid($userid,10)) {
                 $query = $sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");

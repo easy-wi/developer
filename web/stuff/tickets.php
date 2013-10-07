@@ -326,7 +326,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $zur = $start;
         }
         $pageamount = ceil($colcount / $amount);
-        $link='<a href="admin.php?w = ti&amp;d = mt&amp;o='.$o.'&amp;a=';
+        $link='<a href="admin.php?w=ti&amp;d=mt&amp;o='.$o.'&amp;a=';
         if(!isset($amount)) {
             $link .="20";
         } else {
@@ -342,9 +342,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         while ($i<=$pageamount) {
             $selectpage = ($i - 1) * $amount;
             if ($start==$selectpage) {
-                $pages[] = '<a href="admin.php?w = ti&amp;d = mt&amp;a='.$amount.'&p='.$selectpage.'&amp;o='.$o.'" class="bold">'.$i.'</a>';
+                $pages[] = '<a href="admin.php?w=ti&amp;d=mt&amp;a='.$amount.'&p='.$selectpage.'&amp;o='.$o.'" class="bold">'.$i.'</a>';
             } else {
-                $pages[] = '<a href="admin.php?w = ti&amp;d = mt&amp;a='.$amount.'&p='.$selectpage.'&amp;o='.$o.'">'.$i.'</a>';
+                $pages[] = '<a href="admin.php?w=ti&amp;d=mt&amp;a='.$amount.'&p='.$selectpage.'&amp;o='.$o.'">'.$i.'</a>';
             }
             $i++;
         }
@@ -446,14 +446,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
     $table = array();
-    $ticketLinks['all'] = 'admin.php?w = ti&amp;d = md&amp;a='.$ui->id('a',3,'get');
-    $ticketLinks['amount'] = 'admin.php?w = ti&amp;d = md';
-    $ticketLinks['A'] = 'admin.php?w = ti&amp;d = md&amp;a='.$ui->id('a',3,'get');
-    $ticketLinks['C'] = 'admin.php?w = ti&amp;d = md&amp;a='.$ui->id('a',3,'get');
-    $ticketLinks['D'] = 'admin.php?w = ti&amp;d = md&amp;a='.$ui->id('a',3,'get');
-    $ticketLinks['N'] = 'admin.php?w = ti&amp;d = md&amp;a='.$ui->id('a',3,'get');
-    $ticketLinks['P'] = 'admin.php?w = ti&amp;d = md&amp;a='.$ui->id('a',3,'get');
-    $ticketLinks['R'] = 'admin.php?w = ti&amp;d = md&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['all'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['amount'] = 'admin.php?w=ti&amp;d=md';
+    $ticketLinks['A'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['C'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['D'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['N'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['P'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3,'get');
+    $ticketLinks['R'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3,'get');
     $where='WHERE t.`resellerid`=?';
     if (isset($ui->get['ts'])) {
         foreach ($ui->get['ts'] as $get) {
