@@ -42,14 +42,14 @@ if ($ui->st('w','get') == 'se') {
         header('Location: userpanel.php');
         die();
     }
-    $loguserid=$user_id;
-    $logusername=getusername($user_id);
+    $loguserid = $user_id;
+    $logusername = getusername($user_id);
     $logusertype="user";
     $logreseller = 0;
     if (isset($admin_id)) {
-        $logsubuser=$admin_id;
+        $logsubuser = $admin_id;
     } else if (isset($subuser_id)) {
-        $logsubuser=$subuser_id;
+        $logsubuser = $subuser_id;
     } else {
         $logsubuser = 0;
     }
@@ -87,9 +87,9 @@ if ($ui->st('d','get') == 'pw') {
         } else {
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($lookUpID,$reseller_id));
-            $cname=$query->fetchColumn();
-            $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
-            $security=createHash($cname,$ui->password('pass2', 255, 'post'),$salt,$aeskey);
+            $cname = $query->fetchColumn();
+            $salt = md5(mt_rand().date('Y-m-d H:i:s:u'));
+            $security = createHash($cname,$ui->password('pass2', 255, 'post'),$salt,$aeskey);
             $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($security,$salt,$lookUpID,$reseller_id));
             if($query->rowCount()>0) {
@@ -107,22 +107,22 @@ if ($ui->st('d','get') == 'pw') {
     $query = $sql->prepare("SELECT * FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($lookUpID,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $cname=$row['cname'];
-        $name=$row['name'];
-        $vname=$row['vname'];
-        $mail=$row['mail'];
-        $phone=$row['phone'];
-        $handy=$row['handy'];
-        $city=$row['city'];
-        $cityn=$row['cityn'];
-        $street=$row['street'];
-        $streetn=$row['streetn'];
-        $mail_backup=$row['mail_backup'];
-        $mail_serverdown=$row['mail_serverdown'];
-        $mail_ticket=$row['mail_ticket'];
-        $mail_gsupdate=$row['mail_gsupdate'];
-        $mail_securitybreach=$row['mail_securitybreach'];
-        $mail_vserver=$row['mail_vserver'];
+        $cname = $row['cname'];
+        $name = $row['name'];
+        $vname = $row['vname'];
+        $mail = $row['mail'];
+        $phone = $row['phone'];
+        $handy = $row['handy'];
+        $city = $row['city'];
+        $cityn = $row['cityn'];
+        $street = $row['street'];
+        $streetn = $row['streetn'];
+        $mail_backup = $row['mail_backup'];
+        $mail_serverdown = $row['mail_serverdown'];
+        $mail_ticket = $row['mail_ticket'];
+        $mail_gsupdate = $row['mail_gsupdate'];
+        $mail_securitybreach = $row['mail_securitybreach'];
+        $mail_vserver = $row['mail_vserver'];
 
         #https://github.com/easy-wi/developer/issues/5
         $oldValues = array();
@@ -133,15 +133,15 @@ if ($ui->st('d','get') == 'pw') {
             $mail_backup=($ui->active('mail_backup','post')) ? $ui->active('mail_backup','post') : 'N';
             $mail_serverdown=($ui->active('mail_serverdown','post')) ? $ui->active('mail_serverdown','post') : 'N';
             $mail_ticket=($ui->active('mail_ticket','post')) ? $ui->active('mail_ticket','post') : 'N';
-            $name=$ui->names('name', 30, 'post');
-            $vname=$ui->phone('phone', 30, 'post');
-            $mail=$ui->ismail('mail','post');
-            $phone=$ui->phone('phone', 30, 'post');
-            $handy=$ui->phone('handy', 30, 'post');
-            $city=$ui->names('city', 40, 'post');
-            $cityn=$ui->isinteger('cityn', 6, 'post');
-            $street=$ui->names('street', 40, 'post');
-            $streetn=$ui->streetNumber('streetn','post');
+            $name = $ui->names('name', 30, 'post');
+            $vname = $ui->names('vname', 30, 'post');
+            $mail = $ui->ismail('mail','post');
+            $phone = $ui->phone('phone', 30, 'post');
+            $handy = $ui->phone('handy', 30, 'post');
+            $city = $ui->names('city', 40, 'post');
+            $cityn = $ui->isinteger('cityn', 'post');
+            $street = $ui->names('street', 40, 'post');
+            $streetn = $ui->streetNumber('streetn','post');
             if (($ui->st('w','get') == 'se')) {
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$lookUpID,$reseller_id));
