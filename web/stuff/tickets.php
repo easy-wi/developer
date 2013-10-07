@@ -214,10 +214,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = "admin_ticket_topic_md.tpl";
     } else if ($ui->smallletters('action',2,'post') == 'md' and $ui->id('id',19,'get')){
         $id = $ui->id('id',19,'get');
-        if (description($ui->post['maintopic'])){
-            $topic_name = description($ui->post['topic_name']);
+        if ($ui->description('maintopic', 'post')){
+            $topic_name = $ui->description('topic_name', 'post');
             $priority = isid($ui->post['priority'], "1");
-            $maintopic = description($ui->post['maintopic']);
+            $maintopic = $ui->description('maintopic', 'post');
             if ($maintopic=="none") {
                 $maintopic = $id;
                 $priority = '';
@@ -228,7 +228,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 foreach($ui->post['language'] as $language) {
                     if (small_letters_check($language, '2')) {
-                        $subject = description($ui->post["subject_$language"]);
+                        $subject = $ui->description('subject_'.$language, 'post');
                         $query->execute(array($id,$language,$subject,$reseller_id));
                     }
                 }
