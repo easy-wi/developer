@@ -134,7 +134,7 @@ if ($ui->st('d','get') == 'pw') {
             $mail_serverdown=($ui->active('mail_serverdown','post')) ? $ui->active('mail_serverdown','post') : 'N';
             $mail_ticket=($ui->active('mail_ticket','post')) ? $ui->active('mail_ticket','post') : 'N';
             $name=$ui->names('name', 30, 'post');
-            $vname=$ui->phone('phone', 30, 'post');
+            $vname=$ui->names('vname', 30, 'post');
             $mail=$ui->ismail('mail','post');
             $phone=$ui->phone('phone', 30, 'post');
             $handy=$ui->phone('handy', 30, 'post');
