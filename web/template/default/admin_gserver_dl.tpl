@@ -32,7 +32,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-refresh icon-white"></i></button>
+                    <button class="btn btn-danger pull-right" id="inputEdit" type="submit"><i class="icon-remove-sign icon-white"></i></button>
                 </div>
             </div>
         </form>
