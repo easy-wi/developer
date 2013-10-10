@@ -74,7 +74,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $remotesql->DelDB($dbname);
                     $delete=$sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? LIMIT 1");
                     $delete->execute(array($row2['affectedID']));
-                    customColumns('M', $row2['affectedID'],'del');
+                    customColumns('M', $row2['affectedID'], 'del');
                 } else if ($row2['action'] == 'ad') {
                     $command=$gsprache->add.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
                     $remotesql->AddDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);

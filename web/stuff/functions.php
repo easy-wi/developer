@@ -1578,16 +1578,16 @@ if (!function_exists('passwordgenerate')) {
             $tokenLifeTime = '+40 minutes';
             
             if ($ui->id('id', 10, 'get') and $ui->smallletters('d', 10, 'get')) {
-                $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')][$ui->id('id', 10, 'get')]=array('t' => $token,'d' => strtotime($tokenLifeTime));
+                $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')][$ui->id('id', 10, 'get')] = array('t' => $token,'d' => strtotime($tokenLifeTime));
             
             } else if (!$ui->id('id', 10, 'get') and $ui->smallletters('d', 10, 'get')) {
-                $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')]=array('t' => $token,'d' => strtotime($tokenLifeTime));
+                $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')] = array('t' => $token,'d' => strtotime($tokenLifeTime));
             
             } else if ($ui->id('id', 10, 'get') and !$ui->smallletters('d', 10, 'get')) {
-                $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->id('id', 10, 'get')]=array('t' => $token,'d' => strtotime($tokenLifeTime));
+                $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->id('id', 10, 'get')] = array('t' => $token,'d' => strtotime($tokenLifeTime));
             
             } else {
-                $_SESSION[$ui->smallletters('w', 10, 'get')]=array('t' => $token,'d' => strtotime($tokenLifeTime));
+                $_SESSION[$ui->smallletters('w', 10, 'get')] = array('t' => $token,'d' => strtotime($tokenLifeTime));
             }
             
             return $token;

@@ -260,7 +260,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $ssl='http://';
         }
-        $table[]=array('id' => $row['importID'],'img' => $imgName,'alt' => $imgAlt,'domain' => $ssl.$row['domain']. '/' . $row['file'],'lastID' => $row['lastID'],'lastCheck' => $row['lastCheck'],'active' => $row['active']);
+        $table[] = array('id' => $row['importID'], 'img' => $imgName,'alt' => $imgAlt,'domain' => $ssl.$row['domain']. '/' . $row['file'], 'lastID' => $row['lastID'], 'lastCheck' => $row['lastCheck'], 'active' => $row['active']);
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ui&amp;o='.$o.'&amp;a=';

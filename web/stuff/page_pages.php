@@ -112,7 +112,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 					$newpageid=$row3['id'];
 				}
 				foreach (preg_split('/\,/',$ui->escaped('keywords','post',$lg),-1,PREG_SPLIT_NO_EMPTY) as $keyword) {
-					$addkeywords[]=array('lid' => $newpageid,'keyword' => $keyword);
+					$addkeywords[] = array('lid' => $newpageid,'keyword' => $keyword);
 				}
 			}
             $query = $sql->prepare("SELECT `id` FROM `page_terms` WHERE `type`='tag' AND `name`=? AND `resellerid`=? LIMIT 1");
@@ -202,7 +202,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$lang_avail=getlanguages($template_to_use);
 		$table = array();
 		foreach ($lang_avail as $lg) {
-			$table[$lg]=array('title' => false,'keywords' => false,'text' => false);
+			$table[$lg] = array('title' => false,'keywords' => false,'text' => false);
 			$keywords_used[$lg] = array();
 		}
 		$query = $sql->prepare("SELECT `released`,`subpage`,`naviDisplay` FROM `page_pages` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -221,7 +221,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 					$keywords[] = $row3['name'];
 					$keywords_used[$row2['language']][] = $row3['name'];
 				}
-				$table[$row2['language']]=array('title' => $row2['title'],'keywords' => implode(', ',$keywords),'text' => $row2['text']);
+				$table[$row2['language']] = array('title' => $row2['title'], 'keywords' => implode(', ',$keywords),'text' => $row2['text']);
 			}
 		}
 		$subpages = array();
@@ -295,7 +295,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 					}
 					foreach ($keywords as $keyword) {
 						if (!in_array($keyword,$keyword_exist)) {
-							$addkeywords[]=array('lid' => $row['id'],'keyword' => $keyword);
+							$addkeywords[] = array('lid' => $row['id'], 'keyword' => $keyword);
 						}
 					}
 				} else {
@@ -316,7 +316,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 						$newpageid=$row['id'];
 					}
 					foreach (preg_split('/\,/',$ui->escaped('keywords','post',$lg),-1,PREG_SPLIT_NO_EMPTY) as $keyword) {
-						$addkeywords[]=array('lid' => $newpageid,'keyword' => $keyword);
+						$addkeywords[] = array('lid' => $newpageid,'keyword' => $keyword);
 					}
 				}
 			}
@@ -457,7 +457,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $date=$explodedtime2[1] . '.' . $explodedtime2[2] . '.' . $explodedtime2[0] . '  ' . $explodedtime[1];
         }
-        array_push($table, array('id' => $row['id'],'author' => $author,'date' => $date,'released' => $released,'title' => $page_title,'link' => $link,'languages' => $p_languages,'sort' => $row['sort']));
+        array_push($table, array('id' => $row['id'], 'author' => $author,'date' => $date,'released' => $released,'title' => $page_title,'link' => $link,'languages' => $p_languages,'sort' => $row['sort']));
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `page_pages` WHERE `resellerid`=?");

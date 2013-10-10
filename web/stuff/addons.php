@@ -182,7 +182,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `shorten`,`description` FROM `servertypes` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table[]=array('shorten' => $row['shorten'],'description' => $row['description']);
+            $table[] = array('shorten' => $row['shorten'], 'description' => $row['description']);
         }
         $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
         $query->execute();
@@ -192,7 +192,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query2 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `qstat`=? AND `resellerid`=? LIMIT 1");
             $query2->execute(array($exist,$reseller_id));
             if ($query2->fetchColumn()>0) {
-                $table2[]=array('qstat' => $row['qstat'],'description' => $row['description']);
+                $table2[] = array('qstat' => $row['qstat'], 'description' => $row['description']);
             }
         }
         $foundlanguages = array();
@@ -207,7 +207,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $displayNone='display_none';
                     $checkbox='<input type="checkbox" name="language[]" value="'.$row.'" onclick="textdrop('."'".$row."'".');" /> ';
                 }
-                $foundlanguages[]=array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'display' => $displayNone);
+                $foundlanguages[] = array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'display' => $displayNone);
             }
         }
         $dependings = array();
@@ -287,7 +287,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `shorten`,`description` FROM `servertypes` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table[]=array('shorten' => $row['shorten'],'description' => $row['description']);
+            $table[] = array('shorten' => $row['shorten'], 'description' => $row['description']);
         }
         $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
         $countp=$sql->prepare("SELECT `id` FROM `servertypes` WHERE `qstat`=? AND `resellerid`=? LIMIT 1");
@@ -297,7 +297,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $countp->execute(array($exist,$reseller_id));
             $exnum=$countp->rowCount();
             if ($exnum>=1) {
-                $table2[]=array('qstat' => $row['qstat'],'description' => $row['description']);
+                $table2[] = array('qstat' => $row['qstat'], 'description' => $row['description']);
             }
         }
         $query = $sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -336,7 +336,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $style="style=\"display: none;\"";
                     $checkbox="<input type=\"checkbox\" name=\"language[]\" value=\"$row\" onclick=\"textdrop('$row');\" /> ";
                 }
-                $foundlanguages[]=array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'description' => $description,'display' => $displayNone);
+                $foundlanguages[] = array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'description' => $description,'display' => $displayNone);
             }
         }
         $dependings = array();
@@ -469,7 +469,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $type=$sprache->tool;
         }
-        $table[]=array('id' => $row['id'],'active' => $row['active'],'img' => $imgName,'alt' => $imgAlt,'gametype' => "${gtype} (${atype})",'description' => $row['menudescription'],'type' => $type);
+        $table[] = array('id' => $row['id'], 'active' => $row['active'], 'img' => $imgName,'alt' => $imgAlt,'gametype' => "${gtype} (${atype})",'description' => $row['menudescription'], 'type' => $type);
     }
     $table2 = array();
     $pselect2=$sql->prepare("SELECT DISTINCT(`shorten`) FROM `addons` WHERE `resellerid`=:reseller_id");
@@ -489,7 +489,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $gtype=$shorten;
         }
         $gametype="$gtype ($atype)";
-        $table2[]=array('shorten' => $shorten,'description' => $gametype);
+        $table2[] = array('shorten' => $shorten,'description' => $gametype);
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `addons` $where");

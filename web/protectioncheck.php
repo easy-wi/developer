@@ -41,7 +41,7 @@ if (isset($page_include)) {
     $protection_link= ($seo == 'N') ? $page_url . '/protectioncheck.php' : $page_url . '/' . $user_language . '/' . $page_category . '/';
 } else {
     define('EASYWIDIR', dirname(__FILE__));
-    if (is_dir(EASYWIDIR."/install")) {
+    if (is_dir(EASYWIDIR . '/install')) {
         die('Please remove the "install" folder');
     }
     $logininclude = true;

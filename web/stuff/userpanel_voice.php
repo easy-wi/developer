@@ -94,7 +94,7 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSIO
         $query2 = $sql->prepare("SELECT `id`,`name`,`date` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `date` DESC");
         $query2->execute(array($id, $user_id, $reseller_id));
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-            $table[]=array('id' => $row2['id'],'date' => $row2['date'],'name' => $row2['name']);
+            $table[] = array('id' => $row2['id'], 'date' => $row2['date'], 'name' => $row2['name']);
         }
         $template_file = "userpanel_voiceserver_backup_list.tpl";
     } else if (isset($server) and !$ui->smallletters('action',2,'post') and $ui->port('po', 'get') == 1) {
@@ -684,7 +684,7 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSIO
                 $initalize[] = $row['id'].'-token';
                 $initalize[] = $row['id'].'-settings';
             }
-            $table[]=array('id' => $row['id'],'virtual_id' => $row['localserverid'],'backup' => $row['backup'],'filetraffic' => $filetraffic,'maxtraffic' => $maxtraffic,'server' => $server,'address' => $address,'usage' => $usage,'uptime' => $uptime,'stopped' => $stopped,'img' => $imgName,'alt' => $imgAlt,'type' => $type);
+            $table[] = array('id' => $row['id'], 'virtual_id' => $row['localserverid'], 'backup' => $row['backup'], 'filetraffic' => $filetraffic,'maxtraffic' => $maxtraffic,'server' => $server,'address' => $address,'usage' => $usage,'uptime' => $uptime,'stopped' => $stopped,'img' => $imgName,'alt' => $imgAlt,'type' => $type);
         }
     }
     $template_file = "userpanel_voiceserver_list.tpl";

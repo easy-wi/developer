@@ -146,7 +146,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `dnsID`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `active`='Y' AND `userID`=? AND `resellerID`=? ORDER BY $orderby");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-        if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) $table[]=array('id' => $row['dnsID'],'dns' => $row['dns'],'address' => $row['ip'] . ':' . $row['port']);
+        if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) $table[] = array('id' => $row['dnsID'], 'dns' => $row['dns'], 'address' => $row['ip'] . ':' . $row['port']);
     }
     $template_file = 'userpanel_voiceserver_dns_list.tpl';
 }

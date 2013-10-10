@@ -329,11 +329,11 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                 if ($resetTraffic==true and $serverCreated != null) {
                                     $query4 = $sql->prepare("UPDATE `voice_server` SET `filetraffic`=0,`lastfiletraffic`=0 WHERE `id`=? LIMIT 1");
                                     $query4->execute(array($ts3id));
-                                    $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'],'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
+                                    $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'], 'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
                                 } else if ($serverCreated==null) {
                                     $query4 = $sql->prepare("UPDATE `voice_server` SET `filetraffic`=0,`lastfiletraffic`=0,`serverCreated`=NOW() WHERE `id`=? LIMIT 1");
                                     $query4->execute(array($ts3id));
-                                    $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'],'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
+                                    $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'], 'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
                                 }
                             }
                             if ($voice_autobackup == 'Y' and $stunde == '5' and $row3['active'] == 'Y' and $row3['backup'] == 'Y') {

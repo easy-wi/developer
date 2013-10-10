@@ -428,8 +428,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $ds = array();
         $query2->execute(array($row['id'],$reseller_id));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) $ds[]=array('id' => $row2['dnsID'],'address' => $row2['dns'],'status' => ($row2['active'] == 'N') ? 2 : 1);
-        $table[]=array('id' => $row['id'],'active' => $row['active'],'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ssh2ip'],'defaultdns' => $row['defaultdns'],'description' => $row['description'],'server' => $ds);
+        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) $ds[] = array('id' => $row2['dnsID'], 'address' => $row2['dns'], 'status' => ($row2['active'] == 'N') ? 2 : 1);
+        $table[] = array('id' => $row['id'], 'active' => $row['active'], 'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ssh2ip'], 'defaultdns' => $row['defaultdns'], 'description' => $row['description'], 'server' => $ds);
     }
     $next=$start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;

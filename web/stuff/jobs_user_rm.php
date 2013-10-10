@@ -73,7 +73,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 }
             }
         }
-        customColumns('U', $row['affectedID'],'del');
+        customColumns('U', $row['affectedID'], 'del');
         $query2 = $sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         $command=$gsprache->del.' userID: '.$row['affectedID'].' name:'.$row['name'];

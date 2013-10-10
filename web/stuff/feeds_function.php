@@ -66,7 +66,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                         $theCount = 0;
                         foreach ($json->appnews->newsitems as $item) {
                             if ($item->is_external_url==false and $theCount<$newsAmount) {
-                                $steamNews[$lookUpAppID][]=array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate' => date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
+                                $steamNews[$lookUpAppID][] = array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate' => date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
                                 $theCount++;
                             }
                         }
@@ -111,7 +111,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                         $theCount = 0;
                         foreach ($json->appnews->newsitems as $item) {
                             if ($item->is_external_url==false and $theCount<$newsAmount) {
-                                $feedsArray[0][]=array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate' => date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
+                                $feedsArray[0][] = array('title' => $item->title,'description' => $item->contents,'link' => $item->url,'pubDate' => date('Y-m-d H:i:s',$item->date),'content' => $lookUpAppID,'author' => $item->author,'creator' => $item->author);
                                 $theCount++;
                             }
                         }
@@ -140,13 +140,13 @@ if (isset($newsInclude) and $newsInclude==true) {
                             $content = '';
                             $author=$tweet->user->name;
                             $creator=$tweet->user->name;
-                            $feedsArray[$feedID][]=array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
+                            $feedsArray[$feedID][] = array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
                         }
                     }
                 } else {
                     if (isset($printToConsole)) print "Getting Feed Updates for Feed ${row2['feedUrl']}\r\n";
                     $port=80;
-                    if (strpos($row2['feedUrl'],'https://')) $port=443;
+                    if (strpos($row2['feedUrl'], 'https://')) $port=443;
                     $domain=str_replace(array('https://','http://'),'', $row2['feedUrl']);
                     $ex=explode('/',$domain);
                     $domain=$ex[0];
@@ -162,9 +162,9 @@ if (isset($newsInclude) and $newsInclude==true) {
                     if (!empty($row2['feedUrl']) and extension_loaded('zlib')) {
                         $opts=array('http' => array('header' => "Accept-Encoding: gzip\r\n"));
                         $context=stream_context_create($opts);
-                        $feed=fopen($row2['feedUrl'],'r', false,$context);
+                        $feed=fopen($row2['feedUrl'], 'r', false,$context);
                     } else if (!empty($row2['feedUrl'])) {
-                        $feed=fopen($row2['feedUrl'],'r');
+                        $feed=fopen($row2['feedUrl'], 'r');
                     }
                     if ($feed) {
                         $lastModified = true;
@@ -259,7 +259,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                                         $description=base64_decode($description);
                                     }
                                     if($theCount<$newsAmount) {
-                                        $feedsArray[$feedID][]=array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
+                                        $feedsArray[$feedID][] = array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
                                     }
                                     $theCount++;
                                 }

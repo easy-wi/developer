@@ -874,9 +874,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if ($row3['active'] == 'N' or $row3['uptime']==1) $vsStatus = 2;
                 else if ($row3['active'] == 'Y' and $row3['uptime']<1) $vsStatus = 3;
                 else $vsStatus = 1;
-                $vs[]=array('id' => $row3['id'],'address' => $row3['address'],'name' => $row3['queryName'],'status' => $vsStatus);
+                $vs[] = array('id' => $row3['id'], 'address' => $row3['address'], 'name' => $row3['queryName'], 'status' => $vsStatus);
             }
-            $table[]=array('id' => $id,'active' => $row['active'],'managedServer' => $row['managedServer'],'img' => $imgName,'alt' => $imgAlt,'ip' => $ip,'type' => $type,'defaultdns' => $defaultdns,'installedserver' => $row['installedserver']. '/' . $row['maxserver'],'installedslots' => $uslots. '/' . $installedslots. '/' . $row['maxslots'],'server' => $vs);
+            $table[] = array('id' => $id,'active' => $row['active'], 'managedServer' => $row['managedServer'], 'img' => $imgName,'alt' => $imgAlt,'ip' => $ip,'type' => $type,'defaultdns' => $defaultdns,'installedserver' => $row['installedserver']. '/' . $row['maxserver'], 'installedslots' => $uslots. '/' . $installedslots. '/' . $row['maxslots'], 'server' => $vs);
         }
     }
     $next=$start+$amount;

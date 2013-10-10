@@ -112,7 +112,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` WHERE `description` NOT IN ('Rescue 32bit','Rescue 64bit') ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $templates[]=array('id' => $row['id'],'description' => $row['description']);
+            $templates[] = array('id' => $row['id'], 'description' => $row['description']);
         }
         $template_file = (isset($ip)) ? 'userpanel_root_virtual_ri.tpl' : 'admin_404.tpl';
     } else if (in_array($ui->st('action','post'), array('ri','rc','rs','st'))) {
@@ -180,7 +180,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $imgAlt='Inactive';
                 $active = 'N';
             }
-            $table[]=array('id' => $row['id'],'ip' => $row['ip'],'img' => $imgName,'alt' => $imgAlt,'active' => $active,'jobPending' => $jobPending);
+            $table[] = array('id' => $row['id'], 'ip' => $row['ip'], 'img' => $imgName,'alt' => $imgAlt,'active' => $active,'jobPending' => $jobPending);
         }
     }
     $template_file = 'userpanel_root_virtual_list.tpl';

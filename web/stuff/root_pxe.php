@@ -188,7 +188,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        $table[]=array('id' => $row['id'],'ip' => $row['ip'],'description' => $row['description'],'img' => $imgName,'alt' => $imgAlt,'active' => $row['active']);
+        $table[] = array('id' => $row['id'], 'ip' => $row['ip'], 'description' => $row['description'], 'img' => $imgName,'alt' => $imgAlt,'active' => $row['active']);
     }
     $template_file = 'admin_root_pxe_list.tpl';
 }

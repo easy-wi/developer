@@ -75,7 +75,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $displayNone='display_none';
                 $checkbox='<input type="checkbox" name="language[]" value="'.$row.'" onclick="textdrop('."'".$row."'".');" /> ';
             }
-            $foundLanguages[]=array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'description' => $description,'display' => $displayNone);
+            $foundLanguages[] = array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'description' => $description,'display' => $displayNone);
         }
     }
     if (!$ui->st('action','post') and $ui->st('d','get') == 'ad') {
@@ -176,7 +176,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = ($query->rowCount()>0) ? $spracheResponse->table_del : 'admin_404.tpl';
         $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
         $query->execute(array($id,$reseller_id));
-        unlink(EASYWIDIR."/downloads/${id}/${fileExtension}");
+        unlink(EASYWIDIR . "/downloads/${id}/${fileExtension}");
         $template_file = $spracheResponse->table_del;
     }
 } else {
@@ -218,7 +218,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `fileID`,`description`,`order`,`count` FROM `page_downloads` WHERE `resellerID`=? ORDER BY ${orderby}");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[]=array('id' => $row['fileID'],'description' => $row['description'],'order' => $row['order'],'count' => $row['count']);
+        $table[] = array('id' => $row['fileID'], 'description' => $row['description'], 'order' => $row['order'], 'count' => $row['count']);
     }
     $template_file = 'admin_page_downloads_list.tpl';
 }

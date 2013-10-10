@@ -68,30 +68,30 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$active=$row['active'];
             $activeGS=$row['activeGS'];
             $activeVS=$row['activeVS'];
-			$mintime=(int)$row['mintime'];
-			$maxtime=(int)$row['maxtime'];
-			$timesteps=(int)$row['timesteps'];
-			$minplayer=(int)$row['minplayer'];
-			$maxplayer=(int)$row['maxplayer'];
-			$playersteps=(int)$row['playersteps'];
-            $mintimeRegistered=(int)$row['mintimeRegistered'];
-            $maxtimeRegistered=(int)$row['maxtimeRegistered'];
-            $timestepsRegistered=(int)$row['timestepsRegistered'];
-            $minplayerRegistered=(int)$row['minplayerRegistered'];
-            $maxplayerRegistered=(int)$row['maxplayerRegistered'];
-            $playerstepsRegistered=(int)$row['playerstepsRegistered'];
-			$vomintime=(int)$row['vomintime'];
-			$vomaxtime=(int)$row['vomaxtime'];
-			$votimesteps=(int)$row['votimesteps'];
-			$vominplayer=(int)$row['vominplayer'];
-			$vomaxplayer=(int)$row['vomaxplayer'];
-			$voplayersteps=(int)$row['voplayersteps'];
-            $vomintimeRegistered=(int)$row['vomintimeRegistered'];
-            $vomaxtimeRegistered=(int)$row['vomaxtimeRegistered'];
-            $votimestepsRegistered=(int)$row['votimestepsRegistered'];
-            $vominplayerRegistered=(int)$row['vominplayerRegistered'];
-            $vomaxplayerRegistered=(int)$row['vomaxplayerRegistered'];
-            $voplayerstepsRegistered=(int)$row['voplayerstepsRegistered'];
+			$mintime= (int) $row['mintime'];
+			$maxtime= (int) $row['maxtime'];
+			$timesteps= (int) $row['timesteps'];
+			$minplayer= (int) $row['minplayer'];
+			$maxplayer= (int) $row['maxplayer'];
+			$playersteps= (int) $row['playersteps'];
+            $mintimeRegistered= (int) $row['mintimeRegistered'];
+            $maxtimeRegistered= (int) $row['maxtimeRegistered'];
+            $timestepsRegistered= (int) $row['timestepsRegistered'];
+            $minplayerRegistered= (int) $row['minplayerRegistered'];
+            $maxplayerRegistered= (int) $row['maxplayerRegistered'];
+            $playerstepsRegistered= (int) $row['playerstepsRegistered'];
+			$vomintime= (int) $row['vomintime'];
+			$vomaxtime= (int) $row['vomaxtime'];
+			$votimesteps= (int) $row['votimesteps'];
+			$vominplayer= (int) $row['vominplayer'];
+			$vomaxplayer= (int) $row['vomaxplayer'];
+			$voplayersteps= (int) $row['voplayersteps'];
+            $vomintimeRegistered= (int) $row['vomintimeRegistered'];
+            $vomaxtimeRegistered= (int) $row['vomaxtimeRegistered'];
+            $votimestepsRegistered= (int) $row['votimestepsRegistered'];
+            $vominplayerRegistered= (int) $row['vominplayerRegistered'];
+            $vomaxplayerRegistered= (int) $row['vomaxplayerRegistered'];
+            $voplayerstepsRegistered= (int) $row['voplayerstepsRegistered'];
 			$shutdownempty=$row['shutdownempty'];
 			$shutdownemptytime=$row['shutdownemptytime'];
 			$ftpupload=$row['ftpupload'];
@@ -134,7 +134,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $cmds=gsrestart($row['switchID'],'so',$aeskey,$reseller_id);
+                $cmds=gsrestart($row['switchID'], 'so',$aeskey,$reseller_id);
                 ssh2_execute('gs', $row['rootID'],$cmds);
             }
 		} else if ($servertype == 'v') {
@@ -216,7 +216,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				if ($servertype == 'g') {
                     $query2->execute(array($serverid,$reseller_id));
                     foreach($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                        $cmds=gsrestart($row2['switchID'],'so',$aeskey,$reseller_id);
+                        $cmds=gsrestart($row2['switchID'], 'so',$aeskey,$reseller_id);
                         ssh2_execute('gs', $row['rootID'],$cmds);
                     }
 				} else if ($servertype == 'v') {
@@ -270,7 +270,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 						$shorten=$row2['type'];
 					}
 				}
-				$table[]=array('id' => $id,'servertype' => $servertype,'server' => $server,'shorten' => $shorten,'password' => $password,'rcon' => $rcon,'slots' => $slots,'lenderip' => $lenderip,'lendtime' => $lendtime,'timeleft' => $timeleft);
+				$table[] = array('id' => $id,'servertype' => $servertype,'server' => $server,'shorten' => $shorten,'password' => $password,'rcon' => $rcon,'slots' => $slots,'lenderip' => $lenderip,'lendtime' => $lendtime,'timeleft' => $timeleft);
 			}
 		}
 		if (!isset($nextfree) or (isset($nextfree) and $gscount>0))$nextfree = 0;

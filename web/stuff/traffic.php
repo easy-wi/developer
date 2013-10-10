@@ -47,8 +47,8 @@ if ($d== 'se' and $reseller_id==0) {
         $template_file = $spracheResponse->token;
     } else if (isset($ui->post['type']) and $ui->w('action', 4, 'post') == 'md') {
 		$error = 0;
-		if (!isset($ui->post['type']) or (!small_letters_check($ui->post['type'],'30'))) $error = 1;
-		if (!isset($ui->post['statip']) or (!isip($ui->post['statip'],'all') and !isurl($ui->post['statip']))) $error = 1;
+		if (!isset($ui->post['type']) or (!small_letters_check($ui->post['type'], '30'))) $error = 1;
+		if (!isset($ui->post['statip']) or (!isip($ui->post['statip'], 'all') and !isurl($ui->post['statip']))) $error = 1;
 		if (!isset($ui->post['dbname']) or (!gamestring($ui->post['dbname']))) $error = 1;
 		if (!isset($ui->post['dbuser']) or (!gamestring($ui->post['dbuser']))) $error = 1;
 		if (!isset($ui->post['dbpassword']) or (!gamestring($ui->post['dbpassword']))) $error = 1;
@@ -81,7 +81,7 @@ if ($d== 'se' and $reseller_id==0) {
 		if (!isset($ui->post['line_colour_3']) or (!validate_int($ui->post['line_colour_3'], 0 , 255) and $ui->post['line_colour_3'] != 0)) $error = 1;
 		if ($error==0) {
 			$query = $sql->prepare("UPDATE `traffic_settings` SET `type`=:type,`statip`=:statip,`dbname`=AES_ENCRYPT(:dbname,:aeskey),`dbuser`=AES_ENCRYPT(:dbuser,:aeskey),`dbpassword`=AES_ENCRYPT(:dbpassword,:aeskey),`multiplier`=:multiplier,`table_name`=:table_name,`column_sourceip`=:column_sourceip,`column_destip`=:column_destip,`column_byte`=:column_byte,`column_date`=:column_date,`text_colour_1`=:text_colour_1,`text_colour_2`=:text_colour_2,`text_colour_3`=:text_colour_3,`barin_colour_1`=:barin_colour_1,`barin_colour_2`=:barin_colour_2,`barin_colour_3`=:barin_colour_3,`barout_colour_1`=:barout_colour_1,`barout_colour_2`=:barout_colour_2,`barout_colour_3`=:barout_colour_3,`bartotal_colour_1`=:bartotal_colour_1,`bartotal_colour_2`=:bartotal_colour_2,`bartotal_colour_3`=:bartotal_colour_3,`bg_colour_1`=:bg_colour_1,`bg_colour_2`=:bg_colour_2,`bg_colour_3`=:bg_colour_3,`border_colour_1`=:border_colour_1,`border_colour_2`=:border_colour_2,`border_colour_3`=:border_colour_3,`line_colour_1`=:line_colour_1,`line_colour_2`=:line_colour_2,`line_colour_3`=:line_colour_3 LIMIT 1");
-            $query->execute(array(':aeskey' => $aeskey,':type' => $ui->post['type'],':statip' => $ui->post['statip'],':dbname' => $ui->post['dbname'],':dbuser' => $ui->post['dbuser'],':dbpassword' => $ui->post['dbpassword'],':table_name' => $ui->post['table_name'],':multiplier' => $ui->post['multiplier'],':column_sourceip' => $ui->post['column_sourceip'],':column_destip' => $ui->post['column_destip'],':column_byte' => $ui->post['column_byte'],':column_date' => $ui->post['column_date'],':text_colour_1' => $ui->post['text_colour_1'],':text_colour_2' => $ui->post['text_colour_2'],':text_colour_3' => $ui->post['text_colour_3'],':barin_colour_1' => $ui->post['barin_colour_1'],':barin_colour_2' => $ui->post['barin_colour_2'],':barin_colour_3' => $ui->post['barin_colour_3'],':barout_colour_1' => $ui->post['barout_colour_1'],':barout_colour_2' => $ui->post['barout_colour_2'],':barout_colour_3' => $ui->post['barout_colour_3'],':bartotal_colour_1' => $ui->post['bartotal_colour_1'],':bartotal_colour_2' => $ui->post['bartotal_colour_2'],':bartotal_colour_3' => $ui->post['bartotal_colour_3'],':bg_colour_1' => $ui->post['bg_colour_1'],':bg_colour_2' => $ui->post['bg_colour_2'],':bg_colour_3' => $ui->post['bg_colour_3'],':border_colour_1' => $ui->post['border_colour_1'],':border_colour_2' => $ui->post['border_colour_2'],':border_colour_3' => $ui->post['border_colour_3'],':line_colour_1' => $ui->post['line_colour_1'],':line_colour_2' => $ui->post['line_colour_2'],':line_colour_3' => $ui->post['line_colour_3']));
+            $query->execute(array(':aeskey' => $aeskey,':type' => $ui->post['type'], ':statip' => $ui->post['statip'], ':dbname' => $ui->post['dbname'], ':dbuser' => $ui->post['dbuser'], ':dbpassword' => $ui->post['dbpassword'], ':table_name' => $ui->post['table_name'], ':multiplier' => $ui->post['multiplier'], ':column_sourceip' => $ui->post['column_sourceip'], ':column_destip' => $ui->post['column_destip'], ':column_byte' => $ui->post['column_byte'], ':column_date' => $ui->post['column_date'], ':text_colour_1' => $ui->post['text_colour_1'], ':text_colour_2' => $ui->post['text_colour_2'], ':text_colour_3' => $ui->post['text_colour_3'], ':barin_colour_1' => $ui->post['barin_colour_1'], ':barin_colour_2' => $ui->post['barin_colour_2'], ':barin_colour_3' => $ui->post['barin_colour_3'], ':barout_colour_1' => $ui->post['barout_colour_1'], ':barout_colour_2' => $ui->post['barout_colour_2'], ':barout_colour_3' => $ui->post['barout_colour_3'], ':bartotal_colour_1' => $ui->post['bartotal_colour_1'], ':bartotal_colour_2' => $ui->post['bartotal_colour_2'], ':bartotal_colour_3' => $ui->post['bartotal_colour_3'], ':bg_colour_1' => $ui->post['bg_colour_1'], ':bg_colour_2' => $ui->post['bg_colour_2'], ':bg_colour_3' => $ui->post['bg_colour_3'], ':border_colour_1' => $ui->post['border_colour_1'], ':border_colour_2' => $ui->post['border_colour_2'], ':border_colour_3' => $ui->post['border_colour_3'], ':line_colour_1' => $ui->post['line_colour_1'], ':line_colour_2' => $ui->post['line_colour_2'], ':line_colour_3' => $ui->post['line_colour_3']));
 			$template_file = $spracheResponse->table_add;
 		} else {
 			$template_file = 'Error';
@@ -179,7 +179,7 @@ if ($d== 'se' and $reseller_id==0) {
 			}
 		}
 	} else if ($ui->post['kind']=="rs" or $ui->post['kind']=="us") {
-		if (isid($ui->post['what'],'30') and $ui->post['kind']=="rs") {
+		if (isid($ui->post['what'], '30') and $ui->post['kind']=="rs") {
 			$kind="rs";
 			$whichdata="&amp;short=".$ui->post['what'];
 			$extra=$gsprache->reseller;
@@ -194,7 +194,7 @@ if ($d== 'se' and $reseller_id==0) {
 					$data[] = '<option value='.$row['id'].'>'.$row['cname'].'</option>';
 				}
 			}
-		} else if (isid($ui->post['what'],'30') and $ui->post['kind']=="us") {
+		} else if (isid($ui->post['what'], '30') and $ui->post['kind']=="us") {
 			$kind="us";
 			$whichdata="&amp;distro=".$ui->post['what'];
 			$extra=$sprache->user;
@@ -218,14 +218,14 @@ if ($d== 'se' and $reseller_id==0) {
 			$pselect->execute(array(':id' => $ui->post['what']));
 		} else if ($reseller_id==$admin_id) {
 			$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-			$pselect->execute(array(':id' => $ui->post['what'],':reseller_id' => $reseller_id));
+			$pselect->execute(array(':id' => $ui->post['what'], ':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$display=$extra . '  ' . $row['cname'];
 		}
 	} else if ($ui->post['kind']=="se") {
 		$kind="se";
-		if (isid($ui->post['what'],'30')) {
+		if (isid($ui->post['what'], '30')) {
 			$whichdata="&amp;shorten=".$ui->post['what'];
 		}
 		if ($reseller_id==0) {
@@ -233,10 +233,10 @@ if ($d== 'se' and $reseller_id==0) {
 			$pselect->execute(array(':id' =>$ui->post['what']));
 		} else if ($reseller_id==$admin_id){
 			$pselect=$sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id  AND c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id` LIMIT 1");
-			$pselect->execute(array(':id' =>$ui->post['what'],':reseller_id' => $reseller_id));
+			$pselect->execute(array(':id' =>$ui->post['what'], ':reseller_id' => $reseller_id));
 		} else {
 			$pselect=$sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id  AND c.`userid`=:admin_id AND c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id` LIMIT 1");
-			$pselect->execute(array(':id' =>$ui->post['what'],':admin_id' => $admin_id,':reseller_id' => $reseller_id));
+			$pselect->execute(array(':id' =>$ui->post['what'], ':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$display=$sprache->server . '  ' . $row['cname'] . '-' . $ui->post['what'];
@@ -260,7 +260,7 @@ if ($d== 'se' and $reseller_id==0) {
 		}
 	} else if ($ui->post['kind']=="ip") {
 		$kind="ip";
-		if (isip($ui->post['what'],'all')) {
+		if (isip($ui->post['what'], 'all')) {
 			$whichdata="&amp;ip=".$ui->post['what'];
 			$display=$sprache->ip . '  ' . $ui->post['what'];
 		}

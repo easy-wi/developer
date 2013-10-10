@@ -69,7 +69,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if (empty($topic)) {
                 $topic=$row['topic'];
             }
-            $table[]=array('id' => $row['id'],'topic' => $topic);
+            $table[] = array('id' => $row['id'], 'topic' => $topic);
             if ($i==1) {
                 $query2 = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=? AND `maintopic`!=`id` AND `resellerid`=? ORDER BY `id`");
                 $query2->execute(array($row['id'],$reseller_id));
@@ -84,7 +84,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     if (empty($topic)) {
                         $topic=$row2['topic'];
                     }
-                    $table2[]=array('id' => $row2['id'],'topic' => $topic);
+                    $table2[] = array('id' => $row2['id'], 'topic' => $topic);
                 }
             }
             $i++;
@@ -135,7 +135,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query2->execute(array($id,$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $table[]=array('writedate' => ($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'],'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
+                $table[] = array('writedate' => ($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'], 'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
             }
             if ($row['userPriority']==1) $priority=$sprache->priority_low;
             else if ($row['userPriority']==2) $priority=$sprache->priority_medium;
@@ -342,7 +342,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $status=$sprache->status_reopen;
         }
-        $table[]=array('id' => $row['id'],'priority' => $priority,'writedate' => $writedate,'supporter' => (trim($row['vname'] . ' ' . $row['name']) != '') ? trim($row['vname'] . ' ' . $row['name']) : $row['cname'],'subject' => $topic,'status' => $status,'rawState' => $row['state'],'statusClass' => $statusClass);
+        $table[] = array('id' => $row['id'], 'priority' => $priority,'writedate' => $writedate,'supporter' => (trim($row['vname'] . ' ' . $row['name']) != '') ? trim($row['vname'] . ' ' . $row['name']) : $row['cname'], 'subject' => $topic,'status' => $status,'rawState' => $row['state'], 'statusClass' => $statusClass);
     }
     $template_file = "userpanel_tickets_list.tpl";
 }

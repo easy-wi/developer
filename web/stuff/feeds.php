@@ -269,7 +269,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgAlt='Inactive';
         }
         $twitter=($row['twitter'] == 'Y') ? $gsprache->yes : $gsprache->no;
-        $table[]=array('id' => $row['feedID'],'img' => $imgName,'alt' => $imgAlt,'twitter' => $twitter,'feedUrl' => $row['feedUrl'],'active' => $row['active']);
+        $table[] = array('id' => $row['feedID'], 'img' => $imgName,'alt' => $imgAlt,'twitter' => $twitter,'feedUrl' => $row['feedUrl'], 'active' => $row['active']);
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `resellerID`=?");

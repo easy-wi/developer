@@ -77,7 +77,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $installedserver=($row['installedserver'] == null) ? 0 : $row['installedserver'];
             $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
             $uslots=($row['uslots'] == null) ? 0 : $row['uslots'];
-            $table2[]=array('id' => $row['id'],'server' => implode('/', array_unique($ips)),'type' => $type,'maxserver' => $row['maxserver'],'maxslots' => $row['maxslots'],'installedserver' => $installedserver,'uslots' => $uslots,'installedslots' => $installedslots);
+            $table2[] = array('id' => $row['id'], 'server' => implode('/', array_unique($ips)),'type' => $type,'maxserver' => $row['maxserver'], 'maxslots' => $row['maxslots'], 'installedserver' => $installedserver,'uslots' => $uslots,'installedslots' => $installedslots);
         }
         $template_file = "admin_voiceserver_add.tpl";
     } else if ($ui->w('action',3,'post') == 'ad' and $ui->id('masterserver',19,'post') and $ui->id('customer',19,'post')) {
@@ -148,7 +148,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if (is_numeric($row['port']))$ports[] = $row['port'];
                 }
-                $portsArray[count($ports)]=array('ip' => $serverIP,'ports' => $ports);
+                $portsArray[count($ports)] = array('ip' => $serverIP,'ports' => $ports);
             }
             $bestIP=current($portsArray);
             $ip=$bestIP['ip'];
@@ -530,7 +530,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
             $localserverid=$row['localserverid'];
             $query2 = $sql->prepare("SELECT SUM(`slots`) AS `installedslots`  FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=? LIMIT 1");
             $query2->execute(array($masterserver,$reseller_id));
-            $futureSlots=(int)$query2->fetchColumn()-$oldslots+$slots;
+            $futureSlots= (int) $query2->fetchColumn()-$oldslots+$slots;
         }
         if (!isset($oldslots)) $errors[] = $gsprache->voiceserver.' ID';
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
@@ -751,7 +751,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         $minutes=floor(($row['uptime']-($days*86400)-($hours*3600))/60);
         $uptime=$days.'D '.$hours.'H '.$minutes.'M';
         $userid=$row['userid'];
-        $table[]=array('id' => $row['id'],'active' => $row['active'],'virtualID' => $row['localserverid'],'img' => $imgName,'alt' => $imgAlt,'usage' => $usage,'uptime' => $uptime,'server' => $server,'cname' => $row['cname'],'names' => trim($row['name'] . ' ' . $row['vname']),'userid' => $userid,'lendserver' => $lendserver,'type' => $type,'jobPending' => $jobPending);
+        $table[] = array('id' => $row['id'], 'active' => $row['active'], 'virtualID' => $row['localserverid'], 'img' => $imgName,'alt' => $imgAlt,'usage' => $usage,'uptime' => $uptime,'server' => $server,'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'userid' => $userid,'lendserver' => $lendserver,'type' => $type,'jobPending' => $jobPending);
     }
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));

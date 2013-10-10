@@ -150,12 +150,12 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
                 }
                 natsort($freespace);
                 $freespace=array_reverse($freespace);
-                $serverused[$id]=array('ram' => $ramused,'cpu' => $cpucore,'server' => $i2,'hdd' => $mountunused,'freespace' => $freespace);
+                $serverused[$id] = array('ram' => $ramused,'cpu' => $cpucore,'server' => $i2,'hdd' => $mountunused,'freespace' => $freespace);
                 if ($resellerid==$reseller_id) {
-                    $serverusage[$id]=array('ram' => $percentusedram,'cpu' => $percentusedcpu,'server' => $percentserver,'hdd' => $percentusedhdd,'freespace' => $freespace);
-                    $table[]=array('id' => $id,'ip' => $row['ip']);
+                    $serverusage[$id] = array('ram' => $percentusedram,'cpu' => $percentusedcpu,'server' => $percentserver,'hdd' => $percentusedhdd,'freespace' => $freespace);
+                    $table[] = array('id' => $id,'ip' => $row['ip']);
                 } else {
-                    $serverusage2[$id]=array('ram' => $percentusedram,'cpu' => $percentusedcpu,'server' => $percentserver,'hdd' => $percentusedhdd,'freespace' => $freespace);
+                    $serverusage2[$id] = array('ram' => $percentusedram,'cpu' => $percentusedcpu,'server' => $percentserver,'hdd' => $percentusedhdd,'freespace' => $freespace);
                 }
             }
             if (isset($serverusage) and is_array($serverusage)) {
@@ -247,7 +247,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
                         }
                     }
                     $firstpoint=$hdd[0];
-                    $table[]=array('id' => $bestserver,'ip' => $row['ip']);
+                    $table[] = array('id' => $bestserver,'ip' => $row['ip']);
                 }
             }
         } else {
@@ -256,7 +256,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
             $maxserver = '';
             $core = array();
             $hdd = array();
-            $serverused[1]=array('ram' => "",'cpu' => "",'server' => "",'hdd' => "");
+            $serverused[1] = array('ram' => "",'cpu' => "",'server' => "",'hdd' => "");
             $bestserver = 1;
         }
         $reseller = array();
@@ -305,7 +305,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $templates[]=array('id' => $row['id'],'description' => $row['description'] . '  ' . $row['bitversion']." Bit");
+            $templates[] = array('id' => $row['id'], 'description' => $row['description'] . '  ' . $row['bitversion']." Bit");
         }
         $template_file = "admin_root_vserver_add.tpl";
     } else if ($ui->smallletters('action',2,'post') == 'ad'){
@@ -712,7 +712,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
                 $template_file .="Reseller Limits";
             }
         }
-        if (isip($ui->post['ip'],'all') and isset($oldip)) {
+        if (isip($ui->post['ip'], 'all') and isset($oldip)) {
             $freeips=($reseller_id==0) ? freeips($reseller_id) : freeips($userid);
             $checked_ips = array();
             if (isips($ui->post['ips'])) {
@@ -770,7 +770,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
             }
             if ($oldmac != $mac or $oldcores != $cores or $oldminmhz != $minmhz or $oldmaxmhz != $maxmhz or $oldhddsize != $hddsize or $oldram != $ram or $oldminram != $minram or $oldmaxram != $maxram or $oldactive != $active) {
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('D','vs',NULL,?,?,?,?,NULL,NOW(),'md',?,?)");
-                $query->execute(array($admin_id,$id,$userid,$ip,json_encode(array('oldactive' => $row['active'],'oldip' => $row['ip'],'oldmac' => $row['mac'])),$reseller_id));
+                $query->execute(array($admin_id,$id,$userid,$ip,json_encode(array('oldactive' => $row['active'], 'oldip' => $row['ip'], 'oldmac' => $row['mac'])),$reseller_id));
             }
             if ($query->rowCount()>0) {
                 $loguseraction="%mod% %vserver% $ip Ram: $ram; MinRam: $minram; MaxRam: $maxram; Cores: $cores; MinMhz: $minmhz; MaxMhz: $maxmhz; HDD: $hddsize";
@@ -823,7 +823,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['description'] != 'Rescue 32bit' and $row['description'] != 'Rescue 64bit') $templates[]=array('id' => $row['id'],'description' => $row['description']);
+            if ($row['description'] != 'Rescue 32bit' and $row['description'] != 'Rescue 64bit') $templates[] = array('id' => $row['id'], 'description' => $row['description']);
         }
         $template_file = "admin_root_vserver_re.tpl";
     } else if (in_array($ui->st('action','post'), array('ri','rc','rs','st'))) {
@@ -927,7 +927,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
         } else if ($row['active'] == 'N') {
             $active = 'N';
         }
-        $table[]=array('id' => $row['id'],'active' => $active,'cip' => $row['ip'],'cores' => $row['cores'],'minmhz' => $row['minmhz'],'maxmhz' => $row['maxmhz'],'hddsize' => $row['hddsize'],'ram' => $row['ram'],'minram' => $row['minram'],'maxram' => $row['maxram'],'status' => $status,'idescription' => $row['idescription'],'bitversion' => $row['bitversion'],'hip' => $row['hip'],'hid' => $row['hid'],'hdescription' => $row['hdescription'],'cname' => $row['cname'],'userid' => $row['userid'],'jobPending' => $jobPending);
+        $table[] = array('id' => $row['id'], 'active' => $active,'cip' => $row['ip'], 'cores' => $row['cores'], 'minmhz' => $row['minmhz'], 'maxmhz' => $row['maxmhz'], 'hddsize' => $row['hddsize'], 'ram' => $row['ram'], 'minram' => $row['minram'], 'maxram' => $row['maxram'], 'status' => $status,'idescription' => $row['idescription'], 'bitversion' => $row['bitversion'], 'hip' => $row['hip'], 'hid' => $row['hid'], 'hdescription' => $row['hdescription'], 'cname' => $row['cname'], 'userid' => $row['userid'], 'jobPending' => $jobPending);
     }
     $next=$start+$amount;
     if ($reseller_id==0) {

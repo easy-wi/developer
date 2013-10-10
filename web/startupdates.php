@@ -61,7 +61,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     $currentMinute=(int)date('i');
     $query = $sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
-    $lastUpdateRun=(int)$query->fetchColumn();
+    $lastUpdateRun= (int) $query->fetchColumn();
     $query = $sql->prepare("UPDATE `settings` SET `lastUpdateRun`=? WHERE `resellerid`=0 LIMIT 1");
     $query->execute(array($currentMinute));
     echo "Checking for servers to be updated and or synced at hour ${currentHour} and between minutes ${lastUpdateRun} and ${currentMinute}\r\n";

@@ -192,7 +192,7 @@ if (in_array($ui->st('d','get'), array('md','ad'))){
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        $table[]=array('id' => $row['id'],'active' => $row['active'],'ip' => $row['ip'],'description' => $row['description'],'img' => $imgName,'alt' => $imgAlt);
+        $table[] = array('id' => $row['id'], 'active' => $row['active'], 'ip' => $row['ip'], 'description' => $row['description'], 'img' => $imgName,'alt' => $imgAlt);
     }
     $template_file = 'admin_root_dhcp_list.tpl';
 }

@@ -75,9 +75,9 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                 $categoryLink=$page_url.'/index.php?site=categories&amp;tag='.szrp($row2['name']);
             }
             if ($row2['type'] == 'tag') {
-                $allTags[]=array('name' => $row2['name'],'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
+                $allTags[] = array('name' => $row2['name'], 'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
             } else if ($row2['type'] == 'category') {
-                $allCategories[]=array('name' => $row2['name'],'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
+                $allCategories[] = array('name' => $row2['name'], 'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
             }
         }
         $pageLanguage=$row['language'];
@@ -176,7 +176,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
                 } else {
                     $commentDate=date('m.d.Y H:i',strtotime($row['date']));
                 }
-                $commentArray[]=array('commentID' => $row['commentID'],'replyTo' => $row['replyTo'],'homepage' => $row['homepage'],'date' => $commentDate,'author' => htmlentities($row['authorname']),'comment' => htmlentities($row['comment']));
+                $commentArray[] = array('commentID' => $row['commentID'], 'replyTo' => $row['replyTo'], 'homepage' => $row['homepage'], 'date' => $commentDate,'author' => htmlentities($row['authorname']),'comment' => htmlentities($row['comment']));
             }
         }
         $page_data->setCanonicalUrl($s,$textID);
@@ -259,11 +259,11 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
             }
             $page_data->AddData('keywords', $row2['name']);
             if ($row2['type'] == 'tag') {
-                $allTags[]=array('name' => $row2['name'],'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
-                $tag_tags[]=array('name' => $row2['name'],'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
+                $allTags[] = array('name' => $row2['name'], 'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
+                $tag_tags[] = array('name' => $row2['name'], 'link' => $tagLink,'href' => '<a href="'.$tagLink.'">'.$row2['name'].'</a>');
             } else if ($row2['type'] == 'category') {
-                $allCategories[]=array('name' => $row2['name'],'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
-                $category_tags[]=array('name' => $row2['name'],'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
+                $allCategories[] = array('name' => $row2['name'], 'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
+                $category_tags[] = array('name' => $row2['name'], 'link' => $categoryLink,'href' => '<a href="'.$categoryLink.'">'.$row2['name'].'</a>');
             }
         }
         if ($row['language'] == 'de') {
@@ -277,7 +277,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         } else {
             $commentCount = 0;
         }
-        $news[]=array('date' => $date,'title' => $page_title,'text' => $page_text,'href' => $href,'link' => $link,'tags' => $tag_tags,'categories' => $category_tags,'comments' => $row['comments'],'commentCount' => $commentCount,'authorname' => $row['authorname']);
+        $news[] = array('date' => $date,'title' => $page_title,'text' => $page_text,'href' => $href,'link' => $link,'tags' => $tag_tags,'categories' => $category_tags,'comments' => $row['comments'], 'commentCount' => $commentCount,'authorname' => $row['authorname']);
     }
     if ($seo== 'Y') {
         $paginationLink=$page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($page_sprache->older).'/';

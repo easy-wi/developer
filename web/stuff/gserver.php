@@ -100,21 +100,21 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             } else {
                 $percenserver = 0;
             }
-            $serverusage[$rootid]=array('slots' => $percentslots,'server' => $percenserver);
+            $serverusage[$rootid] = array('slots' => $percentslots,'server' => $percenserver);
             if (!isset($i)) $i = 0;
             if (!isset($available)) $available = 0;
             $ips=array($row['ip']);
             foreach (ipstoarray($row['altips']) as $ip) {
                 $ips[] = $ip;
             }
-            $table2[]=array('id' => $rootid,'ip' => implode(' / ', array_unique($ips)));
+            $table2[] = array('id' => $rootid,'ip' => implode(' / ', array_unique($ips)));
         }
 
         $query = $sql->prepare("SELECT s.`description`,s.`shorten` FROM `servertypes` s WHERE s.`resellerid`=? AND EXISTS (SELECT m.`id` FROM `rservermasterg` m WHERE m.`servertypeid`=s.`id` LIMIT 1) ORDER BY s.`description` ASC");
         $query->execute(array($reseller_id));
         $table3 = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table3[]=array('shorten' => $row['shorten'],'description' => $row['description']);
+            $table3[] = array('shorten' => $row['shorten'], 'description' => $row['description']);
         }
 
         $installedserver = 0;
@@ -189,11 +189,11 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                             } else {
                                 $upload = 0;
                             }
-                            $table[]=array('description' => $row['description'],'id' => $row['id'],'steamgame' => $row['steamgame'],'shorten' => $shorten,'gamebinary' => $row['gamebinary'],'binarydir' => $row['binarydir'],'modfolder' => $row['modfolder'],'fps' => $row['fps'],'slots' => $row['slots'],'map' => $row['map'],'mapGroup' => $row['mapGroup'],'cmd' => $cmd,'tic' => $row['tic'],'upload' => $upload,'qstat' => $qstat,'installing' => $installing);
+                            $table[] = array('description' => $row['description'], 'id' => $row['id'], 'steamgame' => $row['steamgame'], 'shorten' => $shorten,'gamebinary' => $row['gamebinary'], 'binarydir' => $row['binarydir'], 'modfolder' => $row['modfolder'], 'fps' => $row['fps'], 'slots' => $row['slots'], 'map' => $row['map'], 'mapGroup' => $row['mapGroup'], 'cmd' => $cmd,'tic' => $row['tic'], 'upload' => $upload,'qstat' => $qstat,'installing' => $installing);
                             $i++;
                         }
                         if ($query->rowcount()==0) {
-                            $table[]=array('installing' => true);
+                            $table[] = array('installing' => true);
                         }
                     }
                 }
@@ -527,7 +527,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
         $query = $sql->prepare("SELECT s.`id`,t.`description`,t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
         $query->execute(array($server_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $table[]=array('id' => $row['id'],'description' => $row['description'],'shorten' => $row['shorten']);
+            $table[] = array('id' => $row['id'], 'description' => $row['description'], 'shorten' => $row['shorten']);
         }
         if (isset($serverip) and isset($port)) {
             $template_file = 'admin_gserver_dl.tpl';
@@ -535,7 +535,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $template_file = 'admin_404.tpl';
         }
     } else if ($action == 'dl') {
-        if ($ui->w('safeDelete',1,'post') != 'D') include(EASYWIDIR."/stuff/ssh_exec.php");
+        if ($ui->w('safeDelete',1,'post') != 'D') include(EASYWIDIR . "/stuff/ssh_exec.php");
         $query = $sql->prepare("SELECT `newlayout`,`serverip`,`port`,`userid`,`rootID`,AES_DECRYPT(`ppassword`,?) AS `protectedpw`,AES_DECRYPT(`ftppassword`,?) AS `ftpPWD` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -691,7 +691,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 }
                 $gamestringtemp .= "_$shorten";
                 $cmd=stripslashes($row2['cmd']);
-                $table[]=array('id' => $row2['id'],'shorten' => $row2['shorten'],'description' => $row2['description'],'gamebinary' => $row2['gamebinary'],'binarydir' => $row2['binarydir'],'modfolder' => $row2['modfolder'],'fps' => $row2['fps'],'map' => $row2['map'],'mapGroup' => $row2['mapGroup'],'cmd' => $cmd,'tic' => $row2['tic'],'qstat' => $qstat,'upload' => $upload,'uploaddir' => $uploaddir,'userfps' => $row2['userfps'],'usertick' => $row2['usertick'],'usermap' => $row2['usermap'],'user_uploaddir' => $row2['user_uploaddir'],'owncmd' => $row2['owncmd'],'style' => $style);
+                $table[] = array('id' => $row2['id'], 'shorten' => $row2['shorten'], 'description' => $row2['description'], 'gamebinary' => $row2['gamebinary'], 'binarydir' => $row2['binarydir'], 'modfolder' => $row2['modfolder'], 'fps' => $row2['fps'], 'map' => $row2['map'], 'mapGroup' => $row2['mapGroup'], 'cmd' => $cmd,'tic' => $row2['tic'], 'qstat' => $qstat,'upload' => $upload,'uploaddir' => $uploaddir,'userfps' => $row2['userfps'], 'usertick' => $row2['usertick'], 'usermap' => $row2['usermap'], 'user_uploaddir' => $row2['user_uploaddir'], 'owncmd' => $row2['owncmd'], 'style' => $style);
                 $i++;
             }
             $gamestring = $i.$gamestringtemp;
@@ -979,7 +979,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $query2->execute(array($server_id,$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 $servertemplate=($row['serverid'] == $row2['id']) ? $row2['servertemplate'] : '';
-                $table[]=array('id' => $row2['id'],'description' => $row2['description'],'shorten' => $row2['shorten'],'servertemplate' => $servertemplate);
+                $table[] = array('id' => $row2['id'], 'description' => $row2['description'], 'shorten' => $row2['shorten'], 'servertemplate' => $servertemplate);
             }
         }
         if (isset($serverip) and isset($port)) {
@@ -1037,7 +1037,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $ftppass = $row['cftppass'];
                 if ($row['newlayout'] == 'Y') $customer = $customer . '-' . $row['id'];
                 if ($ui->active('type','post') == 'Y') {
-                    $cmds=gsrestart($row['id'],'so',$aeskey,$reseller_id);
+                    $cmds=gsrestart($row['id'], 'so',$aeskey,$reseller_id);
                     $cmds[]="./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10);
                     $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
                     $loguseraction="%reinstall% %gserver% ${serverip}:${port}";
@@ -1187,7 +1187,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $nameremoved="<div class=\"error\">".$sprache->nameremoved."</div>";
             }
         }
-        $table[]=array('serveractive' => $serveractive,'shorten' => $row['shorten'],'useractive' => $row['useractive'],'cname' => $row['cname'],'names' => trim($row['name'] . ' ' . $row['vname']),'img' => $imgName,'alt' => $imgAlt,'premoved' => $premoved,'nameremoved' => $nameremoved,'server' => $server,'serverid' => $serverid,'name' => $name,'type' => $type,'map' => $map,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'id' => $userid,'lendserver' => $lendserver,'active' => $row['active'],'jobPending' => $jobPending);
+        $table[] = array('serveractive' => $serveractive,'shorten' => $row['shorten'], 'useractive' => $row['useractive'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'img' => $imgName,'alt' => $imgAlt,'premoved' => $premoved,'nameremoved' => $nameremoved,'server' => $server,'serverid' => $serverid,'name' => $name,'type' => $type,'map' => $map,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'id' => $userid,'lendserver' => $lendserver,'active' => $row['active'], 'jobPending' => $jobPending);
     }
     $next = $start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;

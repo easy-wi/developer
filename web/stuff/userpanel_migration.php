@@ -84,9 +84,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             } else if ($row2['gamebinary'] == 'srcds_run' and $row2['appID']!=740 and $row2['appID']!=730) {
                 $search='/'. $row2['binarydir']. '/' . $row2['modfolder'];
             }
-            $temp[$row2['shorten']]=array('shorten' => $row2['shorten'],'description' => $row2['description'],'searchFor' => $search,'modfolder' => $row2['modfolder']);
+            $temp[$row2['shorten']] = array('shorten' => $row2['shorten'], 'description' => $row2['description'], 'searchFor' => $search,'modfolder' => $row2['modfolder']);
         }
-        $table[$row['id']]=array('id' => $row['id'],'address' => $row['serverip'] . ':' . $row['port'],'games' => $temp,'rootID' => $row['rootID'],'gsfolder' => $row['serverip'] . '_' . $row['port'],'customer' => $customer,'cftppass' => $row['cftppass']);
+        $table[$row['id']] = array('id' => $row['id'], 'address' => $row['serverip'] . ':' . $row['port'], 'games' => $temp,'rootID' => $row['rootID'], 'gsfolder' => $row['serverip'] . '_' . $row['port'], 'customer' => $customer,'cftppass' => $row['cftppass']);
     }
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {

@@ -60,12 +60,12 @@ $query = $sql->prepare("SELECT language FROM settings LIMIT 1");
 $query->execute();
 $default_language=$query->fetchColumn();
 
-if (is_file(EASYWIDIR."/languages/$template_to_use/$default_language/login.xml")) {
-	$sprache=simplexml_load_file(EASYWIDIR."/languages/$template_to_use/$default_language/login.xml");
-} else if (is_file(EASYWIDIR."/languages/default/$default_language/login.xml")) {
-	$sprache=simplexml_load_file(EASYWIDIR."/languages/default/$default_language/login.xml");
+if (is_file(EASYWIDIR . "/languages/$template_to_use/$default_language/login.xml")) {
+	$sprache=simplexml_load_file(EASYWIDIR . "/languages/$template_to_use/$default_language/login.xml");
+} else if (is_file(EASYWIDIR . "/languages/default/$default_language/login.xml")) {
+	$sprache=simplexml_load_file(EASYWIDIR . "/languages/default/$default_language/login.xml");
 } else {
-	$sprache=simplexml_load_file(EASYWIDIR."/languages/$default_language/login.xml");
+	$sprache=simplexml_load_file(EASYWIDIR . "/languages/$default_language/login.xml");
 }
 if ($w == 'lo') {
 	if (isset($ui->server['HTTP_REFERER'])) {
@@ -200,12 +200,12 @@ if ($w == 'lo') {
 		} else if (!$ui->ismail('mail','post')) {
             $text='Error: E-Mail';
         }
-		if (is_file(EASYWIDIR."/languages/$template_to_use/$default_language/voice.xml")) {
-			$vosprache=simplexml_load_file(EASYWIDIR."/languages/$template_to_use/$default_language/voice.xml");
-		} else if (is_file(EASYWIDIR."/languages/default/$default_language/voice.xml")) {
-			$vosprache=simplexml_load_file(EASYWIDIR."/languages/default/$default_language/voice.xml");
+		if (is_file(EASYWIDIR . "/languages/$template_to_use/$default_language/voice.xml")) {
+			$vosprache=simplexml_load_file(EASYWIDIR . "/languages/$template_to_use/$default_language/voice.xml");
+		} else if (is_file(EASYWIDIR . "/languages/default/$default_language/voice.xml")) {
+			$vosprache=simplexml_load_file(EASYWIDIR . "/languages/default/$default_language/voice.xml");
 		} else {
-			$vosprache=simplexml_load_file(EASYWIDIR."/languages/$default_language/voice.xml");
+			$vosprache=simplexml_load_file(EASYWIDIR . "/languages/$default_language/voice.xml");
 		}
 		$include='passwordrecovery_vo.tpl';
 	} else {
@@ -398,12 +398,12 @@ XML;
 	}
 }
 if (isset($include)) {
-	if (is_file(EASYWIDIR."/template/$template_to_use/$include")) {
-		include(EASYWIDIR."/template/$template_to_use/$include");
-	} else if (is_file(EASYWIDIR."/template/default/$include")) {
-		include(EASYWIDIR."/template/default/$include");
+	if (is_file(EASYWIDIR . "/template/$template_to_use/$include")) {
+		include(EASYWIDIR . "/template/$template_to_use/$include");
+	} else if (is_file(EASYWIDIR . "/template/default/$include")) {
+		include(EASYWIDIR . "/template/default/$include");
 	} else {
-		include(EASYWIDIR."/template/$include");
+		include(EASYWIDIR . "/template/$include");
 	}
 }
 $sql=null;

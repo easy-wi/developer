@@ -119,7 +119,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
 			$display=$extra . '  ' . $row['cname'];
 		}
-	} else if (isid($ui->post['what'],'30') and $ui->st('kind','post')=="se") {
+	} else if (isid($ui->post['what'], '30') and $ui->st('kind','post')=="se") {
 		$kind='se';
 		$whichdata="&amp;shorten=".$ui->post['what'];
 		$pselect=$sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
@@ -137,7 +137,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				$data[] = '<option value='.$row['id'].'>'.$server.'</option>';
 			}
 		}
-	} else if (isid($ui->post['what'],'30') and $ui->st('kind','post') == 'ma') {
+	} else if (isid($ui->post['what'], '30') and $ui->st('kind','post') == 'ma') {
 		$kind='ma';
 		$whichdata="&amp;short=".$ui->post['what'];
 		$pselect=$sql->prepare("SELECT `ssh2ip` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");

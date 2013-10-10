@@ -87,7 +87,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         printText('Connect to: '.$ssl.$row['domain']);
         while (!isset($left) or $left>0) {
             $getRequest='/'. $row['file'].'?passwordToken='.urlencode($row['token']).'&start='.urlencode($start).'&chunkSize='.urlencode($row['chunkSize']).'&lastID='.urlencode($row['lastID']).'&updateTime='.urlencode($row['lastCheck']);
-            $rawResponse=webhostRequest($row['domain'],'http://easy-wi.com user importer',$getRequest, null,$port);
+            $rawResponse=webhostRequest($row['domain'], 'http://easy-wi.com user importer',$getRequest, null,$port);
             $response=cleanFsockOpenRequest($rawResponse,'{','}');
             $decoded=json_decode($response);
             unset($response);

@@ -91,8 +91,8 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
 			$username=$row['cname'].' ('.$row['mail'].')';
 		}
 		$logdate=explode(' ', $row['date']);
-		if (isset($row['id']) and isid($row['id'],'30') and isset($logdate[1])) {
-            $table[]=array('id' => $row['id'],'logday' => $logdate[0],'loghour' => $logdate[1],'username' => $username,'topic' => $row['topic']);
+		if (isset($row['id']) and isid($row['id'], '30') and isset($logdate[1])) {
+            $table[] = array('id' => $row['id'], 'logday' => $logdate[0],'loghour' => $logdate[1],'username' => $username,'topic' => $row['topic']);
 		}
 	}
 	$next=$start+$amount;

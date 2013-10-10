@@ -43,9 +43,9 @@ if (!isset($page_include)) {
     die;
 }
 if (isset($page_name) and isid($page_name,10)) {
-    $downloadID=(int)$page_name;
+    $downloadID= (int) $page_name;
 } else if (isset($page_count) and isid($page_count,10)) {
-    $downloadID=(int)$page_count;
+    $downloadID= (int) $page_count;
 } else if ($ui->id('id', 10, 'get')) {
     $downloadID=$ui->id('id', 10, 'get');
 }
@@ -55,9 +55,9 @@ if (isset($downloadID)) {
     $query = $sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? WHERE d.`fileID`=? LIMIT 1");
     $query->execute(array($user_language,$downloadID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}")) {
+        if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}")) {
             if (isset($startDownload)) {
-                $fileWithPath=EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}";
+                $fileWithPath=EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}";
                 $finfo=finfo_open(FILEINFO_MIME_TYPE);
                 $contentType=finfo_file($finfo,$fileWithPath);
                 finfo_close($finfo);
@@ -72,7 +72,7 @@ if (isset($downloadID)) {
                 } else {
                     header("Content-Disposition: attachment; filename=\"${row['fileName']}.${row['fileExtension']}\"");
                     set_time_limit(0);
-                    $fp=@fopen(EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}","rb");
+                    $fp=@fopen(EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}","rb");
                     while(!feof($fp)) {
                         print(@fread($fp,1024));
                         ob_flush();
@@ -95,8 +95,8 @@ if (isset($downloadID)) {
     $query = $sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? ORDER BY d.`order`,d.`fileID`");
     $query->execute(array($user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR."/downloads/${row['fileID']}.${row['fileExtension']}")) {
-            $table[]=array('id' => $row['fileID'],'description' => $row['description'],'link' => (isset($seo) and $seo== 'Y') ? $page_data->pages['downloads']['link'].'get/'.$row['fileID'].'/' : $page_data->pages['downloads']['link'].'&amp;action=get&amp;id='.$row['fileID'],'text' => $row['text']);
+        if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}")) {
+            $table[] = array('id' => $row['fileID'], 'description' => $row['description'], 'link' => (isset($seo) and $seo== 'Y') ? $page_data->pages['downloads']['link'].'get/'.$row['fileID'].'/' : $page_data->pages['downloads']['link'].'&amp;action=get&amp;id='.$row['fileID'], 'text' => $row['text']);
         }
     }
 

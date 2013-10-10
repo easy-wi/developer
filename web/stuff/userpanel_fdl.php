@@ -55,7 +55,7 @@ if (isset($admin_id)) {
 }
 
 if ($ui->st('d','get') == 'ud' and $ui->id('id',19,'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
-    $serverid=(int)$ui->id('id',19,'get');
+    $serverid= (int) $ui->id('id',19,'get');
     require_once(EASYWIDIR . '/stuff/keyphrasefile.php');
     $query = $sql->prepare("SELECT g.`rootID`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,g.`newlayout`,s.`servertemplate`,t.`modfolder`,t.`shorten`,u.`fdlpath`,u.`cname` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($serverid,$reseller_id));
@@ -65,7 +65,7 @@ if ($ui->st('d','get') == 'ud' and $ui->id('id',19,'get') and (!isset($_SESSION[
         if ($row['protected'] == 'Y') $customer=$customer.'-p';
         $ftpupload=($row['masterfdl'] == 'Y') ? $row['fdlpath'] : $row['mfdldata'];
         if ($ftpupload!='') {
-            include(EASYWIDIR."/stuff/ssh_exec.php");
+            include(EASYWIDIR . "/stuff/ssh_exec.php");
             $serverfolder="${row['serverip']}_${row['port']}/${shorten}";
             if(ssh2_execute('gs', $row['rootID'],"sudo -u ${customer} ./control.sh fastdl ${customer} ${serverfolder} \"${ftpupload}\" ${row['modfolder']}")===false) {
                 $template_file = $spracheResponse->error_server;
@@ -146,7 +146,7 @@ if ($ui->st('d','get') == 'ud' and $ui->id('id',19,'get') and (!isset($_SESSION[
     $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) $table[]=array('id' => $row['id'],'serverip' => $row['serverip'],'port' => $row['port']);
+        if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) $table[] = array('id' => $row['id'], 'serverip' => $row['serverip'], 'port' => $row['port']);
     }
     $template_file = "userpanel_gserver_fdl_list.tpl";
 }

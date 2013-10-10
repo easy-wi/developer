@@ -74,7 +74,7 @@ if (isset($page_id) and is_numeric($page_id)) {
         unset($breadcrumbID);
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $link=(isset($seo) and $seo== 'Y') ? $page_data->pageurl. '/' . $user_language . '/' . szrp($row['title']).'/' : $page_data->pageurl.'?s=page&amp;l='.$user_language.'&amp;id='.$row['id'];
-            $breadcrumbs[]=array('href' => '<a href="'.$link.'">'.$row['title'].'</a>','link' => $link);
+            $breadcrumbs[] = array('href' => '<a href="'.$link.'">'.$row['title'].'</a>','link' => $link);
             $breadcrumbID=$row['subpage'];
             $breadcrumbPageID=$row['id'];
         }
@@ -114,15 +114,15 @@ if (isset($page_id) and is_numeric($page_id)) {
                 }
             }
         }
-        $searchFor['exact']=array_unique($searchFor['exact']);
-        $searchFor['general']=array_unique($searchFor['general']);
+        $searchFor['exact'] = array_unique($searchFor['exact']);
+        $searchFor['general'] = array_unique($searchFor['general']);
         function returnRating ($value,$exact=false) {
             global $sql,$newssidebar_textlength,$page_data,$results,$seo;
             $query = $sql->prepare("SELECT t.`id`,p.`id` AS `pageID`,p.`type`,t.`shortlink`,t.`title`,t.`text`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`=1 AND p.`resellerid`=0 AND (LOWER(t.`shortlink`) LIKE :search OR LOWER(t.`title`) LIKE :search OR LOWER(t.`text`) LIKE :search)");
             $query->execute(array(':search' => '%'.$value.'%'));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if(!isset($titleLanguages[$row['language']])) {
-                    $titleLanguages[$row['language']]=array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
+                    $titleLanguages[$row['language']] = array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
                 }
                 if (strlen($row['text'])<=$newssidebar_textlength) {
                     $text=$row['text'];
@@ -172,7 +172,7 @@ if (isset($page_id) and is_numeric($page_id)) {
                 } else {
                     $hits=array($value);
                 }
-                $results[$row['id']]=array('textID' => $row['id'],'pageID' => $row['pageID'],'language' => $row['language'],'type' => $type,'worth' => $worth,'href' => $href,'title' => $title,'link' => $link,'text' => str_replace('%url%',$page_data->pageurl,$text),'hits' => $hits);
+                $results[$row['id']] = array('textID' => $row['id'], 'pageID' => $row['pageID'], 'language' => $row['language'], 'type' => $type,'worth' => $worth,'href' => $href,'title' => $title,'link' => $link,'text' => str_replace('%url%',$page_data->pageurl,$text),'hits' => $hits);
             }
             return $results;
         }

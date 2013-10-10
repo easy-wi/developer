@@ -65,7 +65,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $style='display_none';
                 $checkbox="<input type=\"checkbox\" name=\"language[]\" value=\"$row\" onclick=\"textdrop('$row');\" /> ";
             }
-            $foundlanguages[]=array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'checked' => $checked);
+            $foundlanguages[] = array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'checked' => $checked);
         }
         $query = $sql->prepare("SELECT `id`,`topic` FROM `ticket_topics` WHERE `id`=maintopic AND `resellerid`=?");
         $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
@@ -209,7 +209,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $checked = '';
                 $checkbox="<input type=\"checkbox\" name=\"language[]\" value=\"$langrow2\" onclick=\"textdrop('$langrow2');\" /> ";
             }
-            $foundlanguages[]=array('style' => $style,'lang' => $langrow2,'checkbox' => $checkbox,'checked' => $checked,'subject' => stripslashes($subject));
+            $foundlanguages[] = array('style' => $style,'lang' => $langrow2,'checkbox' => $checkbox,'checked' => $checked,'subject' => stripslashes($subject));
         }
         $template_file = "admin_ticket_topic_md.tpl";
     } else if ($ui->smallletters('action',2,'post') == 'md' and $ui->id('id',19,'get')){
@@ -308,7 +308,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
                 $maintopic=' - ';
             }
-            $table[]=array('id' => $row2['id'],'topic' => $topic,'maintopic' => $maintopic,'mTopic' => $mTopic,'priority' => $priority);
+            $table[] = array('id' => $row2['id'], 'topic' => $topic,'maintopic' => $maintopic,'mTopic' => $mTopic,'priority' => $priority);
         }
         $next = $start+$amount;
         $countp = $sql->prepare("SELECT `id` FROM `ticket_topics` WHERE `resellerid`=?");
@@ -374,7 +374,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $state = $row['state'];
             $query2->execute(array($id,$reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $table[]=array('writedate' => ($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'],'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
+                $table[] = array('writedate' => ($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'], 'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
             }
             if ($row['priority']==1) $priority = $sprache->priority_low;
             else if ($row['priority']==2) $priority = $sprache->priority_medium;
@@ -584,7 +584,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $status = $sprache->status_reopen;
         }
-        $table[]=array('id' => $row['id'],'priority' => $priority,'userPriority' => $userPriority,'writedate' => $writedate,'supporter' => (trim($row['supportername']) != '') ? trim($row['supportername']) : $row['supporter'],'user' => (trim($row['username']) != '') ? trim($row['username']) : $row['cname'],'subject' => $topic,'status' => $status,'rawState' => $row['state'],'statusClass' => $statusClass);
+        $table[] = array('id' => $row['id'], 'priority' => $priority,'userPriority' => $userPriority,'writedate' => $writedate,'supporter' => (trim($row['supportername']) != '') ? trim($row['supportername']) : $row['supporter'], 'user' => (trim($row['username']) != '') ? trim($row['username']) : $row['cname'], 'subject' => $topic,'status' => $status,'rawState' => $row['state'], 'statusClass' => $statusClass);
     }
     $template_file = "admin_tickets_list.tpl";
 }

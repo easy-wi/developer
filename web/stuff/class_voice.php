@@ -284,14 +284,14 @@ class TS3 {
 				}
 				$useserver=$this->UseServer($virtualserver_id);
 				if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
-                    $virtualserver_ip=(isset($serverdetails_query[0]['virtualserver_ip']) and isip($serverdetails_query[0]['virtualserver_ip'],'all')) ? $serverdetails_query[0]['virtualserver_ip'] : $this->ip;
+                    $virtualserver_ip=(isset($serverdetails_query[0]['virtualserver_ip']) and isip($serverdetails_query[0]['virtualserver_ip'], 'all')) ? $serverdetails_query[0]['virtualserver_ip'] : $this->ip;
 					$serverdetails_query=$this->SendCommand('serverinfo');
 					$virtualserver_server=$virtualserver_ip . ':' . $server['virtualserver_port'];
                     $virtualserver_dns=(array_key_exists($virtualserver_server,$dnsarray)) ? $dnsarray[$virtualserver_server] : '';
 
                     //https://github.com/easy-wi/developer/issues/74 check if array keys exists
 					if (isset($serverdetails_query[0]) and ($serverdetails_query[0]['virtualserver_maxclients'])) {
-						$serverdetails[$virtualserver_id]=array(
+						$serverdetails[$virtualserver_id] = array(
 							'virtualserver_ip' => $virtualserver_ip,
 							'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
 							'virtualserver_port' => $server['virtualserver_port'],
@@ -308,7 +308,7 @@ class TS3 {
 							'virtualserver_hostbutton_gfx_url' => $serverdetails_query[0]['virtualserver_hostbutton_gfx_url']
 						);
 					} else {
-						$serverdetails[$virtualserver_id]=array(
+						$serverdetails[$virtualserver_id] = array(
 							'virtualserver_ip' => $virtualserver_ip,
 							'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
 							'virtualserver_port' => $server['virtualserver_port'],
@@ -332,7 +332,7 @@ class TS3 {
 				if (!isset($serverdetails[$virtualserver_id])) {
                     $virtualserver_ip=(isset($virtualserver_ip)) ? $virtualserver_ip :'';
                     $virtualserver_dns=(isset($virtualserver_dns)) ? $virtualserver_dns :'';
-					$serverdetails[$virtualserver_id]=array(
+					$serverdetails[$virtualserver_id] = array(
 						'virtualserver_ip' => $virtualserver_ip,
 						'virtualserver_maxclients' => $server['virtualserver_maxclients'],
 						'virtualserver_port' => $server['virtualserver_port'],
@@ -477,7 +477,7 @@ class TS3 {
 			}
 			$this->SendCommand("privilegekeylist");
 			foreach ($this->SendCommand("privilegekeylist") as $key) {
-				if (isset($key['token_type']) and $key['token_type']==0 and isset($admingroupid)) $return[]=array('token' => $key['token'],'groupname' => $this->ReplaceFromTS3($admingroupid[$key['token_id1']]));
+				if (isset($key['token_type']) and $key['token_type']==0 and isset($admingroupid)) $return[] = array('token' => $key['token'], 'groupname' => $this->ReplaceFromTS3($admingroupid[$key['token_id1']]));
 			}
 		} else {
 			$return=$useserver[0]['msg'];
@@ -538,7 +538,7 @@ class TS3 {
 		if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
 			$servergroups=$this->SendCommand('servergrouplist');
 			foreach ($servergroups as $servergroup) {
-				$return[]=array('id' => $servergroup['sgid'],'name' => $this->ReplaceFromTS3($servergroup['name']),'type' => $servergroup['type']);
+				$return[] = array('id' => $servergroup['sgid'], 'name' => $this->ReplaceFromTS3($servergroup['name']),'type' => $servergroup['type']);
 			}
 			return $return;
 		}
@@ -662,7 +662,7 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 		}
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			if ($row['mail_serverdown'] == 'Y') {
-				sendmail('emaildown', $row['id'],'TS3 Master '.$sship.' ( '.$bad.' )','');
+				sendmail('emaildown', $row['id'], 'TS3 Master '.$sship.' ( '.$bad.' )','');
 			}
 		}
         $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`='Y' WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
@@ -674,8 +674,8 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 }
 function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notified,$path,$bitversion,$tsip,$tsport,$tsdns,$reseller_id,$sql,$maxnotified=2) {
 	if ($keyuse=="Y") {
-		$pubkey=EASYWIDIR."/keys/".$sshkey.".pub";
-		$key=EASYWIDIR."/keys/".$sshkey;
+		$pubkey=EASYWIDIR . "/keys/".$sshkey.".pub";
+		$key=EASYWIDIR . "/keys/".$sshkey;
 		if (file_exists($pubkey) and file_exists($key)) {
 			$ssh2= @ssh2_connect($sship,$sshport, array('hostkey' => 'ssh-rsa'));
 		} else {
@@ -803,7 +803,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                     if ($configLine!='' and !preg_match('/^#(|\s+)(.*)$/',$configLine)) {
                         $splittedLine=preg_split('/\=/',$configLine,-1,PREG_SPLIT_NO_EMPTY);
                         if (isset($splittedLine[1])) {
-                            $usedIPs[]=array('dns' => $splittedLine[0],'address' => $splittedLine[1]);
+                            $usedIPs[] = array('dns' => $splittedLine[0],'address' => $splittedLine[1]);
                         } else {
                             $usedIPs[] = $configLine;
                         }
@@ -814,7 +814,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                 foreach ($tsip as $newLine) {
                     $splittedLine=preg_split('/\=/',strtolower($newLine),-1,PREG_SPLIT_NO_EMPTY);
                     if (isset($splittedLine[1]) and !array_key_exists($splittedLine[1],$usedIPs)) {
-                        $usedIPs[]=array('dns' => $splittedLine[0],'address' => $splittedLine[1]);
+                        $usedIPs[] = array('dns' => $splittedLine[0],'address' => $splittedLine[1]);
                     }
                 }
                 function array_multi_dimensional_unique($multi){
@@ -871,7 +871,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 		}
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			if ($row['mail_serverdown'] == 'Y') {
-				sendmail('emaildown', $row['id'],'TS3 Master '.$sship.' ( '.$bad.' )','');
+				sendmail('emaildown', $row['id'], 'TS3 Master '.$sship.' ( '.$bad.' )','');
 			}
 		}
         $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=`notified`+1 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");

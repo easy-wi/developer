@@ -169,7 +169,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `sID`,`loginName`,`active` FROM `userdata_substitutes` WHERE `userID`=? AND `resellerID`=?");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[]=array('id' => $row['sID'],'loginName' => $row['loginName'],'active' => $row['active']);
+        $table[] = array('id' => $row['sID'], 'loginName' => $row['loginName'], 'active' => $row['active']);
     }
     $template_file = 'userpanel_substitutes_list.tpl';
 }

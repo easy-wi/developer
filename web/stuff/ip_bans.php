@@ -84,8 +84,8 @@ if (isset($action) and $action == 'dl') {
     $pselect->execute();
     foreach ($pselect->fetchall() as $row) {
         $logdate=explode(' ', $row['bantime']);
-        if (isset($row['id']) and isid($row['id'],'30') and isset($logdate[1])) {
-            $table[]=array('id' => $row['id'],'logday' => $logdate[0],'loghour' => $logdate[0],'badip' => $row['badip'],'failcount' => $row['failcount'],'reason' => $row['reason']);
+        if (isset($row['id']) and isid($row['id'], '30') and isset($logdate[1])) {
+            $table[] = array('id' => $row['id'], 'logday' => $logdate[0],'loghour' => $logdate[0],'badip' => $row['badip'], 'failcount' => $row['failcount'], 'reason' => $row['reason']);
         }
     }
     $pselect=$sql->prepare("SELECT `faillogins` FROM `settings` WHERE `resellerid`='0' LIMIT 1");

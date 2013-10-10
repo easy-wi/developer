@@ -66,16 +66,16 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $name=$row['queryName'];
     
 	if ($name != 'OFFLINE' and $row['stopped'] == 'N' and $war == 'Y' and $password == 'N') {
-		$pwd_removed[] = array('userid' => $row['userid'],'address' => $row['server']);
+		$pwd_removed[] = array('userid' => $row['userid'], 'address' => $row['server']);
 		$i_removed++;
         $crashedArray['gsPWD']++;
 	} else if ($name == 'OFFLINE' and $row['stopped'] == 'N') {
-		$crashed[] = array('userid' => $row['userid'],'address' => $row['server']);
+		$crashed[] = array('userid' => $row['userid'], 'address' => $row['server']);
 		$i_crashed++;
         $crashedArray['gsCrashed']++;
 	}
 	if ($name != '' and $row['stopped'] == 'N' and $name != 'OFFLINE' and $brandname == 'Y' and isset($reseller_brandname) and $reseller_brandname != ''  and strpos(strtolower($name), strtolower($reseller_brandname))  === false) {
-		$tag_removed[] = array('userid' => $row['userid'],'username' => getusername($row['userid']),'address' => $row['server']);
+		$tag_removed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
 		$i_tag_removed++;
         $crashedArray['gsTag']++;
 	}
@@ -158,7 +158,7 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
                     } else {
                         $url='https://twitter.com/'.$row2['loginName'];
                     }
-                    $theNews = array('title' => $row3['title'],'link' => $row3['link'],'text' => $text,'url' => $url);
+                    $theNews = array('title' => $row3['title'], 'link' => $row3['link'], 'text' => $text,'url' => $url);
                     if ($row['merge'] == 'Y'){
                         $feedArray['News'][] = $theNews;
                     } else {
@@ -193,7 +193,7 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
                 if (strlen($row2['title'])<=1) {
                     $title=$row2['link'];
                 }
-                $theNews = array('title' => $title,'link' => $row2['link'],'text' => $text,'url' => $url);
+                $theNews = array('title' => $title,'link' => $row2['link'], 'text' => $text,'url' => $url);
                 $feedArray['News'][] = $theNews;
             }
         }

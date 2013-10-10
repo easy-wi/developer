@@ -75,7 +75,7 @@ if ($ui->st('w','get') == 'ms' and $ui->username('shorten','50','get')) {
         $query = $sql->prepare("SELECT `mail_backup` FROM `userdata` WHERE `mail_backup`='Y' AND `id`=? LIMIT 1");
         $query->execute(array($row['userid']));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-			sendmail('emailbackup', $row['userid'], $row['server'],'');
+			sendmail('emailbackup', $row['userid'], $row['server'], '');
 		}
 	}
     echo 'ok';

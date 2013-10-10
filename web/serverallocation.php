@@ -480,7 +480,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
                 $topic=$pselect3->fetchColumn();
             }
             if (empty($topic)) $topic=$row['topic'];
-            $table[]=array('id' => $row['id'],'topic' => $topic);
+            $table[] = array('id' => $row['id'], 'topic' => $topic);
         }
         $ticketTemplate=($ui->id('r',1,'get')!=1) ? 'ajax_userpanel_ticket_category.tpl' : 'ajax_admin_reseller_ticket_category.tpl';
         require_once IncludeTemplate($template_to_use, $ticketTemplate);

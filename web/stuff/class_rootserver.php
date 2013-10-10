@@ -134,7 +134,7 @@ class rootServer {
                 $hostID=$row['hostid'];
                 $userID=$row['userid'];
                 $resellerID=$row['resellerid'];
-                $this->vmwareHosts[$row['hostID']]['actions'][]=array('action' => $action,'id' => $ID);
+                $this->vmwareHosts[$row['hostID']]['actions'][] = array('action' => $action,'id' => $ID);
             }
         }
         if (!isset($row['ip'])) return 'Database Error: Could not find VM or ESX(i) host for ID: '.$this->tempID;
@@ -168,7 +168,7 @@ class rootServer {
                             $this->dhcpData[$row['id']]['dhcpFile'] = $row['dhcpFile'];
                             $this->dhcpData[$row['id']]['subnetOptions'] = $row['subnetOptions'];
                         }
-                        $this->dhcpData[$row['id']]['actions'][]=array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
+                        $this->dhcpData[$row['id']]['actions'][] = array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
                         $modID=$row['id'];
                     }
                 }
@@ -191,7 +191,7 @@ class rootServer {
                                 $this->dhcpData[$row['id']]['dhcpFile'] = $row['dhcpFile'];
                                 $this->dhcpData[$row['id']]['subnetOptions'] = $row['subnetOptions'];
                             }
-                            if (isset($modID) and $modID != $row['id']) $this->dhcpData[$row['id']]['actions'][]=array('action' => 'del','id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
+                            if (isset($modID) and $modID != $row['id']) $this->dhcpData[$row['id']]['actions'][] = array('action' => 'del','id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
                         }
                     }
                 }
@@ -216,7 +216,7 @@ class rootServer {
                             $this->PXEData[$row['id']]['PXEFolder'] = $row['PXEFolder'];
                         }
                         $foundPXE = true;
-                        $this->PXEData[$row['id']]['actions'][]=array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID);
+                        $this->PXEData[$row['id']]['actions'][] = array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID);
                         $this->ID[$type][$ID]['pxeIP'] = $row['ip'];
                         $this->ID[$type][$ID]['pxeID'] = $row['id'];
                     }
@@ -235,7 +235,7 @@ class rootServer {
                             $this->PXEData[$row['id']]['PXEFolder'] = $row['PXEFolder'];
                         }
                         $foundPXE = true;
-                        $this->PXEData[$row['id']]['actions'][]=array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID);
+                        $this->PXEData[$row['id']]['actions'][] = array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID);
                         $this->ID[$type][$ID]['pxeIP'] = $row['ip'];
                         $this->ID[$type][$ID]['pxeID'] = $row['id'];
                     }
@@ -246,7 +246,7 @@ class rootServer {
                 }
             }
         }
-        if ($this->ID[$type][$ID]['restart'] == 'A' and $this->type == 'dedicated' and $action!='rp') $this->startStop[]=array('action' => ((isset($this->extraData['oldactive']) and $this->extraData['oldactive'] == 'Y') or in_array($action, array('ad','st','dl'))) ? 'st' : 're','id' => $ID and $action!='rp');
+        if ($this->ID[$type][$ID]['restart'] == 'A' and $this->type == 'dedicated' and $action!='rp') $this->startStop[] = array('action' => ((isset($this->extraData['oldactive']) and $this->extraData['oldactive'] == 'Y') or in_array($action, array('ad','st','dl'))) ? 'st' : 're','id' => $ID and $action!='rp');
         else if ($this->type == 'dedicated' and $action!='rp') return 'Restart not allowed for Server with ID: '.$this->tempID;
         return true;
     }
@@ -287,7 +287,7 @@ class rootServer {
                                     $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'].';';
                                     $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'].';';
                                     if ($this->ID[$a['type']][$a['id']]['usePXE'] == 'Y' and (in_array($a['action'], array('ad','ri','rc')))) {
-                                        $removeArray[]=array('type' => ($a['type'] == 'dedicated') ? 'de' : 'vs','affectedID' => $a['id'],'name' => $this->ID[$a['type']][$a['id']]['ip'],'imageID' => $a['imageID'],'hostID' => $a['hostID'],'userID' => $a['userID'],'resellerID' => $a['resellerID'],'extraData' => array('runAt' => strtotime("+5 minutes")));
+                                        $removeArray[] = array('type' => ($a['type'] == 'dedicated') ? 'de' : 'vs','affectedID' => $a['id'], 'name' => $this->ID[$a['type']][$a['id']]['ip'], 'imageID' => $a['imageID'], 'hostID' => $a['hostID'], 'userID' => $a['userID'], 'resellerID' => $a['resellerID'], 'extraData' => array('runAt' => strtotime("+5 minutes")));
                                         $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
                                         $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'].';';
                                     } else {

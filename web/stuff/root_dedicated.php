@@ -150,7 +150,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if ($row['active'] != $active or $row['ip'] != $ip or $row['mac'] != $mac or $row['useDHCP'] != $useDHCP or $row['usePXE'] != $usePXE) {
                         $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('D','de',NULL,?,?,?,?,NULL,NOW(),'md',?,?)");
-                        $query->execute(array($admin_id,$id,$userID,$ip,json_encode(array('oldactive' => $row['active'],'oldip' => $row['ip'],'oldmac' => $row['mac'])),$reseller_id));
+                        $query->execute(array($admin_id,$id,$userID,$ip,json_encode(array('oldactive' => $row['active'], 'oldip' => $row['ip'], 'oldmac' => $row['mac'])),$reseller_id));
                     }
                 }
                 $query = $sql->prepare("UPDATE `rootsDedicated` SET `active`=?,`userID`=?,`description`=?,`ip`=?,`ips`=?,`restart`=?,`apiRequestType`=?,`apiRequestRestart`=?,`apiRequestStop`=?,`apiURL`=?,`https`=?,`mac`=?,`useDHCP`=?,`usePXE`=?,`externalID`=?,`jobPending`='Y' WHERE `dedicatedID`=? AND `resellerID`=?");
@@ -277,7 +277,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` WHERE `description` NOT IN ('Rescue 32bit','Rescue 64bit') ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['description'] != 'Rescue 32bit' and $row['description'] != 'Rescue 64bit') $templates[]=array('id' => $row['id'],'description' => $row['description']);
+            if ($row['description'] != 'Rescue 32bit' and $row['description'] != 'Rescue 64bit') $templates[] = array('id' => $row['id'], 'description' => $row['description']);
         }
         $template_file = (isset($ip)) ? 'admin_root_dedicated_ri.tpl' : 'admin_404.tpl';
     } else if (in_array($ui->st('action','post'), array('ri','rc','rs','st'))) {
@@ -387,7 +387,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
         } else {
             $status=$sprache->ok;
         }
-        $table[]=array('id' => $row['dedicatedID'],'ip' => $row['ip'],'description' => $row['description'],'status' => $status,'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'],'cname' => $row['cname'],'names' => trim($row['name'] . ' ' . $row['vname']),'active' => $active,'jobPending' => $jobPending);
+        $table[] = array('id' => $row['dedicatedID'], 'ip' => $row['ip'], 'description' => $row['description'], 'status' => $status,'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'active' => $active,'jobPending' => $jobPending);
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=rp&amp;o='.$o.'&amp;a=';

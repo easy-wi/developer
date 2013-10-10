@@ -377,7 +377,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgAlt='Deactivated';
         }
         $installedserver=$i2. '/' . $row['maxserver'];
-        $table[]=array('id' => $id,'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ip'],'active' => $row['active'],'description' => $row['description'],'cores' => $cores,'mhz' => $mhz,'cpus' => $cpucore,'hdd' => $hdd,'ram' => $ram,'ramused' => $ramused,'mountsize' => $mountsize,'mountunused' => $mountunused,'installedserver' => $installedserver);
+        $table[] = array('id' => $id,'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ip'], 'active' => $row['active'], 'description' => $row['description'], 'cores' => $cores,'mhz' => $mhz,'cpus' => $cpucore,'hdd' => $hdd,'ram' => $ram,'ramused' => $ramused,'mountsize' => $mountsize,'mountunused' => $mountunused,'installedserver' => $installedserver);
     }
     $next=$start+$amount;
     $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `virtualhosts`");

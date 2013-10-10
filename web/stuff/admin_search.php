@@ -114,7 +114,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $adIDs[] = $id;
-                $results["ad-${id}"]=array('type' => $gsprache->addon,'id' => $id,'name' => $row['menudescription'],'owner' => '','edit' => '?w=ad&amp;d=md&amp;id='.$id,'delete' => '?w=ad&amp;d=dl&amp;id='.$id);
+                $results["ad-${id}"] = array('type' => $gsprache->addon,'id' => $id,'name' => $row['menudescription'], 'owner' => '','edit' => '?w=ad&amp;d=md&amp;id='.$id,'delete' => '?w=ad&amp;d=dl&amp;id='.$id);
             }
         }
         if ($im==true) {
@@ -122,7 +122,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $imIDs[] = $id;
-                $results["im-${id}"]=array('type' => $gsprache->gameserver . ' ' . $gsprache->templates,'id' => $id,'name' => $row['description'],'owner' => '','edit' => '?w=im&amp;d=md&amp;id='.$id,'delete' => '?w=im&amp;d=dl&amp;id='.$id);
+                $results["im-${id}"] = array('type' => $gsprache->gameserver . ' ' . $gsprache->templates,'id' => $id,'name' => $row['description'], 'owner' => '','edit' => '?w=im&amp;d=md&amp;id='.$id,'delete' => '?w=im&amp;d=dl&amp;id='.$id);
             }
         }
         if ($us==true) {
@@ -139,7 +139,7 @@ if (isset($ui->get['q'])) {
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usIDs[] = $id;
-                $results["us-${id}"]=array('type' => $gsprache->gameserver,'id' => $id,'name' => theName($row['username'], $row['cname']),'owner' => '','edit' => '?w=us&amp;d=md&amp;id='.$id,'delete' => '?w=us&amp;d=dl&amp;id='.$id);
+                $results["us-${id}"] = array('type' => $gsprache->gameserver,'id' => $id,'name' => theName($row['username'], $row['cname']),'owner' => '','edit' => '?w=us&amp;d=md&amp;id='.$id,'delete' => '?w=us&amp;d=dl&amp;id='.$id);
             }
         }
         if ($gs==true) {
@@ -147,7 +147,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($id,$id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $gsIDs[] = $id;
-                $results["gs-${id}"]=array('type' => $gsprache->gameserver,'id' => $id,'name' => $row['serverip'] . ':' . $row['port'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=gs&amp;d=md&amp;id='.$id,'delete' => '?w=gs&amp;d=dl&amp;id='.$id);
+                $results["gs-${id}"] = array('type' => $gsprache->gameserver,'id' => $id,'name' => $row['serverip'] . ':' . $row['port'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=gs&amp;d=md&amp;id='.$id,'delete' => '?w=gs&amp;d=dl&amp;id='.$id);
             }
         }
         if ($vo==true) {
@@ -155,7 +155,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($id,$id,$reseller_id));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $voIDs[] = $id;
-                $results["vo-${id}"]=array('type' => $gsprache->voiceserver,'id' => $id,'name' => $row['ip'] . ':' . $row['port'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=vo&amp;d=md&amp;id='.$id,'delete' => '?w=vo&amp;d=dl&amp;id='.$id);
+                $results["vo-${id}"] = array('type' => $gsprache->voiceserver,'id' => $id,'name' => $row['ip'] . ':' . $row['port'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=vo&amp;d=md&amp;id='.$id,'delete' => '?w=vo&amp;d=dl&amp;id='.$id);
             }
         }
         if ($ro==true) {
@@ -169,7 +169,7 @@ if (isset($ui->get['q'])) {
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $roIDs[] = $id;
-                $results["ro-${id}"]=array('type' => $gsprache->root,'id' => $id,'name' => $row['ip'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=ro&amp;d=md&amp;id='.$id,'delete' => '?w=ro&amp;d=dl&amp;id='.$id);
+                $results["ro-${id}"] = array('type' => $gsprache->root,'id' => $id,'name' => $row['ip'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=ro&amp;d=md&amp;id='.$id,'delete' => '?w=ro&amp;d=dl&amp;id='.$id);
             }
         }
         if ($vs==true) {
@@ -186,7 +186,7 @@ if (isset($ui->get['q'])) {
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $vsIDs[] = $id;
-                $results["vs-${id}"]=array('type' => $gsprache->virtual,'id' => $id,'name' => $row['id'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=ro&amp;d=md&amp;id='.$id,'delete' => '?w=ro&amp;d=dl&amp;id='.$id);
+                $results["vs-${id}"] = array('type' => $gsprache->virtual,'id' => $id,'name' => $row['id'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=ro&amp;d=md&amp;id='.$id,'delete' => '?w=ro&amp;d=dl&amp;id='.$id);
             }
         }
     }
@@ -196,7 +196,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($reseller_id,$ip));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $gsIDs[] = $row['id'];
-                $results["gs-${row['id']}"]=array('type' => $gsprache->gameserver,'id' => $row['id'],'name' => $ip . ':' . $row['port'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=gs&amp;d=md&amp;id='.$row['id'],'delete' => '?w=gs&amp;d=dl&amp;id='.$row['id']);
+                $results["gs-${row['id']}"] = array('type' => $gsprache->gameserver,'id' => $row['id'], 'name' => $ip . ':' . $row['port'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=gs&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=gs&amp;d=dl&amp;id='.$row['id']);
             }
         }
         if ($vo==true) {
@@ -204,7 +204,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($reseller_id,$ip));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $voIDs[] = $row['id'];
-                $results["vo-${row['id']}"]=array('type' => $gsprache->voiceserver,'id' => $row['id'],'name' => $ip . ':' . $row['port'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=vo&amp;d=md&amp;id='.$row['id'],'delete' => '?w=vo&amp;d=dl&amp;id='.$row['id']);
+                $results["vo-${row['id']}"] = array('type' => $gsprache->voiceserver,'id' => $row['id'], 'name' => $ip . ':' . $row['port'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=vo&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=vo&amp;d=dl&amp;id='.$row['id']);
             }
         }
         if ($ro==true) {
@@ -218,7 +218,7 @@ if (isset($ui->get['q'])) {
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $roIDs[] = $row['id'];
-                $results["ro-${row['id']}"]=array('type' => $gsprache->root,'id' => $row['id'],'name' => $ip,'owner' => theName($row['username'], $row['cname']),'edit' => '?w=ro&amp;d=md&amp;id='.$row['id'],'delete' => '?w=ro&amp;d=dl&amp;id='.$row['id']);
+                $results["ro-${row['id']}"] = array('type' => $gsprache->root,'id' => $row['id'], 'name' => $ip,'owner' => theName($row['username'], $row['cname']),'edit' => '?w=ro&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=ro&amp;d=dl&amp;id='.$row['id']);
             }
         }
         if ($vs==true) {
@@ -235,7 +235,7 @@ if (isset($ui->get['q'])) {
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $vsIDs[] = $row['id'];
-                $results["ro-${row['id']}"]=array('type' => $gsprache->virtual,'id' => $row['id'],'name' => $ip,'owner' => theName($row['username'], $row['cname']),'edit' => '?w=ro&amp;d=md&amp;id='.$row['id'],'delete' => '?w=ro&amp;d=dl&amp;id='.$row['id']);
+                $results["ro-${row['id']}"] = array('type' => $gsprache->virtual,'id' => $row['id'], 'name' => $ip,'owner' => theName($row['username'], $row['cname']),'edit' => '?w=ro&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=ro&amp;d=dl&amp;id='.$row['id']);
             }
         }
     }
@@ -245,7 +245,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array(':id' => $reseller_id,':port' => $port));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $gsIDs[] = $row['id'];
-                $results["gs-${row['id']}"]=array('type' => $gsprache->gameserver,'id' => $row['id'],'name' => $row['serverip'] . ':' . $row['port'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=gs&amp;d=md&amp;id='.$row['id'],'delete' => '?w=gs&amp;d=dl&amp;id='.$row['id']);
+                $results["gs-${row['id']}"] = array('type' => $gsprache->gameserver,'id' => $row['id'], 'name' => $row['serverip'] . ':' . $row['port'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=gs&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=gs&amp;d=dl&amp;id='.$row['id']);
             }
         }
         if ($vo==true) {
@@ -253,7 +253,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($reseller_id,$port));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $voIDs[] = $row['id'];
-                $results["vo-${row['id']}"]=array('type' => $gsprache->voiceserver,'id' => $row['id'],'name' => $row['ip'] . ':' . $row['port'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=vo&amp;d=md&amp;id='.$row['id'],'delete' => '?w=vo&amp;d=dl&amp;id='.$row['id']);
+                $results["vo-${row['id']}"] = array('type' => $gsprache->voiceserver,'id' => $row['id'], 'name' => $row['ip'] . ':' . $row['port'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=vo&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=vo&amp;d=dl&amp;id='.$row['id']);
             }
         }
     }
@@ -264,7 +264,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($reseller_id,$ip,$port));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $gsIDs[] = $row['id'];
-                $results["gs-${row['id']}"]=array('type' => $gsprache->gameserver,'id' => $row['id'],'name' => $ip . ':' . $row['port'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=gs&amp;d=md&amp;id='.$row['id'],'delete' => '?w=gs&amp;d=dl&amp;id='.$row['id']);
+                $results["gs-${row['id']}"] = array('type' => $gsprache->gameserver,'id' => $row['id'], 'name' => $ip . ':' . $row['port'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=gs&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=gs&amp;d=dl&amp;id='.$row['id']);
             }
         }
         if ($vo==true) {
@@ -272,7 +272,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($reseller_id,$ip,$port));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $voIDs[] = $row['id'];
-                $results["vo-${row['id']}"]=array('type' => $gsprache->voiceserver,'id' => $row['id'],'name' => $ip . ':' . $row['port'],'owner' => theName($row['username'], $row['cname']),'edit' => '?w=vo&amp;d=md&amp;id='.$row['id'],'delete' => '?w=vo&amp;d=dl&amp;id='.$row['id']);
+                $results["vo-${row['id']}"] = array('type' => $gsprache->voiceserver,'id' => $row['id'], 'name' => $ip . ':' . $row['port'], 'owner' => theName($row['username'], $row['cname']),'edit' => '?w=vo&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=vo&amp;d=dl&amp;id='.$row['id']);
             }
         }
     }
@@ -283,7 +283,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($reseller_id,$word,$word));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $adIDs[] = $row['id'];
-                $results["ad-${row['id']}"]=array('type' => $gsprache->addon,'id' => $row['id'],'name' => $row['menudescription'],'owner' => '','edit' => '?w=ad&amp;d=md&amp;id='.$row['id'],'delete' => '?w=ad&amp;d=dl&amp;id='.$row['id']);
+                $results["ad-${row['id']}"] = array('type' => $gsprache->addon,'id' => $row['id'], 'name' => $row['menudescription'], 'owner' => '','edit' => '?w=ad&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=ad&amp;d=dl&amp;id='.$row['id']);
             }
         }
         if ($im==true) {
@@ -291,7 +291,7 @@ if (isset($ui->get['q'])) {
             $query->execute(array($reseller_id,$word,$word));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $imIDs[] = $row['id'];
-                $results["im-${row['id']}"]=array('type' => $gsprache->gameserver . ' ' . $gsprache->templates,'id' => $row['id'],'name' => $row['description'],'owner' => '','edit' => '?w=im&amp;d=md&amp;id='.$row['id'],'delete' => '?w=im&amp;d=dl&amp;id='.$row['id']);
+                $results["im-${row['id']}"] = array('type' => $gsprache->gameserver . ' ' . $gsprache->templates,'id' => $row['id'], 'name' => $row['description'], 'owner' => '','edit' => '?w=im&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=im&amp;d=dl&amp;id='.$row['id']);
             }
         }
         if ($us==true) {
@@ -309,7 +309,7 @@ if (isset($ui->get['q'])) {
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usIDs[] = $row['id'];
-                $results["us-${row['id']}"]=array('type' => $gsprache->user,'id' => $row['id'],'name' => theName($row['username'], $row['cname']),'owner' => '','edit' => '?w=us&amp;d=md&amp;id='.$row['id'],'delete' => '?w=us&amp;d=dl&amp;id='.$row['id']);
+                $results["us-${row['id']}"] = array('type' => $gsprache->user,'id' => $row['id'], 'name' => theName($row['username'], $row['cname']),'owner' => '','edit' => '?w=us&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=us&amp;d=dl&amp;id='.$row['id']);
             }
         }
     }

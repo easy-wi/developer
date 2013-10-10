@@ -372,7 +372,7 @@ class ValidateUserinput {
     function id ($value,$length,$type,$object=false){
         $check=$this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\d+]{1,'.$length.'}$/',$check)) {
-            return (int)$check;
+            return (int) $check;
         } else if ($check) {
             return $this->loop($check,'id',$type,$length);
         }

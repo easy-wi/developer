@@ -42,7 +42,7 @@ ini_set('display_errors',1);
 error_reporting(E_ALL|E_STRICT);
 if (isset($_SERVER['REMOTE_ADDR'])) {
 	$ip = $_SERVER['REMOTE_ADDR'];
-    $timelimit=(isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? (int)$_GET['timeout'] : ini_get('max_execution_time')-10;
+    $timelimit=(isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? (int) $_GET['timeout'] : ini_get('max_execution_time')-10;
 } else {
 	$timelimit=600;
 }
@@ -96,7 +96,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             $firstcheck='00-00-'.round(2*(strtotime($row2['lastcheck'])-strtotime($row2['oldcheck']))/60);
             $firstchecktime=date('d-G-i');
         }
-        if (isset($active)) $resellersettings[$resellerid] = array('active' => $active,'shutdownempty' => $shutdownempty,'shutdownemptytime' => $shutdownemptytime,'firstchecktime' => $firstchecktime,'firstcheck' => $firstcheck,'brandname' => $row['brandname'],'noservertag' => $row['noservertag'],'nopassword' => $row['nopassword'],'tohighslots' => $row['tohighslots'],'down_checks' => $row['down_checks']);
+        if (isset($active)) $resellersettings[$resellerid] = array('active' => $active,'shutdownempty' => $shutdownempty,'shutdownemptytime' => $shutdownemptytime,'firstchecktime' => $firstchecktime,'firstcheck' => $firstcheck,'brandname' => $row['brandname'], 'noservertag' => $row['noservertag'], 'nopassword' => $row['nopassword'], 'tohighslots' => $row['tohighslots'], 'down_checks' => $row['down_checks']);
     }
     $query=$sql->prepare("UPDATE `lendsettings` SET `oldcheck`=`lastcheck`,`lastcheck`=NOW()");
     $query->execute();
@@ -254,7 +254,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             $timeleft = round($row['lendtime'] - (strtotime('now') - strtotime($row['started'])) / 60);
             if ($timeleft <= 0) {
                 $query2->execute(array($serverid));
-                $rootID=(int)$query2->fetchColumn();
+                $rootID= (int) $query2->fetchColumn();
                 $tmp = gsrestart($serverid,'so', $aeskey, $resellerid);
                 if (is_array($tmp)) foreach($tmp as $t) $rtmp[$rootID][] = $t;
                 $query2 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -337,7 +337,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 ob_end_clean();
                 $badxml=simplexml_load_string($badquerystring);
                 foreach ($badxml as $badxml2) {
-                    if (isset($badxml2['address']) and isip($badxml2['address'],'ipx')) {
+                    if (isset($badxml2['address']) and isip($badxml2['address'], 'ipx')) {
                         $address = $badxml2['address'];
                         $status = $badxml2['status'];
                         $badstatus[$address] = array('status' => $status);
@@ -661,7 +661,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 $tsdown = false;
                 $tsdnsdown = false;
                 $defaultwelcome = $vrow['defaultwelcome'];
-                $default=array('virtualserver_hostbanner_url' => $vrow['defaulthostbanner_url'],'virtualserver_hostbanner_gfx_url' => $vrow['defaulthostbanner_gfx_url'],'virtualserver_hostbutton_tooltip' => $vrow['defaulthostbutton_tooltip'],'virtualserver_hostbutton_url' => $vrow['defaulthostbutton_url'],'virtualserver_hostbutton_gfx_url' => $vrow['defaulthostbutton_gfx_url'],'defaultwelcome' => $vrow['defaultwelcome']);
+                $default=array('virtualserver_hostbanner_url' => $vrow['defaulthostbanner_url'], 'virtualserver_hostbanner_gfx_url' => $vrow['defaulthostbanner_gfx_url'], 'virtualserver_hostbutton_tooltip' => $vrow['defaulthostbutton_tooltip'], 'virtualserver_hostbutton_url' => $vrow['defaulthostbutton_url'], 'virtualserver_hostbutton_gfx_url' => $vrow['defaulthostbutton_gfx_url'], 'defaultwelcome' => $vrow['defaultwelcome']);
                 print "Connecting to TS3 server $queryip\r\n";
                 $connection=new TS3($queryip, $queryport,'serveradmin', $querypassword,(isset($args['tsDebug']) and $args['tsDebug'] == 1) ? true : false);
                 $errorcode = $connection->errorcode;

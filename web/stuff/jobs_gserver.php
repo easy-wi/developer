@@ -85,7 +85,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $query4 = $sql->prepare("DELETE FROM `gsswitch` WHERE `id`=? LIMIT 1");
             $query4->execute(array($row2['affectedID']));
-            customColumns('G', $row2['affectedID'],'del');
+            customColumns('G', $row2['affectedID'], 'del');
             $query4 = $sql->prepare("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
             $query4->execute();
             $query4 = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
@@ -111,7 +111,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($active != $newActive and $newActive == 'N') {
                 $ftppass=passwordgenerate(15);
                 $ftppass2=passwordgenerate(15);
-                $tmp = gsrestart($row2['affectedID'],'so',$aeskey, $row['resellerID']);
+                $tmp = gsrestart($row2['affectedID'], 'so',$aeskey, $row['resellerID']);
                 if (is_array($tmp)) {
                     foreach($tmp as $t) {
                         $cmds[] = $t;
@@ -129,7 +129,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query4->execute(array($row2['jobID']));
             $command=$gsprache->mod.' gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'].' gsswitchID:'.$row2['affectedID'];
         } else if (isset($i) and $row2['action'] == 're' and isset($customer)) {
-            $tmp = gsrestart($row2['affectedID'],'re',$aeskey, $row2['resellerID']);
+            $tmp = gsrestart($row2['affectedID'], 're',$aeskey, $row2['resellerID']);
             if (is_array($tmp)) {
                 foreach($tmp as $t) {
                     $cmds[] = $t;
@@ -139,7 +139,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query4->execute(array($row2['jobID']));
             $command='(Re)Start gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'];
         } else if (isset($i) and $row2['action'] == 'st' and isset($customer)) {
-            $tmp = gsrestart($row2['affectedID'],'so',$aeskey, $row2['resellerID']);
+            $tmp = gsrestart($row2['affectedID'], 'so',$aeskey, $row2['resellerID']);
             if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
             $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));

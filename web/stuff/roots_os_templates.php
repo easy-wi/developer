@@ -155,7 +155,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT * FROM `resellerimages` ORDER BY $orderby");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[]=array('id' => $row['id'],'distro' => $row['distro'],'description' => $row['description'],'bitversion' => $row['bitversion']);
+        $table[] = array('id' => $row['id'], 'distro' => $row['distro'], 'description' => $row['description'], 'bitversion' => $row['bitversion']);
     }
     $template_file = 'admin_root_templates_list.tpl';
 }
