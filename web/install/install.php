@@ -475,11 +475,11 @@ $aeskey="'.$_POST['aeskey'].'";
 		$fail = 1;
 		$emessage .="</br>Prefix";
 	}
-	if (!isid($_POST['faillogins'],'2')) {
+	if (!isid($_POST['faillogins'], '2')) {
 		$fail = 1;
 		$emessage .="</br>Faillogins";
 	}
-	if (!small_letters_check($_POST['language'],'2')) {
+	if (!small_letters_check($_POST['language'], '2')) {
 		$fail = 1;
 		$emessage .="</br>Language";
 	}
@@ -523,14 +523,14 @@ $aeskey="'.$_POST['aeskey'].'";
 		if (ismail($_POST['email'])) $email=ismail($_POST['email']);
 		else $email='changeme@mail.de';
 		$prefix1=(active_check($_POST['prefix1'])) ? $_POST['prefix1'] : 'Y';
-		$prefix2=(wpreg_check($_POST['prefix2'],'15')) ? $_POST['prefix2'] : '';
+		$prefix2=(wpreg_check($_POST['prefix2'], '15')) ? $_POST['prefix2'] : '';
 		$brandname=description($_POST['brandname']);
-		if (isset($_POST['licence'])) $licence=small_letters_check($_POST['licence'],'20');
+		if (isset($_POST['licence'])) $licence=small_letters_check($_POST['licence'], '20');
 		else $licence = '';
 		$master="N";
 		$imageserver = 0;
-		$language=small_letters_check($_POST['language'],'2');
-		$faillogins=isid($_POST['faillogins'],'2');
+		$language=small_letters_check($_POST['language'], '2');
+		$faillogins=isid($_POST['faillogins'], '2');
 		include(EASYWIDIR . '/stuff/keyphrasefile.php');
 		$insert_usergroups=$sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES
 ('Y','Admin Default','a','Y','N'),
@@ -542,7 +542,7 @@ $aeskey="'.$_POST['aeskey'].'";
 		$groupID=$query->fetchColumn();
 		$query = $sql->prepare("INSERT INTO `settings` (`language`,`imageserver`,`master`,`email`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,'0')");
 		$query->execute(array($language,$imageserver,$master,$email,$prefix1,$prefix2,$faillogins,$brandname));
-		$query = $sql->prepare("INSERT INTO `userdata` (`active`,`cname`,`security`,`mail`,`accounttype`) VALUES ('Y',?,?,?,'a')");
+		$query = $sql->prepare("INSERT INTO `userdata` (`active`,`cname`,`security`,`mail`,`accounttype`,`creationTime`,`updateTime`) VALUES ('Y',?,?,?,'a',NOW(),NOW())");
 		$query->execute(array($cname,$security,$email));
         $userID=$sql->lastInsertId();
         $query = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`) VALUES (?,?)");
