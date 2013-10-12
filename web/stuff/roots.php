@@ -42,22 +42,27 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['roots'])) {
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
 
 $sprache = getlanguagefile('roots', $user_language, $reseller_id);
 $gsSprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
+
 if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
+
 } else {
     $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
+
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $reseller_id = $admin_id;
 }
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 
@@ -154,6 +159,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $errors['hyperthreading'] = 'Hyper Threading';
         }
 
+        $ssh2Check = (count($errors) == 0) ? ssh_check($ui->ip('ip', 'post'), $ui->port('port', 'post'), $ui->username('user', 20, 'post'), $ui->active('publickey', 'post'), $ui->startparameter('keyname', 'post'), $ui->password('pass', 255, 'post')) : true;
+        if ($ssh2Check !== true) {
+
+            if ($ssh2Check == 'ipport') {
+                $errors['ip'] = $sprache->haupt_ip;
+                $errors['port'] = $sprache->ssh_port;
+
+            } else {
+                $errors['user'] = $sprache->ssh_user;
+                $errors['publickey'] = $sprache->keyuse;
+
+                if ($ui->active('publickey', 'post') == 'Y') {
+                    $errors['keyname'] = $sprache->keyname;
+
+                } else {
+                    $errors['pass'] = $sprache->ssh_pass;
+                }
+            }
+        }
+
+
+
         if (count($errors) == 0) {
 
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
@@ -176,6 +203,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $template_file = $spracheResponse->error_table;
             }
         } else {
+            unset($header, $text);
             $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_roots_add.tpl' : 'admin_roots_md.tpl';
         }
     }

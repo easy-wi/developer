@@ -43,7 +43,7 @@
                 <label class="control-label" for="inputExternalID">externalID:</label>
                 <div class="controls"><input class="span12" id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID?>" maxlength="255"></div>
             </div>
-            <div class="control-group"<?php if(isset($errors['ip'])) echo ' error';?>>
+            <div class="control-group<?php if(isset($errors['ip'])) echo ' error';?>">
                 <label class="control-label" for="inputIP"><?php echo $sprache->haupt_ip;?>:</label>
                 <div class="controls"><input class="span12" id="inputIP" type="text" name="ip" value="<?php echo $ip?>" maxlength="15"></div>
             </div>
@@ -59,7 +59,7 @@
                 <label class="control-label" for="inputSSH2Port"><?php echo $sprache->ssh_port;?>:</label>
                 <div class="controls"><input class="span12" id="inputSSH2Port" type="text" name="port" value="<?php echo $port?>" maxlength="5"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['user'])) echo ' error';?>">
                 <label class="control-label" for="inputSSH2User"><?php echo $sprache->ssh_user;?>:</label>
                 <div class="controls"><input class="span12" id="inputSSH2User" type="text" name="user" value="<?php echo $user?>" maxlength="15"></div>
             </div>
@@ -72,11 +72,11 @@
                     </select>
                 </div>
             </div>
-            <div class="N <?php if ($publickey=='Y') echo 'display_none';?> switch control-group">
+            <div class="N <?php if ($publickey=='Y') echo 'display_none';?> switch control-group<?php if(isset($errors['pass'])) echo ' error';?>">
                 <label class="control-label" for="inputSSH2Pass"><?php echo $sprache->ssh_pass;?>:</label>
                 <div class="controls"><input class="span12" id="inputSSH2Pass" type="password" name="pass" value="<?php echo $pass?>" maxlength="50"></div>
             </div>
-            <div class="Y <?php if ($publickey=='N') echo 'display_none';?> switch control-group">
+            <div class="Y <?php if ($publickey=='N') echo 'display_none';?> switch control-group<?php if(isset($errors['keyname'])) echo ' error';?>">
                 <label class="control-label" for="inputSSH2Key"><?php echo $sprache->keyname;?></label>
                 <div class="controls"><input class="span12" id="inputSSH2Key" type="text" name="keyname" maxlength="20" value="<?php echo $keyname;?>"/></div>
             </div>
