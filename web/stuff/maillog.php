@@ -92,7 +92,7 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
 		}
 		$logdate=explode(' ', $row['date']);
 		if (isset($row['id']) and isid($row['id'], '30') and isset($logdate[1])) {
-            $table[] = array('id' => $row['id'], 'logday' => $logdate[0],'loghour' => $logdate[1],'username' => $username,'topic' => $row['topic']);
+            $table[] = array('id' => $row['id'], 'logday' => $logdate[0], 'loghour' => $logdate[1], 'username' => $username,'topic' => $row['topic']);
 		}
 	}
 	$next=$start+$amount;
@@ -138,9 +138,9 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=ml&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ml&amp;d='.$d.'&amp;a=' . $amount . '&amp;p=' . $selectpage . '" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="admin.php?w=ml&amp;d='.$d.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=ml&amp;d='.$d.'&amp;a=' . $amount . '&amp;p=' . $selectpage . '">' . $i . '</a>';
         }
         $i++;
     }

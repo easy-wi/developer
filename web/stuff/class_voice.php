@@ -803,7 +803,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                     if ($configLine!='' and !preg_match('/^#(|\s+)(.*)$/',$configLine)) {
                         $splittedLine=preg_split('/\=/',$configLine,-1,PREG_SPLIT_NO_EMPTY);
                         if (isset($splittedLine[1])) {
-                            $usedIPs[] = array('dns' => $splittedLine[0],'address' => $splittedLine[1]);
+                            $usedIPs[] = array('dns' => $splittedLine[0], 'address' => $splittedLine[1]);
                         } else {
                             $usedIPs[] = $configLine;
                         }
@@ -814,7 +814,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                 foreach ($tsip as $newLine) {
                     $splittedLine=preg_split('/\=/',strtolower($newLine),-1,PREG_SPLIT_NO_EMPTY);
                     if (isset($splittedLine[1]) and !array_key_exists($splittedLine[1],$usedIPs)) {
-                        $usedIPs[] = array('dns' => $splittedLine[0],'address' => $splittedLine[1]);
+                        $usedIPs[] = array('dns' => $splittedLine[0], 'address' => $splittedLine[1]);
                     }
                 }
                 function array_multi_dimensional_unique($multi){

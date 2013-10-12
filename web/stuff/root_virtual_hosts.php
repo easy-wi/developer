@@ -413,9 +413,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=vh&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=vh&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="admin.php?w=vh&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=vh&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
         }
         $i++;
     }

@@ -389,7 +389,7 @@ class rootServer {
                     if (isset($ex[1])) $postParams[$ex[0]] = $ex[1];
                 }
             }
-            webhostRequest($ex[0],'easy-wi.com',$file,$postParams,($this->ID['dedicated'][$a['id']]['https'] == 'Y') ? 443 : 80);
+            webhostRequest($ex[0], 'easy-wi.com',$file,$postParams,($this->ID['dedicated'][$a['id']]['https'] == 'Y') ? 443 : 80);
         }
         return true;
     }

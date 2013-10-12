@@ -210,7 +210,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage=($i-1)*$a;
-        $pages[]=($start==$selectpage) ? '<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a='.$a.'&p='.$selectpage.'" class="bold">'.$i.'</a>' : '<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a='.$a.'&p='.$selectpage.'">'.$i.'</a>';
+        $pages[]=($start==$selectpage) ? '<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a='.$a.'&p=' . $selectpage . '" class="bold">' . $i . '</a>' : '<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a='.$a.'&p=' . $selectpage . '">' . $i . '</a>';
         $i++;
     }
     $pages=implode(', ',$pages);

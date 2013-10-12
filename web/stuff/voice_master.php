@@ -888,7 +888,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
-        $pages[] = '<a href="admin.php?w=vm&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'"' . ($start==$selectpage) ? 'class="bold"' : '' .' >'.$i.'</a>';
+        $pages[] = '<a href="admin.php?w=vm&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '"' . ($start==$selectpage) ? 'class="bold"' : '' .' >' . $i . '</a>';
         $i++;
     }
     $pages=implode(', ',$pages);

@@ -734,7 +734,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
             }
             if ($ui->post['ip'] == $oldip or in_array($ui->post['ip'],$freeips)) {
                 $ip=$ui->post['ip'];
-            } else if(isset($checked_ips[0]) and isip($checked_ips[0],'all')) {
+            } else if(isset($checked_ips[0]) and isip($checked_ips[0], 'all')) {
                 $ip=$checked_ips[0];
             }
             if (!isset($ips)) {
@@ -971,9 +971,9 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licen
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=vs&amp;d=md&amp;shorten='.$o.'&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=vs&amp;d=md&amp;shorten='.$o.'&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="admin.php?w=vs&amp;d=md&amp;shorten='.$o.'&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=vs&amp;d=md&amp;shorten='.$o.'&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
         }
         $i++;
     }

@@ -162,7 +162,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         else if ($row['action'] == 'ri') $action='(Re)Install';
         else if ($row['action'] == 'rc') $action='Recovery Mode';
         else $action = '';
-        $table[] = array('jobID' => $row['jobID'], 'date' => $date,'name' => $row['name'], 'api' => $api,'status' => $row['status'], 'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'type' => $type[$row['type']],'action' => $action);
+        $table[] = array('jobID' => $row['jobID'], 'date' => $date,'name' => $row['name'], 'api' => $api,'status' => $row['status'], 'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'type' => $type[$row['type']], 'action' => $action);
     }
     $next=$start+$amount;
     if ($reseller_id==0) {
@@ -203,9 +203,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=jb&amp;o='.$o.'&amp;a='.$amount.'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=jb&amp;o='.$o.'&amp;a=' . $amount . '&amp;p=' . $selectpage . '" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="admin.php?w=jb&amp;o='.$o.'&amp;a='.$amount.'&amp;p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=jb&amp;o='.$o.'&amp;a=' . $amount . '&amp;p=' . $selectpage . '">' . $i . '</a>';
         }
         $i++;
     }

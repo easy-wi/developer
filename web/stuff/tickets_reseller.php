@@ -299,9 +299,9 @@ if ($ui->st('d','get') == 'ad') {
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="'.$ticketLinks['all'].'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="'.$ticketLinks['all'].'&amp;p=' . $selectpage . '" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="'.$ticketLinks['all'].'&amp;p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="'.$ticketLinks['all'].'&amp;p=' . $selectpage . '">' . $i . '</a>';
         }
         $i++;
     }

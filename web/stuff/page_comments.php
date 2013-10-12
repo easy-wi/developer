@@ -216,9 +216,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=pc&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.$getParams.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=pc&amp;o='.$o.'&amp;a=' . $amount . '&p='.$selectpage.$getParams.'" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="admin.php?w=pc&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.$getParams.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=pc&amp;o='.$o.'&amp;a=' . $amount . '&p='.$selectpage.$getParams.'">' . $i . '</a>';
         }
         $i++;
     }

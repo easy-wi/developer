@@ -163,7 +163,7 @@ class ValidateUserinput {
         if (is_string($check)) $check = trim($check);
         if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_EMAIL)) {
             $exploded=explode('@',$check);
-            if (!checkdnsrr($exploded[1],'MX') and !checkdnsrr($exploded[1],'A')) return false;
+            if (!checkdnsrr($exploded[1], 'MX') and !checkdnsrr($exploded[1], 'A')) return false;
             return strtolower($check);
         }  else if ($check) {
             return $this->loop($check,'ismail',$type);

@@ -399,7 +399,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
-        $pages[]=($start==$selectpage) ? '<a href="admin.php?w=rp&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>' : '<a href="admin.php?w=rp&amp;o='.$o.'&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+        $pages[]=($start==$selectpage) ? '<a href="admin.php?w=rp&amp;o='.$o.'&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>' : '<a href="admin.php?w=rp&amp;o='.$o.'&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
         $i++;
     }
     $pages=implode(', ',$pages);

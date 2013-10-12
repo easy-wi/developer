@@ -146,9 +146,9 @@ if ($ui->st('d','get') == 'ud') {
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=fn&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=fn&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="admin.php?w=fn&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="admin.php?w=fn&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
         }
         $i++;
     }

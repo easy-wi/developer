@@ -342,9 +342,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         while ($i<=$pageamount) {
             $selectpage = ($i - 1) * $amount;
             if ($start==$selectpage) {
-                $pages[] = '<a href="admin.php?w=ti&amp;d=mt&amp;a='.$amount.'&p='.$selectpage.'&amp;o='.$o.'" class="bold">'.$i.'</a>';
+                $pages[] = '<a href="admin.php?w=ti&amp;d=mt&amp;a=' . $amount . '&p=' . $selectpage . '&amp;o='.$o.'" class="bold">' . $i . '</a>';
             } else {
-                $pages[] = '<a href="admin.php?w=ti&amp;d=mt&amp;a='.$amount.'&p='.$selectpage.'&amp;o='.$o.'">'.$i.'</a>';
+                $pages[] = '<a href="admin.php?w=ti&amp;d=mt&amp;a=' . $amount . '&p=' . $selectpage . '&amp;o='.$o.'">' . $i . '</a>';
             }
             $i++;
         }
@@ -530,9 +530,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="'.$ticketLinks['all'].'&amp;p='.$selectpage.'" class="bold">'.$i.'</a>';
+            $pages[] = '<a href="'.$ticketLinks['all'].'&amp;p=' . $selectpage . '" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="'.$ticketLinks['all'].'&amp;p='.$selectpage.'">'.$i.'</a>';
+            $pages[] = '<a href="'.$ticketLinks['all'].'&amp;p=' . $selectpage . '">' . $i . '</a>';
         }
         $i++;
     }

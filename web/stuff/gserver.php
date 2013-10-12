@@ -1198,7 +1198,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     $i = 2;
     while ($i <= $pageamount) {
         $selectpage = ($i - 1) * $amount;
-        $pages[]=($start == $selectpage) ? '<a href="admin.php?w=gs&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'" class="bold">'.$i.'</a>' : '<a href="admin.php?w=ro&amp;d=md&amp;a='.$amount.'&p='.$selectpage.'">'.$i.'</a>';
+        $pages[]=($start == $selectpage) ? '<a href="admin.php?w=gs&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>' : '<a href="admin.php?w=ro&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
         $i++;
     }
     $pages=implode(', ',$pages);
