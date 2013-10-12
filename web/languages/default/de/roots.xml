@@ -9,35 +9,35 @@
 	<confirm1>Update(s) starten?</confirm1>
 	<desc>Beschreibung</desc>
 	<error_root_dbmasterdel>Master Server konnte nicht aus der Datenbank gelöscht werden</error_root_dbmasterdel>
-	<error_root_install>Fehler: Folgende Installation konnte auf dem Rootserver nicht gestartet werden:</error_root_install>
+	<error_root_install>Fehler: Folgende Installation konnte auf dem Rootserver nicht gestartet werden</error_root_install>
 	<error_root_masterdel2>Fehler: Die Masterserver Dateien konnten nicht vom Rootserver gelöscht werden</error_root_masterdel2>
 	<error_root_masterdel>Fehler: Der Master Server wurde bereits gelöscht</error_root_masterdel>
 	<error_root_noselect>Fehler: Es wurden nichts ausgewählt. </error_root_noselect>
 	<error_root_rserverdata>Fehler: Konnte nicht in die rserverdata Tabelle schreiben!</error_root_rserverdata>
-	<error_root_updatemaster>Fehler: Update konnte nicht gestartet werden bei IP:</error_root_updatemaster>
+	<error_root_updatemaster>Fehler: Update konnte nicht gestartet werden bei IP</error_root_updatemaster>
 	<ftp_port>FTP Port</ftp_port>
 	<haupt_ip>SSH2 IP</haupt_ip>
 	<header_add>Masterserver hinzufügen</header_add>
 	<header_del>Masterserver löschen</header_del>
 	<header_update>Masterserver aktualisieren</header_update>
-	<installed>Installierte Masterserver:</installed>
+	<installed>Installierte Masterserver</installed>
 	<installeds>Installierte Slots: </installeds>
 	<ips>IPs</ips>
-	<keyname>Name der Public Keyfile:</keyname>
-	<keyuse>Public Keyfile benutzen:</keyuse>
+	<keyname>Name der Public Keyfile</keyname>
+	<keyuse>Public Keyfile benutzen</keyuse>
 	<master_update>Der Server mit folgender IP wurde erfolgreich aktualisiert</master_update>
-	<maxserver2>Maximale Server:</maxserver2>
+	<maxserver2>Maximale Server</maxserver2>
 	<maxserver>Server installiert</maxserver>
-	<maxslots>Maximale Slots:</maxslots>
+	<maxslots>Maximale Slots</maxslots>
 	<os>Betriebssystem</os>
 	<os_bit>Bitversion</os_bit>
     <password>Passwort</password>
 	<root_masterdel>Löschvorgang erfolgreich auf dem Rootserver gestartet </root_masterdel>
 	<root_masterinstall>Master Server wurde erfolgreich in die Datenbank eingetragen und wird nun auf dem Server installiert</root_masterinstall>
 	<root_updatemaster>Update(s) erfolgreich gestartet</root_updatemaster>
-    <show>Zeige:</show>
-	<showg>Zeige nur Server mit dem Spiel:</showg>
-	<showt>Zeige nur Server mit dem Servertyp:</showt>
+    <show>Zeige</show>
+	<showg>Zeige nur Server mit dem Spiel</showg>
+	<showt>Zeige nur Server mit dem Servertyp</showt>
 	<spiele>Spiele</spiele>
 	<ssh_pass>SSH2 Passwort</ssh_pass>
 	<ssh_port>SSH2 Port</ssh_port>
