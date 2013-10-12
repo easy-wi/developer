@@ -509,7 +509,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             $sshcmd=(4==$stunde) ? $rootServer->returnCmds('update','all') : $rootServer->returnCmds();
             if ($rootServer->sshcmd!==null) {
                 echo "Starting updates for ".$rootServer->sship."\r\n";
-                if (ssh2_execute('gs', $row2['id'], $rootServer->sshcmd)!==false) {
+                if (ssh2_execute('gs', $row2['id'], $rootServer->sshcmd) !== false) {
                     $rootServer->setUpdating();
                     echo "Updater started for ".$rootServer->sship."\r\n";
                 } else {

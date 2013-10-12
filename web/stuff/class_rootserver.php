@@ -377,7 +377,7 @@ class rootServer {
             $ex=preg_split("/\//",$apiPath,-1,PREG_SPLIT_NO_EMPTY);
             $i = 1;
             while (count($ex)>$i) {
-                $file.='/'. $ex[$i];
+                $file.='/' . $ex[$i];
                 $i++;
             }
             $file.='/';
@@ -400,11 +400,11 @@ class rootServer {
         foreach ($splitConfig as $split) {
             if (isset($subnetStart) and isset($subnet)){
                 if (isset($hostStart,$host)){
-                    if (strpos($split,'}')!==false) {
+                    if (strpos($split,'}') !== false) {
                         unset($hostStart,$host);
                     } else {
                         $cleanedLine=preg_replace('/^[\s+]{1,}(.*?)$/','$1',preg_replace('/\s+/',' ',$split));
-                        if (strpos($split,'#')!==false) {
+                        if (strpos($split,'#') !== false) {
                             $config[$subnet][$host]['comment'][] = $cleanedLine;
                         } else {
                             $ex=explode(' ',$cleanedLine);
@@ -418,7 +418,7 @@ class rootServer {
                     $hostStart = true;
                     $host=preg_replace('/\s+/','',preg_replace('/host[\s+]{1,}(.*?)[\s+]{1,}[\{]/','$1',$split,-1));
                     $config[$subnet][$host] = array();
-                } else if (strpos($split,'}')!==false) {
+                } else if (strpos($split,'}') !== false) {
                     unset($subnetStart,$subnet);
                 }
             } else if (preg_match('/^[\s+]{0,}subnet[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[0][\s+]{1,}netmask[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[0][\s+]{0,}[\{]$/',$split)) {

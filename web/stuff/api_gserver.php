@@ -200,7 +200,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
             }
             if (!isset($success['false']) and isip($ip,'ip4')) {
                 if ($portMax==1) {
-                    if (isset($data['port']) and checkPorts(array($data['port']),$ports)===true) {
+                    if (isset($data['port']) and checkPorts(array($data['port']),$ports) === true) {
                         $port=$data['port'];
                     }
                     while (in_array($port,$ports)) {
@@ -211,7 +211,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     $port4 = '';
                     $port5 = '';
                 } else if ($portMax==2) {
-                    if (isset($data['port'],$data['port2']) and checkPorts(array($data['port'],$data['port2']),$ports)===true) {
+                    if (isset($data['port'],$data['port2']) and checkPorts(array($data['port'],$data['port2']),$ports) === true) {
                         $port=$data['port'];
                         $port2=$data['port2'];
                     }
@@ -223,7 +223,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     $port4 = '';
                     $port5 = '';
                 } else if ($portMax==3) {
-                    if (isset($data['port'],$data['port2'],$data['port3']) and checkPorts(array($data['port'],$data['port2'],$data['port3']),$ports)===true) {
+                    if (isset($data['port'],$data['port2'],$data['port3']) and checkPorts(array($data['port'],$data['port2'],$data['port3']),$ports) === true) {
                         $port=$data['port'];
                         $port2=$data['port2'];
                         $port3=$data['port3'];
@@ -236,7 +236,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     $port4 = '';
                     $port5 = '';
                 } else if ($portMax==4) {
-                    if (isset($data['port'],$data['port2'],$data['port3'],$data['port4']) and checkPorts(array($data['port'],$data['port2'],$data['port3'],$data['port4']),$ports)===true) {
+                    if (isset($data['port'],$data['port2'],$data['port3'],$data['port4']) and checkPorts(array($data['port'],$data['port2'],$data['port3'],$data['port4']),$ports) === true) {
                         $port=$data['port'];
                         $port2=$data['port2'];
                         $port3=$data['port3'];
@@ -250,7 +250,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                     }
                     $port5 = '';
                 } else {
-                    if (isset($data['port'],$data['port2'],$data['port3'],$data['port4'],$data['port5']) and checkPorts(array($data['port'],$data['port2'],$data['port3'],$data['port4'],$data['port5']),$ports)===true) {
+                    if (isset($data['port'],$data['port2'],$data['port3'],$data['port4'],$data['port5']) and checkPorts(array($data['port'],$data['port2'],$data['port3'],$data['port4'],$data['port5']),$ports) === true) {
                         $port=$data['port'];
                         $port2=$data['port2'];
                         $port3=$data['port3'];

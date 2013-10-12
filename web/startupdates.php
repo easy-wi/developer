@@ -77,7 +77,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         $sshcmd=$rootServer->returnCmds();
         if ($rootServer->sshcmd!==null) {
             $update=ssh2_execute('gs', $row['id'],$rootServer->sshcmd);
-            if ($update!==false) {
+            if ($update !== false) {
                 $rootServer->setUpdating();
                 echo "Updater started for ".$rootServer->sship."\r\n";
             } else {

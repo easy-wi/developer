@@ -80,9 +80,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $search = '';
             if ($row2['gamebinary'] == 'hlds_run' or ($row2['gamebinary'] == 'srcds_run' and ($row2['appID']==740 or $row2['appID']==730))) {
-                $search='/'. $row2['modfolder'];
+                $search='/' . $row2['modfolder'];
             } else if ($row2['gamebinary'] == 'srcds_run' and $row2['appID']!=740 and $row2['appID']!=730) {
-                $search='/'. $row2['binarydir']. '/' . $row2['modfolder'];
+                $search='/' . $row2['binarydir']. '/' . $row2['modfolder'];
             }
             $temp[$row2['shorten']] = array('shorten' => $row2['shorten'], 'description' => $row2['description'], 'searchFor' => $search,'modfolder' => $row2['modfolder']);
         }

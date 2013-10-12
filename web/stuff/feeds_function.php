@@ -153,7 +153,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                     $params='/';
                     $i = 1;
                     while ($i<count($ex)) {
-                        $params.='/'. $ex[$i];
+                        $params.='/' . $ex[$i];
                         $i++;
                     }
                    # $xml=webhostRequest($domain,'easy-wi.com',$params,$port);
@@ -196,7 +196,7 @@ if (isset($newsInclude) and $newsInclude==true) {
                             $cdataStarted = false;
                             foreach ($cdata as $block) {
                                 if ($cdataStarted==false) {
-                                    if (strpos($block,']]>')!==false) {
+                                    if (strpos($block,']]>') !== false) {
                                         $end=explode(']]>',$block);
                                         $base64Buffer.=$end[0];
                                         if (isset($end[1])) {

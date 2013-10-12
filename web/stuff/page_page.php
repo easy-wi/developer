@@ -97,7 +97,7 @@ if (isset($page_id) and is_numeric($page_id)) {
         $searchFor=array('general' => array(),'exact' => array());
         $searchString=preg_replace("/\s+/",' ',$ui->escaped('search','post'));
         $searchFor['exact'][]=strtolower($searchString);
-        if (strpos($searchString,'"')===false) {
+        if (strpos($searchString,'"') === false) {
             foreach (preg_split('/\s+/',$searchString,-1,PREG_SPLIT_NO_EMPTY) as $v) $searchFor['general'][]=strtolower($v);
         } else {
             $checkForEnd = false;

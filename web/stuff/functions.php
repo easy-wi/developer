@@ -361,11 +361,11 @@ if (!function_exists('passwordgenerate')) {
             $default_language = $row['language'];
             $template = $row['template'];
             
-            if (file_exists(EASYWIDIR . '/languages/'. $template. '/' . $user_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'. $template. '/' . $user_language. '/' . $filename.'.xml');
+            if (file_exists(EASYWIDIR . '/languages/' . $template. '/' . $user_language. '/' . $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/' . $template. '/' . $user_language. '/' . $filename.'.xml');
                 
-            } else if (file_exists(EASYWIDIR . '/languages/'. $template. '/' . $default_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'. $template. '/' . $default_language. '/' . $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/' . $template. '/' . $default_language. '/' . $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/' . $template. '/' . $default_language. '/' . $filename.'.xml');
                 
             } else if (file_exists(EASYWIDIR . '/languages/default/'.$user_language. '/' . $filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$user_language. '/' . $filename.'.xml');
@@ -373,11 +373,11 @@ if (!function_exists('passwordgenerate')) {
             } else if (file_exists(EASYWIDIR . '/languages/default/'.$default_language. '/' . $filename.'.xml')) {
                 $sprache=simplexml_load_file(EASYWIDIR . '/languages/default/'.$default_language. '/' . $filename.'.xml');
             
-            } else if (file_exists(EASYWIDIR . '/languages/'. $user_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'. $user_language. '/' . $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/' . $user_language. '/' . $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/' . $user_language. '/' . $filename.'.xml');
             
-            } else if (file_exists(EASYWIDIR . '/languages/'. $default_language. '/' . $filename.'.xml')) {
-                $sprache=simplexml_load_file(EASYWIDIR . '/languages/'. $default_language. '/' . $filename.'.xml');
+            } else if (file_exists(EASYWIDIR . '/languages/' . $default_language. '/' . $filename.'.xml')) {
+                $sprache=simplexml_load_file(EASYWIDIR . '/languages/' . $default_language. '/' . $filename.'.xml');
             }
         }
         return $sprache;
@@ -1313,7 +1313,7 @@ if (!function_exists('passwordgenerate')) {
 
             } else {
                 foreach ($row as $key => $value) {
-                    if ((isset($pa[$key]) and $pa[$key]===false) or !isset($pa[$key])) {
+                    if ((isset($pa[$key]) and $pa[$key] === false) or !isset($pa[$key])) {
                         $pa[$key] = ($value == 'Y') ? true : false;
                     }
                 }

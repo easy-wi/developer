@@ -54,7 +54,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
         // bei add und mod restart Auftrag schreiben mit extra Data = timestamp
         if ($row['action'] == 'dl') {
-            if ($return===true) {
+            if ($return === true) {
                 $query2->execute(array($row['jobID']));
                 $command=$gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'];
                 $removeIDs[$row['type']][] = $row['affectedID'];
@@ -66,7 +66,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query2->execute(array($row['jobID']));
             $command=$gsprache->add." $type server: ".$row['affectedID'].' name:'.$row['name'];
         } else if (in_array($row['action'], array('md','ri','st','rc','rp'))) {
-            if ($return===true) {
+            if ($return === true) {
                 $query2->execute(array($row['jobID']));
                 $command=$gsprache->mod." $type server: ".$row['affectedID'].' name: '.$row['name'];
             } else {
@@ -74,10 +74,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $command="Error modding $type server: ".$row['affectedID'].' name: '.$row['name'] . ' ' . $return;
             }
         } else if ($row['action'] == 're') {
-            if ($return===true and !isset($extraData->reboot) and strtotime('now')<$extraData->reboot) {
+            if ($return === true and !isset($extraData->reboot) and strtotime('now')<$extraData->reboot) {
                 $query2->execute(array($row['jobID']));
                 $command="Skipped (Re)Start $type server: ".$row['affectedID'].' name: '.$row['name'].' will try later';
-            } else if ($return===true and (!isset($extraData->reboot) or strtotime('now')>$extraData->reboot)) {
+            } else if ($return === true and (!isset($extraData->reboot) or strtotime('now')>$extraData->reboot)) {
                 $query2->execute(array($row['jobID']));
                 $command="(Re)Start $type server: ".$row['affectedID'].' name: '.$row['name'];
             } else {

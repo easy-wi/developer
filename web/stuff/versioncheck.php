@@ -110,7 +110,7 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 							$i = 0;
 							unset($checkfolder);
 							while ($i<$count) {
-								if (isset($checkfolder))$checkfolder .='/'. $folders[$i];
+								if (isset($checkfolder))$checkfolder .='/' . $folders[$i];
                                 else $checkfolder=$folders[$i];
 								$i++;
 							}

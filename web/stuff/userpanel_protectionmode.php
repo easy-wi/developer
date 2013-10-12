@@ -103,7 +103,7 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
                         $i = 0;
                         $folders="${pserverWrite}/${gsfolder}/${writeFTPShorten}/${gamePath}/";
                         while ($i<$folderFileCount) {
-                            $folders.='/'. $split_config[$i];
+                            $folders.='/' . $split_config[$i];
                             $i++;
                         }
                         foreach (preg_split('/\//',str_replace(array('//','///','////'),'/',$folders),-1,PREG_SPLIT_NO_EMPTY) as $dir) {

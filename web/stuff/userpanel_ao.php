@@ -111,7 +111,7 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10,'get') and in_array($ui->smal
             $customer=$customer."-p";
         }
         if ($ui->st('action','get') == 'ad' and ($protected=="N" or ($protected=="Y" and $paddon=="Y"))) {
-            if(ssh2_execute('gs',$rootID,"sudo -u $customer ./control.sh addaddon $type $addon \"$serverfolder\" \"$modfolder\"")!==false){
+            if(ssh2_execute('gs',$rootID,"sudo -u $customer ./control.sh addaddon $type $addon \"$serverfolder\" \"$modfolder\"") !== false){
                 $query = $sql->prepare("INSERT INTO `addons_installed` (`userid`,`addonid`,`serverid`,`servertemplate`,`paddon`,`resellerid`) VALUES (?,?,?,?,?,?)");
                 $query->execute(array($user_id,$addonid,$serverid,$servertemplate,$protected,$reseller_id));
                 $template_file = $sprache->addon_inst;
@@ -148,7 +148,7 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10,'get') and in_array($ui->smal
                     $installedid=$query2->fetchColumn();
                 }
             }
-            if(ssh2_execute('gs',$rootID,$cmds)!==false){
+            if(ssh2_execute('gs',$rootID,$cmds) !== false){
                 $template_file = $sprache->addon_del;
                 $actionstatus="ok";
             } else {

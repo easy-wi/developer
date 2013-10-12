@@ -1033,9 +1033,9 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                             }
                             if (isset($args['coolDown'])) {
                                 $nano = time_nanosleep(0, $args['coolDown']);
-                                if ($nano===true) {
+                                if ($nano === true) {
                                     echo 'Slept for '.$args['coolDown'].' microseconds' . "\r\n";
-                                } elseif ($nano===false) {
+                                } elseif ($nano === false) {
                                     echo 'Sleeping failed' . "\r\n";
                                 } elseif (is_array($nano)) {
                                     echo 'Interrupted by a signal' . "\r\n";

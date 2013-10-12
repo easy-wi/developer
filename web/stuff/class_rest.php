@@ -51,19 +51,19 @@ class easyWiRest {
         $this->timeout=$timeout;
         // check if curl is choosen and available and initiate cURL-Session
         if ($connect == 'curl' and function_exists('curl_init')) {
-            if ($this->startCurl($url,$ssl,$this->port)===true) {
+            if ($this->startCurl($url,$ssl,$this->port) === true) {
                 $this->connect='curl';
             }
 
         // Use and or fallback to fsockopen if possible and create socket
         } else if (($connect == 'fsockopen' or !function_exists('curl_init')) and function_exists('fsockopen')) {
-            if ($this->startSocket($url,$ssl,$this->port)===true) {
+            if ($this->startSocket($url,$ssl,$this->port) === true) {
                 $this->connect='fsockopen';
             }
         }
 
         // If connection was successfull, go on and set values
-        if ($this->connect!==false) {
+        if ($this->connect !== false) {
             return true;
         } else {
             return 'Connection Error: Could not connect to!'.$this->url;
@@ -110,7 +110,7 @@ class easyWiRest {
             while (!feof($this->handle)) $buffer.=fgets($this->handle,4096);
             fclose($this->handle);
             $ex=explode("\r\n\r\n",$buffer);
-            if (strpos($ex[0],'404')!==false) {
+            if (strpos($ex[0],'404') !== false) {
                 return 'file not found: '.$url. '/' . $file;
             } else {
                 return true;
@@ -138,7 +138,7 @@ class easyWiRest {
         $this->handle=curl_init($url);
 
         // check success
-        if ($this->handle===false) return false;
+        if ($this->handle === false) return false;
         return true;
     }
     // in case of curl setopts
@@ -150,7 +150,7 @@ class easyWiRest {
         curl_setopt($this->handle,CURLOPT_FOLLOWLOCATION,1);
         curl_setopt($this->handle,CURLOPT_HEADER,1);
         //curl_setopt($this->handle,CURLOPT_ENCODING,'deflate');
-        if (($this->ssl===true and $this->port!=443) or ($this->ssl===false and $this->port!=80)) {
+        if (($this->ssl === true and $this->port!=443) or ($this->ssl === false and $this->port!=80)) {
             curl_setopt($this->handle,CURLOPT_PORT,$this->port);
         }
     }

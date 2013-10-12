@@ -86,7 +86,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         $start = 0;
         printText('Connect to: '.$ssl.$row['domain']);
         while (!isset($left) or $left>0) {
-            $getRequest='/'. $row['file'].'?passwordToken='.urlencode($row['token']).'&start='.urlencode($start).'&chunkSize='.urlencode($row['chunkSize']).'&lastID='.urlencode($row['lastID']).'&updateTime='.urlencode($row['lastCheck']);
+            $getRequest='/' . $row['file'].'?passwordToken='.urlencode($row['token']).'&start='.urlencode($start).'&chunkSize='.urlencode($row['chunkSize']).'&lastID='.urlencode($row['lastID']).'&updateTime='.urlencode($row['lastCheck']);
             $rawResponse=webhostRequest($row['domain'], 'http://easy-wi.com user importer',$getRequest, null,$port);
             $response=cleanFsockOpenRequest($rawResponse,'{','}');
             $decoded=json_decode($response);
@@ -149,7 +149,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 printText('JSON Response does not contain expected values');
                 $left = 0;
             } else {
-                if (strpos(strtolower($rawResponse),'file not found')===false) {
+                if (strpos(strtolower($rawResponse),'file not found') === false) {
                     printText('No Json Response. Will retry.');
                 } else {
                     $left = 0;

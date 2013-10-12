@@ -75,11 +75,11 @@ class PageSettings {
 		if ($this->seo== 'Y') {
 			if (is_array($request)) {
 				$link = '';
-				foreach ($request as $r) $link .='/'. $this->NameToLink($r);
+				foreach ($request as $r) $link .='/' . $this->NameToLink($r);
 			} else if ($id==false) {
-				$link = '/'. $this->AddPageToArray('pages',$subid,$this->NameToLink($request));
+				$link = '/' . $this->AddPageToArray('pages',$subid,$this->NameToLink($request));
 			} else {
-				$link = '/'. $this->AddPageToArray('pages',$id,$this->NameToLink($request));
+				$link = '/' . $this->AddPageToArray('pages',$id,$this->NameToLink($request));
 			}
 			$subdata['link'] = $this->pageurl. '/' . $this->language.$link.'/';
 		} else {
@@ -119,10 +119,10 @@ class PageSettings {
 		if ($this->seo== 'Y') {
 			if (is_array($request)) {
 				$link = '';
-				for ($i = 0;$i<(count($request)-1);$i++) $link .='/'. $this->NameToLink($request[$i]);
-				$link .= '/'. $this->AddPageToArray($var,$id,$this->NameToLink($request[$i]));
+				for ($i = 0;$i<(count($request)-1);$i++) $link .='/' . $this->NameToLink($request[$i]);
+				$link .= '/' . $this->AddPageToArray($var,$id,$this->NameToLink($request[$i]));
 			} else {
-				$link = '/'. $this->AddPageToArray($var,$id,$this->NameToLink($request));
+				$link = '/' . $this->AddPageToArray($var,$id,$this->NameToLink($request));
 			}
 			$subdata[$id]['link'] = $this->pageurl. '/' . $this->language.$link.'/';
 		} else {
@@ -151,11 +151,11 @@ class PageSettings {
                 $query = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `id`=? LIMIT 1");
                 $query->execute(array($ID));
                 $title=$query->fetchColumn();
-                $addToUrl=($s == 'news') ? '/'. $this->language. '/' . $this->NameToLink($gsprache->news). '/' . $this->NameToLink($title).'/' : '/'. $this->language. '/' . $this->NameToLink($title).'/';
+                $addToUrl=($s == 'news') ? '/' . $this->language. '/' . $this->NameToLink($gsprache->news). '/' . $this->NameToLink($title).'/' : '/' . $this->language. '/' . $this->NameToLink($title).'/';
             } else if ($this->seo== 'Y' and in_array($s, array('imprint','lendserver','news'))) {
-                $addToUrl='/'. $this->language. '/' . $this->NameToLink($gsprache->$s).'/';
+                $addToUrl='/' . $this->language. '/' . $this->NameToLink($gsprache->$s).'/';
             } else if ($this->seo== 'Y') {
-                $addToUrl='/'. $this->language. '/' . $this->NameToLink($page_sprache->$s).'/';
+                $addToUrl='/' . $this->language. '/' . $this->NameToLink($page_sprache->$s).'/';
             } else if ($ID != null) {
                 $addToUrl='?s='.$s.'&amp;id='.$ID;
             } else {
@@ -170,7 +170,7 @@ class PageSettings {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `resellerid`=0 AND `active`='Y' AND `lendserver`='Y' LIMIT 1");
             $query->execute();
             $count=$query->fetchColumn();
-            if ($count>0 and ($this->lendactiveGS== 'B' or ($admin===true and $this->lendactiveGS!='N') or ($user===true and $this->lendactiveGS== 'R') or ($user===false and $this->lendactiveGS== 'A'))) {
+            if ($count>0 and ($this->lendactiveGS== 'B' or ($admin === true and $this->lendactiveGS!='N') or ($user === true and $this->lendactiveGS== 'R') or ($user === false and $this->lendactiveGS== 'A'))) {
                 $this->lendGS = true;
                 return true;
             } else if ($count>0) {
@@ -181,7 +181,7 @@ class PageSettings {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `resellerid`=0 AND `active`='Y' AND `lendserver`='Y' LIMIT 1");
             $query->execute();
             $count=$query->fetchColumn();
-            if ($count>0 and ($this->lendactiveVS== 'B' or ($admin===true and $this->lendactiveVS!='N') or ($user===true and $this->lendactiveVS== 'R') or ($user===false and $this->lendactiveVS== 'A'))) {
+            if ($count>0 and ($this->lendactiveVS== 'B' or ($admin === true and $this->lendactiveVS!='N') or ($user === true and $this->lendactiveVS== 'R') or ($user === false and $this->lendactiveVS== 'A'))) {
                 $this->lendVS = true;
                 return true;
             } else if ($count>0) {
@@ -251,13 +251,13 @@ function checkForSpam ($checkURL=null) {
 
     // Links not allowed in comments
     if ($checkURL==null and count($spamReason)==0 and $blockLinks == 'Y') {
-        foreach (array('http://','https://','ftp://','ftps://') as $key) if (strpos($ui->escaped('comment','post'),$key)!==false and (!in_array('URL Spam',$spamReason))) $spamReason[] = 'URL Spam';
+        foreach (array('http://','https://','ftp://','ftps://') as $key) if (strpos($ui->escaped('comment','post'),$key) !== false and (!in_array('URL Spam',$spamReason))) $spamReason[] = 'URL Spam';
     }
 
     // Post contains blacklisted words
     if ($checkURL==null and count($spamReason)==0) {
         foreach (explode(',',$blockWords) as $word) {
-            if (strlen(trim($word))>0 and strpos($ui->escaped('comment','post'),trim($word))!==false and !in_array('Word Blacklist',$spamReason)) $spamReason[] = 'Word Blacklist';
+            if (strlen(trim($word))>0 and strpos($ui->escaped('comment','post'),trim($word)) !== false and !in_array('Word Blacklist',$spamReason)) $spamReason[] = 'Word Blacklist';
         }
     }
 

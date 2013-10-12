@@ -474,7 +474,7 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSIO
             if ($masteractive == 'N') $fail = 1;
             $dns=strtolower($ui->domain('dns','post'));
             $dnsCheck=checkDNS($dns, $id, $user_id, $type='server');
-            if ($fail!=1 and $usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck!==false) {
+            if ($fail!=1 and $usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck !== false) {
                 if (isset($tsdnsServerID) and isid($tsdnsServerID,10) and isset($resellerToUse)) {
                     $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                     $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $resellerToUse));
@@ -492,7 +492,7 @@ if ($ui->st('d','get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSIO
                 }
                 $return=tsdns('md', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion, array($ip, $oldip), array($port, $oldport), array($dns, $olddns), $reseller_id, $sql);
                 $template_file = ($return == 'ok') ? $spracheResponse->ts_query_success.$return : $spracheResponse->error_ts_query.$return;
-            } else if ($usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck===false) {
+            } else if ($usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck === false) {
                 $error .=" DNS is not allowed<br />";
                 $fail = 1;
             }

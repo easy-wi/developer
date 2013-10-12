@@ -225,7 +225,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $port=$serverdata['port'];
             $pass=$serverdata['pass'];
             $check=ssh2_execute('gs',$id,'./control.sh updatestatus "'.implode(' ',$sshcheck).'"');
-            if ($check===false) {
+            if ($check === false) {
                 $description="The login data does not work";
             } else if (preg_match('/^[\w\:\-\=]+$/',$check)) {
                 $games = array();

@@ -1181,7 +1181,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $imgAlt='No Password';
                 $premoved="<br /><div class=\"error\">".$sprache->premoved."</div>";
             }
-            if ($brandname == 'Y' and $rSA['brandname'] != null and $rSA['brandname'] != '' and strpos(strtolower($name),strtolower($rSA['brandname']))===false) {
+            if ($brandname == 'Y' and $rSA['brandname'] != null and $rSA['brandname'] != '' and strpos(strtolower($name),strtolower($rSA['brandname'])) === false) {
                 $imgName='16_error';
                 $imgAlt='No Servertag';
                 $nameremoved="<div class=\"error\">".$sprache->nameremoved."</div>";

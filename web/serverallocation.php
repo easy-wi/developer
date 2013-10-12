@@ -365,7 +365,7 @@ if ($ui->smallletters('w',5,'get') == 'check') {
     if ($rootServer->sshcmd===null) {
         echo 'Nothing to update/sync!';
     } else {
-        if (ssh2_execute('gs', $ui->id('id', 10, 'get'), $rootServer->sshcmd)===false) {
+        if (ssh2_execute('gs', $ui->id('id', 10, 'get'), $rootServer->sshcmd) === false) {
             echo $sprache->error_root_updatemaster." ( ".implode(", ", $gamelist)." ) ( $start )";
         } else {
             $rootServer->setUpdating();

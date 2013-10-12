@@ -40,7 +40,7 @@ if ($seo== 'Y') {
 	if (!isset($page_count)) {
 		$page_count = 1;
 	}
-	$current_page_link='/'. $user_language . '/' . szrp($page_sprache->$s). '/' . $page_name. '/' . $page_count.'/';
+	$current_page_link='/' . $user_language . '/' . szrp($page_sprache->$s). '/' . $page_name. '/' . $page_count.'/';
 } else {
 	$search_tag=strtolower($ui->username('tag','255','get'));
 	if ($ui->id('older','30','get')) {

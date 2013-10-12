@@ -1269,7 +1269,7 @@ foreach ($defined as $table => $t_p) {
             $array = '';
             $Field=$row['Field'];
             $unset=array_search($Field,$keys_should_exist);
-            if ($unset!==false) {
+            if ($unset !== false) {
                 unset($keys_should_exist[$unset]);
             }
             if (isset($t_p[$Field])) {
@@ -1321,7 +1321,7 @@ foreach ($defined as $table => $t_p) {
             $i = 0;
             $current=current($t_p);
             $current_key=array_search($current,$t_p);
-            while ($current!==false and $current_key != $key) {
+            while ($current !== false and $current_key != $key) {
                 $prev=$current_key;
                 $current=next($t_p);
                 $current_key=array_search($current,$t_p);

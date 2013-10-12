@@ -230,7 +230,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $shorten=$_FILES["file"]["name"];
             try {
                 $xml=new DOMDocument();
-                if (@$xml->load($_FILES["file"]["tmp_name"])!==false) {
+                if (@$xml->load($_FILES["file"]["tmp_name"]) !== false) {
                     $childNodes=$xml->documentElement;
                     foreach ($childNodes->childNodes AS $node) {
                         if($node->nodeName == 'active') $active=$node->nodeValue;

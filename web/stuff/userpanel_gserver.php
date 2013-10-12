@@ -487,13 +487,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
             $noConfig=($fp==false) ? true: false;
             $cleanedconfig = '';
-            if ($noConfig===false and ($ui->smallletters('type',4,'get')=="easy" or ($ui->smallletters('type',4,'get')=="full" and !isset($ui->post['update'])))) {
+            if ($noConfig === false and ($ui->smallletters('type',4,'get')=="easy" or ($ui->smallletters('type',4,'get')=="full" and !isset($ui->post['update'])))) {
                 stream_set_timeout($fp,5);
                 while (!feof($fp)) $configfile .=fread($fp,1024);
                 $info=stream_get_meta_data($fp);
                 fclose($fp);
             }
-            if ($noConfig===false and isset($info['timed_out']) and $info['timed_out'] != '') {
+            if ($noConfig === false and isset($info['timed_out']) and $info['timed_out'] != '') {
                 $template_file = "Connection timed out!";
             } else {
                 $configfile=str_replace(array("\0" , "\b" , "\r", "\Z"),"",$configfile);
@@ -704,7 +704,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $notified=$row['notified'];
             $cftppass=$row['cftppass'];
             if ($stopped== 'Y') $name="OFFLINE";
-            $updatetime=($user_language=="de") ? ($row['queryUpdatetime'] != '') ? date('d.m.Y H:m:s',strtotime($row['queryUpdatetime'])) : $sprache->never : $row['queryUpdatetime'];
+            $updatetime=($user_language == 'de') ? ($row['queryUpdatetime'] != '') ? date('d.m.Y H:m:s',strtotime($row['queryUpdatetime'])) : $sprache->never : $row['queryUpdatetime'];
             $servertemplate=$row['servertemplate'];
             if ($row['upload']>1 and $row['upload']<4) {
                 $upload = true;

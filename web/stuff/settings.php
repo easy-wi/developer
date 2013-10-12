@@ -210,7 +210,7 @@ if ($loguserip!='localhost') {
 
         $ewInstallPath = EASYWIDIR;
 
-        $elements=(!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI','server'), $ewInstallPath)===false) ? preg_split('/\//', $ui->escaped('REQUEST_URI','server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI','server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
+        $elements=(!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI','server'), $ewInstallPath) === false) ? preg_split('/\//', $ui->escaped('REQUEST_URI','server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI','server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
 
         if (isset($seo) and $seo== 'Y' and isset($elements[0])) {
 
@@ -374,8 +374,8 @@ if($ui->id('p', 19, 'get')) {
     $start = 0;
 }
 $dirs = array();
-if (is_dir(EASYWIDIR . '/languages/'. $template_to_use . '/')) {
-    $dirs = array_merge($dirs, scandir(EASYWIDIR . '/languages/'. $template_to_use . '/'));
+if (is_dir(EASYWIDIR . '/languages/' . $template_to_use . '/')) {
+    $dirs = array_merge($dirs, scandir(EASYWIDIR . '/languages/' . $template_to_use . '/'));
 }
 if (is_dir(EASYWIDIR . '/languages/default/')) {
     $dirs=array_merge($dirs , scandir(EASYWIDIR . '/languages/default/'));
@@ -401,7 +401,7 @@ if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->descript
                 $query->execute(array($description, $id, $admin_id));
             }
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $gamestring_buf .= '_'. $row['shorten'];
+                $gamestring_buf .= '_' . $row['shorten'];
                 $i++;
             }
         }

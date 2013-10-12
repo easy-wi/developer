@@ -367,13 +367,13 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
         if (isset($queryip) and $ui->w('safeDelete',1,'post') != 'D') {
             $connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
             $errorcode=$connection->errorcode;
-            if (isset($localserverid) and strpos($errorcode,'error id=0')!==false) {
+            if (isset($localserverid) and strpos($errorcode,'error id=0') !== false) {
                 $connection->DelServer($localserverid);
                 $errorcode=$connection->errorcode;
                 $connection->CloseConnection();
             }
         }
-        if (($ui->w('safeDelete',1,'post') != 'S' or (isset($errorcode) and strpos($errorcode,'error id=0')!==false))) {
+        if (($ui->w('safeDelete',1,'post') != 'S' or (isset($errorcode) and strpos($errorcode,'error id=0') !== false))) {
             $query = $sql->prepare("DELETE FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
             $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `affectedID`=? AND `type`='vo'");
@@ -404,7 +404,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lVo']) and $licen
                 $query = $sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `userdata` u ON b.`uid`=u.`id` LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE u.`id` IS NULL OR  v.`id` IS NULL");
                 $query->execute();
             }
-        } else if ( $ui->w('safeDelete',1,'post') == 'S' and (!isset($errorcode) or strpos($errorcode,'error id=0')===false)) {
+        } else if ( $ui->w('safeDelete',1,'post') == 'S' and (!isset($errorcode) or strpos($errorcode,'error id=0') === false)) {
             $template_file = (isset($errorcode)) ? 'Error: '.$errorcode : 'Error: Could not connect to TS3 masterserver';
         }
     } else {

@@ -67,7 +67,7 @@ if ($ui->st('d','get') == 'ud' and $ui->id('id',19,'get') and (!isset($_SESSION[
         if ($ftpupload!='') {
             include(EASYWIDIR . "/stuff/ssh_exec.php");
             $serverfolder="${row['serverip']}_${row['port']}/${shorten}";
-            if(ssh2_execute('gs', $row['rootID'],"sudo -u ${customer} ./control.sh fastdl ${customer} ${serverfolder} \"${ftpupload}\" ${row['modfolder']}")===false) {
+            if(ssh2_execute('gs', $row['rootID'],"sudo -u ${customer} ./control.sh fastdl ${customer} ${serverfolder} \"${ftpupload}\" ${row['modfolder']}") === false) {
                 $template_file = $spracheResponse->error_server;
                 $actionstatus="fail";
             } else {

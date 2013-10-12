@@ -71,19 +71,18 @@ if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and ($ewVersions['cVersion
     $toooldversion = $vcsprache->newversion.$ewVersions['version'];
 }
 
-$query = $sql->prepare("SELECT `name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
+$query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
 $query->execute(array($admin_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $great_name = $row['name'];
     $great_vname = $row['vname'];
-    if ($row['lastlogin'] != null and $row['lastlogin'] != '0000-00-00 00:00:00' and $user_language == 'de') {
-        $great_last=date('d.m.Y H:i:s',strtotime($row['lastlogin']));
-    } else if ($row['lastlogin'] != null and $row['lastlogin'] != '0000-00-00 00:00:00') {
-        $great_last = $row['lastlogin'];
-    } else if ($user_language == 'de') {
-        $great_last = 'Niemals';
+
+    $great_user = ($row['name'] != '' or $row['vname'] != '') ? trim ($row['vname'] . ' ' . $row['name']) : $row['cname'];
+
+    if ($row['lastlogin'] != null and $row['lastlogin'] != '0000-00-00 00:00:00') {
+        $great_last=($user_language == 'de') ? date('d.m.Y H:m:s', strtotime($row['lastlogin'])) : $row['lastlogin'];
     } else {
-        $great_last = 'Never';
+        $great_last=($user_language == 'de') ? 'Niemals' : 'Never';
     }
 }
 
@@ -112,7 +111,7 @@ $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('A','C')");
 $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR . '/stuff/'. $row['file'])) {
+    if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR . '/stuff/' . $row['file'])) {
         $query2->execute(array($row['id'], $user_language));
         $name = $query2->fetchColumn();
         if (strlen($name) == 0) {

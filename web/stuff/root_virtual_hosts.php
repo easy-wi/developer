@@ -126,7 +126,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $serverid=$sql->lastInsertId();
             include(EASYWIDIR . '/stuff/ssh_exec.php');
             $uidb=ssh2_execute('vh',$serverid,'cd /vmfs/volumes; S = ''; for U in `ls -la | grep "drwxr-xr-t" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; for U in `ls -la | grep "drwxrwxrwx" | awk \'{print $9}\'`; do C=`vmkfstools -Ph $U 2> /dev/null | grep "Capacity" | awk \'{print $2$3}\'`; S="$S$U:$C;"; done; echo $S');
-            if ($uidb != '' and $uidb!==false) {
+            if ($uidb != '' and $uidb !== false) {
                 $uiddata=explode(";",$uidb);
                 $i = 0;
                 $count=count($uiddata)-1;

@@ -62,7 +62,7 @@ if (isset($downloadID)) {
                 $contentType=finfo_file($finfo,$fileWithPath);
                 finfo_close($finfo);
                 header("Content-Type: ${contentType}");
-                if (strpos(strtolower($ui->server['SERVER_SOFTWARE']),'nginx')!==false) {
+                if (strpos(strtolower($ui->server['SERVER_SOFTWARE']),'nginx') !== false) {
                     header('Content-Length: '.(string)(filesize($fileWithPath)));
                     header('Cache-Control: public, must-revalidate');
                     header('Pragma: no-cache');

@@ -95,7 +95,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
             if (count($error)==0 and $ip==$oldip and $dns==$olddns and $port==$oldport) {
                 $error[] = $spracheResponse->error_table;
-            } else if (count($error)==0 and checkDNS($dns,$id,$user_id,$type='dns')===false) {
+            } else if (count($error)==0 and checkDNS($dns,$id,$user_id,$type='dns') === false) {
                 $error[]="DNS";
             }
             if (count($error)>0) {
