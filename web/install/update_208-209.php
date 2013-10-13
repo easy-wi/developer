@@ -36,8 +36,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+if (isset($include) and $include == true) {
+$insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('2.09','<div align=\"right\">09.01.2012</div>
 <b>Neuerungen und &Auml;nderungen:</b><br/>
 <ul>
@@ -61,12 +61,12 @@ $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`d
 </ul>')");
 $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
-$error=$insert_easywi_version->errorinfo();
+$error = $insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$create_mysql_external_servers=$sql->prepare("CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
+$create_mysql_external_servers = $sql->prepare("CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
 `id` INT(30) UNSIGNED NOT NULL auto_increment,
 `active` ENUM('Y','N') DEFAULT 'Y',
 `ip` VARCHAR(15) NOT NULL,
@@ -84,12 +84,12 @@ PRIMARY KEY  (`id`)
 )");
 $create_mysql_external_servers->execute();
 $response->add('Action: create_mysql_external_servers done: ');
-$error=$create_mysql_external_servers->errorinfo();
+$error = $create_mysql_external_servers->errorinfo();
 $create_mysql_external_servers->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$create_mysql_external_dbs=$sql->prepare("CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
+$create_mysql_external_dbs = $sql->prepare("CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
 `id` INT(30) UNSIGNED NOT NULL auto_increment,
 `active` ENUM('Y','N') DEFAULT 'Y',
 `sid` INT(30) UNSIGNED NOT NULL,
@@ -107,7 +107,7 @@ PRIMARY KEY  (`id`)
 )");
 $create_mysql_external_dbs->execute();
 $response->add('Action: create_mysql_external_dbs done: ');
-$error=$create_mysql_external_dbs->errorinfo();
+$error = $create_mysql_external_dbs->errorinfo();
 $create_mysql_external_dbs->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

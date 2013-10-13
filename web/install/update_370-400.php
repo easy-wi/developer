@@ -38,7 +38,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
+if (isset($include) and $include == true) {
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('4.00','<div align=\"right\">31.08.2013</div>
 <b>Änderungen:</b><br/>

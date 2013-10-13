@@ -36,22 +36,22 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$drop_billings=$sql->prepare("DROP TABLE IF EXISTS `billing_vouchers`;
+if (isset($include) and $include == true) {
+$drop_billings = $sql->prepare("DROP TABLE IF EXISTS `billing_vouchers`;
 DROP TABLE IF EXISTS `billing_settings`;
 DROP TABLE IF EXISTS `billing_products`;");
 $drop_billings->execute();
 $drop_billings->closecursor();
 
-$updateSettings=$sql->prepare("UPDATE `settings` SET `template`='default'");
+$updateSettings = $sql->prepare("UPDATE `settings` SET `template`='default'");
 $updateSettings->execute();
 $response->add('Action: updateSettings done: ');
-$error=$updateSettings->errorinfo();
+$error = $updateSettings->errorinfo();
 $updateSettings->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+$insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('2.11','<div align=\"right\">13.05.2012</div>
 <b>Neuerungen und &Auml;nderungen:</b><br/>
 <ul>
@@ -111,50 +111,50 @@ $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`d
 </ul>')");
 $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
-$error=$insert_easywi_version->errorinfo();
+$error = $insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$insert_page_settings=$sql->prepare("INSERT INTO `page_settings` (`resellerid`) VALUES ('0')");
+$insert_page_settings = $sql->prepare("INSERT INTO `page_settings` (`resellerid`) VALUES ('0')");
 $insert_page_settings->execute();
 $response->add('Action: insert_page_settings done: ');
-$error=$insert_page_settings->errorinfo();
+$error = $insert_page_settings->errorinfo();
 $insert_page_settings->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$insert_about_page_pages=$sql->prepare("INSERT INTO `page_pages` (`authorid`,`type`) VALUES ('0','about')");
+$insert_about_page_pages = $sql->prepare("INSERT INTO `page_pages` (`authorid`,`type`) VALUES ('0','about')");
 $insert_about_page_pages->execute();
 $response->add('Action: insert_about_page_pages done: ');
-$error=$insert_about_page_pages->errorinfo();
+$error = $insert_about_page_pages->errorinfo();
 $insert_about_page_pages->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$insert_usergroups=$sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES
+$insert_usergroups = $sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES
 ('Y','Admin Default','a','Y','N'),
 ('Y','Reseller Default','r','Y','N'),
 ('Y','User Default','u','N','Y')");
 $insert_usergroups->execute();
 $response->add('Action: insert_usergroups done: ');
-$error=$insert_usergroups->errorinfo();
+$error = $insert_usergroups->errorinfo();
 $insert_usergroups->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$select=$sql->prepare("SELECT `id`,`resellerid` FROM `userdata` WHERE `accounttype`='r'");
+$select = $sql->prepare("SELECT `id`,`resellerid` FROM `userdata` WHERE `accounttype`='r'");
 $select->execute();
 foreach ($select->fetchAll(PDO::FETCH_ASSOC) as $row) {
-	$insert_usergroups=$sql->prepare("INSERT INTO `usergroups` (`resellerid`,`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES(?,'Y','User Default','u','N','Y')");
+	$insert_usergroups = $sql->prepare("INSERT INTO `usergroups` (`resellerid`,`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES(?,'Y','User Default','u','N','Y')");
 	$insert_usergroups->execute(array($row['id']));
 	$response->add('Action: insert_usergroups done: ');
-	$error=$insert_usergroups->errorinfo();
+	$error = $insert_usergroups->errorinfo();
 	$insert_usergroups->closecursor();
 	if (isset($error[2]) and $error[2] != '' and $error[2] != null and !is_numeric($error[2])) $response->add($error[2].'<br />');
 	else $response->add('OK<br />');
 	if ($row['id'] == $row['resellerid']) {
-		$select2=$sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
+		$select2 = $sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
 		$select2->execute(array($row['id']));
 		$names=array('`resellerid`');
 		$values=array("'".$row['id']."'");
@@ -166,44 +166,44 @@ foreach ($select->fetchAll(PDO::FETCH_ASSOC) as $row) {
 				}
 			}
 		}
-		$insert_usergroups=$sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,".implode(',',$names).") VALUES('Y','Reseller Default','r',".implode(',',$values).")");
+		$insert_usergroups = $sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,".implode(',',$names).") VALUES('Y','Reseller Default','r',".implode(',',$values).")");
 		$insert_usergroups->execute();
 		$response->add('Action: insert_usergroups done: ');
-		$error=$insert_usergroups->errorinfo();
+		$error = $insert_usergroups->errorinfo();
 		$insert_usergroups->closecursor();
 		if (isset($error[2]) and $error[2] != '' and $error[2] != null and !is_numeric($error[2])) $response->add($error[2].'<br />');
 		else $response->add('OK<br />');
 	}
 }
 
-$alter_userpermissions=$sql->prepare("ALTER TABLE `userpermissions` ADD COLUMN `cms_settings` ENUM('Y','N') DEFAULT 'N' AFTER `addons`,
+$alter_userpermissions = $sql->prepare("ALTER TABLE `userpermissions` ADD COLUMN `cms_settings` ENUM('Y','N') DEFAULT 'N' AFTER `addons`,
 ADD COLUMN `cms_pages` ENUM('Y','N') DEFAULT 'N' AFTER `cms_settings`,
 ADD COLUMN `cms_news` ENUM('Y','N') DEFAULT 'N' AFTER `cms_pages`,
 ADD COLUMN `cms_comments` ENUM('Y','N') DEFAULT 'N' AFTER `cms_news`");
 $alter_userpermissions->execute();
 $response->add('Action: alter_userpermissions done: ');
-$error=$alter_userpermissions->errorinfo();
+$error = $alter_userpermissions->errorinfo();
 $alter_userpermissions->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_userdata=$sql->prepare("ALTER TABLE `userdata` ADD COLUMN `usergroup` INT(30) UNSIGNED DEFAULT '0' NOT NULL AFTER `mail_vserver`");
+$alter_userdata = $sql->prepare("ALTER TABLE `userdata` ADD COLUMN `usergroup` INT(30) UNSIGNED DEFAULT '0' NOT NULL AFTER `mail_vserver`");
 $alter_userdata->execute();
 $response->add('Action: alter_userdata done: ');
-$error=$alter_userdata->errorinfo();
+$error = $alter_userdata->errorinfo();
 $alter_userdata->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_settings=$sql->prepare("ALTER TABLE `settings` ADD COLUMN `down_checks` INT(1) DEFAULT '2' AFTER `paneldomain`");
+$alter_settings = $sql->prepare("ALTER TABLE `settings` ADD COLUMN `down_checks` INT(1) DEFAULT '2' AFTER `paneldomain`");
 $alter_settings->execute();
 $response->add('Action: alter_settings done: ');
-$error=$alter_settings->errorinfo();
+$error = $alter_settings->errorinfo();
 $alter_settings->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_notified=$sql->prepare("ALTER TABLE `dhcpdata` CHANGE `notified` `notified` INT( 11 ) NULL DEFAULT '0';
+$alter_notified = $sql->prepare("ALTER TABLE `dhcpdata` CHANGE `notified` `notified` INT( 11 ) NULL DEFAULT '0';
 ALTER TABLE `eac` CHANGE `notified` `notified` INT( 11 ) NULL DEFAULT '0';
 ALTER TABLE `gsswitch` CHANGE `notified` `notified` INT( 11 ) NULL DEFAULT '0';
 ALTER TABLE `rserverdata` CHANGE `notified` `notified` INT( 11 ) NULL DEFAULT '0';
@@ -213,7 +213,7 @@ ALTER TABLE `voice_masterserver` CHANGE `notified` `notified` INT( 11 ) NULL DEF
 ALTER TABLE `voice_server` CHANGE `notified` `notified` INT( 11 ) NULL DEFAULT '0';");
 $alter_notified->execute();
 $response->add('Action: alter_notified done: ');
-$error=$alter_notified->errorinfo();
+$error = $alter_notified->errorinfo();
 $alter_notified->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

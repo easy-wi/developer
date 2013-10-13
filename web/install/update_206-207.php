@@ -36,27 +36,27 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if (isset($include) and $include==true) {
-$alter_voice_server_add=$sql->prepare("ALTER TABLE `voice_server` ADD COLUMN `backup` ENUM('Y','N') DEFAULT 'Y' AFTER `active`");
+if (isset($include) and $include == true) {
+$alter_voice_server_add = $sql->prepare("ALTER TABLE `voice_server` ADD COLUMN `backup` ENUM('Y','N') DEFAULT 'Y' AFTER `active`");
 $alter_voice_server_add->execute();
 $response->add('Action: alter_voice_server_add done: ');
-$error=$alter_voice_server_add->errorinfo();
+$error = $alter_voice_server_add->errorinfo();
 $alter_voice_server_add->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
-$alter_voice_server_change=$sql->prepare("ALTER TABLE `voice_server` CHANGE `file_sent` `maxtraffic` INT( 255 ) NULL DEFAULT '1048576000',
+$alter_voice_server_change = $sql->prepare("ALTER TABLE `voice_server` CHANGE `file_sent` `maxtraffic` INT( 255 ) NULL DEFAULT '1048576000',
 CHANGE `file_received` `filetraffic` INT( 255 ) UNSIGNED NULL DEFAULT NULL ,
 CHANGE `sent` `lastfiletraffic` INT( 255 ) UNSIGNED NULL DEFAULT NULL");
 $alter_voice_server_change->execute();
 $response->add('Action: alter_voice_server_change done: ');
-$error=$alter_voice_server_change->errorinfo();
+$error = $alter_voice_server_change->errorinfo();
 $alter_voice_server_change->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
-$alter_voice_server_drop=$sql->prepare("ALTER TABLE `voice_server` DROP `received`");
+$alter_voice_server_drop = $sql->prepare("ALTER TABLE `voice_server` DROP `received`");
 $alter_voice_server_drop->execute();
 $response->add('Action: alter_voice_server_drop done: ');
-$error=$alter_voice_server_drop->errorinfo();
+$error = $alter_voice_server_drop->errorinfo();
 $alter_voice_server_drop->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

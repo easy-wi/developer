@@ -37,8 +37,8 @@
  */
 
 
-if (isset($include) and $include==true) {
-$alter_lendsettings=$sql->prepare("ALTER TABLE `lendsettings` 
+if (isset($include) and $include == true) {
+$alter_lendsettings = $sql->prepare("ALTER TABLE `lendsettings` 
 ADD COLUMN `vomintime` INT(3) UNSIGNED NOT NULL DEFAULT '20' AFTER `playersteps`,
 ADD COLUMN `vomaxtime` INT(4) UNSIGNED NOT NULL DEFAULT '120' AFTER `vomintime`,
 ADD COLUMN `votimesteps` INT(3) UNSIGNED NOT NULL DEFAULT '20' AFTER `vomaxtime`,
@@ -47,15 +47,15 @@ ADD COLUMN `vomaxplayer` INT(3) UNSIGNED NOT NULL DEFAULT '12' AFTER `vominplaye
 ADD COLUMN `voplayersteps` INT(3) UNSIGNED NOT NULL DEFAULT '2' AFTER `vomaxplayer`");
 $alter_lendsettings->execute();
 $response->add('Action: alter_lendsettings done: ');
-$error=$alter_lendsettings->errorinfo();
+$error = $alter_lendsettings->errorinfo();
 $alter_lendsettings->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$update_easywiversion=$sql->prepare("UPDATE `easywi_version` SET `version`='2.01'");
+$update_easywiversion = $sql->prepare("UPDATE `easywi_version` SET `version`='2.01'");
 $update_easywiversion->execute();
 $response->add('Action: update_easywiversion done: ');
-$error=$update_easywiversion->errorinfo();
+$error = $update_easywiversion->errorinfo();
 $update_easywiversion->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

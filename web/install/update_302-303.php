@@ -36,8 +36,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+if (isset($include) and $include == true) {
+$insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('3.03','<div align=\"right\">06.08.2012</div>
 <b>Neuerungen und &Auml;nderungen:</b><br/>
 <ul>
@@ -94,16 +94,16 @@ $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`d
 </ul>')");
 $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
-$error=$insert_easywi_version->errorinfo();
+$error = $insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 // SteamAppIDs nachtragen
-$alter_servertypes=$sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `appID` smallint(5) unsigned AFTER `steamgame`");
+$alter_servertypes = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `appID` smallint(5) unsigned AFTER `steamgame`");
 $alter_servertypes->execute();
 $response->add('Action: alter_servertypes done: ');
-$error=$alter_servertypes->errorinfo();
+$error = $alter_servertypes->errorinfo();
 $alter_servertypes->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
@@ -114,25 +114,25 @@ foreach (array('cstrike' => 10,'tfc' => 20,'dod' => 30,'czero' => 80,'css' => 24
 }
 
 // Add switchID column to serverlist table
-$alter_serverlist=$sql->prepare("ALTER TABLE `serverlist` ADD COLUMN `switchID` bigint(19) unsigned AFTER `id`");
+$alter_serverlist = $sql->prepare("ALTER TABLE `serverlist` ADD COLUMN `switchID` bigint(19) unsigned AFTER `id`");
 $alter_serverlist->execute();
 $response->add('Action: alter_serverlist done: ');
-$error=$alter_serverlist->errorinfo();
+$error = $alter_serverlist->errorinfo();
 $alter_serverlist->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 // Add serverID column to restart table
-$alter_gserver_restarts=$sql->prepare("ALTER TABLE `gserver_restarts` ADD COLUMN `switchID` bigint(19) unsigned AFTER `gsswitch`");
+$alter_gserver_restarts = $sql->prepare("ALTER TABLE `gserver_restarts` ADD COLUMN `switchID` bigint(19) unsigned AFTER `gsswitch`");
 $alter_gserver_restarts->execute();
 $response->add('Action: alter_gserver_restarts done: ');
-$error=$alter_gserver_restarts->errorinfo();
+$error = $alter_gserver_restarts->errorinfo();
 $alter_gserver_restarts->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
 // Alter gsswitch table
-$alter_gsswitch=$sql->prepare("ALTER TABLE `gsswitch`
+$alter_gsswitch = $sql->prepare("ALTER TABLE `gsswitch`
 ADD COLUMN `active` enum('Y','N') NOT NULL DEFAULT 'Y' after `id`,
 ADD COLUMN `rootID` bigint(19) unsigned NOT NULL after `userid`,
 ADD COLUMN `running` enum('Y','N') NOT NULL DEFAULT 'Y' after `stopped`,
@@ -160,7 +160,7 @@ ADD COLUMN `cores` varchar(255) DEFAULT NULL after `taskset`
 ");
 $alter_gsswitch->execute();
 $response->add('Action: alter_gsswitch done: ');
-$error=$alter_gsswitch->errorinfo();
+$error = $alter_gsswitch->errorinfo();
 $alter_gsswitch->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) {
 	$response->add($error[2].'<br />');
@@ -170,15 +170,15 @@ if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($e
 	$query = $sql->prepare("SELECT `id`,AES_DECRYPT(`ftppass`,?) AS `pwd` FROM `userdata` WHERE `accounttype`='u'");
 	$query->execute(array($aeskey));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$userID=$row['id'];
-		$ftpPWD=$row['pwd'];
+		$userID = $row['id'];
+		$ftpPWD = $row['pwd'];
 		
 		// get the servers
 		$query2 = $sql->prepare("SELECT `id`,`server`,`shorten` FROM `gsswitch` WHERE `userid`=?");
 		$query2->execute(array($userID));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-			$address=$row2['server'];
-			$gsID=$row2['id'];
+			$address = $row2['server'];
+			$gsID = $row2['id'];
 			list($gsIP,$gsPort)=explode(':',$address);
 			
 			// update list and restarts
@@ -218,10 +218,10 @@ if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($e
 
 
 // Drop gsstatus table
-$drop_gsstatus=$sql->prepare("DROP TABLE `gsstatus`");
+$drop_gsstatus = $sql->prepare("DROP TABLE `gsstatus`");
 $drop_gsstatus->execute();
 $response->add('Action: drop_gsstatus done: ');
-$error=$drop_gsstatus->errorinfo();
+$error = $drop_gsstatus->errorinfo();
 $drop_gsstatus->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

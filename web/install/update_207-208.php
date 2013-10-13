@@ -37,34 +37,34 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$insert_qstatshorten_gtasamp=$sql->prepare("INSERT INTO `qstatshorten` (`qstat`,`description`) VALUES ('gtasamp', 'GTA San Andreas')");
+if (isset($include) and $include == true) {
+$insert_qstatshorten_gtasamp = $sql->prepare("INSERT INTO `qstatshorten` (`qstat`,`description`) VALUES ('gtasamp', 'GTA San Andreas')");
 $insert_qstatshorten_gtasamp->execute();
 $response->add('Action: insert_qstatshorten_gtasamp done: ');
-$error=$insert_qstatshorten_gtasamp->errorinfo();
+$error = $insert_qstatshorten_gtasamp->errorinfo();
 $insert_qstatshorten_gtasamp->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_servertypes_configedit=$sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `configedit` TEXT AFTER `configs`");
+$alter_servertypes_configedit = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `configedit` TEXT AFTER `configs`");
 $alter_servertypes_configedit->execute();
 $response->add('Action: alter_servertypes_configedit done: ');
-$error=$alter_servertypes_configedit->errorinfo();
+$error = $alter_servertypes_configedit->errorinfo();
 $alter_servertypes_configedit->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_rserverdata_hyperthreading_cores=$sql->prepare("ALTER TABLE `rserverdata`
+$alter_rserverdata_hyperthreading_cores = $sql->prepare("ALTER TABLE `rserverdata`
 ADD COLUMN `hyperthreading` ENUM('Y','N') DEFAULT 'N' AFTER `active`,
 ADD COLUMN `cores` INT(3) UNSIGNED DEFAULT '4' AFTER `hyperthreading`");
 $alter_rserverdata_hyperthreading_cores->execute();
 $response->add('Action: alter_rserverdata_hyperthreading_cores done: ');
-$error=$alter_rserverdata_hyperthreading_cores->errorinfo();
+$error = $alter_rserverdata_hyperthreading_cores->errorinfo();
 $alter_rserverdata_hyperthreading_cores->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_serverlist=$sql->prepare("ALTER TABLE `serverlist`
+$alter_serverlist = $sql->prepare("ALTER TABLE `serverlist`
 ADD COLUMN `taskset` ENUM('Y','N') DEFAULT 'N' AFTER `userconfig`,
 ADD COLUMN `cores` VARCHAR(255) DEFAULT NULL AFTER `taskset`,
 ADD COLUMN `port4` INT(5) UNSIGNED DEFAULT NULL AFTER `port3`,
@@ -75,54 +75,54 @@ ADD COLUMN `uploaddir` BLOB AFTER `upload`,
 ADD COLUMN `user_uploaddir` ENUM('Y','N') DEFAULT 'N' AFTER `userconfig`");
 $alter_serverlist->execute();
 $response->add('Action: alter_serverlist done: ');
-$error=$alter_serverlist->errorinfo();
+$error = $alter_serverlist->errorinfo();
 $alter_serverlist->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_gserver_restarts_worldsafe=$sql->prepare("ALTER TABLE `gserver_restarts`
+$alter_gserver_restarts_worldsafe = $sql->prepare("ALTER TABLE `gserver_restarts`
 ADD COLUMN `upload` ENUM('Y','N') DEFAULT 'N' AFTER `backup`,
 ADD COLUMN `worldsafe` ENUM('Y','N') DEFAULT 'N' AFTER `upload`");
 $alter_gserver_restarts_worldsafe->execute();
 $response->add('Action: alter_gserver_restarts_worldsafe done: ');
-$error=$alter_gserver_restarts_worldsafe->errorinfo();
+$error = $alter_gserver_restarts_worldsafe->errorinfo();
 $alter_gserver_restarts_worldsafe->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_easywi_version=$sql->prepare("ALTER TABLE `easywi_version`
+$alter_easywi_version = $sql->prepare("ALTER TABLE `easywi_version`
 ADD COLUMN `de` TEXT,
 ADD COLUMN `en` TEXT");
 $alter_easywi_version->execute();
 $response->add('Action: alter_easywi_version done: ');
-$error=$alter_easywi_version->errorinfo();
+$error = $alter_easywi_version->errorinfo();
 $alter_easywi_version->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_settings=$sql->prepare("ALTER TABLE `settings`
+$alter_settings = $sql->prepare("ALTER TABLE `settings`
 ADD COLUMN `version` DECIMAL(4,2) DEFAULT '2.08' AFTER `id`,
 ADD COLUMN `template` VARCHAR(50) DEFAULT 'default' AFTER `language`");
 $alter_settings->execute();
 $response->add('Action: alter_settings done: ');
-$error=$alter_settings->errorinfo();
+$error = $alter_settings->errorinfo();
 $alter_settings->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$pselect=$sql->prepare("SELECT `resellerid` FROM `settings`");
+$pselect = $sql->prepare("SELECT `resellerid` FROM `settings`");
 $pselect->execute();
 foreach ($pselect->fetchAll() as $row) {
-	$inster_servertypes_mc=$sql->prepare("INSERT INTO `servertypes` (`steamgame`, `updates`, `shorten`, `description`, `type`, `gamebinary`, `binarydir`, `modfolder`, `fps`, `slots`, `map`, `cmd`, `tic`, `qstat`, `gamemod`, `gamemod2`, `configs`, `configedit`, `qstatpassparam`, `resellerid`) VALUES ('N', 3, 'mc', 'Minecraft', 'gserver', 'minecraft_server.jar', NULL, NULL, NULL, 0, NULL, 'java -Xmx%maxram%M -Xms%minram%M -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=%maxcores% -XX:+AggressiveOpts -jar %binary% nogui', NULL, 'minecraft', 'N', 'css', NULL, '[server.properties] ini\r\nserver-port=%port%\r\nquery.port=%port%\r\nrcon.port=%port2%\r\nserver-ip=%ip%\r\nmax-players=%slots%', NULL, ?)");
+	$inster_servertypes_mc = $sql->prepare("INSERT INTO `servertypes` (`steamgame`, `updates`, `shorten`, `description`, `type`, `gamebinary`, `binarydir`, `modfolder`, `fps`, `slots`, `map`, `cmd`, `tic`, `qstat`, `gamemod`, `gamemod2`, `configs`, `configedit`, `qstatpassparam`, `resellerid`) VALUES ('N', 3, 'mc', 'Minecraft', 'gserver', 'minecraft_server.jar', NULL, NULL, NULL, 0, NULL, 'java -Xmx%maxram%M -Xms%minram%M -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=%maxcores% -XX:+AggressiveOpts -jar %binary% nogui', NULL, 'minecraft', 'N', 'css', NULL, '[server.properties] ini\r\nserver-port=%port%\r\nquery.port=%port%\r\nrcon.port=%port2%\r\nserver-ip=%ip%\r\nmax-players=%slots%', NULL, ?)");
 	$inster_servertypes_mc->execute(array($row['resellerid']));
 	$response->add('Action: inster_servertypes_mc (Resellerid '.$row['resellerid'].') done: ');
-	$error=$inster_servertypes_mc->errorinfo();
+	$error = $inster_servertypes_mc->errorinfo();
 	$inster_servertypes_mc->closecursor();
 	if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 	else $response->add('OK<br />');
 }
 
-$insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+$insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('2.00','<div align=\"right\">22.12.2011</div>
 <b>Neuerungen und &Auml;nderungen:</b><br/>
 <ul>
@@ -319,7 +319,7 @@ If you want to make use of all functions the SourceTV Demo Uploader you need the
 </ul>')");
 $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
-$error=$insert_easywi_version->errorinfo();
+$error = $insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

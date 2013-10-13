@@ -207,7 +207,7 @@ function password_check($value,$laeng) {
 	}
 }
 function ismail($value) {
-	if(filter_var($value, FILTER_VALIDATE_EMAIL)) {
+	if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
 		return $value;
 	} 
 }
@@ -328,7 +328,7 @@ $aeskey="'.$_POST['aeskey'].'";
 	fclose($config);
 	include(EASYWIDIR . '/stuff/config.php');
 	try {
-		$sql=new PDO("$databanktype:host=$host;dbname=$db",$user,$pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
+		$sql=new PDO("$databanktype:host=$host;dbname=$db", $user, $pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
     }
 	catch(PDOException $error) {
 ?>
@@ -387,7 +387,7 @@ $aeskey="'.$_POST['aeskey'].'";
 	}
 	$zeichen = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9');
 	$anzahl=count($zeichen);
-	$anzahlcorrect=$anzahl-1;
+	$anzahlcorrect = $anzahl-1;
 	$randompass = '';
 	for($i = 1; $i<=10; $i++){
 		$wuerfeln = mt_rand(0,$anzahlcorrect);
@@ -494,7 +494,7 @@ $aeskey="'.$_POST['aeskey'].'";
 	if ($fail!="1") {
 		include(EASYWIDIR . '/stuff/config.php');
 		try {
-			$sql=new PDO("$databanktype:host=$host;dbname=$db", $user, $pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
+			$sql=new PDO("$databanktype:host = $host;dbname = $db", $user, $pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
 			$sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		}
 		catch(PDOException $error) {
@@ -532,19 +532,19 @@ $aeskey="'.$_POST['aeskey'].'";
 		$language=small_letters_check($_POST['language'], '2');
 		$faillogins=isid($_POST['faillogins'], '2');
 		include(EASYWIDIR . '/stuff/keyphrasefile.php');
-		$insert_usergroups=$sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES
+		$insert_usergroups = $sql->prepare("INSERT INTO `usergroups` (`defaultgroup`,`name`,`grouptype`,`root`,`miniroot`) VALUES
 ('Y','Admin Default','a','Y','N'),
 ('Y','Reseller Default','r','Y','N'),
 ('Y','User Default','u','N','Y')");
 		$insert_usergroups->execute();
 		$query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `grouptype`='a' LIMIT 1");
 		$query->execute();
-		$groupID=$query->fetchColumn();
+		$groupID = $query->fetchColumn();
 		$query = $sql->prepare("INSERT INTO `settings` (`language`,`imageserver`,`master`,`email`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,'0')");
 		$query->execute(array($language,$imageserver,$master,$email,$prefix1,$prefix2,$faillogins,$brandname));
 		$query = $sql->prepare("INSERT INTO `userdata` (`active`,`cname`,`security`,`mail`,`accounttype`,`creationTime`,`updateTime`) VALUES ('Y',?,?,?,'a',NOW(),NOW())");
 		$query->execute(array($cname,$security,$email));
-        $userID=$sql->lastInsertId();
+        $userID = $sql->lastInsertId();
         $query = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`) VALUES (?,?)");
         $query->execute(array($userID,$groupID));
 		$query = $sql->prepare("INSERT INTO `eac` (`resellerid`) VALUES (0)");
@@ -765,7 +765,7 @@ $aeskey="'.$_POST['aeskey'].'";
 		'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
 		'1','2','3','4','5','6','7','8','9');
 		$anzahl=count($zeichen);
-		$anzahlcorrect=$anzahl-1;
+		$anzahlcorrect = $anzahl-1;
 		$randompass = '';
 		for($i = 1; $i<=30; $i++){
 			$wuerfeln = mt_rand(0,$anzahlcorrect);

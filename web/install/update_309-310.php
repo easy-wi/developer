@@ -36,8 +36,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+if (isset($include) and $include == true) {
+$insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('3.10','<div align=\"right\">03.02.2013</div>
 <b>Änderungen:</b><br/>
 <ul>
@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `lendstats` (
   `resellerID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`lendDate`,`serverID`,`serverType`),KEY(`resellerID`)
 ) ENGINE=InnoDB;";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `translations` (
@@ -180,12 +180,12 @@ $query="CREATE TABLE IF NOT EXISTS `translations` (
   `text` text,
   PRIMARY KEY (`type`,`lang`,`transID`,`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query = $sql->prepare("SELECT * FROM `addons_desc`");
 $query->execute();
-$insert=$sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
+$insert = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 	$insert->execute(array($row['language'], $row['addonid'], $row['description'], $row['resellerid']));
 }
@@ -193,7 +193,7 @@ $query = $sql->prepare("DROP TABLE `addons_desc`");
 $query->execute();
 $query = $sql->prepare("SELECT * FROM `ticket_language`");
 $query->execute();
-$insert=$sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
+$insert = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 	$insert->execute(array($row['language'], $row['topicid'], $row['subject'], $row['resellerid']));
 }
@@ -201,7 +201,7 @@ $query = $sql->prepare("DROP TABLE `ticket_language`");
 $query->execute();
 $query = $sql->prepare("SELECT * FROM `email_languages`");
 $query->execute();
-$insert=$sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('em',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
+$insert = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('em',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 	$insert->execute(array($row['language'], $row['content'],@gzuncompress($row['xml']), $row['resellerid']));
 }

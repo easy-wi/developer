@@ -37,8 +37,8 @@
  */
 
 
-if (isset($include) and $include==true) {
-$create_mail_log=$sql->prepare("CREATE TABLE IF NOT EXISTS `mail_log` (
+if (isset($include) and $include == true) {
+$create_mail_log = $sql->prepare("CREATE TABLE IF NOT EXISTS `mail_log` (
 `id` INT(30) UNSIGNED NOT NULL AUTO_INCREMENT,
 `uid` INT(30) UNSIGNED DEFAULT NULL,
 `topic` VARCHAR(255) NOT NULL,
@@ -50,18 +50,18 @@ PRIMARY KEY (`id`)
 $create_mail_log->execute();
 $create_mail_log->closecursor();
 
-$drop_rootstatus=$sql->prepare("DROP TABLE `rootstatus`");
+$drop_rootstatus = $sql->prepare("DROP TABLE `rootstatus`");
 $drop_rootstatus->execute();
 $response->add('Action: drop_rootstatus done: ');
-$error=$drop_rootstatus->errorinfo();
+$error = $drop_rootstatus->errorinfo();
 $drop_rootstatus->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_voice_masterserver=$sql->prepare("ALTER TABLE `voice_masterserver` ADD COLUMN `autorestart` ENUM('Y','N') DEFAULT 'Y' AFTER `notified`");
+$alter_voice_masterserver = $sql->prepare("ALTER TABLE `voice_masterserver` ADD COLUMN `autorestart` ENUM('Y','N') DEFAULT 'Y' AFTER `notified`");
 $alter_voice_masterserver->execute();
 $response->add('Action: alter_voice_masterserver done: ');
-$error=$alter_voice_masterserver->errorinfo();
+$error = $alter_voice_masterserver->errorinfo();
 $alter_voice_masterserver->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

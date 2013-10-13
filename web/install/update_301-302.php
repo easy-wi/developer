@@ -36,8 +36,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+if (isset($include) and $include == true) {
+$insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('3.02','<div align=\"right\">01.07.2012</div>
 <b>Neuerungen und &Auml;nderungen:</b><br/>
 <ul>
@@ -89,7 +89,7 @@ $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`d
 </ul>')");
 $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
-$error=$insert_easywi_version->errorinfo();
+$error = $insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
@@ -104,16 +104,16 @@ $query="CREATE TABLE IF NOT EXISTS `feeds_url` (
   `resellerID` bigint(19) unsigned DEFAULT '0',
   PRIMARY KEY (`feedID`)
 );";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
-$pselect=$sql->prepare("SELECT `resellerid` FROM `resellerdata`");
+$pselect = $sql->prepare("SELECT `resellerid` FROM `resellerdata`");
 $pselect->execute(array());
 foreach ($pselect->fetchall() as $row) {
-	$instert_feeds_url=$sql->prepare("INSERT INTO `feeds_url` (`active`, `twitter`, `feedUrl`, `resellerID`, `loginName`) VALUES ('Y', 'Y', 'https://twitter.com/EasyWI', ?, 'EasyWI');");
+	$instert_feeds_url = $sql->prepare("INSERT INTO `feeds_url` (`active`, `twitter`, `feedUrl`, `resellerID`, `loginName`) VALUES ('Y', 'Y', 'https://twitter.com/EasyWI', ?, 'EasyWI');");
 	$instert_feeds_url->execute(array($row['resellerid']));
 	$response->add('Action: instert_feeds_url done: ');
-	$error=$instert_feeds_url->errorinfo();
+	$error = $instert_feeds_url->errorinfo();
 	$instert_feeds_url->closecursor();
 	if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 	else $response->add('OK<br />');

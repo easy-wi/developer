@@ -39,12 +39,12 @@
  */
 
 
-if (!isset($updateinclude) or $updateinclude==false) {
+if (!isset($updateinclude) or $updateinclude == false) {
 	ini_set('display_errors',1);
 	error_reporting(E_ALL|E_STRICT);
 	define('EASYWIDIR', dirname(dirname(__FILE__)));
 	function isinteger($value) {
-	  if(preg_match("/^[\d+(.\d+|$)]+$/", $value) or $value == 0) {
+	  if (preg_match("/^[\d+(.\d+|$)]+$/", $value) or $value == 0) {
 		return true;
 	  }
 	}
@@ -65,7 +65,7 @@ if (!isset($updateinclude) or $updateinclude==false) {
 	}
 	include(EASYWIDIR . '/stuff/config.php');
 	try {
-		$sql=new PDO("$databanktype:host=$host;dbname=$db",$user,$pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
+		$sql=new PDO("$databanktype:host=$host;dbname=$db", $user, $pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 	}
 	catch(PDOException $error) {
 		echo $error->getMessage();
@@ -89,10 +89,10 @@ function versioncheck ($current,$new,$file,$response,$sql) {
 			die("File $file is missing<br />");
 		}
 		if ($new<'2.08') {
-			$update_easywiversion=$sql->prepare("UPDATE `easywi_version` SET `version`=?");
+			$update_easywiversion = $sql->prepare("UPDATE `easywi_version` SET `version`=?");
 			$update_easywiversion->execute(array($new));
 			$response->add('<br />Action: update_easywiversion done: ');
-			$error=$update_easywiversion->errorinfo();
+			$error = $update_easywiversion->errorinfo();
 			$update_easywiversion->closecursor();
 			if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 			else $response->add('OK<br />');
@@ -104,11 +104,11 @@ function versioncheck ($current,$new,$file,$response,$sql) {
 }
 $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
 $query->execute();
-$version=$query->fetchColumn();
+$version = $query->fetchColumn();
 $admin_id = 1;
 $main = 1;
 $reseller_id = 0;
-$error=$query->errorinfo();
+$error = $query->errorinfo();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) {
 	$response->add("Current database version: 1.9<br />");
 	$version="1.9";
@@ -152,8 +152,8 @@ $response->add('Repairing tables if needed.');
 include(EASYWIDIR . '/stuff/tables_repair.php');
 
 # Ende
-if (!isset($updateinclude) or $updateinclude==false) {
+if (!isset($updateinclude) or $updateinclude == false) {
 	$response->add("<br />Database successfully updated!<br /> <b> Please remove the \"install/\" folder and all of it´s content.</b>");
 	echo $response->printresponse();
-	$sql=null;
+	$sql = null;
 }

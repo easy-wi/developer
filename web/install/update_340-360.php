@@ -37,8 +37,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-    $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+if (isset($include) and $include == true) {
+    $insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('3.60','<div align=\"right\">21.07.2013</div>
 <b>Änderungen:</b><br/>
 <ul>
@@ -193,7 +193,7 @@ All template files have been altered and hidden fields for CSFR token added!
     $response->add('Action: insert_easywi_version done: ');
     $insert_easywi_version->closecursor();
 
-    $add=$sql->prepare("CREATE TABLE IF NOT EXISTS `tickets_text` (`ticketID` bigint(19) unsigned DEFAULT NULL,`userID` int(10) unsigned NOT NULL,`writedate` datetime DEFAULT NULL,`message` text,`resellerID` int(10) unsigned DEFAULT '0',KEY(`ticketID`),KEY(`userID`),KEY(`resellerID`)) ENGINE=InnoDB");
+    $add = $sql->prepare("CREATE TABLE IF NOT EXISTS `tickets_text` (`ticketID` bigint(19) unsigned DEFAULT NULL,`userID` int(10) unsigned NOT NULL,`writedate` datetime DEFAULT NULL,`message` text,`resellerID` int(10) unsigned DEFAULT '0',KEY(`ticketID`),KEY(`userID`),KEY(`resellerID`)) ENGINE=InnoDB");
     $add->execute();
     $query = $sql->prepare("ALTER TABLE `tickets` ADD COLUMN `state` enum('A','C','D','N','P','R') NULL DEFAULT 'N' AFTER `id`");
     $query->execute();

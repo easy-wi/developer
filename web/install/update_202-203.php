@@ -37,8 +37,8 @@
  */
 
 
-if (isset($include) and $include==true) {
-$create_voice_stats=$sql->prepare("CREATE TABLE IF NOT EXISTS `voice_server_stats` (
+if (isset($include) and $include == true) {
+$create_voice_stats = $sql->prepare("CREATE TABLE IF NOT EXISTS `voice_server_stats` (
 `id` INT(30) UNSIGNED NOT NULL AUTO_INCREMENT,
 `sid` INT(30) UNSIGNED NOT NULL,
 `mid` INT(30) UNSIGNED NOT NULL,
@@ -52,7 +52,7 @@ PRIMARY KEY (`id`)
 $create_voice_stats->execute();
 $create_voice_stats->closecursor();
 $response->add('Action: create_voice_stats done: ');
-$create_voice_stats_hours=$sql->prepare("CREATE TABLE IF NOT EXISTS `voice_server_stats_hours` (
+$create_voice_stats_hours = $sql->prepare("CREATE TABLE IF NOT EXISTS `voice_server_stats_hours` (
 `id` INT(30) UNSIGNED NOT NULL AUTO_INCREMENT,
 `sid` INT(30) UNSIGNED NOT NULL,
 `mid` INT(30) UNSIGNED NOT NULL,
@@ -66,7 +66,7 @@ PRIMARY KEY (`id`)
 $create_voice_stats_hours->execute();
 $create_voice_stats_hours->closecursor();
 $response->add('Action: create_voice_stats_hours done: ');
-$create_voice_stats_settings=$sql->prepare("CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
+$create_voice_stats_settings = $sql->prepare("CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
 `id` INT(30) UNSIGNED NOT NULL AUTO_INCREMENT,
 `text_colour_1` INT(3) UNSIGNED DEFAULT '0' NULL,
 `text_colour_2` INT(3) UNSIGNED DEFAULT '0' NULL,
@@ -92,20 +92,20 @@ $create_voice_stats_settings=$sql->prepare("CREATE TABLE IF NOT EXISTS `voice_st
 $create_voice_stats_settings->execute();
 $create_voice_stats_settings->closecursor();
 $response->add('Action: create_voice_stats_hours done: ');
-$instert_voice_stats_settings=$sql->prepare("INSERT INTO `voice_stats_settings` (`resellerid`) VALUES ('0')");
+$instert_voice_stats_settings = $sql->prepare("INSERT INTO `voice_stats_settings` (`resellerid`) VALUES ('0')");
 $instert_voice_stats_settings->execute();
 $response->add('Action: instert_voice_stats_settings done: ');
-$error=$instert_voice_stats_settings->errorinfo();
+$error = $instert_voice_stats_settings->errorinfo();
 $instert_voice_stats_settings->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
-$pselect=$sql->prepare("SELECT `resellerid` FROM `resellerdata`");
+$pselect = $sql->prepare("SELECT `resellerid` FROM `resellerdata`");
 $pselect->execute(array());
 foreach ($pselect->fetchall() as $row) {
-	$instert_voice_stats_settings=$sql->prepare("INSERT INTO `voice_stats_settings` (`resellerid`) VALUES (?)");
+	$instert_voice_stats_settings = $sql->prepare("INSERT INTO `voice_stats_settings` (`resellerid`) VALUES (?)");
 	$instert_voice_stats_settings->execute(array($row['resellerid']));
 	$response->add('Action: instert_voice_stats_settings done: ');
-	$error=$instert_voice_stats_settings->errorinfo();
+	$error = $instert_voice_stats_settings->errorinfo();
 	$instert_voice_stats_settings->closecursor();
 	if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 	else $response->add('OK<br />');

@@ -18,7 +18,7 @@
 	<passwordreset>Passwort zurücksetzen</passwordreset>
 	<passwordreseted>Passwort wurde aktualisiert.</passwordreseted>
 	<pwnomatch>Passwörter stimmen nicht überein.</pwnomatch>
-	<send>Eine E-Mail mit einem Betstätigungslink ist an ihren Account versendet worden.</send>
+	<send>Falls ein E-Mail Account gefunden werden konnte, ist ein Betstätigungslink versendet worden.</send>
 	<sus>Ihr Account ist deaktiviert worden. Bitte wenden sie sich an ihren Anbieter.</sus>
 	<sus_heading>Achtung!</sus_heading>
 	<user>Benutzername</user>

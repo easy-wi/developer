@@ -37,8 +37,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-    $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+if (isset($include) and $include == true) {
+    $insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('3.30','<div align=\"right\">04.04.2013</div>
 <b>Änderungen:</b>
 <ul>
@@ -92,17 +92,17 @@ if (isset($include) and $include==true) {
     $insert_easywi_version->closecursor();
 
     $query="CREATE TABLE IF NOT EXISTS `custom_columns` (`customID` int(10) unsigned NOT NULL,`itemID` int(10) unsigned NOT NULL,`var` VARCHAR(255) NOT NULL,PRIMARY KEY (`customID`,`itemID`)) ENGINE=InnoDB";
-    $add=$sql->prepare($query);
+    $add = $sql->prepare($query);
     $add->execute();
     $query="CREATE TABLE IF NOT EXISTS `custom_columns_settings` (`customID` int(10) unsigned NOT NULL AUTO_INCREMENT,`active` enum('Y','N') NOT NULL DEFAULT 'Y',`item` enum('D','G','S','T','U','V') NOT NULL,`type` enum('I','V') NOT NULL,`length` int(10) unsigned,`name` VARCHAR(255) NOT NULL,PRIMARY KEY (`customID`),KEY(`item`)) ENGINE=InnoDB";
-    $add=$sql->prepare($query);
+    $add = $sql->prepare($query);
     $add->execute();
 
-    $add=$sql->prepare("UPDATE `servertypes` SET `appID`=232290,`steamgame`='S',`binarydir`=NULL WHERE `shorten`='dods'");
+    $add = $sql->prepare("UPDATE `servertypes` SET `appID`=232290,`steamgame`='S',`binarydir`=NULL WHERE `shorten`='dods'");
     $add->execute();
 
-    $insert=$sql->prepare("INSERT INTO `custom_columns_settings` (`active`,`item`,`type`,`length`,`name`) VALUES (?,?,?,?,?)");
-    $insert2=$sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('cc',?,?,?,0) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
+    $insert = $sql->prepare("INSERT INTO `custom_columns_settings` (`active`,`item`,`type`,`length`,`name`) VALUES (?,?,?,?,?)");
+    $insert2 = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('cc',?,?,?,0) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
     $copy = array();
     $opts = array();
     foreach(array('opt1' => 'Opt 1','opt2' => 'Opt 2','opt3' => 'Opt 3','opt4' => 'Opt 4','opt5' => 'Opt 5') as $opt=>$trans) {
@@ -110,7 +110,7 @@ if (isset($include) and $include==true) {
         $query->execute();
         if ($query->fetchColumn()>0) {
             $insert->execute(array('Y','G','V',255,$opt));
-            $id=$sql->lastInsertId();
+            $id = $sql->lastInsertId();
             $insert2->execute(array($id,'de',$trans));
             $insert2->execute(array($id,'en',$trans));
             $copy[$id] = $opt;
@@ -120,10 +120,10 @@ if (isset($include) and $include==true) {
     if (count($copy)>0) {
         $query = $sql->prepare("SELECT `id`,".implode(',',$opts)." FROM `gsswitch`");
         $query->execute();
-        $insert=$sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
+        $insert = $sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             foreach ($copy as $k=>$v){
-                $val=$row[$v] == null ? '' : $row[$v];
+                $val = $row[$v] == null ? '' : $row[$v];
                 $insert->execute(array($k, $row['id'],$val));
             }
         }

@@ -36,8 +36,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+if (isset($include) and $include == true) {
+$insert_easywi_version = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('3.06','<div align=\"right\">30.09.2012</div>
 <b>Änderungen:</b><br/>
 <ul>
@@ -103,23 +103,23 @@ $insert_easywi_version=$sql->prepare("INSERT INTO `easywi_version` (`version`,`d
 </ul>')");
 $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
-$error=$insert_easywi_version->errorinfo();
+$error = $insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$alter_servertypes_modcmds=$sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `modcmds` TEXT DEFAULT NULL AFTER `cmd`");
+$alter_servertypes_modcmds = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `modcmds` TEXT DEFAULT NULL AFTER `cmd`");
 $alter_servertypes_modcmds->execute();
 $response->add('Action: alter_servertypes_modcmds done: ');
-$error=$alter_servertypes_modcmds->errorinfo();
+$error = $alter_servertypes_modcmds->errorinfo();
 $alter_servertypes_modcmds->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
 
-$update_servertypes_csgo=$sql->prepare("UPDATE `servertypes` SET `steamgame`='S',`appID`=730,`updates`=1,`description`='Counter-Strike: Global Offensive',`type`='gserver',`gamebinary`='srcds_run',`binarydir`=NULL,`modfolder`='csgo',`fps`=NULL,`slots`=12,`map`='de_dust',`cmd`='./%binary% -game csgo -console -usercon +ip %ip% +port %port% -maxplayers_override %slots% +map %map% +mapgroup %mapgroup%',`modcmds`='[Classic Casual = default]\r\n+game_type 0 +game_mode 0\r\n\r\n[Classic Competitive]\r\n+game_type 0 +game_mode 1\r\n\r\n[Arms Race]\r\n+game_type 1 +game_mode 0\r\n\r\n[Demolition]\r\n+game_type 1 +game_mode 1',`tic`=NULL,`qstat`='a2s',`gamemod`='N',`gamemod2`='css',`configs`='cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes.txt\r\ngamemodes_server.txt',`configedit`=NULL,`qstatpassparam`='password:1',`portStep`=100,`portMax`=5,`portOne`=27015,`portTwo`=27016,`portThree`=27017,`portFour`=27018,`portFive`=27019,`mapGroup`='mg_bomb' WHERE `shorten`='csgo'");
+$update_servertypes_csgo = $sql->prepare("UPDATE `servertypes` SET `steamgame`='S',`appID`=730,`updates`=1,`description`='Counter-Strike: Global Offensive',`type`='gserver',`gamebinary`='srcds_run',`binarydir`=NULL,`modfolder`='csgo',`fps`=NULL,`slots`=12,`map`='de_dust',`cmd`='./%binary% -game csgo -console -usercon +ip %ip% +port %port% -maxplayers_override %slots% +map %map% +mapgroup %mapgroup%',`modcmds`='[Classic Casual = default]\r\n+game_type 0 +game_mode 0\r\n\r\n[Classic Competitive]\r\n+game_type 0 +game_mode 1\r\n\r\n[Arms Race]\r\n+game_type 1 +game_mode 0\r\n\r\n[Demolition]\r\n+game_type 1 +game_mode 1',`tic`=NULL,`qstat`='a2s',`gamemod`='N',`gamemod2`='css',`configs`='cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes.txt\r\ngamemodes_server.txt',`configedit`=NULL,`qstatpassparam`='password:1',`portStep`=100,`portMax`=5,`portOne`=27015,`portTwo`=27016,`portThree`=27017,`portFour`=27018,`portFive`=27019,`mapGroup`='mg_bomb' WHERE `shorten`='csgo'");
 $update_servertypes_csgo->execute();
 $response->add('Action: update_servertypes_csgo done: ');
-$error=$update_servertypes_csgo->errorinfo();
+$error = $update_servertypes_csgo->errorinfo();
 $update_servertypes_csgo->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
@@ -129,13 +129,13 @@ $query = $sql->prepare("SELECT `resellerid` FROM `resellerdata`");
 $query2 = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `resellerid`=? AND `shorten`='csgo'");
 $query3 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`mapGroup`,`resellerid`) VALUES('S',730,1,'csgo','Counter-Strike: Global Offensive','gserver','srcds_run',NULL,'csgo',NULL,0,'de_dust','./%binary% -game csgo -console -usercon +ip %ip% +port %port% -maxplayers_override %slots% +map %map%  +mapgroup %mapgroup%','[Classic Casual = default]\r\n+game_type 0 +game_mode 0\r\n\r\n[Classic Competitive]\r\n+game_type 0 +game_mode 1\r\n\r\n[Arms Race]\r\n+game_type 1 +game_mode 0\r\n\r\n[Demolition]\r\n+game_type 1 +game_mode 1',NULL,'a2s','N','css','cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes.txt\r\ngamemodes_server.txt',NULL,'password:1',100,4,27015,27016,27017,27018,27019,'mg_bomb',?)");
 $query2->execute(array(0));
-if($query2->rowCount()==0) {
+if ($query2->rowCount()==0) {
 	$query3->execute(array(0));
 }
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 	$query2->execute(array($row['resellerid']));
-	if($query2->rowCount()==0) {
+	if ($query2->rowCount()==0) {
 		$query3->execute(array($row['resellerid']));
 	}
 }

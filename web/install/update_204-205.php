@@ -36,18 +36,18 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$alter_lendedserver=$sql->prepare("ALTER TABLE `lendedserver` CHANGE `rcon` `rcon` VARCHAR( 60 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
+if (isset($include) and $include == true) {
+$alter_lendedserver = $sql->prepare("ALTER TABLE `lendedserver` CHANGE `rcon` `rcon` VARCHAR( 60 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
 $alter_lendedserver->execute();
 $response->add('Action: alter_lendedserver done: ');
-$error=$alter_lendedserver->errorinfo();
+$error = $alter_lendedserver->errorinfo();
 $alter_lendedserver->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
-$alter_lendsettings=$sql->prepare("ALTER TABLE `lendsettings` CHANGE `lendhostip` `lendhostip` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
+$alter_lendsettings = $sql->prepare("ALTER TABLE `lendsettings` CHANGE `lendhostip` `lendhostip` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
 $alter_lendsettings->execute();
 $response->add('Action: alter_lendsettings done: ');
-$error=$alter_lendsettings->errorinfo();
+$error = $alter_lendsettings->errorinfo();
 $alter_lendsettings->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');

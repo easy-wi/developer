@@ -18,7 +18,7 @@
 	<passwordreset>reset passwort</passwordreset>
 	<passwordreseted>Password has been updated.</passwordreseted>
 	<pwnomatch>Passwords do not match.</pwnomatch>
-	<send>An E-Mail has been send to your account.</send>
+	<send>In case an email account could be found a mail with activation token has been sent to you.</send>
 	<sus>Your account is suspendet. Please contact your hoster.</sus>
 	<sus_heading>Attention!</sus_heading>
 	<user>Username</user>

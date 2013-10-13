@@ -36,8 +36,8 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include==true) {
-$insert_easywi_version=$sql->prepare("UPDATE `easywi_version` SET `version`='3.00', `de`='<div align=\"right\">13.05.2012</div>
+if (isset($include) and $include == true) {
+$insert_easywi_version = $sql->prepare("UPDATE `easywi_version` SET `version`='3.00', `de`='<div align=\"right\">13.05.2012</div>
 <b>Neuerungen und &Auml;nderungen:</b><br/>
 <ul>
 <li>CMS wurde hinzugef&uuml;gt.</li>
@@ -98,7 +98,7 @@ $insert_easywi_version=$sql->prepare("UPDATE `easywi_version` SET `version`='3.0
 </ul>' WHERE `version`='2.11'");
 $insert_easywi_version->execute();
 $response->add('Action: insert_easywi_version done: ');
-$error=$insert_easywi_version->errorinfo();
+$error = $insert_easywi_version->errorinfo();
 $insert_easywi_version->closecursor();
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) $response->add($error[2].'<br />');
 else $response->add('OK<br />');
