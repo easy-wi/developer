@@ -205,7 +205,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
                         if ($row['mail_securitybreach'] == 'Y') {
-                            sendmail('emailsecuritybreach', $row['id'], $address, $rulebreak);
+                            sendmail('emailsecuritybreach', $row['id'], $address, implode('<br>', $rulebreak));
                         }
                     }
 
