@@ -383,10 +383,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $jobPending = $gsprache->no;
         }
         if (($row['active'] == 'Y' and $row['jobPending'] == 'N') or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
-            $imgName='16_ok';
+            $imgName = '16_ok';
             $imgAlt='online';
         } else {
-            $imgName='16_bad';
+            $imgName = '16_bad';
             $imgAlt='inactive';
         }
         $table[] = array('id' => $row['dnsID'], 'active' => $row['active'], 'img' => $imgName,'alt' => $imgAlt,'dns' => $row['dns'], 'address' => $row['ip'] . ':' . $row['port'], 'masterip' => trim($row['ssh2ip'] . ' ' . $row['description']),'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'userid' => $row['userID'], 'jobPending' => $jobPending);

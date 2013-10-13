@@ -194,11 +194,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $id = $row['id'];
         if ($row['active'] == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Active';
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
         } else {
-            $imgName='16_bad';
-            $imgAlt='Inactive';
+            $imgName = '16_bad';
+            $imgAlt = 'Inactive';
         }
         $statusList = array();
         $sshcheck = array();

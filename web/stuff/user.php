@@ -712,11 +712,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $jobPending = $gsprache->no;
         }
         if (($row['active'] == 'Y' and $row['jobPending'] == 'N') or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Active';
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
         } else {
-            $imgName='16_bad';
-            $imgAlt='Inactive';
+            $imgName = '16_bad';
+            $imgAlt = 'Inactive';
         }
         $table[] = array('id' => $row['id'], 'img' => $imgName,'alt' => $imgAlt,'adminaccount' => $adminaccount,'accounttype' => $accounttype,'cname' => $row['cname'], 'name' => $row['name'], 'jobPending' => $jobPending,'active' => $row['active']);
     }

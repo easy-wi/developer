@@ -416,14 +416,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active'] == 'Y') {
             if ($row['notified']>2) {
-                $imgName='16_error';
+                $imgName = '16_error';
                 $imgAlt='16_error';
             } else {
-                $imgName='16_ok';
+                $imgName = '16_ok';
                 $imgAlt='online';
             }
         } else {
-            $imgName='16_bad';
+            $imgName = '16_bad';
             $imgAlt='inactive';
         }
         $ds = array();

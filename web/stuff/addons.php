@@ -458,11 +458,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $gtype = $shorten;
         }
         if ($row['active'] == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Active';
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
         } else {
-            $imgName='16_bad';
-            $imgAlt='Inactive';
+            $imgName = '16_bad';
+            $imgAlt = 'Inactive';
         }
         if ($row['type'] == 'map') {
             $type = $sprache->map;

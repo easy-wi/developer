@@ -723,14 +723,14 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         $dns = $row['dns'];
         if ($row['active'] == 'Y') {
             if ($row['uptime']>1) {
-                $imgName='16_ok';
+                $imgName = '16_ok';
                 $imgAlt='online';
             } else {
-                $imgName='16_error';
+                $imgName = '16_error';
                 $imgAlt='offline';
             }
         } else {
-            $imgName='16_bad';
+            $imgName = '16_bad';
             $imgAlt='inactive';
         }
         $lendserver=($row['lendserver'] == 'Y') ? $gsprache->yes : $gsprache->no;

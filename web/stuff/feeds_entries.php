@@ -103,11 +103,11 @@ if ($ui->st('d', 'get') == 'ud') {
     $query->execute(array($lookUpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active'] == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Active';
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
         } else {
-            $imgName='16_bad';
-            $imgAlt='Inactive';
+            $imgName = '16_bad';
+            $imgAlt = 'Inactive';
         }
         $twitter=($row['twitter'] == 'Y') ? $gsprache->yes : $gsprache->no;
         $title = $row['title'];

@@ -367,13 +367,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $i2++;
         }
         if ($row['notified']>=$downChecks and $row['active'] == 'Y') {
-            $imgName='16_error';
+            $imgName = '16_error';
             $imgAlt='Offline';
         } else if ($row['active'] == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Online';
+            $imgName = '16_ok';
+            $imgAlt = 'Online';
         } else {
-            $imgName='16_bad';
+            $imgName = '16_bad';
             $imgAlt='Deactivated';
         }
         $installedserver = $i2. '/' . $row['maxserver'];

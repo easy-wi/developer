@@ -336,10 +336,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($id,$lookIpID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row['active'] == 'Y') {
-                $imgName='16_ok';
+                $imgName = '16_ok';
                 $imgAlt='ok';
             } else {
-                $imgName='16_bad';
+                $imgName = '16_bad';
                 $imgAlt='bad';
             }
             if ($row['grouptype'] == 'r') {
@@ -405,10 +405,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($lookIpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active'] == 'Y') {
-            $imgName='16_ok';
+            $imgName = '16_ok';
             $imgAlt='ok';
         } else {
-            $imgName='16_bad';
+            $imgName = '16_bad';
             $imgAlt='inactive';
         }
         if ($row['grouptype'] == 'r') {

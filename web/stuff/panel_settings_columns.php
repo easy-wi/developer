@@ -226,11 +226,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active'] == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Active';
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
         } else {
-            $imgName='16_bad';
-            $imgAlt='Inactive';
+            $imgName = '16_bad';
+            $imgAlt = 'Inactive';
         }
         $type=($row['type'] == 'I') ? $sprache->int : $sprache->var;
         $table[] = array('id' => $row['customID'], 'img' => $imgName,'alt' => $imgAlt,'name' => $row['name'], 'type' => $type,'active' => $row['active']);

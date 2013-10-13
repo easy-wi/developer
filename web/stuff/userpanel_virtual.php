@@ -165,19 +165,19 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $tobeActive=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
                 }
             }
-            $imgName='16_ok';
-            $imgAlt='Active';
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
             $active = 'Y';
             if (($row['active'] == 'Y' and $row['jobPending'] == 'N' and $row['notified']<=$rSA['down_checks']) or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
-                $imgName='16_ok';
-                $imgAlt='Active';
+                $imgName = '16_ok';
+                $imgAlt = 'Active';
             } else if (($row['active'] == 'Y' and $row['jobPending'] == 'N' and $row['notified']>$rSA['down_checks']) or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
-                $imgName='16_error';
-                $imgAlt='Crashed';
+                $imgName = '16_error';
+                $imgAlt = 'Crashed';
                 $active='C';
             } else if ($row['active'] == 'N') {
-                $imgName='16_bad';
-                $imgAlt='Inactive';
+                $imgName = '16_bad';
+                $imgAlt = 'Inactive';
                 $active = 'N';
             }
             $table[] = array('id' => $row['id'], 'ip' => $row['ip'], 'img' => $imgName,'alt' => $imgAlt,'active' => $active,'jobPending' => $jobPending);

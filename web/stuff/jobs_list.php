@@ -141,10 +141,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $api = $gsprache->no;
         }
         if ($row['status'] == null or $row['status']==4) {
-            $imgName='16_ok';
+            $imgName = '16_ok';
             $imgAlt='Running';
         } else if ($row['status']==1) {
-            $imgName='16_bad';
+            $imgName = '16_bad';
             $imgAlt='Error';
         } else if ($row['status']==2) {
             $imgName='16_notice';

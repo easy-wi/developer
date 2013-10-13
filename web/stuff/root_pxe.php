@@ -179,14 +179,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active'] == 'Y' and $row['notified']>0) {
-            $imgName='16_error';
-            $imgAlt='Crashed';
+            $imgName = '16_error';
+            $imgAlt = 'Crashed';
         } else if ($row['active'] == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Active';
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
         } else {
-            $imgName='16_bad';
-            $imgAlt='Inactive';
+            $imgName = '16_bad';
+            $imgAlt = 'Inactive';
         }
         $table[] = array('id' => $row['id'], 'ip' => $row['ip'], 'description' => $row['description'], 'img' => $imgName,'alt' => $imgAlt,'active' => $row['active']);
     }

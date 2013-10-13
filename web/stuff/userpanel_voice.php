@@ -649,15 +649,15 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 }
                 $usage = $usedSlots. '/' . $flexSlots.$row['slots'];
                 if ($row['uptime']==0) {
-                    $imgName='16_error';
+                    $imgName = '16_error';
                     $imgAlt='error';
                     $stopped='C';
                 } else if ($row['uptime']>1) {
-                    $imgName='16_ok';
+                    $imgName = '16_ok';
                     $imgAlt='online';
                     $stopped = 'N';
                 } else {
-                    $imgName='16_bad';
+                    $imgName = '16_bad';
                     $imgAlt='offline';
                     $stopped = 'Y';
                 }

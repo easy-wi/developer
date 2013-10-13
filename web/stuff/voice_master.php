@@ -966,13 +966,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             }
 
             if ($row['active'] == 'Y' and $rSA['down_checks'] > $row['notified']) {
-                $imgName='16_ok';
+                $imgName = '16_ok';
                 $imgAlt='ok';
             } else if ($row['active'] == 'Y' and $rSA['down_checks'] <= $row['notified']) {
-                $imgName='16_error';
+                $imgName = '16_error';
                 $imgAlt='crashed';
             } else {
-                $imgName='16_bad';
+                $imgName = '16_bad';
                 $imgAlt='inactive';
             }
 

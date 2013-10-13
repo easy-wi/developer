@@ -740,27 +740,27 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
             $nameremoved = '';
             $premoved = '';
-            $imgName='16_ok';
-            $imgAlt='Online';
+            $imgName = '16_ok';
+            $imgAlt = 'Online';
             if ($stopped== 'Y') {
                 $numplayers = 0;
                 $maxplayers = 0;
-                $imgName='16_bad';
-                $imgAlt='Stopped';
+                $imgName = '16_bad';
+                $imgAlt = 'Stopped';
             } else if (($name == 'OFFLINE' or $name == '') and $notified>=$rSA['down_checks'] and $stopped== 'N') {
                 $numplayers = 0;
                 $maxplayers = 0;
-                $imgName='16_error';
-                $imgAlt='Crashed';
+                $imgName = '16_error';
+                $imgAlt = 'Crashed';
             } else {
                 if ($war== 'Y' and $password== 'N') {
-                    $imgName='16_error';
-                    $imgAlt='No Password';
+                    $imgName = '16_error';
+                    $imgAlt = 'No Password';
                     $premoved = $sprache->premoved;
                 }
                 if ($brandname == 'Y' and $rSA['brandname'] != null and $rSA['brandname'] != '' and strpos(strtolower($name), strtolower($rSA['brandname'])) === false) {
-                    $imgName='16_error';
-                    $imgAlt='No Servertag';
+                    $imgName = '16_error';
+                    $imgAlt = 'No Servertag';
                     $nameremoved = $sprache->nameremoved;
                 }
             }

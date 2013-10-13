@@ -262,11 +262,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($lookUpID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active'] == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Active';
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
         } else {
-            $imgName='16_bad';
-            $imgAlt='Inactive';
+            $imgName = '16_bad';
+            $imgAlt = 'Inactive';
         }
         $twitter=($row['twitter'] == 'Y') ? $gsprache->yes : $gsprache->no;
         $table[] = array('id' => $row['feedID'], 'img' => $imgName,'alt' => $imgAlt,'twitter' => $twitter,'feedUrl' => $row['feedUrl'], 'active' => $row['active']);
