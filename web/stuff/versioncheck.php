@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: versioncheck.php.
  * Author: Ulrich Block
@@ -35,48 +36,54 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main!=1) or $reseller_id != 0 or !$pa['updateEW']) {
+if ((!isset($admin_id) or $main!=1) or !isset($reseller_id) or $reseller_id != 0 or !$pa['updateEW']) {
     header('Location: admin.php');
     die;
 }
+
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
-$sprache = getlanguagefile('licence',$user_language,$reseller_id);
+$sprache = getlanguagefile('licence', $user_language, $reseller_id);
 $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
-if ($ui->st('d', 'get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
-	if (isset($action) and $action == 'ud') {
-		$updateinclude = true;
-		class UpdateResponse {
-			public $response=array(),$errors = array();
-			function __construct() {
-				$this->response = array();
-			}
-			function add ($newtext) {
-				$this->response[] = $newtext;
-			}
+
+if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($ewVersions['cVersion'] < $ewVersions['version'] or $ewVersions['files'] < $ewVersions['version'])) {
+
+    if (isset($action) and $action == 'ud') {
+
+        $updateinclude = true;
+
+        class UpdateResponse {
+            public $response=array(),$errors = array();
+            function __construct() {
+                $this->response = array();
+            }
+            function add ($newtext) {
+                $this->response[] = $newtext;
+            }
             function addError ($newtext) {
                 $this->errors[] = $newtext;
             }
-			function printresponse () {
-				return $this->response;
-			}
+            function printresponse () {
+                return $this->response;
+            }
             function printErrors () {
                 return $this->errors;
             }
-			function __destruct() {
-				unset($this->response,$this->errors);
-			}
-		}
+            function __destruct() {
+                unset($this->response, $this->errors);
+            }
+        }
+
         function rmr($dir) {
             if (is_dir($dir)) {
-                $dircontent=scandir($dir);
+                $dircontent = scandir($dir);
                 foreach ($dircontent as $c) {
-                    if ($c != '.' and $c != '..' and is_dir($dir. '/' . $c)) {
-                        rmr($dir. '/' . $c);
+                    if ($c != '.' and $c != '..' and is_dir($dir . '/' . $c)) {
+                        rmr($dir . '/' . $c);
                     } else if ($c != '.' and $c != '..') {
-                        unlink($dir. '/' . $c);
+                        unlink($dir . '/' . $c);
                     }
                 }
                 rmdir($dir);
@@ -84,133 +91,212 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ew
                 @unlink($dir);
             }
         }
-		$response=new UpdateResponse();
-		if (!is_dir(EASYWIDIR . '/tmp')) {
-			@mkdir(EASYWIDIR . '/tmp');
-		}
-		if (is_dir(EASYWIDIR . '/tmp')) {
-			$response->add('Creating tempfolder <b>tmp/</b>');
-			$opts=stream_context_create(array('http' => array('method' => 'GET','header' => "Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
-			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'.zip','rb', false,$opts);
-			$zip=@fopen(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip','wb');
-			if ($fp == true and $zip == true) {
-				while (!feof($fp)){
-					fwrite($zip,fread($fp,8192));
-				}
-				fclose($fp);
-				fclose($zip);
-				$zo=@zip_open(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip');
-				if (is_resource($zo)) {
-					while ($ze=zip_read($zo)) {
-						$name=zip_entry_name($ze);
-						$zeo=zip_entry_open($zo,$ze,'r');
-						if (preg_match('/^(.*)\.[\w]{1,}$/',$name)) {
-							$folders=preg_split('/\//',$name,-1,PREG_SPLIT_NO_EMPTY);
-							$count=count($folders)-1;
-							$i = 0;
-							unset($checkfolder);
-							while ($i<$count) {
-								if (isset($checkfolder))$checkfolder .= '/' . $folders[$i];
-                                else $checkfolder = $folders[$i];
-								$i++;
-							}
-							if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/' . $checkfolder) and !is_file(EASYWIDIR . '/' . $checkfolder)) {
-								@mkdir($checkfolder);
-                                if (is_dir(EASYWIDIR . '/' . $checkfolder)) $response->add('Creating new folder: '.$checkfolder);
-                                else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $checkfolder.'</b>');
-                                
-							}
-						} else if (!is_dir(EASYWIDIR . '/' . $name) and !is_file(EASYWIDIR . '/' . $name)) {
-							@mkdir(EASYWIDIR . '/' . $name);
-                            if (is_dir(EASYWIDIR . '/' . $name)) $response->add('Creating new folder: '.$name);
-                            else $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $name.'</b>');
-						}
-						if (preg_match('/^(.*)\.[\w]{1,}$/',$name) and $zeo) {
-							$nf=fopen($name,'w');
-							$fz=zip_entry_filesize($ze);
-							if ($fz>0) {
-                                fwrite($nf,zip_entry_read($ze,$fz),$fz);
-                                $response->add('Unpacking: '.$name);
-                            } else {
-                                $response->addError('Unpacking: '.$name);
+
+        $response = new UpdateResponse();
+
+        if (!is_dir(EASYWIDIR . '/tmp')) {
+            @mkdir(EASYWIDIR . '/tmp');
+        }
+
+        if (is_dir(EASYWIDIR . '/tmp')) {
+            $response->add('Creating tempfolder <b>tmp/</b>');
+
+            $opts = stream_context_create(array('http' => array('method' => 'GET','header' => "Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
+
+            $fp = @fopen('http://update.easy-wi.com/ew/' . $licenceDetails['v'] . '.zip', 'rb', false, $opts);
+            $zip = @fopen(EASYWIDIR . '/tmp/' . $licenceDetails['v'] . '.zip', 'wb');
+
+            if ($fp == true and $zip == true) {
+                while (!feof($fp)){
+                    fwrite($zip, fread($fp, 8192));
+                }
+                fclose($fp);
+                fclose($zip);
+
+                $zo = @zip_open(EASYWIDIR . '/tmp/'. $licenceDetails['v'] . '.zip');
+
+                if (is_resource($zo)) {
+                    while ($ze = zip_read($zo)) {
+
+                        $name = zip_entry_name($ze);
+                        $zeo = zip_entry_open($zo, $ze, 'r');
+
+                        if (preg_match('/^(.*)\.[\w]{1,}$/', $name)) {
+
+                            $folders = preg_split('/\//',$name,-1,PREG_SPLIT_NO_EMPTY);
+                            $count = count($folders) - 1;
+                            $i = 0;
+
+                            unset($checkfolder);
+
+                            while ($i < $count) {
+
+                                if (isset($checkfolder)) {
+                                    $checkfolder .= '/' . $folders[$i];
+                                } else {
+                                    $checkfolder = $folders[$i];
+                                }
+
+                                $i++;
                             }
-							zip_entry_close($ze);
-							fclose($nf);
-						}
-					}
-					zip_close($zo);
-				} else {
-					$response->addError('Cannot open the update archive <b>'.$licenceDetails['v'].'.zip</b>');
-				}
+
+                            if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/' . $checkfolder) and !is_file(EASYWIDIR . '/' . $checkfolder)) {
+
+                                @mkdir($checkfolder);
+
+                                if (is_dir(EASYWIDIR . '/' . $checkfolder)) {
+                                    $response->add('Creating new folder: '.$checkfolder);
+                                } else {
+                                    $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $checkfolder . '</b>');
+                                }
+
+                            }
+
+                        } else if (!is_dir(EASYWIDIR . '/' . $name) and !is_file(EASYWIDIR . '/' . $name)) {
+
+                            @mkdir(EASYWIDIR . '/' . $name);
+
+                            if (is_dir(EASYWIDIR . '/' . $name)) {
+                                $response->add('Creating new folder: '.$name);
+                            } else {
+                                $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $name . '</b>');
+                            }
+
+                        }
+
+                        if (preg_match('/^(.*)\.[\w]{1,}$/', $name) and $zeo) {
+
+                            $nf = fopen($name,'w');
+                            $fz = zip_entry_filesize($ze);
+
+                            if ($fz > 0) {
+                                fwrite($nf, zip_entry_read($ze, $fz), $fz);
+                                $response->add('Unpacking: '. $name);
+                            } else {
+                                $response->addError('Unpacking: '. $name);
+                            }
+
+                            zip_entry_close($ze);
+                            fclose($nf);
+                        }
+                    }
+
+                    zip_close($zo);
+
+                } else {
+                    $response->addError('Cannot open the update archive <b>' . $licenceDetails['v'] . '.zip</b>');
+                }
+
                 $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
+
                 if (!isset($alreadyRepaired)) {
                     $response->add('Adding tables if needed.');
                     include(EASYWIDIR . '/stuff/tables_add.php');
                 }
-				if ($ewVersions['cVersion']<$ewVersions['version']) include(EASYWIDIR . '/install/update.php');
+
+                if ($ewVersions['cVersion'] < $ewVersions['version']) {
+                    include(EASYWIDIR . '/install/update.php');
+                }
+
                 if (!isset($alreadyRepaired)) {
                     $response->add('Repairing tables if needed.');
                     include(EASYWIDIR . '/stuff/tables_repair.php');
                 }
-			} else {
-				$response->add('Error: could not retrieve the update');
-			}
-			$dircontent=scandir(EASYWIDIR . '/tmp/');
-			foreach ($dircontent as $c) {
-				if ($c != '.' and $c != '..') rmr(EASYWIDIR . '/tmp/'.$c);
-			}
+
+            } else {
+                $response->add('Error: could not retrieve the update');
+            }
+
+            foreach (scandir(EASYWIDIR . '/tmp/') as $c) {
+                if ($c != '.' and $c != '..') {
+                    rmr(EASYWIDIR . '/tmp/' . $c);
+                }
+            }
+
             rmr(EASYWIDIR . '/install/');
-			if (is_file(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip')) $response->addError('Cannot remove the content from tempfolder <b>tmp/</b>');
-			else $response->add('Removed temporary files from tempfolder');
-		} else {
-			$response->addError('Cannot create the tempfolder <b>tmp/</b>');
-		}
-        if(count($response->errors)>0) $template_file = 'Errors: '.implode('<br />',$response->errors);
-		if (isset($template_file)) $template_file .= ' <br/>'.implode('<br />',$response->printresponse());
-        else $template_file = $response->printresponse();
-	} else {
-        if (isset($ewVersions)) $template_file = 'admin_versioncheck_ud.tpl';
-	}
-} else {
-	$table = array();
-    if ($user_language == 'de') {
-        $column='de';
-        $release='releasenotesDE';
+
+            if (is_file(EASYWIDIR . '/tmp/' . $licenceDetails['v'] . '.zip')) {
+                $response->addError('Cannot remove the content from tempfolder <b>tmp/</b>');
+            } else {
+                $response->add('Removed temporary files from tempfolder');
+            }
+
+        } else {
+            $response->addError('Cannot create the tempfolder <b>tmp/</b>');
+        }
+
+        if (count($response->errors)>0) {
+            $template_file = 'Errors: '.implode('<br />',$response->errors);
+        }
+
+        if (isset($template_file)) {
+            $template_file .= ' <br/>'.implode('<br />',$response->printresponse());
+        } else {
+            $template_file = $response->printresponse();
+        }
+
     } else {
-        $column='en';
-        $release='releasenotesEN';
+        if (isset($ewVersions)) $template_file = 'admin_versioncheck_ud.tpl';
     }
-    $release='<div class="right"><a href="http://forum.easy-wi.com/showthread.php?tid='.$ewVersions[$release].'" target="_blank">'.$vcsprache->releaseNotes.'</a></div>';
-	$query = $sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
-	$query->execute();
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		if ($row[$column] != null and $row[$column] != '') $table[] = array('version' => $row['version'], 'text' => $row[$column]);
-	}
-    $update=($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW'] == true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
-	if ($ewVersions['cVersion']<$ewVersions['version']) {
+} else {
+    $table = array();
+
+    if ($user_language == 'de') {
+        $column = 'de';
+        $release = 'releasenotesDE';
+    } else {
+        $column = 'en';
+        $release = 'releasenotesEN';
+    }
+
+    $release = '<div class="right"><a href="https://easy-wi.com/forum/showthread.php?tid='.$ewVersions[$release] . '" target="_blank">'.$vcsprache->releaseNotes . '</a></div>';
+
+    $query = $sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
+    $query->execute();
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if ($row[$column] != null and $row[$column] != '') {
+            $table[] = array('version' => $row['version'], 'text' => $row[$column]);
+        }
+    }
+
+    $update = ($reseller_id == 0 and isset($pa['updateEW']) and $pa['updateEW'] == true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
+
+    if ($ewVersions['cVersion'] < $ewVersions['version']) {
         $state = 1;
-		$class='versioncheckbad';
-		$isok = $vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
-	} else if ($ewVersions['files']<$ewVersions['version']) {
+        $class = 'versioncheckbad';
+        $isok = $vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
+
+    } else if ($ewVersions['files'] < $ewVersions['version']) {
         $state = 1;
-		$class='versioncheckbad';
-		$isok = $vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'].'. '.$vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
-	} else {
+        $class = 'versioncheckbad';
+        $isok = $vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'] . '. '.$vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
+
+    } else {
         $state = 2;
-		$class='versioncheckok';
-		$isok = $vcsprache->ok . ' ' . $ewVersions['cVersion'].'.';
-	}
-    if($reseller_id==0){
-        $rowspan=8;
+        $class = 'versioncheckok';
+        $isok = $vcsprache->ok . ' ' . $ewVersions['cVersion'] . '.';
+    }
+
+    if ($reseller_id == 0){
+        $rowspan = 8;
         $contract = $licenceDetails['c'];
         $contract = $sprache->$contract;
         $contractTime = $licenceDetails['validUntil'];
-        if ($licenceDetails['validUntil'] == '0000-00-00') $contractTime = $sprache->unlimited;
         $updates = $licenceDetails['updatesUntil'];
-        if ($licenceDetails['c'] == 'R') $updates = $contractTime;
-        else if ($licenceDetails['updatesUntil'] == '0000-00-00') $updates = $sprache->unlimited;
+
+        if ($licenceDetails['validUntil'] == '0000-00-00') {
+            $contractTime = $sprache->unlimited;
+        }
+
+        if ($licenceDetails['c'] == 'R') {
+            $updates = $contractTime;
+        } else if ($licenceDetails['updatesUntil'] == '0000-00-00') {
+            $updates = $sprache->unlimited;
+        }
+
     } else {
         $rowspan = 4;
     }
-	$template_file = 'admin_versioncheck.tpl';
+
+    $template_file = 'admin_versioncheck.tpl';
 }
