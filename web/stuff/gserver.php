@@ -1127,6 +1127,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
     $table = array();
     $query2 = $sql->prepare("SELECT `extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='gs' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        unset($tobeActive);
         $server = $row['server'];
         $userid = $row['userid'];
         $serverid = $row['id'];
@@ -1148,8 +1149,8 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         if (!isset($maxplayers)) $maxplayers = '';
         $premoved = '';
         $nameremoved = '';
-        $imgName='16_ok';
-        $imgAlt='Online';
+        $imgName = '16_ok';
+        $imgAlt = 'Online';
         if ($row['jobPending'] == 'Y') {
             $query2->execute(array($row['id'], $row['resellerid']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
@@ -1162,31 +1163,37 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         } else {
             $jobPending = $gsprache->no;
         }
-        if (($row['active'] == 'Y' and $row['jobPending'] == 'N') or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
-            $imgName='16_ok';
-            $imgAlt='Active';
+
+        if ($stopped == 'Y') {
+            $imgName = '16_bad';
+            $imgAlt = 'Stopped';
+
+        } else if ($row['active'] == 'N' and $row['jobPending'] == 'Y' and isset($tobeActive) and $tobeActive == 'Y') {
+            $imgName = '16_ok';
+            $imgAlt = 'Active';
+
         } else if ($row['active'] == 'N') {
-            $imgName='16_bad';
-            $imgAlt='Inactive';
-        } else if ($stopped== 'Y') {
-            $imgName='16_bad';
-            $imgAlt='Stopped';
+            $imgName = '16_bad';
+            $imgAlt = 'Inactive';
+
         } else if (($name == 'OFFLINE' or $name == '') and $notified >= $rSA['down_checks'] and $stopped== 'N') {
-            $imgName='16_error';
-            $imgAlt='Crashed';
+            $imgName = '16_error';
+            $imgAlt = 'Crashed';
+
         } else {
-            $imgAlt='Online';
+
             if ($war== 'Y' and $password== 'N') {
-                $imgName='16_error';
-                $imgAlt='No Password';
-                $premoved="<br /><div class=\"error\">".$sprache->premoved."</div>";
+                $imgName = '16_error';
+                $imgAlt = 'No Password';
             }
+
             if ($brandname == 'Y' and $rSA['brandname'] != null and $rSA['brandname'] != '' and strpos(strtolower($name),strtolower($rSA['brandname'])) === false) {
-                $imgName='16_error';
-                $imgAlt='No Servertag';
-                $nameremoved="<div class=\"error\">".$sprache->nameremoved."</div>";
+                $imgName = '16_error';
+                $imgAlt = 'No Servertag';
             }
+
         }
+
         $table[] = array('serveractive' => $serveractive,'shorten' => $row['shorten'], 'useractive' => $row['useractive'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'img' => $imgName,'alt' => $imgAlt,'premoved' => $premoved,'nameremoved' => $nameremoved, 'server' => $server,'serverid' => $serverid,'name' => $name,'type' => $type,'map' => $map,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'id' => $userid,'lendserver' => $lendserver,'active' => $row['active'], 'jobPending' => $jobPending);
     }
     $next = $start+$amount;
