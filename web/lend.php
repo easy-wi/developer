@@ -63,6 +63,9 @@ if (isset($page_include)) {
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/class_voice.php');
+
 $validacces = false;
 
 if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post') and !isset($page_include)) {
@@ -273,8 +276,6 @@ if (isset($servertype)) {
 
                 unset($_SESSION['lend']['gs']);
 
-                include(EASYWIDIR . '/stuff/ssh_exec.php');
-
                 $query1->execute(array($serverid, $reseller_id));
                 foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
                     $cmds = gsrestart($row1['switchID'], 'so', $aeskey, $reseller_id);
@@ -284,8 +285,6 @@ if (isset($servertype)) {
             } else if ($servertype == 'v') {
 
                 unset($_SESSION['lend']['vs']);
-
-                include(EASYWIDIR . '/stuff/class_voice.php');
 
                 $query3->execute(array($aeskey, $serverid, $reseller_id));
                 foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row2) {
@@ -319,7 +318,11 @@ if (isset($servertype)) {
             $password = $row['password'];
             $slots = $row['slots'];
             if ($servertype == 'g') {
-                if (!$ui->id('xml', 1, 'post') and (!isset($_SESSION['lend']['gs']) or $_SESSION['lend']['gs'] != $serverid)) $lendIPBlock = true;
+
+                if (!$ui->id('xml', 1, 'post') and (!isset($_SESSION['lend']['gs']) or $_SESSION['lend']['gs'] != $serverid)) {
+                    $lendIPBlock = true;
+                }
+
                 $gsstillrunning = true;
                 $description = '';
                 $serverip = '';
@@ -424,48 +427,42 @@ if (isset($servertype)) {
             }
         }
     }
-} else {
-
-    if (isset($_SESSION['lend']['gs'])) {
-        unset($_SESSION['lend']['gs']);
-    }
-
-    if (isset($_SESSION['lend']['vs'])) {
-        unset($_SESSION['lend']['vs']);
-    }
 }
 
-if ($ui->escaped('ipblocked', 'post') and $ui->id('xml', 1, 'post') == 1 and !isset($responsexml)) {
+if (!isset($template_file) and $ui->escaped('ipblocked', 'post') and $ui->id('xml', 1, 'post') == 1 and !isset($responsexml)) {
     die('notblocked');
 }
 
-if ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=1) or ($ui->id('xml', 1, 'post') == 1 and !$ui->st('w', 'post'))){
+if (!isset($template_file) and ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=1) or ($ui->id('xml', 1, 'post') == 1 and !$ui->st('w', 'post')))) {
+
     $lendGameServers = array();
     $lendVoiceServers = array();
 
-    $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
-    $query2 = $sql->prepare("SELECT t.`shorten`,t.`description`,l.`slots`,l.`started`,l.`lendtime` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `lendedserver` l ON t.`id`=l.`serverid` AND l.`servertype`='g' WHERE s.`switchID`=? AND s.`resellerid`=0");
+    $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
+    $query2 = $sql->prepare("SELECT `slots`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
+    $query3 = $sql->prepare("SELECT t.`shorten`,t.`description` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
     $query->execute(array($reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+
         $installedShorten = array();
         $timeleft = 0;
         $slots = $row['slots'];
         $runningGame = '';
         $free = '16_ok.png';
 
-        $query2->execute(array($row['id']));
+        $query2->execute(array($row['serverid']));
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-            $installedShorten[$row2['shorten']] = $row2['description'];
-            if ($row2['slots'] != null) {
-                $runningGame = $row2['shorten'];
-                $slots = $row2['slots'];
-                $timeleft = round($row2['lendtime'] - (strtotime('now') - strtotime($row2['started'])) / 60);
-                $free = '16_bad.png';
+            $slots = $row2['slots'];
+            $timeleft = round($row2['lendtime'] - (strtotime('now') - strtotime($row2['started'])) / 60);
+            $free = '16_bad.png';
 
-                if ($timeleft < 0) {
-                    $timeleft = 0;
-                }
+            if ($timeleft < 0) {
+                $timeleft = 0;
             }
+        }
+        $query3->execute(array($row['id']));
+        foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+            $installedShorten[$row3['shorten']] = $row3['description'];
         }
 
         $lendGameServers[] = array('ip' => $row['serverip'], 'port' => (int) $row['port'], 'queryName' => htmlentities($row['queryName'], ENT_QUOTES, 'UTF-8'), 'queryMap' => htmlentities($row['queryMap'], ENT_QUOTES, 'UTF-8'), 'runningGame' => $runningGame, 'games' => $installedShorten, 'slots' => (int) $slots,'usedslots' => (int) $row['queryNumplayers'], 'timeleft' => (int) $timeleft, 'free' => $free);
@@ -583,7 +580,7 @@ if ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!
         $template_file = 'page_lend_list.tpl';
     }
 
-} else if ($gsstillrunning == false and isset($active) and $active == 'Y' and $servertype == 'g' and !$ui->escaped('ipblocked', 'post')) {
+} else if (!isset($template_file) and $gsstillrunning == false and isset($active) and $active == 'Y' and $servertype == 'g' and !$ui->escaped('ipblocked', 'post')) {
 
     $switchcount = array();
 
@@ -853,8 +850,6 @@ if ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!
                 $query = $insert = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($serverid, $updateID, $reseller_id));
 
-                include(EASYWIDIR . '/stuff/ssh_exec.php');
-
                 $cmds = gsrestart($updateID, 're', $aeskey, $reseller_id);
                 ssh2_execute('gs', $rootID, $cmds);
 
@@ -1023,12 +1018,12 @@ if ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!
             echo $xml->saveXML();
 
         } else {
-            echo 'Module deactivated';
+            die('Module deactivated');
         }
     }
 
 # Voiceserver
-} else if ($vostillrunning == false and isset($active) and $active == 'Y' and $servertype == 'v' and !$ui->escaped('ipblocked', 'post')) {
+} else if (!isset($template_file) and $vostillrunning == false and isset($active) and $active == 'Y' and $servertype == 'v' and !$ui->escaped('ipblocked', 'post')) {
 
     $serveravailable = false;
     $freevoice = $vocount;
@@ -1162,9 +1157,7 @@ if ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!
                         $queryip = $query2->fetchColumn();
                     }
 
-                    include(EASYWIDIR . '/stuff/class_voice.php');
-
-                    $connection=new TS3($queryip, $queryport,'serveradmin', $querypassword);
+                    $connection = new TS3($queryip, $queryport,'serveradmin', $querypassword);
                     $errorcode = $connection->errorcode;
 
                     if (strpos($errorcode, 'error id=0') === false) {
@@ -1373,17 +1366,14 @@ if ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!
                 $template_file = 'Module deactivated';
 
             } else {
-                echo 'Module deactivated';
+                $template_file = 'Module deactivated';
             }
 
         } else {
-            echo 'Module deactivated';
+            $template_file = 'Module deactivated';
         }
     }
 
-} else if (isset($active) and $active == 'N' and isset($page_include))  {
-    $template_file = 'Module deactivated';
-
-} else {
-    echo 'Module deactivated';
+} else if (!isset($template_file)){
+   $template_file = 'Module deactivated';
 }
