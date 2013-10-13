@@ -74,13 +74,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $steamAccount = $ui->username('steamAccount', 255, 'post');
     $steamPassword = $ui->password('steamPassword', 255, 'post');
     $keyname = $ui->startparameter('keyname', 'post');
-    $publickey = $ui->active('publickey', 'post');
-    $active = $ui->active('active', 'post');
     $hyperthreading = $ui->active('hyperthreading', 'post');
     $ip = $ui->ip('ip', 'post');
     $altips = $ui->ips('altips', 'post');
-    $port = $ui->port('port', 'post');
-    $ftpport = $ui->port('ftpport', 'post');
     $user = $ui->username('user', 20, 'post');
     $pass = $ui->password('pass', 255, 'post');
     $os = 'linux';
@@ -89,7 +85,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $maxslots = $ui->id('maxslots', 5, 'post');
     $maxserver = $ui->id('maxserver',4, 'post');
     $updates = $ui->id('updates',1, 'post');
+
+    $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
     $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 0;
+    $publickey = ($ui->active('publickey', 'post')) ? $ui->active('publickey', 'post') : 'N';
+    $ftpport = ($ui->port('ftpport', 'post')) ? $ui->port('ftpport', 'post') : 21;
+    $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
 
     if (!$ui->smallletters('action', 2, 'post')) {
 
