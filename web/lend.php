@@ -439,30 +439,35 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     $lendVoiceServers = array();
 
     $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
-    $query2 = $sql->prepare("SELECT `slots`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
-    $query3 = $sql->prepare("SELECT t.`shorten`,t.`description` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
+    $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
+    $query3 = $sql->prepare("SELECT `slots`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 
         $installedShorten = array();
         $timeleft = 0;
-        $slots = $row['slots'];
         $runningGame = '';
+        $slots = $row['slots'];
         $free = '16_ok.png';
 
-        $query2->execute(array($row['serverid']));
+        $query2->execute(array($row['id']));
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-            $slots = $row2['slots'];
-            $timeleft = round($row2['lendtime'] - (strtotime('now') - strtotime($row2['started'])) / 60);
+            $installedShorten[$row2['shorten']] = $row2['description'];
+
+            if ($row2['id'] == $row['serverid']) {
+                $runningGame = $row2['shorten'];
+            }
+        }
+
+        $query3->execute(array($row['serverid']));
+        foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+            $slots = $row3['slots'];
+            $timeleft = round($row3['lendtime'] - (strtotime('now') - strtotime($row3['started'])) / 60);
             $free = '16_bad.png';
 
             if ($timeleft < 0) {
                 $timeleft = 0;
             }
-        }
-        $query3->execute(array($row['id']));
-        foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
-            $installedShorten[$row3['shorten']] = $row3['description'];
         }
 
         $lendGameServers[] = array('ip' => $row['serverip'], 'port' => (int) $row['port'], 'queryName' => htmlentities($row['queryName'], ENT_QUOTES, 'UTF-8'), 'queryMap' => htmlentities($row['queryMap'], ENT_QUOTES, 'UTF-8'), 'runningGame' => $runningGame, 'games' => $installedShorten, 'slots' => (int) $slots,'usedslots' => (int) $row['queryNumplayers'], 'timeleft' => (int) $timeleft, 'free' => $free);

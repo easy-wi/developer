@@ -22,7 +22,7 @@
             <tbody>
             <?php foreach ($lendGameServers as $v){ ?>
             <tr>
-                <td><?php if(strlen($v['runningGame'])>0){ echo '<img src="'.$page_data->pageurl.'/images/games/icons/'.$v['runningGame'].'.png" />';}; echo $v['ip'].':'.$v['port'].' '.$v['queryName'];?></td>
+                <td><?php if(strlen($v['runningGame'])>0){ echo '<img src="'.$page_data->pageurl.'/images/games/icons/'.$v['runningGame'].'.png"  width="18" /> ';}; echo $v['ip'].':'.$v['port'].' '.$v['queryName'];?></td>
                 <td><?php echo $v['usedslots'].'/'.$v['slots'];?></td>
                 <td><?php echo $v['queryMap'];?></td>
                 <td><?php echo implode(', ',$v['games']);?></td>
