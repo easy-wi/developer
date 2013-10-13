@@ -225,7 +225,7 @@ if ($ui->st('action', 'post') and !token(true)) {
         }
     }
 } else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',10, 'get')) {
-    $id=$ui->id('id',10, 'get');
+    $id = $ui->id('id',10, 'get');
     if ($id < 1001) {
         $template_file = $sprache->error_core;
     } else  {

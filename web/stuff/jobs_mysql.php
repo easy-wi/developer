@@ -43,52 +43,52 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $query2 = $sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query2->execute(array($aeskey, $row['hostID'], $row['resellerID']));
     foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-        $ip=$row2['ip'];
-        $port=$row2['port'];
-        $user=$row2['user'];
-        $pwd=$row2['decryptedpassword'];
+        $ip = $row2['ip'];
+        $port = $row2['port'];
+        $user = $row2['user'];
+        $pwd = $row2['decryptedpassword'];
     }
     $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
     if ($remotesql->error== 'ok') {
         $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='my' AND `hostID`=?");
         $query2->execute(array($row['hostID']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            $pselect=$sql->prepare("SELECT e.`active`,e.`dbname`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,e.`max_queries_per_hour`,e.`max_updates_per_hour`,e.`max_connections_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
+            $pselect = $sql->prepare("SELECT e.`active`,e.`dbname`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,e.`max_queries_per_hour`,e.`max_updates_per_hour`,e.`max_connections_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
             $pselect->execute(array($aeskey, $row2['affectedID'], $row2['resellerID']));
             foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-                $ip=$row['ip'];
-                $ips=$row['ips'];
-                $cname=$row['cname'];
-                $dbname=$row['dbname'];
-                $password=$row['decryptedpassword'];
+                $ip = $row['ip'];
+                $ips = $row['ips'];
+                $cname = $row['cname'];
+                $dbname = $row['dbname'];
+                $password = $row['decryptedpassword'];
                 $extraData=@json_decode($row['extraData']);
                 if (is_object($extraData->newActive) and isset($extraData->newActive) and $extraData->newActive == 'N') {
                     $password=passwordgenerate(20);
                 }
-                $max_queries_per_hour=$row['max_queries_per_hour'];
-                $max_updates_per_hour=$row['max_updates_per_hour'];
-                $max_connections_per_hour=$row['max_connections_per_hour'];
-                $max_userconnections_per_hour=$row['max_userconnections_per_hour'];
+                $max_queries_per_hour = $row['max_queries_per_hour'];
+                $max_updates_per_hour = $row['max_updates_per_hour'];
+                $max_connections_per_hour = $row['max_connections_per_hour'];
+                $max_userconnections_per_hour = $row['max_userconnections_per_hour'];
                 if ($row2['action'] == 'dl') {
-                    $command=$gsprache->del.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+                    $command = $gsprache->del.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
                     $remotesql->DelDB($dbname);
-                    $delete=$sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? LIMIT 1");
+                    $delete = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? LIMIT 1");
                     $delete->execute(array($row2['affectedID']));
                     customColumns('M', $row2['affectedID'], 'del');
                 } else if ($row2['action'] == 'ad') {
-                    $command=$gsprache->add.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+                    $command = $gsprache->add.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
                     $remotesql->AddDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
                 } else {
-                    $command=$gsprache->mod.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+                    $command = $gsprache->mod.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
                     $remotesql->ModDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
                 }
                 $theOutput->printGraph($command);
             }
-            $update=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
+            $update = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
             $update->execute(array($row2['jobID']));
         }
     } else {
-        $update=$sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='my' AND `hostID`=?");
+        $update = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='my' AND `hostID`=?");
         $update->execute(array($row['hostID']));
     }
 }

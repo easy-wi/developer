@@ -38,17 +38,17 @@
 class PageSettings {
 	public $seo='',$language,$about,$canurl,$pageurl,$title,$keywords=array(),$lastnews,$tags,$pages,$hiddenPages,$last_news=array(),$MSIE=false,$lendactive,$lendactiveGS,$lendactiveVS,$lendGS=false,$lendVS=false,$protectioncheck,$pages_array=array(),$languageLinks = array();
 	function __construct($user_language,$pageurl,$seo) {
-		$this->language=$user_language;
-		$this->pageurl=$pageurl;
-		$this->seo=$seo;
-		$this->canurl=$this->pageurl.'/';
+		$this->language = $user_language;
+		$this->pageurl = $pageurl;
+		$this->seo = $seo;
+		$this->canurl = $this->pageurl.'/';
 	}
 	private function NameToLink ($value) {
         $szrm=array('ä' => 'ae','ö' => 'oe','ü' => 'ue','Ä' => 'Ae','Ö' => 'Oe','Ü' => 'Ue','ß' => 'ss','á' => 'a','à' => 'a','Á' => 'A','À' => 'A','é' => 'e','è' => 'e','É' => 'E','È' => 'E','ó' => 'o','ò' => 'o','Ó' => 'O','Ò' => 'O','ú' => 'u','ù' => 'u','Ú' => 'U','Ù' => 'U');
         return strtolower(preg_replace('/[^a-zA-Z0-9]{1}/','-',strtr($value,$szrm)));
 	}
 	function SetData ($var,$value) {
-		$this->$var=$value;
+		$this->$var = $value;
 	}
 	function AddData ($var,$value) {
 		if (is_array($this->$var)) {
@@ -58,13 +58,13 @@ class PageSettings {
 		}
 	}
 	function SetCanUrl ($value) {
-		$this->canurl=$this->pageurl. '/' . $value;
+		$this->canurl = $this->pageurl. '/' . $value;
 	}
 	private function AddPageToArray ($type,$pageid,$value) {
 		$i = 1;
 		while (isset($this->pages_array[$type]) and in_array($value,$this->pages_array[$type])) {
 			$i++;
-			$value=$value . '-' . $i;
+			$value = $value . '-' . $i;
 		}
 		$this->pages_array[$type][$pageid] = $value;
 		return $value;
@@ -75,8 +75,8 @@ class PageSettings {
 		if ($this->seo== 'Y') {
 			if (is_array($request)) {
 				$link = '';
-				foreach ($request as $r) $link .='/' . $this->NameToLink($r);
-			} else if ($id==false) {
+				foreach ($request as $r) $link .= '/' . $this->NameToLink($r);
+			} else if ($id == false) {
 				$link = '/' . $this->AddPageToArray('pages',$subid,$this->NameToLink($request));
 			} else {
 				$link = '/' . $this->AddPageToArray('pages',$id,$this->NameToLink($request));
@@ -99,13 +99,13 @@ class PageSettings {
 		}
 		$subdata['href'] = '<a href="'.$subdata['link'].'" title="'.$linkname.'">'.$linkname.'</a>';
 		$subdata['linkname'] = $linkname;
-		if ($id==false and $listPage==true) {
+		if ($id == false and $listPage == true) {
 			$this->pages[$subid] = $subdata;
-		} else if ($listPage==true) {
+		} else if ($listPage == true) {
 			$this->pages[$subid][$id] = $subdata;
-		} else if ($id==false and $listPage==false) {
+		} else if ($id == false and $listPage == false) {
             $this->hiddenPages[$subid] = $subdata;
-        } else if ($listPage==false) {
+        } else if ($listPage == false) {
             $this->hiddenPages[$subid][$id] = $subdata;
         }
 	}
@@ -119,7 +119,7 @@ class PageSettings {
 		if ($this->seo== 'Y') {
 			if (is_array($request)) {
 				$link = '';
-				for ($i = 0;$i<(count($request)-1);$i++) $link .='/' . $this->NameToLink($request[$i]);
+				for ($i = 0;$i<(count($request)-1);$i++) $link .= '/' . $this->NameToLink($request[$i]);
 				$link .= '/' . $this->AddPageToArray($var,$id,$this->NameToLink($request[$i]));
 			} else {
 				$link = '/' . $this->AddPageToArray($var,$id,$this->NameToLink($request));
@@ -140,17 +140,17 @@ class PageSettings {
 		}
 		$subdata[$id]['href'] = '<a href="'.$subdata[$id]['link'].'" title="'.$linkname.'">'.$linkname.'</a>';
 		$subdata[$id]['linkname'] = $linkname;
-		$this->$var=$subdata;
+		$this->$var = $subdata;
 	}
     function setCanonicalUrl($s=null,$ID=null) {
         if ($s==null) {
-            $this->canurl=$this->pageurl;
+            $this->canurl = $this->pageurl;
         } else {
             global $sql,$gsprache,$page_sprache;
             if ($this->seo== 'Y' and $ID != null and ($s == 'news' or $s == 'page')) {
                 $query = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `id`=? LIMIT 1");
                 $query->execute(array($ID));
-                $title=$query->fetchColumn();
+                $title = $query->fetchColumn();
                 $addToUrl=($s == 'news') ? '/' . $this->language. '/' . $this->NameToLink($gsprache->news). '/' . $this->NameToLink($title).'/' : '/' . $this->language. '/' . $this->NameToLink($title).'/';
             } else if ($this->seo== 'Y' and in_array($s, array('imprint','lendserver','news'))) {
                 $addToUrl='/' . $this->language. '/' . $this->NameToLink($gsprache->$s).'/';
@@ -161,7 +161,7 @@ class PageSettings {
             } else {
                 $addToUrl='?s='.$s;
             }
-            $this->canurl=$this->pageurl.$addToUrl;
+            $this->canurl = $this->pageurl.$addToUrl;
         }
     }
     public function showLend ($admin,$user,$type) {
@@ -169,23 +169,23 @@ class PageSettings {
         if ($type == 'g') {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `resellerid`=0 AND `active`='Y' AND `lendserver`='Y' LIMIT 1");
             $query->execute();
-            $count=$query->fetchColumn();
+            $count = $query->fetchColumn();
             if ($count>0 and ($this->lendactiveGS== 'B' or ($admin === true and $this->lendactiveGS!='N') or ($user === true and $this->lendactiveGS== 'R') or ($user === false and $this->lendactiveGS== 'A'))) {
                 $this->lendGS = true;
                 return true;
             } else if ($count>0) {
-                $this->lendGS=null;
+                $this->lendGS = null;
                 return null;
             }
         } else {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `resellerid`=0 AND `active`='Y' AND `lendserver`='Y' LIMIT 1");
             $query->execute();
-            $count=$query->fetchColumn();
+            $count = $query->fetchColumn();
             if ($count>0 and ($this->lendactiveVS== 'B' or ($admin === true and $this->lendactiveVS!='N') or ($user === true and $this->lendactiveVS== 'R') or ($user === false and $this->lendactiveVS== 'A'))) {
                 $this->lendVS = true;
                 return true;
             } else if ($count>0) {
-                $this->lendVS=null;
+                $this->lendVS = null;
                 return null;
             }
         }
@@ -223,12 +223,12 @@ function checkForSpam ($checkURL=null) {
     // Check if IP exists at DB as a spammer
     if ($checkURL==null) {
         $hostByIp = '';
-        if ($ui->ip4('REMOTE_ADDR','server')) {
-            $hostByIp=gethostbyaddr($ui->ip4('REMOTE_ADDR','server'));
+        if ($ui->ip4('REMOTE_ADDR', 'server')) {
+            $hostByIp=gethostbyaddr($ui->ip4('REMOTE_ADDR', 'server'));
             $ips[] = $hostByIp;
         }
         $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `markedSpam`='Y' AND (`ip`=? OR `dns`=?) AND `resellerid`=0 LIMIT 1");
-        $query->execute(array($ui->ip('REMOTE_ADDR','server'),$hostByIp));
+        $query->execute(array($ui->ip('REMOTE_ADDR', 'server'),$hostByIp));
         if ($query->fetchColumn()>0) $spamReason[] = 'IP or Host already known for spam';
     } else {
         $check=str_replace(array('https://','http://','ftps://','ftp://'),'',$checkURL);
@@ -241,36 +241,36 @@ function checkForSpam ($checkURL=null) {
     }
 
     // reverse DNS does not add up
-    if ($checkURL==null and count($spamReason)==0 and $ui->ip4('REMOTE_ADDR','server') and !in_array($ui->ip4('REMOTE_ADDR','server'),gethostbynamel($ips))) $spamReason[] = 'Fake IP';
+    if ($checkURL==null and count($spamReason)==0 and $ui->ip4('REMOTE_ADDR', 'server') and !in_array($ui->ip4('REMOTE_ADDR', 'server'),gethostbynamel($ips))) $spamReason[] = 'Fake IP';
 
     // hidden fields have been filled
-    if ($checkURL==null and count($spamReason)==0 and strlen($ui->escaped('mail','post'))>0) $spamReason[] = 'XSS: Hidden field';
+    if ($checkURL==null and count($spamReason)==0 and strlen($ui->escaped('mail', 'post'))>0) $spamReason[] = 'XSS: Hidden field';
 
     // CSFR token does not add up
-    if ($checkURL==null and count($spamReason)==0 and (!isset($_SESSION['news'][$textID]) or $_SESSION['news'][$textID] != $ui->escaped('token','post'))) $spamReason[] = 'XSS: Token';
+    if ($checkURL==null and count($spamReason)==0 and (!isset($_SESSION['news'][$textID]) or $_SESSION['news'][$textID] != $ui->escaped('token', 'post'))) $spamReason[] = 'XSS: Token';
 
     // Links not allowed in comments
     if ($checkURL==null and count($spamReason)==0 and $blockLinks == 'Y') {
-        foreach (array('http://','https://','ftp://','ftps://') as $key) if (strpos($ui->escaped('comment','post'),$key) !== false and (!in_array('URL Spam',$spamReason))) $spamReason[] = 'URL Spam';
+        foreach (array('http://','https://','ftp://','ftps://') as $key) if (strpos($ui->escaped('comment', 'post'),$key) !== false and (!in_array('URL Spam',$spamReason))) $spamReason[] = 'URL Spam';
     }
 
     // Post contains blacklisted words
     if ($checkURL==null and count($spamReason)==0) {
         foreach (explode(',',$blockWords) as $word) {
-            if (strlen(trim($word))>0 and strpos($ui->escaped('comment','post'),trim($word)) !== false and !in_array('Word Blacklist',$spamReason)) $spamReason[] = 'Word Blacklist';
+            if (strlen(trim($word))>0 and strpos($ui->escaped('comment', 'post'),trim($word)) !== false and !in_array('Word Blacklist',$spamReason)) $spamReason[] = 'Word Blacklist';
         }
     }
 
     // use google translation REST API for language detection. If the current page contains a different language we likely have a spammer
     if ($checkURL==null and count($spamReason)==0 and $languageFilter== 'Y') {
-        $raw=webhostRequest('translate.google.com',$page_data->pageurl,'/translate_a/t?client=x&text='.urlencode(htmlentities(substr($ui->escaped('comment','post'),0,200))));
+        $raw=webhostRequest('translate.google.com',$page_data->pageurl,'/translate_a/t?client=x&text='.urlencode(htmlentities(substr($ui->escaped('comment', 'post'),0,200))));
         $json=json_decode($raw);
         if ($json and isset($json->src) and $json->src != $user_language) $spamReason[] = 'Language';
     }
 
     // check if the remote address (IP) is known for spamming at the tornevall.org list
-    if (count($spamReason)==0 and ($checkURL != null or $ui->ip4('REMOTE_ADDR','server')) and (($honeyPotKey != null and $honeyPotKey != '') or $tornevall== 'Y')) {
-        if ($checkURL != null) $ips=array($ui->ip4('REMOTE_ADDR','server'));
+    if (count($spamReason)==0 and ($checkURL != null or $ui->ip4('REMOTE_ADDR', 'server')) and (($honeyPotKey != null and $honeyPotKey != '') or $tornevall== 'Y')) {
+        if ($checkURL != null) $ips=array($ui->ip4('REMOTE_ADDR', 'server'));
         foreach ($ips as $ip) {
             $ipRevers=implode('.', array_reverse(explode('.',$ip)));
             if (count($spamReason)==0 and $tornevall== 'Y' and (bool)checkdnsrr($ipRevers.'.opm.tornevall.org.','A')) $spamReason[] = 'IP is listed at dnsbl.tornevall.org';

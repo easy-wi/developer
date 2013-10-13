@@ -46,7 +46,7 @@ include(EASYWIDIR . '/stuff/config.php');
 include(EASYWIDIR . '/stuff/settings.php');
 if (isset($admin_id)) {
     $permissionid=(isset($_SESSION['oldid']))  ? (isset($_SESSION['oldadminid'])) ? $_SESSION['oldadminid'] : $_SESSION['oldid'] : $admin_id;
-	$userpermissionquery=$sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
+	$userpermissionquery = $sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
 	$userpermissionquery->execute(array($permissionid));
 	foreach ($userpermissionquery->fetchall() as $userpermissionrow) {
 		if ($userpermissionrow['root']=="Y") {
@@ -65,7 +65,7 @@ if (isset($admin_id)) {
 	}
 }
 if (isset($user_id)) {
-	$userpermissionquery=$sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
+	$userpermissionquery = $sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
 	$userpermissionquery->execute(array($user_id));
 	foreach ($userpermissionquery->fetchall() as $userpermissionrow) {
 		if ($userpermissionrow['miniroot']=="Y") {

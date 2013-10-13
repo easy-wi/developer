@@ -41,11 +41,11 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['log'])) {
 }
 $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
+if (isset($action) and $action == 'dl' and $ui->id('id',30, 'post')) {
 	$i = 0;
-    if ($ui->id('id',30,'post')) {
-        $delete=$sql->prepare("DELETE FROM `mail_log` WHERE `id`=? LIMIT 1");
-		foreach ($ui->id('id',30,'post') as $id) {
+    if ($ui->id('id',30, 'post')) {
+        $delete = $sql->prepare("DELETE FROM `mail_log` WHERE `id`=? LIMIT 1");
+		foreach ($ui->id('id',30, 'post') as $id) {
 			$delete->execute(array($id));
 			$i++;
 		}
@@ -53,27 +53,27 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
 	$template_file = $i." logs deleted";
 } else {
 	$table = array();
-    $o = $ui->st('o','get');
-	if ($ui->st('o','get') == 'du') {
+    $o = $ui->st('o', 'get');
+	if ($ui->st('o', 'get') == 'du') {
 		$orderby = 'u.`cname` DESC';
-	} else if ($ui->st('o','get') == 'au') {
+	} else if ($ui->st('o', 'get') == 'au') {
 		$orderby = 'u.`cname` ASC';
-	} else if ($ui->st('o','get') == 'dt') {
+	} else if ($ui->st('o', 'get') == 'dt') {
 		$orderby = 'l.`topic` DESC';
-	} else if ($ui->st('o','get') == 'at') {
+	} else if ($ui->st('o', 'get') == 'at') {
 		$orderby = 'l.`topic` ASC';
-	} else if ($ui->st('o','get') == 'ad') {
+	} else if ($ui->st('o', 'get') == 'ad') {
 		$orderby = 'l.`id` ASC';
 	} else {
 		$o = 'dd';
 		$orderby = 'l.`id` DESC';
 	}
 	if ($reseller_id==0) {
-		$pselect=$sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `mail_log` l LEFT JOIN `userdata` u ON l.`uid`=u.`id` ORDER BY $orderby LIMIT $start,$amount");
+		$pselect = $sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `mail_log` l LEFT JOIN `userdata` u ON l.`uid`=u.`id` ORDER BY $orderby LIMIT $start,$amount");
 	} else if ($reseller_id != 0 and $admin_id != $reseller_id) {
-		$pselect=$sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `mail_log` l LEFT JOIN `userdata` u ON l.`uid`=u.`id` WHERE l.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
+		$pselect = $sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `mail_log` l LEFT JOIN `userdata` u ON l.`uid`=u.`id` WHERE l.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
 	} else {
-		$pselect=$sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `userdata` u LEFT JOIN `mail_log` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE u.`resellerid`=? GROUP BY l.`date` ORDER BY $orderby LIMIT $start,$amount");
+		$pselect = $sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `userdata` u LEFT JOIN `mail_log` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE u.`resellerid`=? GROUP BY l.`date` ORDER BY $orderby LIMIT $start,$amount");
 	}
 	if ($reseller_id==0) {
 		$pselect->execute();
@@ -84,54 +84,54 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30,'post')) {
 		$pselect->execute(array($reseller_id));
 	}
 	foreach ($pselect->fetchall() as $row) {
-		$userid=$row['uid'];
+		$userid = $row['uid'];
 		if ($userid != $admin_id) {
 			$username='<a href="switch.php?id='.$userid.'">'.$row['cname'].'</a> ('.$row['mail'].')';
 		} else {
-			$username=$row['cname'].' ('.$row['mail'].')';
+			$username = $row['cname'].' ('.$row['mail'].')';
 		}
 		$logdate=explode(' ', $row['date']);
 		if (isset($row['id']) and isid($row['id'], '30') and isset($logdate[1])) {
             $table[] = array('id' => $row['id'], 'logday' => $logdate[0], 'loghour' => $logdate[1], 'username' => $username,'topic' => $row['topic']);
 		}
 	}
-	$next=$start+$amount;
+	$next = $start+$amount;
 	if ($reseller_id==0) {
-		$countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mail_log`");
+		$countp = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mail_log`");
 		$countp->execute();
 	} else {
 		if ($reseller_id != 0 and $admin_id != $reseller_id) {
-			$countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mail_log` WHERE `resellerid`=?");
+			$countp = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mail_log` WHERE `resellerid`=?");
 		} else {
-			$countp=$sql->prepare("SELECT COUNT(l.`id`) AS `amount` FROM `userdata` u LEFT JOIN `mail_log` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE u.`resellerid`=? GROUP BY l.`date`");
+			$countp = $sql->prepare("SELECT COUNT(l.`id`) AS `amount` FROM `userdata` u LEFT JOIN `mail_log` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE u.`resellerid`=? GROUP BY l.`date`");
 		}
 		$countp->execute(array($reseller_id));
 	}
     foreach ($countp->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $colcount=$row['amount'];
+        $colcount = $row['amount'];
     }
 	if ($colcount>$next) {
-		$vor=$start+$amount;
+		$vor = $start+$amount;
 	} else {
-		$vor=$start;
+		$vor = $start;
 	}
-	$back=$start - $amount;
+	$back = $start - $amount;
 	if ($back>=0){
-		$zur=$start - $amount;
+		$zur = $start - $amount;
 	} else {
-		$zur=$start;
+		$zur = $start;
 	}
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ml&amp;d='.$d.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
     } else {
-        $link .=$amount;
+        $link .= $amount;
     }
     if ($start==0) {
-        $link .='&amp;p=0" class="bold">1</a>';
+        $link .= '&amp;p=0" class="bold">1</a>';
     } else {
-        $link .='&amp;p=0">1</a>';
+        $link .= '&amp;p=0">1</a>';
     }
     $pages[] = $link;
     $i = 2;

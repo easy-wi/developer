@@ -39,7 +39,7 @@
 
 
 if (isset($_SERVER['REMOTE_ADDR'])) {
-    $ip=$_SERVER['REMOTE_ADDR'];
+    $ip = $_SERVER['REMOTE_ADDR'];
     $timelimit=ini_get('max_execution_time')-10;
 } else {
     $timelimit=600;
@@ -48,7 +48,7 @@ if (isset($argv)) {
     $args = array();
     foreach ($argv as $a) {
         if ($a == 'deamon') $deamon = true;
-        else if (is_numeric($a)) $sleep=$a;
+        else if (is_numeric($a)) $sleep = $a;
         else {
             $e=explode(':',$a);
             if (isset($e[1])) $args[$e[0]] = $e[1];
@@ -86,17 +86,17 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         private $oneJobPercent = 1;
         function __construct($jobCount,$newLine) {
             $this->startTime=strtotime('now');
-            $this->jobCount=$jobCount;
+            $this->jobCount = $jobCount;
             if ($jobCount>0) {
                 $this->oneJobPercent=100/$jobCount;
             } else {
                 $this->oneJobPercent=100;
             }
-            $this->newLine=$newLine;
+            $this->newLine = $newLine;
             $this->startTime=strtotime('now');
         }
         public function updateCount($jobCount) {
-            $this->jobCount=$jobCount;
+            $this->jobCount = $jobCount;
             if ($jobCount>0) {
                 $this->oneJobPercent=100/$jobCount;
             } else {
@@ -104,7 +104,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             }
         }
         public function printGraph ($newCommand) {
-            $this->jobsDone=$this->jobsDone+1;
+            $this->jobsDone = $this->jobsDone+1;
             $percentDone=number_format($this->jobsDone*$this->oneJobPercent,2);
             $elapsedSeconds=strtotime('now')-$this->startTime;
             print $this->spinner . ' ' . $percentDone.'%'.' done; '.$elapsedSeconds.' Seconds elapsed; Last job: '.$newCommand.$this->newLine;
@@ -118,20 +118,20 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 } else {
                     $this->spinnerCount = 0;
                 }
-                $this->spinner=$this->spinners[$this->spinnerCount].' ';
+                $this->spinner = $this->spinners[$this->spinnerCount].' ';
             } else {
                 $this->spinner = '';
             }
         }
         function __destruct() {
-            $this->jobsDone=null;
-            $this->startTime=null;
-            $this->newLine=null;
-            $this->jobCount=null;
-            $this->spinnerCount=null;
-            $this->spinners=null;
-            $this->spinner=null;
-            $this->oneJobPercent=null;
+            $this->jobsDone = null;
+            $this->startTime = null;
+            $this->newLine = null;
+            $this->jobCount = null;
+            $this->spinnerCount = null;
+            $this->spinners = null;
+            $this->spinner = null;
+            $this->oneJobPercent = null;
             unset($this->jobsDone,$this->startTime,$this->newLine,$this->jobCount,$this->spinnerCount,$this->spinners,$this->spinner,$this->oneJobPercent);
         }
     }
@@ -141,17 +141,17 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     } else {
         $newLine="\r";
     }
-    while ($runJobs==true) {
-        $countp=$sql->prepare("SELECT COUNT(`jobID`) AS `jobCount` FROM `jobs` WHERE `status` IS NULL OR `status`='1'");
+    while ($runJobs == true) {
+        $countp = $sql->prepare("SELECT COUNT(`jobID`) AS `jobCount` FROM `jobs` WHERE `status` IS NULL OR `status`='1'");
         $countp->execute();
-        $jobCount=$countp->rowCount();
+        $jobCount = $countp->rowCount();
         print 'Total jobs open: '.$jobCount.'. Cleaning up outdated and duplicated entries'."\r\n";
         updateStates('dl','us');
         updateStates('dl');
         updateStates('ad');
         updateStates('md');
         $countp->execute();
-        $jobCount=$countp->rowCount();
+        $jobCount = $countp->rowCount();
         print "\r\n".'Total jobs open after cleanup: '.$jobCount."\r\n";
         print 'Executing user cleanup jobs'."\r\n";
         $startTime=strtotime('now');
@@ -159,46 +159,46 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         # us > vo > gs > my > vs
         include(EASYWIDIR . '/stuff/jobs_user.php');
         $countp->execute();
-        $jobCount=$countp->rowCount();
+        $jobCount = $countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after user cleanup jobs are done: '.$jobCount."\r\n";
         print 'Executing voice jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_voice.php');
         $countp->execute();
-        $jobCount=$countp->rowCount();
+        $jobCount = $countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after voice jobs are done: '.$jobCount."\r\n";
         print 'Executing TS DNS jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_tsdns.php');
         $countp->execute();
-        $jobCount=$countp->rowCount();
+        $jobCount = $countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after TS DNS jobs are done: '.$jobCount."\r\n";
         print 'Executing mysql jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_mysql.php');
         $countp->execute();
-        $jobCount=$countp->rowCount();
+        $jobCount = $countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after mysql jobs are done: '.$jobCount."\r\n";
         print 'Executing gameserver jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_gserver.php');
         $countp->execute();
-        $jobCount=$countp->rowCount();
+        $jobCount = $countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after gameserver jobs are done: '.$jobCount."\r\n";
         print 'Executing root server jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_roots.php');
         $countp->execute();
-        $jobCount=$countp->rowCount();
+        $jobCount = $countp->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after root server jobs are done: '.$jobCount."\r\n";
         print 'Executing user remove jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_user_rm.php');
         print "\n";
         $test='ech';
-        if ($deamon==true) {
-            $sql=null;
-            $theOutput=null;
+        if ($deamon == true) {
+            $sql = null;
+            $theOutput = null;
             unset($sql,$theOutput);
             if ($dbConnect['type'] == 'mysql') {
                 $sql=new PDO($dbConnect['connect'],$dbConnect['user'],$dbConnect['pwd'], array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8") );

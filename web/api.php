@@ -45,14 +45,14 @@ include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
-if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post')) {
+if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user',255, 'post')) {
     $query = $sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
-    $query->execute(array($ui->ip4('REMOTE_ADDR','server')));
+    $query->execute(array($ui->ip4('REMOTE_ADDR', 'server')));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $apiIP=$row['ip'];
-        $pwd=$row['pwd'];
-        $salt=$row['salt'];
-        if ($row['active'] == 'Y' and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and $ui->names('user',255,'post')==$row['user']) {
+        $apiIP = $row['ip'];
+        $pwd = $row['pwd'];
+        $salt = $row['salt'];
+        if ($row['active'] == 'Y' and passwordhash($ui->password('pwd',255, 'post'),$salt)==$pwd and $ui->names('user',255, 'post')==$row['user']) {
             $resellerIDs[] = $row['resellerID'];
         }
     }
@@ -60,27 +60,27 @@ if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user',255,'post')) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: No valid access data');
 }
-if ($ui->smallletters('type',10,'post') and ($ui->smallletters('type',4,'post') == 'user' or $ui->smallletters('type',5,'post') == 'voice' or $ui->smallletters('type',7,'post') == 'gserver' or $ui->smallletters('type',5,'post') == 'mysql')) {
-    $type=$ui->smallletters('type',7,'post');
+if ($ui->smallletters('type',10, 'post') and ($ui->smallletters('type',4, 'post') == 'user' or $ui->smallletters('type',5, 'post') == 'voice' or $ui->smallletters('type',7, 'post') == 'gserver' or $ui->smallletters('type',5, 'post') == 'mysql')) {
+    $type = $ui->smallletters('type',7, 'post');
 }
-if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and isset($type)) {
-    $resellerID=$resellerIDs[0];
+if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd',255, 'post'),$salt)==$pwd and isset($type)) {
+    $resellerID = $resellerIDs[0];
     $licenceDetails=serverAmount($resellerID);
     if (is_numeric($licenceDetails['left']) and (0>$licenceDetails['left'] or 0>$licenceDetails['lG'] or 0>$licenceDetails['lVo'] or 0>$licenceDetails['lVs'] or 0>$licenceDetails['lD'])) {
         header('HTTP/1.1 403 Forbidden');
         die('403 Forbidden: More servers are stored than allowed!');
     }
     $data = array();
-    if ($ui->escaped('json','post')) {
+    if ($ui->escaped('json', 'post')) {
         $apiType='json';
-        $data=@json_decode(urldecode(base64_decode($ui->escaped('json','post'))));
+        $data=@json_decode(urldecode(base64_decode($ui->escaped('json', 'post'))));
         if (!$data) {
             header('HTTP/1.1 403 Forbidden');
             die('403 Forbidden: JSON not vaild');
         }
-    } else if ($ui->escaped('xml','post')) {
+    } else if ($ui->escaped('xml', 'post')) {
         $apiType='xml';
-        $data=@simplexml_load_string(urldecode(base64_decode($ui->escaped('xml','post'))));
+        $data=@simplexml_load_string(urldecode(base64_decode($ui->escaped('xml', 'post'))));
         if (!$data) {
             header('HTTP/1.1 403 Forbidden');
             die('403 Forbidden: XML not valid');
@@ -93,12 +93,12 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
     $tempArray = array();
     foreach ($data as $key => $value) {
         if (is_object($value)) {
-            $tempArray[$key]=null;
+            $tempArray[$key] = null;
         } else {
             $tempArray[$key] = $value;
         }
     }
-    $data=$tempArray;
+    $data = $tempArray;
     unset($tempArray);
     $bad=array(false, null,'');
     $licenceDetails=serverAmount($resellerID);
@@ -113,7 +113,7 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
     if ($type == 'user') {
         include(EASYWIDIR . '/stuff/api_users.php');
     } else if ($type == 'voice') {
-        if ($voModule==true) {
+        if ($voModule == true) {
             include(EASYWIDIR . '/stuff/api_voice.php');
         } else {
             header('HTTP/1.1 403 Forbidden');
@@ -122,14 +122,14 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
     } else if ($type == 'mysql') {
         include(EASYWIDIR . '/stuff/api_mysql.php');
     } else if ($type == 'gserver') {
-        if ($gsModule==true) {
+        if ($gsModule == true) {
             include(EASYWIDIR . '/stuff/api_gserver.php');
         } else {
             header('HTTP/1.1 403 Forbidden');
             die('403 Forbidden: Gameserver module is inactive');
         }
     }
-} else if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd',255,'post'),$salt)==$pwd and !isset($type)) {
+} else if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd',255, 'post'),$salt)==$pwd and !isset($type)) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: Type is not defined');
 } else {

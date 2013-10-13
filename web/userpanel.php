@@ -61,4 +61,4 @@ if (isset($template_file) and preg_match('/^(.*)\.tpl$/', $template_file)) {
     include(IncludeTemplate($template_to_use, 'general.tpl'));
 }
 include(IncludeTemplate($template_to_use, 'userpanel_footer.tpl'));
-$sql=null;
+$sql = null;

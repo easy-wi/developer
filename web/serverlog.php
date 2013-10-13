@@ -119,4 +119,4 @@ if ($ui->id('id', 10, 'get')) {
         echo 'Error: ID';
     }
 }
-$sql=null;
+$sql = null;

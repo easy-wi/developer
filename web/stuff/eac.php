@@ -50,7 +50,7 @@ if ($reseller_id == 0) {
 	$logsubuser = 0;
 } else {
 	if (isset($_SESSION['oldid'])) {
-		$logsubuser=$_SESSION['oldid'];
+		$logsubuser = $_SESSION['oldid'];
 	} else {
 		$logsubuser = 0;
 	}
@@ -59,23 +59,23 @@ if ($reseller_id == 0) {
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if (!$ui->w('action', 4, 'post')) {
-	$pselect=$sql->prepare("SELECT `active`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,`publickey`,`keyname`,`cfgdir`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE resellerid=:reseller_id LIMIT 1");
+	$pselect = $sql->prepare("SELECT `active`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,`publickey`,`keyname`,`cfgdir`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE resellerid=:reseller_id LIMIT 1");
 	$pselect->execute(array(':aeskey' => $aeskey,':reseller_id' => $reseller_id));
 	foreach ($pselect->fetchAll() as $row) {
-		$eac_active=$row['active'];
-		$eac_ip=$row['ip'];
-		$eac_port=$row['dport'];
-		$eac_user=$row['duser'];
-		$eac_pass=$row['dpass'];
-		$normal_3=$row['normal_3'];
-		$normal_4=$row['normal_4'];
-		$hlds_3=$row['hlds_3'];
-		$hlds_4=$row['hlds_4'];
-		$hlds_5=$row['hlds_5'];
-		$hlds_6=$row['hlds_6'];
-		$eac_publickey=$row['publickey'];
-		$eac_keyname=$row['keyname'];
-		$eac_cfgdir=$row['cfgdir'];
+		$eac_active = $row['active'];
+		$eac_ip = $row['ip'];
+		$eac_port = $row['dport'];
+		$eac_user = $row['duser'];
+		$eac_pass = $row['dpass'];
+		$normal_3 = $row['normal_3'];
+		$normal_4 = $row['normal_4'];
+		$hlds_3 = $row['hlds_3'];
+		$hlds_4 = $row['hlds_4'];
+		$hlds_5 = $row['hlds_5'];
+		$hlds_6 = $row['hlds_6'];
+		$eac_publickey = $row['publickey'];
+		$eac_keyname = $row['keyname'];
+		$eac_cfgdir = $row['cfgdir'];
 	}
 	$template_file = "admin_eac.tpl";
 } else if ($ui->w('action', 4, 'post')=="md") {
@@ -127,14 +127,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$hlds_6="N";
 		}
 		$keyname=startparameter($ui->post['keyname']);
-		$publickey=$ui->post['publickey'];
-		$active=$ui->post['active'];	
-		$ip=$ui->post['ip'];
-		$port=$ui->post['port'];
-		$user=$ui->post['user'];
+		$publickey = $ui->post['publickey'];
+		$active = $ui->post['active'];	
+		$ip = $ui->post['ip'];
+		$port = $ui->post['port'];
+		$user = $ui->post['user'];
 		$pass=startparameter($ui->post['pass']);
 		$cfgdir=folder($ui->post['cfgdir']);
-		$pupdate=$sql->prepare("UPDATE `eac` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port, :aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`publickey`=:publickey,`keyname`=:keyname,`cfgdir`=:cfgdir,`normal_3`=:normal_3,`normal_4`=:normal_4,`hlds_3`=:hlds_3,`hlds_4`=:hlds_4,`hlds_5`=:hlds_5,`hlds_6`=:hlds_6 WHERE resellerid=:reseller_id");
+		$pupdate = $sql->prepare("UPDATE `eac` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port, :aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`publickey`=:publickey,`keyname`=:keyname,`cfgdir`=:cfgdir,`normal_3`=:normal_3,`normal_4`=:normal_4,`hlds_3`=:hlds_3,`hlds_4`=:hlds_4,`hlds_5`=:hlds_5,`hlds_6`=:hlds_6 WHERE resellerid=:reseller_id");
 		$pupdate->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':cfgdir' => $cfgdir,':normal_3' => $normal_3,':normal_4' => $normal_4,':hlds_3' => $hlds_3,':hlds_4' => $hlds_4,':hlds_5' => $hlds_5,':hlds_6' => $hlds_6,':reseller_id' => $reseller_id));
 		$template_file = $spracheResponse->table_add;
 		$loguseraction="%mod% %eac%";

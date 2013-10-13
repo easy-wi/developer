@@ -48,37 +48,37 @@ $logsubuser = 0;
 $sprache = getlanguagefile('columns',$user_language,$reseller_id);
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if(in_array($ui->st('d','get'), array('ad','md'))) {
-    $id=$ui->id('id', 10, 'get');
-    if (in_array($ui->st('action','post'), array('ad','md'))) {
+} else if(in_array($ui->st('d', 'get'), array('ad','md'))) {
+    $id = $ui->id('id', 10, 'get');
+    if (in_array($ui->st('action', 'post'), array('ad','md'))) {
         $error = array();
-        if (!$ui->active('active','post')) {
+        if (!$ui->active('active', 'post')) {
             $error[] = 'Active';
         }
-        if (!$ui->id('length',10,'post')) {
+        if (!$ui->id('length',10, 'post')) {
             $error[] = 'Length';
         }
-        if (!$ui->w('item',1,'post')) {
+        if (!$ui->w('item',1, 'post')) {
             $error[] = 'Item';
         }
-        if (!$ui->w('type',1,'post')) {
+        if (!$ui->w('type',1, 'post')) {
             $error[] = 'Type';
         }
-        if (!$ui->w('name',255,'post')) {
+        if (!$ui->w('name',255, 'post')) {
             $error[] = 'Name';
         }
         if (count($error)>0) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            $name=$ui->w('name',255,'post');
-            if($ui->st('d','get') == 'ad') {
+            $name = $ui->w('name',255, 'post');
+            if($ui->st('d', 'get') == 'ad') {
                 $query = $sql->prepare("INSERT INTO `custom_columns_settings` (`active`,`item`,`type`,`length`,`name`) VALUES (?,?,?,?,?)");
-                $query->execute(array($ui->active('active','post'),$ui->w('item',1,'post'),$ui->w('type',1,'post'),$ui->id('length',10,'post'),$name));
-                $id=$sql->lastInsertId();
+                $query->execute(array($ui->active('active', 'post'),$ui->w('item',1, 'post'),$ui->w('type',1, 'post'),$ui->id('length',10, 'post'),$name));
+                $id = $sql->lastInsertId();
                 $loguseraction="%add% Custom Column ${name}";
-            } else if ($ui->id('id', 10, 'get') and $ui->st('d','get') == 'md') {
+            } else if ($ui->id('id', 10, 'get') and $ui->st('d', 'get') == 'md') {
                 $query = $sql->prepare("UPDATE `custom_columns_settings` SET `active`=?,`item`=?,`type`=?,`length`=?,`name`=? WHERE `customID`=? LIMIT 1");
-                $query->execute(array($ui->active('active','post'),$ui->w('item',1,'post'),$ui->w('type',1,'post'),$ui->id('length',10,'post'),$name,$id));
+                $query->execute(array($ui->active('active', 'post'),$ui->w('item',1, 'post'),$ui->w('type',1, 'post'),$ui->id('length',10, 'post'),$name,$id));
                 $loguseraction="%mod% Custom Column ${name}";
             } else {
                 $template_file = 'admin_404.tpl';
@@ -86,10 +86,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if (!isset($template_file) and $query->rowCount()>0) {
                 $array = array();
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('cc',?,?,?,0) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
-                if ($ui->smallletters('language',2,'post')) {
-                    $array=(array)$ui->smallletters('language',2,'post');
+                if ($ui->smallletters('language',2, 'post')) {
+                    $array=(array)$ui->smallletters('language',2, 'post');
                     foreach($array as $language) {
-                        $query->execute(array($id,$language,$ui->description('menu','post',$language)));
+                        $query->execute(array($id,$language,$ui->description('menu', 'post',$language)));
                     }
                 }
                 $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='cc' AND `transID`=?");
@@ -106,7 +106,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $template_file = $spracheResponse->error_table;
             }
         }
-    } else if ($ui->st('d','get') == 'ad') {
+    } else if ($ui->st('d', 'get') == 'ad') {
         foreach ($languages as $row) {
             if (small_letters_check($row,2)) {
                 if ($row==$default_language) {
@@ -122,15 +122,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
         }
         $template_file = 'admin_settings_columns_add.tpl';
-    } else if ($ui->id('id', 10, 'get') and $ui->st('d','get') == 'md') {
+    } else if ($ui->id('id', 10, 'get') and $ui->st('d', 'get') == 'md') {
         $query = $sql->prepare("SELECT * FROM `custom_columns_settings` WHERE `customID`=? LIMIT 1");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $active=$row['active'];
-            $item=$row['item'];
-            $type=$row['type'];
-            $length=$row['length'];
-            $name=$row['name'];
+            $active = $row['active'];
+            $item = $row['item'];
+            $type = $row['type'];
+            $length = $row['length'];
+            $name = $row['name'];
         }
         $query2 = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='cc' AND `transID`=? AND `lang`=? LIMIT 1");
         foreach ($languages as $ln) {
@@ -138,8 +138,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $text = '';
             $query2->execute(array($id,$ln));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $lang=$row2['lang'];
-                $text=$row2['text'];
+                $lang = $row2['lang'];
+                $text = $row2['text'];
             }
             if (empty($lang)) {
                 $style='class="display_none"';
@@ -154,16 +154,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $template_file = (isset($active)) ? 'admin_settings_columns_md.tpl' : 'admin_404.tpl';
     }
-} else if ($ui->id('id', 10, 'get') and $ui->st('d','get') == 'dl') {
-    $id=$ui->id('id', 10, 'get');
+} else if ($ui->id('id', 10, 'get') and $ui->st('d', 'get') == 'dl') {
+    $id = $ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `name` FROM `custom_columns_settings` WHERE `customID`=? LIMIT 1");
     $query->execute(array($id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $name=$row['name'];
+        $name = $row['name'];
     }
-    if (!$ui->st('action','post') and isset($name)) {
+    if (!$ui->st('action', 'post') and isset($name)) {
         $template_file = 'admin_settings_columns_dl.tpl';
-    } else if ($ui->st('action','post') == 'dl' and isset($name)) {
+    } else if ($ui->st('action', 'post') == 'dl' and isset($name)) {
         $query = $sql->prepare("DELETE FROM `custom_columns_settings` WHERE `customID`=? LIMIT 1");
         $query->execute(array($id));
         if ($query->rowCount()>0) {
@@ -184,39 +184,39 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $table = array();
     $query = $sql->prepare("SELECT COUNT(`customID`) AS `amount` FROM `custom_columns_settings`");
     $query->execute();
-    $colcount=$query->fetchColumn();
+    $colcount = $query->fetchColumn();
     if ($start>$colcount) {
-        $start=$colcount-$amount;
+        $start = $colcount-$amount;
         if ($start<0) {
             $start = 0;
         }
     }
-    $next=$start+$amount;
+    $next = $start+$amount;
     if ($colcount>$next) {
-        $vor=$start+$amount;
+        $vor = $start+$amount;
     } else {
-        $vor=$start;
+        $vor = $start;
     }
-    $back=$start - $amount;
+    $back = $start - $amount;
     if ($back>=0){
-        $zur=$start - $amount;
+        $zur = $start - $amount;
     } else {
-        $zur=$start;
+        $zur = $start;
     }
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'da') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'da') {
         $orderby = '`active` DESC';
-    } else if ($ui->st('o','get') == 'aa') {
+    } else if ($ui->st('o', 'get') == 'aa') {
         $orderby = '`active` ASC';
-    } else if ($ui->st('o','get') == 'dn') {
+    } else if ($ui->st('o', 'get') == 'dn') {
         $orderby = '`name` DESC';
-    } else if ($ui->st('o','get') == 'an') {
+    } else if ($ui->st('o', 'get') == 'an') {
         $orderby = '`name`';
-    } else if ($ui->st('o','get') == 'dt') {
+    } else if ($ui->st('o', 'get') == 'dt') {
         $orderby = '`type` DESC';
-    } else if ($ui->st('o','get') == 'at') {
+    } else if ($ui->st('o', 'get') == 'at') {
         $orderby = '`type` ASC';
-    } else if ($ui->st('o','get') == 'di') {
+    } else if ($ui->st('o', 'get') == 'di') {
         $orderby = '`customID` DESC';
     } else {
         $orderby = '`customID` ASC';
@@ -240,12 +240,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if(!isset($amount)) {
         $link .=20;
     } else {
-        $link .=$amount;
+        $link .= $amount;
     }
     if ($start==0) {
-        $link .='&p=0" class="bold">1</a>';
+        $link .= '&p=0" class="bold">1</a>';
     } else {
-        $link .='&p=0">1</a>';
+        $link .= '&p=0">1</a>';
     }
     $pages[] = $link;
     $i = 2;

@@ -64,4 +64,4 @@ if (isset ($page_active) and $page_active == 'Y') {
 } else {
     redirect('login.php');
 }
-$sql=null;
+$sql = null;

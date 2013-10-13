@@ -43,45 +43,45 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $query2 = $sql->prepare("SELECT `active`,`usedns`,`defaultdns`,`bitversion`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`maxserver`,`maxslots`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
     $query2->execute(array(':aeskey' => $aeskey,':id' => $row['hostID'], ':reseller_id' => $row['resellerID']));
     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-        $active=$row2['active'];
-        $addedby=$row2['addedby'];
-        $usedns=$row2['usedns'];
-        $defaultdns=$row2['defaultdns'];
-        $queryport=$row2['queryport'];
-        $querypassword=$row2['decryptedquerypassword'];
-        $maxserver=$row2['maxserver'];
-        $maxslots=$row2['maxslots'];
-        $serverdir=$row2['serverdir'];
-        $mnotified=$row2['notified'];
-        $name=$row2['defaultname'];
-        $welcome=$row2['defaultwelcome'];
-        $hostbanner_url=$row2['defaulthostbanner_url'];
-        $hostbanner_gfx_url=$row2['defaulthostbanner_gfx_url'];
-        $hostbutton_tooltip=$row2['defaulthostbutton_tooltip'];
-        $hostbutton_url=$row2['defaulthostbutton_url'];
-        $hostbutton_gfx_url=$row2['defaulthostbutton_gfx_url'];
+        $active = $row2['active'];
+        $addedby = $row2['addedby'];
+        $usedns = $row2['usedns'];
+        $defaultdns = $row2['defaultdns'];
+        $queryport = $row2['queryport'];
+        $querypassword = $row2['decryptedquerypassword'];
+        $maxserver = $row2['maxserver'];
+        $maxslots = $row2['maxslots'];
+        $serverdir = $row2['serverdir'];
+        $mnotified = $row2['notified'];
+        $name = $row2['defaultname'];
+        $welcome = $row2['defaultwelcome'];
+        $hostbanner_url = $row2['defaulthostbanner_url'];
+        $hostbanner_gfx_url = $row2['defaulthostbanner_gfx_url'];
+        $hostbutton_tooltip = $row2['defaulthostbutton_tooltip'];
+        $hostbutton_url = $row2['defaulthostbutton_url'];
+        $hostbutton_gfx_url = $row2['defaulthostbutton_gfx_url'];
         if ($addedby==2) {
-            $publickey=$row2['publickey'];
-            $queryip=$row2['ssh2ip'];
-            $ssh2port=$row2['decryptedssh2port'];
-            $ssh2user=$row2['decryptedssh2user'];
-            $ssh2password=$row2['decryptedssh2password'];
-            $keyname=$row2['keyname'];
-            $bitversion=$row2['bitversion'];
+            $publickey = $row2['publickey'];
+            $queryip = $row2['ssh2ip'];
+            $ssh2port = $row2['decryptedssh2port'];
+            $ssh2user = $row2['decryptedssh2user'];
+            $ssh2password = $row2['decryptedssh2password'];
+            $keyname = $row2['keyname'];
+            $bitversion = $row2['bitversion'];
         } else if ($addedby==1) {
             $query3 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($row2['rootid'], $row['resellerID']));
             foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                $queryip=$row3['ip'];
+                $queryip = $row3['ip'];
             }
         }
     }
     if (isset($queryport)) {
         $connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
-        $errorcode=$connection->errorcode;
+        $errorcode = $connection->errorcode;
     }
     if (!isset($errorcode) or strpos($errorcode,'error id=0') === false) {
-        $update=$sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='vo' AND `hostID`=?");
+        $update = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='vo' AND `hostID`=?");
         $update->execute(array($row['hostID']));
     } else {
         $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' AND `hostID`=?");
@@ -90,32 +90,32 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query3 = $sql->prepare("SELECT `localserverid`,`active`,`backup`,`lendserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`dns`,`localserverid`,`maxtraffic`,`filetraffic` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($row2['affectedID'], $row2['resellerID']));
             foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                $active=$row3['active'];
-                $localserverid=$row3['localserverid'];
-                $backup=$row3['backup'];
-                $lendserver=$row3['lendserver'];
-                $ip=$row3['ip'];
-                $port=$row3['port'];
-                $slots=$row3['slots'];
-                $initialpassword=$row3['initialpassword'];
-                $password=$row3['password'];
-                $forcebanner=$row3['forcebanner'];
-                $forcebutton=$row3['forcebutton'];
-                $forceservertag=$row3['forceservertag'];
-                $forcewelcome=$row3['forcewelcome'];
-                $maxtraffic=$row3['maxtraffic'];
-                $filetraffic=$row3['filetraffic'];
-                $max_download_total_bandwidth=$row3['max_download_total_bandwidth'];
-                $max_upload_total_bandwidth=$row3['max_upload_total_bandwidth'];
-                $dns=$row3['dns'];
+                $active = $row3['active'];
+                $localserverid = $row3['localserverid'];
+                $backup = $row3['backup'];
+                $lendserver = $row3['lendserver'];
+                $ip = $row3['ip'];
+                $port = $row3['port'];
+                $slots = $row3['slots'];
+                $initialpassword = $row3['initialpassword'];
+                $password = $row3['password'];
+                $forcebanner = $row3['forcebanner'];
+                $forcebutton = $row3['forcebutton'];
+                $forceservertag = $row3['forceservertag'];
+                $forcewelcome = $row3['forcewelcome'];
+                $maxtraffic = $row3['maxtraffic'];
+                $filetraffic = $row3['filetraffic'];
+                $max_download_total_bandwidth = $row3['max_download_total_bandwidth'];
+                $max_upload_total_bandwidth = $row3['max_upload_total_bandwidth'];
+                $dns = $row3['dns'];
             }
             if ($row2['action'] == 'dl' and isset($localserverid) and isid($localserverid,30)) {
-                $command=$gsprache->del.' voiceserverID: '.$row2['affectedID'].' name:'.$row2['name'];
+                $command = $gsprache->del.' voiceserverID: '.$row2['affectedID'].' name:'.$row2['name'];
                 $connection->DelServer($localserverid);
-                $pdelete=$sql->prepare("DELETE FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $pdelete = $sql->prepare("DELETE FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $pdelete->execute(array($row2['affectedID'], $row['resellerID']));
                 customColumns('T', $row2['affectedID'], 'del');
-                $update=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
+                $update = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                 $update->execute(array($row2['jobID']));
                 $template_file = $spracheResponse->table_del;
                 if ($usedns == 'Y') {
@@ -124,7 +124,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query3 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `resellerid`=?");
                 $query3->execute(array($row2['affectedID'], $row['resellerID']));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                    $delete=$sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $delete = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $delete->execute(array($row3['id'], $row['resellerID']));
                     tsbackup('delete',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$localserverid, $row3['id'], $row['resellerID'],$sql);
                 }
@@ -132,46 +132,46 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query3->execute();
             } else if ($row2['action'] == 'ad' and isset($active)) {
                 if(isid($localserverid,30)) {
-                    $command=$gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Skipping, virtual ID already exists in Easy-WI DB: '.$localserverid;
-                    $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
+                    $command = $gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Skipping, virtual ID already exists in Easy-WI DB: '.$localserverid;
+                    $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                     $update->execute(array($row2['jobID']));
                 } else {
-                    $virtualserver_id=$connection->AddServer($slots,$ip,$port,$initialpassword,$name, array('Y',$welcome),$max_download_total_bandwidth,$max_upload_total_bandwidth, array('Y',$hostbanner_url),$hostbanner_gfx_url, array('Y',$hostbutton_url),$hostbutton_gfx_url,$hostbutton_tooltip);
+                    $virtualserver_id = $connection->AddServer($slots,$ip,$port,$initialpassword,$name, array('Y',$welcome),$max_download_total_bandwidth,$max_upload_total_bandwidth, array('Y',$hostbanner_url),$hostbanner_gfx_url, array('Y',$hostbutton_url),$hostbutton_gfx_url,$hostbutton_tooltip);
                     if (isid($virtualserver_id,19)) {
-                        $command=$gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Name:'.$row2['name'];
+                        $command = $gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Name:'.$row2['name'];
                         if ($active == 'N') {
                             $connection->StopServer($virtualserver_id);
                         }
-                        $update=$sql->prepare("UPDATE `voice_server` SET `localserverid`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
+                        $update = $sql->prepare("UPDATE `voice_server` SET `localserverid`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
                         $update->execute(array($virtualserver_id, $row2['affectedID']));
                         if ($usedns == 'Y') {
                             $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns), $row['resellerID'],$sql);
                         }
-                        $update=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `affectedID`=? AND `type`='vo' LIMIT 1");
+                        $update = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `affectedID`=? AND `type`='vo' LIMIT 1");
                         $update->execute(array($row2['affectedID']));
                     } else {
-                        $command=$gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Error: '.$virtualserver_id;
-                        $update=$sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
+                        $command = $gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Error: '.$virtualserver_id;
+                        $update = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                         $update->execute(array($row2['jobID']));
                     }
                 }
             } else if ($row2['action'] == 'md' and isset($localserverid) and isid($localserverid,30)) {
-                $command=$gsprache->mod.' voiceserverID: '.$row2['affectedID'].' name:'.$row2['name'];
+                $command = $gsprache->mod.' voiceserverID: '.$row2['affectedID'].' name:'.$row2['name'];
                 $query3 = $sql->prepare("SELECT `active`,`slots`,`ip`,`port`,`dns` FROM `voice_server` WHERE `id`=? LIMIT 1");
                 $query3->execute(array($row2['affectedID']));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                    $oldip=$row3['ip'];
-                    $oldport=$row3['port'];
-                    $olddns=$row3['dns'];
+                    $oldip = $row3['ip'];
+                    $oldport = $row3['port'];
+                    $olddns = $row3['dns'];
                     $connection->StartServer($localserverid);
-                    $serverdetails=$connection->ServerDetails($localserverid);
-                    $name=$serverdetails['virtualserver_name'];
-                    $welcome=$serverdetails['virtualserver_welcomemessage'];
-                    $hostbanner_url=$serverdetails['virtualserver_hostbanner_url'];
-                    $hostbanner_gfx_url=$serverdetails['virtualserver_hostbanner_gfx_url'];
-                    $hostbutton_tooltip=$serverdetails['virtualserver_hostbutton_tooltip'];
-                    $hostbutton_url=$serverdetails['virtualserver_hostbutton_url'];
-                    $hostbutton_gfx_url=$serverdetails['virtualserver_hostbutton_gfx_url'];
+                    $serverdetails = $connection->ServerDetails($localserverid);
+                    $name = $serverdetails['virtualserver_name'];
+                    $welcome = $serverdetails['virtualserver_welcomemessage'];
+                    $hostbanner_url = $serverdetails['virtualserver_hostbanner_url'];
+                    $hostbanner_gfx_url = $serverdetails['virtualserver_hostbanner_gfx_url'];
+                    $hostbutton_tooltip = $serverdetails['virtualserver_hostbutton_tooltip'];
+                    $hostbutton_url = $serverdetails['virtualserver_hostbutton_url'];
+                    $hostbutton_gfx_url = $serverdetails['virtualserver_hostbutton_gfx_url'];
                     $connection->ModServer($localserverid,$slots,$ip,$port,$initialpassword,$name,$welcome,$max_download_total_bandwidth,$max_upload_total_bandwidth,$hostbanner_url,$hostbanner_gfx_url,$hostbutton_url,$hostbutton_gfx_url,$hostbutton_tooltip);
                     if ($forcebanner== 'Y') {
                         $removelist[] = 'b_virtualserver_modify_hostbanner';
@@ -206,14 +206,14 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if ($row3['active'] == 'N') {
                         $connection->StopServer($localserverid);
                     }
-                    $update=$sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
+                    $update = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                     $update->execute(array($row2['jobID']));
-                    $update=$sql->prepare("UPDATE `voice_server` SET `jobPending`='N' WHERE `id`=? LIMIT 1");
+                    $update = $sql->prepare("UPDATE `voice_server` SET `jobPending`='N' WHERE `id`=? LIMIT 1");
                     $update->execute(array($row2['affectedID']));
                 }
             } else if (!isset($localserverid) or !isid($localserverid,30)) {
                 $command='Error: can not find voiceserver';
-                $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
+                $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                 $update->execute(array($row2['jobID']));
             } else {
                 $command='Error: unknown command';

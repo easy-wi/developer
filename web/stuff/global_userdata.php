@@ -37,7 +37,7 @@
  
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-if ($ui->st('w','get') == 'se') {
+if ($ui->st('w', 'get') == 'se') {
     if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usersettings'])) {
         header('Location: userpanel.php');
         die();
@@ -72,11 +72,11 @@ if ($ui->st('w','get') == 'se') {
     if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
 }
 $sprache = getlanguagefile('user',$user_language,$reseller_id);
-$lookUpID=($ui->st('w','get') == 'se') ? $user_id : $admin_id;
-if ($ui->st('d','get') == 'pw') {
-    if (!$ui->smallletters('action',2,'post')) {
+$lookUpID=($ui->st('w', 'get') == 'se') ? $user_id : $admin_id;
+if ($ui->st('d', 'get') == 'pw') {
+    if (!$ui->smallletters('action',2, 'post')) {
         $template_file = ($logusertype == 'user') ? 'userpanel_pass.tpl' : 'admin_user_own_pass.tpl';
-    } else if ($ui->smallletters('action',2,'post') == 'md'){
+    } else if ($ui->smallletters('action',2, 'post') == 'md'){
         $errors = array();
         if (!$ui->password('password', 255, 'post')) $errors[] = $sprache->error_pass;
         if (!$ui->password('pass2', 255, 'post')) $errors[] = $sprache->error_pas;
@@ -128,27 +128,27 @@ if ($ui->st('d','get') == 'pw') {
         $oldValues = array();
         foreach ($row as $k=>$v) $oldValues[$k] = $v;
     }
-    if ($ui->smallletters('action',2,'post') == 'md' and isset($oldValues)){
-        if ($ui->ismail('mail','post') and token(true)) {
-            $mail_backup=($ui->active('mail_backup','post')) ? $ui->active('mail_backup','post') : 'N';
-            $mail_serverdown=($ui->active('mail_serverdown','post')) ? $ui->active('mail_serverdown','post') : 'N';
-            $mail_ticket=($ui->active('mail_ticket','post')) ? $ui->active('mail_ticket','post') : 'N';
+    if ($ui->smallletters('action',2, 'post') == 'md' and isset($oldValues)){
+        if ($ui->ismail('mail', 'post') and token(true)) {
+            $mail_backup=($ui->active('mail_backup', 'post')) ? $ui->active('mail_backup', 'post') : 'N';
+            $mail_serverdown=($ui->active('mail_serverdown', 'post')) ? $ui->active('mail_serverdown', 'post') : 'N';
+            $mail_ticket=($ui->active('mail_ticket', 'post')) ? $ui->active('mail_ticket', 'post') : 'N';
             $name = $ui->names('name', 30, 'post');
             $vname = $ui->names('vname', 30, 'post');
-            $mail = $ui->ismail('mail','post');
+            $mail = $ui->ismail('mail', 'post');
             $phone = $ui->phone('phone', 30, 'post');
             $handy = $ui->phone('handy', 30, 'post');
             $city = $ui->names('city', 40, 'post');
             $cityn = $ui->isinteger('cityn', 'post');
             $street = $ui->names('street', 40, 'post');
-            $streetn = $ui->streetNumber('streetn','post');
-            if (($ui->st('w','get') == 'se')) {
+            $streetn = $ui->streetNumber('streetn', 'post');
+            if (($ui->st('w', 'get') == 'se')) {
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$lookUpID,$reseller_id));
             } else {
-                $mail_gsupdate=($ui->active('mail_gsupdate','post')) ? $ui->active('mail_gsupdate','post') : 'N';
-                $mail_securitybreach=($ui->active('mail_securitybreach','post')) ? $ui->active('mail_securitybreach','post') : 'N';
-                $mail_vserver=($ui->active('mail_vserver','post')) ? $ui->active('mail_vserver','post') : 'N';
+                $mail_gsupdate=($ui->active('mail_gsupdate', 'post')) ? $ui->active('mail_gsupdate', 'post') : 'N';
+                $mail_securitybreach=($ui->active('mail_securitybreach', 'post')) ? $ui->active('mail_securitybreach', 'post') : 'N';
+                $mail_vserver=($ui->active('mail_vserver', 'post')) ? $ui->active('mail_vserver', 'post') : 'N';
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_vserver`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$mail_gsupdate,$mail_securitybreach,$mail_vserver,$lookUpID,$reseller_id));
             }

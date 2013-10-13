@@ -55,71 +55,71 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
-if (in_array($ui->st('d','get'), array('md','ad'))){
-    if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {
-        $id=$ui->id('id',19,'get');
+if (in_array($ui->st('d', 'get'), array('md','ad'))){
+    if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'md') {
+        $id = $ui->id('id',19, 'get');
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `rootsDHCP` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $active=$row['active'];
-            $ip=$row['ip'];
-            $port=$row['decryptedport'];
-            $user=$row['decrypteduser'];
-            $pass=$row['decryptedpass'];
-            $publickey=$row['publickey'];
-            $keyname=$row['keyname'];
-            $ips=$row['ips'];
-            $netmask=$row['netmask'];
-            $startCmd=$row['startCmd'];
-            $dhcpFile=$row['dhcpFile'];
-            $description=$row['description'];
-            $subnetOptions=$row['subnetOptions'];
+            $active = $row['active'];
+            $ip = $row['ip'];
+            $port = $row['decryptedport'];
+            $user = $row['decrypteduser'];
+            $pass = $row['decryptedpass'];
+            $publickey = $row['publickey'];
+            $keyname = $row['keyname'];
+            $ips = $row['ips'];
+            $netmask = $row['netmask'];
+            $startCmd = $row['startCmd'];
+            $dhcpFile = $row['dhcpFile'];
+            $description = $row['description'];
+            $subnetOptions = $row['subnetOptions'];
         }
         $template_file = (isset($dhcpFile)) ? 'admin_root_dhcp_md.tpl' : 'admin_404.tpl';
-    } else if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'ad') {
+    } else if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'ad') {
         $template_file = 'admin_root_dhcp_ad.tpl';
-    } else if (in_array($ui->smallletters('action',2,'post'), array('md','ad'))) {
+    } else if (in_array($ui->smallletters('action',2, 'post'), array('md','ad'))) {
         $error = array();
-        if (!$ui->active('publickey','post')) {
+        if (!$ui->active('publickey', 'post')) {
             $error[] = 'Publickey';
         }
-        if (!$ui->active('active','post')) {
+        if (!$ui->active('active', 'post')) {
             $error[] = 'Active';
         }
-        if (!$ui->ip('ip','post')) {
+        if (!$ui->ip('ip', 'post')) {
             $error[] = 'IP';
         }
-        if (!$ui->port('port','post')) {
+        if (!$ui->port('port', 'post')) {
             $error[] = 'Port';
         }
-        if (!$ui->password('pass',255,'post')) {
+        if (!$ui->password('pass',255, 'post')) {
             $error[] = 'Password';
         }
-        if (!$ui->username('user',255,'post')) {
+        if (!$ui->username('user',255, 'post')) {
             $error[] = 'Username';
         }
         if (count($error)>0) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            $publickey=$ui->active('publickey','post');
-            $keyname=$ui->startparameter('keyname','post');
-            $active=$ui->active('active','post');
-            $ip=$ui->ip('ip','post');
-            $ips=$ui->ips('ips','post');
-            $netmask=$ui->ips('netmask','post');
-            $port=$ui->port('port','post');
-            $user=$ui->username('user',255,'post');
-            $pass=$ui->password('pass',255,'post');
-            $startCmd=$ui->startparameter('startCmd','post');
-            $dhcpFile=$ui->startparameter('dhcpFile','post');
-            $description=$ui->escaped('description','post');
-            $subnetOptions=$ui->escaped('subnetOptions','post');
-            if ($ui->st('d','get') == 'md' and $ui->id('id',19,'get')) {
-                $id=$ui->id('id',19,'get');
+            $publickey = $ui->active('publickey', 'post');
+            $keyname = $ui->startparameter('keyname', 'post');
+            $active = $ui->active('active', 'post');
+            $ip = $ui->ip('ip', 'post');
+            $ips = $ui->ips('ips', 'post');
+            $netmask = $ui->ips('netmask', 'post');
+            $port = $ui->port('port', 'post');
+            $user = $ui->username('user',255, 'post');
+            $pass = $ui->password('pass',255, 'post');
+            $startCmd = $ui->startparameter('startCmd', 'post');
+            $dhcpFile = $ui->startparameter('dhcpFile', 'post');
+            $description = $ui->escaped('description', 'post');
+            $subnetOptions = $ui->escaped('subnetOptions', 'post');
+            if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get')) {
+                $id = $ui->id('id',19, 'get');
                 $query = $sql->prepare("UPDATE `rootsDHCP` SET `active`=:active,`ip`=:ip,`ips`=:ips,`netmask`=:netmask,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`startCmd`=:startCmd,`dhcpFile`=:dhcpFile,`description`=:description,`subnetOptions`=:subnetOptions WHERE `id`=:id AND `resellerid`=:reseller_id");
                 $query->execute(array(':active' => $active,':ip' => $ip,':ips' => $ips,':netmask' => $netmask,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':startCmd' => $startCmd,':dhcpFile' => $dhcpFile,':description' => $description,':subnetOptions' => $subnetOptions,':id' => $id,':reseller_id' => $reseller_id));
                 $loguseraction="%mod% DHCP";
-            } else if ($ui->st('d','get') == 'ad') {
+            } else if ($ui->st('d', 'get') == 'ad') {
                 $query = $sql->prepare("INSERT INTO `rootsDHCP` (`active`,`ip`,`ips`,`netmask`,`port`,`user`,`pass`,`publickey`,`keyname`,`startCmd`,`dhcpFile`,`description`,`subnetOptions`,`resellerid`) VALUES (:active,:ip,:ips,:netmask,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:startCmd,:dhcpFile,:description,:subnetOptions,:reseller_id)");
                 $query->execute(array(':active' => $active,':ip' => $ip,':ips' => $ips,':netmask' => $netmask,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':startCmd' => $startCmd,':dhcpFile' => $dhcpFile,':description' => $description,':subnetOptions' => $subnetOptions,':reseller_id' => $reseller_id));
                 $loguseraction="%add% DHCP";
@@ -134,18 +134,18 @@ if (in_array($ui->st('d','get'), array('md','ad'))){
             }
         }
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id',19,'get')) {
-    $id=$ui->id('id',19,'get');
-    if (!$ui->smallletters('action',2,'post')) {
-        $id=$ui->id('id',19,'get');
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')) {
+    $id = $ui->id('id',19, 'get');
+    if (!$ui->smallletters('action',2, 'post')) {
+        $id = $ui->id('id',19, 'get');
         $query = $sql->prepare("SELECT `ip`,`description` FROM `rootsDHCP` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $ip=$row['ip'];
-            $description=$row['description'];
+            $ip = $row['ip'];
+            $description = $row['description'];
         }
         $template_file = (isset($ip)) ? 'admin_root_dhcp_dl.tpl' : 'admin_404.tpl';
-    } else if ($ui->smallletters('action',2,'post') == 'dl') {
+    } else if ($ui->smallletters('action',2, 'post') == 'dl') {
         $query = $sql->prepare("DELETE FROM `rootsDHCP` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         if ($query->rowCount()>0) {
@@ -159,20 +159,20 @@ if (in_array($ui->st('d','get'), array('md','ad'))){
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'dd') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'dd') {
         $orderby = '`description` DESC';
-    } else if ($ui->st('o','get') == 'ad') {
+    } else if ($ui->st('o', 'get') == 'ad') {
         $orderby = '`description` ASC';
-    } else if ($ui->st('o','get') == 'dp') {
+    } else if ($ui->st('o', 'get') == 'dp') {
         $orderby = '`ip` DESC';
-    } else if ($ui->st('o','get') == 'ap') {
+    } else if ($ui->st('o', 'get') == 'ap') {
         $orderby = '`ip` ASC';
-    } else if ($ui->st('o','get') == 'ds') {
+    } else if ($ui->st('o', 'get') == 'ds') {
         $orderby = '`active` DESC,`notified` DESC';
-    } else if ($ui->st('o','get') == 'as') {
+    } else if ($ui->st('o', 'get') == 'as') {
         $orderby = '`active` ASC,`notified` ASC';
-    } else if ($ui->st('o','get') == 'di') {
+    } else if ($ui->st('o', 'get') == 'di') {
         $orderby = '`id` DESC';
     } else {
         $orderby = '`id` ASC';

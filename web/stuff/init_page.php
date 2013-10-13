@@ -107,7 +107,7 @@ if ($seo== 'Y') {
         }
     }
 
-    if (isset($admin_id) and $ui->smallletters('preview',4,'get') == 'true') {
+    if (isset($admin_id) and $ui->smallletters('preview',4, 'get') == 'true') {
         $preview = 1;
 
     } else if (count($ui->get)>0 and isset($s) and isset($page_data->pages[$s])) {
@@ -158,7 +158,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $page_data->SetNewsPost($row['id'], $row['title'], $row['text'], $newssidebar_textlength);
 }
 
-if (strpos($ui->escaped('HTTP_USER_AGENT','server'), ' MSIE ') !== false) {
+if (strpos($ui->escaped('HTTP_USER_AGENT', 'server'), ' MSIE ') !== false) {
     $page_data->SetData('MSIE',(string)$page_sprache->MSIE);
 }
 
@@ -209,8 +209,8 @@ if (isset($page_lookupid)) {
     $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($page_lookupid));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $great_name=$row['name'];
-        $great_vname=$row['vname'];
+        $great_name = $row['name'];
+        $great_vname = $row['vname'];
 
         $great_user = ($row['name'] != '' or $row['vname'] != '') ? trim ($row['vname'] . ' ' . $row['name']) : $row['cname'];
 
@@ -223,9 +223,9 @@ if (isset($page_lookupid)) {
 }
 if (!isset($s) and !isset($page_category) and isset($page_default) and isid($page_default,19)) {
     $s='page';
-    $default_page_id=$page_default;
+    $default_page_id = $page_default;
 } else if (!isset($s) and !isset($page_category) and isset($page_default)) {
-    $s=$page_default;
+    $s = $page_default;
 } else if (!isset($s) and isset($page_category) and $page_category != '' and $page_category != null) {
     $s='404';
     $throw404 = true;

@@ -52,8 +52,8 @@ class rootServer {
         global $sql;
 
         // define internal vars
-        $this->sql=$sql;
-        $this->aeskey=$aeskey;
+        $this->sql = $sql;
+        $this->aeskey = $aeskey;
 
         // check if curl is choosen and available and initiate cURL-Session else fallback to fsockopen
         $this->httpConnect=(function_exists('curl_init')) ? 'curl' : 'fsockopen';
@@ -62,26 +62,26 @@ class rootServer {
     }
 
     public function rootServer ($ID,$action,$type='dedicated',$extraData=null) {
-        $this->tempID=$ID;
+        $this->tempID = $ID;
         $this->ID[$type][$ID] = array();
         $this->ID[$type][$ID]['action'] = $action;
-        $this->type=$type;
-        $this->extraData=$extraData;
+        $this->type = $type;
+        $this->extraData = $extraData;
         $imageID=(isset($extraData['imageID'])) ? $extraData['imageID'] : 0;
         $hostID = 0;
         $userID = 0;
         $resellerID = 0;
         if(isid($imageID,10)) {
-            $query=$this->sql->prepare("SELECT `distro`,`bitversion` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
+            $query = $this->sql->prepare("SELECT `distro`,`bitversion` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
             $query->execute(array($imageID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $distro=$row['distro'];
+                $distro = $row['distro'];
                 $guestos=($row['bitversion'] == '32') ? $row['distro'] : $row['distro'] . '-' . $row['bitversion'];
             }
         }
         // get Root Data from DB
         if ($this->type == 'dedicated') {
-            $query=$this->sql->prepare("SELECT d.*,u.`cname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`dedicatedID`=? LIMIT 1");
+            $query = $this->sql->prepare("SELECT d.*,u.`cname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`dedicatedID`=? LIMIT 1");
             $query->execute(array($this->tempID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $this->ID[$type][$ID]['useDHCP'] = $row['useDHCP'];
@@ -96,13 +96,13 @@ class rootServer {
                 $this->ID[$type][$ID]['apiRequestStop'] = $row['apiRequestStop'];
                 $this->ID[$type][$ID]['https'] = $row['https'];
                 $this->ID[$type][$ID]['apiURL'] = $row['apiURL'];
-                $userID=$row['userID'];
-                $resellerID=$row['resellerID'];
+                $userID = $row['userID'];
+                $resellerID = $row['resellerID'];
             }
 
             // Get VMware Data
         } else if ($this->type == 'vmware') {
-            $query=$this->sql->prepare("SELECT c.*,u.`id` AS `userID`,u.`cname`,h.`cores` AS `hcore`,h.`esxi`,h.`id` AS `hostID`,h.`ip` AS `hip`,AES_DECRYPT(h.`port`,:aeskey) AS `dport`,AES_DECRYPT(h.`user`,:aeskey) AS `duser`,AES_DECRYPT(h.`pass`,:aeskey) AS `dpass`,h.`publickey`,h.`keyname` FROM `virtualcontainer` c INNER JOIN `userdata` u ON c.`userid`=u.`id` INNER JOIN `virtualhosts` h ON c.`hostid`=h.`id` WHERE c.`id`=:vmID LIMIT 1");
+            $query = $this->sql->prepare("SELECT c.*,u.`id` AS `userID`,u.`cname`,h.`cores` AS `hcore`,h.`esxi`,h.`id` AS `hostID`,h.`ip` AS `hip`,AES_DECRYPT(h.`port`,:aeskey) AS `dport`,AES_DECRYPT(h.`user`,:aeskey) AS `duser`,AES_DECRYPT(h.`pass`,:aeskey) AS `dpass`,h.`publickey`,h.`keyname` FROM `virtualcontainer` c INNER JOIN `userdata` u ON c.`userid`=u.`id` INNER JOIN `virtualhosts` h ON c.`hostid`=h.`id` WHERE c.`id`=:vmID LIMIT 1");
             $query->execute(array(':aeskey' => $this->aeskey,':vmID' => $this->tempID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (!isset($this->vmwareHosts[$row['hostID']])) {
@@ -131,9 +131,9 @@ class rootServer {
                 $this->ID[$type][$ID]['restart'] = 'Y';
                 $this->ID[$type][$ID]['distro']=(isset($distro)) ? $distro : '';
                 $this->ID[$type][$ID]['guestos']=(isset($guestos)) ? $guestos : '';
-                $hostID=$row['hostid'];
-                $userID=$row['userid'];
-                $resellerID=$row['resellerid'];
+                $hostID = $row['hostid'];
+                $userID = $row['userid'];
+                $resellerID = $row['resellerid'];
                 $this->vmwareHosts[$row['hostID']]['actions'][] = array('action' => $action,'id' => $ID);
             }
         }
@@ -148,10 +148,10 @@ class rootServer {
             // get DHCP Data from DB
             if ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['useDHCP'] == 'Y')) {
                 $ex=explode('.',$this->ID[$type][$ID]['ip']);
-                $subnet=$ex[0] . '.' . $ex[1] . '.' . $ex[2].'.0';
+                $subnet = $ex[0] . '.' . $ex[1] . '.' . $ex[2].'.0';
                 $this->ID[$type][$ID]['subnet'] = $subnet;
-                $searchFor=$ex[0] . '.' . $ex[1] . '.' . $ex[2].'.';
-                $query=$this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsDHCP` WHERE `active`='Y' AND (`ips` LIKE :ip OR `ips` LIKE :subnet)");
+                $searchFor = $ex[0] . '.' . $ex[1] . '.' . $ex[2].'.';
+                $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsDHCP` WHERE `active`='Y' AND (`ips` LIKE :ip OR `ips` LIKE :subnet)");
                 $query->execute(array(':aeskey' => $this->aeskey,':ip' => '%'.$this->ID[$type][$ID]['ip'].'%',':subnet' => '%'.$searchFor.'%'));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if (!isset($foundDHCP) and in_array($this->ID[$type][$ID]['ip'],ipstoarray($row['ips']))) {
@@ -169,13 +169,13 @@ class rootServer {
                             $this->dhcpData[$row['id']]['subnetOptions'] = $row['subnetOptions'];
                         }
                         $this->dhcpData[$row['id']]['actions'][] = array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
-                        $modID=$row['id'];
+                        $modID = $row['id'];
                     }
                 }
                 if (isset($foundDHCP) and $action == 'md' and isset($this->extraData['oldip']) and $this->extraData['oldip'] != $this->ID[$type][$ID]['ip']) {
                     $ex=explode('.',$this->extraData['oldip']);
-                    $searchForOld=$ex[0] . '.' . $ex[1] . '.' . $ex[2].'.';
-                    $query=$this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsDHCP` WHERE `active`='Y' AND (`ips` LIKE :ip OR `ips` LIKE :subnet)");
+                    $searchForOld = $ex[0] . '.' . $ex[1] . '.' . $ex[2].'.';
+                    $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsDHCP` WHERE `active`='Y' AND (`ips` LIKE :ip OR `ips` LIKE :subnet)");
                     $query->execute(array(':aeskey' => $this->aeskey,':ip' => '%'.$this->extraData['oldip'].'%',':subnet' => '%'.$searchForOld.'%'));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         if (in_array($this->extraData['oldip'],ipstoarray($row['ips']))) {
@@ -203,7 +203,7 @@ class rootServer {
             // Get PXE Data
             if (!in_array($action, array('md','ad','rp')) and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['usePXE'] == 'Y')) and isid($imageID,10)) {
                 if (isid($this->ID[$type][$ID]['pxeID'],10)) {
-                    $query=$this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' AND `id`=:pxeID LIMIT 1");
+                    $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' AND `id`=:pxeID LIMIT 1");
                     $query->execute(array(':aeskey' => $this->aeskey,':pxeID' => $this->ID[$type][$ID]['pxeID']));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         if(!isset($this->PXEData[$row['id']])){
@@ -222,7 +222,7 @@ class rootServer {
                     }
                 }
                 if (!isset($foundPXE) and $action!='dl') {
-                    $query=$this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' ORDER BY RAND() LIMIT 1");
+                    $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' ORDER BY RAND() LIMIT 1");
                     $query->execute(array(':aeskey' => $this->aeskey));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         if(!isset($this->PXEData[$row['id']])){
@@ -259,16 +259,16 @@ class rootServer {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($v['keyname']);
-                $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
-                $key=EASYWIDIR . '/keys/'.$sshkey;
+                $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
+                $key = EASYWIDIR . '/keys/' . $sshkey;
 
                 $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'],$v['port'], array('hostkey' => 'ssh-rsa')) : false;
             } else {
                 $ssh2= @ssh2_connect($v['ip'],$v['port']);
             }
-            if ($ssh2==true) {
+            if ($ssh2 == true) {
                 $connect_ssh2=($v['publickey'] == 'Y' and isset($pubkey,$key)) ? @ssh2_auth_pubkey_file($ssh2,$v['user'],$pubkey,$key) : @ssh2_auth_password($ssh2,$v['user'],$v['pass']);
-                if ($connect_ssh2==true) {
+                if ($connect_ssh2 == true) {
                     $sftp=ssh2_sftp($ssh2);
                     $file=(substr($v['dhcpFile'],0,1) == '/') ? 'ssh2.sftp://'.$sftp.$v['dhcpFile'] : 'ssh2.sftp://'.$sftp.'/home/'.$v['user']. '/' . $v['dhcpFile'];
                     $fileErrorOutput=(substr($v['dhcpFile'],0,1) == '/') ? $v['dhcpFile'] : '/home/'.$v['user']. '/' . $v['dhcpFile'];
@@ -278,7 +278,7 @@ class rootServer {
                         $filesize=filesize($file);
                         while (strlen($buffer)<$filesize) $buffer.=fread($fp,$filesize);
                         fclose($fp);
-                        $config=$this->parseDhcpConfig(str_replace(array("\0","\b","\r","\Z"),'',$buffer));
+                        $config = $this->parseDhcpConfig(str_replace(array("\0","\b","\r","\Z"),'',$buffer));
                         if (is_array($config)) {
                             foreach ($v['actions'] as $a) {
                                 if ($a['action'] == 'del' and isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
@@ -309,7 +309,7 @@ class rootServer {
             if (isset($tempBad) and isset($bad)) {
                 $bad=array_merge($bad,$tempBad);
             } else if (isset($tempBad) and !isset($bad)) {
-                $bad=$tempBad;
+                $bad = $tempBad;
             }
         }
         if (isset($bad)) return implode(' ',$bad);
@@ -321,36 +321,36 @@ class rootServer {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($v['keyname']);
-                $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
-                $key=EASYWIDIR . '/keys/'.$sshkey;
+                $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
+                $key = EASYWIDIR . '/keys/' . $sshkey;
 
                 $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'],$v['port'], array('hostkey' => 'ssh-rsa')) : false;
             } else {
                 $ssh2= @ssh2_connect($v['ip'],$v['port']);
             }
-            if ($ssh2==true) {
+            if ($ssh2 == true) {
                 $connect_ssh2=($v['publickey'] == 'Y' and isset($pubkey,$key)) ? @ssh2_auth_pubkey_file($ssh2,$v['user'],$pubkey,$key) : @ssh2_auth_password($ssh2,$v['user'],$v['pass']);
-                if ($connect_ssh2==true) {
+                if ($connect_ssh2 == true) {
                     $sftp=ssh2_sftp($ssh2);
                     foreach($v['actions'] as $a) {
                         $extraSlash=(substr($v['PXEFolder'],-1) != '/' and strlen($v['PXEFolder'])>0) ? '/' : '';
-                        $pathWithPXEMac=$v['PXEFolder'].$extraSlash.'01-'.str_replace(':','-',$this->ID[$a['type']][$a['id']]['mac']);
+                        $pathWithPXEMac = $v['PXEFolder'].$extraSlash.'01-'.str_replace(':','-',$this->ID[$a['type']][$a['id']]['mac']);
                         $file=(substr($v['PXEFolder'],0,1) == '/') ? 'ssh2.sftp://'.$sftp.$pathWithPXEMac : 'ssh2.sftp://'.$sftp.'/home/'.$v['user']. '/' . $pathWithPXEMac;
                         $fileWithPath=(substr($v['PXEFolder'],0,1) == '/') ? $pathWithPXEMac : '/home/'.$v['user']. '/' . $pathWithPXEMac;
                         if (in_array($a['action'], array('dl','rt','md'))) {
                             @ssh2_sftp_unlink($sftp,$fileWithPath);
                         } else if (in_array($a['action'], array('ri','rc'))) {
-                            $query=$this->sql->prepare("SELECT `pxelinux` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
+                            $query = $this->sql->prepare("SELECT `pxelinux` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
                             $query->execute(array($a['imageID']));
-                            $pxeconfig=$query->fetchColumn();
+                            $pxeconfig = $query->fetchColumn();
                             if (strlen($pxeconfig)>0) {
                                 $newPass=passwordgenerate(12);
                                 $pxeconfig=str_replace('%rescuepass%',$newPass,$pxeconfig);
                                 if ($a['type'] == 'dedicated') {
-                                    $query=$this->sql->prepare("UPDATE `rootsDedicated` SET `initialPass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `id`=? LIMIT 1");
+                                    $query = $this->sql->prepare("UPDATE `rootsDedicated` SET `initialPass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `id`=? LIMIT 1");
                                     $query->execute(array($newPass,$this->aeskey,$k,$a['id']));
                                 } else {
-                                    $query=$this->sql->prepare("UPDATE `virtualcontainer` SET `pass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `id`=? LIMIT 1");
+                                    $query = $this->sql->prepare("UPDATE `virtualcontainer` SET `pass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `id`=? LIMIT 1");
                                     $query->execute(array($newPass,$this->aeskey,$k,$a['id']));
                                 }
                                 $fp=@fopen($file,'w');
@@ -363,7 +363,7 @@ class rootServer {
                 } else $tempBad[] = 'Could login to PXE server: '.$v['ip'] . ':' . $v['port'];
             } else $tempBad[] = 'Could not connect to PXE server: '.$v['ip'] . ':' . $v['port'];
             if (isset($tempBad) and isset($bad)) $bad=array_merge($bad,$tempBad);
-            else if (isset($tempBad) and !isset($bad)) $bad=$tempBad;
+            else if (isset($tempBad) and !isset($bad)) $bad = $tempBad;
         }
         if (isset($bad)) return implode(' ',$bad);
         return true;
@@ -377,12 +377,12 @@ class rootServer {
             $ex=preg_split("/\//",$apiPath,-1,PREG_SPLIT_NO_EMPTY);
             $i = 1;
             while (count($ex)>$i) {
-                $file.='/' . $ex[$i];
+                $file .= '/' . $ex[$i];
                 $i++;
             }
-            $file.='/';
+            $file .= '/';
             if($this->ID['dedicated'][$a['id']]['apiRequestType'] == 'G') {
-                $file.=$requestString;
+                $file .= $requestString;
             } else {
                 foreach (explode('&',str_replace(array('&amp;','?'), array('&',''),$requestString)) as $param) {
                     $ex=explode('=',$param);
@@ -408,7 +408,7 @@ class rootServer {
                             $config[$subnet][$host]['comment'][] = $cleanedLine;
                         } else {
                             $ex=explode(' ',$cleanedLine);
-                            $v=$ex[count($ex)-1];
+                            $v = $ex[count($ex)-1];
                             unset($ex[count($ex)-1]);
                             $k=implode(' ',$ex);
                             $config[$subnet][$host][$k] = $v;
@@ -433,7 +433,7 @@ class rootServer {
     private function assembleDhcpConfig ($array,$id) {
         $config = '';
         foreach($array['raw'] as $l) {
-            $config.=$l."\r\n";
+            $config .= $l."\r\n";
         }
         foreach($array['subnet'] as $subnets=>$hosts) {
             $config.="subnet ${subnets} netmask ".$this->dhcpData[$id]['netmask']." {\r\n";
@@ -455,16 +455,16 @@ class rootServer {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($this->vmwareHosts[$hID['hostID']]['vmIDs']['keyname']);
-                $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
-                $key=EASYWIDIR . '/keys/'.$sshkey;
+                $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
+                $key = EASYWIDIR . '/keys/' . $sshkey;
 
                 $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($this->vmwareHosts[$hID]['vmIDs']['ip'],$this->vmwareHosts[$hID]['vmIDs']['dport'], array('hostkey' => 'ssh-rsa')) : false;
             } else {
                 $ssh2=@ssh2_connect($this->vmwareHosts[$hID]['vmIDs']['ip'],$this->vmwareHosts[$hID]['vmIDs']['dport']);
             }
-            if ($ssh2==true) {
+            if ($ssh2 == true) {
                 $connectSSH2=($this->vmwareHosts[$hID]['vmIDs']['publickey'] == 'Y' and isset($pubkey,$key)) ? @ssh2_auth_pubkey_file($ssh2,$this->vmwareHosts[$hID]['vmIDs']['duser'],$pubkey,$key) : @ssh2_auth_password($ssh2,$this->vmwareHosts[$hID]['vmIDs']['duser'],$this->vmwareHosts[$hID]['vmIDs']['dpass']);
-                if ($connectSSH2==true) {
+                if ($connectSSH2 == true) {
                     print "Prepare: unregister any invalid vms\r\n";
                     $cmd='vim-cmd vmsvc/getallvms | grep \'Skipping\' | while read line; do vim-cmd vmsvc/unregister `echo $line | grep \'Skipping\' |  awk -F "\'" \'{print $2}\'`; done';
                     $this->execCmd($cmd,$ssh2);
@@ -483,65 +483,65 @@ class rootServer {
                             $fp=fopen('ssh2.sftp://'.$sftp.'/vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint']. '/' . $this->ID['vmware'][$v['id']]['hostname']. '/' . $this->ID['vmware'][$v['id']]['hostname'].'.vmx','w');
                              if ($fp) {
                                  $vmxFile='.encoding = "UTF-8"'."\n";
-                                 $vmxFile.='config.version = "8"'."\n";
-                                 $vmxFile.='displayName = "'.$this->ID['vmware'][$v['id']]['hostname'].'"'."\n";
-                                 $vmxFile.='ethernet0.present = "TRUE"'."\n";
-                                 $vmxFile.='ethernet0.virtualDev = "e1000"'."\n";
-                                 $vmxFile.='ethernet0.networkName = "VM Network"'."\n";
-                                 $vmxFile.='ethernet0.addressType = "static"'."\n";
-                                 $vmxFile.='ethernet0.Address = "'.$this->ID['vmware'][$v['id']]['mac'].'"'."\n";
-                                 $vmxFile.='extendedConfigFile = "'.$this->ID['vmware'][$v['id']]['hostname'].'.vmxf"'."\n";
-                                 $vmxFile.='floppy0.clientDevice = "TRUE"'."\n";
-                                 $vmxFile.='floppy0.fileName = ""'."\n";
-                                 $vmxFile.='floppy0.present = "TRUE"'."\n";
-                                 $vmxFile.='floppy0.startConnected = "FALSE"'."\n";
-                                 $vmxFile.='guestOS = "'.$this->ID['vmware'][$v['id']]['guestos'].'"'."\n";
-                                 $vmxFile.='ide1:0.present = "TRUE"'."\n";
-                                 $vmxFile.='ide1:0.clientDevice = "TRUE"'."\n";
-                                 $vmxFile.='ide1:0.deviceType = "cdrom-raw"'."\n";
-                                 $vmxFile.='ide1:0.startConnected = "FALSE"'."\n";
-                                 $vmxFile.='memsize = "'.$this->ID['vmware'][$v['id']]['ram'].'"'."\n";
-                                 $vmxFile.='numvcpus = "'.$this->ID['vmware'][$v['id']]['cores'].'"'."\n";
-                                 $vmxFile.='nvram = "'.$this->ID['vmware'][$v['id']]['hostname'].'.nvram"'."\n";
-                                 $vmxFile.='pciBridge0.present = "TRUE"'."\n";
-                                 $vmxFile.='pciBridge4.present = "TRUE"'."\n";
-                                 $vmxFile.='pciBridge4.virtualDev = "pcieRootPort"'."\n";
-                                 $vmxFile.='pciBridge4.functions = "8"'."\n";
-                                 $vmxFile.='pciBridge5.present = "TRUE"'."\n";
-                                 $vmxFile.='pciBridge5.virtualDev = "pcieRootPort"'."\n";
-                                 $vmxFile.='pciBridge5.functions = "8"'."\n";
-                                 $vmxFile.='pciBridge6.present = "TRUE"'."\n";
-                                 $vmxFile.='pciBridge6.virtualDev = "pcieRootPort"'."\n";
-                                 $vmxFile.='pciBridge6.functions = "8"'."\n";
-                                 $vmxFile.='pciBridge7.present = "TRUE"'."\n";
-                                 $vmxFile.='pciBridge7.virtualDev = "pcieRootPort"'."\n";
-                                 $vmxFile.='pciBridge7.functions = "8"'."\n";
-                                 $vmxFile.='powerType.powerOff = "soft"'."\n";
-                                 $vmxFile.='powerType.powerOn = "hard"'."\n";
-                                 $vmxFile.='powerType.suspend = "hard"'."\n";
-                                 $vmxFile.='powerType.reset = "soft"'."\n";
-                                 $vmxFile.='sched.cpu.min = "'.$this->ID['vmware'][$v['id']]['minmhz'].'"'."\n";
-                                 $vmxFile.='sched.cpu.units = "mhz"'."\n";
-                                 $vmxFile.='sched.cpu.shares = "normal"'."\n";
-                                 $vmxFile.='sched.cpu.max = "'.$this->ID['vmware'][$v['id']]['maxmhz'].'"'."\n";
-                                 $vmxFile.='sched.cpu.affinity = "all"'."\n";
-                                 $vmxFile.='sched.mem.max = "'.$this->ID['vmware'][$v['id']]['maxram'].'"'."\n";
-                                 $vmxFile.='sched.mem.minsize = "'.$this->ID['vmware'][$v['id']]['minram'].'"'."\n";
-                                 $vmxFile.='sched.mem.shares = "normal"'."\n";
-                                 $vmxFile.='scsi0.present = "TRUE"'."\n";
-                                 $vmxFile.='scsi0.sharedBus = "none"'."\n";
-                                 $vmxFile.='scsi0.virtualDev = "'.$harddisk.'"'."\n";
-                                 $vmxFile.='scsi0:0.present = "TRUE"'."\n";
-                                 $vmxFile.='scsi0:0.fileName = "'.$this->ID['vmware'][$v['id']]['hostname'].'.vmdk"'."\n";
-                                 $vmxFile.='scsi0:0.deviceType = "scsi-hardDisk"'."\n";
-                                 $vmxFile.='uuid.location = "56 4d ce 4e ce 1e 51 4b-3f 61 d8 45 c0 c8 93 90"'."\n";
-                                 $vmxFile.='uuid.bios = "56 4d ce 4e ce 1e 51 4b-3f 61 d8 45 c0 c8 93 90"'."\n";
-                                 $vmxFile.='vc.uuid = "52 9c 06 a8 19 e6 40 c0-61 1b 6e 23 34 c8 c7 f9"'."\n";
-                                 $vmxFile.='virtualHW.productCompatibility = "hosted"'."\n";
-                                 $vmxFile.='virtualHW.version = "7"'."\n";
-                                 $vmxFile.='vmci0.present = "TRUE"'."\n";
-                                 $vmxFile.='uuid.action = "create"'."\n";
-                                 $vmxFile.='bios.bootOrder = "ethernet0"'."\n";
+                                 $vmxFile .= 'config.version = "8"'."\n";
+                                 $vmxFile .= 'displayName = "'.$this->ID['vmware'][$v['id']]['hostname'].'"'."\n";
+                                 $vmxFile .= 'ethernet0.present = "TRUE"'."\n";
+                                 $vmxFile .= 'ethernet0.virtualDev = "e1000"'."\n";
+                                 $vmxFile .= 'ethernet0.networkName = "VM Network"'."\n";
+                                 $vmxFile .= 'ethernet0.addressType = "static"'."\n";
+                                 $vmxFile .= 'ethernet0.Address = "'.$this->ID['vmware'][$v['id']]['mac'].'"'."\n";
+                                 $vmxFile .= 'extendedConfigFile = "'.$this->ID['vmware'][$v['id']]['hostname'].'.vmxf"'."\n";
+                                 $vmxFile .= 'floppy0.clientDevice = "TRUE"'."\n";
+                                 $vmxFile .= 'floppy0.fileName = ""'."\n";
+                                 $vmxFile .= 'floppy0.present = "TRUE"'."\n";
+                                 $vmxFile .= 'floppy0.startConnected = "FALSE"'."\n";
+                                 $vmxFile .= 'guestOS = "'.$this->ID['vmware'][$v['id']]['guestos'].'"'."\n";
+                                 $vmxFile .= 'ide1:0.present = "TRUE"'."\n";
+                                 $vmxFile .= 'ide1:0.clientDevice = "TRUE"'."\n";
+                                 $vmxFile .= 'ide1:0.deviceType = "cdrom-raw"'."\n";
+                                 $vmxFile .= 'ide1:0.startConnected = "FALSE"'."\n";
+                                 $vmxFile .= 'memsize = "'.$this->ID['vmware'][$v['id']]['ram'].'"'."\n";
+                                 $vmxFile .= 'numvcpus = "'.$this->ID['vmware'][$v['id']]['cores'].'"'."\n";
+                                 $vmxFile .= 'nvram = "'.$this->ID['vmware'][$v['id']]['hostname'].'.nvram"'."\n";
+                                 $vmxFile .= 'pciBridge0.present = "TRUE"'."\n";
+                                 $vmxFile .= 'pciBridge4.present = "TRUE"'."\n";
+                                 $vmxFile .= 'pciBridge4.virtualDev = "pcieRootPort"'."\n";
+                                 $vmxFile .= 'pciBridge4.functions = "8"'."\n";
+                                 $vmxFile .= 'pciBridge5.present = "TRUE"'."\n";
+                                 $vmxFile .= 'pciBridge5.virtualDev = "pcieRootPort"'."\n";
+                                 $vmxFile .= 'pciBridge5.functions = "8"'."\n";
+                                 $vmxFile .= 'pciBridge6.present = "TRUE"'."\n";
+                                 $vmxFile .= 'pciBridge6.virtualDev = "pcieRootPort"'."\n";
+                                 $vmxFile .= 'pciBridge6.functions = "8"'."\n";
+                                 $vmxFile .= 'pciBridge7.present = "TRUE"'."\n";
+                                 $vmxFile .= 'pciBridge7.virtualDev = "pcieRootPort"'."\n";
+                                 $vmxFile .= 'pciBridge7.functions = "8"'."\n";
+                                 $vmxFile .= 'powerType.powerOff = "soft"'."\n";
+                                 $vmxFile .= 'powerType.powerOn = "hard"'."\n";
+                                 $vmxFile .= 'powerType.suspend = "hard"'."\n";
+                                 $vmxFile .= 'powerType.reset = "soft"'."\n";
+                                 $vmxFile .= 'sched.cpu.min = "'.$this->ID['vmware'][$v['id']]['minmhz'].'"'."\n";
+                                 $vmxFile .= 'sched.cpu.units = "mhz"'."\n";
+                                 $vmxFile .= 'sched.cpu.shares = "normal"'."\n";
+                                 $vmxFile .= 'sched.cpu.max = "'.$this->ID['vmware'][$v['id']]['maxmhz'].'"'."\n";
+                                 $vmxFile .= 'sched.cpu.affinity = "all"'."\n";
+                                 $vmxFile .= 'sched.mem.max = "'.$this->ID['vmware'][$v['id']]['maxram'].'"'."\n";
+                                 $vmxFile .= 'sched.mem.minsize = "'.$this->ID['vmware'][$v['id']]['minram'].'"'."\n";
+                                 $vmxFile .= 'sched.mem.shares = "normal"'."\n";
+                                 $vmxFile .= 'scsi0.present = "TRUE"'."\n";
+                                 $vmxFile .= 'scsi0.sharedBus = "none"'."\n";
+                                 $vmxFile .= 'scsi0.virtualDev = "'.$harddisk.'"'."\n";
+                                 $vmxFile .= 'scsi0:0.present = "TRUE"'."\n";
+                                 $vmxFile .= 'scsi0:0.fileName = "'.$this->ID['vmware'][$v['id']]['hostname'].'.vmdk"'."\n";
+                                 $vmxFile .= 'scsi0:0.deviceType = "scsi-hardDisk"'."\n";
+                                 $vmxFile .= 'uuid.location = "56 4d ce 4e ce 1e 51 4b-3f 61 d8 45 c0 c8 93 90"'."\n";
+                                 $vmxFile .= 'uuid.bios = "56 4d ce 4e ce 1e 51 4b-3f 61 d8 45 c0 c8 93 90"'."\n";
+                                 $vmxFile .= 'vc.uuid = "52 9c 06 a8 19 e6 40 c0-61 1b 6e 23 34 c8 c7 f9"'."\n";
+                                 $vmxFile .= 'virtualHW.productCompatibility = "hosted"'."\n";
+                                 $vmxFile .= 'virtualHW.version = "7"'."\n";
+                                 $vmxFile .= 'vmci0.present = "TRUE"'."\n";
+                                 $vmxFile .= 'uuid.action = "create"'."\n";
+                                 $vmxFile .= 'bios.bootOrder = "ethernet0"'."\n";
                                  if(fwrite($fp,$vmxFile)) {
                                      print "Step 2: Create/edit vmx file (OK)\r\n";
                                  } else {

@@ -38,9 +38,9 @@
  */
 
 if (isset($_SERVER['REMOTE_ADDR'])) {
-    $ip=$_SERVER['REMOTE_ADDR'];
+    $ip = $_SERVER['REMOTE_ADDR'];
     if (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) {
-        $timelimit=$_GET['timeout'];
+        $timelimit = $_GET['timeout'];
     } else {
         $timelimit=ini_get('max_execution_time')-10;
     }
@@ -75,7 +75,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     $query7 = $sql->prepare("UPDATE `api_import` SET `lastCheck`=?,`lastID`=? WHERE `importID`=? LIMIT 1");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $resellerID=$row['resellerID'];
+        $resellerID = $row['resellerID'];
         if($row['ssl'] == 'Y') {
             $ssl='https://';
             $port=443;
@@ -102,14 +102,14 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 if (isset($left)) {
                     $left-=$row['chunkSize'];
                 } else {
-                    $left=$decoded->total-$row['chunkSize'];
+                    $left = $decoded->total-$row['chunkSize'];
                 }
                 $start+=$row['chunkSize'];
                 unset($lastID);
                 foreach ($decoded->users as $value) {
                     if (isset($value->externalID)) {
                         $query4->execute(array(json_encode(array('I' => $row['importID'])),$value->externalID));
-                        $checkAmount=$query4->fetchColumn();
+                        $checkAmount = $query4->fetchColumn();
                         if($checkAmount>0 and $row['fetchUpdates'] == 'Y') {
                             $query2->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),json_encode(array('I' => $row['importID'])),getParam('externalID'), $row['resellerID']));
                             printText('User updated. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
@@ -130,7 +130,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                         if (getParam('updatetime') != '' and (isset($lastCheck) and strtotime(getParam('updatetime'))>strtotime($lastCheck)) or !isset($lastCheck)) {
                             $lastCheck=getParam('updatetime');
                         }
-                        $lastID=$value->externalID;
+                        $lastID = $value->externalID;
                     }
                 }
                 if (isset($lastID)) {

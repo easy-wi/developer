@@ -151,7 +151,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 } else if ($addedby == '1') {
                     $query3 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query3->execute(array($row2['rootid'], $resellerid));
-                    $queryip=$query3->fetchColumn();
+                    $queryip = $query3->fetchColumn();
                 }
                 
                 $tsdnsExternalActive = false;
@@ -168,8 +168,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                     # https://github.com/easy-wi/developer/issues/70
                     $sshkey=removePub($row2['keyname']);
-                    $pubkey=EASYWIDIR . '/keys/'.$sshkey.'.pub';
-                    $key=EASYWIDIR . '/keys/'.$sshkey;
+                    $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
+                    $key = EASYWIDIR . '/keys/' . $sshkey;
 
                     if (file_exists($pubkey) and file_exists($key)) {
                         $ssh2= @ssh2_connect($queryip, $row2['decryptedssh2port'], array('hostkey' => 'ssh-rsa'));
@@ -189,7 +189,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                         $folders= (substr($row2['serverdir'],0,1) == '/') ? 'cd  /' : 'cd ';
 
                         while ($i<=$folderfilecount) {
-                            $folders=$folders.$split_config[$i]."/";
+                            $folders = $folders.$split_config[$i] . '/';
                             $i++;
                         }
 
@@ -208,14 +208,14 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                     $tsdown = false;
                     $tsdnsdown = false;
                     $connection=new TS3($queryip, $queryport, 'serveradmin', $querypassword);
-                    $errorcode=$connection->errorcode;
+                    $errorcode = $connection->errorcode;
 
                     if (strpos($errorcode,'error id=0') === false) {
                         $connection->CloseConnection();
                         unset($connection);
                         sleep(1);
                         $connection=new TS3($queryip, $queryport, 'serveradmin', $querypassword);
-                        $errorcode=$connection->errorcode;
+                        $errorcode = $connection->errorcode;
                     }
 
                     if (strpos($errorcode,'error id=0') === false) {
@@ -226,7 +226,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                         $restartreturn="TS3";
                     }
                     
-                    if ($row2['usedns'] == 'Y' and $tsdnsExternalActive==false) {
+                    if ($row2['usedns'] == 'Y' and $tsdnsExternalActive == false) {
                         $tsdnscheck=@fsockopen ($queryip,41144, $errno, $errstr,5);
                         
                         if (!is_resource($tsdnscheck)) {
@@ -245,11 +245,11 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                             }
                         }
                         
-                    } else if ($row2['usedns'] == 'Y' and $tsdnsExternalActive==true) {
+                    } else if ($row2['usedns'] == 'Y' and $tsdnsExternalActive == true) {
                         print "Skip TSDNS since external is used\r\n";
                     }
                     
-                    if ($tsdown==true or $tsdnsdown==true) {
+                    if ($tsdown == true or $tsdnsdown == true) {
                         $ts3masternotified++;
                         
                         if ($ts3masternotified==$down_checks) {
@@ -284,16 +284,16 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                 $tsdnsbin='tsdnsserver_linux_amd64';
                             }
 
-                            $ssh2cmd=$folders.'function restart1 () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; restart1& ';
+                            $ssh2cmd = $folders.'function restart1 () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; restart1& ';
 
-                            if ($tsdown==true) {
+                            if ($tsdown == true) {
                                 echo ssh2_exec($ssh2, $ssh2cmd);
                             }
 
                             if ($row2['usedns'] == 'Y') {
 
-                                if ($tsdnsdown==true) {
-                                    $ssh2cmd2=$folders.'cd tsdns && function restart2 () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; restart2& ';
+                                if ($tsdnsdown == true) {
+                                    $ssh2cmd2 = $folders.'cd tsdns && function restart2 () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; restart2& ';
                                     echo ssh2_exec($ssh2, $ssh2cmd2);
                                 }
                             }
@@ -315,7 +315,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                 $resetTraffic = false;
                                 if (version_compare(PHP_VERSION,'5.3.0')>=0){
                                     $createdTime=new DateTime($serverCreated);
-                                    $interval=$createdTime->diff($currentTime);
+                                    $interval = $createdTime->diff($currentTime);
                                     if ($interval->d==0 and $interval->m>0) {
                                         $resetTraffic = true;
                                     }
@@ -326,7 +326,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                         $resetTraffic = true;
                                     }
                                 }
-                                if ($resetTraffic==true and $serverCreated != null) {
+                                if ($resetTraffic == true and $serverCreated != null) {
                                     $query4 = $sql->prepare("UPDATE `voice_server` SET `filetraffic`=0,`lastfiletraffic`=0 WHERE `id`=? LIMIT 1");
                                     $query4->execute(array($ts3id));
                                     $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'], 'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
@@ -351,7 +351,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                 }
                                 $stunde=date('G',strtotime("$resellerstimezone hour"));
                                 if ($backupcount==0 or !isset($last) or (isset($last) and $last<$next)) {
-                                    $toomuch=$backupcount+1-$voice_maxbackup;
+                                    $toomuch = $backupcount+1-$voice_maxbackup;
                                     if ($toomuch>0) {
                                         $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC LIMIT $toomuch");
                                         $query4->execute(array($ts3id, $ts3userid, $resellerid));
@@ -363,7 +363,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                             $shell=ssh2_exec($ssh2, $delcmd);
                                         }
                                     }
-                                    $rawsnapshot=$connection->Snapshotcreate($localserverid);
+                                    $rawsnapshot = $connection->Snapshotcreate($localserverid);
                                     $snapshot=gzcompress($rawsnapshot,9);
                                     $query4 = $sql->prepare("INSERT INTO `voice_server_backup` (`sid`,`uid`,`name`,`snapshot`,`date`,`resellerid`) VALUES(?,?,?,?,NOW(),?)");
                                     $query4->execute(array($ts3id, $ts3userid, $name, $snapshot, $resellerid));
@@ -381,7 +381,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                             }
                         }
                     }
-                    $ssh2=null;
+                    $ssh2 = null;
                     $connection->CloseConnection();
                     usleep(500000);
                 } else {
@@ -390,7 +390,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             }
         }
         $currenttime=strtolower(date('D',strtotime("$resellerstimezone hour"))) . '_' . date('G',strtotime("$resellerstimezone hour"));
-        $query1=$sql->prepare("SELECT `id` FROM `rserverdata` WHERE `active`='Y'");
+        $query1 = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `active`='Y'");
         $query1->execute();
         foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
             $rootID = $row1['id'];
@@ -404,20 +404,20 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 $gsswitchID = $row2['id'];
                 $useridID = $row2['userid'];
                 $newlayout = $row2['newlayout'];
-                $gsfolder=$serverip . '_' . $gsport;
+                $gsfolder = $serverip . '_' . $gsport;
                 $ftppass = $row2['decryptedftppass'];
                 $decryptedftppass = $row2['decryptedppassword'];
                 $protected_old = $row2['protected'];
                 if ($row2['serverid'] == null) {
                     $query3 = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? LIMIT 1");
                     $query3->execute(array($gsswitchID));
-                    $runID_old=$query3->fetchColumn();
+                    $runID_old = $query3->fetchColumn();
                     $query3 = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? LIMIT 1");
                     $query3->execute(array($runID_old, $gsswitchID));
                 } else {
                     $runID_old = $row2['serverid'];
                 }
-                $server=$serverip . ':' . $gsport;
+                $server = $serverip . ':' . $gsport;
                 $query3 = $sql->prepare("SELECT * FROM `gserver_restarts` WHERE `switchID`=? AND `restarttime`=? LIMIT 1");
                 $query3->execute(array($gsswitchID, $currenttime));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
@@ -438,7 +438,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                     $user_active = $row3['active'];
                     $SSH2customer = $row3['cname'];
                 }
-                if ($newlayout == 'Y') $SSH2customer=$SSH2customer . '-' . $gsswitchID;
+                if ($newlayout == 'Y') $SSH2customer = $SSH2customer . '-' . $gsswitchID;
                 if (isset($restart) and $user_active == 'Y') {
                     $query3 = $sql->prepare("SELECT s.`id`,s.`upload`,s.`map`,s.`servertemplate`,s.`mapGroup`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE t.`shorten`=? AND s.`switchID`=? LIMIT 1");
                     $query3->execute(array($shorten, $gsswitchID));
@@ -461,7 +461,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                 $query3 = $sql->prepare("UPDATE `gsswitch` SET `ppassword`=AES_ENCRYPT(?,?) WHERE `id`=? LIMIT 1");
                                 $query3->execute(array($randompass, $aeskey, $gsswitchID));
                                 $cmds[] = './control.sh mod '.$SSH2customer . ' ' . $ftppass . ' ' . $randompass;
-                                $SSH2customer=$SSH2customer.'-p';
+                                $SSH2customer = $SSH2customer.'-p';
                                 $cmds[]="sudo -u ${SSH2customer} ./control.sh reinstserver ${SSH2customer} ${gamestring} ${gsfolder} protected";
                                 echo 'Reinstall protected server: '.$server."\r\n";
                                 $newProtected = true;
@@ -483,7 +483,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                         if ($backup == 'Y') {
                             $query3 = $sql->prepare("SELECT AES_DECRYPT(`ftpbackup`,?) AS `backup` FROM `userdata` WHERE `id`=? LIMIT 1");
                             $query3->execute(array($aeskey, $useridID));
-                            $ftpbackup=$query3->fetchColumn();
+                            $ftpbackup = $query3->fetchColumn();
                             $shortens = array();
                             $query3 = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
                             $query3->execute(array($gsswitchID));

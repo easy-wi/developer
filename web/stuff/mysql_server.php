@@ -61,18 +61,18 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 
-} else if ($ui->st('d','get') == 'ms' and !$ui->id('id', 10, 'get') and $pa['mysql_settings']) {
+} else if ($ui->st('d', 'get') == 'ms' and !$ui->id('id', 10, 'get') and $pa['mysql_settings']) {
 
-    $o = $ui->st('o','get');
-	if ($ui->st('o','get') == 'ap') {
+    $o = $ui->st('o', 'get');
+	if ($ui->st('o', 'get') == 'ap') {
 		$orderby = '`ip` ASC';
-	} else if ($ui->st('o','get') == 'af') {
+	} else if ($ui->st('o', 'get') == 'af') {
 		$orderby = '`interface` ASC';
-	} else if ($ui->st('o','get') == 'df') {
+	} else if ($ui->st('o', 'get') == 'df') {
         $orderby = '`interface` DESC';
-    } else if ($ui->st('o','get') == 'ai') {
+    } else if ($ui->st('o', 'get') == 'ai') {
         $orderby = '`id` ASC';
-    } else if ($ui->st('o','get') == 'di') {
+    } else if ($ui->st('o', 'get') == 'di') {
         $orderby = '`id` DESC';
 	} else {
 		$orderby = '`ip` DESC';
@@ -81,9 +81,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_servers` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));
-    $colcount=$query->fetchColumn();
+    $colcount = $query->fetchColumn();
     if ($start>$colcount) {
-        $start=$colcount-$amount;
+        $start = $colcount-$amount;
         if ($start<0)$start = 0;
     }
 	$table = array();
@@ -107,9 +107,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 		$table[] = array('id' => $row['id'], 'img' => $imgName,'alt' => $imgAlt,'max_databases' => $row['max_databases'], 'dbcount' => $i,'ip' => $row['ip'], 'interface' => $row['interface'], 'active' => $row['active'], 'server' => $ds);
 	}
-	$next=$start+$amount;
+	$next = $start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;
-    $back=$start - $amount;
+    $back = $start - $amount;
     $zur = ($back >= 0) ? $start - $amount : $start;
     $pageamount = ceil($colcount / $amount);
 	$pages[] = '<a href="admin.php?w=my&amp;d=ms&amp;a=' . (!isset($amount)) ? 20 : $amount . ($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
@@ -121,111 +121,111 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	}
 	$pages=implode(', ',$pages);
 	$template_file = "admin_mysql_server_list.tpl";
-} else if ($ui->st('d','get') == 'ds' and $ui->id('id', 10, 'get') and $pa['mysql_settings']) {
-    if ($ui->st('action','post') == 'dl') {
-        $id=$ui->id('id', 10, 'get');
-        $pselect=$sql->prepare("SELECT `ip` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+} else if ($ui->st('d', 'get') == 'ds' and $ui->id('id', 10, 'get') and $pa['mysql_settings']) {
+    if ($ui->st('action', 'post') == 'dl') {
+        $id = $ui->id('id', 10, 'get');
+        $pselect = $sql->prepare("SELECT `ip` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
-            $ip=$row['ip'];
+            $ip = $row['ip'];
         }
-        $pdelete=$sql->prepare("DELETE FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $pdelete = $sql->prepare("DELETE FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pdelete->execute(array($id,$reseller_id));
-        $pdelete2=$sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `sid`=? AND `resellerid`=?");
+        $pdelete2 = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `sid`=? AND `resellerid`=?");
         $pdelete2->execute(array($id,$reseller_id));
         $template_file = $spracheResponse->table_del;
         $loguseraction="%del% MYSQL Server $ip";
         $insertlog->execute();
     } else {
-        $id=$ui->id('id', 10, 'get');
-        $pselect=$sql->prepare("SELECT `ip`,`interface` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $id = $ui->id('id', 10, 'get');
+        $pselect = $sql->prepare("SELECT `ip`,`interface` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
-            $interface=$row['interface'];
-            $ip=$row['ip'];
+            $interface = $row['interface'];
+            $ip = $row['ip'];
         }
         $template_file = "admin_mysql_server_dl.tpl";
     }
-} else if ($ui->st('d','get') == 'ms' and $ui->id('id', 10, 'get') and $pa['mysql_settings']) {
-    if (!$ui->st('action','post')) {
-        $id=$ui->id('id', 10, 'get');
-        $pselect=$sql->prepare("SELECT `active`,`ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+} else if ($ui->st('d', 'get') == 'ms' and $ui->id('id', 10, 'get') and $pa['mysql_settings']) {
+    if (!$ui->st('action', 'post')) {
+        $id = $ui->id('id', 10, 'get');
+        $pselect = $sql->prepare("SELECT `active`,`ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $pselect->execute(array($aeskey,$id,$reseller_id));
         foreach ($pselect->fetchall(PDO::FETCH_ASSOC)  as $row) {
-            $active=$row['active'];
-            $ip=$row['ip'];
-            $port=$row['port'];
-            $user=$row['user'];
-            $password=$row['decryptedpassword'];
-            $max_databases=$row['max_databases'];
-            $interface=$row['interface'];
-            $max_queries_per_hour=$row['max_queries_per_hour'];
-            $max_updates_per_hour=$row['max_updates_per_hour'];
-            $max_connections_per_hour=$row['max_connections_per_hour'];
-            $max_userconnections_per_hour=$row['max_userconnections_per_hour'];
+            $active = $row['active'];
+            $ip = $row['ip'];
+            $port = $row['port'];
+            $user = $row['user'];
+            $password = $row['decryptedpassword'];
+            $max_databases = $row['max_databases'];
+            $interface = $row['interface'];
+            $max_queries_per_hour = $row['max_queries_per_hour'];
+            $max_updates_per_hour = $row['max_updates_per_hour'];
+            $max_connections_per_hour = $row['max_connections_per_hour'];
+            $max_userconnections_per_hour = $row['max_userconnections_per_hour'];
         }
         $template_file = "admin_mysql_server_md.tpl";
-	} else if ($ui->st('action','post') == 'md') {
+	} else if ($ui->st('action', 'post') == 'md') {
         $errors = array();
-        if (!$ui->ip('ip','post')) $errors[] = 'IP';
-        if (!$ui->port('port','post')) $errors[] = 'Port';
-        if (!$ui->username('user',20,'post')) $errors[] = 'Username';
-        if (!$ui->password('password',40,'post')) $errors[] = 'Password';
+        if (!$ui->ip('ip', 'post')) $errors[] = 'IP';
+        if (!$ui->port('port', 'post')) $errors[] = 'Port';
+        if (!$ui->username('user',20, 'post')) $errors[] = 'Username';
+        if (!$ui->password('password',40, 'post')) $errors[] = 'Password';
         if (count($errors)>0) {
             $template_file = 'Error(s): '.implode(', '.$errors);
 		} else {
-            $id=$ui->id('id', 10, 'get');
-			$active=$ui->active('active','post');
-			$ip=$ui->ip('ip','post');
-			$port=$ui->port('port','post');
-			$user=$ui->username('user',20,'post');
-			$password=$ui->password('password',40,'post');
-			$interface=$ui->url('interface','post');
-            $max_databases=($ui->id('max_databases',255,'post')) ? $ui->id('max_databases',255,'post'): 100;
-            $max_queries_per_hour=($ui->id('max_queries_per_hour',255,'post')) ? $ui->id('max_queries_per_hour',255,'post') : 0;
-            $max_updates_per_hour=($ui->id('max_updates_per_hour',255,'post')) ? $ui->id('max_updates_per_hour',255,'post') : 0;
-            $max_connections_per_hour=($ui->id('max_connections_per_hour',255,'post')) ? $ui->id('max_connections_per_hour',255,'post') : 0;
-            $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255,'post')) ? $ui->id('max_userconnections_per_hour',255,'post') : 0;
-			$pupdate=$sql->prepare("UPDATE `mysql_external_servers` SET `active`=?,`ip`=?,`port`=?,`user`=?,`password`=AES_ENCRYPT(?,?),`max_databases`=?,`interface`=?,`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $id = $ui->id('id', 10, 'get');
+			$active = $ui->active('active', 'post');
+			$ip = $ui->ip('ip', 'post');
+			$port = $ui->port('port', 'post');
+			$user = $ui->username('user',20, 'post');
+			$password = $ui->password('password',40, 'post');
+			$interface = $ui->url('interface', 'post');
+            $max_databases=($ui->id('max_databases',255, 'post')) ? $ui->id('max_databases',255, 'post'): 100;
+            $max_queries_per_hour=($ui->id('max_queries_per_hour',255, 'post')) ? $ui->id('max_queries_per_hour',255, 'post') : 0;
+            $max_updates_per_hour=($ui->id('max_updates_per_hour',255, 'post')) ? $ui->id('max_updates_per_hour',255, 'post') : 0;
+            $max_connections_per_hour=($ui->id('max_connections_per_hour',255, 'post')) ? $ui->id('max_connections_per_hour',255, 'post') : 0;
+            $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255, 'post')) ? $ui->id('max_userconnections_per_hour',255, 'post') : 0;
+			$pupdate = $sql->prepare("UPDATE `mysql_external_servers` SET `active`=?,`ip`=?,`port`=?,`user`=?,`password`=AES_ENCRYPT(?,?),`max_databases`=?,`interface`=?,`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
 			$pupdate->execute(array($active,$ip,$port,$user,$password,$aeskey,$max_databases,$interface,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$id,$reseller_id));
 			$template_file = $spracheResponse->table_add;
 			$loguseraction="%mod% MYSQL Server $ip";
 			$insertlog->execute();
 		}
 	}
-} else if ($ui->st('d','get') == 'as' and $pa['mysql']) {
-	if (!$ui->st('action','post')) {
+} else if ($ui->st('d', 'get') == 'as' and $pa['mysql']) {
+	if (!$ui->st('action', 'post')) {
 		$template_file = "admin_mysql_server_add.tpl";
-	} else if ($ui->st('action','post') == 'ad'){
+	} else if ($ui->st('action', 'post') == 'ad'){
         $errors = array();
-        if (!$ui->ip('ip','post')) $errors[] = 'IP';
-        if (!$ui->port('port','post')) $errors[] = 'Port';
-        if (!$ui->username('user',20,'post')) $errors[] = 'Username';
-        if (!$ui->password('password',40,'post')) $errors[] = 'Password';
+        if (!$ui->ip('ip', 'post')) $errors[] = 'IP';
+        if (!$ui->port('port', 'post')) $errors[] = 'Port';
+        if (!$ui->username('user',20, 'post')) $errors[] = 'Username';
+        if (!$ui->password('password',40, 'post')) $errors[] = 'Password';
         if (count($errors)>0) {
             $template_file = 'Error(s): '.implode(', '.$errors);
         } else {
-            $id=$ui->id('id', 10, 'get');
-            $active=$ui->active('active','post');
-            $ip=$ui->ip('ip','post');
-            $port=$ui->port('port','post');
-            $user=$ui->username('user',20,'post');
-            $password=$ui->password('password',40,'post');
-            $interface=$ui->url('interface','post');
-            $max_databases=($ui->id('max_databases',255,'post')) ? $ui->id('max_databases',255,'post'): 100;
-            $max_queries_per_hour=($ui->id('max_queries_per_hour',255,'post')) ? $ui->id('max_queries_per_hour',255,'post') : 0;
-            $max_updates_per_hour=($ui->id('max_updates_per_hour',255,'post')) ? $ui->id('max_updates_per_hour',255,'post') : 0;
-            $max_connections_per_hour=($ui->id('max_connections_per_hour',255,'post')) ? $ui->id('max_connections_per_hour',255,'post') : 0;
-            $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255,'post')) ? $ui->id('max_userconnections_per_hour',255,'post') : 0;
-			$pinsert=$sql->prepare("INSERT INTO `mysql_external_servers` (`active`,`ip`,`port`,`user`,`password`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
+            $id = $ui->id('id', 10, 'get');
+            $active = $ui->active('active', 'post');
+            $ip = $ui->ip('ip', 'post');
+            $port = $ui->port('port', 'post');
+            $user = $ui->username('user',20, 'post');
+            $password = $ui->password('password',40, 'post');
+            $interface = $ui->url('interface', 'post');
+            $max_databases=($ui->id('max_databases',255, 'post')) ? $ui->id('max_databases',255, 'post'): 100;
+            $max_queries_per_hour=($ui->id('max_queries_per_hour',255, 'post')) ? $ui->id('max_queries_per_hour',255, 'post') : 0;
+            $max_updates_per_hour=($ui->id('max_updates_per_hour',255, 'post')) ? $ui->id('max_updates_per_hour',255, 'post') : 0;
+            $max_connections_per_hour=($ui->id('max_connections_per_hour',255, 'post')) ? $ui->id('max_connections_per_hour',255, 'post') : 0;
+            $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255, 'post')) ? $ui->id('max_userconnections_per_hour',255, 'post') : 0;
+			$pinsert = $sql->prepare("INSERT INTO `mysql_external_servers` (`active`,`ip`,`port`,`user`,`password`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
 			$pinsert->execute(array($active,$ip,$port,$user,$password,$aeskey,$max_databases,$interface,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$reseller_id));
 			$template_file = $spracheResponse->table_add;
 			$loguseraction="%add% MYSQL Server $ip";
 			$insertlog->execute();
 		}
 	}	
-} else if ($ui->st('d','get') == 'ad' and $pa['mysql']) {
-	if (!$ui->st('action','post')) {
+} else if ($ui->st('d', 'get') == 'ad' and $pa['mysql']) {
+	if (!$ui->st('action', 'post')) {
 		$table = array();
 		$table2 = array();
 		$password=passwordgenerate(20);
@@ -238,12 +238,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$query2->execute(array($reseller_id));
 		foreach ($query2->fetchall(PDO::FETCH_ASSOC)  as $row2) {
 			if (!isset($installed)) {
-				$installed=$row2['installed'];
-				$max_databases=$row2['max_databases'];
-				$max_queries_per_hour=$row2['max_queries_per_hour'];
-				$max_updates_per_hour=$row2['max_updates_per_hour'];
-				$max_connections_per_hour=$row2['max_connections_per_hour'];
-				$max_userconnections_per_hour=$row2['max_userconnections_per_hour'];
+				$installed = $row2['installed'];
+				$max_databases = $row2['max_databases'];
+				$max_queries_per_hour = $row2['max_queries_per_hour'];
+				$max_updates_per_hour = $row2['max_updates_per_hour'];
+				$max_connections_per_hour = $row2['max_connections_per_hour'];
+				$max_userconnections_per_hour = $row2['max_userconnections_per_hour'];
 			}
 			$table2[] = array('id' => $row2['id'], 'ip' => $row2['ip']);
 		}
@@ -256,35 +256,35 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$max_userconnections_per_hour = 0;
 		}
 		$template_file = "admin_mysql_db_add.tpl";
-	} else if ($ui->st('action','post') == 'ad' and $ui->id('serverid',10,'post') and $ui->id('userid',10,'post')) {
+	} else if ($ui->st('action', 'post') == 'ad' and $ui->id('serverid',10, 'post') and $ui->id('userid',10, 'post')) {
         $errors = array();
-        if (!$ui->active('active','post')) $errors[] = $sprache->active;
-        if (!$ui->password('password',40,'post')) $errors[] = $sprache->password;
+        if (!$ui->active('active', 'post')) $errors[] = $sprache->active;
+        if (!$ui->password('password',40, 'post')) $errors[] = $sprache->password;
         if (count($errors)>0) {
             $template_file = "Error: ".implode('<br>',$errors);
         } else {
-            $sid=$ui->id('serverid',10,'post');
-            $uid=$ui->id('userid',10,'post');
-            $active=$ui->active('active','post');
-            $password=$ui->password('password',40,'post');
-            $ips=$ui->ips('ips','post');
+            $sid = $ui->id('serverid',10, 'post');
+            $uid = $ui->id('userid',10, 'post');
+            $active = $ui->active('active', 'post');
+            $password = $ui->password('password',40, 'post');
+            $ips = $ui->ips('ips', 'post');
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? AND `accounttype`='u' LIMIT 1");
             $query->execute(array($uid,$reseller_id));
-            $cname=$query->fetchColumn();
-            $max_queries_per_hour=($ui->id('max_queries_per_hour',255,'post')) ? $ui->id('max_queries_per_hour',255,'post') : 0;
-            $max_updates_per_hour=($ui->id('max_updates_per_hour',255,'post')) ? $ui->id('max_updates_per_hour',255,'post') : 0;
-            $max_connections_per_hour=($ui->id('max_connections_per_hour',255,'post')) ? $ui->id('max_connections_per_hour',255,'post') : 0;
-            $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255,'post')) ? $ui->id('max_userconnections_per_hour',255,'post') : 0;
+            $cname = $query->fetchColumn();
+            $max_queries_per_hour=($ui->id('max_queries_per_hour',255, 'post')) ? $ui->id('max_queries_per_hour',255, 'post') : 0;
+            $max_updates_per_hour=($ui->id('max_updates_per_hour',255, 'post')) ? $ui->id('max_updates_per_hour',255, 'post') : 0;
+            $max_connections_per_hour=($ui->id('max_connections_per_hour',255, 'post')) ? $ui->id('max_connections_per_hour',255, 'post') : 0;
+            $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255, 'post')) ? $ui->id('max_userconnections_per_hour',255, 'post') : 0;
 
             #https://github.com/easy-wi/developer/issues/42 column description added
             $query = $sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`description`,`password`,`ips`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?)");
-            $query->execute(array($active,$sid,$uid,$ui->names('description',255,'post'),$password,$aeskey,$ips,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$reseller_id));
+            $query->execute(array($active,$sid,$uid,$ui->names('description',255, 'post'),$password,$aeskey,$ips,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$reseller_id));
             if ($active == 'N') $password=passwordgenerate(20);
-            $id=$sql->lastInsertId();
-            $dbname=$cname . '-' . $id;
+            $id = $sql->lastInsertId();
+            $dbname = $cname . '-' . $id;
             $nameLength=strlen($dbname);
             if ($nameLength>16) {
-                $strStart=$nameLength-16;
+                $strStart = $nameLength-16;
                 $dbname=substr($dbname,$strStart,$nameLength);
             }
             $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `dbname`=?,`password`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -292,10 +292,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$sid,$reseller_id));
             foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
-                $ip=$row['ip'];
-                $port=$row['port'];
-                $user=$row['user'];
-                $pwd=$row['decryptedpassword'];
+                $ip = $row['ip'];
+                $port = $row['port'];
+                $user = $row['user'];
+                $pwd = $row['decryptedpassword'];
             }
             $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
             if ($remotesql->error== 'ok') {
@@ -313,70 +313,70 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	} else {
 		$template_file = 'userpanel_404.tpl';
 	}
-} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get') and $pa['mysql']) {
-    if (!$ui->st('action','post')) {
-        $id=$ui->id('id', 10, 'get');
+} else if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get') and $pa['mysql']) {
+    if (!$ui->st('action', 'post')) {
+        $id = $ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT e.*,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$id,$reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-            $ip=$row['ip'];
-            $ips=$row['ips'];
-            $cname=$row['cname'];
+            $ip = $row['ip'];
+            $ips = $row['ips'];
+            $cname = $row['cname'];
             $active = 'N';
-            $description=$row['description'];
+            $description = $row['description'];
             if ($row['jobPending'] == 'Y') {
                 $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='us' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
                 $query2->execute(array($row['id'], $row['resellerid']));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    if ($row2['action'] == 'ad') $jobPending=$gsprache->add;
-                    else if ($row2['action'] == 'dl') $jobPending=$gsprache->del;
-                    else $jobPending=$gsprache->mod;
+                    if ($row2['action'] == 'ad') $jobPending = $gsprache->add;
+                    else if ($row2['action'] == 'dl') $jobPending = $gsprache->del;
+                    else $jobPending = $gsprache->mod;
                     $json=@json_decode($row2['extraData']);
                     $active=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
                 }
             } else {
-                $jobPending=$gsprache->no;
-                $active=$row['active'];
+                $jobPending = $gsprache->no;
+                $active = $row['active'];
             }
-            $dbname=$row['dbname'];
-            $password=$row['decryptedpassword'];
-            $max_queries_per_hour=$row['max_queries_per_hour'];
-            $max_updates_per_hour=$row['max_updates_per_hour'];
-            $max_connections_per_hour=$row['max_connections_per_hour'];
-            $max_userconnections_per_hour=$row['max_userconnections_per_hour'];
+            $dbname = $row['dbname'];
+            $password = $row['decryptedpassword'];
+            $max_queries_per_hour = $row['max_queries_per_hour'];
+            $max_updates_per_hour = $row['max_updates_per_hour'];
+            $max_connections_per_hour = $row['max_connections_per_hour'];
+            $max_userconnections_per_hour = $row['max_userconnections_per_hour'];
         }
         $template_file = (isset($active)) ? 'admin_mysql_db_md.tpl' : 'admin_404.tpl';
-    } else if ($ui->st('action','post') == 'md') {
+    } else if ($ui->st('action', 'post') == 'md') {
         $errors = array();
-        if (!$ui->active('active','post')) $errors[] = $sprache->active;
-        if (!$ui->password('password',40,'post')) $errors[] = $sprache->password;
+        if (!$ui->active('active', 'post')) $errors[] = $sprache->active;
+        if (!$ui->password('password',40, 'post')) $errors[] = $sprache->password;
         if (count($errors)>0) {
             $template_file = "Error: ".implode('<br>',$errors);
         } else {
-            $id=$ui->id('id', 10, 'get');
-            $active=$ui->active('active','post');
-            $password=$ui->password('password',40,'post');
-            $ips=$ui->ips('ips','post');
-            $max_queries_per_hour=($ui->id('max_queries_per_hour',255,'post')) ? $ui->id('max_queries_per_hour',255,'post') : 0;
-            $max_updates_per_hour=($ui->id('max_updates_per_hour',255,'post')) ? $ui->id('max_updates_per_hour',255,'post') : 0;
-            $max_connections_per_hour=($ui->id('max_connections_per_hour',255,'post')) ? $ui->id('max_connections_per_hour',255,'post') : 0;
-            $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255,'post')) ? $ui->id('max_userconnections_per_hour',255,'post') : 0;
+            $id = $ui->id('id', 10, 'get');
+            $active = $ui->active('active', 'post');
+            $password = $ui->password('password',40, 'post');
+            $ips = $ui->ips('ips', 'post');
+            $max_queries_per_hour=($ui->id('max_queries_per_hour',255, 'post')) ? $ui->id('max_queries_per_hour',255, 'post') : 0;
+            $max_updates_per_hour=($ui->id('max_updates_per_hour',255, 'post')) ? $ui->id('max_updates_per_hour',255, 'post') : 0;
+            $max_connections_per_hour=($ui->id('max_connections_per_hour',255, 'post')) ? $ui->id('max_connections_per_hour',255, 'post') : 0;
+            $max_userconnections_per_hour=($ui->id('max_userconnections_per_hour',255, 'post')) ? $ui->id('max_userconnections_per_hour',255, 'post') : 0;
             $query = $sql->prepare("SELECT e.`active`,e.`dbname`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,e.`max_queries_per_hour`,e.`max_updates_per_hour`,e.`max_connections_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$aeskey,$id,$reseller_id));
             foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
-                $cname=$row['cname'];
-                $dbname=$row['dbname'];
-                $ip=$row['ip'];
-                $port=$row['port'];
-                $user=$row['user'];
-                $pwd=$row['decryptedpassword2'];
-                $old_active=$row['active'];
-                $old_ips=$row['ips'];
-                $old_password=$row['decryptedpassword'];
-                $old_max_queries_per_hour=$row['max_queries_per_hour'];
-                $old_max_updates_per_hour=$row['max_updates_per_hour'];
-                $old_max_connections_per_hour=$row['max_connections_per_hour'];
-                $old_max_userconnections_per_hour=$row['max_userconnections_per_hour'];
+                $cname = $row['cname'];
+                $dbname = $row['dbname'];
+                $ip = $row['ip'];
+                $port = $row['port'];
+                $user = $row['user'];
+                $pwd = $row['decryptedpassword2'];
+                $old_active = $row['active'];
+                $old_ips = $row['ips'];
+                $old_password = $row['decryptedpassword'];
+                $old_max_queries_per_hour = $row['max_queries_per_hour'];
+                $old_max_updates_per_hour = $row['max_updates_per_hour'];
+                $old_max_connections_per_hour = $row['max_connections_per_hour'];
+                $old_max_userconnections_per_hour = $row['max_userconnections_per_hour'];
             }
             customColumns('D',$id,'save');
             if ($active != $old_active or $old_password != $password  or $old_ips != $ips or $old_max_queries_per_hour != $max_queries_per_hour or $old_max_updates_per_hour != $max_updates_per_hour or $old_max_connections_per_hour != $max_connections_per_hour or $old_max_userconnections_per_hour != $max_userconnections_per_hour) {
@@ -385,7 +385,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                     #https://github.com/easy-wi/developer/issues/42 column description added
                     $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`ips`=?,`description`=?,`password`=AES_ENCRYPT(?,?),`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array($active,$ips,$ui->names('description',255,'post'),$password,$aeskey,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$id,$reseller_id));
+                    $query->execute(array($active,$ips,$ui->names('description',255, 'post'),$password,$aeskey,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$id,$reseller_id));
                     if ($active == 'N' and $old_active == 'Y') $password=passwordgenerate(20);
                     $remotesql->ModDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
                     $template_file = $spracheResponse->table_add;
@@ -401,30 +401,30 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'dd' and $ui->id('id', 10, 'get') and $pa['mysql']) {
-    if (!$ui->st('action','post')) {
-        $id=$ui->id('id', 10, 'get');
+} else if ($ui->st('d', 'get') == 'dd' and $ui->id('id', 10, 'get') and $pa['mysql']) {
+    if (!$ui->st('action', 'post')) {
+        $id = $ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT e.`dbname`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
-            $ip=$row['ip'];
-            $dbname=$row['dbname'];
-            $cname=$row['cname'];
+            $ip = $row['ip'];
+            $dbname = $row['dbname'];
+            $cname = $row['cname'];
         }
         $template_file = (isset($cname)) ? 'admin_mysql_db_dl.tpl' : 'userpanel_404.tpl';
-    } else if ($ui->st('action','post') == 'dl') {
-        $id=$ui->id('id', 10, 'get');
+    } else if ($ui->st('action', 'post') == 'dl') {
+        $id = $ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT e.`sid`,e.`uid`,e.`dbname`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$id,$reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
-            $sid=$row['sid'];
-            $uid=$row['uid'];
-            $dbname=$row['dbname'];
-            $cname=$row['cname'];
-            $ip=$row['ip'];
-            $port=$row['port'];
-            $user=$row['user'];
-            $pwd=$row['decryptedpassword2'];
+            $sid = $row['sid'];
+            $uid = $row['uid'];
+            $dbname = $row['dbname'];
+            $cname = $row['cname'];
+            $ip = $row['ip'];
+            $port = $row['port'];
+            $user = $row['user'];
+            $pwd = $row['decryptedpassword2'];
             $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
             if ($remotesql->error== 'ok') {
                 $remotesql->DelDB($dbname);
@@ -444,36 +444,36 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else if ($pa['mysql']) {
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'as') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'as') {
         $orderby = 'e.`active` ASC';
-    } else if ($ui->st('o','get') == 'ds') {
+    } else if ($ui->st('o', 'get') == 'ds') {
         $orderby = 'e.`active` DESC';
-    } else if ($ui->st('o','get') == 'ai') {
+    } else if ($ui->st('o', 'get') == 'ai') {
         $orderby = 'e.`id` ASC';
-    } else if ($ui->st('o','get') == 'di') {
+    } else if ($ui->st('o', 'get') == 'di') {
         $orderby = 'e.`id` DESC';
-    } else if ($ui->st('o','get') == 'ad') {
+    } else if ($ui->st('o', 'get') == 'ad') {
         $orderby = 'e.`description` ASC';
-    } else if ($ui->st('o','get') == 'dd') {
+    } else if ($ui->st('o', 'get') == 'dd') {
         $orderby = 'e.`description` DESC';
-    } else if ($ui->st('o','get') == 'ap') {
+    } else if ($ui->st('o', 'get') == 'ap') {
         $orderby = 's.`ip` ASC';
-    } else if ($ui->st('o','get') == 'dp') {
+    } else if ($ui->st('o', 'get') == 'dp') {
         $orderby = 's.`ip` DESC';
-    } else if ($ui->st('o','get') == 'aj') {
+    } else if ($ui->st('o', 'get') == 'aj') {
         $orderby = '`jobPending` ASC';
-    } else if ($ui->st('o','get') == 'dj') {
+    } else if ($ui->st('o', 'get') == 'dj') {
         $orderby = '`jobPending` DESC';
-    } else if ($ui->st('o','get') == 'au') {
+    } else if ($ui->st('o', 'get') == 'au') {
         $orderby = 'u.`cname` ASC';
-    } else if ($ui->st('o','get') == 'du') {
+    } else if ($ui->st('o', 'get') == 'du') {
         $orderby = 'u.`cname` DESC';
-    } else if ($ui->st('o','get') == 'af') {
+    } else if ($ui->st('o', 'get') == 'af') {
         $orderby = 'u.`name` ASC,u.`vname` ASC';
-    } else if ($ui->st('o','get') == 'df') {
+    } else if ($ui->st('o', 'get') == 'df') {
         $orderby = 'u.`name` DESC,u.`vname` DESC';
-    } else if ($ui->st('o','get') == 'dn') {
+    } else if ($ui->st('o', 'get') == 'dn') {
         $orderby = 'e.`dbname` DESC';
     } else {
         $orderby = 'e.`dbname` ASC';
@@ -488,14 +488,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if ($row['jobPending'] == 'Y') {
             $query2->execute(array($row['id'], $row['resellerid']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                if ($row2['action'] == 'ad') $jobPending=$gsprache->add;
-                else if ($row2['action'] == 'dl') $jobPending=$gsprache->del;
-                else $jobPending=$gsprache->mod;
+                if ($row2['action'] == 'ad') $jobPending = $gsprache->add;
+                else if ($row2['action'] == 'dl') $jobPending = $gsprache->del;
+                else $jobPending = $gsprache->mod;
                 $json=@json_decode($row2['extraData']);
                 $tobeActive=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
             }
         } else {
-            $jobPending=$gsprache->no;
+            $jobPending = $gsprache->no;
         }
         if (($row['active'] == 'Y' and $row['jobPending'] == 'N') or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
             $imgName='16_ok';
@@ -504,39 +504,39 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        $dbname=$row['dbname'];
+        $dbname = $row['dbname'];
         $jobPending=($row['jobPending'] == 'Y') ? $gsprache->yes: $gsprache->no;
         #https://github.com/easy-wi/developer/issues/42 column description added
         $table[] = array('id' => $row['id'], 'uid' => $row['uid'], 'img' => $imgName,'description' => $row['description'], 'alt' => $imgAlt,'dbname' => $dbname,'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'ip' => $row['ip'], 'interface' => $row['interface'], 'jobPending' => $jobPending,'active' => $row['active']);
     }
-    $next=$start+$amount;
-    $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_dbs` WHERE `resellerid`=?");
+    $next = $start+$amount;
+    $countp = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_dbs` WHERE `resellerid`=?");
     $countp->execute(array($reseller_id));
     foreach ($countp->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $colcount=$row['amount'];
+        $colcount = $row['amount'];
     }
     if ($colcount>$next) {
-        $vor=$start+$amount;
+        $vor = $start+$amount;
     } else {
-        $vor=$start;
+        $vor = $start;
     }
-    $back=$start - $amount;
+    $back = $start - $amount;
     if ($back>=0){
-        $zur=$start - $amount;
+        $zur = $start - $amount;
     } else {
-        $zur=$start;
+        $zur = $start;
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=my&amp;d=md&amp;a=';
     if(!isset($amount)) {
         $link .="20";
     } else {
-        $link .=$amount;
+        $link .= $amount;
     }
     if ($start==0) {
-        $link .='&p=0" class="bold">1</a>';
+        $link .= '&p=0" class="bold">1</a>';
     } else {
-        $link .='&p=0">1</a>';
+        $link .= '&p=0">1</a>';
     }
     $pages[] = $link;
     $i = 2;

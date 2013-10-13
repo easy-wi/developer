@@ -90,43 +90,43 @@ if ($d== 'se' and $reseller_id==0) {
         $query = $sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date`,`multiplier`,`text_colour_1`,`text_colour_2`,`text_colour_3`,`barin_colour_1`,`barin_colour_2`,`barin_colour_3`,`barout_colour_1`,`barout_colour_2`,`barout_colour_3`,`bartotal_colour_1`,`bartotal_colour_2`,`bartotal_colour_3`,`bg_colour_1`,`bg_colour_2`,`bg_colour_3`,`border_colour_1`,`border_colour_2`,`border_colour_3`,`line_colour_1`,`line_colour_2`,`line_colour_3` FROM `traffic_settings` LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$type=$row['type'];
-			$statip=$row['statip'];
-			$dbname=$row['decpteddbname'];
-			$dbuser=$row['decpteddbuser'];
-			$dbpassword=$row['decpteddbpassword'];
-			$table_name=$row['table_name'];
-			$column_sourceip=$row['column_sourceip'];
-			$column_destip=$row['column_destip'];
-			$column_byte=$row['column_byte'];
-			$column_date=$row['column_date'];
-			$multiplier=$row['multiplier'];
-			$text_colour_1=$row['text_colour_1'];
-			$text_colour_2=$row['text_colour_2'];
-			$text_colour_3=$row['text_colour_3'];
-			$barin_colour_1=$row['barin_colour_1'];
-			$barin_colour_2=$row['barin_colour_2'];
-			$barin_colour_3=$row['barin_colour_3'];
-			$barout_colour_1=$row['barout_colour_1'];
-			$barout_colour_2=$row['barout_colour_2'];
-			$barout_colour_3=$row['barout_colour_3'];
-			$bartotal_colour_1=$row['bartotal_colour_1'];
-			$bartotal_colour_2=$row['bartotal_colour_2'];
-			$bartotal_colour_3=$row['bartotal_colour_3'];
-			$bg_colour_1=$row['bg_colour_1'];
-			$bg_colour_2=$row['bg_colour_2'];
-			$bg_colour_3=$row['bg_colour_3'];
-			$border_colour_1=$row['border_colour_1'];
-			$border_colour_2=$row['border_colour_2'];
-			$border_colour_3=$row['border_colour_3'];
-			$line_colour_1=$row['line_colour_1'];
-			$line_colour_2=$row['line_colour_2'];
-			$line_colour_3=$row['line_colour_3'];
+			$type = $row['type'];
+			$statip = $row['statip'];
+			$dbname = $row['decpteddbname'];
+			$dbuser = $row['decpteddbuser'];
+			$dbpassword = $row['decpteddbpassword'];
+			$table_name = $row['table_name'];
+			$column_sourceip = $row['column_sourceip'];
+			$column_destip = $row['column_destip'];
+			$column_byte = $row['column_byte'];
+			$column_date = $row['column_date'];
+			$multiplier = $row['multiplier'];
+			$text_colour_1 = $row['text_colour_1'];
+			$text_colour_2 = $row['text_colour_2'];
+			$text_colour_3 = $row['text_colour_3'];
+			$barin_colour_1 = $row['barin_colour_1'];
+			$barin_colour_2 = $row['barin_colour_2'];
+			$barin_colour_3 = $row['barin_colour_3'];
+			$barout_colour_1 = $row['barout_colour_1'];
+			$barout_colour_2 = $row['barout_colour_2'];
+			$barout_colour_3 = $row['barout_colour_3'];
+			$bartotal_colour_1 = $row['bartotal_colour_1'];
+			$bartotal_colour_2 = $row['bartotal_colour_2'];
+			$bartotal_colour_3 = $row['bartotal_colour_3'];
+			$bg_colour_1 = $row['bg_colour_1'];
+			$bg_colour_2 = $row['bg_colour_2'];
+			$bg_colour_3 = $row['bg_colour_3'];
+			$border_colour_1 = $row['border_colour_1'];
+			$border_colour_2 = $row['border_colour_2'];
+			$border_colour_3 = $row['border_colour_3'];
+			$line_colour_1 = $row['line_colour_1'];
+			$line_colour_2 = $row['line_colour_2'];
+			$line_colour_3 = $row['line_colour_3'];
 		}
 		$template_file = 'admin_traffic_settings.tpl';
 	}
 } else {
-	$display=$sprache->total;
+	$display = $sprache->total;
 	$data = array();
 	if (!isset($ui->post['unit'])) {
 		$unit="mb";
@@ -147,16 +147,16 @@ if ($d== 'se' and $reseller_id==0) {
 		$kind="su";
 		if (isips($ui->post['what'])) {
 			$whichdata="&amp;ips=".$ui->post['what'];
-			$display=$sprache->subnet . '  ' . $ui->post['what'];
+			$display = $sprache->subnet . '  ' . $ui->post['what'];
 		}
 		if ($reseller_id==0) {
-			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata`");
+			$pselect = $sql->prepare("SELECT `ips` FROM `resellerdata`");
 			$pselect->execute();
 		} else if ($reseller_id==$admin_id) {
-			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellersid`=:reseller_id");
+			$pselect = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellersid`=:reseller_id");
 			$pselect->execute(array(':reseller_id' => $reseller_id));
 		} else {
-			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=:admin_id AND c.`resellersid`=:reseller_id");
+			$pselect = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=:admin_id AND c.`resellersid`=:reseller_id");
 			$pselect->execute(array(':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}		
 		$ips = array();
@@ -182,9 +182,9 @@ if ($d== 'se' and $reseller_id==0) {
 		if (isid($ui->post['what'], '30') and $ui->post['kind']=="rs") {
 			$kind="rs";
 			$whichdata="&amp;short=".$ui->post['what'];
-			$extra=$gsprache->reseller;
+			$extra = $gsprache->reseller;
 			if ($reseller_id==0) {
-				$pselect=$sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=`resellerid`");
+				$pselect = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=`resellerid`");
 				$pselect->execute();
 			}
 			foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -197,12 +197,12 @@ if ($d== 'se' and $reseller_id==0) {
 		} else if (isid($ui->post['what'], '30') and $ui->post['kind']=="us") {
 			$kind="us";
 			$whichdata="&amp;distro=".$ui->post['what'];
-			$extra=$sprache->user;
+			$extra = $sprache->user;
 			if ($reseller_id==0) {
-				$pselect=$sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r'");
+				$pselect = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r'");
 				$pselect->execute();
 			} else if ($reseller_id==$admin_id) {
-				$pselect=$sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `resellerid`=:reseller_id");
+				$pselect = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `resellerid`=:reseller_id");
 				$pselect->execute(array(':reseller_id' => $reseller_id));
 			}
 			foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -214,14 +214,14 @@ if ($d== 'se' and $reseller_id==0) {
 			}
 		}
 		if ($reseller_id==0) {
-			$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=:id LIMIT 1");
+			$pselect = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=:id LIMIT 1");
 			$pselect->execute(array(':id' => $ui->post['what']));
 		} else if ($reseller_id==$admin_id) {
-			$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+			$pselect = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
 			$pselect->execute(array(':id' => $ui->post['what'], ':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$display=$extra . '  ' . $row['cname'];
+			$display = $extra . '  ' . $row['cname'];
 		}
 	} else if ($ui->post['kind']=="se") {
 		$kind="se";
@@ -229,26 +229,26 @@ if ($d== 'se' and $reseller_id==0) {
 			$whichdata="&amp;shorten=".$ui->post['what'];
 		}
 		if ($reseller_id==0) {
-			$pselect=$sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id ORDER BY u.`id`,c.`id` LIMIT 1");
+			$pselect = $sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id ORDER BY u.`id`,c.`id` LIMIT 1");
 			$pselect->execute(array(':id' =>$ui->post['what']));
 		} else if ($reseller_id==$admin_id){
-			$pselect=$sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id  AND c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id` LIMIT 1");
+			$pselect = $sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id  AND c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id` LIMIT 1");
 			$pselect->execute(array(':id' =>$ui->post['what'], ':reseller_id' => $reseller_id));
 		} else {
-			$pselect=$sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id  AND c.`userid`=:admin_id AND c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id` LIMIT 1");
+			$pselect = $sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id  AND c.`userid`=:admin_id AND c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id` LIMIT 1");
 			$pselect->execute(array(':id' =>$ui->post['what'], ':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$display=$sprache->server . '  ' . $row['cname'] . '-' . $ui->post['what'];
+			$display = $sprache->server . '  ' . $row['cname'] . '-' . $ui->post['what'];
 		}
 		if ($reseller_id==0) {
-			$pselect=$sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` ORDER BY u.`id`,c.`id`");
+			$pselect = $sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` ORDER BY u.`id`,c.`id`");
 			$pselect->execute();
 		} else if ($reseller_id==$admin_id){
-			$pselect=$sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id`");
+			$pselect = $sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id`");
 			$pselect->execute(array(':reseller_id' => $reseller_id));
 		} else {
-			$pselect=$sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`userid`=:admin_id AND c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id`");
+			$pselect = $sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`userid`=:admin_id AND c.`resellerid`=:reseller_id ORDER BY u.`id`,c.`id`");
 			$pselect->execute(array(':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -262,16 +262,16 @@ if ($d== 'se' and $reseller_id==0) {
 		$kind="ip";
 		if (isip($ui->post['what'], 'all')) {
 			$whichdata="&amp;ip=".$ui->post['what'];
-			$display=$sprache->ip . '  ' . $ui->post['what'];
+			$display = $sprache->ip . '  ' . $ui->post['what'];
 		}
 		if ($reseller_id==0) {
-			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata`");
+			$pselect = $sql->prepare("SELECT `ips` FROM `resellerdata`");
 			$pselect->execute();
 		} else if ($reseller_id==$admin_id) {
-			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellersid`=:reseller_id");
+			$pselect = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellersid`=:reseller_id");
 			$pselect->execute(array(':reseller_id' => $reseller_id));
 		} else {
-			$pselect=$sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=:admin_id AND c.`resellersid`=:reseller_id");
+			$pselect = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=:admin_id AND c.`resellersid`=:reseller_id");
 			$pselect->execute(array(':admin_id' => $admin_id,':reseller_id' => $reseller_id));
 		}		
 		$ips = array();
@@ -306,32 +306,32 @@ if ($d== 'se' and $reseller_id==0) {
 	} else if ($ui->post['dmy'] == 'da') {
 		$dmy='da';
 		if (validate_int($ui->post['daystart'],1,31)) {
-			$day=$ui->post['daystart'];
+			$day = $ui->post['daystart'];
 		} else {
 			$day=date('d',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['daystop'],1,31)) {
-			$daystop=$ui->post['daystop'];
+			$daystop = $ui->post['daystop'];
 		} else {
 			$day=date('d');
 		}
 		if (validate_int($ui->post['monthstart'],1,12)) {
-			$month=$ui->post['monthstart'];
+			$month = $ui->post['monthstart'];
 		} else {
 			$month=date('m',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['monthstop'],1,12)) {
-			$monthstop=$ui->post['monthstop'];
+			$monthstop = $ui->post['monthstop'];
 		} else {
 			$monthstop=date('m');
 		}
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
-			$year=$ui->post['yearstart'];
+			$year = $ui->post['yearstart'];
 		} else {
 			$year=date('Y',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['yearstop'],2000,date('Y'))) {
-			$yearstop=$ui->post['yearstop'];
+			$yearstop = $ui->post['yearstop'];
 		} else {
 			$yearstop=date('Y');
 		}
@@ -352,37 +352,37 @@ if ($d== 'se' and $reseller_id==0) {
 		$dmy='mo';
 		$day = 1;
 		if (validate_int($ui->post['monthstart'],1,12)) {
-			$month=$ui->post['monthstart'];
+			$month = $ui->post['monthstart'];
 		} else {
 			$month=date('m',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
-			$year=$ui->post['yearstart'];
+			$year = $ui->post['yearstart'];
 		} else {
 			$year=date('Y',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['yearstop'],2000,date('Y'))) {
-			$yearstop=$ui->post['yearstop'];
+			$yearstop = $ui->post['yearstop'];
 		} else {
 			$yearstop=date('Y');
 		}
 		if (validate_int($ui->post['monthstop'],1,12)) {
-			$monthstop=$ui->post['monthstop'];
+			$monthstop = $ui->post['monthstop'];
 		} else {
 			$monthstop=date('m');
 		}
 		$daystop=date('t', strtotime("$yearstop-$monthstop"));
 		$now=date('Y-m');
 		$date1=strtotime("$year-$month-$day");
-		$add=$date1;
+		$add = $date1;
 		$date2=strtotime("$yearstop-$monthstop-$daystop");
 		$i = 0;
 		while ($add<=$date2) {
 			$newadd=strtotime("+1 months",$add);
-			$add=$newadd;
+			$add = $newadd;
 			$i++;
 		}
-		$amount=$i;
+		$amount = $i;
 		if ($amount<0 or "$yearstop-$monthstop">$now){
 			$yearstop=date('Y');
 			$monthstop=date('m');
@@ -396,12 +396,12 @@ if ($d== 'se' and $reseller_id==0) {
 		$dmy='ye';
 		$day = 1;
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
-			$year=$ui->post['yearstart'];
+			$year = $ui->post['yearstart'];
 		} else {
 			$year=date('Y',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['yearstop'],2000,date('Y'))) {
-			$yearstop=$ui->post['yearstop'];
+			$yearstop = $ui->post['yearstop'];
 		} else {
 			$yearstop=date('Y');
 		}
@@ -411,14 +411,14 @@ if ($d== 'se' and $reseller_id==0) {
 		$now=date('Y');
 		$date1=strtotime("$year-$month-$day");
 		$date2=strtotime("$yearstop-$monthstop-$daystop");
-		$add=$date1;
+		$add = $date1;
 		$i = 0;
 		while ($add<=$date2) {
 			$newadd=strtotime("+1 year",$add);
-			$add=$newadd;
+			$add = $newadd;
 			$i++;
 		}
-		$amount=$i;
+		$amount = $i;
 		if ($amount<0 or "$yearstop">$now){
 			$yearstop=date('Y');
 			$monthstop=12;
@@ -436,6 +436,6 @@ if ($d== 'se' and $reseller_id==0) {
 		$startdate="$year-$month-$day";
 		$stopdate="$yearstop-$monthstop-$daystop";
 	}
-	$trafficdata="images.php?img=tr&amp;d=$dmy&amp;w=$unit&amp;p=$year&amp;id=$day&amp;po=$month&amp;m=$amount$whichdata";
+	$trafficdata="images.php?img=tr&amp;d=$dmy&amp;w = $unit&amp;p=$year&amp;id=$day&amp;po=$month&amp;m=$amount$whichdata";
 	$template_file = "admin_traffic.tpl";
 }

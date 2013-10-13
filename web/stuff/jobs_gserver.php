@@ -76,7 +76,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 }
             }
             $i = (int) $query4->rowCount();
-            $gamestring=$i.$gamestring;
+            $gamestring = $i.$gamestring;
         }
         if (isset($i) and $row2['action'] == 'dl' and isset($customer)) {
             $cmds[]="su -u $customer ./control.sh delscreen $customer";
@@ -94,14 +94,14 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query4->execute();
             $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));
-            $command=$gsprache->del.' gsswitchID: '.$row2['affectedID'].' name:'.$row2['name'].' gsswitchID:'.$row2['affectedID'];
+            $command = $gsprache->del.' gsswitchID: '.$row2['affectedID'].' name:'.$row2['name'].' gsswitchID:'.$row2['affectedID'];
         } else if (isset($i) and $row2['action'] == 'ad' and isset($customer)) {
             if ($i>0) {
                 $cmds[] = './control.sh add ' . $customer . ' ' . $ftppass . ' ' . $sshuser . ' ' . passwordgenerate(10);
                 if ($installGames != 'N') $cmds[] = 'sudo -u '.$customer.' ./control.sh addserver "'.$customer.'" "'.$gamestring.'" "'.$gsfolder.'"';
                 $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
                 $query4->execute(array($row2['jobID']));
-                $command=$gsprache->add.' gsswitchID: '.$row2['affectedID'].' name:'.$row2['name'].' gsswitchID:'.$row2['affectedID'];
+                $command = $gsprache->add.' gsswitchID: '.$row2['affectedID'].' name:'.$row2['name'].' gsswitchID:'.$row2['affectedID'];
             } else {
                 $command='Error no switchserver found for this gsswitchID: '.$row2['affectedID'].' name:'.$row2['name'].' gsswitchID:'.$row2['affectedID'];
             }
@@ -127,7 +127,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $query4->execute(array($newActive,$newPort, $row2['affectedID']));
             $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));
-            $command=$gsprache->mod.' gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'].' gsswitchID:'.$row2['affectedID'];
+            $command = $gsprache->mod.' gsswitchID: '.$row2['affectedID'].' name: '.$row2['name'].' gsswitchID:'.$row2['affectedID'];
         } else if (isset($i) and $row2['action'] == 're' and isset($customer)) {
             $tmp = gsrestart($row2['affectedID'], 're',$aeskey, $row2['resellerID']);
             if (is_array($tmp)) {

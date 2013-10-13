@@ -41,20 +41,20 @@ $sprache=(isset($user_language)) ? getlanguagefile('images',$user_language,$rese
 if (isset($admin_id) and $admin_id==$reseller_id) {
 	$resellerid = 0;
 } else if (isset($reseller_id)) {
-	$resellerid=$reseller_id;
+	$resellerid = $reseller_id;
 } else {
 	$resellerid = 0;
 }
 $query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE language=? AND resellerid=? LIMIT 1");
 $query->execute(array($user_language,$resellerid));
-$imprint=$query->fetchColumn();
+$imprint = $query->fetchColumn();
 if ($imprint != '') {
     $query = $sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($resellerid));
-    $defaultlanguage=$query->fetchColumn();
+    $defaultlanguage = $query->fetchColumn();
     $query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE language=? AND resellerid=? LIMIT 1");
     $query->execute(array($defaultlanguage,$resellerid));
-    $imprint=$query->fetchColumn();
+    $imprint = $query->fetchColumn();
 }
 if (isset($page_data)) {
     $page_data->setCanonicalUrl($s);

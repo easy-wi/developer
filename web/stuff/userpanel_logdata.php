@@ -46,23 +46,23 @@ $query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate` 
 $query2 = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
 $query->execute(array($user_id,$reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-	$subuser=$row['subuser'];
+	$subuser = $row['subuser'];
 	if ($subuser==0) {
-		$username=$row['username'];
-		$ip=$row['ip'];
+		$username = $row['username'];
+		$ip = $row['ip'];
 	} else {
         $query2->execute(array($subuser));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 			if (isanyadmin($subuser) and !isset($admin_id)) {
-				$username=$row2['cname'];
+				$username = $row2['cname'];
 				$ip = '';
 			} else {
-				$username=$row2['cname'];
-				$ip=$row['ip'];
+				$username = $row2['cname'];
+				$ip = $row['ip'];
 			}
 		}			
 	}
-	$useraction=$row['useraction'];
+	$useraction = $row['useraction'];
     $placeholders=array('%%', '%add%', '%dl%', '%del%', '%md%', '%mod%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
     $replace=array('',$gsprache->add.': ',$gsprache->del.': ',$gsprache->del.': ',$gsprache->mod.': ',$gsprache->mod.': ',$gsprache->start.': ',$gsprache->start.': ',$gsprache->stop.': ',$gsprache->update.': ','','',$gssprache->password.': ',$gssprache->config.': ',$gsprache->import.': ',$gssprache->reinstall.': ',$gsprache->backup,$gsprache->use.': ');
     $replacedpics=str_replace($placeholders,$replace,$useraction);
@@ -72,11 +72,11 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $logdate=explode(' ', $row['logdate']);
     $table[] = array('logday' => $logdate[0], 'loghour' => $logdate[1], 'ip' => $ip,'username' => $username,'useraction' => $replacedwords);
 }
-$next=$start+$amount;
+$next = $start+$amount;
 $query = $sql->prepare("SELECT `id` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=?");
 $query->execute(array($user_id,$reseller_id));
-$colcount=$query->rowCount();
+$colcount = $query->rowCount();
 $vor=($colcount>$next) ? $start+$amount : $start;
-$back=$start - $amount;
+$back = $start - $amount;
 $zur = ($back >= 0) ? $start - $amount : $start;
 $template_file = "userpanel_logs.tpl";

@@ -58,4 +58,4 @@ if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui-
 include(IncludeTemplate($template_to_use, 'admin_header.tpl'));
 include(IncludeTemplate($template_to_use, (isset($template_file)  and preg_match('/^(.*)\.[\w]{1,}$/',$template_file)) ? $template_file : 'general.tpl'));
 include(IncludeTemplate($template_to_use, 'admin_footer.tpl'));
-$sql=null;
+$sql = null;

@@ -45,10 +45,10 @@ class easyWiRest {
 
     // Constructor that sets defaults which can be overwritten
     function __construct($url,$timeout=10,$ssl='N',$connect='curl') {
-        $this->ssl=$ssl;
+        $this->ssl = $ssl;
         $this->port=($this->ssl== 'Y') ? 443 : 80;
-        $this->url=$url;
-        $this->timeout=$timeout;
+        $this->url = $url;
+        $this->timeout = $timeout;
         // check if curl is choosen and available and initiate cURL-Session
         if ($connect == 'curl' and function_exists('curl_init')) {
             if ($this->startCurl($url,$ssl,$this->port) === true) {
@@ -132,7 +132,7 @@ class easyWiRest {
         } else {
             $url='http://'.$url;
         }
-        $url=$url.'/api.php';
+        $url = $url.'/api.php';
 
         // create cURL-Handle
         $this->handle=curl_init($url);
@@ -180,7 +180,7 @@ class easyWiRest {
             $checkStart='<';
             $checkStop='>';
         }
-        $response=$rawdata;
+        $response = $rawdata;
         while (substr($response,0,1) != $checkStart and strlen($response)>0) {
             $response=substr($response,1);
         }

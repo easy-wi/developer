@@ -122,7 +122,7 @@ foreach ($query->fetchall() as $row) {
 		}
 	}
 
-	$useraction=$row['useraction'];
+	$useraction = $row['useraction'];
     $placeholders=array('%%', '%add%', '%dl%', '%del%', '%mod%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
     $replace=array('', $gsprache->add.': ', $gsprache->del.': ', $gsprache->del.': ', $gsprache->mod.': ', $gsprache->start.': ', $gsprache->start.': ', $gsprache->stop.': ', $gsprache->update.': ','','', $gssprache->password.': ', $gssprache->config.': ', $gsprache->import.': ', $gssprache->reinstall.': ', $gsprache->backup, $gsprache->use.': ');
 	$replacedpics = str_replace($placeholders,$replace,$useraction);

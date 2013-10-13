@@ -120,22 +120,22 @@ class ValidateUserinput {
         }
     }
     private function if_obj_or_str ($value,$type,$object) {
-        if ($object==false and is_string($value) and !isset($this->$type)) {
+        if ($object == false and is_string($value) and !isset($this->$type)) {
             return $value;
-        } else if ($object==false and isset($this->$type)) {
-            $check=$this->$type;
+        } else if ($object == false and isset($this->$type)) {
+            $check = $this->$type;
             if (isset($check[$value])) {
                 return $check[$value];
             }
-        } else if ($object!=false and isset($this->$type)) {
-            $check=$this->$type;
+        } else if ($object != false and isset($this->$type)) {
+            $check = $this->$type;
             if (isset($check[$value]->$object)) {
                 return $check[$value]->$object;
             }
         }
     }
     function url ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_URL)) {
             return $check;
         } else if ($check) {
@@ -143,7 +143,7 @@ class ValidateUserinput {
         }
     }
     function domain ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if($check and is_string($check) and preg_match("/^[\w\d+\-\.]+\.[a-z]{1,5}$/",$check)) {
             return $check;
         } else if ($check) {
@@ -151,7 +151,7 @@ class ValidateUserinput {
         }
     }
     function domainPath ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if($check and is_string($check) and preg_match("/^[\w\d+\-\.]+\.[a-zA-Z]{1,5}(|\:[0-9]{1,5})(|\/[\w\.\/\-\_]{0,})$/",$check)) {
             return $check;
         } else if ($check) {
@@ -159,7 +159,7 @@ class ValidateUserinput {
         }
     }
     function ismail ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if (is_string($check)) $check = trim($check);
         if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_EMAIL)) {
             $exploded=explode('@',$check);
@@ -170,7 +170,7 @@ class ValidateUserinput {
         }
     }
     function ip4 ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP,FILTER_FLAG_IPV4)){
             return $check;
         } else if ($check) {
@@ -178,7 +178,7 @@ class ValidateUserinput {
         }
     }
     function ip6 ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)){
             return $check;
         } else if ($check) {
@@ -186,7 +186,7 @@ class ValidateUserinput {
         }
     }
     function ip ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP)){
             return $check;
         } else if ($check) {
@@ -194,7 +194,7 @@ class ValidateUserinput {
         }
     }
     function ips ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match("/^[\r\n\.\/\d+]+$/",$check)) {
             return $check;
         } else if ($check) {
@@ -202,7 +202,7 @@ class ValidateUserinput {
         }
     }
     function mac ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match("/^[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}$/",$check)) {
             return $check;
         } else if ($check) {
@@ -210,7 +210,7 @@ class ValidateUserinput {
         }
     }
     function isDate ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and @strtotime($check)) {
             return $check;
         } else if ($check) {
@@ -218,7 +218,7 @@ class ValidateUserinput {
         }
     }
     function port ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match("/^(0|([1-9]\d{0,3}|[1-5]\d{4}|[6][0-5][0-5]([0-2]\d|[3][0-5])))$/",$check)) {
             return $check;
         } else if ($check) {
@@ -226,7 +226,7 @@ class ValidateUserinput {
         }
     }
     function path ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match("/^[\w\-\_\/]{1,}[\/]{1}$/",$check)) {
             return $check;
         } else if ($check) {
@@ -234,7 +234,7 @@ class ValidateUserinput {
         }
     }
     function anyPath ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match("/^([\/]{1}|[\/]{0,1}[\w\-\_\/\.]{0,}[\/]{0,1})$/",$check)) {
             return $check;
         } else if ($check) {
@@ -242,7 +242,7 @@ class ValidateUserinput {
         }
     }
     function pregw ($value,$length,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w]{1,'.$length.'}$/',$check)) {
             return $check;
         } else if ($check) {
@@ -250,7 +250,7 @@ class ValidateUserinput {
         }
     }
     function isinteger ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
             $value=(int)str_replace(',', '.',$check);
             if(preg_match("/^[\d+(.\d+|$)]+$/",$value)) {
@@ -261,7 +261,7 @@ class ValidateUserinput {
         }
     }
     function active ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match("/^[N,Y]{1}$/",$check)) {
             return $check;
         } else if ($check) {
@@ -269,7 +269,7 @@ class ValidateUserinput {
         }
     }
     function password ($value,$length,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w\[\]\(\)\<\>!\"$%&\/=\?*+#]{1,'.$length.'}$/',trim($check))) {
             return trim($check);
         } else if ($check) {
@@ -277,7 +277,7 @@ class ValidateUserinput {
         }
     }
     function captcha ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match("/^[a-zA-Z\d+]{4}$/",$check)) {
             return $check;
         } else if ($check) {
@@ -285,7 +285,7 @@ class ValidateUserinput {
         }
     }
     function ipport ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
             $awk=explode(":",preg_replace('/\s+/','',str_replace(' ', "",$check)));
             if (isset($awk[1]) and filter_var($awk[0],FILTER_VALIDATE_IP,FILTER_FLAG_IPV4) and preg_match("/^(0|([1-9]\d{0,3}|[1-5]\d{4}|[6][0-5][0-5]([0-2]\d|[3][0-5])))$/",$awk[1])) {
@@ -296,7 +296,7 @@ class ValidateUserinput {
         }
     }
     function mapname ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
             $replaced=str_replace(array(" ",".bsp"), array("",""),$check);
             if (preg_match("/^[\w\-\.\_ \/]+$/",$replaced)) {
@@ -307,7 +307,7 @@ class ValidateUserinput {
         }
     }
     function gamestring ($value,$type,$object=false){
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w\.\-\_]+$/',$check)) {
             return $check;
         } else if ($check) {
@@ -315,7 +315,7 @@ class ValidateUserinput {
         }
     }
     function folder ($value,$type,$object=false){
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w\/\-\_]+$/',$check)) {
             return $check;
         } else if ($check) {
@@ -323,7 +323,7 @@ class ValidateUserinput {
         }
     }
     function config($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w\/\-\_\.]+$/',$check)) {
             return $check;
         } else if ($check and is_string($check) and preg_match('/^[\w\/\-\_\.]+$/',urldecode($check))) {
@@ -333,7 +333,7 @@ class ValidateUserinput {
         }
     }
     function description ($value,$type,$object=false){
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
             $value=htmlentities($check,ENT_QUOTES,'UTF-8');
             if (preg_match("/^[\x{0400}-\x{04FF}\w\r\n\-():;&.,% ]+/u",$value)) {
@@ -345,7 +345,7 @@ class ValidateUserinput {
     }
     // https://github.com/easy-wi/developer/issues/76 forking l4d(2) servers '#' needed
     function startparameter ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w\r\n\#\(\)\[\]\{\}\~\=\?\%\:\.\,\"+-\_\|ßöÖäÄüÜ ]+$/',$check)) {
             return $check;
         } else if ($check) {
@@ -353,7 +353,7 @@ class ValidateUserinput {
         }
     }
     function phone ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\d+\+\(\)\/\-\s]+$/',$check)) {
             return $check;
         } else if ($check) {
@@ -362,7 +362,7 @@ class ValidateUserinput {
     }
     # https://github.com/easy-wi/developer/issues/73
     function streetNumber ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w\.\-\/\ ]+$/',$check)) {
             return $check;
         } else if ($check) {
@@ -370,7 +370,7 @@ class ValidateUserinput {
         }
     }
     function id ($value,$length,$type,$object=false){
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\d+]{1,'.$length.'}$/',$check)) {
             return (int) $check;
         } else if ($check) {
@@ -378,7 +378,7 @@ class ValidateUserinput {
         }
     }
     function timezone ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^1?[+-][\d+]$|^[+-][1][\d+]|^[+-][2][0-4]$/',$check)) {
             return $check;
         } else if ($check) {
@@ -386,7 +386,7 @@ class ValidateUserinput {
         }
     }
     function username ($value,$length,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w\-\.]{1,'.$length.'}$/',trim($check))) {
             return trim($check);
         } else if ($check) {
@@ -394,7 +394,7 @@ class ValidateUserinput {
         }
     }
     function names ($value,$length,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
             if (strlen($check)<=$length and preg_match('/^[\p{L}\p{N}][\p{L}\p{N}  _.-]+$/u',$check)) {
                 return $check;
@@ -404,7 +404,7 @@ class ValidateUserinput {
         }
     }
     function st ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[a-z]{2}$/',$check)) {
             return $check;
         } else if ($check) {
@@ -412,7 +412,7 @@ class ValidateUserinput {
         }
     }
     function smallletters ($value,$length,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[a-z]{1,'.$length.'}$/',$check)) {
             return $check;
         } else if ($check) {
@@ -420,7 +420,7 @@ class ValidateUserinput {
         }
     }
     function htmlcode ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
             return htmlentities($check,ENT_QUOTES,'UTF-8');
         } else if ($check) {
@@ -428,7 +428,7 @@ class ValidateUserinput {
         }
     }
     function w ($value,$length,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w ]{1,'.$length.'}$/',$check)) {
             return $check;
         } else if ($check) {
@@ -436,7 +436,7 @@ class ValidateUserinput {
         }
     }
     function date ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and @strtotime($check)) {
             return $check;
         } else if ($check) {
@@ -444,7 +444,7 @@ class ValidateUserinput {
         }
     }
     function base64 ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check) and preg_match('/^[\w]{1,}[=]{0,}+$/',$check)) {
             return $check;
         } else if ($check) {
@@ -452,7 +452,7 @@ class ValidateUserinput {
         }
     }
     function escaped ($value,$type,$object=false) {
-        $check=$this->if_obj_or_str($value,$type,$object);
+        $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
             return $check;
         } else if ($check) {

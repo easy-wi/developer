@@ -50,13 +50,13 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $extraData=(array)$extraData;
     $type=($row['type'] == 'de') ? 'dedicated' : 'vmware';
     if (!isset($extraData['runAt']) or strtotime('now')>$extraData['runAt']) {
-        $return=$rootObject->rootServer($row['affectedID'], $row['action'],$type,$extraData);
+        $return = $rootObject->rootServer($row['affectedID'], $row['action'],$type,$extraData);
 
         // bei add und mod restart Auftrag schreiben mit extra Data = timestamp
         if ($row['action'] == 'dl') {
             if ($return === true) {
                 $query2->execute(array($row['jobID']));
-                $command=$gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'];
+                $command = $gsprache->del." $type server: ".$row['affectedID'].' name:'.$row['name'];
                 $removeIDs[$row['type']][] = $row['affectedID'];
             } else {
                 $query4->execute(array($row['jobID']));
@@ -64,11 +64,11 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             }
         } else if ($row['action'] == 'ad') {
             $query2->execute(array($row['jobID']));
-            $command=$gsprache->add." $type server: ".$row['affectedID'].' name:'.$row['name'];
+            $command = $gsprache->add." $type server: ".$row['affectedID'].' name:'.$row['name'];
         } else if (in_array($row['action'], array('md','ri','st','rc','rp'))) {
             if ($return === true) {
                 $query2->execute(array($row['jobID']));
-                $command=$gsprache->mod." $type server: ".$row['affectedID'].' name: '.$row['name'];
+                $command = $gsprache->mod." $type server: ".$row['affectedID'].' name: '.$row['name'];
             } else {
                 $query4->execute(array($row['jobID']));
                 $command="Error modding $type server: ".$row['affectedID'].' name: '.$row['name'] . ' ' . $return;
@@ -124,4 +124,4 @@ foreach ($removeIDs['vs'] as $id) {
     customColumns('V',$id,'del');
     $query->execute(array($id));
 }
-$rootObject=null;
+$rootObject = null;

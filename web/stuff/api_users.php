@@ -67,22 +67,22 @@ $mail_ticket = '';
 $mail_vserver = '';
 if (array_value_exists('action','add',$data)) {
     if (ismail($data['email'])) {
-        $email=$data['email'];
+        $email = $data['email'];
         $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
-        $identifyBy=$data['identify_by'];
-        $username=$data['username'];
-        $externalID=$data['external_id'];
+        $identifyBy = $data['identify_by'];
+        $username = $data['username'];
+        $externalID = $data['external_id'];
         $active=active_check($data['active']);
-        $password=$data['password'];
+        $password = $data['password'];
         $localID = '';
         $userGroupIDs = array();
         $query = $sql->prepare("SELECT COUNT(`id`) AS `amount`,`mail`,`cname` FROM `userdata` WHERE `mail`=? OR `cname`=? LIMIT 1");
         $query->execute(array($email,$username));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $amount=$row['amount'];
+            $amount = $row['amount'];
             if ($row['amount']>0) {
-                $username=$row['cname'];
-                $email=$row['mail'];
+                $username = $row['cname'];
+                $email = $row['mail'];
                 $success['false'][] = 'user with this e-mail already exists: '.$username;
             }
         }
@@ -90,22 +90,22 @@ if (array_value_exists('action','add',$data)) {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount`,`mail`,`cname` FROM `userdata` WHERE `externalID`=? LIMIT 1");
             $query->execute(array($externalID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $amount=$amount+$row['amount'];
+                $amount = $amount+$row['amount'];
                 if ($row['amount']>0) {
-                    $username=$row['cname'];
-                    $email=$row['mail'];
+                    $username = $row['cname'];
+                    $email = $row['mail'];
                     $success['false'][] = 'user with external ID exists: '.$username;
                 }
             }
         }
         if (!in_array($username,$bad)) {
-            $tmpName=$username;
+            $tmpName = $username;
         } else {
             $query = $sql->prepare("SELECT `prefix2` FROM `settings` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $prefix=$row['prefix2'];
-                $tmpName=$row['prefix2'].$salt;
+                $prefix = $row['prefix2'];
+                $tmpName = $row['prefix2'].$salt;
             }
         }
         $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
@@ -146,7 +146,7 @@ if (array_value_exists('action','add',$data)) {
         if (isset($data['salutation']) and is_number($data['salutation'],1)) $salutation=is_number($data['salutation'],1);
         if (isset($data['birthday']) and isDate($data['birthday'])) $birthday=date('Y-m-d',strtotime(isDate($data['birthday'])));
         if (isset($data['country']) and st(strtolower($data['country']))) $country=st(strtolower($data['country']));
-        if (isset($data['fdlpath']) and isurl($data['fdlpath'])) $fdlpath=$data['fdlpath'];
+        if (isset($data['fdlpath']) and isurl($data['fdlpath'])) $fdlpath = $data['fdlpath'];
         $mail_backup=(isset($data['mail_backup']) and active_check($data['mail_backup'])) ? $data['mail_backup'] : 'Y';
         $mail_gsupdate=(isset($data['mail_gsupdate']) and active_check($data['mail_gsupdate'])) ? $data['mail_gsupdate'] : 'Y';
         $mail_securitybreach=(isset($data['mail_securitybreach']) and active_check($data['mail_securitybreach'])) ? $data['mail_securitybreach'] : 'Y';
@@ -163,12 +163,12 @@ if (array_value_exists('action','add',$data)) {
         $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
         $query->execute(array($tmpName,$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $localID=$row['id'];
+            $localID = $row['id'];
             if (isset($prefix)) {
-                $username=$prefix.$localID;
+                $username = $prefix.$localID;
             }
         }
-        if (!isset($success) and isset($localID) and isset($insert) and $insert==true) {
+        if (!isset($success) and isset($localID) and isset($insert) and $insert == true) {
             if (!isset($data['password']) or in_array($data['password'],$bad)) $password=passwordgenerate(10);
             $passwordhash=createHash($username,$password,$salt,$aeskey);
             $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=? WHERE `id`=? LIMIT 1");
@@ -182,24 +182,24 @@ if (array_value_exists('action','add',$data)) {
         $success['false'][] = 'Can not identify user or bad email';
     }
 } else if (array_value_exists('action','mod',$data)) {
-    $identifyBy=$data['identify_by'];
-    $username=$data['username'];
-    $externalID=$data['external_id'];
+    $identifyBy = $data['identify_by'];
+    $username = $data['username'];
+    $externalID = $data['external_id'];
     $active=active_check($data['active']);
-    $localID=$data['localid'];
+    $localID = $data['localid'];
     $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail');
     if (dataExist('identify_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`cname`,`active` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $localID=$row['id'];
-            $name=$row['cname'];
-            $oldactive=$row['active'];
+            $localID = $row['id'];
+            $name = $row['cname'];
+            $oldactive = $row['active'];
         }
         if(isset($localID)) {
             $what = array();
             if (isset($data['password']) and !in_array($data['password'],$bad)) {
-                $password=$data['password'];
+                $password = $data['password'];
                 $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
                 $security=createHash($name,$data['password'],$salt,$aeskey);
                 $what['security'] = $security;
@@ -207,83 +207,83 @@ if (array_value_exists('action','add',$data)) {
             }
             if (isset($data['email']) and ismail($data['email'])) {
                 $what['mail'] = $data['email'];
-                $mail=$what['mail'];
+                $mail = $what['mail'];
             }
             if (isset($data['name']) and names($data['name'],255)) {
                 $what['name']=names($data['name'],255);
-                $name=$what['name'];
+                $name = $what['name'];
             }
             if (isset($data['vname']) and names($data['vname'],255)) {
                 $what['vname']=names($data['vname'],255);
-                $vname=$what['vname'];
+                $vname = $what['vname'];
             }
             if (isset($data['phone']) and phone($data['phone'])) {
                 $what['phone']=phone($data['phone']);
-                $phone=$what['phone'];
+                $phone = $what['phone'];
             }
             if (isset($data['handy']) and phone($data['handy'])) {
                 $what['handy']=phone($data['handy']);
-                $handy=$what['handy'];
+                $handy = $what['handy'];
             }
             if (isset($data['fax']) and phone($data['fax'])) {
                 $what['fax']=phone($data['fax']);
-                $fax=$what['fax'];
+                $fax = $what['fax'];
             }
             if (isset($data['city']) and names($data['city'],50)) {
                 $what['city']=names($data['city'],50);
-                $city=$what['city'];
+                $city = $what['city'];
             }
             if (isset($data['cityn']) and is_number($data['cityn'],6)) {
                 $what['cityn']=is_number($data['cityn'],6);
-                $cityn=$what['cityn'];
+                $cityn = $what['cityn'];
             }
             if (isset($data['street']) and names($data['street'],50)) {
                 $what['street']=names($data['street'],50);
-                $street=$what['street'];
+                $street = $what['street'];
             }
             if (isset($data['streetn']) and wpreg_check($data['streetn'],6)) {
                 $what['streetn']=wpreg_check($data['streetn'],6);
-                $streetn=$what['streetn'];
+                $streetn = $what['streetn'];
             }
             if (isset($data['salutation']) and is_number($data['salutation'],1)) {
                 $what['salutation']=is_number($data['salutation'],1);
-                $salutation=$what['salutation'];
+                $salutation = $what['salutation'];
             }
             if (isset($data['birthday']) and isDate($data['birthday'])) {
                 $what['birthday']=date('Y-m-d',strtotime(isDate($data['birthday'])));
-                $birthday=$what['birthday'];
+                $birthday = $what['birthday'];
             }
             if (isset($data['country']) and st(strtolower($data['country']))) {
                 $what['country']=st(strtolower($data['country']));
-                $country=$what['country'];
+                $country = $what['country'];
             }
             if (isset($data['mail_backup']) and active_check($data['mail_backup'])) {
                 $what['mail_backup'] = $data['mail_backup'];
-                $mail_backup=$what['mail_backup'];
+                $mail_backup = $what['mail_backup'];
             }
             if (isset($data['mail_gsupdate']) and active_check($data['mail_gsupdate'])) {
                 $what['mail_gsupdate'] = $data['mail_gsupdate'];
-                $mail_gsupdate=$what['mail_gsupdate'];
+                $mail_gsupdate = $what['mail_gsupdate'];
             }
             if (isset($data['mail_securitybreach']) and active_check($data['mail_securitybreach'])) {
                 $what['mail_securitybreach'] = $data['mail_securitybreach'];
-                $mail_securitybreach=$what['mail_securitybreach'];
+                $mail_securitybreach = $what['mail_securitybreach'];
             }
             if (isset($data['mail_serverdown']) and active_check($data['mail_serverdown'])) {
                 $what['mail_serverdown'] = $data['mail_serverdown'];
-                $mail_serverdown=$what['mail_serverdown'];
+                $mail_serverdown = $what['mail_serverdown'];
             }
             if (isset($data['mail_ticket']) and active_check($data['mail_ticket'])) {
                 $what['mail_ticket'] = $data['mail_ticket'];
-                $mail_ticket=$what['mail_ticket'];
+                $mail_ticket = $what['mail_ticket'];
             }
             if (isset($data['mail_vserver']) and active_check($data['mail_vserver'])) {
                 $what['mail_vserver'] = $data['mail_vserver'];
-                $mail_vserver=$what['mail_vserver'];
+                $mail_vserver = $what['mail_vserver'];
             }
             if (isset($data['fdlpath']) and isurl($data['fdlpath'])) {
                 $what['fdlpath'] = $data['fdlpath'];
-                $fdlpath=$what['fdlpath'];
+                $fdlpath = $what['fdlpath'];
             }
             $foundGroupIDs = array();
             $userGroupIDs = array();
@@ -313,9 +313,9 @@ if (array_value_exists('action','add',$data)) {
             $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW() $extraUpdate WHERE `id`=? AND `resellerid`=?");
             $query->execute(array($localID,$resellerID));
             if (!in_array($active,$bad) and $active != $oldactive) {
-                $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
+                $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                 $update->execute(array($localID,$resellerID));
-                $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'md',?)");
+                $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'md',?)");
                 $insert->execute(array($resellerID,$localID,$localID,$name,json_encode(array('newActive' => $useractive)),$resellerID));
                 updateJobs($localID,$resellerID);
             }
@@ -326,28 +326,28 @@ if (array_value_exists('action','add',$data)) {
         $success['false'][] = 'No data for this method';
     }
 } else if (array_value_exists('action','del',$data)) {
-    $email=$data['email'];
-    $identifyBy=$data['identify_by'];
-    $username=$data['username'];
-    $password=$data['password'];
-    $externalID=$data['external_id'];
+    $email = $data['email'];
+    $identifyBy = $data['identify_by'];
+    $username = $data['username'];
+    $password = $data['password'];
+    $externalID = $data['external_id'];
     $active=active_check($data['active']);
-    $localID=$data['localid'];
+    $localID = $data['localid'];
     $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail');
     if (dataExist('identify_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $localID=$row['id'];
-            $name=$row['cname'];
+            $localID = $row['id'];
+            $name = $row['cname'];
         }
         if(isset($localID) and isset($name)) {
-            $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
+            $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
             $update->execute(array($localID,$resellerID));
-            $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'dl',?)");
+            $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'dl',?)");
             $insert->execute(array($resellerID,$localID,$localID,$name,$resellerID));
             updateJobs($localID,$resellerID);
-            $delete=$sql->prepare("DELETE FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
+            $delete = $sql->prepare("DELETE FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
             $delete->execute(array($data[$data['identify_by']],$resellerID));
         } else {
             $success['false'][] = 'No user can be found to delete';
@@ -357,13 +357,13 @@ if (array_value_exists('action','add',$data)) {
     }
 } else if (array_value_exists('action','ls',$data) and isset($data['identify_by']) and isset($data[$data['identify_by']]) and !in_array($data[$data['identify_by']],$bad)) {
     $userArray=array('userdetails' => array(),'gserver' => array(),'voice' => array());
-    $email=$data['email'];
-    $identifyBy=$data['identify_by'];
-    $username=$data['username'];
-    $password=$data['password'];
-    $externalID=$data['external_id'];
+    $email = $data['email'];
+    $identifyBy = $data['identify_by'];
+    $username = $data['username'];
+    $password = $data['password'];
+    $externalID = $data['external_id'];
     $active=active_check($data['active']);
-    $localID=$data['localid'];
+    $localID = $data['localid'];
     $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail','mysql' => array());
     if (dataExist('identify_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`active`,`cname`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`usergroup`,`externalID`,`jobPending` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=? LIMIT 1");

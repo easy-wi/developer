@@ -53,7 +53,7 @@ if ($reseller_id==0) {
     $logsubuser = 0;
 } else {
     if (isset($_SESSION['oldid'])) {
-        $logsubuser=$_SESSION['oldid'];
+        $logsubuser = $_SESSION['oldid'];
     } else {
         $logsubuser = 0;
     }
@@ -61,36 +61,36 @@ if ($reseller_id==0) {
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if (in_array($ui->st('d','get'), array('md','ad'))){
-    if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {
-        $id=$ui->id('id', 10, 'get');
+} else if (in_array($ui->st('d', 'get'), array('md','ad'))){
+    if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'md') {
+        $id = $ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT * FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $active=$row['active'];
-            $distro=$row['distro'];
-            $description=$row['description'];
-            $bitversion=$row['bitversion'];
-            $pxelinux=$row['pxelinux'];
+            $active = $row['active'];
+            $distro = $row['distro'];
+            $description = $row['description'];
+            $bitversion = $row['bitversion'];
+            $pxelinux = $row['pxelinux'];
         }
         if (isset($bitversion)) {
             $template_file = 'admin_root_templates_md.tpl';
         } else {
             $template_file = 'admin_404.tpl';
         }
-    } else if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'ad') {
+    } else if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'ad') {
         $template_file = 'admin_root_templates_add.tpl';
-    } else if (in_array($ui->smallletters('action',2,'post'), array('md','ad'))) {
-        $bitversion=($ui->id('bitversion',2,'post')) ? $ui->id('bitversion',2,'post') : 64;
-        $active=($ui->active('active','post')) ? $ui->active('active','post') : 'Y';
-        $distro=$ui->names('distro',255,'post');
-        $description=$ui->description('description','post');
-        $pxelinux=$ui->escaped('pxelinux','post');
-        if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
+    } else if (in_array($ui->smallletters('action',2, 'post'), array('md','ad'))) {
+        $bitversion=($ui->id('bitversion',2, 'post')) ? $ui->id('bitversion',2, 'post') : 64;
+        $active=($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
+        $distro = $ui->names('distro',255, 'post');
+        $description = $ui->description('description', 'post');
+        $pxelinux = $ui->escaped('pxelinux', 'post');
+        if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get')) {
             $query = $sql->prepare("UPDATE `resellerimages` SET `active`=?,`description`=?,`distro`=?,`bitversion`=?,`pxelinux`=? WHERE `id`=? LIMIT 1");
             $query->execute(array($active,$description,$distro,$bitversion,$pxelinux,$ui->id('id', 10, 'get')));
             $loguseraction="%mod% %virtualimage% $description";
-        } else if ($ui->st('d','get') == 'ad') {
+        } else if ($ui->st('d', 'get') == 'ad') {
             $query = $sql->prepare("INSERT INTO `resellerimages` (`active`,`description`,`distro`,`bitversion`,`pxelinux`) VALUES (?,?,?,?,?)");
             $query->execute(array($active,$description,$distro,$bitversion,$pxelinux));
             $loguseraction="%add% %virtualimage% $description";
@@ -104,21 +104,21 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = $spracheResponse->error_table;
         }
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get')) {
-    $id=$ui->id('id', 10, 'get');
-    if (!$ui->smallletters('action',2,'post')) {
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
+    $id = $ui->id('id', 10, 'get');
+    if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT `description` FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
-        $description=$query->fetchColumn();
+        $description = $query->fetchColumn();
         if ($query->rowCount()>0) {
             $template_file = "admin_root_templates_dl.tpl";
         } else {
             $template_file = 'Error: No such ID';
         }
-    } else if ($ui->smallletters('action',2,'post') == 'dl'){
+    } else if ($ui->smallletters('action',2, 'post') == 'dl'){
         $query = $sql->prepare("SELECT `description` FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
-        $description=$query->fetchColumn();
+        $description = $query->fetchColumn();
         $query = $sql->prepare("DELETE FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         if ($query->rowCount()>0) {
@@ -133,20 +133,20 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
     $table = array();
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'dd') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'dd') {
         $orderby = '`distro` DESC';
-    } else if ($ui->st('o','get') == 'ad') {
+    } else if ($ui->st('o', 'get') == 'ad') {
         $orderby = '`distro` ASC';
-    } else if ($ui->st('o','get') == 'de') {
+    } else if ($ui->st('o', 'get') == 'de') {
         $orderby = '`description` DESC';
-    } else if ($ui->st('o','get') == 'ae') {
+    } else if ($ui->st('o', 'get') == 'ae') {
         $orderby = '`description` ASC';
-    } else if ($ui->st('o','get') == 'db') {
+    } else if ($ui->st('o', 'get') == 'db') {
         $orderby = '`bitversion` DESC';
-    } else if ($ui->st('o','get') == 'ab') {
+    } else if ($ui->st('o', 'get') == 'ab') {
         $orderby = '`bitversion` ASC';
-    } else if ($ui->st('o','get') == 'di') {
+    } else if ($ui->st('o', 'get') == 'di') {
         $orderby = '`id` DESC';
     } else {
         $orderby = '`id` ASC';

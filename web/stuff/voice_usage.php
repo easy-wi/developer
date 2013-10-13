@@ -74,38 +74,38 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$query = $sql->prepare("SELECT * FROM `voice_stats_settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-			$text_colour_1=$row['text_colour_1'];
-			$text_colour_2=$row['text_colour_2'];
-			$text_colour_3=$row['text_colour_3'];
-			$barin_colour_1=$row['barin_colour_1'];
-			$barin_colour_2=$row['barin_colour_2'];
-			$barin_colour_3=$row['barin_colour_3'];
-			$barout_colour_1=$row['barout_colour_1'];
-			$barout_colour_2=$row['barout_colour_2'];
-			$barout_colour_3=$row['barout_colour_3'];
-			$bg_colour_1=$row['bg_colour_1'];
-			$bg_colour_2=$row['bg_colour_2'];
-			$bg_colour_3=$row['bg_colour_3'];
-			$border_colour_1=$row['border_colour_1'];
-			$border_colour_2=$row['border_colour_2'];
-			$border_colour_3=$row['border_colour_3'];
-			$line_colour_1=$row['line_colour_1'];
-			$line_colour_2=$row['line_colour_2'];
-			$line_colour_3=$row['line_colour_3'];
+			$text_colour_1 = $row['text_colour_1'];
+			$text_colour_2 = $row['text_colour_2'];
+			$text_colour_3 = $row['text_colour_3'];
+			$barin_colour_1 = $row['barin_colour_1'];
+			$barin_colour_2 = $row['barin_colour_2'];
+			$barin_colour_3 = $row['barin_colour_3'];
+			$barout_colour_1 = $row['barout_colour_1'];
+			$barout_colour_2 = $row['barout_colour_2'];
+			$barout_colour_3 = $row['barout_colour_3'];
+			$bg_colour_1 = $row['bg_colour_1'];
+			$bg_colour_2 = $row['bg_colour_2'];
+			$bg_colour_3 = $row['bg_colour_3'];
+			$border_colour_1 = $row['border_colour_1'];
+			$border_colour_2 = $row['border_colour_2'];
+			$border_colour_3 = $row['border_colour_3'];
+			$line_colour_1 = $row['line_colour_1'];
+			$line_colour_2 = $row['line_colour_2'];
+			$line_colour_3 = $row['line_colour_3'];
 		}
 		$template_file = 'admin_voice_stats_settings.tpl';
 	}
 } else if ($pa['voiceserverStats']) {
-	$display=$sprache->total;
+	$display = $sprache->total;
 	$data = array();
-	if (!$ui->st('kind','post') or $ui->st('kind','post') == 'al') {
+	if (!$ui->st('kind', 'post') or $ui->st('kind', 'post') == 'al') {
 		$kind='al';
 		$whichdata = '';
-	} else if (isid($ui->post['what'],30) and $ui->st('kind','post') == 'us') {
+	} else if (isid($ui->post['what'],30) and $ui->st('kind', 'post') == 'us') {
 		$kind='us';
 		$whichdata="&amp;distro=".$ui->post['what'];
-		$extra=$sprache->user;
-		$pselect=$sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
+		$extra = $sprache->user;
+		$pselect = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
 			if ($ui->post['what'] == $row['id']) {
@@ -114,38 +114,38 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				$data[] = '<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 			}
 		}
-		$pselect=$sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=? AND `resellerid`=? LIMIT 1");
+		$pselect = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=? AND `resellerid`=? LIMIT 1");
 		$pselect->execute(array($ui->post['what'],$reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			$display=$extra . '  ' . $row['cname'];
+			$display = $extra . '  ' . $row['cname'];
 		}
-	} else if (isid($ui->post['what'], '30') and $ui->st('kind','post')=="se") {
+	} else if (isid($ui->post['what'], '30') and $ui->st('kind', 'post')=="se") {
 		$kind='se';
 		$whichdata="&amp;shorten=".$ui->post['what'];
-		$pselect=$sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
+		$pselect = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
 		$pselect->execute(array($ui->post['what'],$reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			$display=$sprache->server . '  ' . $row['ip'] . ':' . $row['port'];
+			$display = $sprache->server . '  ' . $row['ip'] . ':' . $row['port'];
 		}
-		$pselect=$sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
+		$pselect = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-            $server=$row['ip'] . ':' . $row['port'];
+            $server = $row['ip'] . ':' . $row['port'];
 			if ($ui->post['what'] == $row['id']) {
 				$data[] = '<option value='.$row['id'].' selected="selected">'.$server.'</option>';
 			} else {
 				$data[] = '<option value='.$row['id'].'>'.$server.'</option>';
 			}
 		}
-	} else if (isid($ui->post['what'], '30') and $ui->st('kind','post') == 'ma') {
+	} else if (isid($ui->post['what'], '30') and $ui->st('kind', 'post') == 'ma') {
 		$kind='ma';
 		$whichdata="&amp;short=".$ui->post['what'];
-		$pselect=$sql->prepare("SELECT `ssh2ip` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+		$pselect = $sql->prepare("SELECT `ssh2ip` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 		$pselect->execute(array($ui->post['what'],$reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-			$display=$sprache->server . '  ' . $row['ssh2ip'];
+			$display = $sprache->server . '  ' . $row['ssh2ip'];
 		}
-		$pselect=$sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? ORDER BY `ssh2ip`");
+		$pselect = $sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? ORDER BY `ssh2ip`");
 		$pselect->execute(array($reseller_id));
 		foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
 			if ($ui->post['what'] == $row['id']) {
@@ -167,32 +167,32 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	} else if ($ui->post['dmy'] == 'to') {
 		$dmy='to';
 		if (validate_int($ui->post['daystart'],1,31)) {
-			$day=$ui->post['daystart'];
+			$day = $ui->post['daystart'];
 		} else {
 			$day=date('d');
 		}
 		if (validate_int($ui->post['daystop'],1,31)) {
-			$daystop=$ui->post['daystop'];
+			$daystop = $ui->post['daystop'];
 		} else {
 			$day=date('d');
 		}
 		if (validate_int($ui->post['monthstart'],1,12)) {
-			$month=$ui->post['monthstart'];
+			$month = $ui->post['monthstart'];
 		} else {
 			$month=date('m');
 		}
 		if (validate_int($ui->post['monthstop'],1,12)) {
-			$monthstop=$ui->post['monthstop'];
+			$monthstop = $ui->post['monthstop'];
 		} else {
 			$monthstop=date('m');
 		}
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
-			$year=$ui->post['yearstart'];
+			$year = $ui->post['yearstart'];
 		} else {
 			$year=date('Y');
 		}
 		if (validate_int($ui->post['yearstop'],2000,date('Y'))) {
-			$yearstop=$ui->post['yearstop'];
+			$yearstop = $ui->post['yearstop'];
 		} else {
 			$yearstop=date('Y');
 		}
@@ -212,32 +212,32 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	} else if ($ui->post['dmy'] == 'da') {
 		$dmy='da';
 		if (validate_int($ui->post['daystart'],1,31)) {
-			$day=$ui->post['daystart'];
+			$day = $ui->post['daystart'];
 		} else {
 			$day=date('d',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['daystop'],1,31)) {
-			$daystop=$ui->post['daystop'];
+			$daystop = $ui->post['daystop'];
 		} else {
 			$day=date('d');
 		}
 		if (validate_int($ui->post['monthstart'],1,12)) {
-			$month=$ui->post['monthstart'];
+			$month = $ui->post['monthstart'];
 		} else {
 			$month=date('m',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['monthstop'],1,12)) {
-			$monthstop=$ui->post['monthstop'];
+			$monthstop = $ui->post['monthstop'];
 		} else {
 			$monthstop=date('m');
 		}
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
-			$year=$ui->post['yearstart'];
+			$year = $ui->post['yearstart'];
 		} else {
 			$year=date('Y',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['yearstop'],2000,date('Y'))) {
-			$yearstop=$ui->post['yearstop'];
+			$yearstop = $ui->post['yearstop'];
 		} else {
 			$yearstop=date('Y');
 		}
@@ -258,37 +258,37 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$dmy='mo';
 		$day = 1;
 		if (validate_int($ui->post['monthstart'],1,12)) {
-			$month=$ui->post['monthstart'];
+			$month = $ui->post['monthstart'];
 		} else {
 			$month=date('m',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
-			$year=$ui->post['yearstart'];
+			$year = $ui->post['yearstart'];
 		} else {
 			$year=date('Y',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['yearstop'],2000,date('Y'))) {
-			$yearstop=$ui->post['yearstop'];
+			$yearstop = $ui->post['yearstop'];
 		} else {
 			$yearstop=date('Y');
 		}
 		if (validate_int($ui->post['monthstop'],1,12)) {
-			$monthstop=$ui->post['monthstop'];
+			$monthstop = $ui->post['monthstop'];
 		} else {
 			$monthstop=date('m');
 		}
 		$daystop=date('t', strtotime("$yearstop-$monthstop"));
 		$now=date('Y-m');
 		$date1=strtotime("$year-$month-$day");
-		$add=$date1;
+		$add = $date1;
 		$date2=strtotime("$yearstop-$monthstop-$daystop");
 		$i = 0;
 		while ($add<=$date2) {
 			$newadd=strtotime("+1 months",$add);
-			$add=$newadd;
+			$add = $newadd;
 			$i++;
 		}
-		$amount=$i;
+		$amount = $i;
 		if ($amount<0 or "$yearstop-$monthstop">$now){
 			$yearstop=date('Y');
 			$monthstop=date('m');
@@ -302,12 +302,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$dmy='ye';
 		$day = 1;
 		if (validate_int($ui->post['yearstart'],2000,date('Y'))) {
-			$year=$ui->post['yearstart'];
+			$year = $ui->post['yearstart'];
 		} else {
 			$year=date('Y',strtotime("-6 days"));
 		}
 		if (validate_int($ui->post['yearstop'],2000,date('Y'))) {
-			$yearstop=$ui->post['yearstop'];
+			$yearstop = $ui->post['yearstop'];
 		} else {
 			$yearstop=date('Y');
 		}
@@ -317,14 +317,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$now=date('Y');
 		$date1=strtotime("$year-$month-$day");
 		$date2=strtotime("$yearstop-$monthstop-$daystop");
-		$add=$date1;
+		$add = $date1;
 		$i = 0;
 		while ($add<=$date2) {
 			$newadd=strtotime("+1 year",$add);
-			$add=$newadd;
+			$add = $newadd;
 			$i++;
 		}
-		$amount=$i;
+		$amount = $i;
 		if ($amount<0 or "$yearstop">$now){
 			$yearstop=date('Y');
 			$monthstop=12;

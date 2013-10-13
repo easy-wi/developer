@@ -76,19 +76,19 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         customColumns('U', $row['affectedID'], 'del');
         $query2 = $sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
-        $command=$gsprache->del.' userID: '.$row['affectedID'].' name:'.$row['name'];
+        $command = $gsprache->del.' userID: '.$row['affectedID'].' name:'.$row['name'];
     } else {
         $extraData=@json_decode($row['extraData']);
         if (is_object($extraData)) {
             $query2 = $sql->prepare("UPDATE `userdata` SET `active`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
             $query2->execute(array($extraData->newActive, $row['affectedID']));
-            $command=$gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
+            $command = $gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
         } else {
             $ok = false;
             $command='Error: '.$gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
         }
     }
-    if ($ok==true) {
+    if ($ok == true) {
         $query2 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
         $query2->execute(array($row['jobID']));
     }

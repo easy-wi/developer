@@ -47,13 +47,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->w('action', 4, 'post') == 'dl' and !$ui->id('id', 19, 'get')) {
     $i = 0;
-    if ($ui->id('id',30,'post')) {
-        foreach ($ui->id('id',30,'post') as $id) {
+    if ($ui->id('id',30, 'post')) {
+        foreach ($ui->id('id',30, 'post') as $id) {
             if ($reseller_id==0) {
-                $delete=$sql->prepare("DELETE FROM `jobs` WHERE `jobID`=? LIMIT 1");
+                $delete = $sql->prepare("DELETE FROM `jobs` WHERE `jobID`=? LIMIT 1");
                 $delete->execute(array($id));
             } else {
-                $delete=$sql->prepare("DELETE FROM `jobs` WHERE `jobID`=? AND `resellerID`=? LIMIT 1");
+                $delete = $sql->prepare("DELETE FROM `jobs` WHERE `jobID`=? AND `resellerID`=? LIMIT 1");
                 $delete->execute(array($id, $reseller_id));
             }
             $i++;
@@ -77,40 +77,40 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $text;
 } else {
     $table = array();
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'dn') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'dn') {
         $orderby = '`name` DESC';
-    } else if ($ui->st('o','get') == 'an') {
+    } else if ($ui->st('o', 'get') == 'an') {
         $orderby = '`name` ASC';
-    } else if ($ui->st('o','get') == 'ds') {
+    } else if ($ui->st('o', 'get') == 'ds') {
         $orderby = '`status` DESC';
-    } else if ($ui->st('o','get') == 'as') {
+    } else if ($ui->st('o', 'get') == 'as') {
         $orderby = '`status` ASC';
-    } else if ($ui->st('o','get') == 'dt') {
+    } else if ($ui->st('o', 'get') == 'dt') {
         $orderby = '`type` DESC';
-    } else if ($ui->st('o','get') == 'at') {
+    } else if ($ui->st('o', 'get') == 'at') {
         $orderby = '`type` ASC';
-    } else if ($ui->st('o','get') == 'da') {
+    } else if ($ui->st('o', 'get') == 'da') {
         $orderby = '`api` DESC';
-    } else if ($ui->st('o','get') == 'aa') {
+    } else if ($ui->st('o', 'get') == 'aa') {
         $orderby = '`api` ASC';
-    } else if ($ui->st('o','get') == 'dc') {
+    } else if ($ui->st('o', 'get') == 'dc') {
         $orderby = '`action` DESC';
-    } else if ($ui->st('o','get') == 'ac') {
+    } else if ($ui->st('o', 'get') == 'ac') {
         $orderby = '`action` ASC';
-    } else if ($ui->st('o','get') == 'dd') {
+    } else if ($ui->st('o', 'get') == 'dd') {
         $orderby = '`date` DESC';
-    } else if ($ui->st('o','get') == 'ad') {
+    } else if ($ui->st('o', 'get') == 'ad') {
         $orderby = '`date` ASC';
-    } else if ($ui->st('o','get') == 'dn') {
+    } else if ($ui->st('o', 'get') == 'dn') {
         $orderby = '`name` DESC';
-    } else if ($ui->st('o','get') == 'an') {
+    } else if ($ui->st('o', 'get') == 'an') {
         $orderby = '`name` ASC';
-    } else if ($ui->st('o','get') == 'du') {
+    } else if ($ui->st('o', 'get') == 'du') {
         $orderby = '`userID` DESC';
-    } else if ($ui->st('o','get') == 'au') {
+    } else if ($ui->st('o', 'get') == 'au') {
         $orderby = '`userID` ASC';
-    } else if ($ui->st('o','get') == 'ai') {
+    } else if ($ui->st('o', 'get') == 'ai') {
         $orderby = '`jobID` ASC';
     } else {
         $o = 'di';
@@ -133,12 +133,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if ($user_language == 'de') {
             $date=date('Y-d-m H:m:s',strtotime($row['date']));
         } else {
-            $date=$row['date'];
+            $date = $row['date'];
         }
         if ($row['api'] == 'A'){
-            $api=$gsprache->yes;
+            $api = $gsprache->yes;
         } else {
-            $api=$gsprache->no;
+            $api = $gsprache->no;
         }
         if ($row['status'] == null or $row['status']==4) {
             $imgName='16_ok';
@@ -153,9 +153,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_check';
             $imgAlt='Done';
         }
-        if ($row['action'] == 'ad') $action=$gsprache->add;
-        else if ($row['action'] == 'dl') $action=$gsprache->del;
-        else if ($row['action'] == 'md') $action=$gsprache->mod;
+        if ($row['action'] == 'ad') $action = $gsprache->add;
+        else if ($row['action'] == 'dl') $action = $gsprache->del;
+        else if ($row['action'] == 'md') $action = $gsprache->mod;
         else if ($row['action'] == 'st') $action='Stop';
         else if ($row['action'] == 're') $action='(Re)Start';
         else if ($row['action'] == 'rp') $action='Remove PXE from DHCP';
@@ -164,39 +164,39 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         else $action = '';
         $table[] = array('jobID' => $row['jobID'], 'date' => $date,'name' => $row['name'], 'api' => $api,'status' => $row['status'], 'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'type' => $type[$row['type']], 'action' => $action);
     }
-    $next=$start+$amount;
+    $next = $start+$amount;
     if ($reseller_id==0) {
-        $countp=$sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs`");
+        $countp = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs`");
         $countp->execute();
     } else {
-        $countp=$sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `resellerID`=?");
+        $countp = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `resellerID`=?");
         $countp->execute(array($reseller_id));
     }
     foreach ($countp->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $colcount=$row['amount'];
+        $colcount = $row['amount'];
     }
     if ($colcount>$next) {
-        $vor=$start+$amount;
+        $vor = $start+$amount;
     } else {
-        $vor=$start;
+        $vor = $start;
     }
-    $back=$start - $amount;
+    $back = $start - $amount;
     if ($back>=0){
-        $zur=$start - $amount;
+        $zur = $start - $amount;
     } else {
-        $zur=$start;
+        $zur = $start;
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=jb&amp;o='.$o.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
     } else {
-        $link .=$amount;
+        $link .= $amount;
     }
     if ($start==0) {
-        $link .='&amp;p=0" class="bold">1</a>';
+        $link .= '&amp;p=0" class="bold">1</a>';
     } else {
-        $link .='&amp;p=0">1</a>';
+        $link .= '&amp;p=0">1</a>';
     }
     $pages[] = $link;
     $i = 2;

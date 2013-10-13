@@ -102,7 +102,7 @@ if (!function_exists('ssh2_execute')) {
                         $error = true;
                     }
 
-                    $ssh2Socket=null;
+                    $ssh2Socket = null;
 
                 } else {
                     $error = true;

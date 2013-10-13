@@ -77,9 +77,9 @@ try {
     $insertlog->bindParam(':hostname', $userHostname);
     $insertlog->bindParam(':reseller_id', $reseller_id);
 
-    if ($ui->ip('REMOTE_ADDR','server')) {
-        $loguserip = $ui->ip('REMOTE_ADDR','server');
-        $userHostname = @gethostbyaddr($ui->ip('REMOTE_ADDR','server'));
+    if ($ui->ip('REMOTE_ADDR', 'server')) {
+        $loguserip = $ui->ip('REMOTE_ADDR', 'server');
+        $userHostname = @gethostbyaddr($ui->ip('REMOTE_ADDR', 'server'));
 
     } else {
         $loguserip = 'localhost';
@@ -90,7 +90,7 @@ catch(PDOException $error) {
     die($error->getMessage());
 }
 
-$page_url=($ui->escaped ('HTTPS','server')) ? 'https://'.$ui->domain('HTTP_HOST','server') : 'http://'.$ui->domain('HTTP_HOST','server');
+$page_url=($ui->escaped ('HTTPS', 'server')) ? 'https://'.$ui->domain('HTTP_HOST', 'server') : 'http://'.$ui->domain('HTTP_HOST', 'server');
 
 if ($loguserip != 'localhost') {
 
@@ -113,7 +113,7 @@ if ($loguserip != 'localhost') {
 
     if (isset($_SESSION['HTTP_USER_AGENT']) and isset($_SESSION['REMOTE_ADDR'])){
 
-        if ($_SESSION['HTTP_USER_AGENT'] != md5($ui->escaped('HTTP_USER_AGENT','server')) or $_SESSION['REMOTE_ADDR'] != md5($ui->ip('REMOTE_ADDR','server'))){
+        if ($_SESSION['HTTP_USER_AGENT'] != md5($ui->escaped('HTTP_USER_AGENT', 'server')) or $_SESSION['REMOTE_ADDR'] != md5($ui->ip('REMOTE_ADDR', 'server'))){
             session_unset();
             session_destroy();
             if (isset($page_include)) {
@@ -123,8 +123,8 @@ if ($loguserip != 'localhost') {
             }
         }
     } else {
-        $_SESSION['REMOTE_ADDR'] = md5($ui->ip('REMOTE_ADDR','server'));
-        $_SESSION['HTTP_USER_AGENT'] = md5($ui->escaped('HTTP_USER_AGENT','server'));
+        $_SESSION['REMOTE_ADDR'] = md5($ui->ip('REMOTE_ADDR', 'server'));
+        $_SESSION['HTTP_USER_AGENT'] = md5($ui->escaped('HTTP_USER_AGENT', 'server'));
     }
 }
 
@@ -148,7 +148,7 @@ if (isset($reseller_id)) {
         $lookupid = $reseller_id;
 
     } else {
-        $check_split = preg_split("/\//", $ui->escaped('SCRIPT_NAME','server'),-1,PREG_SPLIT_NO_EMPTY);
+        $check_split = preg_split("/\//", $ui->escaped('SCRIPT_NAME', 'server'),-1,PREG_SPLIT_NO_EMPTY);
         $which_file = $check_split[count($check_split)-1];
 
         if ($which_file == 'userpanel.php') {
@@ -193,8 +193,8 @@ if ($loguserip!='localhost') {
             $rssfeed = $row['rssfeed'];
             $maxnews=(isid($row['maxnews'],11)) ? $row['maxnews'] : 10;
             $page_default = $row['defaultpage'];
-            $pageurl=$row['pageurl'];
-            if (!isurl($pageurl) and !isdomain($pageurl)) $pageurl=$page_url;
+            $pageurl = $row['pageurl'];
+            if (!isurl($pageurl) and !isdomain($pageurl)) $pageurl = $page_url;
             $protectioncheck = $row['protectioncheck'];
             $maxnews_sidebar = $row['maxnews_sidebar'];
             $newssidebar_textlength = $row['newssidebar_textlength'];
@@ -210,13 +210,13 @@ if ($loguserip!='localhost') {
 
         $ewInstallPath = EASYWIDIR;
 
-        $elements=(!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI','server'), $ewInstallPath) === false) ? preg_split('/\//', $ui->escaped('REQUEST_URI','server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI','server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
+        $elements=(!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI', 'server'), $ewInstallPath) === false) ? preg_split('/\//', $ui->escaped('REQUEST_URI', 'server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI', 'server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
 
         if (isset($seo) and $seo== 'Y' and isset($elements[0])) {
 
             $page_detect_language = $elements[0];
 
-            if (substr($ui->escaped('REQUEST_URI','server'),-1) != '/' and !$ui->w('site',50, 'get')) {
+            if (substr($ui->escaped('REQUEST_URI', 'server'),-1) != '/' and !$ui->w('site',50, 'get')) {
                 $throw404 = true;
             }
 
@@ -271,7 +271,7 @@ if ($loguserip!='localhost') {
     $gsprache=(isset($reseller_id)) ? getlanguagefile('general', $user_language, $reseller_id) : getlanguagefile('general', $user_language, 0);
     $spracheResponse=(isset($reseller_id)) ? getlanguagefile('response', $user_language, $reseller_id) : getlanguagefile('response', $user_language, 0);
 }
-if (isset($logininclude) and $logininclude==true) {
+if (isset($logininclude) and $logininclude == true) {
     $query = $sql->prepare("DELETE FROM `badips` WHERE `bantime` <= ?");
     $query->execute(array($logdate));
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? AND reason='bot' LIMIT 1");
@@ -289,7 +289,7 @@ if (isset($logininclude) and $logininclude==true) {
     }
 }
 if($ui->st('r', 'get')) {
-    $header = '<meta http-equiv="refresh" content="3; URL=' . $ui->escaped('SCRIPT_NAME','server') . '?w=' . $ui->st('r', 'get') . '">';
+    $header = '<meta http-equiv="refresh" content="3; URL=' . $ui->escaped('SCRIPT_NAME', 'server') . '?w=' . $ui->st('r', 'get') . '">';
     if (!isset($user_language)) {
         $user_language = $rSA['language'];
     }
@@ -297,7 +297,7 @@ if($ui->st('r', 'get')) {
     $text = $rsprache->refresh;
 }
 if ($ui->w('action', 4, 'post')) {
-    $action=$ui->w('action', 4, 'post');
+    $action = $ui->w('action', 4, 'post');
 }
 if($ui->smallletters('site','50', 'get')) {
     $s = $ui->smallletters('site','50', 'get');
@@ -388,13 +388,13 @@ $languages = array();
 foreach ($dirs as $row) {
     if (small_letters_check($row,2)) $languages[] = $row;
 }
-if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->description('description','post') and $ui->id('id',19,'post')) {
+if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->description('description', 'post') and $ui->id('id',19, 'post')) {
     $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r LEFT JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`description`=? AND r.`serverid`=? AND r.`installing`='N' AND r.`resellerid`=?");
     $ajaxonload = '<script type="text/javascript">window.onload = function() {';
-    foreach($ui->id('id',19,'post') as $id) {
+    foreach($ui->id('id',19, 'post') as $id) {
         $i = 0;
         $gamestring_buf = '';
-        foreach($ui->description('description','post') as $description) {
+        foreach($ui->description('description', 'post') as $description) {
             if ($reseller_id==0) {
                 $query->execute(array($description, $id, 0));
             } else {
@@ -407,11 +407,11 @@ if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->descript
         }
         if ($i>0) {
             $posted_gamestring = $i . $gamestring_buf;
-            $ajaxonload .= "onloaddata('serverallocation.php?gamestring=$posted_gamestring&id=','$id','$id');";
+            $ajaxonload .= "onloaddata('serverallocation.php?gamestring = $posted_gamestring&id=','$id','$id');";
         }
     }
-    $ajaxonload .='}</script>';
+    $ajaxonload .= '}</script>';
 }
-if ($ui->escaped('HTTP_REFERER','server')) {
-    $referrer = $ui->escaped('HTTP_REFERER','server');
+if ($ui->escaped('HTTP_REFERER', 'server')) {
+    $referrer = $ui->escaped('HTTP_REFERER', 'server');
 }

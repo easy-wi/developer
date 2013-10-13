@@ -55,31 +55,31 @@ if ($reseller_id==0) {
     $lookupID = 0;
 } else {
     if (isset($_SESSION['oldid'])) {
-        $logsubuser=$_SESSION['oldid'];
+        $logsubuser = $_SESSION['oldid'];
     } else {
         $logsubuser = 0;
     }
     $logreseller = 0;
     if ($admin_id != $reseller_id) {
-        $lookupID=$reseller_id;
+        $lookupID = $reseller_id;
     } else {
-        $lookupID=$admin_id;
+        $lookupID = $admin_id;
     }
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->smallletters('action',2,'post') == 'md'){
+} else if ($ui->smallletters('action',2, 'post') == 'md'){
     $query = $sql->prepare("SELECT COUNT(`active`) AS `amount` FROM `api_external_auth` LIMIT 1");
     $query->execute();
-    $amount=$query->fetchColumn();
+    $amount = $query->fetchColumn();
     $pwd = '';
     $domain = '';
     if ($amount>0) {
         $query = $sql->prepare("UPDATE `api_external_auth` SET `active`=?,`ssl`=?,`user`=?,`domain`=?,`pwd`=AES_ENCRYPT(?,?),`file`=? WHERE `resellerID`=? LIMIT 1");
-        $query->execute(array($ui->active('active','post'),$ui->active('ssl','post'),$ui->names('user',255,'post'),$ui->domain('domain','post'),$ui->password('pwd',50,'post'),$aeskey,$ui->startparameter('file','post'),$lookupID));
+        $query->execute(array($ui->active('active', 'post'),$ui->active('ssl', 'post'),$ui->names('user',255, 'post'),$ui->domain('domain', 'post'),$ui->password('pwd',50, 'post'),$aeskey,$ui->startparameter('file', 'post'),$lookupID));
     } else {
         $query = $sql->prepare("INSERT INTO `api_external_auth` (`active`,`ssl`,`user`,`domain`,`pwd`,`file`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?)");
-        $query->execute(array($ui->active('active','post'),$ui->active('ssl','post'),$ui->names('user',255,'post'),$ui->domain('domain','post'),$ui->password('pwd',50,'post'),$aeskey,$ui->startparameter('file','post'),$lookupID));
+        $query->execute(array($ui->active('active', 'post'),$ui->active('ssl', 'post'),$ui->names('user',255, 'post'),$ui->domain('domain', 'post'),$ui->password('pwd',50, 'post'),$aeskey,$ui->startparameter('file', 'post'),$lookupID));
     }
     $loguseraction="%mod% API external auth";
     $insertlog->execute();
@@ -94,12 +94,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `active`,`ssl`,`user`,`domain`,AES_DECRYPT(`pwd`,?) AS `decryptedPWD`,`file` FROM `api_external_auth` WHERE `resellerID`=? LIMIT 1");
     $query->execute(array($aeskey,$lookupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $active=$row['active'];
-        $ssl=$row['ssl'];
-        $user=$row['user'];
-        $pwd=$row['decryptedPWD'];
-        $domain=$row['domain'];
-        $file=$row['file'];
+        $active = $row['active'];
+        $ssl = $row['ssl'];
+        $user = $row['user'];
+        $pwd = $row['decryptedPWD'];
+        $domain = $row['domain'];
+        $file = $row['file'];
     }
     $template_file = 'admin_api_external_auth_settings.tpl';
 }

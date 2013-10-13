@@ -45,10 +45,10 @@ $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($action) and $action == 'dl') {
     $i = 0;
-    if ($ui->id('id',30,'post')) {
+    if ($ui->id('id',30, 'post')) {
         if (token(true)) {
             $query = $sql->prepare("DELETE FROM `badips` WHERE `id`=? LIMIT 1");
-            foreach ($ui->id('id',30,'post') as $id) {
+            foreach ($ui->id('id',30, 'post') as $id) {
                 $query->execute(array($id));
                 $i++;
             }
@@ -57,30 +57,30 @@ if (isset($action) and $action == 'dl') {
     if(!isset($template_file)) $template_file = $i." entries deleted";
 } else {
     $table = array();
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'dr') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'dr') {
         $orderby = '`reason` DESC';
-    } else if ($ui->st('o','get') == 'ar') {
+    } else if ($ui->st('o', 'get') == 'ar') {
         $orderby = '`reason` ASC';
-    } else if ($ui->st('o','get') == 'df') {
+    } else if ($ui->st('o', 'get') == 'df') {
         $orderby = '`failcount` DESC';
-    } else if ($ui->st('o','get') == 'af') {
+    } else if ($ui->st('o', 'get') == 'af') {
         $orderby = '`failcount` ASC';
-    } else if ($ui->st('o','get') == 'dt') {
+    } else if ($ui->st('o', 'get') == 'dt') {
         $orderby = '`bantime` DESC';
-    } else if ($ui->st('o','get') == 'at') {
+    } else if ($ui->st('o', 'get') == 'at') {
         $orderby = '`bantime` ASC';
-    } else if ($ui->st('o','get') == 'db') {
+    } else if ($ui->st('o', 'get') == 'db') {
         $orderby = '`badip` DESC';
-    } else if ($ui->st('o','get') == 'ab') {
+    } else if ($ui->st('o', 'get') == 'ab') {
         $orderby = '`badip` ASC';
-    } else if ($ui->st('o','get') == 'ai') {
+    } else if ($ui->st('o', 'get') == 'ai') {
         $orderby = '`id` ASC';
     } else {
         $o = 'ai';
         $orderby = '`id` DESC';
     }
-    $pselect=$sql->prepare("SELECT * FROM `badips` ORDER BY $orderby LIMIT $start,$amount");
+    $pselect = $sql->prepare("SELECT * FROM `badips` ORDER BY $orderby LIMIT $start,$amount");
     $pselect->execute();
     foreach ($pselect->fetchall() as $row) {
         $logdate=explode(' ', $row['bantime']);
@@ -88,39 +88,39 @@ if (isset($action) and $action == 'dl') {
             $table[] = array('id' => $row['id'], 'logday' => $logdate[0], 'loghour' => $logdate[0], 'badip' => $row['badip'], 'failcount' => $row['failcount'], 'reason' => $row['reason']);
         }
     }
-    $pselect=$sql->prepare("SELECT `faillogins` FROM `settings` WHERE `resellerid`='0' LIMIT 1");
+    $pselect = $sql->prepare("SELECT `faillogins` FROM `settings` WHERE `resellerid`='0' LIMIT 1");
     $pselect->execute();
     foreach ($pselect->fetchall() as $row) {
-        $faillogins=$row['faillogins'];
+        $faillogins = $row['faillogins'];
     }
-    $next=$start+$amount;
-    $countp=$sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `badips`");
+    $next = $start+$amount;
+    $countp = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `badips`");
     $countp->execute();
     foreach ($countp->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $colcount=$row['amount'];
+        $colcount = $row['amount'];
     }
     if ($colcount>$next) {
-        $vor=$start+$amount;
+        $vor = $start+$amount;
     } else {
-        $vor=$start;
+        $vor = $start;
     }
-    $back=$start - $amount;
+    $back = $start - $amount;
     if ($back>=0){
-        $zur=$start - $amount;
+        $zur = $start - $amount;
     } else {
-        $zur=$start;
+        $zur = $start;
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ib&amp;d='.$d.'&amp;a=';
     if(!isset($amount)) {
         $link .="20";
     } else {
-        $link .=$amount;
+        $link .= $amount;
     }
     if ($start==0) {
-        $link .='&amp;p=0" class="bold">1</a>';
+        $link .= '&amp;p=0" class="bold">1</a>';
     } else {
-        $link .='&amp;p=0">1</a>';
+        $link .= '&amp;p=0">1</a>';
     }
     $pages[] = $link;
     $i = 2;

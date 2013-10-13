@@ -45,15 +45,15 @@ if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$p
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
-$loguserid=$user_id;
+$loguserid = $user_id;
 $logusername=getusername($user_id);
 $logusertype="user";
 $logreseller = 0;
 $logsubuser = 0;
 if (isset($admin_id)) {
-    $logsubuser=$admin_id;
+    $logsubuser = $admin_id;
 } else if (isset($subuser_id)) {
-    $logsubuser=$subuser_id;
+    $logsubuser = $subuser_id;
 }
 if (isset($admin_id) and $reseller_id != 0) {
     $reseller_id = $admin_id;
@@ -65,7 +65,7 @@ $ftpPassword = '';
 $ftpPath = '';
 $thisID = 0;
 $thisTemplate = '';
-$ssl=($ui->active('ssl','post')) ? $ui->active('ssl','post') : 'N';
+$ssl=($ui->active('ssl', 'post')) ? $ui->active('ssl', 'post') : 'N';
 $error = array();
 $table = array();
 $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`userid`=? AND g.`resellerid`=?");
@@ -73,8 +73,8 @@ $query2 = $sql->prepare("SELECT s.`id`,t.`description`,t.`shorten`,t.`gamebinary
 $query->execute(array($aeskey,$user_id,$reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) {
-        $customer=$row['cname'];
-        if ($row['newlayout'] == 'Y') $customer=$row['cname'] . '-' . $row['id'];
+        $customer = $row['cname'];
+        if ($row['newlayout'] == 'Y') $customer = $row['cname'] . '-' . $row['id'];
         $temp = array();
         $query2->execute(array($row['id']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
@@ -91,11 +91,11 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->smallletters('action',2,'post') == 'ms') {
+} else if ($ui->smallletters('action',2, 'post') == 'ms') {
     function checkFolders ($dir,$searchFor,$maxDepth=false,$currentDepth=0) {
         global $ftp;
         $donotsearch=array('bin','cfg','cl_dlls','dlls','gfx','hl2','manual','maps','materials','models','particles','recource','scenes','scripts','sound','sounds','textures','valve','reslists');
-        if ($dir!='/') $dir=$dir.'/';
+        if ($dir!='/') $dir = $dir.'/';
         $spl=strlen($searchFor)*(-1);
         $rawList=@ftp_rawlist($ftp,$dir);
         if ($rawList) {
@@ -122,62 +122,62 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         return $dir;
     }
-    if (!$ui->domain('ftpAddress','post') and !$ui->ip('ftpAddress','post')) {
+    if (!$ui->domain('ftpAddress', 'post') and !$ui->ip('ftpAddress', 'post')) {
         $error[] = $sprache->ftp_adresse;
     } else {
-        $ftpAddress=$ui->post['ftpAddress'];
+        $ftpAddress = $ui->post['ftpAddress'];
     }
-    if (!$ui->port('ftpPort','post')) {
+    if (!$ui->port('ftpPort', 'post')) {
         $error[] = $sprache->ftp_port;
     } else {
-        $ftpPort=$ui->port('ftpPort','post');
+        $ftpPort = $ui->port('ftpPort', 'post');
     }
-    if (!$ui->config('ftpUser','post')) {
+    if (!$ui->config('ftpUser', 'post')) {
         $error[] = $sprache->ftp_user;
     } else {
-        $ftpUser=$ui->config('ftpUser','post');
+        $ftpUser = $ui->config('ftpUser', 'post');
     }
-    if (!$ui->config('ftpPassword','post')) {
+    if (!$ui->config('ftpPassword', 'post')) {
         $error[] = $sprache->ftp_password;
     } else {
-        $ftpPassword=$ui->config('ftpPassword','post');
+        $ftpPassword = $ui->config('ftpPassword', 'post');
     }
-    if (!$ui->id('switchID',10,'post') or !isset($table[$ui->id('switchID',10,'post')])) {
+    if (!$ui->id('switchID',10, 'post') or !isset($table[$ui->id('switchID',10, 'post')])) {
         $error[] = $sprache->server;
     } else {
-        $thisID=$ui->id('switchID',10,'post');
-        $address=$table[$ui->id('switchID',10,'post')]['address'];
-        $rootID=$table[$ui->id('switchID',10,'post')]['rootID'];
-        $gsfolder=$table[$ui->id('switchID',10,'post')]['gsfolder'];
-        $customer=$table[$ui->id('switchID',10,'post')]['customer'];
-        $cftppass=$table[$ui->id('switchID',10,'post')]['cftppass'];
+        $thisID = $ui->id('switchID',10, 'post');
+        $address = $table[$ui->id('switchID',10, 'post')]['address'];
+        $rootID = $table[$ui->id('switchID',10, 'post')]['rootID'];
+        $gsfolder = $table[$ui->id('switchID',10, 'post')]['gsfolder'];
+        $customer = $table[$ui->id('switchID',10, 'post')]['customer'];
+        $cftppass = $table[$ui->id('switchID',10, 'post')]['cftppass'];
     }
-    if (!$ui->config('template','post',$thisID) or !isset($table[$ui->id('switchID',10,'post')]['games'])) {
+    if (!$ui->config('template', 'post',$thisID) or !isset($table[$ui->id('switchID',10, 'post')]['games'])) {
         $error[] = $gsprache->template;
-    } else if (isset($table[$ui->id('switchID',10,'post')]['games'])) {
-        foreach($table[$ui->id('switchID',10,'post')]['games'] as $game) {
+    } else if (isset($table[$ui->id('switchID',10, 'post')]['games'])) {
+        foreach($table[$ui->id('switchID',10, 'post')]['games'] as $game) {
             unset($temp);
-            if ($ui->config('template','post',$thisID)==$game['shorten']) {
+            if ($ui->config('template', 'post',$thisID)==$game['shorten']) {
                 $temp = 1;
-            } else if ($ui->config('template','post',$thisID)==$game['shorten'].'-2') {
+            } else if ($ui->config('template', 'post',$thisID)==$game['shorten'].'-2') {
                 $temp = 2;
-            } else if ($ui->config('template','post',$thisID)==$game['shorten'].'-3') {
+            } else if ($ui->config('template', 'post',$thisID)==$game['shorten'].'-3') {
                 $temp = 3;
             }
             if (isset($temp)) {
-                $template=$temp;
-                $shorten=$game['shorten'];
+                $template = $temp;
+                $shorten = $game['shorten'];
                 $searchFor=str_replace('/','',$game['searchFor']);
-                $modFolder=$game['modfolder'];
+                $modFolder = $game['modfolder'];
             }
         }
         if (isset($shorten)) {
-            $thisTemplate=$ui->config('template','post',$thisID);
+            $thisTemplate = $ui->config('template', 'post',$thisID);
         } else if (!in_array($gsprache->template,$error)) {
             $error[] = $gsprache->template;
         }
     }
-    if ($ui->anyPath('ftpPath','post')) $ftpPath=$ui->anyPath('ftpPath','post');
+    if ($ui->anyPath('ftpPath', 'post')) $ftpPath = $ui->anyPath('ftpPath', 'post');
     $ftp=($ssl== 'N') ? @ftp_connect($ftpAddress,$ftpPort,5) : @ftp_ssl_connect($ftpAddress,$ftpPort,5);
     if ($ftp) {
         $login=@ftp_login($ftp,$ftpUser,$ftpPassword);
@@ -186,7 +186,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if ($ftpPath != '') @ftp_chdir($ftp,$ftpPath);
                 $currentPath=@ftp_pwd($ftp);
                 if (substr($currentPath,strlen($searchFor)*(-1))==$searchFor) {
-                    $ftpPath=$currentPath;
+                    $ftpPath = $currentPath;
                 } else {
                     $error[] = $sprache->ftp_path.'. '.$sprache->import_corrected;
                     $foundPath=checkFolders($currentPath,$searchFor,5);
@@ -205,10 +205,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (count($error)==0 and isset($rootID)) {
         include(EASYWIDIR . '/stuff/ssh_exec.php');
         $rdata=serverdata('root',$rootID,$aeskey);
-        $sship=$rdata['ip'];
-        $sshport=$rdata['port'];
-        $sshuser=$rdata['user'];
-        $sshpass=$rdata['pass'];
+        $sship = $rdata['ip'];
+        $sshport = $rdata['port'];
+        $sshuser = $rdata['user'];
+        $sshpass = $rdata['pass'];
         if ($ssl== 'N') {
             $ftpConnect='ftp://';
         } else {

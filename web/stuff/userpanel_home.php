@@ -60,10 +60,10 @@ $query->execute(array($user_id,$reseller_id));
 $customer=getusername($user_id);
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     
-    $war=$row['war'];
-    $brandname=$row['brandname'];
-    $password=$row['queryPassword'];
-    $name=$row['queryName'];
+    $war = $row['war'];
+    $brandname = $row['brandname'];
+    $password = $row['queryPassword'];
+    $name = $row['queryName'];
     
 	if ($name != 'OFFLINE' and $row['stopped'] == 'N' and $war == 'Y' and $password == 'N') {
 		$pwd_removed[] = array('userid' => $row['userid'], 'address' => $row['server']);
@@ -109,7 +109,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 $crashedArray['ts3'] = $crached_ts3_virtual;
 $feedArray = array();
 
-if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') and !$ui->smallletters('d',2,'get'))) {
+if($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get') and !$ui->smallletters('d',2, 'get'))) {
     $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -120,7 +120,7 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
         } else {
             $orderFeedsBy='n.`pubDate` DESC';
         }
-        $newsAmount=$row['newsAmount'];
+        $newsAmount = $row['newsAmount'];
 
         #https://github.com/easy-wi/developer/issues/80 Include CMS news in dashboards
         $query2 = $sql->prepare("SELECT p.`id`,t.`id` AS `textID`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0 ORDER BY `date` DESC LIMIT 0,$newsAmount");
@@ -136,7 +136,7 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
         if ($row['merge'] == 'N') {
             $query2 = $sql->prepare("SELECT `feedID`,`feedUrl`,`feedID`,`twitter`,`loginName` FROM `feeds_url` WHERE `resellerID`=? AND `active`='Y' ORDER BY $orderFeedsBy");
             $query2->execute(array($row['resellerID']));
-            $object=$query2->fetchAll(PDO::FETCH_ASSOC);
+            $object = $query2->fetchAll(PDO::FETCH_ASSOC);
             if ($row['steamFeeds'] == 'Y') {
                 $object[] = array('feedID' => 0,'feedUrl' => 'http://store.steampowered.com/news/','twitter' => 'N','loginName' => '');
             }
@@ -147,14 +147,14 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
                     if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
                         $text=substr($row3['content'],0, $row['maxChars']);
                     } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){
-                        $text=$row3['content'];
+                        $text = $row3['content'];
                     } else if ($row['displayContent'] == 'N' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
                         $text=substr($row3['description'],0, $row['maxChars']);
                     } else {
-                        $text=$row3['description'];
+                        $text = $row3['description'];
                     }
                     if ($row2['twitter'] == 'N'){
-                        $url=$row2['feedUrl'];
+                        $url = $row2['feedUrl'];
                     } else {
                         $url='https://twitter.com/'.$row2['loginName'];
                     }
@@ -178,20 +178,20 @@ if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') an
                 if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
                     $text=substr(preg_replace('/<(.*?)>/','',preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1', $row2['content'],-1),-1),0, $row['maxChars']);
                 } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){
-                    $text=$row2['content'];
+                    $text = $row2['content'];
                 } else if ($row['displayContent'] == 'N' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
                     $text=substr(preg_replace('/<(.*?)>/','',preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1', $row2['description'],-1),-1),0, $row['maxChars']);
                 } else {
-                    $text=$row2['description'];
+                    $text = $row2['description'];
                 }
                 if ($row2['twitter'] == 'N'){
-                    $url=$row2['feedUrl'];
+                    $url = $row2['feedUrl'];
                 } else {
                     $url='https://twitter.com/'.$row2['loginName'];
                 }
-                $title=$row2['title'];
+                $title = $row2['title'];
                 if (strlen($row2['title'])<=1) {
-                    $title=$row2['link'];
+                    $title = $row2['link'];
                 }
                 $theNews = array('title' => $title,'link' => $row2['link'], 'text' => $text,'url' => $url);
                 $feedArray['News'][] = $theNews;

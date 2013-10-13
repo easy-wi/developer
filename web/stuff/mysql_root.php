@@ -42,7 +42,7 @@ if (!isset($admin_id) or $main!=1 or $reseller_id != 0 or !$pa['root']) {
     die('No acces');
 }
 
-if ($ui->st('d','get') == 'bu' and $ui->st('action','post') == 'bu') {
+if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu') {
     $createBackup = true;
     include(EASYWIDIR . '/stuff/mysql_backup_class.php');
     $theBackup=new createDBDump($dbConnect['db'],$ewVersions['version'],$sql);
@@ -52,7 +52,7 @@ if ($ui->st('d','get') == 'bu' and $ui->st('action','post') == 'bu') {
     $theBackup->createDump();
     echo $theBackup->getDump();
     die();
-} else if ($ui->st('d','get') == 'rp' and $ui->st('action','post') == 'rp') {
+} else if ($ui->st('d', 'get') == 'rp' and $ui->st('action', 'post') == 'rp') {
     $updateinclude = true;
     class UpdateResponse {
         public $response = '';

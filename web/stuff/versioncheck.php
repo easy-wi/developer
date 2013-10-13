@@ -45,7 +45,7 @@ $sprache = getlanguagefile('licence',$user_language,$reseller_id);
 $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
-if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
+if ($ui->st('d', 'get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
 	if (isset($action) and $action == 'ud') {
 		$updateinclude = true;
 		class UpdateResponse {
@@ -93,7 +93,7 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 			$opts=stream_context_create(array('http' => array('method' => 'GET','header' => "Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
 			$fp=@fopen('http://update.easy-wi.com/ew/'.$licenceDetails['v'].'.zip','rb', false,$opts);
 			$zip=@fopen(EASYWIDIR . '/tmp/'.$licenceDetails['v'].'.zip','wb');
-			if ($fp==true and $zip==true) {
+			if ($fp == true and $zip == true) {
 				while (!feof($fp)){
 					fwrite($zip,fread($fp,8192));
 				}
@@ -110,8 +110,8 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 							$i = 0;
 							unset($checkfolder);
 							while ($i<$count) {
-								if (isset($checkfolder))$checkfolder .='/' . $folders[$i];
-                                else $checkfolder=$folders[$i];
+								if (isset($checkfolder))$checkfolder .= '/' . $folders[$i];
+                                else $checkfolder = $folders[$i];
 								$i++;
 							}
 							if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/' . $checkfolder) and !is_file(EASYWIDIR . '/' . $checkfolder)) {
@@ -166,7 +166,7 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 			$response->addError('Cannot create the tempfolder <b>tmp/</b>');
 		}
         if(count($response->errors)>0) $template_file = 'Errors: '.implode('<br />',$response->errors);
-		if (isset($template_file)) $template_file.=' <br/>'.implode('<br />',$response->printresponse());
+		if (isset($template_file)) $template_file .= ' <br/>'.implode('<br />',$response->printresponse());
         else $template_file = $response->printresponse();
 	} else {
         if (isset($ewVersions)) $template_file = 'admin_versioncheck_ud.tpl';
@@ -186,29 +186,29 @@ if ($ui->st('d','get') == 'ud' and $reseller_id==0 and $pa['updateEW'] and ($ewV
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		if ($row[$column] != null and $row[$column] != '') $table[] = array('version' => $row['version'], 'text' => $row[$column]);
 	}
-    $update=($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW']==true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
+    $update=($reseller_id==0 and isset($pa['updateEW']) and $pa['updateEW'] == true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
 	if ($ewVersions['cVersion']<$ewVersions['version']) {
         $state = 1;
 		$class='versioncheckbad';
-		$isok=$vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
+		$isok = $vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
 	} else if ($ewVersions['files']<$ewVersions['version']) {
         $state = 1;
 		$class='versioncheckbad';
-		$isok=$vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'].'. '.$vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
+		$isok = $vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'].'. '.$vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
 	} else {
         $state = 2;
 		$class='versioncheckok';
-		$isok=$vcsprache->ok . ' ' . $ewVersions['cVersion'].'.';
+		$isok = $vcsprache->ok . ' ' . $ewVersions['cVersion'].'.';
 	}
     if($reseller_id==0){
         $rowspan=8;
-        $contract=$licenceDetails['c'];
-        $contract=$sprache->$contract;
-        $contractTime=$licenceDetails['validUntil'];
-        if ($licenceDetails['validUntil'] == '0000-00-00') $contractTime=$sprache->unlimited;
-        $updates=$licenceDetails['updatesUntil'];
-        if ($licenceDetails['c'] == 'R') $updates=$contractTime;
-        else if ($licenceDetails['updatesUntil'] == '0000-00-00') $updates=$sprache->unlimited;
+        $contract = $licenceDetails['c'];
+        $contract = $sprache->$contract;
+        $contractTime = $licenceDetails['validUntil'];
+        if ($licenceDetails['validUntil'] == '0000-00-00') $contractTime = $sprache->unlimited;
+        $updates = $licenceDetails['updatesUntil'];
+        if ($licenceDetails['c'] == 'R') $updates = $contractTime;
+        else if ($licenceDetails['updatesUntil'] == '0000-00-00') $updates = $sprache->unlimited;
     } else {
         $rowspan = 4;
     }

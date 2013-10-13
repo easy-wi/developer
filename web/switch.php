@@ -52,7 +52,7 @@ if ($reseller_id != 0 and isset($admin_id) and $admin_id != $reseller_id) {
 	$reseller_id = $admin_id;
 }
 if ($ui->id('id', 19, 'get')) {
-	$referrer = explode('/', str_replace(array('http://','https://'), '', strtolower($ui->escaped('HTTP_REFERER','server'))));
+	$referrer = explode('/', str_replace(array('http://','https://'), '', strtolower($ui->escaped('HTTP_REFERER', 'server'))));
     $refstring = explode('?',$referrer[1]);
     if (isset($refstring[1])) {
         $from = explode('&',$refstring[1]);
@@ -63,7 +63,7 @@ if ($ui->id('id', 19, 'get')) {
         $resellerid = $row['resellerid'];
         $accounttype = $row['accounttype'];
     }
-    $sql=null;
+    $sql = null;
     if (!isset($resellerid) or ($reseller_id != 0 and $resellerid != $reseller_id)) {
         header('Location: login.php');
         die('Please allow redirection');
@@ -98,7 +98,7 @@ if ($ui->id('id', 19, 'get')) {
         die('Please allow redirection');
     }
 } else {
-    $sql=null;
+    $sql = null;
 	header('Location: login.php');
 	die('Please allow redirection');
 }

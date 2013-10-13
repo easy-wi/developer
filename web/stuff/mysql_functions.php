@@ -44,7 +44,7 @@ class ExternalSQL {
             $this->remotesql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
         } catch(PDOException $error) {
-			$this->error=$error->getMessage();
+			$this->error = $error->getMessage();
 		}
 
 		if (!isset($this->error)) {
@@ -102,7 +102,7 @@ class ExternalSQL {
 
 
             $query = $this->remotesql->prepare("SELECT `host` FROM `mysql`.`host` WHERE `host`=? AND `db`=? LIMIT 1");
-            $query2=$this->remotesql->prepare("INSERT INTO `mysql`.`host` (`host`,`db`,`Select_priv`,`Insert_priv`,`Update_priv`,`Delete_priv`,`Create_priv`,`Drop_priv`,`Alter_priv`) VALUES (?,?,'Y','Y','Y','Y','Y','Y','Y')");
+            $query2 = $this->remotesql->prepare("INSERT INTO `mysql`.`host` (`host`,`db`,`Select_priv`,`Insert_priv`,`Update_priv`,`Delete_priv`,`Create_priv`,`Drop_priv`,`Alter_priv`) VALUES (?,?,'Y','Y','Y','Y','Y','Y','Y')");
             foreach (ipstoarray($ips) as $ip) {
 
                 $query->execute(array($ip,$dbname));

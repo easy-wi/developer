@@ -38,15 +38,15 @@
  */
 
 
-$name=$ui->names('name',255,'post');
-$email=$ui->ismail('email','post');
-$comments=nl2br(htmlentities(trim($ui->escaped('comments','post')),ENT_QUOTES,'UTF-8'));
-if ($ui->escaped('email','post')) {
+$name = $ui->names('name',255, 'post');
+$email = $ui->ismail('email', 'post');
+$comments=nl2br(htmlentities(trim($ui->escaped('comments', 'post')),ENT_QUOTES,'UTF-8'));
+if ($ui->escaped('email', 'post')) {
     $error = array();
-    if (!$ui->ismail('email','post'))$error[] = 'Mail';
-    if (!$ui->names('name',255,'post')) $error[] = 'Name';
+    if (!$ui->ismail('email', 'post'))$error[] = 'Mail';
+    if (!$ui->names('name',255, 'post')) $error[] = 'Name';
     if (!isset($_SESSION['token'])) $error[] = 'No Token';
-    else if ($_SESSION['token'] != $ui->escaped('token','post')) $error[] = 'Spamprotect';
+    else if ($_SESSION['token'] != $ui->escaped('token', 'post')) $error[] = 'Spamprotect';
     if (isset($_SESSION['token'])) unset($_SESSION['token']);
     if (count($error)>0) {
         $token=md5(passwordgenerate(32));
@@ -55,7 +55,7 @@ if ($ui->escaped('email','post')) {
     } else {
         unset($error);
         $success = true;
-        $comments=$name.' ('.$email.'):<br />'.$comments;
+        $comments = $name.' ('.$email.'):<br />'.$comments;
         sendmail('contact',$name,$comments,$rSA['email']);
     }
 } else {

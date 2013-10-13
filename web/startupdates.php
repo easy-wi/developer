@@ -37,9 +37,9 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 if (isset($_SERVER['REMOTE_ADDR'])) {
-    $ip=$_SERVER['REMOTE_ADDR'];
+    $ip = $_SERVER['REMOTE_ADDR'];
     if (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) {
-        $timelimit=$_GET['timeout'];
+        $timelimit = $_GET['timeout'];
     } else {
         $timelimit=ini_get('max_execution_time')-10;
     }
@@ -74,7 +74,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         $rootServer=new masterServer($row['id'],$aeskey);
         $rootServer->collectData();
         echo "Starting updates for ".$rootServer->sship."\r\n";
-        $sshcmd=$rootServer->returnCmds();
+        $sshcmd = $rootServer->returnCmds();
         if ($rootServer->sshcmd!==null) {
             $update=ssh2_execute('gs', $row['id'],$rootServer->sshcmd);
             if ($update !== false) {

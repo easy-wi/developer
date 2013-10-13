@@ -55,18 +55,18 @@ if ($reseller_id==0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
-if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licenceDetails['lDs']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
+if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licenceDetails['lDs']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
     $template_file = $gsprache->licence;
 } else if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if (in_array($ui->st('d','get'), array('md','ad'))){
+} else if (in_array($ui->st('d', 'get'), array('md','ad'))){
     $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
     $query->execute();
     $dhcp=($query->fetchColumn()>0) ? 'Y' : 'N';
     $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsPXE` WHERE `active`='Y' LIMIT 1");
     $query->execute();
     $pxe=($query->fetchColumn()>0) ? 'Y' : 'N';
-    if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'md') {
+    if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'md') {
         $table = array();
         $query=($reseller_id==0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` OR `resellerid`=?) AND `accounttype` IN ('r','u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
@@ -74,37 +74,37 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
             $type=($row['accounttype'] == 'u') ? $gsprache->user : $gsprache->reseller;
             $table[$row['id']] = $type . ' ' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
-        $id=$ui->id('id', 10, 'get');
+        $id = $ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT * FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $active=$row['active'];
-            $ip=$row['ip'];
-            $ips=$row['ips'];
-            $description=$row['description'];
-            $externalID=$row['externalID'];
-            $mac=$row['mac'];
-            $restart=$row['restart'];
-            $apiRequestType=$row['apiRequestType'];
-            $https=$row['https'];
-            $apiRequestRestart=$row['apiRequestRestart'];
-            $apiRequestStop=$row['apiRequestStop'];
-            $apiURL=$row['apiURL'];
-            $userID=$row['userID'];
-            $useDHCP=$row['useDHCP'];
-            $usePXE=$row['usePXE'];
+            $active = $row['active'];
+            $ip = $row['ip'];
+            $ips = $row['ips'];
+            $description = $row['description'];
+            $externalID = $row['externalID'];
+            $mac = $row['mac'];
+            $restart = $row['restart'];
+            $apiRequestType = $row['apiRequestType'];
+            $https = $row['https'];
+            $apiRequestRestart = $row['apiRequestRestart'];
+            $apiRequestStop = $row['apiRequestStop'];
+            $apiURL = $row['apiURL'];
+            $userID = $row['userID'];
+            $useDHCP = $row['useDHCP'];
+            $usePXE = $row['usePXE'];
             if ($row['status']==1) {
-                $status=$sprache->stopped;
+                $status = $sprache->stopped;
             } else if ($row['status']==2) {
-                $status=$sprache->installing;
+                $status = $sprache->installing;
             } else if ($row['status']==3) {
-                $status=$sprache->rescue;
+                $status = $sprache->rescue;
             } else {
-                $status=$sprache->ok;
+                $status = $sprache->ok;
             }
         }
         $template_file = (isset($active)) ? 'admin_root_dedicated_md.tpl' : 'admin_404.tpl';
-    } else if (!in_array($ui->smallletters('action',2,'post'), array('md','ad')) and $ui->st('d','get') == 'ad' and $reseller_id==0) {
+    } else if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'ad' and $reseller_id==0) {
         $table = array();
         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `id`=`resellerid` AND `accounttype`='r' ORDER BY `id` DESC");
         $query->execute();
@@ -112,39 +112,39 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
             $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
         $template_file = 'admin_root_dedicated_ad.tpl';
-    } else if (in_array($ui->smallletters('action',2,'post'), array('md','ad'))) {
+    } else if (in_array($ui->smallletters('action',2, 'post'), array('md','ad'))) {
         $error = array();
-        if (!$ui->active('active','post')) {
+        if (!$ui->active('active', 'post')) {
             $error[] = 'Active';
         }
-        if (!$ui->ip('ip','post')) {
+        if (!$ui->ip('ip', 'post')) {
             $error[] = 'IP';
         }
-        if (!$ui->w('restart',1,'post')) {
+        if (!$ui->w('restart',1, 'post')) {
             $error[] = 'Restart';
         }
         if (count($error)>0) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            $id=$ui->id('id', 10, 'get');
+            $id = $ui->id('id', 10, 'get');
             $active=yesNo('active');
             $https=yesNo('https');
             $useDHCP=yesNo('useDHCP');
             $usePXE=yesNo('usePXE');
-            $ip=$ui->ip('ip','post');
-            $ips=$ui->ips('ips','post');
-            $description=$ui->escaped('description','post');
-            $mac=$ui->mac('mac','post');
-            $externalID=$ui->w('externalID',255,'post');
-            $restart=$ui->w('restart',1,'post');
-            $apiURL=$ui->domainPath('apiURL','post');
-            $apiRequestType=$ui->w('apiRequestType',1,'post');
-            $apiRequestRestart=$ui->escaped('apiRequestRestart','post');
-            $apiRequestStop=$ui->escaped('apiRequestStop','post');
-            $userID=$ui->id('userID',19,'post');
+            $ip = $ui->ip('ip', 'post');
+            $ips = $ui->ips('ips', 'post');
+            $description = $ui->escaped('description', 'post');
+            $mac = $ui->mac('mac', 'post');
+            $externalID = $ui->w('externalID',255, 'post');
+            $restart = $ui->w('restart',1, 'post');
+            $apiURL = $ui->domainPath('apiURL', 'post');
+            $apiRequestType = $ui->w('apiRequestType',1, 'post');
+            $apiRequestRestart = $ui->escaped('apiRequestRestart', 'post');
+            $apiRequestStop = $ui->escaped('apiRequestStop', 'post');
+            $userID = $ui->id('userID',19, 'post');
             $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='de' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
             $query->execute(array($id,$reseller_id));
-            if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
+            if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get')) {
                 $query = $sql->prepare("SELECT `active`,`ip`,`mac`,`useDHCP`,`usePXE` FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -156,7 +156,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
                 $query = $sql->prepare("UPDATE `rootsDedicated` SET `active`=?,`userID`=?,`description`=?,`ip`=?,`ips`=?,`restart`=?,`apiRequestType`=?,`apiRequestRestart`=?,`apiRequestStop`=?,`apiURL`=?,`https`=?,`mac`=?,`useDHCP`=?,`usePXE`=?,`externalID`=?,`jobPending`='Y' WHERE `dedicatedID`=? AND `resellerID`=?");
                 $query->execute(array($active,$userID,$description,$ip,$ips,$restart,$apiRequestType,$apiRequestRestart,$apiRequestStop,$apiURL,$https,$mac,$useDHCP,$usePXE,$externalID,$id,$reseller_id));
                 $loguseraction="%mod% ".$gsprache->dedicated;
-            } else if ($ui->st('d','get') == 'ad' and $reseller_id==0) {
+            } else if ($ui->st('d', 'get') == 'ad' and $reseller_id==0) {
                 $query = $sql->prepare("INSERT INTO `rootsDedicated` (`active`,`userID`,`description`,`ip`,`ips`,`restart`,`apiRequestType`,`apiRequestRestart`,`apiRequestStop`,`apiURL`,`https`,`mac`,`useDHCP`,`usePXE`,`externalID`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 $query->execute(array($active,$userID,$description,$ip,$ips,$restart,$apiRequestType,$apiRequestRestart,$apiRequestStop,$apiURL,$https,$mac,$useDHCP,$usePXE,$externalID,$reseller_id));
                 $loguseraction="%add% ".$gsprache->dedicated;
@@ -172,20 +172,20 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
             }
         }
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get') and $reseller_id==0) {
-    $id=$ui->id('id', 10, 'get');
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get') and $reseller_id==0) {
+    $id = $ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `ip`,`description`,`restart`,`useDHCP`,`usePXE` FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $ip=$row['ip'];
-        $restart=$row['restart'];
-        $description=$row['description'];
-        $useDHCP=$row['useDHCP'];
-        $usePXE=$row['usePXE'];
+        $ip = $row['ip'];
+        $restart = $row['restart'];
+        $description = $row['description'];
+        $useDHCP = $row['useDHCP'];
+        $usePXE = $row['usePXE'];
     }
-    if (!$ui->smallletters('action',2,'post')) {
+    if (!$ui->smallletters('action',2, 'post')) {
         $template_file = (isset($ip)) ? 'admin_root_dedicated_dl.tpl' : 'admin_404.tpl';
-    } else if (isset($restart) and $ui->smallletters('action',2,'post') == 'dl') {
+    } else if (isset($restart) and $ui->smallletters('action',2, 'post') == 'dl') {
         customColumns('S',$id,'del');
         $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
         $query->execute();
@@ -221,9 +221,9 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'ri' and $ui->id('id', 10, 'get')) {
-    $id=$ui->id('id', 10, 'get');
-    if (!$ui->st('action','post')) {
+} else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get')) {
+    $id = $ui->id('id', 10, 'get');
+    if (!$ui->st('action', 'post')) {
         $option = array();
         $query = $sql->prepare("SELECT COUNT(`id`) AS `a` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
         $query->execute();
@@ -234,10 +234,10 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
         $query = $sql->prepare("SELECT r.*,d.*,AES_DECRYPT(d.`initialPass`,?) AS `decryptedpass` FROM `rootsDedicated` d LEFT JOIN `resellerimages` r ON d.`imageID`=r.`id` WHERE d.`dedicatedID`=? LIMIT 1");
         $query->execute(array($aeskey,$id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $ip=$row['ip'];
+            $ip = $row['ip'];
             $showImages = false;
             if ($row['userID'] == null) {
-                $error=$sprache->userAdd;
+                $error = $sprache->userAdd;
             } else if ($dhcp == 'N' or $pxe == 'N') {
                     $option[] = '<option value="rs">'.$sprache->restart.'</option>';
                     $option[] = '<option value="st">'.$sprache->stop.'</option>';
@@ -261,17 +261,17 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
                 }
             }
             if ($row['status'] == 1) {
-                $status=$sprache->stopped;
+                $status = $sprache->stopped;
             } else if ($row['status'] == 2) {
-                $status=$sprache->installing;
+                $status = $sprache->installing;
             } else if ($row['status'] == 3) {
-                $status=$sprache->rescue;
+                $status = $sprache->rescue;
             } else {
-                $status=$sprache->ok;
+                $status = $sprache->ok;
             }
-            $description=$row['description'];
-            $bitversion=$row['bitversion'];
-            $pass=$row['decryptedpass'];
+            $description = $row['description'];
+            $bitversion = $row['bitversion'];
+            $pass = $row['decryptedpass'];
         }
         $templates = array();
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` WHERE `description` NOT IN ('Rescue 32bit','Rescue 64bit') ORDER BY `distro`,`bitversion`,`description`");
@@ -280,25 +280,25 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
             if ($row['description'] != 'Rescue 32bit' and $row['description'] != 'Rescue 64bit') $templates[] = array('id' => $row['id'], 'description' => $row['description']);
         }
         $template_file = (isset($ip)) ? 'admin_root_dedicated_ri.tpl' : 'admin_404.tpl';
-    } else if (in_array($ui->st('action','post'), array('ri','rc','rs','st'))) {
+    } else if (in_array($ui->st('action', 'post'), array('ri','rc','rs','st'))) {
         $query = $sql->prepare("SELECT d.`ip`,i.`bitversion` FROM `rootsDedicated` d LEFT JOIN `resellerimages` i ON d.`resellerImageID`=i.`id` WHERE d.`dedicatedID`=? LIMIT 1");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $ip=$row['ip'];
-            $bitversion=$row['bitversion'];
+            $ip = $row['ip'];
+            $bitversion = $row['bitversion'];
         }
         if (!isset($bitversion)) $bitversion=64;
         if (isset($ip)) {
             $extraData = array();
-            if ($ui->st('action','post') == 'ri') {
-                $extraData['imageID'] = $ui->id('imageid',10,'post');
-            } else if ($ui->st('action','post') == 'rc') {
+            if ($ui->st('action', 'post') == 'ri') {
+                $extraData['imageID'] = $ui->id('imageid',10, 'post');
+            } else if ($ui->st('action', 'post') == 'rc') {
                 $query = $sql->prepare("SELECT `id` FROM `resellerimages` WHERE `bitversion`=? AND `active`='Y' AND `distro`='other' AND `description` LIKE 'Rescue %' LIMIT 1");
                 $query->execute(array($bitversion));
                 $extraData['imageID'] = $query->fetchColumn();
             }
             $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('D','de',NULL,?,?,NULL,?,NULL,NOW(),?,?,?)");
-            $query->execute(array($admin_id,$id,$ip,$ui->st('action','post'),json_encode($extraData),$reseller_id));
+            $query->execute(array($admin_id,$id,$ip,$ui->st('action', 'post'),json_encode($extraData),$reseller_id));
             $query = $sql->prepare("UPDATE `rootsDedicated` SET `jobPending`='Y' WHERE `dedicatedID`=? AND `resellerID`=?");
             $query->execute(array($id,$reseller_id));
             $template_file = $spracheResponse->table_add;
@@ -312,33 +312,33 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
     $table = array();
     $query = $sql->prepare("SELECT COUNT(`dedicatedID`) AS `amount` FROM `rootsDedicated` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
-    $colcount=$query->fetchColumn();
-    if ($start>$colcount) $start=$colcount-$amount;
+    $colcount = $query->fetchColumn();
+    if ($start>$colcount) $start = $colcount-$amount;
     if ($start<0) $start = 0;
-    $next=$start+$amount;
+    $next = $start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;
-    $back=$start - $amount;
+    $back = $start - $amount;
     $zur = ($back >= 0) ? $start - $amount : $start;
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'dp') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'dp') {
         $orderby = 'd.`ip` DESC';
-    } else if ($ui->st('o','get') == 'ap') {
+    } else if ($ui->st('o', 'get') == 'ap') {
         $orderby = 'd.`ip` ASC';
-    } else if ($ui->st('o','get') == 'ds') {
+    } else if ($ui->st('o', 'get') == 'ds') {
         $orderby = 'd.`active` DESC,`notified` DESC';
-    } else if ($ui->st('o','get') == 'as') {
+    } else if ($ui->st('o', 'get') == 'as') {
         $orderby = 'd.`active` ASC,`notified` ASC';
-    } else if ($ui->st('o','get') == 'dc') {
+    } else if ($ui->st('o', 'get') == 'dc') {
         $orderby = 'u.`cname` DESC';
-    } else if ($ui->st('o','get') == 'ac') {
+    } else if ($ui->st('o', 'get') == 'ac') {
         $orderby = 'u.`cname` ASC';
-    } else if ($ui->st('o','get') == 'dn') {
+    } else if ($ui->st('o', 'get') == 'dn') {
         $orderby = 'u.`name` DESC,u.`vname` DESC';
-    } else if ($ui->st('o','get') == 'an') {
+    } else if ($ui->st('o', 'get') == 'an') {
         $orderby = 'u.`name` ASC,u.`vname` ASC';
-    } else if ($ui->st('o','get') == 'as') {
+    } else if ($ui->st('o', 'get') == 'as') {
         $orderby = 'd.`active` ASC,`notified` ASC';
-    } else if ($ui->st('o','get') == 'di') {
+    } else if ($ui->st('o', 'get') == 'di') {
         $orderby = 'd.`dedicatedID` DESC';
     } else {
         $orderby = 'd.`dedicatedID` ASC';
@@ -348,17 +348,17 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='de' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $jobPending=$gsprache->no;
+        $jobPending = $gsprache->no;
         if ($row['jobPending'] == 'Y') {
             $query2->execute(array($row['dedicatedID']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                if ($row2['action'] == 'ad') $jobPending=$gsprache->add;
-                else if ($row2['action'] == 'dl') $jobPending=$gsprache->del;
-                else if ($row2['action'] == 'ri') $jobPending=$sprache->reinstall;
-                else if ($row2['action'] == 'rc') $jobPending=$sprache->rescue_start;
-                else if ($row2['action'] == 'rs') $jobPending=$sprache->restart;
-                else if ($row2['action'] == 'st') $jobPending=$sprache->stop;
-                else $jobPending=$gsprache->mod;
+                if ($row2['action'] == 'ad') $jobPending = $gsprache->add;
+                else if ($row2['action'] == 'dl') $jobPending = $gsprache->del;
+                else if ($row2['action'] == 'ri') $jobPending = $sprache->reinstall;
+                else if ($row2['action'] == 'rc') $jobPending = $sprache->rescue_start;
+                else if ($row2['action'] == 'rs') $jobPending = $sprache->restart;
+                else if ($row2['action'] == 'st') $jobPending = $sprache->stop;
+                else $jobPending = $gsprache->mod;
                 $json=@json_decode($row2['extraData']);
                 $tobeActive=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
             }
@@ -379,22 +379,22 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lDs']) and $licen
             $active = 'N';
         }
         if ($row['status'] == 1) {
-            $status=$sprache->stopped;
+            $status = $sprache->stopped;
         } else if ($row['status'] == 2) {
-            $status=$sprache->installing;
+            $status = $sprache->installing;
         } else if ($row['status'] == 3) {
-            $status=$sprache->rescue;
+            $status = $sprache->rescue;
         } else {
-            $status=$sprache->ok;
+            $status = $sprache->ok;
         }
         $table[] = array('id' => $row['dedicatedID'], 'ip' => $row['ip'], 'description' => $row['description'], 'status' => $status,'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'active' => $active,'jobPending' => $jobPending);
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=rp&amp;o='.$o.'&amp;a=';
     if(!isset($amount)) $link .="20";
-    else $link .=$amount;
-    if ($start==0) $link .='&p=0" class="bold">1</a>';
-    else $link .='&p=0">1</a>';
+    else $link .= $amount;
+    if ($start==0) $link .= '&p=0" class="bold">1</a>';
+    else $link .= '&p=0">1</a>';
     $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {

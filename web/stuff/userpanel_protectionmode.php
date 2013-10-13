@@ -42,14 +42,14 @@ if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
-$loguserid=$user_id;
+$loguserid = $user_id;
 $logusername=getusername($user_id);
 $logusertype="user";
 $logreseller = 0;
 if (isset($admin_id)) {
-	$logsubuser=$admin_id;
+	$logsubuser = $admin_id;
 } else if (isset($subuser_id)) {
-	$logsubuser=$subuser_id;
+	$logsubuser = $subuser_id;
 } else {
 	$logsubuser = 0;
 }
@@ -58,20 +58,20 @@ $files = array();
 $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppassword`,t.`protected` AS `tpallowed`,t.`shorten`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,u.`cname`,s.`servertemplate` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND s.`resellerid`=? LIMIT 1");
 $query->execute(array($aeskey,$aeskey,$ui->id('id', 10, 'get'),$user_id,$reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $currentID=$row['serverid'];
-	$serverip=$row['serverip'];
-	$port=$row['port'];
-    $gsfolder=$serverip . '_' . $port;
+    $currentID = $row['serverid'];
+	$serverip = $row['serverip'];
+	$port = $row['port'];
+    $gsfolder = $serverip . '_' . $port;
     $gamestring='1_'.$row['shorten'];
-	$protected=$row['protected'];
+	$protected = $row['protected'];
     $pallowed=($row['pallowed'] == 'Y' and $row['tpallowed'] == 'Y') ? 'Y' : 'N';
-	$rootid=$row['rootID'];
+	$rootid = $row['rootID'];
     $customer=($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $ui->id('id', 10, 'get') : $row['cname'];
-    $customerp=$customer.'-p';
-    $ftppass=$row['dftppassword'];
-    $ftppassProtected=$row['dpftppassword'];
+    $customerp = $customer.'-p';
+    $ftppass = $row['dftppassword'];
+    $ftppassProtected = $row['dpftppassword'];
     foreach (explode("\r\n", $row['protectedSaveCFGs']) as $cfg) if ($cfg != '') $files[] = $cfg;
-    $shorten=$row['shorten'];
+    $shorten = $row['shorten'];
     $serverTemplate=($row['servertemplate']!=1) ? $row['shorten'] . '-' . $row['servertemplate'] : $row['shorten'];
     if($row['gamebinary'] == 'srcds_run') $gamePath="${row['binarydir']}/${row['modfolder']}";
     else if($row['gamebinary'] == 'hlds_run') $gamePath="${row['modfolder']}";
@@ -103,7 +103,7 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
                         $i = 0;
                         $folders="${pserverWrite}/${gsfolder}/${writeFTPShorten}/${gamePath}/";
                         while ($i<$folderFileCount) {
-                            $folders.='/' . $split_config[$i];
+                            $folders .= '/' . $split_config[$i];
                             $i++;
                         }
                         foreach (preg_split('/\//',str_replace(array('//','///','////'),'/',$folders),-1,PREG_SPLIT_NO_EMPTY) as $dir) {
@@ -122,11 +122,11 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
         }
     }
     $rdata=serverdata('root',$rootid,$aeskey);
-    $sship=$rdata['ip'];
-    $sshport=$rdata['port'];
-    $sshuser=$rdata['user'];
-    $sshpass=$rdata['pass'];
-    $ftpport=$rdata['ftpport'];
+    $sship = $rdata['ip'];
+    $sshport = $rdata['port'];
+    $sshuser = $rdata['user'];
+    $sshpass = $rdata['pass'];
+    $ftpport = $rdata['ftpport'];
     if (isset($protected,$serverip,$port) and $protected== 'Y') {
         $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`='1' WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($currentID,$reseller_id));

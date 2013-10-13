@@ -37,15 +37,15 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($createBackup) and $createBackup==true) {
+if (isset($createBackup) and $createBackup == true) {
     class createDBDump {
         private $connection;
         private $tableList = array();
         private $count = 0;
         private $SQLDump;
         function __construct($db,$version,$sql) {
-            $this->connection=$sql;
-            $query=$this->connection->prepare("SHOW TABLES");
+            $this->connection = $sql;
+            $query = $this->connection->prepare("SHOW TABLES");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $table) {
                 $this->tableList[current($table)] = '';
@@ -72,39 +72,39 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 ';
         }
         private function getContent($table) {
-            $this->SQLDump .='--
+            $this->SQLDump .= '--
 -- Table structure for table `'.$table.'`
 --
 
 ';
             $this->connection->query("LOCK TABLE `".$table."`WRITE");
-            $query=$this->connection->prepare("SHOW CREATE TABLE `".$table."`");
+            $query = $this->connection->prepare("SHOW CREATE TABLE `".$table."`");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $create) {
                 $this->SQLDump .=next($create).";\n\n";
             }
-            $query=$this->connection->prepare("SHOW COLUMNS FROM `".$table."`");
+            $query = $this->connection->prepare("SHOW COLUMNS FROM `".$table."`");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $column) {
-                $columnName=$column['Field'];
+                $columnName = $column['Field'];
                 $inserts[] = '`'.$columnName.'`';
                 $this->tableList[$table][$columnName] = $column['Type'];
             }
-            $query=$this->connection->prepare("SELECT COUNT(*) AS `amount` FROM `".$table."`");
+            $query = $this->connection->prepare("SELECT COUNT(*) AS `amount` FROM `".$table."`");
             $query->execute();
-            $this->count=$query->fetchColumn();
+            $this->count = $query->fetchColumn();
             if ($this->count>0) {
-                $this->SQLDump .='--
+                $this->SQLDump .= '--
 -- Data Table `'.$table.'`
 --
 
 ';
-                $this->SQLDump .='INSERT INTO `'.$table.'` ('.implode(',',$inserts).') VALUES'."\n";
+                $this->SQLDump .= 'INSERT INTO `'.$table.'` ('.implode(',',$inserts).') VALUES'."\n";
                 $this->createInserts($table);
             }
         }
         private function createInserts ($table) {
-            $query=$this->connection->prepare("SELECT * FROM `".$table."`");
+            $query = $this->connection->prepare("SELECT * FROM `".$table."`");
             $query->execute();
             $i = 1;
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -119,9 +119,9 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
                     }
                 }
                 if ($this->count==$i) {
-                    $this->SQLDump .='('.implode(', ',$inserts).');'."\n\n\n";
+                    $this->SQLDump .= '('.implode(', ',$inserts).');'."\n\n\n";
                 } else {
-                    $this->SQLDump .='('.implode(', ',$inserts).'),'."\n";
+                    $this->SQLDump .= '('.implode(', ',$inserts).'),'."\n";
                 }
                 $i++;
             }

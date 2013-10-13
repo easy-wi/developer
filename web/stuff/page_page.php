@@ -40,11 +40,11 @@ if (!isset($page_include)) {
     die;
 }
 if (isset($default_page_id)) {
-	$page_id=$default_page_id;
+	$page_id = $default_page_id;
 } else if (isset($page_category,$page_data->pages_array['pages']) and in_array($page_category,$page_data->pages_array['pages'])) {
 	$page_id=array_search($page_category,$page_data->pages_array['pages']);
 } else {
-	$page_id=$ui->id('id',19,'get');
+	$page_id = $ui->id('id',19, 'get');
 }
 if (isset($page_id) and is_numeric($page_id)) {
     function pre_replace($m) {
@@ -53,13 +53,13 @@ if (isset($page_id) and is_numeric($page_id)) {
 	$query = $sql->prepare("SELECT t.`title`,t.`text`,t.`id`,p.`subpage` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='page' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
 	$query->execute(array($page_id,$user_language));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$page_title=$row['title'];
+		$page_title = $row['title'];
 		$page_text=str_replace('%url%',$page_data->pageurl, $row['text']);
         $page_text=preg_replace_callback('/<pre.*?>(.*?)<\/pre>/imsu','pre_replace',$page_text);
 		$page_keywords = array();
 		$tag_tags = array();
-        $breadcrumbID=$row['subpage'];
-        $breadcrumbPageID=$page_id;
+        $breadcrumbID = $row['subpage'];
+        $breadcrumbPageID = $page_id;
 		$query2 = $sql->prepare("SELECT t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`='0' ORDER BY t.`name` DESC");
 		$query2->execute(array($row['id']));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
@@ -75,8 +75,8 @@ if (isset($page_id) and is_numeric($page_id)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $link=(isset($seo) and $seo== 'Y') ? $page_data->pageurl. '/' . $user_language . '/' . szrp($row['title']).'/' : $page_data->pageurl.'?s=page&amp;l='.$user_language.'&amp;id='.$row['id'];
             $breadcrumbs[] = array('href' => '<a href="'.$link.'">'.$row['title'].'</a>','link' => $link);
-            $breadcrumbID=$row['subpage'];
-            $breadcrumbPageID=$row['id'];
+            $breadcrumbID = $row['subpage'];
+            $breadcrumbPageID = $row['id'];
         }
     }
     $breadcrumbs=array_reverse($breadcrumbs);
@@ -85,17 +85,17 @@ if (isset($page_id) and is_numeric($page_id)) {
     $query = $sql->prepare("SELECT t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE `type`='about' AND t.`language`=? AND p.`resellerid`='0' LIMIT 1");
     $query->execute(array($user_language));
     $page_text=nl2br($query->fetchColumn());
-    $page_title=$page_sprache->about;
+    $page_title = $page_sprache->about;
     $page_keywords = array();
     $tag_tags = array();
     $page_data->setCanonicalUrl($s);
     $template_file = 'page_page.tpl';
 } else if ($s == 'search') {
-    $searchStringValue=htmlentities($ui->escaped('search','post'),ENT_QUOTES,'UTF-8');
-    if ($ui->escaped('search','post')) {
+    $searchStringValue=htmlentities($ui->escaped('search', 'post'),ENT_QUOTES,'UTF-8');
+    if ($ui->escaped('search', 'post')) {
         $results = array();
         $searchFor=array('general' => array(),'exact' => array());
-        $searchString=preg_replace("/\s+/",' ',$ui->escaped('search','post'));
+        $searchString=preg_replace("/\s+/",' ',$ui->escaped('search', 'post'));
         $searchFor['exact'][]=strtolower($searchString);
         if (strpos($searchString,'"') === false) {
             foreach (preg_split('/\s+/',$searchString,-1,PREG_SPLIT_NO_EMPTY) as $v) $searchFor['general'][]=strtolower($v);
@@ -103,13 +103,13 @@ if (isset($page_id) and is_numeric($page_id)) {
             $checkForEnd = false;
             $split=explode('"',$searchString);
             foreach ($split as $v) {
-                if ($v != '' and $checkForEnd==false) {
+                if ($v != '' and $checkForEnd == false) {
                     foreach (preg_split('/\s+/',$v,-1,PREG_SPLIT_NO_EMPTY) as $v2) $searchFor['general'][]=strtolower($v2);
                     $checkForEnd = true;
-                } else if ($v != '' and $checkForEnd==true) {
+                } else if ($v != '' and $checkForEnd == true) {
                     $searchFor['exact'][]=strtolower($v);
                     $checkForEnd = false;
-                } else if ($v== '' and $checkForEnd==false) {
+                } else if ($v== '' and $checkForEnd == false) {
                     $checkForEnd = true;
                 }
             }
@@ -125,36 +125,36 @@ if (isset($page_id) and is_numeric($page_id)) {
                     $titleLanguages[$row['language']] = array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
                 }
                 if (strlen($row['text'])<=$newssidebar_textlength) {
-                    $text=$row['text'];
+                    $text = $row['text'];
                 } else {
                     $text=substr($row['text'],0,$newssidebar_textlength).' ...';
                 }
-                $title=$row['title'];
+                $title = $row['title'];
                 if ($row['type'] == 'news' and isset($seo) and $seo== 'Y') {
                     $type=(string)$titleLanguages[$row['language']]['general']->news;
-                    $link=$page_data->pageurl. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']).'/';
+                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']).'/';
                 } else if ($row['type'] == 'news') {
                     $type=(string)$titleLanguages[$row['language']]['general']->news;
-                    $link=$page_data->pageurl.'?s=news&amp;l='.$row['language'].'&amp;id='.$row['pageID'];
+                    $link = $page_data->pageurl.'?s=news&amp;l='.$row['language'].'&amp;id='.$row['pageID'];
                 } else if ($row['type'] == 'page' and isset($seo) and $seo== 'Y') {
                     $type=(string)$titleLanguages[$row['language']]['general']->page;
-                    $link=$page_data->pageurl. '/' . $row['language'] . '/' . szrp($row['title']).'/';
+                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($row['title']).'/';
                 } else if ($row['type'] == 'page') {
                     $type=(string)$titleLanguages[$row['language']]['general']->page;
-                    $link=$page_data->pageurl.'?s=page&amp;l='.$row['language'].'&amp;id='.$row['pageID'];
+                    $link = $page_data->pageurl.'?s=page&amp;l='.$row['language'].'&amp;id='.$row['pageID'];
                 } else if ($row['type'] == 'about' and isset($seo) and $seo== 'Y') {
                     $type=(string)$titleLanguages[$row['language']]['page']->about;
                     $title=(string)$titleLanguages[$row['language']]['page']->about;
-                    $link=$page_data->pageurl. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['page']->about).'/';
+                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['page']->about).'/';
                 } else if ($row['type'] == 'about') {
                     $type=(string)$titleLanguages[$row['language']]['page']->about;
                     $title=(string)$titleLanguages[$row['language']]['page']->about;
-                    $link=$page_data->pageurl.'/?s=news&amp;l='.$row['language'];
+                    $link = $page_data->pageurl.'/?s=news&amp;l='.$row['language'];
                 }
                 if(!isset($link)) {
                     $link='#';
                 }
-                if ($exact==true) {
+                if ($exact == true) {
                     $worth=substr_count(strtolower($row['title']),strtolower($value))*16;
                     $worth+=substr_count(strtolower($row['text']),strtolower($value))*2;
                 } else {
@@ -163,8 +163,8 @@ if (isset($page_id) and is_numeric($page_id)) {
                 }
                 $href='<a href="'.$link.'" title="'.$title.'">'.$title.'</a>';
                 if(isset($results[$row['id']])) {
-                    $oldWorth=$results[$row['id']]['worth'];
-                    $hits=$results[$row['id']]['hits'];
+                    $oldWorth = $results[$row['id']]['worth'];
+                    $hits = $results[$row['id']]['hits'];
                     $hits[] = $value;
                     $hits=array_unique($hits);
                     $worth+=$oldWorth;
@@ -216,15 +216,15 @@ if (isset($page_id) and is_numeric($page_id)) {
 } else if ($s == 'gallery') {
     $page_data->setCanonicalUrl($s);
     $template_file = 'page_gallery.tpl';
-} else if (isset($admin_id) and $ui->smallletters('preview',4,'get') == 'true') {
-	if (is_array($ui->escaped('text','post')) or is_object($ui->escaped('text','post'))) {
-		foreach ($ui->escaped('text','post') as $key=>$value) {
-			$page_title=$ui->htmlcode('title','post',$key);
+} else if (isset($admin_id) and $ui->smallletters('preview',4, 'get') == 'true') {
+	if (is_array($ui->escaped('text', 'post')) or is_object($ui->escaped('text', 'post'))) {
+		foreach ($ui->escaped('text', 'post') as $key=>$value) {
+			$page_title = $ui->htmlcode('title', 'post',$key);
             $page_text=str_replace('%url%',$page_data->pageurl,$value);
 		}
 	} else {
-		$page_title=$ui->escaped('title','post');
-        $page_text=str_replace('%url%',$page_data->pageurl,$ui->escaped('text','post'));
+		$page_title = $ui->escaped('title', 'post');
+        $page_text=str_replace('%url%',$page_data->pageurl,$ui->escaped('text', 'post'));
 	}
 	$page_keywords = array();
 	$tag_tags = array();

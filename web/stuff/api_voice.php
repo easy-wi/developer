@@ -80,21 +80,21 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
     if (dataExist('identify_user_by',$data) and isid($data['slots'],11)) {
         $active=active_check($data['active']);
         $private=active_check($data['private']);
-        $shorten=$data['shorten'];
+        $shorten = $data['shorten'];
         $slots=isid($data['slots'],11);
-        $identifyUserBy=$data['identify_user_by'];
+        $identifyUserBy = $data['identify_user_by'];
         $localUserID=isid($data['user_localid'],21);
-        $externalUserID=$data['user_externalid'];
-        $username=$data['username'];
-        $identifyServerBy=$data['identify_server_by'];
+        $externalUserID = $data['user_externalid'];
+        $username = $data['username'];
+        $identifyServerBy = $data['identify_server_by'];
         $localServerID=isid($data['server_local_id'],21);
-        $externalServerID=$data['server_external_id'];
+        $externalServerID = $data['server_external_id'];
         $from=array('user_localid' => 'id','username' => 'cname','user_externalid' => 'externalID','email' => 'mail');
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `".$from[$data['identify_user_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $localUserLookupID=$row['id'];
-            $username=$row['cname'];
+            $localUserLookupID = $row['id'];
+            $username = $row['cname'];
         }
         if (!isset($localUserLookupID)) {
             $success['false'][] = 'user does not exist';
@@ -115,30 +115,30 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             } else if (isset($data['master_server_external_id']) and wpreg_check($data['master_server_external_id'],255)) {
                 $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`externalID`=? AND m.`resellerid`=? LIMIT 1");
                 $query->execute(array($data['master_server_external_id'],$resellerID));
-                $masterServerExternalID=$data['master_server_external_id'];
+                $masterServerExternalID = $data['master_server_external_id'];
             } else {
                 $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND ((`maxslots`-`installedslots`)>? OR `installedslots` IS NULL) AND `active`='Y' AND `resellerid`=?) ORDER BY `slotpercent`,`serverpercent` ASC LIMIT 1");
                 $query->execute(array($slots,$resellerID));
             }
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $masterServerID=$row['hostID'];
+                $masterServerID = $row['hostID'];
                 if ($row['active'] == 'Y') {
-                    $hostID=$row['hostID'];
-                    $name=$row['defaultname'];
-                    $welcome=$row['defaultwelcome'];
-                    $hostbanner_url=$row['defaulthostbanner_url'];
-                    $hostbanner_gfx_url=$row['defaulthostbanner_gfx_url'];
-                    $hostbutton_tooltip=$row['defaulthostbutton_tooltip'];
-                    $hostbutton_url=$row['defaulthostbutton_url'];
-                    $hostbutton_gfx_url=$row['defaulthostbutton_gfx_url'];
-                    $defaultFlexSlotsFree=$row['defaultFlexSlotsFree'];
-                    $defaultFlexSlotsPercent=$row['defaultFlexSlotsPercent'];
-                    $usedns=$row['usedns'];
-                    $defaultdns=$row['defaultdns'];
+                    $hostID = $row['hostID'];
+                    $name = $row['defaultname'];
+                    $welcome = $row['defaultwelcome'];
+                    $hostbanner_url = $row['defaulthostbanner_url'];
+                    $hostbanner_gfx_url = $row['defaulthostbanner_gfx_url'];
+                    $hostbutton_tooltip = $row['defaulthostbutton_tooltip'];
+                    $hostbutton_url = $row['defaulthostbutton_url'];
+                    $hostbutton_gfx_url = $row['defaulthostbutton_gfx_url'];
+                    $defaultFlexSlotsFree = $row['defaultFlexSlotsFree'];
+                    $defaultFlexSlotsPercent = $row['defaultFlexSlotsPercent'];
+                    $usedns = $row['usedns'];
+                    $defaultdns = $row['defaultdns'];
                     if ($row['externalDefaultDNS'] == 'Y' and isid($row['tsdnsServerID'],19)) {
                         $query2 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                         $query2->execute(array($tsdnsServerID,$resellerID));
-                        $defaultdns=$query2->fetchColumn();
+                        $defaultdns = $query2->fetchColumn();
                     }
                     if ($row['addedby'] == '2') {
                         $ips[] = $row['ssh2ip'];
@@ -165,11 +165,11 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         }
         if (!isset($success['false']) and isset($ips)) {
             $usedPorts=usedPorts($ips);
-            $ip=$usedPorts['ip'];
-            $ports=$usedPorts['ports'];
+            $ip = $usedPorts['ip'];
+            $ports = $usedPorts['ports'];
             $ports[]=10011;
             if (isset($data['port']) and port($data['port']) and !in_array($data['port'],$ports)) {
-                $port=$data['port'];
+                $port = $data['port'];
             } else {
                 $port=9987;
             }
@@ -193,11 +193,11 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $initialpassword=passwordgenerate(10);
                 $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`lendserver`,`backup`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`maxtraffic`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`externalID`,`jobPending`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'Y',NOW(),?,?,?,?,?)");
                 $query->execute(array($active,$lendserver,$backup,$localUserLookupID,$hostID,$ip,$port,$slots,$initialpassword,$private,$max_download_total_bandwidth,$max_upload_total_bandwidth,$maxtraffic,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$externalServerID,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$autoRestart,$resellerID));
-                $localID=$sql->lastInsertId();
-                $localServerID=$localID;
+                $localID = $sql->lastInsertId();
+                $localServerID = $localID;
                 if (isid($localID,10)) {
                     if($usedns == 'Y' and isset($data['tsdns']) and active_check($data['tsdns'])) {
-                        $tsdns=$data['tsdns'];
+                        $tsdns = $data['tsdns'];
                     } else if($usedns == 'Y' and (!isset($data['tsdns']) or !active_check($data['tsdns']))) {
                         $tsdns = 'Y';
                     } else {
@@ -205,7 +205,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                     }
                     if ($tsdns == 'Y') {
                         if (isdomain($data['dns'])) {
-                            $dns=$data['dns'];
+                            $dns = $data['dns'];
                         } else {
                             $dns=strtolower($localID . '.' . $defaultdns);
                         }
@@ -226,15 +226,15 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
     } else if (!isset($success['false'])) {
         $active=active_check($data['active']);
         $private=active_check($data['private']);
-        $shorten=$data['shorten'];
+        $shorten = $data['shorten'];
         $slots=isid($data['slots'],11);
-        $identifyUserBy=$data['identify_user_by'];
+        $identifyUserBy = $data['identify_user_by'];
         $localUserID=isid($data['user_localid'],21);
-        $externalUserID=$data['user_externalid'];
-        $username=$data['username'];
-        $identifyServerBy=$data['identify_server_by'];
+        $externalUserID = $data['user_externalid'];
+        $username = $data['username'];
+        $identifyServerBy = $data['identify_server_by'];
         $localServerID=isid($data['server_local_id'],21);
-        $externalServerID=$data['server_external_id'];
+        $externalServerID = $data['server_external_id'];
         if (!dataExist('identify_user_by',$data)) {
             $success['false'][] = 'Can not identify user or bad email';
         } else {
@@ -242,27 +242,27 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         }
     }
 } else if (!isset($success['false']) and array_value_exists('action','mod',$data) and $data['shorten'] == 'ts3') {
-    $shorten=$data['shorten'];
-    $identifyUserBy=$data['identify_user_by'];
+    $shorten = $data['shorten'];
+    $identifyUserBy = $data['identify_user_by'];
     $localUserID=isid($data['user_localid'],21);
-    $externalUserID=$data['user_externalid'];
-    $username=$data['username'];
-    $identifyServerBy=$data['identify_server_by'];
+    $externalUserID = $data['user_externalid'];
+    $username = $data['username'];
+    $identifyServerBy = $data['identify_server_by'];
     $localServerID=isid($data['server_local_id'],21);
-    $externalServerID=$data['server_external_id'];
+    $externalServerID = $data['server_external_id'];
     $from=array('server_local_id' => 'id','server_external_id' => 'externalID');
     if (dataExist('identify_server_by',$data)) {
         $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $localID=$row['id'];
-            $userID=$row['userid'];
-            $hostID=$row['masterserver'];
-            $masterServerID=$row['masterserver'];
-            $oldSlots=$row['slots'];
-            $name=$row['ip'] . ':' . $row['port'];
+            $localID = $row['id'];
+            $userID = $row['userid'];
+            $hostID = $row['masterserver'];
+            $masterServerID = $row['masterserver'];
+            $oldSlots = $row['slots'];
+            $name = $row['ip'] . ':' . $row['port'];
             $usedPorts=usedPorts(array($row['ip']));
-            $oldActive=$row['active'];
+            $oldActive = $row['active'];
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID,$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -274,109 +274,109 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $eventualUpdate = '';
             if (isset($data['private']) and active_check($data['private'])) {
                 $updateArray[] = $data['private'];
-                $eventualUpdate.=',`password`=?';
-                $private=$data['private'];
+                $eventualUpdate .= ',`password`=?';
+                $private = $data['private'];
             }
             if (isset($data['port']) and port($data['port']) and !in_array($data['port'],$usedPorts)) {
                 $updateArray[] = $data['port'];
-                $eventualUpdate.=',`port`=?';
-                $port=$data['port'];
+                $eventualUpdate .= ',`port`=?';
+                $port = $data['port'];
             }
             if (isset($data['active']) and active_check($data['active'])) {
                 $updateArray[] = $data['active'];
-                $eventualUpdate.=',`active`=?';
-                $active=$data['active'];
+                $eventualUpdate .= ',`active`=?';
+                $active = $data['active'];
             }
             if (isset($data['slots']) and isid($data['slots'],11)) {
                 $updateArray[] = $data['slots'];
-                $eventualUpdate.=',`slots`=?';
-                $slots=$data['slots'];
+                $eventualUpdate .= ',`slots`=?';
+                $slots = $data['slots'];
             }
             if (isset($data['max_download_total_bandwidth']) and isid($data['max_download_total_bandwidth'],255)) {
                 $updateArray[] = $data['max_download_total_bandwidth'];
-                $eventualUpdate .=',`max_download_total_bandwidth`=?';
-                $max_download_total_bandwidth=$data['max_download_total_bandwidth'];
+                $eventualUpdate .= ',`max_download_total_bandwidth`=?';
+                $max_download_total_bandwidth = $data['max_download_total_bandwidth'];
             }
             if (isset($data['max_upload_total_bandwidth']) and isid($data['max_upload_total_bandwidth'],255)) {
                 $updateArray[] = $data['max_upload_total_bandwidth'];
-                $eventualUpdate .=',`max_upload_total_bandwidth`=?';
-                $max_upload_total_bandwidth=$data['max_upload_total_bandwidth'];
+                $eventualUpdate .= ',`max_upload_total_bandwidth`=?';
+                $max_upload_total_bandwidth = $data['max_upload_total_bandwidth'];
             }
             if (isset($data['maxtraffic']) and ($data['maxtraffic']==0 or $data['maxtraffic'] == '-1' or isid($data['maxtraffic'],255))) {
                 $updateArray[] = $data['maxtraffic'];
-                $eventualUpdate .=',`maxtraffic`=?';
-                $maxtraffic=$data['maxtraffic'];
+                $eventualUpdate .= ',`maxtraffic`=?';
+                $maxtraffic = $data['maxtraffic'];
             }
             if(isset($data['forcebanner']) and active_check($data['forcebanner'])) {
                 $updateArray[] = $data['forcebanner'];
-                $eventualUpdate .=',`forcebanner`=?';
-                $forcebanner=$data['forcebanner'];
+                $eventualUpdate .= ',`forcebanner`=?';
+                $forcebanner = $data['forcebanner'];
             }
             if(isset($data['forcebutton']) and active_check($data['forcebutton'])) {
                 $updateArray[] = $data['forcebutton'];
-                $eventualUpdate .=',`forcebutton`=?';
-                $forcebutton=$data['forcebutton'];
+                $eventualUpdate .= ',`forcebutton`=?';
+                $forcebutton = $data['forcebutton'];
             }
             if(isset($data['forceservertag']) and active_check($data['forceservertag'])) {
                 $updateArray[] = $data['forceservertag'];
-                $eventualUpdate .=',`forceservertag`=?';
-                $forceservertag=$data['forceservertag'];
+                $eventualUpdate .= ',`forceservertag`=?';
+                $forceservertag = $data['forceservertag'];
             }
             if(isset($data['forcewelcome']) and active_check($data['forcewelcome'])) {
                 $updateArray[] = $data['forcewelcome'];
-                $eventualUpdate .=',`forcewelcome`=?';
-                $forcewelcome=$data['forcewelcome'];
+                $eventualUpdate .= ',`forcewelcome`=?';
+                $forcewelcome = $data['forcewelcome'];
             }
             if(isset($data['lendserver']) and active_check($data['lendserver'])) {
                 $updateArray[] = $data['lendserver'];
-                $eventualUpdate .=',`lendserver`=?';
-                $lendserver=$data['lendserver'];
+                $eventualUpdate .= ',`lendserver`=?';
+                $lendserver = $data['lendserver'];
             }
             if(isset($data['backup']) and active_check($data['backup'])) {
                 $updateArray[] = $data['backup'];
-                $eventualUpdate .=',`backup`=?';
-                $backup=$data['backup'];
+                $eventualUpdate .= ',`backup`=?';
+                $backup = $data['backup'];
             }
             if(isset($data['flexSlots']) and active_check($data['flexSlots'])) {
                 $updateArray[] = $data['flexSlots'];
-                $eventualUpdate .=',`flexSlots`=?';
-                $flexSlots=$data['flexSlots'];
+                $eventualUpdate .= ',`flexSlots`=?';
+                $flexSlots = $data['flexSlots'];
             }
             if(isset($data['flexSlotsFree']) and isid($data['flexSlotsFree'],11)) {
                 $updateArray[] = $data['flexSlotsFree'];
-                $eventualUpdate .=',`flexSlotsFree`=?';
-                $flexSlotsFree=$data['flexSlotsFree'];
+                $eventualUpdate .= ',`flexSlotsFree`=?';
+                $flexSlotsFree = $data['flexSlotsFree'];
             }
             if(isset($data['flexSlotsPercent']) and isid($data['flexSlotsPercent'],3)) {
                 $updateArray[] = $data['flexSlotsPercent'];
-                $eventualUpdate .=',`flexSlotsPercent`=?';
-                $flexSlotsPercent=$data['flexSlotsPercent'];
+                $eventualUpdate .= ',`flexSlotsPercent`=?';
+                $flexSlotsPercent = $data['flexSlotsPercent'];
             }
             if(isset($data['tsdns']) and active_check($data['tsdns'])) {
-                $tsdns=$data['tsdns'];
+                $tsdns = $data['tsdns'];
             }
             if(isset($data['dns']) and $tsdns == 'Y' and isdomain($data['dns'])) {
                 $updateArray[] = $data['dns'];
-                $eventualUpdate .=',`dns`=?';
-                $dns=$data['dns'];
+                $eventualUpdate .= ',`dns`=?';
+                $dns = $data['dns'];
             }
             if(isset($data['autoRestart']) and active_check($data['autoRestart'])) {
                 $updateArray[] = $data['autoRestart'];
-                $eventualUpdate .=',`autoRestart`=?';
-                $flexSlots=$data['autoRestart'];
+                $eventualUpdate .= ',`autoRestart`=?';
+                $flexSlots = $data['autoRestart'];
             }
             if (count($updateArray)>0) {
                 $eventualUpdate = trim($eventualUpdate,',');
-                $eventualUpdate .=',';
+                $eventualUpdate .= ',';
             }
             $updateArray[] = $localID;
             $updateArray[] = $resellerID;
             $query = $sql->prepare("UPDATE `voice_server` SET $eventualUpdate `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute($updateArray);
             if (!in_array($active,$bad) and !in_array($slots,$bad) and ($active != $oldActive or $slots != $oldSlots)) {
-                $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
+                $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
                 $update->execute(array($localID,$resellerID));
-                $insert=$sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerID`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'md',?)");
+                $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerID`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'md',?)");
                 $insert->execute(array($hostID,$resellerID,$localID,$userID,$name,$resellerID));
             }
         }
@@ -387,18 +387,18 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         $success['false'][] = 'No data for this method';
     }
 } else if (!isset($success['false']) and array_value_exists('action','del',$data) and $data['shorten'] == 'ts3') {
-    $identifyServerBy=$data['identify_server_by'];
+    $identifyServerBy = $data['identify_server_by'];
     $localServerID=isid($data['server_local_id'],21);
-    $externalServerID=$data['server_external_id'];
+    $externalServerID = $data['server_external_id'];
     $from=array('server_local_id' => 'id','server_external_id' => 'externalID');
     if (dataExist('identify_server_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`ip`,`port`,`userid`,`masterserver` AS `hostID` FROM `voice_server` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']],$resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $localID=$row['id'];
-            $userID=$row['userid'];
-            $name=$row['ip'] . ':' . $row['port'];
-            $hostID=$row['hostID'];
+            $localID = $row['id'];
+            $userID = $row['userid'];
+            $name = $row['ip'] . ':' . $row['port'];
+            $hostID = $row['hostID'];
         }
         if(isset($localID) and isset($name)) {
             $query = $sql->prepare("UPDATE `voice_server` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -414,9 +414,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         $success['false'][] = 'No data for this method';
     }
 } else if (!isset($success['false']) and array_value_exists('action','ls',$data) and isset($data['identify_server_by'])) {
-    $identifyServerBy=$data['identify_server_by'];
+    $identifyServerBy = $data['identify_server_by'];
     $localServerID=isid($data['server_local_id'],21);
-    $externalServerID=$data['server_external_id'];
+    $externalServerID = $data['server_external_id'];
     $from=array('server_local_id' => 'id','server_external_id' => 'externalID');
     if (dataExist('identify_server_by',$data)) {
         $list = true;
@@ -429,7 +429,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 <!DOCTYPE voice>
 <voice>";
                 foreach ($row as $k=>$v) {
-                    $reply.='<'.$k.'>'.$v.'</'.$k.'>';
+                    $reply .= '<'.$k.'>'.$v.'</'.$k.'>';
                 }
                 $reply.="</voice>";
                 echo $reply;
@@ -451,7 +451,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 <!DOCTYPE voice>
 <voice>";
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $reply .=' <server>
+            $reply .= ' <server>
                 <id>'.$row['id'].'</id>
                 <usedns>'.$row['usedns'].'</usedns>
                 <ssh2ip>'.$row['ssh2ip'].'</ssh2ip>
@@ -471,7 +471,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 <defaulthostbutton_gfx_url>'.$row['defaulthostbutton_gfx_url'].'</defaulthostbutton_gfx_url>
                 </server>';
         }
-        $reply .='</voice>';
+        $reply .= '</voice>';
         header("Content-type: text/xml; charset=UTF-8");
         echo $reply;
     } else if ($apiType == 'json') {

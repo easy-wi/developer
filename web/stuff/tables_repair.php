@@ -1267,13 +1267,13 @@ foreach ($defined as $table => $t_p) {
         $keys_should_exist=array_keys($t_p);
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $array = '';
-            $Field=$row['Field'];
+            $Field = $row['Field'];
             $unset=array_search($Field,$keys_should_exist);
             if ($unset !== false) {
                 unset($keys_should_exist[$unset]);
             }
             if (isset($t_p[$Field])) {
-                $properties=$t_p[$Field];
+                $properties = $t_p[$Field];
                 foreach ($row as $key=>$value) {
                     if ($key != 'Field' and $key != 'Key' and !in_array($Field,$key_differ) and $properties[$key] != $value) {
                         $key_differ[] = $Field;
@@ -1308,13 +1308,13 @@ foreach ($defined as $table => $t_p) {
         if (count($change)>0) {
             $alter_query='ALTER TABLE `'.$table.'` '.implode(', ',$change);
             $response->add('CHANGE: '.$alter_query.'<br />');
-            $alter=$sql->prepare($alter_query);
+            $alter = $sql->prepare($alter_query);
             $alter->execute();
         }
         if (count($drop_key)>0) {
             $drop_query='ALTER TABLE `'.$table.'` '.implode(', ',$drop_key);
             $response->add('DROP: '.$drop_query.'<br />');
-            $drop=$sql->prepare($drop_query);
+            $drop = $sql->prepare($drop_query);
             $drop->execute();
         }
         foreach ($keys_should_exist as $key) {
@@ -1322,7 +1322,7 @@ foreach ($defined as $table => $t_p) {
             $current=current($t_p);
             $current_key=array_search($current,$t_p);
             while ($current !== false and $current_key != $key) {
-                $prev=$current_key;
+                $prev = $current_key;
                 $current=next($t_p);
                 $current_key=array_search($current,$t_p);
             }
@@ -1348,19 +1348,19 @@ foreach ($defined as $table => $t_p) {
         if (count($add_keys)>0) {
             $add_query='ALTER TABLE `'.$table.'` '.implode(', ',$add_keys);
             $response->add('ADD: '.$add_query.'<br />');
-            $add=$sql->prepare($add_query);
+            $add = $sql->prepare($add_query);
             $add->execute();
         }
         if(count($addIndex)>0) {
             $add_query='ALTER TABLE `'.$table.'` ADD INDEX(`'.implode('`),ADD INDEX(`',$addIndex).'`)';
             $response->add('ADD: '.$add_query.'<br />');
-            $add=$sql->prepare($add_query);
+            $add = $sql->prepare($add_query);
             $add->execute();
         }
         if(count($removeIndex)>0) {
             $remove_query='ALTER TABLE `'.$table.'` DROP INDEX `'.implode('`,DROP INDEX `',$removeIndex).'`';
             $response->add('ADD: '.$remove_query.'<br />');
-            $remove=$sql->prepare($remove_query);
+            $remove = $sql->prepare($remove_query);
             $remove->execute();
         }
     }

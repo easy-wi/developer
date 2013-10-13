@@ -55,13 +55,13 @@ if ($reseller_id==0) {
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id = $admin_id;
 }
-if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenceDetails['lG']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
+if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenceDetails['lG']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
     $template_file = $gsprache->licence;
 } else if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if ($ui->st('d','get') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
+} else if ($ui->st('d', 'get') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
 
-    if (!$ui->w('action',3,'post')) {
+    if (!$ui->w('action',3, 'post')) {
 
         $table = array();
         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
@@ -100,7 +100,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             } else {
                 $percenserver = 0;
             }
-            $serverusage[$rootid] = array('slots' => $percentslots,'server' => $percenserver);
+            $serverusage[$rootid] = array('slots' => $percentslots, 'server' => $percenserver);
             if (!isset($i)) $i = 0;
             if (!isset($available)) $available = 0;
             $ips=array($row['ip']);
@@ -143,14 +143,14 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
 
         $template_file = 'admin_gserver_add.tpl';
 
-    } else if ($ui->w('action',3,'post') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
-        if($ui->escaped('shorten','post') and $ui->id('customer',19,'post')) {
-            $customer = $ui->id('customer',19,'post');
+    } else if ($ui->w('action',3, 'post') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
+        if($ui->escaped('shorten', 'post') and $ui->id('customer',19, 'post')) {
+            $customer = $ui->id('customer',19, 'post');
             $count = 0;
-            foreach ($ui->escaped('shorten','post') as $i) $count++;
+            foreach ($ui->escaped('shorten', 'post') as $i) $count++;
             $i = 0;
-            if ($ui->id('rserver',19,'post')) {
-                $id = $ui->id('rserver',19,'post');
+            if ($ui->id('rserver',19, 'post')) {
+                $id = $ui->id('rserver',19, 'post');
                 $query = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($id,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -159,7 +159,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 }
                 $table = array();
                 $gamestring = $count;
-                foreach($ui->escaped('shorten','post') as $shortencase=>$shorten) {
+                foreach($ui->escaped('shorten', 'post') as $shortencase=>$shorten) {
                     if (wpreg_check($shorten,30)) {
                         $query = $sql->prepare("SELECT t.*,r.`installing` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE t.`shorten`=? AND t.`resellerid`=? AND r.`serverid`=? LIMIT 1");
                         $query->execute(array($shorten,$reseller_id,$id));
@@ -315,39 +315,39 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
         } else {
             $template_file = $sprache->no_game;
         }
-    } else if ($ui->w('action',3,'post')=="ad2" and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
+    } else if ($ui->w('action',3, 'post')=="ad2" and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
         $error = array();
-        if (!$ui->gamestring('gamestring','post')) $error[] = 'Gamestring';
-        if (!$ui->id('id',19,'post')) $error[] = 'rootID';
-        if (!$ui->id('customer',19,'post')) $error[] = 'userID';
-        if (!$ui->id('slots',3,'post')) $error[] = 'Slots';
-        if (!$ui->ip('ip','post')) $error[] = 'IP';
-        if (!$ui->port('port','post')) $error[] = 'Port';
+        if (!$ui->gamestring('gamestring', 'post')) $error[] = 'Gamestring';
+        if (!$ui->id('id',19, 'post')) $error[] = 'rootID';
+        if (!$ui->id('customer',19, 'post')) $error[] = 'userID';
+        if (!$ui->id('slots',3, 'post')) $error[] = 'Slots';
+        if (!$ui->ip('ip', 'post')) $error[] = 'IP';
+        if (!$ui->port('port', 'post')) $error[] = 'Port';
         if (count($error)==0) {
-            $gamestringPost = $ui->gamestring('gamestring','post');
-            $serverid = $ui->id('id',19,'post');
-            $slots = $ui->id('slots',3,'post');
-            $serverip = $ui->ip('ip','post');
-            $autoRestart = ($ui->active('autoRestart','post')) ? $ui->active('autoRestart','post') : 'N';
-            $active = ($ui->active('active','post')) ? $ui->active('active','post') : 'Y';
-            $taskset = ($ui->active('taskset','post')) ? $ui->active('taskset','post') : 'N';
-            $eacallowed = ($ui->active('eacallowed','post')) ? $ui->active('eacallowed','post') : 'N';
-            $brandname = ($ui->active('brandname','post')) ? $ui->active('brandname','post') : 'Y';
-            $war = ($ui->active('war','post')) ? $ui->active('war','post') : 'N';
-            $tvenable = ($ui->active('tvenable','post')) ? $ui->active('tvenable','post') : 'N';
-            $lendserver = ($ui->active('lendserver','post')) ? $ui->active('lendserver','post') : 'N';
-            $pallowed = ($ui->active('pallowed','post')) ? $ui->active('pallowed','post') : 'N';
-            $customer = $ui->id('customer',19,'post');
-            $port = $ui->port('port','post');
+            $gamestringPost = $ui->gamestring('gamestring', 'post');
+            $serverid = $ui->id('id',19, 'post');
+            $slots = $ui->id('slots',3, 'post');
+            $serverip = $ui->ip('ip', 'post');
+            $autoRestart = ($ui->active('autoRestart', 'post')) ? $ui->active('autoRestart', 'post') : 'N';
+            $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
+            $taskset = ($ui->active('taskset', 'post')) ? $ui->active('taskset', 'post') : 'N';
+            $eacallowed = ($ui->active('eacallowed', 'post')) ? $ui->active('eacallowed', 'post') : 'N';
+            $brandname = ($ui->active('brandname', 'post')) ? $ui->active('brandname', 'post') : 'Y';
+            $war = ($ui->active('war', 'post')) ? $ui->active('war', 'post') : 'N';
+            $tvenable = ($ui->active('tvenable', 'post')) ? $ui->active('tvenable', 'post') : 'N';
+            $lendserver = ($ui->active('lendserver', 'post')) ? $ui->active('lendserver', 'post') : 'N';
+            $pallowed = ($ui->active('pallowed', 'post')) ? $ui->active('pallowed', 'post') : 'N';
+            $customer = $ui->id('customer',19, 'post');
+            $port = $ui->port('port', 'post');
             $gsfolder = $serverip . '_' . $port;
             $server = $serverip . ':' . $port;
-            $port2 = $ui->port('port2','post');
-            $port3 = $ui->port('port3','post');
-            $port4 = $ui->port('port4','post');
-            $port5 = $ui->port('port5','post');
-            $minram = $ui->id('minram',10,'post');
-            $maxram = $ui->id('maxram',10,'post');
-            $ftppass = $ui->password('password',50,'post');
+            $port2 = $ui->port('port2', 'post');
+            $port3 = $ui->port('port3', 'post');
+            $port4 = $ui->port('port4', 'post');
+            $port5 = $ui->port('port5', 'post');
+            $minram = $ui->id('minram',10, 'post');
+            $maxram = $ui->id('maxram',10, 'post');
+            $ftppass = $ui->password('password',50, 'post');
             $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=? AND `serverip`=? AND `port`=? AND `userid`!=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($serverid,$serverip,$port,$customer,$reseller_id));
             if ($query->rowCount()==0) {
@@ -416,20 +416,20 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                         $gamemod = 'N';
                         $gamemod2 = '';
                     }
-                    $fps = $ui->id("fps_$shorten",6,'post');
-                    $map = $ui->mapname("map_$shorten",'post');
-                    $mapGroup = $ui->mapname("mapGroup_$shorten",'post');
-                    $cmd = $ui->startparameter("cmd_$shorten",'post');
-                    $owncmd = $ui->active("owncmd_$shorten",'post');
-                    $tic = $ui->id("tic_$shorten",5,'post');
-                    $userfps = ($ui->active("user_fps_$shorten",'post')) ? $ui->active("user_fps_$shorten",'post') : 'N';
-                    $usertick = ($ui->active("user_tick_$shorten",'post')) ? $ui->active("user_tick_$shorten",'post') : 'N';
-                    $usermap = ($ui->active("user_map_$shorten",'post')) ? $ui->active("user_map_$shorten",'post') : 'N';
-                    $user_uploaddir = ($ui->active("user_uploaddir_$shorten",'post')) ? $ui->active("user_uploaddir_$shorten",'post') : 'N';
-                    if ($ui->id("upload_$shorten",1,'post')) {
-                        $upload = $ui->id("upload_$shorten",1,'post');
+                    $fps = $ui->id("fps_$shorten",6, 'post');
+                    $map = $ui->mapname("map_$shorten", 'post');
+                    $mapGroup = $ui->mapname("mapGroup_$shorten", 'post');
+                    $cmd = $ui->startparameter("cmd_$shorten", 'post');
+                    $owncmd = $ui->active("owncmd_$shorten", 'post');
+                    $tic = $ui->id("tic_$shorten",5, 'post');
+                    $userfps = ($ui->active("user_fps_$shorten", 'post')) ? $ui->active("user_fps_$shorten", 'post') : 'N';
+                    $usertick = ($ui->active("user_tick_$shorten", 'post')) ? $ui->active("user_tick_$shorten", 'post') : 'N';
+                    $usermap = ($ui->active("user_map_$shorten", 'post')) ? $ui->active("user_map_$shorten", 'post') : 'N';
+                    $user_uploaddir = ($ui->active("user_uploaddir_$shorten", 'post')) ? $ui->active("user_uploaddir_$shorten", 'post') : 'N';
+                    if ($ui->id("upload_$shorten",1, 'post')) {
+                        $upload = $ui->id("upload_$shorten",1, 'post');
                         if ($upload>1) {
-                            $uploaddir = $ui->url("uploaddir_$shorten",'post');
+                            $uploaddir = $ui->url("uploaddir_$shorten", 'post');
                         } else {
                             $uploaddir = '';
                         }
@@ -464,14 +464,14 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                         $gamestring[] = $shorten;
                         $query = $sql->prepare("INSERT INTO `serverlist` (`servertype`,`anticheat`,`switchID`,`fps`,`map`,`mapGroup`,`cmd`,`modcmd`,`owncmd`,`tic`,`gamemod`,`gamemod2`,`userfps`,`usertick`,`usermap`,`user_uploaddir`,`upload`,`uploaddir`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?)");
                         $query->execute(array($servertype,$anticheat,$switchID,$fps,$map,$mapGroup,$cmd,$modcmd,$owncmd,$tic,$gamemod,$gamemod2,$userfps,$usertick,$usermap,$user_uploaddir,$upload,$uploaddir,$aeskey,$reseller_id));
-                        if ($shorten == $ui->escaped('primary','post')) {
+                        if ($shorten == $ui->escaped('primary', 'post')) {
                             $query = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                             $query->execute(array($switchID,$reseller_id));
                             $lastServerID = $query->fetchColumn();
                         }
-                        $template_file  .= $shorten.": ".$sprache->server_installed.'<br />';
+                        $template_file .= $shorten.": ".$sprache->server_installed.'<br />';
                     } else {
-                        $template_file  .= $shorten.": ".$sprache->error_folder.'<br />';
+                        $template_file .= $shorten.": ".$sprache->error_folder.'<br />';
                     }
                     $i++;
                 }
@@ -492,9 +492,9 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                     $gsuser = $cname . '-' . $switchID;
                     $cmds = array();
                     $cmds[]="./control.sh add ${gsuser} ${ftppass} ${sshuser} ${ftppass2}";
-                    if ($ui->id('installGames',1,'post')==2) $gamestring=array($ui->escaped('primary','post'));
+                    if ($ui->id('installGames',1, 'post')==2) $gamestring=array($ui->escaped('primary', 'post'));
                     $gamestring=count($gamestring) . '_' . implode('_',$gamestring);
-                    if ($ui->id('installGames',1,'post')!=3) $cmds[]="sudo -u ${gsuser} ./control.sh addserver ${gsuser} ${gamestring} ${gsfolder}";
+                    if ($ui->id('installGames',1, 'post')!=3) $cmds[]="sudo -u ${gsuser} ./control.sh addserver ${gsuser} ${gamestring} ${gsfolder}";
                     ssh2_execute('gs',$serverid,$cmds);
                 } else {
                     $reply="Could not insert data into database";
@@ -514,7 +514,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'dl' and $ui->id('id', 10, 'get')) {
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
     $server_id = $ui->id('id', 10, 'get');
     if (!isset($action)) {
         $table = array();
@@ -535,7 +535,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $template_file = 'admin_404.tpl';
         }
     } else if ($action == 'dl') {
-        if ($ui->w('safeDelete',1,'post') != 'D') include(EASYWIDIR . "/stuff/ssh_exec.php");
+        if ($ui->w('safeDelete',1, 'post') != 'D') include(EASYWIDIR . "/stuff/ssh_exec.php");
         $query = $sql->prepare("SELECT `newlayout`,`serverip`,`port`,`userid`,`rootID`,AES_DECRYPT(`ppassword`,?) AS `protectedpw`,AES_DECRYPT(`ftppassword`,?) AS `ftpPWD` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -547,7 +547,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $ftppass = $row['ftpPWD'];
             $ftppass2 = $row['protectedpw'];
             $gsfolder = $serverip . '_' . $port;
-            if ($ui->w('safeDelete',1,'post') != 'D') {
+            if ($ui->w('safeDelete',1, 'post') != 'D') {
                 $cmds=gsrestart($server_id,'so',$aeskey,$reseller_id);
                 if (is_array($cmds) and count($cmds)>0) ssh2_execute('gs', $row['hostID'],$cmds);
             }
@@ -567,15 +567,15 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
         }
         $gamestring = $count;
         $description = '';
-        if ($count>0 and $ui->id('id',19,'post') and (is_array($ui->id('id',19,'post')) or is_object($ui->id('id',19,'post')))) {
+        if ($count>0 and $ui->id('id',19, 'post') and (is_array($ui->id('id',19, 'post')) or is_object($ui->id('id',19, 'post')))) {
             $query = $sql->prepare("SELECT t.`shorten`,t.`description` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query2 = $sql->prepare("DELETE FROM `serverlist` WHERE id=? AND `resellerid`=? LIMIT 1");
             $query3 = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
-            foreach($ui->id('id',19,'post') as $id) {
+            foreach($ui->id('id',19, 'post') as $id) {
                 $query->execute(array($id,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $shorten = $row['shorten'];
-                    $description  .= $row['description'].'<br />';
+                    $description .= $row['description'].'<br />';
                     $gamestring .= '_'.$shorten;
                     $query2->execute(array($id,$reseller_id));
                     $query3->execute(array($id,$reseller_id));
@@ -608,10 +608,10 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
         }
         $cmds = array();
         if (($num3>0 and $newlayout == 'N') or ($newlayout == 'Y' and $num3_2>0)) {
-            if ($ui->w('safeDelete',1,'post') != 'D') $cmds[]="sudo -u $server_customer ./control.sh delserver $server_customer $gamestring $gsfolder";;
-            if ($ui->w('safeDelete',1,'post') != 'D') $cmds[]="sudo -u $server_customer-p ./control.sh delserver $server_customer-p $gamestring $gsfolder";
+            if ($ui->w('safeDelete',1, 'post') != 'D') $cmds[]="sudo -u $server_customer ./control.sh delserver $server_customer $gamestring $gsfolder";;
+            if ($ui->w('safeDelete',1, 'post') != 'D') $cmds[]="sudo -u $server_customer-p ./control.sh delserver $server_customer-p $gamestring $gsfolder";
             $template_file = $sprache->delete_server.": ";
-            $template_file  .= $description."<br />";
+            $template_file .= $description."<br />";
             $query = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($server_id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -619,9 +619,9 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $query->execute(array($row['id'],$server_id,$reseller_id));
             }
         } else {
-            if ($ui->w('safeDelete',1,'post') != 'D') $cmds[]="sudo -u $server_customer ./control.sh delscreen $server_customer" ;
-            if ($ui->w('safeDelete',1,'post') != 'D') $cmds[]="sudo -u $server_customer-p ./control.sh delscreen $server_customer-p";
-            if ($ui->w('safeDelete',1,'post') != 'D') $cmds[]="./control.sh delCustomer $server_customer";
+            if ($ui->w('safeDelete',1, 'post') != 'D') $cmds[]="sudo -u $server_customer ./control.sh delscreen $server_customer" ;
+            if ($ui->w('safeDelete',1, 'post') != 'D') $cmds[]="sudo -u $server_customer-p ./control.sh delscreen $server_customer-p";
+            if ($ui->w('safeDelete',1, 'post') != 'D') $cmds[]="./control.sh delCustomer $server_customer";
             $template_file = $sprache->no_server_left;
         }
         if (isset($rootID)) {
@@ -634,7 +634,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'md' and $ui->id('id', 10, 'get')) {
+} else if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get')) {
     $server_id = $ui->id('id', 10, 'get');
     if (!isset($action)) {
         $table = array();
@@ -763,42 +763,42 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
         }
     } else if ($action == 'md'){
         $error = array();
-        if (!$ui->gamestring('gamestring','post')) {
+        if (!$ui->gamestring('gamestring', 'post')) {
             $error[] = 'Gamestring';
         }
-        if (!$ui->id('slots',3,'post')) {
+        if (!$ui->id('slots',3, 'post')) {
             $error[] = 'Slots';
         }
-        if (!$ui->ip('ip','post')) {
+        if (!$ui->ip('ip', 'post')) {
             $error[] = 'IP';
         }
-        if (!$ui->port('port','post')) {
+        if (!$ui->port('port', 'post')) {
             $error[] = 'Port';
         }
         if (count($error)==0) {
-            $serverip_new = $ui->ip('ip','post');
-            $gamestring = $ui->gamestring('gamestring','post');
-            $ftppassword_new = $ui->password('password',50,'post');
-            $slots = $ui->id('slots',3,'post');
-            $customer = $ui->id('customer',19,'post');
-            $port_new = $ui->port('port','post');
-            $port2 = $ui->port('port2','post');
-            $port3 = $ui->port('port3','post');
-            $port4 = $ui->port('port4','post');
-            $port5 = $ui->port('port5','post');
-            $minram = $ui->id('minram',10,'post');
-            $maxram = $ui->id('maxram',10,'post');
-            $tvenable = ($ui->active('tvenable','post')) ? $ui->active('tvenable','post') : 'N';
-            $autoRestart = ($ui->active('autoRestart','post')) ? $ui->active('autoRestart','post') : 'N';
-            $active = ($ui->active('active','post')) ? $ui->active('active','post') : 'Y';
-            $taskset = ($ui->active('taskset','post')) ? $ui->active('taskset','post') : 'N';
-            $eacallowed = ($ui->active('eacallowed','post')) ? $ui->active('eacallowed','post') : 'N';
-            $brandname = ($ui->active('brandname','post')) ? $ui->active('brandname','post') : 'Y';
-            $war = ($ui->active('war','post')) ? $ui->active('war','post') : 'N';
-            $lendserver = ($ui->active('lendserver','post')) ? $ui->active('lendserver','post') : 'N';
-            $pallowed = ($ui->active('pallowed','post')) ? $ui->active('pallowed','post') : 'N';
-            $ftppass = $ui->password('password',50,'post');
-            $pallowed = $ui->active('pallowed','post');
+            $serverip_new = $ui->ip('ip', 'post');
+            $gamestring = $ui->gamestring('gamestring', 'post');
+            $ftppassword_new = $ui->password('password',50, 'post');
+            $slots = $ui->id('slots',3, 'post');
+            $customer = $ui->id('customer',19, 'post');
+            $port_new = $ui->port('port', 'post');
+            $port2 = $ui->port('port2', 'post');
+            $port3 = $ui->port('port3', 'post');
+            $port4 = $ui->port('port4', 'post');
+            $port5 = $ui->port('port5', 'post');
+            $minram = $ui->id('minram',10, 'post');
+            $maxram = $ui->id('maxram',10, 'post');
+            $tvenable = ($ui->active('tvenable', 'post')) ? $ui->active('tvenable', 'post') : 'N';
+            $autoRestart = ($ui->active('autoRestart', 'post')) ? $ui->active('autoRestart', 'post') : 'N';
+            $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
+            $taskset = ($ui->active('taskset', 'post')) ? $ui->active('taskset', 'post') : 'N';
+            $eacallowed = ($ui->active('eacallowed', 'post')) ? $ui->active('eacallowed', 'post') : 'N';
+            $brandname = ($ui->active('brandname', 'post')) ? $ui->active('brandname', 'post') : 'Y';
+            $war = ($ui->active('war', 'post')) ? $ui->active('war', 'post') : 'N';
+            $lendserver = ($ui->active('lendserver', 'post')) ? $ui->active('lendserver', 'post') : 'N';
+            $pallowed = ($ui->active('pallowed', 'post')) ? $ui->active('pallowed', 'post') : 'N';
+            $ftppass = $ui->password('password',50, 'post');
+            $pallowed = $ui->active('pallowed', 'post');
             include(EASYWIDIR . '/stuff/ssh_exec.php');
             $query = $sql->prepare("SELECT `newlayout`,`userid`,AES_DECRYPT(`ftppassword`,?) AS `ftp`,AES_DECRYPT(`ppassword`,?) AS `ppass`,`active`,`rootID`,`serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`userid`,`slots` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
@@ -927,21 +927,21 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             $num_check = 0;
             while ($i <= $gamecount) {
                 $shorten = $gamestring_awk[$i];
-                $id = $ui->id("id_$shorten",19,'post');
-                $fps = $ui->id("fps_$shorten",6,'post');
-                $map = $ui->mapname("map_$shorten",'post');
-                $mapGroup = $ui->mapname("mapGroup_$shorten",'post');
-                $cmd = $ui->startparameter("cmd_$shorten",'post');
-                $owncmd = $ui->active("owncmd_$shorten",'post');
-                $tic = $ui->id("tic_$shorten",5,'post');
-                $userfps = ($ui->active("user_fps_$shorten",'post')) ? $ui->active("user_fps_$shorten",'post') : 'N';
-                $usertick = ($ui->active("user_tick_$shorten",'post')) ? $ui->active("user_tick_$shorten",'post') : 'N';
-                $usermap = ($ui->active("user_map_$shorten",'post')) ? $ui->active("user_map_$shorten",'post') : 'N';
-                $user_uploaddir = ($ui->active("user_uploaddir_$shorten",'post')) ? $ui->active("user_uploaddir_$shorten",'post') : 'N';
-                if ($ui->id("upload_$shorten",1,'post')) {
-                    $upload = $ui->id("upload_$shorten",1,'post');
+                $id = $ui->id("id_$shorten",19, 'post');
+                $fps = $ui->id("fps_$shorten",6, 'post');
+                $map = $ui->mapname("map_$shorten", 'post');
+                $mapGroup = $ui->mapname("mapGroup_$shorten", 'post');
+                $cmd = $ui->startparameter("cmd_$shorten", 'post');
+                $owncmd = $ui->active("owncmd_$shorten", 'post');
+                $tic = $ui->id("tic_$shorten",5, 'post');
+                $userfps = ($ui->active("user_fps_$shorten", 'post')) ? $ui->active("user_fps_$shorten", 'post') : 'N';
+                $usertick = ($ui->active("user_tick_$shorten", 'post')) ? $ui->active("user_tick_$shorten", 'post') : 'N';
+                $usermap = ($ui->active("user_map_$shorten", 'post')) ? $ui->active("user_map_$shorten", 'post') : 'N';
+                $user_uploaddir = ($ui->active("user_uploaddir_$shorten", 'post')) ? $ui->active("user_uploaddir_$shorten", 'post') : 'N';
+                if ($ui->id("upload_$shorten",1, 'post')) {
+                    $upload = $ui->id("upload_$shorten",1, 'post');
                     if ($upload>1) {
-                        $uploaddir = $ui->url("uploaddir_$shorten",'post');
+                        $uploaddir = $ui->url("uploaddir_$shorten", 'post');
                     } else {
                         $uploaddir = '';
                     }
@@ -951,7 +951,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 }
                 $query = $sql->prepare("UPDATE `serverlist` SET `fps`=?,`map`=?,`mapGroup`=?,`cmd`=?,`owncmd`=?,`tic`=?,`userfps`=?,`usertick`=?,`usermap`=?,`user_uploaddir`=?,`upload`=?,`uploaddir`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($fps,$map,$mapGroup,$cmd,$owncmd,$tic,$userfps,$usertick,$usermap,$user_uploaddir,$upload,$uploaddir,$aeskey,$id,$reseller_id));
-                $template_file  .= $shorten . '  ' . $serverip_new . ':' . $port_new.": ".$sprache->server_ud."<br />";
+                $template_file .= $shorten . '  ' . $serverip_new . ':' . $port_new.": ".$sprache->server_ud."<br />";
                 $i++;
             }
             if (isset($updateGo)) {
@@ -966,7 +966,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if ($ui->st('d','get') == 'ri' and $ui->id('id', 10, 'get')) {
+} else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get')) {
     $server_id = $ui->id('id', 10, 'get');
     if (!isset($action)) {
         $table = array();
@@ -1002,11 +1002,11 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
         }
 
         # https://github.com/easy-wi/developer/issues/69
-        $templates = (array) $ui->id('template',10,'post');
+        $templates = (array) $ui->id('template',10, 'post');
         foreach($templates as $id => $tpl) {
             if ($tpl>0) {
                 $template[] = $tpl;
-                if ($ui->active('type','post') == 'Y') {
+                if ($ui->active('type', 'post') == 'Y') {
                     $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
                     $query->execute(array($id,$reseller_id));
                     $query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
@@ -1023,7 +1023,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 }
             }
         }
-        if (count($gamestring)>0 and $ui->active('type','post')) {
+        if (count($gamestring)>0 and $ui->active('type', 'post')) {
             include(EASYWIDIR . '/stuff/ssh_exec.php');
             $gamestring=count($gamestring) . '_' . implode('_',$gamestring);
             $rdata=serverdata('root',$serverid,$aeskey);
@@ -1036,7 +1036,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $ftppass = $row['cftppass'];
                 if ($row['newlayout'] == 'Y') $customer = $customer . '-' . $row['id'];
-                if ($ui->active('type','post') == 'Y') {
+                if ($ui->active('type', 'post') == 'Y') {
                     $cmds=gsrestart($row['id'], 'so',$aeskey,$reseller_id);
                     $cmds[]="./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10);
                     $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
@@ -1057,7 +1057,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if (in_array($ui->st('d','get'), array('rs','st','du')) and $ui->id('id', 10, 'get')) {
+} else if (in_array($ui->st('d', 'get'), array('rs','st','du')) and $ui->id('id', 10, 'get')) {
     $id = $ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
@@ -1069,15 +1069,15 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
     }
     if (isset($gsip) and isset($port)) {
         include(EASYWIDIR . '/stuff/ssh_exec.php');
-        if ($ui->st('d','get') == 'rs') {
+        if ($ui->st('d', 'get') == 'rs') {
             $template_file = 'Restart done';
             $cmds=gsrestart($id,'re',$aeskey,$reseller_id);
             $loguseraction="%start% %gserver% $gsip:$port";
-        } else if ($ui->st('d','get') == 'st') {
+        } else if ($ui->st('d', 'get') == 'st') {
             $template_file = 'Stop done';
             $cmds=gsrestart($id,'so',$aeskey,$reseller_id);
             $loguseraction="%stop% %gserver% $gsip:$port";
-        } else if ($ui->st('d','get') == 'du') {
+        } else if ($ui->st('d', 'get') == 'du') {
             $template_file = 'SourceTV upload started';
             $cmds=gsrestart($id,'du',$aeskey,$reseller_id);
             $loguseraction="%movie% %gserver% $gsip:$port";
@@ -1088,28 +1088,28 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
         $template_file = 'admin_404.tpl';
     }
 } else {
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'di') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'di') {
         $orderby = 'g.`id` DESC';
-    } else if ($ui->st('o','get') == 'ai') {
+    } else if ($ui->st('o', 'get') == 'ai') {
         $orderby = 'g.`id` ASC';
-    } else if ($ui->st('o','get') == 'dt') {
+    } else if ($ui->st('o', 'get') == 'dt') {
         $orderby = 'g.`active` ASC';
-    } else if ($ui->st('o','get') == 'at') {
+    } else if ($ui->st('o', 'get') == 'at') {
         $orderby = 'g.`active` ASC';
-    } else if ($ui->st('o','get') == 'da') {
+    } else if ($ui->st('o', 'get') == 'da') {
         $orderby = 'u.`cname` DESC,g.`serverip` ASC,g.`port` ASC';
-    } else if ($ui->st('o','get') == 'aa') {
+    } else if ($ui->st('o', 'get') == 'aa') {
         $orderby = 'u.`cname` ASC,g.`serverip` ASC,g.`port` ASC';
-    } else if ($ui->st('o','get') == 'dn') {
+    } else if ($ui->st('o', 'get') == 'dn') {
         $orderby = 'u.`name` DESC,u.`vname` DESC,g.`serverip` ASC,g.`port` ASC';
-    } else if ($ui->st('o','get') == 'an') {
+    } else if ($ui->st('o', 'get') == 'an') {
         $orderby = 'u.`name` ASC,u.`vname` ASC,g.`serverip` ASC,g.`port` ASC';
-    } else if ($ui->st('o','get') == 'dl') {
+    } else if ($ui->st('o', 'get') == 'dl') {
         $orderby = 'g.`lendserver` DESC';
-    } else if ($ui->st('o','get') == 'al') {
+    } else if ($ui->st('o', 'get') == 'al') {
         $orderby = 'g.`lendserver` ASC';
-    } else if ($ui->st('o','get') == 'ds') {
+    } else if ($ui->st('o', 'get') == 'ds') {
         $orderby = 'g.`serverip` DESC,g.`port` DESC';
     } else {
         $orderby = 'g.`serverip` ASC,g.`port` ASC';
@@ -1187,7 +1187,7 @@ if ($ui->st('d','get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenc
                 $nameremoved="<div class=\"error\">".$sprache->nameremoved."</div>";
             }
         }
-        $table[] = array('serveractive' => $serveractive,'shorten' => $row['shorten'], 'useractive' => $row['useractive'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'img' => $imgName,'alt' => $imgAlt,'premoved' => $premoved,'nameremoved' => $nameremoved,'server' => $server,'serverid' => $serverid,'name' => $name,'type' => $type,'map' => $map,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'id' => $userid,'lendserver' => $lendserver,'active' => $row['active'], 'jobPending' => $jobPending);
+        $table[] = array('serveractive' => $serveractive,'shorten' => $row['shorten'], 'useractive' => $row['useractive'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'img' => $imgName,'alt' => $imgAlt,'premoved' => $premoved,'nameremoved' => $nameremoved, 'server' => $server,'serverid' => $serverid,'name' => $name,'type' => $type,'map' => $map,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'id' => $userid,'lendserver' => $lendserver,'active' => $row['active'], 'jobPending' => $jobPending);
     }
     $next = $start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;

@@ -42,7 +42,7 @@ function serverQuery ($ip, $port, $type) {
 	if ($errnum == 111) {
         return $errstr;
         
-	} else if ($socket==false) {
+	} else if ($socket == false) {
 		usleep(250000);
         $socket = @fsockopen('udp://' . $ip, (int) $port, $errnum, $errstr, 5);
 	}

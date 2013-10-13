@@ -57,7 +57,7 @@ class masterServer {
         // fetch global PDO object
         global $sql;
 
-        $this->aeskey=$aeskey;
+        $this->aeskey = $aeskey;
 
         // get the current webhost
         $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`='0' LIMIT 1");
@@ -67,7 +67,7 @@ class masterServer {
         }
 
         // store the rootserverID
-        $this->rootID=$rootID;
+        $this->rootID = $rootID;
 
         // fetch rootserverdata
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id LIMIT 1");
@@ -86,7 +86,7 @@ class masterServer {
 
             // Get the imageserver if possible and use Easy-WI server as fallback
             $mainip=explode('.', $this->sship);
-            $mainsubnet=$mainip[0] . '.' . $mainip[1] . '.' . $mainip[2];
+            $mainsubnet = $mainip[0] . '.' . $mainip[1] . '.' . $mainip[2];
             $query = $sql->prepare("SELECT AES_DECRYPT(`imageserver`,?) AS `decryptedimageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $this->resellerID));
             $splitImageservers=preg_split('/\r\n/', $query->fetchColumn(), -1, PREG_SPLIT_NO_EMPTY);
@@ -112,10 +112,10 @@ class masterServer {
                         
                     } else if (isip($splitip,'all')) {
                         $ipparts=explode('.', $splitip);
-                        $subnet=$ipparts[0] . '.' . $ipparts[1] . '.' . $ipparts[2];
+                        $subnet = $ipparts[0] . '.' . $ipparts[1] . '.' . $ipparts[2];
                         
                         if ($mainsubnet == $subnet) {
-                            $imageserver=$server;
+                            $imageserver = $server;
                         }
                     }
                 }
@@ -341,7 +341,7 @@ class masterServer {
 
         // Nothing to update
         if ($syncCount == 0 and $noSteamCount == 0 and $steamCmdCount == 0 and $hldsCount == 0 and $mcCount == 0) {
-            $this->sshcmd=null;
+            $this->sshcmd = null;
             
         } else {
 

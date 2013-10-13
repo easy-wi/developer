@@ -44,15 +44,15 @@ include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
-if (isset($admin_id) and $ui->st('img','get')) {
+if (isset($admin_id) and $ui->st('img', 'get')) {
     $pa = User_Permissions($admin_id);
     $multiplier = 1;
-    if ($ui->st('img','get') == 'tr' and ($pa['traffic'] or $pa['root'])) {
+    if ($ui->st('img', 'get') == 'tr' and ($pa['traffic'] or $pa['root'])) {
         $values = array();
         $query = $sql->prepare("SELECT `multiplier`,`text_colour_1`,`text_colour_2`,`text_colour_3`,`barin_colour_1`,`barin_colour_2`,`barin_colour_3`,`barout_colour_1`,`barout_colour_2`,`barout_colour_3`,`bartotal_colour_1`,`bartotal_colour_2`,`bartotal_colour_3`,`bg_colour_1`,`bg_colour_2`,`bg_colour_3`,`border_colour_1`,`border_colour_2`,`border_colour_3`,`line_colour_1`,`line_colour_2`,`line_colour_3` FROM `traffic_settings` LIMIT 1");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $multiplier=$row['multiplier'];
+            $multiplier = $row['multiplier'];
             $text_colour_1 = $row['text_colour_1'];
             $text_colour_2 = $row['text_colour_2'];
             $text_colour_3 = $row['text_colour_3'];
@@ -77,7 +77,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
         }
         if ($ui->id('id', 19, 'get') and $list_gtype != '' and $ui->id('p', 19, 'get') . '-' . $ui->port('po', 'get') . '-' . $ui->id('id',19, 'get') > 0) {
             $i = 0;
-            $stop=$list_gtype;
+            $stop = $list_gtype;
             if ($ui->st('d', 'get') == 'md' or $d== "da") {
                 $starttime = strtotime($ui->id('p', 19, 'get') . '-' . $ui->port('po', 'get') . '-' . $ui->id('id',19, 'get'));
             } else if ($ui->st('d', 'get') == 'mo') {
@@ -328,7 +328,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
             header("Content-type:image/png");
             imagepng($img);
         }
-    } else if ($ui->st('img','get') == 'vo' and ($pa['voicemasterserver'] or $pa['voiceserver'] or $pa['root'])) {
+    } else if ($ui->st('img', 'get') == 'vo' and ($pa['voicemasterserver'] or $pa['voiceserver'] or $pa['root'])) {
         $values = array();
         $query = $sql->prepare("SELECT * FROM `voice_stats_settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
@@ -354,7 +354,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
         }
         if ($ui->id('id', 19, 'get') and $list_gtype != '' and $start>0) {
             $i = 0;
-            $stop=$list_gtype;
+            $stop = $list_gtype;
             if ($ui->st('d', 'get') == 'md' or $ui->st('d', 'get') == 'to') {
                 $stop = 23;
                 $starttime = strtotime($ui->id('p', 19, 'get') . '-' . $ui->port('po', 'get') . '-' . $ui->id('id',19, 'get'));
@@ -492,7 +492,7 @@ if (isset($admin_id) and $ui->st('img','get')) {
             imagepng($img);
         }
     }
-} else if (!$ui->st('img','get')) {
+} else if (!$ui->st('img', 'get')) {
     $randompass = passwordgenerate(4);
     $_SESSION['captcha'] = md5($randompass);
     $captcha = $randompass;
@@ -515,4 +515,4 @@ if (isset($admin_id) and $ui->st('img','get')) {
     header("Content-type: image/png");
     imagepng($bild);
 }
-$sql=null;
+$sql = null;

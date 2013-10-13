@@ -50,42 +50,42 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
     $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`rootID`,g.`newlayout`,s.`map`,t.`shorten`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,u.`cname`,AES_DECRYPT(u.`ftpbackup`,?) AS `ftp` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey,$aeskey,$id,$user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $serverip=$row['serverip'];
-        $port=$row['port'];
-        $gsfolder=$serverip . '_' . $port;
-        $map=$row['map'];
-        $gsswitch=$row['shorten'];
-        $rootid=$row['rootID'];
-        $ftppass=$row['dftppassword'];
-        $customer=$row['cname'];
-        if ($row['newlayout'] == 'Y') $customer=$customer . '-' . $id;
-        $ftpbackup=$row['ftp'];
+        $serverip = $row['serverip'];
+        $port = $row['port'];
+        $gsfolder = $serverip . '_' . $port;
+        $map = $row['map'];
+        $gsswitch = $row['shorten'];
+        $rootid = $row['rootID'];
+        $ftppass = $row['dftppassword'];
+        $customer = $row['cname'];
+        if ($row['newlayout'] == 'Y') $customer = $customer . '-' . $id;
+        $ftpbackup = $row['ftp'];
     }
     if ($query->rowCount()==0) redirect('userpanel.php');
-    if (!$ui->w('action',3,'post')) {
+    if (!$ui->w('action',3, 'post')) {
         $template_file = "userpanel_gserver_backup.tpl";
-    } else if ($ui->w('action',3,'post') == 'mb'){
+    } else if ($ui->w('action',3, 'post') == 'mb'){
         include(EASYWIDIR . '/stuff/ssh_exec.php');
         $rdata=serverdata('root',$rootid,$aeskey);
-        $sship=$rdata['ip'];
-        $sshport=$rdata['port'];
-        $sshuser=$rdata['user'];
-        $sshpass=$rdata['pass'];
+        $sship = $rdata['ip'];
+        $sshport = $rdata['port'];
+        $sshuser = $rdata['user'];
+        $sshpass = $rdata['pass'];
         $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if (isset($shortens)) $shortens .= ' ' . $row['shorten'];
-            else $shortens=$row['shorten'];
+            else $shortens = $row['shorten'];
         }
         $webhostdomain=webhostdomain($reseller_id);
         $template_file = (ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh backup $gsfolder \"$shortens\" \"$webhostdomain\" \"$ftpbackup\"") === false) ? "Error: ".$ssh_reply: $template_file = $gsprache->backup . '  ' . $sprache->create;
-    } else if ($ui->w('action',3,'post') == 'md'){
+    } else if ($ui->w('action',3, 'post') == 'md'){
         $template_file = "userpanel_gserver_backup_md.tpl";
-    } else if ($ui->w('action',3,'post') == 'md2') {
+    } else if ($ui->w('action',3, 'post') == 'md2') {
         $query = $sql->prepare("UPDATE `userdata` SET `ftpbackup`=AES_ENCRYPT(?,?) WHERE `id`=? LIMIT 1");
-        $query->execute(array($ui->url('ftpbackup','post'),$aeskey,$user_id));
+        $query->execute(array($ui->url('ftpbackup', 'post'),$aeskey,$user_id));
         $template_file = $spracheResponse->table_add;
-    } else if ($ui->w('action',3,'post') == 'rb'){
+    } else if ($ui->w('action',3, 'post') == 'rb'){
         $shortens = array();
         $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
         $query->execute(array($id));
@@ -95,23 +95,23 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
             $shortens[] = $row['shorten'].'-3';
         }
         $template_file = "userpanel_gserver_backup_rb.tpl";
-    } else if ($ui->w('action',3,'post') == 'rb2' and $ui->gamestring('template','post')){
+    } else if ($ui->w('action',3, 'post') == 'rb2' and $ui->gamestring('template', 'post')){
         include(EASYWIDIR . '/stuff/ssh_exec.php');
         $rdata=serverdata('root',$rootid,$aeskey);
-        $sship=$rdata['ip'];
-        $sshport=$rdata['port'];
-        $sshuser=$rdata['user'];
-        $sshpass=$rdata['pass'];
+        $sship = $rdata['ip'];
+        $sshport = $rdata['port'];
+        $sshuser = $rdata['user'];
+        $sshpass = $rdata['pass'];
         $folders=explode("/",$ui->server['SCRIPT_NAME']);
         $amount=count($folders)-1;
         $i = 0;
         $path = '';
         while ($i<$amount) {
-            $path .=$folders[$i]."/";
+            $path .= $folders[$i] . '/';
             $i++;
         }
         $webhostdomain=(isset($ui->server['HTTPS'])) ? "https://".$ui->server['HTTP_HOST'].$path : $webhostdomain="http://".$ui->server['HTTP_HOST'].$path;
-        $template_file = (ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh restore $gsfolder \"".$ui->gamestring('template','post')."\" \"$webhostdomain\" \"$ftpbackup\"") === false) ? "Error: ".$ssh_reply: $template_file = $gsprache->backup . '  ' . $sprache->recover;
+        $template_file = (ssh2_execute('gs',$rootid,"sudo -u $customer ./control.sh restore $gsfolder \"".$ui->gamestring('template', 'post')."\" \"$webhostdomain\" \"$ftpbackup\"") === false) ? "Error: ".$ssh_reply: $template_file = $gsprache->backup . '  ' . $sprache->recover;
     } else {
         $template_file = 'userpanel_404.tpl';
     }

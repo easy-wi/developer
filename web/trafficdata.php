@@ -38,15 +38,15 @@
 ini_set('display_errors',1);
 error_reporting(E_ALL|E_STRICT);
 if (isset($_SERVER['REMOTE_ADDR'])) {
-	$remoteip=$_SERVER['REMOTE_ADDR'];
+	$remoteip = $_SERVER['REMOTE_ADDR'];
 } else {
     if (isset($argv[1])) {
-        $maxTime=$argv[1];
+        $maxTime = $argv[1];
     } else {
         $maxTime=60;
     }
     if (isset($argv[2])) {
-        $memoryLimit=$argv[2];
+        $memoryLimit = $argv[2];
     } else {
         $memoryLimit='64M';
     }
@@ -66,16 +66,16 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
 	$query = $sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date` FROM `traffic_settings` LIMIT 1");
     $query->execute(array(':aeskey' => $aeskey));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$stats_databanktype=$row['type'];
-		$stats_host=$row['statip'];
-		$stats_db=$row['decpteddbname'];
-		$stats_user=$row['decpteddbuser'];
-		$stats_pwd=$row['decpteddbpassword'];
-		$table_name=$row['table_name'];
-		$column_sourceip=$row['column_sourceip'];
-		$column_destip=$row['column_destip'];
-		$column_byte=$row['column_byte'];
-		$column_date=$row['column_date'];
+		$stats_databanktype = $row['type'];
+		$stats_host = $row['statip'];
+		$stats_db = $row['decpteddbname'];
+		$stats_user = $row['decpteddbuser'];
+		$stats_pwd = $row['decpteddbpassword'];
+		$table_name = $row['table_name'];
+		$column_sourceip = $row['column_sourceip'];
+		$column_destip = $row['column_destip'];
+		$column_byte = $row['column_byte'];
+		$column_date = $row['column_date'];
 	}
 	try {
 		$sql2=new PDO("$stats_databanktype:host=$stats_host;dbname=$stats_db", $stats_user, $stats_pwd);
@@ -87,7 +87,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
 	function searchinnerarray($value,$array) {
 		foreach ($array as $key => $ips) {
 			if (in_array($value,$ips)) {
-				$serverid=$key;
+				$serverid = $key;
 			}
 		}
 		if (isset($serverid)) {
@@ -97,7 +97,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
     $query = $sql->prepare("SELECT `ips`,`resellerid`,`resellersid` FROM `resellerdata`");
     $query->execute();
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$ids=$row['resellerid'] . '-' . $row['resellersid'];
+		$ids = $row['resellerid'] . '-' . $row['resellersid'];
 		$userips[$ids]=ipstoarray($row['ips']);
 	}
     $query = $sql->prepare("SELECT `id`,`ip`,`ips` FROM `virtualcontainer`");
@@ -105,7 +105,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		unset($vserverip);
 		$vserverip[] = $row['ip'];
-		$vserverid=$row['id'];
+		$vserverid = $row['id'];
 		foreach(ipstoarray($row['ips']) as $vip) {
 			$vserverip[] = $vip;
 		}
@@ -121,37 +121,37 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
             $query2->execute(array($row['Id']));
         }
     }
-    $Count=$sql2->prepare("SELECT COUNT(`id`) AS `amount` FROM `$table_name`");
+    $Count = $sql2->prepare("SELECT COUNT(`id`) AS `amount` FROM `$table_name`");
     $Count->execute();
     $pass = 1;
-    $theCount=$Count->fetchColumn();
+    $theCount = $Count->fetchColumn();
     while ($theCount>100) {
         $query = $sql2->prepare("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
         $query->execute();
         $query = $sql2->prepare("SELECT `id`,`$column_sourceip`,`$column_destip`,`$column_byte`,`$column_date` FROM `$table_name` ORDER BY `id` LIMIT 300");
         $query->execute();
-        $trafficData=$query->fetchAll(PDO::FETCH_ASSOC);
+        $trafficData = $query->fetchAll(PDO::FETCH_ASSOC);
         $query = $sql2->prepare("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ");
         $query->execute();
         $query = $sql2->prepare("DELETE FROM `$table_name` ORDER BY `id` LIMIT 300");
         $query->execute();
-        $currentCount=$theCount;
+        $currentCount = $theCount;
         $Count->execute();
-        $theCount=$Count->fetchColumn();
+        $theCount = $Count->fetchColumn();
         print "Run: $pass; Found $currentCount traffic entries; Entries left after Run: $theCount\r\n";
         $pass++;
         $serverIDs = array();
         foreach ($trafficData as $id => $row) {
             unset($trafficData[$id]);
             unset($serverid);
-            $data_id=$row['id'];
-            $ip_src=$row[$column_sourceip];
-            $ip_dst=$row[$column_destip];
-            $bytes=$row[$column_byte];
-            $stamp_updated=$row[$column_date];
+            $data_id = $row['id'];
+            $ip_src = $row[$column_sourceip];
+            $ip_dst = $row[$column_destip];
+            $bytes = $row[$column_byte];
+            $stamp_updated = $row[$column_date];
             $date=explode(' ', $row[$column_date]);
             $hour=explode(':',$date[1]);
-            $day=$date[0] . '  ' . $hour[0].":00:00";
+            $day = $date[0] . '  ' . $hour[0].":00:00";
             if (searchinnerarray($ip_src,$vserverips) or searchinnerarray($ip_dst,$vserverips)) {
                 if (searchinnerarray($ip_src,$vserverips)) {
                     $direction="out";
@@ -161,14 +161,14 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
                     $serverid=searchinnerarray($ip_dst,$vserverips);
                 }
                 if (isset($serverid) and isset($serverIDs[$serverid])) {
-                    $userid=$serverIDs[$serverid]['userid'];
-                    $resellerid=$serverIDs[$serverid]['resellerid'];
+                    $userid = $serverIDs[$serverid]['userid'];
+                    $resellerid = $serverIDs[$serverid]['resellerid'];
                 } else if (isset($serverid)) {
                     $query2 = $sql->prepare("SELECT `userid`,`resellerid` FROM `virtualcontainer` WHERE `id`=? LIMIT 1");
                     $query2->execute(array($serverid));
                     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                        $userid=$row['userid'];
-                        $resellerid=$row['resellerid'];
+                        $userid = $row['userid'];
+                        $resellerid = $row['resellerid'];
                         $serverIDs[$serverid]['userid'] = $userid;
                         $serverIDs[$serverid]['resellerid'] = $resellerid;
                     }
@@ -178,28 +178,28 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
                 $serverid = 0;
                 $userids=searchinnerarray($ip_src,$userips);
                 $uids=explode("-",$userids);
-                $userid=$uids[0];
-                $resellerid=$uids[1];
+                $userid = $uids[0];
+                $resellerid = $uids[1];
             } else if (searchinnerarray($ip_dst,$userips)) {
                 $direction="in";
                 $serverid = 0;
                 $userids=searchinnerarray($ip_dst,$userips);
                 $uids=explode("-",$userids);
-                $userid=$uids[0];
-                $resellerid=$uids[1];
+                $userid = $uids[0];
+                $resellerid = $uids[1];
             }
             if (isset($serverid)) {
                 if($direction=="in") {
-                    $ip=$ip_dst;
+                    $ip = $ip_dst;
                     $ipcase="ip_dst";
                 } else {
-                    $ip=$ip_src;
+                    $ip = $ip_src;
                     $ipcase="ip_src";
                 }
                 $query2 = $sql->prepare("SELECT `id` FROM `traffic_data` WHERE `ip`=? AND `day`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
                 $query2->execute(array($ip,$day,$userid,$resellerid));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $id=$row['id'];
+                    $id = $row['id'];
                 }
                 if ($query2->rowcount()==1) {
                     $query2 = $sql->prepare("UPDATE `traffic_data` SET `$direction`=`$direction`+?,`serverid`=? WHERE `id`=? LIMIT 1");
@@ -216,6 +216,6 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
     $query->execute();
     $query = $sql2->prepare("OPTIMIZE TABLE `$table_name`");
     $query->execute();
-	$sql=null;
-	$sql2=null;
+	$sql = null;
+	$sql2 = null;
 }

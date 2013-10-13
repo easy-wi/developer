@@ -65,10 +65,10 @@ if (isset($page_include)) {
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $validacces = false;
 
-if ($ui->ip4('REMOTE_ADDR','server') and $ui->names('user', 255, 'post') and !isset($page_include)) {
+if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post') and !isset($page_include)) {
 
     $query = $sql->prepare("SELECT `active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
-    $query->execute(array($ui->ip4('REMOTE_ADDR','server')));
+    $query->execute(array($ui->ip4('REMOTE_ADDR', 'server')));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $pwd = $row['pwd'];
         $salt = $row['salt'];
@@ -291,7 +291,7 @@ if(isset($servertype)) {
                 foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row2) {
                     $queryport = $row2['queryport'];
                     $querypassword = $row2['decryptedquerypassword'];
-                    $addedby=$row2['addedby'];
+                    $addedby = $row2['addedby'];
                     $localserverid = $row2['localserverid'];
 
                     if ($addedby == 2) {
@@ -850,7 +850,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=
                     $rootID = $row['rootID'];
                 }
 
-                $query=$insert = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query = $insert = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($serverid, $updateID, $reseller_id));
 
                 include(EASYWIDIR . '/stuff/ssh_exec.php');
@@ -1028,7 +1028,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=
     }
 
 # Voiceserver
-} else if ($vostillrunning==false and isset($active) and $active == 'Y' and $servertype == 'v' and !$ui->escaped('ipblocked', 'post')) {
+} else if ($vostillrunning == false and isset($active) and $active == 'Y' and $servertype == 'v' and !$ui->escaped('ipblocked', 'post')) {
 
     $serveravailable = false;
     $freevoice = $vocount;
@@ -1096,7 +1096,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=
             $tousevoiceid = $mastervoiceids[$bestmaster][$arrayid];
         }
 
-        if ($serveravailable==true and isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2) and (($ui->id('xml', 1, 'post') and $ui->w('game', 20, 'post') or $ui->w('password', 20, 'post')))) {
+        if ($serveravailable == true and isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2) and (($ui->id('xml', 1, 'post') and $ui->w('game', 20, 'post') or $ui->w('password', 20, 'post')))) {
 
             $fail = 0;
 
@@ -1171,7 +1171,7 @@ if((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=
                         $connecterror = $errorcode;
 
                     } else {
-                        $query2=$sql->prepare("SELECT `ip`,`port`,`dns`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
+                        $query2 = $sql->prepare("SELECT `ip`,`port`,`dns`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                         $query2->execute(array($tousevoiceid, $reseller_id));
                         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                             $voip = $row2['ip'];

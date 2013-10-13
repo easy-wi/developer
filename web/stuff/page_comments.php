@@ -50,26 +50,26 @@ $logsubuser = 0;
 
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if($ui->st('d','get') == 'md' and $ui->id('id',19,'get') and $ui->smallletters('action',2,'post') == 'md'){
-    $id=$ui->id('id',19,'get');
+} else if($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get') and $ui->smallletters('action',2, 'post') == 'md'){
+    $id = $ui->id('id',19, 'get');
     $url = '';
-    if ($ui->url('url','post')) {
-        $url=$ui->url('url','post');
+    if ($ui->url('url', 'post')) {
+        $url = $ui->url('url', 'post');
     }
-    if ($ui->domain('url','post')) {
-        $url='http://'.$ui->domain('url','post');
+    if ($ui->domain('url', 'post')) {
+        $url='http://'.$ui->domain('url', 'post');
     }
     $query = $sql->prepare("UPDATE `page_comments` SET `homepage`=?,`markedSpam`=?,`moderateAccepted`=?,`comment`=? WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
-    $query->execute(array($url,$ui->active('markedSpam','post'),$ui->active('moderateAccepted','post'),$ui->post['comment'],$id,$reseller_id));
+    $query->execute(array($url,$ui->active('markedSpam', 'post'),$ui->active('moderateAccepted', 'post'),$ui->post['comment'],$id,$reseller_id));
     if ($query->rowCount()>0) {
-        $loguseraction='%mod% %comment% '.$ui->id('id',19,'get');
+        $loguseraction='%mod% %comment% '.$ui->id('id',19, 'get');
         $insertlog->execute();
         $template_file = $spracheResponse->table_add;
     } else {
         $template_file = $spracheResponse->error_table;
     }
-} else if($ui->st('d','get') == 'md' and $ui->id('id',19,'get') and !$ui->smallletters('action',2,'post')){
-    $id=$ui->id('id',19,'get');
+} else if($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get') and !$ui->smallletters('action',2, 'post')){
+    $id = $ui->id('id',19, 'get');
     $query = $sql->prepare("SELECT t.`pageid`,t.`title`,c.* FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`commentID`=? AND c.`resellerID`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -78,24 +78,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $date=date($commentDate,strtotime($row['date']));
         $comment=htmlentities($row['comment']);
         $authorname=htmlentities($row['authorname']);
-        $email=$row['email'];
-        $homepage=$row['homepage'];
-        $ip=$row['ip'];
-        $dns=$row['dns'];
-        $markedSpam=$row['markedSpam'];
-        $spamReason=$row['spamReason'];
-        $moderateAccepted=$row['moderateAccepted'];
+        $email = $row['email'];
+        $homepage = $row['homepage'];
+        $ip = $row['ip'];
+        $dns = $row['dns'];
+        $markedSpam = $row['markedSpam'];
+        $spamReason = $row['spamReason'];
+        $moderateAccepted = $row['moderateAccepted'];
     }
     if (isset($comment)) {
         $template_file = 'admin_page_comments_md.tpl';
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if($ui->st('d','get') == 'dl' and $ui->id('id',19,'get')){
+} else if($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')){
     $query = $sql->prepare("DELETE FROM `page_comments` WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
-    $query->execute(array($ui->id('id',19,'get'),$reseller_id));
+    $query->execute(array($ui->id('id',19, 'get'),$reseller_id));
     if ($query->rowCount()>0) {
-        $loguseraction='%del% %comment% '.$ui->id('id',19,'get');
+        $loguseraction='%del% %comment% '.$ui->id('id',19, 'get');
         $insertlog->execute();
         $template_file = $spracheResponse->table_del;
     } else {
@@ -104,16 +104,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 } else {
     $query = $sql->prepare("SELECT `seo` FROM `page_settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
-    $seo=$query->fetchColumn();
+    $seo = $query->fetchColumn();
     $table = array();
     $getParams = '';
     $s = 1;
     $m = 1;
-    if ($ui->id('spam',1,'get')==1) {
+    if ($ui->id('spam',1, 'get')==1) {
         $s = 0;
         $getParams='&amp;spam=1';
         $AND="AND `markedSpam`='Y'";
-    } else if ($ui->id('mod',1,'get')==1) {
+    } else if ($ui->id('mod',1, 'get')==1) {
         $m = 0;
         $getParams='&amp;mod=1';
         $AND="AND `markedSpam`='N' AND `moderateAccepted`='N'";
@@ -122,12 +122,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? $AND");
     $query->execute(array($reseller_id));
-    $colcount=$query->fetchColumn();
+    $colcount = $query->fetchColumn();
     if ($start>$colcount ) {
         if (isset($amount)) {
-            $start=$colcount-$amount;
+            $start = $colcount-$amount;
         } else {
-            $start=$colcount-20;
+            $start = $colcount-20;
         }
         if ($start<0) {
             $start = 0;
@@ -135,47 +135,47 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
-    $totalCount=$query->fetchColumn();
+    $totalCount = $query->fetchColumn();
     $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? AND `markedSpam`='N' AND `moderateAccepted`='N'");
     $query->execute(array($reseller_id));
-    $moderationExpectedCount=$query->fetchColumn();
+    $moderationExpectedCount = $query->fetchColumn();
     $query = $sql->prepare("SELECT COUNT(`commentID`) AS `amount` FROM `page_comments` WHERE `resellerID`=? AND `markedSpam`='Y'");
     $query->execute(array($reseller_id));
-    $spamCount=$query->fetchColumn();
-    $next=$start+$amount;
+    $spamCount = $query->fetchColumn();
+    $next = $start+$amount;
     if ($colcount>$next) {
-        $vor=$start+$amount;
+        $vor = $start+$amount;
     } else {
-        $vor=$start;
+        $vor = $start;
     }
-    $back=$start - $amount;
+    $back = $start - $amount;
     if ($back>=0){
-        $zur=$start - $amount;
+        $zur = $start - $amount;
     } else {
-        $zur=$start;
+        $zur = $start;
     }
-    $o = $ui->st('o','get');
-    if ($ui->st('o','get') == 'dt') {
+    $o = $ui->st('o', 'get');
+    if ($ui->st('o', 'get') == 'dt') {
         $orderby = 't.`title` DESC';
-    } else if ($ui->st('o','get') == 'at') {
+    } else if ($ui->st('o', 'get') == 'at') {
         $orderby = 't.`title` ASC';
-    } else if ($ui->st('o','get') == 'dd') {
+    } else if ($ui->st('o', 'get') == 'dd') {
         $orderby = 'c.`date` DESC';
-    } else if ($ui->st('o','get') == 'ad') {
+    } else if ($ui->st('o', 'get') == 'ad') {
         $orderby = 'c.`date` ASC';
-    } else if ($ui->st('o','get') == 'dn') {
+    } else if ($ui->st('o', 'get') == 'dn') {
         $orderby = 'c.`authorname` DESC';
-    } else if ($ui->st('o','get') == 'an') {
+    } else if ($ui->st('o', 'get') == 'an') {
         $orderby = 'c.`authorname` ASC';
-    } else if ($ui->st('o','get') == 'ds') {
+    } else if ($ui->st('o', 'get') == 'ds') {
         $orderby = 'c.`markedSpam` DESC';
-    } else if ($ui->st('o','get') == 'as') {
+    } else if ($ui->st('o', 'get') == 'as') {
         $orderby = 'c.`markedSpam` ASC';
-    } else if ($ui->st('o','get') == 'dm') {
+    } else if ($ui->st('o', 'get') == 'dm') {
         $orderby = 'c.`moderateAccepted` DESC';
-    } else if ($ui->st('o','get') == 'am') {
+    } else if ($ui->st('o', 'get') == 'am') {
         $orderby = 'c.`moderateAccepted` ASC';
-    } else if ($ui->st('o','get') == 'di') {
+    } else if ($ui->st('o', 'get') == 'di') {
         $orderby = 'c.`commentID` DESC';
     } else {
         $orderby = 'c.`commentID` ASC';
@@ -188,14 +188,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $commentDate='m.d.Y H:i';
         if ($user_language == 'de') $commentDate='d.m.Y H:i';
-        $moderated=$gsprache->no;
-        if ($row['moderateAccepted'] == 'N') $moderated=$gsprache->yes;
-        $spam=$gsprache->no;
-        if ($row['markedSpam'] == 'Y') $spam=$gsprache->yes;
+        $moderated = $gsprache->no;
+        if ($row['moderateAccepted'] == 'N') $moderated = $gsprache->yes;
+        $spam = $gsprache->no;
+        if ($row['markedSpam'] == 'Y') $spam = $gsprache->yes;
         if ($seo== 'N') {
-            $link=$page_url.'/index.php?site=news&amp;id='.$row['pageid'];
+            $link = $page_url.'/index.php?site=news&amp;id='.$row['pageid'];
         } else {
-            $link=$page_url. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']).'/';
+            $link = $page_url. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']).'/';
         }
         $table[] = array('pageid' => $row['pageid'], 'title' => htmlentities($row['title']),'comment' => htmlentities($row['comment']),'commentID' => $row['commentID'], 'date' => date($commentDate,strtotime($row['date'])),'authorname' => htmlentities($row['authorname']),'moderated' => $moderated,'spam' => $spam,'spamReason' => $row['spamReason'], 'link' => $link);
     }
@@ -204,12 +204,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if(!isset($amount)) {
         $link .="20";
     } else {
-        $link .=$amount;
+        $link .= $amount;
     }
     if ($start==0) {
-        $link .='&p=0'.$getParams.'" class="bold">1</a>';
+        $link .= '&p=0'.$getParams.'" class="bold">1</a>';
     } else {
-        $link .='&p=0'.$getParams.'">1</a>';
+        $link .= '&p=0'.$getParams.'">1</a>';
     }
     $pages[] = $link;
     $i = 2;

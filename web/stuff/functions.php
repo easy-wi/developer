@@ -63,7 +63,7 @@ if (!function_exists('passwordgenerate')) {
     function passwordhash($username, $password, $salt=false){
         $passworda = str_split($password, (strlen($password) / 2) + 1);
         $usernamea = str_split($username, (strlen($username) / 2) + 1);
-        return ($salt==false) ? hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $usernamea[1]) . $passworda[1])): hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $salt . $usernamea[1]) . $passworda[1]));
+        return ($salt == false) ? hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $usernamea[1]) . $passworda[1])): hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $salt . $usernamea[1]) . $passworda[1]));
     }
     
     function createHash ($name, $pwd, $saltOne, $saltTwo = 'ZPZw$[pkJF!;SHdl', $iterate = 1000) {
@@ -281,7 +281,7 @@ if (!function_exists('passwordgenerate')) {
         $colcount = $query->rowCount();
         
         if ($colcount == 0) {
-            $query=$sql->prepare("SELECT g.`id` FROM `userdata_groups` u LEFT JOIN `usergroups` g ON u.`groupID`=g.`id` WHERE u.`userID`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
+            $query = $sql->prepare("SELECT g.`id` FROM `userdata_groups` u LEFT JOIN `usergroups` g ON u.`groupID`=g.`id` WHERE u.`userID`=? AND (`addvserver`='Y' OR `modvserver`='Y' OR `delvserver`='Y' OR `vserversettings`='Y' OR `vserverhost`='Y' OR `resellertemplates`='Y' OR `usevserver`='Y' OR `root`='Y' OR `traffic`='Y') LIMIT 1");
             $query->execute(array($userid));
             $colcount = $query->fetchAll(PDO::FETCH_ASSOC);
         }
@@ -636,7 +636,7 @@ if (!function_exists('passwordgenerate')) {
                 $pserver = 'server/';
                 $absolutepath = '/home/' . $customer . '/server/' . $gsip . '_' . $port . '/' . $folder;
             }
-            $bindir=$absolutepath. '/' . $binarydir;
+            $bindir = $absolutepath. '/' . $binarydir;
             $cvarprotect = array();
             if ($qstat == 'hla2s' and $tvenable == 'Y') {
                 $slots++;
@@ -974,7 +974,7 @@ if (!function_exists('passwordgenerate')) {
                                         }
                                     }
                                     
-                                    if ($edited==false) {
+                                    if ($edited == false) {
                                         fwrite($temp2, $singeline);
                                     }
                                     if ($i<$linecount) {
@@ -1057,7 +1057,7 @@ if (!function_exists('passwordgenerate')) {
                 fputs($smtpSocket, "EHLO ".$host."\r\n");
             }
             
-            if ((isset($crypto) and $crypto!=false) or $ssl == 'N') {
+            if ((isset($crypto) and $crypto != false) or $ssl == 'N') {
                 
                 fputs($smtpSocket, "auth login\r\n");
                 fputs($smtpSocket, $user."\r\n");
@@ -1239,7 +1239,7 @@ if (!function_exists('passwordgenerate')) {
                         }
                     }
 
-                    if ($sended==true) {
+                    if ($sended == true) {
                         $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
 
                         if($resellerid == $userid) {
@@ -1330,19 +1330,19 @@ if (!function_exists('passwordgenerate')) {
 
         global $sql;
 
-        $update=$sql->prepare("UPDATE `gsswitch` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
+        $update = $sql->prepare("UPDATE `gsswitch` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
         $update->execute(array($jobPending, $localID, $resellerID));
 
-        $update=$sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`=? WHERE `uid`=? AND `resellerid`=?");
+        $update = $sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`=? WHERE `uid`=? AND `resellerid`=?");
         $update->execute(array($jobPending, $localID, $resellerID));
 
-        $update=$sql->prepare("UPDATE `virtualcontainer` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
+        $update = $sql->prepare("UPDATE `virtualcontainer` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
         $update->execute(array($jobPending, $localID, $resellerID));
 
-        $update=$sql->prepare("UPDATE `voice_server` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
+        $update = $sql->prepare("UPDATE `voice_server` SET `jobPending`=? WHERE `userid`=? AND `resellerid`=?");
         $update->execute(array($jobPending, $localID, $resellerID));
 
-        $update=$sql->prepare("UPDATE `voice_dns` SET `jobPending`=? WHERE `userID`=? AND `resellerID`=?");
+        $update = $sql->prepare("UPDATE `voice_dns` SET `jobPending`=? WHERE `userID`=? AND `resellerID`=?");
         $update->execute(array($jobPending, $localID, $resellerID));
     }
 
@@ -1361,11 +1361,11 @@ if (!function_exists('passwordgenerate')) {
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
                 if ($type==null) {
-                    $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `type`=? AND `affectedID`=? AND `jobID`!=?");
+                    $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `type`=? AND `affectedID`=? AND `jobID`!=?");
                     $update->execute(array($row['type'], $row['affectedID'], $row2['jobID']));
 
                 } else {
-                    $update=$sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `userID`=? AND `jobID`!=?");
+                    $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `userID`=? AND `jobID`!=?");
                     $update->execute(array($row['affectedID'], $row2['jobID']));
                 }
             }
@@ -1517,7 +1517,7 @@ if (!function_exists('passwordgenerate')) {
                 array2xml($value, $xml->addChild($key));
 
             } else {
-                $xml->$key=$value;
+                $xml->$key = $value;
             }
         }
         return $xml->asXML();

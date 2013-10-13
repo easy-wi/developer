@@ -59,7 +59,7 @@ $query="CREATE TABLE IF NOT EXISTS `addons` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `addons_installed` (
@@ -72,7 +72,7 @@ $query="CREATE TABLE IF NOT EXISTS `addons_installed` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`userid`),KEY(`addonid`),KEY(`serverid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `api_ips` (
@@ -80,7 +80,7 @@ $query="CREATE TABLE IF NOT EXISTS `api_ips` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`ip`,`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `api_settings` (
@@ -92,7 +92,7 @@ $query="CREATE TABLE IF NOT EXISTS `api_settings` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`resellerID`),KEY(`userID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `api_external_auth` (
@@ -105,7 +105,7 @@ $query="CREATE TABLE IF NOT EXISTS `api_external_auth` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`domain`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `api_import` (
@@ -123,7 +123,7 @@ $query="CREATE TABLE IF NOT EXISTS `api_import` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`importID`),KEY(`groupID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `badips` (
@@ -134,7 +134,7 @@ $query="CREATE TABLE IF NOT EXISTS `badips` (
   `reason` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `custom_columns` (
@@ -143,7 +143,7 @@ $query="CREATE TABLE IF NOT EXISTS `custom_columns` (
   `var` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`customID`),KEY (`itemID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `custom_columns_settings` (
@@ -155,7 +155,7 @@ $query="CREATE TABLE IF NOT EXISTS `custom_columns_settings` (
   `name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`customID`),KEY(`item`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `eac` (
@@ -178,7 +178,7 @@ $query="CREATE TABLE IF NOT EXISTS `eac` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `easywi_version` (
@@ -188,7 +188,7 @@ $query="CREATE TABLE IF NOT EXISTS `easywi_version` (
   `en` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `feeds_news` (
@@ -204,7 +204,7 @@ $query="CREATE TABLE IF NOT EXISTS `feeds_news` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`newsID`),KEY(`feedID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `feeds_settings` (
@@ -224,7 +224,7 @@ $query="CREATE TABLE IF NOT EXISTS `feeds_settings` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`settingsID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `feeds_url` (
@@ -237,7 +237,7 @@ $query="CREATE TABLE IF NOT EXISTS `feeds_url` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`feedID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `gserver_restarts` (
@@ -258,7 +258,7 @@ $query="CREATE TABLE IF NOT EXISTS `gserver_restarts` (
   `resellerid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),KEY(`switchID`),KEY(`userid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `gsswitch` (
@@ -308,7 +308,7 @@ $query="CREATE TABLE IF NOT EXISTS `gsswitch` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`userid`),KEY(`rootID`),KEY(`serverid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `imprints` (
@@ -318,7 +318,7 @@ $query="CREATE TABLE IF NOT EXISTS `imprints` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `jobs` (
@@ -337,7 +337,7 @@ $query="CREATE TABLE IF NOT EXISTS `jobs` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`jobID`),KEY(`hostID`),KEY(`affectedID`),KEY(`userID`),KEY(`invoicedByID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `lendedserver` (
@@ -354,7 +354,7 @@ $query="CREATE TABLE IF NOT EXISTS `lendedserver` (
   `resellerid` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),KEY(`serverid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `lendsettings` (
@@ -396,7 +396,7 @@ $query="CREATE TABLE IF NOT EXISTS `lendsettings` (
   `oldcheck` datetime NOT NULL,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `lendstats` (
@@ -408,7 +408,7 @@ $query="CREATE TABLE IF NOT EXISTS `lendstats` (
   `resellerID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`lendDate`,`serverID`,`serverType`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `mail_log` (
@@ -419,7 +419,7 @@ $query="CREATE TABLE IF NOT EXISTS `mail_log` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`uid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 #https://github.com/easy-wi/developer/issues/61 add module management
@@ -432,7 +432,7 @@ $query="CREATE TABLE IF NOT EXISTS `modules` (
   `type` enum('A','C','P','U') DEFAULT 'A',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1001;";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 #https://github.com/easy-wi/developer/issues/42 column description added
@@ -456,7 +456,7 @@ $query="CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`sid`),KEY(`uid`),KEY(`gsid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
@@ -475,7 +475,7 @@ $query="CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_comments` (
@@ -495,7 +495,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_comments` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`commentID`),KEY(`pageTextID`),KEY(`replyTo`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_downloads` (
@@ -510,7 +510,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_downloads` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`fileID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_downloads_log` (
@@ -521,7 +521,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_downloads_log` (
   `resellerID` int(10) unsigned DEFAULT 0,
   KEY (`fileID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_pages` (
@@ -539,7 +539,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_pages` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`subpage`),KEY(`authorid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_pages_text` (
@@ -552,7 +552,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_pages_text` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`pageid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_register_questions` (
@@ -561,7 +561,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_register_questions` (
   `answer` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_settings` (
@@ -593,7 +593,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_settings` (
   `dnsbl` enum('Y','N') DEFAULT 'Y',
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_terms` (
@@ -607,7 +607,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_terms` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `page_terms_used` (
@@ -617,7 +617,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_terms_used` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`page_id`,`term_id`,`language_id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `qstatshorten` (
@@ -626,7 +626,7 @@ $query="CREATE TABLE IF NOT EXISTS `qstatshorten` (
   `description` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `resellerdata` (
@@ -644,7 +644,7 @@ $query="CREATE TABLE IF NOT EXISTS `resellerdata` (
   `resellersid` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),KEY(`resellerid`),KEY(`resellersid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `resellerimages` (
@@ -656,7 +656,7 @@ $query="CREATE TABLE IF NOT EXISTS `resellerimages` (
   `pxelinux` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `rserverdata` (
@@ -689,7 +689,7 @@ $query="CREATE TABLE IF NOT EXISTS `rserverdata` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`hostid`),KEY(`externalID`),KEY(`userID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `rservermasterg` (
@@ -703,7 +703,7 @@ $query="CREATE TABLE IF NOT EXISTS `rservermasterg` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`servertypeid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `rootsDedicated` (
@@ -733,7 +733,7 @@ $query="CREATE TABLE IF NOT EXISTS `rootsDedicated` (
   `resellerID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`dedicatedID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `rootsDHCP` (
@@ -755,7 +755,7 @@ $query="CREATE TABLE IF NOT EXISTS `rootsDHCP` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `rootsPXE` (
@@ -774,7 +774,7 @@ $query="CREATE TABLE IF NOT EXISTS `rootsPXE` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `serverlist` (
@@ -804,7 +804,7 @@ $query="CREATE TABLE IF NOT EXISTS `serverlist` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`switchID`),KEY(`servertype`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `servertypes` (
@@ -846,7 +846,7 @@ $query="CREATE TABLE IF NOT EXISTS `servertypes` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`appID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `settings` (
@@ -908,7 +908,7 @@ $query="CREATE TABLE IF NOT EXISTS `settings` (
   `lastCronWarnCloud` enum('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `tickets` (
@@ -925,7 +925,7 @@ $query="CREATE TABLE IF NOT EXISTS `tickets` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`supporter`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `tickets_text` (
@@ -936,7 +936,7 @@ $query="CREATE TABLE IF NOT EXISTS `tickets_text` (
   `resellerID` int(10) unsigned DEFAULT 0,
   KEY(`ticketID`),KEY(`userID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `ticket_topics` (
@@ -947,7 +947,7 @@ $query="CREATE TABLE IF NOT EXISTS `ticket_topics` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `traffic_data` (
@@ -961,7 +961,7 @@ $query="CREATE TABLE IF NOT EXISTS `traffic_data` (
   `resellerid` bigint(19) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),KEY(`serverid`),KEY(`userid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `traffic_data_day` (
@@ -975,7 +975,7 @@ $query="CREATE TABLE IF NOT EXISTS `traffic_data_day` (
   `resellerid` bigint(19) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),KEY(`serverid`),KEY(`userid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `traffic_settings` (
@@ -1014,7 +1014,7 @@ $query="CREATE TABLE IF NOT EXISTS `traffic_settings` (
   `line_colour_3` smallint(3) unsigned DEFAULT '220',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `translations` (
@@ -1025,7 +1025,7 @@ $query="CREATE TABLE IF NOT EXISTS `translations` (
   `text` text,
   PRIMARY KEY (`type`,`lang`,`transID`,`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `userdata` (
@@ -1068,7 +1068,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 #https://github.com/easy-wi/developer/issues/5
@@ -1079,7 +1079,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata_value_log` (
   `resellerID` int(10) unsigned DEFAULT 0,
   KEY (`userID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 #https://github.com/easy-wi/developer/issues/2
@@ -1098,7 +1098,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata_substitutes` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`sID`),KEY(`userID`),KEY(`resellerID`),KEY(`loginName`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `userdata_substitutes_servers` (
@@ -1108,7 +1108,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata_substitutes_servers` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`sID`,`oType`,`oID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `userdata_groups` (
@@ -1117,7 +1117,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata_groups` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`userID`,`groupID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `usergroups` (
@@ -1182,7 +1182,7 @@ $query="CREATE TABLE IF NOT EXISTS `usergroups` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 )";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `userlog` (
@@ -1199,7 +1199,7 @@ $query="CREATE TABLE IF NOT EXISTS `userlog` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`userid`),KEY(`subuser`),KEY(`reseller`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `userpermissions` (
@@ -1244,7 +1244,7 @@ $query="CREATE TABLE IF NOT EXISTS `userpermissions` (
   `lendserver` enum('Y','N') DEFAULT 'N',
   PRIMARY KEY (`id`),KEY(`userid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `virtualcontainer` (
@@ -1275,7 +1275,7 @@ $query="CREATE TABLE IF NOT EXISTS `virtualcontainer` (
   `resellerid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),KEY(`imageid`),KEY(`userid`),KEY(`hostid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `virtualhosts` (
@@ -1302,7 +1302,7 @@ $query="CREATE TABLE IF NOT EXISTS `virtualhosts` (
   `resellerid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `voice_dns` (
@@ -1318,7 +1318,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_dns` (
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`dnsID`),KEY(`tsdnsID`),KEY(`userID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 // https://github.com/easy-wi/developer/issues/36 managedByUser, managedForID added
@@ -1363,7 +1363,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`tsdnsServerID`),KEY(`rootid`),KEY(`resellerid`),KEY(`externalID`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `voice_server` (
@@ -1408,7 +1408,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_server` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`userid`),KEY(`masterserver`),KEY(`localserverid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `voice_server_backup` (
@@ -1422,7 +1422,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_server_backup` (
   `resellerid` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),KEY(`sid`),KEY(`uid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `voice_server_stats` (
@@ -1436,7 +1436,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_server_stats` (
   `resellerid` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`sid`,`date`),KEY(`mid`),KEY(`uid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `voice_server_stats_hours` (
@@ -1450,7 +1450,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_server_stats_hours` (
   `resellerid` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`sid`,`date`),KEY(`mid`),KEY(`uid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
@@ -1476,7 +1476,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
   `resellerid` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();
 
 $query="CREATE TABLE IF NOT EXISTS `voice_tsdns` (
@@ -1498,5 +1498,5 @@ $query="CREATE TABLE IF NOT EXISTS `voice_tsdns` (
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`rootid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
-$add=$sql->prepare($query);
+$add = $sql->prepare($query);
 $add->execute();

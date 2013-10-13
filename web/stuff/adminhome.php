@@ -126,7 +126,7 @@ if ($reseller_id == 0) {
 $crached_hosts = $query->rowCount();
 $crashedArray['virtualHosts'] = $crached_hosts;
 $feedArray = array();
-if($ui->smallletters('w',2,'get') == 'da' or (!$ui->smallletters('w',2,'get') and !$ui->smallletters('d',2,'get'))) {
+if($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get') and !$ui->smallletters('d',2, 'get'))) {
 
 
     if ($reseller_id == 0 and $admin_id == $reseller_id) {

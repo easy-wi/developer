@@ -49,35 +49,35 @@ $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $query2->execute(array(':aeskey' => $aeskey,':id' => $row['hostID'], ':reseller_id' => $row['resellerID']));
     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-        $publickey=$row2['publickey'];
-        $queryip=$row2['ssh2ip'];
-        $ssh2port=$row2['decryptedssh2port'];
-        $ssh2user=$row2['decryptedssh2user'];
-        $ssh2password=$row2['decryptedssh2password'];
-        $serverdir=$row2['serverdir'];
-        $keyname=$row2['keyname'];
-        $bitversion=$row2['bitversion'];
+        $publickey = $row2['publickey'];
+        $queryip = $row2['ssh2ip'];
+        $ssh2port = $row2['decryptedssh2port'];
+        $ssh2user = $row2['decryptedssh2user'];
+        $ssh2password = $row2['decryptedssh2password'];
+        $serverdir = $row2['serverdir'];
+        $keyname = $row2['keyname'];
+        $bitversion = $row2['bitversion'];
     }
     $query3->execute(array($row['hostID']));
     foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
         $query4->execute(array($row3['affectedID'], $row3['resellerID']));
         foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-            $active=$row4['active'];
+            $active = $row4['active'];
             $ipArray=array($row4['ip']);
             $portArray=array($row4['port']);
             $dnsArray=array($row4['dns']);
             $dnsAction='md';
             if ($row3['action'] == 'dl') {
-                $command=$gsprache->del.' TS DNS ID: '.$row3['affectedID'].' name:'.$row4['dns'];
+                $command = $gsprache->del.' TS DNS ID: '.$row3['affectedID'].' name:'.$row4['dns'];
                 $query5->execute(array($row3['affectedID'], $row['resellerID']));
                 customColumns('T', $row3['affectedID'], 'del');
                 $dnsAction='dl';
             } else if ($row3['action'] == 'ad') {
-                $command=$gsprache->add.' TS DNS ID: '.$row3['affectedID'].' name:'.$row4['dns'];
+                $command = $gsprache->add.' TS DNS ID: '.$row3['affectedID'].' name:'.$row4['dns'];
             } else if ($row3['action'] == 'md') {
                 $extraData=@json_decode($row3['extraData']);
-                if (is_object($extraData) and isset($extraData->newActive)) $active=$extraData->newActive;
-                $command=$gsprache->mod.' TS DNS ID: '.$row3['affectedID'].' name:'.$row4['dns'];
+                if (is_object($extraData) and isset($extraData->newActive)) $active = $extraData->newActive;
+                $command = $gsprache->mod.' TS DNS ID: '.$row3['affectedID'].' name:'.$row4['dns'];
                 if ($active == 'N') {
                     $dnsAction='dl';
                 } else if ($active == 'Y' and isset($oldip) and ($row4['ip'] != $oldip or $row4['port'] != $oldport or $row4['dns'] != $olddns)) {
