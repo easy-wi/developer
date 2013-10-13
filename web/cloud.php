@@ -76,7 +76,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $resellerID = $row['resellerID'];
-        if($row['ssl'] == 'Y') {
+        if ($row['ssl'] == 'Y') {
             $ssl='https://';
             $port=443;
         } else {
@@ -110,7 +110,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                     if (isset($value->externalID)) {
                         $query4->execute(array(json_encode(array('I' => $row['importID'])),$value->externalID));
                         $checkAmount = $query4->fetchColumn();
-                        if($checkAmount>0 and $row['fetchUpdates'] == 'Y') {
+                        if ($checkAmount>0 and $row['fetchUpdates'] == 'Y') {
                             $query2->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),json_encode(array('I' => $row['importID'])),getParam('externalID'), $row['resellerID']));
                             printText('User updated. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
                         } else if ($checkAmount>0) {

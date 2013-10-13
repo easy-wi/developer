@@ -59,7 +59,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (small_letters_check($row,2)) {
             $description = '';
             unset($lang);
-            if($ui->id('id', 10, 'get')) {
+            if ($ui->id('id', 10, 'get')) {
                 $query->execute(array($id, $row,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $lang = $row2['lang'];
@@ -103,7 +103,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $query = $sql->prepare("INSERT INTO `page_downloads` (`show`,`description`,`fileName`,`date`,`resellerID`) VALUES (?,?,?,NOW(),?)");
                 $query->execute(array($ui->w('show',1, 'post'),$ui->names('description',255, 'post'),$ui->names('fileName',255, 'post'),$reseller_id));
-                if($query->rowCount()>0) $changed = true;
+                if ($query->rowCount()>0) $changed = true;
                 $template_file = $spracheResponse->table_add;
                 $id = $sql->lastInsertId();
             }
@@ -135,7 +135,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     'rar' => 'application/x-rar-compressed');
                 $exploded=explode('.',$_FILES["upload"]["name"]);
                 $extension = $exploded[count($exploded)-1];
-                if(isset($allowedTypes[$extension]) and ((is_array($allowedTypes[$extension]) and in_array($_FILES["upload"]["type"],$allowedTypes[$extension])) or (!is_array($allowedTypes[$extension]) and $_FILES["upload"]["type"] == $allowedTypes[$extension])) ) {
+                if (isset($allowedTypes[$extension]) and ((is_array($allowedTypes[$extension]) and in_array($_FILES["upload"]["type"],$allowedTypes[$extension])) or (!is_array($allowedTypes[$extension]) and $_FILES["upload"]["type"] == $allowedTypes[$extension])) ) {
                     if (move_uploaded_file($_FILES["upload"]["tmp_name"],EASYWIDIR . '/downloads/'.$id . '.' . $extension)) {
                         $changed = true;
                         $query = $sql->prepare("UPDATE `page_downloads` SET `fileExtension`=? WHERE `fileID`=? AND `resellerID`=?");
@@ -149,7 +149,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 foreach($array as $language) {
                     if (small_letters_check($language,2)) {
                         $query->execute(array($id,$language,$ui->description('text', 'post',$language),$reseller_id));
-                        if($query->rowCount()>0) $changed = true;
+                        if ($query->rowCount()>0) $changed = true;
                     }
                 }
                 $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
@@ -158,13 +158,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if (!in_array($row['lang'],$array)) {
                         $query2->execute(array($addonid, $row['lang'],$reseller_id));
-                        if($query2->rowCount()>0) $changed = true;
+                        if ($query2->rowCount()>0) $changed = true;
                     }
                 }
             } else {
                 $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
                 $query->execute(array($id,$reseller_id));
-                if($query->rowCount()>0) $changed = true;
+                if ($query->rowCount()>0) $changed = true;
             }
             $template_file = (isset($changed)) ? $spracheResponse->table_add : $spracheResponse->error_table;
         } else {

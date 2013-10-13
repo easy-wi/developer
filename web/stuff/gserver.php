@@ -45,7 +45,7 @@ $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
 } else {
@@ -144,7 +144,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         $template_file = 'admin_gserver_add.tpl';
 
     } else if ($ui->w('action',3, 'post') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
-        if($ui->escaped('shorten', 'post') and $ui->id('customer',19, 'post')) {
+        if ($ui->escaped('shorten', 'post') and $ui->id('customer',19, 'post')) {
             $customer = $ui->id('customer',19, 'post');
             $count = 0;
             foreach ($ui->escaped('shorten', 'post') as $i) $count++;
@@ -449,9 +449,9 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                         if ($eacallowed== 'Y') {
                             if ($shorten=="cstrike" or $shorten=="czero") {
                                 if ($war== 'Y') {
-                                    $anticheat=5;
+                                    $anticheat = 5;
                                 } else {
-                                    $anticheat=6;
+                                    $anticheat = 6;
                                 }
                             } else if ($shorten=="css" or $shorten=="tf" or $shorten=="cod4") {
                                 $anticheat = 3;
@@ -891,7 +891,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                 $updateGo = true;
             }
             $cmds = array();
-            if(($serverip_old != $serverip_new or $port_old != $port_new) and isset($updateGo)){
+            if (($serverip_old != $serverip_new or $port_old != $port_new) and isset($updateGo)){
                 $tmp=gsrestart($server_id,'so',$aeskey,$reseller_id);
                 if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
                 $address_old = $serverip_old . ':' . $port_old;

@@ -316,7 +316,7 @@ XML;
 			session_start();
 
             # https://github.com/easy-wi/developer/issues/2
-            if(isset($sID)) {
+            if (isset($sID)) {
                 $query = $sql->prepare("SELECT `logintime`,`language` FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
                 $query->execute(array($sID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -338,13 +338,13 @@ XML;
             $_SESSION['resellerid'] = $resellerid;
             $query = $sql->prepare("DELETE FROM `badips` WHERE `badip`=?");
             $query->execute(array($loguserip));
-			if(isanyadmin($id) or rsellerpermisions($id)) {
+			if (isanyadmin($id) or rsellerpermisions($id)) {
 				$_SESSION['adminid'] = $id;
-				if(isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) $admin_id = $_SESSION['adminid'];
+				if (isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) $admin_id = $_SESSION['adminid'];
 			} else if (isanyuser($id)) {
 				$_SESSION['userid'] = $id;
-				if(isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) $user_id = $_SESSION['userid'];
-                if(isset($sID)) $_SESSION['sID'] = $sID;
+				if (isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) $user_id = $_SESSION['userid'];
+                if (isset($sID)) $_SESSION['sID'] = $sID;
 			}
             $ref = '';
 			if ($ui->url('HTTP_REFERER', 'server')) {
@@ -356,9 +356,9 @@ XML;
 			if (isset($referrer[1]) and $referrer[1] == 'login.php') $topanel = true;
 			if (!isset($user_id) and !isset($admin_id)) {
 				header('Location: login.php&r=lo');
-			} else if(isset($user_id)) {
+			} else if (isset($user_id)) {
 				redirect('userpanel.php');
-			} else if(isset($admin_id)) {
+			} else if (isset($admin_id)) {
 				$folders=explode("/",$ui->server['SCRIPT_NAME']);
 				$amount=count($folders)-1;
 				$i = 0;
@@ -371,7 +371,7 @@ XML;
                 $query = $sql->prepare("UPDATE `settings` SET `paneldomain`=? WHERE `resellerid`=0 LIMIT 1");
                 $query->execute(array($webhostdomain));
                 $params=@json_decode(licenceRequest(true));
-				if(isanyadmin($admin_id) or rsellerpermisions($admin_id)) {
+				if (isanyadmin($admin_id) or rsellerpermisions($admin_id)) {
 					redirect('admin.php');
 				} else {
                     redirect('login.php&r=lo');

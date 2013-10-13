@@ -219,35 +219,35 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $eac = array();
             if ($rowcount>0 and $eacallowed== 'Y' and ($gshorten=="css" or $gshorten=="cod4" or $gshorten=="cstrike" or $gshorten=="czero" or $gshorten=="tf")) {
                 if ($gshorten=="cstrike" or $gshorten=="czero") {
-                    if($anticheat==3 and $hlds_3== 'Y') {
+                    if ($anticheat==3 and $hlds_3== 'Y') {
                         $eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
-                    } else if($hlds_3== 'Y') {
+                    } else if ($hlds_3== 'Y') {
                         $eac[] = '<option value="3">Easy Anti Cheat</option>';
                     }
-                    if($anticheat==4 and $hlds_4== 'Y') {
+                    if ($anticheat==4 and $hlds_4== 'Y') {
                         $eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
-                    } else if($hlds_4== 'Y') {
+                    } else if ($hlds_4== 'Y') {
                         $eac[] = '<option value="4">Easy Anti Cheat Public</option>';
                     }
-                    if($anticheat==5 and $hlds_5== 'Y') {
+                    if ($anticheat==5 and $hlds_5== 'Y') {
                         $eac[] = '<option value="5" selected="selected">Easy Anti Cheat 32Bit</option>';
-                    } else if($hlds_5== 'Y') {
+                    } else if ($hlds_5== 'Y') {
                         $eac[] = '<option value="5">Easy Anti Cheat 32Bit</option>';
                     }
-                    if($anticheat==6 and $hlds_6== 'Y') {
+                    if ($anticheat==6 and $hlds_6== 'Y') {
                         $eac[] = '<option value="6" selected="selected">Easy Anti Cheat Public 32Bit</option>';
-                    } else if($hlds_6== 'Y') {
+                    } else if ($hlds_6== 'Y') {
                         $eac[] = '<option value="6">Easy Anti Cheat Public 32Bit</option>';
                     }
                 } else {
-                    if($anticheat==3 and $normal_3== 'Y') {
+                    if ($anticheat==3 and $normal_3== 'Y') {
                         $eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
-                    } else if($normal_3== 'Y') {
+                    } else if ($normal_3== 'Y') {
                         $eac[] = '<option value="3">Easy Anti Cheat</option>';
                     }
-                    if($anticheat==4 and $normal_4== 'Y') {
+                    if ($anticheat==4 and $normal_4== 'Y') {
                         $eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
-                    } else if($normal_4== 'Y') {
+                    } else if ($normal_4== 'Y') {
                         $eac[] = '<option value="4">Easy Anti Cheat Public</option>';
                     }
                 }
@@ -316,19 +316,19 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($ui->id("anticheat_${switchID}",1, 'post')) {
                 $anticheat=($ui->id("anticheat_${switchID}",1, 'post')>0) ? $ui->id("anticheat_${switchID}",1, 'post') : 1;
                 if ($row['shorten']=="cstrike" or $row['shorten']=="czero") {
-                    if($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'Y' and $active == 'Y') $anticheat=5;
-                    else if($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'N' and $active == 'Y') $anticheat = 1;
+                    if ($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'Y' and $active == 'Y') $anticheat = 5;
+                    else if ($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'N' and $active == 'Y') $anticheat = 1;
                     else if ($anticheat>1 and $active == 'N') $anticheat = 1;
-                    if($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'Y' and $active == 'Y') $anticheat=6;
-                    else if($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'N' and $active == 'Y') $anticheat = 1;
+                    if ($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'Y' and $active == 'Y') $anticheat = 6;
+                    else if ($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'N' and $active == 'Y') $anticheat = 1;
                     else if ($anticheat>1 and $active == 'N') $anticheat = 1;
-                    if($anticheat==5 and $hlds_5== 'N' and $active == 'Y') $anticheat = 1;
-                    if($anticheat==6 and $hlds_6== 'N' and $active == 'Y') $anticheat = 1;
-                    if(($anticheat>6 and $active == 'Y') or $anticheat>2 and $active == 'N') $anticheat = 1;
+                    if ($anticheat==5 and $hlds_5== 'N' and $active == 'Y') $anticheat = 1;
+                    if ($anticheat==6 and $hlds_6== 'N' and $active == 'Y') $anticheat = 1;
+                    if (($anticheat>6 and $active == 'Y') or $anticheat>2 and $active == 'N') $anticheat = 1;
                 } else {
-                    if($anticheat==3 and $normal_3== 'N' and $active == 'Y') $anticheat = 1;
-                    if($anticheat==4 and $normal_4== 'N' and $active == 'Y') $anticheat = 1;
-                    if(($anticheat>4 and $active == 'Y') or $anticheat>2 and $active == 'N') $anticheat = 1;
+                    if ($anticheat==3 and $normal_3== 'N' and $active == 'Y') $anticheat = 1;
+                    if ($anticheat==4 and $normal_4== 'N' and $active == 'Y') $anticheat = 1;
+                    if (($anticheat>4 and $active == 'Y') or $anticheat>2 and $active == 'N') $anticheat = 1;
                 }
             } else {
                 $anticheat = 1;
@@ -457,14 +457,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $ftpport = $row['ftpport'];
                 $ip = $row['ip'];
             }
-            if($gamebinary == 'srcds_run'){
+            if ($gamebinary == 'srcds_run'){
                 $config = $binarydir. '/' . $modfolder. '/' . $postconfig;
                 if ($configname=="server.cfg" and $qstat=="a2s") {
                     $general_cvar=array('hostname','sv_password','sv_contact','sv_tags','motdfile','mapcyclefile','sv_downloadurl','net_maxfilesize','rcon_password','sv_rcon_minfailures','sv_rcon_maxfailures','sv_rcon_banpenalty','sv_rcon_minfailuretime','sv_pure','sv_pure_kick_clients','sv_timeout','sv_voiceenable','sv_allowdownload','sv_allowupload','sv_region','sv_friction','sv_stopspeed','sv_gravity','sv_accelerate','sv_airaccelerate','sv_wateraccelerate','sv_allow_color_correction','sv_allow_wait_command','mp_flashlight','mp_footsteps','mp_falldamage','mp_limitteams','mp_limitteams','mp_friendlyfire','mp_autokick','mp_forcecamera','mp_fadetoblack','mp_allowspectators','mp_chattime','log','sv_log_onefile','sv_logfile','sv_logbans','sv_logecho','mp_logdetail','mp_timelimit','mp_winlimit','sv_minrate','sv_maxrate','sv_minupdaterate','sv_maxupdaterate','sv_mincmdrate','sv_maxcmdrate','sv_client_cmdrate_difference','sv_client_min_interp_ratio','sv_client_max_interp_ratio','mp_fraglimit','mp_maxrounds');
                 } else {
                     $general_cvar = array();
                 }
-            } else if($gamebinary == 'hlds_run'){
+            } else if ($gamebinary == 'hlds_run'){
                 $config = $modfolder. '/' . $postconfig;
                 $general_cvar = array();
             } else {
@@ -728,7 +728,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $pserver="/pserver/";
                 $pro = $sprache->on;
             }
-            if($pa['ftpaccess'] or $pa['miniroot']) {
+            if ($pa['ftpaccess'] or $pa['miniroot']) {
                 if ($row['newlayout'] == 'Y') $cname = $cname . '-' . $row['id'];
                 $query2->execute(array($rootid));
                 $ftpport = $query2->fetchColumn();

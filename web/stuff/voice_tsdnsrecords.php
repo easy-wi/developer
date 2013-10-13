@@ -48,7 +48,7 @@ $sprache = getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
 } else {
@@ -405,7 +405,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=vr&amp&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

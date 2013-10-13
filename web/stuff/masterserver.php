@@ -47,7 +47,7 @@ $sprache = getlanguagefile('roots',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
 } else {
@@ -64,7 +64,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         include(EASYWIDIR . '/stuff/ssh_exec.php');
         $serverid = $ui->id('id', 10, 'get');
         $rootServer=new masterServer($serverid,$aeskey);
-        if($ui->id('id',19, 'post')) {
+        if ($ui->id('id',19, 'post')) {
             $template_file = '';
             $query = $sql->prepare("SELECT `id` FROM `rservermasterg` WHERE `serverid`=? AND `servertypeid`=? AND `resellerid`=?");
             $query2 = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -119,7 +119,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $sshport = $rdata['port'];
         $sshuser = $rdata['user'];
         $sshpass = $rdata['pass'];
-        if($ui->id('id',30, 'post')) {
+        if ($ui->id('id',30, 'post')) {
             $template_file = '';
             $deletestring = '';
             $i = 0;
@@ -275,7 +275,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ma&amp;d=md&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

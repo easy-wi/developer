@@ -100,12 +100,12 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         $url = '';
         $comment = '';
         if (isset($comments) and $comments == 'Y') {
-            if($ui->escaped('comment', 'post')) {
+            if ($ui->escaped('comment', 'post')) {
                 $comment = $ui->escaped('comment', 'post');
                 if (strlen($ui->escaped('comment', 'post'))<=$commentMinLength) {
                     $error = true;
                 }
-                if(!isset($admin_id) and !isset($user_id)){
+                if (!isset($admin_id) and !isset($user_id)){
                     $email = $ui->ismail('email', 'post');
                     $author = $ui->names('author',255, 'post');
                     if ($mailRequired== 'Y' and !$ui->ismail('email', 'post')) {

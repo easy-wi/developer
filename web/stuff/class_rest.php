@@ -83,7 +83,7 @@ class easyWiRest {
         $url=str_replace(array('http://','https://',':8080',':80',':443'),'',$url);
         if (isdomain($url)) {
             $this->handle=@fsockopen($url,$port,$errno,$errstr,10);
-            if(!$this->handle) return $errstr;
+            if (!$this->handle) return $errstr;
             return true;
         } else {
             return 'Error: Domain';
@@ -91,8 +91,8 @@ class easyWiRest {
     }
 
     private function execSocket ($type,$params,$url) {
-        if($this->handle) {
-            if($type == 'P') {
+        if ($this->handle) {
+            if ($type == 'P') {
                 $send="POST /".$file." HTTP/1.1\r\n";
             } else {
                 $send="GET $file HTTP/1.1\r\n";
@@ -100,11 +100,11 @@ class easyWiRest {
             $send .= "Host: ".$url."\r\n";
             $send .="User-Agent: easy-wi.com\r\n";
             $send .= "Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n";
-            if(strlen($params)>0) {
+            if (strlen($params)>0) {
                 $send .= "Content-Length: ".strlen($params)."\r\n";
             }
             $send .= "Connection: Close\r\n\r\n";
-            if(strlen($postParams)>0) $send .= $params;
+            if (strlen($postParams)>0) $send .= $params;
             fwrite($this->handle,$send);
             $buffer = '';
             while (!feof($this->handle)) $buffer.=fgets($this->handle,4096);

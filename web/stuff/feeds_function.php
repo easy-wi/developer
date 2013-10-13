@@ -44,7 +44,7 @@ if (isset($newsInclude) and $newsInclude == true) {
     $total = $sql->prepare("SELECT COUNT(`newsID`) AS `amount` FROM `feeds_news` WHERE `resellerID`=?");
     $delete = $sql->prepare("DELETE FROM `feeds_news` WHERE `resellerID`=? AND `pubDate`<=?");
     @ini_set('user_agent','easy-wi.com');
-    if(isset($lookUpID)) {
+    if (isset($lookUpID)) {
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
         $query->execute(array($lookUpID));
     } else {
@@ -171,7 +171,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                         stream_set_timeout($feed,10);
                         $meta=stream_get_meta_data($feed);
                         foreach ($meta['wrapper_data'] as $mrow) {
-                            if(is_string($mrow) and $mrow == 'Content-Encoding: gzip') {
+                            if (is_string($mrow) and $mrow == 'Content-Encoding: gzip') {
                                 $gZipped = true;
                             } else if (is_string($mrow) and substr($mrow,0,13) == 'Last-Modified' and !isset($lastModified)) {
                                 $lastModified=substr($mrow,16);
@@ -258,7 +258,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                                     if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$description)) {
                                         $description=base64_decode($description);
                                     }
-                                    if($theCount<$newsAmount) {
+                                    if ($theCount<$newsAmount) {
                                         $feedsArray[$feedID][] = array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
                                     }
                                     $theCount++;
@@ -278,7 +278,7 @@ if (isset($newsInclude) and $newsInclude == true) {
             foreach ($feeds as $singleFeed) {
                 $count->execute(array($singleFeed['pubDate'],$lookUpID,$feedID));
                 $exists = $count->fetchColumn();
-                if($exists>0) {
+                if ($exists>0) {
                     $skipEntries++;
                 } else {
                     $newEntries++;

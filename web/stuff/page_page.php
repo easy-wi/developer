@@ -121,7 +121,7 @@ if (isset($page_id) and is_numeric($page_id)) {
             $query = $sql->prepare("SELECT t.`id`,p.`id` AS `pageID`,p.`type`,t.`shortlink`,t.`title`,t.`text`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`=1 AND p.`resellerid`=0 AND (LOWER(t.`shortlink`) LIKE :search OR LOWER(t.`title`) LIKE :search OR LOWER(t.`text`) LIKE :search)");
             $query->execute(array(':search' => '%'.$value.'%'));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                if(!isset($titleLanguages[$row['language']])) {
+                if (!isset($titleLanguages[$row['language']])) {
                     $titleLanguages[$row['language']] = array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
                 }
                 if (strlen($row['text'])<=$newssidebar_textlength) {
@@ -151,7 +151,7 @@ if (isset($page_id) and is_numeric($page_id)) {
                     $title=(string)$titleLanguages[$row['language']]['page']->about;
                     $link = $page_data->pageurl.'/?s=news&amp;l='.$row['language'];
                 }
-                if(!isset($link)) {
+                if (!isset($link)) {
                     $link='#';
                 }
                 if ($exact == true) {
@@ -162,7 +162,7 @@ if (isset($page_id) and is_numeric($page_id)) {
                     $worth+=substr_count(strtolower($row['text']),strtolower($value));
                 }
                 $href='<a href="'.$link.'" title="'.$title.'">'.$title.'</a>';
-                if(isset($results[$row['id']])) {
+                if (isset($results[$row['id']])) {
                     $oldWorth = $results[$row['id']]['worth'];
                     $hits = $results[$row['id']]['hits'];
                     $hits[] = $value;
@@ -196,7 +196,7 @@ if (isset($page_id) and is_numeric($page_id)) {
         $exists = array();
         foreach ($resultsArray as $key=>$val) {
             foreach ($val as $k=>$v) {
-                if(!in_array($key,$exists)) {
+                if (!in_array($key,$exists)) {
                     unset($resultsArray[$key][$k]);
                     $results[] = $v;
                     $exists[] = $key;

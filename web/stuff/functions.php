@@ -659,9 +659,9 @@ if (!function_exists('passwordgenerate')) {
                         unset($splitline);
                         if ($cvarprotect[$config]['type'] == 'cfg') {
                             $splitline = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
-                        } else if($cvarprotect[$config]['type'] == 'ini') {
+                        } else if ($cvarprotect[$config]['type'] == 'ini') {
                             $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
-                        } else if($cvarprotect[$config]['type'] == 'xml') {
+                        } else if ($cvarprotect[$config]['type'] == 'xml') {
                             $ex1 = explode('>', $line);
                             if (isset($ex1[1])) {
                                 $c = str_replace('<', '', $ex1[0]);
@@ -786,9 +786,9 @@ if (!function_exists('passwordgenerate')) {
                     
                 } else if ($action == 're') {
                     
-                    if($gamebinary == 'srcds_run') {
+                    if ($gamebinary == 'srcds_run') {
                         $config = $modfolder . '/cfg/server.cfg';
-                    } else if($gamebinary == 'hlds_run') {
+                    } else if ($gamebinary == 'hlds_run') {
                         $config = $modfolder . '/server.cfg';
                     } else {
                         $config = 'main/server.cfg';
@@ -1128,9 +1128,9 @@ if (!function_exists('passwordgenerate')) {
             }
         }
         
-        if(!isset($resellerid) or $resellerid==$userid) {
+        if (!isset($resellerid) or $resellerid==$userid) {
             $resellersid = 0;
-            if(!isset($resellerid)) {
+            if (!isset($resellerid)) {
                 $resellerid = 0;
             }
         } else {
@@ -1146,7 +1146,7 @@ if (!function_exists('passwordgenerate')) {
             $resellerLanguage = $row['language'];
             $email_settings_type = $row['email_settings_type'];
             
-            if($email_settings_type == 'S'){
+            if ($email_settings_type == 'S'){
                 $email_settings_host = $row['email_settings_host'];
                 $email_settings_port = $row['email_settings_port'];
                 $email_settings_user = $row['email_settings_user'];
@@ -1165,7 +1165,7 @@ if (!function_exists('passwordgenerate')) {
             }
             
             if ($template != 'contact') {
-                if($resellerid == $userid) {
+                if ($resellerid == $userid) {
                     $resellermail = $resellersmail;
                     $lookupID = $resellersid;
                 } else {
@@ -1242,7 +1242,7 @@ if (!function_exists('passwordgenerate')) {
                     if ($sended == true) {
                         $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
 
-                        if($resellerid == $userid) {
+                        if ($resellerid == $userid) {
                             $query->execute(array($userid, $topic, $resellersid));
 
                         } else {
@@ -1386,7 +1386,7 @@ if (!function_exists('passwordgenerate')) {
             $errstr = $domain . ' is no domain';
         }
 
-        if(isset($fp) and $fp) {
+        if (isset($fp) and $fp) {
 
             if (is_array($postParams) and count($postParams) > 0) {
                 $postData = '';
@@ -1420,7 +1420,7 @@ if (!function_exists('passwordgenerate')) {
             }
             $send .= "Connection: Close\r\n\r\n";
 
-            if(isset($postData) and is_array($postParams) and count($postParams)>0) {
+            if (isset($postData) and is_array($postParams) and count($postParams)>0) {
                 $send .= $postData;
             }
 
@@ -1513,7 +1513,7 @@ if (!function_exists('passwordgenerate')) {
                 $key = 'key' . $key;
             }
 
-            if(is_array($value)){
+            if (is_array($value)){
                 array2xml($value, $xml->addChild($key));
 
             } else {
@@ -1527,7 +1527,7 @@ if (!function_exists('passwordgenerate')) {
 
         global $ui;
 
-        if($ui->active($check, 'post') == 'Y') {
+        if ($ui->active($check, 'post') == 'Y') {
             return 'Y';
         }
         return 'N';

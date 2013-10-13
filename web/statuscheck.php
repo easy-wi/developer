@@ -1009,7 +1009,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                     $removedeadvoiceserver->execute(array($ts3id));
                                 } else if ($active == 'Y' and $vs != 'online' and $olduptime>1 and $olduptime != null) {
                                     $notified++;
-                                    if($notified>=$ts3masternotified == $resellersettings[$resellerid]['down_checks']){
+                                    if ($notified>=$ts3masternotified == $resellersettings[$resellerid]['down_checks']){
                                         print "TS3 server $address not running. Starting it.\r\n";
                                         $connection->StartServer($virtualserver_id);
                                     }
@@ -1025,7 +1025,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                             }
                             if (isset($ts3id)) {
                                 $flagPassword = 'N';
-                                if(isset($sd['virtualserver_flag_password']) and $sd['virtualserver_flag_password'] == 1) {
+                                if (isset($sd['virtualserver_flag_password']) and $sd['virtualserver_flag_password'] == 1) {
                                     $flagPassword = 'Y';
                                 }
                                 $query2 = $sql->prepare("UPDATE `voice_server` SET `usedslots`=?,`uptime`=?,`notified`=?,`filetraffic`=?,`lastfiletraffic`=?,`queryName`=?,`queryNumplayers`=?,`queryMaxplayers`=?,`queryPassword`=?,`queryUpdatetime`=NOW() WHERE `id`=? AND `resellerid`=? LIMIT 1");

@@ -44,7 +44,7 @@ include(EASYWIDIR . '/stuff/settings.php');
 $die = false;
 if (!isset($admin_id) and !isset($user_id)) {
     redirect('login.php');
-} else if(isset($admin_id)) {
+} else if (isset($admin_id)) {
     $pa=User_Permissions($admin_id);
 } else if (isset($user_id)) {
     $pa=User_Permissions($user_id);
@@ -178,7 +178,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
     require_once IncludeTemplate($template_to_use,'ajax_admin_mysql_server.tpl');
 } else if ($ui->st('d', 'get')=="tr" and $ui->st('w', 'get')) {
 	if ($ui->st('w', 'get')=="su") {
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
             $query = $sql->prepare("SELECT `ips` FROM `resellerdata`");
             $query->execute();
 		} else if ($reseller_id==$admin_id) {
@@ -204,13 +204,13 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 			$data[] = '<option>'.$subnet.'</option>';
 		}
 	} else if ($ui->st('w', 'get')=="rs") {
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=`resellerid`");
             $query->execute();
 		}
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['cname'].'</option>';
 	} else if ($ui->st('w', 'get')=="us") {
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r'");
             $query->execute();
 		} else if ($reseller_id==$admin_id) {
@@ -221,7 +221,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 			$data[] = '<option value='.$row['id'].'>'.$row['cname'].'</option>';
 		}
 	} else if ($ui->st('w', 'get')=="se") {
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
             $query = $sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` ORDER BY u.`id`,c.`id`");
             $query->execute();
 		} else if ($reseller_id==$admin_id){
@@ -234,7 +234,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['cname'] . '-' . $row['id'].'</option>';
 	} else if ($ui->st('w', 'get')=="ip") {
 		$userips = array();
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
             $query = $sql->prepare("SELECT `ips` FROM `resellerdata`");
             $query->execute();
 		} else if ($reseller_id==$admin_id) {
@@ -271,7 +271,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl');
-} else if ($ui->username('distro','50', 'get') and $ui->id('id',19, 'get') and ($pa['vserversettings'] or $pa['root']) and $reseller_id==0) {
+} else if ($ui->username('distro','50', 'get') and $ui->id('id',19, 'get') and ($pa['vserversettings'] or $pa['root']) and $reseller_id == 0) {
 	$pselect = $sql->prepare("SELECT `pxeautorun` FROM `resellerimages` WHERE `bitversion`=? AND `distro`=?");
 	$pselect->execute(array($ui->id('id',19, 'get'), $ui->username('distro','50', 'get')));
 	$usedpxeautorun = array();
@@ -334,7 +334,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 ?>
 <select name="anticheat">
 	<option value="1"><?php echo $anticheatsoft . '  ' . $sprache->on;?></option>
-	<?php if (!$ui->username('short','50', 'get')){ ?><option value="2" <?php if($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft . '  ' . $sprache->off2;?></option><?php } ?>
+	<?php if (!$ui->username('short','50', 'get')){ ?><option value="2" <?php if ($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft . '  ' . $sprache->off2;?></option><?php } ?>
 	<?php echo $eac;?>
 </select>
 <?php

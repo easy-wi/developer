@@ -128,7 +128,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $loguseraction="%mod% CMS Settings";
     $insertlog->execute();
-    if($queryAffected>0) {
+    if ($queryAffected>0) {
         $template_file = $spracheResponse->table_add;
     } else {
         $template_file = $spracheResponse->error_table;

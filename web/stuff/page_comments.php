@@ -50,7 +50,7 @@ $logsubuser = 0;
 
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get') and $ui->smallletters('action',2, 'post') == 'md'){
+} else if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get') and $ui->smallletters('action',2, 'post') == 'md'){
     $id = $ui->id('id',19, 'get');
     $url = '';
     if ($ui->url('url', 'post')) {
@@ -68,7 +68,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $template_file = $spracheResponse->error_table;
     }
-} else if($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get') and !$ui->smallletters('action',2, 'post')){
+} else if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get') and !$ui->smallletters('action',2, 'post')){
     $id = $ui->id('id',19, 'get');
     $query = $sql->prepare("SELECT t.`pageid`,t.`title`,c.* FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`commentID`=? AND c.`resellerID`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
@@ -91,7 +91,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
-} else if($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')){
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')){
     $query = $sql->prepare("DELETE FROM `page_comments` WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($ui->id('id',19, 'get'),$reseller_id));
     if ($query->rowCount()>0) {
@@ -183,7 +183,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT t.`pageid`,t.`language`,t.`title`,c.`commentID`,c.`date`,c.`authorname`,c.`markedSpam`,c.`spamReason`,c.`moderateAccepted`,c.`comment` FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`resellerID`=? $AND ORDER BY $orderby");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if(!isset($titleLanguages[$row['language']])) {
+        if (!isset($titleLanguages[$row['language']])) {
             $titleLanguages[$row['language']] = array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
         }
         $commentDate='m.d.Y H:i';
@@ -201,7 +201,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=pc&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

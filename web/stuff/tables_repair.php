@@ -1351,13 +1351,13 @@ foreach ($defined as $table => $t_p) {
             $add = $sql->prepare($add_query);
             $add->execute();
         }
-        if(count($addIndex)>0) {
+        if (count($addIndex)>0) {
             $add_query='ALTER TABLE `'.$table.'` ADD INDEX(`'.implode('`),ADD INDEX(`',$addIndex).'`)';
             $response->add('ADD: '.$add_query.'<br />');
             $add = $sql->prepare($add_query);
             $add->execute();
         }
-        if(count($removeIndex)>0) {
+        if (count($removeIndex)>0) {
             $remove_query='ALTER TABLE `'.$table.'` DROP INDEX `'.implode('`,DROP INDEX `',$removeIndex).'`';
             $response->add('ADD: '.$remove_query.'<br />');
             $remove = $sql->prepare($remove_query);

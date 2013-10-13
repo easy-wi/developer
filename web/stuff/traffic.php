@@ -34,12 +34,12 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if(!isset($admin_id) or $main != 1 or (isset($admin_id) and !$pa['traffic'])) {
+if (!isset($admin_id) or $main != 1 or (isset($admin_id) and !$pa['traffic'])) {
 	header('Location: admin.php');
 	die('No acces');
 }
 $sprache = getlanguagefile('traffic',$user_language,$reseller_id);
-if ($d== 'se' and $reseller_id==0) {
+if ($d== 'se' and $reseller_id == 0) {
 
 	include(EASYWIDIR . '/stuff/keyphrasefile.php');
 	
@@ -149,7 +149,7 @@ if ($d== 'se' and $reseller_id==0) {
 			$whichdata="&amp;ips=".$ui->post['what'];
 			$display = $sprache->subnet . '  ' . $ui->post['what'];
 		}
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
 			$pselect = $sql->prepare("SELECT `ips` FROM `resellerdata`");
 			$pselect->execute();
 		} else if ($reseller_id==$admin_id) {
@@ -183,7 +183,7 @@ if ($d== 'se' and $reseller_id==0) {
 			$kind="rs";
 			$whichdata="&amp;short=".$ui->post['what'];
 			$extra = $gsprache->reseller;
-			if ($reseller_id==0) {
+			if ($reseller_id == 0) {
 				$pselect = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=`resellerid`");
 				$pselect->execute();
 			}
@@ -198,7 +198,7 @@ if ($d== 'se' and $reseller_id==0) {
 			$kind="us";
 			$whichdata="&amp;distro=".$ui->post['what'];
 			$extra = $sprache->user;
-			if ($reseller_id==0) {
+			if ($reseller_id == 0) {
 				$pselect = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r'");
 				$pselect->execute();
 			} else if ($reseller_id==$admin_id) {
@@ -213,7 +213,7 @@ if ($d== 'se' and $reseller_id==0) {
 				}
 			}
 		}
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
 			$pselect = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=:id LIMIT 1");
 			$pselect->execute(array(':id' => $ui->post['what']));
 		} else if ($reseller_id==$admin_id) {
@@ -228,7 +228,7 @@ if ($d== 'se' and $reseller_id==0) {
 		if (isid($ui->post['what'], '30')) {
 			$whichdata="&amp;shorten=".$ui->post['what'];
 		}
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
 			$pselect = $sql->prepare("SELECT u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` WHERE c.`id`=:id ORDER BY u.`id`,c.`id` LIMIT 1");
 			$pselect->execute(array(':id' =>$ui->post['what']));
 		} else if ($reseller_id==$admin_id){
@@ -241,7 +241,7 @@ if ($d== 'se' and $reseller_id==0) {
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$display = $sprache->server . '  ' . $row['cname'] . '-' . $ui->post['what'];
 		}
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
 			$pselect = $sql->prepare("SELECT c.`id`,u.`cname` FROM `virtualcontainer` c LEFT JOIN `userdata` u ON c.`userid`=u.`id` ORDER BY u.`id`,c.`id`");
 			$pselect->execute();
 		} else if ($reseller_id==$admin_id){
@@ -264,7 +264,7 @@ if ($d== 'se' and $reseller_id==0) {
 			$whichdata="&amp;ip=".$ui->post['what'];
 			$display = $sprache->ip . '  ' . $ui->post['what'];
 		}
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
 			$pselect = $sql->prepare("SELECT `ips` FROM `resellerdata`");
 			$pselect->execute();
 		} else if ($reseller_id==$admin_id) {
@@ -302,7 +302,7 @@ if ($d== 'se' and $reseller_id==0) {
 		$yearstop=date('Y');
 		$monthstop=date('m');
 		$daystop=date('d');
-		$amount=7;
+		$amount = 7;
 	} else if ($ui->post['dmy'] == 'da') {
 		$dmy='da';
 		if (validate_int($ui->post['daystart'],1,31)) {
@@ -346,7 +346,7 @@ if ($d== 'se' and $reseller_id==0) {
 			$day=date('d',strtotime("-6 days"));
 			$month=date('m',strtotime("-6 days"));
 			$year=date('Y',strtotime("-6 days"));
-			$amount=7;
+			$amount = 7;
 		}
 	} else if ($ui->post['dmy'] == 'mo') {
 		$dmy='mo';
@@ -390,7 +390,7 @@ if ($d== 'se' and $reseller_id==0) {
 			$day = 1;
 			$month=date('m',strtotime("-6 months"));
 			$year=date('Y',strtotime("-6 months"));
-			$amount=7;
+			$amount = 7;
 		}
 	} else if ($ui->post['dmy'] == 'ye') {
 		$dmy='ye';

@@ -87,6 +87,6 @@ if (isset($user_id)) {
 		}
 	}
 }
-if(((!isset($admin_id) and !isset($user_id)) or (((!$pa['gserver']) and !$pa['voiceserver'] and !$pa['voicemasterserver'] and !$pa['traffic'] and !$pa['user'] and !rsellerpermisions($admin_id) and !$pa['usertickets']) and (!$pau['restart'] and !$pau['usertickets'])))) {
+if (((!isset($admin_id) and !isset($user_id)) or (((!$pa['gserver']) and !$pa['voiceserver'] and !$pa['voicemasterserver'] and !$pa['traffic'] and !$pa['user'] and !rsellerpermisions($admin_id) and !$pa['usertickets']) and (!$pau['restart'] and !$pau['usertickets'])))) {
 	die('No acces');
 }

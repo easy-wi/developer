@@ -196,9 +196,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $localID = $sql->lastInsertId();
                 $localServerID = $localID;
                 if (isid($localID,10)) {
-                    if($usedns == 'Y' and isset($data['tsdns']) and active_check($data['tsdns'])) {
+                    if ($usedns == 'Y' and isset($data['tsdns']) and active_check($data['tsdns'])) {
                         $tsdns = $data['tsdns'];
-                    } else if($usedns == 'Y' and (!isset($data['tsdns']) or !active_check($data['tsdns']))) {
+                    } else if ($usedns == 'Y' and (!isset($data['tsdns']) or !active_check($data['tsdns']))) {
                         $tsdns = 'Y';
                     } else {
                         $tsdns = 'N';
@@ -266,7 +266,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID,$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                if($row['amount']>0) {
+                if ($row['amount']>0) {
                     $success['false'][] = 'Server is marked for deletion';
                 }
             }
@@ -307,60 +307,60 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $eventualUpdate .= ',`maxtraffic`=?';
                 $maxtraffic = $data['maxtraffic'];
             }
-            if(isset($data['forcebanner']) and active_check($data['forcebanner'])) {
+            if (isset($data['forcebanner']) and active_check($data['forcebanner'])) {
                 $updateArray[] = $data['forcebanner'];
                 $eventualUpdate .= ',`forcebanner`=?';
                 $forcebanner = $data['forcebanner'];
             }
-            if(isset($data['forcebutton']) and active_check($data['forcebutton'])) {
+            if (isset($data['forcebutton']) and active_check($data['forcebutton'])) {
                 $updateArray[] = $data['forcebutton'];
                 $eventualUpdate .= ',`forcebutton`=?';
                 $forcebutton = $data['forcebutton'];
             }
-            if(isset($data['forceservertag']) and active_check($data['forceservertag'])) {
+            if (isset($data['forceservertag']) and active_check($data['forceservertag'])) {
                 $updateArray[] = $data['forceservertag'];
                 $eventualUpdate .= ',`forceservertag`=?';
                 $forceservertag = $data['forceservertag'];
             }
-            if(isset($data['forcewelcome']) and active_check($data['forcewelcome'])) {
+            if (isset($data['forcewelcome']) and active_check($data['forcewelcome'])) {
                 $updateArray[] = $data['forcewelcome'];
                 $eventualUpdate .= ',`forcewelcome`=?';
                 $forcewelcome = $data['forcewelcome'];
             }
-            if(isset($data['lendserver']) and active_check($data['lendserver'])) {
+            if (isset($data['lendserver']) and active_check($data['lendserver'])) {
                 $updateArray[] = $data['lendserver'];
                 $eventualUpdate .= ',`lendserver`=?';
                 $lendserver = $data['lendserver'];
             }
-            if(isset($data['backup']) and active_check($data['backup'])) {
+            if (isset($data['backup']) and active_check($data['backup'])) {
                 $updateArray[] = $data['backup'];
                 $eventualUpdate .= ',`backup`=?';
                 $backup = $data['backup'];
             }
-            if(isset($data['flexSlots']) and active_check($data['flexSlots'])) {
+            if (isset($data['flexSlots']) and active_check($data['flexSlots'])) {
                 $updateArray[] = $data['flexSlots'];
                 $eventualUpdate .= ',`flexSlots`=?';
                 $flexSlots = $data['flexSlots'];
             }
-            if(isset($data['flexSlotsFree']) and isid($data['flexSlotsFree'],11)) {
+            if (isset($data['flexSlotsFree']) and isid($data['flexSlotsFree'],11)) {
                 $updateArray[] = $data['flexSlotsFree'];
                 $eventualUpdate .= ',`flexSlotsFree`=?';
                 $flexSlotsFree = $data['flexSlotsFree'];
             }
-            if(isset($data['flexSlotsPercent']) and isid($data['flexSlotsPercent'],3)) {
+            if (isset($data['flexSlotsPercent']) and isid($data['flexSlotsPercent'],3)) {
                 $updateArray[] = $data['flexSlotsPercent'];
                 $eventualUpdate .= ',`flexSlotsPercent`=?';
                 $flexSlotsPercent = $data['flexSlotsPercent'];
             }
-            if(isset($data['tsdns']) and active_check($data['tsdns'])) {
+            if (isset($data['tsdns']) and active_check($data['tsdns'])) {
                 $tsdns = $data['tsdns'];
             }
-            if(isset($data['dns']) and $tsdns == 'Y' and isdomain($data['dns'])) {
+            if (isset($data['dns']) and $tsdns == 'Y' and isdomain($data['dns'])) {
                 $updateArray[] = $data['dns'];
                 $eventualUpdate .= ',`dns`=?';
                 $dns = $data['dns'];
             }
-            if(isset($data['autoRestart']) and active_check($data['autoRestart'])) {
+            if (isset($data['autoRestart']) and active_check($data['autoRestart'])) {
                 $updateArray[] = $data['autoRestart'];
                 $eventualUpdate .= ',`autoRestart`=?';
                 $flexSlots = $data['autoRestart'];
@@ -380,7 +380,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $insert->execute(array($hostID,$resellerID,$localID,$userID,$name,$resellerID));
             }
         }
-        if(!isset($oldSlots)) {
+        if (!isset($oldSlots)) {
             $success['false'][] = 'No server can be found to edit';
         }
     } else {
@@ -400,7 +400,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $name = $row['ip'] . ':' . $row['port'];
             $hostID = $row['hostID'];
         }
-        if(isset($localID) and isset($name)) {
+        if (isset($localID) and isset($name)) {
             $query = $sql->prepare("UPDATE `voice_server` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($localID,$resellerID));
             $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");

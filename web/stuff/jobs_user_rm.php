@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if(!function_exists('removeUser')) {
+if (!function_exists('removeUser')) {
     function removeUser ($userID,$tables,$reseller=null) {
         global $sql;
         foreach ($tables as $table => $column) {

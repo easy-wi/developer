@@ -353,7 +353,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID,$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                if($row['amount']>0) $success['false'][] = 'Server is marked for deletion';
+                if ($row['amount']>0) $success['false'][] = 'Server is marked for deletion';
             }
             $updateArray = array();
             $eventualUpdate = '';
@@ -455,7 +455,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                 $insert->execute(array($hostID,$resellerID,$localID,$userID,$name,json_encode(array('newActive' => $active,'newPort' => $port)),$resellerID));
             }
         }
-        if(!isset($oldSlots)) {
+        if (!isset($oldSlots)) {
             $success['false'][] = 'No server can be found to edit';
         }
     } else {
@@ -476,7 +476,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
             $hostID = $row['rootID'];
             $hostExternalID = $row['rootID'];
         }
-        if(isset($localID) and isset($name)) {
+        if (isset($localID) and isset($name)) {
             $query = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($localID,$resellerID));
             $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
@@ -536,7 +536,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and 1
                 $localID = $row['id'];
                 $name = $row['serverip'] . ':' . $row['port'];
             }
-            if(isset($localID) and isset($userID)) {
+            if (isset($localID) and isset($userID)) {
                 $query = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($localID,$resellerID));
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND (`action`='re' OR `action`='st') AND `affectedID`=? and `resellerID`=?");

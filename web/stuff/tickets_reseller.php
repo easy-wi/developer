@@ -42,7 +42,7 @@ $sprache = getlanguagefile('tickets',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
 } else {
@@ -57,7 +57,7 @@ if ($reseller_id != 0 and $admin_id==$reseller_id) {
 	$resellerid = 0;
 } else if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$resellerid = $reseller_id;
-} else if ($reseller_id==0) {
+} else if ($reseller_id == 0) {
 	$resellerid = 0;
 }
 if ($ui->st('d', 'get') == 'ad') {
@@ -191,13 +191,13 @@ if ($ui->st('d', 'get') == 'ad') {
             $state = $row['state'];
         }
         if (isset($state) and $state!='C' and $state!='P') {
-            if($ui->id('userPriority',1, 'post')) {
+            if ($ui->id('userPriority',1, 'post')) {
                 $query=($state == 'A') ? $sql->prepare("UPDATE `tickets` SET `state`='P',`userPriority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1") : $sql->prepare("UPDATE `tickets` SET `userPriority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->id('userPriority',1, 'post'),$id,$resellerid));
             }
             $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`message`,`writeDate`,`userID`,`resellerid`) VALUES (?,?,?,?,?)");
             $query->execute(array($id,$ui->post['ticket'],$logdate,$admin_id,$resellerid));
-            if(isid($userid,10)) {
+            if (isid($userid,10)) {
                 $query = $sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($userid));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

@@ -53,7 +53,7 @@ if ($ui->id('id', 10, 'get')) {
 		$reseller_id = $admin_id;
 	}
     
-	if(isset($admin_id)) {
+	if (isset($admin_id)) {
         
         $query = $sql->prepare("SELECT u.`id`,u.`cname` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id', 10, 'get'), $reseller_id));

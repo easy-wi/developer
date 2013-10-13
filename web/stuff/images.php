@@ -147,97 +147,97 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     if (@$xml->load($_FILES['file']['tmp_name']) !== false) {
                         $childNodes = $xml->documentElement;
                         foreach ($childNodes->childNodes AS $node) {
-                            if($node->nodeName == 'shorten') {
+                            if ($node->nodeName == 'shorten') {
                                 $shorten = $node->nodeValue;
                             }
-                            if($node->nodeName == 'steamgame') {
+                            if ($node->nodeName == 'steamgame') {
                                 $steamgame = $node->nodeValue;
                             }
-                            if($node->nodeName == 'appID') {
+                            if ($node->nodeName == 'appID') {
                                 $appID = $node->nodeValue;
                             }
-                            if($node->nodeName == 'updates ') {
+                            if ($node->nodeName == 'updates ') {
                                 $updates = $node->nodeValue;
                             }
-                            if($node->nodeName == 'description') {
+                            if ($node->nodeName == 'description') {
                                 $description = $node->nodeValue;
                             }
-                            if($node->nodeName == 'type') {
+                            if ($node->nodeName == 'type') {
                                 $type = $node->nodeValue;
                             }
-                            if($node->nodeName == 'gamebinary') {
+                            if ($node->nodeName == 'gamebinary') {
                                 $gamebinary = $node->nodeValue;
                             }
-                            if($node->nodeName == 'binarydir') {
+                            if ($node->nodeName == 'binarydir') {
                                 $binarydir = $node->nodeValue;
                             }
-                            if($node->nodeName == 'modfolder') {
+                            if ($node->nodeName == 'modfolder') {
                                 $modfolder = $node->nodeValue;
                             }
-                            if($node->nodeName == 'fps') {
+                            if ($node->nodeName == 'fps') {
                                 $fps = $node->configs;
                             }
-                            if($node->nodeName == 'slots') {
+                            if ($node->nodeName == 'slots') {
                                 $slots = $node->nodeValue;
                             }
-                            if($node->nodeName == 'modcmds') {
+                            if ($node->nodeName == 'modcmds') {
                                 $modcmds = $node->nodeValue;
                             }
-                            if($node->nodeName == 'tic') {
+                            if ($node->nodeName == 'tic') {
                                 $tic = $node->nodeValue;
                             }
-                            if($node->nodeName == 'qstat') {
+                            if ($node->nodeName == 'qstat') {
                                 $qstat = $node->nodeValue;
                             }
-                            if($node->nodeName == 'gamemod') {
+                            if ($node->nodeName == 'gamemod') {
                                 $gamemod = $node->nodeValue;
                             }
-                            if($node->nodeName == 'gamemod2') {
+                            if ($node->nodeName == 'gamemod2') {
                                 $gamemod2 = $node->nodeValue;
                             }
-                            if($node->nodeName == 'configs') {
+                            if ($node->nodeName == 'configs') {
                                 $configs = $node->nodeValue;
                             }
-                            if($node->nodeName == 'configedit') {
+                            if ($node->nodeName == 'configedit') {
                                 $configedit = $node->nodeValue;
                             }
-                            if($node->nodeName == 'qstatpassparam') {
+                            if ($node->nodeName == 'qstatpassparam') {
                                 $qstatpassparam = $node->nodeValue;
                             }
-                            if($node->nodeName == 'portStep') {
+                            if ($node->nodeName == 'portStep') {
                                 $portStep = $node->nodeValue;
                             }
-                            if($node->nodeName == 'portMax') {
+                            if ($node->nodeName == 'portMax') {
                                 $portMax = $node->nodeValue;
                             }
-                            if($node->nodeName == 'portOne') {
+                            if ($node->nodeName == 'portOne') {
                                 $portOne = $node->nodeValue;
                             }
-                            if($node->nodeName == 'portTwo') {
+                            if ($node->nodeName == 'portTwo') {
                                 $portTwo = $node->nodeValue;
                             }
-                            if($node->nodeName == 'portThree') {
+                            if ($node->nodeName == 'portThree') {
                                 $portThree = $node->nodeValue;
                             }
-                            if($node->nodeName == 'portFour') {
+                            if ($node->nodeName == 'portFour') {
                                 $portFour = $node->nodeValue;
                             }
-                            if($node->nodeName == 'portFive') {
+                            if ($node->nodeName == 'portFive') {
                                 $portFive = $node->nodeValue;
                             }
-                            if($node->nodeName == 'cmd') {
+                            if ($node->nodeName == 'cmd') {
                                 $cmd = $node->nodeValue;
                             }
-                            if($node->nodeName == 'protected') {
+                            if ($node->nodeName == 'protected') {
                                 $protected = $node->nodeValue;
                             }
-                            if($node->nodeName == 'protectedSaveCFGs') {
+                            if ($node->nodeName == 'protectedSaveCFGs') {
                                 $protectedSaveCFGs = $node->nodeValue;
                             }
-                            if($node->nodeName == 'iptables') {
+                            if ($node->nodeName == 'iptables') {
                                 $iptables = $node->nodeValue;
                             }
-                            if($node->nodeName == 'mapGroup') {
+                            if ($node->nodeName == 'mapGroup') {
                                 $mapGroup = $node->nodeValue;
                             }
                         }
@@ -320,27 +320,27 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
         
         $errors = array();
-        if(!$ui->w('steamgame', 1, 'post')) {
+        if (!$ui->w('steamgame', 1, 'post')) {
             $errors['steamgame'] = $sprache->steam;
         }
-        if(!$ui->active('gamemod', 'post')) {
+        if (!$ui->active('gamemod', 'post')) {
             $errors['gamemod'] = $sprache->mods;
         }
-        if(!$ui->id('updates', 1, 'post')) {
+        if (!$ui->id('updates', 1, 'post')) {
             $errors['updates'] = 'Autoupdate';
         }
-        if(!$ui->startparameter('cmd', 'post')) {
+        if (!$ui->startparameter('cmd', 'post')) {
             $errors['cmd'] = $sprache->start;
         }
-        if(!$ui->startparameter('gamebinary', 'post')) {
+        if (!$ui->startparameter('gamebinary', 'post')) {
             $errors['gamebinary'] = $sprache->bin;
         }
         
-        if($ui->gamestring('shorten', 'post') and $ui->smallletters('action',2, 'post') == 'ad') {
+        if ($ui->gamestring('shorten', 'post') and $ui->smallletters('action',2, 'post') == 'ad') {
             
             $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($shorten, $reseller_id));
-            if($query->rowCount()>0) {
+            if ($query->rowCount()>0) {
                 $errors['shorten'] = $sprache->abkuerz;
             }
             
@@ -348,7 +348,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             
             $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `id`!=? AND `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $shorten, $reseller_id));
-            if($query->rowCount()>0) {
+            if ($query->rowCount()>0) {
                 $errors['shorten'] = $sprache->abkuerz;
             }
             
@@ -407,7 +407,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("DELETE FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $reseller_id));
 
-        if($query->rowCount()>0) {
+        if ($query->rowCount()>0) {
             $loguseraction = '%del% %template% ' . $shorten;
             $insertlog->execute();
             $template_file = $spracheResponse->table_del;

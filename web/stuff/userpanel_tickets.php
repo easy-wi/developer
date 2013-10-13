@@ -102,7 +102,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $lastID = $sql->lastInsertId();
         $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`writeDate`,`userID`,`message`,`resellerID`) VALUES (?,?,?,?,?)");
         $query->execute(array($lastID,$logdate,$user_id,$ticketText,$reseller_id));
-        if ($reseller_id==0) {
+        if ($reseller_id == 0) {
             $query = $sql->prepare("SELECT `id`,`mail_ticket` FROM `userdata` WHERE `resellerid`='0' AND `accounttype`='a'");
             $query->execute();
         } else {
@@ -181,7 +181,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $state = $row['state'];
         }
         if (isset($state) and $state!='C' and $state!='P') {
-            if($ui->id('userPriority',1, 'post')) {
+            if ($ui->id('userPriority',1, 'post')) {
                 $query=($state == 'A') ? $sql->prepare("UPDATE `tickets` SET `state`='P',`userPriority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1") : $sql->prepare("UPDATE `tickets` SET `userPriority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->id('userPriority',1, 'post'),$id,$reseller_id));
                 $template_file = ($query->rowCount()>0) ? $spracheResponse->table_add : $spracheResponse->error_table;
@@ -192,7 +192,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $count = $query->rowCount();
                 $template_file = ((!isset($template_file) and $count > 0) or (isset($template_file) & $template_file == $spracheResponse->error_table & $count>0)) ? $spracheResponse->table_add : $spracheResponse->error_table;
             }
-            if(isid($userid,10)) {
+            if (isid($userid,10)) {
                 $query = $sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($userid));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

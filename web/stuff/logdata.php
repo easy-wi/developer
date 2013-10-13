@@ -50,7 +50,7 @@ if (!isset($start)) {
     $start = 0;
 }
 
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
 	$query = $sql->prepare("SELECT `userid`,`subuser`,`reseller`,`username`,`usertype`,`useraction`,`ip`,`hostname`,`logdate` FROM `userlog` WHERE `usertype` LIKE :usertype AND (`resellerid`=:reseller_id OR `resellerid`=`userid`) ORDER BY `id` DESC LIMIT $start,$amount");
 } else if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $query = $sql->prepare("SELECT `userid`,`subuser`,`reseller`,`username`,`usertype`,`useraction`,`ip`,`hostname`,`logdate` FROM `userlog` WHERE `usertype` LIKE :usertype AND `resellerid`=:reseller_id GROUP BY `userid`,`subuser`,`reseller`,`username`,`usertype`,`useraction`,`ip`,`logdate` ORDER BY `id` DESC LIMIT $start,$amount");
@@ -85,7 +85,7 @@ foreach ($query->fetchall() as $row) {
             $username = $row['username'] . ' &harr; ' . $query2->fetchColumn();
 		}
 
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
 			$ip = $row['ip'];
             $hostname = $row['hostname'];
 
@@ -136,7 +136,7 @@ foreach ($query->fetchall() as $row) {
 }
 $next = $start + $amount;
 
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
 	$query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userlog` WHERE `usertype` LIKE :usertype AND (`resellerid`=:reseller_id OR `resellerid`=`userid`)");
 	$requestid = $reseller_id;
 } else if ($reseller_id != 0 and $admin_id != $reseller_id) {

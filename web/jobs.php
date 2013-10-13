@@ -54,14 +54,14 @@ if (isset($argv)) {
             if (isset($e[1])) $args[$e[0]] = $e[1];
         }
     }
-    if(!isset($deamon)) {
+    if (!isset($deamon)) {
         print 'Running job management as cronjob'."\r\n";
         $deamon = false;
         set_time_limit($timelimit);
     } else {
         print 'Running job management as Deamon'."\r\n";
     }
-    if(!isset($sleep)) $sleep=60;
+    if (!isset($sleep)) $sleep=60;
 }
 if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     define('EASYWIDIR', dirname(__FILE__));

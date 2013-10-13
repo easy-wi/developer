@@ -478,7 +478,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=pp&amp;d=md&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

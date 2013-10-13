@@ -68,14 +68,14 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30, 'post')) {
 		$o = 'dd';
 		$orderby = 'l.`id` DESC';
 	}
-	if ($reseller_id==0) {
+	if ($reseller_id == 0) {
 		$pselect = $sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `mail_log` l LEFT JOIN `userdata` u ON l.`uid`=u.`id` ORDER BY $orderby LIMIT $start,$amount");
 	} else if ($reseller_id != 0 and $admin_id != $reseller_id) {
 		$pselect = $sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `mail_log` l LEFT JOIN `userdata` u ON l.`uid`=u.`id` WHERE l.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
 	} else {
 		$pselect = $sql->prepare("SELECT l.`id`,l.`uid`,l.`topic`,l.`date`,u.`cname`,u.`accounttype`,u.`mail` FROM `userdata` u LEFT JOIN `mail_log` l ON u.`id`=l.`resellerid` OR u.`resellerid`=l.`resellerid` WHERE u.`resellerid`=? GROUP BY l.`date` ORDER BY $orderby LIMIT $start,$amount");
 	}
-	if ($reseller_id==0) {
+	if ($reseller_id == 0) {
 		$pselect->execute();
 	} else {
 		if ($reseller_id != 0 and $admin_id != $reseller_id) {
@@ -96,7 +96,7 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30, 'post')) {
 		}
 	}
 	$next = $start+$amount;
-	if ($reseller_id==0) {
+	if ($reseller_id == 0) {
 		$countp = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mail_log`");
 		$countp->execute();
 	} else {
@@ -123,7 +123,7 @@ if (isset($action) and $action == 'dl' and $ui->id('id',30, 'post')) {
 	}
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ml&amp;d='.$d.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

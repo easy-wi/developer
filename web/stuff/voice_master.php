@@ -53,7 +53,7 @@ $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
 
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
 
@@ -121,7 +121,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         $resellerIDs = array();
 
-        $or = ($reseller_id==0) ? 'OR `resellerid`=`id`' : '';
+        $or = ($reseller_id == 0) ? 'OR `resellerid`=`id`' : '';
         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE (`resellerid`=? $or) AND `accounttype`='r' ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -736,7 +736,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                         $password = ($ui->id("$virtualserver_id-password", 1, 'post') == 1) ? 'Y' : 'N';
                         $serverdns = ($ui->domain("$virtualserver_id-virtualserver_dns", 'post') == '') ? $cnamenew . '-' . $virtualserver_id . '.' . $defaultdns : $ui->domain("$virtualserver_id-virtualserver_dns", 'post');
 
-                        if($port != null) {
+                        if ($port != null) {
                             $serverdns=strtolower($serverdns);
                             unset($addlist);
                             $addlist = array();

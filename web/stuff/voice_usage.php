@@ -35,7 +35,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($admin_id) or $main!=1 or (isset($admin_id) and !$pa['voiceserver'] and !$pa['voiceserverSettings'] and !$pa['voiceserverStats'])) {
+if (!isset($admin_id) or $main!=1 or (isset($admin_id) and !$pa['voiceserver'] and !$pa['voiceserverSettings'] and !$pa['voiceserverStats'])) {
     header('Location: admin.php');
     die;
 }
@@ -163,7 +163,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$yearstop=date('Y');
 		$monthstop=date('m');
 		$daystop=date('d');
-		$amount=7;
+		$amount = 7;
 	} else if ($ui->post['dmy'] == 'to') {
 		$dmy='to';
 		if (validate_int($ui->post['daystart'],1,31)) {
@@ -252,7 +252,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$day=date('d',strtotime("-6 days"));
 			$month=date('m',strtotime("-6 days"));
 			$year=date('Y',strtotime("-6 days"));
-			$amount=7;
+			$amount = 7;
 		}
 	} else if ($ui->post['dmy'] == 'mo') {
 		$dmy='mo';
@@ -296,7 +296,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$day = 1;
 			$month=date('m',strtotime("-6 months"));
 			$year=date('Y',strtotime("-6 months"));
-			$amount=7;
+			$amount = 7;
 		}
 	} else if ($ui->post['dmy'] == 'ye') {
 		$dmy='ye';

@@ -147,7 +147,7 @@ class TS3 {
 		$this->socket = @fsockopen('tcp://' . $ip,$queryport,$errnum,$errstr,5);
 		if ($this->socket == true) {
             $this->socketConnected = true;
-			if(strpos(fgets($this->socket, 8192),'TS3') !== false) {
+			if (strpos(fgets($this->socket, 8192),'TS3') !== false) {
 				$welcome=fgets($this->socket, 8192);
 				@fputs($this->socket, "login $admin $querypassword"."\n");
 				$this->errorcode = $this->ReplaceFromTS3(fgets($this->socket, 8192));
@@ -449,7 +449,7 @@ class TS3 {
                 print_r($serverdetails);
                 print "\r\n";
             }
-		} else if($this->debug == true) {
+		} else if ($this->debug == true) {
             print "Userserver at serverdetails failed:";
             print_r($useserver);
             print "\r\n";
@@ -698,7 +698,7 @@ function tsbackup ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$noti
 		$bad="Could not connect to Server";
 	}
 	if (isset($bad) and $notified!='Y') {
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
             $query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'");
             $query->execute();
 		} else {
@@ -865,7 +865,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
                 function array_multi_dimensional_unique($multi){
                     $unique = array();
                     foreach($multi as $sub){
-                        if(!in_array($sub,$unique)){
+                        if (!in_array($sub,$unique)){
                             $unique[] = $sub;
                         }
                     }
@@ -907,7 +907,7 @@ function tsdns ($action,$sship,$sshport,$sshuser,$keyuse,$sshkey,$sshpw,$notifie
 		$bad="Could not connect to Server";
 	}
 	if (isset($bad) and $notified==$maxnotified) {
-		if ($reseller_id==0) {
+		if ($reseller_id == 0) {
 			$query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'");
 			$query->execute();
 		} else {

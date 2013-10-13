@@ -73,8 +73,8 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     foreach (explode("\r\n", $row['protectedSaveCFGs']) as $cfg) if ($cfg != '') $files[] = $cfg;
     $shorten = $row['shorten'];
     $serverTemplate=($row['servertemplate']!=1) ? $row['shorten'] . '-' . $row['servertemplate'] : $row['shorten'];
-    if($row['gamebinary'] == 'srcds_run') $gamePath="${row['binarydir']}/${row['modfolder']}";
-    else if($row['gamebinary'] == 'hlds_run') $gamePath="${row['modfolder']}";
+    if ($row['gamebinary'] == 'srcds_run') $gamePath="${row['binarydir']}/${row['modfolder']}";
+    else if ($row['gamebinary'] == 'hlds_run') $gamePath="${row['modfolder']}";
     else $gamePath = '';
     $gamePath=str_replace(array('//','///','////'),'/',$gamePath);
 }
@@ -107,7 +107,7 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
                             $i++;
                         }
                         foreach (preg_split('/\//',str_replace(array('//','///','////'),'/',$folders),-1,PREG_SPLIT_NO_EMPTY) as $dir) {
-                            if(!@ftp_chdir($ftp_connect,$dir)) {
+                            if (!@ftp_chdir($ftp_connect,$dir)) {
                                 @ftp_mkdir($ftp_connect,$dir);
                                 @ftp_chdir($ftp_connect,$dir);
                             }

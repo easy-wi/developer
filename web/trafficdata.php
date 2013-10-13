@@ -189,7 +189,7 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
                 $resellerid = $uids[1];
             }
             if (isset($serverid)) {
-                if($direction=="in") {
+                if ($direction=="in") {
                     $ip = $ip_dst;
                     $ipcase="ip_dst";
                 } else {

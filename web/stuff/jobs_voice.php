@@ -131,7 +131,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query3 = $sql->prepare("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
                 $query3->execute();
             } else if ($row2['action'] == 'ad' and isset($active)) {
-                if(isid($localserverid,30)) {
+                if (isid($localserverid,30)) {
                     $command = $gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Skipping, virtual ID already exists in Easy-WI DB: '.$localserverid;
                     $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                     $update->execute(array($row2['jobID']));

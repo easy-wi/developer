@@ -48,7 +48,7 @@ $logsubuser = 0;
 $sprache = getlanguagefile('columns',$user_language,$reseller_id);
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
-} else if(in_array($ui->st('d', 'get'), array('ad','md'))) {
+} else if (in_array($ui->st('d', 'get'), array('ad','md'))) {
     $id = $ui->id('id', 10, 'get');
     if (in_array($ui->st('action', 'post'), array('ad','md'))) {
         $error = array();
@@ -71,7 +71,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
             $name = $ui->w('name',255, 'post');
-            if($ui->st('d', 'get') == 'ad') {
+            if ($ui->st('d', 'get') == 'ad') {
                 $query = $sql->prepare("INSERT INTO `custom_columns_settings` (`active`,`item`,`type`,`length`,`name`) VALUES (?,?,?,?,?)");
                 $query->execute(array($ui->active('active', 'post'),$ui->w('item',1, 'post'),$ui->w('type',1, 'post'),$ui->id('length',10, 'post'),$name));
                 $id = $sql->lastInsertId();
@@ -237,7 +237,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=cc&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .=20;
     } else {
         $link .= $amount;

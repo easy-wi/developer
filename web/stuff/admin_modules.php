@@ -212,7 +212,7 @@ if ($ui->st('action', 'post') and !token(true)) {
                         }
                         $languageTexts[$row['lang']] = $row['text'];
                     }
-                    if(!isset($name)) {
+                    if (!isset($name)) {
                         $name = $file;
                     }
                     $template_file = 'admin_modules_md.tpl';

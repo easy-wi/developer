@@ -49,7 +49,7 @@ $logusertype = 'admin';
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
     $lookupID = 0;

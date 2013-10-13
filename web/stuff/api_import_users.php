@@ -48,7 +48,7 @@ $logusertype = 'admin';
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
     $lookupID = 0;
@@ -170,7 +170,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `ssl`,`domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if($row['ssl'] == 'Y') {
+            if ($row['ssl'] == 'Y') {
                 $ssl='https://';
             } else {
                 $ssl='http://';
@@ -255,7 +255,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_bad';
             $imgAlt='Inactive';
         }
-        if($row['ssl'] == 'Y') {
+        if ($row['ssl'] == 'Y') {
             $ssl='https://';
         } else {
             $ssl='http://';
@@ -264,7 +264,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ui&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

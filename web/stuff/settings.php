@@ -39,7 +39,7 @@ if (isset($_SERVER['QUERY_STRING'])) {
     $queries = strtolower($_SERVER['QUERY_STRING']);
     $badcontent = array("http://", "ftp://", "https://", "ftps://", "delete ", "from ", "into ", "userdata ", "userdata(", "userdata`", "userpermissions ", "userpermissions(", "userpermissions`", "select ", "set ", "where ", "update ", "union ", "*", ".ssh", "~", "chmod ", "passwd", "fclose", "fopen", "fwrite", "getenv", "locate", "passthru", "phpinfo", "proc_close", "proc_get_status", "proc_nice", "proc_open", "proc_terminate", "shell_exec(", "system(");
     $check_bad = str_replace($badcontent, 'bad', $queries);
-    if($queries != $check_bad) {
+    if ($queries != $check_bad) {
         die();
     }
 }
@@ -100,7 +100,7 @@ if ($loguserip != 'localhost') {
         $user_id = $_SESSION['userid'];
         $admin_id = $_SESSION['adminid'];
 
-    } else if(isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) {
+    } else if (isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) {
         $user_id = $_SESSION['userid'];
 
     } else if (isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) {
@@ -239,7 +239,7 @@ if ($loguserip!='localhost') {
     }
     if (!isset($user_language) and isset($user_id) and isset($admin_id)) {
         $user_language=language($admin_id);
-    } else if(!isset($user_language) and isset($user_id) and !isset($admin_id)) {
+    } else if (!isset($user_language) and isset($user_id) and !isset($admin_id)) {
         $user_language=language($user_id);
     } else if (!isset($user_language) and isset($admin_id)) {
         $user_language=language($admin_id);
@@ -248,8 +248,8 @@ if ($loguserip!='localhost') {
         $language_changed = true;
         $user_language = $page_detect_language;
     }
-    if($ui->st('l', 'get') or isset($language_changed)) {
-        if($ui->st('l', 'get')) $user_language = $ui->st('l', 'get');
+    if ($ui->st('l', 'get') or isset($language_changed)) {
+        if ($ui->st('l', 'get')) $user_language = $ui->st('l', 'get');
         
         # https://github.com/easy-wi/developer/issues/2
         if (isset($_SESSION['sID'])) {
@@ -288,7 +288,7 @@ if (isset($logininclude) and $logininclude == true) {
         die('Your IP is banned');
     }
 }
-if($ui->st('r', 'get')) {
+if ($ui->st('r', 'get')) {
     $header = '<meta http-equiv="refresh" content="3; URL=' . $ui->escaped('SCRIPT_NAME', 'server') . '?w=' . $ui->st('r', 'get') . '">';
     if (!isset($user_language)) {
         $user_language = $rSA['language'];
@@ -299,22 +299,22 @@ if($ui->st('r', 'get')) {
 if ($ui->w('action', 4, 'post')) {
     $action = $ui->w('action', 4, 'post');
 }
-if($ui->smallletters('site','50', 'get')) {
+if ($ui->smallletters('site','50', 'get')) {
     $s = $ui->smallletters('site','50', 'get');
 }
-if($ui->st('w', 'get')) {
+if ($ui->st('w', 'get')) {
     $w = $ui->st('w', 'get');
 } else {
     $w = 'ho';
 }
-if($ui->st('d', 'get')) {
+if ($ui->st('d', 'get')) {
     $d = $ui->st('d', 'get');
 } else {
     $d = 'md';
 }
 
 
-if($ui->smallletters('t','1', 'get')) {
+if ($ui->smallletters('t','1', 'get')) {
     $list_type = $ui->smallletters('t','1', 'get');
     if ($list_type=="m") {
         $where="WHERE `type`='map'";
@@ -328,7 +328,7 @@ if($ui->smallletters('t','1', 'get')) {
     $list_type="a";
     $where = '';
 }
-if($ui->pregw('g','14', 'get')) {
+if ($ui->pregw('g','14', 'get')) {
     $list_gtype = $ui->pregw('g','14', 'get');
     if ($where != '') {
         $where .=" AND shorten='$list_gtype'";
@@ -342,7 +342,7 @@ if($ui->pregw('g','14', 'get')) {
 } else {
     $list_gtype = '';
 }
-if($ui->pregw('m','20', 'get')) {
+if ($ui->pregw('m','20', 'get')) {
     $list_gtype = $ui->pregw('m','20', 'get');
     if ($where != '') {
         $where .=" AND (s.`shorten`='$list_gtype' OR s.`qstat`='$list_gtype')";
@@ -361,14 +361,14 @@ if (empty($where) and $w!="lo" and $w!="rs" and ($w!="ma" and $d!="ud")) {
 } else if ($w!="lo" and ($w=="ma" and $d=="ud")) {
     $where .=" AND r.`resellerid`=:reseller_id";
 }
-if($ui->isinteger('a', 'get')) {
+if ($ui->isinteger('a', 'get')) {
     $a = (int) $ui->isinteger('a', 'get');
     $amount = $a;
     $_SESSION['amount'] = $a;
 } else {
     $amount = (isset($_SESSION['amount']) and is_int($_SESSION['amount'])) ? $_SESSION['amount'] : 20;
 }
-if($ui->id('p', 19, 'get')) {
+if ($ui->id('p', 19, 'get')) {
     $start = $ui->id('p', 19, 'get');
 } else {
     $start = 0;
@@ -395,7 +395,7 @@ if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->descript
         $i = 0;
         $gamestring_buf = '';
         foreach($ui->description('description', 'post') as $description) {
-            if ($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $query->execute(array($description, $id, 0));
             } else {
                 $query->execute(array($description, $id, $admin_id));

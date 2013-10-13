@@ -216,7 +216,7 @@ class masterServer {
                     if ($updateType == 1) {
                         $this->steamCmdTotal['sync'][$lookUpAppID] = $row['shorten'];
                         
-                    } else if($updateType == 2) {
+                    } else if ($updateType == 2) {
                         $this->steamCmdTotal['nosync'][$lookUpAppID] = $row['shorten'];
                     }
 
@@ -327,7 +327,7 @@ class masterServer {
             $mc = 'mcTotal';
             
             foreach (array_unique(array_merge($this->steamCmdTotal['sync'], $this->steamCmdTotal['nosync'], $this->hldsTotal['sync'], $this->hldsTotal['nosync'], $this->noSteam['sync'], $this->noSteam['nosync'])) as $shorten) {
-                if(in_array($shorten, $this->syncList)) {
+                if (in_array($shorten, $this->syncList)) {
                     unset($this->syncList[array_search($shorten, $this->syncList)]);
                 }
             }

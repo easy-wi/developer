@@ -48,7 +48,7 @@ $sprache = getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
 } else {
@@ -162,7 +162,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $id = $query->fetchColumn();
                     $dnsarray=tsdns('li',$ip,$port,$user,$publickey,$keyname,$pass,'N',$serverdir,$bit, array(''), array(''), array(''),$reseller_id,$sql);
                     $newArray = array();
-                    if(is_array($dnsarray)) {
+                    if (is_array($dnsarray)) {
                         $table = array();
                         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
                         $query->execute(array($reseller_id));
@@ -182,7 +182,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         $newArray = array();
                         $maxPost=@ini_get('suhosin.post.max_vars');
                         $maxRequests=@ini_get('suhosin.request.max_vars');
-                        if($maxRequests and $maxPost and $maxPost<$maxRequests) {
+                        if ($maxRequests and $maxPost and $maxPost<$maxRequests) {
                             $max = $maxPost;
                         } else {
                             $max = $maxRequests;
@@ -230,7 +230,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $bit = $row['bitversion'];
         }
         $dnsarray=tsdns('li',$ssh2ip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,'N',$serverdir,$bit, array(''), array(''), array(''),$reseller_id,$sql);
-        if(is_array($dnsarray)) {
+        if (is_array($dnsarray)) {
             $table = array();
             $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
             $query->execute(array($reseller_id));
@@ -250,7 +250,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $newArray = array();
             $maxPost=@ini_get('suhosin.post.max_vars');
             $maxRequests=@ini_get('suhosin.request.max_vars');
-            if($maxRequests and $maxPost and $maxPost<$maxRequests) {
+            if ($maxRequests and $maxPost and $maxPost<$maxRequests) {
                 $max = $maxPost;
             } else {
                 $max = $maxRequests;

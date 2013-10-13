@@ -71,7 +71,7 @@ class rootServer {
         $hostID = 0;
         $userID = 0;
         $resellerID = 0;
-        if(isid($imageID,10)) {
+        if (isid($imageID,10)) {
             $query = $this->sql->prepare("SELECT `distro`,`bitversion` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
             $query->execute(array($imageID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -206,7 +206,7 @@ class rootServer {
                     $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' AND `id`=:pxeID LIMIT 1");
                     $query->execute(array(':aeskey' => $this->aeskey,':pxeID' => $this->ID[$type][$ID]['pxeID']));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                        if(!isset($this->PXEData[$row['id']])){
+                        if (!isset($this->PXEData[$row['id']])){
                             $this->PXEData[$row['id']]['ip'] = $row['ip'];
                             $this->PXEData[$row['id']]['port'] = $row['dport'];
                             $this->PXEData[$row['id']]['user'] = $row['duser'];
@@ -225,7 +225,7 @@ class rootServer {
                     $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' ORDER BY RAND() LIMIT 1");
                     $query->execute(array(':aeskey' => $this->aeskey));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                        if(!isset($this->PXEData[$row['id']])){
+                        if (!isset($this->PXEData[$row['id']])){
                             $this->PXEData[$row['id']]['ip'] = $row['ip'];
                             $this->PXEData[$row['id']]['port'] = $row['dport'];
                             $this->PXEData[$row['id']]['user'] = $row['duser'];
@@ -381,7 +381,7 @@ class rootServer {
                 $i++;
             }
             $file .= '/';
-            if($this->ID['dedicated'][$a['id']]['apiRequestType'] == 'G') {
+            if ($this->ID['dedicated'][$a['id']]['apiRequestType'] == 'G') {
                 $file .= $requestString;
             } else {
                 foreach (explode('&',str_replace(array('&amp;','?'), array('&',''),$requestString)) as $param) {
@@ -470,7 +470,7 @@ class rootServer {
                     $this->execCmd($cmd,$ssh2);
                     foreach ($h['actions'] as $v) {
                         $dir='/vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint']. '/' . $this->ID['vmware'][$v['id']]['hostname'];
-                        if(in_array($v['action'], array('md','dl','st','ri','re'))) {
+                        if (in_array($v['action'], array('md','dl','st','ri','re'))) {
                             print "Step 1: Stop and remove if needed\r\n";
                             $cmd="i(){ echo `vim-cmd vmsvc/getallvms 2> /dev/null | grep -v 'Skipping' | grep '".$this->ID['vmware'][$v['id']]['hostname'].".vmx' | awk '{print $1}'`;}; o(){ vim-cmd vmsvc/power.off `i ".$this->ID['vmware'][$v['id']]['hostname']."`; vim-cmd vmsvc/unregister `i ".$this->ID['vmware'][$v['id']]['hostname']."`;}; o;";
                             if (in_array($v['action'], array('dl','ri','re'))) $cmd.=" rm -rf /vmfs/volumes/".$this->ID['vmware'][$v['id']]['mountpoint']. '/' . $this->ID['vmware'][$v['id']]['hostname'];
@@ -542,7 +542,7 @@ class rootServer {
                                  $vmxFile .= 'vmci0.present = "TRUE"'."\n";
                                  $vmxFile .= 'uuid.action = "create"'."\n";
                                  $vmxFile .= 'bios.bootOrder = "ethernet0"'."\n";
-                                 if(fwrite($fp,$vmxFile)) {
+                                 if (fwrite($fp,$vmxFile)) {
                                      print "Step 2: Create/edit vmx file (OK)\r\n";
                                  } else {
                                      print "Step 2: Create/edit vmx file (FAILED)\r\n";
@@ -551,7 +551,7 @@ class rootServer {
                             } else {
                                  print 'could not open: /vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint']. '/' . $this->ID['vmware'][$v['id']]['hostname']. '/' . $this->ID['vmware'][$v['id']]['hostname'].'.vmx'."\r\n";
                             }
-                            if(is_resource($sftp)) fclose($sftp);
+                            if (is_resource($sftp)) fclose($sftp);
                             else unset ($sftp);
                             print "Step 3: create volume\r\n";
                             $cmd="a() { vmkfstools -c ".$this->ID['vmware'][$v['id']]['hddsize']." -a lsilogic -d thin /vmfs/volumes/".$this->ID['vmware'][$v['id']]['mountpoint']. '/' . $this->ID['vmware'][$v['id']]['hostname']. '/' . $this->ID['vmware'][$v['id']]['hostname'].".vmdk >/dev/null 2>&1;}; a";

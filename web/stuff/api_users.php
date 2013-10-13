@@ -196,7 +196,7 @@ if (array_value_exists('action','add',$data)) {
             $name = $row['cname'];
             $oldactive = $row['active'];
         }
-        if(isset($localID)) {
+        if (isset($localID)) {
             $what = array();
             if (isset($data['password']) and !in_array($data['password'],$bad)) {
                 $password = $data['password'];
@@ -341,7 +341,7 @@ if (array_value_exists('action','add',$data)) {
             $localID = $row['id'];
             $name = $row['cname'];
         }
-        if(isset($localID) and isset($name)) {
+        if (isset($localID) and isset($name)) {
             $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
             $update->execute(array($localID,$resellerID));
             $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'dl',?)");
@@ -371,7 +371,7 @@ if (array_value_exists('action','add',$data)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $userArray['userdetails'] = $row;
         }
-        if($query->rowCount()>0) {
+        if ($query->rowCount()>0) {
             $list = true;
             $tempArray = array();
             $query = $sql->prepare("SELECT `id`,`active`,`queryUpdatetime`,`queryPassword`,`queryMap`,`queryMaxplayers`,`queryNumplayers`,`queryName`,`port5`,`serverid`,`pallowed`,`eacallowed`,`protected`,`brandname`,`tvenable`,`war`,`psince`,`serverip`,`port`,`port2`,`port3`,`port4`,`minram`,`maxram`,`slots`,`taskset`,`cores`,`lendserver`,`externalID`,`jobPending` FROM `gsswitch` WHERE `userid`=? AND `resellerid`=? ORDER BY `serverip`,`port`");

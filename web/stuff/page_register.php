@@ -144,7 +144,7 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
             }
 
             // If no error occurred go on otherwise display form again
-            if(count($error)>0) {
+            if (count($error)>0) {
                 $token=md5(date('Y-d-m H:i:s u').md5(mt_rand()));
                 $_SESSION['registerToken'] = $token;
                 $template_file = 'page_register.tpl';
@@ -175,9 +175,9 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
 
                 // If is is in DB and mail could be send
                 if ($query->rowCount()>0) {
-                    if($registration == 'A') {
+                    if ($registration == 'A') {
                         $template_file = $page_sprache->registerAdmin;
-                    } else if($registration == 'M') {
+                    } else if ($registration == 'M') {
                         $template_file = $page_sprache->registerMailSend;
 
                         // send Mail

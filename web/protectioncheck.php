@@ -81,7 +81,7 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
     if (isset($serveraddress)) {
         $ipvalue = $serveraddress;
     }
-    if(isset($ip) and isset($port)) {
+    if (isset($ip) and isset($port)) {
         $query = $sql->prepare("SELECT g.`protected`,g.`psince`,g.`queryName`,g.`queryNumplayers`,g.`queryMaxplayers`,g.`queryMap`,u.`cname`,t.`description` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`serverip`=? AND g.`port`=? LIMIT 1");
         $query->execute(array($ip, $port));
         $logs = array();

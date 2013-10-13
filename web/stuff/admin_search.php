@@ -126,7 +126,7 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($us == true) {
-            if($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $query = $sql->prepare("SELECT `cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE (`id`=? OR `externalID`=?) ".notIN($usIDs,'`id`'));
                 $query->execute(array($id,$id));
             } else {
@@ -160,7 +160,7 @@ if (isset($ui->get['q'])) {
         }
         if ($ro == true) {
             $notIN=notIN($roIDs,'r.`id`');
-            if ($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $query = $sql->prepare("SELECT r.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE (r.`id`=? OR r.`externalID`=?) AND r.`hostid`=0 $notIN");
                 $query->execute(array($id,$id));
             } else {
@@ -174,7 +174,7 @@ if (isset($ui->get['q'])) {
         }
         if ($vs == true) {
             $notIN=notIN($vsIDs,'r.`id`');
-            if ($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $query = $sql->prepare("SELECT v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE (v.`id`=? OR v.`externalID`=?) $notIN");
                 $query->execute(array($id,$id));
             } else if ($reseller_id==$admin_id) {
@@ -209,7 +209,7 @@ if (isset($ui->get['q'])) {
         }
         if ($ro == true) {
             $notIN=notIN($roIDs,'r.`id`');
-            if ($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $query = $sql->prepare("SELECT r.`id`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`resellerid`=u.`id` WHERE r.`hostid`=0 $notIN AND r.`ip`=?");
                 $query->execute(array($ip));
             } else {
@@ -223,7 +223,7 @@ if (isset($ui->get['q'])) {
         }
         if ($vs == true) {
             $notIN=notIN($vsIDs,'r.`id`');
-            if ($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $query = $sql->prepare("SELECT v.`id`,v.`ip`,u.`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `virtualcontainer` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`ip`=? $notIN");
                 $query->execute(array($ip));
             } else if ($reseller_id==$admin_id) {
@@ -295,7 +295,7 @@ if (isset($ui->get['q'])) {
             }
         }
         if ($us == true) {
-            if($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $notIN=(count($usIDs)>0) ? '`id` NOT IN('.implode(',',$usIDs).') AND ' : '';
                 $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE $notIN (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
                 $query->execute(array(':word' => $word));

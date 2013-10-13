@@ -48,7 +48,7 @@ $sprache = getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
 } else {
@@ -132,12 +132,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $count=count($uiddata)-1;
                 while ($i<$count) {
                     list($uid,$space)=explode(":", $uiddata[$i]);
-                    if(strpos(strtolower($space), strtolower('TB')) === false) {
+                    if (strpos(strtolower($space), strtolower('TB')) === false) {
                         $hddamount=str_replace('GB,', '', $space);
                     } else {
                         $hddamount=str_replace('TB,', '', $space)*1000;
                     }
-                    if(isset($hdd)){
+                    if (isset($hdd)){
                         $hdd .="\r\n".$uid . '  ' . $hddamount;
                     } else {
                         $hdd = $uid . '  ' . $hddamount;
@@ -398,7 +398,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=vh&amp;d=md&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

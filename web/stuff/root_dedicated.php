@@ -48,7 +48,7 @@ $sprache = getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
 } else {
@@ -68,7 +68,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lDs']) and $lice
     $pxe=($query->fetchColumn()>0) ? 'Y' : 'N';
     if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'md') {
         $table = array();
-        $query=($reseller_id==0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` OR `resellerid`=?) AND `accounttype` IN ('r','u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
+        $query=($reseller_id == 0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` OR `resellerid`=?) AND `accounttype` IN ('r','u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $type=($row['accounttype'] == 'u') ? $gsprache->user : $gsprache->reseller;
@@ -104,7 +104,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lDs']) and $lice
             }
         }
         $template_file = (isset($active)) ? 'admin_root_dedicated_md.tpl' : 'admin_404.tpl';
-    } else if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'ad' and $reseller_id==0) {
+    } else if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'ad' and $reseller_id == 0) {
         $table = array();
         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `id`=`resellerid` AND `accounttype`='r' ORDER BY `id` DESC");
         $query->execute();
@@ -156,7 +156,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lDs']) and $lice
                 $query = $sql->prepare("UPDATE `rootsDedicated` SET `active`=?,`userID`=?,`description`=?,`ip`=?,`ips`=?,`restart`=?,`apiRequestType`=?,`apiRequestRestart`=?,`apiRequestStop`=?,`apiURL`=?,`https`=?,`mac`=?,`useDHCP`=?,`usePXE`=?,`externalID`=?,`jobPending`='Y' WHERE `dedicatedID`=? AND `resellerID`=?");
                 $query->execute(array($active,$userID,$description,$ip,$ips,$restart,$apiRequestType,$apiRequestRestart,$apiRequestStop,$apiURL,$https,$mac,$useDHCP,$usePXE,$externalID,$id,$reseller_id));
                 $loguseraction="%mod% ".$gsprache->dedicated;
-            } else if ($ui->st('d', 'get') == 'ad' and $reseller_id==0) {
+            } else if ($ui->st('d', 'get') == 'ad' and $reseller_id == 0) {
                 $query = $sql->prepare("INSERT INTO `rootsDedicated` (`active`,`userID`,`description`,`ip`,`ips`,`restart`,`apiRequestType`,`apiRequestRestart`,`apiRequestStop`,`apiURL`,`https`,`mac`,`useDHCP`,`usePXE`,`externalID`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 $query->execute(array($active,$userID,$description,$ip,$ips,$restart,$apiRequestType,$apiRequestRestart,$apiRequestStop,$apiURL,$https,$mac,$useDHCP,$usePXE,$externalID,$reseller_id));
                 $loguseraction="%add% ".$gsprache->dedicated;
@@ -172,7 +172,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lDs']) and $lice
             }
         }
     }
-} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get') and $reseller_id==0) {
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get') and $reseller_id == 0) {
     $id = $ui->id('id', 10, 'get');
     $query = $sql->prepare("SELECT `ip`,`description`,`restart`,`useDHCP`,`usePXE` FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
@@ -344,7 +344,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lDs']) and $lice
         $orderby = 'd.`dedicatedID` ASC';
         $o = 'ai';
     }
-    $query=($reseller_id==0) ? $sql->prepare("SELECT d.*,u.`cname`,u.`name`,u.`vname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`resellerID`=? OR u.`id`=u.`resellerid` ORDER BY $orderby LIMIT $start,$amount") : $sql->prepare("SELECT d.*,u.`cname`,u.`name`,u.`vname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
+    $query=($reseller_id == 0) ? $sql->prepare("SELECT d.*,u.`cname`,u.`name`,u.`vname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`resellerID`=? OR u.`id`=u.`resellerid` ORDER BY $orderby LIMIT $start,$amount") : $sql->prepare("SELECT d.*,u.`cname`,u.`name`,u.`vname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='de' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -391,7 +391,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lDs']) and $lice
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=rp&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) $link .="20";
+    if (!isset($amount)) $link .="20";
     else $link .= $amount;
     if ($start==0) $link .= '&p=0" class="bold">1</a>';
     else $link .= '&p=0">1</a>';

@@ -116,7 +116,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		$anticheat = $row['anticheat'];
 		$gsswitch = $row['gsswitch'];
         $defaultMapGroup = $table[$row['gsswitch']]['defaultMapGroup'];
-        if($defaultMapGroup != null) $mapGroup = $row['mapGroup'];
+        if ($defaultMapGroup != null) $mapGroup = $row['mapGroup'];
 		$map = $row['map'];
 		$pro = $row['protected'];
 		$restart = $row['restart'];
@@ -134,35 +134,35 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	}
 	if (!isset($eac) and $eacallowed== 'Y' and $rowcount>0 and ($gsswitch=="css" or $gsswitch=="cod4" or $gsswitch=="cstrike" or $gsswitch=="czero" or $gsswitch=="tf")) {
 		if ($gsswitch=="cstrike" or $gsswitch=="czero") {
-			if($anticheat=="3" and $hlds_3== 'Y') {
+			if ($anticheat=="3" and $hlds_3== 'Y') {
 				$eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
-			} else if($hlds_3== 'Y') {
+			} else if ($hlds_3== 'Y') {
 				$eac[] = '<option value="3">Easy Anti Cheat</option>';
 			}
-			if($anticheat=="4" and $hlds_4== 'Y') {
+			if ($anticheat=="4" and $hlds_4== 'Y') {
 				$eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
-			} else if($hlds_4== 'Y') {
+			} else if ($hlds_4== 'Y') {
 				$eac[] = '<option value="4">Easy Anti Cheat Public</option>';
 			}
-			if($anticheat=="5" and $hlds_5== 'Y') {
+			if ($anticheat=="5" and $hlds_5== 'Y') {
 				$eac[] = '<option value="5" selected="selected">Easy Anti Cheat 32Bit</option>';
-			} else if($hlds_5== 'Y') {
+			} else if ($hlds_5== 'Y') {
 				$eac[] = '<option value="5">Easy Anti Cheat 32Bit</option>';
 			}
-			if($anticheat=="6" and $hlds_6== 'Y') {
+			if ($anticheat=="6" and $hlds_6== 'Y') {
 				$eac[] = '<option value="6" selected="selected">Easy Anti Cheat Public 32Bit</option>';
-			} else if($hlds_6== 'Y') {
+			} else if ($hlds_6== 'Y') {
 				$eac[] = '<option value="6">Easy Anti Cheat Public 32Bit</option>';
 			}
 		} else {
-			if($anticheat=="3" and $normal_3== 'Y') {
+			if ($anticheat=="3" and $normal_3== 'Y') {
 				$eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
-			} else if($normal_3== 'Y') {
+			} else if ($normal_3== 'Y') {
 				$eac[] = '<option value="3">Easy Anti Cheat</option>';
 			}
-			if($anticheat=="4" and $normal_4== 'Y') {
+			if ($anticheat=="4" and $normal_4== 'Y') {
 				$eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
-			} else if($normal_4== 'Y') {
+			} else if ($normal_4== 'Y') {
 				$eac[] = '<option value="4">Easy Anti Cheat Public</option>';
 			}
 		}
@@ -206,31 +206,31 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	}
 	if ($anticheat>2) {
 		if ($gsswitch=="cstrike" or $gsswitch=="czero") {
-			if($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'Y') {
-				$anticheat=5;
-			} else if($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'N') {
+			if ($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'Y') {
+				$anticheat = 5;
+			} else if ($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'N') {
 				$anticheat = 1;
 			} else {
 				$anticheat = 1;
 			}
-			if($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'Y') {
-				$anticheat=6;
-			} else if($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'N') {
+			if ($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'Y') {
+				$anticheat = 6;
+			} else if ($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'N') {
                 $anticheat = 1;
 			} else {
                 $anticheat = 1;
 			}
-			if($anticheat==5 and $hlds_5== 'N') {
+			if ($anticheat==5 and $hlds_5== 'N') {
                 $anticheat = 1;
 			}
-			if($anticheat==6 and $hlds_6== 'N') {
+			if ($anticheat==6 and $hlds_6== 'N') {
                 $anticheat = 1;
 			}
 		} else {
-			if($anticheat==3 and $normal_3== 'N') {
+			if ($anticheat==3 and $normal_3== 'N') {
                 $anticheat = 1;
 			}
-			if($anticheat==4 and $normal_4== 'N') {
+			if ($anticheat==4 and $normal_4== 'N') {
                 $anticheat = 1;
 			}
 		}

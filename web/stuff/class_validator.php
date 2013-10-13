@@ -46,7 +46,7 @@ class ValidateUserinput {
         return $value;
     }
     private function ArrayToObject($array) {
-        if(is_string($array)) {
+        if (is_string($array)) {
             return $this->magic_quotes($array);
         } else if (is_array($array)) {
             $stdClass = new stdClass();
@@ -103,9 +103,9 @@ class ValidateUserinput {
         unset($this->env);
     }
     private function loop ($check,$function,$type,$length=null) {
-        if(is_string($check) and $length==null and $this->$function($check,$type)) {
+        if (is_string($check) and $length==null and $this->$function($check,$type)) {
             return $this->$function($check,$type);
-        } else if(is_string($check) and $this->$function($check,$length,$type)) {
+        } else if (is_string($check) and $this->$function($check,$length,$type)) {
             return $this->$function($check,$length,$type);
         } else if (is_array($check) or is_object($check)) {
             $stdClass = new stdClass();
@@ -136,7 +136,7 @@ class ValidateUserinput {
     }
     function url ($value,$type,$object=false) {
         $check = $this->if_obj_or_str($value,$type,$object);
-        if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_URL)) {
+        if ($check and is_string($check) and filter_var($check,FILTER_VALIDATE_URL)) {
             return $check;
         } else if ($check) {
             return $this->loop($check,'url',$type);
@@ -144,7 +144,7 @@ class ValidateUserinput {
     }
     function domain ($value,$type,$object=false) {
         $check = $this->if_obj_or_str($value,$type,$object);
-        if($check and is_string($check) and preg_match("/^[\w\d+\-\.]+\.[a-z]{1,5}$/",$check)) {
+        if ($check and is_string($check) and preg_match("/^[\w\d+\-\.]+\.[a-z]{1,5}$/",$check)) {
             return $check;
         } else if ($check) {
             return $this->loop($check,'domain',$type);
@@ -152,7 +152,7 @@ class ValidateUserinput {
     }
     function domainPath ($value,$type,$object=false) {
         $check = $this->if_obj_or_str($value,$type,$object);
-        if($check and is_string($check) and preg_match("/^[\w\d+\-\.]+\.[a-zA-Z]{1,5}(|\:[0-9]{1,5})(|\/[\w\.\/\-\_]{0,})$/",$check)) {
+        if ($check and is_string($check) and preg_match("/^[\w\d+\-\.]+\.[a-zA-Z]{1,5}(|\:[0-9]{1,5})(|\/[\w\.\/\-\_]{0,})$/",$check)) {
             return $check;
         } else if ($check) {
             return $this->loop($check,'domain',$type);
@@ -161,7 +161,7 @@ class ValidateUserinput {
     function ismail ($value,$type,$object=false) {
         $check = $this->if_obj_or_str($value,$type,$object);
         if (is_string($check)) $check = trim($check);
-        if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_EMAIL)) {
+        if ($check and is_string($check) and filter_var($check,FILTER_VALIDATE_EMAIL)) {
             $exploded=explode('@',$check);
             if (!checkdnsrr($exploded[1], 'MX') and !checkdnsrr($exploded[1], 'A')) return false;
             return strtolower($check);
@@ -171,7 +171,7 @@ class ValidateUserinput {
     }
     function ip4 ($value,$type,$object=false) {
         $check = $this->if_obj_or_str($value,$type,$object);
-        if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP,FILTER_FLAG_IPV4)){
+        if ($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP,FILTER_FLAG_IPV4)){
             return $check;
         } else if ($check) {
             return $this->loop($check,'ip4',$type);
@@ -179,7 +179,7 @@ class ValidateUserinput {
     }
     function ip6 ($value,$type,$object=false) {
         $check = $this->if_obj_or_str($value,$type,$object);
-        if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)){
+        if ($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)){
             return $check;
         } else if ($check) {
             return $this->loop($check,'ip6',$type);
@@ -187,7 +187,7 @@ class ValidateUserinput {
     }
     function ip ($value,$type,$object=false) {
         $check = $this->if_obj_or_str($value,$type,$object);
-        if($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP)){
+        if ($check and is_string($check) and filter_var($check,FILTER_VALIDATE_IP)){
             return $check;
         } else if ($check) {
             return $this->loop($check,'ip',$type);
@@ -253,7 +253,7 @@ class ValidateUserinput {
         $check = $this->if_obj_or_str($value,$type,$object);
         if ($check and is_string($check)) {
             $value=(int)str_replace(',', '.',$check);
-            if(preg_match("/^[\d+(.\d+|$)]+$/",$value)) {
+            if (preg_match("/^[\d+(.\d+|$)]+$/",$value)) {
                 return $value;
             }
         } else if ($check) {

@@ -42,7 +42,7 @@ $sprache = getlanguagefile('tickets',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
 } else {
@@ -327,7 +327,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $pageamount = ceil($colcount / $amount);
         $link='<a href="admin.php?w=ti&amp;d=mt&amp;o='.$o.'&amp;a=';
-        if(!isset($amount)) {
+        if (!isset($amount)) {
             $link .="20";
         } else {
             $link .= $amount;
@@ -424,7 +424,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $state = $row['state'];
         }
         if (isset($state) and $state!='C' and $ui->w('state',1, 'post') != 'C') {
-            if($ui->id('priority',1, 'post')) {
+            if ($ui->id('priority',1, 'post')) {
                 $query = $sql->prepare("UPDATE `tickets` SET `state`=?,`supporter`=?,`priority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->w('state',1, 'post'),$ui->id('supporter',10, 'post'),$ui->id('priority',1, 'post'),$id,$reseller_id));
             }
@@ -433,7 +433,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`message`,`writeDate`,`userID`,`resellerid`) VALUES (?,?,?,?,?)");
                 $query->execute(array($id,$ui->post['ticket'],$logdate,$admin_id,$reseller_id));
             }
-            if(isid($userid,10)) {
+            if (isid($userid,10)) {
                 $query = $sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($userid));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

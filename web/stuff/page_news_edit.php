@@ -426,7 +426,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($user_language,$reseller_id));
     $table = array();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if(!isset($titleLanguages[$row['language']])) {
+        if (!isset($titleLanguages[$row['language']])) {
             $titleLanguages[$row['language']] = array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
         }
         if ($row['released'] == '1') {
@@ -496,7 +496,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=pn&amp;d=md&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

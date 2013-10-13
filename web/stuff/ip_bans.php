@@ -54,7 +54,7 @@ if (isset($action) and $action == 'dl') {
             }
         } else $template_file = $spracheResponse->token;
     }
-    if(!isset($template_file)) $template_file = $i." entries deleted";
+    if (!isset($template_file)) $template_file = $i." entries deleted";
 } else {
     $table = array();
     $o = $ui->st('o', 'get');
@@ -112,7 +112,7 @@ if (isset($action) and $action == 'dl') {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ib&amp;d='.$d.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

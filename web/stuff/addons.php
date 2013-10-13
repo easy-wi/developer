@@ -43,7 +43,7 @@ $sprache = getlanguagefile('images',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-if ($reseller_id==0) {
+if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
 } else {
@@ -84,26 +84,26 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if ($ui->smallletters('action',2, 'post') == 'ad' and $ui->id('import',1, 'post')!=1) {
         $fail = 0;
         $template_file = '';
-        if(!$ui->gamestring('shorten', 'post')) {
+        if (!$ui->gamestring('shorten', 'post')) {
             $template_file .="Shorten<br />";
             $fail = 1;
         }
-        if(!$ui->smallletters('type',99, 'post')) {
+        if (!$ui->smallletters('type',99, 'post')) {
             $template_file .="type<br />";
             $fail = 1;
         }
-        if(!$ui->gamestring('addon', 'post')) {
+        if (!$ui->gamestring('addon', 'post')) {
             $template_file .="Addon<br />";
             $fail = 1;
         }
-        if(!$ui->description('menudescription', 'post')) {
+        if (!$ui->description('menudescription', 'post')) {
             $template_file .="Menuescription<br />";
             $fail = 1;
         }
-        if(!$ui->active('paddon', 'post')) {
+        if (!$ui->active('paddon', 'post')) {
             $fail = 1;
         }
-        if(!$ui->id('depending',19, 'post') and $ui->escaped('depending', 'post') != 0) {
+        if (!$ui->id('depending',19, 'post') and $ui->escaped('depending', 'post') != 0) {
             $fail = 1;
         }
         if ($fail!=1){
@@ -118,7 +118,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $configs = $ui->startparameter('configs', 'post');
             $cmd = $ui->startparameter('cmd', 'post');
             $rmcmd = $ui->startparameter('rmcmd', 'post');
-            if ($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE `accounttype`='r'");
                 $query2->execute();
                 $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `addons` WHERE ((`shorten`=? AND `addon`=?) OR `folder`=?) AND `resellerid`=? LIMIT 1");
@@ -233,16 +233,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if (@$xml->load($_FILES["file"]["tmp_name"]) !== false) {
                     $childNodes = $xml->documentElement;
                     foreach ($childNodes->childNodes AS $node) {
-                        if($node->nodeName == 'active') $active = $node->nodeValue;
-                        if($node->nodeName == 'paddon ') $paddon = $node->nodeValue;
-                        if($node->nodeName == 'shorten') $shorten = $node->nodeValue;
-                        if($node->nodeName == 'addon') $addon = $node->nodeValue;
-                        if($node->nodeName == 'type') $type = $node->nodeValue;
-                        if($node->nodeName == 'folder') $folder = $node->nodeValue;
-                        if($node->nodeName == 'menudescription') $menudescription = $node->nodeValue;
-                        if($node->nodeName == 'configs') $configs = $node->configs;
-                        if($node->nodeName == 'cmd') $cmd = $node->nodeValue;
-                        if($node->nodeName == 'rmcmd') $rmcmd = $node->nodeValue;
+                        if ($node->nodeName == 'active') $active = $node->nodeValue;
+                        if ($node->nodeName == 'paddon ') $paddon = $node->nodeValue;
+                        if ($node->nodeName == 'shorten') $shorten = $node->nodeValue;
+                        if ($node->nodeName == 'addon') $addon = $node->nodeValue;
+                        if ($node->nodeName == 'type') $type = $node->nodeValue;
+                        if ($node->nodeName == 'folder') $folder = $node->nodeValue;
+                        if ($node->nodeName == 'menudescription') $menudescription = $node->nodeValue;
+                        if ($node->nodeName == 'configs') $configs = $node->configs;
+                        if ($node->nodeName == 'cmd') $cmd = $node->nodeValue;
+                        if ($node->nodeName == 'rmcmd') $rmcmd = $node->nodeValue;
                     }
                 }
             } catch(Exception $error) {
@@ -350,26 +350,26 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($action == 'md'){
         $fail = 0;
         $template_file = '';
-        if(!$ui->gamestring('shorten', 'post')) {
+        if (!$ui->gamestring('shorten', 'post')) {
             $template_file .="Shorten<br />";
             $fail = 1;
         }
-        if(!$ui->smallletters('type',99, 'post')) {
+        if (!$ui->smallletters('type',99, 'post')) {
             $template_file .="type<br />";
             $fail = 1;
         }
-        if(!$ui->gamestring('addon', 'post')) {
+        if (!$ui->gamestring('addon', 'post')) {
             $template_file .="Addon<br />";
             $fail = 1;
         }
-        if(!$ui->description('menudescription', 'post')) {
+        if (!$ui->description('menudescription', 'post')) {
             $template_file .="Menuescription<br />";
             $fail = 1;
         }
-        if(!$ui->active('paddon', 'post')) {
+        if (!$ui->active('paddon', 'post')) {
             $fail = 1;
         }
-        if(!$ui->id('depending',19, 'post') and $ui->escaped('depending', 'post') != 0) {
+        if (!$ui->id('depending',19, 'post') and $ui->escaped('depending', 'post') != 0) {
             $fail = 1;
         }
         if ($fail!=1){
@@ -513,7 +513,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=ad&amp;d=md&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

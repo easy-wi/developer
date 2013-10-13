@@ -150,7 +150,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID,$resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                if($row['amount']>0) {
+                if ($row['amount']>0) {
                     $success['false'][] = 'Database is already marked for deletion';
                 }
             }
@@ -163,7 +163,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
                 $insert->execute(array($hostID,$resellerID,$localID,$userID,$name,$resellerID));
             }
         }
-        if(!isset($localID)) {
+        if (!isset($localID)) {
             $success['false'][] = 'No database can be found to edit';
         }
     } else {
@@ -188,7 +188,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data)) {
             $name = $row['dbname'];
             $hostID = $row['sid'];
         }
-        if(isset($localID) and isset($name)) {
+        if (isset($localID) and isset($name)) {
             $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($localID,$resellerID));
             $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");

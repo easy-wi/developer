@@ -49,7 +49,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $i = 0;
     if ($ui->id('id',30, 'post')) {
         foreach ($ui->id('id',30, 'post') as $id) {
-            if ($reseller_id==0) {
+            if ($reseller_id == 0) {
                 $delete = $sql->prepare("DELETE FROM `jobs` WHERE `jobID`=? LIMIT 1");
                 $delete->execute(array($id));
             } else {
@@ -61,7 +61,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $template_file = $i . ' ' . $gsprache->jobs.' deleted';
 } else if ($ui->id('id', 19, 'get')) {
-    if ($reseller_id==0) {
+    if ($reseller_id == 0) {
         $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? LIMIT 1");
         $query->execute(array($ui->id('id', 19, 'get')));
     } else if ($reseller_id != 0 and $admin_id != $reseller_id) {
@@ -116,12 +116,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $o = 'di';
         $orderby = '`jobID` DESC';
     }
-    if ($reseller_id==0) {
+    if ($reseller_id == 0) {
         $where = '';
     } else {
         $where='WHERE `resellerID`=?';
     }
-    if ($reseller_id==0) {
+    if ($reseller_id == 0) {
         $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
         $query->execute();
     } else {
@@ -165,7 +165,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $table[] = array('jobID' => $row['jobID'], 'date' => $date,'name' => $row['name'], 'api' => $api,'status' => $row['status'], 'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'type' => $type[$row['type']], 'action' => $action);
     }
     $next = $start+$amount;
-    if ($reseller_id==0) {
+    if ($reseller_id == 0) {
         $countp = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs`");
         $countp->execute();
     } else {
@@ -188,7 +188,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pageamount = ceil($colcount / $amount);
     $link='<a href="admin.php?w=jb&amp;o='.$o.'&amp;a=';
-    if(!isset($amount)) {
+    if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;

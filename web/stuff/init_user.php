@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($user_id)) {
+if (!isset($user_id)) {
     header('Location: login.php');
     die;
 }

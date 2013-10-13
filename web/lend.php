@@ -171,27 +171,27 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
     if ($nextcheck < 0) {
         $nextcheck = $nextcheck * (-1);
     }
-    if($time>0 and $maxtime>0) {
+    if ($time>0 and $maxtime>0) {
         while ($time <= $maxtime) {
             $timeselect[] = $time;
             $time = $time + $timesteps;
         }
     }
     $gsstart = $minplayer;
-    if($player>0 and $gsstart>0) {
+    if ($player>0 and $gsstart>0) {
         while ($gsstart <= $player) {
             $slotselect[] = $gsstart;
             $gsstart = $gsstart + $playersteps;
         }
     }
-    if($votime>0 and $vomaxtime>0) {
+    if ($votime>0 and $vomaxtime>0) {
         while ($votime <= $vomaxtime) {
             $votimeselect[] = $votime;
             $votime = $votime + $votimesteps;
         }
     }
     $vstart = $vominplayer;
-    if($voplayer>0 and $vstart>0) {
+    if ($voplayer>0 and $vstart>0) {
         while ($vstart <= $voplayer) {
             $voslotselect[] = $vstart;
             $vstart = $vstart + $voplayersteps;
@@ -248,11 +248,11 @@ if ($activeGS == 'Y' and ($w == 'gs' or $d == 'gs' or $ui->st('w', 'post') == 'g
 $volallowed = ($vocount>0) ? true : false;
 $gslallowed = ($gscount>0) ? true : false;
 
-if(!isset($servertype) and !isset($page_include) and (!$ui->username('shorten', 50, 'get') or ($ui->username('shorten', 50, 'get') == 'api') and !$ui->st('w', 'post'))) {
+if (!isset($servertype) and !isset($page_include) and (!$ui->username('shorten', 50, 'get') or ($ui->username('shorten', 50, 'get') == 'api') and !$ui->st('w', 'post'))) {
     $servertype = ($vocount > $gscount) ? 'v' : 'g';
 }
 
-if(isset($servertype)) {
+if (isset($servertype)) {
 
     $query = $sql->prepare("SELECT `id`,`serverid`,`rcon`,`password`,`slots`,`started`,`lendtime` FROM `lendedserver` WHERE `lenderip`=? AND `servertype`=? AND `resellerid`=? LIMIT 1");
     $query1 = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
@@ -439,7 +439,7 @@ if ($ui->escaped('ipblocked', 'post') and $ui->id('xml', 1, 'post') == 1 and !is
     die('notblocked');
 }
 
-if((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=1) or ($ui->id('xml', 1, 'post') == 1 and !$ui->st('w', 'post'))){
+if ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=1) or ($ui->id('xml', 1, 'post') == 1 and !$ui->st('w', 'post'))){
     $lendGameServers = array();
     $lendVoiceServers = array();
 
