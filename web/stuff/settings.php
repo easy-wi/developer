@@ -54,7 +54,7 @@ include(EASYWIDIR . '/stuff/config.php');
 $ewCfg['captcha'] = $captcha;
 $ewCfg['title'] = $title;
 
-$dbConnect['type'] = $type;
+$dbConnect['type'] = $databanktype;
 $dbConnect['host'] = $host;
 $dbConnect['user'] = $user;
 $dbConnect['pwd'] = $pwd;
@@ -117,6 +117,8 @@ if ($loguserip != 'localhost') {
     if (isset($_SESSION['resellerid']) and is_numeric($_SESSION['resellerid'])) {
         $reseller_id = $_SESSION['resellerid'];
     } else if ((isset($_SESSION['userid']) or isset($_SESSION['adminid'])) and (!isset($_SESSION['resellerid']) or !is_numeric($_SESSION['resellerid']))) {
+        session_unset();
+        session_destroy();
         redirect('login.php');
     }
 
@@ -280,7 +282,7 @@ if ($loguserip!='localhost') {
             $query->execute(array($user_language, $user_id, $reseller_id));
         }
     }
-    $default_language=(!empty($user_language)) ? $user_language : $rSA['language'];
+    $default_language = (!empty($user_language)) ? $user_language : $rSA['language'];
 
     if (!isset($user_language) or empty($user_language)) {
         $user_language = $default_language;
