@@ -40,13 +40,17 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !isanyadmin($admi
 	header('Location: login.php');
 	die('No acces');
 }
+
 $sprache_bad = getlanguagefile('home', $user_language, $reseller_id);
 $resellerid = ($reseller_id != 0 and $admin_id != $reseller_id) ? $admin_id : $reseller_id;
 $reseller_brandname = $rSA['brandname'];
+$counttickets_open = 0;
+$counttickets_unanswered = 0;
 $crashedArray = array('gsCrashed' => 0,'gsPWD' => 0,'gsTag' => 0,'ticketsOpen' => 0,'tickets' => 0,'ticketsResellerOpen' => 0,'ticketsReseller' => 0,'masterserver' => 0,'ts3Master' => 0,'ts3' => 0,'virtualHosts' => 0);
 $removed = array();
 $tag_removed = array();
 $crashed = array();
+
 $query = $sql->prepare("SELECT `stopped`,`serverid`,CONCAT(`serverip`,':',`port`) AS `server`,`userid`,`war`,`brandname`,`queryName`,`queryPassword` FROM `gsswitch` WHERE `active`='Y' AND `resellerid`=?");
 $query->execute(array($resellerid));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -54,68 +58,76 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $brandname = $row['brandname'];
     $password = $row['queryPassword'];
     $name = $row['queryName'];
+
 	if ($name != "OFFLINE" and $row['stopped'] == 'N' and $war == "Y" and $password == "N") {
 		$removed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
         $crashedArray['gsPWD']++;
+
 	} else if ($name == "OFFLINE" and $row['stopped'] == 'N') {
 		$crashed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
         $crashedArray['gsCrashed']++;
 	}
+
 	if (isset($name) and $name != '' and $name != "OFFLINE" and $row['stopped'] == 'N' and isset($reseller_brandname) and $reseller_brandname != '' and $brandname == "Y" and strpos(strtolower($name), strtolower($reseller_brandname))  === false) {
 		$tag_removed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
         $crashedArray['gsTag']++;
 	}
 }
+
 $query = $sql->prepare("SELECT `id`,`userid` FROM `tickets` WHERE `state` NOT IN ('C','D') AND `resellerid`=?");
 $query2 = $sql->prepare("SELECT `userID` FROM `tickets_text` WHERE `ticketID`=? ORDER BY `writeDate` DESC LIMIT 1");
 $query->execute(array($resellerid));
-$counttickets_open = 0;
-$counttickets_unanswered = 0;
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $counttickets_open++;
     $crashedArray['ticketsOpen']++;
     $query2->execute(array($row['id']));
+
     if ($row['userid'] == $query2->fetchColumn()) {
         $counttickets_unanswered++;
         $crashedArray['tickets']++;
     }
 }
+
 if ($reseller_id != 0) {
-	if ($reseller_id != 0 and $admin_id == $reseller_id) {
-		$resellerid = 0;
-	} else if ($reseller_id != 0 and $admin_id != $reseller_id) {
-		$resellerid = $admin_id;
-	}
-    $query = $sql->prepare("SELECT `id` FROM `tickets` WHERE `userid`=? AND `state` != 'C' AND `resellerid`=?");
-    $query2 = $sql->prepare("SELECT `userID` FROM `tickets_text` WHERE `ticketID`=? ORDER BY `writeDate` DESC LIMIT 1");
-    $query->execute(array($admin_id,$reseller_id));
+
     $counttickets_open = 0;
     $counttickets_unanswered = 0;
+
+    $query = $sql->prepare("SELECT `id` FROM `tickets` WHERE `userid`=? AND `state` != 'C' AND `resellerid`=?");
+    $query2 = $sql->prepare("SELECT `userID` FROM `tickets_text` WHERE `ticketID`=? ORDER BY `writeDate` DESC LIMIT 1");
+
+    $query->execute(array($admin_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $crashedArray['ticketsReseller']++;
         $query2->execute(array($row['id']));
+
         if ($admin_id == $query2->fetchColumn()) {
             $crashedArray['ticketsResellerOpen']++;
         }
     }
 }
-$query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `active`='Y' AND `uptime`='0' AND `resellerid`=?");
-$query->execute(array($reseller_id));
+
 $crached_ts3_virtual = 0;
 $crashed_ts3 = array();
+
+$query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `active`='Y' AND `uptime`='0' AND `resellerid`=?");
+$query->execute(array($reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $crashed_ts3[] = array('address' => $row['address']);
     $crached_ts3_virtual++;
 }
 $crashedArray['ts3'] = $crached_ts3_virtual;
+
 $query = $sql->prepare("SELECT `id` FROM `voice_masterserver` WHERE `active`='Y' AND `notified`>=? AND `resellerid`=?");
 $query->execute(array($downChecks,$resellerid));
 $crached_ts3_master = $query->rowCount();
 $crashedArray['ts3Master'] = $crached_ts3_master;
+
 $query = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `active`='Y' AND `notified`>=? AND `resellerid`=?");
 $query->execute(array($downChecks,$resellerid));
 $crached_master = $query->rowCount();
 $crashedArray['masterserver'] = $crached_master;
+
 if ($reseller_id == 0) {
     $query = $sql->prepare("SELECT `id` FROM `virtualhosts` WHERE `active`='Y' AND `notified`>=?");
     $query->execute(array($downChecks));
@@ -126,6 +138,7 @@ if ($reseller_id == 0) {
 $crached_hosts = $query->rowCount();
 $crashedArray['virtualHosts'] = $crached_hosts;
 $feedArray = array();
+
 if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get') and !$ui->smallletters('d',2, 'get'))) {
 
 
@@ -136,6 +149,7 @@ if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get')
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
         $query->execute(array($reseller_id));
     }
+
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
         if ($row['orderBy'] == 'I' and $row['merge'] == 'N'){

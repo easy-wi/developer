@@ -276,25 +276,35 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query = $sql->prepare("INSERT INTO `eac` (resellerid) VALUES (?)");
                     $query->execute(array($resellerid));
 				}
-				if (!isset($resellersid)) $resellersid = $reseller_id;
-                $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
-                $security2=createHash($cnamenew,$password,$salt,$aeskey);
+
+				if (!isset($resellersid)) {
+                    $resellersid = $reseller_id;
+                }
+
+                $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
+                $security2 = createHash($cnamenew, $password, $salt, $aeskey);
+
                 $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
-				if ($user_accounttype=="a") {
-                    $query->execute(array($cnamenew,$security2,$salt,$resellerid,$id));
-				} else if ($user_accounttype=="r" and $admin_id==$reseller_id) {
-                    $query->execute(array($cnamenew,$security2,$salt,$reseller_id,$id));
-				} else if ($user_accounttype=="r" and $admin_id != $reseller_id) {
-                    $query->execute(array($cnamenew,$security2,$salt,$admin_id,$id));
+
+				if ($user_accounttype == 'a') {
+                    $query->execute(array($cnamenew, $security2, $salt, $id, $id));
+				} else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
+                    $query->execute(array($cnamenew, $security2, $salt, $reseller_id, $id));
+				} else if ($user_accounttype == 'r') {
+                    $query->execute(array($cnamenew, $security2, $salt, $admin_id, $id));
 				}
+
 				sendmail('emailuseradd',$id,$cnamenew,$password);
+
 				$template_file = $sprache->user_create .": <b>$cnamenew</b>.";
 				$loguseraction="%add% %user% $cnamenew";				
 				$insertlog->execute();
+
 			} else {
 				$template_file = $sprache->error_cname;
 			}
 		}
+
 	} else {
         $randompass=passwordgenerate(10);
         $randompass2=passwordgenerate(10);
@@ -691,10 +701,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $table = array();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $adminaccount = false;
-        if ($row['accounttype']=="a") {
+        if ($row['accounttype'] == 'a') {
             $adminaccount = true;
             $accounttype = $sprache->accounttype_admin;
-        } else if ($row['accounttype']=="r") {
+        } else if ($row['accounttype'] == 'r') {
             $accounttype = $sprache->accounttype_reseller;
         } else {
             $accounttype = $sprache->accounttype_user;

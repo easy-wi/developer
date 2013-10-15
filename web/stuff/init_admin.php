@@ -52,7 +52,7 @@ $vserver_module = (is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs']
 $voserver_module = (is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo'] == 0) ? false : true;
 $dediserver_module = (is_numeric($licenceDetails['mD']) and $licenceDetails['mD'] == 0) ? false : true;
 
-$ewVersions['files'] = '4.00';
+$ewVersions['files'] = '4.1';
 
 $vcsprache = getlanguagefile('versioncheck',$user_language,$reseller_id);
 $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
@@ -67,7 +67,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $ewVersions['releasenotesEN'] = $row['releasenotesEN'];
 }
 
-if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and ($ewVersions['cVersion']<$ewVersions['version'] or $ewVersions['files']<$ewVersions['version'])) {
+if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and ($ewVersions['cVersion'] < $ewVersions['version'] or $ewVersions['files'] < $ewVersions['version'])) {
     $toooldversion = $vcsprache->newversion.$ewVersions['version'];
 }
 

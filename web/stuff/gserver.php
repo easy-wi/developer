@@ -1164,11 +1164,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $jobPending = $gsprache->no;
         }
 
-        if ($stopped == 'Y') {
-            $imgName = '16_bad';
-            $imgAlt = 'Stopped';
-
-        } else if ($row['active'] == 'N' and $row['jobPending'] == 'Y' and isset($tobeActive) and $tobeActive == 'Y') {
+        if ($row['active'] == 'N' and $row['jobPending'] == 'Y' and isset($tobeActive) and $tobeActive == 'Y') {
             $imgName = '16_ok';
             $imgAlt = 'Active';
 
@@ -1176,13 +1172,17 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $imgName = '16_bad';
             $imgAlt = 'Inactive';
 
+        } else if ($stopped == 'Y') {
+            $imgName = '16_bad';
+            $imgAlt = 'Stopped';
+
         } else if (($name == 'OFFLINE' or $name == '') and $notified >= $rSA['down_checks'] and $stopped== 'N') {
             $imgName = '16_error';
             $imgAlt = 'Crashed';
 
         } else {
 
-            if ($war== 'Y' and $password== 'N') {
+            if ($war == 'Y' and $password == 'N') {
                 $imgName = '16_error';
                 $imgAlt = 'No Password';
             }
