@@ -42,7 +42,7 @@
             <div class="controls">
                 <div class="input-prepend">
                     <span class="add-on"><i class="icon-lock"></i></span>
-                    <input name="password1" type="text" id="inputPass" placeholder="<?php echo $sprache->password;?>" required >
+                    <input name="password1" type="password" id="inputPass" placeholder="<?php echo $sprache->password;?>" required >
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
             <div class="controls">
                 <div class="input-prepend">
                     <span class="add-on"><i class="icon-lock"></i></span>
-                    <input name="password2" type="text" id="inputPassRepeat" placeholder="<?php echo $sprache->password;?>" required >
+                    <input name="password2" type="password" id="inputPassRepeat" placeholder="<?php echo $sprache->password;?>" required >
                 </div>
             </div>
         </div>

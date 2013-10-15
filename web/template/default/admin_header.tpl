@@ -35,7 +35,7 @@
                 <span class="icon-bar"></span>
             </button>
             <p class="navbar-text pull-left">
-                <?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
+                <?php foreach ($languages as $language){ echo '<a href="admin.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
             </p>
             <div class="nav-collapse collapse">
                 <ul class="nav">

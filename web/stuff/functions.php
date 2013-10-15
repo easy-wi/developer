@@ -97,6 +97,11 @@ if (!function_exists('passwordgenerate')) {
     
     function redirect($value, $sendHTTP301 = false) {
 
+        if ($value == 'login.php') {
+            session_unset();
+            session_destroy();
+        }
+
         if ($sendHTTP301 == true) {
             header('HTTP/1.1 301 Moved Permanently');
         }
