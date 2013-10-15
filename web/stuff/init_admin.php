@@ -114,6 +114,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR . '/stuff/' . $row['file'])) {
         $query2->execute(array($row['id'], $user_language));
         $name = $query2->fetchColumn();
+
         if (strlen($name) == 0) {
             $query2->execute(array($row['id'], $rSA['language']));
             $name = $query2->fetchColumn();
@@ -121,12 +122,15 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (strlen($name) == 0) {
             $name = $row['file'];
         }
+
         $customModules[$row['sub']][$row['get']] = $name;
         $what_to_be_included_array[$row['get']] = $row['file'];
+
     } else if ($row['type'] == 'C' and $row['active'] == 'N') {
         $easywiModules[$row['get']] = false;
     }
 }
+
 if ($easywiModules['gs'] === true) {
     $what_to_be_included_array['ro'] = 'roots.php';
     $what_to_be_included_array['ma'] = 'masterserver.php';
@@ -134,12 +138,15 @@ if ($easywiModules['gs'] === true) {
     $what_to_be_included_array['ad'] = 'addons.php';
     $what_to_be_included_array['im'] = 'images.php';
 }
+
 if ($easywiModules['ea'] === true) {
     $what_to_be_included_array['ea'] = 'eac.php';
 }
+
 if ($easywiModules['my'] === true) {
     $what_to_be_included_array['my'] = 'mysql_server.php';
 }
+
 if ($easywiModules['ro'] === true) {
     $what_to_be_included_array['rh'] = 'root_dedicated.php';
     $what_to_be_included_array['rd'] = 'root_dhcp.php';
@@ -149,13 +156,16 @@ if ($easywiModules['ro'] === true) {
     $what_to_be_included_array['ot'] = 'roots_os_templates.php';
     $what_to_be_included_array['tf'] = 'traffic.php';
 }
+
 if ($easywiModules['ti'] === true) {
     $what_to_be_included_array['ti'] = 'tickets.php';
     $what_to_be_included_array['tr'] = 'tickets_reseller.php';
 }
+
 if ($easywiModules['le'] === true) {
     $what_to_be_included_array['le'] = 'lendserver.php';
 }
+
 if ($easywiModules['vo'] === true) {
     $what_to_be_included_array['vu'] = 'voice_usage.php';
     $what_to_be_included_array['vo'] = 'voice.php';

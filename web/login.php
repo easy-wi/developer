@@ -214,7 +214,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
         $salt = '';
 
-        $query = $sql->prepare("SELECT `id`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
+        $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
         $query->execute(array($ui->username('username', 255, 'post'),$ui->ismail('username', 'post')));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $username = $row['cname'];
@@ -225,6 +225,7 @@ if ($ui->st('w', 'get') == 'lo') {
             $externalID = $row['externalID'];
 			$security = $row['security'];
 			$resellerid = $row['resellerid'];
+            $accounttype = $row['accounttype'];
 
             $userpassNew = createHash($username, $password, $salt, $aeskey);
 
@@ -351,6 +352,10 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 $query = $sql->prepare("UPDATE `userdata` SET `lastlogin`=?,`logintime`=? WHERE `id`=? LIMIT 1");
                 $query->execute(array($logintime, $logdate, $id));
+            }
+
+            if (!isset($accounttype) or !isset($resellerid)  or ($accounttype == 'r' and $resellerid < 1)) {
+                redirect('login.php');
             }
 
             $_SESSION['resellerid'] = $resellerid;

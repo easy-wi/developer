@@ -35,6 +35,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
 if (isset($_SERVER['QUERY_STRING'])) {
     $queries = strtolower($_SERVER['QUERY_STRING']);
     $badcontent = array("http://", "ftp://", "https://", "ftps://", "delete ", "from ", "into ", "userdata ", "userdata(", "userdata`", "userpermissions ", "userpermissions(", "userpermissions`", "select ", "set ", "where ", "update ", "union ", "*", ".ssh", "~", "chmod ", "passwd", "fclose", "fopen", "fwrite", "getenv", "locate", "passthru", "phpinfo", "proc_close", "proc_get_status", "proc_nice", "proc_open", "proc_terminate", "shell_exec(", "system(");
@@ -43,16 +44,21 @@ if (isset($_SERVER['QUERY_STRING'])) {
         die();
     }
 }
+
+include(EASYWIDIR . '/stuff/config.php');
+
 $ui = new ValidateUserinput($_GET, $_POST, $_SERVER, array(), $_ENV);
 unset($_GET, $_POST, $_SERVER, $_ENV);
-include(EASYWIDIR . '/stuff/config.php');
+
 $ewCfg['captcha'] = $captcha;
 $ewCfg['title'] = $title;
-$dbConnect['type']=(!isset($type) or $type == '') ? 'mysql' : $type;
+
+$dbConnect['type'] = (!isset($type) or $type == '') ? 'mysql' : $type;
 $dbConnect['host'] = $host;
 $dbConnect['user'] = $user;
 $dbConnect['pwd'] = $pwd;
 $dbConnect['db'] = $db;
+
 if (isset($debug) and $debug==1) {
     $dbConnect['debug'] = 1;
     ini_set('display_errors',1);
@@ -109,6 +115,8 @@ if ($loguserip != 'localhost') {
 
     if (isset($_SESSION['resellerid']) and is_numeric($_SESSION['resellerid'])) {
         $reseller_id = $_SESSION['resellerid'];
+    } else if ((isset($_SESSION['userid']) or isset($_SESSION['adminid'])) and (!isset($_SESSION['resellerid']) or !is_numeric($_SESSION['resellerid']))) {
+        redirect('login.php');
     }
 
     if (isset($_SESSION['HTTP_USER_AGENT']) and isset($_SESSION['REMOTE_ADDR'])){
@@ -116,12 +124,14 @@ if ($loguserip != 'localhost') {
         if ($_SESSION['HTTP_USER_AGENT'] != md5($ui->escaped('HTTP_USER_AGENT', 'server')) or $_SESSION['REMOTE_ADDR'] != md5($ui->ip('REMOTE_ADDR', 'server'))){
             session_unset();
             session_destroy();
+
             if (isset($page_include)) {
                 redirect('/');
             } else {
                 redirect('login.php');
             }
         }
+
     } else {
         $_SESSION['REMOTE_ADDR'] = md5($ui->ip('REMOTE_ADDR', 'server'));
         $_SESSION['HTTP_USER_AGENT'] = md5($ui->escaped('HTTP_USER_AGENT', 'server'));
@@ -148,8 +158,8 @@ if (isset($reseller_id)) {
         $lookupid = $reseller_id;
 
     } else {
-        $check_split = preg_split("/\//", $ui->escaped('SCRIPT_NAME', 'server'),-1,PREG_SPLIT_NO_EMPTY);
-        $which_file = $check_split[count($check_split)-1];
+        $check_split = preg_split("/\//", $ui->escaped('SCRIPT_NAME', 'server'), -1, PREG_SPLIT_NO_EMPTY);
+        $which_file = $check_split[count($check_split) - 1];
 
         if ($which_file == 'userpanel.php') {
             $lookupid = $reseller_id;
@@ -194,7 +204,6 @@ if ($loguserip!='localhost') {
             $maxnews=(isid($row['maxnews'],11)) ? $row['maxnews'] : 10;
             $page_default = $row['defaultpage'];
             $pageurl = $row['pageurl'];
-            if (!isurl($pageurl) and !isdomain($pageurl)) $pageurl = $page_url;
             $protectioncheck = $row['protectioncheck'];
             $maxnews_sidebar = $row['maxnews_sidebar'];
             $newssidebar_textlength = $row['newssidebar_textlength'];
@@ -206,6 +215,10 @@ if ($loguserip!='localhost') {
             $commentMinLength = $row['commentMinLength'];
             $commentsModerated = $row['commentsModerated'];
             $honeyPotKey = $row['honeyPotKey'];
+
+            if (!isurl($pageurl) and !isdomain($pageurl)) {
+                $pageurl = $page_url;
+            }
         }
 
         $ewInstallPath = EASYWIDIR;
@@ -237,17 +250,20 @@ if ($loguserip!='localhost') {
             $page_count = strtolower($elements[3]);
         }
     }
+
     if (!isset($user_language) and isset($user_id) and isset($admin_id)) {
-        $user_language=language($admin_id);
+        $user_language = language($admin_id);
     } else if (!isset($user_language) and isset($user_id) and !isset($admin_id)) {
-        $user_language=language($user_id);
+        $user_language = language($user_id);
     } else if (!isset($user_language) and isset($admin_id)) {
-        $user_language=language($admin_id);
+        $user_language = language($admin_id);
     }
+
     if (isset($page_detect_language) and preg_match('/^[a-z]{2}+$/', $page_detect_language) and ((isset($_SESSION['language']) and $page_detect_language != $_SESSION['language']) or !isset($_SESSION['language']))){
         $language_changed = true;
         $user_language = $page_detect_language;
     }
+
     if ($ui->st('l', 'get') or isset($language_changed)) {
         if ($ui->st('l', 'get')) $user_language = $ui->st('l', 'get');
         
@@ -264,13 +280,18 @@ if ($loguserip!='localhost') {
         }
     }
     $default_language=(!empty($user_language)) ? $user_language : $rSA['language'];
+
     if (!isset($user_language) or empty($user_language)) {
         $user_language = $default_language;
     }
+
     $_SESSION['language'] = $user_language;
-    $gsprache=(isset($reseller_id)) ? getlanguagefile('general', $user_language, $reseller_id) : getlanguagefile('general', $user_language, 0);
-    $spracheResponse=(isset($reseller_id)) ? getlanguagefile('response', $user_language, $reseller_id) : getlanguagefile('response', $user_language, 0);
+
+    $gsprache = (isset($reseller_id)) ? getlanguagefile('general', $user_language, $reseller_id) : getlanguagefile('general', $user_language, 0);
+    $spracheResponse = (isset($reseller_id)) ? getlanguagefile('response', $user_language, $reseller_id) : getlanguagefile('response', $user_language, 0);
+
 }
+
 if (isset($logininclude) and $logininclude == true) {
     $query = $sql->prepare("DELETE FROM `badips` WHERE `bantime` <= ?");
     $query->execute(array($logdate));
