@@ -45,15 +45,16 @@ if (isset($_SERVER['QUERY_STRING'])) {
     }
 }
 
-include(EASYWIDIR . '/stuff/config.php');
 
 $ui = new ValidateUserinput($_GET, $_POST, $_SERVER, array(), $_ENV);
-unset($_GET, $_POST, $_SERVER, $_ENV);
+unset($_GET, $_POST, $_SERVER, $_ENV, $type, $host, $user, $pwd, $db);
+
+include(EASYWIDIR . '/stuff/config.php');
 
 $ewCfg['captcha'] = $captcha;
 $ewCfg['title'] = $title;
 
-$dbConnect['type'] = (!isset($type) or $type == '') ? 'mysql' : $type;
+$dbConnect['type'] = $type;
 $dbConnect['host'] = $host;
 $dbConnect['user'] = $user;
 $dbConnect['pwd'] = $pwd;
