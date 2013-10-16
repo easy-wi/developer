@@ -78,7 +78,7 @@ header("Content-type: application/json; charset=UTF-8");
  
 // If there was an error send error and stop script
 if (count($error)>0) {
-	echo json_encode(array('error'=>$error));
+	echo json_encode(array('error' => $error));
  
 // Else check for new users
 } else {
@@ -100,13 +100,13 @@ if (count($error)>0) {
 		$json=array();
 		
 		// User export
-		if ($list=='user') {
+		if ($list == 'user') {
 			// This query fetches the actual data.
 			// The Query needs to be altered to your database. This is just an example!
 			// specify the needed columns to reduce database load.
 			// webspell
 			if ($config['sourceType']=='webspell') {
-				$sql="SELECT * FROM `usertable`
+				$sql = "SELECT * FROM `usertable`
 				WHERE (`userID`>? OR `updatetime`>?) AND `activated`=1 AND (`banned` IS NULL OR `banned`='')
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
@@ -114,62 +114,119 @@ if (count($error)>0) {
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 					// Easy-Wi stores the salutation with numbers
 					if (isset($row['salutation']) and $row['salutation']=='mr') {
-						$salutation=1;
+						$salutation = 1;
 					} else if (isset($row['salutation']) and $row['salutation']=='ms') {
-						$salutation=2;
+						$salutation = 2;
 					} else {
-						$salutation=null;
+						$salutation = null;
 					}
 					// the keys needs to be adjusted to your table layout and query!
 					$json[]=array(
-						'externalID'=>$row['userID'],
-						'salutation'=>$salutation,
-						'email'=>$row['email'],
-						'loginName'=>$row['username'],
-						'firstName'=>$row['firstname'],
-						'lastName'=>$row['lastname'],
-						'birthday'=>$row['birthday'],
-						'country'=>$row['country'],
-						'phone'=>$row['tel'],
-						'fax'=>$row['fax'],
-						'handy'=>$row['mobile'],
-						'city'=>$row['town'],
-						'cityn'=>$row['postcode'],
-						'street'=>$row['street'],
-						'streetn'=>$row['streetnr'],
-						'updatetime'=>$row['updatetime'],
+						'externalID' => $row['userID'],
+						'salutation' => $salutation,
+						'email' => $row['email'],
+						'loginName' => $row['username'],
+						'firstName' => $row['firstname'],
+						'lastName' => $row['lastname'],
+						'birthday' => $row['birthday'],
+						'country' => $row['country'],
+						'phone' => $row['tel'],
+						'fax' => $row['fax'],
+						'handy' => $row['mobile'],
+						'city' => $row['town'],
+						'cityn' => $row['postcode'],
+						'street' => $row['street'],
+						'streetn' => $row['streetnr'],
+						'updatetime' => $row['updatetime'],
 						'usertype'=>'u',
-						'password'=>$row['password']
+						'password' => $row['password']
 						);
 				}
 			} else if ($config['sourceType']=='teklab') {
-			
+				$sql = "SELECT * FROM `teklab_members`
+				WHERE `rank`=1
+				LIMIT $start,$chunkSize";
+				$query=$pdo->prepare($sql);
+				$query->execute(array($lastID,$updateTime));
+				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+					// Easy-Wi stores the salutation with numbers
+					if ($row['title'] == 0) {
+						$salutation = 1;
+					} else if ($row['title']==1) {
+						$salutation = 2;
+					} else {
+						$salutation = null;
+					}
+
+					if ($row['country'] == 1) {
+						$country = 'de';
+					} else if ($row['country'] == 2) {
+						$country = 'uk';
+					} else if ($row['country'] == 3) {
+						$country = 'at';
+					} else if ($row['country'] == 4) {
+						$country = 'ch';
+					} else {
+						$country = null;
+					}
+
+					$exploded = explode(" ", $row['street']);
+					if (count($exploded) > 2) {
+						$streetNumber = $exploded[count($exploded) - 1];
+						unset($exploded[count($exploded) - 1]);
+						$streetName = implode(' ', $exploded);
+					} else {
+						$streetName = null;
+						$streetNumber = null;
+					}
+					
+					// the keys needs to be adjusted to your table layout and query!
+					$json[]=array(
+						'externalID' => $row['id'],
+						'salutation' => $salutation,
+						'email' => $row['email'],
+						'loginName' => $row['member'],
+						'firstName' => $row['surname'],
+						'lastName' => $row['name'],
+						'birthday'=> date('Y-m-d H:m:s', strtotime($row['birthday'])),
+						'country' => $country,
+						'phone' => $row['phone'],
+						'fax' => $row['fax'],
+						'handy' => null,
+						'city' => $row['city'],
+						'cityn' => $row['zipcode'],
+						'street' => $streetName,
+						'streetn' => $streetNumber,
+						'updatetime' => null,
+						'usertype'=>'u',
+						'password' => $row['password']
+						);
 			}
-		} else if ($list=='substitutes' and $config['sourceType']=='teklab') {
+		} else if ($list == 'substitutes' and $config['sourceType']=='teklab') {
 		
 		
-		} else if ($list=='dedicated' and $config['sourceType']=='teklab') {
+		} else if ($list == 'dedicated' and $config['sourceType']=='teklab') {
 		
 		
-		} else if ($list=='gameserver' and $config['sourceType']=='teklab') {
+		} else if ($list == 'gameserver' and $config['sourceType']=='teklab') {
 		
 		
-		} else if ($list=='voice' and $config['sourceType']=='teklab') {
+		} else if ($list == 'voice' and $config['sourceType']=='teklab') {
 		
 		
-		} else if ($list=='node' and $config['sourceType']=='teklab') {
+		} else if ($list == 'node' and $config['sourceType']=='teklab') {
 		
 		
-		} else if ($list=='virt' and $config['sourceType']=='teklab') {
+		} else if ($list == 'virt' and $config['sourceType']=='teklab') {
 		
 		
 		}
 		// Echo the JSON reply with 
-		echo json_encode(array('total'=>$total,'entries'=>$json));
+		echo json_encode(array('total' => $total,'entries' => $json));
 	}
  
 	// Catch database error and display
 	catch(PDOException $error) {
-		echo json_encode(array('error'=>$error->getMessage()));
+		echo json_encode(array('error' => $error->getMessage()));
 	}
 }
