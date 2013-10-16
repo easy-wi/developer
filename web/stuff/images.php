@@ -92,6 +92,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else if ($ui->st('d', 'get') == 'ad' or ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get'))) {
 
+    $errors = array();
     $id = $ui->id('id', 10, 'get');
     $shorten = $ui->gamestring('shorten', 'post');
     $steamgame = $ui->w('steamgame', 1, 'post');
@@ -142,7 +143,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($ui->id('import', 1, 'post') == 1 and $_FILES['file']['error']==0 and $_FILES['file']['type'] == 'text/xml') {
 
                 try {
-                    $xml=new DOMDocument();
+                    $xml = new DOMDocument();
 
                     if (@$xml->load($_FILES['file']['tmp_name']) !== false) {
                         $childNodes = $xml->documentElement;
@@ -318,8 +319,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
-        
-        $errors = array();
+
         if (!$ui->w('steamgame', 1, 'post')) {
             $errors['steamgame'] = $sprache->steam;
         }

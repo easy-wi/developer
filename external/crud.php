@@ -44,6 +44,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 // Add and modify entries. Same validation can be used.
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
+	// Error handling. Check if required attributes are set and can be validated
+    $errors = array();
+
 	// At this point all variables are defined that can come from the user
     $id = $ui->id('id', 10, 'get');
 
@@ -70,9 +73,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
 	// Form is submitted
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
-
-		// Error handling. Check if required attributes are set and can be validated
-        $errors = array();
 
         if (!$ui->active('active', 'post')) {
             $errors['active'] = $sprache->active;

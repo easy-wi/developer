@@ -156,6 +156,7 @@ if ($ui->st('w', 'get') == 'lo') {
             $query->execute(array($ui->w('token',32, 'get')));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $username = $row['cname'];
+
                 $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
                 $password = createHash($username, $ui->password('password1', 255, 'post'), $salt, $aeskey);
                 $text = $sprache->passwordreseted;
@@ -217,6 +218,7 @@ if ($ui->st('w', 'get') == 'lo') {
         $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
         $query->execute(array($ui->username('username', 255, 'post'),$ui->ismail('username', 'post')));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $username = $row['cname'];
 			$id = $row['id'];
 			$active = $row['active'];
@@ -233,12 +235,16 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 $userpassOld = passwordhash($username, $password);
 
-                if (isset($id) and $userpassOld == $security) {
+                // some systems do not care about security at all.
+                // In case we imported users from such insecure implementations
+                $md5Import = md5($password);
+
+                if ($userpassOld == $security) {
                     $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
                     $userpass = $userpassOld;
 
                     $query = $sql->prepare("UPDATE `userdata` SET `security`=?,`salt`=? WHERE `id`=? LIMIT 1");
-                    $query->execute(array(createHash($username,$password,$salt,$aeskey),$salt,$id));
+                    $query->execute(array(createHash($username, $password, $salt, $aeskey), $salt, $id));
 
                 } else {
                     $userpass = $userpassNew;
