@@ -40,11 +40,13 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['gserver'])) {
     header('Location: admin.php');
     die;
 }
+
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
+
 if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
@@ -52,6 +54,7 @@ if ($reseller_id == 0) {
     $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
+
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id = $admin_id;
 }
@@ -74,40 +77,31 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         $i = 0;
         $available = 0;
 
-        $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(DISTINCT s.`id`) AS `freeserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid` FROM `rserverdata` r LEFT JOIN `gsswitch` s ON s.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
+        $query = $sql->prepare("SELECT r.`description`,r.`id`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(DISTINCT s.`id`) AS `freeserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid` FROM `rserverdata` r LEFT JOIN `gsswitch` s ON s.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $used = 0;
             $available = 0;
             $maxslots = $row['maxslots'];
             $maxserver = $row['maxserver'];
             $rootid = $row['id'];
+
+            $i = 0;
             $query2 = $sql->prepare("SELECT `slots`,`queryNumplayers` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=? AND `active`='Y'");
             $query2->execute(array($rootid,$reseller_id));
-            $i = 0;
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 $used += $row2['queryNumplayers'];
                 $available += $row2['slots'];
                 $i++;
             }
-            if ($maxslots != null){
-                $percentslots = $available/($maxslots/100);
-            } else {
-                $percentslots = 0;
-            }
-            if ($maxserver != null){
-                $percenserver = $i/($maxserver/100);
-            } else {
-                $percenserver = 0;
-            }
+
+            $percentslots =  ($maxslots != null) ? $available/($maxslots/100) : 0;
+            $percenserver = ($maxserver != null) ? $i/($maxserver/100) : 0;
+
             $serverusage[$rootid] = array('slots' => $percentslots, 'server' => $percenserver);
-            if (!isset($i)) $i = 0;
-            if (!isset($available)) $available = 0;
-            $ips=array($row['ip']);
-            foreach (ipstoarray($row['altips']) as $ip) {
-                $ips[] = $ip;
-            }
-            $table2[] = array('id' => $rootid,'ip' => implode(' / ', array_unique($ips)));
+
+            $table2[] = array('id' => $rootid, 'ip' => ($row['description'] != null and $row['description'] != '') ? $row['description'] : $row['ip']);
         }
 
         $query = $sql->prepare("SELECT s.`description`,s.`shorten` FROM `servertypes` s WHERE s.`resellerid`=? AND EXISTS (SELECT m.`id` FROM `rservermasterg` m WHERE m.`servertypeid`=s.`id` LIMIT 1) ORDER BY s.`description` ASC");
@@ -124,14 +118,17 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         $used = 0;
 
         if (isset($serverusage)){
+
             asort($serverusage);
-            $bestserver=key($serverusage);
+            $bestserver = key($serverusage);
+
             $query = $sql->prepare("SELECT `maxslots`,`maxserver` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($bestserver,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $maxslots = $row['maxslots'];
                 $maxserver = $row['maxserver'];
             }
+
             $query = $sql->prepare("SELECT `slots`,`queryNumplayers` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=? AND `active`='Y'");
             $query->execute(array($bestserver,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -155,7 +152,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                 $query->execute(array($id,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $ip = $row['ip'];
-                    $altips=preg_split('/\r\n/', $row['altips'],-1,PREG_SPLIT_NO_EMPTY);
+                    $altips = preg_split('/\r\n/', $row['altips'],-1,PREG_SPLIT_NO_EMPTY);
                 }
                 $table = array();
                 $gamestring = $count;

@@ -39,6 +39,7 @@
 // The database access
 $config['dbHost']='localhost';
 $config['dbName']='database';
+$config['tblPrefix']='teklab';
 $config['dbUser']='databaseUser';
 $config['dbPwd']='securePassword';
 $config['sourceSystem']='securePassword';

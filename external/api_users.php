@@ -102,13 +102,13 @@ if (count($error)>0) {
  
 				// Get amount of users that are new or received an update
 				// The Query needs to be altered to your database. This is just an example!
-				$sql="SELECT COUNT(`userID`) AS `amount` FROM `ws_C4J_user`
+				$sql="SELECT COUNT(`userID`) AS `amount` FROM `{$config['tblPrefix']}_user`
 				WHERE (`userID`>? OR `updatetime`>?) AND `activated`=1 AND `banned` IS NULL";
 				$query=$pdo->prepare($sql);
 				$query->execute(array($lastID,$updateTime));			
 				$total=$query->fetchColumn();
 
-				$sql = "SELECT * FROM `usertable`
+				$sql = "SELECT * FROM `{$config['tblPrefix']}_usertable`
 				WHERE (`userID`>? OR `updatetime`>?) AND `activated`=1 AND (`banned` IS NULL OR `banned`='')
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
@@ -149,13 +149,13 @@ if (count($error)>0) {
 
 				// Get amount of users that are new or received an update
 				// The Query needs to be altered to your database. This is just an example!
-				$sql="SELECT COUNT(`id`) AS `amount` FROM `teklab_members`
+				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_members`
 				WHERE `rank`=1";
 				$query=$pdo->prepare($sql);
 				$query->execute(array($lastID,$updateTime));			
 				$total=$query->fetchColumn();
 
-				$sql = "SELECT * FROM `teklab_members`
+				$sql = "SELECT * FROM `{$config['tblPrefix']}_members`
 				WHERE `rank`=1
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);

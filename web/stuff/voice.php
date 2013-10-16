@@ -62,30 +62,42 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 } else if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d', 'get') == 'ad' and (!is_numeric($licenceDetails['lVo']) or $licenceDetails['lVo']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
+
     if (!$ui->w('action',3, 'post')) {
+
         $table = array();
+        $table2 = array();
+
         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
-        $table2 = array();
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
+        }
+
         $query = $sql->prepare("SELECT m.`id`,m.`ssh2ip`,m.`ips`,m.`usedns`,m.`defaultdns`,m.`type`,m.`rootid`,m.`maxserver`,m.`maxslots`,m.`active`,m.`resellerid`,m.`managedForID`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND `active`='Y' AND (`resellerid`=? OR m.`managedForID`=?)) ORDER BY `slotpercent`,`serverpercent` ASC");
         $query->execute(array($reseller_id,$admin_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $ips[] = $row['ssh2ip'];
-            foreach (ipstoarray($row['ips']) as $ip) $ips[] = $ip;
-            if ($row['type'] == 'ts3') $type = $sprache->ts3;
+            if ($row['type'] == 'ts3') {
+                $type = $sprache->ts3;
+            }
+
             $installedserver=($row['installedserver'] == null) ? 0 : $row['installedserver'];
             $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
             $uslots=($row['uslots'] == null) ? 0 : $row['uslots'];
-            $table2[] = array('id' => $row['id'], 'server' => implode('/', array_unique($ips)),'type' => $type,'maxserver' => $row['maxserver'], 'maxslots' => $row['maxslots'], 'installedserver' => $installedserver,'uslots' => $uslots,'installedslots' => $installedslots);
+
+            $table2[] = array('id' => $row['id'], 'server' => $row['ssh2ip'], 'type' => $type,'maxserver' => $row['maxserver'], 'maxslots' => $row['maxslots'], 'installedserver' => $installedserver,'uslots' => $uslots,'installedslots' => $installedslots);
         }
-        $template_file = "admin_voiceserver_add.tpl";
-    } else if ($ui->w('action',3, 'post') == 'ad' and $ui->id('masterserver',19, 'post') and $ui->id('customer',19, 'post')) {
+
+        $template_file = 'admin_voiceserver_add.tpl';
+
+    } else if ($ui->w('action', 3, 'post') == 'ad' and $ui->id('masterserver', 19, 'post') and $ui->id('customer', 19, 'post')) {
         $masterserver = $ui->id('masterserver',19, 'post');
         $customer = $ui->id('customer',19, 'post');
+
         $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? AND `accounttype`='u' LIMIT 1");
         $query->execute(array($customer,$reseller_id));
         $cname = $query->fetchColumn();
+
         $query2 = $sql->prepare("SELECT m.*,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`  FROM `voice_masterserver` m LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND (m.`resellerid`=? OR m.`managedForID`=?) LIMIT 1");
         $query2->execute(array($masterserver,$reseller_id,$admin_id));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
@@ -103,7 +115,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
             } else {
                 $dns = '';
             }
-            $dns=strtolower($dns);
+            $dns = strtolower($dns);
             $maxserver = $row2['maxserver'];
             $maxslots = $row2['maxslots'];
             $addedby = $row2['addedby'];
