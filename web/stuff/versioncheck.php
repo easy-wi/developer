@@ -280,19 +280,6 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
     if ($reseller_id == 0){
         $rowspan = 8;
         $contract = $licenceDetails['c'];
-        $contract = $sprache->$contract;
-        $contractTime = $licenceDetails['validUntil'];
-        $updates = $licenceDetails['updatesUntil'];
-
-        if ($licenceDetails['validUntil'] == '0000-00-00') {
-            $contractTime = $sprache->unlimited;
-        }
-
-        if ($licenceDetails['c'] == 'R') {
-            $updates = $contractTime;
-        } else if ($licenceDetails['updatesUntil'] == '0000-00-00') {
-            $updates = $sprache->unlimited;
-        }
 
     } else {
         $rowspan = 4;

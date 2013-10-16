@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: ajax.php.
  * Author: Ulrich Block

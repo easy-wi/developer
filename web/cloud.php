@@ -71,11 +71,12 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
     $query = $sql->prepare("SELECT * FROM `api_import` WHERE `active`='Y'");
     $query2 = $sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerid`=? LIMIT 1");
-    $query3 = $sql->prepare("INSERT INTO `userdata` (`salutation`,`mail`,`cname`,`name`,`vname`,`birthday`,`country`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`,`usergroup`,`sourceSystemID`,`externalID`,`security`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    $query3 = $sql->prepare("INSERT INTO `userdata` (`accounttype`,`salutation`,`mail`,`cname`,`vname`,`name`,`birthday`,`country`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`,`sourceSystemID`,`externalID`,`security`,`resellerid`) VALUES ('u',?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     $query4 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `sourceSystemID`=? AND `externalID`=? LIMIT 1");
     $query5 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? LIMIT 1");
-    $query6 = $sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`security`=? WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? AND `resellerid`=? LIMIT 1");
+    $query6 = $sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`vname`=?,`name`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? AND `resellerid`=? LIMIT 1");
     $query7 = $sql->prepare("UPDATE `api_import` SET `lastCheck`=?,`lastID`=? WHERE `importID`=? LIMIT 1");
+    $query8 = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `userID`=`userID`");
 
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -122,7 +123,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 $start += $row['chunkSize'];
                 unset($lastID);
 
-                foreach ($decoded->users as $value) {
+                foreach ($decoded->entries as $value) {
 
                     if (isset($value->externalID)) {
                         $query4->execute(array(json_encode(array('I' => $row['importID'])), $value->externalID));
@@ -140,7 +141,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                             $query5->execute(array(strtolower($value->email), strtolower($value->loginName)));
 
                             if ($query5->fetchColumn()>0 and $row['fetchUpdates'] == 'Y') {
-                                $query6->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('firstName'), getParam('lastName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'), getParam('password'), strtolower($value->email), strtolower($value->loginName), $row['resellerID']));
+                                $query6->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('firstName'), getParam('lastName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'), strtolower($value->email), strtolower($value->loginName), $row['resellerID']));
                                 printText('User updated. Loginname: ' . $value->loginName.' e-mail: ' . strtolower($value->email));
 
                             } else if ($checkAmount > 0) {
@@ -148,7 +149,8 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                             } else {
                                 printText('Import user. Loginname: ' . $value->loginName.' e-mail: ' . strtolower($value->email));
-                                $query3->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('firstName'), getParam('lastName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'), $row['groupID'],json_encode(array('I' => $row['importID'])), getParam('externalID'), getParam('password'), $row['resellerID']));
+                                $query3->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('firstName'), getParam('lastName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'), json_encode(array('I' => $row['importID'])), getParam('externalID'), getParam('password'), $row['resellerID']));
+                                $query8->execute(array($sql->lastInsertId(), $row['groupID'], $row['resellerID']));
                             }
                         }
 

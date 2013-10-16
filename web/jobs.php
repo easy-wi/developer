@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: jobs.php.
  * Author: Ulrich Block
@@ -37,13 +38,13 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-
 if (isset($_SERVER['REMOTE_ADDR'])) {
     $ip = $_SERVER['REMOTE_ADDR'];
     $timelimit=ini_get('max_execution_time')-10;
 } else {
     $timelimit=600;
 }
+
 if (isset($argv)) {
     $args = array();
     foreach ($argv as $a) {

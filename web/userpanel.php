@@ -38,15 +38,18 @@
 
 $main = 1;
 define('EASYWIDIR', dirname(__FILE__));
+
 if (is_dir(EASYWIDIR . '/install')) {
     die('Please remove the "install" folder');
 }
+
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/init_user.php');
 include(EASYWIDIR . '/stuff/userpanel_home.php');
+
 if (isset($what_to_be_included_array[$w])) {
     include(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$w]);
     unset($dbConnect);
@@ -54,6 +57,7 @@ if (isset($what_to_be_included_array[$w])) {
     unset($dbConnect);
     $template_file = 'userpanel_home.tpl';
 }
+
 include(IncludeTemplate($template_to_use, 'userpanel_header.tpl'));
 if (isset($template_file) and preg_match('/^(.*)\.tpl$/', $template_file)) {
     include(IncludeTemplate($template_to_use, $template_file));
@@ -61,4 +65,5 @@ if (isset($template_file) and preg_match('/^(.*)\.tpl$/', $template_file)) {
     include(IncludeTemplate($template_to_use, 'general.tpl'));
 }
 include(IncludeTemplate($template_to_use, 'userpanel_footer.tpl'));
+
 $sql = null;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: index.php.
  * Author: Ulrich Block
@@ -37,13 +38,17 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+define('EASYWIDIR', dirname(__FILE__));
+
 $main = 1;
 $page_include = 1;
-define('EASYWIDIR', dirname(__FILE__));
+
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
+
+
 if (isset ($page_active) and $page_active == 'Y') {
     include(EASYWIDIR . '/stuff/init_page.php');
     if (isset($throw404)) {

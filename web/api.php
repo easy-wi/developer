@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: api.php.
  * Author: Ulrich Block
@@ -39,12 +40,18 @@
 
 
 define('EASYWIDIR', dirname(__FILE__));
-if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
+
+if (is_dir(EASYWIDIR . '/install')) {
+    die('Please remove the "install" folder');
+}
+
 $logininclude = true;
+
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
+
 if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user',255, 'post')) {
     $query = $sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR', 'server')));
