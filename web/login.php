@@ -236,12 +236,13 @@ if ($ui->st('w', 'get') == 'lo') {
                 $userpassOld = passwordhash($username, $password);
 
                 // some systems do not care about security at all.
-                // In case we imported users from such insecure implementations
+                // In case we imported users from such insecure implementations we need to migrate to something safe
                 $md5Import = md5($password);
 
-                if ($userpassOld == $security) {
+                if ($userpassOld == $security or $md5Import == $security) {
+
                     $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
-                    $userpass = $userpassOld;
+                    $userpass = ($userpassOld == $security) ? $userpassOld : $security;
 
                     $query = $sql->prepare("UPDATE `userdata` SET `security`=?,`salt`=? WHERE `id`=? LIMIT 1");
                     $query->execute(array(createHash($username, $password, $salt, $aeskey), $salt, $id));
