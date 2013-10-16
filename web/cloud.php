@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: cloud.php.
  * Author: Ulrich Block
@@ -37,119 +38,148 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+define('EASYWIDIR', dirname(__FILE__));
+
 if (isset($_SERVER['REMOTE_ADDR'])) {
     $ip = $_SERVER['REMOTE_ADDR'];
-    if (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) {
-        $timelimit = $_GET['timeout'];
-    } else {
-        $timelimit=ini_get('max_execution_time')-10;
-    }
+    $timelimit = (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? (int) $_GET['timeout'] : ini_get('max_execution_time') - 10;
 } else {
-    $timelimit=600;
+    $timelimit = 600;
 }
+
 set_time_limit($timelimit);
+
 if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
-    define('EASYWIDIR', dirname(__FILE__));
+
     function printText ($text) {
         echo $text."\r\n";
     }
+
     function getParam ($v) {
         global $value;
-        if (isset($value->$v)) {
-            return $value->$v;
-        }
-        return '';
+        return (isset($value->$v)) ? $value->$v : '';
     }
+
     printText('Cloud jobs started');
+
     include(EASYWIDIR . '/stuff/vorlage.php');
     include(EASYWIDIR . '/stuff/functions.php');
     include(EASYWIDIR . '/stuff/class_validator.php');
     include(EASYWIDIR . '/stuff/settings.php');
+
     printText('File include and parameters fetched. Start connecting to external systems.');
+
     $query = $sql->prepare("SELECT * FROM `api_import` WHERE `active`='Y'");
     $query2 = $sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerid`=? LIMIT 1");
-    $query3 = $sql->prepare("INSERT INTO `userdata` (`salutation`,`mail`,`cname`,`name`,`vname`,`birthday`,`country`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`,`usergroup`,`sourceSystemID`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    $query3 = $sql->prepare("INSERT INTO `userdata` (`salutation`,`mail`,`cname`,`name`,`vname`,`birthday`,`country`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`,`usergroup`,`sourceSystemID`,`externalID`,`security`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     $query4 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `sourceSystemID`=? AND `externalID`=? LIMIT 1");
     $query5 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? LIMIT 1");
-    $query6 = $sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=? WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? AND `resellerid`=? LIMIT 1");
+    $query6 = $sql->prepare("UPDATE `userdata` SET `salutation`=?,`mail`=?,`cname`=?,`name`=?,`vname`=?,`birthday`=?,`country`=?,`phone`=?,`fax`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`security`=? WHERE LOWER(`mail`)=? AND LOWER(`cname`)=? AND `resellerid`=? LIMIT 1");
     $query7 = $sql->prepare("UPDATE `api_import` SET `lastCheck`=?,`lastID`=? WHERE `importID`=? LIMIT 1");
+
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
         $resellerID = $row['resellerID'];
-        if ($row['ssl'] == 'Y') {
-            $ssl='https://';
-            $port=443;
-        } else {
-            $ssl='http://';
-            $port=80;
-        }
         $start = 0;
+
+        if ($row['ssl'] == 'Y') {
+            $ssl = 'https://';
+            $port = 443;
+        } else {
+            $ssl = 'http://';
+            $port = 80;
+        }
+
         printText('Connect to: '.$ssl.$row['domain']);
-        while (!isset($left) or $left>0) {
-            $getRequest='/' . $row['file'].'?passwordToken='.urlencode($row['token']).'&start='.urlencode($start).'&chunkSize='.urlencode($row['chunkSize']).'&lastID='.urlencode($row['lastID']).'&updateTime='.urlencode($row['lastCheck']);
-            $rawResponse=webhostRequest($row['domain'], 'http://easy-wi.com user importer',$getRequest, null,$port);
-            $response=cleanFsockOpenRequest($rawResponse,'{','}');
-            $decoded=json_decode($response);
+
+        while (!isset($left) or $left > 0) {
+
+            $getRequest = '/' . $row['file'] . '?passwordToken=' . urlencode($row['token']) . '&start=' . urlencode($start) . '&chunkSize=' . urlencode($row['chunkSize']) . '&lastID=' . urlencode($row['lastID']) . '&updateTime=' . urlencode($row['lastCheck']);
+            $rawResponse = webhostRequest($row['domain'], 'https://easy-wi.com user importer', $getRequest, null, $port);
+            $response = cleanFsockOpenRequest($rawResponse, '{', '}');
+            $decoded = json_decode($response);
+
             unset($response);
+
             if ($decoded and isset($decoded->error)) {
                 $left = 0;
+
                 if (is_array($decoded->error)) {
-                    printText('Error: '.implode(', ',$decoded->error));
+                    printText('Error: ' . implode(', ', $decoded->error));
                 } else {
-                    printText('Error: '.$decoded->error);
+                    printText('Error: ' . $decoded->error);
                 }
+
             } else if ($decoded and isset($decoded->total)) {
+
                 if (isset($left)) {
-                    $left-=$row['chunkSize'];
+                    $left -= $row['chunkSize'];
                 } else {
-                    $left = $decoded->total-$row['chunkSize'];
+                    $left = $decoded->total - $row['chunkSize'];
                 }
-                $start+=$row['chunkSize'];
+
+                $start += $row['chunkSize'];
                 unset($lastID);
+
                 foreach ($decoded->users as $value) {
+
                     if (isset($value->externalID)) {
-                        $query4->execute(array(json_encode(array('I' => $row['importID'])),$value->externalID));
+                        $query4->execute(array(json_encode(array('I' => $row['importID'])), $value->externalID));
                         $checkAmount = $query4->fetchColumn();
-                        if ($checkAmount>0 and $row['fetchUpdates'] == 'Y') {
-                            $query2->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),json_encode(array('I' => $row['importID'])),getParam('externalID'), $row['resellerID']));
-                            printText('User updated. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
-                        } else if ($checkAmount>0) {
-                            printText('User update skipped. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
+
+                        if ($checkAmount > 0 and $row['fetchUpdates'] == 'Y') {
+                            $query2->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('firstName'), getParam('lastName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'),json_encode(array('I' => $row['importID'])), getParam('externalID'), $row['resellerID']));
+                            printText('User updated. Loginname: ' . $value->loginName.' e-mail: ' . strtolower($value->email));
+
+                        } else if ($checkAmount > 0) {
+                            printText('User update skipped. Loginname: ' . $value->loginName.' e-mail: ' . strtolower($value->email));
+
                         } else {
-                            $query5->execute(array(strtolower($value->email),strtolower($value->loginName)));
+
+                            $query5->execute(array(strtolower($value->email), strtolower($value->loginName)));
+
                             if ($query5->fetchColumn()>0 and $row['fetchUpdates'] == 'Y') {
-                                $query6->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'),strtolower($value->email),strtolower($value->loginName), $row['resellerID']));
-                                printText('User updated. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
-                            } else if ($checkAmount>0) {
-                                printText('User update skipped because source system differ. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
+                                $query6->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('firstName'), getParam('lastName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'), getParam('password'), strtolower($value->email), strtolower($value->loginName), $row['resellerID']));
+                                printText('User updated. Loginname: ' . $value->loginName.' e-mail: ' . strtolower($value->email));
+
+                            } else if ($checkAmount > 0) {
+                                printText('User update skipped because source system differ. Loginname: ' . $value->loginName.' e-mail: ' . strtolower($value->email));
+
                             } else {
-                                printText('Import user. Loginname: '.$value->loginName.' e-mail: '.strtolower($value->email));
-                                $query3->execute(array(getParam('salutation'),strtolower(getParam('email')),getParam('loginName'),getParam('firstName'),getParam('lastName'),getParam('birthday'),getParam('country'),getParam('phone'),getParam('fax'),getParam('handy'),getParam('city'),getParam('cityn'),getParam('street'),getParam('streetn'), $row['groupID'],json_encode(array('I' => $row['importID'])),getParam('externalID'), $row['resellerID']));
+                                printText('Import user. Loginname: ' . $value->loginName.' e-mail: ' . strtolower($value->email));
+                                $query3->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('firstName'), getParam('lastName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'), $row['groupID'],json_encode(array('I' => $row['importID'])), getParam('externalID'), getParam('password'), $row['resellerID']));
                             }
                         }
-                        if (getParam('updatetime') != '' and (isset($lastCheck) and strtotime(getParam('updatetime'))>strtotime($lastCheck)) or !isset($lastCheck)) {
-                            $lastCheck=getParam('updatetime');
+
+                        if (getParam('updatetime') != '' and (isset($lastCheck) and strtotime(getParam('updatetime')) > strtotime($lastCheck)) or !isset($lastCheck)) {
+                            $lastCheck = getParam('updatetime');
                         }
+
                         $lastID = $value->externalID;
                     }
                 }
+
                 if (isset($lastID)) {
                     if (!isset($lastCheck)) {
                         $lastCheck=date('Y-m-d H:i:s');
                     }
-                    $query7->execute(array($lastCheck,$lastID, $row['importID']));
+                    $query7->execute(array($lastCheck, $lastID, $row['importID']));
                 }
-                if ($left>0){
-                    printText('Total amount is: '.$decoded->total.' User left: '.$left.' need to make another run');
+
+                if ($left > 0){
+                    printText('Total amount is: ' . $decoded->total . ' User left: ' . $left . ' need to make another run');
                     sleep(1);
                 } else {
-                    printText('Total amount is: '.$decoded->total.' No user left.');
+                    printText('Total amount is: ' . $decoded->total . ' No user left.');
                 }
+
             } else if ($decoded) {
                 printText('JSON Response does not contain expected values');
                 $left = 0;
+
             } else {
-                if (strpos(strtolower($rawResponse),'file not found') === false) {
+                if (strpos(strtolower($rawResponse), 'file not found') === false) {
                     printText('No Json Response. Will retry.');
                 } else {
                     $left = 0;
@@ -158,8 +188,10 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             }
         }
     }
+
     $query = $sql->prepare("UPDATE `settings` SET `lastCronCloud`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
+
 } else {
     header('Location: login.php');
     die('Cloud can only be run via console and or a cronjob');
