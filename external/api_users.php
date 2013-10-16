@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: api_users.php.
  * Author: Ulrich Block
@@ -88,14 +89,6 @@ if (count($error)>0) {
 		$pdo=new PDO("mysql:host=".$config['dbHost'].";dbname=".$config['dbName'],$config['dbUser'],$config['dbPwd'],array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
 		$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
  
-		// Get amount of users that are new or received an update
-		// The Query needs to be altered to your database. This is just an example!
-		$sql="SELECT COUNT(`userID`) AS `amount` FROM `ws_C4J_user`
-		WHERE (`userID`>? OR `updatetime`>?) AND `activated`=1 AND `banned` IS NULL";
-		$query=$pdo->prepare($sql);
-		$query->execute(array($lastID,$updateTime));			
-		$total=$query->fetchColumn();
- 
 		// JSON array
 		$json=array();
 		
@@ -106,6 +99,15 @@ if (count($error)>0) {
 			// specify the needed columns to reduce database load.
 			// webspell
 			if ($config['sourceType']=='webspell') {
+ 
+				// Get amount of users that are new or received an update
+				// The Query needs to be altered to your database. This is just an example!
+				$sql="SELECT COUNT(`userID`) AS `amount` FROM `ws_C4J_user`
+				WHERE (`userID`>? OR `updatetime`>?) AND `activated`=1 AND `banned` IS NULL";
+				$query=$pdo->prepare($sql);
+				$query->execute(array($lastID,$updateTime));			
+				$total=$query->fetchColumn();
+
 				$sql = "SELECT * FROM `usertable`
 				WHERE (`userID`>? OR `updatetime`>?) AND `activated`=1 AND (`banned` IS NULL OR `banned`='')
 				LIMIT $start,$chunkSize";
@@ -142,7 +144,17 @@ if (count($error)>0) {
 						'password' => $row['password']
 						);
 				}
+
 			} else if ($config['sourceType']=='teklab') {
+
+				// Get amount of users that are new or received an update
+				// The Query needs to be altered to your database. This is just an example!
+				$sql="SELECT COUNT(`id`) AS `amount` FROM `teklab_members`
+				WHERE `rank`=1";
+				$query=$pdo->prepare($sql);
+				$query->execute(array($lastID,$updateTime));			
+				$total=$query->fetchColumn();
+
 				$sql = "SELECT * FROM `teklab_members`
 				WHERE `rank`=1
 				LIMIT $start,$chunkSize";
@@ -201,32 +213,32 @@ if (count($error)>0) {
 						'usertype'=>'u',
 						'password' => $row['password']
 						);
+				}
 			}
+			// Echo the JSON reply with 
+			echo json_encode(array('total' => $total,'entries' => $json));
 		} else if ($list == 'substitutes' and $config['sourceType']=='teklab') {
-		
-		
+			die;
+			
 		} else if ($list == 'dedicated' and $config['sourceType']=='teklab') {
-		
-		
+			die;
+			
 		} else if ($list == 'gameserver' and $config['sourceType']=='teklab') {
-		
-		
+			die;
+			
 		} else if ($list == 'voice' and $config['sourceType']=='teklab') {
-		
-		
+			die;
+			
 		} else if ($list == 'node' and $config['sourceType']=='teklab') {
-		
-		
+			die;
+			
 		} else if ($list == 'virt' and $config['sourceType']=='teklab') {
-		
-		
+			die;
+			
 		}
-		// Echo the JSON reply with 
-		echo json_encode(array('total' => $total,'entries' => $json));
-	}
- 
-	// Catch database error and display
-	catch(PDOException $error) {
+
+		// Catch database error and display
+	} catch(PDOException $error) {
 		echo json_encode(array('error' => $error->getMessage()));
 	}
 }
