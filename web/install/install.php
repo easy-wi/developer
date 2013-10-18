@@ -316,6 +316,8 @@ $databanktype="'.$_POST['databanktype'].'";
 $captcha="'.$_POST['captcha'].'";
 $title="'.$_POST['title'].'";
 $debug = 0;
+// Workaround for Debian Jessie/Sid
+date_default_timezone_set('Europe/Berlin');
 ?>';
 	@fwrite($config, $configdata) or die("Can not write the configdata");
 	fclose($config);
