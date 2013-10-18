@@ -167,9 +167,9 @@ if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get')
         $query2->execute(array($user_language));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             if ($row['merge'] == 'N') {
-                $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => ($seo== 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id='.$row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
+                $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo== 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
             } else {
-                $feedArray['News'][] = array('title' => $row2['title'], 'link' => ($seo== 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id='.$row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
+                $feedArray['News'][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo== 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
             }
         }
 
@@ -198,7 +198,7 @@ if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get')
                         $text = $row3['description'];
                     }
 
-                    $url = ($row2['twitter'] == 'N') ? $row2['feedUrl'] : 'https://twitter.com/'.$row2['loginName'];
+                    $url = ($row2['twitter'] == 'N') ? $row2['feedUrl'] : 'https://twitter.com/' . $row2['loginName'];
                     $feedArray[$url][] = array('title' => $row3['title'], 'link' => $row3['link'], 'text' => $text, 'url' => $url);
                 }
             }
