@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: page_register.php.
  * Author: Ulrich Block
@@ -36,6 +37,8 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
+include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 if (!isset($page_include) or (isset($user_id)) or isset($admin_id) or isset($reseller_id)) {
     if (isset($page_data->canurl)) header('Location: '.$page_data->canurl);
@@ -159,11 +162,8 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
                 $query->execute(array($mail,$activeHash,$salutation = $ui->id('salutation',1, 'post'),$ui->st('country', 'post'),$name,$vname,$bday,$ui->phone('phone',50, 'post'),$ui->phone('fax',50, 'post'),$ui->phone('handy',50, 'post'),$ui->names('city',50, 'post'),$ui->id('cityn',6, 'post'),$ui->names('street',50, 'post'),$ui->w('streetn',6, 'post')));
                 $userID = $sql->lastInsertId();
 
-                // generate hash
-                $hash=createHash($rSA['prefix2'].$userID,$ui->password('password',100, 'post'),$userSalt,$aeskey);
-
                 $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
-                $query->execute(array($rSA['prefix2'].$userID,$hash,$userSalt,$userID));
+                $query->execute(array($rSA['prefix2'].$userID, password_hash($ui->password('password', 100, 'post'), PASSWORD_DEFAULT), $userID));
 
                 // Setup default Group
                 $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `grouptype`='u' AND `active`='Y' AND `defaultgroup`='Y' AND `resellerid`=0 LIMIT 1");

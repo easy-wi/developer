@@ -89,7 +89,25 @@ if (!function_exists('passwordgenerate')) {
 
         return false;
     }
-    
+
+    function passwordCheck ($password, $storedHash, $username = '', $salt = '', $aeskey = '') {
+
+        // Easy-WI uses the PHP hash API introduced with version 5.5.
+
+        // Return true in case the password is ok
+        if (password_verify($password, $storedHash)) {
+            return true;
+
+            // Password is correctly but stored in an old or insecure format. We need to hash it with a secure implementation.
+            // Insecure implementations like md5 or sha1 are imported from other systems with the cloud.php job.
+        } else if (createHash($username, $password, $salt, $aeskey) == $storedHash or md5($password) == $storedHash or sha1($password) == $storedHash or passwordhash($username, $password) == $storedHash) {
+            return password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        // Password Is Not Correct
+        return false;
+    }
+
     function szrp ($value) {
         $szrm = array('ä' => 'ae','ö' => 'oe','ü' => 'ue','Ä' => 'Ae','Ö' => 'Oe','Ü' => 'Ue','ß' => 'ss','á' => 'a','à' => 'a','Á' => 'A','À' => 'A','é' => 'e','è' => 'e','É' => 'E','È' => 'E','ó' => 'o','ò' => 'o','Ó' => 'O','Ò' => 'O','ú' => 'u','ù' => 'u','Ú' => 'U','Ù' => 'U');
         return strtolower(preg_replace('/[^a-zA-Z0-9]{1}/', '-', strtr($value, $szrm)));

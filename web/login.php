@@ -50,6 +50,7 @@ if (is_dir(EASYWIDIR . '/install')) {
 
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/third_party/password_compat/password.php');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -150,19 +151,17 @@ if ($ui->st('w', 'get') == 'lo') {
 
     } else if ($ui->password('password1', 255, 'post') and $ui->password('password2', 255, 'post') and $ui->w('token', 32, 'get')) {
 
-        if ($ui->password('password1', 255, 'post')==$ui->password('password2', 255, 'post')) {
+        if ($ui->password('password1', 255, 'post') == $ui->password('password2', 255, 'post')) {
 
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `token`=? LIMIT 1");
             $query->execute(array($ui->w('token',32, 'get')));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $username = $row['cname'];
 
-                $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
-                $password = createHash($username, $ui->password('password1', 255, 'post'), $salt, $aeskey);
                 $text = $sprache->passwordreseted;
 
-                $query2 = $sql->prepare("UPDATE `userdata` SET `token`='',`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
-                $query2->execute(array($password, $salt, $row['id']));
+                $query2 = $sql->prepare("UPDATE `userdata` SET `token`='',`security`=? WHERE `id`=? LIMIT 1");
+                $query2->execute(array(password_hash($ui->password('password1', 255, 'post'), PASSWORD_DEFAULT), $row['id']));
             }
 
         } else if ($ui->password('password1', 255, 'post') != $ui->password('password2', 255, 'post'))  {
@@ -223,36 +222,15 @@ if ($ui->st('w', 'get') == 'lo') {
 			$id = $row['id'];
 			$active = $row['active'];
             $mail = $row['mail'];
-            $salt = $row['salt'];
             $externalID = $row['externalID'];
-			$security = $row['security'];
 			$resellerid = $row['resellerid'];
             $accounttype = $row['accounttype'];
 
-            $userpassNew = createHash($username, $password, $salt, $aeskey);
+            $passwordCorrect = passwordCheck($password, $row['security'], $row['cname'], $row['salt'], $aeskey);
 
-            if (isset($security) and $security != $userpassNew) {
-
-                $userpassOld = passwordhash($username, $password);
-
-                // some systems do not care about security at all.
-                // In case we imported users from such insecure implementations we need to migrate to something safe
-                $md5Import = md5($password);
-
-                if ($userpassOld == $security or $md5Import == $security) {
-
-                    $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
-                    $userpass = ($userpassOld == $security) ? $userpassOld : $security;
-
-                    $query = $sql->prepare("UPDATE `userdata` SET `security`=?,`salt`=? WHERE `id`=? LIMIT 1");
-                    $query->execute(array(createHash($username, $password, $salt, $aeskey), $salt, $id));
-
-                } else {
-                    $userpass = $userpassNew;
-                }
-
-            } else {
-                $userpass = $userpassNew;
+            if ($passwordCorrect !== true and $passwordCorrect !== false) {
+                $query = $sql->prepare("UPDATE `userdata` SET `security`=? WHERE `id`=? LIMIT 1");
+                $query->execute(array($passwordCorrect, $id));
             }
         }
 
@@ -267,14 +245,18 @@ if ($ui->st('w', 'get') == 'lo') {
                 $id = $row['userID'];
                 $username = $row['loginName'];
                 $active = $row['active'];
-                $salt = $row['salt'];
-                $security = $row['passwordHashed'];
                 $resellerid = $row['resellerID'];
-                $userpass = createHash($username, $password, $salt, $aeskey);
+
+                $passwordCorrect = passwordCheck($password, $row['passwordHashed'], $row['loginName'], $row['salt'], $aeskey);
+
+                if ($passwordCorrect !== true and $passwordCorrect !== false) {
+                    $query = $sql->prepare("UPDATE `userdata_substitutes` SET `passwordHashed`=? WHERE `sID`=? LIMIT 1");
+                    $query->execute(array($passwordCorrect, $sID));
+                }
             }
         }
 
-        if (isset($active) and $active == 'Y' and $security != $userpass) {
+        if (!isset($sID) and isset($active) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect === false) {
 
             $authLookupID = ($resellerid == $id) ? 0 : $resellerid;
 
@@ -316,11 +298,10 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 if ($xmlReply and isset($xmlReply->success) and $xmlReply->success == 1 and $xmlReply->user == $username) {
 
-                    $externalOK = 1;
-                    $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
+                    $passwordCorrect = true;
 
-                    $query = $sql->prepare("UPDATE `userdata` SET `security`=?,`salt`=? WHERE `id`=? LIMIT 1");
-                    $query->execute(array(createHash($username, $password, $salt, $aeskey), $salt, $id));
+                    $query = $sql->prepare("UPDATE `userdata` SET `security`=? WHERE `id`=? LIMIT 1");
+                    $query->execute(array(password_hash($password, PASSWORD_DEFAULT), $id));
 
                 } else if ($xmlReply and isset($xmlReply->error)) {
                     $externalAuthError = $xmlReply->error;
@@ -331,7 +312,7 @@ if ($ui->st('w', 'get') == 'lo') {
             }
         }
 
-		if (isset($active) and $active == 'Y' and ($security == $userpass or (isset($externalOK) and $externalOK == 1))) {
+		if (isset($active) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect) {
 
 			session_unset();
 			session_destroy();
@@ -433,7 +414,7 @@ if ($ui->st('w', 'get') == 'lo') {
 				}
 			}
 
-		} else if (!isset($security) or $security != $userpass) {
+		} else if (!isset($passwordCorrect) or $passwordCorrect === false) {
 
 			$halfhour = date('Y-m-d H:i:s', strtotime('+30 minutes'));
 

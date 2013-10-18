@@ -36,6 +36,7 @@
  */
  
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 if ($ui->st('w', 'get') == 'se') {
     if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usersettings'])) {
@@ -88,10 +89,8 @@ if ($ui->st('d', 'get') == 'pw') {
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($lookUpID,$reseller_id));
             $cname = $query->fetchColumn();
-            $salt = md5(mt_rand().date('Y-m-d H:i:s:u'));
-            $security = createHash($cname,$ui->password('pass2', 255, 'post'),$salt,$aeskey);
-            $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($security,$salt,$lookUpID,$reseller_id));
+            $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array(password_hash($password, PASSWORD_DEFAULT) ,$lookUpID,$reseller_id));
             if ($query->rowCount()>0) {
                 $template_file = $spracheResponse->table_add;
                 $loguseraction="%psw% %user% $cname";

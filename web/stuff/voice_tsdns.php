@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: voice_tsdns.php.
  * Author: Ulrich Block
@@ -43,6 +44,7 @@ if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['voiceserver']
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 $sprache = getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid = $admin_id;
@@ -299,11 +301,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             $cnamenew = $ui->username("${lookUp}-username",50, 'post');
                         }
                         if ($usernew == true) {
-                            $initialpassword=passwordgenerate(10);
-                            $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
-                            $security=createHash($ui->username("${lookUp}-username",50, 'post'),$initialpassword,$salt,$aeskey);
                             $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,'u',?)");
-                            $query->execute(array($ui->username("${lookUp}-username",50, 'post'),$security,$ui->ismail("${lookUp}-email", 'post'),$reseller_id));
+                            $query->execute(array($ui->username("${lookUp}-username",50, 'post'),password_hash(passwordgenerate(10), PASSWORD_DEFAULT),$ui->ismail("${lookUp}-email", 'post'),$reseller_id));
                             $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                             $query->execute(array($ui->username("${lookUp}-username",50, 'post'),$ui->ismail("${lookUp}-email", 'post'),$reseller_id));
                             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

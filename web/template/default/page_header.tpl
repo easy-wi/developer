@@ -140,8 +140,8 @@
                     <?php if($page_data->lendactive=='Y'){ ?>
                     <li class="nav-header"><?php echo $page_data->pages['lendserver']['linkname'];?></li>
                     <li <?php if($s=='lendserver' and !isset($servertype)) echo 'class="active"';?>><?php echo $page_data->pages['lendserver']['href'];?></li>
-                    <li <?php if(isset($servertype) and $servertype=='v') echo 'class="active"';?>><?php echo $page_data->pages['lendservervoice']['href'];?></li>
-                    <li <?php if(isset($servertype) and $servertype=='g') echo 'class="active"';?>><?php echo $page_data->pages['lendservergs']['href'];?></li>
+                    <?php if (isset($page_data->pages['lendservervoice'])) { ?><li <?php if(isset($servertype) and $servertype=='v') echo 'class="active"';?>><?php echo $page_data->pages['lendservervoice']['href'];?></li><?php } ?>
+                    <?php if (isset($page_data->pages['lendservergs'])) { ?><li <?php if(isset($servertype) and $servertype=='g') echo 'class="active"';?>><?php echo $page_data->pages['lendservergs']['href'];?></li><?php } ?>
                     <li class="divider"></li>
                     <?php } ?>
                     <li class="nav-header"><?php echo $gsprache->pages;?></li>

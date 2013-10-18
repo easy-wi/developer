@@ -89,8 +89,9 @@ if (count($error)>0) {
 		$pdo=new PDO("mysql:host=".$config['dbHost'].";dbname=".$config['dbName'],$config['dbUser'],$config['dbPwd'],array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
 		$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
  
-		// JSON array
-		$json=array();
+		// Define default values so we always have a proper return
+		$total = 0;
+		$json = array();
 		
 		// User export
 		if ($list == 'user') {
@@ -148,20 +149,21 @@ if (count($error)>0) {
 			} else if ($config['sourceType']=='teklab') {
 
 				// Get amount of users that are new or received an update
-				// The Query needs to be altered to your database. This is just an example!
 				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_members`
 				WHERE `rank`=1";
 				$query=$pdo->prepare($sql);
-				$query->execute(array($lastID,$updateTime));			
+				$query->execute();			
 				$total=$query->fetchColumn();
 
+				// users
 				$sql = "SELECT * FROM `{$config['tblPrefix']}_members`
 				WHERE `rank`=1
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
-				$query->execute(array($lastID,$updateTime));
+				$query->execute();
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-					// Easy-Wi stores the salutation with numbers
+
+					// Teklab has also 3 for company which Easy-WI currently does not maintain
 					if ($row['title'] == 0) {
 						$salutation = 1;
 					} else if ($row['title']==1) {
@@ -170,6 +172,7 @@ if (count($error)>0) {
 						$salutation = null;
 					}
 
+					// Easy-WI uses ISO code for storing countries
 					if ($row['country'] == 1) {
 						$country = 'de';
 					} else if ($row['country'] == 2) {
@@ -182,8 +185,9 @@ if (count($error)>0) {
 						$country = null;
 					}
 
+					// Street and streetnumber are stored in the same column Easy-WI has individual columns
 					$exploded = explode(" ", $row['street']);
-					if (count($exploded) > 2) {
+					if (count($exploded) > 1) {
 						$streetNumber = $exploded[count($exploded) - 1];
 						unset($exploded[count($exploded) - 1]);
 						$streetName = implode(' ', $exploded);
@@ -191,8 +195,7 @@ if (count($error)>0) {
 						$streetName = null;
 						$streetNumber = null;
 					}
-					
-					// the keys needs to be adjusted to your table layout and query!
+
 					$json[]=array(
 						'externalID' => $row['id'],
 						'salutation' => $salutation,
@@ -215,29 +218,114 @@ if (count($error)>0) {
 						);
 				}
 			}
-			// Echo the JSON reply with 
-			echo json_encode(array('total' => $total,'entries' => $json));
-		} else if ($list == 'substitutes' and $config['sourceType']=='teklab') {
-			die;
+
+/**	
+		} else if ($list == 'gameroots') {
+			if ($config['sourceType']=='teklab') {
+
+				// Get amount of users that are new or received an update
+				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_rootserver`
+				WHERE `active`=1
+				AND `games`=1";
+				$query=$pdo->prepare($sql);
+				$query->execute();			
+				$total=$query->fetchColumn();
+
+				// users
+				$sql = "SELECT * FROM `{$config['tblPrefix']}_rootserver`
+				WHERE `active`=1
+				AND `games`=1
+				LIMIT $start,$chunkSize";
+				$query=$pdo->prepare($sql);
+				$query->execute();
+				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+					$json[]=array(
+						'externalID' => $row['id'],
+						'userID' => $row['memberid'],
+						'description' => $row['name'],
+						'serverIP' => $row['serverip'],
+						'sshPort' => $row['sshport'],
+						'ftpPort' => $row['ftpport'],
+						'cpuCores' => $row['cpucores'],
+						'maxRam' => $row['ram']
+						);
+				}
 			
-		} else if ($list == 'dedicated' and $config['sourceType']=='teklab') {
-			die;
+			}
+		
+		} else if ($list == 'gameimages') {
+			if ($config['sourceType']=='teklab') {
 			
-		} else if ($list == 'gameserver' and $config['sourceType']=='teklab') {
-			die;
+			}
+
+		} else if ($list == 'gameserver') {
+			if ($config['sourceType']=='teklab') {
 			
-		} else if ($list == 'voice' and $config['sourceType']=='teklab') {
-			die;
+			}
+/**
+		} else if ($list == 'addons') {
+
+			if ($config['sourceType']=='teklab') {
+
+				// Get amount of users that are new or received an update
+				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_games_addons`";
+				$query=$pdo->prepare($sql);
+				$query->execute();			
+				$total=$query->fetchColumn();
+
+				// users
+				$sql = "SELECT * FROM `{$config['tblPrefix']}_games_addons`
+				LIMIT $start,$chunkSize";
+				$query=$pdo->prepare($sql);
+				$query->execute();
+				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+					$json[]=array(
+						'externalID' => $row['id'],
+						'name' => $row['addonname'],
+						'description' => $row['text'],
+						'shortName' => $row['sname']
+						);
+				}
 			
-		} else if ($list == 'node' and $config['sourceType']=='teklab') {
-			die;
+			}
+**/
+		} else if ($list == 'voice') {
+			if ($config['sourceType']=='teklab') {
 			
-		} else if ($list == 'virt' and $config['sourceType']=='teklab') {
-			die;
-			
+			}
+
+		// Substitutes at last so we can get access permissions as well
+		} else if ($list == 'substitutes') {
+			if ($config['sourceType']=='teklab') {
+
+				// Get amount of users that are new or received an update
+				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_subusers`";
+				$query=$pdo->prepare($sql);
+				$query->execute();			
+				$total=$query->fetchColumn();
+
+				// users
+				$sql = "SELECT * FROM `{$config['tblPrefix']}_subusers`
+				LIMIT $start,$chunkSize";
+				$query=$pdo->prepare($sql);
+				$query->execute();
+				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+					$json[]=array(
+						'externalID' => $row['id'],
+						'belongsToExternalID' => $row['memberid'],
+						'loginName' => $row['user'],
+						'firstName' => null,
+						'lastName' => null,
+						'password' => $row['password']
+						);
+				}
+			}
 		}
 
-		// Catch database error and display
+		// Echo the JSON reply with 
+		echo json_encode(array('total' => $total,'entries' => $json));
+
+	// Catch database error and display
 	} catch(PDOException $error) {
 		echo json_encode(array('error' => $error->getMessage()));
 	}

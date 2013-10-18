@@ -38,6 +38,7 @@
  */
  
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 $username = '';
 $externalID = '';
@@ -170,11 +171,14 @@ if (array_value_exists('action','add',$data)) {
         }
         if (!isset($success) and isset($localID) and isset($insert) and $insert == true) {
             if (!isset($data['password']) or in_array($data['password'],$bad)) $password=passwordgenerate(10);
-            $passwordhash=createHash($username,$password,$salt,$aeskey);
+
             $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=? WHERE `id`=? LIMIT 1");
-            $query->execute(array($username,$passwordhash,$localID));
+            $query->execute(array($username, password_hash($password, PASSWORD_DEFAULT), $localID));
+
             $query = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?)");
-            foreach ($userGroupIDs as $groupID) $query->execute(array($localID,$groupID,$resellerID));
+            foreach ($userGroupIDs as $groupID) {
+				$query->execute(array($localID, $groupID, $resellerID));
+			}
         } else if (!isset($success)) {
             $success['false'][] = 'Could not write user to database';
         }
@@ -200,10 +204,7 @@ if (array_value_exists('action','add',$data)) {
             $what = array();
             if (isset($data['password']) and !in_array($data['password'],$bad)) {
                 $password = $data['password'];
-                $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
-                $security=createHash($name,$data['password'],$salt,$aeskey);
-                $what['security'] = $security;
-                $what['salt'] = $salt;
+                $what['security'] = password_hash($password, PASSWORD_DEFAULT);
             }
             if (isset($data['email']) and ismail($data['email'])) {
                 $what['mail'] = $data['email'];

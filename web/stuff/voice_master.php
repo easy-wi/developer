@@ -41,6 +41,7 @@
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/class_voice.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['voicemasterserver'])) {
     header('Location: admin.php');
@@ -662,12 +663,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                                 }
 
                                 if ($usernew == true) {
-                                    $initialpassword = passwordgenerate(10);
-                                    $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
-                                    $security = createHash($ui->username("$virtualserver_id-username",50, 'post'), $initialpassword, $salt, $aeskey);
 
-                                    $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`salt`,`resellerid`) VALUES (?,?,?,'u',?,?)");
-                                    $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $security, $ui->ismail("$virtualserver_id-email", 'post'), $salt, $reseller_id));
+                                    $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,'u',?)");
+                                    $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), password_hash(passwordgenerate(10), PASSWORD_DEFAULT), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
 
                                     $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                                     $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));

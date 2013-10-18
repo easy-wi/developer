@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: user.php.
  * Author: Ulrich Block
@@ -34,11 +35,14 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+ 
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/third_party/password_compat/password.php');
+
 if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['user'] and !$pa['user_users'])) {
 	header('Location: admin.php');
     die();
 }
-include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache = getlanguagefile('user',$user_language,$reseller_id);
 $rsprache = getlanguagefile('reseller',$user_language,$reseller_id);
 $loguserid = $admin_id;
@@ -281,17 +285,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $resellersid = $reseller_id;
                 }
 
-                $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
-                $security2 = createHash($cnamenew, $password, $salt, $aeskey);
-
-                $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
+                $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
 
 				if ($user_accounttype == 'a') {
-                    $query->execute(array($cnamenew, $security2, $salt, $id, $id));
+                    $query->execute(array($cnamenew, password_hash($password, PASSWORD_DEFAULT), $id, $id));
 				} else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
-                    $query->execute(array($cnamenew, $security2, $salt, $reseller_id, $id));
+                    $query->execute(array($cnamenew, password_hash($password, PASSWORD_DEFAULT), $reseller_id, $id));
 				} else if ($user_accounttype == 'r') {
-                    $query->execute(array($cnamenew, $security2, $salt, $admin_id, $id));
+                    $query->execute(array($cnamenew, password_hash($password, PASSWORD_DEFAULT), $admin_id, $id));
 				}
 
 				sendmail('emailuseradd',$id,$cnamenew,$password);
@@ -631,10 +632,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
             $password = $ui->password('password',20, 'post');
-            $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
-            $security=createHash($cname,$password,$salt,$aeskey);
-            $query=($reseller_id == 0) ? $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE id=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE id=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($security,$salt,$id,$reseller_id));
+            $query=($reseller_id == 0) ? $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=? WHERE id=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE id=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array(password_hash($password, PASSWORD_DEFAULT), $id, $reseller_id));
             $template_file = $spracheResponse->table_add ."<br />";
             $loguseraction="%psw% %user% $cname";
             $insertlog->execute();
