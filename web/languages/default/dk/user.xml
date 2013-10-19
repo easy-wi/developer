@@ -14,6 +14,7 @@
 	<bear2>Skift brugerdata</bear2>
 	<bez>Betaling</bez>
     <birthday>Fødselsdag</birthday>
+    <creationTime>Skabelse Tid</creationTime>
     <country>Land</country>
 	<einz>Automatisk debitering transfer-system</einz>
 	<email>E-Mail adresse</email>
@@ -75,6 +76,7 @@
 	<switch>Skift til bruger</switch>
 	<tel>Telefonnummer</tel>
 	<tickets>Support tickets</tickets>
+    <updateTime>Opdateret</updateTime>
 	<user>Brugernavn</user>
 	<user_users>Bruger Administration</user_users>
 	<user_admins>Administration</user_admins>

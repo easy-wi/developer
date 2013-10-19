@@ -14,6 +14,7 @@
 	<bear2>Change Userdata</bear2>
 	<bez>Payment</bez>
     <birthday>Birthday</birthday>
+    <creationTime>Created at</creationTime>
     <country>Country</country>
 	<einz>automatic debit transfer system</einz>
 	<email>E-Mail adress</email>
@@ -75,6 +76,7 @@
 	<switch>Switch to user</switch>
 	<tel>Phonenumber</tel>
 	<tickets>Supporttickets</tickets>
+    <updateTime>Updated at</updateTime>
 	<user>Username</user>
 	<user_users>Useradminstration</user_users>
 	<user_admins>Adminadminstration</user_admins>

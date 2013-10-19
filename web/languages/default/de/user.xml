@@ -15,6 +15,7 @@
 	<bez>Bezahlart</bez>
     <birthday>Geburtstag</birthday>
     <country>Land</country>
+    <creationTime>Erstellt am</creationTime>
 	<einz>Bankeinzug</einz>
 	<email>E-Mail Adresse</email>
 	<error_cname>Es wurde kein, oder ein unzulässiger Kundenname eingegeben.</error_cname>
@@ -75,6 +76,7 @@
 	<switch>Zum Benutzer wechseln</switch>
 	<tel>Telefonnummer</tel>
 	<tickets>Supporttickets</tickets>
+    <updateTime>Aktualisiert am</updateTime>
 	<user>Benutzername</user>
 	<user_users>Userverwaltung</user_users>
 	<user_admins>Adminverwaltung</user_admins>

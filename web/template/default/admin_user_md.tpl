@@ -13,9 +13,9 @@
         <dl class="dl-horizontal">
             <dt><?php echo $sprache->user;?></dt>
             <dd><?php echo $cname;?></dd>
-            <dt>creationTime</dt>
+            <dt><?php echo $sprache->creationTime;?></dt>
             <dd><?php echo $creationTime;?></dd>
-            <dt>updateTime</dt>
+            <dt><?php echo $sprache->updateTime;?></dt>
             <dd><?php echo $updateTime;?></dd>
             <dt><?php echo $sprache->accounttype;?></dt>
             <dd><?php ;if($accounttype=='r'){ echo $sprache->accounttype_reseller;}else if($accounttype=='a'){ echo $sprache->accounttype_admin;}else{ echo $sprache->accounttype_user;}?></dd>
