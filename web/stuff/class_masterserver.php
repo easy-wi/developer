@@ -165,11 +165,11 @@ class masterServer {
         // if an ID is given collect only data for this ID, else collect all game data for this rootserver
         if ($all === true) {
             
-            $query = $sql->prepare("SELECT t.`shorten`,t.`qstat`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? ${extraSQL}");
+            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`qstat`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? ${extraSQL}");
             $query->execute(array($this->rootID));
             
         } else {
-            $query = $sql->prepare("SELECT t.`shorten`,t.`qstat`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? ${extraSQL} LIMIT 1");
+            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`qstat`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? ${extraSQL} LIMIT 1");
             $query->execute(array($this->rootID, $all));
         }
         
@@ -281,22 +281,20 @@ class masterServer {
 
             if (($row['supdates'] == 1 or $row['supdates'] == 4) and ($row['updates'] == 1 or $row['updates'] == 4)) {
                 // collect maps
-                $query2 = $sql->prepare("SELECT `addon` FROM `addons` WHERE `type`='map' AND `shorten`=? AND `resellerid`=?");
-                $query2->execute(array($row['shorten'], $this->resellerID));
+                $query2 = $sql->prepare("SELECT DISTINCT(t.`addon`) FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` WHERE t.`type`='map' AND a.`servertype_id`=? AND a.`reseller_id`=?");
+                $query2->execute(array($row['servertype_id'], $this->resellerID));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $this->maps[] = $row2['addon'];
                 }
 
                 // collect addons
-                $query2 = $sql->prepare("SELECT `addon` FROM `addons` WHERE `type`='tool' AND (`shorten`=? OR `shorten`=?) AND `resellerid`=?");
-                $query2->execute(array($row['shorten'], $row['qstat'], $this->resellerID));
+                $query2 = $sql->prepare("SELECT DISTINCT(t.`addon`) FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` WHERE t.`type`='tool' AND a.`servertype_id`=? AND a.`reseller_id`=?");
+                $query2->execute(array($row['servertype_id'], $this->resellerID));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $this->addons[] = $row2['addon'];
                 }
             }
         }
-        $this->addons = array_unique($this->addons);
-        $this->maps = array_unique($this->maps);
     }
 
     // return command only for outdated servers
@@ -479,7 +477,7 @@ class masterServer {
 
 
             // sync maps and addons
-            if (isset($sshcmd) and $addonCount>0) {
+            if ($addonCount>0) {
                 $tempCmd[] = './control.sh syncaddons '.$this->imageserver . ' "' . implode(' ', $this->maps).'" "'.implode(' ', $this->addons).'"';
             }
 
@@ -488,6 +486,7 @@ class masterServer {
         #print_r($this->sshcmd);
         return $this->sshcmd;
     }
+
     public function setUpdating () {
         
         global $sql;
@@ -497,6 +496,7 @@ class masterServer {
             $query->execute(array($id));
         }
     }
+
     private function makeSteamCmd ($array) {
         
         $steamCmd = '';

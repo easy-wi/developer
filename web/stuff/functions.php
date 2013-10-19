@@ -416,14 +416,14 @@ if (!function_exists('passwordgenerate')) {
                 if (isips($exip)) {
                     $exploded_ip = explode('.', $exip);
                     
-                    if (is_numeric($exploded_ip[3])){
+                    if (isset($exploded_ip[3]) and is_numeric($exploded_ip[3])){
                         $ips_array[] = $exip;
                         
-                    } else {
+                    } else if (isset($exploded_ip[3])) {
                         $range = explode('/', $exploded_ip[3]);
                         $i = $range[0];
                         
-                        while ($i <= $range[1]) {
+                        while (isset($range[1]) and $i <= $range[1]) {
                             $ips_array[] = $exploded_ip[0] . '.' . $exploded_ip[1] . '.' . $exploded_ip[2] . '.' . $i;
                             $i++;
                         }

@@ -14,7 +14,7 @@
 	<addon_ud>Addon blevet opdateret</addon_ud>
 	<add_addon>Opret Addon</add_addon>
 	<all>ALLE</all>
-	<aname>Addonnavn:</aname>
+	<aname>Addonnavn</aname>
 	<bin>Binary</bin>
 	<bin_folder>Binary mappe (for eksempel orangebox)</bin_folder>
 	<configs>Bruger Redigerbar configs</configs>
@@ -37,8 +37,8 @@
 	<maps>Kort Pakker</maps>
 	<mod>Modmappe (for eksempel cstrike and dod)</mod>
     <modcmds>Kommandoer for Spiltilstande</modcmds>
-	<mods2>Mod for spillet:</mods2>
-	<mods>Modifikation:</mods>
+	<mods2>Mod for spillet</mods2>
+	<mods>Modifikation</mods>
 	<multi>Platform</multi>
 	<password>Adgangskode</password>
 	<port>Spilserverport</port>
@@ -52,8 +52,8 @@
 	<requires>Kræver</requires>
     <rmcmd>fjerne fra startkommando</rmcmd>
 	<servername>Servernavn</servername>
-	<showg>Vis addons for:</showg>
-	<shown>Resultater per side:</shown>
+	<showg>Vis addons for</showg>
+	<shown>Resultater per side</shown>
 	<single>Spil</single>
 	<slots>Serverantal</slots>
 	<start>Start Kommando</start>
@@ -66,6 +66,6 @@
 	<tool>Server værktøj</tool>
 	<tools>Serverværktøj, Addons, Configpakker</tools>
 	<tvport>SourceTV Port</tvport>
-	<type2>Addon for:</type2>
+	<type2>Addon for</type2>
 	<type>Kort eller Serverværktøj</type>
 </sprache>

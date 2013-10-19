@@ -251,21 +251,29 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             $query->execute($intos);
                         }
                     }
-                    $query = $sql->prepare("SELECT * FROM `addons` WHERE `resellerid`=?");
-                    $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`shorten`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`paddon`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?)");
-                    $query3 = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=? LIMIT 1");
-                    $query4 = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`text`,`transID`,`resellerID`) VALUES ('ad',?,?,?,?)");
-                    $query->execute(array($reseller_id));
-					foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                        $query2->execute(array($row['active'], $row['shorten'], $row['addon'], $row['type'], $row['folder'], $row['menudescription'], $row['configs'], $row['cmd'], $row['paddon'],$id));
-                        $newID = $sql->lastInsertId();
-                        $query3->execute(array($row['id'],$reseller_id));
-						foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) $query4->execute(array($row3['lang'], $row3['text'],$newID,$id));
-					}
                     CopyAdminTable('servertypes',$id,$reseller_id,'',$sql);
                     CopyAdminTable('settings',$id,$reseller_id,'LIMIT 1',$sql);
                     CopyAdminTable('voice_stats_settings',$id,$reseller_id,'LIMIT 1',$sql);
                     CopyAdminTable('usergroups',$id,$reseller_id,'',$sql,"AND `active`='Y' AND `name` IS NOT NULL AND `grouptype`='u'");
+                    $query = $sql->prepare("SELECT * FROM `addons` WHERE `resellerid`=?");
+                    $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`paddon`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?)");
+                    $query3 = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=? LIMIT 1");
+                    $query4 = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`text`,`transID`,`resellerID`) VALUES ('ad',?,?,?,?)");
+                    $query5 = $sql->prepare("SELECT t2.`id` FROM `addons_allowed` AS a INNER JOIN `servertypes` AS t1 ON a.`servertype_id`=t1.`id` INNER JOIN `servertypes` AS t2 ON t1.`shorten`=t2.`shorten` AND t2.`resellerid`=? WHERE a.`addon_id`=? AND a.`reseller_id`=?");
+                    $query6 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `addon_id`=`addon_id`");
+                    $query->execute(array($reseller_id));
+					foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        $query2->execute(array($row['active'], $row['addon'], $row['type'], $row['folder'], $row['menudescription'], $row['configs'], $row['cmd'], $row['paddon'],$id));
+                        $newID = $sql->lastInsertId();
+                        $query3->execute(array($row['id'], $reseller_id));
+						foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+						    $query4->execute(array($row3['lang'], $row3['text'], $newID, $id));
+                        }
+                        $query5->execute(array($id, $row['id'], $reseller_id));
+						foreach ($query5->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+						    $query6->execute(array($newID, $row3['id'], $id));
+                        }
+					}
                     $query = $sql->prepare("SELECT * FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
                     $query2 = $sql->prepare("INSERT INTO `lendsettings` (`active`,`mintime`,`maxtime`,`timesteps`,`minplayer`,`maxplayer`,`playersteps`,`vomintime`,`vomaxtime`,`votimesteps`,`vominplayer`,`vomaxplayer`,`voplayersteps`,`shutdownempty`,`shutdownemptytime`,`ftpupload`,`ftpuploadpath`,`lendaccess`,`lastcheck`,`oldcheck`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'0xe4bca9cd69b8488c9c5ee5b7d32c12f3a3cdae349a54edbe6659fc2817ccc86489b12864ebbb43eff607be85611da6c4','3',?,?,?)");
                     $query->execute(array($reseller_id));
@@ -445,7 +453,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
             if ($accounttype == 'r' and $reseller_id == 0) $lookUpID = $id;
             $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=? AND `resellerID`=?");
-            $query->execute(array($id,$lookUpID));
+            $query->execute(array($id, $reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $groupsAssigned[] = $row['groupID'];
             }
@@ -529,7 +537,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $country = $ui->st('country', 'post');
                 $fax = $ui->phone('fax',50, 'post');
                 $useractive=($ui->active('useractive', 'post')) ? $ui->active('useractive', 'post') : 'N';
-                if ($ui->ips('ips', 'post') or $ui->id('maxuser',10, 'post') and $accounttype='r') {
+                if ($ui->ips('ips', 'post') or $ui->id('maxuser',10, 'post') and $accounttype == 'r') {
                     if ($reseller_id == 0) {
                         $availableips=freeips($reseller_id);
                     } else if ($resellerlockupid==0 or $resellerlockupid==$admin_id) {
@@ -582,16 +590,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`salutation`=?,`birthday`=?,`country`=?,`fax`=?,`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`fdlpath`=?,`mail_backup`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_vserver`=?$jobPending WHERE `id`=? and `resellerid`=? LIMIT 1");
                 $query->execute(array($salutation,$birthday,$country,$fax,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$id,$resellerlockupid));
-                customColumns('U',$id,'save');
+                customColumns('U', $id, 'save');
                 if ($id != $admin_id) {
                     $tempArray = array();
-                    $query=($accounttype == 'r' and $reseller_id == 0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
+                    $query = ($accounttype == 'r' and $reseller_id == 0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
                     $query2 = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `groupID`=VALUES(`groupID`)");
                     foreach ($ui->id('groups',10, 'post') as $gid) {
+
                         $tempArray[] = $gid;
-                        if ($accounttype == 'r' and $reseller_id == 0) $query->execute(array($gid,$accounttype));
-                        else $query->execute(array($gid,$accounttype,$resellerlockupid));
-                        if (isid($query->fetchColumn(),10)) $query2->execute(array($id,$gid,$resellerlockupid));
+
+                        if ($accounttype == 'r' and $reseller_id == 0) {
+                            $query->execute(array($gid, $accounttype));
+                        } else {
+                            $query->execute(array($gid, $accounttype, $resellerlockupid));
+                        }
+
+                        if (isid($query->fetchColumn(),10)) {
+                            $query2->execute(array($id, $gid, $resellerlockupid));
+                        }
                     }
                     $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=? AND `resellerID`=?");
                     $query2 = $sql->prepare("DELETE FROM `userdata_groups` WHERE `groupID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");

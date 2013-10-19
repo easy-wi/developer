@@ -62,6 +62,15 @@ $query="CREATE TABLE IF NOT EXISTS `addons` (
 $add = $sql->prepare($query);
 $add->execute();
 
+$query="CREATE TABLE IF NOT EXISTS `addons_allowed` (
+  `addon_id` int(10) unsigned NOT NULL,
+  `servertype_id` int(10) unsigned NOT NULL,
+  `reseller_id` int(10) unsigned NULL DEFAULT 0,
+  PRIMARY KEY (`addon_id`,`servertype_id`),KEY(`reseller_id`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
 $query="CREATE TABLE IF NOT EXISTS `addons_installed` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
@@ -1035,7 +1044,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata` (
   `active` enum('Y','N','R') NOT NULL DEFAULT 'Y',
   `salutation` smallint(1),
   `cname` varchar(255) NOT NULL,
-  `security` blob NOT NULL,
+  `security` varchar(255),
   `salt` varchar(32) DEFAULT NULL,
   `token` varchar(32) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,

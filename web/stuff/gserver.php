@@ -492,12 +492,12 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                     if ($ui->id('installGames',1, 'post')==2) $gamestring=array($ui->escaped('primary', 'post'));
                     $gamestring=count($gamestring) . '_' . implode('_',$gamestring);
                     if ($ui->id('installGames',1, 'post')!=3) $cmds[]="sudo -u ${gsuser} ./control.sh addserver ${gsuser} ${gamestring} ${gsfolder}";
-                    ssh2_execute('gs',$serverid,$cmds);
+                    $reply = ssh2_execute('gs', $serverid, $cmds);
                 } else {
-                    $reply="Could not insert data into database";
+                    $reply = "Could not insert data into database";
                 }
-                if ($reply=="Could not connect to Server" or $reply=="The login data does not work" or $reply=="Could not insert data into database") {
-                    $template_file = $sprache->cant_install.'<br />'.$reply;
+                if ($reply === false) {
+                    $template_file = $sprache->cant_install.'<br />';
                 } else {
                     $loguseraction="%add% %gserver% $serverip:$port";
                     $insertlog->execute();

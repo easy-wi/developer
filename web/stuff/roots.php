@@ -68,9 +68,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
+    $errors = array();
+
     $id = $ui->id('id', 10, 'get');
     $cores = ($ui->id('cores', 3, 'post')) ? $ui->id('cores', 3, 'post') : 4;
-    $externalId = $ui->escaped('externalID', 'post');
+    $externalID = $ui->escaped('externalID', 'post');
     $steamAccount = $ui->username('steamAccount', 255, 'post');
     $steamPassword = $ui->password('steamPassword', 255, 'post');
     $keyname = $ui->startparameter('keyname', 'post');
@@ -103,7 +105,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':reseller_id' => $reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $active = $row['active'];
-                $externalId = $row['externalID'];
+                $externalID = $row['externalID'];
                 $hyperthreading = $row['hyperthreading'];
                 $cores = $row['cores'];
                 $os = $row['os'];
@@ -137,7 +139,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
-        $errors = array();
         if (!$ui->active('active', 'post')) {
             $errors['active'] = $sprache->active;
         }

@@ -14,7 +14,7 @@
 	<addon_ud>Addon successfully updated</addon_ud>
 	<add_addon>Create Addon</add_addon>
 	<all>ALL</all>
-	<aname>Addonname:</aname>
+	<aname>Addonname</aname>
 	<bin>Binary</bin>
 	<bin_folder>Binaryfolder (for example orangebox)</bin_folder>
 	<configs>Usereditable configs</configs>
@@ -37,8 +37,8 @@
 	<maps>Mappackages</maps>
 	<mod>Modfolder (for example cstrike and dod)</mod>
     <modcmds>Commands regarding Gamemods</modcmds>
-	<mods2>Mod for the game:</mods2>
-	<mods>Modification:</mods>
+	<mods2>Mod for the game</mods2>
+	<mods>Modification</mods>
 	<multi>Plattform</multi>
 	<password>Password</password>
 	<port>Gameserverport</port>
@@ -52,8 +52,8 @@
 	<requires>Requires</requires>
     <rmcmd>remove from startcommand</rmcmd>
 	<servername>Servername</servername>
-	<showg>Show addons for:</showg>
-	<shown>Results per page:</shown>
+	<showg>Show addons for</showg>
+	<shown>Results per page</shown>
 	<single>Game</single>
 	<slots>Serverslots</slots>
 	<start>Startcommand</start>
@@ -66,6 +66,6 @@
 	<tool>Servertool</tool>
 	<tools>Servertool, Addons, Configpackages</tools>
 	<tvport>SourceTV Port</tvport>
-	<type2>Addon for:</type2>
+	<type2>Addon for</type2>
 	<type>Map, or Servertool</type>
 </sprache>

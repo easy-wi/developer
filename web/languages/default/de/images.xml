@@ -14,7 +14,7 @@
 	<addon_ud>Das Addon wurde erfolgreich aktualisiert</addon_ud>
 	<add_addon>Addon erstellen</add_addon>
 	<all>Alles</all>
-	<aname>Addonname:</aname>
+	<aname>Addonname</aname>
 	<bin>Binary</bin>
 	<bin_folder>Binaryverzeichnis(z.B. orangebox)</bin_folder>
 	<configs>Configs, die vom User editierbar sein sollen</configs>
@@ -37,8 +37,8 @@
 	<maps>Mappackages</maps>
 	<mod>Modverzeichnis (z.B. cstrike und dod)</mod>
     <modcmds>Befehle für Gamemods</modcmds>
-	<mods2>Mod zum Spiel:</mods2>
-	<mods>Spielemodifikation:</mods>
+	<mods2>Mod zum Spiel</mods2>
+	<mods>Spielemodifikation</mods>
 	<multi>Plattform</multi>
 	<password>Passwort</password>
 	<port>Gameserverport</port>
@@ -52,8 +52,8 @@
 	<requires>Benötigt</requires>
     <rmcmd>entferne vom Startbefehl</rmcmd>
 	<servername>Servername</servername>
-	<showg>Zeige Addons zu:</showg>
-	<shown>Ergebnisse pro Seite:</shown>
+	<showg>Zeige Addons zu</showg>
+	<shown>Ergebnisse pro Seite</shown>
 	<single>Spiel</single>
 	<slots>Serverslots</slots>
 	<start>Startbefehl</start>
@@ -66,6 +66,6 @@
 	<tool>Servertool</tool>
 	<tools>Servertool, Addons, Configpakete</tools>
 	<tvport>SourceTV Port</tvport>
-	<type2>Addon für:</type2>
+	<type2>Addon für</type2>
 	<type>Map, oder Servertool</type>
 </sprache>

@@ -16,13 +16,13 @@
 </div>
 <div class="row-fluid">
     <div class="span6">
-        <form class="form-horizontal" action="admin.php?w=ad&amp;d=dl&amp;id=<?php echo $addonid;?>&amp;r=ad" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+        <form class="form-horizontal" action="admin.php?w=ad&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=ad" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="dl">
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-danger pull-right" id="inputEdit" type="submit"><i class="icon-remove-sign icon-white"></i></button>
                 </div>
             </div>
         </form>

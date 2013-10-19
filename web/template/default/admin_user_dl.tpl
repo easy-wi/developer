@@ -14,10 +14,10 @@
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="dl">
             <dl class="dl-horizontal">
-                <dt><?php echo $sprache->fname;?></dt>
-                <dd><?php echo $name;?></dd>
                 <dt><?php echo $sprache->user;?></dt>
                 <dd><?php echo $cname;?></dd>
+                <dt><?php echo $sprache->fname;?></dt>
+                <dd><?php echo $name;?></dd>
             </dl>
             <div class="control-group">
                 <label class="control-label" for="inputDelete"></label>

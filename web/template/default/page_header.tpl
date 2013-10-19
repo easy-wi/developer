@@ -43,7 +43,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Easy-WI.com<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="http://wiki.easy-wi.com" target="_blank" title="easy-wi.com wiki">Wiki</a></li>
-                            <li><a href="https://easy-wi.com" target="_blank" title="free gameserver voiceserver dedicated and virtualserver webinterface easy-wi.com">About</a></li>
+                            <li><a href="https://easy-wi.com" target="_blank" title="free gameserver, voiceserver, dedicated and virtualserver webinterface easy-wi.com">About</a></li>
                             <li><a href="https://easy-wi.com/forum/" target="_blank" title="easy-wi.com forum">Forum</a></li>
                         </ul>
                     </li>

@@ -279,8 +279,8 @@ if (isset($ui->get['q'])) {
     foreach($words as $word) {
         $word="%${word}%";
         if ($ad == true) {
-            $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `resellerid`=? ".notIN($adIDs,'`id`')." AND (LOWER(`menudescription`) LIKE ? OR LOWER(`shorten`) LIKE ?)");
-            $query->execute(array($reseller_id,$word,$word));
+            $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `resellerid`=? ".notIN($adIDs,'`id`')." AND LOWER(`menudescription`) LIKE ?");
+            $query->execute(array($reseller_id,$word));
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $adIDs[] = $row['id'];
                 $results["ad-${row['id']}"] = array('type' => $gsprache->addon,'id' => $row['id'], 'name' => $row['menudescription'], 'owner' => '','edit' => '?w=ad&amp;d=md&amp;id='.$row['id'], 'delete' => '?w=ad&amp;d=dl&amp;id='.$row['id']);

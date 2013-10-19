@@ -40,27 +40,36 @@
 
 if (isset($include) and $include == true) {
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('4.10','<div align=\"right\">31.08.2013</div>
+('4.10','<div align=\"right\">16.10.2013</div>
 <b>Änderungen:</b><br/>
 <ul>
 </ul>
-<br/><br/>
-<b>Bugfixes:</b><br />
-<ul>
-</ul>
-','<div align=\"right\">08.31.2013</div>
+
+','<div align=\"right\">10.16.2013</div>
 <b>Changes:</b><br/>
 <ul>
 </ul>
-<br/><br/>
-<b>Bugfixes:</b><br />
-<ul>
 
-</ul>
 ')");
     $query->execute();
     $response->add('Action: insert_easywi_version done: ');
     $query->closecursor();
+
+    $query="CREATE TABLE IF NOT EXISTS `addons_allowed` (
+  `addon_id` int(10) unsigned NOT NULL,
+  `servertype_id` int(10) unsigned NOT NULL,
+  `reseller_id` int(10) unsigned NULL DEFAULT 0,
+  PRIMARY KEY (`addon_id`,`servertype_id`),KEY(`reseller_id`)
+) ENGINE=InnoDB";
+    $add = $sql->prepare($query);
+    $add->execute();
+
+    $query = $sql->prepare("SELECT s.`id` AS `servertype_id`,s.`resellerid`,a.`id` AS `addon_id` FROM `servertypes` AS s LEFT JOIN `addons` AS a ON s.`shorten`=a.`shorten` OR s.`qstat`=a.`shorten` WHERE a.`id` IS NOT NULL");
+    $query2 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `addon_id`=`addon_id`");
+    $query->execute();
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $query2->execute(array($row['addon_id'],$row['servertype_id'],$row['resellerid']));
+    }
 
     $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='samp' AND `resellerid`=0 LIMIT 1");
     $query->execute();

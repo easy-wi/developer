@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: serverallocation.php.
  * Author: Ulrich Block
@@ -41,6 +42,7 @@ include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/config.php');
 include(EASYWIDIR . '/stuff/settings.php');
+
 $die = false;
 if (!isset($admin_id) and !isset($user_id)) {
     redirect('login.php');
@@ -51,9 +53,11 @@ if (!isset($admin_id) and !isset($user_id)) {
 } else {
     $die = true;
 }
+
 if (!isset($pa) or count($pa)==0 or ((!isset($admin_id) and !isset($user_id)) or (((!$pa['gserver']) and !$pa['voiceserver'] and !$pa['voicemasterserver'] and !$pa['traffic'] and !$pa['user'] and !rsellerpermisions($admin_id) and !$pa['usertickets']) and (!$pa['restart'] and !$pa['usertickets'])))) {
     $die = true;
 }
+
 if ($ui->smallletters('w',5, 'get') == 'check') {
     $return='bad';
     if ($ui->w('method',40, 'get')) {
@@ -62,10 +66,13 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
         else if ($ui->$method('check', 'get')) $return='ok';
     }
     echo $return;
+
 } else if ($die == true) {
     redirect('login.php');
+
 } else if ($ui->username('mapgroup','50', 'get')) {
     $sprache = getlanguagefile('gserver', $user_language, $reseller_id);
+
     $query = $sql->prepare("SELECT `mapGroup` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($ui->username('mapgroup','50', 'get'), $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -74,6 +81,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
             require_once IncludeTemplate($template_to_use,'ajax_userpanel_mapgroup.tpl');
         }
     }
+
 } else if ($ui->id('id',19, 'get') and $ui->st('d', 'get')=="vs" and ($pa['addvserver'] or $pa['root'])) {
 	$sprache = getlanguagefile('reseller', $user_language, $reseller_id);
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {
@@ -162,8 +170,10 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		}
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_vserver_allocation.tpl');
+
 } else if ($ui->st('d', 'get')=="ui" and $ui->id('id',19, 'get')) {
 	foreach (freeips($ui->id('id',19, 'get')) as $ip) echo $ip."<br />";
+
 } else if ($ui->st('d', 'get')=="my" and $ui->id('id',19, 'get')) {
 	$query = $sql->prepare("SELECT s.`ip`,s.`max_databases`,COUNT(d.`id`) AS `installed` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`id`=? AND s.`active`='Y' AND s.`resellerid`=? LIMIT 1");
 	$query->execute(array($ui->id('id',19, 'get'), $reseller_id));
@@ -176,6 +186,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		$max_databases = 0;
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_mysql_server.tpl');
+
 } else if ($ui->st('d', 'get')=="tr" and $ui->st('w', 'get')) {
 	if ($ui->st('w', 'get')=="su") {
 		if ($reseller_id == 0) {
@@ -370,6 +381,9 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
         } else {
             $rootServer->setUpdating();
             echo $sprache->root_updatemaster." ( ".implode(", ", $gamelist)." )";
+        }
+        if (isset($debug) and $debug == 1) {
+            echo '<br>' . implode('<br>', $rootServer->sshcmd);
         }
     }
 } else if (($pa['voiceserver'] or $pa['voiceserver']) and $ui->st('d', 'get')=="vo" and $ui->id('id',19, 'get')) {

@@ -431,7 +431,7 @@ if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->descript
         }
         if ($i>0) {
             $posted_gamestring = $i . $gamestring_buf;
-            $ajaxonload .= "onloaddata('serverallocation.php?gamestring = $posted_gamestring&id=','$id','$id');";
+            $ajaxonload .= "onloaddata('serverallocation.php?gamestring=$posted_gamestring&id=','$id','$id');";
         }
     }
     $ajaxonload .= '}</script>';

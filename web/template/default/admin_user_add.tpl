@@ -157,7 +157,7 @@
                 <input id="inputUCname" type="text" name="cname" value="user">
             </div>
         </div>
-        <div class="u display_none switch control-group">
+        <div class="r display_none switch control-group">
             <label class="control-label" for="inputRCname"><?php echo $gsprache->user;?></label>
             <div class="controls">
                 <input id="inputRCname" type="text" name="rcname" value="reseller">

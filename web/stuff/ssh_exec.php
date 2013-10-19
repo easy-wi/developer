@@ -42,6 +42,7 @@ if (!function_exists('ssh2_execute')) {
         global $sql, $rSA, $aeskey;
 
         $return = '';
+        $error = false;
 
         if ($type == 'eac') {
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `eac` WHERE resellerid=:serverID LIMIT 1");
@@ -108,7 +109,7 @@ if (!function_exists('ssh2_execute')) {
                     $error = true;
                 }
 
-                if (isset($error)) {
+                if ($error === true) {
                     $notified++;
                 } else {
                     $notified = 0;
@@ -133,7 +134,7 @@ if (!function_exists('ssh2_execute')) {
                 }
                 $query->execute(array($notified, $serverID));
 
-                return $return;
+                return ($error === true) ? false: $return;
             }
         }
         return false;

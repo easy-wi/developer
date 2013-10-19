@@ -28,6 +28,13 @@
     </div>
 </div>
 <hr>
+<?php if (count($errors)>0){ ?>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4>Error(s)</h4>
+    <?php echo implode(', ',$errors);?>
+</div>
+<?php }?>
 <div class="row-fluid">
     <div class="span6">
         <form class="form-horizontal" action="admin.php?w=ad&amp;d=ad&amp;r=ad" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
@@ -36,9 +43,8 @@
             <div class="control-group">
                 <label class="control-label" for="inputGame2"><?php echo $sprache->game2;?></label>
                 <div class="controls">
-                    <select id="inputGame2" name="shorten">
-                        <?php foreach ($table as $table_row){ ?><option value="<?php echo $table_row['shorten'];?>" <?php if($table_row['shorten']==$shorten) echo 'selected="selected"';?>><?php echo $sprache->single?>: <?php echo $table_row['description'];?></option><?php } ?>
-                        <?php foreach ($table2 as $table_row2){ ?><option value="<?php echo $table_row2['qstat'];?>" <?php if($table_row2['qstat']==$shorten) echo 'selected="selected"';?>><?php echo $sprache->multi?>: <?php echo $table_row2['description'];?></option><?php } ?>
+                    <select id="inputGame2" multiple="multiple" name="shorten[]">
+                        <?php foreach ($gamesAssigned as $sid => $shorten){ ?><option value="<?php echo $sid;?>" <?php if(in_array($sid,$shortens)) echo 'selected="selected"';?>><?php echo $shorten;?></option><?php }?>
                     </select>
                 </div>
             </div>
@@ -60,7 +66,7 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['type'])) echo ' error';?>">
                 <label class="control-label" for="inputType"><?php echo $sprache->type;?></label>
                 <div class="controls">
                     <select id="inputType" name="type">
@@ -69,15 +75,15 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['addon'])) echo ' error';?>">
                 <label class="control-label" for="inputAddon"><?php echo $sprache->addon;?></label>
                 <div class="controls"><input id="inputAddon" type="text" name="addon" value="<?php echo $addon;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['menudescription'])) echo ' error';?>">
                 <label class="control-label" for="inputAddon2"><?php echo $sprache->addon2;?></label>
                 <div class="controls"><input id="inputAddon2" type="text" name="menudescription" value="<?php echo $menudescription;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
                 <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" name="active">
@@ -92,12 +98,12 @@
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputDescription"><?php echo $sprache->description;?></label>
-                <div class="controls"><?php foreach ($foundlanguages as $array) echo '<label class="checkbox inline">'.$array['checkbox'].'<img src="images/flags/'.$array['lang'].'.png" alt="Flag: '.$array['lang'].'.png"/></label>';?></div>
+                <div class="controls"><?php foreach ($foundLanguages as $array) echo '<label class="checkbox inline">'.$array['checkbox'].'<img src="images/flags/'.$array['lang'].'.png" alt="Flag: '.$array['lang'].'.png"/></label>';?></div>
             </div>
             <?php foreach ($foundLanguages as $array) { ?>
             <div id="<?php echo $array['lang'];?>" class="control-group <?php echo $array['display'];?>">
                 <label class="control-label" for="inputLangs-<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></label>
-                <div class="controls"><textarea id="inputLangs-<?php echo $array['lang'];?>" name="description_<?php echo $array['lang'];?>"></textarea></div>
+                <div class="controls"><textarea id="inputLangs-<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]"></textarea></div>
             </div>
             <?php } ?>
             <div class="control-group">
@@ -115,7 +121,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
                 </div>
             </div>
         </form>
