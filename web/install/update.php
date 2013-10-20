@@ -93,7 +93,7 @@ function versioncheck ($current, $new ,$file ,$response) {
     $include = true;
 
     if ($current < $new) {
-        $response->add("Upgrading Databe from $current to $new<br />");
+        $response->add("Upgrading Database from $current to $new<br />");
         if (is_file(EASYWIDIR . '/' . $file)) {
             $response->add('Found updaterfile ' . $file . '. Executing it now<br>');
             include(EASYWIDIR . '/' . $file);

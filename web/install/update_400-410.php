@@ -120,7 +120,7 @@ if (isset($include) and $include == true) {
 <li>PHP Notice beim Gameserver Reinstall korrigiert</li>
 <li>Userpanel Gamerserverübersicht bezüglich FTP Passwörtern korrigiert</li>
 <li>FastDL Abgleich startet wieder</li>
-<li>Gebrauch von $_SERVER in der login.php entfernt</li>
+<li>Gebrauch von " . '$_SERVER' . " in der login.php entfernt</li>
 <li>Installer definiert das default template</li>
 </ul>
 ','<div align=\"right\">10.20.2013</div>
@@ -199,7 +199,7 @@ if (isset($include) and $include == true) {
 <li>Corrected PHP Notice in case of gameserver reinstall</li>
 <li>Corrected userpanel gamerserver overview regarding FTP passwords</li>
 <li>FastDL matching working again</li>
-<li>Usage of $_SERVER removed from login.php</li>
+<li>Usage of " . '$_SERVER' . " removed from login.php</li>
 <li>Installer definines the default template</li>
 </ul>
 ')");
@@ -233,7 +233,7 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='mtasa' AND `resellerid`=0 LIMIT 1");
     $query->execute();
     if ($query->rowCount() == 0) {
-        $query = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`resellerid`,`mapGroup`) VALUES ('N',NULL,1,'mtasa','Multi Theft Auto San Andreas','gserver','mta-server',NULL,NULL,NULL,0,NULL,'./%binary%',NULL,NULL,'mtasa','N','','[mods/deathmatch/mtaserver.conf] xml\r\n<serverip>%ip%</serverip>\r\n<serverport>%port%</serverport> \r\n<httpport>%port2%</httpport>\r\n<maxplayers>%slots%</maxplayers>\r\n<httpserver>0</httpserver>','',10,3,22003,22005,22126,NULL,NULL,0,NULL)");
+        $query = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`resellerid`,`mapGroup`) VALUES ('N',NULL,1,'mtasa','Multi Theft Auto San Andreas','gserver','mta-server',NULL,NULL,NULL,0,NULL,'./%binary%',NULL,NULL,'mtasa','N','','','[mods/deathmatch/mtaserver.conf] xml\r\n<serverip>%ip%</serverip>\r\n<serverport>%port%</serverport> \r\n<httpport>%port2%</httpport>\r\n<maxplayers>%slots%</maxplayers>\r\n<httpserver>0</httpserver>','',10,3,22003,22005,22126,NULL,NULL,0,NULL)");
         $query->execute();
     }
 
