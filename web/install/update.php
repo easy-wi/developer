@@ -89,6 +89,9 @@ if (!isset($sql)) {
 function versioncheck ($current, $new ,$file ,$response) {
 
     global $sql;
+
+    $include = true;
+
     if ($current < $new) {
         $response->add("Upgrading Databe from $current to $new<br />");
         if (is_file(EASYWIDIR . '/' . $file)) {
