@@ -72,7 +72,7 @@ if [ "$IONICEALLOWED" == "1" ]; then
 fi
 if [ "`id -u`" != "0" ]; then screen -wipe > /dev/null 2>&1; fi
 function wget_remove {
-	if [ "`id -u`" != "0" -a "`id -u`" == "`id -u $MASTERUSER`" ]; then
+	if [ "`id -u`" != "0" -a "`id -u`" == "`id -u $MASTERUSER`" -a ! -f $HOMEFOLDER/.updateLock ]; then
 		rm wget-log > /dev/null 2>&1
 		find $HOMEFOLDER -maxdepth 1 -name "control_new.*" -delete
 		find $HOMEFOLDER \( -iname "wget-*" \) -delete
@@ -105,9 +105,9 @@ function updatecheck {
 						if [ -f $HOMEFOLDER/control_new.sh ]; then
 							mv $HOMEFOLDER/control.sh $HOMEFOLDER/control.old.$CVERSION.sh
 							mv $HOMEFOLDER/control_new.sh $HOMEFOLDER/control.sh
-							chmod 750 control.sh
 							if [ "$ISROOT" == "0" ]; then echo "`date`: Updated the controlprogram from $CVERSION version to $CURRENTFDLVERSION" >> $LOGDIR/update.log; fi
 						fi
+						chmod 750 control.sh
 					fi
 				fi
 				if [ ! -f $HOMEFOLDER/control.sh ]; then
