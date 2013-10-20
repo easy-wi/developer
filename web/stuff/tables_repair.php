@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: tables_repair.php.
  * Author: Ulrich Block
@@ -680,12 +681,13 @@ $defined['servertypes'] = array('id' => array("Type"=>"int(10) unsigned","Null"=
 );
 
 $defined['settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'version' => array("Type"=>"decimal(4,2)","Null"=>"YES","Key"=>"","Default"=>"3.30","Extra"=>""),
+    'version' => array("Type"=>"decimal(4,2)","Null"=>"YES","Key"=>"","Default"=>"4.10","Extra"=>""),
     'releasenotesDE' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'releasenotesEN' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'template' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"default","Extra"=>""),
     'imageserver' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'cronjob_ips' => array("Type"=>"text","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'licence' => array("Type"=>"text","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'master' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'voice_autobackup' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),

@@ -38,13 +38,11 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-ini_set('display_errors',1);
-error_reporting(E_ALL|E_STRICT);
 if (isset($_SERVER['REMOTE_ADDR'])) {
-	$ip = $_SERVER['REMOTE_ADDR'];
-    $timelimit=(isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? (int) $_GET['timeout'] : ini_get('max_execution_time')-10;
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $timelimit = (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? $_GET['timeout'] : ini_get('max_execution_time') - 10;
 } else {
-	$timelimit=600;
+    $timelimit = 600;
 }
 if (isset($argv)) {
     $args = array();
@@ -57,23 +55,28 @@ if (isset($argv)) {
         }
     }
 }
-if (isset($checkTypeOfServer)) {
-    print ($checkTypeOfServer == 'gs') ? 'Checking Gameserver' . "\r\n" : 'Checking Voiceserver' . "\r\n";
-} else {
-    $checkTypeOfServer='all';
-    print 'Checking Gameserver and Voiceserver' . "\r\n";
-}
+
+define('EASYWIDIR', dirname(__FILE__));
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/queries.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 set_time_limit($timelimit);
-if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
-    define('EASYWIDIR', dirname(__FILE__));
-	include(EASYWIDIR . '/stuff/vorlage.php');
-	include(EASYWIDIR . '/stuff/functions.php');
-	include(EASYWIDIR . '/stuff/class_validator.php');
-	include(EASYWIDIR . '/stuff/settings.php');
-	include(EASYWIDIR . '/stuff/ssh_exec.php');
-	include(EASYWIDIR . '/stuff/class_voice.php');
-	include(EASYWIDIR . '/stuff/queries.php');
-    include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
+if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
+
+    if (isset($checkTypeOfServer)) {
+        print ($checkTypeOfServer == 'gs') ? 'Checking Gameserver' . "\r\n" : 'Checking Voiceserver' . "\r\n";
+    } else {
+        $checkTypeOfServer='all';
+        print 'Checking Gameserver and Voiceserver' . "\r\n";
+    }
+
     $dayAndHour=date('Y-m-d H:').'00:00';
     $dayAndZeroHour=date('Y-m-d').' 00:00:00';
     $ssprache = getlanguagefile('settings','uk',0);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: tables_add.php.
  * Author: Ulrich Block
@@ -37,13 +38,12 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-
 if (!isset($admin_id) or !isset($reseller_id) or $main!=1 or $reseller_id != 0) {
     header('Location: admin.php');
     die('No Acces');
 }
 
-$query="CREATE TABLE IF NOT EXISTS `addons` (
+$query = "CREATE TABLE IF NOT EXISTS `addons` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'N',
   `paddon` enum('Y','N') DEFAULT 'N',
@@ -62,7 +62,7 @@ $query="CREATE TABLE IF NOT EXISTS `addons` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `addons_allowed` (
+$query = "CREATE TABLE IF NOT EXISTS `addons_allowed` (
   `addon_id` int(10) unsigned NOT NULL,
   `servertype_id` int(10) unsigned NOT NULL,
   `reseller_id` int(10) unsigned NULL DEFAULT 0,
@@ -71,7 +71,7 @@ $query="CREATE TABLE IF NOT EXISTS `addons_allowed` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `addons_installed` (
+$query = "CREATE TABLE IF NOT EXISTS `addons_installed` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
   `addonid` int(10) unsigned NOT NULL,
@@ -84,7 +84,7 @@ $query="CREATE TABLE IF NOT EXISTS `addons_installed` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `api_ips` (
+$query = "CREATE TABLE IF NOT EXISTS `api_ips` (
   `ip` varchar(15) NOT NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`ip`,`resellerID`)
@@ -92,7 +92,7 @@ $query="CREATE TABLE IF NOT EXISTS `api_ips` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `api_settings` (
+$query = "CREATE TABLE IF NOT EXISTS `api_settings` (
   `active` enum('Y','N') NOT NULL DEFAULT 'N',
   `user` varchar(255) NOT NULL,
   `pwd` BLOB,
@@ -104,7 +104,7 @@ $query="CREATE TABLE IF NOT EXISTS `api_settings` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `api_external_auth` (
+$query = "CREATE TABLE IF NOT EXISTS `api_external_auth` (
   `active` enum('Y','N') NOT NULL DEFAULT 'N',
   `ssl` enum('Y','N') NOT NULL DEFAULT 'N',
   `user` varchar(255) NOT NULL,
@@ -117,7 +117,7 @@ $query="CREATE TABLE IF NOT EXISTS `api_external_auth` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `api_import` (
+$query = "CREATE TABLE IF NOT EXISTS `api_import` (
   `importID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `fetchUpdates` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -135,7 +135,7 @@ $query="CREATE TABLE IF NOT EXISTS `api_import` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `badips` (
+$query = "CREATE TABLE IF NOT EXISTS `badips` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `badip` varchar(15) NOT NULL,
   `bantime` datetime NOT NULL,
@@ -146,7 +146,7 @@ $query="CREATE TABLE IF NOT EXISTS `badips` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `custom_columns` (
+$query = "CREATE TABLE IF NOT EXISTS `custom_columns` (
   `customID` int(10) unsigned NOT NULL,
   `itemID` int(10) unsigned NOT NULL,
   `var` VARCHAR(255) NOT NULL,
@@ -155,7 +155,7 @@ $query="CREATE TABLE IF NOT EXISTS `custom_columns` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `custom_columns_settings` (
+$query = "CREATE TABLE IF NOT EXISTS `custom_columns_settings` (
   `customID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `item` enum('D','G','S','T','U','V') NOT NULL,
@@ -167,7 +167,7 @@ $query="CREATE TABLE IF NOT EXISTS `custom_columns_settings` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `eac` (
+$query = "CREATE TABLE IF NOT EXISTS `eac` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'N',
   `ip` varchar(15) DEFAULT NULL,
@@ -190,7 +190,7 @@ $query="CREATE TABLE IF NOT EXISTS `eac` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `easywi_version` (
+$query = "CREATE TABLE IF NOT EXISTS `easywi_version` (
   `id` smallint(1) unsigned NOT NULL AUTO_INCREMENT,
   `version` decimal(4,2) NOT NULL DEFAULT '3.30',
   `de` text COLLATE utf8_unicode_ci,
@@ -200,7 +200,7 @@ $query="CREATE TABLE IF NOT EXISTS `easywi_version` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `feeds_news` (
+$query = "CREATE TABLE IF NOT EXISTS `feeds_news` (
   `newsID` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `feedID` int(10) unsigned NOT NULL,
   `active` enum('Y','N') DEFAULT 'Y',
@@ -216,7 +216,7 @@ $query="CREATE TABLE IF NOT EXISTS `feeds_news` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `feeds_settings` (
+$query = "CREATE TABLE IF NOT EXISTS `feeds_settings` (
   `settingsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `merge` enum('Y','N') DEFAULT 'Y',
@@ -236,7 +236,7 @@ $query="CREATE TABLE IF NOT EXISTS `feeds_settings` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `feeds_url` (
+$query = "CREATE TABLE IF NOT EXISTS `feeds_url` (
   `feedID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `twitter` enum('Y','N') DEFAULT 'N',
@@ -249,7 +249,7 @@ $query="CREATE TABLE IF NOT EXISTS `feeds_url` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `gserver_restarts` (
+$query = "CREATE TABLE IF NOT EXISTS `gserver_restarts` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `template` smallint(1) unsigned NOT NULL,
   `anticheat` smallint(1) unsigned DEFAULT '1',
@@ -270,7 +270,7 @@ $query="CREATE TABLE IF NOT EXISTS `gserver_restarts` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `gsswitch` (
+$query = "CREATE TABLE IF NOT EXISTS `gsswitch` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `autoRestart` enum('Y','N') DEFAULT 'Y',
@@ -320,7 +320,7 @@ $query="CREATE TABLE IF NOT EXISTS `gsswitch` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `imprints` (
+$query = "CREATE TABLE IF NOT EXISTS `imprints` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `language` varchar(2) NOT NULL,
   `imprint` text COLLATE utf8_unicode_ci,
@@ -330,7 +330,7 @@ $query="CREATE TABLE IF NOT EXISTS `imprints` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `jobs` (
+$query = "CREATE TABLE IF NOT EXISTS `jobs` (
   `jobID` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `hostID` int(10) unsigned NULL,
   `affectedID` int(10) unsigned NULL,
@@ -349,7 +349,7 @@ $query="CREATE TABLE IF NOT EXISTS `jobs` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `lendedserver` (
+$query = "CREATE TABLE IF NOT EXISTS `lendedserver` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `serverid` int(10) unsigned NOT NULL,
   `servertype` varchar(1) NOT NULL DEFAULT 'g',
@@ -366,7 +366,7 @@ $query="CREATE TABLE IF NOT EXISTS `lendedserver` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `lendsettings` (
+$query = "CREATE TABLE IF NOT EXISTS `lendsettings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'N',
   `userGame` enum('A','B','R') NOT NULL DEFAULT 'B',
@@ -408,7 +408,7 @@ $query="CREATE TABLE IF NOT EXISTS `lendsettings` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `lendstats` (
+$query = "CREATE TABLE IF NOT EXISTS `lendstats` (
   `lendDate` datetime NOT NULL,
   `serverID` int(10) unsigned NOT NULL,
   `serverType` enum('v','g') NOT NULL,
@@ -420,7 +420,7 @@ $query="CREATE TABLE IF NOT EXISTS `lendstats` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `mail_log` (
+$query = "CREATE TABLE IF NOT EXISTS `mail_log` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned DEFAULT NULL,
   `topic` varchar(255) NOT NULL,
@@ -432,7 +432,7 @@ $add = $sql->prepare($query);
 $add->execute();
 
 #https://github.com/easy-wi/developer/issues/61 add module management
-$query="CREATE TABLE IF NOT EXISTS `modules` (
+$query = "CREATE TABLE IF NOT EXISTS `modules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `get` varchar(255) NOT NULL,
   `file` varchar(255) NOT NULL,
@@ -445,7 +445,7 @@ $add = $sql->prepare($query);
 $add->execute();
 
 #https://github.com/easy-wi/developer/issues/42 column description added
-$query="CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
+$query = "CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `sid` int(10) unsigned NOT NULL,
@@ -468,7 +468,7 @@ $query="CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
+$query = "CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `ip` varchar(15) NOT NULL,
@@ -487,7 +487,7 @@ $query="CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_comments` (
+$query = "CREATE TABLE IF NOT EXISTS `page_comments` (
   `commentID` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `pageTextID` int(10) unsigned NOT NULL,
   `replyTo` bigint(19) unsigned DEFAULT NULL,
@@ -507,7 +507,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_comments` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_downloads` (
+$query = "CREATE TABLE IF NOT EXISTS `page_downloads` (
   `fileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `show` enum('A','R','N','E') DEFAULT 'E',
   `order` int(10) unsigned,
@@ -522,7 +522,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_downloads` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_downloads_log` (
+$query = "CREATE TABLE IF NOT EXISTS `page_downloads_log` (
   `fileID` int(10) unsigned NOT NULL,
   `date` datetime NOT NULL,
   `ip` varchar(15) NOT NULL,
@@ -533,7 +533,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_downloads_log` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_pages` (
+$query = "CREATE TABLE IF NOT EXISTS `page_pages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `subpage` int(10) unsigned DEFAULT NULL,
   `released` smallint(1) unsigned DEFAULT '1',
@@ -551,7 +551,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_pages` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_pages_text` (
+$query = "CREATE TABLE IF NOT EXISTS `page_pages_text` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pageid` int(10) unsigned NOT NULL,
   `language` varchar(2) CHARACTER SET utf8 NOT NULL,
@@ -564,7 +564,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_pages_text` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_register_questions` (
+$query = "CREATE TABLE IF NOT EXISTS `page_register_questions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `question` varchar(255) DEFAULT NULL,
   `answer` varchar(255) DEFAULT NULL,
@@ -573,7 +573,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_register_questions` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_settings` (
+$query = "CREATE TABLE IF NOT EXISTS `page_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `seo` enum('Y','N') DEFAULT 'N',
@@ -605,7 +605,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_settings` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_terms` (
+$query = "CREATE TABLE IF NOT EXISTS `page_terms` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `language` varchar(2) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -619,7 +619,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_terms` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `page_terms_used` (
+$query = "CREATE TABLE IF NOT EXISTS `page_terms_used` (
   `page_id` int(10) unsigned NOT NULL DEFAULT '0',
   `term_id` int(10) unsigned NOT NULL DEFAULT '0',
   `language_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -629,7 +629,7 @@ $query="CREATE TABLE IF NOT EXISTS `page_terms_used` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `qstatshorten` (
+$query = "CREATE TABLE IF NOT EXISTS `qstatshorten` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `qstat` varchar(15) NOT NULL,
   `description` varchar(50) NOT NULL,
@@ -638,7 +638,7 @@ $query="CREATE TABLE IF NOT EXISTS `qstatshorten` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `resellerdata` (
+$query = "CREATE TABLE IF NOT EXISTS `resellerdata` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `useractive` enum('Y','N') NOT NULL DEFAULT 'Y',
   `ips` text,
@@ -656,7 +656,7 @@ $query="CREATE TABLE IF NOT EXISTS `resellerdata` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `resellerimages` (
+$query = "CREATE TABLE IF NOT EXISTS `resellerimages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `distro` varchar(50) NOT NULL,
@@ -668,7 +668,7 @@ $query="CREATE TABLE IF NOT EXISTS `resellerimages` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `rserverdata` (
+$query = "CREATE TABLE IF NOT EXISTS `rserverdata` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `hyperthreading` enum('Y','N') DEFAULT 'N',
@@ -701,7 +701,7 @@ $query="CREATE TABLE IF NOT EXISTS `rserverdata` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `rservermasterg` (
+$query = "CREATE TABLE IF NOT EXISTS `rservermasterg` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `serverid` varchar(11) NOT NULL,
   `servertypeid` int(10) unsigned DEFAULT NULL,
@@ -715,7 +715,7 @@ $query="CREATE TABLE IF NOT EXISTS `rservermasterg` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `rootsDedicated` (
+$query = "CREATE TABLE IF NOT EXISTS `rootsDedicated` (
   `dedicatedID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `status` smallint(1) unsigned NULL,
@@ -745,7 +745,7 @@ $query="CREATE TABLE IF NOT EXISTS `rootsDedicated` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `rootsDHCP` (
+$query = "CREATE TABLE IF NOT EXISTS `rootsDHCP` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `ip` varchar(15) DEFAULT NULL,
@@ -767,7 +767,7 @@ $query="CREATE TABLE IF NOT EXISTS `rootsDHCP` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `rootsPXE` (
+$query = "CREATE TABLE IF NOT EXISTS `rootsPXE` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `ip` varchar(15) DEFAULT NULL,
@@ -786,7 +786,7 @@ $query="CREATE TABLE IF NOT EXISTS `rootsPXE` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `serverlist` (
+$query = "CREATE TABLE IF NOT EXISTS `serverlist` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `switchID` int(10) unsigned NOT NULL,
   `servertype` int(10) unsigned NOT NULL,
@@ -816,7 +816,7 @@ $query="CREATE TABLE IF NOT EXISTS `serverlist` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `servertypes` (
+$query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `steamgame` enum('Y','N','S') NOT NULL DEFAULT 'Y',
   `appID` int(10) unsigned,
@@ -858,14 +858,15 @@ $query="CREATE TABLE IF NOT EXISTS `servertypes` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `settings` (
+$query = "CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `version` decimal(4,2) DEFAULT '3.30',
+  `version` decimal(4,2) DEFAULT '4.10',
   `releasenotesDE` INT(11) unsigned NULL,
   `releasenotesEN` INT(11) unsigned NULL,
   `language` varchar(2) NOT NULL,
   `template` varchar(50) DEFAULT 'default',
   `imageserver` blob,
+  `cronjob_ips` text,
   `licence` text,
   `master` enum('Y','N') NOT NULL DEFAULT 'N',
   `voice_autobackup` enum('Y','N') DEFAULT 'Y',
@@ -920,7 +921,7 @@ $query="CREATE TABLE IF NOT EXISTS `settings` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `tickets` (
+$query = "CREATE TABLE IF NOT EXISTS `tickets` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `writedate` datetime DEFAULT NULL,
   `topic` varchar(30) DEFAULT NULL,
@@ -937,7 +938,7 @@ $query="CREATE TABLE IF NOT EXISTS `tickets` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `tickets_text` (
+$query = "CREATE TABLE IF NOT EXISTS `tickets_text` (
   `ticketID` bigint(19) unsigned DEFAULT NULL,
   `userID` int(10) unsigned NOT NULL,
   `writeDate` datetime DEFAULT NULL,
@@ -948,7 +949,7 @@ $query="CREATE TABLE IF NOT EXISTS `tickets_text` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `ticket_topics` (
+$query = "CREATE TABLE IF NOT EXISTS `ticket_topics` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `topic` varchar(30) NOT NULL,
   `maintopic` int(10) unsigned DEFAULT NULL,
@@ -959,7 +960,7 @@ $query="CREATE TABLE IF NOT EXISTS `ticket_topics` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `traffic_data` (
+$query = "CREATE TABLE IF NOT EXISTS `traffic_data` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `serverid` bigint(19) unsigned DEFAULT NULL,
   `ip` varchar(15) DEFAULT NULL,
@@ -973,7 +974,7 @@ $query="CREATE TABLE IF NOT EXISTS `traffic_data` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `traffic_data_day` (
+$query = "CREATE TABLE IF NOT EXISTS `traffic_data_day` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `serverid` bigint(19) unsigned DEFAULT NULL,
   `ip` varchar(15) DEFAULT NULL,
@@ -987,7 +988,7 @@ $query="CREATE TABLE IF NOT EXISTS `traffic_data_day` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `traffic_settings` (
+$query = "CREATE TABLE IF NOT EXISTS `traffic_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(30) NOT NULL DEFAULT 'mysql',
   `statip` varchar(50) DEFAULT NULL,
@@ -1026,7 +1027,7 @@ $query="CREATE TABLE IF NOT EXISTS `traffic_settings` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `translations` (
+$query = "CREATE TABLE IF NOT EXISTS `translations` (
   `type` varchar(2) NOT NULL,
   `lang` varchar(2) NOT NULL,
   `transID` varchar(255) NOT NULL,
@@ -1037,7 +1038,7 @@ $query="CREATE TABLE IF NOT EXISTS `translations` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `userdata` (
+$query = "CREATE TABLE IF NOT EXISTS `userdata` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `creationTime` datetime,
   `updateTime` datetime,
@@ -1081,7 +1082,7 @@ $add = $sql->prepare($query);
 $add->execute();
 
 #https://github.com/easy-wi/developer/issues/5
-$query="CREATE TABLE IF NOT EXISTS `userdata_value_log` (
+$query = "CREATE TABLE IF NOT EXISTS `userdata_value_log` (
   `userID` int(10) unsigned NOT NULL,
   `date` datetime NOT NULL,
   `json` text NOT NULL,
@@ -1092,7 +1093,7 @@ $add = $sql->prepare($query);
 $add->execute();
 
 #https://github.com/easy-wi/developer/issues/2
-$query="CREATE TABLE IF NOT EXISTS `userdata_substitutes` (
+$query = "CREATE TABLE IF NOT EXISTS `userdata_substitutes` (
   `sID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userID` int(10) unsigned NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -1110,7 +1111,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata_substitutes` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `userdata_substitutes_servers` (
+$query = "CREATE TABLE IF NOT EXISTS `userdata_substitutes_servers` (
   `sID` int(10) unsigned NOT NULL,
   `oType` varchar(2) NOT NULL,
   `oID` int(10) unsigned NOT NULL,
@@ -1120,7 +1121,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata_substitutes_servers` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `userdata_groups` (
+$query = "CREATE TABLE IF NOT EXISTS `userdata_groups` (
   `userID` int(10) unsigned NOT NULL,
   `groupID` int(10) unsigned NOT NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
@@ -1129,7 +1130,7 @@ $query="CREATE TABLE IF NOT EXISTS `userdata_groups` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `usergroups` (
+$query = "CREATE TABLE IF NOT EXISTS `usergroups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `defaultgroup` enum('Y','N') DEFAULT 'N',
   `active` enum('Y','N') DEFAULT 'Y',
@@ -1194,7 +1195,7 @@ $query="CREATE TABLE IF NOT EXISTS `usergroups` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `userlog` (
+$query = "CREATE TABLE IF NOT EXISTS `userlog` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
   `subuser` int(10) unsigned DEFAULT 0,
@@ -1211,7 +1212,7 @@ $query="CREATE TABLE IF NOT EXISTS `userlog` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `userpermissions` (
+$query = "CREATE TABLE IF NOT EXISTS `userpermissions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `root` enum('Y','N') NOT NULL DEFAULT 'N',
   `log` enum('Y','N') DEFAULT 'N',
@@ -1256,7 +1257,7 @@ $query="CREATE TABLE IF NOT EXISTS `userpermissions` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `virtualcontainer` (
+$query = "CREATE TABLE IF NOT EXISTS `virtualcontainer` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `imageid` int(10) unsigned DEFAULT NULL,
   `userid` int(10) unsigned DEFAULT NULL,
@@ -1287,7 +1288,7 @@ $query="CREATE TABLE IF NOT EXISTS `virtualcontainer` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `virtualhosts` (
+$query = "CREATE TABLE IF NOT EXISTS `virtualhosts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `esxi` enum('Y','N') DEFAULT 'N',
@@ -1314,7 +1315,7 @@ $query="CREATE TABLE IF NOT EXISTS `virtualhosts` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `voice_dns` (
+$query = "CREATE TABLE IF NOT EXISTS `voice_dns` (
   `dnsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `dns` varchar(255) DEFAULT NULL,
@@ -1331,7 +1332,7 @@ $add = $sql->prepare($query);
 $add->execute();
 
 // https://github.com/easy-wi/developer/issues/36 managedByUser, managedForID added
-$query="CREATE TABLE IF NOT EXISTS `voice_masterserver` (
+$query = "CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `type` varchar(30) NOT NULL DEFAULT 'ts3',
@@ -1375,7 +1376,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_masterserver` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `voice_server` (
+$query = "CREATE TABLE IF NOT EXISTS `voice_server` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `autoRestart` enum('Y','N') DEFAULT 'Y',
@@ -1420,7 +1421,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_server` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `voice_server_backup` (
+$query = "CREATE TABLE IF NOT EXISTS `voice_server_backup` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `sid` int(10) unsigned NOT NULL,
   `uid` int(10) unsigned DEFAULT NULL,
@@ -1434,7 +1435,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_server_backup` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `voice_server_stats` (
+$query = "CREATE TABLE IF NOT EXISTS `voice_server_stats` (
   `sid` int(10) unsigned NOT NULL,
   `mid` int(10) unsigned NOT NULL,
   `installed` decimal(6,2) unsigned NOT NULL,
@@ -1448,7 +1449,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_server_stats` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `voice_server_stats_hours` (
+$query = "CREATE TABLE IF NOT EXISTS `voice_server_stats_hours` (
   `sid` int(10) unsigned NOT NULL,
   `mid` int(10) unsigned NOT NULL,
   `installed` decimal(6,2) unsigned NOT NULL,
@@ -1462,7 +1463,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_server_stats_hours` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
+$query = "CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `text_colour_1` smallint(3) unsigned DEFAULT '0',
   `text_colour_2` smallint(3) unsigned DEFAULT '0',
@@ -1488,7 +1489,7 @@ $query="CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query="CREATE TABLE IF NOT EXISTS `voice_tsdns` (
+$query = "CREATE TABLE IF NOT EXISTS `voice_tsdns` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `defaultdns` varchar(255) DEFAULT NULL,

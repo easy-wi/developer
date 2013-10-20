@@ -203,67 +203,73 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10, 'get') and in_array($ui->sma
 
 		$protected = $row['protected'];
         $description = $row['queryName'];
-		if ($protected== 'Y') {
-            $query2 = $sql->prepare("SELECT a.`addon_id`,t.`menudescription`,t.`depending`,t.`type` FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` AND a.`reseller_id`=t.`resellerid` WHERE t.`active`='Y' AND t.`paddon`='Y' AND a.`servertype_id`=? AND a.`reseller_id`=? ORDER BY t.`depending`,t.`menudescription`");
-		} else {
-            $query2 = $sql->prepare("SELECT a.`addon_id`,t.`menudescription`,t.`depending`,t.`type` FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` AND a.`reseller_id`=t.`resellerid` WHERE t.`active`='Y' AND a.`servertype_id`=? AND a.`reseller_id`=? ORDER BY t.`depending`,t.`menudescription`");
-		}
+
+		$query2 =  ($protected== 'Y') ? $sql->prepare("SELECT a.`addon_id`,t.`menudescription`,t.`depending`,t.`type` FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` AND a.`reseller_id`=t.`resellerid` WHERE t.`active`='Y' AND t.`paddon`='Y' AND a.`servertype_id`=? AND a.`reseller_id`=? ORDER BY t.`depending`,t.`menudescription`") : $sql->prepare("SELECT a.`addon_id`,t.`menudescription`,t.`depending`,t.`type` FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` AND a.`reseller_id`=t.`resellerid` WHERE t.`active`='Y' AND a.`servertype_id`=? AND a.`reseller_id`=? ORDER BY t.`depending`,t.`menudescription`");
         $query2->execute(array($row['servertype_id'], $reseller_id));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
+            $descriptionrow = '';
+            $lang = '';
+            $delete = '';
+
 			$adid = $row2['addon_id'];
 			$depending = $row2['depending'];
 			$menudescription = $row2['menudescription'];
-			$descriptionrow = '';
-			$lang = '';
+
 			$query3 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
             $query3->execute(array($adid, $user_language, $reseller_id));
             $descriptionrow = $query3->fetchColumn();
+
 			if (empty($descriptionrow)) {
                 $query3 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
                 $query3->execute(array($adid, $default_language, $reseller_id));
                 $descriptionrow = $query->fetchColumn();
 			}
-            $addescription=nl2br($descriptionrow);
-            if ($protected == 'Y') {
-                $query3 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `paddon`='Y' AND `resellerid`=? LIMIT 1");
-            } else {
-                $query3 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
-            }
+            $addescription = nl2br($descriptionrow);
+
+            $query3 =  ($protected == 'Y') ? $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `paddon`='Y' AND `resellerid`=? LIMIT 1") : $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($user_id, $serverid, $adid, $servertemplate, $reseller_id));
             $installedid = $query3->fetchColumn();
-            $delete = '';
-            if (isid($installedid,19)){
-                $imgName='16_delete';
-                $imgAlt='Remove';
-                $bootstrap='icon-remove-sign';
-                $action='dl';
-                $delete='&amp;rid='.$installedid;
+
+            if (isid($installedid, 19)){
+                $imgName = '16_delete';
+                $imgAlt = 'Remove';
+                $bootstrap = 'icon-remove-sign';
+                $action = 'dl';
+                $delete = '&amp;rid=' . $installedid;
+
             } else {
                 $query3 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `servertemplate`=? AND `addonid`=? AND `resellerid`=?");
                 $query3->execute(array($user_id, $serverid, $servertemplate, $depending, $reseller_id));
                 $colcount = $query3->rowcount();
-                if ($row2['type'] == 'map' or $depending==0 or ($depending>0 and $colcount>0)) {
-                    $action='ad';
-                    $imgName='16_add';
-                    $bootstrap='icon-plus-sign';
-                    $imgAlt='Install';
+
+                if ($row2['type'] == 'map' or $depending == 0 or ($depending > 0 and $colcount > 0)) {
+                    $action = 'ad';
+                    $imgName = '16_add';
+                    $bootstrap = 'icon-plus-sign';
+                    $imgAlt = 'Install';
                 } else {
-                    $action='none';
+                    $action = 'none';
                     $query3 = $sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query3->execute(array($depending, $reseller_id));
-                    $imgName='16_notice';
-                    $bootstrap='icon-warning-sign';
+                    $imgName = '16_notice';
+                    $bootstrap = 'icon-warning-sign';
                     $imgAlt = $sprache->requires. ': ' .$query3->fetchColumn();
                 }
+
             }
+
             $link='userpanel.php?w=ao&amp;id=' . $switchID . '&amp;adid=' . $adid . '&amp;action=' . $action . $delete . '&amp;r=gs';
+
             if ($row2['type'] == 'tool') {
-                $table2[] = array('adid' => $adid,'menudescription' => $menudescription,'addescription' => $addescription,'installedid' => $installedid,'img' => $imgName,'bootstrap' => $bootstrap,'alt' => $imgAlt,'link' => $link);
+                $table2[] = array('adid' => $adid, 'menudescription' => $menudescription, 'addescription' => $addescription, 'installedid' => $installedid, 'img' => $imgName, 'bootstrap' => $bootstrap, 'alt' => $imgAlt, 'link' => $link);
             } else if ($row2['type'] == 'map') {
-                $table3[] = array('adid' => $adid,'menudescription' => $menudescription,'addescription' => $addescription,'installedid' => $installedid,'img' => $imgName,'bootstrap' => $bootstrap,'alt' => $imgAlt,'link' => $link);
+                $table3[] = array('adid' => $adid, 'menudescription' => $menudescription, 'addescription' => $addescription, 'installedid' => $installedid, 'img' => $imgName, 'bootstrap' => $bootstrap, 'alt' => $imgAlt, 'link' => $link);
             }
+
 		}
-		$table=array('id' => $switchID,'serverip' => $serverip,'port' => $serverport,'tools' => $table2,'maps' => $table3,'name' => $description);
+
+		$table = array('id' => $switchID, 'serverip' => $serverip, 'port' => $serverport, 'tools' => $table2, 'maps' => $table3, 'name' => $description);
         unset($table2, $table3);
 	}			
 	$template_file = 'userpanel_gserver_addon.tpl';

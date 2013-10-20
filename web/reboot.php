@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: reboot.php.
  * Author: Ulrich Block
@@ -35,28 +36,28 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-
 if (isset($_SERVER['REMOTE_ADDR'])) {
     $ip = $_SERVER['REMOTE_ADDR'];
     $timelimit = (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? $_GET['timeout'] : ini_get('max_execution_time') - 10;
     
 } else {
-    $timelimit=600;
+    $timelimit = 600;
 }
 
 set_time_limit($timelimit);
 
-if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
-    define('EASYWIDIR', dirname(__FILE__));
-    include(EASYWIDIR . '/stuff/vorlage.php');
-    include(EASYWIDIR . '/stuff/class_validator.php');
-    include(EASYWIDIR . '/stuff/functions.php');
-    include(EASYWIDIR . '/stuff/settings.php');
-    include(EASYWIDIR . '/stuff/ssh_exec.php');
-    include(EASYWIDIR . '/stuff/class_masterserver.php');
-    include(EASYWIDIR . '/stuff/class_voice.php');
-    include(EASYWIDIR . '/stuff/queries_updates.php');
-    include(EASYWIDIR . '/stuff/keyphrasefile.php');
+define('EASYWIDIR', dirname(__FILE__));
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/class_masterserver.php');
+include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/queries_updates.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
+if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
     
     echo "Reboot and Updater started\r\n";    
 
@@ -381,9 +382,14 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                             }
                         }
                     }
+
                     $ssh2 = null;
-                    $connection->CloseConnection();
+                    if (isset($connection) and is_object($connection)) {
+                        $connection->CloseConnection();
+                    }
+
                     usleep(500000);
+
                 } else {
                     print "Error: Cannot connect to masterserver $queryip\r\n";
                 }

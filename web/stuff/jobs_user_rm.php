@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: jobs_user_rm.php.
  * Author: Ulrich Block
@@ -55,21 +56,69 @@ $query = $sql->prepare("SELECT * FROM `jobs` j WHERE `status`='4' AND `type`='us
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $ok = true;
+
     if ($row['action'] == 'dl') {
         $query2 = $sql->prepare("SELECT `accounttype`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             if ($row2['accounttype'] == 'r') {
-                removeUser($row['affectedID'], array('userdata' => 'id','userpermissions' => 'userid'));
-                $tables=array('addons' => 'resellerid','addons_installed' => 'resellerid','gsswitch' => 'resellerid','rserverdata' => 'resellerid','rservermasterg' => 'resellerid','serverlist' => 'resellerid',
-                    'servertypes' => 'resellerid','settings' => 'resellerid','tickets' => 'resellerid','ticket_topics' => 'resellerid','userdata' => 'resellerid','userpermissions' => 'resellerid','userlog' => 'resellerid','resellerdata' => 'resellerid',
-                    'gserver_restarts' => 'resellerid','eac' => 'resellerid','imprints' => 'resellerid','lendedserver' => 'resellerid','lendsettings' => 'resellerid','lendstats' => 'resellerID','voice_server' => 'resellerid','voice_masterserver' => 'resellerid',
-                    'translations' => 'resellerID','voice_server_stats' => 'resellerid','voice_server_stats_hours' => 'resellerid','voice_stats_settings' => 'resellerid','mysql_external_servers' => 'resellerid','mysql_external_dbs' => 'resellerid','usergroups' => 'resellerid',
-                    'api_ips' => 'resellerID','api_settings' => 'resellerID','voice_tsdns' => 'resellerid','voice_dns' => 'resellerID');
+
+                removeUser($row['affectedID'], array(
+                    'userdata' => 'id',
+                    'userpermissions' => 'userid'
+                    )
+                );
+
+                $tables = array(
+                    'addons' => 'resellerid',
+                    'addons_installed' => 'resellerid',
+                    'addons_allowed' => 'reseller_id',
+                    'gsswitch' => 'resellerid',
+                    'rserverdata' => 'resellerid',
+                    'rservermasterg' => 'resellerid',
+                    'serverlist' => 'resellerid',
+                    'servertypes' => 'resellerid',
+                    'settings' => 'resellerid',
+                    'tickets' => 'resellerid',
+                    'ticket_topics' => 'resellerid',
+                    'userdata' => 'resellerid',
+                    'userpermissions' => 'resellerid',
+                    'userlog' => 'resellerid',
+                    'resellerdata' => 'resellerid',
+                    'gserver_restarts' => 'resellerid',
+                    'eac' => 'resellerid',
+                    'imprints' => 'resellerid',
+                    'lendedserver' => 'resellerid',
+                    'lendsettings' => 'resellerid',
+                    'lendstats' => 'resellerID',
+                    'voice_server' => 'resellerid',
+                    'voice_masterserver' => 'resellerid',
+                    'translations' => 'resellerID',
+                    'voice_server_stats' => 'resellerid',
+                    'voice_server_stats_hours' => 'resellerid',
+                    'voice_stats_settings' => 'resellerid',
+                    'mysql_external_servers' => 'resellerid',
+                    'mysql_external_dbs' => 'resellerid',
+                    'usergroups' => 'resellerid',
+                    'api_ips' => 'resellerID',
+                    'api_settings' => 'resellerID',
+                    'voice_tsdns' => 'resellerid',
+                    'voice_dns' => 'resellerID'
+                );
                 removeUser($row['affectedID'],$tables);
+
                 if ($row2['resellerid'] == $row['affectedID']) {
-                    removeUser($row['affectedID'], array('traffic_data' => 'userid','traffic_data_day' => 'userid'));
-                    removeUser($row['affectedID'], array('traffic_data' => 'resellerid','traffic_data_day' => 'resellerid'));
+                    removeUser($row['affectedID'], array(
+                        'traffic_data' => 'userid',
+                        'traffic_data_day' => 'userid'
+                        )
+                    );
+
+                    removeUser($row['affectedID'], array(
+                        'traffic_data' => 'resellerid',
+                        'traffic_data_day' => 'resellerid'
+                        )
+                    );
                 }
             }
         }
@@ -77,8 +126,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $query2 = $sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         $command = $gsprache->del.' userID: '.$row['affectedID'].' name:'.$row['name'];
+
     } else {
-        $extraData=@json_decode($row['extraData']);
+        $extraData = @json_decode($row['extraData']);
         if (is_object($extraData)) {
             $query2 = $sql->prepare("UPDATE `userdata` SET `active`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
             $query2->execute(array($extraData->newActive, $row['affectedID']));
@@ -88,37 +138,28 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $command='Error: '.$gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
         }
     }
+
     if ($ok == true) {
         $query2 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
         $query2->execute(array($row['jobID']));
     }
+
     $theOutput->printGraph($command);
 }
-$query = $sql->prepare("DELETE p.* FROM `userpermissions` p LEFT JOIN `userdata` u ON p.`userid`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE g.* FROM `userdata_groups` g LEFT JOIN `userdata` u ON g.`userID`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE s.* FROM `userdata_substitutes` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata_substitutes` s ON o.`sID`=s.`sID` WHERE s.`sID` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE d.* FROM `mysql_external_dbs` d LEFT JOIN `userdata` u ON d.`uid`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE v.* FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE v.* FROM `voice_dns` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
-$query = $sql->prepare("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
-$query->execute();
+
+// following queries will clean up the database. In case we have a NULL value joining failed and the entry needs to be removed.
+$sql->exec("DELETE p.* FROM `userpermissions` p LEFT JOIN `userdata` u ON p.`userid`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE g.* FROM `userdata_groups` g LEFT JOIN `userdata` u ON g.`userID`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE s.* FROM `userdata_substitutes` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata_substitutes` s ON o.`sID`=s.`sID` WHERE s.`sID` IS NULL");
+$sql->exec("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
+$sql->exec("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
+$sql->exec("DELETE a.* FROM `addons` a LEFT JOIN `userdata` u ON a.`resellerid`=u.`id` WHERE a.`resellerid` IS NULL OR (a.`resellerid`!=0 AND u.`id` IS NULL)");
+$sql->exec("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` LEFT JOIN `userdata` u ON a.`userid`=u.`id` LEFT JOIN `addons` t ON a.`addonid`=t.`id` WHERE s.`id` IS NULL OR u.`id` IS NULL");
+$sql->exec("DELETE a.* FROM `addons_allowed` a LEFT JOIN `userdata` u ON a.`reseller_id`=u.`id` LEFT JOIN `addons` t ON a.`addon_id`=t.`id` WHERE a.`reseller_id` IS NULL OR (a.`reseller_id`!=0 AND u.`id` IS NULL) OR t.`id` IS NULL");
+$sql->exec("DELETE d.* FROM `mysql_external_dbs` d LEFT JOIN `userdata` u ON d.`uid`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE v.* FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE v.* FROM `voice_dns` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");

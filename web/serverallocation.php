@@ -70,11 +70,11 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 } else if ($die == true) {
     redirect('login.php');
 
-} else if ($ui->username('mapgroup','50', 'get')) {
+} else if ($ui->username('mapgroup', 50, 'get')) {
     $sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 
     $query = $sql->prepare("SELECT `mapGroup` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-    $query->execute(array($ui->username('mapgroup','50', 'get'), $reseller_id));
+    $query->execute(array($ui->username('mapgroup', 50, 'get'), $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['mapGroup'] != null) {
             $mapGroup = $row['mapGroup'];
@@ -282,9 +282,9 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl');
-} else if ($ui->username('distro','50', 'get') and $ui->id('id',19, 'get') and ($pa['vserversettings'] or $pa['root']) and $reseller_id == 0) {
+} else if ($ui->username('distro', 50, 'get') and $ui->id('id',19, 'get') and ($pa['vserversettings'] or $pa['root']) and $reseller_id == 0) {
 	$pselect = $sql->prepare("SELECT `pxeautorun` FROM `resellerimages` WHERE `bitversion`=? AND `distro`=?");
-	$pselect->execute(array($ui->id('id',19, 'get'), $ui->username('distro','50', 'get')));
+	$pselect->execute(array($ui->id('id',19, 'get'), $ui->username('distro', 50, 'get')));
 	$usedpxeautorun = array();
 	foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$usedpxeautorun[] = $row['pxeautorun'];
@@ -307,7 +307,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 ?>
 </select>
 <?php 
-} else if (($ui->username('short','50', 'get') or $ui->username('shorten','50', 'get')) and $pa['restart']) {
+} else if (($ui->username('short', 50, 'get') or $ui->username('shorten', 50, 'get')) and $pa['restart']) {
 	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {
 		$reseller_id = $admin_id;
@@ -345,48 +345,63 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 ?>
 <select name="anticheat">
 	<option value="1"><?php echo $anticheatsoft . '  ' . $sprache->on;?></option>
-	<?php if (!$ui->username('short','50', 'get')){ ?><option value="2" <?php if ($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft . '  ' . $sprache->off2;?></option><?php } ?>
+	<?php if (!$ui->username('short', 50, 'get')){ ?><option value="2" <?php if ($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft . '  ' . $sprache->off2;?></option><?php } ?>
 	<?php echo $eac;?>
 </select>
 <?php
-} else if ($ui->username('gamestring','50', 'get') and $ui->id('id',19, 'get') and ($pa['roots'] or $pa['root'])) {
+
+} else if ($ui->username('gamestring', 50, 'get') and $ui->id('id',19, 'get') and ($pa['roots'] or $pa['root'])) {
+
+    include(EASYWIDIR . '/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/class_masterserver.php');
+    include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 	$sprache = getlanguagefile('roots', $user_language, $reseller_id);
+
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {
 		$reseller_id = $admin_id;
 	}
-	include(EASYWIDIR . '/stuff/ssh_exec.php');
-    include(EASYWIDIR . '/stuff/class_masterserver.php');
-	include(EASYWIDIR . '/stuff/keyphrasefile.php');
-    $rootServer=new masterServer($ui->id('id', 10, 'get'), $aeskey);
-    $games=explode("_", $ui->username('gamestring','50', 'get'));
+
+    $rootServer = new masterServer($ui->id('id', 10, 'get'), $aeskey);
+
     $i = 1;
     $gamelist = array();
-    $count=count($games);
-	while ($i<$count) {
+    $games = explode('_', $ui->username('gamestring', 50, 'get'));
+    $count = count($games);
+    $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+
+	while ($i < $count) {
+
         if ($games[$i] != '' and !in_array($games[$i], $gamelist)) {
             $gamelist[] = $games[$i];
-            $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($games[$i], $reseller_id));
             $typeID = $query->fetchColumn();
-            $rootServer->collectData($typeID,true);
+            $rootServer->collectData($typeID, true);
         }
+
 		$i++;
 	}
-    $sshcmd = $rootServer->returnCmds('install','all');
-    if ($rootServer->sshcmd===null) {
+
+    $sshcmd = $rootServer->returnCmds('install', 'all');
+
+    if ($rootServer->sshcmd === null) {
         echo 'Nothing to update/sync!';
     } else {
+
         if (ssh2_execute('gs', $ui->id('id', 10, 'get'), $rootServer->sshcmd) === false) {
-            echo $sprache->error_root_updatemaster." ( ".implode(", ", $gamelist)." ) ( $start )";
+            echo $sprache->error_root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
         } else {
             $rootServer->setUpdating();
-            echo $sprache->root_updatemaster." ( ".implode(", ", $gamelist)." )";
+            echo $sprache->root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
         }
+
         if (isset($debug) and $debug == 1) {
             echo '<br>' . implode('<br>', $rootServer->sshcmd);
         }
     }
+
 } else if (($pa['voiceserver'] or $pa['voiceserver']) and $ui->st('d', 'get')=="vo" and $ui->id('id',19, 'get')) {
+
 	$sprache = getlanguagefile('voice', $user_language, $reseller_id);
 	$query = $sql->prepare("SELECT m.`maxserver`,COUNT(v.`id`) AS `installedserver`,m.`maxslots`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`resellerid`=? LIMIT 1");
 	$query->execute(array($ui->id('id',19, 'get'), $reseller_id));

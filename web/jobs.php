@@ -40,42 +40,51 @@
 
 if (isset($_SERVER['REMOTE_ADDR'])) {
     $ip = $_SERVER['REMOTE_ADDR'];
-    $timelimit=ini_get('max_execution_time')-10;
+    $timelimit = ini_get('max_execution_time') - 10;
 } else {
-    $timelimit=600;
+    $timelimit = 600;
 }
-
+$deamon = false;
 if (isset($argv)) {
     $args = array();
     foreach ($argv as $a) {
-        if ($a == 'deamon') $deamon = true;
-        else if (is_numeric($a)) $sleep = $a;
-        else {
+        if ($a == 'deamon') {
+            $deamon = true;
+        } else if (is_numeric($a)) {
+            $sleep = $a;
+        } else {
             $e=explode(':',$a);
             if (isset($e[1])) $args[$e[0]] = $e[1];
         }
     }
-    if (!isset($deamon)) {
+
+    if ($deamon == false) {
         print 'Running job management as cronjob'."\r\n";
-        $deamon = false;
         set_time_limit($timelimit);
     } else {
         print 'Running job management as Deamon'."\r\n";
     }
-    if (!isset($sleep)) $sleep=60;
+
+    if (!isset($sleep)) {
+        $sleep = 60;
+    }
 }
-if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
-    define('EASYWIDIR', dirname(__FILE__));
-    include(EASYWIDIR . '/stuff/vorlage.php');
-    include(EASYWIDIR . '/stuff/functions.php');
-    include(EASYWIDIR . '/stuff/class_validator.php');
-    include(EASYWIDIR . '/stuff/class_rootserver.php');
-    include(EASYWIDIR . '/stuff/settings.php');
-    include(EASYWIDIR . '/stuff/ssh_exec.php');
-    include(EASYWIDIR . '/stuff/class_voice.php');
-    include(EASYWIDIR . '/stuff/mysql_functions.php');
-	include(EASYWIDIR . '/stuff/keyphrasefile.php');
-    $gsprache = getlanguagefile('general','uk',0);
+
+define('EASYWIDIR', dirname(__FILE__));
+
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/class_rootserver.php');
+include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/mysql_functions.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
+if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
+    $gsprache = getlanguagefile('general', 'uk', 0);
+
     class runGraph {
         private $jobsDone = 0;
         private $startTime = 0;
@@ -136,67 +145,69 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             unset($this->jobsDone,$this->startTime,$this->newLine,$this->jobCount,$this->spinnerCount,$this->spinners,$this->spinner,$this->oneJobPercent);
         }
     }
+
     $runJobs = true;
+
     if (isset($ip)) {
-        $newLine="\r\n";
+        $newLine = "\r\n";
     } else {
-        $newLine="\r";
+        $newLine = "\r";
     }
+
+    $counJobs = $sql->prepare("SELECT COUNT(`jobID`) AS `jobCount` FROM `jobs` WHERE `status` IS NULL OR `status`='1'");
     while ($runJobs == true) {
-        $countp = $sql->prepare("SELECT COUNT(`jobID`) AS `jobCount` FROM `jobs` WHERE `status` IS NULL OR `status`='1'");
-        $countp->execute();
-        $jobCount = $countp->rowCount();
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
         print 'Total jobs open: '.$jobCount.'. Cleaning up outdated and duplicated entries'."\r\n";
         updateStates('dl','us');
         updateStates('dl');
         updateStates('ad');
         updateStates('md');
-        $countp->execute();
-        $jobCount = $countp->rowCount();
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
         print "\r\n".'Total jobs open after cleanup: '.$jobCount."\r\n";
         print 'Executing user cleanup jobs'."\r\n";
         $startTime=strtotime('now');
         $theOutput=new runGraph($jobCount,$newLine);
         # us > vo > gs > my > vs
         include(EASYWIDIR . '/stuff/jobs_user.php');
-        $countp->execute();
-        $jobCount = $countp->rowCount();
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after user cleanup jobs are done: '.$jobCount."\r\n";
         print 'Executing voice jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_voice.php');
-        $countp->execute();
-        $jobCount = $countp->rowCount();
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after voice jobs are done: '.$jobCount."\r\n";
         print 'Executing TS DNS jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_tsdns.php');
-        $countp->execute();
-        $jobCount = $countp->rowCount();
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after TS DNS jobs are done: '.$jobCount."\r\n";
         print 'Executing mysql jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_mysql.php');
-        $countp->execute();
-        $jobCount = $countp->rowCount();
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after mysql jobs are done: '.$jobCount."\r\n";
         print 'Executing gameserver jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_gserver.php');
-        $countp->execute();
-        $jobCount = $countp->rowCount();
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after gameserver jobs are done: '.$jobCount."\r\n";
         print 'Executing root server jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_roots.php');
-        $countp->execute();
-        $jobCount = $countp->rowCount();
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n".'Total jobs open after root server jobs are done: '.$jobCount."\r\n";
         print 'Executing user remove jobs'."\r\n";
         include(EASYWIDIR . '/stuff/jobs_user_rm.php');
         print "\n";
-        $test='ech';
         if ($deamon == true) {
             $sql = null;
             $theOutput = null;

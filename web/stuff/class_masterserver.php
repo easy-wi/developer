@@ -507,12 +507,15 @@ class masterServer {
                 $steamCmd .= $val . ' ' . workAroundForValveChaos($key, $val, false) . ' ';
                 
             } else {
-                list($appID)=explode('-', $key);
+                list($appID) = explode('-', $key);
                 $steamCmd .= $val . ' ' . workAroundForValveChaos($appID, $val, false) . ' ';
             }
         }
+
         return $steamCmd;
+
     }
+
     function __destruct() {
         unset($this->updateIDs, $this->aeskey, $this->imageserver, $this->resellerID, $this->webhost, $this->rootID, $this->steamAccount, $this->steamPassword, $this->sship, $this->sshport, $this->sshuser, $this->sshpass, $this->publickey, $this->keyname, $this->syncList, $this->steamCmdTotal, $this->steamCmdOutdated, $this->hldsTotal, $this->hldsOutdated, $this->noSteam, $this->maps, $this->addons, $this->sshcmd);
     }

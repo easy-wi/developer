@@ -219,6 +219,12 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputCronjobIPs">Cronjob IPs</label>
+                <div class="controls">
+                    <textarea class="span10" id="inputCronjobIPs" name="cronjobIPs" rows="8"><?php echo $cronjobIPs;?></textarea>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label"><?php echo $gsprache->imprint;?></label>
                 <div class="controls">
                     <?php foreach ($foundlanguages as $array) { ?>
@@ -232,7 +238,7 @@
             <div id="<?php echo $array['lang'];?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
                 <label class="control-label" for="inputImprint<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                 <div class="controls">
-                    <textarea class="span10" id="inputImprint<?php echo $array['lang'];?>" name="description_<?php echo $array['lang'];?>" rows="8"><?php echo $array['imprint'];?></textarea>
+                    <textarea class="span10" id="inputImprint<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]" rows="8"><?php echo $array['imprint'];?></textarea>
                 </div>
             </div>
             <?php } ?>

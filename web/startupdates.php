@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: startupdates.php.
  * Author: Ulrich Block
@@ -36,27 +37,26 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
 if (isset($_SERVER['REMOTE_ADDR'])) {
     $ip = $_SERVER['REMOTE_ADDR'];
-    if (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) {
-        $timelimit = $_GET['timeout'];
-    } else {
-        $timelimit=ini_get('max_execution_time')-10;
-    }
+    $timelimit = (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? $_GET['timeout'] : ini_get('max_execution_time') - 10;
 } else {
-    $timelimit=600;
+    $timelimit = 600;
 }
 set_time_limit($timelimit);
-if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
-    define('EASYWIDIR', dirname(__FILE__));
+
+define('EASYWIDIR', dirname(__FILE__));
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/class_masterserver.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
+if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
     echo "Start Syncs and Updates loading...\r\n";
-    include(EASYWIDIR . '/stuff/vorlage.php');
-    include(EASYWIDIR . '/stuff/class_validator.php');
-    include(EASYWIDIR . '/stuff/functions.php');
-    include(EASYWIDIR . '/stuff/settings.php');
-    include(EASYWIDIR . '/stuff/ssh_exec.php');
-    include(EASYWIDIR . '/stuff/class_masterserver.php');
-    include(EASYWIDIR . '/stuff/keyphrasefile.php');
     $currentHour=date('G');
     $currentMinute=(int)date('i');
     $query = $sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
@@ -71,7 +71,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     $query2 = $sql->prepare("UPDATE `rserverdata` SET `alreadyStartedAt`=? WHERE `id`=? LIMIT 1");
     $query->execute(array($currentHour,$lastUpdateRun,($currentMinute+1)));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $rootServer=new masterServer($row['id'],$aeskey);
+        $rootServer = new masterServer($row['id'],$aeskey);
         $rootServer->collectData();
         echo "Starting updates for ".$rootServer->sship."\r\n";
         $sshcmd = $rootServer->returnCmds();

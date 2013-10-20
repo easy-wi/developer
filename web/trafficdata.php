@@ -36,12 +36,9 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-ini_set('display_errors',1);
-error_reporting(E_ALL|E_STRICT);
-
 if (isset($_SERVER['REMOTE_ADDR'])) {
-	$remoteip = $_SERVER['REMOTE_ADDR'];
-
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $timelimit = (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? $_GET['timeout'] : ini_get('max_execution_time') - 10;
 } else {
     $maxTime =  (isset($argv[1])) ? $argv[1]: 60;
     $memoryLimit =  (isset($argv[2])) ? $argv[2] : '64M';
@@ -52,17 +49,17 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 
     print 'The time is now: ' . ini_get('max_execution_time') . "\r\n";
     print 'The memory limit is now: ' . ini_get('memory_limit') . "\r\n";
+    $timelimit = 600;
 }
 
-if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
+define('EASYWIDIR', dirname(__FILE__));
+include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-    define('EASYWIDIR', dirname(__FILE__));
-
-	include(EASYWIDIR . '/stuff/vorlage.php');
-	include(EASYWIDIR . '/stuff/class_validator.php');
-	include(EASYWIDIR . '/stuff/functions.php');
-	include(EASYWIDIR . '/stuff/settings.php');
-	include(EASYWIDIR . '/stuff/keyphrasefile.php');
+if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
 
 	$query = $sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date` FROM `traffic_settings` LIMIT 1");
     $query->execute(array(':aeskey' => $aeskey));
@@ -77,16 +74,20 @@ if (!isset($remoteip) or $_SERVER['SERVER_ADDR'] == $remoteip) {
 		$column_destip = $row['column_destip'];
 		$column_byte = $row['column_byte'];
 		$column_date = $row['column_date'];
+
+        try {
+            $sql2 = new PDO("$stats_databanktype:host=$stats_host;dbname=$stats_db", $stats_user, $stats_pwd, array(PDO::ATTR_TIMEOUT => 5,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        }
+
+        catch(PDOException $error) {
+            print $error->getMessage();
+            die("Could not connect to external server\r\n");
+        }
 	}
 
-	try {
-		$sql2=new PDO("$stats_databanktype:host=$stats_host;dbname=$stats_db", $stats_user, $stats_pwd);
-	}
-
-	catch(PDOException $error) {
-		print $error->getMessage();
-		die("Could not connect to external server\r\n");
-	}
+    if (!isset($sql2)) {
+        die("No external server defined \r\n");
+    }
 
 	function searchinnerarray($value,$array) {
 		foreach ($array as $key => $ips) {

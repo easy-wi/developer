@@ -432,7 +432,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $amount = 20;
     }
 
-    $o = $ui->st('o', 'get');
+    $o = (string) $ui->st('o', 'get');
     if ($ui->st('o', 'get') == 'ds') {
         $orderby = '`active` DESC';
     } else if ($ui->st('o', 'get') == 'as') {
@@ -494,15 +494,14 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         }
 
         $query2->execute(array($row['id'], $reseller_id));
-        foreach ($query2 as $row2) {
+        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $gamesList = '(' . $row2['amount'] . ') ' . $row2['list'];
         }
-
-        $query2->fetchColumn();
 
         if (strlen($gamesList) > 40) {
             $gamesList = substr($gamesList, 0, 40) . '...';
         }
+
         $table[] = array('id' => $row['id'], 'active' => $row['active'], 'img' => $imgName,'alt' => $imgAlt, 'gametype' => $gamesList, 'description' => $row['menudescription'], 'type' => ($row['type'] == 'map') ? $sprache->map : $sprache->tool);
     }
 

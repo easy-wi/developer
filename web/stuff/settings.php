@@ -323,8 +323,8 @@ if ($ui->st('r', 'get')) {
 if ($ui->w('action', 4, 'post')) {
     $action = $ui->w('action', 4, 'post');
 }
-if ($ui->smallletters('site','50', 'get')) {
-    $s = $ui->smallletters('site','50', 'get');
+if ($ui->smallletters('site', 50, 'get')) {
+    $s = $ui->smallletters('site', 50, 'get');
 }
 if ($ui->st('w', 'get')) {
     $w = $ui->st('w', 'get');
