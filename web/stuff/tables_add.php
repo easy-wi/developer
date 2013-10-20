@@ -1045,7 +1045,7 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata` (
   `active` enum('Y','N','R') NOT NULL DEFAULT 'Y',
   `salutation` smallint(1),
   `cname` varchar(255) NOT NULL,
-  `security` varchar(255),
+  `security` blob,
   `salt` varchar(32) DEFAULT NULL,
   `token` varchar(32) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
