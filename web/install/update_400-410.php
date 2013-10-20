@@ -40,16 +40,168 @@
 
 if (isset($include) and $include == true) {
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('4.10','<div align=\"right\">16.10.2013</div>
+('4.10','<div align=\"right\">20.10.2013</div>
 <b>Änderungen:</b><br/>
 <ul>
+<li>Generell:
+<ul>
+<li>News Feeds sind standardmäßig aktiviert</li>
+<li>CMS ist standardmäßig aktiviert</li>
+<li>Cronjobs können von einem externen Server aufgerufen werden, wenn er whitelisted ist</li>
+<li>Link in der Versionsübersicht an den neuen Ort des Easy-WI Forums angepasst</li>
+<li>Passwortfelder werden mit Sternen dargestellt</li>
+<li>Die News aus dem CMS werden im Dashboard angezeigt</li>
+<li>Zahlreiche legacy Funktionen entfernt und optimiert</li>
+<li>Keyfiles können nun mit und ohne die Endung pub definiert werden</li>
+<li>Entfernen Buttons mit Kreuz als Icon und roter Darstellung</li>
+<li>Modul Management hinzugefügt</li>
+</ul></li>
+<li>API:
+<ul>
+<li>Passwort Hashes werden ebenfalls importiert</li>
+</ul></li>
+<li>Benutzer:
+<ul>
+<li>Sprachvariablen für Erstell- und Änderungsdatum hinzugefügt</li>
+<li>Passwörter werden mit PHP 55 eingeführten Hash API bzw einem Fallback gehasht</li>
+<li>Migration von alten Hashes und aus anderen Systemen importierten Hashes</li>
+<li>Loginname wird bei Willkommen: () angezeigt, wenn kein Familien-, oder Vorname gepflegt wurde</li>
+<li>Rückgaben, die verraten, ob ein Account existiert, aus dem Passwort Reset entfernt</li>
+</ul></li>
+<li>CMS:
+<ul>
+<li>Im Falle der Sprachwahl im CMS wird die entsprechende Seite an Stelle der Home Seite angezeigt</li>
+</ul></li>
+<li>Gameserver:
+<ul>
+<li>Root Beschreibung wird beim Anlegen eines Gameserver angezeigt und als Fallback die IP</li>
+<li>Beim Ändern und Anlegen des Masterservers werden die Verbindungsdaten überprüft und nur zugelassen, wenn erfolgreich</li>
+<li>Multiselect für unterstütze Spiele an Stelle von einem Spiel bzw ganzem Engine Typ</li>
+<li>Minecraft Craft Bukkit Startbefehl erweitert</li>
+<li>l4d, l4d2 und tf2 Images werden mit steamCmd Installer definiert</li>
+<li>l4d2 und tf2 zum Woraround für appIDs bezüglich API und Updater hinzugefügt</li>
+<li>Multi Theft San Andreas Image und Query hinzugefügt</li>
+<li>GTA San Andreas Multiplayer Image und Query hinzugefügt</li>
+<li>Teeworlds Image und Query hinzugefügt</li>
+<li>Autoupdater für Minecraft hinzugefügt</li>
+<li>Autoupdater für Minecraft Craft Bukkit hinzugefügt</li>
+<li>Im Falle eines Totalverlustes des Roots können alle Gameserver mit einem Klick neu erstellt werden</li>
+</ul></li>
+<li>MYSQL:
+<ul>
+<li>Beschreibung kann bei MYSQL Datenbanken mit angegeben werden</li>
+</ul></li>
+<li>Voiceserver:
+<ul>
+<li>Beim Ändern und Anlegen des Masterservers werden die Verbindungsdaten überprüft und nur zugelassen, wenn erfolgreich</li>
+<li>Masterserver kann einem Reseller hinzugefügt werden, ohne dass er Verbindungsdaten usw einsehen kann</li>
+</ul></li>
 </ul>
-
-','<div align=\"right\">10.16.2013</div>
+<br/><br/>
+<b>Bugfixes:</b><br/>
+<ul>
+<li>Farben in der Admin Gameserverübersicht</li>
+<li>Game Leihserver werden nun korrekt beendet</li>
+<li>Kein Timeout mehr, wenn der TS3 Server den webserver während einer Operation bannt</li>
+<li>Erstell- und Änderungsdatum wird beim Anlegen des initialen Admin Accounts gesetzt</li>
+<li>Alte Icon Referenz beim des Userswitches aus der Logübersicht entfernt</li>
+<li>Rückgabe nach Useraktion im Ticket Bereich des Users korrigiert</li>
+<li>Validator beim Editieren der eigenen Userdaten korrigiert</li>
+<li>Veraltete Icons in der Protectionabfrage des CMS ersetzt</li>
+<li>Leihserverübersicht im CMS wird korrekt dargestellt</li>
+<li>MYSQL Modul verwaltet die Datenbankuser korrekt</li>
+<li>Erfolgreiches Anlegen eines Vertreters gibt nun den Erfolg an den User zurück</li>
+<li>Fehlendes Template admin_voicemasterserver_dltpl hinzugefügt</li>
+<li>Reinstall von Gameservern im Adminpanel korrigiert</li>
+<li>Startbefehl kann nun das Zeichen # enthalten, welches zB für das Forking bei l4d benötigt wird</li>
+<li>Image ALT der Anzeige vom Protection Mode korrigiert</li>
+<li>Error Handling der TS3 Klasse für den Fall erweitert, dass keine Serverinfo abgefragt werden konnte</li>
+<li>Hausnummer kann Querstriche enthalten</li>
+<li>PHP Notice beim Gameserver Reinstall korrigiert</li>
+<li>Userpanel Gamerserverübersicht bezüglich FTP Passwörtern korrigiert</li>
+<li>FastDL Abgleich startet wieder</li>
+<li>Gebrauch von $_SERVER in der login.php entfernt</li>
+<li>Installer definiert das default template</li>
+</ul>
+','<div align=\"right\">10.20.2013</div>
 <b>Changes:</b><br/>
 <ul>
+<li>General:
+<ul>
+<li>News feeds are active per default</li>
+<li>CMS is activated per default</li>
+<li>Cronjobs can be executed from remote host in case the IP is whitelisted</li>
+<li>Link at versionckeck are changed to the new Easy-WI forums location</li>
+<li>Passwordforms are masked with stars</li>
+<li>News created at the CMS module are displayed at the dashboard as well</li>
+<li>Multiple legacy functions removed or optimized</li>
+<li>Keyfiles can be entered with and without pub</li>
+<li>Removal buttons are displayed with fitting icon and in red</li>
+<li>Modul Management added</li>
+</ul></li>
+<li>API:
+<ul>
+<li>Passwort hashes are imported as well</li>
+</ul></li>
+<li>Gameserver:
+<ul>
+<li>Root description will be displayed while adding a gameserver Fallback is the IP</li>
+<li>While adding or editing a masterserver the connection data will be verified and a connection check done</li>
+<li>Addons now have a multiselect regarding supported games in case of selecting a game or a whole engine type</li>
+<li>Minecraft Craft Bukkit startcommand extended</li>
+<li>l4d, l4d2 and tf2 images are defined with steamCmd installer</li>
+<li>l4d2 and tf2 are added to the workaround function regarding appIDs for API and updater</li>
+<li>Added Multi Theft San Andreas image and query</li>
+<li>Added GTA San Andreas Multiplayer image and query</li>
+<li>Added Teeworlds image and query</li>
+<li>Added Minecraft autoupdater</li>
+<li>Added Minecraft Craft Bukkit autoupdater</li>
+<li>In case a whole rootserver is lost and replaced all users and server can be recreated with one click</li>
+</ul></li>
+<li>MYSQL:
+<ul>
+<li>Description can be added with a MYSQL database</li>
+</ul></li>
+<li>User:
+<ul>
+<li>Language variables added regarding users creation and modifcation date</li>
+<li>Passwords are hashed with PHP 55 Hash API or fallback if PHP is older</li>
+<li>Migration of old hashes once a user logs in</li>
+<li>Loginname will be shown at Welcome: () in case no first and last name is maintained</li>
+<li>Any hints regarding account existence removed from password reset</li>
+</ul></li>
+<li>Voiceserver:
+<ul>
+<li>While adding or editing a masterserver the connection data will be verified and a connection check done</li>
+<li>Masterserver can be added to a reseller account which then will be able to use it but cannot see configurations like passwords</li>
+</ul></li>
 </ul>
-
+<br/><br/>
+<b>Bugfixes:</b><br/>
+<ul>
+<li>Colours correct at admins gameserver overview</li>
+<li>Game lendserver are shut down correctly</li>
+<li>No PHP time out in case the TS3 server bans the webserver during command execution</li>
+<li>Creation- and modification date correctly setup for initial admin account</li>
+<li>Outdated icon regarding userswitch removed from logoverview</li>
+<li>Return after useraction at the ticket module corrected</li>
+<li>Correct validator used in case of editing own userdata</li>
+<li>Outdated icons replaced at protectioncheck within the CMS</li>
+<li>Lendserver overview is displayed correctly at CMS</li>
+<li>MYSQL module maintains DB users without errors</li>
+<li>Success message in case of adding a substitute</li>
+<li>Added missing template admin_voicemasterserver_dltpl</li>
+<li>Corrected reinstall gameservern at adminpanel</li>
+<li>Startcommand can now contain the character #</li>
+<li>Corrected image ALT at protection mode display</li>
+<li>Enhanced error handling at TS3 class in case no serverinfo has been retrieved</li>
+<li>Streetnumber can contain a horizontal line</li>
+<li>Corrected PHP Notice in case of gameserver reinstall</li>
+<li>Corrected userpanel gamerserver overview regarding FTP passwords</li>
+<li>FastDL matching working again</li>
+<li>Usage of $_SERVER removed from login.php</li>
+<li>Installer definines the default template</li>
+</ul>
 ')");
     $query->execute();
     $response->add('Action: insert_easywi_version done: ');
@@ -68,7 +220,7 @@ if (isset($include) and $include == true) {
     $query2 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `addon_id`=`addon_id`");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $query2->execute(array($row['addon_id'],$row['servertype_id'],$row['resellerid']));
+        $query2->execute(array($row['addon_id'], $row['servertype_id'], $row['resellerid']));
     }
 
     $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='samp' AND `resellerid`=0 LIMIT 1");
