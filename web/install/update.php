@@ -66,6 +66,15 @@ if (!isset($updateinclude) or $updateinclude == false) {
         }
     }
 
+
+    $response = new UpdateResponse();
+
+} else if (!defined('EASYWIDIR')) {
+    define('EASYWIDIR', dirname(dirname(__FILE__)));
+}
+
+if (!isset($sql)) {
+
     include(EASYWIDIR . '/stuff/config.php');
 
     try {
@@ -75,16 +84,11 @@ if (!isset($updateinclude) or $updateinclude == false) {
         echo $error->getMessage();
         die();
     }
-
-    $response = new UpdateResponse();
-
-} else if (!defined('EASYWIDIR')) {
-    define('EASYWIDIR', dirname(dirname(__FILE__)));
 }
 
 function versioncheck ($current, $new ,$file ,$response) {
-    $include = true;
 
+    global $sql;
     if ($current < $new) {
         $response->add("Upgrading Databe from $current to $new<br />");
         if (is_file(EASYWIDIR . '/' . $file)) {
