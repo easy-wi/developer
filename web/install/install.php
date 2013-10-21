@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: install.php.
  * Author: Ulrich Block
@@ -40,6 +41,7 @@
 ini_set('display_errors',1);
 error_reporting(E_ALL|E_STRICT);
 define('EASYWIDIR', dirname(dirname(__FILE__)));
+include(EASYWIDIR . '/third_party/password_compat/password.php');
 ?>
 <!DOCTYPE html>
 <head>
@@ -230,7 +232,7 @@ define('EASYWIDIR', dirname(dirname(__FILE__)));
             $hash = hash('sha512', sha1($usernamea[0].md5($passworda[0].$usernamea[1]).$passworda[1]));
             return $hash;
         }
-        $lang_detect=strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'],"0","2"));
+        $lang_detect=strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'],0,2));
         if (file_exists("$lang_detect.xml")) {
             $sprache=simplexml_load_file("$lang_detect.xml");
         } else {
@@ -519,7 +521,7 @@ include(EASYWIDIR . '/stuff/config.php');
     }
 $cname=uname_check($_POST['cname'],20);
 $password=password_check($_POST['passw1'],50);
-$security=passwordhash($cname,$password);
+$security=password_hash($password, PASSWORD_DEFAULT);
 if (ismail($_POST['email'])) $email=ismail($_POST['email']);
 else $email='changeme@mail.de';
 $prefix1=(active_check($_POST['prefix1'])) ? $_POST['prefix1'] : 'Y';
