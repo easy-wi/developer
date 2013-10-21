@@ -141,7 +141,7 @@ function serverQuery ($ip, $port, $type) {
 
                 $reply = substr($reply, 3);
                 $reply = iconv('UTF-16BE', 'UTF-8', $reply);
-                print_r($reply);
+
                 $exploded = explode("\x00", $reply);
 
                 if (isset($exploded[1]) and isset($exploded[2]) and $exploded[1] === "\xA7" and $exploded[2] === "\x31") {
