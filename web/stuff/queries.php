@@ -38,15 +38,29 @@
 
 
 function serverQuery ($ip, $port, $type) {
-	$socket = @fsockopen('udp://' . $ip, (int) $port, $errnum, $errstr, 5);
-	if ($errnum == 111) {
-        return $errstr;
-        
-	} else if ($socket == false) {
-		usleep(250000);
+    if ($type == 'minecraft') {
+
+        $socket = @fsockopen($ip, (int) $port, $errnum, $errstr, 5);
+
+        if ($errnum == 111) {
+            return $errstr;
+        } else if ($socket == false) {
+            usleep(250000);
+            $socket = @fsockopen($ip, (int) $port, $errnum, $errstr, 5);
+        }
+    } else {
+
         $socket = @fsockopen('udp://' . $ip, (int) $port, $errnum, $errstr, 5);
-	}
-    
+
+        if ($errnum == 111) {
+            return $errstr;
+
+        } else if ($socket == false) {
+            usleep(250000);
+            $socket = @fsockopen('udp://' . $ip, (int) $port, $errnum, $errstr, 5);
+        }
+    }
+
     if ($socket === false) {
         return $errstr;
         
@@ -115,8 +129,8 @@ function serverQuery ($ip, $port, $type) {
 
         } else if ($type == 'minecraft') {
 
-            $string="\xFE";
-            $length=strlen($string);
+            $string = "\xFE";
+            $length = strlen($string);
             if (@fwrite($socket, $string, $length)) {
                 
                 $reply = @fread($socket, 4096);
@@ -124,13 +138,14 @@ function serverQuery ($ip, $port, $type) {
                 if (is_resource($socket)) {
                     fclose($socket);
                 }
-                
-                $reply = substr($reply,3);
+
+                $reply = substr($reply, 3);
                 $reply = iconv('UTF-16BE', 'UTF-8', $reply);
-                
-                if ($reply[1] === "\xA7" and $reply[2] === "\x31") {
-                    
-                    $exploded = explode("\x00", $reply);
+                print_r($reply);
+                $exploded = explode("\x00", $reply);
+
+                if (isset($exploded[1]) and isset($exploded[2]) and $exploded[1] === "\xA7" and $exploded[2] === "\x31") {
+
 
                     if (!isset($exploded[3]) and !isset($exploded[4])) {
                         return 'Error: Can not retrieve data from MC Server';
