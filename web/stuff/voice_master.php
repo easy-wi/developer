@@ -663,8 +663,15 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                                 if ($usernew == true) {
 
-                                    $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,'u',?)");
-                                    $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), password_hash(passwordgenerate(10), PASSWORD_DEFAULT), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
+                                    $newHash = passwordCreate($ui->username("$virtualserver_id-username",50, 'post'), passwordgenerate(10));
+
+                                    if (is_array($newHash)) {
+                                        $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`salt`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,?,'u',?)");
+                                        $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $newHash['hash'], $newHash['salt'], $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
+                                    } else {
+                                        $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,'u',?)");
+                                        $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $newHash, $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
+                                    }
 
                                     $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                                     $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));

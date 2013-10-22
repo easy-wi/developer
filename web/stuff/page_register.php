@@ -161,9 +161,18 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
                 $query = $sql->prepare("INSERT INTO `userdata` (`accounttype`,`active`,`mail`,`token`,`creationTime`,`updateTime`,`salutation`,`country`,`name`,`vname`,`birthday`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`) VALUES ('u','R',?,?,NOW(),NOW(),?,?,?,?,?,?,?,?,?,?,?,?)");
                 $query->execute(array($mail,$activeHash,$salutation = $ui->id('salutation',1, 'post'),$ui->st('country', 'post'),$name,$vname,$bday,$ui->phone('phone',50, 'post'),$ui->phone('fax',50, 'post'),$ui->phone('handy',50, 'post'),$ui->names('city',50, 'post'),$ui->id('cityn',6, 'post'),$ui->names('street',50, 'post'),$ui->w('streetn',6, 'post')));
                 $userID = $sql->lastInsertId();
+                $cname = $rSA['prefix2'] . $userID;
 
-                $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
-                $query->execute(array($rSA['prefix2'].$userID, password_hash($ui->password('password', 100, 'post'), PASSWORD_DEFAULT), $userID));
+                $newHash = passwordCreate($cname, $ui->password('password', 255, 'post'));
+
+                if (is_array($newHash)) {
+                    $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
+                    $query->execute(array($cname, $newHash['hash'], $newHash['salt'], $userID));
+
+                } else {
+                    $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=? WHERE `id`=? LIMIT 1");
+                    $query->execute(array($cname, $newHash, $userID));
+                }
 
                 // Setup default Group
                 $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `grouptype`='u' AND `active`='Y' AND `defaultgroup`='Y' AND `resellerid`=0 LIMIT 1");

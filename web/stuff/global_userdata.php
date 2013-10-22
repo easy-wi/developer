@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: global_userdata.php.
  * Author: Ulrich Block
@@ -45,7 +46,7 @@ if ($ui->st('w', 'get') == 'se') {
     }
     $loguserid = $user_id;
     $logusername = getusername($user_id);
-    $logusertype="user";
+    $logusertype = 'user';
     $logreseller = 0;
     if (isset($admin_id)) {
         $logsubuser = $admin_id;
@@ -54,7 +55,9 @@ if ($ui->st('w', 'get') == 'se') {
     } else {
         $logsubuser = 0;
     }
-    if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
+    if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
+        $reseller_id = $admin_id;
+    }
 } else {
     if ((!isset($admin_id) or $main!=1)) {
         header('Location: admin.php');
@@ -67,30 +70,46 @@ if ($ui->st('w', 'get') == 'se') {
         $logreseller = 0;
         $logsubuser = 0;
     } else {
-        $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
+        $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
         $logreseller = 0;
     }
-    if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
+    if ($reseller_id != 0 and $admin_id != $reseller_id) {
+        $reseller_id = $admin_id;
+    }
 }
 $sprache = getlanguagefile('user',$user_language,$reseller_id);
 $lookUpID=($ui->st('w', 'get') == 'se') ? $user_id : $admin_id;
+
 if ($ui->st('d', 'get') == 'pw') {
+
     if (!$ui->smallletters('action',2, 'post')) {
         $template_file = ($logusertype == 'user') ? 'userpanel_pass.tpl' : 'admin_user_own_pass.tpl';
+
     } else if ($ui->smallletters('action',2, 'post') == 'md'){
         $errors = array();
         if (!$ui->password('password', 255, 'post')) $errors[] = $sprache->error_pass;
         if (!$ui->password('pass2', 255, 'post')) $errors[] = $sprache->error_pas;
         if ($ui->password('password', 255, 'post') != $ui->password('pass2', 255, 'post')) $errors[] = $sprache->error_passw_succ;
         if (!token(true)) $errors[] = $spracheResponse->token;
+
         if (count($errors)>0) {
             $template_file = implode('<br />',$errors);
         } else {
+
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($lookUpID,$reseller_id));
             $cname = $query->fetchColumn();
-            $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array(password_hash($password, PASSWORD_DEFAULT) ,$lookUpID,$reseller_id));
+
+            $newHash = passwordCreate($cname, $ui->password('password', 255, 'post'));
+
+            if (is_array($newHash)) {
+                $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($newHash['hash'], $newHash['salt'], $lookUpID, $reseller_id));
+
+            } else {
+                $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($newHash, $lookUpID, $reseller_id));
+            }
             if ($query->rowCount()>0) {
                 $template_file = $spracheResponse->table_add;
                 $loguseraction="%psw% %user% $cname";
@@ -102,6 +121,7 @@ if ($ui->st('d', 'get') == 'pw') {
     } else {
         $template_file = 'userpanel_404.tpl';
     }
+
 } else {
     $query = $sql->prepare("SELECT * FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($lookUpID,$reseller_id));

@@ -293,15 +293,32 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $resellersid = $reseller_id;
                 }
 
-                $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
 
-				if ($user_accounttype == 'a') {
-                    $query->execute(array($cnamenew, password_hash($password, PASSWORD_DEFAULT), $id, $id));
-				} else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
-                    $query->execute(array($cnamenew, password_hash($password, PASSWORD_DEFAULT), $reseller_id, $id));
-				} else if ($user_accounttype == 'r') {
-                    $query->execute(array($cnamenew, password_hash($password, PASSWORD_DEFAULT), $admin_id, $id));
-				}
+
+                $newHash = passwordCreate($cnamenew, $password);
+
+                if (is_array($newHash)) {
+
+                    $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
+                    if ($user_accounttype == 'a') {
+                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $id, $id));
+                    } else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
+                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $reseller_id, $id));
+                    } else if ($user_accounttype == 'r') {
+                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $admin_id, $id));
+                    }
+
+                } else {
+
+                    $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
+                    if ($user_accounttype == 'a') {
+                        $query->execute(array($cnamenew, $newHash, $id, $id));
+                    } else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
+                        $query->execute(array($cnamenew, $newHash, $reseller_id, $id));
+                    } else if ($user_accounttype == 'r') {
+                        $query->execute(array($cnamenew, $newHash, $admin_id, $id));
+                    }
+                }
 
 				sendmail('emailuseradd',$id,$cnamenew,$password);
 
@@ -630,26 +647,44 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else if ($ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'get') and $pa['userPassword']) {
+
     $id = $ui->id('id', 10, 'get');
+
     $query=($reseller_id == 0) ? $sql->prepare("SELECT `cname`,`accounttype` FROM `userdata` WHERE `id`=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("SELECT `cname`,`accounttype` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (($row['accounttype'] == 'a' and $pa['user']) or ($row['accounttype'] != 'a') and ($pa['user'] or $pa['user_users'])) $cname = $row['cname'];
+        if (($row['accounttype'] == 'a' and $pa['user']) or ($row['accounttype'] != 'a') and ($pa['user'] or $pa['user_users'])) {
+            $cname = $row['cname'];
+        }
     }
+
     if (!$ui->smallletters('action',2, 'post') and isset($cname)) {
         $template_file = 'admin_user_pass.tpl';
+
     } else if ($ui->smallletters('action',2, 'post') == 'pw' and isset($cname)) {
         $errors = array();
         if (!$ui->password('password',20, 'post')) $errors[] = $sprache->error_pass;
         if (!$ui->password('pass2',20, 'post'))$errors[] = $sprache->error_pass;
         if ($ui->password('password',20, 'post') != $ui->password('pass2',20, 'post')) $errors[] = $sprache->error_passw_succ;
+
         if (count($errors)>0) {
             $template_file = implode('<br />',$errors);
         } else {
             if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
             $password = $ui->password('password',20, 'post');
-            $query=($reseller_id == 0) ? $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=? WHERE id=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE id=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array(password_hash($password, PASSWORD_DEFAULT), $id, $reseller_id));
+
+            $newHash = passwordCreate($cname, $ui->password('password', 255, 'post'));
+
+            if (is_array($newHash)) {
+                $query = ($reseller_id == 0) ? $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE id=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=?,`salt`=? WHERE id=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($newHash['hash'], $newHash['salt'], $id, $reseller_id));
+
+            } else {
+                $query = ($reseller_id == 0) ? $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=? WHERE id=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=? WHERE id=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($newHash, $id, $reseller_id));
+            }
+
+
             $template_file = $spracheResponse->table_add ."<br />";
             $loguseraction="%psw% %user% $cname";
             $insertlog->execute();

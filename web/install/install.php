@@ -41,7 +41,7 @@
 ini_set('display_errors',1);
 error_reporting(E_ALL|E_STRICT);
 define('EASYWIDIR', dirname(dirname(__FILE__)));
-include(EASYWIDIR . '/third_party/password_compat/password.php');
+
 ?>
 <!DOCTYPE html>
 <head>
@@ -225,12 +225,6 @@ include(EASYWIDIR . '/third_party/password_compat/password.php');
                     return $value;
                 }
             }
-        }
-        function passwordhash($username,$password){
-            $passworda = str_split($password,(strlen($password)/2)+1);
-            $usernamea = str_split($username,(strlen($username)/2)+1);
-            $hash = hash('sha512', sha1($usernamea[0].md5($passworda[0].$usernamea[1]).$passworda[1]));
-            return $hash;
         }
         $lang_detect=strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'],0,2));
         if (file_exists("$lang_detect.xml")) {
@@ -521,7 +515,6 @@ include(EASYWIDIR . '/stuff/config.php');
     }
 $cname=uname_check($_POST['cname'],20);
 $password=password_check($_POST['passw1'],50);
-$security=password_hash($password, PASSWORD_DEFAULT);
 if (ismail($_POST['email'])) $email=ismail($_POST['email']);
 else $email='changeme@mail.de';
 $prefix1=(active_check($_POST['prefix1'])) ? $_POST['prefix1'] : 'Y';
@@ -545,7 +538,7 @@ $groupID = $query->fetchColumn();
 $query = $sql->prepare("INSERT INTO `settings` (`language`,`imageserver`,`master`,`email`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,'0')");
 $query->execute(array($language,$imageserver,$master,$email,$prefix1,$prefix2,$faillogins,$brandname));
 $query = $sql->prepare("INSERT INTO `userdata` (`active`,`cname`,`security`,`mail`,`accounttype`,`creationTime`,`updateTime`) VALUES ('Y',?,?,?,'a',NOW(),NOW())");
-$query->execute(array($cname,$security,$email));
+$query->execute(array($cname,md5($password),$email));
 $userID = $sql->lastInsertId();
 $query = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`) VALUES (?,?)");
 $query->execute(array($userID,$groupID));

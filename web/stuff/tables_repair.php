@@ -881,7 +881,7 @@ $defined['userdata_substitutes'] = array('sID' => array("Type"=>"int(10) unsigne
     'loginName' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'name' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'vname' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'passwordHashed' => array("Type"=>"blob","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'passwordHashed' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'salt' => array("Type"=>"varchar(32)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'lastlogin' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),

@@ -159,9 +159,15 @@ if ($ui->st('w', 'get') == 'lo') {
                 $username = $row['cname'];
 
                 $text = $sprache->passwordreseted;
+                $newHash = passwordCreate($username, $ui->password('password1', 255, 'post'));
 
-                $query2 = $sql->prepare("UPDATE `userdata` SET `token`='',`security`=? WHERE `id`=? LIMIT 1");
-                $query2->execute(array(password_hash($ui->password('password1', 255, 'post'), PASSWORD_DEFAULT), $row['id']));
+                if (is_array($newHash)) {
+                    $query2 = $sql->prepare("UPDATE `userdata` SET `token`='',`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
+                    $query2->execute(array($newHash['hash'], $newHash['salt'], $row['id']));
+                } else {
+                    $query2 = $sql->prepare("UPDATE `userdata` SET `token`='',`security`=? WHERE `id`=? LIMIT 1");
+                    $query2->execute(array($newHash, $row['id']));
+                }
             }
 
         } else if ($ui->password('password1', 255, 'post') != $ui->password('password2', 255, 'post'))  {
@@ -226,11 +232,16 @@ if ($ui->st('w', 'get') == 'lo') {
 			$resellerid = $row['resellerid'];
             $accounttype = $row['accounttype'];
 
-            $passwordCorrect = passwordCheck($password, $row['security'], $row['cname'], $row['salt'], $aeskey);
+            $passwordCorrect = passwordCheck($password, $row['security'], $row['cname'], $row['salt']);
 
             if ($passwordCorrect !== true and $passwordCorrect !== false) {
-                $query = $sql->prepare("UPDATE `userdata` SET `security`=? WHERE `id`=? LIMIT 1");
-                $query->execute(array($passwordCorrect, $id));
+                if (is_array($passwordCorrect)) {
+                    $query = $sql->prepare("UPDATE `userdata` SET `security`=?,`salt`=? WHERE `id`=? LIMIT 1");
+                    $query->execute(array($passwordCorrect['hash'], $passwordCorrect['salt'], $id));
+                } else {
+                    $query = $sql->prepare("UPDATE `userdata` SET `security`=? WHERE `id`=? LIMIT 1");
+                    $query->execute(array($passwordCorrect, $id));
+                }
             }
         }
 
@@ -247,15 +258,21 @@ if ($ui->st('w', 'get') == 'lo') {
                 $active = $row['active'];
                 $resellerid = $row['resellerID'];
 
-                $passwordCorrect = passwordCheck($password, $row['passwordHashed'], $row['loginName'], $row['salt'], $aeskey);
+                $accounttype = 'v';
+
+                $passwordCorrect = passwordCheck($password, $row['passwordHashed'], $row['loginName'], $row['salt']);
 
                 if ($passwordCorrect !== true and $passwordCorrect !== false) {
-                    $query = $sql->prepare("UPDATE `userdata_substitutes` SET `passwordHashed`=? WHERE `sID`=? LIMIT 1");
-                    $query->execute(array($passwordCorrect, $sID));
+                    if (is_array($newHash)) {
+                        $query = $sql->prepare("UPDATE `userdata_substitutes` SET `passwordHashed`=?,`salt`=? WHERE `sID`=? LIMIT 1");
+                        $query->execute(array($passwordCorrect['hash'], $passwordCorrect['salt'], $sID));
+                    } else {
+                        $query = $sql->prepare("UPDATE `userdata_substitutes` SET `passwordHashed`=? WHERE `sID`=? LIMIT 1");
+                        $query->execute(array($passwordCorrect, $sID));
+                    }
                 }
             }
         }
-
         if (!isset($sID) and isset($active) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect === false) {
 
             $authLookupID = ($resellerid == $id) ? 0 : $resellerid;
@@ -299,9 +316,16 @@ if ($ui->st('w', 'get') == 'lo') {
                 if ($xmlReply and isset($xmlReply->success) and $xmlReply->success == 1 and $xmlReply->user == $username) {
 
                     $passwordCorrect = true;
+                    $newHash = passwordCreate($username, $password);
 
-                    $query = $sql->prepare("UPDATE `userdata` SET `security`=? WHERE `id`=? LIMIT 1");
-                    $query->execute(array(password_hash($password, PASSWORD_DEFAULT), $id));
+                    if (is_array($newHash)) {
+                        $query = $sql->prepare("UPDATE `userdata` SET `security`=?,`salt`=? WHERE `id`=? LIMIT 1");
+                        $query->execute(array($newHash['hash'], $newHash['salt'], $id));
+                    } else {
+                        $query = $sql->prepare("UPDATE `userdata` SET `security`=? WHERE `id`=? LIMIT 1");
+                        $query->execute(array($newHash, $id));
+                    }
+
 
                 } else if ($xmlReply and isset($xmlReply->error)) {
                     $externalAuthError = $xmlReply->error;
@@ -313,7 +337,6 @@ if ($ui->st('w', 'get') == 'lo') {
         }
 
 		if (isset($active) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect) {
-
 			session_unset();
 			session_destroy();
 			session_start();
@@ -330,7 +353,7 @@ if ($ui->st('w', 'get') == 'lo') {
                 $query = $sql->prepare("UPDATE `userdata_substitutes` SET `lastlogin`=?,`logintime`=? WHERE `sID`=? LIMIT 1");
                 $query->execute(array($logintime, $logdate, $sID));
 
-            } else {
+            } else if (isset($id)) {
                 $query = $sql->prepare("SELECT `logintime`,`language` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -340,6 +363,9 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 $query = $sql->prepare("UPDATE `userdata` SET `lastlogin`=?,`logintime`=? WHERE `id`=? LIMIT 1");
                 $query->execute(array($logintime, $logdate, $id));
+
+            } else {
+                redirect('login.php');
             }
 
             if (!isset($accounttype) or !isset($resellerid)  or ($accounttype == 'r' and $resellerid < 1)) {

@@ -170,15 +170,26 @@ if (array_value_exists('action','add',$data)) {
             }
         }
         if (!isset($success) and isset($localID) and isset($insert) and $insert == true) {
-            if (!isset($data['password']) or in_array($data['password'],$bad)) $password=passwordgenerate(10);
 
-            $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=? WHERE `id`=? LIMIT 1");
-            $query->execute(array($username, password_hash($password, PASSWORD_DEFAULT), $localID));
+            $password = (!isset($data['password']) or in_array($data['password'],$bad)) ? passwordgenerate(10) : $data['password'];
+
+            $newHash = passwordCreate($name, $data['password']);
+
+            if (is_array($newHash)) {
+                $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
+                $query->execute(array($username, $newHash['hash'], $newHash['salt'], $localID));
+
+            } else {
+                $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=? WHERE `id`=? LIMIT 1");
+                $query->execute(array($username, $newHash, $localID));
+            }
+
 
             $query = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?)");
             foreach ($userGroupIDs as $groupID) {
 				$query->execute(array($localID, $groupID, $resellerID));
 			}
+
         } else if (!isset($success)) {
             $success['false'][] = 'Could not write user to database';
         }
@@ -194,7 +205,7 @@ if (array_value_exists('action','add',$data)) {
     $from=array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail');
     if (dataExist('identify_by',$data)) {
         $query = $sql->prepare("SELECT `id`,`cname`,`active` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
-        $query->execute(array($data[$data['identify_by']],$resellerID));
+        $query->execute(array($data[$data['identify_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localID = $row['id'];
             $name = $row['cname'];
@@ -202,9 +213,16 @@ if (array_value_exists('action','add',$data)) {
         }
         if (isset($localID)) {
             $what = array();
-            if (isset($data['password']) and !in_array($data['password'],$bad)) {
+            if (isset($data['password']) and !in_array($data['password'], $bad)) {
                 $password = $data['password'];
-                $what['security'] = password_hash($password, PASSWORD_DEFAULT);
+                $newHash = passwordCreate($name, $data['password']);
+                if (is_array($newHash)) {
+                    $what['security'] = $newHash['hash'];
+                    $what['salt'] = $newHash['salt'];
+
+                } else {
+                    $what['security'] = $newHash;
+                }
             }
             if (isset($data['email']) and ismail($data['email'])) {
                 $what['mail'] = $data['email'];

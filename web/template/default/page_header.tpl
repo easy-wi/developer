@@ -55,11 +55,11 @@
                         <ul class="dropdown-menu">
                             <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                             <li class="divider"></li>
-                            <li><a href="<?php echo (isset($admin_id)) ? $page_data->url.'/admin.php' : $page_data->url.'/userpanel.php';?>">Backend</a></li>
+                            <li><a href="<?php echo (isset($admin_id)) ? $page_data->pageurl.'/admin.php' : $page_data->url.'/userpanel.php';?>">Backend</a></li>
                             <li class="divider"></li>
                             <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
                             <li class="divider"></li>
-                            <li><a href="<?php echo $page_data->url;?>/login.php?w=lo">Logout</a></li>
+                            <li><a href="<?php echo $page_data->pageurl;?>/login.php?w=lo">Logout</a></li>
                         </ul>
                     </li>
                 </ul>

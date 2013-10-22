@@ -9,7 +9,7 @@
 </div>
 <div class="row-fluid">
     <div class="span11">
-        <form class="form-horizontal" action="userpanel.php?w=se&amp;d=pw&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+        <form class="form-horizontal" action="admin.php?w=su&amp;d=pw&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <div class="control-group">
                 <label class="control-label" for="password1"><?php echo $sprache->passw_1;?></label>

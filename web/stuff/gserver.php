@@ -546,7 +546,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $gsfolder = $serverip . '_' . $port;
             if ($ui->w('safeDelete',1, 'post') != 'D') {
                 $cmds=gsrestart($server_id,'so',$aeskey,$reseller_id);
-                if (is_array($cmds) and count($cmds)>0) ssh2_execute('gs', $row['hostID'],$cmds);
+                if (is_array($cmds) and count($cmds)>0) ssh2_execute('gs', $row['rootID'],$cmds);
             }
         }
         $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
@@ -830,7 +830,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $rootcores = $rdata['cores'];
             $c = 0;
             $corecount=($hyperthreading== 'Y') ? $rootcores*2 : $rootcores;
-            $postCores=(array)$ui->post['cores'];
+            $postCores = (isset($ui->post['cores'])) ? (array) $ui->post['cores'] : array();
             $usedcores = array();
             while ($c<$corecount) {
                 if (in_array($c,$postCores)) $usedcores[] = $c;
@@ -1119,12 +1119,13 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         $start = $colcount-$amount;
         if ($start<0)$start = 0;
     }
-    $query = $sql->prepare("SELECT g.*,CONCAT(g.`serverip`,':',g.`port`) AS `server`,t.`shorten`,u.`cname`,u.`name`,u.`vname`,u.`active` AS `useractive` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
+    $query = $sql->prepare("SELECT g.*,CONCAT(g.`serverip`,':',g.`port`) AS `server`,t.`shorten`,u.`cname`,u.`name`,u.`vname`,u.`active` AS `useractive` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array($reseller_id));
     $table = array();
     $query2 = $sql->prepare("SELECT `extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='gs' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         unset($tobeActive);
+        $jobPending = '';
         $server = $row['server'];
         $userid = $row['userid'];
         $serverid = $row['id'];
@@ -1148,7 +1149,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         $nameremoved = '';
         $imgName = '16_ok';
         $imgAlt = 'Online';
-        if ($row['jobPending'] == 'Y') {
+        if (isset($row['jobPending']) and $row['jobPending'] == 'Y') {
             $query2->execute(array($row['id'], $row['resellerid']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 if ($row2['action'] == 'ad') $jobPending = $gsprache->add;

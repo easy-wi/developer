@@ -301,8 +301,17 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             $cnamenew = $ui->username("${lookUp}-username",50, 'post');
                         }
                         if ($usernew == true) {
-                            $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,'u',?)");
-                            $query->execute(array($ui->username("${lookUp}-username",50, 'post'),password_hash(passwordgenerate(10), PASSWORD_DEFAULT),$ui->ismail("${lookUp}-email", 'post'),$reseller_id));
+
+                            $newHash = passwordCreate($ui->username("${lookUp}-username",50, 'post'), passwordgenerate(10));
+
+                            if (is_array($newHash)) {
+                                $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`salt`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,?,'u',?)");
+                                $query->execute(array($ui->username("${lookUp}-username",50, 'post'), $newHash['hash'], $newHash['salt'], $ui->ismail("${lookUp}-email", 'post'), $reseller_id));
+                            } else {
+                                $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,'u',?)");
+                                $query->execute(array($ui->username("${lookUp}-username",50, 'post'), $newHash, $ui->ismail("${lookUp}-email", 'post'), $reseller_id));
+                            }
+
                             $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                             $query->execute(array($ui->username("${lookUp}-username",50, 'post'),$ui->ismail("${lookUp}-email", 'post'),$reseller_id));
                             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

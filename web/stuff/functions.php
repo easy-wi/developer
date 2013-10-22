@@ -81,7 +81,7 @@ if (!function_exists('passwordgenerate')) {
 
         if (isset($nameSplit[1]) and isset($pwdSplit[1])) {
             for ($i = 0;$i<=$iterate;$i++) {
-                $hash=hash('sha512', $nameSplit[0] . $saltOne . $pwdSplit[0] . $hash . $nameSplit[1] . $saltTwo . $pwdSplit[1]);
+                $hash = hash('sha512', $nameSplit[0] . $saltOne . $pwdSplit[0] . $hash . $nameSplit[1] . $saltTwo . $pwdSplit[1]);
             }
 
             return $hash;
@@ -90,7 +90,9 @@ if (!function_exists('passwordgenerate')) {
         return false;
     }
 
-    function passwordCheck ($password, $storedHash, $username = '', $salt = '', $aeskey = '') {
+    function passwordCheck ($password, $storedHash, $username = '', $salt = '') {
+
+        global $aeskey;
 
         // Easy-WI uses the PHP hash API introduced with version 5.5.
 
@@ -98,14 +100,50 @@ if (!function_exists('passwordgenerate')) {
         if (password_verify($password, $storedHash)) {
             return true;
 
-            // Password is correctly but stored in an old or insecure format. We need to hash it with a secure implementation.
-            // Insecure implementations like md5 or sha1 are imported from other systems with the cloud.php job.
-        } else if (createHash($username, $password, $salt, $aeskey) == $storedHash or md5($password) == $storedHash or sha1($password) == $storedHash or passwordhash($username, $password) == $storedHash) {
-            return password_hash($password, PASSWORD_DEFAULT);
+        // Password is correctly but stored in an old or insecure format. We need to hash it with a secure implementation.
+        // Insecure implementations like md5 or sha1 are imported from other systems with the cloud.php job.
+
+        // First check if crypt works properly. Old PHP versions like Debian 6 with 5.3.3 will run into an error
+        } else if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
+
+            if (md5($password) == $storedHash) {
+                return password_hash($password, PASSWORD_DEFAULT);
+            } else if (sha1($password) == $storedHash) {
+                return password_hash($password, PASSWORD_DEFAULT);
+            } else if (createHash($username, $password, $salt, $aeskey) == $storedHash) {
+                return password_hash($password, PASSWORD_DEFAULT);
+            } else if (passwordhash($username, $password) == $storedHash) {
+                return password_hash($password, PASSWORD_DEFAULT);
+            }
+
+        // Fallback from fallback since some Admins are either forced to stick to old PHP or are lazy.
+        } else {
+
+            $newSalt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
+
+            if (md5($password) == $storedHash) {
+                return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
+            } else if (sha1($password) == $storedHash) {
+                return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
+            } else if (passwordhash($username, $password) == $storedHash) {
+                return createHash($username, $password, $salt, $aeskey);
+            }
         }
 
         // Password Is Not Correct
         return false;
+    }
+
+    function passwordCreate ($username, $password) {
+
+        global $aeskey;
+
+        if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
+            return password_hash($password, PASSWORD_DEFAULT);
+        } else {
+            $newSalt = md5(mt_rand() . strtotime('now'));
+            return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
+        }
     }
 
     function szrp ($value) {
