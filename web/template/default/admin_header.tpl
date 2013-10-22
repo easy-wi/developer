@@ -75,7 +75,7 @@
                 <?php if($pa['voiceserver'] and $crashedArray['ts3']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></span></a><?php }?>
                 <?php if($pa['voicemasterserver'] and $crashedArray['ts3Master']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3Master'].' '.$sprache_bad->ts3master_crashed; ?></span></a><?php }?>
                 <?php if($pa['roots'] and $crashedArray['masterserver']>0 and $gserver_module) { ?><a href="admin.php?w=ro"><span class="badge badge-important"><?php echo $crashedArray['masterserver'].' '.$sprache_bad->master_crashed; ?></span></a><?php }?>
-                <?php if($pa['vserverhost'] and $crashedArray['virtualHosts']>0 and $vserver_module and $reseller_id==0) { ?><a href="admin.php?w=vh&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['virtualHosts'].' '.$sprache_bad->host_crashed; ?></span></a><?php }?>
+                <?php if($pa['vserverhost'] and $crashedArray['virtualHosts']>0 and $vserver_module and $reseller_id==0) { ?><a href="admin.php?w=vh"><span class="badge badge-important"><?php echo $crashedArray['virtualHosts'].' '.$sprache_bad->host_crashed; ?></span></a><?php }?>
             </div>
         </div>
     </div>
@@ -367,7 +367,7 @@
                                     <?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?><li <?php if($ui->smallletters('w',255,'get')=='vs') echo 'class="active"';?>><a href="admin.php?w=vs&amp;d=md"><?php echo $gsprache->virtual;?></a></li><?php } ?>
                                     <?php if($pa['dedicatedServer']) { ?><li <?php if($ui->smallletters('w',255,'get')=='rh') echo 'class="active"';?>><a href="admin.php?w=rh"><?php echo $gsprache->dedicated;?></a></li><?php } ?>
                                     <?php if($pa['traffic']) { ?><li <?php if($ui->smallletters('w',255,'get')=='tf' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=tf"><?php echo $gsprache->traffic;?></a></li><?php } ?>
-                                    <?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='vh') echo 'class="active"';?>><a href="admin.php?w=vh&amp;d=md">ESX(I) Host</a></li><?php } ?>
+                                    <?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='vh') echo 'class="active"';?>><a href="admin.php?w=vh">ESX(I) Host</a></li><?php } ?>
                                     <?php if($pa['dhcpServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rd') echo 'class="active"';?>><a href="admin.php?w=rd">DHCP</a></li><?php } ?>
                                     <?php if($pa['pxeServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rp') echo 'class="active"';?>><a href="admin.php?w=rp">PXE</a></li><?php } ?>
                                     <?php if($pa['resellertemplates'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='ot') echo 'class="active"';?>><a href="admin.php?w=ot"><?php echo $gsprache->template;?></a></li><?php } ?>
