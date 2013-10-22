@@ -301,22 +301,26 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                     $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
                     if ($user_accounttype == 'a') {
-                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $id, $id));
+                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], 0, $id));
                     } else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
                         $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $reseller_id, $id));
                     } else if ($user_accounttype == 'r') {
                         $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $admin_id, $id));
+                    } else {
+                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $reseller_id, $id));
                     }
 
                 } else {
 
                     $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
                     if ($user_accounttype == 'a') {
-                        $query->execute(array($cnamenew, $newHash, $id, $id));
+                        $query->execute(array($cnamenew, $newHash, 0, $id));
                     } else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
                         $query->execute(array($cnamenew, $newHash, $reseller_id, $id));
                     } else if ($user_accounttype == 'r') {
                         $query->execute(array($cnamenew, $newHash, $admin_id, $id));
+                    } else {
+                        $query->execute(array($cnamenew, $newHash, $reseller_id, $id));
                     }
                 }
 
@@ -376,7 +380,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = 'admin_404.tpl';
         }
     } else if ($ui->smallletters('action',2, 'post') == 'dl') {
-        if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
+        if ($reseller_id != 0 and $admin_id != $reseller_id) {
+            $reseller_id = $admin_id;
+        }
         $template_file = '';
         if ($reseller_id == 0) {
             $query = $sql->prepare("SELECT `cname`,`resellerid`,`accounttype` FROM `userdata` WHERE `id`=? AND (`resellerid`=? OR `id`=resellerid) LIMIT 1");
