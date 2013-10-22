@@ -115,7 +115,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $bitversion = $row['bitversion'];
                 }
                 if (isset($publickey)) {
-                    $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip,$oldip), array($port,$oldport), array($dns,$olddns),$reseller_id,$sql);
+                    $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip,$oldip), array($port,$oldport), array($dns,$olddns),$reseller_id);
                     $query = $sql->prepare("UPDATE `voice_dns` SET `dns`=?,`ip`=?,`port`=? WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($dns,$ip,$port,$id,$reseller_id));
                 } else {

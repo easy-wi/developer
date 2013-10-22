@@ -222,7 +222,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query2->execute(array($dns,$reseller_id));
                 if ($query->fetchColumn()==0 and $query2->fetchColumn()==0) {
                     if ($active == 'Y') {
-                        $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip), array($port), array($dns),$reseller_id,$sql);
+                        $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip), array($port), array($dns),$reseller_id);
                     }
                     $query = $sql->prepare("INSERT INTO `voice_dns` (`active`,`dns`,`ip`,`port`,`tsdnsID`,`userID`,`externalID`,`resellerID`) VALUES (?,?,?,?,?,?,?,?)");
                     $query->execute(array($active,$dns,$ip,$port,$tsdnsID,$userID,$externalID,$reseller_id));
@@ -256,7 +256,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $dnsArray=array($dns,$olddns);
                 }
                 if (isset($dnsAction)) {
-                    $template_file = tsdns($dnsAction,$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,$ipArray,$portArray,$dnsArray,$reseller_id,$sql);
+                    $template_file = tsdns($dnsAction,$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,$ipArray,$portArray,$dnsArray,$reseller_id);
                 }
                 $log='mod';
                 $query = $sql->prepare("UPDATE `voice_dns` SET `active`=?,`dns`=?,`ip`=?,`port`=?,`externalID`=? WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
@@ -315,7 +315,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("DELETE FROM `voice_dns` WHERE `dnsID`=? AND `resellerid`=?");
             $query->execute(array($id,$reseller_id));
             if ($query->rowCount()>0) {
-                $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip), array($port), array($dns),$reseller_id,$sql);
+                $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip), array($port), array($dns),$reseller_id);
                 $loguseraction="%del% %voserver% %dns% $deleteDNS";
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_del;

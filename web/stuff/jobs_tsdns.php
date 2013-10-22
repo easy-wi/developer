@@ -87,7 +87,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 }
             }
             $query7->execute(array($active, $row3['affectedID']));
-            if (isset($dnsAction)) tsdns($dnsAction,$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,$ipArray,$portArray,$dnsArray, $row3['resellerID'],$sql);
+            if (isset($dnsAction)) tsdns($dnsAction,$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion,$ipArray,$portArray,$dnsArray, $row3['resellerID']);
             $query6->execute(array($row3['jobID']));
         }  
     }

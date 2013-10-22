@@ -76,6 +76,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $resellerToBeWritten = null;
     $externalDNS = array();
     $dnsarray = array();
+    $errors = array();
 
     $id = $ui->id('id', 10, 'get');
     $autorestart = $ui->active('autorestart', 'post');
@@ -230,8 +231,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         }
 
     } else if ($ui->w('action', 3, 'post') == 'ad' or ((in_array($ui->w('action', 3, 'post'), array('md', 'ad2')) or $ui->st('d', 'get') == 'ri') and $id)) {
-
-        $errors = array();
 
         if (!$ui->active('active', 'post')) {
             $errors['active'] = $sprache->active;
@@ -419,7 +418,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                             }
                         }
 
-                        $dnsarray = tsdns('li', $ip, $port, $user, $publickey, $keyname, $pass,'N', $serverdir, $bit, array(''), array(''), array(''), $reseller_id, $sql);
+                        $dnsarray = tsdns('li', $ip, $port, $user, $publickey, $keyname, $pass,'N', $serverdir, $bit, array(''), array(''), array(''), $reseller_id);
 
                     }
                     if ($ui->st('d', 'get') == 'ri') {
@@ -829,7 +828,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                     $dns = array_unique($dns);
                     if ($i > 0) {
-                        $template_file = tsdns('mw', $TSDNSSsh2ip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion, $dns,'','', $reseller_id, $sql);
+                        $template_file = tsdns('mw', $TSDNSSsh2ip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion, $dns,'','', $reseller_id);
                     }
                 }
             }

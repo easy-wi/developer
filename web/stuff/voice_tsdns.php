@@ -162,7 +162,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query = $sql->prepare("SELECT `id` FROM `voice_tsdns` WHERE `ssh2ip`=? ORDER BY `id` DESC LIMIT 1");
                     $query->execute(array($ip));
                     $id = $query->fetchColumn();
-                    $dnsarray=tsdns('li',$ip,$port,$user,$publickey,$keyname,$pass,'N',$serverdir,$bit, array(''), array(''), array(''),$reseller_id,$sql);
+                    $dnsarray=tsdns('li',$ip,$port,$user,$publickey,$keyname,$pass,'N',$serverdir,$bit, array(''), array(''), array(''),$reseller_id);
                     $newArray = array();
                     if (is_array($dnsarray)) {
                         $table = array();
@@ -231,7 +231,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $keyname = $row['keyname'];
             $bit = $row['bitversion'];
         }
-        $dnsarray=tsdns('li',$ssh2ip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,'N',$serverdir,$bit, array(''), array(''), array(''),$reseller_id,$sql);
+        $dnsarray=tsdns('li',$ssh2ip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,'N',$serverdir,$bit, array(''), array(''), array(''),$reseller_id);
         if (is_array($dnsarray)) {
             $table = array();
             $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");

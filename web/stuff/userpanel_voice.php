@@ -490,7 +490,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                         $slots = $row['slots'];
                     }
                 }
-                $return=tsdns('md', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion, array($ip, $oldip), array($port, $oldport), array($dns, $olddns), $reseller_id, $sql);
+                $return=tsdns('md', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion, array($ip, $oldip), array($port, $oldport), array($dns, $olddns), $reseller_id);
                 $template_file = ($return == 'ok') ? $spracheResponse->ts_query_success.$return : $spracheResponse->error_ts_query.$return;
             } else if ($usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck === false) {
                 $error .=" DNS is not allowed<br />";

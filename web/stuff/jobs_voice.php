@@ -119,7 +119,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $update->execute(array($row2['jobID']));
                 $template_file = $spracheResponse->table_del;
                 if ($usedns == 'Y') {
-                    $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns), $row['resellerID'],$sql);
+                    $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns), $row['resellerID']);
                 }
                 $query3 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `resellerid`=?");
                 $query3->execute(array($row2['affectedID'], $row['resellerID']));
@@ -145,7 +145,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         $update = $sql->prepare("UPDATE `voice_server` SET `localserverid`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
                         $update->execute(array($virtualserver_id, $row2['affectedID']));
                         if ($usedns == 'Y') {
-                            $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns), $row['resellerID'],$sql);
+                            $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns), $row['resellerID']);
                         }
                         $update = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `affectedID`=? AND `type`='vo' LIMIT 1");
                         $update->execute(array($row2['affectedID']));
@@ -201,7 +201,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         $connection->AdminPermissions($localserverid,'del',$removelist);
                     }
                     if ($usedns == 'Y') {
-                        $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip,$oldip), array($port,$oldport), array($dns,$olddns), $row2['resellerID'],$sql);
+                        $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip,$oldip), array($port,$oldport), array($dns,$olddns), $row2['resellerID']);
                     }
                     if ($row3['active'] == 'N') {
                         $connection->StopServer($localserverid);
