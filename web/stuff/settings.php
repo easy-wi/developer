@@ -36,6 +36,16 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+// We cannot wait until it is removed from PHP and need to protect admins from themselves
+if (ini_get('register_globals') == 'on') {
+    @ini_set('register_globals', 'off');
+
+    // check if we could turn it off. If not shut down.
+    if (ini_get('register_globals') == 'on') {
+        die('register_globals ist set to <b>on</b>. This setting is very dangerous. Easy-WI refuses to work in such an insecure inviroment');
+    }
+}
+
 if (isset($_SERVER['QUERY_STRING'])) {
     $queries = strtolower($_SERVER['QUERY_STRING']);
     $badcontent = array("http://", "ftp://", "https://", "ftps://", "delete ", "from ", "into ", "userdata ", "userdata(", "userdata`", "userpermissions ", "userpermissions(", "userpermissions`", "select ", "set ", "where ", "update ", "union ", "*", ".ssh", "~", "chmod ", "passwd", "fclose", "fopen", "fwrite", "getenv", "locate", "passthru", "phpinfo", "proc_close", "proc_get_status", "proc_nice", "proc_open", "proc_terminate", "shell_exec(", "system(");
