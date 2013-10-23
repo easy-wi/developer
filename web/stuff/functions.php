@@ -120,8 +120,9 @@ if (!function_exists('passwordgenerate')) {
         } else {
 
             $newSalt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
-
-            if (md5($password) == $storedHash) {
+            if (createHash($username, $password, $salt, $aeskey) == $storedHash) {
+                return true;
+            } else if (md5($password) == $storedHash) {
                 return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
             } else if (sha1($password) == $storedHash) {
                 return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
