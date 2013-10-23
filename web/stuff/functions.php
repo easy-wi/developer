@@ -103,7 +103,7 @@ if (!function_exists('passwordgenerate')) {
         // Password is correctly but stored in an old or insecure format. We need to hash it with a secure implementation.
         // Insecure implementations like md5 or sha1 are imported from other systems with the cloud.php job.
 
-        // First check if crypt works properly. Old PHP versions like Debian 6 with 5.3.3 will run into an error
+        // First check if crypt works properly. With old PHP versions like Debian 6 with 5.3.3 we will run into an error
         } else if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
 
             if (md5($password) == $storedHash) {
@@ -139,6 +139,7 @@ if (!function_exists('passwordgenerate')) {
 
         global $aeskey;
 
+        // First check if crypt works properly. Old PHP versions like Debian 6 with 5.3.3 will run into an error
         if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
             return password_hash($password, PASSWORD_DEFAULT);
         } else {

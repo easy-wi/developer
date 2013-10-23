@@ -648,7 +648,7 @@ $query = $sql->prepare("INSERT INTO `lendsettings` (`resellerid`) VALUES (0)");
 $query->execute();
 $query = $sql->prepare("INSERT INTO `traffic_settings` (`type`) VALUES ('mysql')");
 $query->execute();
-$query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES ('4.1','','')");
+$query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES ('4.11','','')");
 $query->execute();
 $query = $sql->prepare("INSERT INTO `voice_stats_settings` (`resellerid`) VALUES (0)");
 $query->execute();
