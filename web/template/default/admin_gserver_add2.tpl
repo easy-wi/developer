@@ -228,7 +228,7 @@
                     <?php if ($table_row['upload']>0) { ?>
                     <div class="control-group">
                         <label class="control-label" for="input-<?php echo $table_row['shorten'];?>-UploadFTP">Upload FTP</label>
-                        <div class="controls"><input id="input-<?php echo $table_row['shorten'];?>-UploadFTP" type="text" name="uploaddir_<?php echo $table_row['shorten'];?>" value="<?php echo $table_row['uploaddir'];?>"></div>
+                        <div class="controls"><input id="input-<?php echo $table_row['shorten'];?>-UploadFTP" type="text" name="uploaddir_<?php echo $table_row['shorten'];?>" value=""></div>
                     </div>
                     <?php }?>
                     <div class="control-group">
