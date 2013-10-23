@@ -63,9 +63,19 @@ if (isset ($page_active) and $page_active == 'Y') {
         $template_file = 'page_home.tpl';
     }
     unset($dbConnect);
+
+    if (!isset($template_to_use) or !isset($template_to_use) ) {
+        $template_to_use = 'default';
+    }
+
+    if (!isset($template_file) or !is_string($template_file) ) {
+        $template_file = '';
+    }
+
     include(IncludeTemplate($template_to_use,'page_header.tpl'));
-    include(IncludeTemplate($template_to_use,(isset($template_file) and preg_match('/^(.*)\.[\w]{1,}$/',$template_file)) ? $template_file : 'page_general.tpl'));
+    include(IncludeTemplate($template_to_use,(preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'page_general.tpl'));
     include(IncludeTemplate($template_to_use,'page_footer.tpl'));
+
 } else {
     redirect('login.php');
 }

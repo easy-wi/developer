@@ -55,8 +55,17 @@ if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui-
     unset($dbConnect);
     $template_file = 'admin_home.tpl';
 }
+
+if (!isset($template_to_use) or !isset($template_to_use) ) {
+    $template_to_use = 'default';
+}
+
+if (!isset($template_file) or !is_string($template_file) ) {
+    $template_file = '';
+}
+
 include(IncludeTemplate($template_to_use, 'admin_header.tpl'));
-include(IncludeTemplate($template_to_use, (isset($template_file)  and preg_match('/^(.*)\.[\w]{1,}$/',$template_file)) ? $template_file : 'general.tpl'));
+include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'general.tpl'));
 include(IncludeTemplate($template_to_use, 'admin_footer.tpl'));
 
 $sql = null;

@@ -58,12 +58,16 @@ if (isset($what_to_be_included_array[$w])) {
     $template_file = 'userpanel_home.tpl';
 }
 
-include(IncludeTemplate($template_to_use, 'userpanel_header.tpl'));
-if (isset($template_file) and preg_match('/^(.*)\.tpl$/', $template_file)) {
-    include(IncludeTemplate($template_to_use, $template_file));
-} else {
-    include(IncludeTemplate($template_to_use, 'general.tpl'));
+if (!isset($template_to_use) or !isset($template_to_use) ) {
+    $template_to_use = 'default';
 }
+
+if (!isset($template_file) or !is_string($template_file) ) {
+    $template_file = '';
+}
+
+include(IncludeTemplate($template_to_use, 'userpanel_header.tpl'));
+include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'general.tpl'));
 include(IncludeTemplate($template_to_use, 'userpanel_footer.tpl'));
 
 $sql = null;
