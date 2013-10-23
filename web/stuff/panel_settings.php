@@ -160,7 +160,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query->execute(array($reseller_id));
 			foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-				if (!in_array($row['language'], $languages)) {
+				if (isset($row['language']) and !in_array($row['language'], $languages)) {
                     $query2->execute(array($row['language'], $reseller_id));
                     if ($query2->rowCount()>0) {
                         $changed = true;

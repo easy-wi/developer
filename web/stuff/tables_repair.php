@@ -834,7 +834,7 @@ $defined['userdata'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"N
     'active' => array("Type"=>"enum('Y','N','R')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'salutation' => array("Type"=>"int(1)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'cname' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'security' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'security' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'salt' => array("Type"=>"varchar(32)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'token' => array("Type"=>"varchar(32)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'name' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),

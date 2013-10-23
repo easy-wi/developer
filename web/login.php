@@ -156,10 +156,9 @@ if ($ui->st('w', 'get') == 'lo') {
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `token`=? LIMIT 1");
             $query->execute(array($ui->w('token',32, 'get')));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $username = $row['cname'];
 
                 $text = $sprache->passwordreseted;
-                $newHash = passwordCreate($username, $ui->password('password1', 255, 'post'));
+                $newHash = passwordCreate($row['cname'], $ui->password('password1', 255, 'post'));
 
                 if (is_array($newHash)) {
                     $query2 = $sql->prepare("UPDATE `userdata` SET `token`='',`security`=?,`salt`=? WHERE `id`=? LIMIT 1");
