@@ -41,7 +41,7 @@
 if (isset($include) and $include == true) {
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('4.11','<div align=\"right\">23.10.2013</div>
-Leider haben sich in der 4.10 einige Fehler eingeschlichen. Dazu hat sie deutlich aufgezeigt, das viele Admins noch sehr alte PHP Versionen nutzen und Easy-WI inkompatibel geworden ist.<br>
+Leider haben sich in der 4.10 einige Fehler eingeschlichen. Dazu hat sie deutlich aufgezeigt, das viele Admins noch alte PHP Versionen nutzen und Easy-WI inkompatibel geworden ist.<br>
 <br>
 4.11 ist ein Hotfix Release, dass diese Probleme addressiert.<br>
 <br>
@@ -60,7 +60,7 @@ Leider haben sich in der 4.10 einige Fehler eingeschlichen. Dazu hat sie deutlic
 <li>Falscher tsdns_settings.ini Syntax</li>
 </ul>
 ','<div align=\"right\">10.23.2013</div>
-Unfortunately errors has slipped in. In addition the update revealed that there are still admins with old PHP versions around. Those admins could not login anymore since.<br>
+Unfortunately errors have slipped in 4.10. In addition the update revealed that there are still admins with old PHP versions around. Those admins could not login anymore since.<br>
 <br>
 4.11 is a hotfix release which addresses these problems.<br>
 <br>
