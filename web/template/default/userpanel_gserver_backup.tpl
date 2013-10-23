@@ -10,7 +10,7 @@
 </div>
 <div class="row-fluid">
     <div class="span5">
-        <form class="form-horizontal" action="userpanel.php?w=bu&amp;id=<?php echo $server_id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+        <form class="form-horizontal" action="userpanel.php?w=bu&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <div class="control-group">
                 <label class="control-label" for="inputCreate"><?php echo $gsprache->backup." ".$sprache->create;?></label>
                 <div class="controls">
@@ -23,7 +23,7 @@
 </div>
 <div class="row-fluid">
     <div class="span5">
-        <form class="form-horizontal" action="userpanel.php?w=bu&amp;id=<?php echo $server_id;?>" method="post">
+        <form class="form-horizontal" action="userpanel.php?w=bu&amp;id=<?php echo $id;?>" method="post">
             <div class="control-group">
                 <label class="control-label" for="inputRecover"><?php echo $gsprache->backup." ".$sprache->recover;?></label>
                 <div class="controls">
@@ -36,7 +36,7 @@
 </div>
 <div class="row-fluid">
     <div class="span5">
-        <form class="form-horizontal" action="userpanel.php?w=bu&amp;id=<?php echo $server_id;?>" method="post">
+        <form class="form-horizontal" action="userpanel.php?w=bu&amp;id=<?php echo $id;?>" method="post">
             <div class="control-group">
                 <label class="control-label" for="inputSettings"><?php echo $gsprache->settings;?></label>
                 <div class="controls">
