@@ -72,7 +72,7 @@ if (!isset($_GET['passwordToken'])) {
 	$error[]='Bad password token has been send.';
 }
 
-$list=(in_array($_GET['list'],array('user','substitutes','gameserver','voicemaster','voiceserver','dedicated','virtual','hostnode'))) ? (string)$_GET['list'] : 'user';
+$list = (in_array($_GET['list'], array('user','substitutes','gameserver','voiceserver','voicemaster','rootserver'))) ? (string)$_GET['list'] : 'user';
 
 // Send header data
 header("Content-type: application/json; charset=UTF-8");
@@ -99,7 +99,7 @@ if (count($error)>0) {
 			// The Query needs to be altered to your database. This is just an example!
 			// specify the needed columns to reduce database load.
 			// webspell
-			if ($config['sourceType']=='webspell') {
+			if ($config['sourceType'] == 'webspell') {
  
 				// Get amount of users that are new or received an update
 				// The Query needs to be altered to your database. This is just an example!
@@ -116,9 +116,9 @@ if (count($error)>0) {
 				$query->execute(array($lastID,$updateTime));
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 					// Easy-Wi stores the salutation with numbers
-					if (isset($row['salutation']) and $row['salutation']=='mr') {
+					if (isset($row['salutation']) and $row['salutation'] == 'mr') {
 						$salutation = 1;
-					} else if (isset($row['salutation']) and $row['salutation']=='ms') {
+					} else if (isset($row['salutation']) and $row['salutation'] == 'ms') {
 						$salutation = 2;
 					} else {
 						$salutation = null;
@@ -146,7 +146,7 @@ if (count($error)>0) {
 						);
 				}
 
-			} else if ($config['sourceType']=='teklab') {
+			} else if ($config['sourceType'] == 'teklab') {
 
 				// Get amount of users that are new or received an update
 				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_members`
@@ -219,103 +219,203 @@ if (count($error)>0) {
 				}
 			}
 
-/**	
-		} else if ($list == 'gameroots') {
-			if ($config['sourceType']=='teklab') {
+		} else if ($list == 'rootserver') {
+			if ($config['sourceType'] == 'teklab') {
 
-				// Get amount of users that are new or received an update
-				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_rootserver`
-				WHERE `active`=1
-				AND `games`=1";
-				$query=$pdo->prepare($sql);
+				// Get amount of gameservers that are new or received an update
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_rootserver`";
+				$query = $pdo->prepare($sql);
 				$query->execute();			
 				$total=$query->fetchColumn();
 
-				// users
+				// gameservers
 				$sql = "SELECT * FROM `{$config['tblPrefix']}_rootserver`
-				WHERE `active`=1
-				AND `games`=1
+				WHERE `memberid` > 0
+				AND `active`=1
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
 				$query->execute();
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+					$ips = explode("\n", $row['serverip']);
+					$ram = (substr($row['ram'], -2) == 'GB') ? trim(substr($row['ram'], 0, (strlen($row['ram']) - 2))) : round((trim(substr($row['ram'], 0, (strlen($row['ram']) - 2))) / 1024), 2);
+
 					$json[]=array(
 						'externalID' => $row['id'],
-						'userID' => $row['memberid'],
-						'description' => $row['name'],
-						'serverIP' => $row['serverip'],
+						'belongsToID' => $row['memberid'],
+						'ips' => $ips,
 						'sshPort' => $row['sshport'],
 						'ftpPort' => $row['ftpport'],
-						'cpuCores' => $row['cpucores'],
-						'maxRam' => $row['ram']
+						'cores' => $row['cpucores'],
+						'maxGameServer' => $row['games'],
+						'maxVoiceServer' => $row['voice'],
+						'ram' => $ram
 						);
 				}
-			
-			}
-		
-		} else if ($list == 'gameimages') {
-			if ($config['sourceType']=='teklab') {
-			
 			}
 
 		} else if ($list == 'gameserver') {
-			if ($config['sourceType']=='teklab') {
-			
-			}
-/**
-		} else if ($list == 'addons') {
+			if ($config['sourceType'] == 'teklab') {
 
-			if ($config['sourceType']=='teklab') {
-
-				// Get amount of users that are new or received an update
-				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_games_addons`";
-				$query=$pdo->prepare($sql);
+				// Get amount of gameservers that are new or received an update
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_gameserver`";
+				$query = $pdo->prepare($sql);
 				$query->execute();			
 				$total=$query->fetchColumn();
 
-				// users
-				$sql = "SELECT * FROM `{$config['tblPrefix']}_games_addons`
+				// gameservers
+				$sql = "SELECT u.`member`,u.`ftppasswd`,g.* FROM `{$config['tblPrefix']}_gameserver` AS g
+				INNER JOIN `{$config['tblPrefix']}_members` AS u
+				ON g.`memberid`=u.`id`
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
 				$query->execute();
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+				
 					$json[]=array(
 						'externalID' => $row['id'],
-						'name' => $row['addonname'],
-						'description' => $row['text'],
-						'shortName' => $row['sname']
+						'belongsToID' => $row['memberid'],
+						'rootID' => $row['rserverid'],
+						'ip' => $row['serverip'],
+						'port' => $row['serverport'],
+						'port2' => $row['queryport'],
+						'slots' => $row['player'],
+						'assignedCore' => $row['cpucore'],
+						'protectionMode' => ($row['protect'] == 1) ? 'Y' : 'N',
+						'tickrate' => $row['gtick'],
+						'startMap' => $row['gmap'],
+						'shorten' => $row['game'],
+						'player' => $row['player'],
+						'ftpUser' => $row['member'],
+						'ftpPass' => $row['ftppasswd'],
+						'path' => '/home/' . $row['member'] . '/server/' . $row['path'] . '/'
 						);
 				}
-			
 			}
-**/
-		} else if ($list == 'voice') {
-			if ($config['sourceType']=='teklab') {
-			
+
+		} else if ($list == 'voiceserver') {
+			if ($config['sourceType'] == 'teklab') {
+
+				// Get amount of voiceservers that are new or received an update
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_voiceserver`";
+				$query = $pdo->prepare($sql);
+				$query->execute();			
+				$total=$query->fetchColumn();
+
+				// voiceservers
+				$sql = "SELECT * FROM `{$config['tblPrefix']}_voiceserver`
+				WHERE `typ`='Teamspeak3'
+				LIMIT $start,$chunkSize";
+				$query=$pdo->prepare($sql);
+				$query->execute();
+				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+					if (filter_var($row['serverip'], FILTER_VALIDATE_IP)) {
+						$ip = $row['serverip'];
+						$dns = '';
+					} else {
+						$ip = gethostbyname($row['serverip']);
+						$dns = $row['serverip'];
+					}
+				
+					$json[]=array(
+						'externalID' => $row['id'],
+						'belongsToID' => $row['memberid'],
+						'ip' => $ip,
+						'dns' => $dns,
+						'port' => $row['serverport'],
+						'slots' => $row['slots']
+						);
+				}
+			}
+		} else if ($list == 'voicemaster') {
+			if ($config['sourceType'] == 'teklab') {
+
+				// Get amount of voiceservers that are new or received an update
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_teamspeak`";
+				$query = $pdo->prepare($sql);
+				$query->execute();			
+				$total=$query->fetchColumn();
+
+				// voiceservers
+				$sql = "SELECT * FROM `{$config['tblPrefix']}_teamspeak`
+				WHERE `typ`='Teamspeak3'
+				LIMIT $start,$chunkSize";
+				$query=$pdo->prepare($sql);
+				$query->execute();
+				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+					if (filter_var($row['serverip'], FILTER_VALIDATE_IP)) {
+						$ip = $row['serverip'];
+						$dns = '';
+					} else {
+						$ip = gethostbyname($row['serverip']);
+						$dns = $row['serverip'];
+					}
+				
+					$json[]=array(
+						'externalID' => $row['id'],
+						'belongsToID' => $row['memberid'],
+						'ip' => $ip,
+						'dns' => $dns,
+						'port' => $row['queryport'],
+						'queryAdmin' => $row['admin'],
+						'queryPassword' => $row['passwd'],
+						'path' => '/home/user-webi/' . $row['path'] . '/'
+						);
+				}
 			}
 
 		// Substitutes at last so we can get access permissions as well
 		} else if ($list == 'substitutes') {
-			if ($config['sourceType']=='teklab') {
+			if ($config['sourceType'] == 'teklab') {
 
-				// Get amount of users that are new or received an update
-				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_subusers`";
-				$query=$pdo->prepare($sql);
+				// Get amount of substitutes that are new or received an update
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_subusers`";
+				$query = $pdo->prepare($sql);
 				$query->execute();			
 				$total=$query->fetchColumn();
 
-				// users
+				// substitutes
 				$sql = "SELECT * FROM `{$config['tblPrefix']}_subusers`
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
+
+				$sql = "SELECT * FROM `{$config['tblPrefix']}_subusers_servers` WHERE `subuserid`=? AND `active`=1";
+				$query2 = $pdo->prepare($sql);
+
 				$query->execute();
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-					$json[]=array(
+
+					$serverAccess = array(
+						'de' => array(),
+						'gs' => array(),
+						'vo' => array(),
+						'vs' => array(),
+					);
+
+					$query2->execute(array($row['id']));
+					foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+						if ($row2['typ'] == 'games') {
+							$what = 'gs';
+						} else if ($row2['typ'] == 'voice') {
+							$what = 'vo';
+						} else if ($row2['typ'] == 'mvserver') {
+							$what = 'vs';
+						} else if ($row2['typ'] == 'mrserver') {
+							$what = 'de';
+						} else {
+							$what = $row2['typ'];
+						}
+						$serverAccess[$what][] = $row2['typid'];
+					}
+					
+
+					$json[] = array(
 						'externalID' => $row['id'],
-						'belongsToExternalID' => $row['memberid'],
+						'belongsToID' => $row['memberid'],
 						'loginName' => $row['user'],
 						'firstName' => null,
 						'lastName' => null,
+						'serverAccess' => $serverAccess,
 						'password' => $row['password']
 						);
 				}
