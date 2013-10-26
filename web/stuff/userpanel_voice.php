@@ -341,7 +341,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         $template_file = 'userpanel_404.tpl';
     }
 
-} else if ($ui->st('d', 'get') == 'rs' and $ui->id('id', 10, 'get') and $ui->smallletters('action', 2, 'post') == 'rs' and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
+} else if ($ui->st('d', 'get') == 'rs' and $ui->id('id', 10, 'get') and $ui->smallletters('action', 2, 'get') == 'rs' and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
 
     $id = (int) $ui->id('id', 10, 'get');
 
@@ -698,7 +698,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         $template_file = $spracheResponse->token;
     }
 
-} else if ($ui->st('d', 'get') == 'st' and $ui->id('id', 10, 'get') and $ui->smallletters('action', 2, 'post') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
+} else if ($ui->st('d', 'get') == 'st' and $ui->id('id', 10, 'get') and $ui->smallletters('action', 2, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
 
     $id = (int) $ui->id('id', 10, 'get');
 
@@ -726,7 +726,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
         } else {
 
-            if ($ui->smallletters('action', 2, 'post') == 're') {
+            if ($ui->smallletters('action', 2, 'get') == 're') {
                 $uptime = 2;
                 $reply = $connection->StopServer($volocalserverid);
                 $reply = $connection->StartServer($volocalserverid);
@@ -734,7 +734,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $loguseraction = '%start% %voserver% ' . $row['ip'] . ':' . $row['port'];
                 $insertlog->execute();
 
-            } else if ($ui->smallletters('action', 2, 'post') == 'so') {
+            } else if ($ui->smallletters('action', 2, 'get') == 'so') {
                 $uptime = 1;
                 $reply = $connection->StopServer($volocalserverid);
 
