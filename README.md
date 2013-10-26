@@ -33,7 +33,7 @@ How does the support work?
 -------
 Typical Open Source we have:
 * Wiki [wiki.easy-wi.com](http://wiki.easy-wi.com)
-* Forum [forum.easy-wi.com](https://easy-wi.com/forum/)
+* Forum [easy-wi.com/forum/](https://easy-wi.com/forum/)
 * Bug tracker that can be used for feature requests as well at [github.com](https://github.com/easy-wi/developer/issues?state=open)
 
 
