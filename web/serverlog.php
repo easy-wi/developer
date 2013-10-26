@@ -105,9 +105,6 @@ if ($ui->id('id', 10, 'get')) {
 
         ini_set('default_socket_timeout', 5);
 
-        #echo "ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip . '_' . "$port/$shorten/$binarydir/screenlog.0";
-        #$fp = @fopen('ftp://' . $username . ':' . $ftppass . '@' . $ip . ':' . $ftpport . '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', 'r');
-
         $ftpConnection = @ftp_connect($ip, $ftpport);
 
         if ($ftpConnection) {
@@ -120,7 +117,7 @@ if ($ui->id('id', 10, 'get')) {
                 if ($logSize != -1) {
                     $startAtSize = ($logSize > 16384) ? ($logSize - 16384) : 0;
 
-                    // now we have a connection and filesize we can create a local temp file and start downloading
+                    // now we have a connection and filesize so we can create a local temp file and start downloading
                     $tempHandle = tmpfile();
                     $download = @ftp_fget($ftpConnection, $tempHandle, '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', FTP_BINARY, $startAtSize);
 
@@ -130,14 +127,16 @@ if ($ui->id('id', 10, 'get')) {
 
                         $fstats = fstat($tempHandle);
 
-                        $screenlog = nl2br(fread($tempHandle, $fstats['size']));
+                        $screenlog = ($fstats['size'] > 0) ? nl2br(fread($tempHandle, $fstats['size'])) : '';
                     }
+
+                    fclose($tempHandle);
                 }
             }
             ftp_close($ftpConnection);
         }
 
-        echo (!isset($screenlog)) ? 'Connection failed!' : '<html><head><meta http-equiv="refresh" content="5"></head><body>' . $screenlog . '</body></html>';
+        echo (!isset($screenlog)) ? 'Connection failed!' : '<html><head><title>' . $ewCfg['title'] . ' ' . $serverip .':' . $port . '</title><meta http-equiv="refresh" content="3"></head><body>' . $screenlog . '</body></html>';
 
     } else {
         echo 'Error: ID';
