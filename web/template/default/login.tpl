@@ -35,7 +35,7 @@
         </label>
         <?php } else { ?>
         <h2 class="form-signin-heading"><?php echo $sprache->heading;?></h2>
-        <?php if(isset($header)) echo '<div id="redirect" class="control-group"><img src="images/16_notice.png" alt="notice" />'.$text.'</div>'; ?>
+        <?php if(isset($header)) echo '<div class="alert">'.$text.'</div><div id="redirect" class="control-group">'; ?>
         <div class="control-group">
             <div class="controls">
                 <label class="control-label" for="inputUser"></label>
