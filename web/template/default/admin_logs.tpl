@@ -26,7 +26,7 @@
                 <th data-hide="phone"><?php echo $sprache->account;?></th>
                 <th><?php echo $sprache->action;?></th>
                 <th data-hide="phone,tablet"><?php echo $sprache->ip;?></th>
-                <th data-hide="phone,tablet"><?php echo $sprache->hostname;?>:</th>
+                <th data-hide="phone,tablet"><?php echo $sprache->hostname;?></th>
             </tr>
             </thead>
             <tbody>
