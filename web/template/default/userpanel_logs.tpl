@@ -22,18 +22,18 @@
         <table class="table table-bordered table-hover table-striped footable">
             <thead>
             <tr>
-                <th data-class="expand"><?php echo $sprache->action;?></th>
-                <th><?php echo $sprache->account;?></th>
-                <th data-hide="phone"><?php echo $sprache->date;?></th>
+                <th data-class="expand"><?php echo $sprache->date;?></th>
+                <th data-hide="phone"><?php echo $sprache->account;?></th>
+                <th><?php echo $sprache->action;?></th>
                 <th data-hide="phone,tablet"><?php echo $sprache->ip;?></th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($table as $table_row) { ?>
             <tr>
-                <td><?php echo $table_row['useraction']; ?></td>
-                <td><?php echo $table_row['username']; ?></td>
                 <td><?php echo $table_row['logday'].' '.$table_row['loghour']; ?></td>
+                <td><?php echo $table_row['username']; ?></td>
+                <td><?php echo $table_row['useraction']; ?></td>
                 <td><?php echo $table_row['ip']; ?></td>
             </tr>
             <?php } ?>

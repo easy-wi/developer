@@ -22,17 +22,17 @@
         <table class="table table-bordered table-hover table-striped footable">
             <thead>
             <tr>
-                <th data-class="expand"><a href="admin.php?w=ml&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='at') { echo 'dt'; } else { echo 'at'; } ?>"><?php echo $sprache->topic;?></a>:</th>
-                <th><a href="admin.php?w=ml&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='au') { echo 'du'; } else { echo 'au'; } ?>"><?php echo $sprache->account;?></a>:</th>
-                <th data-hide="phone"><a href="admin.php?w=ml&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dd') { echo 'ad'; } else { echo 'dd'; } ?>"><?php echo $sprache->date;?></a>:</th>
+                <th data-class="expand"><a href="admin.php?w=ml&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dd') { echo 'ad'; } else { echo 'dd'; } ?>"><?php echo $sprache->date;?></a></th>
+                <th data-hide="phone"><a href="admin.php?w=ml&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='au') { echo 'du'; } else { echo 'au'; } ?>"><?php echo $sprache->account;?></a></th>
+                <th><a href="admin.php?w=ml&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='at') { echo 'dt'; } else { echo 'at'; } ?>"><?php echo $sprache->topic;?></a></th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($table as $table_row) { ?>
             <tr>
-                <td><?php echo $table_row['topic']; ?></td>
-                <td><?php echo $table_row['username']; ?></td>
                 <td><?php echo $table_row['logday']." ".$table_row['loghour']; ?></td>
+                <td><?php echo $table_row['username']; ?></td>
+                <td><?php echo $table_row['topic']; ?></td>
             </tr>
             <?php } ?>
             </tbody>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: userpanel_logdata.php.
  * Author: Ulrich Block

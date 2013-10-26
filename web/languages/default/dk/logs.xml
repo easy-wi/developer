@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
 	<account>Konto</account>
-	<action>Bruger handling</action>
+	<action>Handling</action>
 	<admin>Admin</admin>
 	<all>Alle</all>
 	<banned_till>Udelukket indtil</banned_till>
     <date>Dato</date>
     <hostname>værtsnavn</hostname>
-	<ip>BrugerIP</ip>
+	<ip>IP</ip>
 	<shown>Beløb</shown>
 	<subuser>Subuser</subuser>
 	<topic>Emne</topic>
