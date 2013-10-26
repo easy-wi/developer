@@ -1910,7 +1910,20 @@ function ftpStringToData ($fptConnect) {
 
     if ($serverData) {
 
-        @list($portServer, $path) = preg_split('/\//', $serverData, -1, PREG_SPLIT_NO_EMPTY);
+        $ex = preg_split('/\//', $serverData, -1, PREG_SPLIT_NO_EMPTY);
+        $portServer = $ex[0];
+
+        $path = '';
+        $i = 1;
+
+        while ($i < count($ex)) {
+            $path .= '/' . $ex[$i];
+            $i++;
+        }
+
+        if ($path == '') {
+            $path = '/';
+        }
 
         @list($server, $port) = explode(':', $portServer);
 
@@ -1920,5 +1933,5 @@ function ftpStringToData ($fptConnect) {
 
     }
 
-    return array('server' => $server, 'port' => $port, 'user' => $user, 'pwd' => $pwd, 'path' => '/' . $path);
+    return array('server' => $server, 'port' => $port, 'user' => $user, 'pwd' => $pwd, 'path' => $path);
 }
