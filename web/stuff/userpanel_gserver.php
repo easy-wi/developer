@@ -60,13 +60,20 @@ if (isset($admin_id) and $reseller_id != 0) {
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
+
 } else if ($ui->st('d', 'get') == 'ri' and !$ui->id('id', 10, 'get')) {
     $template_file = $sprache->error_id;
+
 } else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
-    $id = $ui->id('id', 10, 'get');
+
+    $id = (int) $ui->id('id', 10, 'get');
+
     if ($ui->st('action', 'post') == 'ri') {
+
         $i = 0;
         $gamestring = array();
+        $template = array();
+
         $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$aeskey,$ui->id('id', 10, 'get'),$user_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -78,7 +85,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $gsfolder = $serverip . '_' . $port;
             if ($row['newlayout'] == 'Y') $customer = $customer . '-' . $row['id'];
         }
-        $template = array();
+
         # https://github.com/easy-wi/developer/issues/69
         $templates = (array) $ui->id('template',10, 'post');
         foreach($templates as $id => $tpl) {
@@ -764,17 +771,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $nameremoved = $sprache->nameremoved;
                 }
             }
-            $initalize[] = $gameserverid.'-start';
-            $initalize[] = $gameserverid.'-stop';
-            $initalize[] = $gameserverid.'-settings';
-            $initalize[] = $gameserverid.'-config';
-            $initalize[] = $gameserverid.'-reinstall';
-            $initalize[] = $gameserverid.'-planer';
-            $initalize[] = $gameserverid.'-logs';
-            $initalize[] = $gameserverid.'-backup';
-            $initalize[] = $gameserverid.'-addons';
-            $initalize[] = $gameserverid.'-protect';
-            $initalize[] = $gameserverid.'-sourcetv';
             $table[] = array('id' => $gameserverid,'premoved' => $premoved,'nameremoved' => $nameremoved, 'server' => $address,'name' => $name,'img' => $imgName,'alt' => $imgAlt,'imgp' => $imgNameP,'altp' => $imgAltP,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'map' => $map,'cname' => $cname,'cftppass' => $cftppass,'ip' => $ip,'ftpport' => $ftpport,'port' => $port,'shorten' => $currentTemplate,'gameShorten' => $shorten,'ftpdata' => $ftpdata,'updatetime' => $updatetime,'stopped' => $stopped,'pro' => $pro,'upload' => $upload,'minram' => $row['minram'], 'maxram' => $row['maxram'], 'taskset' => $row['taskset'], 'coreCount' => $coreCount,'cores' => $cores);
         }
     }

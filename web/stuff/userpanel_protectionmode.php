@@ -137,7 +137,7 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
         ssh2_execute('gs',$rootid,$cmds);
         $loguseraction="%stop% %pmode% $serverip:$port";
         $insertlog->execute();
-        $template_file = $sprache->protect.' off';
+        $template_file = $sprache->protect . ' ' . $sprache->off2;
     } else if (isset($protected,$serverip,$port,$rootid,$customer,$ftppass) and $protected== 'N') {
         $cmds=gsrestart($ui->id('id', 10, 'get'),'sp',$aeskey,$reseller_id);
         $randompass=passwordgenerate(10);
@@ -149,6 +149,6 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
         ssh2_execute('gs',$rootid,$cmds);
         $loguseraction="%restart% %pmode% $serverip:$port";
         $insertlog->execute();
-        $template_file = $sprache->protect.' on';
+        $template_file = $sprache->protect . ' ' . $sprache->on;
     }
 }
