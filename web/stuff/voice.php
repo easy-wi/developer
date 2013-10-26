@@ -128,12 +128,12 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
             $hostbutton_gfx_url = $row2['defaulthostbutton_gfx_url'];
             $defaultFlexSlotsFree = $row2['defaultFlexSlotsFree'];
             $defaultFlexSlotsPercent = $row2['defaultFlexSlotsPercent'];
-            if ($addedby == '2') {
+            if ($addedby == 2) {
                 $ips[] = $row2['ssh2ip'];
                 foreach (preg_split('/\r\n/', $row2['ips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) {
                     $ips[] = $ip;
                 }
-            } else if ($addedby == '1') {
+            } else if ($addedby == 1) {
                 $query3 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query3->execute(array($row2['rootid'],$reseller_id));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
@@ -241,7 +241,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $maxslots = $row['maxslots'];
                 $serverdir = $row['serverdir'];
                 $mnotified = $row['notified'];
-                if ($addedby == '2') {
+                if ($addedby == 2) {
                     $publickey = $row['publickey'];
                     $queryip = $row['ssh2ip'];
                     $ssh2port = $row['decryptedssh2port'];
@@ -249,7 +249,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                     $ssh2password = $row['decryptedssh2password'];
                     $keyname = $row['keyname'];
                     $bitversion = $row['bitversion'];
-                } else if ($addedby == '1') {
+                } else if ($addedby == 1) {
                     $pselect2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $pselect2->execute(array($row['rootid'],$reseller_id));
                     foreach ($pselect2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
@@ -360,7 +360,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
             $mnotified = $row['notified'];
             $tsdnsServerID = $row['tsdnsServerID'];
             $externalDefaultDNS = $row['externalDefaultDNS'];
-            if ($addedby == '2') {
+            if ($addedby == 2) {
                 $publickey = $row['publickey'];
                 $queryip = $row['ssh2ip'];
                 $ssh2port = $row['decryptedssh2port'];
@@ -368,7 +368,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $ssh2password = $row['decryptedssh2password'];
                 $keyname = $row['keyname'];
                 $bitversion = $row['bitversion'];
-            } else if ($addedby == '1') {
+            } else if ($addedby == 1) {
                 $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($row['rootid'],$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -465,11 +465,11 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $maxserver = $row2['maxserver'];
                 $maxslots = $row2['maxslots'];
                 $addedby = $row2['addedby'];
-                if ($addedby == '2') {
+                if ($addedby == 2) {
                     $queryip = $row2['ssh2ip'];
                     $ips[] = $row2['ssh2ip'];
                     foreach (preg_split('/\r\n/', $row2['ips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) $ips[] = $ip;
-                } else if ($addedby == '1') {
+                } else if ($addedby == 1) {
                     $query3 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query3->execute(array($row2['rootid'],$reseller_id));
                     foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
@@ -557,7 +557,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
             $mnotified = $row['notified'];
             $tsdnsServerID = $row['tsdnsServerID'];
             $externalDefaultDNS = $row['externalDefaultDNS'];
-            if ($addedby == '2') {
+            if ($addedby == 2) {
                 $publickey = $row['publickey'];
                 $queryip = $row['ssh2ip'];
                 $ssh2port = $row['decryptedssh2port'];
@@ -565,7 +565,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $ssh2password = $row['decryptedssh2password'];
                 $keyname = $row['keyname'];
                 $bitversion = $row['bitversion'];
-            } else if ($addedby == '1') {
+            } else if ($addedby == 1) {
                 $query = $sql->prepare("SELECT `ip`,`bitversion` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($row['rootid'],$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

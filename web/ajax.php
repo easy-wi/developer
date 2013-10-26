@@ -50,13 +50,13 @@ if (isset($admin_id)) {
 	$userpermissionquery = $sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
 	$userpermissionquery->execute(array($permissionid));
 	foreach ($userpermissionquery->fetchall() as $userpermissionrow) {
-		if ($userpermissionrow['root']=="Y") {
+		if ($userpermissionrow['root'] == 'Y') {
 			foreach ($userpermissionrow as $key => $value) {
 				$pa[$key] = true;
 			}
 		} else {
 			foreach ($userpermissionrow as $key => $value) {
-				if ($value=="Y") {
+				if ($value == 'Y') {
 					$pa[$key] = true;
 				} else {
 					$pa[$key] = false;
@@ -69,7 +69,7 @@ if (isset($user_id)) {
 	$userpermissionquery = $sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
 	$userpermissionquery->execute(array($user_id));
 	foreach ($userpermissionquery->fetchall() as $userpermissionrow) {
-		if ($userpermissionrow['miniroot']=="Y") {
+		if ($userpermissionrow['miniroot'] == 'Y') {
 			foreach ($userpermissionrow as $key => $value) {
 				$pau[$key] = true;
 			}
@@ -78,7 +78,7 @@ if (isset($user_id)) {
 				if (isset($admin_id)) {
 					$pau[$key] = true;
 				} else {
-					if ($value=="Y") {
+					if ($value == 'Y') {
 						$pau[$key] = true;
 					} else {
 						$pau[$key] = false;

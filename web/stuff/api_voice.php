@@ -140,12 +140,12 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                         $query2->execute(array($tsdnsServerID,$resellerID));
                         $defaultdns = $query2->fetchColumn();
                     }
-                    if ($row['addedby'] == '2') {
+                    if ($row['addedby'] == 2) {
                         $ips[] = $row['ssh2ip'];
                         foreach (preg_split('/\r\n/', $row['ips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) {
                             $ips[] = $ip;
                         }
-                    } else if ($row['addedby'] == '1') {
+                    } else if ($row['addedby'] == 1) {
                         $query2 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                         $query2->execute(array($row['rootid'],$resellerID));
                         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {

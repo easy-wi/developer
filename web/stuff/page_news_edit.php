@@ -142,7 +142,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$pselect = $sql->prepare("SELECT p.`id`,p.`released`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`id`=? AND p.`resellerid`=? LIMIT 1");
 		$pselect->execute(array($user_language,$id,$reseller_id));
 		foreach ($pselect->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			if ($row['released'] == '1') {
+			if ($row['released'] == 1) {
 				$page_active = $gsprache->yes;
 			} else {
 				$page_active = $gsprache->no;
@@ -429,7 +429,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (!isset($titleLanguages[$row['language']])) {
             $titleLanguages[$row['language']] = array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
         }
-        if ($row['released'] == '1') {
+        if ($row['released'] == 1) {
             $released = $gsprache->yes;
         } else {
             $released = $gsprache->no;

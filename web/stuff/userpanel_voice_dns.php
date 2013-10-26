@@ -39,7 +39,7 @@
 $sprache = getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid = $user_id;
 $logusername = getusername($user_id);
-$logusertype='user';
+$logusertype = 'user';
 $logreseller = 0;
 if (isset($admin_id)) {
     $logsubuser = $admin_id;

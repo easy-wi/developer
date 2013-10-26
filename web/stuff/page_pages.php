@@ -151,7 +151,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($user_language,$id,$reseller_id));
 		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
             $page_title = $row['title'];
-			if ($row['released'] == '1') {
+			if ($row['released'] == 1) {
 				$page_active = $gsprache->yes;
 			} else {
 				$page_active = $gsprache->no;
@@ -406,7 +406,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($user_language,$reseller_id));
     $table = array();
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-        if ($row['released'] == '1') {
+        if ($row['released'] == 1) {
             $released = $gsprache->yes;
         } else {
             $released = $gsprache->no;

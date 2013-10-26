@@ -158,7 +158,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                     $rulebreak[] = $ssprache->nopassword;
 
-                    if ($resellersettings[$resellerid]['nopassword'] == '1') {
+                    if ($resellersettings[$resellerid]['nopassword'] == 1) {
                         $stopserver = true;
                         print "Will stop server $address because running without password. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
 
@@ -171,7 +171,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                     $rulebreak[] = $ssprache->tohighslots;
 
-                    if ($resellersettings[$resellerid]['tohighslots'] == '1') {
+                    if ($resellersettings[$resellerid]['tohighslots'] == 1) {
                         $stopserver = true;
                         print "Will stop server $address because running with to much slots. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
                     } else {
@@ -183,7 +183,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                     $rulebreak[] = $ssprache->noservertag;
 
-                    if ($resellersettings[$resellerid]['noservertag'] == '1') {
+                    if ($resellersettings[$resellerid]['noservertag'] == 1) {
                         $stopserver = true;
                         print "Will stop server $address because running without servertag. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
                     } else {
@@ -739,9 +739,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $querypassword = $vrow['decryptedquerypassword'];
             $resellerid = $vrow['resellerid'];
             $autorestart = $vrow['autorestart'];
-            if ($addedby == '2') {
+            if ($addedby == 2) {
                 $queryip = $vrow['ssh2ip'];
-            } else if ($addedby == '1') {
+            } else if ($addedby == 1) {
                 $vselect2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $vselect2->execute(array($vrow['rootid'], $resellerid));
                 foreach ($vselect2->fetchall(PDO::FETCH_ASSOC) as $vrow2) $queryip = $vrow2['ip'];

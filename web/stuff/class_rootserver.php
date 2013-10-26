@@ -255,7 +255,7 @@ class rootServer {
         foreach ($this->dhcpData as $k => $v) {
             $i = 0;
             unset($tempBad);
-            if ($v['publickey']=="Y") {
+            if ($v['publickey'] == 'Y') {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($v['keyname']);
@@ -317,7 +317,7 @@ class rootServer {
     }
     public function PXEFiles() {
         foreach($this->PXEData as $k => $v) {
-            if ($v['publickey']=="Y") {
+            if ($v['publickey'] == 'Y') {
 
                 # https://github.com/easy-wi/developer/issues/70
                 $sshkey=removePub($v['keyname']);

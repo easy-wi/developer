@@ -100,7 +100,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		$maxserver = $row['maxserver'];
 		$esxi = $row['esxi'];
 		$besthostcpu = $row['cpu'] . '  ' . $cores."x".$mhz." MHz";
-		if ($row['thin']=="Y") {
+		if ($row['thin'] == 'Y') {
 			$percent = $row['thinquota'];
 		} else {
 			$percent="100";
@@ -123,7 +123,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 			$i++;
 		}
 		$i = 1;
-		if ($esxi=="Y") {
+		if ($esxi == 'Y') {
 			$maxcore="8";
 		} else {
 			$maxcore = $cores;

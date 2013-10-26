@@ -146,10 +146,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $resellerid = $row2['resellerid'];
                 $autorestart = $row2['autorestart'];
                 
-                if ($addedby == '2') {
+                if ($addedby == 2) {
                     $queryip = $row2['ssh2ip'];
                     
-                } else if ($addedby == '1') {
+                } else if ($addedby == 1) {
                     $query3 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query3->execute(array($row2['rootid'], $resellerid));
                     $queryip = $query3->fetchColumn();
@@ -482,7 +482,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         } else if ($restart == 'N' and $qstat == 'minecraft' and $worldsafe == 'Y') {
                             $cmds[]="sudo -u ${SSH2customer} ./control.sh mc_ws $gsfolder";
                             echo "Minecraft worlsafe: $server\r\n";
-                        } else if ($restart == 'N' and $qstat == 'a2s' and ($uploadtype == '2' or $uploadtype == '3') and $upload== 'Y') {
+                        } else if ($restart == 'N' and $qstat == 'a2s' and ($uploadtype == 2 or $uploadtype == '3') and $upload== 'Y') {
                             $tmp=gsrestart($gsswitchID,'du', $aeskey, $resellerid);
                             if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
                         }

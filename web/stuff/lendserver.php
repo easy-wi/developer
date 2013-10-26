@@ -145,9 +145,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				$querypassword = $row['decryptedquerypassword'];
 				$addedby = $row['addedby'];
 				$localserverid = $row['localserverid'];
-				if ($addedby == '2') {
+				if ($addedby == 2) {
 					$queryip = $row['ssh2ip'];
-				} else if ($addedby == '1') {
+				} else if ($addedby == 1) {
                     $query = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($row2['rootid'],$reseller_id));
 					foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -226,9 +226,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 						$querypassword = $row2['decryptedquerypassword'];
 						$addedby = $row2['addedby'];
 						$localserverid = $row2['localserverid'];
-						if ($addedby == '2') {
+						if ($addedby == 2) {
 							$queryip = $row2['ssh2ip'];
-						} else if ($addedby == '1') {
+						} else if ($addedby == 1) {
 							$query4->execute(array($row2['rootid'],$reseller_id));
 							foreach ($query4->fetchall(PDO::FETCH_ASSOC) as $row3) {
 								$queryip = $row3['ip'];
