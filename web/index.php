@@ -68,8 +68,10 @@ if (isset ($page_active) and $page_active == 'Y') {
         $template_to_use = 'default';
     }
 
-    if (!isset($template_file) or !is_string($template_file) ) {
+    if (!isset($template_file) or is_array($template_file)) {
         $template_file = '';
+    } else if (is_object($template_file)) {
+        $template_file = (string) $template_file;
     }
 
     include(IncludeTemplate($template_to_use,'page_header.tpl'));

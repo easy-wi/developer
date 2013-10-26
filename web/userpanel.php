@@ -62,8 +62,10 @@ if (!isset($template_to_use) or !isset($template_to_use) ) {
     $template_to_use = 'default';
 }
 
-if (!isset($template_file) or !is_string($template_file) ) {
+if (!isset($template_file) or is_array($template_file)) {
     $template_file = '';
+} else if (is_object($template_file)) {
+    $template_file = (string) $template_file;
 }
 
 include(IncludeTemplate($template_to_use, 'userpanel_header.tpl'));
