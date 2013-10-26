@@ -425,7 +425,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                     $user_uploaddir = ($ui->active("user_uploaddir_$shorten", 'post')) ? $ui->active("user_uploaddir_$shorten", 'post') : 'N';
                     if ($ui->id("upload_$shorten",1, 'post')) {
                         $upload = $ui->id("upload_$shorten",1, 'post');
-                        if ($upload>1) {
+                        if ($upload > 1) {
                             $uploaddir = $ui->url("uploaddir_$shorten", 'post');
                         } else {
                             $uploaddir = '';
