@@ -5,6 +5,7 @@
 	<addtype>Add type</addtype>
 	<autorestart>Restart at serverdown</autorestart>
 	<backup>Backup</backup>
+    <backups>Backups</backups>
     <backupname>Backupname</backupname>
 	<date>Datum</date>
 	<defaultdns>Default DNS</defaultdns>
@@ -19,6 +20,7 @@
     <defaultFlexSlotsPercent>Default Flex Slots percent</defaultFlexSlotsPercent>
     <description>Description</description>
 	<dns>Server DNS</dns>
+    <dnsError>Server DNS not allowed</dnsError>
 	<enter>enter</enter>
     <externalDefaultDNS>Use external default DNS</externalDefaultDNS>
 	<filetransferport>Filetransferport</filetransferport>

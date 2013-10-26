@@ -5,6 +5,7 @@
 	<addtype>Art des Hinzufügens</addtype>
 	<autorestart>Restart bei Serverdown</autorestart>
 	<backup>Backup</backup>
+    <backups>Backups</backups>
     <backupname>Backupname</backupname>
 	<date>Datum</date>
 	<defaultdns>Standard DNS</defaultdns>
@@ -19,6 +20,7 @@
     <defaultFlexSlotsPercent>Standard Plex Slots Prozente</defaultFlexSlotsPercent>
     <description>Beschreibung</description>
 	<dns>Server DNS</dns>
+    <dnsError>Server DNS nicht erlaubt</dnsError>
 	<enter>Eingabe</enter>
     <externalDefaultDNS>Externe default DNS nutzen</externalDefaultDNS>
 	<filetransferport>Filetransferport</filetransferport>

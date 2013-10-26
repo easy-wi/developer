@@ -10,7 +10,7 @@
 </div>
 <div class="row-fluid">
     <dl class="dl-horizontal">
-        <dt><?php echo $sprache->backup;?></dt>
+        <dt><?php echo $sprache->backups;?></dt>
         <dd><?php echo $backupcount.'/'.$voice_maxbackup;?></dd>
     </dl>
 </div>
@@ -19,7 +19,7 @@
     <div class="span11">
         <form class="form-horizontal" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <div class="control-group">
-                <label class="control-label" for="name"><?php echo $sprache->name;?></label>
+                <label class="control-label" for="name"><?php echo $sprache->backupname;?></label>
                 <div class="controls">
                     <input id="name" type="text" name="name" placeholder="New Backup" class="span10" required>
                 </div>

@@ -11,8 +11,8 @@
 <div class="row-fluid">
     <dl class="dl-horizontal">
         <dt><?php echo $gsprache->add;?></dt>
-        <dd><a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $server_id;?>"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a></dd>
-        <dt><?php echo $sprache->backup;?></dt>
+        <dd><a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $id;?>"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a></dd>
+        <dt><?php echo $sprache->backups;?></dt>
         <dd><?php echo $backupcount.'/'.$voice_maxbackup;?></dd>
     </dl>
 </div>

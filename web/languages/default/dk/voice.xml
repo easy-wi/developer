@@ -5,6 +5,7 @@
 	<addtype>Tilføj typen</addtype>
 	<autorestart>Genstart serveren som er nede.</autorestart>
 	<backup>Sikkerhedskopi</backup>
+    <backups>Sikkerhedskopi</backups>
     <backupname>Backupnavn</backupname>
 	<date>Dato</date>
 	<defaultdns>Standard DNS</defaultdns>
@@ -19,6 +20,7 @@
     <defaultFlexSlotsPercent>Standard Flex Slots percent</defaultFlexSlotsPercent>
     <description>Beskrivelse</description>
 	<dns>Server DNS</dns>
+    <dnsError>Server DNS ikke tilladt</dnsError>
 	<enter>Indtaste</enter>
     <externalDefaultDNS>Brug eksterne standard DNS</externalDefaultDNS>
 	<filetransferport>File Transfer Port</filetransferport>
