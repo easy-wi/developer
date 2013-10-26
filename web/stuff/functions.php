@@ -1881,3 +1881,44 @@ function removePub ($string) {
     }
     return $string;
 }
+
+# https://github.com/easy-wi/developer/issues/57
+function checkFtpData ($ip, $port, $user, $pwd) {
+
+    $ftpConnection = @ftp_connect($ip, $port);
+
+    if ($ftpConnection) {
+
+        $ftpLogin = @ftp_login($ftpConnection, $user, $pwd);
+        ftp_close($ftpConnection);
+
+        return ($ftpLogin === true) ? true : 'login';
+    }
+    return 'ipport';
+}
+
+function ftpStringToData ($fptConnect) {
+
+    $server = null;
+    $port = null;
+    $path = null;
+    $fptConnect = str_replace(array('ftp://', 'ftps://'), '', $fptConnect);
+
+    @list($userPWD, $serverData) = explode('@', $fptConnect);
+
+    @list($user, $pwd) = explode(':', $userPWD);
+
+    if ($serverData) {
+
+        @list($portServer, $path) = preg_split('/\//', $serverData, -1, PREG_SPLIT_NO_EMPTY);
+
+        @list($server, $port) = explode(':', $portServer);
+
+        if (!$port) {
+            $port = 21;
+        }
+
+    }
+
+    return array('server' => $server, 'port' => $port, 'user' => $user, 'pwd' => $pwd, 'path' => '/' . $path);
+}

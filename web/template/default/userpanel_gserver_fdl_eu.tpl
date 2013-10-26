@@ -8,20 +8,54 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <div class="span11"><?php echo $sprache->example;?></div>
+<?php if (count($errors)>0){ ?>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4>Error(s)</h4>
+    <?php echo implode(', ',$errors);?>
 </div>
+<?php }?>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span6">
         <form class="form-horizontal" action="userpanel.php?w=fd&amp;d=eu&amp;r=fd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+            <input type="hidden" name="action" value="md">
+
+            <div class="control-group<?php if(isset($errors['ftp_adresse'])) echo ' error';?>">
+                <label class="control-label" for="input_ftp_adresse"><?php echo $gameSprache->ftp_adresse;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_adresse" type="text" name="ftp_adresse" value="<?php echo $ftp_adresse;?>" required>
+                </div>
+            </div>
+            <div class="control-group<?php if(isset($errors['ftp_port'])) echo ' error';?>">
+                <label class="control-label" for="input_ftp_port"><?php echo $gameSprache->ftp_port;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_port" type="text" name="ftp_port" value="<?php echo $ftp_port;?>" required>
+                </div>
+            </div>
+            <div class="control-group<?php if(isset($errors['ftp_user'])) echo ' error';?>">
+                <label class="control-label" for="input_ftp_user"><?php echo $gameSprache->ftp_user;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_port" type="text" name="ftp_user" value="<?php echo $ftp_user;?>" required>
+                </div>
+            </div>
+            <div class="control-group<?php if(isset($errors['ftp_password'])) echo ' error';?>">
+                <label class="control-label" for="input_ftp_password"><?php echo $gameSprache->ftp_password;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_port" type="text" name="ftp_password" value="<?php echo $ftp_password;?>" required>
+                </div>
+            </div>
             <div class="control-group">
-                <label class="control-label" for="inputFTP"></label>
+                <label class="control-label" for="input_ftp_path"><?php echo $gameSprache->ftp_path;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_port" type="text" name="ftp_path" value="<?php echo $ftp_path;?>" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <div class="input-append">
-                        <input type="hidden" name="action" value="md" />
-                        <input class="input-block-level" id="inputFTP" type="text" name="fdlpath" value="<?php echo $fdlpath;?>">
-                        <button class="btn btn-primary"><i class="icon-pencil icon-white"></i></button>
-                    </div>
+                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <input type="hidden" name="action" value="md">
                 </div>
             </div>
         </form>

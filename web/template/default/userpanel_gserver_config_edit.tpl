@@ -10,7 +10,8 @@
 </div>
 <?php foreach ($configs as $config){ ?>
 <div class="row-fluid">
-    <div class="span11 pull-left">
+    <div class="span6 pull-left">
+        <hr>
         <strong><?php echo $config['line'];?></strong>&ensp;
         <?php if($config['permission']=="easy" or $config['permission']=="both") { ?>
         <a href="userpanel.php?w=gs&amp;d=cf&amp;id=<?php echo $id;?>&amp;type=easy&amp;config=<?php echo urlencode($config['line']);?>"><span class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $sprache->easy;?></span></a>

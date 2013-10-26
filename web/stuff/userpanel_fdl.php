@@ -45,6 +45,7 @@ require_once(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
 
 $sprache = getlanguagefile('fastdl', $user_language, $reseller_id);
+$gameSprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
@@ -102,7 +103,9 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id',19, 'get') and (!isset($_SESSIO
 
 } else if ($ui->st('d', 'get') == 'es' and $ui->id('id',19, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['gs']))) {
 
+    $errors = array();
     $id = (int) $ui->id('id',19, 'get');
+    $masterfdl = $ui->active('masterfdl', 'post');
 
     if (!$ui->smallletters('action',2, 'post')) {
 
@@ -112,43 +115,105 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id',19, 'get') and (!isset($_SESSIO
             $serverip = $row['serverip'];
             $port = $row['port'];
             $masterfdl = $row['masterfdl'];
-            $mfdldata = $row['mfdldata'];
-        }
-
-        if (!isset($mfdldata)) {
-            $mfdldata = '';
+            $fdlData = ftpStringToData($row['mfdldata']);
+            $ftp_adresse = $fdlData['server'];
+            $ftp_password = $fdlData['pwd'];
+            $ftp_port = $fdlData['port'];
+            $ftp_user = $fdlData['user'];
+            $ftp_path = $fdlData['path'];
         }
 
         $template_file = (isset($serverip)) ? 'userpanel_gserver_fdl_es.tpl' : 'userpanel_404.tpl';
 
     } else if ($ui->smallletters('action',2, 'post') == 'md') {
 
+
+        $query = $sql->prepare("SELECT `serverip`,`port` FROM `gsswitch` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($id, $reseller_id));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $serverip = $row['serverip'];
+            $port = $row['port'];
+        }
+
         if ($ui->active('masterfdl', 'post')) {
 
-            $query = $sql->prepare("SELECT `serverip`,`port` FROM `gsswitch` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($id, $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $gsip = $row['serverip'];
-                $port = $row['port'];
+            $fdlConnectString = '';
+
+            if ($ui->active('masterfdl', 'post') == 'N') {
+
+                if ($ui->ip('ftp_adresse', 'post')) {
+                    $ftp_adresse = $ui->ip('ftp_adresse', 'post');
+                } else {
+                    $ftp_adresse = $ui->domain('ftp_adresse', 'post');
+                }
+
+                $ftp_password = $ui->password('ftp_password', 20, 'post');
+                $ftp_port = $ui->port('ftp_port', 'post');
+                $ftp_user = $ui->username('ftp_user', 50, 'post');
+                $ftp_path = $ui->path('ftp_path', 'post');
+
+                if (!$ftp_adresse) {
+                    $errors['ftp_adresse'] = $gameSprache->ftp_adresse;
+                }
+
+                if (!$ftp_port) {
+                    $errors['ftp_port'] = $gameSprache->ftp_port;
+                }
+
+                if (!$ftp_user) {
+                    $errors['ftp_user'] = $gameSprache->ftp_user;
+                }
+
+                if (!$ftp_password) {
+                    $errors['ftp_password'] = $gameSprache->ftp_password;
+                }
+
+                if (count($errors) == 0) {
+
+                    $checkFtpData = checkFtpData($ftp_adresse, $ftp_port, $ftp_user, $ftp_password);
+
+                    if ($checkFtpData !== true and $checkFtpData == 'login') {
+                        $errors['ftp_user'] = $gameSprache->ftp_user;
+                        $errors['ftp_password'] = $gameSprache->ftp_password;
+                    } else if ($checkFtpData !== true and $checkFtpData == 'ipport') {
+                        $errors['ftp_adresse'] = $gameSprache->ftp_adresse;
+                        $errors['ftp_port'] = $gameSprache->ftp_port;
+                    }
+                }
+
+                if (substr($ftp_path, 0, 1) != '/') {
+                    $ftp_path = '/' . $ftp_path;
+                }
+
+                if (substr($ftp_path, -1, 1) != '/') {
+                    $ftp_path = $ftp_path . '/';
+                }
+
+                $fdlConnectString = 'ftp://' . $ftp_user . ':' . $ftp_password . '@' . $ftp_adresse . ':' . $ftp_port . $ftp_path;
             }
 
-            if (isset($gsip) and isset($port)) {
-                $mfdldata = $ui->url('mfdldata', 'post');
-                $masterfdl = $ui->active('masterfdl', 'post');
 
-                $query = $sql->prepare("UPDATE `gsswitch` SET `mfdldata`=?, `masterfdl`=? WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($mfdldata, $masterfdl, $id, $reseller_id));
+            if (count($errors) == 0) {
 
-                $loguseraction = '%mod% %fastdl% ' . $gsip . ':' . $port;
-                $insertlog->execute();
+                if (isset($serverip) and isset($port)) {
+                    $query = $sql->prepare("UPDATE `gsswitch` SET `mfdldata`=?, `masterfdl`=? WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
+                    $query->execute(array($fdlConnectString, $ui->active('masterfdl', 'post'), $id, $reseller_id));
 
-                $template_file = $spracheResponse->table_add;
+                    $loguseraction = '%mod% %fastdl% ' . $serverip . ':' . $port;
+                    $insertlog->execute();
 
+                    $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+
+                } else {
+                    $template_file = 'userpanel_404.tpl';
+                }
             } else {
-                $template_file = 'userpanel_404.tpl';
+                unset($header, $text);
+                $template_file = 'userpanel_gserver_fdl_es.tpl';
             }
+
         } else {
-            $template_file = $spracheResponse->error_table;
+            $template_file = 'userpanel_404.tpl';
         }
 
     } else {
@@ -157,18 +222,78 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id',19, 'get') and (!isset($_SESSIO
 
 } else if ($ui->st('d', 'get') == 'eu' and $pa['modfastdl'] == true) {
 
+    $errors = array();
+
+    if ($ui->ip('ftp_adresse', 'post')) {
+        $ftp_adresse = $ui->ip('ftp_adresse', 'post');
+    } else {
+        $ftp_adresse = $ui->domain('ftp_adresse', 'post');
+    }
+
+    $ftp_password = $ui->password('ftp_password', 20, 'post');
+    $ftp_port = $ui->port('ftp_port', 'post');
+    $ftp_user = $ui->username('ftp_user', 50, 'post');
+    $ftp_path = $ui->path('ftp_path', 'post');
+
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT `fdlpath` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($user_id, $reseller_id));
-        $fdlpath = $query->fetchColumn();
+        $fdlData = ftpStringToData($query->fetchColumn());
+        $ftp_adresse = $fdlData['server'];
+        $ftp_password = $fdlData['pwd'];
+        $ftp_port = $fdlData['port'];
+        $ftp_user = $fdlData['user'];
+        $ftp_path = $fdlData['path'];
 
         $template_file = ($query->rowCount() > 0) ? 'userpanel_gserver_fdl_eu.tpl' : 'userpanel_404.tpl';
 
     } else if ($ui->smallletters('action',2, 'post') == 'md') {
 
-        if ($ui->url('fdlpath', 'post')) {
+        if (!$ftp_adresse) {
+            $errors['ftp_adresse'] = $gameSprache->ftp_adresse;
+        }
+
+        if (!$ftp_port) {
+            $errors['ftp_port'] = $gameSprache->ftp_port;
+        }
+
+        if (!$ftp_user) {
+            $errors['ftp_user'] = $gameSprache->ftp_user;
+        }
+
+        if (!$ftp_password) {
+            $errors['ftp_password'] = $gameSprache->ftp_password;
+        }
+
+        if (count($errors) == 0) {
+
+            $checkFtpData = checkFtpData($ftp_adresse, $ftp_port, $ftp_user, $ftp_password);
+
+            if ($checkFtpData !== true and $checkFtpData == 'login') {
+                $errors['ftp_user'] = $gameSprache->ftp_user;
+                $errors['ftp_password'] = $gameSprache->ftp_password;
+            } else if ($checkFtpData !== true and $checkFtpData == 'ipport') {
+                $errors['ftp_adresse'] = $gameSprache->ftp_adresse;
+                $errors['ftp_port'] = $gameSprache->ftp_port;
+            }
+        }
+
+        if (count($errors) > 0) {
+            unset($header, $text);
+            $template_file = 'userpanel_gserver_fdl_eu.tpl';
+        } else {
+
+            if (substr($ftp_path, 0, 1) != '/') {
+                $ftp_path = '/' . $ftp_path;
+            }
+
+            if (substr($ftp_path, -1, 1) != '/') {
+                $ftp_path = $ftp_path . '/';
+            }
+
+            $fdlConnectString = 'ftp://' . $ftp_user . ':' . $ftp_password . '@' . $ftp_adresse . ':' . $ftp_port . $ftp_path;
             $query = $sql->prepare("UPDATE `userdata` SET `fdlpath`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($ui->url('fdlpath', 'post'), $user_id, $reseller_id));
+            $query->execute(array($fdlConnectString, $user_id, $reseller_id));
 
             if ($query->rowCount() > 0) {
 
@@ -180,8 +305,6 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id',19, 'get') and (!isset($_SESSIO
             } else {
                 $template_file = $spracheResponse->error_table;
             }
-        } else {
-            $template_file = $spracheResponse->error_table;
         }
 
     } else {

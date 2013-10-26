@@ -8,6 +8,13 @@
         </ul>
     </div>
 </div>
+<?php if (count($errors)>0){ ?>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4>Error(s)</h4>
+    <?php echo implode(', ',$errors);?>
+</div>
+<?php }?>
 <div class="row-fluid">
     <div class="span6">
         <form class="form-horizontal" action="userpanel.php?w=fd&amp;d=es&amp;id=<?php echo $id;?>&amp;r=fd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
@@ -20,15 +27,34 @@
                     </select>
                 </div>
             </div>
-            <div class="details <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch row-fluid">
-                <div class="control-group">
-                    <?php echo $sprache->example;?>
+            <div class="details <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch control-group<?php if(isset($errors['ftp_adresse'])) echo ' error';?>">
+                <label class="control-label" for="input_ftp_adresse"><?php echo $gameSprache->ftp_adresse;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_adresse" type="text" name="ftp_adresse" value="<?php echo $ftp_adresse;?>" required>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="mfdldata"><?php echo $sprache->own2;?></label>
-                    <div class="controls">
-                        <input id="mfdldata" type="text" name="mfdldata" value="<?php echo $mfdldata;?>">
-                    </div>
+            </div>
+            <div class="details <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch control-group<?php if(isset($errors['ftp_port'])) echo ' error';?>">
+                <label class="control-label" for="input_ftp_port"><?php echo $gameSprache->ftp_port;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_port" type="text" name="ftp_port" value="<?php echo $ftp_port;?>" required>
+                </div>
+            </div>
+            <div class="details <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch control-group<?php if(isset($errors['ftp_user'])) echo ' error';?>">
+                <label class="control-label" for="input_ftp_user"><?php echo $gameSprache->ftp_user;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_port" type="text" name="ftp_user" value="<?php echo $ftp_user;?>" required>
+                </div>
+            </div>
+            <div class="details <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch control-group<?php if(isset($errors['ftp_password'])) echo ' error';?>">
+                <label class="control-label" for="input_ftp_password"><?php echo $gameSprache->ftp_password;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_port" type="text" name="ftp_password" value="<?php echo $ftp_password;?>" required>
+                </div>
+            </div>
+            <div class="details <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch control-group">
+                <label class="control-label" for="input_ftp_path"><?php echo $gameSprache->ftp_path;?></label>
+                <div id="information" class="controls">
+                    <input id="input_ftp_port" type="text" name="ftp_path" value="<?php echo $ftp_path;?>" required>
                 </div>
             </div>
             <div class="control-group">
