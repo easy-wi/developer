@@ -48,7 +48,7 @@
             <div class="control-group">
                 <label class="control-label" for="input_ftp_path"><?php echo $gameSprache->ftp_path;?></label>
                 <div id="information" class="controls">
-                    <input id="input_ftp_port" type="text" name="ftp_path" value="<?php echo $ftp_path;?>" required>
+                    <input id="input_ftp_port" type="text" name="ftp_path" value="<?php echo $ftp_path;?>">
                 </div>
             </div>
             <div class="control-group">
