@@ -36,7 +36,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main!=1) or !isset($reseller_id) or $reseller_id != 0 or !$pa['updateEW']) {
+if ((!isset($admin_id) or $main != 1) or !isset($reseller_id) or $reseller_id != 0 or !$pa['updateEW']) {
     header('Location: admin.php');
     die;
 }

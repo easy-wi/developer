@@ -34,7 +34,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['mysql'])) {
+if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['mysql'])) {
     header('Location: userpanel.php');
     die;
 }

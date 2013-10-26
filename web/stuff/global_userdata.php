@@ -40,7 +40,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 if ($ui->st('w', 'get') == 'se') {
-    if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['usersettings'])) {
+    if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['usersettings'])) {
         header('Location: userpanel.php');
         die();
     }
@@ -59,7 +59,7 @@ if ($ui->st('w', 'get') == 'se') {
         $reseller_id = $admin_id;
     }
 } else {
-    if ((!isset($admin_id) or $main!=1)) {
+    if ((!isset($admin_id) or $main != 1)) {
         header('Location: admin.php');
         die();
     }

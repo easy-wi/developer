@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main!=1 or !$pa['dedicatedServer']) {
+if (!isset($admin_id) or $main != 1 or !$pa['dedicatedServer']) {
     header('Location: admin.php');
     die;
 }

@@ -35,7 +35,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['mysql_settings'] and !$pa['mysql'])) {
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['mysql_settings'] and !$pa['mysql'])) {
     header('Location: login.php');
     die;
 }

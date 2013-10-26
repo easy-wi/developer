@@ -34,7 +34,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id',19, 'get')) {
+if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id',19, 'get')) {
 	redirect('userpanel.php');
 }
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);

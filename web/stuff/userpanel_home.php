@@ -57,7 +57,7 @@ $crashedArray = array('gsCrashed' => 0,'gsPWD' => 0,'gsTag' => 0,'ticketsOpen' =
 
 $query = $sql->prepare("SELECT `stopped`,`serverid`,CONCAT(`serverip`,':',`port`) AS `server`,`userid`,`war`,`brandname`,`queryName`,`queryPassword` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
 $query->execute(array($user_id,$reseller_id));
-$customer=getusername($user_id);
+$customer = getusername($user_id);
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     
     $war = $row['war'];

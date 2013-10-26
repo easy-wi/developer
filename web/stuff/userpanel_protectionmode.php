@@ -34,7 +34,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or $main!=1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id', 10, 'get')) {
+if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['restart']) or !$ui->id('id', 10, 'get')) {
 	header('Location: userpanel.php');
 	die;
 }
@@ -72,7 +72,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $ftppassProtected = $row['dpftppassword'];
     foreach (explode("\r\n", $row['protectedSaveCFGs']) as $cfg) if ($cfg != '') $files[] = $cfg;
     $shorten = $row['shorten'];
-    $serverTemplate=($row['servertemplate']!=1) ? $row['shorten'] . '-' . $row['servertemplate'] : $row['shorten'];
+    $serverTemplate=($row['servertemplate'] != 1) ? $row['shorten'] . '-' . $row['servertemplate'] : $row['shorten'];
     if ($row['gamebinary'] == 'srcds_run') $gamePath="${row['binarydir']}/${row['modfolder']}";
     else if ($row['gamebinary'] == 'hlds_run') $gamePath="${row['modfolder']}";
     else $gamePath = '';

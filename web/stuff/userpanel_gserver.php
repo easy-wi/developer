@@ -34,7 +34,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($main) or $main!=1) or (!isset($user_id) or (isset($user_id) and !$pa['restart']))) {
+if ((!isset($main) or $main != 1) or (!isset($user_id) or (isset($user_id) and !$pa['restart']))) {
     header('Location: userpanel.php');
     die('No acces');
 }
@@ -418,7 +418,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $configCheck = array();
     $query = $sql->prepare("SELECT g.`protected`,t.`configs`,s.`id` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($id,$user_id,$reseller_id));
-    $customer=getusername($user_id);
+    $customer = getusername($user_id);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $serverID = $row['id'];
         $protected = $row['protected'];

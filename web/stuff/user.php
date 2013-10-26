@@ -39,7 +39,7 @@
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/third_party/password_compat/password.php');
 
-if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['user'] and !$pa['user_users'])) {
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['user'] and !$pa['user_users'])) {
 	header('Location: admin.php');
     die();
 }

@@ -36,7 +36,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['addvserver'] and !$pa['modvserver'] and !$pa['delvserver'] and !$pa['usevserver'])) {
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['addvserver'] and !$pa['modvserver'] and !$pa['delvserver'] and !$pa['usevserver'])) {
     header('Location: admin.php');
     die;
 }
@@ -476,7 +476,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             $fail = 1;
             $template_file .="<br/ >Hostlimits reached";
         }
-        if ($fail!=1) {
+        if ($fail != 1) {
             $pass=passwordgenerate(10);
             $last_mac = $sql->prepare("SELECT mac FROM `virtualcontainer` ORDER BY id DESC LIMIT 1");
             $last_mac->execute();
@@ -748,7 +748,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             $fail = 1;
             $template_file .="No/Bad IP";
         }
-        if ($fail!=1 and isset($oldmac)) {
+        if ($fail != 1 and isset($oldmac)) {
             $cores = $ui->post['cores'];
             $minmhz = $ui->post['minmhz'];
             $maxmhz = $ui->post['maxmhz'];

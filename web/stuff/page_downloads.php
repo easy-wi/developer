@@ -37,7 +37,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($admin_id) or $main!=1) or (isset($admin_id) and !$pa['cms_pages']) or $reseller_id != 0) {
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['cms_pages']) or $reseller_id != 0) {
     header('Location: admin.php');
     die;
 }

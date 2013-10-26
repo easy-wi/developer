@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main!=1 or $reseller_id != 0 or !$pa['root']) {
+if (!isset($admin_id) or $main != 1 or $reseller_id != 0 or !$pa['root']) {
     header('Location: admin.php');
     die('No acces');
 }
