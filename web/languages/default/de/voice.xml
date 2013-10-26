@@ -8,7 +8,7 @@
     <backups>Backups</backups>
     <backupname>Backupname</backupname>
 	<date>Datum</date>
-	<defaultdns>Standard DNS</defaultdns>
+	<defaultdns>Standard TSDNS</defaultdns>
 	<defaulthostbanner_gfx_url>Standard Hostbanner GFX URL</defaulthostbanner_gfx_url>
 	<defaulthostbanner_url>Standard Hostbanner URL</defaulthostbanner_url>
 	<defaulthostbutton_gfx_url>Standard Hostbutton GFX URL</defaulthostbutton_gfx_url>
@@ -19,10 +19,10 @@
     <defaultFlexSlotsFree>Standard Freie Flex Slots</defaultFlexSlotsFree>
     <defaultFlexSlotsPercent>Standard Plex Slots Prozente</defaultFlexSlotsPercent>
     <description>Beschreibung</description>
-	<dns>Server DNS</dns>
+	<dns>Aktueller TSDNS</dns>
     <dnsError>Server DNS nicht erlaubt</dnsError>
 	<enter>Eingabe</enter>
-    <externalDefaultDNS>Externe default DNS nutzen</externalDefaultDNS>
+    <externalDefaultDNS>Externe default TSDNS nutzen</externalDefaultDNS>
 	<filetransferport>Filetransferport</filetransferport>
     <flexSlots>Flex Slots</flexSlots>
     <flexSlotsPercent>Flex Slots Prozent</flexSlotsPercent>
@@ -34,13 +34,13 @@
 	<ftpport>FTP Port</ftpport>
 	<generate>Generieren</generate>
 	<groupname>Gruppenname</groupname>
-	<hostbanner_gfx_url>Hostbanner GFX Url</hostbanner_gfx_url>
-	<hostbanner_url>Hostbanner Url</hostbanner_url>
-	<hostbutton_gfx_url>Hostbutton GFX Url</hostbutton_gfx_url>
+	<hostbanner_gfx_url>Hostbanner Grafik Url</hostbanner_gfx_url>
+	<hostbanner_url>Hostbanner Link</hostbanner_url>
+	<hostbutton_gfx_url>Hostbutton Grafik Url</hostbutton_gfx_url>
 	<hostbutton_tooltip>Hostbutton Tooltip</hostbutton_tooltip>
-	<hostbutton_url>Hostbutton Url</hostbutton_url>
+	<hostbutton_url>Hostbutton Link</hostbutton_url>
 	<import>Importieren</import>
-	<initialpassword>Initiales Password</initialpassword>
+	<initialpassword>Initiales Passwort</initialpassword>
 	<installedserver>Installierte Server</installedserver>
 	<installedslots>Installierte Slots</installedslots>
 	<ip>IP</ip>
@@ -74,7 +74,7 @@
 	<ts3>Teamspeak 3</ts3>
 	<type>Servertyp</type>
 	<usage>Belegung</usage>
-	<usedns>DNS benutzen</usedns>
+	<usedns>TSDNS benutzen</usedns>
 	<usedports>Belegte Ports</usedports>
 	<user>Benutzername</user>
     <virtualserver_antiflood_points_needed_command_block>Anti-Flood: Punkte um Befehle zu blockieren</virtualserver_antiflood_points_needed_command_block>

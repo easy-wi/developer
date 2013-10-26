@@ -8,7 +8,7 @@
     <backups>Backups</backups>
     <backupname>Backupname</backupname>
 	<date>Datum</date>
-	<defaultdns>Default DNS</defaultdns>
+	<defaultdns>Default TSDNS</defaultdns>
 	<defaulthostbanner_gfx_url>Default Hostbanner GFX URL</defaulthostbanner_gfx_url>
 	<defaulthostbanner_url>Default Hostbanner URL</defaulthostbanner_url>
 	<defaulthostbutton_gfx_url>Default Hostbutton GFX URL</defaulthostbutton_gfx_url>
@@ -19,10 +19,10 @@
     <defaultFlexSlotsFree>Default free Flex Slots</defaultFlexSlotsFree>
     <defaultFlexSlotsPercent>Default Flex Slots percent</defaultFlexSlotsPercent>
     <description>Description</description>
-	<dns>Server DNS</dns>
-    <dnsError>Server DNS not allowed</dnsError>
+	<dns>Strøm TSDNS</dns>
+    <dnsError>Server TSDNS not allowed</dnsError>
 	<enter>enter</enter>
-    <externalDefaultDNS>Use external default DNS</externalDefaultDNS>
+    <externalDefaultDNS>Use external default TSDNS</externalDefaultDNS>
 	<filetransferport>Filetransferport</filetransferport>
     <flexSlots>Flex Slots</flexSlots>
     <flexSlotsPercent>Flex Slots Percent</flexSlotsPercent>
@@ -74,7 +74,7 @@
 	<ts3>Teamspeak 3</ts3>
 	<type>Servertype</type>
 	<usage>Usage</usage>
-	<usedns>Use DNS</usedns>
+	<usedns>Use TSDNS</usedns>
 	<usedports>Used ports</usedports>
 	<user>Username</user>
     <virtualserver_antiflood_points_needed_command_block>Anti-Flood: points needed to block commands being executed by the client</virtualserver_antiflood_points_needed_command_block>
