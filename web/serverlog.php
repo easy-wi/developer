@@ -74,12 +74,14 @@ if ($ui->id('id', 10, 'get')) {
 		$rootID = $row['rootID'];
 		$serverip = $row['serverip'];
 		$port = $row['port'];
+        $shorten = $row['shorten'];
+        $binarydir = $row['binarydir'];
+        $ftppass = $row['dftppass'];
+
         if ($row['newlayout'] == 'Y') {
             $username .= '-' . $row['id'];
         }
-		$shorten = $row['shorten'];
-		$binarydir = $row['binarydir'];
-        $ftppass = $row['dftppass'];
+
 		if ($protected == 'N' and $servertemplate > 1) {
 			$shorten .= '-' . $servertemplate;
             $pserver = 'server/';
@@ -91,30 +93,52 @@ if ($ui->id('id', 10, 'get')) {
 			$pserver = 'server/';
 		}
 	}
+
     if (isset($rootID)) {
+
         $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($rootID, $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ftpport = $row['ftpport'];
             $ip = $row['ip'];
         }
+
         ini_set('default_socket_timeout', 5);
+
         #echo "ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip . '_' . "$port/$shorten/$binarydir/screenlog.0";
-        $fp=@fopen('ftp://' . $username . ':' . $ftppass . '@' . $ip . ':' . $ftpport . '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0','r');
-        $screenlog = '';
-        if ($fp == false) {
-            echo 'No Logdata!';
-        } else {
-            stream_set_timeout($fp,5);
-            $i = 0;
-            while ($i < 500) {
-                $screenlog.=nl2br(fread($fp,128));
-                $i++;
+        #$fp = @fopen('ftp://' . $username . ':' . $ftppass . '@' . $ip . ':' . $ftpport . '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', 'r');
+
+        $ftpConnection = @ftp_connect($ip, $ftpport);
+
+        if ($ftpConnection) {
+
+            $ftpLogin = @ftp_login($ftpConnection, $username, $ftppass);
+
+            if ($ftpLogin) {
+                $logSize = @ftp_size($ftpConnection, '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0');
+
+                if ($logSize != -1) {
+                    $startAtSize = ($logSize > 16384) ? ($logSize - 16384) : 0;
+
+                    // now we have a connection and filesize we can create a local temp file and start downloading
+                    $tempHandle = tmpfile();
+                    $download = @ftp_fget($ftpConnection, $tempHandle, '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', FTP_BINARY, $startAtSize);
+
+                    if ($download) {
+
+                        fseek($tempHandle, 0);
+
+                        $fstats = fstat($tempHandle);
+
+                        $screenlog = nl2br(fread($tempHandle, $fstats['size']));
+                    }
+                }
             }
-            $info=stream_get_meta_data($fp);
-            fclose($fp);
-            echo ($info['timed_out']) ? 'Connection timed out!' : '<html><head><link href="main.css" rel="stylesheet" type="text/css"></head><body><div id="screenlog">'.$screenlog.'</div></body></html>';
+            ftp_close($ftpConnection);
         }
+
+        echo (!isset($screenlog)) ? 'Connection failed!' : '<html><head><meta http-equiv="refresh" content="5"></head><body>' . $screenlog . '</body></html>';
+
     } else {
         echo 'Error: ID';
     }
