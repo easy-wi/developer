@@ -1619,7 +1619,7 @@ if (!function_exists('passwordgenerate')) {
         if ($json and isset($json->v)) {
             $licencecode = array();
 
-            foreach($json as $k=>$v) {
+            foreach($json as $k => $v) {
                 $licencecode[$k] = $v;
             }
 
@@ -1697,7 +1697,7 @@ if (!function_exists('passwordgenerate')) {
             unset($_SESSION[$w]);
         }
         
-        foreach ($_SESSION as $k=>$v) {
+        foreach ($_SESSION as $k => $v) {
             
             if (wpreg_check($k, 4) and ((isset($_SESSION[$k]['t']) and $_SESSION[$k]['d'] < strtotime('now')) or (is_array($_SESSION[$k]) and count($_SESSION[$k]) == 0))) {
                 unset($_SESSION[$k]);

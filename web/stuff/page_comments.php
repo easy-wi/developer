@@ -195,7 +195,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if ($seo== 'N') {
             $link = $page_url.'/index.php?site=news&amp;id='.$row['pageid'];
         } else {
-            $link = $page_url. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']).'/';
+            $link = $page_url. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']) . '/';
         }
         $table[] = array('pageid' => $row['pageid'], 'title' => htmlentities($row['title']),'comment' => htmlentities($row['comment']),'commentID' => $row['commentID'], 'date' => date($commentDate,strtotime($row['date'])),'authorname' => htmlentities($row['authorname']),'moderated' => $moderated,'spam' => $spam,'spamReason' => $row['spamReason'], 'link' => $link);
     }

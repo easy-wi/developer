@@ -66,11 +66,11 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $page_data->AddData('keywords', $row2['name']);
             if ($seo== 'Y' and $row2['type'] == 'tag') {
-                $tagLink = $page_url. '/' . $user_language . '/' . szrp($page_sprache->tag) . '/' . szrp($row2['name']).'/';
+                $tagLink = $page_url. '/' . $user_language . '/' . szrp($page_sprache->tag) . '/' . szrp($row2['name']) . '/';
             } else if ($row2['type'] == 'tag') {
                 $tagLink = $page_url.'/index.php?site=tag&amp;tag='.szrp($row2['name']);
             } else if ($seo== 'Y' and $row2['type'] == 'category') {
-                $categoryLink = $page_url. '/' . $user_language . '/' . szrp($page_sprache->categories) . '/' . szrp($row2['name']).'/';
+                $categoryLink = $page_url. '/' . $user_language . '/' . szrp($page_sprache->categories) . '/' . szrp($row2['name']) . '/';
             } else if ($row2['type'] == 'category') {
                 $categoryLink = $page_url.'/index.php?site=categories&amp;tag='.szrp($row2['name']);
             }
@@ -240,7 +240,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         $page_title = $row['title'];
         $page_text=nl2br($row['text']);
         if ($seo== 'Y') {
-            $link = $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row['title']).'/';
+            $link = $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row['title']) . '/';
         } else {
             $link = $page_url.'/index.php?site=news&amp;id='.$row['id'];
         }
@@ -249,11 +249,11 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $page_data->AddData('keywords', $row2['name']);
             if ($seo== 'Y' and $row2['type'] == 'tag') {
-                $tagLink = $page_url. '/' . $user_language . '/' . szrp($page_sprache->tag) . '/' . szrp($row2['name']).'/';
+                $tagLink = $page_url. '/' . $user_language . '/' . szrp($page_sprache->tag) . '/' . szrp($row2['name']) . '/';
             } else if ($row2['type'] == 'tag') {
                 $tagLink = $page_url.'/index.php?site=tag&amp;tag='.szrp($row2['name']);
             } else if ($seo== 'Y' and $row2['type'] == 'category') {
-                $categoryLink = $page_url. '/' . $user_language . '/' . szrp($page_sprache->categories) . '/' . szrp($row2['name']).'/';
+                $categoryLink = $page_url. '/' . $user_language . '/' . szrp($page_sprache->categories) . '/' . szrp($row2['name']) . '/';
             } else if ($row2['type'] == 'category') {
                 $categoryLink = $page_url.'/index.php?site=categories&amp;tag='.szrp($row2['name']);
             }
@@ -280,7 +280,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
         $news[] = array('date' => $date,'title' => $page_title,'text' => $page_text,'href' => $href,'link' => $link,'tags' => $tag_tags,'categories' => $category_tags,'comments' => $row['comments'], 'commentCount' => $commentCount,'authorname' => $row['authorname']);
     }
     if ($seo== 'Y') {
-        $paginationLink = $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($page_sprache->older).'/';
+        $paginationLink = $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($page_sprache->older) . '/';
     } else {
         $paginationLink = $page_url.'/index.php?site=news&amp;start=';
     }

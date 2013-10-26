@@ -359,7 +359,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                         foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
                                             $query5 = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
                                             $query5->execute(array($row4['id'], $ts3userid, $resellerid));
-                                            $backupfolder='backups/virtualserver_'.$localserverid.'/';
+                                            $backupfolder='backups/virtualserver_'.$localserverid . '/';
                                             $delcmd='cd '.$folders.' && function backup () { nice -n +19 rm -f '.$backupfolder.$row4['id'].'.tar.bz2; }; backup& ';
                                             $shell=ssh2_exec($ssh2, $delcmd);
                                         }
@@ -371,8 +371,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                     $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                                     $query4->execute(array($ts3id, $ts3userid, $resellerid));
                                     foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                                        $filefolder='files/virtualserver_'.$localserverid.'/';
-                                        $backupfolder='backups/virtualserver_'.$localserverid.'/';
+                                        $filefolder='files/virtualserver_'.$localserverid . '/';
+                                        $backupfolder='backups/virtualserver_'.$localserverid . '/';
                                         $createcmd='cd '.$folders.' && function backup () { mkdir -p '.$backupfolder.' && nice -n +19 tar cfj '.$backupfolder.$row4['id'].'.tar.bz2 '.$filefolder.'; }; backup& ';
                                         $shell=ssh2_exec($ssh2, $createcmd);
                                         print "Creating backup for ts3 server: ".$row3['ip'] . ':' . $row3['port']."\r\n";

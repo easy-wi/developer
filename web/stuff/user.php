@@ -735,7 +735,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $selected=array('Y','N','R');
     }
-    foreach ($ticketLinks as $k=>$v) {
+    foreach ($ticketLinks as $k => $v) {
         foreach (array('Y','N','R') as $s) {
             if ((in_array($s,$selected) and $k != $s) or (!in_array($s,$selected) and $k==$s)) $ticketLinks[$k] .= '&amp;state[] = '.$s;
         }

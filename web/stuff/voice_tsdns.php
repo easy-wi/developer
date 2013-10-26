@@ -197,7 +197,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         $i = 0;
                         $query = $sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dns`=? AND `resellerID`=? LIMIT 1");
                         $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
-                        foreach ($dnsarray as $k=>$v) {
+                        foreach ($dnsarray as $k => $v) {
                             $query->execute(array($v,$reseller_id));
                             $query2->execute(array($v,$reseller_id));
                             $ex=explode(':',$k);
@@ -265,7 +265,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $i = 0;
             $query = $sql->prepare("SELECT `tsdnsID` FROM `voice_dns` WHERE `dns`=? AND `resellerID`=? LIMIT 1");
             $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
-            foreach ($dnsarray as $k=>$v) {
+            foreach ($dnsarray as $k => $v) {
                 $query->execute(array($v,$reseller_id));
                 $query2->execute(array($v,$reseller_id));
                 $ex=explode(':',$k);

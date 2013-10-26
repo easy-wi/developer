@@ -428,7 +428,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $reply="<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE voice>
 <voice>";
-                foreach ($row as $k=>$v) {
+                foreach ($row as $k => $v) {
                     $reply .= '<'.$k.'>'.$v.'</'.$k.'>';
                 }
                 $reply.="</voice>";

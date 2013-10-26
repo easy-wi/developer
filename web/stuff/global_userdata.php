@@ -145,7 +145,7 @@ if ($ui->st('d', 'get') == 'pw') {
 
         #https://github.com/easy-wi/developer/issues/5
         $oldValues = array();
-        foreach ($row as $k=>$v) $oldValues[$k] = $v;
+        foreach ($row as $k => $v) $oldValues[$k] = $v;
     }
     if ($ui->smallletters('action',2, 'post') == 'md' and isset($oldValues)){
         if ($ui->ismail('mail', 'post') and token(true)) {
@@ -174,7 +174,7 @@ if ($ui->st('d', 'get') == 'pw') {
             if ($query->rowCount()>0) {
                 #https://github.com/easy-wi/developer/issues/5
                 $changed = array();
-                foreach ($oldValues as $k=>$v) if (isset($$k) and "{$$k}" != $v) $changed[$k] = $v;
+                foreach ($oldValues as $k => $v) if (isset($$k) and "{$$k}" != $v) $changed[$k] = $v;
                 $query = $sql->prepare("INSERT INTO `userdata_value_log` (`userID`,`date`,`json`,`resellerID`) VALUES (?,NOW(),?,?)");
                 $query->execute(array($lookUpID,json_encode($changed),$reseller_id));
 

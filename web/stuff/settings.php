@@ -157,7 +157,7 @@ if (isset($reseller_id)) {
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        foreach ($row as $k=>$v) {
+        foreach ($row as $k => $v) {
             $rSA[$k] = $v;
         }
     }
@@ -190,7 +190,7 @@ if (isset($reseller_id)) {
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        foreach ($row as $k=>$v) {
+        foreach ($row as $k => $v) {
             $rSA[$k] = $v;
         }
     }

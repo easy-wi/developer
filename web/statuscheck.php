@@ -631,7 +631,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
             }
         }
-        foreach($shellCmds as $k=>$v) {
+        foreach($shellCmds as $k => $v) {
             ssh2_execute('gs', $k, $v);
         }
     }

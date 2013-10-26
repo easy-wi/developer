@@ -46,7 +46,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid = $user_id;
-$logusername=getusername($user_id);
+$logusername = getusername($user_id);
 $logusertype = 'user';
 $logreseller = 0;
 $logsubuser = 0;
@@ -95,7 +95,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     function checkFolders ($dir,$searchFor,$maxDepth=false,$currentDepth=0) {
         global $ftp;
         $donotsearch=array('bin','cfg','cl_dlls','dlls','gfx','hl2','manual','maps','materials','models','particles','recource','scenes','scripts','sound','sounds','textures','valve','reslists');
-        if ($dir!='/') $dir = $dir.'/';
+        if ($dir!='/') $dir = $dir . '/';
         $spl=strlen($searchFor)*(-1);
         $rawList=@ftp_rawlist($ftp,$dir);
         if ($rawList) {

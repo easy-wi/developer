@@ -755,8 +755,8 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         $usedSlots = $row['usedslots'];
         if ($row['usedslots'] == null) $usedSlots = 0;
         $flexSlots = '';
-        if ($row['flexSlots'] == 'Y' and $row['flexSlotsCurrent'] == null) $flexSlots = $row['slots'].'/';
-        else if ($row['flexSlots'] == 'Y') $flexSlots = $row['flexSlotsCurrent'].'/';
+        if ($row['flexSlots'] == 'Y' and $row['flexSlotsCurrent'] == null) $flexSlots = $row['slots'] . '/';
+        else if ($row['flexSlots'] == 'Y') $flexSlots = $row['flexSlotsCurrent'] . '/';
         $usage = $usedSlots. '/' . $flexSlots.$row['slots'];
         $days=floor($row['uptime']/86400);
         $hours=floor(($row['uptime']-($days*86400))/3600);

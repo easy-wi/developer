@@ -237,7 +237,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         $games[$ex[0]] = $ex[1];
                     }
                 }
-                foreach ($games as $k=>$v) {
+                foreach ($games as $k => $v) {
                     if (!in_array($k, array('steamcmd','sync'))) {
                         $query2->execute(array($k,$reseller_id,$ip));
                         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {

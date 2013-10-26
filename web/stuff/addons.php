@@ -70,7 +70,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $query->execute(array($ui->id('id', 10, 'get'), $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $addon = $row['addon'];
-        foreach ($row as $k=>$v) {
+        foreach ($row as $k => $v) {
             if (!in_array($k, array('id','resellerid','depending'))) {
                 $key = $xml->createElement($k, $v);
                 $element->appendChild($key);

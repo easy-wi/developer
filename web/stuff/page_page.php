@@ -132,20 +132,20 @@ if (isset($page_id) and is_numeric($page_id)) {
                 $title = $row['title'];
                 if ($row['type'] == 'news' and isset($seo) and $seo== 'Y') {
                     $type=(string)$titleLanguages[$row['language']]['general']->news;
-                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']).'/';
+                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['general']->news) . '/' . szrp($row['title']) . '/';
                 } else if ($row['type'] == 'news') {
                     $type=(string)$titleLanguages[$row['language']]['general']->news;
                     $link = $page_data->pageurl.'?s=news&amp;l='.$row['language'].'&amp;id='.$row['pageID'];
                 } else if ($row['type'] == 'page' and isset($seo) and $seo== 'Y') {
                     $type=(string)$titleLanguages[$row['language']]['general']->page;
-                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($row['title']).'/';
+                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($row['title']) . '/';
                 } else if ($row['type'] == 'page') {
                     $type=(string)$titleLanguages[$row['language']]['general']->page;
                     $link = $page_data->pageurl.'?s=page&amp;l='.$row['language'].'&amp;id='.$row['pageID'];
                 } else if ($row['type'] == 'about' and isset($seo) and $seo== 'Y') {
                     $type=(string)$titleLanguages[$row['language']]['page']->about;
                     $title=(string)$titleLanguages[$row['language']]['page']->about;
-                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['page']->about).'/';
+                    $link = $page_data->pageurl. '/' . $row['language'] . '/' . szrp($titleLanguages[$row['language']]['page']->about) . '/';
                 } else if ($row['type'] == 'about') {
                     $type=(string)$titleLanguages[$row['language']]['page']->about;
                     $title=(string)$titleLanguages[$row['language']]['page']->about;
@@ -187,7 +187,7 @@ if (isset($page_id) and is_numeric($page_id)) {
             }
         }
         $resultsArray = array();
-        foreach ($results as $k=>$v) {
+        foreach ($results as $k => $v) {
             unset($results[$k]);
             $resultsArray[$v['worth']][$v['textID']] = $v;
         }
@@ -195,7 +195,7 @@ if (isset($page_id) and is_numeric($page_id)) {
         $results = array();
         $exists = array();
         foreach ($resultsArray as $key=>$val) {
-            foreach ($val as $k=>$v) {
+            foreach ($val as $k => $v) {
                 if (!in_array($key,$exists)) {
                     unset($resultsArray[$key][$k]);
                     $results[] = $v;

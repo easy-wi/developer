@@ -401,7 +401,7 @@ class TS3 {
 	public function ServerList () {
 		$serverdetails = array();
         $array = $this->SendCommand('serverlist');
-        if (is_array($array) or is_object($array)) foreach ($array as $k=>$v) $serverdetails[$k] = $this->ReplaceFromTS3($v);
+        if (is_array($array) or is_object($array)) foreach ($array as $k => $v) $serverdetails[$k] = $this->ReplaceFromTS3($v);
         if ($this->debug == true){
             print "ServerList:";
             print_r($serverdetails);
@@ -660,7 +660,7 @@ function tsbackup ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw
             if (substr($path,0,1) == '/') {
                 $folders='/';
             } else {
-                $folders='/home/'.$sshuser.'/';
+                $folders='/home/'.$sshuser . '/';
             }
 			while ($i<=$folderfilecount) {
 				$folders .= $split_config[$i] . '/';
@@ -669,9 +669,9 @@ function tsbackup ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw
 			if ($folders == '') {
 				$folders='.';
 			}
-            if (substr($folders,-1) != '/') $folders = $folders.'/';
-			$filefolder = $folders.'files/virtualserver_'.$virtualserver_id.'/';
-			$backupfolder = $folders.'backups/virtualserver_'.$virtualserver_id.'/';
+            if (substr($folders,-1) != '/') $folders = $folders . '/';
+			$filefolder = $folders.'files/virtualserver_'.$virtualserver_id . '/';
+			$backupfolder = $folders.'backups/virtualserver_'.$virtualserver_id . '/';
 			if ($action == 'create') {
 				$function='function backup () { mkdir -p '.$backupfolder.' && nice -n +19 tar cfj '.$backupfolder.$backupid.'.tar.bz2 '.$filefolder.'; }';
 			} else if ($action == 'delete') {

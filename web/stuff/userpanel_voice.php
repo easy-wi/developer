@@ -41,7 +41,7 @@ if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['voiceserver']
 }
 $sprache = getlanguagefile('voice', $user_language, $reseller_id);
 $loguserid = $user_id;
-$logusername=getusername($user_id);
+$logusername = getusername($user_id);
 $logusertype='user';
 $logreseller = 0;
 if (isset($admin_id)) {
@@ -172,7 +172,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                     $move = array();
                     $channelListOld=@json_decode($row['channels']);
                     $channelListDeployed=@json_decode($connection->channelList($volocalserverid));
-                    if (is_object($channelListDeployed) and is_object($channelListOld)) foreach ($channelListOld as $k=>$v) if (isset($channelListDeployed->$k)) $move[$v] = $channelListDeployed->$k;
+                    if (is_object($channelListDeployed) and is_object($channelListOld)) foreach ($channelListOld as $k => $v) if (isset($channelListDeployed->$k)) $move[$v] = $channelListDeployed->$k;
                     tsbackup('deploy', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $ui->id('id',10, 'post'), $reseller_id, $sql, $move);
                     $query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($row['sid'], $user_id, $reseller_id));
@@ -643,9 +643,9 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 }
                 $flexSlots = '';
                 if ($row['flexSlots'] == 'Y' and $row['flexSlotsCurrent'] == null) {
-                    $flexSlots = $row['slots'].'/';
+                    $flexSlots = $row['slots'] . '/';
                 } else if ($row['flexSlots'] == 'Y') {
-                    $flexSlots = $row['flexSlotsCurrent'].'/';
+                    $flexSlots = $row['flexSlotsCurrent'] . '/';
                 }
                 $usage = $usedSlots. '/' . $flexSlots.$row['slots'];
                 if ($row['uptime']==0) {

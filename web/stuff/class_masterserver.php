@@ -428,11 +428,11 @@ class masterServer {
                 if ($this->imageserver ==  'none') {
                     $combined = array();
                     
-                    foreach ($goFor['sync'] as $k=>$v) {
+                    foreach ($goFor['sync'] as $k => $v) {
                         $combined[$k] = $v;
                     }
                     
-                    foreach ($goFor['nosync'] as $k=>$v) {
+                    foreach ($goFor['nosync'] as $k => $v) {
                         $combined[$k] = $v;
                     }
 

@@ -252,7 +252,7 @@ class rootServer {
     }
     public function dhcpFiles () {
         $removeArray = array();
-        foreach ($this->dhcpData as $k=>$v) {
+        foreach ($this->dhcpData as $k => $v) {
             $i = 0;
             unset($tempBad);
             if ($v['publickey']=="Y") {
@@ -316,7 +316,7 @@ class rootServer {
         return $removeArray;
     }
     public function PXEFiles() {
-        foreach($this->PXEData as $k=>$v) {
+        foreach($this->PXEData as $k => $v) {
             if ($v['publickey']=="Y") {
 
                 # https://github.com/easy-wi/developer/issues/70

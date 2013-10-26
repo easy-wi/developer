@@ -46,7 +46,7 @@ if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['useraddons'])
 
 $sprache = getlanguagefile('images',$user_language,$reseller_id);
 $loguserid = $user_id;
-$logusername=getusername($user_id);
+$logusername = getusername($user_id);
 $logusertype = 'user';
 $logreseller = 0;
 
