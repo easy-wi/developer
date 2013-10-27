@@ -909,6 +909,7 @@ if [ ! -d $SERVERDIR/$VARIABLE4/$GAMENAME ]; then
 	mkdir -p $SERVERDIR/$VARIABLE4/$GAMENAME
 fi" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 if [ "$MODINSTALL" == "1" ]; then
+	echo "if [ -d $HOMEFOLDER/masterserver/$MODNAME ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "cd $HOMEFOLDER/masterserver/$MODNAME" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.vdf" -o -name "*.cfg" -o -name "*.ini" -o -name "*.conf" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "server.properties"  -o -name "*.example"| grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
@@ -923,8 +924,10 @@ if [ "$MODINSTALL" == "1" ]; then
 		'"${IONICE}"'cp "$HOMEFOLDER/masterserver/$MODNAME/$FILTEREDFILES" "$SERVERDIR/$VARIABLE4/$GAMENAME/$FILTEREDFILES"
 	fi
 done
-'"${IONICE}"'cp -sr $HOMEFOLDER/masterserver/$MODNAME/* $SERVERDIR/$VARIABLE4/$GAMENAME/' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+'"${IONICE}"'cp -sr $HOMEFOLDER/masterserver/$MODNAME/* $SERVERDIR/$VARIABLE4/$GAMENAME/
+fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 fi
+echo "if [ -d $HOMEFOLDER/masterserver/$GAMENAME2 ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo "cd $HOMEFOLDER/masterserver/$GAMENAME2" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.vdf" -o -name "*.cfg" -o -name "*.ini" -o -name "*.conf" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "server.properties" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
@@ -939,7 +942,8 @@ echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
 		'"${IONICE}"'cp "$HOMEFOLDER/masterserver/$GAMENAME2/$FILTEREDFILES" "$SERVERDIR/$VARIABLE4/$GAMENAME/$FILTEREDFILES"
 	fi
 done
-'"${IONICE}"'cp -sr $HOMEFOLDER/masterserver/$GAMENAME2/* $SERVERDIR/$VARIABLE4/$GAMENAME/' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+'"${IONICE}"'cp -sr $HOMEFOLDER/masterserver/$GAMENAME2/* $SERVERDIR/$VARIABLE4/$GAMENAME/
+fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 }
 
 function remove_folders {
