@@ -1367,13 +1367,11 @@ GAMESTRING="${I}${GAMESTRING}"
 if [ "$VARIABLE5" != "protected" ]; then
 	CLEANFILE=$HOMEFOLDER/temp/cleanup-${VARIABLE2}-${SCREENNAME}.sh
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-${SCREENNAME}.sh
-	SYNCSERVERCMD="cd `dirname $FOLDERCHECK` && ./control.sh addserver ${VARIABLE2} ${GAMESTRING} ${SYNCGSPATH}"
 	CLEANUPDIR="/home/$VARIABLE2/server/"
 else
 	CLEANFILE=$HOMEFOLDER/temp/cleanup-${VARIABLE2}-p-${SCREENNAME}.sh
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-p-${SCREENNAME}.sh
 	CLEANUPDIR="/home/$VARIABLE2/pserver/"
-	SYNCSERVERCMD="cd `dirname $FOLDERCHECK` && ./control.sh addserver ${VARIABLE2}-p ${GAMESTRING} ${SYNCGSPATH} protected"
 fi
 cd $SERVERDIR
 DONOTTOUCH='*/bin/*.so bin/*.so */cfg/valve.rc srcds_* hlds_* *.sh *.run'
@@ -1457,35 +1455,27 @@ else
 				BADTIME="-mtime +$BADTIME"
 			fi
 		fi
-		echo "#!/bin/bash" > $CLEANFILE
-		echo "rm $CLEANFILE" >> $CLEANFILE
-		echo "${SYNCSERVERCMD}" >> $CLEANFILE
-		echo "cd $SERVERDIR" >> $CLEANFILE
-		for FILE in $BADFILES; do
-			echo "find $CLEANUPDIR -type f -name \"*.$FILE\" $BADTIME -delete" >> $CLEANFILE
-		done
-		echo "${IONICE}find -L $CLEANUPDIR -type l -delete" >> $CLEANFILE
-		echo "${IONICE}find $CLEANUPDIR -type f -name '*.log' $LOGTIME -delete" >> $CLEANFILE
-		echo "${IONICE}find $CLEANUPDIR -type f -name '*.dem' $DEMOTIME -delete" >> $CLEANFILE
-		echo "${IONICE}find $CLEANUPDIR -type f -name '*.ztmp' $ZTMPTIME -delete" >> $CLEANFILE
-		if [ "$VARIABLE5" != "protected" ]; then
-			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -maxdepth 1  \( -type f -or -type l \) ! \( -name ".bashrc" -or -name \".bash_history\" -or -name \".profile\" -or -name \".bash_logout\" \) -delete" >> $CLEANFILE
-			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete" >> $CLEANFILE
-			echo "${IONICE}nice -n +19 find $DATADIR -type f -user `whoami` ! -name \"*.bz2\" -delete" >> $CLEANFILE
-		fi
-		echo "exit 0" >> $CLEANFILE
-		chmod +x $CLEANFILE
-		#screen -dmS cleanup $CLEANFILE
-		$CLEANFILE &
 		if [ ! -f $STARTFILE ]; then
 		echo '#!/bin/bash' > $STARTFILE
 		echo "rm $STARTFILE" >> $STARTFILE
 		fi
 		echo "cd ${SERVERDIR}" >> $STARTFILE
+		for FILE in $BADFILES; do
+			echo "find $CLEANUPDIR -type f -name \"*.$FILE\" $BADTIME -delete" >> $STARTFILE
+		done
+		echo "${IONICE}find -L $CLEANUPDIR -type l -delete" >> $STARTFILE
+		echo "${IONICE}find $CLEANUPDIR -type f -name '*.log' $LOGTIME -delete" >> $STARTFILE
+		echo "${IONICE}find $CLEANUPDIR -type f -name '*.dem' $DEMOTIME -delete" >> $STARTFILE
+		echo "${IONICE}find $CLEANUPDIR -type f -name '*.ztmp' $ZTMPTIME -delete" >> $STARTFILE
+		if [ "$VARIABLE5" != "protected" ]; then
+			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -maxdepth 1  \( -type f -or -type l \) ! \( -name ".bashrc" -or -name \".bash_history\" -or -name \".profile\" -or -name \".bash_logout\" \) -delete" >> $STARTFILE
+			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete" >> $STARTFILE
+			echo "${IONICE}nice -n +19 find $DATADIR -type f -user `whoami` ! -name \"*.bz2\" -delete" >> $STARTFILE
+		fi
 		echo 'while [ "`ps x | grep '"'"'cleanup'"'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
 		echo 'sleep 0.5' >> $STARTFILE
 		echo 'done' >> $STARTFILE
-		echo 'while [ "`ps x | grep '"'add-${VARIABLE2}-${SCREENNAME}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
+		echo 'while [ "`ps x | grep '"'add-${VARIABLE2}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
 		echo 'sleep 0.5' >> $STARTFILE
 		echo 'done' >> $STARTFILE
 		# Steampipe Fix Start
@@ -1506,7 +1496,7 @@ else
 		echo "if [ -f screenlog.0 ]; then rm screenlog.0; fi" >> $STARTFILE
 		echo "${TASKSET}screen -A -m -d -L -S $SCREENNAME $VARIABLE4" >> $STARTFILE
 		chmod +x $STARTFILE
-		$STARTFILE &
+		screen -d -m -S startDetached $STARTFILE
 		STARTED=yes
 	else
 		STARTED=no
@@ -1545,6 +1535,12 @@ if [ "$VARIABLE1" == "grestart" ]; then
 	echo '#!/bin/bash' > $STARTFILE
 	echo "rm $STARTFILE" >> $STARTFILE
 	echo "SCREENNAME=$SCREENNAME" >> $STARTFILE
+	echo 'while [ "`ps x | grep '"'"'cleanup'"'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
+	echo 'sleep 0.5' >> $STARTFILE
+	echo 'done' >> $STARTFILE
+	echo 'while [ "`ps x | grep '"'add-${VARIABLE2}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
+	echo 'sleep 0.5' >> $STARTFILE
+	echo 'done' >> $STARTFILE
 	addStop $STARTFILE
 else
 	echo "#!/bin/bash" > $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
@@ -1587,10 +1583,10 @@ function addStop {
 			echo "screen -p 0 -S $SENDTO -X stuff \"tv_stoprecord\"" >> $1
 			screenEnter $1
 		fi
-		echo 'if [ "`screen -ls | grep $SCREENNAME | wc -l`" == "1" ]; then' >> $1
+		echo 'if [ "`screen -ls | grep -v startDetached | grep $SCREENNAME | wc -l`" == "1" ]; then' >> $1
 		echo 'screen -r $SCREENNAME -X quit' >> $1
 		echo 'fi' >> $1
-		echo "ps x | grep -v '$1' | grep $SCREENNAME | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
+		echo "ps x | grep -v '$1' | grep -v startDetached | grep $SCREENNAME | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
 		echo 'kill $PID' >> $1
 		echo 'kill -9 $PID' >> $1
 		echo 'done' >> $1
@@ -1598,7 +1594,7 @@ function addStop {
 	else
 		echo "No screen found: $SCREENNAME"
 	fi
-	echo "ps x | grep -v '$1' | grep `echo $SCREENNAME | awk -F '_' '{print $1}'` | grep `echo $SCREENNAME | awk -F '_' '{print $2}'` | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
+	echo "ps x | grep -v '$1' | grep -v startDetached | grep `echo $SCREENNAME | awk -F '_' '{print $1}'` | grep `echo $SCREENNAME | awk -F '_' '{print $2}'` | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
 	echo 'kill $PID' >> $1
 	echo 'kill -9 $PID' >> $1
 	echo 'done' >> $1
