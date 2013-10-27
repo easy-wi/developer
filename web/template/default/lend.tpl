@@ -26,9 +26,9 @@
 </head>
 <body>
 <div class="container">
-    <?php if(isset($header)) echo "<div id=\"redirect\"><img src=\"images/16_notice.png\" alt=\"notice\" /> $text </div>"; ?>
+    <?php if(isset($header)) echo $text; ?>
     <?php if ($servertype=='g' and $gslallowed==true) { ?>
-    <form class="form-signin" action="lend.php?w=gs" method="post">
+    <form class="form-signin" action="lend.php?w=gs" method="post" >
         <h2 class="form-signin-heading"><?php echo $gsprache->lendserver.' '.$gsprache->gameserver; ?></h2>
         <?php if ($volallowed==true) { ?><h3><a href="lend.php?w=vo"><?php echo $gsprache->voiceserver;?></a></h3><?php } ?>
         <p><?php echo $sprache->nextfree.' '.$nextfree." ".$sprache->minutes;?></p>
@@ -113,18 +113,22 @@
         </div>
         <div class="hide" aria-hidden="true"><input type="hidden" name="voice" value="1" ></div>
         <?php } ?>
-    <?php } ?>
-    <?php if ($serveravailable==true) { ?>
-        <div class="control-group">
-            <div class="controls">
-                <button class="btn btn-large btn-primary pull-right" type="submit"><?php echo $sprache->lend; ?></button>
+        <?php } ?>
+        <?php if ($serveravailable==true) { ?>
+            <div class="control-group">
+                <div class="controls">
+                    <button class="btn btn-large btn-primary pull-right" type="submit"><?php echo $sprache->lend; ?></button>
+                </div>
             </div>
-        </div>
-        <div class="hide" aria-hidden="true">
-            <input type="text" name="email">
-        </div>
-    <?php }?>
+            <div class="hide" aria-hidden="true">
+                <input type="text" name="email">
+            </div>
+        <?php }?>
     </form>
+        <hr>
+        <div>
+            &copy; <a href="https://easy-wi.com" target="_blank" title="free gameserver, voiceserver, dedicated and virtualserver webinterface easy-wi.com">Easy-WI.com</a> 2011 - <?php echo date('Y'); ?>
+        </div>
 </div>
 <script src="js/default/jquery.js"></script>
 <script src="js/default/bootstrap.min.js"></script>
