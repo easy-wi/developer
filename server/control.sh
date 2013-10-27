@@ -1458,6 +1458,9 @@ else
 		if [ ! -f $STARTFILE ]; then
 		echo '#!/bin/bash' > $STARTFILE
 		echo "rm $STARTFILE" >> $STARTFILE
+		echo 'while [ "`ps x | grep '"'add-${VARIABLE2}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
+		echo 'sleep 0.5' >> $STARTFILE
+		echo 'done' >> $STARTFILE
 		fi
 		echo "cd ${SERVERDIR}" >> $STARTFILE
 		for FILE in $BADFILES; do
@@ -1472,12 +1475,6 @@ else
 			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete" >> $STARTFILE
 			echo "${IONICE}nice -n +19 find $DATADIR -type f -user `whoami` ! -name \"*.bz2\" -delete" >> $STARTFILE
 		fi
-		echo 'while [ "`ps x | grep '"'"'cleanup'"'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
-		echo 'sleep 0.5' >> $STARTFILE
-		echo 'done' >> $STARTFILE
-		echo 'while [ "`ps x | grep '"'add-${VARIABLE2}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
-		echo 'sleep 0.5' >> $STARTFILE
-		echo 'done' >> $STARTFILE
 		# Steampipe Fix Start
 		echo 'if [ -d "tf" -o -d "dod" -o -d "hl2mp" -o -d "cstrike" ]; then' >> $STARTFILE
 		echo 'if [ "`find orangebox/ css/ -type f 2> /dev/null | wc -l`" == "0" ]; then rm -rf orangebox/ css/ 2> /dev/null; fi' >> $STARTFILE
@@ -1494,9 +1491,9 @@ else
 		echo 'fi' >> $STARTFILE
 		# Steampipe Fix Ende
 		echo "if [ -f screenlog.0 ]; then rm screenlog.0; fi" >> $STARTFILE
-		echo "${TASKSET}screen -A -m -d -L -S $SCREENNAME $VARIABLE4" >> $STARTFILE
+		echo "${TASKSET} screen -A -m -d -L -S $SCREENNAME $VARIABLE4" >> $STARTFILE
 		chmod +x $STARTFILE
-		screen -d -m -S startDetached $STARTFILE
+		$STARTFILE > /dev/null 2>&1 &
 		STARTED=yes
 	else
 		STARTED=no
@@ -1535,9 +1532,6 @@ if [ "$VARIABLE1" == "grestart" ]; then
 	echo '#!/bin/bash' > $STARTFILE
 	echo "rm $STARTFILE" >> $STARTFILE
 	echo "SCREENNAME=$SCREENNAME" >> $STARTFILE
-	echo 'while [ "`ps x | grep '"'"'cleanup'"'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
-	echo 'sleep 0.5' >> $STARTFILE
-	echo 'done' >> $STARTFILE
 	echo 'while [ "`ps x | grep '"'add-${VARIABLE2}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
 	echo 'sleep 0.5' >> $STARTFILE
 	echo 'done' >> $STARTFILE
@@ -1583,10 +1577,10 @@ function addStop {
 			echo "screen -p 0 -S $SENDTO -X stuff \"tv_stoprecord\"" >> $1
 			screenEnter $1
 		fi
-		echo 'if [ "`screen -ls | grep -v startDetached | grep $SCREENNAME | wc -l`" == "1" ]; then' >> $1
+		echo 'if [ "`screen -ls | grep $SCREENNAME | wc -l`" == "1" ]; then' >> $1
 		echo 'screen -r $SCREENNAME -X quit' >> $1
 		echo 'fi' >> $1
-		echo "ps x | grep -v '$1' | grep -v startDetached | grep $SCREENNAME | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
+		echo "ps x | grep -v '$1' | grep $SCREENNAME | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
 		echo 'kill $PID' >> $1
 		echo 'kill -9 $PID' >> $1
 		echo 'done' >> $1
@@ -1594,7 +1588,7 @@ function addStop {
 	else
 		echo "No screen found: $SCREENNAME"
 	fi
-	echo "ps x | grep -v '$1' | grep -v startDetached | grep `echo $SCREENNAME | awk -F '_' '{print $1}'` | grep `echo $SCREENNAME | awk -F '_' '{print $2}'` | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
+	echo "ps x | grep -v '$1' | grep `echo $SCREENNAME | awk -F '_' '{print $1}'` | grep `echo $SCREENNAME | awk -F '_' '{print $2}'` | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
 	echo 'kill $PID' >> $1
 	echo 'kill -9 $PID' >> $1
 	echo 'done' >> $1
