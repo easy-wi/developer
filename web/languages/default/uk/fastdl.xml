@@ -4,12 +4,12 @@
 	<example>Example: ftp://Yourusername:Yourftppassword@Adresse/path</example>
 	<fdlfailed>Fastdownload matching failed</fdlfailed>
 	<fdlstarted>Fastdownload matching started</fdlstarted>
-	<haupt>Main fastdownload server</haupt>
-	<haupt2>Use mainserver?</haupt2>
+	<haupt>Default fastdownload server</haupt>
+	<haupt2>Use default fastdownload server?</haupt2>
 	<neben>FTP Data used for the fastdownload server</neben>
 	<noset>No FTP data available</noset>
 	<own>Use main FTP</own>
-	<own2>Own fastdownloadaccess for the server</own2>
+	<own2>Own fastdownload server</own2>
 	<server>Einzelne Server</server>
 	<startfdl>Start matching</startfdl>
 	<udsuc>Successfully changed the FTP Data</udsuc>
