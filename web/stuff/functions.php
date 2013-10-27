@@ -677,7 +677,6 @@ if (!function_exists('passwordgenerate')) {
             $modcmd = $row['modcmd'];
             $pallowed = $row['pallowed'];
             $user_id = $row['userid'];
-
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($user_id));
             $customer = $query->fetchColumn();
@@ -840,7 +839,7 @@ if (!function_exists('passwordgenerate')) {
             } else if ($protected == 'N' and $pallowed == 'Y') {
                 $customerProtected = $customer . '-p';
             }
-            
+
             if ($action!='du' and $eacallowed == 'Y' and ($anticheat == 3 or $anticheat == 4 or $anticheat == 5 or $anticheat == 6) and ($qstat == 'a2s' or $qstat == 'hla2s')) {
                 
                 if ($action == 'so' or $action == 'sp') {
@@ -1065,6 +1064,8 @@ if (!function_exists('passwordgenerate')) {
                 $cmds[]="sudo -u ${customerProtected} ./control.sh stopall";
             }
 
+            $cmds[] = 'sudo -u ' . $customer . ' ./control.sh addserver ' . $customer . ' 1_' . $shorten . ' ' . $gsip . '_' . $port;
+
             if (isset($restartCmd)) {
                 $cmds[] = $restartCmd;
             }
@@ -1072,7 +1073,6 @@ if (!function_exists('passwordgenerate')) {
             foreach ($tempCmds as $c) {
                 $cmds[] = $c;
             }
-
             return $cmds;
         }
         
