@@ -5,6 +5,7 @@
 	<active>Aktiver</active>
 	<all>Vælg alle spil</all>
 	<anticheat>AntiSnyd</anticheat>
+    <authkey_info></authkey_info>
 	<belegt2>Eksisterende mapper</belegt2>
 	<belegt>Brugt porte</belegt>
 	<beschr>Beskrivelse</beschr>
@@ -12,6 +13,7 @@
 	<bin_folder>Binary mappe (orangebox og så videre)</bin_folder>
 	<brandname>Servertag</brandname>
 	<cant_install>Kunne ikke starte installationen på serveren</cant_install>
+    <collection_info></collection_info>
 	<config>Serverconfigs</config>
 	<confirm_change>Gem ændringer?</confirm_change>
 	<confirm_delete>Slet Server?</confirm_delete>

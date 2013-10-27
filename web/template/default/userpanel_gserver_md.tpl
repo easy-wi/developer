@@ -54,6 +54,26 @@
                         </select>
                     </div>
                 </div>
+                <?php if ($table_row['qstat']=="a2s" or $table_row['qstat']=="hla2s") { ?>
+                <div class="control-group">
+                    <label class="control-label" for="anticheat_<?php echo $table_row['id'];?>"><?php echo $sprache->anticheat;?></label>
+                    <div class="controls">
+                        <select id="anticheat_<?php echo $table_row['id'];?>" name="anticheat_<?php echo $table_row['id'];?>">
+                            <option value="1"><?php echo $table_row['anticheatsoft']." ".$sprache->on;?></option>
+                            <option value="2" <?php if($table_row['anticheat']==2) echo 'selected="selected"';?>><?php echo $table_row['anticheatsoft']." ".$sprache->off2;?></option>
+                            <?php foreach($table_row['eac'] as $eac) echo $eac;?>
+                        </select>
+                    </div>
+                </div>
+                <?php } ?>
+                <?php if ($table_row['upload']==true) { ?>
+                <div class="control-group">
+                    <label class="control-label" for="uploaddir_<?php echo $table_row['id'];?>">SourceTV Demo FTP</label>
+                    <div class="controls">
+                        <input id="uploaddir_<?php echo $table_row['id'];?>" type="text" name="uploaddir_<?php echo $table_row['id'];?>" value="<?php echo $table_row['uploaddir'];?>">
+                    </div>
+                </div>
+                <?php } ?>
                 <?php if ($table_row['userfps']=="Y") { ?>
                 <div class="control-group">
                     <label class="control-label" for="fps_<?php echo $table_row['id'];?>"><?php echo $sprache->fps;?></label>
@@ -89,35 +109,17 @@
                     <label class="control-label" for="workshopCollection_<?php echo $table_row['id'];?>">Workshop Collection</label>
                     <div class="controls">
                         <input id="workshopCollection_<?php echo $table_row['id'];?>" type="text" name="workshopCollection_<?php echo $table_row['id'];?>" value="<?php echo $table_row['workshopCollection'];?>">
+                        <span class="help-block"><?php echo $sprache->collection_info;?></span>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="webapiAuthkey_<?php echo $table_row['id'];?>">Steam Webapi Authkey</label>
                     <div class="controls">
                         <input id="webapiAuthkey_<?php echo $table_row['id'];?>" type="text" name="webapiAuthkey_<?php echo $table_row['id'];?>" value="<?php echo $table_row['webapiAuthkey'];?>">
+                        <span class="help-block"><?php echo $sprache->authkey_info;?></span>
                     </div>
                 </div>
                 <?php }} ?>
-                <?php if ($table_row['qstat']=="a2s" or $table_row['qstat']=="hla2s") { ?>
-                <div class="control-group">
-                    <label class="control-label" for="anticheat_<?php echo $table_row['id'];?>"><?php echo $sprache->anticheat;?></label>
-                    <div class="controls">
-                        <select id="anticheat_<?php echo $table_row['id'];?>" name="anticheat_<?php echo $table_row['id'];?>">
-                            <option value="1"><?php echo $table_row['anticheatsoft']." ".$sprache->on;?></option>
-                            <option value="2" <?php if($table_row['anticheat']==2) echo 'selected="selected"';?>><?php echo $table_row['anticheatsoft']." ".$sprache->off2;?></option>
-                            <?php foreach($table_row['eac'] as $eac) echo $eac;?>
-                        </select>
-                    </div>
-                </div>
-                <?php } ?>
-                <?php if ($table_row['upload']==true) { ?>
-                <div class="control-group">
-                    <label class="control-label" for="uploaddir_<?php echo $table_row['id'];?>">SourceTV Demo FTP</label>
-                    <div class="controls">
-                        <input id="uploaddir_<?php echo $table_row['id'];?>" type="text" name="uploaddir_<?php echo $table_row['id'];?>" value="<?php echo $table_row['uploaddir'];?>">
-                    </div>
-                </div>
-                <?php } ?>
             </div>
             <?php } ?>
             <div class="control-group">

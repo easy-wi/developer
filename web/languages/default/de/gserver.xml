@@ -5,6 +5,7 @@
     <active>Aktivieren</active>
     <all>Alle Spiele auswählen</all>
     <anticheat>Anticheat</anticheat>
+    <authkey_info><![CDATA[Ihr Persoenlicher Webapi Authkey zum Download der Maps von Steam. Weitere Informationen finden Sie <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators#Getting_your_web_api_authorization_key" target="_blank">hier</a>.]]></authkey_info>
     <belegt2>Vorhandene Verzeichnisse</belegt2>
     <belegt>Belegte Ports</belegt>
     <beschr>Beschreibung</beschr>
@@ -12,6 +13,7 @@
     <bin_folder>Binaryverzeichnis(z.B. orangebox)</bin_folder>
     <brandname>Branding</brandname>
     <cant_install>Resynchronisation/Reinstall konnte nicht gestartet werden.</cant_install>
+    <collection_info><![CDATA[Workshop Collection ID zum Download der Maps. Weitere Informationen finden Sie <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators" target="_blank">hier</a>.]]></collection_info>
     <config>Configs</config>
     <confirm_change>Änderungen speichern?</confirm_change>
     <confirm_delete>Gameserver wirklich löschen?</confirm_delete>

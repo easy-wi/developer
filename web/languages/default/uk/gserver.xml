@@ -5,13 +5,15 @@
 	<active>Activate</active>
 	<all>Select all games</all>
 	<anticheat>Anticheat</anticheat>
-	<belegt2>Existing folders</belegt2>
+    <authkey_info><![CDATA[Your personal Webapi Authkey which is required for downloading Steam maps. Additional information can be found <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators#Getting_your_web_api_authorization_key" target="_blank">here</a>.]]></authkey_info>
+    <belegt2>Existing folders</belegt2>
 	<belegt>Used ports</belegt>
 	<beschr>Description</beschr>
 	<bin>Binary</bin>
 	<bin_folder>Binary folder(orangebox and so on)</bin_folder>
 	<brandname>Servertag</brandname>
 	<cant_install>Could not start installation on the server</cant_install>
+    <collection_info><![CDATA[Workshop Collection ID used for downloading maps. Additional information can be found <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators" target="_blank">here</a>.]]></collection_info>
 	<config>Serverconfigs</config>
 	<confirm_change>Save Changes?</confirm_change>
 	<confirm_delete>Delete Server?</confirm_delete>
