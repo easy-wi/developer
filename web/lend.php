@@ -433,7 +433,7 @@ if (!isset($template_file) and $ui->escaped('ipblocked', 'post') and $ui->id('xm
     die('notblocked');
 }
 
-if (!isset($template_file) and ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post')!=1) or ($ui->id('xml', 1, 'post') == 1 and !$ui->st('w', 'post')))) {
+if (!isset($template_file) and ((!isset($servertype) and isset($page_include) and $ui->id('xml', 1, 'post') != 1) or ($ui->id('xml', 1, 'post') == 1 and !$ui->st('w', 'post')))) {
 
     $lendGameServers = array();
     $lendVoiceServers = array();
