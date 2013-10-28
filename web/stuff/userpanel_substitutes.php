@@ -159,7 +159,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query->execute(array($user_id, $ui->active('active', 'post'), $ui->names('loginName',255, 'post'), $ui->names('name',255, 'post'), $ui->names('vname',255, 'post'), $newHash['hash'], $newHash['salt'], $reseller_id));
 
                 } else {
-                    $query = $sql->prepare("INSERT INTO `userdata_substitutes` (`userID`,`active`,`loginName`,`name`,`vname`,`passwordHashed`,`salt`,`resellerID`) VALUES (?,?,?,?,?,?,?)");
+                    $query = $sql->prepare("INSERT INTO `userdata_substitutes` (`userID`,`active`,`loginName`,`name`,`vname`,`passwordHashed`,`resellerID`) VALUES (?,?,?,?,?,?,?)");
                     $query->execute(array($user_id, $ui->active('active', 'post'), $ui->names('loginName',255, 'post'), $ui->names('name',255, 'post'), $ui->names('vname',255, 'post'), $newHash, $reseller_id));
                 }
 
@@ -167,9 +167,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 if ($query->rowCount()>0) {
                     $changed = true;
+                    $id = $sql->lastInsertId();
                 }
 
-                $id = $sql->lastInsertId();
             }
 
         } else if ($ui->st('action', 'post') == 'md' and $ui->id('id', 10, 'get')) {
@@ -202,6 +202,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $changed = true;
             }
         }
+
         if ($id) {
             $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=? AND `resellerID`=?");
             $query2 = $sql->prepare("DELETE FROM `userdata_substitutes_servers` WHERE `oType`=? AND `oID`=? AND `sID`=? AND `resellerID`=?");
@@ -223,19 +224,27 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
             $template_file = (isset($changed)) ? $spracheResponse->table_add : $spracheResponse->error_table;
         }
+
     } else if ($ui->st('action', 'post') == 'dl' and $ui->id('id', 10, 'get')) {
+
         $query = $sql->prepare("DELETE FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_del : 'userpanel_404.tpl';
+
+        $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_del : 'userpanel_404.tpl';
+
         $query = $sql->prepare("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata_substitutes` s ON o.`sID`=s.`sID` WHERE s.`sID` IS NULL");
         $query->execute();
     }
+
 } else {
+
     $table = array();
+
     $query = $sql->prepare("SELECT `sID`,`loginName`,`active` FROM `userdata_substitutes` WHERE `userID`=? AND `resellerID`=?");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $table[] = array('id' => $row['sID'], 'loginName' => $row['loginName'], 'active' => $row['active']);
     }
+
     $template_file = 'userpanel_substitutes_list.tpl';
 }
