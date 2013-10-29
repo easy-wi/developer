@@ -80,6 +80,15 @@
                 <label class="control-label" for="inputSSH2Key"><?php echo $sprache->keyname;?></label>
                 <div class="controls"><input class="span12" id="inputSSH2Key" type="text" name="keyname" maxlength="20" value="<?php echo $keyname;?>"/></div>
             </div>
+            <div class="control-group<?php if(isset($errors['os'])) echo ' error';?>">
+                <label class="control-label" for="inputOS"><?php echo $sprache->os;?>:</label>
+                <div class="controls">
+                    <select class="span12" id="inputBit" name="os">
+                        <option value="L">Linux</option>
+                        <!--<option value="W" <?php if ($os=="W") echo 'selected="selected"'; ?>>Windows</option>-->
+                    </select>
+                </div>
+            </div>
             <div class="control-group<?php if(isset($errors['bit'])) echo ' error';?>">
                 <label class="control-label" for="inputBit"><?php echo $sprache->os_bit;?>:</label>
                 <div class="controls">
@@ -88,18 +97,6 @@
                         <option value="64" <?php if ($bit=="64") echo 'selected="selected"'; ?>>64</option>
                     </select>
                 </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputDesc"><?php echo $sprache->desc;?>:</label>
-                <div class="controls"><input class="span12" id="inputDesc" type="text" name="desc" value="<?php echo $desc;?>"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputSlots"><?php echo $sprache->maxslots;?></label>
-                <div class="controls"><input class="span12" id="inputSlots" type="text" name="maxslots" value="<?php echo $maxslots;?>" maxlength="5"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputServer"><?php echo $sprache->maxserver2;?></label>
-                <div class="controls"><input class="span12" id="inputServer" type="text" name="maxserver" value="<?php echo $maxserver;?>" maxlength="4"></div>
             </div>
             <div class="control-group<?php if(isset($errors['hyperthreading'])) echo ' error';?>">
                 <label class="control-label" for="inputHT">Hyper Threading</label>
@@ -113,6 +110,24 @@
             <div class="control-group">
                 <label class="control-label" for="inputCores">Cores</label>
                 <div class="controls"><input class="span12" id="inputCores" type="text" name="cores" value="<?php echo $cores;?>" maxlength="5"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputRam">Ram (MB)</label>
+                <div class="controls">
+                    <input class="span12" id="inputRam" type="text" name="ram" value="<?php echo $ram;?>" maxlength="5">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputDesc"><?php echo $sprache->desc;?>:</label>
+                <div class="controls"><input class="span12" id="inputDesc" type="text" name="desc" value="<?php echo $desc;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputSlots"><?php echo $sprache->maxslots;?></label>
+                <div class="controls"><input class="span12" id="inputSlots" type="text" name="maxslots" value="<?php echo $maxslots;?>" maxlength="5"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputServer"><?php echo $sprache->maxserver2;?></label>
+                <div class="controls"><input class="span12" id="inputServer" type="text" name="maxserver" value="<?php echo $maxserver;?>" maxlength="4"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputAutoupdate">Autoupdate:</label>

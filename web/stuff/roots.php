@@ -81,10 +81,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $altips = $ui->ips('altips', 'post');
     $user = $ui->username('user', 20, 'post');
     $pass = $ui->password('pass', 255, 'post');
-    $os = 'linux';
+    $os = $ui->w('os', 1, 'post');
     $bit = $ui->id('bit', 2, 'post');
     $desc = $ui->description('desc', 'post');
     $maxslots = $ui->id('maxslots', 5, 'post');
+    $ram = $ui->id('ram', 5, 'post');
     $maxserver = $ui->id('maxserver',4, 'post');
     $updates = $ui->id('updates',1, 'post');
 
@@ -123,6 +124,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $resellerid = $row['resellerid'];
                 $steamAccount = $row['steamAcc'];
                 $steamPassword = $row['steamPwd'];
+                $ram = $row['ram'];
+                $os = $row['os'];
                 $port = $row['dport'];
                 $user = $row['duser'];
                 $pass = $row['dpass'];
@@ -186,14 +189,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (count($errors) == 0) {
 
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
-                $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:externalID,:reseller)");
-                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':externalID' => $externalID, ':reseller' => $reseller_id));
+                $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`ram`,`os`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:ram,:externalID,:reseller)");
+                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':reseller' => $reseller_id));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %root% ' . $ip;
 
             } else if ($ui->st('action', 'post') == 'md') {
-                $query = $sql->prepare("UPDATE `rserverdata` SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`externalID`=:externalID WHERE `id`=:id AND `resellerid`=:reseller_id");
-                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':externalID' => $externalID, ':id' => $id, ':reseller_id' => $reseller_id));
+                $query = $sql->prepare("UPDATE `rserverdata` SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`externalID`=:externalID WHERE `id`=:id AND `resellerid`=:reseller_id");
+                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':id' => $id, ':reseller_id' => $reseller_id));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %root% ' . $ip;
             }
@@ -343,11 +346,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $start = (int) $ui->id('p', 19, 'get');
     }
     $query = $sql->prepare("SELECT r.*,u.`cname`,u.`name`,u.`vname` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`userID`=u.`id` WHERE r.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
-    $query2 = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`, ':',g.`port`) AS `address`,g.`active`,g.`stopped`,g.`queryName`,g.`queryNumplayers`,g.`slots`,t.`shorten` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`resellerid`=?");
+    $query2 = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`, ':',g.`port`) AS `address`,g.`active`,g.`stopped`,g.`queryName`,g.`queryNumplayers`,g.`slots`,g.`maxram`,t.`shorten` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`resellerid`=?");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $used = 0;
         $available = 0;
+        $assignedRam = 0;
         $i = 0;
         $gs = array();
         $id = $row['id'];
@@ -372,6 +376,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $gs[] = array('id' => $row2['id'], 'address' => $row2['address'], 'shorten' => $row2['shorten'], 'name' => $row2['queryName'], 'status' => $gsStatus);
             $used+=$row2['queryNumplayers'];
             $available+=$row2['slots'];
+            $assignedRam+=$row2['maxram'];
             $i++;
         }
         if ($row['active'] == 'Y' and isset($downChecks) and $downChecks > $row['notified']) {
@@ -384,7 +389,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName = '16_bad';
             $imgAlt = 'Inactive';
         }
-        $table[] = array('id' => $id, 'names' => $names, 'deleteAllowed' => $deleteAllowed, 'img' => $imgName, 'alt' => $imgAlt, 'ip' => $row['ip'], 'active' => $row['active'], 'os' => $row['os'], 'bit' => $row['bitversion'], 'description' => $row['description'], 'used' => $used, 'max' => $available, 'maxslots' => $maxslots, 'maxserver' => $maxserver, 'installedserver' => $i, 'server' => $gs);
+        $table[] = array('id' => $id, 'names' => $names, 'deleteAllowed' => $deleteAllowed, 'img' => $imgName, 'alt' => $imgAlt, 'ip' => $row['ip'], 'active' => $row['active'], 'os' => $row['os'], 'bit' => $row['bitversion'], 'description' => $row['description'], 'assignedRam' => $assignedRam, 'ram' => $row['ram'], 'used' => $used, 'max' => $available, 'maxslots' => $maxslots, 'maxserver' => $maxserver, 'installedserver' => $i, 'server' => $gs);
     }
     $next = $start + $amount;
     $vor = ($colcount > $next) ? $next : $start;
