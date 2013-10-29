@@ -106,13 +106,13 @@ if (!function_exists('passwordgenerate')) {
         // First check if crypt works properly. With old PHP versions like Debian 6 with 5.3.3 we will run into an error
         } else if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
 
-            if (md5($password) == $storedHash) {
+            if (preg_match('/^[a-z0-9]{32}+$/', $storedHash) and md5($password) == $storedHash) {
                 return password_hash($password, PASSWORD_DEFAULT);
-            } else if (sha1($password) == $storedHash) {
+            } else if (preg_match('/^[a-z0-9]{40}+$/', $storedHash) and sha1($password) == $storedHash) {
                 return password_hash($password, PASSWORD_DEFAULT);
-            } else if (createHash($username, $password, $salt, $aeskey) == $storedHash) {
+            } else if (preg_match('/^[a-z0-9]{128}+$/', $storedHash) and createHash($username, $password, $salt, $aeskey) == $storedHash) {
                 return password_hash($password, PASSWORD_DEFAULT);
-            } else if (passwordhash($username, $password) == $storedHash) {
+            } else if (preg_match('/^[a-z0-9]{128}+$/', $storedHash) and passwordhash($username, $password) == $storedHash) {
                 return password_hash($password, PASSWORD_DEFAULT);
             }
 
@@ -122,11 +122,11 @@ if (!function_exists('passwordgenerate')) {
             $newSalt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
             if (createHash($username, $password, $salt, $aeskey) == $storedHash) {
                 return true;
-            } else if (md5($password) == $storedHash) {
+            } else if (preg_match('/^[a-z0-9]{32}+$/', $storedHash) and md5($password) == $storedHash) {
                 return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
-            } else if (sha1($password) == $storedHash) {
+            } else if (preg_match('/^[a-z0-9]{40}+$/', $storedHash) and sha1($password) == $storedHash) {
                 return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
-            } else if (passwordhash($username, $password) == $storedHash) {
+            } else if (preg_match('/^[a-z0-9]{128}+$/', $storedHash) and passwordhash($username, $password) == $storedHash) {
                 return createHash($username, $password, $salt, $aeskey);
             }
         }
