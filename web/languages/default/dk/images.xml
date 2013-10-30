@@ -27,6 +27,7 @@
 	<folder>Server Mappe</folder>
 	<folders>Mapper, der skal slettes ved fjernelse</folders>
 	<fps>Server FPS</fps>
+    <ftpAccess>FTP adgang</ftpAccess>
 	<game2>Spil eller spiltype</game2>
 	<game>Spilnavn</game>
 	<heading_addons>Spilserver tilføjelsesprogrammer</heading_addons>
@@ -48,6 +49,7 @@
     <protectedSaveCFGs>Filer, der skal holdes mens skifte Beskyttet tilstand</protectedSaveCFGs>
 	<qstat>Qstat Parameter</qstat>
 	<qstatpassparam>Qstat adgangskodeparameter</qstatpassparam>
+    <ramLimited>Ram begrænset</ramLimited>
 	<rcon>Fjernbetjening adgangskode (RCON)</rcon>
 	<requires>Kræver</requires>
     <rmcmd>fjerne fra startkommando</rmcmd>

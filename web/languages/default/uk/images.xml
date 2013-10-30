@@ -27,6 +27,7 @@
 	<folder>Serverfolder</folder>
 	<folders>Folders to be deleted on removal</folders>
 	<fps>Server FPS</fps>
+    <ftpAccess>FTP Access</ftpAccess>
 	<game2>Game or gametype</game2>
 	<game>Gamename</game>
 	<heading_addons>Gameserver Addons</heading_addons>
@@ -48,6 +49,7 @@
     <protectedSaveCFGs>Files to be kept while switching Protection Mode</protectedSaveCFGs>
 	<qstat>Qstat Parameter</qstat>
 	<qstatpassparam>Qstat passwordparameter</qstatpassparam>
+    <ramLimited>Ram limited</ramLimited>
 	<rcon>Remote password (RCON)</rcon>
 	<requires>Requires</requires>
     <rmcmd>remove from startcommand</rmcmd>

@@ -70,7 +70,34 @@
                 <div class="controls">
                     <select class="span12" id="inputProtect" name="protected">
                         <option value="Y"><?php echo $gsprache->yes;?></option>
-                        <option value="N" <?php if($protected=="N") echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                        <option value="N" <?php if($protected=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputRamLimited"><?php echo $sprache->ramLimited;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputRamLimited" name="ramLimited">
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N" <?php if($ramLimited=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputFtpAccess"><?php echo $sprache->ftpAccess;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputFtpAccess" name="ftpAccess">
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N" <?php if($ftpAccess=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputOS"><?php echo $rsprache->os;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputOS" name="os">
+                        <option value="L">Linux</option>
+                        <!--<option value="W" <?php if($os=='W') echo 'selected="selected"';?>>Windows</option>-->
                     </select>
                 </div>
             </div>

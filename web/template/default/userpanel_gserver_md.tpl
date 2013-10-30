@@ -12,7 +12,7 @@
     <div class="span6">
         <form class="form-horizontal" action="userpanel.php?w=gs&amp;d=md&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
-            <?php if ($pa['ftpaccess']) { ?>
+            <?php if ($pa['ftpaccess'] and $ftpAccess=='Y') { ?>
             <div class="control-group">
                 <label class="control-label" for="ftppass"><?php echo $sprache->ftp_password;?></label>
                 <div class="controls">

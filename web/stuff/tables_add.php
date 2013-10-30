@@ -852,6 +852,9 @@ $query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `portFour` smallint(5) unsigned DEFAULT 27018,
   `portFive` smallint(5) unsigned DEFAULT 27019,
   `protected` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `ramLimited` enum('Y','N') DEFAULT 'N',
+  `ftpAccess` enum('Y','N') DEFAULT 'Y',
+  `os` enum('L','W') DEFAULT 'L',
   `downloadPath` text,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`appID`),KEY(`resellerid`)

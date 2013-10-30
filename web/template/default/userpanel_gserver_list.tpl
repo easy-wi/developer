@@ -37,7 +37,7 @@
             <dd><?php echo $table_row['map'];?></dd>
             <dt><?php echo $sprache->player;?></dt>
             <dd><?php echo $table_row['numplayers']?>/<?php echo $table_row['maxplayers'];?></dd>
-            <?php if($table_row['maxram']>1) { ?>
+            <?php if($table_row['ramLimited']=='Y') { ?>
             <dt><?php echo $sprache->ramMax;?></dt>
             <dd><?php echo $table_row['maxram'];?> MB</dd>
             <?php } ?>
@@ -45,7 +45,7 @@
             <dt><?php echo $sprache->coreBind;?></dt>
             <dd><?php echo $table_row['cores'].' ('.$table_row['coreCount'].')';?></dd>
             <?php } ?>
-            <?php if(($pa['ftpaccess'] or $pa['miniroot']) and $table_row['imgp']!='16_protected') { ?>
+            <?php if(($pa['ftpaccess'] or $pa['miniroot']) and $table_row['imgp']!='16_protected' and $table_row['ftpAllowed']) { ?>
             <dt><?php echo $sprache->ftp_link;?></dt>
             <dd><a href="<?php echo $table_row['ftpdata'];?>"><?php echo $table_row['ftpdata'];?></a></dd>
             <dt><?php echo $sprache->ftp_adresse;?></dt>

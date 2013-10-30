@@ -27,6 +27,7 @@
 	<folder>Serververzeichnis</folder>
 	<folders>Zu löschende Ordner</folders>
 	<fps>Server FPS</fps>
+    <ftpAccess>FTP Zugang</ftpAccess>
 	<game2>Spiel oder Spieltyp</game2>
 	<game>Spielname</game>
 	<heading_addons>Gameserver Addons</heading_addons>
@@ -48,6 +49,7 @@
     <protectedSaveCFGs>Dateien behalten beim Protection Mode Switch</protectedSaveCFGs>
 	<qstat>Qstat Parameter</qstat>
 	<qstatpassparam>Qstat Passwortparameter</qstatpassparam>
+    <ramLimited>Ram Limitiert</ramLimited>
 	<rcon>Remote Passwort (RCON)</rcon>
 	<requires>Benötigt</requires>
     <rmcmd>entferne vom Startbefehl</rmcmd>
