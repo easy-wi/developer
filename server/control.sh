@@ -732,7 +732,7 @@ EOF
 		# Create folder if needed
 		echo "BOMRM=\"sed \"'s/^\xef\xbb\xbf//g'\"\"" >> $TEMPFOLDER/update_$UPDATE.sh
 		echo 'if [ ! -d $UPDATE ]; then mkdir -p $UPDATE; fi' >> $TEMPFOLDER/update_$UPDATE.sh
-		
+
 		# Retreive files from mirror and clean up afterwards
 		if [ "$SYNCTOOL" == 'rsync' ]; then
 			echo "$SYNCCMD/masterserver/$UPDATE $MASTERSERVERDIR/ > $LOGDIR/update-$UPDATE.log" >> $TEMPFOLDER/update_$UPDATE.sh
@@ -740,7 +740,7 @@ EOF
 			echo "$SYNCCMD/masterserver/$UPDATE > $LOGDIR/update-$UPDATE.log" >> $TEMPFOLDER/update_$UPDATE.sh
 			echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type f -name "*.listing" -delete' >> $TEMPFOLDER/update_$UPDATE.sh
 		fi
-		
+
 		# Neither HLDS nor steamCmd
 		FDLFOLDER="$UPDATE"
 		if [ "$VARIABLE1" == "noSteamCmd" ]; then
@@ -748,7 +748,7 @@ EOF
 			echo 'cd `dirname $PBUSTER`' >> $TEMPFOLDER/update_$UPDATE.sh
 			echo './pbsetup.run -u --i-accept-the-pb-eula >> $LOGDIR/update-$UPDATE.log' >> $TEMPFOLDER/update_$UPDATE.sh
 			echo 'TEXT="needs to be updated."' >> $TEMPFOLDER/update_$UPDATE.sh
-		
+
 		# Minecraft
 		elif [ "$VARIABLE1" == "mcUpdate" ]; then
 			echo 'cd $UPDATE' >> $TEMPFOLDER/update_$UPDATE.sh
@@ -756,7 +756,7 @@ EOF
 			echo "chmod 750 $SAVEAS" >> $TEMPFOLDER/update_$UPDATE.sh
 		# HLDS
 		elif [ "$VARIABLE1" == "hldsCmd" ]; then
-		
+
 			# Update the game and updater
 			if [ "$UPDATE" = "css" ]; then
 				echo "${IONICE}"'nice -n +19 ./steam -command update -game "Counter-Strike Source" -dir $MASTERSERVERDIR/$UPDATE -verify_all -retry >> $LOGDIR/update-$UPDATE.log' >> $TEMPFOLDER/update_$UPDATE.sh
@@ -769,9 +769,9 @@ EOF
 				fi
 				echo "${IONICE}"'nice -n +19 ./steam -command update -game $UPDATE -dir $MASTERSERVERDIR/$UPDATE -verify_all -retry >> $LOGDIR/update-$UPDATE.log' >> $TEMPFOLDER/update_$UPDATE.sh
 			fi
-			
+
 			echo 'TEXT="downloading"' >> $TEMPFOLDER/update_$UPDATE.sh
-						
+
 			# Create FDL Folders in advance
 			echo 'cd $MASTERSERVERDIR/$UPDATE' >> $TEMPFOLDER/update_$UPDATE.sh
 			echo 'if [[ `find -maxdepth 2 -name srcds_run | head -n 1` ]]; then' >> $TEMPFOLDER/update_$UPDATE.sh
@@ -1155,7 +1155,7 @@ function map_list {
 			MAPCFGS="1"
 			MAPTYPE="bsp"
 		elif [ "`find -maxdepth 2 -name hlds_run`" != "" ]; then
-			MAPTYPE="bsp"		
+			MAPTYPE="bsp"
 		elif [ "`find -maxdepth 1 -name ucc-bin`" != "" ]; then
 			MAPTYPE="rom"
 		fi
@@ -1165,7 +1165,7 @@ function map_list {
 			MAPCFGS="1"
 			MAPTYPE="bsp"
 		elif [ "`find -maxdepth 2 -name hlds_run`" != "" ]; then
-			MAPTYPE="bsp"		
+			MAPTYPE="bsp"
 		elif [ "`find -maxdepth 1 -name ucc-bin`" != "" ]; then
 			MAPTYPE="rom"
 			cd ..
@@ -1208,15 +1208,15 @@ SHORTEN=$SHORTEN
 find $BACKUPDIR/ -maxdepth 1 -type f -name \"$VARIABLE2-$SHORTEN*.tar.bz2\" -delete" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'if [ -d /home/$USERNAME/server/$VARIABLE2/$SHORTEN ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo "cd /home/$USERNAME/server/$VARIABLE2/$SHORTEN" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh		
+		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'fi' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'if [ -d /home/$USERNAME/server/$VARIABLE2/$SHORTEN-2 ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo "cd /home/$USERNAME/server/$VARIABLE2/$SHORTEN-2" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN-2.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh	
+		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN-2.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'fi' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'if [ -d /home/$USERNAME/server/$VARIABLE2/$SHORTEN-3 ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo "cd /home/$USERNAME/server/$VARIABLE2/$SHORTEN-3" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN-3.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh	
+		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN-3.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'fi' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		if [ "$VARIABLE5" != "" ]; then
 			echo "wput -q --limit-rate=$FTPUPLOADLIMIT --basename=/home/$USERNAME/backup/ \"$BACKUPDIR/$VARIABLE2-$SHORTEN.tar.bz2\" \"$VARIABLE5\"" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
