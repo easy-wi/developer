@@ -10,6 +10,10 @@
     </div>
 </div>
 <div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_voiceserver_key;?></p>
+</div>
+<hr>
+<div class="row-fluid">
     <div class="span6">
         <form class="form-horizontal" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <div class="control-group">

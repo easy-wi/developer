@@ -9,6 +9,10 @@
     </div>
 </div>
 <div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_voiceserver_md;?></p>
+</div>
+<hr>
+<div class="row-fluid">
     <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=vo&amp;d=md&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">

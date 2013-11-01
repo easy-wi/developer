@@ -34,6 +34,15 @@
 	<ftpport>FTP Port</ftpport>
 	<generate>Generieren</generate>
 	<groupname>Gruppenname</groupname>
+    <help_voiceserver_list>In der Voiceserver-Übersicht werden alle Ihre Voiceserver mit nützlichen Informationen aufgelistet. Auch sind die wichtigsten Funktionen direkt von hier erreichbar. Dies schließt das Bearbeiten wichtiger Konfigurationsparameter und die Möglichkeit zum Anlegen von Tokens mit ein.</help_voiceserver_list>
+    <help_voiceserver_backup>Wir erstellen von jedem Voiceserver einmal täglich ein Backup. So können Sie jederzeit, sollten Channel oder Benutzerrechte verändert worden sein, wieder auf einen vorherigen Stand zurückwechseln. Zudem haben Sie die Möglichkeit jederzeit eigene Backups manuell anzulegen, diese werden auch nicht überschrieben.</help_voiceserver_backup>
+    <help_voiceserver_key>Über ein Token können Sie sich selbst, oder anderen, wenn diese das Token benutzen, bestimmte Zugriffsrechte auf Ihrem Teamspeak zuweisen. Tokens lassen sich über unser Webinterface sowie auch über Teamspeak selbst anlegen und verwalten. Ein Token ist jeweils nur einmal gültig und wird nach dem Gebrauch aus der Liste entfernt.</help_voiceserver_key>
+    <help_voiceserver_md>
+    <![CDATA[
+	Mittels <strong>TSDNS</strong> können Sie sich mit Ihrem Teamspeak Server verbinden, ohne dass die IP und der Port eingegeben werden muss. Es genügt der unter <strong>Aktueller TSDNS</strong> eingetragene Domainname. Der Wert wird von uns auf einen Standard gesetzt, kann aber von Ihnen frei bearbeitet werden. Sie können Ihren Teamspeak Server darüber beispielsweise so einstellen, dass er via ts.clanname.de erreichbar ist. Voraussetzung für eine solche Änderung ist, dass ein gültiger A-Eintrag existiert, der auf die Teamspeak-Server-IP verweist. Im genannten Beispiel muss ein A-Eintrag für "ts.clanname.de" existieren.<br />
+	Mittels der Felder <strong>Hostbanner Grafik URL</strong> und <strong>Hostbutton Grafik URL</strong> kann auf dem Teamspeak Server ein Banner und ein Button hinterlegt werden. Diese werden beim Login für Clients angezeigt. Über die entsprechenden "Link"-Felder können URLs eingetragen werden, die man beim Klick auf den Banner beziehungsweise Button aufruft.
+    ]]>
+    </help_voiceserver_md>
 	<hostbanner_gfx_url>Hostbanner Grafik Url</hostbanner_gfx_url>
 	<hostbanner_url>Hostbanner Link</hostbanner_url>
 	<hostbutton_gfx_url>Hostbutton Grafik Url</hostbutton_gfx_url>

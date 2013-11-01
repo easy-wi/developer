@@ -24,7 +24,10 @@
     <file>File</file>
 	<gameserver>Gameserver</gameserver>
     <gameroot>Game Rootserver</gameroot>
+    <greating_home>Welcome to the %name% webinterface!</greating_home>
 	<groups>Groups</groups>
+    <help_home>At your Dashboard you can find the overview regarding the status of your game- and voiceserver. Also you can see the latest news regarding Valve games (Counter-Strike, Team Fortress, ...). Please note that the listed status information are updated every %n% minutes. This means that a recently restarted gameserver might be shown as offline for a while even if he is back online.</help_home>
+    <help_sidebar>The status information are gathered every %n% minutes.</help_sidebar>
 	<hostsystem>Hostsystem</hostsystem>
 	<hotline>Hotline</hotline>
     <import>Import</import>

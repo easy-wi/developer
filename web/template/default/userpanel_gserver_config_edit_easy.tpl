@@ -10,6 +10,10 @@
     </div>
 </div>
 <div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_config;?></p>
+</div>
+<hr>
+<div class="row-fluid">
     <div class="span5">
         <form class="form-horizontal" action="userpanel.php?w=gs&amp;d=cf&amp;id=<?php echo $id;?>&amp;type=easy&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <?php if($gamebinary=="srcds_run" and $configname=="server.cfg"){ ?>

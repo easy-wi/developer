@@ -34,6 +34,15 @@
 	<ftpport>FTP port</ftpport>
 	<generate>generate</generate>
 	<groupname>Groupname</groupname>
+    <help_voiceserver_list>At the voiceserver overview all your servers are listed with usefull information. The most important voiceserver functions can be directly accessed at the interface. This includes the configuration of important settings and the Token management.</help_voiceserver_list>
+    <help_voiceserver_backup>We are creating a backup for each voiceserver on a dayly basis. This allows you to switch back to previous settings in case channel or user permissions have been altered. In addition you can create your own backups.</help_voiceserver_backup>
+    <help_voiceserver_key>With the help of a token you can you can access or hand out server permissions to others. Tokens can be managed with the webinterface or directly at the Teamspeak server. A token can be used only once and will be removed after usage.</help_voiceserver_key>
+    <help_voiceserver_md>
+    <![CDATA[
+	With the help of <strong>TSDNS</strong> you can connect to your teamspeak server without using an IP or port. All you need is the domain which is maintained at <strong>Current TSDNS</strong>. The default value we setup during server creation can be edited to whatever you like. For example you can enter and use ts.clanname.net. Prerequisite for this change is a valid A-Record whose target is the Teamspeak server IP.<br />
+	The values at <strong>Hostbanner GFX URL</strong> and <strong>Hostbutton GFX URL</strong> are used to maintain a banner and button at your Teamspeak server. Both will be shown to clients upon connect. If the according link values are maintained, the browser will open with this link.
+    ]]>
+    </help_voiceserver_md>
 	<hostbanner_gfx_url>Hostbanner GFX Url</hostbanner_gfx_url>
 	<hostbanner_url>Hostbanner Url</hostbanner_url>
 	<hostbutton_gfx_url>Hostbutton GFX Url</hostbutton_gfx_url>

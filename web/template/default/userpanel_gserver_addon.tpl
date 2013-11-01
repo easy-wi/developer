@@ -11,6 +11,10 @@
     </div>
 </div>
 <div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_addons;?></p>
+</div>
+<hr>
+<div class="row-fluid">
     <div class="span8">
         <table class="table table-striped table-bordered table-hover">
             <thead>

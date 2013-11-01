@@ -8,6 +8,10 @@
         </ul>
     </div>
 </div>
+<div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_fdl;?></p>
+</div>
+<hr>
 <?php if (count($errors)>0){ ?>
 <div class="alert alert-error">
     <button type="button" class="close" data-dismiss="alert">&times;</button>

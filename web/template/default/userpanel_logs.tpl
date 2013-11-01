@@ -7,6 +7,12 @@
     </div>
 </div>
 <div class="row-fluid">
+    <p class="span11">
+        <?php echo $sprache->help_logs;?>
+    </p>
+</div>
+<hr>
+<div class="row-fluid">
     <div class="span11 pagination">
         <ul>
             <li><a href="userpanel.php?w=lo&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $zur; ?>"><i class="icon-step-backward"></i></a></li>

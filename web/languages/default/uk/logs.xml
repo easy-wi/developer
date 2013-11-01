@@ -6,6 +6,7 @@
 	<all>All</all>
 	<banned_till>Banned until</banned_till>
     <date>Date</date>
+    <help_logs>All important actions which you perform with the interface will be logged. That way you will have the complete overview. In case you have asked for help you will see the supporter´s actions as well. He will be shown with its own name.</help_logs>
     <hostname>Hostname</hostname>
 	<ip>IP</ip>
 	<shown>Amount</shown>

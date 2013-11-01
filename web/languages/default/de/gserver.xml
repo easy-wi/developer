@@ -49,6 +49,35 @@
     <gs_add>Server Hinzufügen Schritt 1: User, Rootserver, Spiele</gs_add>
     <heading_delete>Gameserver löschen</heading_delete>
     <heading_template>Gameserver Übersicht</heading_template>
+    <help_calendar>
+        <![CDATA[
+	Über den Restart Planer können Sie zu jeder vollen Stunde einen Neustart Ihres Gameservers definieren.<br />
+	Nützlich wird diese Funktion wenn Sie Automatisch an bestimmten Tagen das Spiel oder das Konfigurations-Template wechseln möchten.
+    ]]>
+    </help_calendar>
+    <help_config>
+        <![CDATA[
+	Über unser Webinterface können Sie jederzeit die wichtigsten Konfigurationsdateien für Ihr Spiel bearbeiten. Konfigurationsdateien für Plugins werden hinzugefügt, sobald diese über das Webinterface installiert worden sind.<br />
+	<br />
+    Sollte Ihnen eine Konfigurationsdatei im Webinterface fehlen, können Sie diese auch jederzeit direkt per FTP bearbeiten.
+    ]]>
+    </help_config>
+    <help_md>Sie können Ihren Gameserver jederzeit zwischen mehreren Spielen wechseln. Auch können Sie über die Templates mehrere Konfigurationsstände gleichzeitig verwalten und beibehalten.</help_md>
+    <help_list>
+        <![CDATA[
+	In dieser Übersicht werden Ihre Gameserver mit allen Detailinformationen, wie dem gerade aktiven Template, den FTP-Daten, etc. aufgeführt. Über die Submenüpunkte können Sie umfangreiche Einstellungsänderungen durchführen.<br />
+	Das Spiel sowie die Template können Sie über <em>Einstellungen</em> definieren. Im <em>Configs</em> Bereich können Sie sämtliche Konfigurationsdateien bequem anpassen. Der <em>Restart Planer</em> ermöglicht es Ihnen, festzulegen, welches Spiel wann laufen soll. Sollten Sie Probleme mit einem Gameserver haben, finden Sie im Menüpunkt <em>Screenlog</em> die Fehlerausgaben, welche es Ihnen ermöglichen, dem Problem auf den Grund zu gehen.
+    ]]>
+    </help_list>
+    <help_reinstall>
+        <![CDATA[
+	Mittels <strong>Resynchronisation</strong> werden nur fehlende Dateien auf Ihrem Gameserver hinzugefügt, nicht aber Ihre Konfiguration überschrieben. Das ist vor allem dann nützlich wenn Sie Ordner gelöscht haben und diese wiederherstellen möchten oder zu einem Spiel neue Dateien von uns oder dem Hersteller hinzugefügt wurden.<br />
+    <br />
+	Über die <strong>Reinstallation</strong> führen Sie eine komplette Neuinstallation Ihres Gameservers durch, hierbei werden alle durch Sie vorgenommenen Änderungen zurückgesetzt und Sie erhalten frischen Gameserver.<br />
+    <br />
+	Beide Aktionen sind im Regelfall innerhalb weniger Minuten abgeschlossen.
+    ]]>
+    </help_reinstall>
     <hour>Uhr</hour>
     <import_corrected>Ist der gefundende Gameserver korrekt?</import_corrected>
     <import_destination>Zielserver, Spiel und Template des Imports</import_destination>

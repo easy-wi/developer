@@ -32,7 +32,8 @@
 	<game>Spielname</game>
 	<heading_addons>Gameserver Addons</heading_addons>
 	<heading_template>Gameservertemplates</heading_template>
-	<ip>Gameserver IP Adresse</ip>
+    <help_addons>Über unser Webinterface können Sie jederzeit schnell und bequem die aktuellsten Plugins, Addons, Configs und Mappackages zu Ihrem Gameserver hinzufügen. Diese werden von uns immer aktuell gehalten, um Ihren Administrationsaufwand möglichst gering zu halten.</help_addons>
+    <ip>Gameserver IP Adresse</ip>
     <iptables>IP Tables</iptables>
 	<map>Mappackage</map>
 	<maps>Mappackages</maps>

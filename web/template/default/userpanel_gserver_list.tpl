@@ -6,6 +6,10 @@
         </ul>
     </div>
 </div>
+<div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_list;?></p>
+</div>
+<hr>
 <?php foreach ($table as $table_row){ ?>
 <div class="row-fluid span11 alert <?php if($table_row['stopped']=='N') echo 'alert-success'; else echo 'alert-block';?>">
     <h4 class="row-fluid span12 inline"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="14" /> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h4>

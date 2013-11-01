@@ -24,7 +24,10 @@
     <file>Datei</file>
     <gameroot>Game Rootserver</gameroot>
 	<gameserver>Gameserver</gameserver>
+    <greating_home>Herzlich Willkommen im %name% Webinterface!</greating_home>
 	<groups>Gruppen</groups>
+    <help_home>In Ihrem Dashboard finden Sie eine Übersicht über den Status Ihrer Game- und Voiceserver, sowie die letzten Nachrichten für Spiele von Valve (Counter-Strike, Team Fortress, ...). Bitte beachten Sie, dass die hier aufgeführten Statusinformationen nur alle %n% Minuten aktualisiert werden. Das heißt beispielsweise, dass ein Gameserver, den Sie gerade neugestartet haben, noch eine Zeit lang als abgestürzt angezeigt werden kann, auch wenn er de facto bereits wieder erreichbar ist.</help_home>
+    <help_sidebar>Die Status Informationen werden alle %n% Minuten aktualisiert.</help_sidebar>
 	<hostsystem>Hostsystem</hostsystem>
 	<hotline>Hotline</hotline>
     <import>Importieren</import>

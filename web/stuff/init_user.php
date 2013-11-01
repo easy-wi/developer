@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: init_user.php.
  * Author: Ulrich Block
@@ -41,7 +42,15 @@ if (!isset($user_id)) {
     header('Location: login.php');
     die;
 }
+
 $pa = User_Permissions($user_id);
+
+$query = $sql->prepare("SELECT ((UNIX_TIMESTAMP(`lastcheck`)-UNIX_TIMESTAMP(`oldcheck`))/60)-((UNIX_TIMESTAMP()-UNIX_TIMESTAMP(`lastcheck`))/60) AS `nextRunInMinutes` FROM `lendsettings` LIMIT 1");
+$query->execute();
+$statusTime = round($query->fetchColumn());
+$gsprache->help_home = str_replace('%n%', $statusTime, $gsprache->help_home);
+$gsprache->help_sidebar = str_replace('%n%', $statusTime, $gsprache->help_sidebar);
+$gsprache->greating_home = str_replace('%name%', $ewCfg['title'], $gsprache->greating_home);
 
 # https://github.com/easy-wi/developer/issues/2
 if (isset($_SESSION['sID'])) {

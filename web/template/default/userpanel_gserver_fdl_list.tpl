@@ -7,6 +7,10 @@
         </ul>
     </div>
 </div>
+<div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_fdl;?></p>
+</div>
+<hr>
 <?php if ($pa['modfastdl']==true) { ?>
 <div class="row-fluid">
     <div class="span4"><?php echo $sprache->haupt;?></div>

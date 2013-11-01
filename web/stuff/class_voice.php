@@ -989,7 +989,7 @@ function checkDNS ($dns, $id = null, $user_id = null, $type='') {
     }
     if ($user_id != null) {
         $serverdnsArray = array();
-        $query = $sql->prepare("SELECT `id`,`defaultdns`,`externalDefaultDNS` FROM `voice_masterserver` WHERE `resellerid`=?");
+        $query = $sql->prepare("SELECT `id`,`defaultdns`,`externalDefaultDNS`,`tsdnsServerID` FROM `voice_masterserver` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row['externalDefaultDNS'] == 'N') {

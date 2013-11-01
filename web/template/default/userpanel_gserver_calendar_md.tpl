@@ -10,6 +10,10 @@
     </div>
 </div>
 <div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_calendar;?></p>
+</div>
+<hr>
+<div class="row-fluid">
     <div class="span6">
         <form class="form-horizontal" action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <div class="control-group">

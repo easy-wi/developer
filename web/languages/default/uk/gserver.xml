@@ -49,6 +49,35 @@
 	<gs_add>Add server step 1: User, Rootserver, games</gs_add>
 	<heading_delete>Delete Gameserver</heading_delete>
 	<heading_template>Gameserver Overview</heading_template>
+    <help_calendar>
+        <![CDATA[
+	You can define gameserver restarts to every full hour at our restart planer.<br />
+	This feature comes in handy if you want to switch the game or the template to a given time.
+    ]]>
+    </help_calendar>
+    <help_config>
+        <![CDATA[
+	Our webinterface allows you to configre the most important configs for your gameserver. Configs belonging to plugins will be added once they have been installed with the webinterface.<br />
+	<br />
+    In case you cannot see a config at the webinterface you can still edit with the help of FTP.
+    ]]>
+    </help_config>
+    <help_md>The gameswitch feature allows you to change games at any time. Our template feature allows you to maintain multiple configurations at a time.</help_md>
+    <help_list>
+        <![CDATA[
+	This overview lists detailed gameserver information. For example the active template, FTP data, and so on are listed. The submenus will allow you to do extensive configuration changes.<br />
+	Game and template can be defined at <em>settings</em>. The <em>Configs</em> area will allow you to manage game and addon settings. If you want to automaticaly change a game or template the <em>restart planer</em> will be of great use for you. Troubleshooting can be done with the <em>Screenlog</em>.
+    ]]>
+    </help_list>
+    <help_reinstall>
+        <![CDATA[
+	<strong>Resynchronisation</strong> will add missing files without touching existing ones. The feature comes in handy when you deleted files by accident or new files are shipped out.<br />
+    <br />
+	<strong>Reinstallat</strong> will result in a complete reset. All data will be lost and the server be reset to factory defaults.<br />
+    <br />
+	Both actions are usually done within a few minutes.
+    ]]>
+    </help_reinstall>
 	<hour>Hour</hour>
     <import_corrected>Is the found path correct?</import_corrected>
     <import_destination>Destination server, game and template of import</import_destination>

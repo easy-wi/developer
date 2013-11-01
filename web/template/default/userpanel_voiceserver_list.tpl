@@ -6,6 +6,10 @@
         </ul>
     </div>
 </div>
+<div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_voiceserver_list;?></p>
+</div>
+<hr>
 <?php foreach ($table as $table_row) { ?>
 <div class="row-fluid span11 alert <?php if($table_row['stopped']=='Y') echo 'alert-block'; else if($table_row['stopped']=='C') echo 'alert-error'; else echo 'alert-success';?>">
     <h5><?php echo $table_row['server'];?></h5>

@@ -9,6 +9,10 @@
     </div>
 </div>
 <div class="row-fluid">
+    <p class="span11"><?php echo $sprache->help_voiceserver_backup;?></p>
+</div>
+<hr>
+<div class="row-fluid">
     <dl class="dl-horizontal">
         <dt><?php echo $sprache->backups;?></dt>
         <dd><?php echo $backupcount.'/'.$voice_maxbackup;?></dd>

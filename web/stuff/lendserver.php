@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: lendserver.php.
  * Author: Ulrich Block
@@ -42,18 +43,21 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and (!isset($pa) or (
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
 include(EASYWIDIR . '/stuff/class_voice.php');
+
 $sprache = getlanguagefile('lendserver',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
+
 if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
 } else {
-    $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
+    $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d', 'get')=="se" and $pa['lendserverSettings']) {
@@ -61,6 +65,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("UPDATE `lendsettings` SET `active`=?,`activeGS`=?,`activeVS`=?,`mintime`=?,`maxtime`=?,`timesteps`=?,`minplayer`=?,`maxplayer`=?,`playersteps`=?,`mintimeRegistered`=?,`maxtimeRegistered`=?,`timestepsRegistered`=?,`minplayerRegistered`=?,`maxplayerRegistered`=?,`playerstepsRegistered`=?,`vomintime`=?,`vomaxtime`=?,`votimesteps`=?,`vominplayer`=?,`vomaxplayer`=?,`voplayersteps`=?,`vomintimeRegistered`=?,`vomaxtimeRegistered`=?,`votimestepsRegistered`=?,`vominplayerRegistered`=?,`vomaxplayerRegistered`=?,`voplayerstepsRegistered`=?,`shutdownempty`=?,`shutdownemptytime`=?,`ftpupload`=?,`ftpuploadpath`=AES_ENCRYPT(?,?),`lendaccess`=? WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($ui->active('active', 'post'),$ui->w('activeGS',1, 'post'),$ui->w('activeVS',1, 'post'),$ui->id('mintime',3, 'post'),$ui->id('maxtime',4, 'post'),$ui->id('timesteps',3, 'post'),$ui->id('minplayer',3, 'post'),$maxplayer = $ui->id('maxplayer',3, 'post'),$ui->id('playersteps',3, 'post'),$ui->id('mintimeRegistered',3, 'post'),$ui->id('maxtimeRegistered',4, 'post'),$ui->id('timestepsRegistered',3, 'post'),$ui->id('minplayerRegistered',3, 'post'),$ui->id('maxplayerRegistered',3, 'post'),$ui->id('playerstepsRegistered',3, 'post'),$vomintime = $ui->id('vomintime',3, 'post'),$ui->id('vomaxtime',4, 'post'),$ui->id('votimesteps',3, 'post'),$ui->id('vominplayer',3, 'post'),$ui->id('vomaxplayer',3, 'post'),$ui->id('voplayersteps',3, 'post'),$ui->id('vomintimeRegistered',3, 'post'),$ui->id('vomaxtimeRegistered',4, 'post'),$ui->id('votimestepsRegistered',3, 'post'),$ui->id('vominplayerRegistered',3, 'post'),$ui->id('vomaxplayerRegistered',3, 'post'),$ui->id('voplayerstepsRegistered',3, 'post'),$ui->active('shutdownempty', 'post'),$ui->id('shutdownemptytime',4, 'post'),$ui->w('ftpupload',1, 'post'),$ui->url('ftpuploadpath', 'post'),$aeskey,$ui->id('lendaccess',1, 'post'),$reseller_id));
         $template_file = ($query->rowCount()>0) ? $spracheResponse->table_add : $spracheResponse->error_table;;
+
 	} else {
 		$query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$reseller_id));
@@ -68,39 +73,41 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$active = $row['active'];
             $activeGS = $row['activeGS'];
             $activeVS = $row['activeVS'];
-			$mintime= (int) $row['mintime'];
-			$maxtime= (int) $row['maxtime'];
-			$timesteps= (int) $row['timesteps'];
-			$minplayer= (int) $row['minplayer'];
-			$maxplayer= (int) $row['maxplayer'];
-			$playersteps= (int) $row['playersteps'];
-            $mintimeRegistered= (int) $row['mintimeRegistered'];
-            $maxtimeRegistered= (int) $row['maxtimeRegistered'];
-            $timestepsRegistered= (int) $row['timestepsRegistered'];
-            $minplayerRegistered= (int) $row['minplayerRegistered'];
-            $maxplayerRegistered= (int) $row['maxplayerRegistered'];
-            $playerstepsRegistered= (int) $row['playerstepsRegistered'];
-			$vomintime= (int) $row['vomintime'];
-			$vomaxtime= (int) $row['vomaxtime'];
-			$votimesteps= (int) $row['votimesteps'];
-			$vominplayer= (int) $row['vominplayer'];
-			$vomaxplayer= (int) $row['vomaxplayer'];
-			$voplayersteps= (int) $row['voplayersteps'];
-            $vomintimeRegistered= (int) $row['vomintimeRegistered'];
-            $vomaxtimeRegistered= (int) $row['vomaxtimeRegistered'];
-            $votimestepsRegistered= (int) $row['votimestepsRegistered'];
-            $vominplayerRegistered= (int) $row['vominplayerRegistered'];
-            $vomaxplayerRegistered= (int) $row['vomaxplayerRegistered'];
-            $voplayerstepsRegistered= (int) $row['voplayerstepsRegistered'];
+			$mintime = (int) $row['mintime'];
+			$maxtime = (int) $row['maxtime'];
+			$timesteps = (int) $row['timesteps'];
+			$minplayer = (int) $row['minplayer'];
+			$maxplayer = (int) $row['maxplayer'];
+			$playersteps = (int) $row['playersteps'];
+            $mintimeRegistered = (int) $row['mintimeRegistered'];
+            $maxtimeRegistered = (int) $row['maxtimeRegistered'];
+            $timestepsRegistered = (int) $row['timestepsRegistered'];
+            $minplayerRegistered = (int) $row['minplayerRegistered'];
+            $maxplayerRegistered = (int) $row['maxplayerRegistered'];
+            $playerstepsRegistered = (int) $row['playerstepsRegistered'];
+			$vomintime = (int) $row['vomintime'];
+			$vomaxtime = (int) $row['vomaxtime'];
+			$votimesteps = (int) $row['votimesteps'];
+			$vominplayer = (int) $row['vominplayer'];
+			$vomaxplayer = (int) $row['vomaxplayer'];
+			$voplayersteps = (int) $row['voplayersteps'];
+            $vomintimeRegistered = (int) $row['vomintimeRegistered'];
+            $vomaxtimeRegistered = (int) $row['vomaxtimeRegistered'];
+            $votimestepsRegistered = (int) $row['votimestepsRegistered'];
+            $vominplayerRegistered = (int) $row['vominplayerRegistered'];
+            $vomaxplayerRegistered = (int) $row['vomaxplayerRegistered'];
+            $voplayerstepsRegistered = (int) $row['voplayerstepsRegistered'];
 			$shutdownempty = $row['shutdownempty'];
 			$shutdownemptytime = $row['shutdownemptytime'];
 			$ftpupload = $row['ftpupload'];
 			$ftpuploadpath = $row['decyptedftpuploadpath'];
 			$lendaccess = $row['lendaccess'];
 		}
+
 		$template_file = "admin_lendserver_settings.tpl";
 	}
-} else if ($ui->st('d', 'get')=="st" and $pa['lendserver']) {
+} else if ($ui->st('d', 'get') == 'st' and $pa['lendserver']) {
+    $statistic = array();
     $query = $sql->prepare("SELECT * FROM `lendstats` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
 	foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -122,6 +129,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		}
 	}
 	$template_file = $stats;
+
 } else if ($pa['lendserver']) {
 	if ($ui->id('id',19, 'post')) {
 		$query = $sql->prepare("SELECT `serverid`,`servertype` FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
