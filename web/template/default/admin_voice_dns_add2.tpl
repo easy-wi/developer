@@ -19,7 +19,7 @@
 </div>
 <div class="row-fluid">
     <div class="span6">
-        <form name="form" class="form-horizontal" action="admin.php?w=vr&amp;d=ad&amp;r=ad" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+        <form name="form" class="form-horizontal" action="admin.php?w=vr&amp;d=ad&amp;r=vr" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ad2">
             <input type="hidden" name="userID" value="<?php echo $userID;?>">
