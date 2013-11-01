@@ -84,9 +84,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $os = $ui->w('os', 1, 'post');
     $bit = $ui->id('bit', 2, 'post');
     $desc = $ui->description('desc', 'post');
-    $maxslots = $ui->id('maxslots', 5, 'post');
     $ram = $ui->id('ram', 5, 'post');
-    $maxserver = $ui->id('maxserver',4, 'post');
     $updates = $ui->id('updates',1, 'post');
 
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
@@ -94,6 +92,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $publickey = ($ui->active('publickey', 'post')) ? $ui->active('publickey', 'post') : 'N';
     $ftpport = ($ui->port('ftpport', 'post')) ? $ui->port('ftpport', 'post') : 21;
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
+    $maxserver = ($ui->id('maxserver',4, 'post')) ? $ui->id('maxserver',4, 'post') : 10;
+    $maxslots = ($ui->id('maxslots', 5, 'post')) ? $ui->id('maxslots', 5, 'post') : 512;
 
     if (!$ui->smallletters('action', 2, 'post')) {
 
@@ -164,7 +164,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $errors['hyperthreading'] = 'Hyper Threading';
         }
 
-        $ssh2Check = (count($errors) == 0) ? ssh_check($ui->ip('ip', 'post'), $ui->port('port', 'post'), $ui->username('user', 20, 'post'), $ui->active('publickey', 'post'), $ui->startparameter('keyname', 'post'), $ui->password('pass', 255, 'post')) : true;
+        $ssh2Check = (count($errors) == 0) ? ssh_check($ip, $port, $user, $publickey, $keyname, $pass) : true;
         if ($ssh2Check !== true) {
 
             if ($ssh2Check == 'ipport') {
@@ -175,7 +175,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $errors['user'] = $sprache->ssh_user;
                 $errors['publickey'] = $sprache->keyuse;
 
-                if ($ui->active('publickey', 'post') == 'Y') {
+                if ($publickey == 'Y') {
                     $errors['keyname'] = $sprache->keyname;
 
                 } else {
@@ -189,7 +189,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (count($errors) == 0) {
 
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
-                $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`ram`,`os`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:ram,:externalID,:reseller)");
+                $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`ram`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:ram,:externalID,:reseller)");
                 $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':reseller' => $reseller_id));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %root% ' . $ip;
