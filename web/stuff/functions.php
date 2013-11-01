@@ -1353,13 +1353,13 @@ if (!function_exists('passwordgenerate')) {
 
         global $sql;
 
-        $pa = array();
+        $pa = array('defaultgroup' => false, 'active' => false, 'root' => false, 'miniroot' => false, 'settings' => false, 'log' => false, 'ipBans' => false, 'updateEW' => false, 'feeds' => false, 'jobs' => false, 'apiSettings' => false, 'cms_settings' => false, 'cms_pages' => false, 'cms_news' => false, 'cms_comments' => false, 'mysql_settings' => false, 'mysql' => false, 'user' => false, 'user_users' => false, 'userGroups' => false, 'userPassword' => false, 'roots' => false, 'masterServer' => false, 'gserver' => false, 'eac' => false, 'gimages' => false, 'addons' => false, 'restart' => false, 'gsResetting' => false, 'modfastdl' => false, 'fastdl' => false, 'useraddons' => false, 'usersettings' => false, 'ftpaccess' => false, 'tickets' => false, 'usertickets' => false, 'addvserver' => false, 'modvserver' => false, 'delvserver' => false, 'usevserver' => false, 'vserversettings' => false, 'dhcpServer' => false, 'pxeServer' => false, 'dedicatedServer' => false, 'resellertemplates' => false, 'vserverhost' => false, 'lendserver' => false, 'lendserverSettings' => false, 'voicemasterserver' => false, 'voiceserver' => false, 'voiceserverStats' => false, 'voiceserverSettings' => false, 'ftpbackup' => false, 'traffic' => false, 'trafficsettings' => false);
 
         $query = $sql->prepare("SELECT `accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         $accounttype = $query->fetchColumn();
 
-        $query = $sql->prepare("SELECT g.* FROM `userdata_groups` a LEFT JOIN `usergroups` g ON g.`id`=a.`groupID` WHERE a.`userID`=?");
+        $query = $sql->prepare("SELECT g.* FROM `userdata_groups` a INNER JOIN `usergroups` g ON g.`id`=a.`groupID` WHERE a.`userID`=?");
         $query->execute(array($id));
         $array = $query->fetchAll(PDO::FETCH_ASSOC);
         foreach ($array as $row) {
@@ -1369,7 +1369,7 @@ if (!function_exists('passwordgenerate')) {
                     $pa[$key] = true;
                 }
 
-            } else if (($accounttype!='u' and $row['root'] == 'Y')) {
+            } else if (($accounttype != 'u' and $row['root'] == 'Y')) {
                 foreach ($row as $key => $value) {
                     $pa[$key] = true;
                 }
