@@ -64,10 +64,11 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
         $gsfolder = $serverip . '_' . $port;
         $map = $row['map'];
         $gsswitch = $row['shorten'];
-        $rootid = $row['rootID'];
+        $rootID = $row['rootID'];
         $ftppass = $row['dftppassword'];
         $customer = $row['cname'];
         $ftpbackup = $row['ftp'];
+
         if ($row['newlayout'] == 'Y') {
             $customer .= '-' . $id;
         }
@@ -87,7 +88,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
     if (!$ui->w('action',3, 'post')) {
         $template_file = 'userpanel_gserver_backup.tpl';
 
-    } else if ($ui->w('action', 3, 'post') == 'mb') {
+    } else if ($ui->w('action', 3, 'post') == 'mb' and isset($rootID)) {
 
         $shortens = array();
 
@@ -97,24 +98,25 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
             $shortens[] = $row['shorten'];
         }
 
-        $shortens = implode(' ', $shortens);
+        if (count($shortens) > 0) {
+            $shortens = implode(' ', $shortens);
 
-        $webhostdomain = webhostdomain($reseller_id);
+            $sshCmd = 'sudo -u ' . $customer . ' ./control.sh backup '. $gsfolder . ' "' . $shortens . '" "' . webhostdomain($reseller_id) . '" "' . $ftpbackup . '"';
 
-        $sshReply = ssh2_execute('gs', $rootid, 'sudo -u ' . $customer . ' ./control.sh backup '. $gsfolder . ' "' . $shortens . '" "' . $webhostdomain . '" "' . $ftpbackup . '"');
+            $sshReply = ssh2_execute('gs', $rootID, $sshCmd);
 
-        $template_file = ($sshReply === false) ? 'Unkown Error' : $template_file = $gsprache->backup . ' ' . $sprache->create;
+            $template_file = ($sshReply === false) ? 'Unkown Error' : $template_file = $gsprache->backup . ' ' . $sprache->create;
 
-    } else if ($ui->w('action',3, 'post') == 'md') {
+        } else {
+            $template_file = 'userpanel_404.tpl';
+        }
+
+    } else if ($ui->w('action',3, 'post') == 'md' and isset($rootID)) {
         $template_file = 'userpanel_gserver_backup_md.tpl';
 
-    } else if ($ui->w('action',3, 'post') == 'md2') {
+    } else if ($ui->w('action',3, 'post') == 'md2' and isset($rootID)) {
 
-        if ($ui->ip('ftp_adresse', 'post')) {
-            $ftp_adresse = $ui->ip('ftp_adresse', 'post');
-        } else {
-            $ftp_adresse = $ui->domain('ftp_adresse', 'post');
-        }
+        $ftp_adresse = ($ui->ip('ftp_adresse', 'post')) ? $ui->ip('ftp_adresse', 'post') : $ui->domain('ftp_adresse', 'post');
 
         $ftp_password = $ui->password('ftp_password', 20, 'post');
         $ftp_port = $ui->port('ftp_port', 'post');
@@ -144,6 +146,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
             if ($checkFtpData !== true and $checkFtpData == 'login') {
                 $errors['ftp_user'] = $sprache->ftp_user;
                 $errors['ftp_password'] = $sprache->ftp_password;
+
             } else if ($checkFtpData !== true and $checkFtpData == 'ipport') {
                 $errors['ftp_adresse'] = $sprache->ftp_adresse;
                 $errors['ftp_port'] = $sprache->ftp_port;
@@ -170,7 +173,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
             $template_file = 'userpanel_gserver_backup_md.tpl';
         }
 
-    } else if ($ui->w('action',3, 'post') == 'rb') {
+    } else if ($ui->w('action',3, 'post') == 'rb' and isset($rootID)) {
 
         $shortens = array();
 
@@ -184,23 +187,29 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
         $template_file = 'userpanel_gserver_backup_rb.tpl';
 
-    } else if ($ui->w('action',3, 'post') == 'rb2' and $ui->gamestring('template', 'post')) {
+    } else if ($ui->w('action',3, 'post') == 'rb2' and $ui->gamestring('template', 'post') and isset($rootID)) {
 
-        $folders = preg_split('/\//', $ui->server['SCRIPT_NAME'], -1, PREG_SPLIT_NO_EMPTY);
+        $shortens = array();
 
-        $amount = count($folders) - 1;
-        $i = 0;
-        $path = '';
-        while ($i<$amount) {
-            $path .= $folders[$i] . '/';
-            $i++;
+        $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
+        $query->execute(array($id));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $shortens[] = $row['shorten'];
+            $shortens[] = $row['shorten'] . '-2';
+            $shortens[] = $row['shorten'] . '-3';
         }
 
-        $webhostdomain = (isset($ui->server['HTTPS'])) ? 'https://' . $ui->server['HTTP_HOST'] . $path : $webhostdomain = 'http://' . $ui->server['HTTP_HOST'] . $path;
+        if (in_array($ui->gamestring('template', 'post'), $shortens)) {
 
-        $sshReply = ssh2_execute('gs', $rootid, 'sudo -u ' . $customer . ' ./control.sh restore ' . $gsfolder . '"' . $ui->gamestring('template', 'post') . ' " "' . $webhostdomain . ' " "' . $ftpbackup . '"');
+            $sshCmd = 'sudo -u ' . $customer . ' ./control.sh restore ' . $gsfolder . ' "' . $ui->gamestring('template', 'post') . '" "' . webhostdomain($reseller_id) . ' " "' . $ftpbackup . '"';
 
-        $template_file = ($sshReply === false) ? 'Unkown Error: ' : $gsprache->backup . ' ' . $sprache->recover;
+            $sshReply = ssh2_execute('gs', $rootID, $sshCmd);
+
+            $template_file = ($sshReply === false) ? 'Unkown Error: ' : $gsprache->backup . ' ' . $sprache->recover;
+
+        } else {
+            $template_file = 'userpanel_404.tpl';
+        }
 
     } else {
         $template_file = 'userpanel_404.tpl';

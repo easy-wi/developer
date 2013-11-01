@@ -1091,7 +1091,7 @@ if (!function_exists('passwordgenerate')) {
             $paneldomain = $row['paneldomain'];
         }
         
-        if (!isset($paneldomain) or (isset($paneldomain) and !filter_var($paneldomain, FILTER_VALIDATE_URL))) {
+        if (!filter_var($paneldomain, FILTER_VALIDATE_URL)) {
             $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
