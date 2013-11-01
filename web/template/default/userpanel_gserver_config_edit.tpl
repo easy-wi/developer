@@ -11,7 +11,6 @@
 <div class="row-fluid">
     <p class="span11"><?php echo $sprache->help_config;?></p>
 </div>
-<hr>
 <?php foreach ($configs as $config){ ?>
 <div class="row-fluid">
     <div class="span6 pull-left">
