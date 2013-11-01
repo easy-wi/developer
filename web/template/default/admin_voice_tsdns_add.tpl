@@ -7,12 +7,19 @@
         </ul>
     </div>
 </div>
+<?php if (count($errors)>0){ ?>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4>Error(s)</h4>
+    <?php echo implode(', ',$errors);?>
+</div>
+<?php }?>
 <div class="row-fluid">
     <div class="span6">
         <form name="form" class="form-horizontal" action="admin.php?w=vd&amp;d=ad&amp;r=vd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ad">
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
                 <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" name="active">
@@ -21,66 +28,65 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['autorestart'])) echo ' error';?>">
                 <label class="control-label" for="inputAutoRestart"><?php echo $sprache->autorestart;?></label>
                 <div class="controls">
                     <select id="inputAutoRestart" name="autorestart">
                         <option value="Y"><?php echo $gsprache->yes;?></option>
-                        <option value="N"><?php echo $gsprache->no;?></option>
+                        <option value="N" <?php if($autorestart=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
                     </select>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputDefaultDns"><?php echo $sprache->defaultdns;?></label>
-                <div class="controls"><input id="inputDefaultDns" type="text" name="defaultdns"></div>
+                <div class="controls"><input id="inputDefaultDns" type="text" name="defaultdns" value="<?php echo $defaultdns;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputServerDir"><?php echo $sprache->serverdir;?></label>
-                <div class="controls"><input id="inputServerDir" type="text" name="serverdir"></div>
+                <div class="controls"><input id="inputServerDir" type="text" name="serverdir" value="<?php echo $serverdir;?>"></div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="inputSshIp"><?php echo $sprache->ssh_ip;?></label>
-                <div class="controls"><input id="inputSshIp" type="text" name="ip" maxlength="15"></div>
+            <div class="control-group<?php if(isset($errors['ip'])) echo ' error';?>">
+                <label class="control-label" for="inputSshIP"><?php echo $sprache->ssh_ip;?></label>
+                <div class="controls"><input id="inputSshIP" type="text" name="ip" maxlength="15" value="<?php echo $ssh2ip;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['port'])) echo ' error';?>">
                 <label class="control-label" for="inputSshPort"><?php echo $sprache->ssh_port;?></label>
-                <div class="controls"><input id="inputSshPort" type="text" name="port" value="22" maxlength="5"></div>
+                <div class="controls"><input id="inputSshPort" type="text" name="port" maxlength="5" value="<?php echo $ssh2port;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['user'])) echo ' error';?>">
                 <label class="control-label" for="inputSshUser"><?php echo $sprache->ssh_user;?></label>
-                <div class="controls"><input id="inputSshUser" type="text" name="user" value="easy-wi" maxlength="15"></div>
+                <div class="controls"><input id="inputSshUser" type="text" name="user" maxlength="15" value="<?php echo $ssh2user;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['pass'])) echo ' error';?>">
                 <label class="control-label" for="inputSshPass"><?php echo $sprache->ssh_pass;?></label>
-                <div class="controls"><input id="inputSshPass" type="password" name="pass"></div>
+                <div class="controls"><input id="inputSshPass" type="password" name="pass" value="<?php echo $ssh2password;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputKeyUse"><?php echo $sprache->keyuse;?></label>
                 <div class="controls">
                     <select id="inputKeyUse" name="publickey">
-                        <option value="N"><?php echo $gsprache->no;?></option>
                         <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N" <?php if($publickey=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['keyname'])) echo ' error';?>">
                 <label class="control-label" for="inputKeyName"><?php echo $sprache->keyname;?></label>
-                <div class="controls"><input id="inputKeyName" type="text" name="keyname" maxlength="20" value="id_rsa"></div>
+                <div class="controls"><input id="inputKeyName" type="text" name="keyname" maxlength="20" value="<?php echo $keyname;?>"/></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['bit'])) echo ' error';?>">
                 <label class="control-label" for="inputOsBit"><?php echo $sprache->os_bit;?></label>
                 <div class="controls">
                     <select id="inputOsBit" name="bit">
-                        <option value="64">64</option>
                         <option value="32">32</option>
+                        <option value="64" <?php if($bit=='64') echo 'selected="selected"';?>>64</option>
                     </select>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputDesc"><?php echo $sprache->description;?></label>
-                <div class="controls"><textarea id="inputDesc" name="description"></textarea></div>
+                <div class="controls"><textarea id="inputDesc" name="description"><?php echo $description;?></textarea></div>
             </div>
-
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
