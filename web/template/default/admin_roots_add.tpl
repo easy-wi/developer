@@ -52,15 +52,6 @@
                 <label class="control-label" for="inputSSH2User"><?php echo $sprache->ssh_user;?>:</label>
                 <div class="controls"><input class="span12" id="inputSSH2User" type="text" name="user" value="<?php echo $user?>" maxlength="15"></div>
             </div>
-            <div class="control-group<?php if(isset($errors['os'])) echo ' error';?>">
-                <label class="control-label" for="inputOS"><?php echo $sprache->os;?>:</label>
-                <div class="controls">
-                    <select class="span12" id="inputBit" name="os">
-                        <option value="L">Linux</option>
-                        <!--<option value="W" <?php if ($bit=="W") echo 'selected="selected"'; ?>>Windows</option>-->
-                    </select>
-                </div>
-            </div>
             <div class="control-group<?php if(isset($errors['publickey'])) echo ' error';?>">
                 <label class="control-label" for="inputKeyUse"><?php echo $sprache->keyuse;?></label>
                 <div class="controls">
