@@ -64,9 +64,12 @@ if ($reseller_id == 0) {
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $reseller_id = $admin_id;
 }
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
+
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
+
     if ($ui->st('d', 'get') == 'ad' and !$ui->smallletters('action',2, 'post')) {
         $template_file = 'admin_voice_tsdns_add.tpl';
     } else if ($ui->st('d', 'get') == 'md' and !$ui->smallletters('action',2, 'post') and $ui->id('id',19, 'get')) {
@@ -444,11 +447,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $back = $start - $amount;
     $zur = ($back >= 0) ? $start - $amount : $start;
     $pageamount = ceil($colcount / $amount);
-    $pages[] = '<a href="admin.php?w=vd&amp&amp;o='.$o.'&amp;a=' . (!isset($amount)) ? 20 : $amount . ($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
+    $pages[] = '<a href="admin.php?w=vd&amp;o='.$o.'&amp;a=' . (!isset($amount)) ? 20 : $amount . ($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
-        $pages[] = '<a href="admin.php?w=vd&amp&amp;o='.$o.'&amp;a=' . $amount . '&p=' . $selectpage . '"' . ($start==$selectpage) ? 'class="bold"' : '' . ' >' . $i . '</a>';
+        $pages[] = '<a href="admin.php?w=vd&amp;o='.$o.'&amp;a=' . $amount . '&p=' . $selectpage . '"' . ($start==$selectpage) ? 'class="bold"' : '' . ' >' . $i . '</a>';
         $i++;
     }
     $pages=implode(', ',$pages);
