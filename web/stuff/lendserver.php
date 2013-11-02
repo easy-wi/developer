@@ -149,7 +149,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $servertype = $row['servertype'];
         }
 
-        if ($servertype == 'g') {
+        if (isset($servertype) and $servertype == 'g') {
 
             $query = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
@@ -158,7 +158,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 ssh2_execute('gs', $row['rootID'], $cmds);
             }
 
-        } else if ($servertype == 'v') {
+        } else if (isset($servertype) and $servertype == 'v') {
 
             $query = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $reseller_id));
@@ -188,6 +188,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $query = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',19, 'post'), $reseller_id));
+
+        $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_del : $spracheResponse->error_table;
 
     } else {
 
