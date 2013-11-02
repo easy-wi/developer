@@ -265,8 +265,10 @@ if (isset($servertype)) {
 
     $query->execute(array($loguserip, $servertype, $reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+
         $serverid = $row['serverid'];
         $lendtime = $row['lendtime'];
+
         $timeleft = round($lendtime - (strtotime('now') - strtotime($row['started'])) / 60);
 
         if ($timeleft <= 0) {
@@ -298,9 +300,7 @@ if (isset($servertype)) {
 
                     } else if ($addedby == 1) {
                         $query4->execute(array($row2['rootid'], $reseller_id));
-                        foreach ($query4->fetchall(PDO::FETCH_ASSOC) as $row3) {
-                            $queryip = $row3['ip'];
-                        }
+                        $queryip = $query4->fetchColumn();
                     }
                 }
 

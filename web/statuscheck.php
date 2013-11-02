@@ -739,18 +739,21 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $querypassword = $vrow['decryptedquerypassword'];
             $resellerid = $vrow['resellerid'];
             $autorestart = $vrow['autorestart'];
+
             if ($addedby == 2) {
                 $queryip = $vrow['ssh2ip'];
             } else if ($addedby == 1) {
                 $vselect2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $vselect2->execute(array($vrow['rootid'], $resellerid));
-                foreach ($vselect2->fetchall(PDO::FETCH_ASSOC) as $vrow2) $queryip = $vrow2['ip'];
+                $queryip = $vselect2->fetchColumn();
             }
+
             if ($vrow['type'] == 'ts3') {
                 $tsdown = false;
                 $tsdnsdown = false;
                 $defaultwelcome = $vrow['defaultwelcome'];
-                $default=array('virtualserver_hostbanner_url' => $vrow['defaulthostbanner_url'], 'virtualserver_hostbanner_gfx_url' => $vrow['defaulthostbanner_gfx_url'], 'virtualserver_hostbutton_tooltip' => $vrow['defaulthostbutton_tooltip'], 'virtualserver_hostbutton_url' => $vrow['defaulthostbutton_url'], 'virtualserver_hostbutton_gfx_url' => $vrow['defaulthostbutton_gfx_url'], 'defaultwelcome' => $vrow['defaultwelcome']);
+
+                $default = array('virtualserver_hostbanner_url' => $vrow['defaulthostbanner_url'], 'virtualserver_hostbanner_gfx_url' => $vrow['defaulthostbanner_gfx_url'], 'virtualserver_hostbutton_tooltip' => $vrow['defaulthostbutton_tooltip'], 'virtualserver_hostbutton_url' => $vrow['defaulthostbutton_url'], 'virtualserver_hostbutton_gfx_url' => $vrow['defaulthostbutton_gfx_url'], 'defaultwelcome' => $vrow['defaultwelcome']);
                 print "Connecting to TS3 server $queryip\r\n";
                 $connection=new TS3($queryip, $queryport,'serveradmin', $querypassword,(isset($args['tsDebug']) and $args['tsDebug'] == 1) ? true : false);
                 $errorcode = $connection->errorcode;
@@ -917,43 +920,61 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 $newtrafficdata = $lastfiletraffic;
                                 $newtraffic = $filetraffic;
                             }
+
                             if (isset($ts3id) and $vs == 'online' and $active == 'N') {
                                 print "Inactive TS3 server $address running. Stopping it.\r\n";
                                 $connection->StopServer($virtualserver_id);
                             } else if (isset($ts3id) and $vs == 'online' and $active == 'Y') {
-                                $queryName = $server['virtualserver_name'];
-                                $usedslots=(isset($server['virtualserver_clientsonline'])) ? $server['virtualserver_clientsonline'] : 0 - (isset($server['virtualserver_queryclientsonline'])) ? $server['virtualserver_queryclientsonline'] : 0;
-                                $sd = $connection->ServerDetails($virtualserver_id);
                                 unset($rulebreak, $changeSlots);
-                                $newtrafficdata=round(($sd['connection_filetransfer_bytes_sent_total']+$sd['connection_filetransfer_bytes_received_total'])/1024);
-                                if ($resellersettings[$resellerid]['firstchecktime']<$resellersettings[$resellerid]['firstcheck']) $filetraffic = 0;
+                                $queryName = $server['virtualserver_name'];
+                                $usedslots = (isset($server['virtualserver_clientsonline'])) ? $server['virtualserver_clientsonline'] : 0;
+
+                                $sd = $connection->ServerDetails($virtualserver_id);
+                                $newtrafficdata=round(($sd['connection_filetransfer_bytes_sent_total']+$sd['connection_filetransfer_bytes_received_total']) / 1024);
+
+                                if ($resellersettings[$resellerid]['firstchecktime']<$resellersettings[$resellerid]['firstcheck']) {
+                                    $filetraffic = 0;
+                                }
+
                                 $newtraffic = 0;
-                                if ($newtrafficdata>$lastfiletraffic) {
-                                    $addedtraffic = $newtrafficdata-$lastfiletraffic;
-                                    $newtraffic = $filetraffic+$addedtraffic;
+
+                                if ($newtrafficdata > $lastfiletraffic) {
+                                    $addedtraffic = $newtrafficdata - $lastfiletraffic;
+                                    $newtraffic = $filetraffic + $addedtraffic;
                                 } else if ($newtrafficdata == $lastfiletraffic) {
                                     $newtraffic = $filetraffic;
-                                } else if ($newtrafficdata<$lastfiletraffic) {
+                                } else if ($newtrafficdata < $lastfiletraffic) {
                                     $addedtraffic = $newtrafficdata;
                                     $newtraffic = $filetraffic+$addedtraffic;
                                 }
-                                $newtrafficmb=round($newtraffic/1024);
+
+                                $newtrafficmb = round($newtraffic / 1024);
                                 $traffictext = '';
                                 $virtualserver_max_download_total_bandwidth = $max_download_total_bandwidth;
                                 $virtualserver_max_upload_total_bandwidth = $max_upload_total_bandwidth;
-                                if (isset($ts3id) and $flexSlots == 'Y' and $usedslots==0 and ($usedslots+$flexSlotsFree) != $flexSlotsCurrent) $changeSlots = $flexSlotsFree;
-                                else if (isset($ts3id) and $flexSlots == 'Y' and ($usedslots+$flexSlotsFree) != $flexSlotsCurrent and ($usedslots+$flexSlotsFree) <= $slots and (abs(($usedslots+$flexSlotsFree)-$flexSlotsCurrent)/($flexSlotsFree/100))>=$flexSlotsPercent) $changeSlots = $usedslots+$flexSlotsFree;
-                                else if (isset($ts3id) and $flexSlots == 'Y' and $flexSlotsCurrent != $slots and ($usedslots+$flexSlotsFree)>$slots and (abs(($usedslots+$flexSlotsFree)-$flexSlotsCurrent)/($flexSlotsFree/100))>=$flexSlotsPercent) $changeSlots = $slots;
-                                if (isset($changeSlots) and $flexSlotsCurrent!=2 and $changeSlots<2) $changeSlots = 2;
-                                else if (isset($changeSlots) and $flexSlotsCurrent==2 and $changeSlots<2) unset($changeSlots);
-                                if ($maxtraffic>0 and $newtraffic>$maxtraffic and $sd['virtualserver_max_download_total_bandwidth']>1 and $sd['virtualserver_max_upload_total_bandwidth']>1) {
+
+                                if (isset($ts3id) and $flexSlots == 'Y' and $usedslots==0 and ($usedslots+$flexSlotsFree) != $flexSlotsCurrent) {
+                                    $changeSlots = $flexSlotsFree;
+                                } else if (isset($ts3id) and $flexSlots == 'Y' and ($usedslots + $flexSlotsFree) != $flexSlotsCurrent and ($usedslots + $flexSlotsFree) <= $slots and (abs(($usedslots + $flexSlotsFree) - $flexSlotsCurrent) / ($flexSlotsFree / 100)) >= $flexSlotsPercent) {
+                                    $changeSlots = $usedslots + $flexSlotsFree;
+                                } else if (isset($ts3id) and $flexSlots == 'Y' and $flexSlotsCurrent != $slots and ($usedslots + $flexSlotsFree) > $slots and (abs(($usedslots + $flexSlotsFree) - $flexSlotsCurrent) / ($flexSlotsFree / 100)) >= $flexSlotsPercent) {
+                                    $changeSlots = $slots;
+                                }
+
+                                if (isset($changeSlots) and $flexSlotsCurrent != 2 and $changeSlots < 2) {
+                                    $changeSlots = 2;
+                                } else if (isset($changeSlots) and $flexSlotsCurrent == 2 and $changeSlots < 2) {
+                                    unset($changeSlots);
+                                }
+
+                                if ($maxtraffic > 0 and $newtraffic > $maxtraffic and $sd['virtualserver_max_download_total_bandwidth'] > 1 and $sd['virtualserver_max_upload_total_bandwidth'] > 1) {
                                     $virtualserver_max_download_total_bandwidth = 1;
                                     $virtualserver_max_upload_total_bandwidth = 1;
                                     $traffictext="and has now reached the traffic limit ".$newtrafficmb. '/' . $maxtrafficmb." MB";
                                     if (isset($rulebreak)) {
                                         $rulebreak .="<br />Traffic Limit".$newtrafficmb. '/' . $maxtrafficmb." MB";
                                     } else {
-                                        $rulebreak="<br />Traffic Limit".$newtrafficmb. '/' . $maxtrafficmb." MB";
+                                        $rulebreak = "<br />Traffic Limit".$newtrafficmb. '/' . $maxtrafficmb." MB";
                                     }
                                 } else if ($maxtraffic>0 and $newtraffic>$maxtraffic and $sd['virtualserver_max_download_total_bandwidth']<2 and $sd['virtualserver_max_upload_total_bandwidth']<2) {
                                     $virtualserver_max_download_total_bandwidth = 1;
@@ -1067,14 +1088,16 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                         $dataloss = false;
                                         $lid = $erow['id'];
                                         $runtime = $erow['lendtime'];
-                                        $elapsed=round((strtotime('now')-strtotime($erow['started']))/60);
-                                        if ($elapsed>$shutdownemptytime and $usedslots == 0) {
+                                        $elapsed = round((strtotime('now') - strtotime($erow['started'])) / 60);
+
+                                        if ($elapsed > $shutdownemptytime and $usedslots == 0) {
                                             print "Will stop server $address before time is up, because it is empty\r\n";
                                             $stop = true;
-                                        } else if ($elapsed>=$runtime) {
+                                        } else if ($elapsed >= $runtime) {
                                             print "Will stop server $address because time is up\r\n";
                                             $stop = true;
                                         }
+
                                         if ($stop == true) {
                                             $rmvoicelend = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? LIMIT 1");
                                             $rmvoicelend->execute(array($lid));
