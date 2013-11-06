@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <p class="span11"><?php echo $sprache->help_list;?></p>
+    <p class="span12 breadcrumb"><?php echo $sprache->help_list;?></p>
 </div>
 <hr>
 <?php foreach ($table as $table_row){ ?>
