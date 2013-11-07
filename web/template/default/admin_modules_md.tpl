@@ -48,7 +48,7 @@
                         <option value="gs" <?php if ($sub=='gs') echo 'selected="selected"'; ?>><?php echo $gsprache->gameserver;?></option>
                         <option value="vo" <?php if ($sub=='vo') echo 'selected="selected"'; ?>><?php echo $gsprache->voiceserver;?></option>
                         <option value="ro" <?php if ($sub=='ro') echo 'selected="selected"'; ?>>Rootserver</option>
-                        <option value="my" <?php if ($sub=='my') echo 'selected="selected"'; ?>>MYSQL</option>
+                        <option value="my" <?php if ($sub=='my') echo 'selected="selected"'; ?>>MySQL</option>
                         <option value="gs" <?php if ($sub=='us') echo 'selected="selected"'; ?>><?php echo $gsprache->user;?></option>
                         <option value="ti" <?php if ($sub=='ti') echo 'selected="selected"'; ?>><?php echo $gsprache->support;?></option>
                         <option value="pa" <?php if ($sub=='pa') echo 'selected="selected"'; ?>>CMS</option>

@@ -2,7 +2,7 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="userpanel.php">Home</a> <span class="divider">/</span></li>
-            <li class="active">MYSQL <?php echo $gsprache->databases;?></li>
+            <li class="active">MySQL <?php echo $gsprache->databases;?></li>
         </ul>
     </div>
 </div>

@@ -194,7 +194,7 @@
                     <?php if($easywiModules['my'] and ($pa['mysql_settings'] or $pa['mysql'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive">MYSQL</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive">MySQL</a>
                         </div>
                         <div id="collapseFive" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='my' or isset($customModules['my'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">

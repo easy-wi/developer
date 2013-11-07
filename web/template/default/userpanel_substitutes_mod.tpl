@@ -105,7 +105,7 @@
             <?php }}?>
             <?php if(count($db)>0){ ?>
             <hr>
-            <h4>MYSQL</h4>
+            <h4>MySQL</h4>
             <?php foreach($db as $k=>$v){ ?>
             <div class="control-group">
                 <label class="control-label" for="inputDB-<?php echo $k;?>"><?php echo $v;?></label>
@@ -117,7 +117,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $sprache->save;?></button>
+                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
                 </div>
             </div>
         </form>

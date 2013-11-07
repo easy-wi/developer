@@ -2,7 +2,7 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=my">MYSQL Server</a> <span class="divider">/</span></li>
+            <li><a href="admin.php?w=my">MySQL Server</a> <span class="divider">/</span></li>
             <li class="active"><?php echo $gsprache->add;?></li>
         </ul>
     </div>

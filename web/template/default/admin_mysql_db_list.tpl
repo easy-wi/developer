@@ -2,14 +2,14 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li>MYSQL <?php echo $gsprache->databases;?> <span class="divider">/</span></li>
+            <li>MySQL <?php echo $gsprache->databases;?> <span class="divider">/</span></li>
             <li class="active"><?php echo $gsprache->overview;?></li>
         </ul>
     </div>
 </div>
 <div class="row-fluid">
     <div class="span6">
-        MYSQL <?php echo $gsprache->databases;?> <a href="admin.php?w=my&amp;d=ad"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a>
+        MySQL <?php echo $gsprache->databases;?> <a href="admin.php?w=my&amp;d=ad"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a>
     </div>
 </div>
 <hr>
