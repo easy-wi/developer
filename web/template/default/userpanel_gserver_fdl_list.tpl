@@ -7,8 +7,8 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span11"><?php echo $sprache->help_fdl;?></p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_fdl;?></div>
 </div>
 <hr>
 <?php if ($pa['modfastdl']==true) { ?>

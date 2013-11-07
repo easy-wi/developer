@@ -6,8 +6,8 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span12 breadcrumb"><?php echo $sprache->help_list;?></p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_list;?></div>
 </div>
 <hr>
 <?php foreach ($table as $table_row){ ?>

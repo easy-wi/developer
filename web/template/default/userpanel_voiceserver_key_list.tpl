@@ -7,8 +7,8 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span11"><?php echo $sprache->help_voiceserver_key;?></p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_voiceserver_key;?></div>
 </div>
 <hr>
 <div class="row-fluid">

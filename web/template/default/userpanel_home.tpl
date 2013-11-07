@@ -8,7 +8,9 @@
 </div>
 <div class="row-fluid">
     <h4><?php echo $gsprache->greating_home;?></h4>
-    <p class="span11"><?php echo $gsprache->help_home;?></p>
+</div>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $gsprache->help_home;?></div>
 </div>
 <hr>
 <?php if($crashedArray['ticketsOpen']>0){ ?>
