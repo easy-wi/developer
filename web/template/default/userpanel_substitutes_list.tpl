@@ -7,9 +7,12 @@
         </ul>
     </div>
 </div>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_substitutes_list;?></div>
+</div>
 <div class="row-fluid">
     <div class="span6">
-        <?php echo $gsprache->substitutes;?> <a href="userpanel.php?w=su&amp;d=ad"<span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a>
+        <a href="userpanel.php?w=su&amp;d=ad"<span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $gsprache->substitutes;?></span></a>
     </div>
 </div>
 <hr>
