@@ -38,6 +38,7 @@
 	<heading_add>Add User</heading_add>
 	<heading_detail>User Details</heading_detail>
 	<heading_list>User Overview</heading_list>
+	<help_substitutes_list></help_substitutes_list>
 	<hnum>Housenumber</hnum>
 	<inst>Installed Server</inst>
 	<ips>IP4 adresses:</ips>
