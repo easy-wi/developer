@@ -85,10 +85,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
         redirect('userpanel.php?w=bu&id=' . $id);
     }
 
-    if (!$ui->w('action',3, 'post')) {
-        $template_file = 'userpanel_gserver_backup.tpl';
-
-    } else if ($ui->w('action', 3, 'get') == 'mb' and isset($rootID)) {
+	if ($ui->w('action', 3, 'get') == 'mb' and isset($rootID)) {
 
         $shortens = array();
 
