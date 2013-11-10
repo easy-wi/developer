@@ -35,3 +35,7 @@
 .footable > tbody img {
     vertical-align:middle;
 }
+
+table.fixed {
+	table-layout: fixed;
+}
