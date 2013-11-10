@@ -53,7 +53,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini span12"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -80,7 +80,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="tue_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini span12"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -107,7 +107,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="wed_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini span12"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -134,7 +134,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="thu_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini span12"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -161,7 +161,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="fri_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini span12"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -188,7 +188,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="sat_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini span12"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -215,7 +215,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="sun_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini span12"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
