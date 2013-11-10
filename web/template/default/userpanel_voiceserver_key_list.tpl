@@ -34,7 +34,7 @@
                     <form method="post" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                         <input type="hidden" name="token" value="<?php echo $token['token'];?>" >
                         <input type="hidden" name="action" value="dl" >
-                        <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-remove-sign icon-white"></i></button>
+                        <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-remove-sign icon-white"></i> <?php echo $gsprache->del;?></button>
                     </form>
                 </td>
             </tr>
