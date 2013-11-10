@@ -12,10 +12,7 @@
 </div>
 <hr>
 <div class="row-fluid">
-    <dl class="dl-horizontal">
-        <dt><?php echo $gsprache->add;?></dt>
-        <dd><a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a></dd>
-    </dl>
+	<a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $gsprache->add;?></span></a>
 </div>
 <hr>
 <div class="row-fluid">
