@@ -27,9 +27,9 @@
               <button data-toggle="dropdown" class="btn btn-mini btn-primary dropdown-toggle"><i class="icon-white icon-bold"></i> <?php echo $gsprache->backup;?> <span class="caret"></span></button>
               <ul class="dropdown-menu">
                 <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>"><?php echo $gsprache->backup;?></a></li>
-                <li><a href="#"><?php echo $gsprache->backup." ".$sprache->create;?></a></li>
-                <li><a href="#"><?php echo $gsprache->backup." ".$sprache->recover;?></a></li>
-                <li><a href="#"><?php echo $gsprache->settings;?></a></li>
+                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=mb"><?php echo $gsprache->backup." ".$sprache->create;?></a></li>
+                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=rb"><?php echo $gsprache->backup." ".$sprache->recover;?></a></li>
+                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=md"><?php echo $gsprache->settings;?></a></li>
               </ul>
             </div>
             <a href="serverlog.php?id=<?php echo $table_row['id'];?>" onclick="return popup(this.href);"><button class="btn btn-mini btn-primary"><i class="icon-white icon-tasks"></i> <?php echo $gsprache->logs;?></button></a>
