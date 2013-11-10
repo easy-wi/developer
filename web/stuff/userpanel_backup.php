@@ -88,7 +88,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
     if (!$ui->w('action',3, 'post')) {
         $template_file = 'userpanel_gserver_backup.tpl';
 
-    } else if ($ui->w('action', 3, 'post') == 'mb' and isset($rootID)) {
+    } else if ($ui->w('action', 3, 'get') == 'mb' and isset($rootID)) {
 
         $shortens = array();
 
@@ -111,7 +111,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
             $template_file = 'userpanel_404.tpl';
         }
 
-    } else if ($ui->w('action',3, 'post') == 'md' and isset($rootID)) {
+    } else if ($ui->w('action',3, 'get') == 'md' and isset($rootID)) {
         $template_file = 'userpanel_gserver_backup_md.tpl';
 
     } else if ($ui->w('action',3, 'post') == 'md2' and isset($rootID)) {
@@ -173,7 +173,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
             $template_file = 'userpanel_gserver_backup_md.tpl';
         }
 
-    } else if ($ui->w('action',3, 'post') == 'rb' and isset($rootID)) {
+    } else if ($ui->w('action',3, 'get') == 'rb' and isset($rootID)) {
 
         $shortens = array();
 
