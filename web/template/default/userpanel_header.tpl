@@ -30,54 +30,52 @@
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
+    <div class="navbar-inner">           
+        <p class="navbar-text pull-left">
+            <?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
+        </p>
+        <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Easy-WI.com<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
+                        <li><a href="http://easy-wi.com" target="_blank">About</a></li>
+                        <li><a href="http://forum.easy-wi.com" target="_blank">Forum</a></li>
+                        <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank">Steam Bugtracker</a></li>
+                    </ul>
+                </li>
+            </ul>
             <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <p class="navbar-text pull-left">
-                <?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
-            </p>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Easy-WI.com<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
-                            <li><a href="http://easy-wi.com" target="_blank">About</a></li>
-                            <li><a href="http://forum.easy-wi.com" target="_blank">Forum</a></li>
-                            <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank">Steam Bugtracker</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav pull-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?><b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
-                            <li class="divider"></li>
-                            <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
-                            <li class="divider"></li>
-                            <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
-                            <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
-                            <li class="divider"></li>
-                            <?php } ?>
-                            <li><a href="login.php?w=lo">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!--/.nav-collapse -->
-            <div class="navbar-text pull-right">
-                <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="userpanel.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
-                <?php if($gscount>0 and $pa['gserver']) { ?>
-                <?php if($crashedArray['gsCrashed']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
-                <?php if($crashedArray['gsPWD']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
-                <?php if($crashedArray['gsTag']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
-                <?php }?>
-                <?php if($voicecount>0 and $pa['voiceserver'] and $crashedArray['ts3']>0) { ?><a href="userpanel.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></a><?php }?>
-            </div>
+            <ul class="nav pull-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
+                        <li class="divider"></li>
+                        <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
+                        <li class="divider"></li>
+                        <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
+                        <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
+                        <li class="divider"></li>
+                        <?php } ?>
+                        <li><a href="login.php?w=lo">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+        <div class="navbar-text pull-right">
+            <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="userpanel.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
+            <?php if($gscount>0 and $pa['gserver']) { ?>
+            <?php if($crashedArray['gsCrashed']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
+            <?php if($crashedArray['gsPWD']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
+            <?php if($crashedArray['gsTag']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
+            <?php }?>
+            <?php if($voicecount>0 and $pa['voiceserver'] and $crashedArray['ts3']>0) { ?><a href="userpanel.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></a><?php }?>
         </div>
     </div>
 </div>
