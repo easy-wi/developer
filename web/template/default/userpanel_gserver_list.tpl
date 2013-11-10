@@ -24,9 +24,10 @@
             <?php if($pa['useraddons']){ ?><a href="userpanel.php?w=ao&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-gift"></i> <?php echo $gsprache->addon;?></button></a><?php } ?>
             <a href="userpanel.php?w=ca&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-calendar"></i> <?php echo $sprache->restarttime;?></button></a>    
             <div class="btn-group">
-              <a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-bold"></i> <?php echo $gsprache->backup;?></button></a>
+              <button class="btn btn-mini btn-primary"><i class="icon-white icon-bold"></i> <?php echo $gsprache->backup;?></button>
               <button data-toggle="dropdown" class="btn dropdown-toggle"><span class="caret"></span></button>
               <ul class="dropdown-menu">
+                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>"><?php echo $gsprache->backup;?></a></li>
                 <li><a href="#"><?php echo $gsprache->backup." ".$sprache->create;?></a></li>
                 <li><a href="#"><?php echo $gsprache->backup." ".$sprache->recover;?></a></li>
                 <li><a href="#"><?php echo $gsprache->settings;?></a></li>
