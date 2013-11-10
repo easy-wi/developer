@@ -14,7 +14,7 @@
 <hr>
 <div class="row-fluid">
 <div class="span11">
-<table class="table table-striped table-bordered table-hover">
+<table class="table table-striped table-bordered table-hover fixed">
 <thead>
 <tr>
     <th><?php echo $sprache->hour;?></th>
@@ -45,7 +45,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
-                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
+                    <button class="btn btn-danger btn-mini span12"><i class="icon-trash icon-white"></i></button>
                 </form>
                 <?php } ?>
             </div>
@@ -53,7 +53,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->edit;?></button>
+                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="tue_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
-                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
+                    <button class="btn btn-danger btn-mini span12"><i class="icon-trash icon-white"></i></button>
                 </form>
                 <?php } ?>
             </div>
@@ -80,7 +80,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="tue_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->edit;?></button>
+                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -99,7 +99,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="wed_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
-                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
+                    <button class="btn btn-danger btn-mini span12"><i class="icon-trash icon-white"></i></button>
                 </form>
                 <?php } ?>
             </div>
@@ -107,7 +107,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="wed_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->edit;?></button>
+                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -126,7 +126,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="thu_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
-                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
+                    <button class="btn btn-danger btn-mini span12"><i class="icon-trash icon-white"></i></button>
                 </form>
                 <?php } ?>
             </div>
@@ -134,7 +134,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="thu_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->edit;?></button>
+                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -153,7 +153,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="fri_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
-                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
+                    <button class="btn btn-danger btn-mini span12"><i class="icon-trash icon-white"></i></button>
                 </form>
                 <?php } ?>
             </div>
@@ -161,7 +161,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="fri_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->edit;?></button>
+                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -180,7 +180,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="sat_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
-                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
+                    <button class="btn btn-danger btn-mini span12"><i class="icon-trash icon-white"></i></button>
                 </form>
                 <?php } ?>
             </div>
@@ -188,7 +188,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="sat_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->edit;?></button>
+                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
@@ -207,7 +207,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                     <input type="hidden" name="date" value="sun_<?php echo $i;?>"/>
                     <input type="hidden" name="delete" value="delete" />
-                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
+                    <button class="btn btn-danger btn-mini span12"><i class="icon-trash icon-white"></i></button>
                 </form>
                 <?php } ?>
             </div>
@@ -215,7 +215,7 @@
                 <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
                     <input type="hidden" name="date" value="sun_<?php echo $i;?>"/>
                     <input type="hidden" name="edit" value="edit" />
-                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->edit;?></button>
+                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></button>
                 </form>
             </div>
         </div>
