@@ -60,13 +60,11 @@
             	<?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
         	</p>
         	
-        	<p class="navbar-text">Easy-WI.com</p>
+        	<span class="navbar-text">Easy-WI.com</span>
         	
-            <p class="navbar-text pull-right">
-            	<a href="login.php?w=lo">
-            		<button class="btn btn-small btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
-            	</a>
-            </p>
+        	<a href="login.php?w=lo" class="navbar-text pull-right">
+        		<button class="btn btn-small btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
+        	</a>
    
         </div><!--/.nav-collapse -->
         <div class="navbar-text pull-right">
