@@ -61,6 +61,7 @@
 	<port>Port</port>
 	<querypassword>Forespørgseladgangskode</querypassword>
 	<queryport>Forespørgselport</queryport>
+	<recover></recover>
     <reset>Nulstil</reset>
 	<rootserver>Rootserver</rootserver>
 	<server>Server</server>

@@ -70,6 +70,7 @@
 	<port>Port</port>
 	<querypassword>Querypassword</querypassword>
 	<queryport>Queryport</queryport>
+	<recover>Recover</recover>
     <reset>Reset</reset>
 	<rootserver>Rootserver</rootserver>
 	<server>Server</server>

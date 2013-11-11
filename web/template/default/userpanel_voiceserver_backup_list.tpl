@@ -14,10 +14,10 @@
 <hr>
 <div class="row-fluid">
 <a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $id;?>"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $sprache->backup ." (".($voice_maxbackup-$backupcount)." ".$sprache->left.")";?></span></a>
-
 </div>
+<br>
 <div class="row-fluid">
-    <table class="table table-condensed table-striped table-hover">
+    <table class="table table-bordered table-condensed table-striped table-hover">
         <thead>
         <tr>
             <th><?php echo $sprache->date;?></th>
@@ -31,15 +31,13 @@
             <td><?php echo $table_row['name']; ?></td>
             <td>
                 <form method="post" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-                    <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-remove-sign"></i></button>
+                    <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-remove-sign"></i> <?php echo $gsprache->del;?></button>
                     <input type="hidden" name="action" value="md" />
                     <input type="hidden" name="delete" value="md" />
                     <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />
                 </form>
-            </td>
-            <td>
                 <form method="post" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-                    <button class="btn btn-primary btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-refresh"></i></button>
+                    <button class="btn btn-primary btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-refresh"></i> <?php echo $gsprache->recover;?></button>
                     <input type="hidden" name="action" value="md" />
                     <input type="hidden" name="use" value="md" />
                     <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />
