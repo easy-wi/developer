@@ -40,6 +40,6 @@ table.fixed {
 	table-layout: fixed;
 }
 
-.navbar > .pull-right {
+.navbar .pull-right {
 	margin-right: 20px;
 }
