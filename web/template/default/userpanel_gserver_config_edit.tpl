@@ -27,7 +27,7 @@
 	        <a href="userpanel.php?w=gs&amp;d=cf&amp;id=<?php echo $id;?>&amp;type=full&amp;config=<?php echo urlencode($config['line']);?>"><span class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $sprache->full;?></span></a>
 	        <?php } ?>
 		</td>
-	<tr>
+	</tr>
 <?php } ?>
 </tbody>
 </table>
