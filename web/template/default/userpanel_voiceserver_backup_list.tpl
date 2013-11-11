@@ -21,7 +21,9 @@
         <thead>
         <tr>
             <th><?php echo $sprache->date;?></th>
-            <th colspan="3"><?php echo $sprache->backupname;?></th>
+            <th><?php echo $sprache->backupname;?></th>
+            <th> </th>
+            <th> </th>
         </tr>
         </thead>
         <tbody>
@@ -36,8 +38,10 @@
                     <input type="hidden" name="delete" value="md" />
                     <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />
                 </form>
+            </td>
+            <td>
                 <form method="post" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-                    <button class="btn btn-primary btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-refresh"></i> <?php echo $gsprache->recover;?></button>
+                    <button class="btn btn-primary btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-refresh"></i> <?php echo $sprache->recover;?></button>
                     <input type="hidden" name="action" value="md" />
                     <input type="hidden" name="use" value="md" />
                     <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />
