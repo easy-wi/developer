@@ -124,10 +124,10 @@ if (isset($_SESSION['sID'])) {
 	$query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE language=? AND resellerid=? LIMIT 1");
 	$query->execute(array($user_language,$resellerid));
 	if (strlen($query->fetchColumn())>1) {
-		$showImprint=false;
+		$showImprint=true;
 	}
 	else {
-		$showImprint=true;
+		$showImprint=false;
 	}
 }
 
