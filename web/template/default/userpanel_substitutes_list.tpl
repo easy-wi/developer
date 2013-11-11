@@ -22,16 +22,16 @@
             <thead>
             <tr>
                 <th><?php echo $sprache->user;?></th>
-                <th><?php echo $gsprache->del;?></a></th>
-                <th><?php echo $gsprache->mod;?></a></th>
+                <th> </th>
+                <th> </th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($table as $table_row) { ?>
             <tr class="<?php if($table_row['active']=='Y') echo 'success'; else echo 'warning';?>">
                 <td><?php echo $table_row['loginName'];?></td>
-                <td><a href="userpanel.php?w=su&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
-                <td><a href="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
+                <td><a href="userpanel.php?w=su&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i> <?php echo $gsprache->del;?></span></a></td>
+                <td><a href="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i> <?php echo $gsprache->mod;?></span></a></td>
             </tr>
             <?php } ?>
             </tbody>
