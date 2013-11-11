@@ -13,14 +13,9 @@
 </div>
 <hr>
 <div class="row-fluid">
-    <dl class="dl-horizontal">
-        <dt><?php echo $sprache->backups;?></dt>
-        <dd><?php echo $backupcount.'/'.$voice_maxbackup;?></dd>
-        <dt><?php echo $gsprache->add;?></dt>
-        <dd><a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $id;?>"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a></dd>
-    </dl>
+<a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $id;?>"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $sprache->backup ." (".($voice_maxbackup-$backupcount)." ".$sprache->left.")";?></span></a>
+
 </div>
-<hr>
 <div class="row-fluid">
     <table class="table table-condensed table-striped table-hover">
         <thead>

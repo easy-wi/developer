@@ -57,6 +57,7 @@
 	<isnot>is not</isnot>
 	<keyname>Public keyfile name</keyname>
 	<keyuse>Use public keyfile</keyuse>
+	<left>remaining</left>
 	<maxserver>Maximum Server</maxserver>
 	<maxslots>Maximum Slots</maxslots>
 	<maxtraffic>Maximum Traffic</maxtraffic>
