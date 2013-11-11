@@ -39,8 +39,16 @@
         <div class="nav-collapse collapse">
             <ul class="nav">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Easy-WI.com<b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                    	<li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
+                        <li class="divider"></li>
+                        <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>            
+                        <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
+                        <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
+                        <li class="divider"></li>
+                        <?php } ?>
+
                         <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
                         <li><a href="http://easy-wi.com" target="_blank">About</a></li>
                         <li><a href="http://forum.easy-wi.com" target="_blank">Forum</a></li>
@@ -51,22 +59,11 @@
             <p class="navbar-text pull-left">
             	<?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
         	</p>
-            <ul class="nav pull-right">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?><b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
-                        <li class="divider"></li>
-                        <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
-                        <li class="divider"></li>
-                        <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
-                        <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
-                        <li class="divider"></li>
-                        <?php } ?>
-                        <li><a href="login.php?w=lo">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
+        	
+        	Easy-WI.com
+        	
+            <a href="login.php?w=lo" class="nav pull-right"><button class="btn btn-small btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button></a>
+   
         </div><!--/.nav-collapse -->
         <div class="navbar-text pull-right">
             <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="userpanel.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
