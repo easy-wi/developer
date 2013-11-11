@@ -63,7 +63,7 @@
         	<span class="navbar-text">Easy-WI.com</span>
         	
         	<a href="login.php?w=lo" class="navbar-text pull-right">
-        		<button class="btn btn-small btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
+        		<button class="btn btn-mini btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
         	</a>
    
         </div><!--/.nav-collapse -->

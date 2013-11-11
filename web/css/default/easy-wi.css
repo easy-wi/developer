@@ -43,3 +43,7 @@ table.fixed {
 .navbar .pull-right {
 	margin-right: 20px;
 }
+
+.navbar button {
+	margin-top: 0px;
+}
