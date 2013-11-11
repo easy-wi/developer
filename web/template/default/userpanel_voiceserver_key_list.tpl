@@ -14,7 +14,7 @@
 <div class="row-fluid">
 	<a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $gsprache->add;?></span></a>
 </div>
-<hr>
+<br>
 <div class="row-fluid">
     <div class="span11">
         <table class="table table-condensed table-bordered table-striped table-hover">
