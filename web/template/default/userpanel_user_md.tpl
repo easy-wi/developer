@@ -32,55 +32,55 @@
             <div class="control-group">
                 <label class="control-label" for="fname"><?php echo $sprache->fname;?></label>
                 <div class="controls">
-                    <input class="span10" id="fname" type="text" name="name" value="<?php echo $name;?>">
+                    <input class="span8" id="fname" type="text" name="name" value="<?php echo $name;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="vname"><?php echo $sprache->vname;?></label>
                 <div class="controls">
-                    <input class="span10" id="vname" type="text" name="vname" value="<?php echo $vname;?>">
+                    <input class="span8" id="vname" type="text" name="vname" value="<?php echo $vname;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="mail"><?php echo $sprache->email;?>*</label>
                 <div class="controls">
-                    <input class="span10" id="mail" type="email" name="mail" value="<?php echo $mail;?>" required>
+                    <input class="span8" id="mail" type="email" name="mail" value="<?php echo $mail;?>" required>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="tel"><?php echo $sprache->tel;?></label>
                 <div class="controls">
-                    <input class="span10" id="tel" type="text" name="phone" value="<?php echo $phone;?>">
+                    <input class="span8" id="tel" type="text" name="phone" value="<?php echo $phone;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="handy"><?php echo $sprache->han;?></label>
                 <div class="controls">
-                    <input class="span10" id="handy" type="text" name="handy" value="<?php echo $handy;?>">
+                    <input class="span8" id="handy" type="text" name="handy" value="<?php echo $handy;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="stadt"><?php echo $sprache->stadt;?></label>
                 <div class="controls">
-                    <input class="span10" id="stadt" type="text" name="city" value="<?php echo $city;?>">
+                    <input class="span8" id="stadt" type="text" name="city" value="<?php echo $city;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="cityn"><?php echo $sprache->plz;?></label>
                 <div class="controls">
-                    <input class="span10" id="cityn" type="text" name="cityn" value="<?php echo $cityn;?>">
+                    <input class="span8" id="cityn" type="text" name="cityn" value="<?php echo $cityn;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="street"><?php echo $sprache->str;?></label>
                 <div class="controls">
-                    <input class="span10" id="street" type="text" name="street" value="<?php echo $street;?>">
+                    <input class="span8" id="street" type="text" name="street" value="<?php echo $street;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="streetn"><?php echo $sprache->hnum;?></label>
                 <div class="controls">
-                    <input class="span10" id="streetn" type="text" name="streetn" value="<?php echo $streetn;?>">
+                    <input class="span8" id="streetn" type="text" name="streetn" value="<?php echo $streetn;?>">
                 </div>
             </div>
             <div class="control-group">
