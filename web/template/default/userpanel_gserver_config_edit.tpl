@@ -12,7 +12,8 @@
     <div class="span12 alert alert-info"><?php echo $sprache->help_config;?></div>
 </div>
 <hr>
-<table class="table table-condensed table-bordered table-striped table-hover">
+<table class="table table-bordered table-striped table-hover">
+<tbody>
 <?php foreach ($configs as $config){ ?>
 	<tr>
 		<td>
@@ -28,5 +29,6 @@
 		</td>
 	<tr>
 <?php } ?>
+</tbody>
 </table>
 
