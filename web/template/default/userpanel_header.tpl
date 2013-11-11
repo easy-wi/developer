@@ -45,6 +45,7 @@
                         <li class="divider"></li>
                         <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>            
                         <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
+                        <li><a href="userpanel.php?w=se&amp;d=pw"><?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                         <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
                         <li class="divider"></li>
                         <?php } ?>
@@ -66,15 +67,15 @@
         		<button class="btn btn-mini btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
         	</a>
    
-        </div><!--/.nav-collapse -->
-        <div class="navbar-text pull-right">
-            <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="userpanel.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
-            <?php if($gscount>0 and $pa['gserver']) { ?>
-            <?php if($crashedArray['gsCrashed']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
-            <?php if($crashedArray['gsPWD']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
-            <?php if($crashedArray['gsTag']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
-            <?php }?>
-            <?php if($voicecount>0 and $pa['voiceserver'] and $crashedArray['ts3']>0) { ?><a href="userpanel.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></a><?php }?>
+	        <div class="navbar-text pull-right">
+	            <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="userpanel.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
+	            <?php if($gscount>0 and $pa['gserver']) { ?>
+	            <?php if($crashedArray['gsCrashed']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
+	            <?php if($crashedArray['gsPWD']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
+	            <?php if($crashedArray['gsTag']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
+	            <?php }?>
+	            <?php if($voicecount>0 and $pa['voiceserver'] and $crashedArray['ts3']>0) { ?><a href="userpanel.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></a><?php }?>
+	        </div>
         </div>
     </div>
 </div>

@@ -8,6 +8,7 @@
     <api>API</api>
     <apiAuth>ekstern godkendelse</apiAuth>
 	<backup>Sikkerhedskopi</backup>
+	<change></change>
     <columns>Tilpassede kolonner</columns>
     <comments>Kommentarer</comments>
 	<databases>Databaser</databases>
@@ -40,6 +41,7 @@
 	<overview>Oversigt</overview>
 	<page>Side</page>
 	<pages>Sider</pages>
+	<password></password>
     <registration>Registrering</registration>
     <repair>Reparer</repair>
 	<reseller>Forhandler</reseller>

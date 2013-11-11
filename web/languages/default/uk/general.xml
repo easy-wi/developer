@@ -8,6 +8,7 @@
     <api>API</api>
     <apiAuth>External Authentication</apiAuth>
 	<backup>Backup</backup>
+	<change>Change</change>
     <columns>Custom Columns</columns>
     <comments>Comments</comments>
 	<databases>Databases</databases>
@@ -48,6 +49,7 @@
 	<overview>Overview</overview>
 	<page>Page</page>
 	<pages>Pages</pages>
+	<password>Password</password>
     <registration>Registration</registration>
     <repair>Repair</repair>
 	<reseller>Reseller</reseller>
