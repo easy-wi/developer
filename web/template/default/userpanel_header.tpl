@@ -30,7 +30,7 @@
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
+    <div class="navbar-inner text-center">
         <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -60,9 +60,13 @@
             	<?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
         	</p>
         	
-        	Easy-WI.com
+        	<p class="navbar-text">Easy-WI.com</p>
         	
-            <a href="login.php?w=lo" class="nav pull-right"><button class="btn btn-small btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button></a>
+            <p class="navbar-text pull-right">
+            	<a href="login.php?w=lo">
+            		<button class="btn btn-small btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
+            	</a>
+            </p>
    
         </div><!--/.nav-collapse -->
         <div class="navbar-text pull-right">
