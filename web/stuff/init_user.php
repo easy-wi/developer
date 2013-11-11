@@ -112,6 +112,24 @@ if (isset($_SESSION['sID'])) {
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `virtualcontainer` WHERE `active`='Y' AND `userid`=? LIMIT 1");
     $query->execute(array($user_id));
     $virtualcount = $query->fetchColumn();
+    
+    if (!isset($reseller_id)) $reseller_id = 0;
+	$sprache=(isset($user_language)) ? getlanguagefile('images',$user_language,$reseller_id) : getlanguagefile('images',$page_language,$reseller_id);
+	if (isset($admin_id) and $admin_id==$reseller_id) {
+		$resellerid = 0;
+	} else if (isset($reseller_id)) {
+		$resellerid = $reseller_id;
+	} else {
+		$resellerid = 0;
+	}
+	$query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE language=? AND resellerid=? LIMIT 1");
+	$query->execute(array($user_language,$resellerid));
+	if (strlen($query->fetchColumn())>1) {
+		$noImprint=false;
+	}
+	else {
+		$noImprint=true;
+	}
 }
 
 if (isset($lastlogin) and $lastlogin != null and $lastlogin != '0000-00-00 00:00:00') {
