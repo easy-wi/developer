@@ -12,8 +12,7 @@
     <div class="span12 alert alert-info"><?php echo $sprache->help_config;?></div>
 </div>
 <hr>
-
-<table class="table table-bordered table-hover table-striped default footable-loaded">
+<table class="table table-condensed table-bordered table-striped table-hover">
 <?php foreach ($configs as $config){ ?>
 	<tr>
 		<td>
