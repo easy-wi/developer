@@ -12,14 +12,14 @@
 </div>
 <hr>
 <div class="row-fluid">
-    <div class="span6">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <script type="text/javascript">
 			$(document).ready(function (){
-				$('#resync').button('toggle')
+				$('#resync').button('toggle');
+				$('#game').change();
 				$('#game').change(function() {
 					var shorten=$('#game').val();
-					$('#templateGroup').show();
 					$('#template1').text(shorten);
 					$('#template2').text(shorten+'-2');
 					$('#template3').text(shorten+'-3');
