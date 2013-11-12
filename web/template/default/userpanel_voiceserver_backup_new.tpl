@@ -31,7 +31,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->exec;?></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-play-circle icon-white"></i> <?php echo $gsprache->exec;?></button>
                     <input type="hidden" name="action" value="nb">
                 </div>
             </div>
