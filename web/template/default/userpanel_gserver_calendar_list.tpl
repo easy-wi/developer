@@ -49,14 +49,16 @@ $(document).ready(function (){
 	<div class="span12">
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
-				<td><?php echo $gsprache->time;?></td>
-				<td><?php echo $sprache->template;?></td>
-				<td><?php echo $sprache->map;?></td>
-				<td><?php echo $sprache->restart;?></td>
-				<td><?php echo $sprache->backup;?></td>
-				<td><?php echo $sprache->protection;?></td>
-				<td> </td>
-				<td> </td>
+				<tr>
+					<td><?php echo $gsprache->time;?></td>
+					<td><?php echo $gsprache->template;?></td>
+					<td><?php echo $sprache->map;?></td>
+					<td><?php echo $sprache->restart;?></td>
+					<td><?php echo $gsprache->backup;?></td>
+					<td><?php echo $sprache->protect;?></td>
+					<td> </td>
+					<td> </td>
+				</td>
 			</thead>
             <tbody>
 				<?php
@@ -73,7 +75,7 @@ $(document).ready(function (){
 							$restart=explode("br", $restarts[$i][$day]['out']);
 							?>
 							<td>
-								<?php $dayname." - ".str_pad($i,2,"0",STR_PAD_LEFT).":00" ?>
+								<?php echo $dayname." - ".str_pad($i,2,"0",STR_PAD_LEFT).":00" ?>
 							</td>
 							<td>
 								<?php echo $restart[0]; ?>
@@ -88,7 +90,7 @@ $(document).ready(function (){
 								<?php echo $restart[3]; ?>
 							</td>
 							<td>
-								<?php if(isset($restarts[$i]['mon']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['mon']['img'];?>.png" alt="<?php echo $restarts[$i]['mon']['alt'];?>" width="16" height="16"/><?php }?>
+								<?php if(isset($restarts[$i]['mon']['img'])){ ?><img src="images/<?php echo $restarts[$i]['mon']['img'];?>.png" alt="<?php echo $restarts[$i]['mon']['alt'];?>" width="16" height="16"/><?php }?>
 							</td>
 							<td class="span1">
 				                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
