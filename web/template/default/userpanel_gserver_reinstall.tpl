@@ -21,7 +21,7 @@
                 <div class="controls">
                     <select id="game" name="game">
                     	<?php foreach ($table as $table_row){ ?>
-                        <option value="$table_row['shorten']"><?php echo $table_row['description'];?></option>
+                        <option value="<?php echo $table_row['shorten'];?>"><?php echo $table_row['description'];?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -44,10 +44,10 @@
             <div id="typeGroup" class="control-group">
                 <label class="control-label"> </label>
                 <div class="controls">
+                	<input type="hidden" id="type" name="type" value="">
                     <div class="btn-group" data-toggle="buttons-radio">
-                    	<input type='hidden' name="attendy" value='default value'>
-		    			<button type="button" class="btn btn-primary" name="type" id="resync" value="resync"><?php echo $sprache->resync;?></input>
-		    			<button type="button" class="btn btn-primary" name="type" id="reinstall" value="reinstall"><?php echo $sprache->reinstall;?></input>
+		    			<button type="button" class="btn btn-primary" value="resync"><?php echo $sprache->resync;?></input>
+		    			<button type="button" class="btn btn-primary" value="reinstall"><?php echo $sprache->reinstall;?></input>
 					</div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
 					});
 				});		
 				$('div[data-toggle="buttons-radio"] .btn').click(function() {
-					$(this).parent().find('input').val($(this).val());
+					$(this).parent().parent().find('input').val($(this).val());
 				});
 			});
 			</script>
