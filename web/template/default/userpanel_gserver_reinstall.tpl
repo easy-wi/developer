@@ -32,9 +32,9 @@
                 <div class="controls">
                     <select id="template" name="template">
                     	<option value="4"><?php echo $gsprache->all;?></option>
-                        <option value="1"><span class="templateShorten"></span></option>
-						<option value="2"><span class="templateShorten"></span>-2</option>
-						<option value="3"><span class="templateShorten"></span>-3</option>
+                        <option id="template1" value="1"></option>
+						<option id="template2" value="2"></option>
+						<option id="template3" value="3"></option>
                     </select>
                 </div>
             </div>
@@ -57,9 +57,9 @@
 				$('#game').change(function() {
 					var shorten=$('#game').val();
 					$('#templateGroup').show();
-					$('.templateShorten').each(function() {
-						$(this).text(shorten);
-					});
+					$('#template1').text(shorten);
+					$('#template2').text(shorten+'-2');
+					$('#template3').text(shorten+'-3');
 				});		
 				$('div[data-toggle="buttons-radio"] .btn').click(function() {
 					$(this).parent().parent().find('input').val($(this).val());
