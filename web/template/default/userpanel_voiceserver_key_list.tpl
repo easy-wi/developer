@@ -22,7 +22,7 @@
             <tr>
                 <th><?php echo $sprache->groupname;?></th>
                 <th><?php echo $sprache->token;?></th>
-                <th><?php echo $gsprache->del;?></th>
+                <th> </th>
             </tr>
             </thead>
             <tbody>

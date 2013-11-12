@@ -11,10 +11,10 @@
 </div>
 <hr>
 <?php foreach ($table as $table_row){ ?>
-<div class="row-fluid span12 alert <?php if($table_row['stopped']=='N') echo 'alert-success'; else echo 'alert-block';?>">
-    <h4 class="row-fluid span12 inline"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="14" /> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h4>
-    <?php if(!empty($table_row['premoved'])){ ?><div class="row-fluid span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['premoved'];?></div><?php } ?>
-    <?php if(!empty($table_row['nameremoved'])){ ?><div class="row-fluid span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['nameremoved'];?></div><?php } ?>
+<div class="row-fluid span11 alert <?php if($table_row['stopped']=='N') echo 'alert-success'; else echo 'alert-block';?>">
+    <h5 class="row-fluid span12 inline"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="14" /> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h5>
+    <?php if(!empty($table_row['premoved'])){ ?><div class="row-fluid"><div class="span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['premoved'];?></div></div><?php } ?>
+    <?php if(!empty($table_row['nameremoved'])){ ?><div class="row-fluid"><div class="span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['nameremoved'];?></div></div><?php } ?>
     <div class="row-fluid">
         <div class="span12 btn-group-vertical">
             <a href="userpanel.php?w=gs&amp;d=rs&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->confirm_restart;?>');"><button class="btn btn-mini btn-success inline"><i class="icon-white icon-play"></i> <?php echo $sprache->restarts;?></button></a>
