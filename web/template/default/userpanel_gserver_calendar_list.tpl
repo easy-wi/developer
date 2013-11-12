@@ -50,7 +50,7 @@ $(document).ready(function (){
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					<th><?php echo $gsprache->time;?></th>
+					<th><?php echo $gsprache->datetime;?></th>
 					<th><?php echo $gsprache->template;?></th>
 					<th><?php echo $sprache->map;?></th>
 					<th><?php echo $sprache->restart;?></th>

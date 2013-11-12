@@ -12,6 +12,7 @@
     <columns>Tilpassede kolonner</columns>
     <comments>Kommentarer</comments>
 	<databases>Databaser</databases>
+	<datetime></datetime>
     <dedicated>Dedikeret</dedicated>
 	<del>Slet</del>
     <delSafe>Sikker Slat</delSafe>

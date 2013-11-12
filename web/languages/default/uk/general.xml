@@ -12,6 +12,7 @@
     <columns>Custom Columns</columns>
     <comments>Comments</comments>
 	<databases>Databases</databases>
+	<datetime>Date / Time</datetime>
     <dedicated>Dedicated</dedicated>
 	<del>Delete</del>
     <delSafe>Safe Delete</delSafe>
