@@ -58,7 +58,7 @@
                 </li>
             </ul>
             <p class="navbar-text pull-left">
-            	<?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
+            	<?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>
         	</p>
         	
         	<span class="navbar-text">Easy-WI.com</span>

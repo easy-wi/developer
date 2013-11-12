@@ -21,10 +21,10 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputRecover"><?php echo $sprache->recover;?></label>
+                <label class="control-label" for="inputRecover"> </label>
                 <div class="controls">
                     <input type="hidden" name="action" value="rb2" />
-                    <button class="btn btn-primary" id="inputRecover" type="submit"><i class="icon-refresh icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputRecover" type="submit"><i class="icon-refresh icon-white"></i> <?php echo $sprache->recover;?></button>
                 </div>
             </div>
         </form>
