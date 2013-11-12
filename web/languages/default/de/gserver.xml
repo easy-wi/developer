@@ -20,7 +20,7 @@
     <confirm_restart>Gameserver wirklich (re)starten?</confirm_restart>
     <confirm_stop>Gameserver wirklich stoppen?</confirm_stop>
     <coreBind>CPU Kerne</coreBind>
-    <create>erstellen</create>
+    <create>Erstellen</create>
     <delete_server>Folgende(r) Gameserver werden/wird gelöscht</delete_server>
     <details>Erweiterte Serveroptionen</details>
     <easy>Einfach</easy>
