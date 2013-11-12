@@ -22,7 +22,7 @@
             <tr>
                 <th><?php echo $sprache->groupname;?></th>
                 <th><?php echo $sprache->token;?></th>
-                <th> </th>
+                <th class="span1"> </th>
             </tr>
             </thead>
             <tbody>
@@ -30,7 +30,7 @@
             <tr>
                 <td><?php echo $token['groupname'];?></td>
                 <td><?php echo $token['token'];?></td>
-                <td>
+                <td class="span1">
                     <form method="post" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                         <input type="hidden" name="token" value="<?php echo $token['token'];?>" >
                         <input type="hidden" name="action" value="dl" >
