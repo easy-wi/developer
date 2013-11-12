@@ -11,13 +11,6 @@
     <div class="span12 alert alert-info"><?php echo $sprache->help_fdl;?></div>
 </div>
 <hr>
-
-<div class="row-fluid">
-    <div class="span4"><?php echo $sprache->haupt;?></div>
-    <div class="span4"><?php echo $fdlpath[1];?></div>
-    <div class="span4"></div>
-</div>
-<hr>
 <div class="row-fluid">
     <div class="span12">
         <table class="table table-striped table-bordered table-hover">

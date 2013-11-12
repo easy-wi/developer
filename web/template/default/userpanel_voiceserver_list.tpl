@@ -12,7 +12,7 @@
 <hr>
 <?php foreach ($table as $table_row) { ?>
 <div class="row-fluid span11 alert <?php if($table_row['stopped']=='Y') echo 'alert-block'; else if($table_row['stopped']=='C') echo 'alert-error'; else echo 'alert-success';?>">
-    <h4><?php echo $table_row['server'];?></h4>
+    <h4 class="row-fluid span12 inline"><?php echo $table_row['server'];?></h4>
     <div class="row-fluid">
         <div class="span12 btn-group-vertical">
             <a href="userpanel.php?w=vo&amp;d=st&amp;id=<?php echo $table_row['id'];?>&amp;action=re&amp;r=vo" onclick="return confirm('<?php echo $table_row['address'];?>: <?php echo $sprache->confirm_restart;?>');"><button class="btn btn-mini btn-success"><i class="icon-white icon-play"></i> <?php echo $gsprache->start;?></button></a>
