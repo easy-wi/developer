@@ -19,6 +19,7 @@
     <delDB>Fjern fra database</delDB>
     <feeds>Feeds</feeds>
 	<edit>Rediger</edit>
+	<exec></exec>
 	<fastdownload>Fastdownload</fastdownload>
 	<gameserver>Spilserver</gameserver>
     <gameroot>Spil Rodenserver</gameroot>

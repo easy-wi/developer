@@ -15,6 +15,54 @@
     <div class="span6">
         <form class="form-horizontal" action="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
+            
+            <div class="control-group">
+                <label class="control-label" for="game"></label>
+                <div class="controls">
+                    <select id="game" name="game">
+                    	<?php foreach ($table as $table_row){ ?>
+                        <option value="$table_row['shorten']"><?php echo $table_row['description'];?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label" for="template"></label>
+                <div class="controls">
+                    <select id="template" name="template">
+                    	<option value="4"><?php echo $gsprache->all;?></option>
+                        <option value="1"></option>
+						<option value="2">-2</option>
+						<option value="3">-3</option>
+                    </select>
+                </div>
+            </div>
+            
+            
+            
+            <div class="control-group">
+                <label class="control-label"> </label>
+                <div class="controls">
+                    <div class="btn-group" data-toggle="buttons-radio">
+		    			<input type="button" class="btn btn-primary" name="type" id="resync" value="resync"><?php echo $sprache->resync;?></input>
+		    			<input type="button" class="btn btn-primary" name="type" id="reinstall" value="reinstall"><?php echo $sprache->reinstall;?></input>
+					</div>
+                </div>
+            </div>
+            
+            
+			<div class="control-group">
+                <label class="control-label" for="inputEdit"></label>
+                <div class="controls">
+                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->exec;?></button>
+                    <input type="hidden" name="action" value="ri">
+                </div>
+            </div>
+            
+            
+            
+            
             <div class="control-group">
                 <label class="checkbox inline" for="resync"><?php echo $sprache->resync;?></label>
                 <div class="controls checkbox inline">
