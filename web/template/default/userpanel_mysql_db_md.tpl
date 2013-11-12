@@ -28,19 +28,19 @@
             <div class="control-group">
                 <label class="control-label" for="inputDescription"><?php echo $sprache->description;?></label>
                 <div class="controls">
-                    <input class="span12" id=inputDescription type="text" name="description" value="<?php echo $description;?>">
+                    <input id=inputDescription type="text" name="description" value="<?php echo $description;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="password"><?php echo $sprache->password;?></label>
                 <div class="controls">
-                    <input class="span12" id="password" type="text" name="password" value="<?php echo $password;?>">
+                    <input id="password" type="text" name="password" value="<?php echo $password;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="ips"><?php echo $sprache->ips;?></label>
                 <div class="controls">
-                    <textarea class="span12" id="ips" name="ips" rows="5"><?php echo $ips?></textarea>
+                    <textarea id="ips" name="ips" rows="5"><?php echo $ips?></textarea>
                 </div>
             </div>
             <div class="control-group">

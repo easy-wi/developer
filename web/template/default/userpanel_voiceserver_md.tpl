@@ -93,7 +93,7 @@
             <div class="control-group">
                 <label class="control-label" for="virtualserver_hostmessage_mode"><?php echo $sprache->virtualserver_hostmessage_mode;?></label>
                 <div class="controls">
-                    <select class="span12" id="virtualserver_hostmessage_mode" name="virtualserver_hostmessage_mode">
+                    <select id="virtualserver_hostmessage_mode" name="virtualserver_hostmessage_mode">
                         <option value="0"><?php echo $sprache->virtualserver_hostmessage_mode_0;?></option>
                         <option value="1" <?php if($virtualserver_hostmessage_mode==1) echo 'selected="selected"';?>><?php echo $sprache->virtualserver_hostmessage_mode_1;?></option>
                         <option value="2" <?php if($virtualserver_hostmessage_mode==2) echo 'selected="selected"';?>><?php echo $sprache->virtualserver_hostmessage_mode_2;?></option>
