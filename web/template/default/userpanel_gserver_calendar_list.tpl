@@ -50,14 +50,14 @@ $(document).ready(function (){
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					<td><?php echo $gsprache->time;?></td>
-					<td><?php echo $gsprache->template;?></td>
-					<td><?php echo $sprache->map;?></td>
-					<td><?php echo $sprache->restart;?></td>
-					<td><?php echo $gsprache->backup;?></td>
-					<td><?php echo $sprache->protect;?></td>
-					<td> </td>
-					<td> </td>
+					<th><?php echo $gsprache->time;?></th>
+					<th><?php echo $gsprache->template;?></th>
+					<th><?php echo $sprache->map;?></th>
+					<th><?php echo $sprache->restart;?></th>
+					<th><?php echo $gsprache->backup;?></th>
+					<th><?php echo $sprache->protect;?></th>
+					<th> </th>
+					<th> </th>
 				</td>
 			</thead>
             <tbody>
@@ -72,7 +72,7 @@ $(document).ready(function (){
 				foreach($days as $day => $dayname) {
 					for($i=0;$i<=23;$i++) {
 						if(!empty($restarts[$i][$day])){ 
-							$restart=explode("br", $restarts[$i][$day]['out']);
+							$restart=explode("<br/>", $restarts[$i][$day]['out']);
 							?>
 							<td>
 								<?php echo $dayname." - ".str_pad($i,2,"0",STR_PAD_LEFT).":00" ?>
