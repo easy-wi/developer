@@ -141,6 +141,7 @@
     <tuesday>Dienstag</tuesday>
     <tv>TV erlaubt</tv>
     <tvport>TV Port</tvport>
+    <type>Installationsart</type>
     <updated>Konfigurationsdatei erfolgreich bearbeitet</updated>
     <updatetime>Status vom</updatetime>
     <usage>Serverbelegung</usage>
