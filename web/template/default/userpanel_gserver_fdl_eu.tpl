@@ -9,7 +9,7 @@
     </div>
 </div>
 <div class="row-fluid hidden-phone">
-    <div class="span12 alert alert-info"><?php echo $sprache->help_fdl;?></info>
+    <div class="span12 alert alert-info"><?php echo $sprache->help_fdl;?></div>
 </div>
 <hr>
 <?php if (count($errors)>0){ ?>
