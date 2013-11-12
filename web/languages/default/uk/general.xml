@@ -24,6 +24,7 @@
     <fastdownload>Fastdownload</fastdownload>
     <feeds>Feeds</feeds>
     <file>File</file>
+    <game>Game</game>
 	<gameserver>Gameserver</gameserver>
     <gameroot>Game Rootserver</gameroot>
     <greating_home>Welcome to the %name% webinterface!</greating_home>

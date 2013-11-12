@@ -16,8 +16,8 @@
         <form class="form-horizontal" action="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             
-            <div class="control-group">
-                <label class="control-label" for="game"></label>
+            <div id="gameGroup" class="control-group">
+                <label class="control-label" for="game"><?php echo $gsprache->game;?></label>
                 <div class="controls">
                     <select id="game" name="game">
                     	<?php foreach ($table as $table_row){ ?>
@@ -27,29 +27,47 @@
                 </div>
             </div>
             
-            <div class="control-group">
-                <label class="control-label" for="template"></label>
+            <div id="templateGroup" class="control-group hide">
+                <label class="control-label" for="template"><?php echo $gsprache->template;?></label>
                 <div class="controls">
                     <select id="template" name="template">
                     	<option value="4"><?php echo $gsprache->all;?></option>
-                        <option value="1"></option>
-						<option value="2">-2</option>
-						<option value="3">-3</option>
+                        <option value="1"><span class="templateShorten"></span></option>
+						<option value="2"><span class="templateShorten"></span>-2</option>
+						<option value="3"><span class="templateShorten"></span>-3</option>
                     </select>
                 </div>
             </div>
             
             
             
-            <div class="control-group">
+            <div id="typeGroup" class="control-group">
                 <label class="control-label"> </label>
                 <div class="controls">
                     <div class="btn-group" data-toggle="buttons-radio">
-		    			<input type="button" class="btn btn-primary" name="type" id="resync" value="resync"><?php echo $sprache->resync;?></input>
-		    			<input type="button" class="btn btn-primary" name="type" id="reinstall" value="reinstall"><?php echo $sprache->reinstall;?></input>
+                    	<input type='hidden' name="attendy" value='default value'>
+		    			<button type="button" class="btn btn-primary" name="type" id="resync" value="resync"><?php echo $sprache->resync;?></input>
+		    			<button type="button" class="btn btn-primary" name="type" id="reinstall" value="reinstall"><?php echo $sprache->reinstall;?></input>
 					</div>
                 </div>
             </div>
+            
+			<script type="text/javascript">
+			$(document).ready(function (){
+				$('#game').change(function() {
+					var shorten=$('#game').val();
+					$('#templateGroup').show();
+					$('.templateShorten').each(function() {
+						$(this).text(shorten);
+					});
+				});		
+				$('div[data-toggle="buttons-radio"] .btn').click(function() {
+					$(this).parent().find('input').val($(this).val());
+				});
+			});
+			</script>
+            
+            
             
             
 			<div class="control-group">

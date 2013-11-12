@@ -21,6 +21,7 @@
 	<edit>Rediger</edit>
 	<exec></exec>
 	<fastdownload>Fastdownload</fastdownload>
+	<game></game>
 	<gameserver>Spilserver</gameserver>
     <gameroot>Spil Rodenserver</gameroot>
 	<groups>Grupper</groups>
