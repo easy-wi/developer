@@ -74,6 +74,7 @@ $(document).ready(function (){
 						if(!empty($restarts[$i][$day])){ 
 							$restart=explode("<br />", $restarts[$i][$day]['out']);
 							?>
+							<tr>
 							<td>
 								<?php echo $dayname." - ".str_pad($i,2,"0",STR_PAD_LEFT).":00" ?>
 							</td>
@@ -106,6 +107,7 @@ $(document).ready(function (){
 				                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->mod;?></button>
 			                	</form>
 		                	</td>
+		                	</tr>
 		                <?php
 		                }
 					}
