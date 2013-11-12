@@ -15,17 +15,35 @@
 
 <div class="row-fluid">
 	<div class="span12">
-			<form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
-                <input type="hidden" name="date" value=""/>
-                <input type="hidden" name="edit" value="edit" />
-                
-                
-                
-                <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
+			<form id="newRestart" action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post" class="form-inline">
+                <input type="hidden" id="date" name="date" value=""/>
+                <input type="hidden" id="edit" name="edit" value="edit" />
+                <select id="day" name="day">
+                    <option value="mon"><?php echo $sprache->monday;?></option>
+                    <option value="tue"><?php echo $sprache->tuesday;?></option>
+                    <option value="wed"><?php echo $sprache->wednesday;?></option>
+                    <option value="thu"><?php echo $sprache->thursday;?></option>
+                    <option value="fri"><?php echo $sprache->friday;?></option>
+                    <option value="sat"><?php echo $sprache->saturday;?></option>
+                    <option value="sun"><?php echo $sprache->sunday;?></option>
+                </select>
+                <select id="hour" name="hour">
+                	<?php for($i=0;$i<=23;$i++) { ?>
+                    <option value="<?php echo $i;?>"><?php echo str_pad($i,2,"0",STR_PAD_LEFT); ;?>:00</option>
+                    <?php } ?>
+                </select>
+                <input type="button" class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i> <?php echo $gsprache->add;?></button>
             </form>
 	</div>
 </div>
-
+<script type="text/javascript">
+$(document).ready(function (){
+	$('#newRestart').submit(function() {
+		var date=$('#day').val()+'_'+$('#hour').val();
+		$('#date').val(date);
+	});		
+});
+</script>  
 
 
 
