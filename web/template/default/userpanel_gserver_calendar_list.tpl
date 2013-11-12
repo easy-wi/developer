@@ -54,7 +54,7 @@ $(document).ready(function (){
 				foreach($days as $day) {
 					for($i=0;$i<=23;$i++) {
 						if(!empty($restarts[$i][$day])){ 
-							$restart=explode("<br>", $restarts[$i]['mon']['out']);
+							$restart=explode("<br>", $restarts[$i][$day]['out']);
 							?>
 							<td>
 								<?php echo $restart[0]; ?>
@@ -78,14 +78,14 @@ $(document).ready(function (){
 				                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
 				                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
 				                    <input type="hidden" name="delete" value="delete" />
-				                    <button class="btn btn-danger btn-mini btn-block"><i class="icon-trash icon-white"></i></button>
+				                    <button class="btn btn-danger btn-mini btn-block"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
 				                </form>
 			                </td>
 							<td class="span1">
 				                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
 				                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
 				                    <input type="hidden" name="edit" value="edit" />
-				                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
+				                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i> <?php echo $gsprache->mod;?></button>
 			                	</form>
 		                	</td>
 		                <?php
