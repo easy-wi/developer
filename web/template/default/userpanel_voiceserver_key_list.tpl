@@ -16,7 +16,7 @@
 </div>
 <br>
 <div class="row-fluid">
-    <div class="span12">
+    <div class="span8">
         <table class="table table-condensed table-bordered table-striped table-hover">
             <thead>
             <tr>
