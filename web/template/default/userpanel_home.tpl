@@ -15,7 +15,7 @@
 <hr>
 <?php if($crashedArray['ticketsOpen']>0){ ?>
 <div class="row-fluid">
-    <div class="span11 alert alert-block alert-info">
+    <div class="span12 alert alert-block alert-info">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <h4><?php echo $sprache_bad->tickets; ?></h4>
         <a href="userpanel.php?w=ti"><?php echo $crashedArray['tickets']."/".$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets_open; ?></a>
@@ -24,7 +24,7 @@
 <?php } ?>
 <?php if($crashedArray['gsCrashed']>0){ ?>
 <div class="row-fluid">
-    <div class="span11 alert alert-block alert-error">
+    <div class="span12 alert alert-block alert-error">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <h4><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></h4>
         <?php foreach ($crashed as $row) { ?>
@@ -35,7 +35,7 @@
 <?php } ?>
 <?php if($crashedArray['gsTag']>0){ ?>
 <div class="row-fluid">
-    <div class="span11 alert alert-block alert-error">
+    <div class="span12 alert alert-block alert-error">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <h4><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></h4>
         <?php foreach ($tag_removed as $row) { ?>
@@ -46,7 +46,7 @@
 <?php } ?>
 <?php if($crashedArray['gsPWD']>0){ ?>
 <div class="row-fluid">
-    <div class="span11 alert alert-block alert-error">
+    <div class="span12 alert alert-block alert-error">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <h4><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></h4>
         <?php foreach ($pwd_removed as $row) { ?>
@@ -57,7 +57,7 @@
 <?php } ?>
 <?php if($crashedArray['ts3']>0){ ?>
 <div class="row-fluid">
-    <div class="span11 alert alert-block alert-error">
+    <div class="span12 alert alert-block alert-error">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <h4><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></h4>
         <?php foreach ($crashed_ts3 as $row) { ?>
@@ -71,7 +71,7 @@
 <?php foreach ($array as $feed) { ?>
 <div class="row-fluid">
     <h4><a href="<?php echo $feed['link'];?>" target="_blank"><?php echo $feed['title'];?></a></h4>
-    <div class="span11">
+    <div class="span12">
         <?php echo $feed['text'];?>
     </div>
 </div>

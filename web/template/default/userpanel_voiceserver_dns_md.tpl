@@ -15,7 +15,7 @@
 </div>
 <hr>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=vd&amp;d=md&amp;id=<?php echo $id;?>&amp;r=vd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">

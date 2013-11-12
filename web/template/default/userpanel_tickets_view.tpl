@@ -28,7 +28,7 @@
 <?php foreach ($table as $table_row) { ?>
 <div class="row-fluid">
     <h5><a href="#" onclick="textdrop('<?php echo $table_row['writedate'];?>')"><?php echo $table_row['writedate'];?></a> <?php echo $sprache->writer.': '.$table_row['writer'];?></h5>
-    <div id="<?php echo $table_row['writedate'];?>" class="span11">
+    <div id="<?php echo $table_row['writedate'];?>" class="span12">
         <?php echo $table_row['ticket'];?>
     </div>
 </div>

@@ -12,6 +12,27 @@
     <div class="span12 alert alert-info"><?php echo $sprache->help_calendar;?></div>
 </div>
 <hr>
+
+<div class="row-fluid">
+	<div class="span12">
+			<form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
+                <input type="hidden" name="date" value=""/>
+                <input type="hidden" name="edit" value="edit" />
+                
+                
+                
+                <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
+            </form>
+	</div>
+</div>
+
+
+
+
+
+
+
+<hr>
 <div class="row-fluid">
 <div class="span12">
 <table class="table table-striped table-bordered table-hover fixed">

@@ -51,3 +51,7 @@ table.fixed {
 table form {
 	margin-bottom: 0px;
 }
+
+.btn {
+	 white-space: nowrap;
+}

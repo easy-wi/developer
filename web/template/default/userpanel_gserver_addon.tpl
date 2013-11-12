@@ -24,7 +24,7 @@
             <?php foreach ($table['tools'] as $table_row) { ?>
             <tr>
                 <td><?php echo $table_row['menudescription'];?> <a href="#" id="<?php echo $table_row['adid'].'-'.$table['id'];?>" data-toggle="tooltip" data-placement="right" title="<?php echo $table_row['addescription'];?>"><i class="icon-question-sign"></i></a><?php echo ($table_row['alt']=='Install' or $table_row['alt']=='Remove') ? '': ' '.$table_row['alt'];?></td>
-                <td class="span2"><a href="<?php echo $table_row['link'];?>" onclick="return confirm('<?php echo $gsprache->sure;?>');"><span class="btn btn-<?php if($table_row['bootstrap']=='icon-warning-sign') echo 'warning'; elseif($table_row['bootstrap']=='icon-plus-sign') echo 'success'; else echo 'danger'; ?> btn-mini"><i class="<?php echo $table_row['bootstrap'];?> icon-white"></i> <?php if($table_row['bootstrap']=='icon-warning-sign') echo ""; elseif($table_row['bootstrap']=='icon-plus-sign') echo $gsprache->add; else echo $gsprache->del; ?></span></a></td>
+                <td class="span1"><a href="<?php echo $table_row['link'];?>" onclick="return confirm('<?php echo $gsprache->sure;?>');"><span class="btn btn-<?php if($table_row['bootstrap']=='icon-warning-sign') echo 'warning'; elseif($table_row['bootstrap']=='icon-plus-sign') echo 'success'; else echo 'danger'; ?> btn-mini"><i class="<?php echo $table_row['bootstrap'];?> icon-white"></i> <?php if($table_row['bootstrap']=='icon-warning-sign') echo ""; elseif($table_row['bootstrap']=='icon-plus-sign') echo $gsprache->add; else echo $gsprache->del; ?></span></a></td>
             </tr>
             <?php }?>
             </tbody>
@@ -37,7 +37,7 @@
             <?php foreach ($table['maps'] as $table_row) { ?>
             <tr>
                 <td><?php echo $table_row['menudescription'];?> <a href="#" id="<?php echo $table_row['adid'].'-'.$table['id'];?>" data-toggle="tooltip" data-placement="right" title="<?php echo $table_row['addescription'];?>"><i class="icon-question-sign"></i></a><?php echo ($table_row['alt']=='Install' or $table_row['alt']=='Remove') ? '': ' '.$table_row['alt'];?></td>
-                <td class="span2"><a href="<?php echo $table_row['link'];?>" onclick="return confirm('<?php echo $gsprache->sure;?>');"><span class="btn btn-<?php if($table_row['bootstrap']=='icon-warning-sign') echo 'warning'; elseif($table_row['bootstrap']=='icon-plus-sign') echo 'success'; else echo 'danger'; ?> btn-mini"><i class="<?php echo $table_row['bootstrap'];?> icon-white"></i> <?php if($table_row['bootstrap']=='icon-warning-sign') echo ""; elseif($table_row['bootstrap']=='icon-plus-sign') echo $gsprache->add; else echo $gsprache->del; ?></span></a></td>
+                <td class="span1"><a href="<?php echo $table_row['link'];?>" onclick="return confirm('<?php echo $gsprache->sure;?>');"><span class="btn btn-<?php if($table_row['bootstrap']=='icon-warning-sign') echo 'warning'; elseif($table_row['bootstrap']=='icon-plus-sign') echo 'success'; else echo 'danger'; ?> btn-mini"><i class="<?php echo $table_row['bootstrap'];?> icon-white"></i> <?php if($table_row['bootstrap']=='icon-warning-sign') echo ""; elseif($table_row['bootstrap']=='icon-plus-sign') echo $gsprache->add; else echo $gsprache->del; ?></span></a></td>
             </tr>
             <?php }?>
             </tbody>
