@@ -72,7 +72,7 @@ $(document).ready(function (){
 				foreach($days as $day => $dayname) {
 					for($i=0;$i<=23;$i++) {
 						if(!empty($restarts[$i][$day])){ 
-							$restart=explode("<br/>", $restarts[$i][$day]['out']);
+							$restart=explode("<br />", $restarts[$i][$day]['out']);
 							?>
 							<td>
 								<?php echo $dayname." - ".str_pad($i,2,"0",STR_PAD_LEFT).":00" ?>
