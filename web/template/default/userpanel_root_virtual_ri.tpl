@@ -14,7 +14,7 @@
 </div>
 <?php }else{ ?>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span8">
         <dl class="dl-horizontal">
             <dt><?php echo $sprache->status?>:</dt>
             <dd><?php echo $status;?></dd>
@@ -59,7 +59,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-refresh icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-refresh icon-white"></i></button>
                 </div>
             </div>
         </form>

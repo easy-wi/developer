@@ -40,7 +40,7 @@
                     </select>
                 </div>
             </div>
-            <div id="templateGroup" class="control-group hide">
+            <div id="templateGroup" class="control-group">
                 <label class="control-label" for="template"><?php echo $gsprache->template;?></label>
                 <div class="controls">
                     <select id="template" name="template[]">
@@ -64,7 +64,7 @@
 			<div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->exec;?></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->exec;?></button>
                     <input type="hidden" name="action" value="ri">
                 </div>
             </div>

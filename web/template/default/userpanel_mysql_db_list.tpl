@@ -7,7 +7,7 @@
     </div>
 </div>
 <?php foreach ($table as $table_row) { ?>
-<div class="row-fluid span11 alert alert-success">
+<div class="row-fluid span12 alert alert-success">
     <div class="row-fluid">
         <dl class="dl-horizontal">
             <dt><?php echo $gsprache->settings; ?></dt>

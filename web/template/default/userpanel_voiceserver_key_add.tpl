@@ -14,7 +14,7 @@
 </div>
 <hr>
 <div class="row-fluid">
-    <div class="span6">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <div class="control-group">
                 <label class="control-label" for="groupname"><?php echo $sprache->groupname;?></label>
@@ -29,7 +29,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
                     <input type="hidden" name="action" value="ad">
                 </div>
             </div>

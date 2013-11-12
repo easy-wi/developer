@@ -20,12 +20,12 @@
 </div>
 <hr>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <div class="control-group">
                 <label class="control-label" for="name"><?php echo $sprache->backupname;?></label>
                 <div class="controls">
-                    <input id="name" type="text" name="name" placeholder="New Backup" class="span10" required>
+                    <input id="name" type="text" name="name" placeholder="New Backup" required>
                 </div>
             </div>
             <div class="control-group">

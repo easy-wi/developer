@@ -18,7 +18,7 @@
 </div>
 <br>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span12">
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
