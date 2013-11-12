@@ -20,11 +20,9 @@
                 <textarea id="inputConfig"  rows="20" class="span12" name="cleanedconfig"><?php echo $cleanedconfig;?></textarea>
             </div>
             <div class="control-group">
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
-                    <input type="hidden" name="config" value="<?php echo $postconfig;?>">
-                    <input type="hidden" name="update" value="1">
-                </div>
+                <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
+                <input type="hidden" name="config" value="<?php echo $postconfig;?>">
+                <input type="hidden" name="update" value="1">
             </div>
         </form>
     </div>
