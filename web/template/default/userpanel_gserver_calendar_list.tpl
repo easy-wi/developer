@@ -32,7 +32,7 @@
                     <option value="<?php echo $i;?>"><?php echo str_pad($i,2,"0",STR_PAD_LEFT); ;?>:00</option>
                     <?php } ?>
                 </select>
-                <input type="button" class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i> <?php echo $gsprache->add;?></button>
+                <button class="btn btn-primary btn-block"><i class="icon-edit icon-white"></i> <?php echo $gsprache->add;?></button>
             </form>
 	</div>
 </div>
