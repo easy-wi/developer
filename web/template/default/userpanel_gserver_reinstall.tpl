@@ -16,8 +16,6 @@
         <form class="form-horizontal" action="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <script type="text/javascript">
 			$(document).ready(function (){
-				$('#resync').button('toggle');
-				$('#game').change();
 				$('#game').change(function() {
 					var shorten=$('#game').val();
 					$('#template1').text(shorten);
@@ -27,6 +25,9 @@
 				$('div[data-toggle="buttons-radio"] .btn').click(function() {
 					$(this).parent().parent().find('input').val($(this).val());
 				});
+				
+				$('#game').change();
+				$('#resync').button('toggle');
 			});
 			</script>  
             <input type="hidden" name="token" value="<?php echo token();?>">     
