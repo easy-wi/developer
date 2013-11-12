@@ -29,7 +29,7 @@
             </select>
             <select id="hour" name="hour">
             	<?php for($i=0;$i<=23;$i++) { ?>
-                <option value="<?php echo $i;?>"><?php echo str_pad($i,2,"0",STR_PAD_LEFT); ;?>:00</option>
+                <option value="<?php echo $i;?>"><?php echo str_pad($i,2,"0",STR_PAD_LEFT);?>:00</option>
                 <?php } ?>
             </select>
             <button class="btn btn-primary"><i class="icon-edit icon-white"></i> <?php echo $gsprache->add;?></button>
@@ -48,14 +48,33 @@ $(document).ready(function (){
 <div class="row-fluid">
 	<div class="span12">
 		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<td><?php echo $gsprache->time;?></td>
+				<td><?php echo $sprache->template;?></td>
+				<td><?php echo $sprache->map;?></td>
+				<td><?php echo $sprache->restart;?></td>
+				<td><?php echo $sprache->backup;?></td>
+				<td><?php echo $sprache->protection;?></td>
+				<td> </td>
+				<td> </td>
+			</thead>
             <tbody>
 				<?php
-				$days=array('mon','tue','wed','thu','fri','sat','sun');
-				foreach($days as $day) {
+				$days=array('mon'=>$sprache->monday,
+					'tue'=>$sprache->tuesday,
+					'wed'=>$sprache->wednesday,
+					'thu'=>$sprache->thursday,
+					'fri'=>$sprache->friday,
+					'sat'=>$sprache->saturday,
+					'sun'=>$sprache->sunday);
+				foreach($days as $day => $dayname) {
 					for($i=0;$i<=23;$i++) {
 						if(!empty($restarts[$i][$day])){ 
 							$restart=explode("br", $restarts[$i][$day]['out']);
 							?>
+							<td>
+								<?php $dayname." - ".str_pad($i,2,"0",STR_PAD_LEFT).":00" ?>
+							</td>
 							<td>
 								<?php echo $restart[0]; ?>
 							</td>
@@ -67,9 +86,6 @@ $(document).ready(function (){
 							</td>
 							<td>
 								<?php echo $restart[3]; ?>
-							</td>
-							<td>
-								<?php echo $restart[4]; ?>
 							</td>
 							<td>
 								<?php if(isset($restarts[$i]['mon']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['mon']['img'];?>.png" alt="<?php echo $restarts[$i]['mon']['alt'];?>" width="16" height="16"/><?php }?>
