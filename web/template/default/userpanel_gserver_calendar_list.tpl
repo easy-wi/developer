@@ -13,7 +13,7 @@
 </div>
 <hr>
 <div class="row-fluid">
-<div class="span11">
+<div class="span12">
 <table class="table table-striped table-bordered table-hover fixed">
 <thead>
 <tr>
