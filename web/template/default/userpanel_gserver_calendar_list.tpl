@@ -47,30 +47,53 @@ $(document).ready(function (){
 <br>
 <div class="row-fluid">
 	<div class="span12">
-		<?php
-		$days=array('mon','tue','wed','thu','fri','sat','sun');
-		foreach($days as $day) {
-			for($i=0;$i<=23;$i++) {
-				if(!empty($restarts[$i][$day])){ ?>
-					<?php echo $restarts[$i]['mon']['out']; if(isset($restarts[$i]['mon']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['mon']['img'];?>.png" alt="<?php echo $restarts[$i]['mon']['alt'];?>" width="16" height="16"/><?php }?>
-					<br><br>
-					
-	                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-	                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
-	                    <input type="hidden" name="delete" value="delete" />
-	                    <button class="btn btn-danger btn-mini btn-block"><i class="icon-trash icon-white"></i></button>
-	                </form>
-	                
-	                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
-	                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
-	                    <input type="hidden" name="edit" value="edit" />
-	                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
-                	</form>
-                	<br><br><br>
-                <?php
-                }
-			}
-		} ?>
+		<table class="table table-striped table-bordered table-hover">
+            <tbody>
+				<?php
+				$days=array('mon','tue','wed','thu','fri','sat','sun');
+				foreach($days as $day) {
+					for($i=0;$i<=23;$i++) {
+						if(!empty($restarts[$i][$day])){ 
+							$restart=explode("<br>", $restarts[$i]['mon']['out']);
+							?>
+							<td>
+								<?php echo $restart[0]; ?>
+							</td>
+							<td>
+								<?php echo $restart[1]; ?>
+							</td>
+							<td>
+								<?php echo $restart[2]; ?>
+							</td>
+							<td>
+								<?php echo $restart[3]; ?>
+							</td>
+							<td>
+								<?php echo $restart[4]; ?>
+							</td>
+							<td>
+								<?php if(isset($restarts[$i]['mon']['img'])){ ?><br /><img src="images/<?php echo $restarts[$i]['mon']['img'];?>.png" alt="<?php echo $restarts[$i]['mon']['alt'];?>" width="16" height="16"/><?php }?>
+							</td>
+							<td class="span1">
+				                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
+				                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
+				                    <input type="hidden" name="delete" value="delete" />
+				                    <button class="btn btn-danger btn-mini btn-block"><i class="icon-trash icon-white"></i></button>
+				                </form>
+			                </td>
+							<td class="span1">
+				                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
+				                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
+				                    <input type="hidden" name="edit" value="edit" />
+				                    <button class="btn btn-primary btn-mini btn-block"><i class="icon-edit icon-white"></i></button>
+			                	</form>
+		                	</td>
+		                <?php
+		                }
+					}
+				} ?>
+			</tbody>
+		</table>
 	</div>
 </div>
 
