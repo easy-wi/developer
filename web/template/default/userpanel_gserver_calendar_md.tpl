@@ -23,7 +23,7 @@
 					$('#inputTemplate1').text(shorten);
 					$('#inputTemplate2').text(shorten+'-2');
 					$('#inputTemplate3').text(shorten+'-3');
-					if($('#inputSwitch').find('option:selected').data('protected')=='Y') {
+					if($(this).find('option:selected').data('protected')=='Y') {
 						$('#protectedSettings').collapse('show');
 					}
 					else {
@@ -43,7 +43,7 @@
                     </select>
                 </div>
             </div>
-            <?php if(in_array('minecraft',$qstat_array)){ ?>
+            <?php if(!in_array('minecraft',$qstat_array)){ ?>
             <div class="control-group">
                 <label class="control-label" for="inputWorldSave">Minecraft Worldsave</label>
                 <div class="controls">
@@ -120,6 +120,7 @@
 	                    </div>
 	                </div>
 	            </div>
+	            <?php if(in_array('minecraft',$qstat_array)){ ?>
                 <div class="control-group">
                     <label class="control-label" for="inputMap"><?php echo $sprache->map;?></label>
                     <div class="controls">
@@ -134,6 +135,7 @@
                     </div>
                 </div>
                 <?php }?>
+            <?php }?>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
