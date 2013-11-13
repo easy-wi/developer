@@ -8,14 +8,6 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span6">
-        <dl class="dl-horizontal">
-            <dt><?php echo $sprache->passw;?></dt>
-            <dd><a href="admin.php?w=su&amp;d=pw"><span class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></span></a></dd>
-        </dl>
-    </div>
-</div>
-<div class="row-fluid">
     <div class="span11">
         <form class="form-horizontal" action="admin.php?w=su&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">

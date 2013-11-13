@@ -41,7 +41,7 @@
                         <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                         <li class="divider"></li>
                         <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>        
-                        <li><a href="userpanel.php?w=se&amp;d=pw"><?php echo $gsprache->password." ".$gsprache->change;?></a></li>
+                        <li><a href="admin.php?w=su&amp;d=pw"><?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                         <li><a href="admin.php?w=su"><?php echo $gsprache->settings;?></a></li>
                         <li class="divider"></li>
                         <li><a href="login.php?w=lo">Logout</a></li>
