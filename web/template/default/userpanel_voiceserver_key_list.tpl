@@ -12,7 +12,7 @@
 </div>
 <hr>
 <div class="row-fluid">
-	<a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $gsprache->add;?></span></a>
+	<a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $sprache->token;?></span></a>
 </div>
 <br>
 <div class="row-fluid">
