@@ -214,6 +214,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	$query->execute(array($gsswitch, $reseller_id));
 	$serverlist = $query->fetch(PDO::FETCH_ASSOC);
 	$query->closeCursor();
+	print_r($serverlist);
 	
 	$query = $sql->prepare("SELECT `normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
