@@ -115,7 +115,7 @@
                     </div>
                     <?php }?>
                 </div>
-                <div id="restartSettings" class="collapse <?php if ($restart=='Y') echo 'in';?>">
+                <div id="anticheatSettings" class="collapse <?php if ($pro=='Y') echo 'in';?>">
 	                <div class="control-group">
 	                    <label class="control-label" for="inputCheat"><?php echo $sprache->anticheat;?></label>
 	                    <div class="controls">
