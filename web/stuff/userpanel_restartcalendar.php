@@ -275,6 +275,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	
 	if ($ui->active('protected', 'post') && $serverlist['protected']=='Y') {
 		$protected = $ui->active('protected', 'post');
+		echo "p";
 	} else {
 		$protected = 'N';
 	}

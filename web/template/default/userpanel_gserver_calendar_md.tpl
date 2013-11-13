@@ -40,10 +40,10 @@
 						$('#mapSettings').collapse('show');
 					}
 					if(shorten='csgo') {
-						$('#mapgroup').collapse('show');
+						$('#mapGroupSettings').collapse('show');
 					}
 					else {
-						$('#mapgroup').collapse('hide');
+						$('#mapGroupSettings').collapse('hide');
 					}
 				});					
 				$('#inputSwitch').change();
@@ -143,6 +143,8 @@
 	                        <input id="inputMap" type="text" name="map" value="<?php echo $map;?>" >
 	                    </div>
 	                </div>
+	            </div>
+	            <div id="mapGroupSettings">
 	                <div class="control-group" id="mapGroup">
 	                    <label class="control-label" for="inputMapGroup"><?php echo $sprache->startmapgroup;?></label>
 	                    <div class="controls">
