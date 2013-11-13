@@ -21,7 +21,7 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-upload icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-upload icon-white"></i></button>
                 </div>
             </div>
         </form>
@@ -224,7 +224,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
                 </div>
             </div>
         </form>
