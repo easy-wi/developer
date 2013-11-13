@@ -327,27 +327,18 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		}
 		$anticheat = $row['anticheat'];
 		if ($anticheat==1) {
-			$anti = $anticheatsoft . ' ' . $sprache->on;
+			$restarts[$hour][$day]['anti'] = $anticheatsoft . ' ' . $sprache->on;
 		} else if ($anticheat==2) {
-			$anti = $anticheatsoft . ' ' . $sprache->off2;
+			$restarts[$hour][$day]['anti'] = $anticheatsoft . ' ' . $sprache->off2;
 		} else if ($anticheat==3 or $anticheat==4 or $anticheat==5 or $anticheat==6) {
-			$anti='EAC';
+			$restarts[$hour][$day]['anti'] = 'EAC';
 		}
 		if ($template==1) {
 			$template = '';
 		} else {
 			$template='-' . $template;
 		}
-        if ($restart == 'Y') {
-            $restarts[$hour][$day]['restart'] = $gsprache->yes;
-            $restarts[$hour][$day]['template'] = $shorten.$template;
-        	$restarts[$hour][$day]['map'] = $row['map'];
-        }
-        else {
-        	$restarts[$hour][$day]['restart'] = $gsprache->no;
-        	$restarts[$hour][$day]['template'] = "";
-        	$restarts[$hour][$day]['map'] = "";
-        }
+        
 		if ($backup == 'Y') {
 			$restarts[$hour][$day]['backup'] = $gsprache->yes;
 		} else {
@@ -363,16 +354,29 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		} else if ($qstat == 'a2s' and $restart == 'N') {
 			$restarts[$hour][$day]['sourcetvdemo'] = $gsprache->no;
 		}
-        if ($pallowed== 'Y') {
-            if ($protected== 'N') {
-                $restarts[$hour][$day]['protected'] = $gsprache->no;
-            } else if ($protected== 'Y') {
-                $restarts[$hour][$day]['protected'] = $gsprache->yes;
-            }
-        }
-        else {
-        	$restarts[$hour][$day]['protected'] = "";
-        }
+		
+		if ($restart == 'Y') {
+			$restarts[$hour][$day]['restart'] = $gsprache->yes;
+			$restarts[$hour][$day]['template'] = $shorten.$template;
+			$restarts[$hour][$day]['map'] = $row['map'];
+			if ($pallowed== 'Y') {
+				if ($protected== 'N') {
+					$restarts[$hour][$day]['protected'] = $gsprache->no;
+				} else if ($protected== 'Y') {
+					$restarts[$hour][$day]['protected'] = $gsprache->yes;
+				}
+			}
+			else {
+				$restarts[$hour][$day]['protected'] = "";
+			}
+		}
+		else {
+			$restarts[$hour][$day]['restart'] = $gsprache->no;
+			$restarts[$hour][$day]['template'] = "";
+			$restarts[$hour][$day]['map'] = "";
+			$restarts[$hour][$day]['protected'] = "";
+		}
+        
 	}
 	$template_file = 'userpanel_gserver_calendar_list.tpl';
 }
