@@ -38,14 +38,13 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                    	<li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
+                        <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                         <li class="divider"></li>
-                        <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>            
-                        <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
+                        <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>        
                         <li><a href="userpanel.php?w=se&amp;d=pw"><?php echo $gsprache->password." ".$gsprache->change;?></a></li>
-                        <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
+                        <li><a href="admin.php?w=su"><?php echo $gsprache->settings;?></a></li>
                         <li class="divider"></li>
-                        <?php } ?>
+                        <li><a href="login.php?w=lo">Logout</a></li>
 
                         <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
                         <li><a href="http://easy-wi.com" target="_blank">About</a></li>
@@ -55,7 +54,7 @@
                 </li>
             </ul>
             <p class="navbar-text pull-left">
-            	<?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>
+            	<?php foreach ($languages as $language){ echo '<a href="admin.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>
         	</p>
         	
         	<span class="navbar-text">Easy-WI.com</span>
@@ -65,14 +64,18 @@
         	</a>
    
 	        <div class="navbar-text pull-right">
-	            <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="userpanel.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
-	            <?php if($gscount>0 and $pa['gserver']) { ?>
-	            <?php if($crashedArray['gsCrashed']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
-	            <?php if($crashedArray['gsPWD']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
-	            <?php if($crashedArray['gsTag']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
-	            <?php }?>
-	            <?php if($voicecount>0 and $pa['voiceserver'] and $crashedArray['ts3']>0) { ?><a href="userpanel.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></a><?php }?>
-	        </div>
+                <?php if($pa['usertickets'] and $crashedArray['ticketsReseller']>0 and $reseller_id!=0) { ?><a href="admin.php?w=tr"><span class="badge badge-info"><?php echo $crashedArray['ticketsReseller'].'/'.$crashedArray['ticketsResellerOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
+                <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="admin.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
+                <?php if($pa['gserver'] and $gserver_module) { ?>
+                <?php if($crashedArray['gsCrashed']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
+                <?php if($crashedArray['gsPWD']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
+                <?php if($crashedArray['gsTag']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
+                <?php }?>
+                <?php if($pa['voiceserver'] and $crashedArray['ts3']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></span></a><?php }?>
+                <?php if($pa['voicemasterserver'] and $crashedArray['ts3Master']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3Master'].' '.$sprache_bad->ts3master_crashed; ?></span></a><?php }?>
+                <?php if($pa['roots'] and $crashedArray['masterserver']>0 and $gserver_module) { ?><a href="admin.php?w=ro"><span class="badge badge-important"><?php echo $crashedArray['masterserver'].' '.$sprache_bad->master_crashed; ?></span></a><?php }?>
+                <?php if($pa['vserverhost'] and $crashedArray['virtualHosts']>0 and $vserver_module and $reseller_id==0) { ?><a href="admin.php?w=vh"><span class="badge badge-important"><?php echo $crashedArray['virtualHosts'].' '.$sprache_bad->host_crashed; ?></span></a><?php }?>
+        	</div>
         </div>
     </div>
 </div>
