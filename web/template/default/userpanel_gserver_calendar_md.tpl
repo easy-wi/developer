@@ -39,6 +39,12 @@
 						$('#worldsaveSettings').collapse('hide');
 						$('#mapSettings').collapse('show');
 					}
+					if(shorten='csgo') {
+						$('#mapgroupSettings').collapse('show');
+					}
+					else {
+						$('#mapgroupSettings').collapse('hide');
+					}
 				});					
 				$('#inputSwitch').change();
 			});
@@ -53,7 +59,7 @@
                     </select>
                 </div>
             </div>
-            <div id="worldsaveSettings" class="hide">
+            <div id="worldsaveSettings">
 	            <div class="control-group">
 	                <label class="control-label" for="inputWorldSave">Minecraft Worldsave</label>
 	                <div class="controls">
@@ -137,14 +143,14 @@
 	                        <input id="inputMap" type="text" name="map" value="<?php echo $map;?>" >
 	                    </div>
 	                </div>
-	                <?php if ($defaultMapGroup!=null){ ?>
-	                <div class="control-group" id="mapGroup">
-	                    <label class="control-label" for="inputMapGroup"><?php echo $sprache->startmapgroup;?></label>
-	                    <div class="controls">
-	                        <input id="inputMapGroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>" >
-	                    </div>
-	                </div>
-	                <?php }?>
+	                <div id="mapgroupSettings">
+		                <div class="control-group" id="mapGroup">
+		                    <label class="control-label" for="inputMapGroup"><?php echo $sprache->startmapgroup;?></label>
+		                    <div class="controls">
+		                        <input id="inputMapGroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>" >
+		                    </div>
+		                </div>
+		            </div>
                 </div>
             </div>
             <div class="control-group">
