@@ -24,7 +24,7 @@
 					$('#inputTemplate2').text(shorten+'-2');
 					$('#inputTemplate3').text(shorten+'-3');
 				});					
-				$('#game').change();
+				$('#inputSwitch').change();
 
 			});
 			</script>
@@ -96,12 +96,12 @@
                     <div class="controls">
                         <select name="protected" id="inputProtected">
                             <option value="N"><?php echo $sprache->off2;?></option>
-                            <option value="Y"  data-toggle="collapse" data-target="#anticheatSettings" <?php if($pro=="Y") echo 'selected="selected"';?>><?php echo $sprache->on;?></option>
+                            <option value="Y" data-toggle="collapse" data-target="#anticheatSettings" <?php if($pro=="Y") echo 'selected="selected"';?>><?php echo $sprache->on;?></option>
                         </select>
                     </div>
                 </div>
                 <?php } ?>
-                <div id="anticheatSettings" class="control-group" class="collapse <?php if ($pro!='Y') echo 'in';?>">
+                <div id="anticheatSettings" class="control-group collapse <?php if ($pro!='Y') echo 'in';?>">
                     <label class="control-label" for="inputCheat"><?php echo $sprache->anticheat;?></label>
                     <div class="controls">
                         <select name="anticheat" id="inputCheat">

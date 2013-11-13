@@ -52,9 +52,9 @@ $(document).ready(function (){
 				<tr>
 					<th><?php echo $gsprache->datetime;?></th>
 					<th><?php echo $gsprache->backup;?></th>
-					<th><?php echo $sprache->restart;?></th>
+					<th><?php echo $sprache->restarts;?></th>
 					<th><?php echo $gsprache->template;?></th>
-					<th><?php echo $gsprache->map;?></th>
+					<th><?php echo $sprache->startmap;?></th>
 					<th><?php echo $sprache->protect;?></th>
 					<th> </th>
 					<th> </th>
