@@ -23,7 +23,7 @@
 					$('#inputTemplate1').text(shorten);
 					$('#inputTemplate2').text(shorten+'-2');
 					$('#inputTemplate3').text(shorten+'-3');
-					if($('#inputSwitch').find('option:selected').attr('data-protected')=='Y') {
+					if($('#inputSwitch').find('option:selected').data('protected')=='Y') {
 						$('#protectedSettings').collapse('show');
 					}
 					else {
