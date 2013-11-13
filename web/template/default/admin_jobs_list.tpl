@@ -64,7 +64,7 @@
                 <div class="control-group span6">
                     <label class="control-label" for="inputDelete"></label>
                     <div class="controls">
-                        <button class="btn btn-primary" id="inputDelete" type="submit"><i class="icon-remove icon-white"></i></button>
+                        <button class="btn btn-primary pull-right" id="inputDelete" type="submit"><i class="icon-remove icon-white"></i> <? echo $gsprache->del;?></button>
                     </div>
                 </div>
             </div>
