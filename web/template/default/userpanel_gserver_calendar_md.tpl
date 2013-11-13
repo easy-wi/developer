@@ -16,6 +16,19 @@
 <div class="row-fluid">
     <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+            <script type="text/javascript">
+			$(document).ready(function (){
+				$('#inputSwitch').change(function() {
+					var shorten=$('#inputSwitch').val();
+					$('#inputTemplate1').text(shorten);
+					$('#inputTemplate2').text(shorten+'-2');
+					$('#inputTemplate3').text(shorten+'-3');
+				});					
+				$('#game').change();
+
+			});
+			</script>
+			
             <div class="control-group">
                 <label class="control-label" for="inputBackup"><?php echo $gsprache->backup;?></label>
                 <div class="controls">
@@ -71,19 +84,9 @@
                     <label class="control-label" for="inputTemplate"><?php echo $gsprache->template;?></label>
                     <div class="controls">
                         <select name="template" id="inputTemplate">
-                            <option>1</option>
-                            <option <?php if($template=="2") echo 'selected="selected"';?>>2</option>
-                            <option <?php if($template=="3") echo 'selected="selected"';?>>3</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="inputCheat"><?php echo $sprache->anticheat;?></label>
-                    <div class="controls">
-                        <select name="anticheat" id="inputCheat">
-                            <option value="1"><?php echo $anticheatsoft." ".$sprache->on;?></option>
-                            <option value="2" <?php if($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft." ".$sprache->off2;?></option>
-                            <?php foreach($eac as $ea) echo $ea;?>
+                            <option id="inputTemplate1">1</option>
+                            <option id="inputTemplate2" <?php if($template=="2") echo 'selected="selected"';?>>2</option>
+                            <option id="inputTemplate3" <?php if($template=="3") echo 'selected="selected"';?>>3</option>
                         </select>
                     </div>
                 </div>
@@ -93,11 +96,21 @@
                     <div class="controls">
                         <select name="protected" id="inputProtected">
                             <option value="N"><?php echo $sprache->off2;?></option>
-                            <option value="Y" <?php if($pro=="Y") echo 'selected="selected"';?>><?php echo $sprache->on;?></option>
+                            <option value="Y"  data-toggle="collapse" data-target="#anticheatSettings" <?php if($pro=="Y") echo 'selected="selected"';?>><?php echo $sprache->on;?></option>
                         </select>
                     </div>
                 </div>
                 <?php } ?>
+                <div id="anticheatSettings" class="control-group" class="collapse <?php if ($pro!='Y') echo 'in';?>">
+                    <label class="control-label" for="inputCheat"><?php echo $sprache->anticheat;?></label>
+                    <div class="controls">
+                        <select name="anticheat" id="inputCheat">
+                            <option value="1"><?php echo $anticheatsoft." ".$sprache->on;?></option>
+                            <option value="2" <?php if($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft." ".$sprache->off2;?></option>
+                            <?php foreach($eac as $ea) echo $ea;?>
+                        </select>
+                    </div>
+                </div>  
                 <div class="control-group">
                     <label class="control-label" for="inputMap"><?php echo $sprache->map;?></label>
                     <div class="controls">

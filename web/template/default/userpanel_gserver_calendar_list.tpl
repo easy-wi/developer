@@ -51,10 +51,10 @@ $(document).ready(function (){
 			<thead>
 				<tr>
 					<th><?php echo $gsprache->datetime;?></th>
-					<th><?php echo $gsprache->template;?></th>
-					<th><?php echo $sprache->map;?></th>
-					<th><?php echo $sprache->restart;?></th>
 					<th><?php echo $gsprache->backup;?></th>
+					<th><?php echo $sprache->restart;?></th>
+					<th><?php echo $gsprache->template;?></th>
+					<th><?php echo $gsprache->map;?></th>
 					<th><?php echo $sprache->protect;?></th>
 					<th> </th>
 					<th> </th>
@@ -71,27 +71,25 @@ $(document).ready(function (){
 					'sun'=>$sprache->sunday);
 				foreach($days as $day => $dayname) {
 					for($i=0;$i<=23;$i++) {
-						if(!empty($restarts[$i][$day])){ 
-							$restart=explode("<br />", $restarts[$i][$day]['out']);
-							?>
+						if(!empty($restarts[$i][$day])){ ?>
 							<tr>
 							<td>
 								<?php echo $dayname." - ".str_pad($i,2,"0",STR_PAD_LEFT).":00" ?>
 							</td>
 							<td>
-								<?php echo $restart[0]; ?>
+								<?php echo $restarts[$i][$day]['backup']; ?>
 							</td>
 							<td>
-								<?php echo $restart[1]; ?>
+								<?php echo $restarts[$i][$day]['restart']; ?>
 							</td>
 							<td>
-								<?php echo $restart[2]; ?>
+								<?php echo $restarts[$i][$day]['template']; ?>
 							</td>
 							<td>
-								<?php echo $restart[3]; ?>
+								<?php echo $restarts[$i][$day]['map']; ?>
 							</td>
 							<td>
-								<?php if(isset($restarts[$i]['mon']['img'])){ ?><img src="images/<?php echo $restarts[$i]['mon']['img'];?>.png" alt="<?php echo $restarts[$i]['mon']['alt'];?>" width="16" height="16"/><?php }?>
+								<?php echo $restarts[$i][$day]['protected']; ?>
 							</td>
 							<td class="span1">
 				                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">

@@ -339,34 +339,37 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 			$template='-' . $template;
 		}
         if ($restart == 'Y') {
-            $routput = $shorten.$template."<br />".$row['map']."<br />".$anti;
+            $restarts[$hour][$day]['restart'] = $gsprache->yes;
+            $restarts[$hour][$day]['template'] = $shorten.$template;
+        	$restarts[$hour][$day]['map'] = $row['map'];
+        }
+        else {
+        	$restarts[$hour][$day]['restart'] = $gsprache->no;
+        	$restarts[$hour][$day]['template'] = "";
+        	$restarts[$hour][$day]['map'] = "";
         }
 		if ($backup == 'Y') {
-			$routput.="<br />".$gsprache->backup.": ".$gsprache->yes;
+			$restarts[$hour][$day]['backup'] = $gsprache->yes;
 		} else {
-			$routput.="<br />".$gsprache->backup.": ".$gsprache->no;
+			$restarts[$hour][$day]['backup'] = $gsprache->no;
 		}
 		if ($qstat == 'minecraft' and $restart == 'N' and $worldsafe == 'Y') {
-			$routput .="<br />Worldsafe: ".$gsprache->yes;
+			$restarts[$hour][$day]['worldsave'] = $gsprache->yes;
 		} else if ($qstat == 'minecraft' and $restart == 'N') {
-			$routput .="<br />Worldsafe: ".$gsprache->no;
+			$restarts[$hour][$day]['worldsave'] = $gsprache->no;
 		}
 		if ($qstat == 'a2s' and $restart == 'N' and $upload== 'Y') {
-			$routput .="<br />SourceTV Demo Upload: ".$gsprache->yes.'<br />';
+			$restarts[$hour][$day]['sourcetvdemo'] = $gsprache->yes;
 		} else if ($qstat == 'a2s' and $restart == 'N') {
-			$routput .="<br />SourceTV Demo Upload: ".$gsprache->no.'<br />';
+			$restarts[$hour][$day]['sourcetvdemo'] = $gsprache->no;
 		}
         if ($pallowed== 'Y') {
             if ($protected== 'N') {
-                $imgName='16_unprotected';
-                $imgAlt='Unprotected';
+                $restarts[$hour][$day]['protected'] = 'unprotected';
             } else if ($protected== 'Y') {
-                $imgName='16_protected';
-                $imgAlt='Protected';
+                $restarts[$hour][$day]['protected'] = 'protected';
             }
-            $restarts[$hour][$day] = array('out' => $routput,'img' => $imgName,'alt' => $imgAlt);
-        } else {
-            $restarts[$hour][$day] = array('out' => $routput);
+
         }
 	}
 	$template_file = 'userpanel_gserver_calendar_list.tpl';
