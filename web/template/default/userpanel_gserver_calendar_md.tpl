@@ -101,16 +101,18 @@
                     </div>
                 </div>
                 <?php } ?>
-                <div id="anticheatSettings" class="control-group collapse <?php if ($pro!='Y') echo 'in';?>">
-                    <label class="control-label" for="inputCheat"><?php echo $sprache->anticheat;?></label>
-                    <div class="controls">
-                        <select name="anticheat" id="inputCheat">
-                            <option value="1"><?php echo $anticheatsoft." ".$sprache->on;?></option>
-                            <option value="2" <?php if($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft." ".$sprache->off2;?></option>
-                            <?php foreach($eac as $ea) echo $ea;?>
-                        </select>
-                    </div>
-                </div>  
+                <div id="restartSettings" class="collapse <?php if ($restart=='Y') echo 'in';?>">
+	                <div class="control-group">
+	                    <label class="control-label" for="inputCheat"><?php echo $sprache->anticheat;?></label>
+	                    <div class="controls">
+	                        <select name="anticheat" id="inputCheat">
+	                            <option value="1"><?php echo $anticheatsoft." ".$sprache->on;?></option>
+	                            <option value="2" <?php if($anticheat=="2") echo 'selected="selected"';?>><?php echo $anticheatsoft." ".$sprache->off2;?></option>
+	                            <?php foreach($eac as $ea) echo $ea;?>
+	                        </select>
+	                    </div>
+	                </div>
+	            </div>
                 <div class="control-group">
                     <label class="control-label" for="inputMap"><?php echo $sprache->map;?></label>
                     <div class="controls">
