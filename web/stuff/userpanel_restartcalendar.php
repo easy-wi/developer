@@ -212,7 +212,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 
 	$query = $sql->prepare("SELECT t.`protected`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE t.`shorten`=? AND s.`resellerid`=?");
 	$query->execute(array($gsswitch, $reseller_id));
-	$serverlist = $query->fetchAll(PDO::FETCH_ASSOC);
+	$serverlist = $query->fetch(PDO::FETCH_ASSOC);
 	$query->closeCursor();
 	
 	$query = $sql->prepare("SELECT `normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
@@ -371,9 +371,9 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 			$restarts[$hour][$day]['template'] = $shorten.$template;
 			$restarts[$hour][$day]['map'] = $row['map'];
 			if ($pallowed== 'Y') {
-				if ($protected== 'N') {
+				if ($protected=='N') {
 					$restarts[$hour][$day]['protected'] = $gsprache->no;
-				} else if ($protected== 'Y') {
+				} else if ($protected=='Y') {
 					$restarts[$hour][$day]['protected'] = $gsprache->yes;
 				}
 			}
