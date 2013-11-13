@@ -38,7 +38,7 @@
 						$('#mapSettings').collapse('show');
 					}
 				});					
-				$('#inputSwitch').change();
+				$('#inputSwitch').change().change();
 			});
 			</script>
             
