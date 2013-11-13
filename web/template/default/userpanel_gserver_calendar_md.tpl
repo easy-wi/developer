@@ -39,7 +39,7 @@
 						$('#worldsaveSettings').collapse('hide');
 						$('#mapSettings').collapse('show');
 					}
-					if(shorten='csgo') {
+					if(shorten=='csgo') {
 						$('#mapGroupSettings').collapse('show');
 					}
 					else {

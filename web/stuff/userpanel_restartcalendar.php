@@ -275,7 +275,6 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	
 	if ($ui->active('protected', 'post') && $serverlist['protected']=='Y') {
 		$protected = $ui->active('protected', 'post');
-		echo "p";
 	} else {
 		$protected = 'N';
 	}
@@ -313,7 +312,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		$qstat_array[$shorten] = $row['qstat'];
 	}
 	$backup = 'N';
-    $query = $sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
+    $query = $sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`protected`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
     $query->execute(array($ui->id('id',19, 'get'), $reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$restarttime=explode("_", $row['restarttime']);
@@ -325,6 +324,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		$backup = $row['backup'];
 		$worldsafe = $row['worldsafe'];
 		$upload = $row['upload'];
+		$protected = $row['protected'];
         if (isset($qstat_array[$shorten])) {
             $qstat = $qstat_array[$shorten];
         } else {
