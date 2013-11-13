@@ -105,7 +105,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		$hlds_6 = $row['hlds_6'];
 	}
 
-    $query = $sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`qstat`,t.`mapGroup` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
+    $query = $sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`qstat`,t.`mapGroup`,t.`protected` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
     $query->execute(array($ui->id('id',19, 'get'), $reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$shorten = $row['shorten'];
@@ -116,7 +116,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 			$qstat = $row['qstat'];
 		}
 
-		$table[$row['shorten']] = array('shorten' => $shorten,'description' => $row['description'], 'defaultMapGroup' => $row['mapGroup']);
+		$table[$row['shorten']] = array('shorten' => $shorten,'description' => $row['description'], 'defaultMapGroup' => $row['mapGroup'], 'protected' => $row['protected']);
 	}
 
 	$template = '';
@@ -365,11 +365,13 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		}
         if ($pallowed== 'Y') {
             if ($protected== 'N') {
-                $restarts[$hour][$day]['protected'] = 'unprotected';
+                $restarts[$hour][$day]['protected'] = $gsprache->no;
             } else if ($protected== 'Y') {
-                $restarts[$hour][$day]['protected'] = 'protected';
+                $restarts[$hour][$day]['protected'] = $gsprache->yes;
             }
-
+        }
+        else {
+        	$restarts[$hour][$day]['protected'] = "";
         }
 	}
 	$template_file = 'userpanel_gserver_calendar_list.tpl';
