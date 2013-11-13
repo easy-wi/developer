@@ -55,3 +55,7 @@ table form {
 .btn {
 	 white-space: nowrap;
 }
+
+.collapse :not(in) {
+	margin-bottom: 0px;
+}
