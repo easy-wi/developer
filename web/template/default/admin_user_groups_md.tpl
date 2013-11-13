@@ -573,7 +573,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputMod"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputMod" type="submit"><i class="icon-white icon-edit"></i></button>
+                    <button class="btn btn-primary" id="inputMod" type="submit"><i class="icon-white icon-edit"></i></button>
                 </div>
             </div>
         </form>
