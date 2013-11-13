@@ -210,6 +210,11 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	$anticheat = $ui->id('anticheat',1, 'post');
 	$gsswitch = $ui->gamestring('shorten', 'post');
 
+	$query = $sql->prepare("SELECT t.`protected`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE t.`shorten`=? AND s.`resellerid`=?");
+	$query->execute(array($gsswitch, $reseller_id));
+	$serverlist = $query->fetchAll(PDO::FETCH_ASSOC);
+	$query->closeCursor();
+	
 	$query = $sql->prepare("SELECT `normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
 	$rowcount = $query->rowCount();
@@ -261,8 +266,14 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	}
 	$restart = $ui->active('restart', 'post');
 	$backup = $ui->active('backup', 'post');
-	$map = $ui->mapname('map', 'post');
-	if ($ui->active('protected', 'post')) {
+	if($ui->mapname('map', 'post') && $serverlist['minecraft']!='minecraft') {
+		$map = $ui->mapname('map', 'post');
+	}
+	else {
+		$map = "";
+	}
+	
+	if ($ui->active('protected', 'post') && $serverlist['protected']=='Y') {
 		$protected = $ui->active('protected', 'post');
 	} else {
 		$protected = 'N';
