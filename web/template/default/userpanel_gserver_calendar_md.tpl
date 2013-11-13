@@ -53,7 +53,7 @@
                     </select>
                 </div>
             </div>
-            <div id="worldsaveSettings">
+            <div id="worldsaveSettings" class="hide">
 	            <div class="control-group">
 	                <label class="control-label" for="inputWorldSave">Minecraft Worldsave</label>
 	                <div class="controls">
