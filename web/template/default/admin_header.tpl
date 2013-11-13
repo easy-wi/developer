@@ -44,7 +44,6 @@
                         <li><a href="admin.php?w=su&amp;d=pw"><?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                         <li><a href="admin.php?w=su"><?php echo $gsprache->settings;?></a></li>
                         <li class="divider"></li>
-                        <li><a href="login.php?w=lo">Logout</a></li>
 
                         <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
                         <li><a href="http://easy-wi.com" target="_blank">About</a></li>
