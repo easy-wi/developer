@@ -25,11 +25,9 @@
 					$('#inputTemplate3').text(shorten+'-3');
 					if($(this).find('option:selected').data('protected')=='Y') {
 						$('#protectedSettings').collapse('show');
-						alert('Y');
 					}
 					else {
 						$('#protectedSettings').collapse('hide');
-						alert('N');
 					}
 				});					
 				$('#inputSwitch').change();
@@ -98,7 +96,7 @@
                     </div>
                 </div>
                 <?php if ($pallowed=="Y") { ?>
-                <div id="protectedSettings" class="collapse <?php if ($pro=='Y') echo 'in';?>">
+                <div id="protectedSettings" class="collapse">
 	                <div class="control-group">
 	                    <label class="control-label" for="inputProtected"><?php echo $sprache->protect;?></label>
 	                    <div class="controls">
