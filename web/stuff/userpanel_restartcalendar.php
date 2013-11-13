@@ -266,9 +266,8 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	}
 	$restart = $ui->active('restart', 'post');
 	$backup = $ui->active('backup', 'post');
-	if($ui->mapname('map', 'post') && $serverlist['minecraft']!='minecraft') {
+	if($ui->mapname('map', 'post') && $serverlist['qstat']!='minecraft') {
 		$map = $ui->mapname('map', 'post');
-		echo "map";
 	}
 	else {
 		$map = "";
@@ -276,7 +275,6 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	
 	if ($ui->active('protected', 'post') && $serverlist['protected']=='Y') {
 		$protected = $ui->active('protected', 'post');
-		echo "protected";
 	} else {
 		$protected = 'N';
 	}
