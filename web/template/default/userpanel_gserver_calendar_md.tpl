@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <?php if ($pallowed=="Y") { ?>
-                <div id="protectedSettings" class="collapse <?php if ($pro=='Y') echo 'in';?>">
+                <div id="protectedSettings" class="collapse">
 	                <div class="control-group">
 	                    <label class="control-label" for="inputProtected"><?php echo $sprache->protect;?></label>
 	                    <div class="controls">
