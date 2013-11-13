@@ -16,6 +16,32 @@
 <div class="row-fluid">
     <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+            <script type="text/javascript">
+			$(document).ready(function (){
+				$('#inputSwitch').change(function() {
+					var shorten=$('#inputSwitch').val();
+					$('#inputTemplate1').text(shorten);
+					$('#inputTemplate2').text(shorten+'-2');
+					$('#inputTemplate3').text(shorten+'-3');
+					if($(this).find('option:selected').data('protected')=='Y') {
+						$('#protectedSettings').collapse('show');
+					}
+					else {
+						$('#protectedSettings').collapse('hide');
+					}
+					if($(this).find('option:selected').data('qstat')=='minecraft') {
+						$('#worldsaveSettings').collapse('show');
+						$('#mapSettings').collapse('hide');
+					}
+					else {
+						$('#worldsaveSettings').collapse('hide');
+						$('#mapSettings').collapse('show');
+					}
+				});					
+				$('#inputSwitch').change();
+			});
+			</script>
+            
             <div class="control-group">
                 <label class="control-label" for="inputBackup"><?php echo $gsprache->backup;?></label>
                 <div class="controls">
@@ -25,17 +51,17 @@
                     </select>
                 </div>
             </div>
-            <?php if(in_array('minecraft',$qstat_array)){ ?>
-            <div class="control-group">
-                <label class="control-label" for="inputWorldSave">Minecraft Worldsave</label>
-                <div class="controls">
-                    <select name="worldsafe" id="inputWorldSave">
-                        <option value="N"><?php echo $gsprache->no;?></option>
-                        <option value="Y" <?php if($worldsafe=="Y") echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
-                    </select>
-                </div>
-            </div>
-            <?php } ?>
+            <div id="worldsaveSettings" class="collapse">
+	            <div class="control-group">
+	                <label class="control-label" for="inputWorldSave">Minecraft Worldsave</label>
+	                <div class="controls">
+	                    <select name="worldsafe" id="inputWorldSave">
+	                        <option value="N"><?php echo $gsprache->no;?></option>
+	                        <option value="Y" <?php if($worldsafe=="Y") echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+	                    </select>
+	                </div>
+	            </div>
+	        </div>
             <?php if(in_array('a2s',$qstat_array) and (in_array('2',$uploadallowed) or in_array('3',$uploadallowed))){ ?>
             <div class="control-group">
                 <label class="control-label" for="inputSourceTV">SourceTV Demo Upload</label>
@@ -62,7 +88,7 @@
                     <div class="controls">
                         <select name="shorten" id="inputSwitch" onchange="$.get('serverallocation.php?mapgroup=' + this.value, function(data) { $('#mapGroup').html(data); });">
                             <?php foreach ($table as $table_row){ ?>
-                            <option value="<?php echo $table_row['shorten'];?>" <?php if($gsswitch==$table_row['shorten']) echo 'selected="selected"';?> data-protected="<?php echo $table_row['protected'];?>"><?php echo $table_row['description'];?></option>
+                            <option value="<?php echo $table_row['shorten'];?>" <?php if($gsswitch==$table_row['shorten']) echo 'selected="selected"';?> data-protected="<?php echo $table_row['protected'];?>" data-qstat="<?php echo $table_row['qstat'];?>"><?php echo $table_row['description'];?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -102,21 +128,21 @@
 	                    </div>
 	                </div>
 	            </div>
-	            <?php if(!in_array('minecraft',$qstat_array)){ ?>
-                <div class="control-group">
-                    <label class="control-label" for="inputMap"><?php echo $sprache->map;?></label>
-                    <div class="controls">
-                        <input id="inputMap" type="text" name="map" value="<?php echo $map;?>" >
-                    </div>
+	            <div id="mapSettings" class="collapse">
+	                <div class="control-group">
+	                    <label class="control-label" for="inputMap"><?php echo $sprache->map;?></label>
+	                    <div class="controls">
+	                        <input id="inputMap" type="text" name="map" value="<?php echo $map;?>" >
+	                    </div>
+	                </div>
+	                <?php if ($defaultMapGroup!=null){ ?>
+	                <div class="control-group" id="mapGroup">
+	                    <label class="control-label" for="inputMapGroup"><?php echo $sprache->startmapgroup;?></label>
+	                    <div class="controls">
+	                        <input id="inputMapGroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>" >
+	                    </div>
+	                </div>
                 </div>
-                <?php if ($defaultMapGroup!=null){ ?>
-                <div class="control-group" id="mapGroup">
-                    <label class="control-label" for="inputMapGroup"><?php echo $sprache->startmapgroup;?></label>
-                    <div class="controls">
-                        <input id="inputMapGroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>" >
-                    </div>
-                </div>
-                <?php }?>
             <?php }?>
             </div>
             <div class="control-group">
@@ -127,24 +153,6 @@
                     <input type="hidden" name="edit2" value="edit">
                 </div>
             </div>
-            
-            <script type="text/javascript">
-			$(document).ready(function (){
-				$('#inputSwitch').change(function() {
-					var shorten=$('#inputSwitch').val();
-					$('#inputTemplate1').text(shorten);
-					$('#inputTemplate2').text(shorten+'-2');
-					$('#inputTemplate3').text(shorten+'-3');
-					if($(this).find('option:selected').data('protected')=='Y') {
-						$('#protectedSettings').collapse('show');
-					}
-					else {
-						$('#protectedSettings').collapse('hide');
-					}
-				});					
-				$('#inputSwitch').change();
-			});
-			</script>
         </form>
     </div>
 </div>
