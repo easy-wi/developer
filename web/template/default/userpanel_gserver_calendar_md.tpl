@@ -23,17 +23,14 @@
 					$('#inputTemplate1').text(shorten);
 					$('#inputTemplate2').text(shorten+'-2');
 					$('#inputTemplate3').text(shorten+'-3');
-				});					
-				$('#inputSwitch').change();
-				$('#shorten').change(function() {
-					if($('#shorten').attr('data-protected')=='Y') {
+					if($('#inputSwitch').attr('data-protected')=='Y') {
 						$('#protectedSettings').collapse('show');
 					}
 					else {
 						$('#protectedSettings').collapse('hide');
 					}
 				});					
-				$('#shorten').change();
+				$('#inputSwitch').change();
 			});
 			</script>
 			
