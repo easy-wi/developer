@@ -143,14 +143,12 @@
 	                        <input id="inputMap" type="text" name="map" value="<?php echo $map;?>" >
 	                    </div>
 	                </div>
-	                <div id="mapgroupSettings">
-		                <div class="control-group" id="mapGroup">
-		                    <label class="control-label" for="inputMapGroup"><?php echo $sprache->startmapgroup;?></label>
-		                    <div class="controls">
-		                        <input id="inputMapGroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>" >
-		                    </div>
-		                </div>
-		            </div>
+	                <div id="mapgroupSettings" class="control-group" id="mapGroup">
+	                    <label class="control-label" for="inputMapGroup"><?php echo $sprache->startmapgroup;?></label>
+	                    <div class="controls">
+	                        <input id="inputMapGroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>" >
+	                    </div>
+	                </div>
                 </div>
             </div>
             <div class="control-group">
