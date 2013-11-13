@@ -30,15 +30,17 @@
 						$('#protectedSettings').collapse('hide');
 					}
 					if($(this).find('option:selected').data('qstat')=='minecraft') {
+						console.log('minecraft');
 						$('#worldsaveSettings').collapse('show');
 						$('#mapSettings').collapse('hide');
 					}
 					else {
+						console.log('not minecraft');
 						$('#worldsaveSettings').collapse('hide');
 						$('#mapSettings').collapse('show');
 					}
 				});					
-				$('#inputSwitch').change().change();
+				$('#inputSwitch').change();
 			});
 			</script>
             
@@ -51,7 +53,7 @@
                     </select>
                 </div>
             </div>
-            <div id="worldsaveSettings" class="collapse">
+            <div id="worldsaveSettings">
 	            <div class="control-group">
 	                <label class="control-label" for="inputWorldSave">Minecraft Worldsave</label>
 	                <div class="controls">
@@ -104,7 +106,7 @@
                     </div>
                 </div>
                 <?php if ($pallowed=="Y") { ?>
-                <div id="protectedSettings" class="collapse">
+                <div id="protectedSettings">
 	                <div class="control-group">
 	                    <label class="control-label" for="inputProtected"><?php echo $sprache->protect;?></label>
 	                    <div class="controls">
@@ -128,7 +130,7 @@
 	                    </div>
 	                </div>
 	            </div>
-	            <div id="mapSettings" class="collapse">
+	            <div id="mapSettings">
 	                <div class="control-group">
 	                    <label class="control-label" for="inputMap"><?php echo $sprache->map;?></label>
 	                    <div class="controls">
@@ -142,8 +144,8 @@
 	                        <input id="inputMapGroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>" >
 	                    </div>
 	                </div>
+	                <?php }?>
                 </div>
-            <?php }?>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
