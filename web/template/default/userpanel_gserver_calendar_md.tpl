@@ -16,24 +16,6 @@
 <div class="row-fluid">
     <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-            <script type="text/javascript">
-			$(document).ready(function (){
-				$('#inputSwitch').change(function() {
-					var shorten=$('#inputSwitch').val();
-					$('#inputTemplate1').text(shorten);
-					$('#inputTemplate2').text(shorten+'-2');
-					$('#inputTemplate3').text(shorten+'-3');
-					if($(this).find('option:selected').data('protected')=='Y') {
-						$('#protectedSettings').collapse('show');
-					}
-					else {
-						$('#protectedSettings').collapse('hide');
-					}
-				});					
-				$('#inputSwitch').change();
-			});
-			</script>
-			
             <div class="control-group">
                 <label class="control-label" for="inputBackup"><?php echo $gsprache->backup;?></label>
                 <div class="controls">
@@ -96,7 +78,7 @@
                     </div>
                 </div>
                 <?php if ($pallowed=="Y") { ?>
-                <div id="protectedSettings" class="collapse">
+                <div id="protectedSettings" class="collapse <?php if ($pro=='Y') echo 'in';?>">
 	                <div class="control-group">
 	                    <label class="control-label" for="inputProtected"><?php echo $sprache->protect;?></label>
 	                    <div class="controls">
@@ -145,6 +127,24 @@
                     <input type="hidden" name="edit2" value="edit">
                 </div>
             </div>
+            
+            <script type="text/javascript">
+			$(document).ready(function (){
+				$('#inputSwitch').change(function() {
+					var shorten=$('#inputSwitch').val();
+					$('#inputTemplate1').text(shorten);
+					$('#inputTemplate2').text(shorten+'-2');
+					$('#inputTemplate3').text(shorten+'-3');
+					if($(this).find('option:selected').data('protected')=='Y') {
+						$('#protectedSettings').collapse('show');
+					}
+					else {
+						$('#protectedSettings').collapse('hide');
+					}
+				});					
+				$('#inputSwitch').change();
+			});
+			</script>
         </form>
     </div>
 </div>
