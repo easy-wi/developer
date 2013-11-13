@@ -107,14 +107,14 @@
                         <input id="inputMap" type="text" name="map" value="<?php echo $map;?>" >
                     </div>
                 </div>
+                <?php if ($defaultMapGroup!=null){ ?>
                 <div class="control-group" id="mapGroup">
-                    <?php if ($defaultMapGroup!=null){ ?>
                     <label class="control-label" for="inputMapGroup"><?php echo $sprache->startmapgroup;?></label>
                     <div class="controls">
                         <input id="inputMapGroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>" >
                     </div>
-                    <?php }?>
                 </div>
+                <?php }?>
                 <div id="anticheatSettings" class="collapse <?php if ($pro=='Y') echo 'in';?>">
 	                <div class="control-group">
 	                    <label class="control-label" for="inputCheat"><?php echo $sprache->anticheat;?></label>
