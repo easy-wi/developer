@@ -117,7 +117,7 @@
     <div class="modal-footer">
         <a class="btn pull-left btn-info" href="<?php echo $page_data->pages['register']['link'];?>"><?php echo $page_data->pages['register']['linkname'];?></a>
         <a class="btn pull-left" href="<?php echo $page_data->pageurl;?>/login.php?w=pr" >Lost PW</a>
-        <button class="btn btn-primary">Login</button>
+        <button class="btn btn-primary pull-right">Login</button>
     </div>
     </form>
 </div>
