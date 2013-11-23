@@ -41,11 +41,12 @@ if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['restart']) or
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache = getlanguagefile('gserver',$user_language,$reseller_id);
+$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
 $logreseller = 0;
+
 if (isset($admin_id)) {
 	$logsubuser = $admin_id;
 } else if (isset($subuser_id)) {
@@ -53,40 +54,54 @@ if (isset($admin_id)) {
 } else {
 	$logsubuser = 0;
 }
-if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
+
+if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
+    $reseller_id = $admin_id;
+}
+
 $files = array();
+
 $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppassword`,t.`protected` AS `tpallowed`,t.`shorten`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,u.`cname`,s.`servertemplate` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND s.`resellerid`=? LIMIT 1");
-$query->execute(array($aeskey,$aeskey,$ui->id('id', 10, 'get'),$user_id,$reseller_id));
+$query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $user_id, $reseller_id));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $currentID = $row['serverid'];
 	$serverip = $row['serverip'];
 	$port = $row['port'];
-    $gsfolder = $serverip . '_' . $port;
-    $gamestring='1_'.$row['shorten'];
-	$protected = $row['protected'];
-    $pallowed=($row['pallowed'] == 'Y' and $row['tpallowed'] == 'Y') ? 'Y' : 'N';
-	$rootid = $row['rootID'];
-    $customer=($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $ui->id('id', 10, 'get') : $row['cname'];
-    $customerp = $customer.'-p';
+    $protected = $row['protected'];
+    $rootid = $row['rootID'];
     $ftppass = $row['dftppassword'];
     $ftppassProtected = $row['dpftppassword'];
-    foreach (explode("\r\n", $row['protectedSaveCFGs']) as $cfg) if ($cfg != '') $files[] = $cfg;
     $shorten = $row['shorten'];
-    $serverTemplate=($row['servertemplate'] != 1) ? $row['shorten'] . '-' . $row['servertemplate'] : $row['shorten'];
-    if ($row['gamebinary'] == 'srcds_run') $gamePath="${row['binarydir']}/${row['modfolder']}";
-    else if ($row['gamebinary'] == 'hlds_run') $gamePath="${row['modfolder']}";
-    else $gamePath = '';
-    $gamePath=str_replace(array('//','///','////'),'/',$gamePath);
+    $gsfolder = $serverip . '_' . $port;
+    $gamestring = '1_' . $row['shorten'];
+    $pallowed=($row['pallowed'] == 'Y' and $row['tpallowed'] == 'Y') ? 'Y' : 'N';
+    $customer=($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $ui->id('id', 10, 'get') : $row['cname'];
+    $customerp = $customer.'-p';
+    $serverTemplate = ($row['servertemplate'] != 1) ? $row['shorten'] . '-' . $row['servertemplate'] : $row['shorten'];
+
+    foreach (explode("\r\n", $row['protectedSaveCFGs']) as $cfg) {
+        if ($cfg != '') {
+            $files[] = $cfg;
+        }
+    }
+    if ($row['gamebinary'] == 'srcds_run') {
+        $gamePath="${row['binarydir']}/${row['modfolder']}";
+    } else if ($row['gamebinary'] == 'hlds_run') {
+        $gamePath="${row['modfolder']}";
+    } else {
+        $gamePath = '';
+    }
+    $gamePath = str_replace(array('//', '///', '////'), '/', $gamePath);
 }
 
-if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_SESSION['sID']) and !in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
+if ($query->rowCount() == 0 or (isset($pallowed) and $pallowed== 'N') or (isset($_SESSION['sID']) and !in_array($ui->id('id', 10, 'get'), $substituteAccess['gs']))) {
 	redirect('userpanel.php');
 } else if (isset($rootid)) {
     include(EASYWIDIR . '/stuff/ssh_exec.php');
-    function cfgTransfer ($pserverRead,$customerRead,$ftppassRead,$readFTPShorten,$pserverWrite,$customerWrite,$ftppassWrite,$writeFTPShorten) {
-        global $sship,$ftpport,$gsfolder,$gamePath,$files;
+    function cfgTransfer ($pserverRead, $customerRead, $ftppassRead, $readFTPShorten, $pserverWrite, $customerWrite, $ftppassWrite, $writeFTPShorten) {
+        global $sship, $ftpport, $gsfolder, $gamePath, $files;
         foreach ($files as $cfg) {
-            $fp=@fopen("ftp://${customerRead}:${ftppassRead}@${sship}:${ftpport}/${pserverRead}${gsfolder}/${readFTPShorten}/${gamePath}/${cfg}",'r');
+            $fp = @fopen("ftp://${customerRead}:${ftppassRead}@${sship}:${ftpport}/${pserverRead}${gsfolder}/${readFTPShorten}/${gamePath}/${cfg}",'r');
             if ($fp) {
                 $temp = tmpfile();
                 stream_set_timeout($fp,5);
@@ -94,11 +109,11 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
                 fclose($fp);
                 fseek($temp,0);
                 fseek($temp,0);
-                $ftp_connect=($ftpport==21 or $ftpport == '' or $ftpport==null) ? @ftp_connect($sship) : @ftp_connect($sship,$ftpport);
+                $ftp_connect = ($ftpport == 21 or $ftpport == '' or $ftpport == null) ? @ftp_connect($sship) : @ftp_connect($sship, $ftpport);
                 if ($ftp_connect) {
-                    $ftp_login=ftp_login($ftp_connect,$customerWrite,$ftppassWrite);
+                    $ftp_login = @ftp_login($ftp_connect, $customerWrite, $ftppassWrite);
                     if ($ftp_login) {
-                        $split_config=preg_split('/\//',str_replace(array('//','///','////'),'/',$cfg),-1,PREG_SPLIT_NO_EMPTY);
+                        $split_config = preg_split('/\//', str_replace(array('//', '///', '////'), '/', $cfg), -1, PREG_SPLIT_NO_EMPTY);
                         $folderFileCount=count($split_config)-1;
                         $i = 0;
                         $folders="${pserverWrite}/${gsfolder}/${writeFTPShorten}/${gamePath}/";
@@ -106,14 +121,14 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
                             $folders .= '/' . $split_config[$i];
                             $i++;
                         }
-                        foreach (preg_split('/\//',str_replace(array('//','///','////'),'/',$folders),-1,PREG_SPLIT_NO_EMPTY) as $dir) {
-                            if (!@ftp_chdir($ftp_connect,$dir)) {
-                                @ftp_mkdir($ftp_connect,$dir);
-                                @ftp_chdir($ftp_connect,$dir);
+                        foreach (preg_split('/\//',str_replace(array('//','///','////'),'/', $folders),-1,PREG_SPLIT_NO_EMPTY) as $dir) {
+                            if (!@ftp_chdir($ftp_connect, $dir)) {
+                                @ftp_mkdir($ftp_connect, $dir);
+                                @ftp_chdir($ftp_connect, $dir);
                             }
                         }
-                        $uploadfile=str_replace(array('//','///','////'),'/',$split_config[$i]);
-                        @ftp_fput($ftp_connect,$uploadfile,$temp,FTP_ASCII);
+                        $uploadfile=str_replace(array('//','///','////'),'/', $split_config[$i]);
+                        @ftp_fput($ftp_connect, $uploadfile, $temp,FTP_ASCII);
                     }
                     ftp_close($ftp_connect);
                 }
@@ -121,32 +136,32 @@ if ($query->rowCount()==0 or (isset($pallowed) and $pallowed== 'N') or (isset($_
             }
         }
     }
-    $rdata=serverdata('root',$rootid,$aeskey);
+    $rdata = serverdata('root', $rootid, $aeskey);
     $sship = $rdata['ip'];
     $sshport = $rdata['port'];
     $sshuser = $rdata['user'];
     $sshpass = $rdata['pass'];
     $ftpport = $rdata['ftpport'];
-    if (isset($protected,$serverip,$port) and $protected== 'Y') {
+    if (isset($protected, $serverip, $port) and $protected== 'Y') {
         $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`='1' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($currentID,$reseller_id));
+        $query->execute(array($currentID, $reseller_id));
         $query = $sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('id', 10, 'get'),$reseller_id));
-        cfgTransfer('',$customerp,$ftppassProtected,$shorten,'server/',$customer,$ftppass,$serverTemplate);
-        $cmds=gsrestart($ui->id('id', 10, 'get'),'re',$aeskey,$reseller_id);
-        ssh2_execute('gs',$rootid,$cmds);
+        $query->execute(array($ui->id('id', 10, 'get'), $reseller_id));
+        cfgTransfer('', $customerp, $ftppassProtected, $shorten,'server/', $customer, $ftppass, $serverTemplate);
+        $cmds=gsrestart($ui->id('id', 10, 'get'),'re', $aeskey, $reseller_id);
+        ssh2_execute('gs', $rootid, $cmds);
         $loguseraction="%stop% %pmode% $serverip:$port";
         $insertlog->execute();
         $template_file = $sprache->protect . ' ' . $sprache->off2;
-    } else if (isset($protected,$serverip,$port,$rootid,$customer,$ftppass) and $protected== 'N') {
-        $cmds=gsrestart($ui->id('id', 10, 'get'),'sp',$aeskey,$reseller_id);
+    } else if (isset($protected, $serverip, $port, $rootid, $customer, $ftppass) and $protected== 'N') {
+        $cmds=gsrestart($ui->id('id', 10, 'get'),'sp', $aeskey, $reseller_id);
         $randompass=passwordgenerate(10);
         $cmds[] = './control.sh mod '.$customer . ' ' . $ftppass . ' ' . $randompass;
         $cmds[]="sudo -u ${customer}-p ./control.sh reinstserver ${customer}-p ${gamestring} ${gsfolder} protected";
         $query = $sql->prepare("UPDATE `gsswitch` SET `ppassword`=AES_ENCRYPT(?,?),`protected`='Y',`psince`=NOW() WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($randompass,$aeskey,$ui->id('id', 10, 'get'),$reseller_id));
-        cfgTransfer('server/',$customer,$ftppass,$serverTemplate,'',$customerp,$randompass,$shorten);
-        ssh2_execute('gs',$rootid,$cmds);
+        $query->execute(array($randompass, $aeskey, $ui->id('id', 10, 'get'), $reseller_id));
+        cfgTransfer('server/', $customer, $ftppass, $serverTemplate,'', $customerp, $ftppassProtected, $shorten);
+        ssh2_execute('gs', $rootid, $cmds);
         $loguseraction="%restart% %pmode% $serverip:$port";
         $insertlog->execute();
         $template_file = $sprache->protect . ' ' . $sprache->on;
