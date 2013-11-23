@@ -376,7 +376,8 @@ class rootServer {
             $apiPath=str_replace(array('http://','https://',':8080',':80',':443'),'',$this->ID['dedicated'][$a['id']]['apiURL']);
             $ex=preg_split("/\//",$apiPath,-1,PREG_SPLIT_NO_EMPTY);
             $i = 1;
-            while (count($ex)>$i) {
+			$exCount = count($ex);
+            while ($exCount > $i) {
                 $file .= '/' . $ex[$i];
                 $i++;
             }

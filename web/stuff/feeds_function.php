@@ -93,7 +93,8 @@ if (isset($newsInclude) and $newsInclude == true) {
         if (isset($steamNews) and $row['steamFeeds'] == 'Y') {
             foreach ($steamNews as $news) {
                 $i = 0;
-                while ($i<count($news) and $i<=$newsAmount) {
+				$newsCount = count($news);
+                while ($i < $newsCount and $i <= $newsAmount) {
                     $feedsArray[0][] = $news[$i];
                     $i++;
                 }
@@ -152,7 +153,8 @@ if (isset($newsInclude) and $newsInclude == true) {
                     $domain = $ex[0];
                     $params='/';
                     $i = 1;
-                    while ($i<count($ex)) {
+					$countEx = count($ex);
+                    while ($i < $countEx) {
                         $params .= '/' . $ex[$i];
                         $i++;
                     }

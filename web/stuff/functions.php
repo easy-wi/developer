@@ -1726,70 +1726,73 @@ if (!function_exists('passwordgenerate')) {
         global $sql, $user_language, $default_language;
         
         $return = array();
-        
-        $query = $sql->prepare("SELECT * FROM `custom_columns_settings` WHERE `item`=? AND `active`='Y'");
-        $query->execute(array($item));
-        
-        if ($action == false) {
-            $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='cc' AND `transID`=? AND `lang`=? LIMIT 1");
-            $query3 = $sql->prepare("SELECT `var` FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $text = '';
-                $query2->execute(array($row['customID'], $user_language));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    $text = $row2['text'];
-                }
-                if (empty($text)) {
-                    $query2->execute(array($row['customID'], $default_language));
+
+        if ($id != null ) {
+            $query = $sql->prepare("SELECT * FROM `custom_columns_settings` WHERE `item`=? AND `active`='Y'");
+            $query->execute(array($item));
+
+            if ($action == false) {
+                $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='cc' AND `transID`=? AND `lang`=? LIMIT 1");
+                $query3 = $sql->prepare("SELECT `var` FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $text = '';
+                    $query2->execute(array($row['customID'], $user_language));
                     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                         $text = $row2['text'];
                     }
-                }
-                $type = ($row['type'] == 'I') ? 'number' : 'text';
-                $query3->execute(array($row['customID'], $id));
-                $value = ($id == 0) ? '' : $query3->fetchColumn();
-                $return[] = array('customID' => $row['customID'], 'menu' => $text, 'name' => $row['name'], 'length' => $row['length'], 'type' => $row['type'], 'input' => "<input id='inputCustom-${row['customID']}' type='${type}' name='${row['name']}' maxlength='${row['length']}' value='${value}' >", 'value' => $value);
-            }
-            
-        } else if ($action == 'save') {
-            $query2 = $sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
-            
-            if ($api == false) {
-                global $ui;
-                
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    
-                    $var = '';
-                    
-                    if ($row['type'] == 'I' and $ui->id($row['name'], $row['length'], 'post')) {
-                        $var = $ui->id($row['name'], $row['length'], 'post');
-                    
-                    } else if ($ui->names($row['name'], $row['length'], 'post')) {
-                        $var = $ui->names($row['name'], $row['length'], 'post');
+                    if (empty($text)) {
+                        $query2->execute(array($row['customID'], $default_language));
+                        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                            $text = $row2['text'];
+                        }
                     }
-                    
-                    $query2->execute(array($row['customID'], $id, $var));
+                    $type = ($row['type'] == 'I') ? 'number' : 'text';
+                    $query3->execute(array($row['customID'], $id));
+                    $value = ($id == 0) ? '' : $query3->fetchColumn();
+                    $return[] = array('customID' => $row['customID'], 'menu' => $text, 'name' => $row['name'], 'length' => $row['length'], 'type' => $row['type'], 'input' => "<input id='inputCustom-${row['customID']}' type='${type}' name='${row['name']}' maxlength='${row['length']}' value='${value}' >", 'value' => $value);
                 }
-            
-            } else {
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    
-                    $var = '';
-                    
-                    if ($row['type'] == 'I') {
-                        $var = isid($api[$row['name']], $row['length']);
-                    } else if (names($api[$row['name']], $row['length'])) {
-                        $var = names($api[$row['name']], $row['length']);
+
+            } else if ($action == 'save') {
+                $query2 = $sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
+
+                if ($api == false) {
+                    global $ui;
+
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                        $var = '';
+
+                        if ($row['type'] == 'I' and $ui->id($row['name'], $row['length'], 'post')) {
+                            $var = $ui->id($row['name'], $row['length'], 'post');
+
+                        } else if ($ui->names($row['name'], $row['length'], 'post')) {
+                            $var = $ui->names($row['name'], $row['length'], 'post');
+                        }
+
+                        $query2->execute(array($row['customID'], $id, $var));
                     }
-                    $query2->execute(array($row['customID'], $id, $var));
+
+                } else {
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                        $var = '';
+
+                        if ($row['type'] == 'I') {
+                            $var = isid($api[$row['name']], $row['length']);
+                        } else if (names($api[$row['name']], $row['length'])) {
+                            $var = names($api[$row['name']], $row['length']);
+                        }
+                        $query2->execute(array($row['customID'], $id, $var));
+                    }
+                }
+
+            } else if ($action == 'del') {
+                $query2 = $sql->prepare("DELETE FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $query2->execute(array($row['customID'], $id));
                 }
             }
-            
-        } else if ($action == 'del') {
-            $query2 = $sql->prepare("DELETE FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $query2->execute(array($row['customID'], $id));
-            }
+
         }
         
         return $return;

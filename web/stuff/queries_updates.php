@@ -46,7 +46,8 @@ function getHttpHeaders ($url) {
 
     $path = '';
     $i = 1;
-    while ($i < count($splitUrl)) {
+	$splitUrlCount = count($splitUrl);
+    while ($i < $splitUrlCount) {
         $path .= '/' . $splitUrl[$i];
         $i++;
     }

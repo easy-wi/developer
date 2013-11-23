@@ -662,7 +662,7 @@ function tsbackup ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw
             } else {
                 $folders='/home/'.$sshuser . '/';
             }
-			while ($i<=$folderfilecount) {
+			while ($i <= $folderfilecount) {
 				$folders .= $split_config[$i] . '/';
 				$i++;
 			}
