@@ -11,7 +11,7 @@
 </div>
 <hr>
 <?php foreach ($table as $table_row){ ?>
-<div class="row-fluid span11 alert <?php if($table_row['stopped']=='N') echo 'alert-success'; else echo 'alert-block';?>">
+<div class="row-fluid span11 alert <?php if($table_row['img']=='16_bad') echo 'alert-block'; else if($table_row['img']=='16_error') echo 'alert-danger'; else echo 'alert-success';?>">
     <h4 class="row-fluid span12 inline"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="14" /> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h4>
     <?php if(!empty($table_row['premoved'])){ ?><div class="row-fluid"><div class="span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['premoved'];?></div></div><?php } ?>
     <?php if(!empty($table_row['nameremoved'])){ ?><div class="row-fluid"><div class="span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['nameremoved'];?></div></div><?php } ?>

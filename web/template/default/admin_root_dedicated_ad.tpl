@@ -19,7 +19,7 @@
         <form class="form-horizontal" action="admin.php?w=rh&amp;d=ad&amp;r=rh" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ad">
-            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?">
+            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
                 <label class="control-label>" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" class="span11" name="active">

@@ -37,6 +37,7 @@
             <p class="navbar-text pull-left">
                 &nbsp;&nbsp;
                 <?php foreach ($languages as $language){ echo '<a href="admin.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>
+                &nbsp;&nbsp;
             </p>
 
             <div class="navbar-text pull-right">
