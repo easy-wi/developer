@@ -152,12 +152,21 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("INSERT INTO `userdata` (`creationTime`,`updateTime`,`active`,`salutation`,`birthday`,`country`,`fax`,`cname`,`security`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`fdlpath`,`accounttype`,`mail_backup`,`mail_gsupdate`,`mail_securitybreach`,`mail_serverdown`,`mail_ticket`,`mail_vserver`) VALUES (NOW(),NOW(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 $query->execute(array($active,$salutation,$birthday,$country,$fax,$bogus,$security,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$accounttype,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver));
                 $id = $sql->lastInsertId();
-                $query=($accounttype == 'r' and $reseller_id == 0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
+                $query = ($accounttype == 'r' and $reseller_id == 0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
                 $query2 = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `groupID`=VALUES(`groupID`)");
                 foreach ($usergroup as $gid) {
-                    if ($accounttype == 'r' and $reseller_id == 0) $query->execute(array($gid,$accounttype));
-                    else $query->execute(array($gid,$accounttype,$reseller_id));
-                    if (isid($query->fetchColumn(),10)) $query2->execute(array($id,$gid,$reseller_id));
+                    if ($accounttype == 'r' and $reseller_id == 0) {
+                        $query->execute(array($gid,$accounttype));
+                    } else {
+                        $query->execute(array($gid,$accounttype,$reseller_id));
+                    }
+                    if (isid($query->fetchColumn(), 10)) {
+                        if ($accounttype == 'r' and $reseller_id == 0) {
+                            $query2->execute(array($id, $gid, $id));
+                        } else {
+                            $query2->execute(array($id, $gid, $reseller_id));
+                        }
+                    }
                 }
                 customColumns('U',$id,'save');
                 $cnamenew = $ui->username('cname',255, 'post');
@@ -300,11 +309,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if (is_array($newHash)) {
 
                     $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`salt`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
-                    if ($user_accounttype == 'a') {
-                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], 0, $id));
-                    } else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
-                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $reseller_id, $id));
-                    } else if ($user_accounttype == 'r') {
+                    if ($user_accounttype == 'a' and $accounttype == 'r') {
+                        $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $id, $id));
+                    } else if ($user_accounttype == 'r' and $accounttype == 'r') {
                         $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $admin_id, $id));
                     } else {
                         $query->execute(array($cnamenew, $newHash['hash'], $newHash['salt'], $reseller_id, $id));
@@ -313,11 +320,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 } else {
 
                     $query = $sql->prepare("UPDATE `userdata` SET `cname`=?,`security`=?,`resellerid`=? WHERE `id`=? LIMIT 1");
-                    if ($user_accounttype == 'a') {
-                        $query->execute(array($cnamenew, $newHash, 0, $id));
-                    } else if ($user_accounttype == 'r' and $admin_id == $reseller_id) {
-                        $query->execute(array($cnamenew, $newHash, $reseller_id, $id));
-                    } else if ($user_accounttype == 'r') {
+                    if ($user_accounttype == 'a' and $accounttype == 'r') {
+                        $query->execute(array($cnamenew, $newHash, $id, $id));
+                    } else if ($user_accounttype == 'r' and $accounttype == 'r') {
                         $query->execute(array($cnamenew, $newHash, $admin_id, $id));
                     } else {
                         $query->execute(array($cnamenew, $newHash, $reseller_id, $id));
