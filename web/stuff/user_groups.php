@@ -255,12 +255,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $ftpaccess=yesNo('ftpaccess');
                 $usertickets=yesNo('usertickets');
                 $ftpbackup=yesNo('ftpbackup');
-                $voiceserver=yesNo('uvoiceserver');
+                $voiceserver=yesNo('voiceserver');
                 $apiSettings=yesNo('uapiSettings');
                 $jobs=yesNo('ujobs');
                 $mysql=yesNo('umysql');
                 $roots=yesNo('uroots');
-            } else if ($ui->smallletters('grouptype',1, 'post')=="r") {
+            } else if ($ui->smallletters('grouptype',1, 'post') == 'r') {
                 $user=yesNo('ruser');
                 $user_users=yesNo('ruser_users');
                 $root=yesNo('rroot');
