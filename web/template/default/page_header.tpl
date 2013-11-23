@@ -8,12 +8,12 @@
     <meta name="robots" content="index,follow,noodp,noydir" />
     <meta name="description" content="">
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php echo $page_data->title; ?>">
-    <link href="<?php echo $page_data->pageurl;?>/css/default/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">body { padding-top: 60px;padding-bottom: 40px;}</style>
-    <link href="<?php echo $page_data->pageurl;?>/css/default/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="<?php echo $page_data->pageurl;?>/css/default/easy-wi.css" rel="stylesheet">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
-    <script src="<?php echo $page_data->pageurl;?>/js/default/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
     <script src="<?php echo $page_data->pageurl;?>/js/default/footable.js" type="text/javascript"></script>
     <link rel="shortcut icon" href="<?php echo $page_data->pageurl;?>/images/favicon.ico" />
     <link rel="canonical" href="<?php echo $page_data->canurl;?>" />

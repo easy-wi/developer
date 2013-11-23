@@ -8,9 +8,10 @@
     <meta name="robots" content="index,follow,noodp,noydir" />
     <meta name="description" content="">
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php if(isset($ewCfg['title'])) echo $ewCfg['title']; ?>">
-    <link href="css/default/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">body { padding-top: 60px;padding-bottom: 40px;}</style>
-    <link href="css/default/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="css/default/easy-wi.css" rel="stylesheet">
     <link rel="shortcut icon" href="images/favicon.ico" />
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -18,7 +19,7 @@
     <script src="js/default/html5shiv.js"></script>
     <![endif]-->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
-    <script src="js/default/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
     <script src="js/default/footable.js" type="text/javascript"></script>
     <script type="text/javascript">$(function() { $('table').footable();});</script>
     <script src="js/default/main.js" type="text/javascript"></script>
