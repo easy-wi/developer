@@ -47,18 +47,18 @@ $(document).ready(function (){
 <br>
 <div class="row-fluid">
 	<div class="span12">
-		<table class="table table-striped table-bordered table-hover">
+		<table class="table table-striped table-bordered table-hover footable">
 			<thead>
 				<tr>
-					<th><?php echo $gsprache->datetime;?></th>
-					<th><?php echo $gsprache->backup;?></th>
-					<th><?php echo $sprache->restarts;?></th>
-					<th><?php echo $gsprache->template;?></th>
-					<th><?php echo $sprache->startmap;?></th>
-					<th><?php echo $sprache->protect;?></th>
+					<th data-class="expand"><?php echo $gsprache->datetime;?></th>
+					<th data-hide="phone"><?php echo $gsprache->backup;?></th>
+					<th data-hide="phone"><?php echo $sprache->restarts;?></th>
+					<th data-hide="phone,tablet"><?php echo $gsprache->template;?></th>
+					<th data-hide="phone,tablet"><?php echo $sprache->startmap;?></th>
+					<th data-hide="phone"><?php echo $sprache->protect;?></th>
 					<th> </th>
 					<th> </th>
-				</td>
+				</tr>
 			</thead>
             <tbody>
 				<?php
