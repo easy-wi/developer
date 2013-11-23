@@ -1,9 +1,12 @@
-.footable {
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    border: solid #ccc 1px;
+#content {
+    padding-top: 60px;padding-bottom: 40px;
 }
+.footable {
+     border-collapse: separate;
+     border-spacing: 0;
+     width: 100%;
+     border: solid #ccc 1px;
+ }
 
 .footable.breakpoint > tbody > tr > td.expand {
     background-image:url("../../images/footable/plus.png");
@@ -37,21 +40,21 @@
 }
 
 .navbar .pull-right {
-	margin-right: 20px;
+    margin-right: 20px;
 }
 
 .navbar .btn {
-	margin-top: 0px;
+    margin-top: 0;
 }
 
 table form {
-	margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .btn {
-	 white-space: nowrap;
+    white-space: nowrap;
 }
 
 .collapse :not(in) {
-	margin-bottom: 0px;
+    margin-bottom: 0;
 }
