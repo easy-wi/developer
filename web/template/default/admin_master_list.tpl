@@ -40,7 +40,7 @@
                 <td><?php echo $table_row['id'];?></td>
                 <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else echo 'icon-ban-circle';?>"></i></td>
                 <td><?php echo $table_row['description'];?></td>
-                <td><?php foreach($table_row['statusList'] as $k=>$v){ echo ($v=='16_installing') ? '<i class="icon-refresh"></i>'.$k.' ' : '<i class="icon-ok"></i>'.$k.' '; };?></td>
+                <td><?php foreach($table_row['statusList'] as $k=>$v){ echo ($v=='16_installing') ? '<i class="fa fa-spinner fa-spin"></i>'.$k.' ' : '<i class="fa fa-check"></i>'.$k.' '; };?></td>
                 <td><a href="admin.php?w=ma&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                 <td><a href="admin.php?w=ma&amp;d=ad&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-plus-sign"></i></span></a></td>
             </tr>
