@@ -40,7 +40,7 @@
                 &nbsp;&nbsp;
             </p>
 
-            <div class="navbar-text pull-right">
+            <div class="navbar-text pull-left">
                 <?php if($pa['usertickets'] and $crashedArray['ticketsReseller']>0 and $reseller_id!=0) { ?><a href="admin.php?w=tr"><span class="badge badge-info"><?php echo $crashedArray['ticketsReseller'].'/'.$crashedArray['ticketsResellerOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
                 <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="admin.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
                 <?php if($pa['gserver'] and $gserver_module) { ?>
