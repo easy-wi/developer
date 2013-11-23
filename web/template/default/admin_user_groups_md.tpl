@@ -126,14 +126,14 @@
             </div>
             <?php };if($pa['mysql']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputMYSQL">MYSQL <?php echo $gsprache->databases;?></label>
+                <label class="control-label" for="inputMYSQL">MySQL <?php echo $gsprache->databases;?></label>
                 <div class="controls">
                     <input id="inputMYSQL" type="checkbox" name="mysql" value="Y" <?php if ($mysql=='Y') echo 'checked="checked"'; ?>>
                 </div>
             </div>
             <?php };if($pa['mysql_settings']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputMYSQLServer">MYSQL Server</label>
+                <label class="control-label" for="inputMYSQLServer">MySQL Server</label>
                 <div class="controls">
                     <input id="inputMYSQLServer" type="checkbox" name="mysql_settings" value="Y" <?php if ($mysql_settings=='Y') echo 'checked="checked"'; ?>>
                 </div>
@@ -460,12 +460,12 @@
             </div>
             <?php };if($pa['mysql']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputResellerMysqlDB">MYSQL <?php echo $gsprache->databases;?></label>
+                <label class="control-label" for="inputResellerMysqlDB">MySQL <?php echo $gsprache->databases;?></label>
                 <div class="controls"><input id="inputResellerMysqlDB" type="checkbox" name="rmysql" value="Y"  <?php if ($mysql=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <?php };if($pa['mysql_settings']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputResellerMysqlServer">MYSQL Server</label>
+                <label class="control-label" for="inputResellerMysqlServer">MySQL Server</label>
                 <div class="controls"><input id="inputResellerMysqlServer" type="checkbox" name="rmysql_settings" value="Y"  <?php if ($mysql_settings=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <?php };if($pa['roots']) { ?>
@@ -573,7 +573,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputMod"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputMod" type="submit"><i class="icon-white icon-edit"></i></button>
+                    <button class="btn btn-primary" id="inputMod" type="submit"><i class="icon-white icon-edit"></i></button>
                 </div>
             </div>
         </form>

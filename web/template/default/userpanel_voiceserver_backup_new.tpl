@@ -8,8 +8,8 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span11"><?php echo $sprache->help_voiceserver_backup;?></p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_voiceserver_backup;?></div>
 </div>
 <hr>
 <div class="row-fluid">
@@ -18,20 +18,19 @@
         <dd><?php echo $backupcount.'/'.$voice_maxbackup;?></dd>
     </dl>
 </div>
-<hr>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <div class="control-group">
                 <label class="control-label" for="name"><?php echo $sprache->backupname;?></label>
                 <div class="controls">
-                    <input id="name" type="text" name="name" placeholder="New Backup" class="span10" required>
+                    <input id="name" type="text" name="name" placeholder="New Backup" required>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-play-circle icon-white"></i> <?php echo $gsprache->exec;?></button>
                     <input type="hidden" name="action" value="nb">
                 </div>
             </div>

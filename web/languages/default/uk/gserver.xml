@@ -20,7 +20,7 @@
 	<confirm_restart>(Re)start Server?</confirm_restart>
 	<confirm_stop>Stop server?</confirm_stop>
     <coreBind>CPU Cores</coreBind>
-	<create>create</create>
+	<create>Create</create>
 	<delete_server>Following server(s) will be deleted</delete_server>
 	<details>Extented Serveroptions</details>
 	<easy>Easy</easy>
@@ -108,7 +108,7 @@
     <ramMax>Maximum Ram</ramMax>
     <ramMin>Minimum Ram</ramMin>
 	<rcon>Remote password (RCON)</rcon>
-	<recover>recovery</recover>
+	<recover>Recover</recover>
 	<reinstall>Reinstall</reinstall>
 	<restart_all>Restart all Servers</restart_all>
 	<restarts>Restart Server</restarts>
@@ -141,6 +141,7 @@
 	<tuesday>Tuesday</tuesday>
 	<tv>TV allowed</tv>
 	<tvport>SourceTV</tvport>
+	<type>Installation type</type>
 	<updated>The config has been successfully edited</updated>
 	<updatetime>Status at</updatetime>
 	<usage>Server allocation</usage>

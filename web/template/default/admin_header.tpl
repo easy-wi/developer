@@ -27,44 +27,42 @@
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+	<div class="navbar-inner text-center">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
+                        <li class="divider"></li>
+                        <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>        
+                        <li><a href="admin.php?w=su&amp;d=pw"><?php echo $gsprache->password." ".$gsprache->change;?></a></li>
+                        <li><a href="admin.php?w=su"><?php echo $gsprache->settings;?></a></li>
+                        <li class="divider"></li>
+
+                        <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
+                        <li><a href="http://easy-wi.com" target="_blank">About</a></li>
+                        <li><a href="http://forum.easy-wi.com" target="_blank">Forum</a></li>
+                        <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank">Steam Bugtracker</a></li>
+                    </ul>
+                </li>
+            </ul>
             <p class="navbar-text pull-left">
-                <?php foreach ($languages as $language){ echo '<a href="admin.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
-            </p>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Easy-WI.com<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
-                            <li><a href="http://easy-wi.com" target="_blank">About</a></li>
-                            <li><a href="http://forum.easy-wi.com" target="_blank">Forum</a></li>
-                            <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank">Steam Bugtracker</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav pull-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?><b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
-                            <li class="divider"></li>
-                            <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
-                            <li class="divider"></li>
-                            <li><a href="admin.php?w=su"><?php echo $gsprache->settings;?></a></li>
-                            <li class="divider"></li>
-                            <li><a href="login.php?w=lo">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!--/.nav-collapse -->
-            <div class="navbar-text pull-right">
+            	<?php foreach ($languages as $language){ echo '<a href="admin.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>
+        	</p>
+        	
+        	<span class="navbar-text">Easy-WI.com</span>
+        	
+        	<a href="login.php?w=lo" class="navbar-text pull-right">
+        		<button class="btn btn-mini btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
+        	</a>
+   
+	        <div class="navbar-text pull-right">
                 <?php if($pa['usertickets'] and $crashedArray['ticketsReseller']>0 and $reseller_id!=0) { ?><a href="admin.php?w=tr"><span class="badge badge-info"><?php echo $crashedArray['ticketsReseller'].'/'.$crashedArray['ticketsResellerOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
                 <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="admin.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
                 <?php if($pa['gserver'] and $gserver_module) { ?>
@@ -76,7 +74,7 @@
                 <?php if($pa['voicemasterserver'] and $crashedArray['ts3Master']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3Master'].' '.$sprache_bad->ts3master_crashed; ?></span></a><?php }?>
                 <?php if($pa['roots'] and $crashedArray['masterserver']>0 and $gserver_module) { ?><a href="admin.php?w=ro"><span class="badge badge-important"><?php echo $crashedArray['masterserver'].' '.$sprache_bad->master_crashed; ?></span></a><?php }?>
                 <?php if($pa['vserverhost'] and $crashedArray['virtualHosts']>0 and $vserver_module and $reseller_id==0) { ?><a href="admin.php?w=vh"><span class="badge badge-important"><?php echo $crashedArray['virtualHosts'].' '.$sprache_bad->host_crashed; ?></span></a><?php }?>
-            </div>
+        	</div>
         </div>
     </div>
 </div>
@@ -194,7 +192,7 @@
                     <?php if($easywiModules['my'] and ($pa['mysql_settings'] or $pa['mysql'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive">MYSQL</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive">MySQL</a>
                         </div>
                         <div id="collapseFive" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='my' or isset($customModules['my'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">

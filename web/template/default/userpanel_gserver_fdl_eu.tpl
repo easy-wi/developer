@@ -8,8 +8,8 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span11"><?php echo $sprache->help_fdl;?></p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_fdl;?></div>
 </div>
 <hr>
 <?php if (count($errors)>0){ ?>
@@ -20,7 +20,7 @@
 </div>
 <?php }?>
 <div class="row-fluid">
-    <div class="span6">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=fd&amp;d=eu&amp;r=fd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
             <input type="hidden" name="action" value="md">
@@ -58,7 +58,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
                     <input type="hidden" name="action" value="md">
                 </div>
             </div>

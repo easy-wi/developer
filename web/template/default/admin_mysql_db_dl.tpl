@@ -2,7 +2,7 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=my">MYSQL <?php echo $gsprache->databases;?></a> <span class="divider">/</span></li>
+            <li><a href="admin.php?w=my">MySQL <?php echo $gsprache->databases;?></a> <span class="divider">/</span></li>
             <li><?php echo $gsprache->del;?> <span class="divider">/</span></li>
             <li class="active"><?php echo $dbname.' ('.$ip.' )';?></li>
         </ul>

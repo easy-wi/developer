@@ -48,6 +48,7 @@
 	<isnot>er ikke</isnot>
 	<keyname>Offentlig nøgle filnavn</keyname>
 	<keyuse>Brug offentlige nøglefil</keyuse>
+	<left></left>
 	<maxserver>Maksimal Server</maxserver>
 	<maxslots>Maksimal Slots</maxslots>
 	<maxtraffic>Maksimal Trafik</maxtraffic>
@@ -60,6 +61,7 @@
 	<port>Port</port>
 	<querypassword>Forespørgseladgangskode</querypassword>
 	<queryport>Forespørgselport</queryport>
+	<recover></recover>
     <reset>Nulstil</reset>
 	<rootserver>Rootserver</rootserver>
 	<server>Server</server>

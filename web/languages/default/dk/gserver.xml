@@ -112,6 +112,7 @@
 	<tuesday>Tirsdag</tuesday>
 	<tv>TV tilladt</tv>
 	<tvport>SourceTV</tvport>
+	<type></type>
 	<updated>Config er blevet redigeret</updated>
 	<updatetime>Status på</updatetime>
 	<usage>Server tildeling</usage>

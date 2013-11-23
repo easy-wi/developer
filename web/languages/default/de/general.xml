@@ -4,13 +4,15 @@
 	<add>Hinzufügen</add>
 	<addon>Addons</addon>
     <addon2>Addon</addon2>
-    <all>Alles</all>
+    <all>Alle</all>
     <api>API</api>
     <apiAuth>Externe Authentifizierung</apiAuth>
 	<backup>Backup</backup>
+	<change>ändern</change>
     <columns>Custom Columns</columns>
     <comments>Kommentare</comments>
 	<databases>DB</databases>
+	<datetime>Datum / Uhrzeit</datetime>
     <dedicated>Dedizierte</dedicated>
 	<del>Löschen</del>
     <delSafe>Sicheres Löschen</delSafe>
@@ -18,10 +20,12 @@
     <delDB>Aus der Datenbank Löschen</delDB>
     <downloads>Downloads</downloads>
     <edit>Bearbeiten</edit>
+    <exec>Ausführen</exec>
     <export>Exportieren</export>
     <fastdownload>Fastdownload</fastdownload>
     <feeds>Feeds</feeds>
     <file>Datei</file>
+    <game>Spiel</game>
     <gameroot>Game Rootserver</gameroot>
 	<gameserver>Gameserver</gameserver>
     <greating_home>Herzlich Willkommen im %name% Webinterface!</greating_home>
@@ -48,10 +52,12 @@
 	<overview>Übersicht</overview>
 	<page>Seite</page>
 	<pages>Seiten</pages>
+	<password>Passwort</password>
     <registration>Registration</registration>
     <repair>Reparieren</repair>
 	<reseller>Reseller</reseller>
 	<root>Rootserver</root>
+	<save>Speichern</save>
     <search>Suche</search>
 	<settings>Einstellungen</settings>
 	<shown>Ergebnisse pro Seite:</shown>

@@ -8,9 +8,11 @@
     <api>API</api>
     <apiAuth>External Authentication</apiAuth>
 	<backup>Backup</backup>
+	<change>change</change>
     <columns>Custom Columns</columns>
     <comments>Comments</comments>
 	<databases>Databases</databases>
+	<datetime>Date / Time</datetime>
     <dedicated>Dedicated</dedicated>
 	<del>Delete</del>
     <delSafe>Safe Delete</delSafe>
@@ -18,10 +20,12 @@
     <delDB>Remove from database</delDB>
     <downloads>Downloads</downloads>
     <edit>Edit</edit>
+    <exec>Execute</exec>
     <export>Export</export>
     <fastdownload>Fastdownload</fastdownload>
     <feeds>Feeds</feeds>
     <file>File</file>
+    <game>Game</game>
 	<gameserver>Gameserver</gameserver>
     <gameroot>Game Rootserver</gameroot>
     <greating_home>Welcome to the %name% webinterface!</greating_home>
@@ -48,10 +52,12 @@
 	<overview>Overview</overview>
 	<page>Page</page>
 	<pages>Pages</pages>
+	<password>Password</password>
     <registration>Registration</registration>
     <repair>Repair</repair>
 	<reseller>Reseller</reseller>
 	<root>Rootserver</root>
+	<save>Save</save>
     <search>Search</search>
 	<settings>Settings</settings>
 	<shown>Results per page:</shown>

@@ -6,15 +6,15 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span11"><?php echo $sprache->help_list;?></p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_list;?></div>
 </div>
 <hr>
 <?php foreach ($table as $table_row){ ?>
 <div class="row-fluid span11 alert <?php if($table_row['stopped']=='N') echo 'alert-success'; else echo 'alert-block';?>">
     <h4 class="row-fluid span12 inline"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="14" /> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h4>
-    <?php if(!empty($table_row['premoved'])){ ?><div class="row-fluid span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['premoved'];?></div><?php } ?>
-    <?php if(!empty($table_row['nameremoved'])){ ?><div class="row-fluid span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['nameremoved'];?></div><?php } ?>
+    <?php if(!empty($table_row['premoved'])){ ?><div class="row-fluid"><div class="span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['premoved'];?></div></div><?php } ?>
+    <?php if(!empty($table_row['nameremoved'])){ ?><div class="row-fluid"><div class="span12 alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> <?php echo $table_row['nameremoved'];?></div></div><?php } ?>
     <div class="row-fluid">
         <div class="span12 btn-group-vertical">
             <a href="userpanel.php?w=gs&amp;d=rs&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->confirm_restart;?>');"><button class="btn btn-mini btn-success inline"><i class="icon-white icon-play"></i> <?php echo $sprache->restarts;?></button></a>
@@ -22,8 +22,15 @@
             <?php if(!empty($table_row['pro'])){ ?><a href="userpanel.php?w=pr&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->protect . ' '; echo ($table_row['imgp']=='16_protected') ? $sprache->off2 : $sprache->on;?>?');"><button class="btn btn-mini <?php if($table_row['imgp']=='16_protected')echo 'btn-info';else if($table_row['imgp']=='16_unprotected') echo 'btn-warning';?>"><i class="icon-white icon-lock"></i> <?php echo $sprache->protect.' '.$table_row['pro'];?></button></a><?php } ?>
             <a href="userpanel.php?w=gs&amp;d=cf&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-cog"></i> <?php echo $sprache->config;?></button></a>
             <?php if($pa['useraddons']){ ?><a href="userpanel.php?w=ao&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-gift"></i> <?php echo $gsprache->addon;?></button></a><?php } ?>
-            <a href="userpanel.php?w=ca&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-calendar"></i> <?php echo $sprache->restarttime;?></button></a>
-            <a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-bold"></i> <?php echo $gsprache->backup;?></button></a>
+            <a href="userpanel.php?w=ca&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-calendar"></i> <?php echo $sprache->restarttime;?></button></a>    
+            <div class="btn-group">
+              <button data-toggle="dropdown" class="btn btn-mini btn-primary dropdown-toggle"><i class="icon-white icon-bold"></i> <?php echo $gsprache->backup;?> <span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=mb"><?php echo $sprache->create;?></a></li>
+                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=rb"><?php echo $sprache->recover;?></a></li>
+                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=md"><?php echo $gsprache->settings;?></a></li>
+              </ul>
+            </div>
             <a href="serverlog.php?id=<?php echo $table_row['id'];?>" onclick="return popup(this.href);"><button class="btn btn-mini btn-primary"><i class="icon-white icon-tasks"></i> <?php echo $gsprache->logs;?></button></a>
             <a href="userpanel.php?w=gs&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="icon-white icon-pencil"></i> <?php echo $gsprache->settings;?></button></a>
             <a href="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-warning"><i class="icon-white icon-refresh"></i> <?php echo $sprache->reinstall;?></button></a>

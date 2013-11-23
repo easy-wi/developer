@@ -2,7 +2,7 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=my">MYSQL <?php echo $gsprache->databases;?></a> <span class="divider">/</span></li>
+            <li><a href="admin.php?w=my">MySQL <?php echo $gsprache->databases;?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $gsprache->add;?></li>
         </ul>
     </div>
@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputServer">MYSQL Server</label>
+                <label class="control-label" for="inputServer">MySQL Server</label>
                 <div class="controls">
                     <select id="inputServer" name="serverid" onchange="getdetails('serverallocation.php?d=my&id=', this.value)">
                         <?php foreach ($table2 as $table_row2){ ?>
@@ -100,7 +100,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i></button>
                 </div>
             </div>
         </form>

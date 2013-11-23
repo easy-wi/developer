@@ -10,7 +10,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span5">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=bu&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <div class="control-group">
                 <label class="control-label" for="inputTemplate"><?php echo $gsprache->template;?></label>
@@ -21,10 +21,10 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputRecover"><?php echo $sprache->recover;?></label>
+                <label class="control-label" for="inputRecover"> </label>
                 <div class="controls">
                     <input type="hidden" name="action" value="rb2" />
-                    <button class="btn btn-primary pull-right" id="inputRecover" type="submit"><i class="icon-refresh icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputRecover" type="submit"><i class="icon-refresh icon-white"></i> <?php echo $sprache->recover;?></button>
                 </div>
             </div>
         </form>

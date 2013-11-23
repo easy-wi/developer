@@ -15,32 +15,32 @@
 </div>
 <hr>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=vd&amp;d=md&amp;id=<?php echo $id;?>&amp;r=vd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
             <div class="control-group">
                 <label class="control-label" for="dns"><?php echo $sprache->dns;?></label>
                 <div class="controls">
-                    <input id="dns" type="text" name="dns" value="<?php echo $dns;?>" class="span10" required>
+                    <input id="dns" type="text" name="dns" value="<?php echo $dns;?>" required>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="ip"><?php echo $sprache->ip;?></label>
                 <div class="controls">
-                    <input id="ip" type="text" name="ip" value="<?php echo $ip;?>" class="span10" required>
+                    <input id="ip" type="text" name="ip" value="<?php echo $ip;?>" required>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="port"><?php echo $sprache->port;?></label>
                 <div class="controls">
-                    <input id="port" type="text" name="port" value="<?php echo $port;?>" class="span10" required>
+                    <input id="port" type="text" name="port" value="<?php echo $port;?>" required>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
                 </div>
             </div>
         </form>

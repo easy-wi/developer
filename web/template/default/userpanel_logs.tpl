@@ -6,14 +6,12 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span11">
-        <?php echo $sprache->help_logs;?>
-    </p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_logs;?></div>
 </div>
 <hr>
 <div class="row-fluid">
-    <div class="span11 pagination">
+    <div class="span12 pagination">
         <ul>
             <li><a href="userpanel.php?w=lo&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $zur; ?>"><i class="icon-step-backward"></i></a></li>
             <li><a href="userpanel.php?w=lo&amp;a=20&amp;p=<?php echo $start; ?>">20</a></li>
@@ -24,7 +22,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span12">
         <table class="table table-bordered table-hover table-striped footable">
             <thead>
             <tr>

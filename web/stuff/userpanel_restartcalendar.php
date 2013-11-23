@@ -105,7 +105,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		$hlds_6 = $row['hlds_6'];
 	}
 
-    $query = $sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`qstat`,t.`mapGroup` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
+    $query = $sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`qstat`,t.`mapGroup`,t.`protected`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
     $query->execute(array($ui->id('id',19, 'get'), $reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$shorten = $row['shorten'];
@@ -116,7 +116,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 			$qstat = $row['qstat'];
 		}
 
-		$table[$row['shorten']] = array('shorten' => $shorten,'description' => $row['description'], 'defaultMapGroup' => $row['mapGroup']);
+		$table[$row['shorten']] = array('shorten' => $shorten,'description' => $row['description'], 'defaultMapGroup' => $row['mapGroup'], 'protected' => $row['protected'], 'qstat' => $row['qstat']);
 	}
 
 	$template = '';
@@ -210,6 +210,11 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	$anticheat = $ui->id('anticheat',1, 'post');
 	$gsswitch = $ui->gamestring('shorten', 'post');
 
+	$query = $sql->prepare("SELECT t.`protected`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE t.`shorten`=? AND s.`resellerid`=?");
+	$query->execute(array($gsswitch, $reseller_id));
+	$serverlist = $query->fetch(PDO::FETCH_ASSOC);
+	$query->closeCursor();
+	
 	$query = $sql->prepare("SELECT `normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
 	$rowcount = $query->rowCount();
@@ -261,8 +266,14 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 	}
 	$restart = $ui->active('restart', 'post');
 	$backup = $ui->active('backup', 'post');
-	$map = $ui->mapname('map', 'post');
-	if ($ui->active('protected', 'post')) {
+	if($ui->mapname('map', 'post') && $serverlist['qstat']!='minecraft') {
+		$map = $ui->mapname('map', 'post');
+	}
+	else {
+		$map = "";
+	}
+	
+	if ($ui->active('protected', 'post') && $serverlist['protected']=='Y') {
 		$protected = $ui->active('protected', 'post');
 	} else {
 		$protected = 'N';
@@ -301,7 +312,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		$qstat_array[$shorten] = $row['qstat'];
 	}
 	$backup = 'N';
-    $query = $sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
+    $query = $sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`protected`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
     $query->execute(array($ui->id('id',19, 'get'), $reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$restarttime=explode("_", $row['restarttime']);
@@ -313,6 +324,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		$backup = $row['backup'];
 		$worldsafe = $row['worldsafe'];
 		$upload = $row['upload'];
+		$protected = $row['protected'];
         if (isset($qstat_array[$shorten])) {
             $qstat = $qstat_array[$shorten];
         } else {
@@ -327,47 +339,56 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 		}
 		$anticheat = $row['anticheat'];
 		if ($anticheat==1) {
-			$anti = $anticheatsoft . ' ' . $sprache->on;
+			$restarts[$hour][$day]['anti'] = $anticheatsoft . ' ' . $sprache->on;
 		} else if ($anticheat==2) {
-			$anti = $anticheatsoft . ' ' . $sprache->off2;
+			$restarts[$hour][$day]['anti'] = $anticheatsoft . ' ' . $sprache->off2;
 		} else if ($anticheat==3 or $anticheat==4 or $anticheat==5 or $anticheat==6) {
-			$anti='EAC';
+			$restarts[$hour][$day]['anti'] = 'EAC';
 		}
 		if ($template==1) {
 			$template = '';
 		} else {
 			$template='-' . $template;
 		}
-        if ($restart == 'Y') {
-            $routput = $shorten.$template."<br />".$row['map']."<br />".$anti;
-        }
+        
 		if ($backup == 'Y') {
-			$routput.="<br />".$gsprache->backup.": ".$gsprache->yes;
+			$restarts[$hour][$day]['backup'] = $gsprache->yes;
 		} else {
-			$routput.="<br />".$gsprache->backup.": ".$gsprache->no;
+			$restarts[$hour][$day]['backup'] = $gsprache->no;
 		}
 		if ($qstat == 'minecraft' and $restart == 'N' and $worldsafe == 'Y') {
-			$routput .="<br />Worldsafe: ".$gsprache->yes;
+			$restarts[$hour][$day]['worldsave'] = $gsprache->yes;
 		} else if ($qstat == 'minecraft' and $restart == 'N') {
-			$routput .="<br />Worldsafe: ".$gsprache->no;
+			$restarts[$hour][$day]['worldsave'] = $gsprache->no;
 		}
 		if ($qstat == 'a2s' and $restart == 'N' and $upload== 'Y') {
-			$routput .="<br />SourceTV Demo Upload: ".$gsprache->yes.'<br />';
+			$restarts[$hour][$day]['sourcetvdemo'] = $gsprache->yes;
 		} else if ($qstat == 'a2s' and $restart == 'N') {
-			$routput .="<br />SourceTV Demo Upload: ".$gsprache->no.'<br />';
+			$restarts[$hour][$day]['sourcetvdemo'] = $gsprache->no;
 		}
-        if ($pallowed== 'Y') {
-            if ($protected== 'N') {
-                $imgName='16_unprotected';
-                $imgAlt='Unprotected';
-            } else if ($protected== 'Y') {
-                $imgName='16_protected';
-                $imgAlt='Protected';
-            }
-            $restarts[$hour][$day] = array('out' => $routput,'img' => $imgName,'alt' => $imgAlt);
-        } else {
-            $restarts[$hour][$day] = array('out' => $routput);
-        }
+		
+		if ($restart == 'Y') {
+			$restarts[$hour][$day]['restart'] = $gsprache->yes;
+			$restarts[$hour][$day]['template'] = $shorten.$template;
+			$restarts[$hour][$day]['map'] = $row['map'];
+			if ($pallowed== 'Y') {
+				if ($protected=='N') {
+					$restarts[$hour][$day]['protected'] = $gsprache->no;
+				} else if ($protected=='Y') {
+					$restarts[$hour][$day]['protected'] = $gsprache->yes;
+				}
+			}
+			else {
+				$restarts[$hour][$day]['protected'] = "";
+			}
+		}
+		else {
+			$restarts[$hour][$day]['restart'] = $gsprache->no;
+			$restarts[$hour][$day]['template'] = "";
+			$restarts[$hour][$day]['map'] = "";
+			$restarts[$hour][$day]['protected'] = "";
+		}
+        
 	}
 	$template_file = 'userpanel_gserver_calendar_list.tpl';
 }

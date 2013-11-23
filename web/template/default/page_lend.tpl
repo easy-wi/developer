@@ -99,7 +99,7 @@
         <div class="control-group">
             <label class="control-label" for="inputSubmit"></label>
             <div class="controls">
-                <button class="btn btn-primary pull-right" id="inputSubmit" type="submit"><?php echo $sprache->lend; ?></button>
+                <button class="btn btn-primary" id="inputSubmit" type="submit"><?php echo $sprache->lend; ?></button>
             </div>
         </div>
         <div class="hide" aria-hidden="true">

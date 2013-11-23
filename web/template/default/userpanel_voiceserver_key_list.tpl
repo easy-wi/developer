@@ -7,25 +7,22 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span11"><?php echo $sprache->help_voiceserver_key;?></p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_voiceserver_key;?></div>
 </div>
 <hr>
 <div class="row-fluid">
-    <dl class="dl-horizontal">
-        <dt><?php echo $gsprache->add;?></dt>
-        <dd><a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a></dd>
-    </dl>
+	<a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $sprache->token;?></span></a>
 </div>
-<hr>
+<br>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span8">
         <table class="table table-condensed table-bordered table-striped table-hover">
             <thead>
             <tr>
                 <th><?php echo $sprache->groupname;?></th>
                 <th><?php echo $sprache->token;?></th>
-                <th><?php echo $gsprache->del;?></th>
+                <th class="span1"> </th>
             </tr>
             </thead>
             <tbody>
@@ -33,11 +30,11 @@
             <tr>
                 <td><?php echo $token['groupname'];?></td>
                 <td><?php echo $token['token'];?></td>
-                <td>
+                <td class="span1">
                     <form method="post" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                         <input type="hidden" name="token" value="<?php echo $token['token'];?>" >
                         <input type="hidden" name="action" value="dl" >
-                        <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-remove-sign icon-white"></i></button>
+                        <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-remove-sign icon-white"></i> <?php echo $gsprache->del;?></button>
                     </form>
                 </td>
             </tr>

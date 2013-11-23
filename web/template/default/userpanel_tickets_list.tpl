@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span12">
         <h4><?php echo $sprache->status;?></h4>
         <a href="<?php echo $ticketLinks['N'];?>"><?php echo $sprache->status_new;?></a><?php if(in_array('N',$selected)) { ?> <i class="icon-check"></i><?php }?>,
         <a href="<?php echo $ticketLinks['P'];?>"><?php echo $sprache->status_process;?></a><?php if(in_array('P',$selected)) { ?> <i class="icon-check"></i><?php }?>,
@@ -19,7 +19,7 @@
 </div>
 <hr>
 <div class="row-fluid">
-    <div class="span11 pagination">
+    <div class="span12 pagination">
         <ul>
             <li><a href="<?php echo $ticketLinks['all'];?>&amp;p=<?php echo $zur;?>"><i class="icon-step-backward"></i></a></li>
             <li><a href="<?php echo $ticketLinks['amount'];?>&amp;a=20&amp;p=<?php echo $start; ?>">20</a></li>
@@ -30,7 +30,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span11">
+    <div class="span12">
         <table class="table table-condensed table-bordered table-hover footable">
             <thead>
             <tr>

@@ -57,6 +57,7 @@
 	<isnot>ist nicht</isnot>
 	<keyname>Name der Public Keyfile</keyname>
 	<keyuse>Public Keyfile benutzen</keyuse>
+	<left>verbleibend</left>
 	<maxserver>Maximum Server</maxserver>
 	<maxslots>Maximum Slots</maxslots>
 	<maxtraffic>Maximum Traffic</maxtraffic>
@@ -69,6 +70,7 @@
 	<port>Port</port>
 	<querypassword>Querypasswort</querypassword>
 	<queryport>Queryport</queryport>
+	<recover>Wiederherstellen</recover>
     <reset>Reset</reset>
 	<rootserver>Rootserver</rootserver>
 	<server>Server</server>

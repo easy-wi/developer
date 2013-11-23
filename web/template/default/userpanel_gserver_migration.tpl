@@ -14,7 +14,7 @@
 </div>
 <?php }?>
 <div class="row-fluid">
-    <div class="span6">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=ms" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ms">
@@ -86,7 +86,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-play-circle icon-white"></i> <?php echo $gsprache->exec;?></button>
                 </div>
             </div>
         </form>

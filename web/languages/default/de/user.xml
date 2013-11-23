@@ -38,6 +38,7 @@
 	<heading_add>Benutzer hinzufügen</heading_add>
 	<heading_detail>Benutzerdetails</heading_detail>
 	<heading_list>Benutzerübersicht</heading_list>
+	<help_substitutes_list>Hier können weitere Nutzer hinzugefügt werden, die ebenfalls Zugriff auf einzelne Dienste erhalten sollen.</help_substitutes_list>
 	<hnum>Hausnummer</hnum>
 	<inst>Installierte Server</inst>
 	<ips>IP4 Adressen:</ips>

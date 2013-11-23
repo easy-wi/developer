@@ -38,6 +38,7 @@
 	<heading_add>Tilføj Bruger</heading_add>
 	<heading_detail>Bruger Detaljer</heading_detail>
 	<heading_list>Bruger Oversigt</heading_list>
+	<help_substitutes_list></help_substitutes_list>
 	<hnum>Husnummer</hnum>
 	<inst>Installeret Server</inst>
 	<ips>IP4 Adresse:</ips>

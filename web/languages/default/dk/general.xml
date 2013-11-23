@@ -8,9 +8,11 @@
     <api>API</api>
     <apiAuth>ekstern godkendelse</apiAuth>
 	<backup>Sikkerhedskopi</backup>
+	<change></change>
     <columns>Tilpassede kolonner</columns>
     <comments>Kommentarer</comments>
 	<databases>Databaser</databases>
+	<datetime></datetime>
     <dedicated>Dedikeret</dedicated>
 	<del>Slet</del>
     <delSafe>Sikker Slat</delSafe>
@@ -18,7 +20,9 @@
     <delDB>Fjern fra database</delDB>
     <feeds>Feeds</feeds>
 	<edit>Rediger</edit>
+	<exec></exec>
 	<fastdownload>Fastdownload</fastdownload>
+	<game></game>
 	<gameserver>Spilserver</gameserver>
     <gameroot>Spil Rodenserver</gameroot>
 	<groups>Grupper</groups>
@@ -40,10 +44,12 @@
 	<overview>Oversigt</overview>
 	<page>Side</page>
 	<pages>Sider</pages>
+	<password></password>
     <registration>Registrering</registration>
     <repair>Reparer</repair>
 	<reseller>Forhandler</reseller>
 	<root>Rootserver</root>
+	<save>Optag</save>
     <search>Søg</search>
 	<settings>Indstillinger</settings>
 	<shown>Resultater per side:</shown>

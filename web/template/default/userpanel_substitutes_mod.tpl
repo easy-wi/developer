@@ -17,7 +17,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span6">
+    <div class="span8">
         <form class="form-horizontal" action="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $id;?>&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
@@ -105,7 +105,7 @@
             <?php }}?>
             <?php if(count($db)>0){ ?>
             <hr>
-            <h4>MYSQL</h4>
+            <h4>MySQL</h4>
             <?php foreach($db as $k=>$v){ ?>
             <div class="control-group">
                 <label class="control-label" for="inputDB-<?php echo $k;?>"><?php echo $v;?></label>
@@ -117,7 +117,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
                 </div>
             </div>
         </form>

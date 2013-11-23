@@ -35,3 +35,23 @@
 .footable > tbody img {
     vertical-align:middle;
 }
+
+.navbar .pull-right {
+	margin-right: 20px;
+}
+
+.navbar .btn {
+	margin-top: 0px;
+}
+
+table form {
+	margin-bottom: 0px;
+}
+
+.btn {
+	 white-space: nowrap;
+}
+
+.collapse :not(in) {
+	margin-bottom: 0px;
+}

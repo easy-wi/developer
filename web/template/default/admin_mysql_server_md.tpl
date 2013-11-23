@@ -2,7 +2,7 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=my">MYSQL Server</a> <span class="divider">/</span></li>
+            <li><a href="admin.php?w=my">MySQL Server</a> <span class="divider">/</span></li>
             <li><?php echo $gsprache->mod;?> <span class="divider">/</span></li>
             <li class="active"><?php echo $ip;?></li>
         </ul>
@@ -87,7 +87,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary pull-right" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
                 </div>
             </div>
         </form>

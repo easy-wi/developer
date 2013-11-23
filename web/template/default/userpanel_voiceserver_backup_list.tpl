@@ -8,50 +8,49 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <p class="span11"><?php echo $sprache->help_voiceserver_backup;?></p>
+<div class="row-fluid hidden-phone">
+    <div class="span12 alert alert-info"><?php echo $sprache->help_voiceserver_backup;?></div>
 </div>
 <hr>
 <div class="row-fluid">
-    <dl class="dl-horizontal">
-        <dt><?php echo $sprache->backups;?></dt>
-        <dd><?php echo $backupcount.'/'.$voice_maxbackup;?></dd>
-        <dt><?php echo $gsprache->add;?></dt>
-        <dd><a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $id;?>"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a></dd>
-    </dl>
+	<a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $id;?>"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $sprache->backup ." (".($voice_maxbackup-$backupcount)." ".$sprache->left.")";?></span></a>
 </div>
-<hr>
+<br>
 <div class="row-fluid">
-    <table class="table table-condensed table-striped table-hover">
-        <thead>
-        <tr>
-            <th><?php echo $sprache->date;?></th>
-            <th colspan="3"><?php echo $sprache->backupname;?></th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($table as $table_row) { ?>
-        <tr>
-            <td><?php echo $table_row['date']; ?></td>
-            <td><?php echo $table_row['name']; ?></td>
-            <td>
-                <form method="post" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-                    <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-remove-sign"></i></button>
-                    <input type="hidden" name="action" value="md" />
-                    <input type="hidden" name="delete" value="md" />
-                    <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />
-                </form>
-            </td>
-            <td>
-                <form method="post" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-                    <button class="btn btn-primary btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-refresh"></i></button>
-                    <input type="hidden" name="action" value="md" />
-                    <input type="hidden" name="use" value="md" />
-                    <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />
-                </form>
-            </td>
-        </tr>
-        <?php } ?>
-        </tbody>
-    </table>
+	<div class="span8">
+	    <table class="table table-bordered table-condensed table-striped table-hover">
+	        <thead>
+	        <tr>
+	            <th><?php echo $sprache->date;?></th>
+	            <th><?php echo $sprache->backupname;?></th>
+	            <th class="span1"> </th>
+	            <th class="span1"> </th>
+	        </tr>
+	        </thead>
+	        <tbody>
+	        <?php foreach ($table as $table_row) { ?>
+	        <tr>
+	            <td><?php echo $table_row['date']; ?></td>
+	            <td><?php echo $table_row['name']; ?></td>
+	            <td class="span1">
+	                <form method="post" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
+	                    <button class="btn btn-danger btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-remove-sign"></i> <?php echo $gsprache->del;?></button>
+	                    <input type="hidden" name="action" value="md" />
+	                    <input type="hidden" name="delete" value="md" />
+	                    <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />
+	                </form>
+	            </td>
+	            <td class="span1">
+	                <form method="post" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
+	                    <button class="btn btn-primary btn-mini" id="inputEdit" type="submit"><i class="icon-white icon-refresh"></i> <?php echo $sprache->recover;?></button>
+	                    <input type="hidden" name="action" value="md" />
+	                    <input type="hidden" name="use" value="md" />
+	                    <input type="hidden" name="id" value="<?php echo $table_row['id'];?>" />
+	                </form>
+	            </td>
+	        </tr>
+	        <?php } ?>
+	        </tbody>
+	    </table>
+	</div>
 </div>

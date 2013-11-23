@@ -30,54 +30,52 @@
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+    <div class="navbar-inner text-center">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    	<li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
+                        <li class="divider"></li>
+                        <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>            
+                        <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
+                        <li><a href="userpanel.php?w=se&amp;d=pw"><?php echo $gsprache->password." ".$gsprache->change;?></a></li>
+                        <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
+                        <li class="divider"></li>
+                        <?php } ?>
+
+                        <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
+                        <li><a href="http://easy-wi.com" target="_blank">About</a></li>
+                        <li><a href="http://forum.easy-wi.com" target="_blank">Forum</a></li>
+                        <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank">Steam Bugtracker</a></li>
+                    </ul>
+                </li>
+            </ul>
             <p class="navbar-text pull-left">
-                <?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>';} ?>
-            </p>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Easy-WI.com<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
-                            <li><a href="http://easy-wi.com" target="_blank">About</a></li>
-                            <li><a href="http://forum.easy-wi.com" target="_blank">Forum</a></li>
-                            <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank">Steam Bugtracker</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav pull-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?><b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
-                            <li class="divider"></li>
-                            <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
-                            <li class="divider"></li>
-                            <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
-                            <li><a href="userpanel.php?w=se"><?php echo $gsprache->settings;?></a></li>
-                            <li class="divider"></li>
-                            <?php } ?>
-                            <li><a href="login.php?w=lo">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!--/.nav-collapse -->
-            <div class="navbar-text pull-right">
-                <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="userpanel.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
-                <?php if($gscount>0 and $pa['gserver']) { ?>
-                <?php if($crashedArray['gsCrashed']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
-                <?php if($crashedArray['gsPWD']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
-                <?php if($crashedArray['gsTag']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
-                <?php }?>
-                <?php if($voicecount>0 and $pa['voiceserver'] and $crashedArray['ts3']>0) { ?><a href="userpanel.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></a><?php }?>
-            </div>
+            	<?php foreach ($languages as $language){ echo '<a href="userpanel.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>
+        	</p>
+        	
+        	<span class="navbar-text">Easy-WI.com</span>
+        	
+        	<a href="login.php?w=lo" class="navbar-text pull-right">
+        		<button class="btn btn-mini btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
+        	</a>
+   
+	        <div class="navbar-text pull-right">
+	            <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="userpanel.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
+	            <?php if($gscount>0 and $pa['gserver']) { ?>
+	            <?php if($crashedArray['gsCrashed']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
+	            <?php if($crashedArray['gsPWD']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
+	            <?php if($crashedArray['gsTag']>0) { ?><a href="userpanel.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
+	            <?php }?>
+	            <?php if($voicecount>0 and $pa['voiceserver'] and $crashedArray['ts3']>0) { ?><a href="userpanel.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></a><?php }?>
+	        </div>
         </div>
     </div>
 </div>
@@ -96,7 +94,7 @@
                                     <li <?php if($w=='da' or $w=='ho') echo 'class="active"';?>><a href="userpanel.php?w=da">Dashboard</a></li>
                                     <?php if(!isset($_SESSION['sID'])){ ?><li <?php if($w=='su') echo 'class="active"';?>><a href="userpanel.php?w=su"><?php echo $gsprache->substitutes;?></a></li><?php }?>
                                     <li <?php if($w=='lo') echo 'class="active"';?>><a href="userpanel.php?w=lo"><?php echo $gsprache->logs;?></a></li>
-                                    <li <?php if($w=='ip') echo 'class="active"';?>><a href="userpanel.php?w=ip"><?php echo $gsprache->imprint;?></a></li>
+                                    <?php if($showImprint){ ?><li <?php if($w=='ip') echo 'class="active"';?>><a href="userpanel.php?w=ip"><?php echo $gsprache->imprint;?></a></li><?php }?>
                                     <?php foreach ($customModules['us'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
@@ -160,7 +158,7 @@
                     <?php if($easywiModules['my'] and $dbcount>0 and ($pa['mysql'] or $pa['mysql'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive">MYSQL</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive">MySQL</a>
                         </div>
                         <div id="collapseFive" class="accordion-body collapse <?php if($w=='my') echo 'in';?>">
                             <div class="accordion-inner">
