@@ -6,13 +6,9 @@
         </ul>
     </div>
 </div>
-<div class="row-fluid">
-    <h4><?php echo $gsprache->greating_home;?></h4>
-</div>
 <div class="row-fluid hidden-phone">
     <div class="span12 alert alert-info"><?php echo $gsprache->help_home;?></div>
 </div>
-<hr>
 <?php if($crashedArray['ticketsOpen']>0){ ?>
 <div class="row-fluid">
     <div class="span12 alert alert-block alert-info">
