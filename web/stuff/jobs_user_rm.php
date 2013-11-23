@@ -39,22 +39,26 @@
  */
 
 if (!function_exists('removeUser')) {
-    function removeUser ($userID,$tables,$reseller=null) {
+    function removeUser ($userID, $tables, $reseller = null) {
+
         global $sql;
+
         foreach ($tables as $table => $column) {
-            if ($reseller==null) {
-                $query = $sql->prepare("DELETE FROM `".$table."` WHERE `".$column."`=?");
+            if ($reseller == null) {
+                $query = $sql->prepare("DELETE FROM `" . $table . "` WHERE `" . $column . "`=?");
                 $query->execute(array($userID));
             } else {
-                $query = $sql->prepare("DELETE FROM `".$table."` WHERE `".$column."`=? AND `".$reseller['column']."`=?");
-                $query->execute(array($userID,$reseller['value']));
+                $query = $sql->prepare("DELETE FROM `" . $table . "` WHERE `" . $column . "`=? AND `" . $reseller['column'] . "`=?");
+                $query->execute(array($userID, $reseller['value']));
             }
         }
     }
 }
+
 $query = $sql->prepare("SELECT * FROM `jobs` j WHERE `status`='4' AND `type`='us' AND `action` IN ('dl','md') AND NOT EXISTS (SELECT 1 FROM `jobs` WHERE `userID`=j.`userID` AND (`status`=1 OR `status` IS NULL) AND `type`!='us' LIMIT 1)");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
     $ok = true;
 
     if ($row['action'] == 'dl') {
@@ -125,17 +129,17 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         customColumns('U', $row['affectedID'], 'del');
         $query2 = $sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
-        $command = $gsprache->del.' userID: '.$row['affectedID'].' name:'.$row['name'];
+        $command = $gsprache->del.' userID: ' . $row['affectedID'] . ' name:' . $row['name'];
 
     } else {
         $extraData = @json_decode($row['extraData']);
         if (is_object($extraData)) {
             $query2 = $sql->prepare("UPDATE `userdata` SET `active`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
             $query2->execute(array($extraData->newActive, $row['affectedID']));
-            $command = $gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
+            $command = $gsprache->mod.' userID: ' . $row['affectedID'] . ' name:' . $row['name'];
         } else {
             $ok = false;
-            $command='Error: '.$gsprache->mod.' userID: '.$row['affectedID'].' name:'.$row['name'];
+            $command='Error: ' . $gsprache->mod . ' userID: ' . $row['affectedID'] . ' name:' . $row['name'];
         }
     }
 

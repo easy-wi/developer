@@ -92,7 +92,7 @@ $what_to_be_included_array = array(
     'ap' => 'api_settings.php', 'aa' => 'api_external_auth.php', 'ui' => 'api_import_users.php', 'jb' => 'jobs_list.php', 'bu' => 'mysql_root.php',
     'vc' => 'versioncheck.php', 'ib' => 'ip_bans.php', 'se' => 'panel_settings.php', 'cc' => 'panel_settings_columns.php', 'sm' => 'panel_settings_email.php', 'lo' => 'logdata.php', 'ml' => 'maillog.php', 'sr' => 'admin_search.php',
     'us' => 'user.php', 'ug' => 'user_groups.php',
-    'ip' => 'imprint.php', 'su' => 'global_userdata.php'
+    'su' => 'global_userdata.php'
 );
 
 if ($reseller_id == 0) {
@@ -104,7 +104,7 @@ if ($reseller_id == 0) {
     $what_to_be_included_array['pd'] = 'page_downloads.php';
 }
 
-$easywiModules = array('gs' => true, 'ea' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
+$easywiModules = array('gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
 $customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
 
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('A','C')");
@@ -172,4 +172,8 @@ if ($easywiModules['vo'] === true) {
     $what_to_be_included_array['vd'] = 'voice_tsdns.php';
     $what_to_be_included_array['vr'] = 'voice_tsdnsrecords.php';
     $what_to_be_included_array['vm'] = 'voice_master.php';
+}
+
+if ($easywiModules['ip'] === true) {
+    $what_to_be_included_array['ip'] = 'imprint.php';
 }

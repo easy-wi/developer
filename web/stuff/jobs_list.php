@@ -128,7 +128,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
         $query->execute(array($reseller_id));
     }
-    $type=array('de' => $gsprache->dedicated,'ds' => 'TS3 DNS','gs' => $gsprache->gameserver,'my' => 'MYSQL','us' => $gsprache->user,'vo' => $gsprache->voiceserver,'vs' => $gsprache->virtual);
+    $type=array('de' => $gsprache->dedicated,'ds' => 'TS3 DNS','gs' => $gsprache->gameserver,'my' => 'MySQL','us' => $gsprache->user,'vo' => $gsprache->voiceserver,'vs' => $gsprache->virtual);
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($user_language == 'de') {
             $date=date('Y-d-m H:m:s',strtotime($row['date']));

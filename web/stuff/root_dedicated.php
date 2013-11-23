@@ -397,7 +397,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $ip = $row['ip'];
             $bitversion = $row['bitversion'];
         }
-        if (!isset($bitversion)) $bitversion=64;
+        if (!isset($bitversion)) {
+            $bitversion = 64;
+        }
         if (isset($ip)) {
             $extraData = array();
             if ($ui->st('action', 'post') == 'ri') {

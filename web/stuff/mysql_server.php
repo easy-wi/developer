@@ -134,7 +134,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $pdelete2 = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `sid`=? AND `resellerid`=?");
         $pdelete2->execute(array($id,$reseller_id));
         $template_file = $spracheResponse->table_del;
-        $loguseraction="%del% MYSQL Server $ip";
+        $loguseraction="%del% MySQL Server $ip";
         $insertlog->execute();
     } else {
         $id = $ui->id('id', 10, 'get');
@@ -189,7 +189,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$pupdate = $sql->prepare("UPDATE `mysql_external_servers` SET `active`=?,`ip`=?,`port`=?,`user`=?,`password`=AES_ENCRYPT(?,?),`max_databases`=?,`interface`=?,`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
 			$pupdate->execute(array($active,$ip,$port,$user,$password,$aeskey,$max_databases,$interface,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$id,$reseller_id));
 			$template_file = $spracheResponse->table_add;
-			$loguseraction="%mod% MYSQL Server $ip";
+			$loguseraction="%mod% MySQL Server $ip";
 			$insertlog->execute();
 		}
 	}
@@ -220,7 +220,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			$pinsert = $sql->prepare("INSERT INTO `mysql_external_servers` (`active`,`ip`,`port`,`user`,`password`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
 			$pinsert->execute(array($active,$ip,$port,$user,$password,$aeskey,$max_databases,$interface,$max_queries_per_hour,$max_updates_per_hour,$max_connections_per_hour,$max_userconnections_per_hour,$reseller_id));
 			$template_file = $spracheResponse->table_add;
-			$loguseraction="%add% MYSQL Server $ip";
+			$loguseraction="%add% MySQL Server $ip";
 			$insertlog->execute();
 		}
 	}	
@@ -302,7 +302,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $reply = $remotesql->AddDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
                 customColumns('D',$id,'save');
                 $template_file = $spracheResponse->table_add;
-                $loguseraction="%add% MYSQL DB $dbname ($ip)";
+                $loguseraction="%add% MySQL DB $dbname ($ip)";
                 $insertlog->execute();
             } else {
                 $template_file = $remotesql->error;
@@ -389,7 +389,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     if ($active == 'N' and $old_active == 'Y') $password=passwordgenerate(20);
                     $remotesql->ModDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
                     $template_file = $spracheResponse->table_add;
-                    $loguseraction="%mod% MYSQL DB $dbname ($ip)";
+                    $loguseraction="%mod% MySQL DB $dbname ($ip)";
                     $insertlog->execute();
                 } else {
                     $template_file = $remotesql->error;
@@ -433,7 +433,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($id,$reseller_id));
                 customColumns('D',$id,'del');
                 $template_file = $spracheResponse->table_del;
-                $loguseraction="%del% MYSQL DB $dbname ($ip)";
+                $loguseraction="%del% MySQL DB $dbname ($ip)";
                 $insertlog->execute();
             } else {
                 $template_file = $remotesql->error;

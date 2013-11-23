@@ -50,7 +50,6 @@ $query->execute();
 $statusTime = ceil($query->fetchColumn());
 $gsprache->help_home = str_replace('%n%', $statusTime, $gsprache->help_home);
 $gsprache->help_sidebar = str_replace('%n%', $statusTime, $gsprache->help_sidebar);
-$gsprache->greating_home = str_replace('%name%', $ewCfg['title'], $gsprache->greating_home);
 
 # https://github.com/easy-wi/developer/issues/2
 if (isset($_SESSION['sID'])) {
@@ -113,21 +112,16 @@ if (isset($_SESSION['sID'])) {
     $query->execute(array($user_id));
     $virtualcount = $query->fetchColumn();
     
-    if (!isset($reseller_id)) $reseller_id = 0;
+    if (!isset($reseller_id)) {
+        $reseller_id = 0;
+    }
+
 	if (isset($admin_id) and $admin_id==$reseller_id) {
 		$resellerid = 0;
 	} else if (isset($reseller_id)) {
 		$resellerid = $reseller_id;
 	} else {
 		$resellerid = 0;
-	}
-	$query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE language=? AND resellerid=? LIMIT 1");
-	$query->execute(array($user_language,$resellerid));
-	if (strlen($query->fetchColumn())>1) {
-		$showImprint=true;
-	}
-	else {
-		$showImprint=false;
 	}
 }
 
@@ -139,10 +133,10 @@ if (isset($lastlogin) and $lastlogin != null and $lastlogin != '0000-00-00 00:00
 
 # https://github.com/easy-wi/developer/issues/61
 # basic modules array. available at any time to anyone
-$what_to_be_included_array = array('ip' => 'imprint.php','lo' => 'userpanel_logdata.php','ti' => 'userpanel_tickets.php');
+$what_to_be_included_array = array('lo' => 'userpanel_logdata.php','ti' => 'userpanel_tickets.php');
 
 
-$easywiModules = array('gs' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
+$easywiModules = array('gs' => true, 'ip' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
 $customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array());
 
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('U','C')");
@@ -206,4 +200,8 @@ if ($virtualcount > 0 and $easywiModules['ro'] === true) {
 
 if ($dbcount > 0 and $easywiModules['my'] === true) {
     $what_to_be_included_array['my'] = 'userpanel_mysql.php';
+}
+
+if ($easywiModules['ip'] === true) {
+    $what_to_be_included_array['ip'] = 'imprint.php';
 }

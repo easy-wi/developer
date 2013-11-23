@@ -56,7 +56,7 @@ unset($name);
 $table = array(
     1 => array('id' =>1, 'active' => 'Y', 'name' => $gsprache->gameserver, 'sub' => 'gs', 'type' => $sprache->type_core),
     2 => array('id' =>2, 'active' => 'Y', 'name' => 'Easy Anti Cheat', 'sub' => 'ea', 'type' => $sprache->type_core),
-    3 => array('id' =>3, 'active' => 'Y', 'name' => 'MYSQL', 'sub' => 'my', 'type' => $sprache->type_core),
+    3 => array('id' =>3, 'active' => 'Y', 'name' => 'MySQL', 'sub' => 'my', 'type' => $sprache->type_core),
     4 => array('id' =>4, 'active' => 'Y', 'name' => $gsprache->voiceserver, 'sub' => 'vo', 'type' => $sprache->type_core),
     5 => array('id' =>5, 'active' => 'Y', 'name' => $gsprache->lendserver, 'sub' => 'le', 'type' => $sprache->type_core),
     6 => array('id' =>6, 'active' => 'Y', 'name' => $gsprache->support, 'sub' => 'ti', 'type' => $sprache->type_core),

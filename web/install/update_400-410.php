@@ -87,9 +87,9 @@ if (isset($include) and $include == true) {
 <li>Autoupdater für Minecraft Craft Bukkit hinzugefügt</li>
 <li>Im Falle eines Totalverlustes des Roots können alle Gameserver mit einem Klick neu erstellt werden</li>
 </ul></li>
-<li>MYSQL:
+<li>MySQL:
 <ul>
-<li>Beschreibung kann bei MYSQL Datenbanken mit angegeben werden</li>
+<li>Beschreibung kann bei MySQL Datenbanken mit angegeben werden</li>
 </ul></li>
 <li>Voiceserver:
 <ul>
@@ -109,7 +109,7 @@ if (isset($include) and $include == true) {
 <li>Validator beim Editieren der eigenen Userdaten korrigiert</li>
 <li>Veraltete Icons in der Protectionabfrage des CMS ersetzt</li>
 <li>Leihserverübersicht im CMS wird korrekt dargestellt</li>
-<li>MYSQL Modul verwaltet die Datenbankuser korrekt</li>
+<li>MySQL Modul verwaltet die Datenbankuser korrekt</li>
 <li>Erfolgreiches Anlegen eines Vertreters gibt nun den Erfolg an den User zurück</li>
 <li>Fehlendes Template admin_voicemasterserver_dltpl hinzugefügt</li>
 <li>Reinstall von Gameservern im Adminpanel korrigiert</li>
@@ -158,9 +158,9 @@ if (isset($include) and $include == true) {
 <li>Added Minecraft Craft Bukkit autoupdater</li>
 <li>In case a whole rootserver is lost and replaced all users and server can be recreated with one click</li>
 </ul></li>
-<li>MYSQL:
+<li>MySQL:
 <ul>
-<li>Description can be added with a MYSQL database</li>
+<li>Description can be added with a MySQL database</li>
 </ul></li>
 <li>User:
 <ul>
@@ -188,7 +188,7 @@ if (isset($include) and $include == true) {
 <li>Correct validator used in case of editing own userdata</li>
 <li>Outdated icons replaced at protectioncheck within the CMS</li>
 <li>Lendserver overview is displayed correctly at CMS</li>
-<li>MYSQL module maintains DB users without errors</li>
+<li>MySQL module maintains DB users without errors</li>
 <li>Success message in case of adding a substitute</li>
 <li>Added missing template admin_voicemasterserver_dltpl</li>
 <li>Corrected reinstall gameservern at adminpanel</li>

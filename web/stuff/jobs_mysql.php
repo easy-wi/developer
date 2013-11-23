@@ -70,16 +70,16 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $max_connections_per_hour = $row['max_connections_per_hour'];
                 $max_userconnections_per_hour = $row['max_userconnections_per_hour'];
                 if ($row2['action'] == 'dl') {
-                    $command = $gsprache->del.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+                    $command = $gsprache->del.' MySQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
                     $remotesql->DelDB($dbname);
                     $delete = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? LIMIT 1");
                     $delete->execute(array($row2['affectedID']));
                     customColumns('M', $row2['affectedID'], 'del');
                 } else if ($row2['action'] == 'ad') {
-                    $command = $gsprache->add.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+                    $command = $gsprache->add.' MySQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
                     $remotesql->AddDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
                 } else {
-                    $command = $gsprache->mod.' MYSQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+                    $command = $gsprache->mod.' MySQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
                     $remotesql->ModDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
                 }
                 $theOutput->printGraph($command);

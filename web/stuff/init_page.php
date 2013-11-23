@@ -53,6 +53,48 @@ if (!isurl($pageurl) or (!isdomain($pageurl) and (!isurl($pageurl)))) {
 $page_sprache = getlanguagefile('page', $user_language, 0);
 $page_data = new PageSettings($user_language, $pageurl, $seo);
 
+
+
+
+$easywiModules = array('gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
+$customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
+
+$query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('P','C')");
+$query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
+$query->execute();
+foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR . '/stuff/' . $row['file'])) {
+        $query2->execute(array($row['id'], $user_language));
+        $name = $query2->fetchColumn();
+
+        if (strlen($name) == 0) {
+            $query2->execute(array($row['id'], $rSA['language']));
+            $name = $query2->fetchColumn();
+        }
+        if (strlen($name) == 0) {
+            $name = $row['file'];
+        }
+
+        $customModules[$row['sub']][$row['get']] = $name;
+        $what_to_be_included_array[$row['get']] = $row['file'];
+
+    } else if ($row['type'] == 'C' and $row['active'] == 'N') {
+        $easywiModules[$row['get']] = false;
+    }
+}
+
+$what_to_be_included_array = array('news' => 'page_news.php','contact' => 'page_contact.php',
+    'page' => 'page_page.php','home' => 'page_page.php','about' => 'page_page.php','gallery' => 'page_page.php','sitemap' => 'page_page.php','search' => 'page_page.php',
+    'tag' => 'page_tag.php','categories' => 'page_tag.php','downloads' => 'page_download.php',
+    'lendserver' => 'lend.php',
+    'protectioncheck' => 'protectioncheck.php',
+    'register' => 'page_register.php'
+);
+
+if ($easywiModules['ip'] === true) {
+    $what_to_be_included_array['ip'] = 'imprint.php';
+}
+
 $query = $sql->prepare("SELECT `active`,`activeGS`,`activeVS` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -66,10 +108,10 @@ $page_data->SetData('title', $title);
 
 $query = $sql->prepare("SELECT p.`id`,p.`subpage`,p.`naviDisplay`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='page' AND t.`language`=? AND p.`resellerid`='0' ORDER BY `subpage`,`sort`");
 $query->execute(array($user_language));
-if ($seo== 'Y') {
+if ($seo == 'Y') {
     $page_data->SetMenu($gsprache->news, $gsprache->news,'news');
 
-    if ($protectioncheck== 'Y') {
+    if ($protectioncheck == 'Y') {
         $page_data->SetMenu($page_sprache->protectioncheck, $page_sprache->protectioncheck,'protectioncheck');
     }
 
@@ -101,7 +143,6 @@ if ($seo== 'Y') {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['naviDisplay'] == 'Y') {
             $page_data->SetMenu($row['title'], $row['title'], $row['subpage'], $row['id']);
-
         } else {
             $page_data->SetMenu($row['title'], $row['title'], $row['subpage'], $row['id'], false);
         }
@@ -222,19 +263,11 @@ if (isset($page_lookupid)) {
     }
 }
 if (!isset($s) and !isset($page_category) and isset($page_default) and isid($page_default,19)) {
-    $s='page';
+    $s = 'page';
     $default_page_id = $page_default;
 } else if (!isset($s) and !isset($page_category) and isset($page_default)) {
     $s = $page_default;
 } else if (!isset($s) and isset($page_category) and $page_category != '' and $page_category != null) {
-    $s='404';
+    $s = 404;
     $throw404 = true;
 }
-$what_to_be_included_array=array('news' => 'page_news.php','contact' => 'page_contact.php',
-    'page' => 'page_page.php','home' => 'page_page.php','about' => 'page_page.php','gallery' => 'page_page.php','sitemap' => 'page_page.php','search' => 'page_page.php',
-    'tag' => 'page_tag.php','categories' => 'page_tag.php','downloads' => 'page_download.php',
-    'lendserver' => 'lend.php',
-    'protectioncheck' => 'protectioncheck.php',
-    'imprint' => 'imprint.php',
-    'register' => 'page_register.php'
-);

@@ -799,7 +799,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $maxplayers = 0;
                 $imgName = '16_bad';
                 $imgAlt = 'Stopped';
-            } else if (($name == 'OFFLINE' or $name == '') and $notified>=$rSA['down_checks'] and $stopped == 'N') {
+            } else if (($name == 'OFFLINE' or $name == '') and $stopped == 'N') {
                 $numplayers = 0;
                 $maxplayers = 0;
                 $imgName = '16_error';
