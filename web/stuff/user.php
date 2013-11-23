@@ -52,7 +52,7 @@ if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
 } else {
-    $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
+    $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
 if ($ui->w('action', 4, 'post') and !token(true)) {
@@ -699,10 +699,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else {
+
     $ticketLinks['Y'] = 'admin.php?w=us&amp;a='.$ui->id('a',3, 'get');
     $ticketLinks['N'] = 'admin.php?w=us&amp;a='.$ui->id('a',3, 'get');
     $ticketLinks['R'] = 'admin.php?w=us&amp;a='.$ui->id('a',3, 'get');
+
     $o = $ui->st('o', 'get');
+
     if ($ui->st('o', 'get') == 'da') {
         $orderby = '`active` DESC';
     } else if ($ui->st('o', 'get') == 'aa') {
@@ -725,9 +728,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $orderby = '`id` ASC';
         $o = 'ai';
     }
-    $and = '';
-    if (!$pa['user']) $and=" AND `accounttype` IN ('u','r')";
+
+    $table = array();
     $selected = array();
+    $and = '';
+
+    if (!$pa['user']) {
+        $and = " AND `accounttype` IN ('u','r')";
+    }
+
     if (isset($ui->get['state'])) {
         foreach ($ui->get['state'] as $get) {
             if (preg_match('/[YNR]/',$get)) $selected[] = $get;
@@ -737,26 +746,32 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     foreach ($ticketLinks as $k => $v) {
         foreach (array('Y','N','R') as $s) {
-            if ((in_array($s,$selected) and $k != $s) or (!in_array($s,$selected) and $k==$s)) $ticketLinks[$k] .= '&amp;state[] = '.$s;
+            if ((in_array($s,$selected) and $k != $s) or (!in_array($s,$selected) and $k==$s)) $ticketLinks[$k] .= '&amp;state[]='.$s;
         }
     }
-    if (count($selected)==1) $and.=" AND `active`='${selected[0]}'";
-    else if (count($selected)==2) $and.=" AND (`active`='${selected[0]}' OR `active`='${selected[1]}')";
+
+    if (count($selected) == 1) {
+        $and .= " AND `active`='${selected[0]}'";
+    } else if (count($selected) == 2) {
+        $and .= " AND (`active`='${selected[0]}' OR `active`='${selected[1]}')";
+    }
+
     if ($reseller_id == 0) {
         $query = $sql->prepare("SELECT `id`,`active`,`cname`,`name`,`accounttype`,`jobPending`,`resellerid` FROM `userdata` WHERE (`resellerid`=0 OR `id`=`resellerid`) ${and} ORDER BY $orderby LIMIT $start,$amount");
         $query->execute();
     } else {
         $query = $sql->prepare("SELECT `id`,`active`,`cname`,`name`,`accounttype`,`jobPending`,`resellerid` FROM `userdata` WHERE `resellerid`=? ${and} ORDER BY $orderby LIMIT $start,$amount");
-        if ($admin_id==$reseller_id) {
+        if ($admin_id == $reseller_id) {
             $query->execute(array($reseller_id));
         } else {
             $query->execute(array($admin_id));
         }
     }
+
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='us' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
-    $table = array();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $adminaccount = false;
+
         if ($row['accounttype'] == 'a') {
             $adminaccount = true;
             $accounttype = $sprache->accounttype_admin;
@@ -765,18 +780,26 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $accounttype = $sprache->accounttype_user;
         }
+
         if ($row['jobPending'] == 'Y') {
             $query2->execute(array($row['id'], $row['resellerid']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                if ($row2['action'] == 'ad') $jobPending = $gsprache->add;
-                else if ($row2['action'] == 'dl') $jobPending = $gsprache->del;
-                else $jobPending = $gsprache->mod;
-                $json=@json_decode($row2['extraData']);
-                $tobeActive=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
+                if ($row2['action'] == 'ad') {
+                    $jobPending = $gsprache->add;
+                } else if ($row2['action'] == 'dl') {
+                    $jobPending = $gsprache->del;
+                } else {
+                    $jobPending = $gsprache->mod;
+                }
+
+                $json = @json_decode($row2['extraData']);
+                $tobeActive = (is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
             }
+
         } else {
             $jobPending = $gsprache->no;
         }
+
         if (($row['active'] == 'Y' and $row['jobPending'] == 'N') or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
             $imgName = '16_ok';
             $imgAlt = 'Active';
@@ -786,23 +809,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $table[] = array('id' => $row['id'], 'img' => $imgName,'alt' => $imgAlt,'adminaccount' => $adminaccount,'accounttype' => $accounttype,'cname' => $row['cname'], 'name' => $row['name'], 'jobPending' => $jobPending,'active' => $row['active']);
     }
+
     $next = $start+$amount;
+
     if ($reseller_id == 0) {
         $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE (`resellerid`=0 OR `id`=`resellerid`) ${and}");
         $query->execute();
     } else {
         $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `resellerid`=? ${and}");
-        if ($admin_id==$reseller_id) $query->execute(array($reseller_id));
-        else $query->execute(array($admin_id));
+        if ($admin_id == $reseller_id) {
+            $query->execute(array($reseller_id));
+        } else {
+            $query->execute(array($admin_id));
+        }
     }
     $colcount = $query->fetchColumn();
-    if ($colcount>$next) {
+    if ($colcount > $next) {
         $vor = $start+$amount;
     } else {
         $vor = $start;
     }
     $back = $start - $amount;
-    if ($back>=0){
+    if ($back >= 0){
         $zur = $start - $amount;
     } else {
         $zur = $start;
