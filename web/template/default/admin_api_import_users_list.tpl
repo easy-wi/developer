@@ -46,7 +46,7 @@
                 <td><?php echo $table_row['id'];?></td>
                 <td><?php echo $table_row['lastCheck'];?></td>
                 <td><?php echo $table_row['lastID'];?></td>
-                <td><a href="admin.php?w=ui&amp;d=dl&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=ui&amp;d=dl&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                 <td><a href="admin.php?w=ui&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

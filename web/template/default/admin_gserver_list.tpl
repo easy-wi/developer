@@ -48,11 +48,11 @@
                 <td><?php echo $table_row['serverid'];?></td>
                 <td><i class="<?php if($table_row['img']=='16_ok') echo 'icon-ok'; else if($table_row['img']=='16_bad') echo 'icon-stop'; else echo 'icon-warning-sign';?>"></i></td>
                 <td><a href="switch.php?id=<?php echo $table_row['id'];?>"><?php echo $table_row['cname'];?></a> <?php echo $table_row['names'];?></td>
-                <td><a href="admin.php?w=gs&amp;d=ri&amp;id=<?php echo $table_row['serverid'];?>"><span class="btn btn-mini btn-warning"><i class="icon-white icon-refresh"></i></span></a></td>
+                <td><a href="admin.php?w=gs&amp;d=ri&amp;id=<?php echo $table_row['serverid'];?>"><span class="btn btn-mini btn-warning"><i class="fa fa-refresh"></i></span></a></td>
                 <td><a href="admin.php?w=gs&amp;d=st&amp;id=<?php echo $table_row['serverid'];?>&amp;r=gs"><span class="btn btn-mini btn-danger"><i class="icon-white icon-stop"></i></span></a></td>
                 <td><a href="admin.php?w=gs&amp;d=rs&amp;id=<?php echo $table_row['serverid'];?>&amp;r=gs"><span class="btn btn-mini btn-success"><i class="icon-white icon-play"></i></span></a></td>
                 <td><?php echo $table_row['jobPending'];?></td>
-                <td><a href="admin.php?w=gs&amp;d=dl&amp;id=<?php echo $table_row['serverid'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=gs&amp;d=dl&amp;id=<?php echo $table_row['serverid'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                 <td><a href="admin.php?w=gs&amp;d=md&amp;id=<?php echo $table_row['serverid'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

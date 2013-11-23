@@ -53,7 +53,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-refresh icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-refresh"></i></button>
                 </div>
             </div>
         </form>

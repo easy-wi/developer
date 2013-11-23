@@ -27,7 +27,7 @@
             		<td><?php echo $table_row['serverip']?>:<?php echo $table_row['port']?></td>
             		<td>
             			<form class="form-inline" method="post" action="userpanel.php?w=fd&amp;d=ud&amp;id=<?php echo $table_row['id']?>&amp;r=fd" onsubmit="return confirm('<?php echo $table_row['serverip']?>:<?php echo $table_row['port']?>: <?php echo $sprache->startfdl;?>');">
-            				<button class="btn btn-mini btn-primary"><i class="icon-white icon-refresh"></i> <?php echo $sprache->startfdl;?></button>
+            				<button class="btn btn-mini btn-primary"><i class="fa fa-refresh"></i> <?php echo $sprache->startfdl;?></button>
         				</form>
         			</td>
             		<td><?php if ($pa['modfastdl']==true) { ?><a href="userpanel.php?w=fd&amp;d=es&amp;id=<?php echo $table_row['id']?>"><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i> <?php echo $gsprache->settings;?></span></a><?php } ?></td>

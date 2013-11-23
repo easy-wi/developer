@@ -26,7 +26,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputUpdate"><?php echo $gsprache->database.' '.$gsprache->repair;?></label>
                 <div class="controls">
-                    <button class="btn btn-primary" id="inputUpdate" type="submit"><i class="icon-refresh icon-white"></i></button>
+                    <button class="btn btn-primary" id="inputUpdate" type="submit"><i class="fa fa-refresh"></i></button>
                 </div>
             </div>
         </form>

@@ -63,7 +63,7 @@
                                 <?php foreach($table_row['server'] as $row){ ?>
                                 <tr class="<?php if($row['status']==1) echo 'success'; else if($row['status']==2) echo 'warning'; else echo 'error';?>">
                                     <td><?php echo $row['address'];?></td>
-                                    <td><a href="admin.php?w=vo&amp;d=dl&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                                    <td><a href="admin.php?w=vo&amp;d=dl&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                                     <td><a href="admin.php?w=vo&amp;d=md&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
                                 </tr>
                                 <?php }?>
@@ -77,8 +77,8 @@
                 <td><?php echo $table_row['installedserver'];?></td>
                 <td><?php echo $table_row['installedslots'];?></td>
                 <td><?php echo $table_row['defaultdns'];?></td>
-                <td><?php if($table_row['managedServer']!='Y' or $reseller_id==0){ ?><a href="admin.php?w=vm&amp;d=ri&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-refresh"></i></span></a><?php } ?></td>
-                <td><?php if($table_row['managedServer']!='Y' or $reseller_id==0){ ?><a href="admin.php?w=vm&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a><?php } ?></td>
+                <td><?php if($table_row['managedServer']!='Y' or $reseller_id==0){ ?><a href="admin.php?w=vm&amp;d=ri&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="fa fa-refresh"></i></span></a><?php } ?></td>
+                <td><?php if($table_row['managedServer']!='Y' or $reseller_id==0){ ?><a href="admin.php?w=vm&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a><?php } ?></td>
                 <td><?php if($table_row['managedServer']!='Y' or $reseller_id==0){ ?><a href="admin.php?w=vm&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a><?php } ?></td>
             </tr>
             <?php } ?>

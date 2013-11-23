@@ -9,7 +9,6 @@
     <meta name="description" content="">
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php if(isset($ewCfg['title'])) echo $ewCfg['title']; ?>">
     <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">body { padding-top: 60px;padding-bottom: 40px;}</style>
     <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="css/default/easy-wi.css" rel="stylesheet">
@@ -35,35 +34,12 @@
             <span class="icon-bar"></span>
         </button>
         <div class="nav-collapse collapse">
-            <ul class="nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?> <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
-                        <li class="divider"></li>
-                        <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>        
-                        <li><a href="admin.php?w=su&amp;d=pw"><?php echo $gsprache->password." ".$gsprache->change;?></a></li>
-                        <li><a href="admin.php?w=su"><?php echo $gsprache->settings;?></a></li>
-                        <li class="divider"></li>
-
-                        <li><a href="http://wiki.easy-wi.com" target="_blank">Wiki</a></li>
-                        <li><a href="http://easy-wi.com" target="_blank">About</a></li>
-                        <li><a href="http://forum.easy-wi.com" target="_blank">Forum</a></li>
-                        <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank">Steam Bugtracker</a></li>
-                    </ul>
-                </li>
-            </ul>
             <p class="navbar-text pull-left">
-            	<?php foreach ($languages as $language){ echo '<a href="admin.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>
-        	</p>
-        	
-        	<span class="navbar-text">Easy-WI.com</span>
-        	
-        	<a href="login.php?w=lo" class="navbar-text pull-right">
-        		<button class="btn btn-mini btn-danger"><i class="icon-white icon-arrow-right"></i> Logout</button>
-        	</a>
-   
-	        <div class="navbar-text pull-right">
+                &nbsp;&nbsp;
+                <?php foreach ($languages as $language){ echo '<a href="admin.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>
+            </p>
+
+            <div class="navbar-text pull-right">
                 <?php if($pa['usertickets'] and $crashedArray['ticketsReseller']>0 and $reseller_id!=0) { ?><a href="admin.php?w=tr"><span class="badge badge-info"><?php echo $crashedArray['ticketsReseller'].'/'.$crashedArray['ticketsResellerOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
                 <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="admin.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
                 <?php if($pa['gserver'] and $gserver_module) { ?>
@@ -75,18 +51,43 @@
                 <?php if($pa['voicemasterserver'] and $crashedArray['ts3Master']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3Master'].' '.$sprache_bad->ts3master_crashed; ?></span></a><?php }?>
                 <?php if($pa['roots'] and $crashedArray['masterserver']>0 and $gserver_module) { ?><a href="admin.php?w=ro"><span class="badge badge-important"><?php echo $crashedArray['masterserver'].' '.$sprache_bad->master_crashed; ?></span></a><?php }?>
                 <?php if($pa['vserverhost'] and $crashedArray['virtualHosts']>0 and $vserver_module and $reseller_id==0) { ?><a href="admin.php?w=vh"><span class="badge badge-important"><?php echo $crashedArray['virtualHosts'].' '.$sprache_bad->host_crashed; ?></span></a><?php }?>
-        	</div>
+            </div>
+
+            <span class="navbar-text">Easy-WI.com</span>
+
+            <a href="login.php?w=lo" class="navbar-text pull-right">
+                <button class="btn btn-mini btn-danger"><i class="fa fa-power-off"></i> Logout</button>
+            </a>
+
+            <ul class="nav pull-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-fw"></i> <?php echo $great_user;?> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
+                        <li class="divider"></li>
+                        <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>
+                        <li><a href="admin.php?w=su&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
+                        <li><a href="admin.php?w=su"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
+                        <li class="divider"></li>
+                        <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info fa-fw"></i> About</a></li>
+                        <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
+                        <li><a href="https://easy-wi.com/forum/" target="_blank"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
+                        <li><a href="http://wiki.easy-wi.com" target="_blank"><i class="fa fa-question fa-fw"></i> Wiki</a></li>
+                        <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank"><i class="fa fa-bug fa-fw"></i> Steam Bugtracker</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" id="content">
     <div class="row-fluid">
         <div class="span3">
             <div class="well sidebar-nav">
                 <div class="accordion" id="accordionMenu">
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseOne">Dashboard</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseOne"><i class="fa fa-tachometer fa-fw"></i> Dashboard</a>
                         </div>
                         <div id="collapseOne" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('da','ho','ib','lo','ml','ip'))) echo 'in';?>">
                             <div class="accordion-inner">
@@ -104,12 +105,12 @@
                     </div>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" href="admin.php?w=sr"><?php echo $gsprache->search;?></a>
+                            <a class="accordion-toggle" href="admin.php?w=sr"><i class="fa fa-search fa-fw"></i> <?php echo $gsprache->search;?></a>
                         </div>
                     </div>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSettings">Easy-WI <?php echo $gsprache->settings;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSettings"><i class="fa fa-cogs fa-fw"></i> Easy-WI <?php echo $gsprache->settings;?></a>
                         </div>
                         <div id="collapseSettings" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('se','sm','vc','cc','bu','mo'))) echo 'in';?>">
                             <div class="accordion-inner">
@@ -133,7 +134,7 @@
                     <?php if($pa['jobs'] or $pa['apiSettings']) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTwo"><?php echo $gsprache->jobs.'/'.$gsprache->api;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTwo"><i class="fa fa-cloud fa-fw"></i> <?php echo $gsprache->jobs.'/'.$gsprache->api;?></a>
                         </div>
                         <div id="collapseTwo" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('ap','aa','jb','ui'))) echo 'in';?>">
                             <div class="accordion-inner">
@@ -152,7 +153,7 @@
                     <?php if($pa['feeds']) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThree"><?php echo $gsprache->feeds;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThree"><i class="fa fa-rss fa-fw"></i> <?php echo $gsprache->feeds;?></a>
                         </div>
                         <div id="collapseThree" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('fe','fn'))) echo 'in';?>">
                             <div class="accordion-inner">
@@ -168,7 +169,7 @@
                     <?php if($reseller_id==0 and ($pa['cms_settings'] or $pa['cms_pages'] or $pa['cms_news'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour">CMS</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour"><i class="fa fa-globe fa-fw"></i> CMS</a>
                         </div>
                         <div id="collapseFour" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('pn','pp','ps','pc','pd')) or isset($customModules['pa'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
@@ -193,7 +194,7 @@
                     <?php if($easywiModules['my'] and ($pa['mysql_settings'] or $pa['mysql'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive">MySQL</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive"><i class="fa fa-sitemap fa-fw"></i> MySQL</a>
                         </div>
                         <div id="collapseFive" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='my' or isset($customModules['my'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
@@ -213,7 +214,7 @@
                     <?php if($easywiModules['ti'] and $pa['usertickets'] and $reseller_id!=0) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSix"><?php echo $gsprache->support;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSix"><i class="fa fa-h-square fa-fw"></i> <?php echo $gsprache->support;?></a>
                         </div>
                         <div id="collapseSix" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='my') echo 'in';?>">
                             <div class="accordion-inner">
@@ -227,7 +228,7 @@
                     <?php if($pa['user'] or $pa['user_users'] or $pa['userGroups'] ) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSeven"><?php echo $gsprache->user;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSeven"><i class="fa fa-users fa-fw"></i> <?php echo $gsprache->user;?></a>
                         </div>
                         <div id="collapseSeven" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('us','ug')) or isset($customModules['us'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
@@ -247,7 +248,7 @@
                     <?php if($easywiModules['gs'] and ($pa['roots'] or $pa['masterServer'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEight"><?php echo $gsprache->gameroot;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEight"><i class="fa fa-gamepad fa-fw"></i> <?php echo $gsprache->gameroot;?></a>
                         </div>
                         <div id="collapseEight" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('ro','ma'))) echo 'in';?>">
                             <div class="accordion-inner">
@@ -265,7 +266,7 @@
                     <?php if($easywiModules['gs'] and ($pa['gserver'] or $pa['addons'] or $pa['gimages'] or $pa['eac']) and $gserver_module) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseNine"><?php echo $gsprache->gameserver;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseNine"><i class="fa fa-gamepad fa-fw"></i> <?php echo $gsprache->gameserver;?></a>
                         </div>
                         <div id="collapseNine" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('gs','ea','im','ad')) or isset($customModules['gs'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
@@ -291,7 +292,7 @@
                     <?php if($easywiModules['vo'] and ($pa['voicemasterserver'] or $pa['voiceserver'] or $pa['voiceserverStats'] or $pa['voiceserverSettings'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTen"><?php echo $gsprache->voiceserver;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTen"><i class="fa fa-microphone fa-fw"></i> <?php echo $gsprache->voiceserver;?></a>
                         </div>
                         <div id="collapseTen" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('vo','vu','vd','vm','vr')) or isset($customModules['vo'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
@@ -323,7 +324,7 @@
                     <?php if($easywiModules['le'] and ($gserver_module and ($pa['lendserver'] or $pa['lendserverSettings']))) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEleven"><?php echo $gsprache->lendserver;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEleven"><i class="fa fa-smile-o fa-fw"></i> <?php echo $gsprache->lendserver;?></a>
                         </div>
                         <div id="collapseEleven" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='le') echo 'in';?>">
                             <div class="accordion-inner">
@@ -342,7 +343,7 @@
                     <?php if($easywiModules['ti'] and $pa['tickets']) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTwelve"><?php echo $gsprache->support;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTwelve"><i class="fa fa-h-square fa-fw"></i> <?php echo $gsprache->support;?></a>
                         </div>
                         <div id="collapseTwelve" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='ti' or isset($customModules['ti'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
@@ -358,7 +359,7 @@
                     <?php if($easywiModules['ro'] and rsellerpermisions($admin_id,$sql) and $vserver_module) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThirteen">Rootserver</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThirteen"><i class="fa fa-laptop fa-fw"></i> Rootserver</a>
                         </div>
                         <div id="collapseThirteen" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('vs','dp','vh','rd','rp','rh','ot','tf')) or isset($customModules['ro'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
@@ -380,7 +381,7 @@
                     <?php if(count($customModules['mo'])>0) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFourteen"><?php echo $gsprache->modules;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFourteen"><i class="fa fa-tasks fa-fw"></i> <?php echo $gsprache->modules;?></a>
                         </div>
                         <div id="collapseFourteen" class="accordion-body collapse <?php if(isset($customModules['mo'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">

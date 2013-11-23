@@ -53,7 +53,7 @@
                 <td>
                     <form method="post" action="admin.php?w=le&amp;r=le" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
                         <input type="hidden" name="id" value="<?php echo $table_row['id'];?>">
-                        <button class="btn btn-small btn-danger"><i class="icon-white icon-remove-sign"></i></button>
+                        <button class="btn btn-small btn-danger"><i class="fa fa-trash-o"></i></button>
                     </form>
                 </td>
             </tr>

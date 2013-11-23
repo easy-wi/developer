@@ -24,7 +24,7 @@
                 <label class="control-label" for="inputRecover"> </label>
                 <div class="controls">
                     <input type="hidden" name="action" value="rb2" />
-                    <button class="btn btn-primary" id="inputRecover" type="submit"><i class="icon-refresh icon-white"></i> <?php echo $sprache->recover;?></button>
+                    <button class="btn btn-primary" id="inputRecover" type="submit"><i class="fa fa-refresh"></i> <?php echo $sprache->recover;?></button>
                 </div>
             </div>
         </form>

@@ -63,7 +63,7 @@
                 <td><?php echo $r['id'];?></td>
                 <td><?php echo $r['type'];?></td>
                 <td><?php echo ($r['owner']!='')?$r['owner']:$r['name'];?></td>
-                <td><a href="admin.php<?php echo $r['delete'];?>"><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php<?php echo $r['delete'];?>"><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                 <td><a href="admin.php<?php echo $r['edit'];?>"><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

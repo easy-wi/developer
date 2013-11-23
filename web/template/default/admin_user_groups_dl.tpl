@@ -22,7 +22,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputMod"></label>
                 <div class="controls">
-                    <button class="btn btn-primary" id="inputMod" type="submit"><i class="icon-white icon-remove-sign"></i></button>
+                    <button class="btn btn-primary" id="inputMod" type="submit"><i class="fa fa-trash-o"></i></button>
                 </div>
             </div>
         </form>

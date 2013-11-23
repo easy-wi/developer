@@ -9,7 +9,6 @@
     <meta name="description" content="">
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php echo $page_data->title; ?>">
     <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">body { padding-top: 60px;padding-bottom: 40px;}</style>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="<?php echo $page_data->pageurl;?>/css/default/easy-wi.css" rel="stylesheet">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
@@ -122,7 +121,7 @@
     </form>
 </div>
 <?php } ?>
-<div class="container-fluid">
+<div class="container-fluid" id="content">
     <div class="row-fluid">
         <div class="span3">
             <div class="well sidebar-nav">

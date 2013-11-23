@@ -28,7 +28,7 @@
             <tr class="<?php if($table_row['active']=='Y') echo 'success'; else echo 'error';?>">
                 <td><?php echo $table_row['name'];?></td>
                 <td><?php echo $table_row['type'];?></td>
-                <td><?php if($table_row['id']>1000) { ?><a href="admin.php?w=mo&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a><?php } ?></td>
+                <td><?php if($table_row['id']>1000) { ?><a href="admin.php?w=mo&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a><?php } ?></td>
                 <td><a href="admin.php?w=mo&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

@@ -42,7 +42,7 @@
                 <div id="<?php echo $ip?>" class="control-group">
                     <label class="control-label" for="inputIPs-<?php echo $ip?>">IP</label>
                     <div class="controls">
-                        <input id="inputIPs-<?php echo $ip?>" type="text" name="ip[]" value="<?php echo $ip?>" maxlength="15" required> <span class="btn btn-mini btn-danger" onclick="Remove('<?php echo $ip?>')"><i class="icon-white icon-remove-sign"></i></span>
+                        <input id="inputIPs-<?php echo $ip?>" type="text" name="ip[]" value="<?php echo $ip?>" maxlength="15" required> <span class="btn btn-mini btn-danger" onclick="Remove('<?php echo $ip?>')"><i class="fa fa-trash-o"></i></span>
                     </div>
                 </div>
                 <?php } ?>

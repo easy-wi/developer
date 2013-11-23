@@ -48,7 +48,7 @@
                 <td><?php echo $table_row['released'];?></td>
                 <td><?php echo $table_row['author'];?></td>
                 <td><?php echo $table_row['date'];?></td>
-                <td><a href="admin.php?w=pn&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=pn&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                 <td><a href="admin.php?w=pn&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>

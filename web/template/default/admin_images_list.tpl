@@ -43,7 +43,7 @@
                 <td><?php echo $table_row['id'];?></td>
                 <td><?php echo $table_row['shorten'];?></td>
                 <td><a href="admin.php?w=im&amp;d=ex&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-download"></i></span></a></td>
-                <td><a href="admin.php?w=im&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="icon-white icon-remove-sign"></i></span></a></td>
+                <td><a href="admin.php?w=im&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                 <td><a href="admin.php?w=im&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>
