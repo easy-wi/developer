@@ -16,13 +16,20 @@
         </dl>
     </div>
 </div>
+<?php if (count($errors)>0){ ?>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4>Error(s)</h4>
+    <?php echo implode(', ',$errors);?>
+</div>
+<?php }?>
 <div class="row-fluid">
     <div class="span11">
         <form class="form-horizontal" action="admin.php?w=rh&amp;d=md&amp;id=<?php echo $id;?>&amp;r=rh" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
-            <div class="control-group">
-                <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
+            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?">
+                <label class="control-label>" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" class="span11" name="active">
                         <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -47,7 +54,7 @@
                 <label class="control-label" for="inputMac"><?php echo $sprache->mac;?></label>
                 <div class="controls"><input id="inputMac" type="text" class="span11" name="mac" maxlength="17" value="<?php echo $mac; ?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['ip'])) echo ' error';?>">
                 <label class="control-label" for="inputIp"><?php echo $sprache->ip;?></label>
                 <div class="controls"><input id="inputIp" type="text" class="span11" name="ip" maxlength="15" value="<?php echo $ip; ?>"></div>
             </div>
@@ -77,7 +84,7 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
                 <label class="control-label" for="inputRestart"><?php echo $sprache->restart;?></label>
                 <div class="controls">
                     <select id="inputRestart" class="span11" name="restart" onchange="SwitchShowHideRows(this.value)">
