@@ -60,12 +60,16 @@ $table = array(
     4 => array('id' =>4, 'active' => 'Y', 'name' => $gsprache->voiceserver, 'sub' => 'vo', 'type' => $sprache->type_core),
     5 => array('id' =>5, 'active' => 'Y', 'name' => $gsprache->lendserver, 'sub' => 'le', 'type' => $sprache->type_core),
     6 => array('id' =>6, 'active' => 'Y', 'name' => $gsprache->support, 'sub' => 'ti', 'type' => $sprache->type_core),
-    7 => array('id' =>7, 'active' => 'Y', 'name' => 'Rootserver', 'sub' => 'ro', 'type' => $sprache->type_core)
+    7 => array('id' =>7, 'active' => 'Y', 'name' => 'Rootserver', 'sub' => 'ro', 'type' => $sprache->type_core),
+    8 => array('id' =>8, 'active' => 'Y', 'name' => $gsprache->imprint, 'sub' => 'ip', 'type' => $sprache->type_core),
+    9 => array('id' =>9, 'active' => 'Y', 'name' => 'CMS', 'sub' => 'pn', 'type' => $sprache->type_core)
 );
     
 if ($ui->st('action', 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
+
+    $errors = array();
 
     $id = $ui->id('id', 10, 'get');
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
@@ -93,7 +97,6 @@ if ($ui->st('action', 'post') and !token(true)) {
     // Custom Modules
     } else if ($id > 1000 or $id === null) {
 
-        $errors = array();
         $dbSuccess = false;
         $file = $ui->config('file', 'post');
         $sub = $ui->st('sub', 'post');

@@ -1,9 +1,10 @@
 <?php
 
 /**
- * File: update_410-411.php.
+ * File: update_411-420.php.
  * Author: Ulrich Block
- * Date: 23.10.13
+ * Date: 24.11.13
+ * Time: 12:51
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
@@ -82,6 +83,18 @@ Unfortunately errors have slipped in 4.10. In addition the update revealed that 
     $response->add('Action: insert_easywi_version done: ');
     $query->closecursor();
 
+    $query = $sql->prepare("SELECT `active` FROM `page_settings` LIMIT 1");
+    $query->execute();
+    if ($query->fetchColumn() == 'N') {
+        $query = $sql->prepare("INSERT INTO `modules` (`id`,`file`,`get`,`sub`,`type`,`active`) VALUES (9,'','pn','','C','N') ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
+        $query->execute();
+    }
+    $query = $sql->prepare("SELECT `active` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");
+    $query->execute();
+    if ($query->fetchColumn() == 'N') {
+        $query = $sql->prepare("INSERT INTO `modules` (`id`,`file`,`get`,`sub`,`type`,`active`) VALUES (5,'','le','','C','N') ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
+        $query->execute();
+    }
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
 }

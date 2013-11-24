@@ -12,15 +12,6 @@
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
             <div class="control-group">
-                <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
-                <div class="controls">
-                    <select id="inputActive" name="active">
-                        <option value="Y"><?php echo $gsprache->yes;?></option>
-                        <option value="N" <?php if ($active=='N') echo 'selected="selected"'; ?>><?php echo $gsprache->no;?></option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label" for="inputURL">URL</label>
                 <div class="controls">
                     <input id="inputURL" type="text" name="pageurl" value="<?php echo $pageurl;?>">

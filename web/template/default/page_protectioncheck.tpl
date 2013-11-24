@@ -14,7 +14,7 @@
                 <div class="controls">
                     <label class="control-label" for="inputIP"></label>
                     <div class="input-prepend input-append">
-                        <span class="add-on"><i class="icon-lock"></i></span>
+                        <span class="add-on"><i class="fa fa-shield"></i></span>
                         <input class="input-block-level" id="inputIP" type="text" name="serveraddress" value="<?php echo $ipvalue ?>" maxlength="22"  >
                         <button class="btn btn-primary" type="submit"><i class="icon-search icon-white"></i></button>
                     </div>

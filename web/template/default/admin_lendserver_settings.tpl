@@ -13,15 +13,6 @@
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
             <div class="control-group">
-                <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
-                <div class="controls">
-                    <select id="inputActive" name="active">
-                        <option value="N"><?php echo $gsprache->no;?></option>
-                        <option value="Y" <?php if ($active=="Y") echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label" for="inputEmpty"><?php echo $sprache->shutdownempty;?></label>
                 <div class="controls">
                     <select id="inputEmpty" name="shutdownempty">

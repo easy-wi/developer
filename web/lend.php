@@ -119,10 +119,15 @@ $slotselect = array();
 $votimeselect = array();
 $voslotselect = array();
 
+
+$query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=5 LIMIT 1");
+$query->execute();
+$active = $query->fetchColumn();
+$active = (active_check($active)) ? $active : 'Y';
+
 $query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
 $query->execute(array($aeskey, $reseller_id));
 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-    $active = $row['active'];
     $activeGS = ($row['activeGS'] == 'B' or ($row['activeGS'] != 'N' and (isset($admin_id) or ($row['activeGS'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeGS'] == 'R' and isset($user_id)) or ($row['activeGS'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
     $activeVS = ($row['activeVS'] == 'B' or ($row['activeVS'] != 'N' and (isset($admin_id) or ($row['activeVS'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeVS'] == 'R' and isset($user_id)) or ($row['activeVS'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
     $ftpupload = ($row['ftpupload'] == 'Y' or ($row['ftpupload'] != 'N' and (isset($admin_id) or ($row['ftpupload'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['ftpupload'] == 'R' and isset($user_id)) or ($row['ftpupload'] == 'A' and !isset($user_id))) ? 'Y' : 'N';

@@ -47,10 +47,11 @@ include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/class_page_settings.php');
+include(EASYWIDIR . '/stuff/init_page.php');
 
 
-if (isset ($page_active) and $page_active == 'Y') {
-    include(EASYWIDIR . '/stuff/init_page.php');
+if (isset($page_active) and $page_active == 'Y') {
     if (isset($throw404)) {
         $template_file = 'page_404.tpl';
     } else if (isset($what_to_be_included_array[$s]) and is_file(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$s])) {
@@ -79,6 +80,6 @@ if (isset ($page_active) and $page_active == 'Y') {
     include(IncludeTemplate($template_to_use,'page_footer.tpl'));
 
 } else {
-    redirect('login.php');
+    redirect($page_data->pageurl . '/login.php');
 }
 $sql = null;

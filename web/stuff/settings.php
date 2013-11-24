@@ -211,7 +211,7 @@ if ($loguserip!='localhost') {
         $query = $sql->prepare("SELECT * FROM `page_settings` WHERE `resellerid`='0' LIMIT 1");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $page_active = $row['active'];
+
             $seo = $row['seo'];
             $rssfeed = $row['rssfeed'];
             $maxnews=(isid($row['maxnews'],11)) ? $row['maxnews'] : 10;
@@ -234,9 +234,14 @@ if ($loguserip!='localhost') {
             }
         }
 
+        $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=9 LIMIT 1");
+        $query->execute();
+        $page_active = $query->fetchColumn();
+        $page_active = (active_check($page_active)) ? $page_active : 'Y';
+
         $ewInstallPath = EASYWIDIR;
 
-        $elements=(!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI', 'server'), $ewInstallPath) === false) ? preg_split('/\//', $ui->escaped('REQUEST_URI', 'server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI', 'server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
+        $elements = (!empty($ewInstallPath) and strpos($ui->escaped('REQUEST_URI', 'server'), $ewInstallPath) === false) ? preg_split('/\//', $ui->escaped('REQUEST_URI', 'server'),-1,PREG_SPLIT_NO_EMPTY) : preg_split('/\//',substr($ui->escaped('REQUEST_URI', 'server'),strlen($ewInstallPath)),-1,PREG_SPLIT_NO_EMPTY);
 
         if (isset($seo) and $seo== 'Y' and isset($elements[0])) {
 

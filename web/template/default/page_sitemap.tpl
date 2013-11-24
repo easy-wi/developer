@@ -52,7 +52,7 @@ function getSubLinks2($getamount,$pagelist,$id,$sub=1){
             <li>
                 <?php echo $page_data->pages['contact']['href'];?>
                 <ul>
-                    <li><?php echo $page_data->pages['imprint']['href'];?></li>
+                    <?php if($easywiModules['ip']){ ?><li><?php echo $page_data->pages['imprint']['href'];?></li><?php }?>
                     <li><?php echo $page_data->pages['contact']['href'];?></li>
                 </ul>
             </li>

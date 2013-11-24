@@ -26,48 +26,49 @@
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+    <div class="navbar-inner text-center">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class="nav-collapse collapse">
             <p class="navbar-text pull-left">
+                &nbsp;&nbsp;
                 <?php foreach ($page_data->getLangLinks() as $l=>$v) { echo '<a href="'.$v.'"><img src="'.$page_data->pageurl.'/images/flags/'.$l.'.png" alt="Flag: '.$l.'.png."></a>';}?>
+                &nbsp;&nbsp;
             </p>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Easy-WI.com<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="http://wiki.easy-wi.com" target="_blank" title="easy-wi.com wiki">Wiki</a></li>
-                            <li><a href="https://easy-wi.com" target="_blank" title="free gameserver, voiceserver, dedicated and virtualserver webinterface easy-wi.com">About</a></li>
-                            <li><a href="https://easy-wi.com/forum/" target="_blank" title="easy-wi.com forum">Forum</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <?php if (isset($admin_id) or isset($user_id)) { ?>
-                <ul class="nav pull-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $gsprache->welcome.' '.$great_user;?><b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
-                            <li class="divider"></li>
-                            <li><a href="<?php echo (isset($admin_id)) ? $page_data->pageurl.'/admin.php' : $page_data->url.'/userpanel.php';?>">Backend</a></li>
-                            <li class="divider"></li>
-                            <?php if ($support_phonenumber!="") echo '<li><a href="#">'.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
-                            <li class="divider"></li>
-                            <li><a href="<?php echo $page_data->pageurl;?>/login.php?w=lo">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <?php } else { ?>
-                <div id="modal" class="navbar-form pull-right">
-                    <a href="#myModal" role="button" class="btn" data-toggle="modal">Login</a>
-                </div>
-                <?php } ?>
-            </div><!--/.nav-collapse -->
+
+            <span class="navbar-text">Easy-WI.com</span>
+
+            <a href="<?php echo $page_data->pageurl;?>/login.php?w=lo" class="navbar-text pull-right">
+                <button class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</button>
+                &nbsp;&nbsp;
+            </a>
+
+            <?php if (isset($admin_id) or isset($user_id)) { ?>
+            <ul class="nav pull-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $great_user;?><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
+                        <li class="divider"></li>
+                        <li><a href="<?php echo (isset($admin_id)) ? $page_data->pageurl.'/admin.php' : $page_data->url.'/userpanel.php';?>"><i class="fa fa-sign-in fa-fw"></i> Backend</a></li>
+                        <li class="divider"></li>
+                        <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
+                        <li class="divider"></li>
+                        <li><a href="https://easy-wi.com" target="_blank" title="free gameserver, voiceserver, dedicated and virtualserver webinterface easy-wi.com"><i class="fa fa-info-circle fa-fw"></i> About</a></li>
+                        <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
+                        <li><a href="https://easy-wi.com/forum/" target="_blank" title="easy-wi.com wiki"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
+                        <li><a href="http://wiki.easy-wi.com" target="_blank" title="easy-wi.com forum"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
+                    </ul>
+                 </li>
+            </ul>
+            <?php } else { ?>
+            <div id="modal" class="navbar-form pull-right">
+                <a href="#myModal" role="button" class="btn" data-toggle="modal">Login</a>
+            </div>
+            <?php } ?>
         </div>
     </div>
 </div>
@@ -131,7 +132,7 @@
                     <li <?php if($s=='news') echo 'class="active"';?>><?php echo $page_data->pages['news']['href'];?></li>
                     <li <?php if($s=='about') echo 'class="active"';?>><?php echo $page_data->pages['about']['href'];?></li>
                     <li <?php if($s=='gallery') echo 'class="active"';?>><?php echo $page_data->pages['gallery']['href'];?></li>
-                    <li <?php if($s=='imprint') echo 'class="active"';?>><?php echo $page_data->pages['imprint']['href'];?></li>
+                    <?php if($easywiModules['ip']){ ?><li <?php if($s=='imprint') echo 'class="active"';?>><?php echo $page_data->pages['imprint']['href'];?></li><?php }?>
                     <li <?php if($s=='contact') echo 'class="active"';?>><?php echo $page_data->pages['contact']['href'];?></li>
                     <li <?php if($s=='downloads') echo 'class="active"';?>><?php echo $page_data->pages['downloads']['href'];?></li>
                     <?php if($page_data->protectioncheck=='Y'){ ?><li <?php if($s=='protectioncheck') echo 'class="active"';?>><?php echo $page_data->pages['protectioncheck']['href'];?></li><?php } ?>

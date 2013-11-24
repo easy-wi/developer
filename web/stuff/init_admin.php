@@ -95,16 +95,7 @@ $what_to_be_included_array = array(
     'su' => 'global_userdata.php'
 );
 
-if ($reseller_id == 0) {
-    $what_to_be_included_array['mo'] = 'admin_modules.php';
-    $what_to_be_included_array['ps'] = 'page_settings.php';
-    $what_to_be_included_array['pp'] = 'page_pages.php';
-    $what_to_be_included_array['pn'] = 'page_news_edit.php';
-    $what_to_be_included_array['pc'] = 'page_comments.php';
-    $what_to_be_included_array['pd'] = 'page_downloads.php';
-}
-
-$easywiModules = array('gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
+$easywiModules = array('gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'pn' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
 $customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
 
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('A','C')");
@@ -128,6 +119,18 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
     } else if ($row['type'] == 'C' and $row['active'] == 'N') {
         $easywiModules[$row['get']] = false;
+    }
+}
+
+if ($reseller_id == 0) {
+    $what_to_be_included_array['mo'] = 'admin_modules.php';
+
+    if ($easywiModules['pn'] === true) {
+        $what_to_be_included_array['ps'] = 'page_settings.php';
+        $what_to_be_included_array['pp'] = 'page_pages.php';
+        $what_to_be_included_array['pn'] = 'page_news_edit.php';
+        $what_to_be_included_array['pc'] = 'page_comments.php';
+        $what_to_be_included_array['pd'] = 'page_downloads.php';
     }
 }
 

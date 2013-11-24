@@ -347,7 +347,6 @@ $defined['lendedserver'] = array('id' => array("Type"=>"bigint(19) unsigned","Nu
 );
 
 $defined['lendsettings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'activeGS' => array("Type"=>"enum('A','R','B','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'activeVS' => array("Type"=>"enum('A','R','B','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'userGame' => array("Type"=>"enum('A','B','R')","Null"=>"NO","Key"=>"","Default"=>"B","Extra"=>""),
@@ -508,7 +507,6 @@ $defined['page_register_questions'] = array('id' => array("Type"=>"int(10) unsig
 );
 
 $defined['page_settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'seo' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'rssfeed' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'rssfeed_fulltext' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
@@ -592,7 +590,7 @@ $defined['rserverdata'] = array('id' => array("Type"=>"int(10) unsigned","Null"=
     'steamPassword' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'os' => array("Type"=>"enum('W','L')","Null"=>"YES","Key"=>"L","Default"=>"","Extra"=>""),
     'bitversion' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'ram' => array("Type"=>"smallint(5) unsigned","Null"=>"","Key"=>"","Default"=>"","Extra"=>""),
+    'ram' => array("Type"=>"int(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'description' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'ftpport' => array("Type"=>"smallint(5) unsigned","Null"=>"NO","Key"=>"","Default"=>"21","Extra"=>""),
     'publickey' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),

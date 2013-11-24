@@ -368,7 +368,6 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `lendsettings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `active` enum('Y','N') NOT NULL DEFAULT 'N',
   `userGame` enum('A','B','R') NOT NULL DEFAULT 'B',
   `gameVoice` enum('A','B','R') NOT NULL DEFAULT 'B',
   `mintime` smallint(3) NOT NULL DEFAULT '20',
@@ -575,7 +574,6 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `page_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `active` enum('Y','N') DEFAULT 'Y',
   `seo` enum('Y','N') DEFAULT 'N',
   `rssfeed` enum('Y','N') DEFAULT 'Y',
   `rssfeed_fulltext` enum('Y','N') DEFAULT 'Y',
@@ -683,7 +681,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rserverdata` (
   `steamPassword` BLOB,
   `os` enum('W','L') DEFAULT 'L',
   `bitversion` varchar(255) NOT NULL,
-  `ram` smallint(5),
+  `ram` int(5) unsigned,
   `description` varchar(255) DEFAULT NULL,
   `ftpport` smallint(5) unsigned NOT NULL DEFAULT '21',
   `publickey` enum('Y','N') NOT NULL,

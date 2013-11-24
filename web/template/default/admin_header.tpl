@@ -56,7 +56,7 @@
             <span class="navbar-text">Easy-WI.com</span>
 
             <a href="login.php?w=lo" class="navbar-text pull-right">
-                <button class="btn btn-mini btn-danger"><i class="fa fa-power-off"></i> Logout</button>
+                <button class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</button>
                 &nbsp;&nbsp;
             </a>
 
@@ -99,7 +99,7 @@
                                     <li <?php if($ui->smallletters('w',255,'get')=='lo') echo 'class="active"';?>><a href="admin.php?w=lo"><?php echo $gsprache->logs;?></a></li>
                                     <li <?php if($ui->smallletters('w',255,'get')=='ml') echo 'class="active"';?>><a href="admin.php?w=ml">Mail <?php echo $gsprache->logs;?></a></li>
                                     <?php } ?>
-                                    <li <?php if($ui->smallletters('w',255,'get')=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><?php echo $gsprache->imprint;?></a></li>
+                                    <?php if($easywiModules['ip']) { ?><li <?php if($ui->smallletters('w',255,'get')=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><?php echo $gsprache->imprint;?></a></li><?php }?>
                                 </ul>
                             </div>
                         </div>
@@ -119,7 +119,7 @@
                                     <?php if($pa['settings']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='se') echo 'class="active"';?>><a href="admin.php?w=se"><?php echo $gsprache->settings;?></a></li>
                                     <li <?php if($ui->smallletters('w',255,'get')=='sm') echo 'class="active"';?>><a href="admin.php?w=sm">E-Mail <?php echo $gsprache->settings;?></a></li>
-                                    <li <?php if($ui->smallletters('w',255,'get')=='si') echo 'class="active"';?>><a href="admin.php?w=si"><?php echo $gsprache->imprint.' '.$gsprache->settings;?></a></li>
+                                    <?php if($easywiModules['ip']) { ?><li <?php if($ui->smallletters('w',255,'get')=='si') echo 'class="active"';?>><a href="admin.php?w=si"><?php echo $gsprache->imprint.' '.$gsprache->settings;?></a></li><?php }?>
                                     <?php } ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='vc') echo 'class="active"';?>><a href="admin.php?w=vc"><?php echo $gsprache->versioncheck;?></a></li>
                                     <?php if($pa['root'] and $reseller_id==0) { ?>
@@ -168,7 +168,7 @@
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if($reseller_id==0 and ($pa['cms_settings'] or $pa['cms_pages'] or $pa['cms_news'])) { ?>
+                    <?php if($easywiModules['pn'] and $reseller_id==0 and ($pa['cms_settings'] or $pa['cms_pages'] or $pa['cms_news'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour"><i class="fa fa-globe fa-fw"></i> CMS</a>
