@@ -311,7 +311,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
                 $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `name`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->names('groupname',255, 'post'),$lookIpID));
-                if ($query->rowcount()>0) {
+                if ($query->rowCount() > 0) {
                     $template_file = 'Error: Group already exists';
                 } else {
                     $query = $sql->prepare("INSERT INTO `usergroups` (`active`,`defaultgroup`,`grouptype`,`name`,`root`,`user`,`user_users`,`log`,`settings`,`cms_comments`,`cms_settings`,`cms_pages`,`cms_news`,`gserver`,`addons`,`gimages`,`roots`,`restart`,`gsResetting`,`miniroot`,`fastdl`,`modfastdl`,`useraddons`,`usersettings`,`ftpaccess`,`addvserver`,`modvserver`,`delvserver`,`usevserver`,`vserversettings`,`vserverhost`,`voicemasterserver`,`voiceserver`,`resellertemplates`,`ftpbackup`,`traffic`,`trafficsettings`,`lendserver`,`tickets`,`usertickets`,`voiceserverSettings`,`voiceserverStats`,`lendserverSettings`,`pxeServer`,`dhcpServer`,`dedicatedServer`,`eac`,`masterServer`,`userGroups`,`userPassword`,`apiSettings`,`jobs`,`updateEW`,`ipBans`,`mysql`,`mysql_settings`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -321,7 +321,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $template_file = 'admin_404.tpl';
             }
-            if (!isset($template_file) and $query->rowCount()>0) {
+            if (!isset($template_file) and $query->rowCount() > 0) {
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
             } else if (!isset($template_file)) {
@@ -362,7 +362,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (isset($default_id) and $default_id != $id and $default_id != null and $default_id != 0) {
             $query = $sql->prepare("DELETE FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$lookIpID));
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $query = $sql->prepare("DELETE FROM `userdata_groups` WHERE `groupID`=? AND `resellerID`=?");
                 $query->execute(array($id,$lookIpID));
                 $loguseraction='%del% %group% '.$name;

@@ -984,7 +984,7 @@ function checkDNS ($dns, $id = null, $user_id = null, $type='') {
         $query2 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `dns`=? AND `resellerid`=? LIMIT 1");
         $query2->execute(array($dns, $reseller_id));
     }
-    if ($query->rowCount()>0 or $query2->rowCount()>0) {
+    if ($query->rowCount() > 0 or $query2->rowCount() > 0) {
         return false;
     }
     if ($user_id != null) {

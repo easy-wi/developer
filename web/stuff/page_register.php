@@ -183,7 +183,7 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
                 $query->execute(array($userID,$groupID));
 
                 // If is is in DB and mail could be send
-                if ($query->rowCount()>0) {
+                if ($query->rowCount() > 0) {
                     if ($registration == 'A') {
                         $template_file = $page_sprache->registerAdmin;
                     } else if ($registration == 'M') {

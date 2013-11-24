@@ -61,7 +61,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $query = $sql->prepare("UPDATE `page_comments` SET `homepage`=?,`markedSpam`=?,`moderateAccepted`=?,`comment`=? WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($url,$ui->active('markedSpam', 'post'),$ui->active('moderateAccepted', 'post'),$ui->post['comment'],$id,$reseller_id));
-    if ($query->rowCount()>0) {
+    if ($query->rowCount() > 0) {
         $loguseraction='%mod% %comment% '.$ui->id('id',19, 'get');
         $insertlog->execute();
         $template_file = $spracheResponse->table_add;
@@ -94,7 +94,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 } else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')){
     $query = $sql->prepare("DELETE FROM `page_comments` WHERE `commentID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($ui->id('id',19, 'get'),$reseller_id));
-    if ($query->rowCount()>0) {
+    if ($query->rowCount() > 0) {
         $loguseraction='%del% %comment% '.$ui->id('id',19, 'get');
         $insertlog->execute();
         $template_file = $spracheResponse->table_del;

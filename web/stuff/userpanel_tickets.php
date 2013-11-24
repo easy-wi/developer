@@ -123,7 +123,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($ui->st('action', 'get') == 'op') {
         $query = $sql->prepare("UPDATE `tickets` SET `state`='R' WHERE `id`=? AND `userid`=? AND `resellerid`=? AND `state`='D' LIMIT 1");
         $query->execute(array($id,$user_id,$reseller_id));
-        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+        $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
     } else if (!$ui->smallletters('action',2, 'post') or $ui->smallletters('action',2, 'get') == 'md') {
         $table = array();
         $default_language = $rSA['language'];
@@ -184,7 +184,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($ui->id('userPriority',1, 'post')) {
                 $query=($state == 'A') ? $sql->prepare("UPDATE `tickets` SET `state`='P',`userPriority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1") : $sql->prepare("UPDATE `tickets` SET `userPriority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->id('userPriority',1, 'post'),$id,$reseller_id));
-                $template_file = ($query->rowCount()>0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+                $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
             }
             if (isset($ui->post['ticket']) and strlen($ui->post['ticket'])>0) {
                 $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`message`,`writeDate`,`userID`,`resellerid`) VALUES (?,?,?,?,?)");
@@ -205,7 +205,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($ui->smallletters('action',2, 'post') == 'cl' and $ui->id('rating',1, 'post')) {
         $query = $sql->prepare("UPDATE `tickets` SET `state`='C', `rating`=?,`comment`=? WHERE `id`=? AND `userid`=? AND `resellerid`=? AND `state`!='C' LIMIT 1");
         $query->execute(array($ui->id('rating',1, 'post'),$ui->description('comment', 'post'),$id,$user_id,$reseller_id));
-        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+        $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
     }
 } else {
     $table = array();

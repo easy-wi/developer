@@ -103,12 +103,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $bogus = $cname;
                     $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? LIMIT 1");
                     $query->execute(array($cname));
-                    if ($query->rowCount()>0) unset($cname,$bogus);
+                    if ($query->rowCount() > 0) unset($cname,$bogus);
                     else {
                         # https://github.com/easy-wi/developer/issues/2 "Substitutes"
                         $query = $sql->prepare("SELECT 1 FROM `userdata_substitutes` WHERE `loginName`=? LIMIT 1");
                         $query->execute(array($cname));
-                        if ($query->rowCount()>0) unset($cname,$bogus);
+                        if ($query->rowCount() > 0) unset($cname,$bogus);
                     }
                 } else {
                     $error[] = 'Username transmitted empty!';
@@ -407,7 +407,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 updateJobs($id,$reseller_id);
             }
         }
-        if ($query->rowCount()>0 and isset($deleted)) {
+        if ($query->rowCount() > 0 and isset($deleted)) {
             $update = $sql->prepare("UPDATE `userdata` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=?");
             $update->execute(array($id,$resellerid));
             $template_file .= $spracheResponse->table_del ."<br />";

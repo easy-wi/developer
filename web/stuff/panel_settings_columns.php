@@ -83,7 +83,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $template_file = 'admin_404.tpl';
             }
-            if (!isset($template_file) and $query->rowCount()>0) {
+            if (!isset($template_file) and $query->rowCount() > 0) {
                 $array = array();
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('cc',?,?,?,0) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 if ($ui->smallletters('language',2, 'post')) {
@@ -166,7 +166,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($ui->st('action', 'post') == 'dl' and isset($name)) {
         $query = $sql->prepare("DELETE FROM `custom_columns_settings` WHERE `customID`=? LIMIT 1");
         $query->execute(array($id));
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $query = $sql->prepare("DELETE FROM `custom_columns` WHERE `customID`=?");
             $query->execute(array($id));
             $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='cc' AND `transID`=?");

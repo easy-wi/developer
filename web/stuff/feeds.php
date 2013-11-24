@@ -190,7 +190,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if ($ui->smallletters('action',2, 'post') == 'dl'){
         $query = $sql->prepare("DELETE FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$lookUpID));
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $query = $sql->prepare("DELETE FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=?");
             $query->execute(array($id,$lookUpID));
             $loguseraction="%del% Feed $feedUrl";

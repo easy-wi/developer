@@ -142,7 +142,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $query->execute(array($ui->id('managedForID', 10, 'post'), $reseller_id));
         }
 
-        $resellerToBeWritten = ($query->rowCount()>0) ? $ui->id('managedForID', 10, 'post') : null;
+        $resellerToBeWritten = ($query->rowCount() > 0) ? $ui->id('managedForID', 10, 'post') : null;
 
     }
 
@@ -889,7 +889,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $ip = $query->fetchColumn();
             }
         }
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $query = $sql->prepare("DELETE FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
             $query = $sql->prepare("DELETE FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");

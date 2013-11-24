@@ -390,7 +390,7 @@ if (array_value_exists('action','add',$data)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $userArray['userdetails'] = $row;
         }
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $list = true;
             $tempArray = array();
             $query = $sql->prepare("SELECT `id`,`active`,`queryUpdatetime`,`queryPassword`,`queryMap`,`queryMaxplayers`,`queryNumplayers`,`queryName`,`port5`,`serverid`,`pallowed`,`eacallowed`,`protected`,`brandname`,`tvenable`,`war`,`psince`,`serverip`,`port`,`port2`,`port3`,`port4`,`minram`,`maxram`,`slots`,`taskset`,`cores`,`lendserver`,`externalID`,`jobPending` FROM `gsswitch` WHERE `userid`=? AND `resellerid`=? ORDER BY `serverip`,`port`");

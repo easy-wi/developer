@@ -113,7 +113,7 @@ if ($ui->st('action', 'post') and !token(true)) {
             if ($get and strlen($get) != 2) {
                 $query = $sql->prepare("SELECT 1 FROM `modules` WHERE `get`=? AND `id`!=? LIMIT 1");
                 $query->execute(array($get, $id));
-                if ($query->rowCount()>0) {
+                if ($query->rowCount() > 0) {
                     $errors['get'] = $sprache->get;
                 }
             } else {
@@ -123,7 +123,7 @@ if ($ui->st('action', 'post') and !token(true)) {
             if ($file and substr(strtolower($file), -4) == '.php') {
                 $query = $sql->prepare("SELECT 1 FROM `modules` WHERE `file`=? AND `id`!=? LIMIT 1");
                 $query->execute(array($file, $id));
-                if ($query->rowCount()>0) {
+                if ($query->rowCount() > 0) {
                     $errors['file'] = $sprache->file;
                 }
             } else {

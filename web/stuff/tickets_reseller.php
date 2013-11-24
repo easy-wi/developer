@@ -134,7 +134,7 @@ if ($ui->st('d', 'get') == 'ad') {
     } else if ($ui->st('action', 'get') == 'op') {
         $query = $sql->prepare("UPDATE `tickets` SET `state`='R' WHERE `id`=? AND `resellerid`=? AND `state`='D' LIMIT 1");
         $query->execute(array($id,$resellerid));
-        $template_file = ($query->rowCount()>0) ? $spracheResponse->table_add : 'admin_404.tpl';
+        $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : 'admin_404.tpl';
     } else if (!$ui->smallletters('action',2, 'post') or $ui->smallletters('action',2, 'get') == 'md') {
         $table = array();
         $default_language = $rSA['language'];

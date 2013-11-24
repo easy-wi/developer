@@ -136,7 +136,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $id = $ui->id('id',19, 'get');
                 $query = $sql->prepare("SELECT `importID` FROM `api_import` WHERE `importID`!=? AND `domain`=? AND `file`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id,$ui->domain('domain', 'post'),$ui->startparameter('file', 'post'),$reseller_id));
-                if ($query->rowCount()>0) {
+                if ($query->rowCount() > 0) {
                     $template_file = 'Error: Domain and file already existing';
                 } else {
                     $query = $sql->prepare("UPDATE `api_import` SET `active`=?,`fetchUpdates`=?,`token`=?,`groupID`=?,`chunkSize`=?,`ssl`=?,`domain`=?,`file`=? WHERE `importID`=? AND `resellerID`=? LIMIT 1");
@@ -146,7 +146,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else if ($ui->st('d', 'get') == 'ad') {
                 $query = $sql->prepare("SELECT `importID` FROM `api_import` WHERE `domain`=? AND `file`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($ui->domain('domain', 'post'),$ui->startparameter('file', 'post'),$reseller_id));
-                if ($query->rowCount()>0) {
+                if ($query->rowCount() > 0) {
                     $template_file = 'Error: Domain and file already added';
                 } else {
                     $query = $sql->prepare("INSERT INTO `api_import` (`active`,`fetchUpdates`,`token`,`groupID`,`chunkSize`,`ssl`,`domain`,`file`,`lastID`,`lastCheck`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,0,'0000-00-00 00:00:00',?)");
@@ -156,7 +156,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $template_file = 'admin_404.tpl';
             }
-            if (!isset($template_file) and $query->rowCount()>0) {
+            if (!isset($template_file) and $query->rowCount() > 0) {
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
             } else if (!isset($template_file)) {
@@ -192,7 +192,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $query = $sql->prepare("DELETE FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $loguseraction='%del% %apiimport% '.$domain. '/' . $file;
             $insertlog->execute();
             $template_file = $spracheResponse->table_del;

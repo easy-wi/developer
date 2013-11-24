@@ -122,7 +122,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $template_file = 'admin_404.tpl';
             }
-            if (!isset($template_file) and $query->rowCount()>0) {
+            if (!isset($template_file) and $query->rowCount() > 0) {
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
             } else if (!isset($template_file)) {
@@ -144,7 +144,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($ui->smallletters('action',2, 'post') == 'dl') {
         $query = $sql->prepare("DELETE FROM `rootsPXE` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $loguseraction="%del% PXE";
             $insertlog->execute();
             $template_file = $spracheResponse->table_del;

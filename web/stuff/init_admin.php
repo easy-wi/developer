@@ -176,4 +176,5 @@ if ($easywiModules['vo'] === true) {
 
 if ($easywiModules['ip'] === true) {
     $what_to_be_included_array['ip'] = 'imprint.php';
+    $what_to_be_included_array['si'] = 'panel_settings_imprint.php';
 }

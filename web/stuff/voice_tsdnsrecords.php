@@ -262,7 +262,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("UPDATE `voice_dns` SET `active`=?,`dns`=?,`ip`=?,`port`=?,`externalID`=? WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($active,$dns,$ip,$port,$externalID,$id,$reseller_id));
             }
-            if (isset($queryip) and !isset($insterfail) and $query->rowCount()>0) {
+            if (isset($queryip) and !isset($insterfail) and $query->rowCount() > 0) {
                 $loguseraction="%$log% %voserver% %dns% $ip";
                 $insertlog->execute();
             } else if (isset($queryip) and isset($insterfail)) {
@@ -311,10 +311,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $keyname = $row['keyname'];
             $bitversion = $row['bitversion'];
         }
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $query = $sql->prepare("DELETE FROM `voice_dns` WHERE `dnsID`=? AND `resellerid`=?");
             $query->execute(array($id,$reseller_id));
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip), array($port), array($dns),$reseller_id);
                 $loguseraction="%del% %voserver% %dns% $deleteDNS";
                 $insertlog->execute();

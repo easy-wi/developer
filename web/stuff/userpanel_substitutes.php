@@ -138,13 +138,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT 1 FROM `userdata_substitutes` WHERE `loginName`=? LIMIT 1");
             $query->execute(array($ui->names('loginName',255, 'post')));
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $userError = $spracheResponse->error_username;
             }
 
             $query = $sql->prepare("SELECT 1 FROM `userdata` WHERE `cname`=? LIMIT 1");
             $query->execute(array($ui->names('loginName',255, 'post')));
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $userError = $spracheResponse->error_username;
             }
 
@@ -165,7 +165,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 
 
-                if ($query->rowCount()>0) {
+                if ($query->rowCount() > 0) {
                     $changed = true;
                     $id = $sql->lastInsertId();
                 }
@@ -198,7 +198,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($ui->active('active', 'post'),$ui->names('name',255, 'post'),$ui->names('vname',255, 'post'),$id,$user_id,$reseller_id));
             }
 
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $changed = true;
             }
         }
@@ -210,7 +210,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (!$ui->id($row['oType'],10, 'post') or !in_array($row['oID'],(array)$ui->id($row['oType'],10, 'post'))) {
                     $query2->execute(array($row['oType'], $row['oID'],$id,$reseller_id));
-                    if ($query2->rowCount()>0) {
+                    if ($query2->rowCount() > 0) {
                         $changed = true;
                     }
                 }
@@ -219,7 +219,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if ($ui->id($v,10, 'post')) {
                     $query = $sql->prepare("INSERT INTO `userdata_substitutes_servers` (`sID`,`oType`,`oID`,`resellerID`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `sID`=`sID`");
                     foreach ($ui->id($v,10, 'post') as $oID) $query->execute(array($id,$v,$oID,$reseller_id));
-                    if ($query->rowCount()>0) $changed = true;
+                    if ($query->rowCount() > 0) $changed = true;
                 }
             }
             $template_file = (isset($changed)) ? $spracheResponse->table_add : $spracheResponse->error_table;

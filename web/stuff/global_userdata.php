@@ -110,7 +110,7 @@ if ($ui->st('d', 'get') == 'pw') {
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`security`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($newHash, $lookUpID, $reseller_id));
             }
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $template_file = $spracheResponse->table_add;
                 $loguseraction="%psw% %user% $cname";
                 $insertlog->execute();
@@ -171,7 +171,7 @@ if ($ui->st('d', 'get') == 'pw') {
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_vserver`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$mail_gsupdate,$mail_securitybreach,$mail_vserver,$lookUpID,$reseller_id));
             }
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 #https://github.com/easy-wi/developer/issues/5
                 $changed = array();
                 foreach ($oldValues as $k => $v) if (isset($$k) and "{$$k}" != $v) $changed[$k] = $v;

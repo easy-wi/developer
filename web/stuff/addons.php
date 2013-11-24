@@ -396,7 +396,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $addon = $query->fetchColumn();
 
         // Check if a row was affected meaning an entry could be deleted. If yes add log entry and display success message
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $query = $sql->prepare("DELETE FROM `addons_allowed` WHERE `addon_id`=? AND `reseller_id`=?");
             $query->execute(array($id, $reseller_id));
             $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `addonid`=? AND `resellerid`=?");

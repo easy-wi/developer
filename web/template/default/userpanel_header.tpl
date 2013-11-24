@@ -54,6 +54,7 @@
 
             <a href="login.php?w=lo" class="navbar-text pull-right">
                 <button class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</button>
+                &nbsp;&nbsp;
             </a>
 
             <ul class="nav pull-right">
@@ -68,10 +69,10 @@
                         <li><a href="userpanel.php?w=se"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                         <li class="divider"></li>
                         <?php } ?>
-                        <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info fa-fw"></i> About</a></li>
+                        <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info-circle fa-fw"></i> About</a></li>
                         <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
                         <li><a href="https://easy-wi.com/forum/" target="_blank"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
-                        <li><a href="http://wiki.easy-wi.com" target="_blank"><i class="fa fa-question fa-fw"></i> Wiki</a></li>
+                        <li><a href="http://wiki.easy-wi.com" target="_blank"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
                         <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank"><i class="fa fa-bug fa-fw"></i> Steam Bugtracker</a></li>
                     </ul>
                 </li>

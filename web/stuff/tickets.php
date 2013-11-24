@@ -428,7 +428,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("UPDATE `tickets` SET `state`=?,`supporter`=?,`priority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->w('state',1, 'post'),$ui->id('supporter',10, 'post'),$ui->id('priority',1, 'post'),$id,$reseller_id));
             }
-            $template_file = ($query->rowCount()>0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+            $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
             if (isset($ui->post['ticket']) and strlen($ui->post['ticket'])>0) {
                 $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`message`,`writeDate`,`userID`,`resellerid`) VALUES (?,?,?,?,?)");
                 $query->execute(array($id,$ui->post['ticket'],$logdate,$admin_id,$reseller_id));

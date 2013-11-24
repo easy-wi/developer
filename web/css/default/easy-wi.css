@@ -1,5 +1,8 @@
-#content {
-    padding-top: 60px;padding-bottom: 40px;
+@media (min-width: 979px) {
+    #content {
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
 }
 .footable {
      border-collapse: separate;
@@ -37,10 +40,6 @@
 
 .footable > tbody img {
     vertical-align:middle;
-}
-
-.navbar .pull-right {
-    margin-right: 20px;
 }
 
 .navbar .btn {

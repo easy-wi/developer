@@ -427,7 +427,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $query->execute(array($id, $reseller_id));
         $ip = $query->fetchColumn();
 
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $query = $sql->prepare("UPDATE `voice_masterserver` SET `tsdnsServerID`=NULL WHERE `tsdnsServerID`=? AND `resellerid`=?");
             $query->execute(array($id, $reseller_id));
 
@@ -436,7 +436,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         }
 
         // Check if a row was affected meaning an entry could be deleted. If yes add log entry and display success message
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
 
             $template_file = $spracheResponse->table_del;
             $loguseraction = '%del% %voserver% %tsdns% ' . $ip;

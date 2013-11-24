@@ -234,7 +234,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("DELETE FROM `rserverdata` WHERE `id`=? AND `resellerid`=? AND (`userID` IS NULL OR `userID` IN ('',0)) LIMIT 1");
         $query->execute(array($id,$reseller_id));
 
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $query = $sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
             $query->execute();
             $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");

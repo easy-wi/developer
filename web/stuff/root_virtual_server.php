@@ -64,7 +64,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         $besthostcpu = '';
         $query = $sql->prepare("SELECT h.`id`, h.`ip`, h.`description`, h.`cores`, h.`mhz`, h.`hdd`, h.`ram`, h.`maxserver`, h.`maxserver`-COUNT(DISTINCT v.`id`) AS `freeserver`, h.`ram`-SUM(v.`minram`) AS `freeram`, h.`cores`*h.`mhz`-SUM(v.`cores`*v.`minmhz`) AS `freecpu`, h.`active` AS `active`, h.`resellerid` AS `resellerid`,h.`thin`,h.`thinquota` FROM `virtualhosts` h LEFT JOIN `virtualcontainer` v ON v.`hostid`=h.`id` GROUP BY h.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`freecpu` > 0 OR `freecpu` IS NULL) AND (`freeram` > 0 OR `freeram` IS NULL) AND `active`='Y' AND (`resellerid`=? OR `resellerid`='0')) ORDER BY `freeram` DESC,`freecpu` DESC,`freeserver` DESC");
         $query->execute(array($reseller_id));
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 unset($ramused);
                 unset($cpucore);
@@ -528,7 +528,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             }
             $query = $sql->prepare("INSERT INTO `virtualcontainer` (`userid`,`hostid`,`ip`,`ips`,`mac`,`port`,`pass`,`cores`,`minmhz`,`maxmhz`,`hddsize`,`mountpoint`,`ram`,`minram`,`maxram`,`status`,`resellerid`) VALUES (:userid, :hostid, :ip, :ips, :mac, :port, AES_ENCRYPT(:pass, :aeskey), :cores, :minmhz, :maxmhz, :hddsize, :mountpoint, :ram, :minram, :maxram, :status, :resellerid)");
             $query->execute(array(':userid' => $userid,':hostid' => $hostid,':ip' => $ip,':ips' => $ips,':mac' => $mac,':port' => '21',':pass' => $pass,':aeskey' => $aeskey,':cores' => $cores,':minmhz' => $minmhz,':maxmhz' => $maxmhz,':hddsize' => $hddsize,':mountpoint' => $mountpoint,':ram' => $ram,':minram' => $minram,':maxram' => $maxram,':status' => 0,':resellerid' => $resellerid));
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $loguseraction="%add% %vserver% $ip Ram: $ram; MinRam: $minram; MaxRam: $maxram; Cores: $cores; MinMhz: $minmhz; MaxMhz: $maxmhz; HDD: $hddsize";
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
@@ -563,7 +563,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             $query->execute(array($id));
             $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('D','vs',?,?,?,?,?,NULL,NOW(),'dl',?)");
             $query->execute(array($hostID,$admin_id,$id,$userID,$ip,$reseller_id));
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $query = $sql->prepare("UPDATE `virtualcontainer` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=?");
                 $query->execute(array($id,$reseller_id));
                 $loguseraction="%del% %vserver% $ip";
@@ -772,7 +772,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('D','vs',NULL,?,?,?,?,NULL,NOW(),'md',?,?)");
                 $query->execute(array($admin_id,$id,$userid,$ip,json_encode(array('oldactive' => $row['active'], 'oldip' => $row['ip'], 'oldmac' => $row['mac'])),$reseller_id));
             }
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $loguseraction="%mod% %vserver% $ip Ram: $ram; MinRam: $minram; MaxRam: $maxram; Cores: $cores; MinMhz: $minmhz; MaxMhz: $maxmhz; HDD: $hddsize";
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;

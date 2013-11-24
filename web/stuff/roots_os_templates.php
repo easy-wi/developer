@@ -97,7 +97,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $template_file = 'admin_404.tpl';
         }
-        if (!isset($template_file) and isset($query) and $query->rowCount()>0) {
+        if (!isset($template_file) and isset($query) and $query->rowCount() > 0) {
             $insertlog->execute();
             $template_file = $spracheResponse->table_add;
         } else if (!isset($template_file)) {
@@ -110,7 +110,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `description` FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         $description = $query->fetchColumn();
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $template_file = "admin_root_templates_dl.tpl";
         } else {
             $template_file = 'Error: No such ID';
@@ -121,7 +121,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $description = $query->fetchColumn();
         $query = $sql->prepare("DELETE FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $loguseraction="%del% %virtualimage% $description";
             $insertlog->execute();
             $template_file = $spracheResponse->table_del;

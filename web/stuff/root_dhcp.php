@@ -126,7 +126,7 @@ if (in_array($ui->st('d', 'get'), array('md','ad'))){
             } else {
                 $template_file = 'admin_404.tpl';
             }
-            if (!isset($template_file) and $query->rowCount()>0) {
+            if (!isset($template_file) and $query->rowCount() > 0) {
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
             } else if (!isset($template_file)) {
@@ -148,7 +148,7 @@ if (in_array($ui->st('d', 'get'), array('md','ad'))){
     } else if ($ui->smallletters('action',2, 'post') == 'dl') {
         $query = $sql->prepare("DELETE FROM `rootsDHCP` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $loguseraction="%del% DHCP";
             $insertlog->execute();
             $template_file = $spracheResponse->table_del;

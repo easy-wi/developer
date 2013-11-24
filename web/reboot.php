@@ -137,7 +137,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $query3 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `masterserver`=? LIMIT 1");
             $query3->execute(array($ts3masterid));
             
-            if ($query3->rowcount()>0) {
+            if ($query3->rowCount() > 0) {
                 unset($connect_ssh2, $ssh2, $badLogin);
                 $ts3masternotified = $row2['notified'];
                 $addedby = $row2['addedby'];
@@ -160,7 +160,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 if (isid($row2['tsdnsServerID'],19)) {
                     $query3 = $sql->prepare("SELECT `id` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? LIMIT 1");
                     $query3->execute(array($row2['tsdnsServerID']));
-                    if ($query3->rowCount()>0) {
+                    if ($query3->rowCount() > 0) {
                         $tsdnsExternalActive = true;
                     }
                 }

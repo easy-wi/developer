@@ -310,7 +310,7 @@ if (isset($logininclude) and $logininclude == true) {
     $query->execute(array($logdate));
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? AND reason='bot' LIMIT 1");
     $query->execute(array($loguserip));
-    if ($query->rowcount()>0) {
+    if ($query->rowCount() > 0) {
         die();
     }
     $query = $sql->prepare("SELECT `faillogins` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
@@ -318,7 +318,7 @@ if (isset($logininclude) and $logininclude == true) {
     $allowedfails = $query->fetchColumn();
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? AND `reason`='password' AND `failcount`>=? LIMIT 1");
     $query->execute(array($loguserip, $allowedfails));
-    if ($query->rowCount()>0) {
+    if ($query->rowCount() > 0) {
         die('Your IP is banned');
     }
 }

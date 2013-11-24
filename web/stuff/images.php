@@ -357,7 +357,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             
             $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($shorten, $reseller_id));
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $errors['shorten'] = $sprache->abkuerz;
             }
             
@@ -365,7 +365,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             
             $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `id`!=? AND `shorten`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $shorten, $reseller_id));
-            if ($query->rowCount()>0) {
+            if ($query->rowCount() > 0) {
                 $errors['shorten'] = $sprache->abkuerz;
             }
             
@@ -424,7 +424,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("DELETE FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $reseller_id));
 
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
             $loguseraction = '%del% %template% ' . $shorten;
             $insertlog->execute();
             $template_file = $spracheResponse->table_del;
