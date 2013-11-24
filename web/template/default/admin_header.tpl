@@ -9,7 +9,6 @@
     <meta name="description" content="">
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php if(isset($ewCfg['title'])) echo $ewCfg['title']; ?>">
     <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="css/default/easy-wi.css" rel="stylesheet">
     <link rel="shortcut icon" href="images/favicon.ico" />
@@ -26,7 +25,7 @@
     <script type="text/javascript">window.onDomReady(onReady); function onReady() { SwitchShowHideRows('init_ready');}</script>
 </head>
 <body>
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="nav navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner text-center">
         <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
@@ -58,6 +57,7 @@
 
             <a href="login.php?w=lo" class="navbar-text pull-right">
                 <button class="btn btn-mini btn-danger"><i class="fa fa-power-off"></i> Logout</button>
+                &nbsp;&nbsp;
             </a>
 
             <ul class="nav pull-right">
@@ -70,10 +70,10 @@
                         <li><a href="admin.php?w=su&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                         <li><a href="admin.php?w=su"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                         <li class="divider"></li>
-                        <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info fa-fw"></i> About</a></li>
+                        <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info-circle fa-fw"></i> About</a></li>
                         <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
                         <li><a href="https://easy-wi.com/forum/" target="_blank"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
-                        <li><a href="http://wiki.easy-wi.com" target="_blank"><i class="fa fa-question fa-fw"></i> Wiki</a></li>
+                        <li><a href="http://wiki.easy-wi.com" target="_blank"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
                         <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank"><i class="fa fa-bug fa-fw"></i> Steam Bugtracker</a></li>
                     </ul>
                 </li>
@@ -113,12 +113,13 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSettings"><i class="fa fa-cogs fa-fw"></i> Easy-WI <?php echo $gsprache->settings;?></a>
                         </div>
-                        <div id="collapseSettings" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('se','sm','vc','cc','bu','mo'))) echo 'in';?>">
+                        <div id="collapseSettings" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('se','si','sm','vc','cc','bu','mo'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['settings']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='se') echo 'class="active"';?>><a href="admin.php?w=se"><?php echo $gsprache->settings;?></a></li>
                                     <li <?php if($ui->smallletters('w',255,'get')=='sm') echo 'class="active"';?>><a href="admin.php?w=sm">E-Mail <?php echo $gsprache->settings;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='si') echo 'class="active"';?>><a href="admin.php?w=si"><?php echo $gsprache->imprint.' '.$gsprache->settings;?></a></li>
                                     <?php } ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='vc') echo 'class="active"';?>><a href="admin.php?w=vc"><?php echo $gsprache->versioncheck;?></a></li>
                                     <?php if($pa['root'] and $reseller_id==0) { ?>

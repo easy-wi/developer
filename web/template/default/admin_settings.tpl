@@ -87,11 +87,36 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputPhone"><?php echo $sprache->supportnumber;?></label>
+                <div class="controls">
+                    <input class="span10" id="inputPhone" type="tel" name="supportnumber" value="<?php echo $supportnumber;?>">
+                </div>
+            </div>
+            <hr>
+            <h4><?php echo $gsprache->user;?></h4>
+            <div class="control-group">
                 <label class="control-label" for="inputLogins"><?php echo $sprache->faillogins;?></label>
                 <div class="controls">
                     <input class="span10" id="inputLogins" type="number" name="faillogins" value="<?php echo $faillogins;?>" required>
                 </div>
             </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPrefix1"><?php echo $sprache->prefix1;?></label>
+                <div class="controls">
+                    <select class="span10" id="inputPrefix1" name="prefix1" onchange="textdrop('prefix');">
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N" <?php if($prefix1=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group <?php if ($prefix1=='N') echo 'display_none';?>" id="prefix">
+                <label class="control-label" for="inputPrefix2"><?php echo $sprache->prefix3;?></label>
+                <div class="controls">
+                    <input class="span10" id="inputPrefix2" type="text" name="prefix2" value="<?php echo $prefix2;?>">
+                </div>
+            </div>
+            <hr>
+            <h4><?php echo $gsprache->gameserver.' + '.$gsprache->voiceserver;?></h4>
             <div class="control-group">
                 <label class="control-label" for="inputDown"><?php echo $sprache->down_checks;?></label>
                 <div class="controls">
@@ -104,6 +129,8 @@
                     <input class="span10" id="inputBrandname" type="text" name="brandname" value="<?php echo $brandname;?>">
                 </div>
             </div>
+            <hr>
+            <h4><?php echo $gsprache->gameserver;?></h4>
             <div class="control-group">
                 <label class="control-label" for="inputServertag"><?php echo $sprache->noservertag;?></label>
                 <div class="controls">
@@ -132,26 +159,13 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputPhone"><?php echo $sprache->supportnumber;?></label>
+                <label class="control-label" for="inputImageServer"><?php echo $sprache->image_server2;?></label>
                 <div class="controls">
-                    <input class="span10" id="inputPhone" type="tel" name="supportnumber" value="<?php echo $supportnumber;?>">
+                    <textarea class="span10" id="inputImageServer" name="imageserver" rows="5"><?php echo $imageserver;?></textarea>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="inputPrefix1"><?php echo $sprache->prefix1;?></label>
-                <div class="controls">
-                    <select class="span10" id="inputPrefix1" name="prefix1" onchange="textdrop('prefix');">
-                        <option value="Y"><?php echo $gsprache->yes;?></option>
-                        <option value="N" <?php if($prefix1=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group <?php if ($prefix1=='N') echo 'display_none';?>" id="prefix">
-                <label class="control-label" for="inputPrefix2"><?php echo $sprache->prefix3;?></label>
-                <div class="controls">
-                    <input class="span10" id="inputPrefix2" type="text" name="prefix2" value="<?php echo $prefix2;?>">
-                </div>
-            </div>
+            <hr>
+            <h4><?php echo $gsprache->voiceserver;?></h4>
             <div class="control-group">
                 <label class="control-label" for="inputBackups"><?php echo $sprache->maxbackups;?></label>
                 <div class="controls">
@@ -173,6 +187,8 @@
                     <input class="span10" id="inputAutoBackup2" type="number" name="voice_autobackup_intervall" value="<?php echo $voice_autobackup_intervall;?>">
                 </div>
             </div>
+            <hr>
+            <h4>Cronjobs</h4>
             <div class="control-group">
                 <label class="control-label" for="inputlastCronWarnStatus"><?php echo $sprache->lastCronWarnStatus;?></label>
                 <div class="controls">
@@ -222,30 +238,6 @@
                 <label class="control-label" for="inputCronjobIPs">Cronjob IPs</label>
                 <div class="controls">
                     <textarea class="span10" id="inputCronjobIPs" name="cronjobIPs" rows="8"><?php echo $cronjobIPs;?></textarea>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label"><?php echo $gsprache->imprint;?></label>
-                <div class="controls">
-                    <?php foreach ($foundlanguages as $array) { ?>
-                    <label class="checkbox inline">
-                        <input type="checkbox" id="inlineCheckbox<?php echo $array['lang'];?>" name="languages[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" <?php if ($array['style']!=0) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
-                    </label>
-                    <?php }?>
-                </div>
-            </div>
-            <?php foreach ($foundlanguages as $array) { ?>
-            <div id="<?php echo $array['lang'];?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputImprint<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
-                <div class="controls">
-                    <textarea class="span10" id="inputImprint<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]" rows="8"><?php echo $array['imprint'];?></textarea>
-                </div>
-            </div>
-            <?php } ?>
-            <div class="control-group">
-                <label class="control-label" for="inputImageServer"><?php echo $sprache->image_server2;?></label>
-                <div class="controls">
-                    <textarea class="span10" id="inputImageServer" name="imageserver" rows="5"><?php echo $imageserver;?></textarea>
                 </div>
             </div>
             <div class="control-group">

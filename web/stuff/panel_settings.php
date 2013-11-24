@@ -45,6 +45,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $sprache = getlanguagefile('settings', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
+$usprache = getlanguagefile('user', $user_language, $reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
@@ -83,7 +84,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	if ($fail != 1) {
 
         $imageserver = '';
-
         $master = 'N';
 
 		$voice_autobackup = $ui->active('voice_autobackup', 'post');
@@ -119,63 +119,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$query = $sql->prepare("UPDATE `settings` SET `cronjob_ips`=?,`template`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=AES_ENCRYPT(?,?),`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($cronjobIPs, $template, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $aeskey, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $reseller_id));
 
-        if ($query->rowCount() > 0) {
-            $changed = true;
-        }
-
-        $query = $sql->prepare("SELECT `id` FROM `imprints` WHERE `language`=? AND `resellerid`=? LIMIT 1");
-        $query2 = $sql->prepare("UPDATE imprints SET `imprint`=? WHERE `language`=? AND `resellerid`=? LIMIT 1");
-        $query3 = $sql->prepare("INSERT INTO `imprints` (`language`,`imprint`,`resellerid`) VALUES (?,?,?)");
-
-		if ($ui->escaped('languages', 'post')) {
-
-            $languages=(array)$ui->escaped('languages', 'post');
-
-			foreach($languages as $language) {
-
-				if (small_letters_check($language, 2)) {
-
-					$description = $ui->escaped('description', 'post', $language);
-                    $query->execute(array($language, $reseller_id));
-					$num = $query->rowCount();
-
-                    if ($num == 1) {
-                        $query2->execute(array($description, $language, $reseller_id));
-                        if ($query2->rowCount() > 0) {
-                            $changed = true;
-                        }
-                    } else {
-                        $query3->execute(array($language, $description, $reseller_id));
-                        if ($query3->rowCount() > 0) {
-                            $changed = true;
-                        }
-                    }
-
-				}
-
-			}
-
-            $query = $sql->prepare("SELECT `language` FROM `imprints` WHERE `resellerid`=?");
-            $query2 = $sql->prepare("DELETE FROM `imprints` WHERE `language`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($reseller_id));
-			foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-				if (isset($row['language']) and !in_array($row['language'], $languages)) {
-                    $query2->execute(array($row['language'], $reseller_id));
-                    if ($query2->rowCount()>0) {
-                        $changed = true;
-                    }
-				}
-
-			}
-
-		} else {
-            $query = $sql->prepare("DELETE FROM `imprints` WHERE `resellerid`=?");
-            $query->execute(array($reseller_id));
-            if ($query->rowCount()>0) $changed = true;
-		}
-
-		if (isset($changed)) {
+		if ($query->rowCount() > 0) {
             $loguseraction = "%mod% %settings%";
             $insertlog->execute();
             $template_file = $spracheResponse->table_add;
@@ -188,10 +132,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	}
 
 } else {
-    $usprache = getlanguagefile('user', $user_language, $reseller_id);
+
     $servertime = date('Y-m-d H:i:s');
     $templates = array();
-    $foundlanguages = array();
     $dir = EASYWIDIR . '/template/';
 
     if (is_dir($dir)){
@@ -208,6 +151,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$language_choosen = $row['language'];
 		$template_choosen = $row['template'];
+        $selectlanguages = getlanguages($template_choosen);
 		$imageserver = $row['decryptedimageserver'];
 		$master = $row['master'];
 		$cronjobIPs = $row['cronjob_ips'];
@@ -231,25 +175,5 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $lastCronWarnCloud = $row['lastCronWarnCloud'];
 	}
 
-    if ($query->rowCount() > 0) {
-
-        $selectlanguages = getlanguages($template_choosen);
-
-        foreach (getlanguages($template_choosen) as $langrow2) {
-            $imprint = '';
-            $lang = '';
-
-            $query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE `language`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($langrow2, $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $imprint = $row['imprint'];
-            }
-
-            $foundlanguages[] = array('style' => $query->rowCount(),'lang' => $langrow2,'imprint' => $imprint);
-        }
-
-        $template_file = 'admin_settings.tpl';
-    } else {
-        $template_file = 'admin_404.tpl';
-    }
+    $template_file = ($query->rowCount() > 0) ? 'admin_settings.tpl' : 'admin_404.tpl';
 }
