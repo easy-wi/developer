@@ -126,10 +126,13 @@
                 <div class="controls"><input class="span12" id="inputShorten" type="text" name="shorten" value="<?php echo $shorten;?>"></div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputQstat"><?php echo $sprache->qstat;?></label>
+                <label class="control-label" for="inputGameQ">GameQ</label>
                 <div class="controls">
-                    <select class="span12" id="inputQstat" name="qstat">
-                        <?php foreach ($table3 as $table_row3) { echo $table_row3['option'];} ?>
+                    <select class="span12" id="inputGameQ" name="gameq">
+                        <option value="">Other</option>
+                        <?php foreach ($protocols as $k=>$v){ ?>
+                        <option value="<?php echo $k;?>" <?php if($k==$gameq) echo 'selected="selected"';?>><?php echo $v;?></option>
+                        <?php } ?>
                     </select>
                 </div>
             </div>
@@ -156,10 +159,6 @@
             <div class="control-group">
                 <label class="control-label" for="inputMapgroup"><?php echo $sprache->startmapgroup;?></label>
                 <div class="controls"><input class="span12" id="inputMapgroup" type="text" name="mapGroup" value="<?php echo $mapGroup;?>"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputQstatParam"><?php echo $sprache->qstatpassparam;?></label>
-                <div class="controls"><input class="span12" id="inputQstatParam" type="text" name="qstatpassparam" value="<?php echo $qstatpassparam;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputPortMax"><?php echo $sprache->portMax;?></label>

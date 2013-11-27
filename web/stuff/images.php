@@ -40,6 +40,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['gimages']))
 	header('Location: admin.php');
 	die('No acces');
 }
+include(EASYWIDIR . '/third_party/gameq/GameQ.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $sprache = getlanguagefile('images', $user_language, $reseller_id);
@@ -111,10 +112,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $configs = $ui->startparameter('configs', 'post');
     $configedit = $ui->startparameter('configedit', 'post');
     $modcmds = $ui->startparameter('modcmds', 'post');
-    $qstat = $ui->w('qstat', 20, 'post');
+    $gameq = $ui->w('gameq', 255, 'post');
     $gamemod = $ui->active('gamemod', 'post');
     $gamemod2 = $ui->w('gamemod2', 10, 'post');
-    $qstatpassparam = $ui->startparameter('qstatpassparam', 'post');
     $portMax = ($ui->id('portMax', 1, 'post')) ? $ui->id('portMax', 1, 'post') : 1;
     $portStep = ($ui->id('portStep',4, 'post')) ? $ui->id('portStep',4, 'post') : 100;
     $portOne = ($ui->id('portOne',5, 'post')) ? $ui->id('portOne',5, 'post') : 27015;
@@ -132,17 +132,59 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     
     if (!$ui->smallletters('action', 2, 'post') or $ui->id('import', 1, 'post') == 1) {
 
+        // Protocol list code taken from https://github.com/Austinb/GameQ/blob/v2/examples/list.php
+        $protocols_path = GAMEQ_BASE."gameq/protocols/";
+
+        // Grab the dir with all the classes available
+        $dir = dir($protocols_path);
+
+        $protocols = array();
+
+        // Now lets loop the directories
+        while (false !== ($entry = $dir->read()))
+        {
+            if(!is_file($protocols_path.$entry))
+            {
+                continue;
+            }
+
+            // Figure out the class name
+            $class_name = 'GameQ_Protocols_'.ucfirst(pathinfo($entry, PATHINFO_FILENAME));
+
+            // Lets get some info on the class
+            $reflection = new ReflectionClass($class_name);
+
+            // Check to make sure we can actually load the class
+            if(!$reflection->IsInstantiable())
+            {
+                continue;
+            }
+
+            // Load up the class so we can get info
+            $class = new $class_name;
+
+            // Add it to the list
+            $protocols[$class->name()] = $class->name_long();
+
+            // Unset the class
+            unset($class);
+        }
+
+        // Close the directory
+        unset($dir);
+
+        ksort($protocols);
+
+        // GameQ protocol listing done. Easy-WI Code again.
         if ($ui->st('d', 'get') == 'ad') {
-            $token=token();
+            $token = token();
+            $table = array();
+
+            // Collect the shorten we need for game modification
             $query = $sql->prepare("SELECT DISTINCT(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
             $query->execute(array($reseller_id));
-            $table = array();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $table[] = array('shorten' => $row['shorten']);
-            $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten` ORDER BY `description`");
-            $query->execute();
-            $table2 = array();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $table2[] = array('qstat' => $row['qstat'], 'description' => $row['description']);
+                $table[] = array('shorten' => $row['shorten']);
             }
             
             if ($ui->id('import', 1, 'post') == 1 and $_FILES['file']['error']==0 and $_FILES['file']['type'] == 'text/xml') {
@@ -192,8 +234,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             if ($node->nodeName == 'tic') {
                                 $tic = $node->nodeValue;
                             }
-                            if ($node->nodeName == 'qstat') {
-                                $qstat = $node->nodeValue;
+                            if ($node->nodeName == 'gameq') {
+                                $gameq = $node->nodeValue;
                             }
                             if ($node->nodeName == 'gamemod') {
                                 $gamemod = $node->nodeValue;
@@ -206,9 +248,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             }
                             if ($node->nodeName == 'configedit') {
                                 $configedit = $node->nodeValue;
-                            }
-                            if ($node->nodeName == 'qstatpassparam') {
-                                $qstatpassparam = $node->nodeValue;
                             }
                             if ($node->nodeName == 'portStep') {
                                 $portStep = $node->nodeValue;
@@ -262,13 +301,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
             }
 
-            $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
-            $query->execute();
-            $table3 = array();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $selected = (isset($qstat) and $qstat == $row['qstat']) ? ' selected="selected"' : '';
-                $table3[] = array('option' => '<option value="' . $row['qstat'] . '" ' . $selected . '>' . $row['description'] . '</option>');
-            }
             $template_file = 'admin_images_add.tpl';
 
         } else if ($ui->st('d', 'get') == 'md' and $id) {
@@ -288,12 +320,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $cmd = $row['cmd'];
                 $modcmds = $row['modcmds'];
                 $tic = $row['tic'];
-                $qstat = $row['qstat'];
+                $gameq = $row['gameq'];
                 $gamemod = $row['gamemod'];
                 $gamemod2 = $row['gamemod2'];
                 $configs = $row['configs'];
                 $configedit = $row['configedit'];
-                $qstatpassparam = $row['qstatpassparam'];
                 $appID = $row['appID'];
                 $portMax = $row['portMax'];
                 $portStep = $row['portStep'];
@@ -318,13 +349,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $table[] = array('shorten' => $row['shorten']);
                 }
 
-                $query = $sql->prepare("SELECT `qstat`,`description` FROM `qstatshorten`");
-                $query->execute();
-                $table3 = array();
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $selected = (isset($qstat) and $qstat == $row['qstat']) ? ' selected="selected"' : '';
-                    $table3[] = array('option' => '<option value="' . $row['qstat'] . '" ' . $selected . '>' . $row['description'] . '</option>');
-                }
                 $template_file = 'admin_images_md.tpl';
             } else {
                 $template_file = 'admin_404.tpl';
@@ -378,15 +402,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
 
-                $query = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`cmd`,`modcmds`,`qstat`,`gamemod`,`gamemod2`,`configs`,`configedit`,`qstatpassparam`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`ramLimited`,`ftpAccess`,`os`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $cmd, $modcmds, $qstat, $gamemod, $gamemod2, $configs, $configedit, $qstatpassparam, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os,$reseller_id));
+                $query = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`ramLimited`,`ftpAccess`,`os`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os,$reseller_id));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %template% ' . $shorten;
 
             } else if ($ui->st('action', 'post') == 'md') {
                 
-                $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`cmd`=?,`modcmds`=?,`qstat`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`qstatpassparam`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`protected`=?,`ramLimited`=?,`ftpAccess`=?,`os`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $cmd, $modcmds, $qstat, $gamemod, $gamemod2, $configs, $configedit, $qstatpassparam, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $ui->id('id', 10, 'get'), $reseller_id));
+                $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`cmd`=?,`modcmds`=?,`gameq`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`protected`=?,`ramLimited`=?,`ftpAccess`=?,`os`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $ui->id('id', 10, 'get'), $reseller_id));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %template% ' . $shorten;
             }

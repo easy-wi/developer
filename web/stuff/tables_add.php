@@ -627,15 +627,6 @@ $query = "CREATE TABLE IF NOT EXISTS `page_terms_used` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query = "CREATE TABLE IF NOT EXISTS `qstatshorten` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `qstat` varchar(15) NOT NULL,
-  `description` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB";
-$add = $sql->prepare($query);
-$add->execute();
-
 $query = "CREATE TABLE IF NOT EXISTS `resellerdata` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `useractive` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -834,6 +825,7 @@ $query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `cmd` text NOT NULL,
   `modcmds` text,
   `tic` varchar(5) DEFAULT NULL,
+  `gameq` varchar(255) DEFAULT NULL,
   `qstat` varchar(30) DEFAULT NULL,
   `gamemod` enum('Y','N') NOT NULL DEFAULT 'N',
   `gamemod2` varchar(15) DEFAULT NULL,

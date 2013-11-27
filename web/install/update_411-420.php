@@ -95,6 +95,79 @@ Unfortunately errors have slipped in 4.10. In addition the update revealed that 
         $query = $sql->prepare("INSERT INTO `modules` (`id`,`file`,`get`,`sub`,`type`,`active`) VALUES (5,'','le','','C','N') ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
         $query->execute();
     }
+
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `gameq` varchar(255) NULL AFTER `qstat`");
+    $query->execute();
+
+    // Most accurate based on appID
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='css' WHERE `appID`=232330 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='dods' WHERE `appID`=232290 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='l4d' WHERE `appID`=550 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='l4d2' WHERE `appID`=222860 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='aoc' WHERE `appID`=17515 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='hl2dm' WHERE `appID`=232370 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='insurgency' WHERE `appID`=17705 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='tf2' WHERE `appID`=232250 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='csgo' WHERE `appID`=740 LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='killingfloor' WHERE `appID`=215360 LIMIT 1");
+    $query->execute();
+
+    // Accurate, based on easy-wi/qstat query
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='minecraft' WHERE `qstat`='minecraft'");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='samp' WHERE `qstat`='gtasamp'");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='Mta' WHERE `qstat`='mtasa'");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='teeworlds' WHERE `qstat`='teeworlds'");
+    $query->execute();
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='warsow' WHERE `qstat`='warsows'");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='et' WHERE `qstat`='woets'");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='ut' WHERE `qstat`='uns'");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='ut2004' WHERE `qstat`='ut2004s'");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='ut3' WHERE `qstat`='ut2s'");
+    $query->execute();
+
+    // Less accurate, based on shorten
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='dod' WHERE `shorten`='dod' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cs16' WHERE `shorten`='cstrike' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cscz' WHERE `shorten`='czero' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='tfc' WHERE `shorten`='tfc' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cod' WHERE `shorten`='cod' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cod2' WHERE `shorten`='cod2' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cod4' WHERE `shorten`='cod4' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='codmw3' WHERE `shorten`='codmw3' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='coduo' WHERE `shorten`='coduo' LIMIT 1");
+    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='codwaw' WHERE `shorten`='codwaw' LIMIT 1");
+    $query->execute();
+
+
+    $query = $sql->prepare("DROP TABLE `qstatshorten`");
+    $query->execute();
+
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
 }
