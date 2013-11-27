@@ -41,12 +41,12 @@
 
             <span class="navbar-text">Easy-WI.com</span>
 
+            <?php if (isset($admin_id) or isset($user_id)) { ?>
+
             <a href="<?php echo $page_data->pageurl;?>/login.php?w=lo" class="navbar-text pull-right">
                 <button class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</button>
                 &nbsp;&nbsp;
             </a>
-
-            <?php if (isset($admin_id) or isset($user_id)) { ?>
             <ul class="nav pull-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $great_user;?><b class="caret"></b></a>
@@ -65,8 +65,9 @@
                  </li>
             </ul>
             <?php } else { ?>
-            <div id="modal" class="navbar-form pull-right">
+            <div id="modal" class="navbar-text navbar-form pull-right">
                 <a href="#myModal" role="button" class="btn" data-toggle="modal">Login</a>
+                &nbsp;&nbsp;
             </div>
             <?php } ?>
         </div>
