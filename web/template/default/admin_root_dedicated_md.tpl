@@ -28,8 +28,8 @@
         <form class="form-horizontal" action="admin.php?w=rh&amp;d=md&amp;id=<?php echo $id;?>&amp;r=rh" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
-            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?">
-                <label class="control-label>" for="inputActive"><?php echo $sprache->active;?></label>
+            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
+                <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" class="span11" name="active">
                         <option value="Y"><?php echo $gsprache->yes;?></option>
