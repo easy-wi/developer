@@ -459,8 +459,8 @@ echo "#Minecraft can easily produce 1GB+ logs within one hour
 */5 * * * * root nice -n +19 ionice -n 7 find /home/*/server/*/*/ -maxdepth 2 -type f -name \"screenlog.0\" -size +100M -delete
 
 # Even sudo /usr/sbin/deluser --remove-all-files is used some data remain from time to time
-*/5 * * * root nice -n +19 $IONICE find /home/ -maxdepth 2 -type d -nouser -delete
-*/5 * * * root nice -n +19 $IONICE find /home/*/fdl_data/ /home/*/temp/ /tmp/ /var/run/screen/ -nouser -delete" >> /etc/crontab
+*/5 * * * * root nice -n +19 $IONICE find /home/ -maxdepth 2 -type d -nouser -delete
+*/5 * * * * root nice -n +19 $IONICE find /home/*/fdl_data/ /home/*/temp/ /tmp/ /var/run/screen/ -nouser -delete" >> /etc/crontab
 /etc/init.d/cron restart
 fi
 fi
