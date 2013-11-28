@@ -1,12 +1,6 @@
-Included third party frameworks, tools, and so on:
+Included third party frameworks, tools, and so on.
 
-* Bootstrap v2.3.2
-http://getbootstrap.com/2.3.2/
-Copyright 2013 Twitter, Inc
-Licensed under the Apache License v2.0
-http://www.apache.org/licenses/LICENSE-2.0
-Designed and built with all the love in the world by @mdo and @fat.
-
+Shipped with Easy-WI:
 
 * FooTable - Awesome Responsive Tables
 http://themergency.com/footable/
@@ -15,11 +9,6 @@ Requires jQuery - http://jquery.com/
 Copyright Steven Usher & Brad Vincent
 Released under the MIT license
 http://opensource.org/licenses/MIT
-
-
-* HTML5 Shiv v3.6.2
-https://github.com/aFarkas/html5shiv
-@afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
 
 * Flag icons - http://www.famfamfam.com
 These icons are public domain, and as such are free for any use (attribution appreciated but not required).
@@ -32,3 +21,23 @@ https://github.com/ircmaxell/password_compat/
 Copyright Anthony Ferrara
 Released under the MIT license
 http://opensource.org/licenses/MIT
+
+* GameQ
+https://github.com/Austinb/GameQ
+GNU GENERAL PUBLIC LICENSE Version 3
+https://www.gnu.org/licenses/gpl.html
+
+
+Used but included with CDN servers:
+
+* Bootstrap v2.3.2
+http://getbootstrap.com/2.3.2/
+Copyright 2013 Twitter, Inc
+Licensed under the Apache License v2.0
+http://www.apache.org/licenses/LICENSE-2.0
+Designed and built with all the love in the world by @mdo and @fat.
+
+
+* HTML5 Shiv v3.6.2
+https://github.com/aFarkas/html5shiv
+@afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
