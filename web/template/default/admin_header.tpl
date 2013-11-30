@@ -14,7 +14,7 @@
     <link rel="shortcut icon" href="images/favicon.ico" />
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-    <script src="js/default/html5shiv.js"></script>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
@@ -88,7 +88,7 @@
                 <div class="accordion" id="accordionMenu">
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseOne"><i class="fa fa-tachometer fa-fw"></i> Dashboard</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseOne"><i class="fa fa-home fa-fw"></i> Home</a>
                         </div>
                         <div id="collapseOne" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('da','ho','ib','lo','ml','ip'))) echo 'in';?>">
                             <div class="accordion-inner">
