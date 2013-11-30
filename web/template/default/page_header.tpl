@@ -20,7 +20,7 @@
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-    <script src="<?php echo $page_data->pageurl;?>/js/default/html5shiv.js"></script>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script type="text/javascript">$(function() { $('table').footable();});</script>
 </head>
