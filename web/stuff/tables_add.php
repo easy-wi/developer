@@ -313,6 +313,7 @@ $query = "CREATE TABLE IF NOT EXISTS `gsswitch` (
   `queryPassword` enum('Y','N') NOT NULL,
   `queryUpdatetime` datetime DEFAULT NULL,
   `externalID` varchar(255) DEFAULT NULL,
+  `sourceSystemID` varchar(255) NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`userid`),KEY(`rootID`),KEY(`serverid`),KEY(`resellerid`)
@@ -685,6 +686,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rserverdata` (
   `notified` int(11) unsigned DEFAULT '0',
   `userID` int(10) unsigned DEFAULT 0,
   `externalID` varchar(255) DEFAULT NULL,
+  `sourceSystemID` varchar(255) NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`hostid`),KEY(`externalID`),KEY(`userID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
@@ -1356,13 +1358,13 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `ssh2port` blob,
   `ssh2user` blob,
   `ssh2password` blob,
-  `bitversion` smallint(2) unsigned NOT NULL,
+  `bitversion` smallint(2) unsigned DEFAULT 64 NOT NULL,
   `serverdir` varchar(255) DEFAULT NULL,
   `keyname` varchar(50) DEFAULT NULL,
   `notified` int(11) unsigned DEFAULT '0',
   `autorestart` enum('Y','N') DEFAULT 'Y',
   `externalID` varchar(255) DEFAULT NULL,
-  `managedServer` enum('Y','N') DEFAULT 'Y',
+  `managedServer` enum('Y','N') DEFAULT 'N',
   `managedForID` int(10) unsigned DEFAULT NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`tsdnsServerID`),KEY(`rootid`),KEY(`resellerid`),KEY(`externalID`)
