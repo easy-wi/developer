@@ -89,7 +89,7 @@ if (isset($page_active) and $page_active == 'Y') {
         $what_to_be_included_array['imprint'] = 'imprint.php';
     }
     if ($easywiModules['le'] === true) {
-        $what_to_be_included_array['lendserver'] = 'lendserver.php';
+        $what_to_be_included_array['lendserver'] = 'lend.php';
     }
 
     $query = $sql->prepare("SELECT `activeGS`,`activeVS` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");

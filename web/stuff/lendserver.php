@@ -37,7 +37,7 @@
  */
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and (!isset($pa) or (!$pa['lendserver'] and !$pa['lendserverSettings'])))) {
-    redirect('Location: admin.php');
+    redirect('admin.php');
     die;
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
