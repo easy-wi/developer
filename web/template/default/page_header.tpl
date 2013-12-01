@@ -43,9 +43,8 @@
 
             <?php if (isset($admin_id) or isset($user_id)) { ?>
 
-            <a href="<?php echo $page_data->pageurl;?>/login.php?w=lo" class="navbar-text pull-right">
+            <a href="<?php echo $page_data->pageurl;?>/login.php?w=lo" class="navbar-text pull-right navbar-logout">
                 <button class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</button>
-                &nbsp;&nbsp;
             </a>
             <ul class="nav pull-right">
                 <li class="dropdown">
@@ -65,9 +64,8 @@
                  </li>
             </ul>
             <?php } else { ?>
-            <div id="modal" class="navbar-text navbar-form pull-right">
+            <div id="modal" class="navbar-text navbar-form pull-right navbar-logout">
                 <a href="#myModal" role="button" class="btn" data-toggle="modal">Login</a>
-                &nbsp;&nbsp;
             </div>
             <?php } ?>
         </div>
@@ -129,20 +127,20 @@
             <div class="well sidebar-nav">
                 <ul class="nav nav-list">
                     <li class="nav-header"><?php echo $gsprache->overview;?></li>
-                    <li <?php if($s=='search') echo 'class="active"';?>><?php echo $page_data->pages['search']['href'];?></li>
-                    <li <?php if($s=='news') echo 'class="active"';?>><?php echo $page_data->pages['news']['href'];?></li>
-                    <li <?php if($s=='about') echo 'class="active"';?>><?php echo $page_data->pages['about']['href'];?></li>
-                    <li <?php if($s=='gallery') echo 'class="active"';?>><?php echo $page_data->pages['gallery']['href'];?></li>
-                    <?php if($easywiModules['ip']){ ?><li <?php if($s=='imprint') echo 'class="active"';?>><?php echo $page_data->pages['imprint']['href'];?></li><?php }?>
-                    <li <?php if($s=='contact') echo 'class="active"';?>><?php echo $page_data->pages['contact']['href'];?></li>
-                    <li <?php if($s=='downloads') echo 'class="active"';?>><?php echo $page_data->pages['downloads']['href'];?></li>
-                    <?php if($page_data->protectioncheck=='Y'){ ?><li <?php if($s=='protectioncheck') echo 'class="active"';?>><?php echo $page_data->pages['protectioncheck']['href'];?></li><?php } ?>
+                    <li <?php if($s=='search') echo 'class="active"';?>><a href="<?php echo $page_data->pages['search']['link'];?>"><i class="fa fa-search fa-fw"></i> <?php echo $page_data->pages['search']['linkname'];?></a></li>
+                    <li <?php if($s=='news') echo 'class="active"';?>><a href="<?php echo $page_data->pages['news']['link'];?>"><i class="fa fa-bullhorn fa-fw"></i> <?php echo $page_data->pages['news']['linkname'];?></a></li>
+                    <li <?php if($s=='about') echo 'class="active"';?>><a href="<?php echo $page_data->pages['about']['link'];?>"><i class="fa fa-info-circle fa-fw"></i> <?php echo $page_data->pages['about']['linkname'];?></a></li>
+                    <li <?php if($s=='gallery') echo 'class="active"';?>><a href="<?php echo $page_data->pages['gallery']['link'];?>"><i class="fa fa-picture-o fa-fw"></i> <?php echo $page_data->pages['gallery']['linkname'];?></a></li>
+                    <?php if($easywiModules['ip']){ ?><li <?php if($s=='imprint') echo 'class="active"';?>><a href="<?php echo $page_data->pages['imprint']['link'];?>"><i class="fa fa-gavel fa-fw"></i> <?php echo $page_data->pages['imprint']['linkname'];?></a></li><?php }?>
+                    <li <?php if($s=='contact') echo 'class="active"';?>><a href="<?php echo $page_data->pages['contact']['link'];?>"><i class="fa fa-envelope fa-fw"></i> <?php echo $page_data->pages['contact']['linkname'];?></a></li>
+                    <li <?php if($s=='downloads') echo 'class="active"';?>><a href="<?php echo $page_data->pages['downloads']['link'];?>"><i class="fa fa-download fa-fw"></i> <?php echo $page_data->pages['downloads']['linkname'];?></a></li>
+                    <?php if($page_data->protectioncheck=='Y'){ ?><li <?php if($s=='protectioncheck') echo 'class="active"';?>><a href="<?php echo $page_data->pages['protectioncheck']['link'];?>"><i class="fa fa-shield fa-fw"></i> <?php echo $page_data->pages['protectioncheck']['linkname'];?></a></li><?php } ?>
                     <li class="divider"></li>
                     <?php if($page_data->lendactive=='Y'){ ?>
                     <li class="nav-header"><?php echo $page_data->pages['lendserver']['linkname'];?></li>
-                    <li <?php if($s=='lendserver' and !isset($servertype)) echo 'class="active"';?>><?php echo $page_data->pages['lendserver']['href'];?></li>
-                    <?php if (isset($page_data->pages['lendservervoice'])) { ?><li <?php if(isset($servertype) and $servertype=='v') echo 'class="active"';?>><?php echo $page_data->pages['lendservervoice']['href'];?></li><?php } ?>
-                    <?php if (isset($page_data->pages['lendservergs'])) { ?><li <?php if(isset($servertype) and $servertype=='g') echo 'class="active"';?>><?php echo $page_data->pages['lendservergs']['href'];?></li><?php } ?>
+                    <li <?php if($s=='lendserver' and !isset($servertype)) echo 'class="active"';?>><a href="<?php echo $page_data->pages['lendserver']['link'];?>"><i class="fa fa-list fa-fw"></i> <?php echo $page_data->pages['lendserver']['linkname'];?></a></li>
+                    <?php if (isset($page_data->pages['lendservervoice'])) { ?><li <?php if(isset($servertype) and $servertype=='v') echo 'class="active"';?>><a href="<?php echo $page_data->pages['lendservervoice']['link'];?>"><i class="fa fa-microphone fa-fw"></i> <?php echo $page_data->pages['lendservervoice']['linkname'];?></a></li><?php } ?>
+                    <?php if (isset($page_data->pages['lendservergs'])) { ?><li <?php if(isset($servertype) and $servertype=='g') echo 'class="active"';?>><a href="<?php echo $page_data->pages['lendservergs']['link'];?>"><i class="fa fa-gamepad fa-fw"></i> <?php echo $page_data->pages['lendservergs']['linkname'];?></a></li><?php } ?>
                     <li class="divider"></li>
                     <?php } ?>
                     <li class="nav-header"><?php echo $gsprache->pages;?></li>
