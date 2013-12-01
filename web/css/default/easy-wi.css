@@ -50,6 +50,10 @@ table form {
     margin-bottom: 0;
 }
 
+.navbar-logout {
+    margin-right: 10px;
+}
+
 .btn {
     white-space: nowrap;
 }
