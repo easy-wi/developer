@@ -213,6 +213,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $lid = 0;
                 $elapsed = 0;
                 $shutdownemptytime = 0;
+                $notified = 0;
 
                 $query = $sql->prepare("SELECT s.`id`,t.`description`,g.`serverip`,g.`port`,g.`port2`,g.`slots`,g.`war`,g.`brandname`,g.`secnotified`,g.`notified`,g.`lendserver`,g.`userid`,g.`resellerid`,g.`rootID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
                 $query2 = $sql->prepare("SELECT `id`,`started` FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
@@ -267,7 +268,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $query->execute(array($lid));
 
                         if ($query->rowCount() == 0) {
-                            print "Will stop lendserver $address with lendID $lid because not lendet\r\n";
+                            print "Will stop lendserver $address because not lendet\r\n";
                             $stopserver = true;
                         }
 
