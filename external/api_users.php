@@ -359,6 +359,7 @@ if (count($error)>0) {
 						'port' => $row['queryport'],
 						'queryAdmin' => $row['admin'],
 						'queryPassword' => $row['passwd'],
+						'sshUser' => 'user-webi',
 						'path' => '/home/user-webi/' . $row['path'] . '/'
 						);
 				}
