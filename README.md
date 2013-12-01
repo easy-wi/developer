@@ -7,6 +7,11 @@ What is Easy-WI?
 First of all Easy-Wi is a Web-interface that allows you to manage server daemons like gameservers. In addition it provides you with a CMS which includes a fully automated game- and voiceserver lending service. 
 The development goal is always to automate as far as possible. The daily work which requires an administrator should be reduced to a minimum.
 
+Requirements
+-------
+* Web installation requires PHP 5.3.7 or later and [PECL SSH2] (http://pecl.php.net/package/ssh2)
+* The gameserver module requires sudo, cron, proftpd and the bash shell at the game root
+* The Voicemodule works best with a linux based TS3 server
 
 Who is the target group for Easy-WI?
 -------
