@@ -100,25 +100,25 @@ Unfortunately errors have slipped in 4.10. In addition the update revealed that 
     $query->execute();
 
     // Most accurate based on appID
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='css' WHERE `appID`=232330 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='css' WHERE `appID`=232330");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='dods' WHERE `appID`=232290 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='dods' WHERE `appID`=232290");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='l4d' WHERE `appID`=550 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='l4d' WHERE `appID`=550");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='l4d2' WHERE `appID`=222860 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='l4d2' WHERE `appID`=222860");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='aoc' WHERE `appID`=17515 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='aoc' WHERE `appID`=17515");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='hl2dm' WHERE `appID`=232370 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='hl2dm' WHERE `appID`=232370");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='insurgency' WHERE `appID`=17705 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='insurgency' WHERE `appID`=17705");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='tf2' WHERE `appID`=232250 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='tf2' WHERE `appID`=232250");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='csgo' WHERE `appID`=740 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='csgo' WHERE `appID`=740");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='killingfloor' WHERE `appID`=215360 LIMIT 1");
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='killingfloor' WHERE `appID`=215360");
     $query->execute();
 
     // Accurate, based on easy-wi/qstat query
