@@ -17,7 +17,7 @@
             <script type="text/javascript">
 			$(document).ready(function (){
 				$('#game').change(function() {
-					var shorten=$('#game').val();
+					var shorten=$('#game').find(':selected').data('shorten');
 					$('#template1').text(shorten);
 					$('#template2').text(shorten+'-2');
 					$('#template3').text(shorten+'-3');
@@ -36,7 +36,7 @@
                 <div class="controls">
                     <select id="game" name="game">
                     	<?php foreach ($table as $table_row){ ?>
-                        <option value="<?php echo $table_row['shorten'];?>"><?php echo $table_row['description'];?></option>
+                        <option value="<?php echo $table_row['id'];?>" data-shorten="<?php echo $table_row['shorten'];?>"><?php echo $table_row['description'];?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -44,7 +44,7 @@
             <div id="templateGroup" class="control-group">
                 <label class="control-label" for="template"><?php echo $gsprache->template;?></label>
                 <div class="controls">
-                    <select id="template" name="template[]">
+                    <select id="template" name="template">
                     	<option value="4"><?php echo $gsprache->all;?></option>
                         <option id="template1" value="1"></option>
 						<option id="template2" value="2"></option>
