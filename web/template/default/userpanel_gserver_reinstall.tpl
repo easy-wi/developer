@@ -17,7 +17,7 @@
             <script type="text/javascript">
 			$(document).ready(function (){
 				$('#game').change(function() {
-					var shorten=$('#game').data('shorten');
+					var shorten=$('#game').find(':selected').data('shorten');
 					$('#template1').text(shorten);
 					$('#template2').text(shorten+'-2');
 					$('#template3').text(shorten+'-3');
