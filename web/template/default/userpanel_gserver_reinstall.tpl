@@ -17,7 +17,7 @@
             <script type="text/javascript">
 			$(document).ready(function (){
 				$('#game').change(function() {
-					var shorten=$('#game').val();
+					var shorten=$('#game').data('shorten');
 					$('#template1').text(shorten);
 					$('#template2').text(shorten+'-2');
 					$('#template3').text(shorten+'-3');
@@ -36,7 +36,7 @@
                 <div class="controls">
                     <select id="game" name="game">
                     	<?php foreach ($table as $table_row){ ?>
-                        <option value="<?php echo $table_row['shorten'];?>"><?php echo $table_row['description'];?></option>
+                        <option value="<?php echo $table_row['id'];?>" data-shorten="<?php echo $table_row['shorten'];?>"><?php echo $table_row['description'];?></option>
                         <?php } ?>
                     </select>
                 </div>
