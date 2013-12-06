@@ -223,21 +223,23 @@ if (count($error)>0) {
 			if ($config['sourceType'] == 'teklab') {
 
 				// Get amount of gameservers that are new or received an update
-				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_rootserver`";
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_rootserver`
+				WHERE `active`=1
+				AND `games`=1";
 				$query = $pdo->prepare($sql);
 				$query->execute();			
 				$total=$query->fetchColumn();
 
 				// gameservers
 				$sql = "SELECT * FROM `{$config['tblPrefix']}_rootserver`
-				WHERE `memberid` > 0
-				AND `active`=1
+				WHERE `active`=1
+				AND `games`=1
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
 				$query->execute();
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-					$ips = explode("\n", $row['serverip']);
+					$ips = explode("\n", str_replace("\r",'',$row['serverip']));
 					$ram = (substr($row['ram'], -2) == 'GB') ? trim(substr($row['ram'], 0, (strlen($row['ram']) - 2))) : round((trim(substr($row['ram'], 0, (strlen($row['ram']) - 2))) / 1024), 2);
 
 					$json[]=array(
@@ -247,8 +249,6 @@ if (count($error)>0) {
 						'sshPort' => $row['sshport'],
 						'ftpPort' => $row['ftpport'],
 						'cores' => $row['cpucores'],
-						'maxGameServer' => $row['games'],
-						'maxVoiceServer' => $row['voice'],
 						'ram' => $ram
 						);
 				}
@@ -297,7 +297,8 @@ if (count($error)>0) {
 			if ($config['sourceType'] == 'teklab') {
 
 				// Get amount of voiceservers that are new or received an update
-				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_voiceserver`";
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_voiceserver`
+				WHERE `typ`='Teamspeak3'";
 				$query = $pdo->prepare($sql);
 				$query->execute();			
 				$total=$query->fetchColumn();
@@ -331,7 +332,8 @@ if (count($error)>0) {
 			if ($config['sourceType'] == 'teklab') {
 
 				// Get amount of voiceservers that are new or received an update
-				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_teamspeak`";
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_teamspeak`
+				WHERE `typ`='Teamspeak3'";
 				$query = $pdo->prepare($sql);
 				$query->execute();			
 				$total=$query->fetchColumn();
