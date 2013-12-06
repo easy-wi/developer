@@ -336,13 +336,5 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $shorten = $row5['shorten'];
         $table3[] = '<a href="admin.php?w=ma&amp;d=ud&amp;m='.$shorten.'">'.$shorten.'</a>';
     }
-    $query6 = $sql->prepare("SELECT s.`qstat`,q.`description` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` INNER JOIN `qstatshorten` q ON s.`qstat`=q.`qstat` WHERE r.`resellerid`=? GROUP BY s.`qstat` ORDER BY s.`qstat` ASC");
-    $query6->execute(array($reseller_id));
-    $table4 = array();
-    foreach ($query6->fetchAll(PDO::FETCH_ASSOC) as $row6) {
-        $shorten = $row6['qstat'];
-        $type = $row6['description'];
-        $table4[] = '<a href="admin.php?w=ma&amp;d=ud&amp;m='.$shorten.'">'.$type.'</a>';
-    }
     $template_file = "admin_master_ud.tpl";
 }
