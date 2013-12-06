@@ -1364,6 +1364,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `notified` int(11) unsigned DEFAULT '0',
   `autorestart` enum('Y','N') DEFAULT 'Y',
   `externalID` varchar(255) DEFAULT NULL,
+  `sourceSystemID` varchar(255) NULL,
   `managedServer` enum('Y','N') DEFAULT 'N',
   `managedForID` int(10) unsigned DEFAULT NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
@@ -1410,6 +1411,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_server` (
   `queryUpdatetime` datetime DEFAULT NULL,
   `notified` int(11) unsigned DEFAULT '0',
   `externalID` varchar(255) DEFAULT NULL,
+  `sourceSystemID` varchar(255) NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`userid`),KEY(`masterserver`),KEY(`localserverid`),KEY(`resellerid`)
