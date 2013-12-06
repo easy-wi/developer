@@ -87,24 +87,22 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         # https://github.com/easy-wi/developer/issues/69
-        $templates = (array) $ui->id('template',10, 'post');
-        foreach($templates as $id => $tpl) {
-            if ($tpl>0) {
-                $template[] = $tpl;
-                if ($ui->active('type', 'post') == 'Y') {
-                    $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=? AND `userid`=?");
-                    $query->execute(array($id,$reseller_id,$user_id));
-                }
-                $query = $sql->prepare("SELECT s.`gamemod`,s.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
-                $query->execute(array($id,$reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $shorten = $row['shorten'];
-                    $gamemod2 = $row['gamemod2'];
-                    $gamestring[]=($row['gamemod'] == 'Y') ? $shorten.$gamemod2 : $shorten;
-                }
-            }
-        }
-        if (isset($gsfolder) and count($gamestring)>0 and $ui->active('type', 'post')) {
+        $template = $ui->id('template',10, 'post');
+        $game = $ui->id('game',10, 'post');
+
+		if ($ui->active('type', 'post') == 'Y') {
+		    $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=? AND `userid`=?");
+		    $query->execute(array($game,$reseller_id,$user_id));
+		}
+		$query = $sql->prepare("SELECT s.`gamemod`,s.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+		$query->execute(array($game,$reseller_id));
+		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+		    $shorten = $row['shorten'];
+		    $gamemod2 = $row['gamemod2'];
+		    $gamestring[]=($row['gamemod'] == 'Y') ? $shorten.$gamemod2 : $shorten;
+		}
+
+		if (isset($gsfolder) and count($gamestring)>0 and $ui->active('type', 'post')) {
             $gamestring=count($gamestring) . '_' . implode('_',$gamestring);
             $rdata=serverdata('root',$rootID,$aeskey);
             $sship = $rdata['ip'];
