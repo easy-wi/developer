@@ -1132,6 +1132,7 @@ PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.in
 	else
 		TEMPLATE=`echo $VARIABLE3 | awk -F "_" '{ print $2 }'`"-$VARIABLE5"
 	fi
+	add_customer_server
 	echo "TEMPLATE=$TEMPLATE" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'if [ ! -d "$SERVERDIR/$VARIABLE4/$TEMPLATE/" ]; then mkdir -p "$SERVERDIR/$VARIABLE4/$TEMPLATE/"; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "find $SERVERDIR/$VARIABLE4/$TEMPLATE/ -type f -delete" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
