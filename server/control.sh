@@ -1099,8 +1099,10 @@ while [ $i -le $COUNT ]; do
 	fi
 	i=$[i+1]
 done
-chmod +x $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-screen -d -m -S add-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+if [ "$VARIABLE1" != "migrateserver" ]; then
+	chmod +x $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	screen -d -m -S add-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+fi
 fi
 }
 
@@ -1121,6 +1123,7 @@ echo "#!/bin/bash
 
 HOMEFOLDER=$HOMEFOLDER
 rm $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+sleep 30
 VARIABLE2=$VARIABLE2
 VARIABLE4=$VARIABLE4
 VARIABLE9=$VARIABLE9
@@ -1135,12 +1138,13 @@ PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.in
 	add_customer_server
 	echo "TEMPLATE=$TEMPLATE" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'if [ ! -d "$SERVERDIR/$VARIABLE4/$TEMPLATE/" ]; then mkdir -p "$SERVERDIR/$VARIABLE4/$TEMPLATE/"; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo "find $SERVERDIR/$VARIABLE4/$TEMPLATE/ -type f -delete" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo "cd $SERVERDIR/$VARIABLE4/$TEMPLATE/" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'find $SERVERDIR/$VARIABLE4/$TEMPLATE/ -type f -delete' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'cd $SERVERDIR/$VARIABLE4/$TEMPLATE/' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'MODFOLDER=`find -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE9" | head -n 1`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'if [ "$MODFOLDER" != "" ]; then cd $MODFOLDER; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "wget -q -r -l inf -nc -nH --limit-rate=4096K --retr-symlinks --ftp-user=$VARIABLE6 --ftp-password=$VARIABLE7 --cut-dirs=$CUTDIRS --no-check-certificate $VARIABLE8" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	add_customer_server
+	screen -d -m -S add-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 }
 
 function port_move {
