@@ -466,10 +466,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else {
     $o = $ui->st('o', 'get');
-    if ($ui->st('o', 'get') == 'ds') {
-        $orderby = '`shorten` DESC';
-    } else if ($ui->st('o', 'get') == 'as') {
-        $orderby = '`shorten` ASC';
+    if ($ui->st('o', 'get') == 'di') {
+        $orderby = '`id` DESC';
+    } else if ($ui->st('o', 'get') == 'ai') {
+        $orderby = '`id` ASC';
     } else if ($ui->st('o', 'get') == 'di') {
         $orderby = '`id` DESC';
     } else if ($ui->st('o', 'get') == 'ai') {
@@ -478,11 +478,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $orderby = '`description` DESC';
     } else if ($ui->st('o', 'get') == 'ad') {
         $orderby = '`description` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`id` DESC';
+    } else if ($ui->st('o', 'get') == 'ds') {
+        $orderby = '`shorten` DESC';
     } else {
-        $orderby = '`id` ASC';
-        $o = 'ai';
+        $orderby = '`shorten` ASC';
+        $o = 'as';
     }
     $query = $sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description`,`type` FROM `servertypes` $where ORDER BY $orderby LIMIT $start,$amount");
     $query->execute(array(':reseller_id' => $reseller_id));
