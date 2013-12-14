@@ -66,8 +66,9 @@ function getHttpHeaders ($url) {
 
         // small chunks and break out the loop once we have the header
         while (!feof($fp) and strpos($buffer, "\r\n\r\n") === false) {
-            $buffer .= fgets($fp, 128);
-            if (strpos($buffer, "\r\n\r\n") !== false) {
+            $fGet = fgets($fp);
+            $buffer .= $fGet;
+            if($fGet === false or strpos($buffer, "\r\n\r\n") !== false) {
                 break;
             }
         }

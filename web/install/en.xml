@@ -2,50 +2,92 @@
 <sprache>
 	<aeskey2>The AES key is needed to crypt sensible data like FTP Passwords. Make sure it is a very secure string.</aeskey2>
 	<aeskey3>Safe this key. If you loose it all crypted data will be lost.</aeskey3>
-	<aeskey>AES Key:</aeskey>
-	<brandname>Servertag:</brandname>
-	<captcha>Use a Captcha at the login:</captcha>
+	<aeskey>AES Key</aeskey>
+	<brandname>Servertag</brandname>
+    <brandname2>Voice- and gameserver names can be searched for this servertag</brandname2>
+    <captcha>Captcha</captcha>
+	<captcha_2>Use a Captcha at the login</captcha_2>
 	<confirm_change>Save modifications?</confirm_change>
-	<data>Please fill out following data fields. All are required:</data>
-	<databanktype>Type of database:</databanktype>
-	<db>Databasename:</db>
-	<domain>Current domain:</domain>
+    <continue>Continue</continue>
+	<data>Please fill out following data fields. All are required</data>
+	<db>Databasename</db>
+	<domain>Current domain</domain>
 	<email2>This email will be used when sending data to the users.</email2>
-	<email>Email:</email>
-	<error_database>Error: Can not estblish a connection to the database:</error_database>
-	<error_htaccess>Notice: The ".htaccess" file can not be found. Make sure you secure your files and folders properly.</error_htaccess>
-	<error_keys1>Error: Can not read files in the "keys" folder! Please correct your permissions first.</error_keys1>
-	<error_keys2>Error: Can not create the "keys" folder! Please correct your permissions first.</error_keys2>
-	<error_quakestat>Error: Can not find or access "/usr/bin/quakestat".</error_quakestat>
-	<error_ssh2>Error: The SSH2 functions are not available. Please install them.</error_ssh2>
-	<error_stuff1>Error: Can not create files in the "stuff" folder! Please correct your permissions first.</error_stuff1>
-	<error_stuff2>Error: Can not create the "stuff" folder! Please correct your permissions first.</error_stuff2>
-	<faillogins>Possible failed Logins in a row</faillogins>
+	<email>Email</email>
+    <error_cname>Error: No username entered!</error_cname>
+    <error_config_php_data>Error: File stuff/config.php exists but does not contain all variables!</error_config_php_data>
+    <error_config_keyphrase_php_missing>Error: File stuff/config.php and or stuff/keyphrasefile.php does not exist!</error_config_keyphrase_php_missing>
+	<error_database>Error: Can not estblish a connection to the database</error_database>
+    <error_email>Error: No email entered!</error_email>
+    <error_game_insert>Error: Game could not be added: </error_game_insert>
+    <error_keyphrase_php_create>Error: File stuff/config.php and or stuff/keyphrasefile.php cannot be created!</error_keyphrase_php_create>
+    <error_password>Error: The passwords do not match!</error_password>
+    <error_system_curl>curl extension is not installed, please install it.</error_system_curl>
+    <error_system_ftp>ftp extension is not installed, please install it.</error_system_ftp>
+    <error_system_fopen>fopen function cannot be used. please enable it.</error_system_fopen>
+    <error_system_gd>gd extension is not installed, please install it.</error_system_gd>
+    <error_system_hash>hash extension is not installed, please install it.</error_system_hash>
+    <error_system_php_version>At least PHP 5.3 is required. Your PHP version is to old: </error_system_php_version>
+    <error_system_json>json extension is not installed, please install it.</error_system_json>
+    <error_system_openssl>openssl extension is not installed, please install it.</error_system_openssl>
+    <error_system_PDO>PDO extension is not installed, please install it.</error_system_PDO>
+    <error_system_pdo_mysql>pdo_mysql extension is not installed, please install it.</error_system_pdo_mysql>
+    <error_system_php_version>Es wird mindestens PHP 5.3 benötigt. PHP Version zu alt: </error_system_php_version>
+    <error_system_SimpleXML>SimpleXML extension is not installed, please install it.</error_system_SimpleXML>
+    <error_system_ssh2>SSH2 extension is not installed, please install it.</error_system_ssh2>
+    <faillogins>Failed logins</faillogins>
+	<faillogins2>Possible failed Logins in a row</faillogins2>
 	<finished>The installation has been completed. Please remove the "install" directory.</finished>
+    <games_insert>The next step will add gameserver templates and addons.</games_insert>
 	<header>Settings</header>
-	<host>Databasehost:</host>
+	<host>Databasehost</host>
 	<image_server2>If a masterinstallation is not set up the data will be downloaded from this server.</image_server2>
-	<image_server3>Use an image server:</image_server3>
-	<image_server>Image Server:</image_server>
-	<informations>Following informations must be send to license@easy-wi.com in order to get your licence file:</informations>
-	<install>Install</install>
-	<ip>Webserver IP:</ip>
-	<language>Default language:</language>
+	<image_server3>Use an image server</image_server3>
+	<image_server>Image Server</image_server>
+    <install_done>The installation is now completed. Please keep in mind to configure the cronjobs.</install_done>
+    <install_done_folder>Please remove the folder "install/".</install_done_folder>
+	<ip>Webserver IP</ip>
+	<language>Default language</language>
+    <menu_welcome>Welcome</menu_welcome>
+    <menu_system>System Check</menu_system>
+    <menu_db_access>Database Access</menu_db_access>
+    <menu_db_access_check>Database Access Check</menu_db_access_check>
+    <menu_db_add>Create Tables</menu_db_add>
+    <menu_db_check>Check Tables</menu_db_check>
+    <menu_admin_add>Admin Account</menu_admin_add>
+    <menu_page_data>Website Data</menu_page_data>
+    <menu_gamedata_add>Insert Gamedata</menu_gamedata_add>
+    <menu_finish>Finish</menu_finish>
 	<no>No</no>
-	<passw_1>Enter new password:</passw_1>
-	<passw_2>Repeat new password:</passw_2>
-	<prefix1>Define usernames:</prefix1>
+    <ok_admin_user>The initial admin account has been successfully created.</ok_admin_user>
+    <ok_configuration>DThe configuration has been written.</ok_configuration>
+    <ok_db_connect>Database connection could be established.</ok_db_connect>
+    <ok_db_tables_check>Database tables successfully checked.</ok_db_tables_check>
+    <ok_db_tables_check_repair>Database tables successfully corrected.</ok_db_tables_check_repair>
+    <ok_db_tables_create>Database tables created.</ok_db_tables_create>
+    <ok_files_created>Files stuff/keyphrasefile.php and config.php could be created.</ok_files_created>
+    <ok_gameserver_data>The gameserver data has been added.</ok_gameserver_data>
+	<passw_1>Password</passw_1>
+	<passw_2>Repeat new password</passw_2>
+	<prefix1>Define usernames</prefix1>
 	<prefix2>If you define a username the users unique ids will be appended to the defined name. Only small letters and numbers are allowed. Example: customer will be customer2 and counting</prefix2>
-	<prefix3>Default username:</prefix3>
-	<pwd>Databasepassword:</pwd>
-	<step1a>Step 1</step1a>
-	<step1b>Check permissions, functions and enter SQL data</step1b>
-	<step2a>Step 2</step2a>
-	<step2b>Setup settings, create admin account</step2b>
-	<step3a>Step 3</step3a>
-	<step3b>Remove the install folder</step3b>
+	<prefix3>Default username</prefix3>
+    <system_ok_curl>curl extension is installed.</system_ok_curl>
+    <system_ok_fopen>fopen function can be used.</system_ok_fopen>
+    <system_ok_ftp>ftp extension is installed.</system_ok_ftp>
+    <system_ok_gd>gd extension is installed.</system_ok_gd>
+    <system_ok_hash>hash extension is installed.</system_ok_hash>
+    <system_ok_json>json extension is installed.</system_ok_json>
+    <system_ok_openssl>openssl extension is installed.</system_ok_openssl>
+    <system_ok_PDO>PDO extension is installed.</system_ok_PDO>
+    <system_ok_pdo_mysql>pdo_mysql extension is installed.</system_ok_pdo_mysql>
+    <system_ok_php_version>At least PHP 5.3 is required. Your PHP version is ok: </system_ok_php_version>
+    <system_ok_SimpleXML>Extension SimpleXMLis installed.</system_ok_SimpleXML>
+    <system_ok_ssh2>SSH2 extension is installed.</system_ok_ssh2>
 	<title>Homepage title</title>
-	<user>Databaseuser:</user>
-	<user2>Admin Username:</user2>
-	<yes>Yes</yes>
+	<user>Databaseuser</user>
+	<user2>Admin Username</user2>
+    <welcome_header>Welcome to the Easy-WI installer!</welcome_header>
+    <welcome_text>At first we will run a system check that will ensure your webspace offers the required functionality. Afterwards database tables will be created and the initial data inserted and configured.</welcome_text>
+    <yes>Yes</yes>
 </sprache>
