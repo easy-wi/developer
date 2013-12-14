@@ -39,6 +39,7 @@
 define('EASYWIDIR', dirname(__FILE__));
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/class_ftp.php');
 include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -101,39 +102,17 @@ if ($ui->id('id', 10, 'get')) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ftpport = $row['ftpport'];
             $ip = $row['ip'];
-        }
 
-        ini_set('default_socket_timeout', 5);
+            $ftpConnect = new EasyWiFTP($ip, $ftpport, $username, $ftppass);
 
-        $ftpConnection = @ftp_connect($ip, $ftpport);
+            if ($ftpConnect->ftpConnection) {
 
-        if ($ftpConnection) {
-
-            $ftpLogin = @ftp_login($ftpConnection, $username, $ftppass);
-
-            if ($ftpLogin) {
-                $logSize = @ftp_size($ftpConnection, '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0');
-
-                if ($logSize != -1) {
-                    $startAtSize = ($logSize > 16384) ? ($logSize - 16384) : 0;
-
-                    // now we have a connection and filesize so we can create a local temp file and start downloading
-                    $tempHandle = tmpfile();
-                    $download = @ftp_fget($ftpConnection, $tempHandle, '/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', FTP_BINARY, $startAtSize);
-
-                    if ($download) {
-
-                        fseek($tempHandle, 0);
-
-                        $fstats = fstat($tempHandle);
-
-                        $screenlog = ($fstats['size'] > 0) ? nl2br(fread($tempHandle, $fstats['size'])) : '';
-                    }
-
-                    fclose($tempHandle);
+                if ($ftpConnect->downloadToTemp('/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', 16384)) {
+                    $screenlog = nl2br($ftpConnect->getTempFileContent());
                 }
             }
-            ftp_close($ftpConnection);
+
+            $ftpConnect = null;
         }
 
         echo (!isset($screenlog)) ? 'Connection failed!' : '<html><head><title>' . $ewCfg['title'] . ' ' . $serverip .':' . $port . '</title><meta http-equiv="refresh" content="3"></head><body>' . $screenlog . '</body></html>';
