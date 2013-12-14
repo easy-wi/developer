@@ -41,19 +41,22 @@ class EasyWiFTP {
 
 
     // define vars
-    public $ftpConnection = null;
+    public $ftpConnection = false, $loggedIn = false;
     private $tempHandle = null;
 
-    function __construct($ip, $port, $user, $pwd) {
+    function __construct($ip, $port, $user, $pwd, $ssl = 'N') {
 
         @ini_set('default_socket_timeout', 5);
 
-        $this->ftpConnection = @ftp_connect($ip, $port);
+        $this->ftpConnection = ($ssl == 'N') ? @ftp_connect($ip, $port, 5) :  @ftp_ssl_connect($ip, $port, 5);
 
         if ($this->ftpConnection) {
             $ftpLogin = @ftp_login($this->ftpConnection, $user, $pwd);
 
             if ($ftpLogin) {
+
+                $this->loggedIn = true;
+
                 return true;
             }
         }
@@ -96,6 +99,69 @@ class EasyWiFTP {
 
     public function uploadFileFromTemp () {
 
+    }
+
+    public function checkPath ($ftpPath, $searchFor) {
+
+        if ($ftpPath != '') {
+            @ftp_chdir($this->ftpConnection, $ftpPath);
+        }
+
+        $currentPath = @ftp_pwd($this->ftpConnection);
+
+        if (substr($currentPath, strlen($searchFor) * (-1)) == $searchFor) {
+            return $currentPath;
+        }
+
+        return false;
+    }
+
+    public function checkFolders ($dir, $searchFor, $maxDepth = false, $currentDepth = 0) {
+
+        $folders = array();
+        $donotsearch = array('bin','cfg','cl_dlls','dlls','gfx','hl2','manual','maps','materials','models','particles','recource','scenes','scripts','sound','sounds','textures','valve','reslists');
+        $spl = strlen($searchFor) * (-1);
+
+        if ($dir != '/') {
+            $dir = $dir . '/';
+        }
+
+        $rawList = @ftp_rawlist($this->ftpConnection, $dir);
+
+        if ($rawList) {
+            foreach ($rawList as $d) {
+
+                $list = preg_split('/(\s|\s+)/', $d, -1, PREG_SPLIT_NO_EMPTY);
+
+                if (preg_match('/^d[rwx\-]{9}+$/', $list[0]) and !preg_match('/^[\.\/]{0,}Steam[\/]{0,}+$/', $list[count($list) - 1]) and !in_array($list[count($list) - 1], $donotsearch)) {
+
+                    if (substr($dir . $list[count($list) - 1], $spl) == $searchFor) {
+                        return $dir . $list[count($list) - 1];
+                    }
+
+                    $folders[] = $dir . $list[count($list) - 1];
+
+                    if (is_numeric($maxDepth) and $currentDepth < ($maxDepth + 1)) {
+
+                        $array = $this->checkFolders($dir . $list[count($list) - 1], $searchFor, $maxDepth, $currentDepth + 1);
+
+                        if (is_array($array)) {
+                            foreach ($array as $f){
+                                if (substr($f, $spl) == $searchFor) {
+                                    return $f;
+                                }
+                                $folders[] = $f;
+                            }
+
+                        } else if (substr($array,$spl) == $searchFor) {
+                            return $array;
+                        }
+                    }
+                }
+            }
+            return $folders;
+        }
+        return $dir;
     }
 
     function __destruct() {
