@@ -247,30 +247,12 @@
                         </div>
                     </div>
                     <?php } ?>
-                    <?php if($easywiModules['gs'] and ($pa['roots'] or $pa['masterServer'])) { ?>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEight"><i class="fa fa-gamepad fa-fw"></i> <?php echo $gsprache->gameroot;?></a>
-                        </div>
-                        <div id="collapseEight" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('ro','ma'))) echo 'in';?>">
-                            <div class="accordion-inner">
-                                <ul class="nav nav-pills nav-stacked">
-                                    <li <?php if($ui->smallletters('w',255,'get')=='ro') echo 'class="active"';?>><a href="admin.php?w=ro"><?php echo $gsprache->overview;?></a></li>
-                                    <?php if($pa['masterServer']) { ?>
-                                    <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><?php echo $gsprache->master.' '.$gsprache->overview;?></a></li>
-                                    <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><?php echo $gsprache->master.' '.$gsprache->update;?></a></li>
-                                    <?php } ?>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <?php } ?>
-                    <?php if($easywiModules['gs'] and ($pa['gserver'] or $pa['addons'] or $pa['gimages'] or $pa['eac']) and $gserver_module) { ?>
+                    <?php if($easywiModules['gs'] and ($pa['gserver'] or $pa['addons'] or $pa['gimages'] or $pa['eac'] or $pa['roots'] or $pa['masterServer']) and $gserver_module) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseNine"><i class="fa fa-gamepad fa-fw"></i> <?php echo $gsprache->gameserver;?></a>
                         </div>
-                        <div id="collapseNine" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('gs','ea','im','ad')) or isset($customModules['gs'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
+                        <div id="collapseNine" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('gs','ea','im','ad','ro','ma')) or isset($customModules['gs'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['gserver']) { ?>
@@ -284,6 +266,13 @@
                                     <?php } ?>
                                     <?php if($pa['addons']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=ad"><?php echo $gsprache->addon;?></a></li>
+                                    <?php } ?>
+                                    <?php if($pa['roots']) { ?>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ro') echo 'class="active"';?>><a href="admin.php?w=ro"><?php echo $gsprache->gameroot.' '.$gsprache->overview;?></a></li>
+                                    <?php } ?>
+                                    <?php if($pa['masterServer']) { ?>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><?php echo $gsprache->master.' '.$gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><?php echo $gsprache->master.' '.$gsprache->update;?></a></li>
                                     <?php } ?>
                                     <?php foreach ($customModules['gs'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
