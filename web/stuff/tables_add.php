@@ -38,7 +38,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or !isset($reseller_id) or $main != 1 or $reseller_id != 0) {
+if (!isset($displayToUser) and (!isset($admin_id) or !isset($reseller_id) or $main != 1 or $reseller_id != 0)) {
     header('Location: admin.php');
     die('No Acces');
 }
@@ -47,7 +47,6 @@ $query = "CREATE TABLE IF NOT EXISTS `addons` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'N',
   `paddon` enum('Y','N') DEFAULT 'N',
-  `shorten` varchar(20) NOT NULL,
   `addon` varchar(15) NOT NULL,
   `type` enum('tool','map') DEFAULT 'tool',
   `folder` varchar(255) DEFAULT NULL,

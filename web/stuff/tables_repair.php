@@ -38,7 +38,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main != 1 or $reseller_id != 0) {
+if (!isset($displayToUser) and (!isset($admin_id) or $main != 1 or $reseller_id != 0)) {
     header('Location: admin.php');
     die('No acces');
 }
@@ -46,7 +46,6 @@ if (!isset($admin_id) or $main != 1 or $reseller_id != 0) {
 $defined['addons'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'paddon' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
-    'shorten' => array("Type"=>"varchar(20)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'addon' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'type' => array("Type"=>"enum('tool','map')","Null"=>"YES","Key"=>"","Default"=>"tool","Extra"=>""),
     'folder' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -1262,8 +1261,8 @@ foreach ($defined as $table => $t_p) {
             $response->add($sqlStatement.'<br />');
         }
     }
-    if ($query->rowCount()==0) {
-        $response->add('<b>Error: no such Table: '.$table.'</b><br />');
+    if ($query->rowCount() == 0) {
+        $response->add('<b>Error: no such table: '.$table.'</b><br />');
     } else {
         $query = $sql->prepare("SHOW COLUMNS FROM `$table`");
         $query->execute();
@@ -1314,13 +1313,13 @@ foreach ($defined as $table => $t_p) {
             }
             $change[] = 'CHANGE `'.$key.'` `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AUTO_INCREMENT;
         }
-        if (count($change)>0) {
+        if (count($change) > 0) {
             $alter_query='ALTER TABLE `'.$table.'` '.implode(', ',$change);
             $response->add('CHANGE: '.$alter_query.'<br />');
             $alter = $sql->prepare($alter_query);
             $alter->execute();
         }
-        if (count($drop_key)>0) {
+        if (count($drop_key) > 0) {
             $drop_query='ALTER TABLE `'.$table.'` '.implode(', ',$drop_key);
             $response->add('DROP: '.$drop_query.'<br />');
             $drop = $sql->prepare($drop_query);
@@ -1354,19 +1353,19 @@ foreach ($defined as $table => $t_p) {
             }
             $add_keys[] = 'ADD COLUMN `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AFTER;
         }
-        if (count($add_keys)>0) {
+        if (count($add_keys) > 0) {
             $add_query='ALTER TABLE `'.$table.'` '.implode(', ',$add_keys);
             $response->add('ADD: '.$add_query.'<br />');
             $add = $sql->prepare($add_query);
             $add->execute();
         }
-        if (count($addIndex)>0) {
+        if (count($addIndex) > 0) {
             $add_query='ALTER TABLE `'.$table.'` ADD INDEX(`'.implode('`),ADD INDEX(`',$addIndex).'`)';
             $response->add('ADD: '.$add_query.'<br />');
             $add = $sql->prepare($add_query);
             $add->execute();
         }
-        if (count($removeIndex)>0) {
+        if (count($removeIndex) > 0) {
             $remove_query='ALTER TABLE `'.$table.'` DROP INDEX `'.implode('`,DROP INDEX `',$removeIndex).'`';
             $response->add('ADD: '.$remove_query.'<br />');
             $remove = $sql->prepare($remove_query);

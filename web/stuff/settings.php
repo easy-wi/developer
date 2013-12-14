@@ -64,7 +64,7 @@ include(EASYWIDIR . '/stuff/config.php');
 $ewCfg['captcha'] = $captcha;
 $ewCfg['title'] = $title;
 
-$dbConnect['type'] = $databanktype;
+$dbConnect['type'] = "mysql";
 $dbConnect['host'] = $host;
 $dbConnect['user'] = $user;
 $dbConnect['pwd'] = $pwd;
