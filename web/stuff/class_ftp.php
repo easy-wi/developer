@@ -41,7 +41,7 @@ class EasyWiFTP {
 
 
     // define vars
-    public $ftpConnection = false, $loggedIn = false;
+    public $ftpConnection = false, $ftpSecondConnection = false, $loggedIn = false, $secondLoggedIn = false;
     private $tempHandle = null;
 
     function __construct($ip, $port, $user, $pwd, $ssl = 'N') {
@@ -65,24 +65,61 @@ class EasyWiFTP {
 
     }
 
-    public function downloadToTemp ($pathAndFile, $startAt = 0) {
+    public function createSecondFTPConnect ($ip, $port, $user, $pwd, $ssl = 'N') {
 
-        // Check if file exists by getting size
-        $fileSize = @ftp_size($this->ftpConnection, $pathAndFile);
+        $this->ftpSecondConnection = ($ssl == 'N') ? @ftp_connect($ip, $port, 5) :  @ftp_ssl_connect($ip, $port, 5);
 
-        if ($fileSize != -1) {
+        if ($this->ftpSecondConnection) {
+            $ftpLogin = @ftp_login($this->ftpSecondConnection, $user, $pwd);
 
-            $startAtSize = ($startAt != 0 and $fileSize > $startAt) ? ($fileSize - $startAt) : 0;
+            if ($ftpLogin) {
 
-            // now we have a connection and filesize so we can create a local temp file and start downloading
-            $this->tempHandle = tmpfile();
+                $this->secondLoggedIn = true;
 
-            $download = @ftp_fget($this->ftpConnection, $this->tempHandle, $pathAndFile, FTP_BINARY, $startAtSize);
-
-            if ($download) {
                 return true;
             }
+        }
 
+        return false;
+    }
+
+    public function downloadToTemp ($pathAndFile, $startAt = 0, $files = false) {
+
+        if (is_array($files)) {
+
+            $this->tempHandle = array();
+
+            foreach ($files as $file) {
+
+                $arrayCombined = str_replace(array('//', '///', '////'), '/', $pathAndFile . '/' . $file);
+                $fileSize = @ftp_size($this->ftpConnection, $arrayCombined);
+
+                if ($fileSize != -1) {
+                    $this->tempHandle[$file] = tmpfile();
+                    @ftp_fget($this->ftpConnection, $this->tempHandle[$file], $arrayCombined, FTP_BINARY, 0);
+
+                    fseek($this->tempHandle[$file], 0);
+                }
+            }
+
+        }  else {
+
+            $fileSize = @ftp_size($this->ftpConnection, $pathAndFile);
+
+            if ($fileSize != -1) {
+
+                $startAtSize = ($startAt != 0 and $fileSize > $startAt) ? ($fileSize - $startAt) : 0;
+                $this->tempHandle = tmpfile();
+
+                $download = @ftp_fget($this->ftpConnection, $this->tempHandle, $pathAndFile, FTP_BINARY, $startAtSize);
+
+                fseek($this->tempHandle, 0);
+
+                if ($download) {
+                    return true;
+                }
+
+            }
         }
 
         return false;
@@ -90,15 +127,115 @@ class EasyWiFTP {
 
     public function getTempFileContent () {
 
-        fseek($this->tempHandle, 0);
+        if (is_array($this->tempHandle)) {
 
-        $fstats = fstat($this->tempHandle);
+            $fileContentArray = array();
 
-        return ($fstats['size'] > 0) ? fread($this->tempHandle, $fstats['size']) : '';
+            foreach (array_keys($this->tempHandle) as $k) {
+
+                fseek($this->tempHandle[$k], 0);
+
+                $fstats = fstat($this->tempHandle[$k]);
+
+                $fileContentArray[$k] = ($fstats['size'] > 0) ? fread($this->tempHandle[$k], $fstats['size']) : '';
+            }
+
+            return $fileContentArray;
+
+        } else if (is_resource($this->tempHandle)) {
+
+            fseek($this->tempHandle, 0);
+
+            $fstats = fstat($this->tempHandle);
+
+            return ($fstats['size'] > 0) ? fread($this->tempHandle, $fstats['size']) : '';
+
+        }
+
+        return false;
     }
 
-    public function uploadFileFromTemp () {
+    public function uploadFileFromTemp ($folders, $file = '') {
 
+        if ($this->secondLoggedIn) {
+
+            if (is_array($this->tempHandle)) {
+
+                foreach (array_keys($this->tempHandle) as $k) {
+
+                    $combinedFolders = $this->combineFolderFile($folders, $k);
+
+                    $this->arrayToChDir($combinedFolders);
+
+                    fseek($this->tempHandle[$k], 0);
+
+                    // only upload in case we have downloaded some data.
+                    $fstats = fstat($this->tempHandle[$k]);
+
+                    if ($fstats['size'] > 0) {
+                        @ftp_fput($this->ftpSecondConnection, $this->fileNameFromPath($k), $this->tempHandle[$k], FTP_BINARY, 0);
+                    }
+
+                }
+
+            } else {
+
+                $combinedFolders = $this->combineFolderFile($folders, $file);
+                $this->arrayToChDir($combinedFolders);
+
+                fseek($this->tempHandle, 0);
+
+                // only upload in case we have downloaded some data.
+                $fstats = fstat($this->tempHandle);
+
+                if ($fstats['size'] > 0) {
+                    @ftp_fput($this->ftpSecondConnection, $this->fileNameFromPath($file), $this->tempHandle, FTP_BINARY, 0);
+                }
+
+            }
+        }
+    }
+
+    private function fileNameFromPath ($fileWithPath) {
+
+        $splitConfig = preg_split('/\//', str_replace(array('//', '///', '////'), '/', $fileWithPath), -1, PREG_SPLIT_NO_EMPTY);
+
+        return $splitConfig[count($splitConfig) - 1];
+    }
+
+    private function combineFolderFile ($folders, $file) {
+
+        $i = 0;
+
+        $splitConfig = preg_split('/\//', str_replace(array('//', '///', '////'), '/', $file), -1, PREG_SPLIT_NO_EMPTY);
+        $folderFileCount = count($splitConfig) - 1;
+
+        while ($i < $folderFileCount) {
+            $folders .= '/' . $splitConfig[$i];
+            $i++;
+        }
+
+        return str_replace(array('//', '///', '////'), '/', $folders);
+
+    }
+
+    private function arrayToChDir ($folders) {
+
+        // only in case we cannot access the folder directly, loop and create
+        if (!@ftp_chdir($this->ftpSecondConnection, $folders)) {
+
+            // go back to home dir. otherwise we might create subfolders in wrong places
+            @ftp_chdir($this->ftpSecondConnection, '/');
+
+            foreach (preg_split('/\//', $folders, -1, PREG_SPLIT_NO_EMPTY) as $dir) {
+
+                if (!@ftp_chdir($this->ftpSecondConnection, $dir)) {
+                    @ftp_mkdir($this->ftpSecondConnection, $dir);
+                    @ftp_chdir($this->ftpSecondConnection, $dir);
+                }
+
+            }
+        }
     }
 
     public function checkPath ($ftpPath, $searchFor) {
@@ -166,11 +303,19 @@ class EasyWiFTP {
 
     function __destruct() {
 
-        if ($this->ftpConnection) {
+        if (is_resource($this->ftpConnection)) {
             ftp_close($this->ftpConnection);
         }
 
-        if ($this->tempHandle) {
+        if (is_resource($this->ftpSecondConnection)) {
+            ftp_close($this->ftpSecondConnection);
+        }
+
+        if (is_array($this->tempHandle)) {
+            foreach (array_keys($this->tempHandle) as $k) {
+                fclose($this->tempHandle[$k]);
+            }
+        } else if (is_resource($this->tempHandle)) {
             fclose($this->tempHandle);
         }
     }
