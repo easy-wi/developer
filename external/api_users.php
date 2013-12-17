@@ -288,7 +288,7 @@ if (count($error)>0) {
 						'player' => $row['player'],
 						'ftpUser' => $row['member'],
 						'ftpPass' => $row['ftppasswd'],
-						'path' => './server/' . $row['path'] . '/'
+						'path' => 'server/' . $row['path'] . '/'
 						);
 				}
 			}
