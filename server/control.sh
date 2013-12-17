@@ -26,7 +26,7 @@
 #
 #    Easy-WI wird in der Hoffnung, dass es nuetzlich sein wird, aber
 #    OHNE JEDE GEWAEHELEISTUNG, bereitgestellt; sogar ohne die implizite
-#    Gewaehrleistung der MARKTFAEHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK.
+#    Gewaehrleistung der MARKTFAEHIGKEIT oder EIGNUNG FUER EINEN BESTIMMTEN ZWECK.
 #    Siehe die GNU General Public License fuer weitere Details.
 #
 #    Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
@@ -1147,7 +1147,7 @@ PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.in
 	echo 'if [ ! -d "$SERVERDIR/$VARIABLE4/$TEMPLATE/" ]; then mkdir -p "$SERVERDIR/$VARIABLE4/$TEMPLATE/"; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'find $SERVERDIR/$VARIABLE4/$TEMPLATE/ -type f -delete' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'cd $SERVERDIR/$VARIABLE4/$TEMPLATE/' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo 'VARIABLE9=`echo $VARIABLE9 | tr -d '/'`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'VARIABLE9=`echo $VARIABLE9 | tr -d '"'"'/'"'"'`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'MODFOLDER=`find -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE9" | head -n 1`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'if [ "$MODFOLDER" != "" ]; then cd $MODFOLDER; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'find -type f -print0 | xargs -0 rm -f' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
