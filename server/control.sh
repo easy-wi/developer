@@ -1138,21 +1138,21 @@ SERVERDIR=$SERVERDIR
 PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.inf\|/sound/\|steam_appid.txt\|/hl2/\|/overviews/\|/resource/\|/sprites/'" > $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'while [[ `screen -ls | grep "del-$VARIABLE2-$VARIABLE4"` ]]; do sleep 5; done' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	if [ "$VARIABLE5" == "" -o "$VARIABLE5" == "1" ]; then
-		TEMPLATE=`echo $VARIABLE3 | awk -F "_" '{ print $2 }'`
+		GSTEMPLATE=`echo $VARIABLE3 | awk -F "_" '{ print $2 }'`
 	else
-		TEMPLATE=`echo $VARIABLE3 | awk -F "_" '{ print $2 }'`"-$VARIABLE5"
+		GSTEMPLATE=`echo $VARIABLE3 | awk -F "_" '{ print $2 }'`"-$VARIABLE5"
 	fi
+	echo "GSTEMPLATE=$GSTEMPLATE" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	add_customer_server
-	echo "TEMPLATE=$TEMPLATE" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo 'if [ ! -d "$SERVERDIR/$VARIABLE4/$TEMPLATE/" ]; then mkdir -p "$SERVERDIR/$VARIABLE4/$TEMPLATE/"; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo 'find $SERVERDIR/$VARIABLE4/$TEMPLATE/ -type f -delete' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo 'cd $SERVERDIR/$VARIABLE4/$TEMPLATE/' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'if [ ! -d "$SERVERDIR/$VARIABLE4/$GSTEMPLATE/" ]; then mkdir -p "$SERVERDIR/$VARIABLE4/$GSTEMPLATE/"; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'cd $SERVERDIR/$VARIABLE4/$GSTEMPLATE/' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'VARIABLE9=`echo $VARIABLE9 | tr -d '"'"'/'"'"'`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'MODFOLDER=`find -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE9" | head -n 1`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'if [ "$MODFOLDER" != "" ]; then cd $MODFOLDER; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo 'find -type f -print0 | xargs -0 rm -f' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'find $SERVERDIR/$VARIABLE4/$GSTEMPLATE/ -type f -print0 | xargs -0 rm -f' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "wget -q -r -l inf -nc -nH --limit-rate=4096K --retr-symlinks --ftp-user=$VARIABLE6 --ftp-password=$VARIABLE7 --cut-dirs=$CUTDIRS --no-check-certificate $VARIABLE8" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	add_customer_server
+	chmod +x $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	screen -d -m -S add-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 }
 
@@ -1962,7 +1962,7 @@ function fdl_update {
 		fi
 		PATTERN="\.log\|\.txt\|\.cfg\|\.vdf\|\.db\|\.dat\|\.ztmp\|\.blib\|log\/\|logs\/\|downloads\/\|DownloadLists\/\|metamod\/\|amxmodx\/\|hl\/\|hl2\/\|cfg\/\|addons\/\|bin\/\|classes/"
 		echo "#!/bin/bash" > $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
-		echo "#rm $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
+		echo "rm $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 		echo "GAMETYPE=$GAMETYPE" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 		echo "HOMEFOLDER=$HOMEFOLDER" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 		echo "VARIABLE2=$VARIABLE2" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
