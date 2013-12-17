@@ -355,17 +355,12 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 		AllowAll
 	</Limit>
 </Directory>
-<Directory ~/*/*/orangebox/>
-	HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll|\.so|\.vdf)$
-	PathDenyFilter (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll|\.so|\.vdf)$
+<Directory ~/*/*/>
+	HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll|\.so)$
+	PathDenyFilter (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll|\.so)$
 	HideNoAccess on
 </Directory>
-<Directory ~/*/*/css/>
-	HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll|\.so|\.vdf)$
-	PathDenyFilter (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll|\.so|\.vdf)$
-	HideNoAccess on
-</Directory>
-<Directory ~/*/*/*/*/maps>
+<Directory ~/*/*/*/*/addons>
 	Umask 077 077
 	<Limit RNFR RNTO STOR DELE>
 		AllowAll
@@ -377,13 +372,25 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 		AllowAll
 	</Limit>
 </Directory>
-<Directory ~/*/*/*/maps>
+<Directory ~/*/*/*/*/maps>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/*/*/*/addons>
         Umask 077 077
         <Limit RNFR RNTO STOR DELE MKD RMD>
                 AllowAll
         </Limit>
 </Directory>
 <Directory ~/*/*/*/cfg>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/*/*/*/maps>
         Umask 077 077
         <Limit RNFR RNTO STOR DELE MKD RMD>
                 AllowAll
@@ -1093,7 +1100,7 @@ while [ $i -le $COUNT ]; do
 		else
 			echo "${IONICE}nice -n +19 find $SERVERDIR/$VARIABLE4/$GAMENAME/ -type d -print0 | xargs -0 chmod 700" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 			echo "${IONICE}nice -n +19 find $SERVERDIR/$VARIABLE4/$GAMENAME/ -type f -print0 | xargs -0 chmod 600" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-			echo "${IONICE}nice -n +19 find -L $SERVERDIR/$VARIABLE4/$GAMENAME/ -type l -print0 | xargs -0 rm" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+			echo "${IONICE}nice -n +19 find -L $SERVERDIR/$VARIABLE4/$GAMENAME/ -type l -print0 | xargs -0 rm -f" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 		fi
 		echo 'echo "`date`: Server $VARIABLE4/$GAMENAME2 for user $VARIABLE2 created" >> '"$LOGDIR/update.log" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	fi
@@ -1140,8 +1147,10 @@ PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.in
 	echo 'if [ ! -d "$SERVERDIR/$VARIABLE4/$TEMPLATE/" ]; then mkdir -p "$SERVERDIR/$VARIABLE4/$TEMPLATE/"; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'find $SERVERDIR/$VARIABLE4/$TEMPLATE/ -type f -delete' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'cd $SERVERDIR/$VARIABLE4/$TEMPLATE/' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'VARIABLE9=`echo $VARIABLE9 | tr -d '/'`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'MODFOLDER=`find -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE9" | head -n 1`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'if [ "$MODFOLDER" != "" ]; then cd $MODFOLDER; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'find -type f -print0 | xargs -0 rm -f' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "wget -q -r -l inf -nc -nH --limit-rate=4096K --retr-symlinks --ftp-user=$VARIABLE6 --ftp-password=$VARIABLE7 --cut-dirs=$CUTDIRS --no-check-certificate $VARIABLE8" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	add_customer_server
 	screen -d -m -S add-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
@@ -1577,7 +1586,7 @@ function addStop {
 			echo "screen -p 0 -S $SENDTO -X stuff \"stop\"" >> $1
 			screenEnter $1
 			echo "sleep 5" >> $1
-		elif [ "$VARIABLE6" == "a2s" -o "$VARIABLE4" == "a2s" ]; then
+		elif [ "$VARIABLE6" == "srcds_run" -o "$VARIABLE4" == "srcds_run" ]; then
 			screenEnter $1
 			echo "screen -p 0 -S $SENDTO -X stuff \"tv_stoprecord\"" >> $1
 			screenEnter $1
