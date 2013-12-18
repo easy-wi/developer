@@ -67,6 +67,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     include(EASYWIDIR . '/stuff/vorlage.php');
     include(EASYWIDIR . '/stuff/functions.php');
     include(EASYWIDIR . '/stuff/class_validator.php');
+    include(EASYWIDIR . '/stuff/class_voice.php');
     include(EASYWIDIR . '/stuff/settings.php');
     include(EASYWIDIR . '/stuff/ssh_exec.php');
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -320,7 +321,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         $query3 = $sql->prepare("SELECT `id`,`sourceSystemID`,`externalID` FROM `gsswitch` WHERE `serverip`=? AND `port`=? AND `resellerid`=? LIMIT 1");
         $query4 = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerid`=? LIMIT 1");
         $query5 = $sql->prepare("INSERT INTO `gsswitch` (`stopped`,`ftppassword`,`userid`,`rootID`,`serverip`,`port`,`port2`,`slots`,`taskset`,`cores`,`pallowed`,`sourceSystemID`,`externalID`,`resellerid`) VALUES ('Y',AES_ENCRYPT(?,?),?,?,?,?,?,?,?,?,?,?,?,?)");
-        $query6 = $sql->prepare("INSERT INTO `serverlist` (`tic`,`map`,`switchID`,`servertype`,`resellerid`) VALUES (?,?,?,?,?)");
+        $query6 = $sql->prepare("INSERT INTO `serverlist` (`tic`,`map`,`switchID`,`servertype`,`usermap`,`resellerid`) VALUES (?,?,?,?,'Y',?)");
         $query7 = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? LIMIT 1");
         $query8 = $sql->prepare("UPDATE `gsswitch` SET `slots`=?,`taskset`=?,`cores`=?,`pallowed`=? WHERE `id`=? LIMIT 1");
 
@@ -584,6 +585,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         // TS3 virtual server
         unset($left);
         $start = 0;
+        $getVirtualIDs = array();
 
         // Prepare queries only once to avoid overhead
         $query2 = $sql->prepare("SELECT `id`,`sourceSystemID`,`externalID` FROM `voice_server` WHERE `ip` =? AND `port`=? AND `resellerid`=? LIMIT 1");
