@@ -75,6 +75,15 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputWorkshop">Steam Workshop</label>
+                <div class="controls">
+                    <select class="span12" id="inputWorkshop" name="workShop">
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N" <?php if($workShop=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputRamLimited"><?php echo $sprache->ramLimited;?></label>
                 <div class="controls">
                     <select class="span12" id="inputRamLimited" name="ramLimited">

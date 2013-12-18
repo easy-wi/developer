@@ -125,6 +125,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $appID = ($ui->id('appID', 19, 'post')) ? $ui->id('appID', 19, 'post') : null;
     $protected = ($ui->active('protected', 'post')) ? $ui->active('protected', 'post') : 'N';
     $ramLimited = ($ui->active('ramLimited', 'post')) ? $ui->active('ramLimited', 'post') : 'N';
+    $workShop = ($ui->active('workShop', 'post')) ? $ui->active('workShop', 'post') : 'N';
     $ftpAccess = ($ui->active('ftpAccess', 'post')) ? $ui->active('ftpAccess', 'post') : 'Y';
     $os = ($ui->w('os', 1, 'post')) ? $ui->w('os', 1, 'post') : 'L';
     $iptables = $ui->startparameter('iptables', 'post');
@@ -338,11 +339,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $protectedSaveCFGs = $row['protectedSaveCFGs'];
                 $os = $row['os'];
                 $ftpAccess = $row['ftpAccess'];
+                $workShop = $row['workShop'];
                 $ramLimited = $row['ramLimited'];
             }
 
             if ($query->rowCount() > 0) {
-                $query = $sql->prepare("SELECT distinct(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
+                $query = $sql->prepare("SELECT DISTINCT(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
                 $query->execute(array($reseller_id));
                 $table = array();
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -402,15 +404,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
 
-                $query = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`ramLimited`,`ftpAccess`,`os`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os,$reseller_id));
+                $query = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`workShop`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`ramLimited`,`ftpAccess`,`os`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os,$reseller_id));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %template% ' . $shorten;
 
             } else if ($ui->st('action', 'post') == 'md') {
                 
-                $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`cmd`=?,`modcmds`=?,`gameq`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`protected`=?,`ramLimited`=?,`ftpAccess`=?,`os`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $ui->id('id', 10, 'get'), $reseller_id));
+                $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`workShop`=?,`cmd`=?,`modcmds`=?,`gameq`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`protected`=?,`ramLimited`=?,`ftpAccess`=?,`os`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $ui->id('id', 10, 'get'), $reseller_id));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %template% ' . $shorten;
             }
