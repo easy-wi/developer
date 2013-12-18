@@ -35,10 +35,11 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['usersettings'])) {
+if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['log'])) {
     header('Location: userpanel.php');
     die;
 }
+
 $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
 if (isset($admin_id) and $reseller_id != 0) $reseller_id = $admin_id;
