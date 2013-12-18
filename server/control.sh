@@ -1539,7 +1539,7 @@ else
 fi
 SCREENNAME="`echo $SERVERDIR | awk  -F '/' '{print $5}'`"
 if [ "$VARIABLE5" != "protected" ]; then
-	STARTFILE=/temp/start-${VARIABLE2}-${SCREENNAME}.sh
+	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-${SCREENNAME}.sh
 else
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-p-${SCREENNAME}.sh
 fi
