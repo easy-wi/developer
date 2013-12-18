@@ -63,7 +63,7 @@
             <div class="control-group">
                 <label class="control-label" for="hostbanner_gfx_url"><?php echo $sprache->hostbanner_gfx_url;?></label>
                 <div class="controls">
-                    <input id="hostbanner_gfx_url" type="text" name="hostbanner_gfx_url" value="<?php echo $hostbanner_url; ?>"<?php if ($forcebanner=='Y') echo 'disabled';?>>
+                    <input id="hostbanner_gfx_url" type="text" name="hostbanner_gfx_url" value="<?php echo $hostbanner_gfx_url; ?>"<?php if ($forcebanner=='Y') echo 'disabled';?>>
                 </div>
             </div>
             <div class="control-group">
