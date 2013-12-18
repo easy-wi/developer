@@ -151,11 +151,25 @@ $gameAddons = array(
         )
     ),
     array(
+        ':paddon' => 'N',
+        ':addon' => 'smac-block',
+        ':type' => 'tool',
+        ':folder' => '',
+        ':menudescription' => 'SmacBans.com Block Plugin',
+        ':configs' => "",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => 'smac',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
         ':paddon' => 'Y',
         ':addon' => 'css-anno',
         ':type' => 'tool',
         ':folder' => 'css-anno',
-        ':menudescription' => 'SMACBans Announcer',
+        ':menudescription' => 'SmacBans.com Announcer',
         ':configs' => "",
         ':cmd' => null,
         ':rmcmd' => null,
