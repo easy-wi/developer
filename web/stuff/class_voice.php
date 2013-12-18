@@ -318,6 +318,11 @@ class TS3 {
 			}
 		}
 	}
+
+    private function tenaryReturn ($array, $key) {
+        return (isset($array[$key])) ? $array[$key] : '';
+    }
+
 	public function ImportData ($dnsarray) {
 		$serverdetails = array();
 		$serverlist = $this->SendCommand('serverlist');
@@ -334,46 +339,28 @@ class TS3 {
 					$virtualserver_server = $virtualserver_ip . ':' . $server['virtualserver_port'];
                     $virtualserver_dns=(array_key_exists($virtualserver_server, $dnsarray)) ? $dnsarray[$virtualserver_server] : '';
 
-                    //https://github.com/easy-wi/developer/issues/74 check if array keys exists
-					if (isset($serverdetails_query[0]) and ($serverdetails_query[0]['virtualserver_maxclients'])) {
-						$serverdetails[$virtualserver_id] = array(
-							'virtualserver_ip' => $virtualserver_ip,
-							'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
-							'virtualserver_port' => $server['virtualserver_port'],
-							'virtualserver_dns' => $virtualserver_dns,
-							'virtualserver_name' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_name']),
-							'virtualserver_welcomemessage' => $serverdetails_query[0]['virtualserver_welcomemessage'],
-							'virtualserver_flag_password' => $serverdetails_query[0]['virtualserver_flag_password'],
-							'virtualserver_max_download_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_download_total_bandwidth'],
-							'virtualserver_max_upload_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_upload_total_bandwidth'],
-							'virtualserver_hostbanner_url' => $serverdetails_query[0]['virtualserver_hostbanner_url'],
-							'virtualserver_hostbanner_gfx_url' => $serverdetails_query[0]['virtualserver_hostbanner_gfx_url'],
-							'virtualserver_hostbutton_tooltip' => $serverdetails_query[0]['virtualserver_hostbutton_tooltip'],
-							'virtualserver_hostbutton_url' => $serverdetails_query[0]['virtualserver_hostbutton_url'],
-							'virtualserver_hostbutton_gfx_url' => $serverdetails_query[0]['virtualserver_hostbutton_gfx_url']
-						);
-					} else {
-						$serverdetails[$virtualserver_id] = array(
-							'virtualserver_ip' => $virtualserver_ip,
-							'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
-							'virtualserver_port' => $server['virtualserver_port'],
-							'virtualserver_dns' => $virtualserver_dns,
-							'virtualserver_name' => '',
-							'virtualserver_welcomemessage' => '',
-							'virtualserver_flag_password' => '',
-							'virtualserver_max_download_total_bandwidth' => '',
-							'virtualserver_max_upload_total_bandwidth' => '',
-							'virtualserver_hostbanner_url' => '',
-							'virtualserver_hostbanner_gfx_url' => '',
-							'virtualserver_hostbutton_tooltip' => '',
-							'virtualserver_hostbutton_url' => '',
-							'virtualserver_hostbutton_gfx_url' => ''
-						);
-					}
+                    $serverdetails[$virtualserver_id] = array(
+                        'virtualserver_ip' => $virtualserver_ip,
+                        'virtualserver_maxclients' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_maxclients'),
+                        'virtualserver_port' => $server['virtualserver_port'],
+                        'virtualserver_dns' => $virtualserver_dns,
+                        'virtualserver_name' => $this->ReplaceFromTS3($this->tenaryReturn($serverdetails_query[0],'virtualserver_name')),
+                        'virtualserver_welcomemessage' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_welcomemessage'),
+                        'virtualserver_flag_password' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_flag_password'),
+                        'virtualserver_max_download_total_bandwidth' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_max_download_total_bandwidth'),
+                        'virtualserver_max_upload_total_bandwidth' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_max_upload_total_bandwidth'),
+                        'virtualserver_hostbanner_url' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_hostbanner_url'),
+                        'virtualserver_hostbanner_gfx_url' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_hostbanner_gfx_url'),
+                        'virtualserver_hostbutton_tooltip' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_hostbutton_tooltip'),
+                        'virtualserver_hostbutton_url' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_hostbutton_url'),
+                        'virtualserver_hostbutton_gfx_url' => $this->tenaryReturn($serverdetails_query[0],'virtualserver_hostbutton_gfx_url')
+                    );
 				}
+
 				if ($server['virtualserver_status'] == 'offline') {
 					$this->StopServer($virtualserver_id);
 				}
+
 				if (!isset($serverdetails[$virtualserver_id])) {
                     $virtualserver_ip=(isset($virtualserver_ip)) ? $virtualserver_ip :'';
                     $virtualserver_dns=(isset($virtualserver_dns)) ? $virtualserver_dns :'';
@@ -789,12 +776,10 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
 
                     $filesize = filesize($file);
 
-                    if ($filesize == 0) {
-                        $filesize = 1;
-                    }
-
-                    while (strlen($buffer) < $filesize) {
-                        $buffer .= fread($tsdns_read, $filesize);
+                    if ($filesize > 0) {
+                        while (strlen($buffer) < $filesize) {
+                            $buffer .= fread($tsdns_read, $filesize);
+                        }
                     }
 
                     fclose($tsdns_read);
