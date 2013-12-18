@@ -165,11 +165,11 @@ class masterServer {
         // if an ID is given collect only data for this ID, else collect all game data for this rootserver
         if ($all === true) {
             
-            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`qstat`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? ${extraSQL}");
+            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? ${extraSQL}");
             $query->execute(array($this->rootID));
             
         } else {
-            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`qstat`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? ${extraSQL} LIMIT 1");
+            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? ${extraSQL} LIMIT 1");
             $query->execute(array($this->rootID, $all));
         }
         

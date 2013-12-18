@@ -48,8 +48,6 @@
     <portStep>Port steps to next server</portStep>
 	<protect>Protection modus</protect>
     <protectedSaveCFGs>Files to be kept while switching Protection Mode</protectedSaveCFGs>
-	<qstat>Qstat Parameter</qstat>
-	<qstatpassparam>Qstat passwordparameter</qstatpassparam>
     <ramLimited>Ram limited</ramLimited>
 	<rcon>Remote password (RCON)</rcon>
 	<requires>Requires</requires>

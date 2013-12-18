@@ -641,14 +641,13 @@ if (!function_exists('passwordgenerate')) {
         $tempCmds = array();
         $stopped = 'Y';
         
-        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`qstat`,t.`appID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`appID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':serverid' => $switchID, ':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $serverid = $row['serverid'];
             $anticheat = $row['anticheat'];
             $servertemplate = $row['servertemplate'];
             $protected = $row['protected'];
-            $qstat = $row['qstat'];
             $upload = $row['upload'];
             $uploaddir = $row['decypteduploaddir'];
             $shorten = $row['shorten'];
@@ -659,8 +658,8 @@ if (!function_exists('passwordgenerate')) {
             $port3 = $row['port3'];
             $port4 = $row['port4'];
             $port5 = $row['port5'];
-            $minram = ($row['minram']>0) ? $row['minram'] : 512;
-            $maxram = ($row['maxram']>0) ? $row['maxram'] : 1024;
+            $minram = ($row['minram'] > 0) ? $row['minram'] : 512;
+            $maxram = ($row['maxram'] > 0) ? $row['maxram'] : 1024;
             $gamebinary = $row['gamebinary'];
             $binarydir = $row['binarydir'];
             $eacallowed = $row['eacallowed'];
@@ -677,12 +676,14 @@ if (!function_exists('passwordgenerate')) {
             $modcmd = $row['modcmd'];
             $pallowed = $row['pallowed'];
             $user_id = $row['userid'];
+
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($user_id));
             $customer = $query->fetchColumn();
             if ($row['newlayout'] == 'Y') {
                 $customer .= '-' . $row['switchID'];
             }
+
             $cores = ($row['taskset'] == 'Y') ? $row['cores'] : '';
             $maxcores = count(preg_split("/\,/", $cores, -1,PREG_SPLIT_NO_EMPTY));
             if ($maxcores == 0) {
@@ -700,13 +701,14 @@ if (!function_exists('passwordgenerate')) {
             }
             $bindir = $absolutepath. '/' . $binarydir;
             $cvarprotect = array();
-            if ($qstat == 'hla2s' and $tvenable == 'Y') {
+            if ($gamebinary == 'hlds_run' and $tvenable == 'Y') {
                 $slots++;
             }
             $modsCmds = array();
-            $cvars=array('%binary%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%');
+            $cvars = array('%binary%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%');
             $query2 = $sql->prepare("SELECT `cmd`,`modcmds`,`configedit` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query2->execute(array($shorten, $reseller_id));
+
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 
                 foreach (explode("\r\n", $row2['configedit']) as $line) {
@@ -765,10 +767,10 @@ if (!function_exists('passwordgenerate')) {
                     $cmd = $row2['cmd'];
                 }
             }
-            if ($qstat == 'a2s' and $tvenable == 'N') {
+            if ($gamebinary == 'srcds_run' and $tvenable == 'N') {
                 $cmd .= ' -nohltv -tvdisable';
             }
-            if (($protected == 'N' and ($qstat == 'a2s' or $qstat == 'hla2s') and ($anticheat == 2 or $anticheat == 3 or $anticheat == 4 or $anticheat == 5 or $anticheat == 6)) or (($protected == 'Y' and ($anticheat == 3 or $anticheat == 4 or $anticheat == 5 or $anticheat == 6)) and ($qstat == 'a2s' or $qstat == 'hla2s') and $eacallowed == 'Y')) {
+            if (($protected == 'N' and ($gamebinary == 'hlds_run' or $gamebinary == 'srcds_run') and ($anticheat == 2 or $anticheat == 3 or $anticheat == 4 or $anticheat == 5 or $anticheat == 6)) or (($protected == 'Y' and ($anticheat == 3 or $anticheat == 4 or $anticheat == 5 or $anticheat == 6)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y')) {
                 $cmd .= ' -insecure';
             }
 
@@ -805,9 +807,9 @@ if (!function_exists('passwordgenerate')) {
                 if ($row2['decyptedftpuploadpath'] != null and $row2['decyptedftpuploadpath'] != '' and $row2['decyptedftpuploadpath'] != 'ftp://username:password@1.1.1.1/demos') {
                     $ftpupload = $row2['decyptedftpuploadpath'];
                 }
-                if ($qstat == 'a2s') {
+                if ($gamebinary == 'srcds_run') {
                     $cmd .= ' +rcon_password ' .$row2['rcon'] . ' +sv_password ' . $row2['password']. ' +tv_enable 1 +tv_autorecord 1';
-                } else if ($qstat == 'hla2s') {
+                } else if ($gamebinary == 'hlds_run') {
                     $cmd .= ' +rcon_password ' . $row2['rcon'] . ' +sv_password ' . $row2['password'];
                 }
             }
@@ -819,7 +821,7 @@ if (!function_exists('passwordgenerate')) {
             }
             if (in_array($row['appID'], array(730,740)) and isid($row['workshopCollection'], 10) and wpreg_check($row['dwebapiAuthkey'], 32) and strlen($row['dwebapiAuthkey'])>0 and $row['workshopCollection']>0) {
                 $cmd .= ' +host_workshop_collection ' . $row['workshopCollection'] . ' +workshop_start_map ' . $map . ' -authkey ' . $row['dwebapiAuthkey'];
-                $cmd = preg_replace('/[\s\s+]{1,}\+map[\s\s+]{1,}[\w-_!%]{1,}/','', $cmd);
+                $cmd = preg_replace('/[\s\s+]{1,}\+map[\s\s+]{1,}[\w-_!%]{1,}/', '', $cmd);
             }
             $rdata = serverdata('root', $rootid, $aeskey);
             $sship = $rdata['ip'];
@@ -840,7 +842,7 @@ if (!function_exists('passwordgenerate')) {
                 $customerProtected = $customer . '-p';
             }
 
-            if ($action!='du' and $eacallowed == 'Y' and ($anticheat == 3 or $anticheat == 4 or $anticheat == 5 or $anticheat == 6) and ($qstat == 'a2s' or $qstat == 'hla2s')) {
+            if ($action!='du' and $eacallowed == 'Y' and ($anticheat == 3 or $anticheat == 4 or $anticheat == 5 or $anticheat == 6) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run')) {
                 
                 if ($action == 'so' or $action == 'sp') {
                     $rcon = '';
@@ -905,7 +907,7 @@ if (!function_exists('passwordgenerate')) {
                     }
                 }
 
-            } else if ($action!='du' and $eacallowed == 'Y' and ($qstat == 'a2s' or $qstat == 'hla2s') and ($anticheat == 1 or $anticheat == 2)) {
+            } else if ($action!='du' and $eacallowed == 'Y' and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and ($anticheat == 1 or $anticheat == 2)) {
                 $rcon = '';
                 eacchange('remove', $serverid, $rcon, $reseller_id);
             }
@@ -916,8 +918,8 @@ if (!function_exists('passwordgenerate')) {
                 $stopped = 'Y';
 
                 if ($action == 'so') {
-                    $tempCmds[]="sudo -u ${customer} ./control.sh gstop $customer \"$serverfolder\" $qstat $protectedString";
-                    if ((isset($ftpupload) and $qstat == 'a2s')) {
+                    $tempCmds[]="sudo -u ${customer} ./control.sh gstop $customer \"$serverfolder\" $gamebinary $protectedString";
+                    if ((isset($ftpupload) and $gamebinary == 'srcds_run')) {
                         $tempCmds[]="sudo -u ${customer} ./control.sh demoupload \"$bindir\" \"$ftpupload\" \"$modfolder\"";
                     }
                 } else {
@@ -931,10 +933,10 @@ if (!function_exists('passwordgenerate')) {
                 if ($protected == 'N' and count($installedaddons)>0) {
                     $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$serverfolder\" \"".implode(' ', $installedaddons)."\"";
                 }
-                $restartCmd = "sudo -u ${customer} ./control.sh grestart $customer \"$serverfolder\" \"$startline\" $protectedString $qstat \"$cores\"";
+                $restartCmd = "sudo -u ${customer} ./control.sh grestart $customer \"$serverfolder\" \"$startline\" $protectedString $gamebinary \"$cores\"";
             }
 
-            if (!isset($ftpupload) and $qstat == 'a2s' and isurl($uploaddir)) {
+            if (!isset($ftpupload) and $gamebinary == 'srcds_run' and isurl($uploaddir)) {
 
                 if ($upload==2) {
                     $uploadcmd = "./control.sh demoupload \"$bindir\" \"$uploaddir\" \"$modfolder\" manual remove";

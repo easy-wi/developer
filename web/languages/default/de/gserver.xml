@@ -104,7 +104,6 @@
     <port_gs>Gameserverport</port_gs>
     <premoved>Serverpasswort entfernt</premoved>
     <protect>Protection Modus</protect>
-    <qstat>QStat Parameter</qstat>
     <ramMax>Maximaler Ram</ramMax>
     <ramMin>Minimaler Ram</ramMin>
     <rcon>RCON Passwort</rcon>

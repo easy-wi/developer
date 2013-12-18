@@ -319,13 +319,12 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
     $query = $sql->prepare("SELECT `id` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
     $count = $query->rowCount();
-    $query2 = $sql->prepare("SELECT `qstat` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+    $query2 = $sql->prepare("SELECT `gamebinary` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
     $query2->execute(array($get_shorten, $reseller_id));
 	foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-		$qstat = $row2['qstat'];
-		if ($qstat=="a2s" or $qstat=="hla2s") {
+		if ($row['gamebinary'] == 'srcds_run' or $row['gamebinary'] == 'hlds_run') {
 			$anticheatsoft="Valve Anti Cheat";
-		} else if ($qstat=="cods") {
+		} else if ($row2['gamebinary'] == 'cod4_lnxded') {
 			$anticheatsoft="Punkbuster";
 		} else {
 			$anticheatsoft = '';

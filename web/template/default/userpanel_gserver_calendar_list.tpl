@@ -15,7 +15,7 @@
 
 <div class="row-fluid">
 	<div class="span12">
-		<form id="newRestart" action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post" class="form-inline">
+		<form id="newRestart" action="userpanel.php?w=ca&amp;id=<?php echo $id;?>" method="post" class="form-inline">
             <input type="hidden" id="date" name="date" value=""/>
             <input type="hidden" id="edit" name="edit" value="edit" />
             <select id="day" name="day">
@@ -92,14 +92,14 @@ $(document).ready(function (){
 								<?php echo $restarts[$i][$day]['protected']; ?>
 							</td>
 							<td class="span1">
-				                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
+				                <form action="userpanel.php?w=ca&amp;id=<?php echo $id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
 				                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
 				                    <input type="hidden" name="delete" value="delete" />
 				                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
 				                </form>
 			                </td>
 							<td class="span1">
-				                <form action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>" method="post">
+				                <form action="userpanel.php?w=ca&amp;id=<?php echo $id;?>" method="post">
 				                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
 				                    <input type="hidden" name="edit" value="edit" />
 				                    <button class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i> <?php echo $gsprache->mod;?></button>

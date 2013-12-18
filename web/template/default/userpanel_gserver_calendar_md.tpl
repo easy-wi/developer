@@ -15,7 +15,7 @@
 <hr>
 <div class="row-fluid">
     <div class="span8">
-        <form class="form-horizontal" action="userpanel.php?w=ca&amp;id=<?php echo $server_id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+        <form class="form-horizontal" action="userpanel.php?w=ca&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <script type="text/javascript">
 			$(document).ready(function (){
 				$('#inputSwitch').change(function() {
@@ -29,7 +29,7 @@
 					else {
 						$('#protectedSettings').collapse('hide');
 					}
-					if($(this).find('option:selected').data('qstat')=='minecraft') {
+					if($(this).find('option:selected').data('gameq')=='minecraft') {
 						console.log('minecraft');
 						$('#worldsaveSettings').collapse('show');
 						$('#mapSettings').collapse('hide');
@@ -70,7 +70,7 @@
 	                </div>
 	            </div>
 	        </div>
-            <?php if(in_array('a2s',$qstat_array) and (in_array('2',$uploadallowed) or in_array('3',$uploadallowed))){ ?>
+            <?php if(in_array('srcds_run',$binaryArray) and (in_array(2,$uploadallowed) or in_array(3,$uploadallowed))){ ?>
             <div class="control-group">
                 <label class="control-label" for="inputSourceTV">SourceTV Demo Upload</label>
                 <div class="controls">
@@ -96,7 +96,7 @@
                     <div class="controls">
                         <select name="shorten" id="inputSwitch" onchange="$.get('serverallocation.php?mapgroup=' + this.value, function(data) { $('#mapGroup').html(data); });">
                             <?php foreach ($table as $table_row){ ?>
-                            <option value="<?php echo $table_row['shorten'];?>" <?php if($gsswitch==$table_row['shorten']) echo 'selected="selected"';?> data-protected="<?php echo $table_row['protected'];?>" data-qstat="<?php echo $table_row['qstat'];?>"><?php echo $table_row['description'];?></option>
+                            <option value="<?php echo $table_row['shorten'];?>" <?php if($gsswitch==$table_row['shorten']) echo 'selected="selected"';?> data-protected="<?php echo $table_row['protected'];?>" data-gameq="<?php echo $table_row['gameq'];?>"><?php echo $table_row['description'];?></option>
                             <?php } ?>
                         </select>
                     </div>

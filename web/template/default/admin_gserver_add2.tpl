@@ -114,8 +114,8 @@
                 <label class="control-label" for="inputPmode"><?php echo $sprache->protect;?></label>
                 <div class="controls">
                     <select id="inputPmode" name="pallowed">
-                        <option value="Y"><?php echo $gsprache->yes;?></option>
                         <option value="N"><?php echo $gsprache->no;?></option>
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
                     </select>
                 </div>
             </div>

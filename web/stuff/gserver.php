@@ -180,13 +180,13 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                             } else {
                                 $installing = true;
                             }
-                            $qstat = $row['qstat'];
-                            if ($qstat == 'a2s') {
+
+                            if ($row['gamebinary'] == 'srcds_run') {
                                 $upload = 1;
                             } else {
                                 $upload = 0;
                             }
-                            $table[] = array('description' => $row['description'], 'id' => $row['id'], 'steamgame' => $row['steamgame'], 'shorten' => $shorten,'gamebinary' => $row['gamebinary'], 'binarydir' => $row['binarydir'], 'modfolder' => $row['modfolder'], 'fps' => $row['fps'], 'slots' => $row['slots'], 'map' => $row['map'], 'mapGroup' => $row['mapGroup'], 'cmd' => $cmd,'tic' => $row['tic'], 'upload' => $upload,'qstat' => $qstat,'installing' => $installing);
+                            $table[] = array('description' => $row['description'], 'id' => $row['id'], 'steamgame' => $row['steamgame'], 'shorten' => $shorten,'gamebinary' => $row['gamebinary'], 'binarydir' => $row['binarydir'], 'modfolder' => $row['modfolder'], 'fps' => $row['fps'], 'slots' => $row['slots'], 'map' => $row['map'], 'mapGroup' => $row['mapGroup'], 'cmd' => $cmd,'tic' => $row['tic'], 'upload' => $upload,'installing' => $installing);
                             $i++;
                         }
                         if ($query->rowcount()==0) {
@@ -662,7 +662,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             foreach (preg_split('/\,/', $row['cores'],-1,PREG_SPLIT_NO_EMPTY) as $uc) {
                 $usedcores[] = $uc;
             }
-            $query2 = $sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,t.`shorten`,t.`description`,t.`qstat`,t.`gamebinary`,t.`binarydir`,t.`modfolder` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
+            $query2 = $sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,t.`shorten`,t.`description`,t.`gamebinary`,t.`gamebinary`,t.`binarydir`,t.`modfolder` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
             $query2->execute(array($aeskey,$server_id,$reseller_id));
             $i = 0;
             $gamestringtemp = '';
@@ -674,8 +674,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                 } else {
                     $style="style=\"display: none; border-spacing: 0px;\"";
                 }
-                $qstat = $row2['qstat'];
-                if ($qstat == 'a2s') {
+                if ($row2['gamebinary'] == 'srcds_run') {
                     if ($row2['upload']>0) {
                         $upload = $row2['upload'];
                     } else {
@@ -688,7 +687,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                 }
                 $gamestringtemp .= "_$shorten";
                 $cmd=stripslashes($row2['cmd']);
-                $table[] = array('id' => $row2['id'], 'shorten' => $row2['shorten'], 'description' => $row2['description'], 'gamebinary' => $row2['gamebinary'], 'binarydir' => $row2['binarydir'], 'modfolder' => $row2['modfolder'], 'fps' => $row2['fps'], 'map' => $row2['map'], 'mapGroup' => $row2['mapGroup'], 'cmd' => $cmd,'tic' => $row2['tic'], 'qstat' => $qstat,'upload' => $upload,'uploaddir' => $uploaddir,'userfps' => $row2['userfps'], 'usertick' => $row2['usertick'], 'usermap' => $row2['usermap'], 'user_uploaddir' => $row2['user_uploaddir'], 'owncmd' => $row2['owncmd'], 'style' => $style);
+                $table[] = array('id' => $row2['id'], 'shorten' => $row2['shorten'], 'description' => $row2['description'], 'gamebinary' => $row2['gamebinary'], 'binarydir' => $row2['binarydir'], 'modfolder' => $row2['modfolder'], 'fps' => $row2['fps'], 'map' => $row2['map'], 'mapGroup' => $row2['mapGroup'], 'cmd' => $cmd,'tic' => $row2['tic'],'upload' => $upload,'uploaddir' => $uploaddir,'userfps' => $row2['userfps'], 'usertick' => $row2['usertick'], 'usermap' => $row2['usermap'], 'user_uploaddir' => $row2['user_uploaddir'], 'owncmd' => $row2['owncmd'], 'style' => $style);
                 $i++;
             }
             $gamestring = $i.$gamestringtemp;

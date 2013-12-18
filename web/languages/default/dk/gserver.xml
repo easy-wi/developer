@@ -75,7 +75,6 @@
 	<port_gs>Spilserverport</port_gs>
 	<premoved>Serveradgangskode fjernet</premoved>
 	<protect>Beskyttelse tilstand</protect>
-	<qstat>Qstat parameter</qstat>
     <ramMax>Maksimale Hukommelse</ramMax>
     <ramMin>Minimum Hukommelse</ramMin>
 	<rcon>Fjernbetjening adgangskode (RCON)</rcon>

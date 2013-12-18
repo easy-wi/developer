@@ -73,7 +73,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     echo "Fetch version for Minecraft and Bukkit Server\r\n";
 
-    $query = $sql->prepare("SELECT t.`shorten` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`qstat`='minecraft' GROUP BY t.`shorten` ORDER BY t.`shorten`");
+    $query = $sql->prepare("SELECT t.`shorten` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`gameq`='minecraft' GROUP BY t.`shorten` ORDER BY t.`shorten`");
     $query2 = $sql->prepare("UPDATE `servertypes` SET `steamVersion`=?,`downloadPath`=? WHERE `shorten`=?");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -446,11 +446,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
                 if ($newlayout == 'Y') $SSH2customer = $SSH2customer . '-' . $gsswitchID;
                 if (isset($restart) and $user_active == 'Y') {
-                    $query3 = $sql->prepare("SELECT s.`id`,s.`upload`,s.`map`,s.`servertemplate`,s.`mapGroup`,t.`qstat` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE t.`shorten`=? AND s.`switchID`=? LIMIT 1");
+                    $query3 = $sql->prepare("SELECT s.`id`,s.`upload`,s.`map`,s.`servertemplate`,s.`mapGroup`,t.`gameq`,t.`gamebinary` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE t.`shorten`=? AND s.`switchID`=? LIMIT 1");
                     $query3->execute(array($shorten, $gsswitchID));
                     foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                         $runID = $row3['id'];
-                        $qstat = $row3['qstat'];
                         $query3 = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                         $query3->execute(array($runID, $gsswitchID, $resellerid));
                         $query3 = $sql->prepare("UPDATE `serverlist` SET `anticheat`=?,`map`=?,`mapGroup`=?,`servertemplate`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -479,10 +478,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 $tmp=gsrestart($gsswitchID,'re', $aeskey, $resellerid);
                                 if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
                             }
-                        } else if ($restart == 'N' and $qstat == 'minecraft' and $worldsafe == 'Y') {
+                        } else if ($restart == 'N' and $row3['gameq'] == 'minecraft' and $worldsafe == 'Y') {
                             $cmds[]="sudo -u ${SSH2customer} ./control.sh mc_ws $gsfolder";
                             echo "Minecraft worlsafe: $server\r\n";
-                        } else if ($restart == 'N' and $qstat == 'a2s' and ($uploadtype == 2 or $uploadtype == '3') and $upload== 'Y') {
+                        } else if ($restart == 'N' and $row3['gamebinary'] == 'srcds_run' and ($uploadtype == 2 or $uploadtype == '3') and $upload== 'Y') {
                             $tmp=gsrestart($gsswitchID,'du', $aeskey, $resellerid);
                             if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
                         }

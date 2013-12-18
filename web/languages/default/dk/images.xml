@@ -47,8 +47,6 @@
     <portStep>Port skridt til næste server</portStep>
 	<protect>Beskyttelse tilstand</protect>
     <protectedSaveCFGs>Filer, der skal holdes mens skifte Beskyttet tilstand</protectedSaveCFGs>
-	<qstat>Qstat Parameter</qstat>
-	<qstatpassparam>Qstat adgangskodeparameter</qstatpassparam>
     <ramLimited>Ram begrænset</ramLimited>
 	<rcon>Fjernbetjening adgangskode (RCON)</rcon>
 	<requires>Kræver</requires>
