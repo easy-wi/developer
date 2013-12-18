@@ -53,12 +53,12 @@
                     <div class="controls">
                         <select id="servertemplate_<?php echo $table_row['id'];?>" name="servertemplate_<?php echo $table_row['id'];?>">
                             <option value="1"><?php echo $table_row['shorten'];?></option>
-                            <option value="2" <?php if($table_row['servertemplate']=="2") echo "selected";?>><?php echo $table_row['shorten'];?>-2</option>
-                            <option value="3" <?php if($table_row['servertemplate']=="3") echo "selected";?>><?php echo $table_row['shorten'];?>-3</option>
+                            <option value="2" <?php if($table_row['servertemplate']==2) echo "selected";?>><?php echo $table_row['shorten'];?>-2</option>
+                            <option value="3" <?php if($table_row['servertemplate']==3) echo "selected";?>><?php echo $table_row['shorten'];?>-3</option>
                         </select>
                     </div>
                 </div>
-                <?php if ($table_row['qstat']=="a2s" or $table_row['qstat']=="hla2s") { ?>
+                <?php if (in_array($table_row['gamebinary'],array('hlds_run','srcds_run','cod4_lnxded'))) { ?>
                 <div class="control-group">
                     <label class="control-label" for="anticheat_<?php echo $table_row['id'];?>"><?php echo $sprache->anticheat;?></label>
                     <div class="controls">
@@ -101,29 +101,45 @@
                         <input id="map_<?php echo $table_row['id'];?>" type="text" name="map_<?php echo $table_row['id'];?>" value="<?php echo $table_row['map'];?>">
                     </div>
                 </div>
-                <?php if(!in_array($table_row['defaultMapGroup'],array('',null))){ ?>
+                <?php if($table_row['workshopCollection']!==false){ ?>
                 <div class="control-group">
-                    <label class="control-label" for="mapGroup_<?php echo $table_row['id'];?>"><?php echo $sprache->startmapgroup;?></label>
+                    <label class="control-label" for="workShop_<?php echo $table_row['id'];?>">Steam Workshop</label>
                     <div class="controls">
-                        <input id="mapGroup_<?php echo $table_row['id'];?>" type="text" name="mapGroup_<?php echo $table_row['id'];?>" value="<?php echo $table_row['mapGroup'];?>">
+                        <select id="workShop_<?php echo $table_row['id'];?>" name="workShop_<?php echo $table_row['id'];?>" onchange="SwitchShowHideRows(this.value,'mapGroupWorkShop-<?php echo $table_row['id'];?>');">
+                            <option value="N"><?php echo $gsprache->no;?></option>
+                            <option value="Y" <?php if($table_row['workShop']=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                        </select>
                     </div>
                 </div>
-                <?php }; if($table_row['workshopCollection']!==false){ ?>
-                <div class="control-group">
+                <div class="Y <?php if($table_row['workShop']=='N') echo 'display_none';?> mapGroupWorkShop-<?php echo $table_row['id'];?> control-group">
                     <label class="control-label" for="workshopCollection_<?php echo $table_row['id'];?>">Workshop Collection</label>
                     <div class="controls">
                         <input id="workshopCollection_<?php echo $table_row['id'];?>" type="text" name="workshopCollection_<?php echo $table_row['id'];?>" value="<?php echo $table_row['workshopCollection'];?>">
                         <span class="help-block"><?php echo $sprache->collection_info;?></span>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="Y <?php if($table_row['workShop']=='N') echo 'display_none';?> mapGroupWorkShop-<?php echo $table_row['id'];?> control-group">
                     <label class="control-label" for="webapiAuthkey_<?php echo $table_row['id'];?>">Steam Webapi Authkey</label>
                     <div class="controls">
                         <input id="webapiAuthkey_<?php echo $table_row['id'];?>" type="text" name="webapiAuthkey_<?php echo $table_row['id'];?>" value="<?php echo $table_row['webapiAuthkey'];?>">
                         <span class="help-block"><?php echo $sprache->authkey_info;?></span>
                     </div>
                 </div>
-                <?php }} ?>
+                <?php } ?>
+
+                <?php if(!in_array($table_row['defaultMapGroup'],array('',null))){ ?>
+                <div class="N <?php if($table_row['workShop']=='Y') echo 'display_none';?> mapGroupWorkShop-<?php echo $table_row['id'];?> control-group">
+                    <label class="control-label" for="mapGroup_<?php echo $table_row['id'];?>"><?php echo $sprache->startmapgroup;?></label>
+                    <div class="controls">
+                        <select id="mapGroup_<?php echo $table_row['id'];?>" name="mapGroup_<?php echo $table_row['id'];?>">
+                            <?php foreach($table_row['mapGroupsAvailable'] as $g){ ?>
+                            <option<?php if($g==$table_row['mapGroup']) echo 'selected="selected"';?>><?php echo $g;?></option>
+                            <?php }?>
+                        </select>
+                    </div>
+                </div>
+                <?php } ?>
+                <?php } ?>
             </div>
             <?php } ?>
             <div class="control-group">

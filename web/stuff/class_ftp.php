@@ -301,6 +301,72 @@ class EasyWiFTP {
         return $dir;
     }
 
+    public function getMapGroups () {
+
+        $mapGroups = array();
+
+        $contents = $this->getTempFileContent();
+        if (!is_array($contents)) {
+            $contents = array($contents);
+        }
+
+        foreach ($contents as $content) {
+
+            @list($buffer, $mapgroupsRaw) = explode('"mapgroups"', $content);
+
+            if ($mapgroupsRaw) {
+
+                $mapGroupStarted = false;
+                $mapGroupBlockStarted = false;
+                $mapGroupMapsBlockStarted = false;
+
+                $splitConfig = preg_split('/\n/',str_replace("\r", '', str_replace(array("\0", "\b", "\r", "\Z"), '', $mapgroupsRaw)) , -1, PREG_SPLIT_NO_EMPTY);
+
+                foreach ($splitConfig as $line) {
+                    if (isset($mapGroupStarted) and $mapGroupStarted) {
+
+                        if ($mapGroupBlockStarted) {
+
+                            if ($mapGroupMapsBlockStarted and preg_match('/^[\s+]{0,}[\}][\s+]{0,}$/', $line)) {
+                                $mapGroupMapsBlockStarted = false;
+                            } else if (!$mapGroupMapsBlockStarted and preg_match('/^[\s+]{0,}[\{][\s+]{0,}$/', $line)) {
+                                $mapGroupMapsBlockStarted = true;
+                            } else if (!$mapGroupMapsBlockStarted and preg_match('/^[\s+]{0,}[\}][\s+]{0,}$/', $line)) {
+                                $mapGroupBlockStarted = false;
+                            }
+
+                        } else if (!$mapGroupBlockStarted and preg_match('/^[\s+]{0,}[\{][\s+]{0,}$/', $line)) {
+                            $mapGroupBlockStarted = true;
+
+                        } else if (substr_count($line, '"') == 2 and !$mapGroupBlockStarted and !$mapGroupMapsBlockStarted) {
+                            $mapGroups[] = preg_replace('/\s/', '', str_replace('"', '', $line));
+
+                        } else if (!$mapGroupBlockStarted and !$mapGroupMapsBlockStarted and preg_match('/^[\s+]{0,}[\}][\s+]{0,}$/', $line)) {
+                            unset($mapGroupStarted);
+                        }
+                    } else if (isset($mapGroupStarted) and !$mapGroupStarted and preg_match('/^[\s+]{0,}[\{][\s+]{0,}$/', $line)) {
+                        $mapGroupStarted = true;
+                    }
+                }
+            }
+        }
+
+        natsort($mapGroups);
+
+        return $mapGroups;
+
+    }
+
+    public function removeTempFiles () {
+        if (is_array($this->tempHandle)) {
+            foreach (array_keys($this->tempHandle) as $k) {
+                fclose($this->tempHandle[$k]);
+            }
+        } else if (is_resource($this->tempHandle)) {
+            fclose($this->tempHandle);
+        }
+    }
+
     function __destruct() {
 
         if (is_resource($this->ftpConnection)) {
@@ -311,12 +377,6 @@ class EasyWiFTP {
             ftp_close($this->ftpSecondConnection);
         }
 
-        if (is_array($this->tempHandle)) {
-            foreach (array_keys($this->tempHandle) as $k) {
-                fclose($this->tempHandle[$k]);
-            }
-        } else if (is_resource($this->tempHandle)) {
-            fclose($this->tempHandle);
-        }
+        $this->removeTempFiles();
     }
 }

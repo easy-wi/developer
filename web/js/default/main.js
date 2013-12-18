@@ -142,9 +142,14 @@ function popup(url) {
     window.open(url, "popup_id", "scrollbars,resizable,width=1024,height=756");
     return false;
 }
-function SwitchShowHideRows (Element) {
+function SwitchShowHideRows (Element, change) {
     var TheRest = document.getElementsByTagName('div');
     var ElementLenght = Element.length;
+
+    if(typeof(change)==='undefined') {
+        change = 'switch';
+    }
+
     for(var x=0; x<TheRest.length; x++) {
         var TheClass = TheRest[x].getAttribute('class');
         if (TheClass != null) {
@@ -155,7 +160,7 @@ function SwitchShowHideRows (Element) {
                     TheRest[x].style.display = '';
                 }
             } else {
-                if (TheClass.indexOf('switch')!=-1) {
+                if (TheClass.indexOf(change)!=-1) {
                     if (TheClass.substring(0,ElementLenght) == Element) {
                         if (TheRest[x].style.display == 'none') {
                             TheRest[x].style.display = '';
