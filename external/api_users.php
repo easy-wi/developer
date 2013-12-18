@@ -264,14 +264,18 @@ if (count($error)>0) {
 				$total=$query->fetchColumn();
 
 				// gameservers
-				$sql = "SELECT u.`member`,u.`ftppasswd`,g.* FROM `{$config['tblPrefix']}_gameserver` AS g
+				$sql = "SELECT u.`member`,u.`ftppasswd`,i.`scriptfolder`,g.* FROM `{$config['tblPrefix']}_gameserver` AS g
 				INNER JOIN `{$config['tblPrefix']}_members` AS u
 				ON g.`memberid`=u.`id`
+				INNER JOIN `{$config['tblPrefix']}_games` AS i
+				ON i.`sname`=g.`game`
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
 				$query->execute();
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 				
+					$extraPath = (strlen($row['scriptfolder']) > 0) ? $row['scriptfolder'] . '/' : '';
+
 					$json[]=array(
 						'externalID' => $row['id'],
 						'belongsToID' => $row['memberid'],
@@ -288,7 +292,7 @@ if (count($error)>0) {
 						'player' => $row['player'],
 						'ftpUser' => $row['member'],
 						'ftpPass' => $row['ftppasswd'],
-						'path' => 'server/' . $row['path'] . '/'
+						'path' => 'server/' . $row['path'] . '/' .$extraPath
 						);
 				}
 			}
