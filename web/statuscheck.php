@@ -690,8 +690,11 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $pupdate = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `id`=? LIMIT 1");
                         $pupdate->execute(array($ts3masterid));
                     }
+
                     $serverlist = $connection->ServerList();
+
                     if (!isset($serverlist[0]['id']) or $serverlist[0]['id'] == 0) {
+
                         foreach ($serverlist as $server) {
                             unset($modbadserver);
                             $modbadserver = array();

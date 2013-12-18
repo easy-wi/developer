@@ -317,7 +317,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         $gameRootCmds = array();
 
         // Prepare queries only once to avoid overhead
-        $query2 = $sql->prepare("SELECT t.`id`,t.`modfolder`,t.`gamebinary` FROM `servertypes` t INNER JOIN `rservermasterg` m ON t.`id`=m.`servertypeid` WHERE t.`shorten`=? AND t.`resellerid`=? AND m.`serverid`=? AND m.`updating`='N' LIMIT 1");
+        $query2 = $sql->prepare("SELECT t.`id`,t.`modfolder`,t.`gamebinary`,t.`map` FROM `servertypes` t INNER JOIN `rservermasterg` m ON t.`id`=m.`servertypeid` WHERE t.`shorten`=? AND t.`resellerid`=? AND m.`serverid`=? AND m.`updating`='N' LIMIT 1");
         $query3 = $sql->prepare("SELECT `id`,`sourceSystemID`,`externalID` FROM `gsswitch` WHERE `serverip`=? AND `port`=? AND `resellerid`=? LIMIT 1");
         $query4 = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerid`=? LIMIT 1");
         $query5 = $sql->prepare("INSERT INTO `gsswitch` (`stopped`,`ftppassword`,`userid`,`rootID`,`serverip`,`port`,`port2`,`slots`,`taskset`,`cores`,`pallowed`,`sourceSystemID`,`externalID`,`resellerid`) VALUES ('Y',AES_ENCRYPT(?,?),?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -367,6 +367,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                             $query2->execute(array(getParam('shorten'), $row['resellerID'], $gameRootIPs[$arrayIP]['id']));
                             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                                 $servertypeID = $row2['id'];
+                                $defaultMap = $row2['map'];
 
                                 // If no srcds or hlds game we will work with the root folder.
                                 // If yes than we need to set or all files will be downloaded into incorrect subfolder.
@@ -422,7 +423,10 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                         $query5->execute(array($passwordGenerate, $aeskey, $internalUserID, $gameRootIPs[$arrayIP]['id'], getParam('ip'), getParam('port'), getParam('port2'), getParam('slots'), $taskset, $core, getParam('protectionMode'), json_encode(array('I' => $row['importID'])), getParam('externalID'), $resellerID));
                                         $switchID = $sql->lastInsertId();
 
-                                        $query6->execute(array(getParam('tickrate'), getParam('startMap'), $switchID, $servertypeID, $resellerID));
+                                        $tickrate = (getParam('tickrate') > 0) ? getParam('tickrate') : 66;
+                                        $startMap = (strlen(getParam('startMap')) > 0) ? getParam('startMap') : $defaultMap;
+
+                                        $query6->execute(array($tickrate, $startMap, $switchID, $servertypeID, $resellerID));
 
                                         $query7->execute(array($sql->lastInsertId(), $switchID));
 
@@ -585,7 +589,6 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         // TS3 virtual server
         unset($left);
         $start = 0;
-        $getVirtualIDs = array();
 
         // Prepare queries only once to avoid overhead
         $query2 = $sql->prepare("SELECT `id`,`sourceSystemID`,`externalID` FROM `voice_server` WHERE `ip` =? AND `port`=? AND `resellerid`=? LIMIT 1");
@@ -698,10 +701,39 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             }
         }
 
+        // As we cannot import the virtual server IDs we need to get them afterwards
+        $query = $sql->prepare("SELECT DISTINCT(`masterserver`) FROM `voice_server` WHERE `resellerid`=? AND (`localserverid`<1 OR `localserverid` IS NULL)");
+        $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `active`='Y' AND `id`=:id LIMIT 1");
+        $query3 = $sql->prepare("UPDATE `voice_server` SET `localserverid`=? WHERE `masterserver`=? AND `resellerid`=? AND `port`=? AND (`localserverid`<1 OR `localserverid` IS NULL)");
+
+        $query->execute(array($resellerID));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            $query2->execute(array(':aeskey' => $aeskey, ':id' => $row2['masterserver']));
+            foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row3) {
+
+                $ts3 = new TS3($row3['ssh2ip'], $row3['queryport'], 'serveradmin', $row3['decryptedquerypassword'], false);
+
+                if (strpos($ts3->errorcode, 'error id=0') !== false) {
+
+                    $serverlist = $ts3->ServerList();
+
+                    if (!isset($serverlist[0]['id']) or $serverlist[0]['id'] == 0) {
+
+                        foreach ($serverlist as $server) {
+                            $query3->execute(array($server['virtualserver_id'], $row2['masterserver'], $resellerID, $server['virtualserver_port']));
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+
         // Substitutes
         unset($left);
         $start = 0;
-
+/**
         // Prepare queries only once to avoid overhead
 
         while (!isset($left) or $left > 0) {
@@ -794,7 +826,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             }
         }
 
-
+**/
 
     }
 
