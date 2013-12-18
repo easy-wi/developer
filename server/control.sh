@@ -654,6 +654,7 @@ for UPDATE in $VARIABLE3; do
 echo '	LASTUPDATE=$UPDATE' >> $TEMPFOLDER/updateSteamCmd.sh
 echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type f \( -iname "srcds_*" -or -iname "hlds_*" -or -iname "*.run" -or -iname "*.sh" \) -print0 | xargs -0 chmod 750' >> $TEMPFOLDER/updateSteamCmd.sh
 echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type f ! -perm -750 ! -perm -755 -print0 | xargs -0 chmod 640' >> $TEMPFOLDER/updateSteamCmd.sh
+echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type f -name "subscribed_file_ids.txt" -o -name "subscribed_collection_ids.txt " | xargs -0 rm -f' >> $TEMPFOLDER/updateSteamCmd.sh
 echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type d -print0 | xargs -0 chmod 750' >> $TEMPFOLDER/updateSteamCmd.sh
 echo '	ls $MASTERSERVERDIR/$UPDATE | while read dir; do' >> $TEMPFOLDER/updateSteamCmd.sh
 echo '		if [[ `echo $dir| grep '"'"'[a-z0-9]\{40\}'"'"'` ]]; then' >> $TEMPFOLDER/updateSteamCmd.sh
