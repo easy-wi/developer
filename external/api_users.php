@@ -284,7 +284,7 @@ if (count($error)>0) {
 						'port' => $row['serverport'],
 						'port2' => $row['queryport'],
 						'slots' => $row['player'],
-						'assignedCore' => $row['cpucore'],
+						'assignedCore' => ($row['cpucore'] - 1),
 						'protectionMode' => ($row['protect'] == 1) ? 'Y' : 'N',
 						'tickrate' => $row['gtick'],
 						'startMap' => $row['gmap'],
