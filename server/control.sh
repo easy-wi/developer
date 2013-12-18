@@ -1539,7 +1539,7 @@ else
 fi
 SCREENNAME="`echo $SERVERDIR | awk  -F '/' '{print $5}'`"
 if [ "$VARIABLE5" != "protected" ]; then
-	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-${SCREENNAME}.sh
+	STARTFILE=/temp/start-${VARIABLE2}-${SCREENNAME}.sh
 else
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-p-${SCREENNAME}.sh
 fi
@@ -1550,12 +1550,12 @@ if [ "$VARIABLE1" == "grestart" ]; then
 	echo 'while [ "`ps x | grep '"'add-${VARIABLE2}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
 	echo 'sleep 0.5' >> $STARTFILE
 	echo 'done' >> $STARTFILE
-	addStop $STARTFILE
+	addStop $STARTFILE temp/start-${VARIABLE2}-p-${SCREENNAME}.sh
 else
 	echo "#!/bin/bash" > $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	echo "rm $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	echo "SCREENNAME=$SCREENNAME" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
-	addStop $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
+	addStop $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	echo "${IONICE}nice -n +19 find $HOMEFOLDER/temp/ -type f -user `whoami` -delete" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	echo "${IONICE}nice -n +19  find /tmp -user `whoami` -delete" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	echo "crontab -r 2> /dev/null" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
@@ -1595,7 +1595,7 @@ function addStop {
 		echo 'if [ "`screen -ls | grep $SCREENNAME | wc -l`" == "1" ]; then' >> $1
 		echo 'screen -r $SCREENNAME -X quit' >> $1
 		echo 'fi' >> $1
-		echo "ps x | grep -v '$1' | grep $SCREENNAME | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
+		echo "ps x | grep -v '$1' | grep -v '$2' | grep $SCREENNAME | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
 		echo 'kill $PID' >> $1
 		echo 'kill -9 $PID' >> $1
 		echo 'done' >> $1
@@ -1603,11 +1603,11 @@ function addStop {
 	else
 		echo "No screen found: $SCREENNAME"
 	fi
-	echo "ps x | grep -v '$1' | grep `echo $SCREENNAME | awk -F '_' '{print $1}'` | grep `echo $SCREENNAME | awk -F '_' '{print $2}'` | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
+	echo "ps x | grep -v '$1' | grep -v '$2' | grep `echo $SCREENNAME | awk -F '_' '{print $1}'` | grep `echo $SCREENNAME | awk -F '_' '{print $2}'` | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
 	echo 'kill $PID' >> $1
 	echo 'kill -9 $PID' >> $1
 	echo 'done' >> $1
-	echo "ps x | grep -v '$1' | grep 'java' | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
+	echo "ps x | grep -v '$1' | grep -v '$2' | grep 'java' | grep -v grep | awk '{print "'$1'"}' | while read PID; do" >> $1
 	echo 'kill $PID' >> $1
 	echo 'kill -9 $PID' >> $1
 	echo 'done' >> $1
