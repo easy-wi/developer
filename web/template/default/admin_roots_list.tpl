@@ -7,11 +7,13 @@
         </ul>
     </div>
 </div>
+<?php if($reseller_id==0){ ?>
 <div class="row-fluid">
     <div class="span6">
         <?php echo $gsprache->gameroot;?> <a href="admin.php?w=ro&amp;d=ad"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a>
     </div>
 </div>
+<?php }?>
 <hr>
 <div class="row-fluid">
     <div class="span11 pagination">

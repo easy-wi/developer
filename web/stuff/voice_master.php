@@ -117,6 +117,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
     $bit = ($ui->id('bit', 2, 'post')) ? $ui->id('bit', 2, 'post') : 64;
     $managedServer = ($ui->active('managedServer', 'post')) ? $ui->active('managedServer', 'post') : 'N';
+    $managedForID = $ui->id('managedForID', 10, 'post');
 
     // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
     if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
@@ -171,9 +172,11 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     if (!$ui->w('action', 3, 'post') and $ui->st('d', 'get') != 'ri') {
 
         if ($ui->st('d', 'get') == 'ad') {
+
             $template_file = 'admin_voicemasterserver_add.tpl';
 
         } else if ($ui->st('d', 'get') == 'md' and $id) {
+
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

@@ -53,7 +53,7 @@ class TS3 {
 	}
 
 	public function SendCommand ($value) {
-		if ($this->connected == true) {
+		if ($this->connected == true and is_resource($this->socket)) {
 
 			$return = array();
             $response = '';
@@ -82,8 +82,11 @@ class TS3 {
                 print "Raw query return: ${response}\r\n";
             }
 
-			list($databody, $errorcode) = explode('error id=', str_replace(array("\r", "\n"), '', $response));
-			$this->errorcode = 'error id=' . $errorcode;
+			@list($databody, $errorcode) = explode('error id=', str_replace(array("\r", "\n"), '', $response));
+
+            if ($errorcode) {
+                $this->errorcode = 'error id=' . $errorcode;
+            }
 
 			if ($databody == '' or $databody==null) {
                 $databody = $this->errorcode;
@@ -328,16 +331,22 @@ class TS3 {
 		$serverlist = $this->SendCommand('serverlist');
 		foreach ($serverlist as $server) {
 			if (isset($server['virtualserver_id'])) {
+
 				$virtualserver_id = $server['virtualserver_id'];
+
 				if ($server['virtualserver_status'] == 'offline') {
 					$this->StartServer($virtualserver_id);
 				}
+
 				$useserver = $this->UseServer($virtualserver_id);
+
 				if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
-                    $virtualserver_ip=(isset($serverdetails_query[0]['virtualserver_ip']) and isip($serverdetails_query[0]['virtualserver_ip'], 'all')) ? $serverdetails_query[0]['virtualserver_ip'] : $this->ip;
+
+                    $virtualserver_ip = (isset($serverdetails_query[0]['virtualserver_ip']) and isip($serverdetails_query[0]['virtualserver_ip'], 'all')) ? $serverdetails_query[0]['virtualserver_ip'] : $this->ip;
+
 					$serverdetails_query = $this->SendCommand('serverinfo');
 					$virtualserver_server = $virtualserver_ip . ':' . $server['virtualserver_port'];
-                    $virtualserver_dns=(array_key_exists($virtualserver_server, $dnsarray)) ? $dnsarray[$virtualserver_server] : '';
+                    $virtualserver_dns = (array_key_exists($virtualserver_server, $dnsarray)) ? $dnsarray[$virtualserver_server] : '';
 
                     $serverdetails[$virtualserver_id] = array(
                         'virtualserver_ip' => $virtualserver_ip,
@@ -385,22 +394,59 @@ class TS3 {
 		}
 		return $serverdetails;
 	}
+
 	public function ServerList () {
+
 		$serverdetails = array();
+
         $array = $this->SendCommand('serverlist');
-        if (is_array($array) or is_object($array)) foreach ($array as $k => $v) $serverdetails[$k] = $this->ReplaceFromTS3($v);
+
+        if (is_array($array) or is_object($array)) {
+            foreach ($array as $k => $v) {
+                $serverdetails[$k] = $this->ReplaceFromTS3($v);
+            }
+        }
+
         if ($this->debug == true){
             print "ServerList:";
             print_r($serverdetails);
             print "\r\n";
         }
+
 		return $serverdetails;
+
 	}
+
 	public function ServerDetails ($virtualserver_id) {
-		$serverdetails = array('virtualserver_name' => '','virtualserver_welcomemessage' => '','virtualserver_hostbanner_url' => '','virtualserver_hostbanner_gfx_url' => '','virtualserver_hostbutton_tooltip' => '','virtualserver_hostbutton_url' => '','virtualserver_hostbutton_gfx_url' => '','virtualserver_maxclients' => '','virtualserver_flag_password' => '','virtualserver_max_download_total_bandwidth' => '','virtualserver_max_upload_total_bandwidth' => '','virtualserver_clientsonline' => 0,'virtualserver_queryclientsonline' => 0,'virtualserver_uptime' => 20,'virtualserver_status' => '','connection_filetransfer_bytes_sent_total' => '','connection_filetransfer_bytes_received_total' => '','connection_bytes_sent_total' => '','connection_bytes_received_total' => '');
+
+		$serverdetails = array(
+            'virtualserver_name' => '',
+            'virtualserver_welcomemessage' => '',
+            'virtualserver_hostbanner_url' => '',
+            'virtualserver_hostbanner_gfx_url' => '',
+            'virtualserver_hostbutton_tooltip' => '',
+            'virtualserver_hostbutton_url' => '',
+            'virtualserver_hostbutton_gfx_url' => '',
+            'virtualserver_maxclients' => '',
+            'virtualserver_flag_password' => '',
+            'virtualserver_max_download_total_bandwidth' => '',
+            'virtualserver_max_upload_total_bandwidth' => '',
+            'virtualserver_clientsonline' => 0,
+            'virtualserver_queryclientsonline' => 0,
+            'virtualserver_uptime' => 20,
+            'virtualserver_status' => '',
+            'connection_filetransfer_bytes_sent_total' => '',
+            'connection_filetransfer_bytes_received_total' => '',
+            'connection_bytes_sent_total' => '',
+            'connection_bytes_received_total' => ''
+        );
+
         $useserver = $this->UseServer($virtualserver_id);
+
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
+
 			$serverdetails_query = $this->SendCommand('serverinfo');
+
 			$serverdetails = array(
 				'virtualserver_name' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_name']),
 				'virtualserver_welcomemessage' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_welcomemessage']),
@@ -431,11 +477,13 @@ class TS3 {
                 'virtualserver_antiflood_points_needed_command_block' => $serverdetails_query[0]['virtualserver_antiflood_points_needed_command_block'],
                 'virtualserver_antiflood_points_needed_ip_block' => $serverdetails_query[0]['virtualserver_antiflood_points_needed_ip_block']
 			);
+
             if ($this->debug == true){
                 print "Serverdetails:";
                 print_r($serverdetails);
                 print "\r\n";
             }
+
 		} else if ($this->debug == true) {
             print "Userserver at serverdetails failed:";
             print_r($useserver);
@@ -447,11 +495,17 @@ class TS3 {
             else echo '$useserver[0]["msg"] not set';
             print "\r\n";
         }
+
 		return $serverdetails;
+
 	}
+
 	public function AdminList ($virtualserver_id) {
+
         $adminlist = '';
+
 		$useserver = $this->UseServer($virtualserver_id);
+
 		if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg'])==strtolower('ok')) {
 			$servergroups = $this->SendCommand('servergrouplist');
 			$permissioncount = 0;
