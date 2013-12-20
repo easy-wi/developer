@@ -139,7 +139,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                         $checkAmount = $query4->fetchColumn();
 
                         if ($checkAmount > 0 and $row['fetchUpdates'] == 'Y') {
-                            $query2->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('firstName'), getParam('lastName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'),json_encode(array('I' => $row['importID'])), getParam('externalID'), $row['resellerID']));
+                            $query2->execute(array(getParam('salutation'), strtolower(getParam('email')), getParam('loginName'), getParam('lastName'), getParam('firstName'), getParam('birthday'), getParam('country'), getParam('phone'), getParam('fax'), getParam('handy'), getParam('city'), getParam('cityn'), getParam('street'), getParam('streetn'),json_encode(array('I' => $row['importID'])), getParam('externalID'), $row['resellerID']));
                             printText('User updated. Loginname: ' . $value->loginName.' e-mail: ' . strtolower($value->email));
 
                         } else if ($checkAmount > 0) {
