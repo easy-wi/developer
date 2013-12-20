@@ -1812,88 +1812,35 @@ if (!function_exists('passwordgenerate')) {
 function workAroundForValveChaos ($appID, $shorten, $toApi = true) {
 
     if ($toApi == true) {
-        if ($appID == 90 and $shorten == 'cstrike') {
-            return 10;
+        if ($appID == 90) {
 
-        } else if ($appID == 90 and $shorten == 'czero') {
-            return 80;
+            $mapping = array('cstrike' => 10, 'czero' => 80, 'dmc' => 40, 'dod' => 30, 'gearbox' => 50, 'ricochet' => 60, 'tfc' => 20);
 
-        } else if ($appID == 90 and $shorten == 'dmc') {
-            return 40;
+            if (isset($mapping[$shorten])) {
+                return $mapping[$shorten];
+            }
+        } else {
 
-        } else if ($appID == 90 and $shorten == 'dod') {
-            return 30;
+            $mapping = array(740 => 730, 215360 => 1250, 215350 => 1250, 222860 => 550, 229830 => 440, 232250 => 440, 232290 => 300, 232330 => 240, 232370 => 320, 258550 => 252490, 259080 => 261140);
 
-        } else if ($appID == 90 and $shorten == 'gearbox') {
-            return 50;
-
-        } else if ($appID == 90 and $shorten == 'ricochet') {
-            return 60;
-
-        } else if ($appID == 90 and $shorten == 'tfc') {
-            return 20;
-
-        } else if ($appID == 740) {
-            return 730;
-
-        } else if ($appID == 215360 or $appID == 215350) {
-            return 1250;
-
-        } else if ($appID == 222860) {
-            return 550;
-
-        } else if ($appID == 229830) {
-            return 440;
-
-        } else if ($appID == 232250) {
-            return 440;
-
-        } else if ($appID == 232290) {
-            return 300;
-
-        } else if ($appID == 232330) {
-            return 240;
-
-        } else if ($appID == 232370) {
-            return 320;
-
-        } else if ($appID == 258550) {
-            return 252490;
-
-        } else if ($appID == 259080) {
-            return 261140;
+            if (isset($mapping[$appID])) {
+                return $mapping[$appID];
+            }
         }
 
     } else {
+
         if (in_array($appID, array(10, 20, 30, 40, 50, 60, 80))) {
+
             return 90;
 
-        } else if ($appID == 240) {
-            return 232330;
+        } else {
 
-        } else if ($appID == 300) {
-            return 232290;
+            $mapping = array(240 => 232330, 300 => 232290, 320 => 232370, 440 => 232250, 730 => 740, 550 => 222860, 1250 => 215360, 215350 => 215360, 252490 => 258550, 261140 => 259080);
 
-        } else if ($appID == 320) {
-            return 232370;
-
-        } else if ($appID == 440) {
-            return 232250;
-
-        } else if ($appID == 730) {
-            return 740;
-
-        } else if ($appID == 550) {
-            return 222860;
-
-        } else if ($appID == 1250 or $appID == 215350) {
-            return 215360;
-
-        } else if ($appID == 252490) {
-            return 258550;
-
-        } else if ($appID == 261140) {
-            return 259080;
+            if (isset($mapping[$appID])) {
+                return $mapping[$appID];
+            }
         }
     }
 
