@@ -113,8 +113,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $configedit = $ui->startparameter('configedit', 'post');
     $modcmds = $ui->startparameter('modcmds', 'post');
     $gameq = $ui->w('gameq', 255, 'post');
-    $gamemod = $ui->active('gamemod', 'post');
     $gamemod2 = $ui->w('gamemod2', 10, 'post');
+    $gamemod = ($ui->active('gamemod', 'post')) ? $ui->active('gamemod', 'post') : 'N';
     $portMax = ($ui->id('portMax', 1, 'post')) ? $ui->id('portMax', 1, 'post') : 1;
     $portStep = ($ui->id('portStep',4, 'post')) ? $ui->id('portStep',4, 'post') : 100;
     $portOne = ($ui->id('portOne',5, 'post')) ? $ui->id('portOne',5, 'post') : 27015;
@@ -290,7 +290,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                 $ramLimited = $node->nodeValue;
                             }
                             if ($node->nodeName == 'ftpAccess') {
-                                $ftpAccess = $node->ftpAccess;
+                                $ftpAccess = $node->nodeValue;
                             }
                             if ($node->nodeName == 'os') {
                                 $os = $node->nodeValue;
@@ -405,7 +405,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
 
                 $query = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`workShop`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`ramLimited`,`ftpAccess`,`os`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os,$reseller_id));
+                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $reseller_id));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %template% ' . $shorten;
 
