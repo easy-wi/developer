@@ -674,7 +674,7 @@ $defined['servertypes'] = array('id' => array("Type"=>"int(10) unsigned","Null"=
     'ramLimited' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'ftpAccess' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'workShop' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
-    'os' => array("Type"=>"enum('L','W')","Null"=>"YES","Key"=>"","Default"=>"L","Extra"=>""),
+    'os' => array("Type"=>"enum('B','L','W')","Null"=>"YES","Key"=>"","Default"=>"L","Extra"=>""),
     'downloadPath' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
