@@ -713,7 +713,7 @@ if (!function_exists('passwordgenerate')) {
                 
                 foreach (explode("\r\n", $row2['configedit']) as $line) {
                     
-                    if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg))$/', $line)) {
+                    if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua))$/', $line)) {
                         $ex = preg_split("/\s+/", $line, -1,PREG_SPLIT_NO_EMPTY);
                         $cvartype = (isset($ex[1])) ? $ex[1] : 'cfg';
                         $config = substr($ex[0], 1, strlen($ex[0]) - 2);
@@ -724,6 +724,8 @@ if (!function_exists('passwordgenerate')) {
                         if ($cvarprotect[$config]['type'] == 'cfg') {
                             $splitline = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
                         } else if ($cvarprotect[$config]['type'] == 'ini') {
+                            $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
+                        } else if ($cvarprotect[$config]['type'] == 'lua') {
                             $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
                         } else if ($cvarprotect[$config]['type'] == 'xml') {
                             $ex1 = explode('>', $line);
@@ -997,8 +999,9 @@ if (!function_exists('passwordgenerate')) {
                                     $configfile .= fread($temp, 1024);
                                 }
                                 fclose($temp);
-                                
+
                                 $configfile = str_replace(array("\0","\b","\r","\Z"),"", $configfile);
+
                                 $lines = explode("\n", $configfile);
                                 $linecount = count($lines) - 1;
                                 $i = 0;
@@ -1006,33 +1009,37 @@ if (!function_exists('passwordgenerate')) {
                                 foreach ($lines as $singeline) {
                                     
                                     $edited = false;
-                                    $lline=strtolower($singeline);
+                                    $lline = strtolower($singeline);
                                     
                                     foreach ($values['cvars'] as $cvar => $value) {
                                         
-                                        if ($cfgtype == 'cfg' and preg_match("/^(.*)".strtolower($cvar)."\s+(.*)$/", $lline)) {
+                                        if ($cfgtype == 'cfg' and preg_match("/^(.*)" . strtolower($cvar) . "\s+(.*)$/", $lline)) {
                                             
                                             $edited = true;
-                                            $splitline = preg_split("/$cvar/", $lline, -1,PREG_SPLIT_NO_EMPTY);
+
+                                            $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
                                             
-                                            fwrite($temp2, (isset($splitline[1])) ? $splitline[0].$cvar . '  ' . $value : $cvar . '  ' . $value);
+                                            fwrite($temp2, (isset($splitline[1])) ? $splitline[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
                                             
-                                        } else if ($cfgtype == 'ini' and preg_match("/^(.*)".strtolower($cvar)."(\=|\s+\=\s+|\s+\=|\=\s+)(.*)$/", $lline)) {
-                                            
-                                            $edited = true;
-                                            $splitline = preg_split("/$cvar/", $lline, -1,PREG_SPLIT_NO_EMPTY);
-                                            if (isset($splitline[1]) and preg_match("/^(.*)".strtolower($cvar)."\s+\=\s+(.*)$/", $splitline[1])) {
-                                                fwrite($temp2, $splitline[0].$cvar. ' = ' .$value);
-                                            } else if (preg_match("/^(.*)".strtolower($cvar)."\s+\=\s+(.*)$/", $splitline[0])) {
-                                                fwrite($temp2, $cvar. ' = ' .$value);
-                                            } else {
-                                                fwrite($temp2, $cvar . '=' . $value);
-                                            }
-                                            
-                                        } else if ($cfgtype == 'xml' and preg_match("/^(.*)<".strtolower($cvar).">(.*)<\/".strtolower($cvar).">(.*)$/", $lline)) {
+                                        } else if ($cfgtype == 'ini' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)$/", $lline)) {
                                             
                                             $edited = true;
-                                            $splitline = preg_split("/\<$cvar/", $lline, -1,PREG_SPLIT_NO_EMPTY);
+
+                                            fwrite($temp2, $cvar . '=' . $value);
+
+                                        } else if ($cfgtype == 'lua' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)[\,]$/", $lline)) {
+
+                                            $edited = true;
+
+                                            $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
+
+                                            fwrite($temp2, (isset($splitline[1])) ? $splitline[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
+
+                                        } else if ($cfgtype == 'xml' and preg_match("/^(.*)<" . strtolower($cvar) . ">(.*)<\/" . strtolower($cvar) . ">(.*)$/", $lline)) {
+                                            
+                                            $edited = true;
+
+                                            $splitline = preg_split("/\<$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
                                             
                                             fwrite($temp2,  (isset($splitline[1])) ? $splitline[0] . '<' .$cvar . '>' . $value . '</' . $cvar . '>' : '<' . $cvar . '> ' . $value . '</' . $cvar . '>');
                                         }
@@ -1041,14 +1048,16 @@ if (!function_exists('passwordgenerate')) {
                                     if ($edited == false) {
                                         fwrite($temp2, $singeline);
                                     }
-                                    if ($i<$linecount) {
-                                        fwrite($temp2,"\r\n");
+
+                                    if ($i < $linecount) {
+                                        fwrite($temp2, "\r\n");
                                     }
+
                                     $i++;
                                 }
                                 fseek($temp2, 0);
                                 fseek($temp2, 0);
-                                @ftp_fput($ftp_connect, $uploadfile, $temp2,FTP_ASCII);
+                                @ftp_fput($ftp_connect, $uploadfile, $temp2, FTP_BINARY);
                             }
                             fclose($temp2);
                         }
