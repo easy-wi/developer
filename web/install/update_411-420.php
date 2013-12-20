@@ -153,6 +153,12 @@ Unfortunately errors have slipped in 4.10. In addition the update revealed that 
             $query = $sql->prepare("INSERT INTO `servertypes` (`steamgame`, `appID`, `steamVersion`, `updates`, `shorten`, `description`, `type`, `gamebinary`, `binarydir`, `modfolder`, `fps`, `slots`, `map`, `cmd`, `modcmds`, `tic`, `qstat`, `gamemod`, `gamemod2`, `configs`, `configedit`, `qstatpassparam`, `portStep`, `portMax`, `portOne`, `portTwo`, `portThree`, `portFour`, `portFive`, `protected`, `resellerid`, `gameq`, `os`, `ftpAccess`, `ramLimited`, `downloadPath`, `protectedSaveCFGs`, `iptables`, `mapGroup`) VALUES ('N', NULL, NULL, 1, 'warsow', 'WarSow', '', 'wsw_server.x86_64', '', 'basewsw', NULL, 12, '', './%binary% +exec dedicated_server.cfg +set sv_maxclients %slots% +set sv_ip %ip% +set sv_port %port% +set sv_port6 %port%', '[Deathmatch]\r\n+set g_gametype \"dm\"\r\n\r\n[Team Deathmatch]\r\n+set g_gametype \"tdm\"\r\n\r\n[Team DMCTF]\r\n+set g_gametype \"tdm_ctf\"\r\n\r\n[Capture the Flag]\r\n+set g_gametype \"ctf\"\r\n\r\n[Clan Arena]\r\n+set g_gametype \"ca\"\r\n\r\n[Duel]\r\n+set g_gametype \"duel\"\r\n\r\n[Duel Arena]\r\n+set g_gametype \"da\"\r\n\r\n[DuelQuad]\r\n+set g_gametype \"duel_quad\"\r\n\r\n[FFA = default]\r\n+set g_gametype \"ffa\"\r\n\r\n[Mid Air]\r\n+set g_gametype \"midair\"\r\n\r\n[Race]\r\n+set g_gametype \"race\"\r\n\r\n[All Round]\r\n+set g_gametype \"allaround\"', NULL, NULL, 'N', NULL, 'basewsw/dedicated_server.cfg\r\nbasewsw/motd.cfg', '[basewsw/dedicated_autoexec.cfg] cfg\r\nsv_ip \"%ip%\"\r\nsv_port \"%port%\"\r\nsv_port6 \"%port%\"\r\nsv_maxclients \"%slots%\"', NULL, 10, 1, 44400, NULL, NULL, NULL, NULL, 'N', ?, 'warsow', 'L', 'Y', 'N', NULL, NULL, NULL, NULL);");
             $query->execute(array($row['resellerid']));
         }
+        $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='jcmp' AND `resellerid`=? LIMIT 1");
+        $query->execute(array($row['resellerid']));
+        if ($query->rowCount() == 0) {
+            $query = $sql->prepare("INSERT INTO `servertypes` (`steamgame`, `appID`, `steamVersion`, `updates`, `shorten`, `description`, `type`, `gamebinary`, `binarydir`, `modfolder`, `fps`, `slots`, `map`, `cmd`, `modcmds`, `tic`, `qstat`, `gamemod`, `gamemod2`, `configs`, `configedit`, `qstatpassparam`, `portStep`, `portMax`, `portOne`, `portTwo`, `portThree`, `portFour`, `portFive`, `protected`, `resellerid`, `gameq`, `os`, `ftpAccess`, `ramLimited`, `downloadPath`, `protectedSaveCFGs`, `iptables`, `mapGroup`) VALUES ('S', 261140, NULL, 1, 'jcmp', 'Just Cause 2 Multi Player', '', 'Jcmp-Server', NULL, NULL, NULL, 0, NULL, './%binary%', NULL, NULL,'jcmp', 'N', NULL, 'config.lua', '[config.lua] lua\r\nMaxPlayers = %slots%,\r\nBindIP = \"%ip%\",\r\nBindPort = %port%,', 100, 2, 7777, 7778, NULL, NULL, NULL, 'N', ?, 'N', 'jcmp', 'L', 'Y', 'N', NULL, NULL, NULL, NULL);");
+            $query->execute(array($row['resellerid']));
+        }
 
         // Loop to addons and add in case addons does not exist yet
         foreach ($gameAddons as $addon) {
@@ -185,78 +191,45 @@ Unfortunately errors have slipped in 4.10. In addition the update revealed that 
                 }
             }
         }
-        
+
     }
 
 
     // Migrate existing Images from qstat to GameQ
+
     // Most accurate based on appID
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='css' WHERE `appID`=232330");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='dods' WHERE `appID`=232290");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='l4d' WHERE `appID`=550");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='l4d2' WHERE `appID`=222860");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='aoc' WHERE `appID`=17515");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='hl2dm' WHERE `appID`=232370");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='insurgency' WHERE `appID`=17705");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='tf2' WHERE `appID`=232250");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='csgo' WHERE `appID`=740");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='killingfloor' WHERE `appID`=215360");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='zps' WHERE `appID`=17505");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='source' WHERE `appID`=17575");
-    $query->execute();
+    $array = array('css' => 232330, 'dods' => 232290, 'l4d' => 550, 'l4d2' => 222860, 'aoc' => 17515, 'hl2dm' => 232370, 'insurgency' =>  7705, 'tf2' => 232250, 'csgo' => 740, 'killingfloor' => 215360, 'zps' => 17505, 'source' => 17575);
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`=? WHERE `appID`=?");
+
+    foreach ($array as $k => $v) {
+        $query->execute(array($k, $v));
+    }
 
     // Accurate, based on easy-wi/qstat query
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='minecraft' WHERE `qstat`='minecraft'");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='samp' WHERE `qstat`='gtasamp'");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='Mta' WHERE `qstat`='mtasa'");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='teeworlds' WHERE `qstat`='teeworlds'");
-    $query->execute();
+    $array = array('minecraft' => 'minecraft', 'samp' => 'gtasamp', 'Mta' => 'mtasa', 'teeworlds' => 'teeworlds', 'warsow' => 'warsows', 'et' => 'woets', 'ut' => 'uns', 'ut2004' => 'ut2004s', 'ut3' => 'ut2s');
 
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='warsow' WHERE `qstat`='warsows'");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='et' WHERE `qstat`='woets'");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='ut' WHERE `qstat`='uns'");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='ut2004' WHERE `qstat`='ut2004s'");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='ut3' WHERE `qstat`='ut2s'");
-    $query->execute();
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`=? WHERE `qstat`=?");
+
+    foreach ($array as $k => $v) {
+        $query->execute(array($k, $v));
+    }
 
     // Less accurate, based on shorten
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='dod' WHERE `shorten`='dod' LIMIT 1");
+    $array = array('dod' => 'dod', 'cs16' => 'cstrike', 'cscz' => 'czero', 'tfc' => 'tfc', 'cod' => 'cod', 'cod2' => 'cod2', 'cod4' => 'cod4', 'codmw3' => 'codmw3', 'coduo' => 'coduo', 'codwaw' => 'codwaw');
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`=? WHERE `shorten`=?");
+
+    foreach ($array as $k => $v) {
+        $query->execute(array($k, $v));
+    }
+
+    // rework workshop support and allow with csgo
+
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `workShop` enum('Y','N') DEFAULT 'N' AFTER `mapGroup`");
     $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cs16' WHERE `shorten`='cstrike' LIMIT 1");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cscz' WHERE `shorten`='czero' LIMIT 1");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='tfc' WHERE `shorten`='tfc' LIMIT 1");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cod' WHERE `shorten`='cod' LIMIT 1");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cod2' WHERE `shorten`='cod2' LIMIT 1");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='cod4' WHERE `shorten`='cod4' LIMIT 1");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='codmw3' WHERE `shorten`='codmw3' LIMIT 1");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='coduo' WHERE `shorten`='coduo' LIMIT 1");
-    $query->execute();
-    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='codwaw' WHERE `shorten`='codwaw' LIMIT 1");
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `workShop`='Y' WHERE `appID`=730 OR `appID`=740");
     $query->execute();
 
     // DROP as not needed anymore
