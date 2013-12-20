@@ -360,7 +360,9 @@ class EasyWiFTP {
     public function removeTempFiles () {
         if (is_array($this->tempHandle)) {
             foreach (array_keys($this->tempHandle) as $k) {
-                fclose($this->tempHandle[$k]);
+                if (is_resource($this->tempHandle[$k])) {
+                    fclose($this->tempHandle[$k]);
+                }
             }
         } else if (is_resource($this->tempHandle)) {
             fclose($this->tempHandle);
