@@ -96,7 +96,7 @@
                                     <?php if(!isset($_SESSION['sID'])){ ?><li <?php if($w=='su') echo 'class="active"';?>><a href="userpanel.php?w=su"><?php echo $gsprache->substitutes;?></a></li><?php }?>
                                     <li <?php if($w=='lo') echo 'class="active"';?>><a href="userpanel.php?w=lo"><?php echo $gsprache->logs;?></a></li>
                                     <?php if($easywiModules['ip']){ ?><li <?php if($w=='ip') echo 'class="active"';?>><a href="userpanel.php?w=ip"><?php echo $gsprache->imprint;?></a></li><?php }?>
-                                    <?php foreach ($customModules['us'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                    <?php foreach ($customModules['us'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                                 <ul class="nav nav-pills nav-stacked">
                                     <li <?php if($w=='ti' and $d!='ad') echo 'class="active"';?>><a href="userpanel.php?w=ti"><?php echo $gsprache->overview;?></a></li>
                                     <li <?php if($w=='ti' and $d=='ad') echo 'class="active"';?>><a href="userpanel.php?w=ti&amp;d=ad"><?php echo $gsprache->support2;?></a></li>
-                                    <?php foreach ($customModules['ti'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                    <?php foreach ($customModules['ti'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
@@ -134,7 +134,7 @@
                                     <?php if($pa['restart']) { ?>
                                     <li <?php if($w=='ms') echo 'class="active"';?>><a href="userpanel.php?w=ms"><?php echo $gsprache->migration;?></a></li>
                                     <?php } ?>
-                                    <?php foreach ($customModules['gs'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                    <?php foreach ($customModules['gs'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($voicecount>0) { ?><li <?php if($w=='vo') echo 'class="active"';?>><a href="userpanel.php?w=vo"><?php echo $gsprache->overview;?></a></li><?php } ?>
                                     <?php if($tsdnscount>0) { ?><li <?php if($w=='vd') echo 'class="active"';?>><a href="userpanel.php?w=vd">TS3 DNS</a></li><?php } ?>
-                                    <?php foreach ($customModules['vo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                    <?php foreach ($customModules['vo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
@@ -165,7 +165,7 @@
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <li <?php if($w=='my') echo 'class="active"';?>><a href="userpanel.php?w=my"><?php echo $gsprache->overview;?></a></li>
-                                    <?php foreach ($customModules['my'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                    <?php foreach ($customModules['my'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
@@ -181,7 +181,7 @@
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($rootcount>0) { ?><li <?php if($w=='de') echo 'class="active"';?>><a href="userpanel.php?w=de"><?php echo $gsprache->dedicated;?></a></li><?php } ?>
                                     <?php if($virtualcount>0) { ?><li <?php if($w=='vm') echo 'class="active"';?>><a href="userpanel.php?w=vm"><?php echo $gsprache->virtual;?></a></li><?php } ?>
-                                    <?php foreach ($customModules['ro'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                    <?php foreach ($customModules['ro'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
@@ -195,7 +195,7 @@
                         <div id="collapseFourteen" class="accordion-body collapse <?php if(isset($customModules['mo'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <?php foreach ($customModules['mo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                    <?php foreach ($customModules['mo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>

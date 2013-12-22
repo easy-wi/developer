@@ -218,10 +218,12 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSix"><i class="fa fa-h-square fa-fw"></i> <?php echo $gsprache->support;?></a>
                         </div>
-                        <div id="collapseSix" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='my') echo 'in';?>">
+                        <div id="collapseSix" class="accordion-body collapse <?php if($ui->smallletters('w',255,'get')=='tr') echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
-                                    <li <?php if($ui->smallletters('w',255,'get')=='tr') echo 'class="active"';?>><a href="admin.php?w=tr"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='tr' and $ui->smallletters('d',255,'get')!='ad') echo 'class="active"';?>><a href="admin.php?w=tr"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='ti' and $ui->smallletters('d',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=tr&amp;d=ad"><?php echo $gsprache->support2;?></a></li>
+                                    <?php foreach ($customModules['ti'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>
