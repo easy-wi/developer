@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: init_admin.php.
  * Author: Ulrich Block
@@ -46,6 +47,7 @@ $pa = User_Permissions($admin_id);
 if (!isanyadmin($admin_id) and count($pa) == 0) {
     redirect('login.php');
 }
+
 $licenceDetails = serverAmount($reseller_id);
 $gserver_module = (is_numeric($licenceDetails['mG']) and $licenceDetails['mG'] == 0) ? false : true;
 $vserver_module = (is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs'] == 0) ? false : true;

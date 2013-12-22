@@ -167,6 +167,10 @@ if (isset($reseller_id)) {
     $downChecks = $rSA['down_checks'];
     $logdate = date('Y-m-d H:i:s', strtotime($resellerstimezone .' hour'));
 
+    if (isset($admin_id)) {
+        $resellerLockupID = ($reseller_id != 0 and $reseller_id != $admin_id) ? $admin_id : $reseller_id;
+    }
+
     if (isset($user_id) and !isset($admin_id)) {
         $lookupid = $reseller_id;
 
@@ -185,6 +189,7 @@ if (isset($reseller_id)) {
     $query = $sql->prepare("SELECT `supportnumber` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($lookupid));
     $support_phonenumber = $query->fetchColumn();
+
 
 } else {
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=0 LIMIT 1");

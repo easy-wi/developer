@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: masterserver.php.
  * Author: Ulrich Block
@@ -42,11 +43,13 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['masterServe
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/class_masterserver.php');
+include(EASYWIDIR . '/stuff/ssh_exec.php');
 
 $sprache = getlanguagefile('roots',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
+
 if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
@@ -54,14 +57,11 @@ if ($reseller_id == 0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
-if ($reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id = $admin_id;
-}
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d', 'get') == 'ad') {
     if ($ui->smallletters('action',2, 'post') == 'ad'){
-        include(EASYWIDIR . '/stuff/ssh_exec.php');
         $serverid = $ui->id('id', 10, 'get');
         $rootServer=new masterServer($serverid,$aeskey);
         if ($ui->id('id',19, 'post')) {
@@ -70,14 +70,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query2 = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3 = $sql->prepare("INSERT INTO rservermasterg (`serverid`,`servertypeid`,`installing`,`installstarted`,`resellerid`) VALUES (?,?,'Y',NOW(),?)");
             foreach($ui->id('id',19, 'post') as $id) {
-                $query->execute(array($serverid,$id,$reseller_id));
+                $query->execute(array($serverid,$id,$resellerLockupID));
                 if ($query->rowcount()==0) {
-                    $query2->execute(array($id,$reseller_id));
+                    $query2->execute(array($id,$resellerLockupID));
                     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                         $description = $row2['description'];
                         $shorten = $row2['shorten'];
                     }
-                    $query3->execute(array($serverid,$id,$reseller_id));
+                    $query3->execute(array($serverid,$id,$resellerLockupID));
                     $template_file .="<b>$description</b> ".$sprache->root_masterinstall;
                     $loguseraction="%add% %master% $shorten";
                     $insertlog->execute();
@@ -92,10 +92,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $id = $ui->id('id',19, 'get');
         $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         $ip = $query->fetchColumn();
         $query = $sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description`,`type` FROM `servertypes` WHERE `resellerid`=? ORDER BY `description`");
-        $query->execute(array($reseller_id));
+        $query->execute(array($resellerLockupID));
         $table = array();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $gameid = $row['id'];
@@ -103,7 +103,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $description = $row['description'];
             $type = $row['type'];
             $query = $sql->prepare("SELECT r.`id` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? AND s.`shorten`=?");
-            $query->execute(array($id,$reseller_id,$shorten));
+            $query->execute(array($id,$resellerLockupID,$shorten));
             if ($query->rowCount()<1) {
                 $table[] = array('id' => $gameid,'shorten' => $shorten,'description' => $description);
             }
@@ -112,7 +112,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')) {
     if ($ui->smallletters('action',2, 'post') == 'dl'){
-        include(EASYWIDIR . '/stuff/ssh_exec.php');
         $serverid = $ui->id('id',19, 'get');
         $rdata=serverdata('root',$serverid,$aeskey);
         $sship = $rdata['ip'];
@@ -125,13 +124,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $i = 0;
             foreach($ui->id('id',30, 'post') as $id) {
                 $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
-                $query->execute(array($id,$reseller_id));
+                $query->execute(array($id,$resellerLockupID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $shorten = $row['shorten'];
                     $deletestring .="_".$shorten;
                 }
                 $query = $sql->prepare("DELETE FROM `rservermasterg` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($id,$reseller_id));
+                $query->execute(array($id,$resellerLockupID));
                 $template_file .= $spracheResponse->table_del.": $shorten<br />";
                 $loguseraction="%del% %master% $sship $shorten";
                 $insertlog->execute();
@@ -149,11 +148,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $id = $ui->id('id',19, 'get');
         $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         $ip = $query->fetchColumn();
         $table = array();
         $query = $sql->prepare("SELECT r.`id`,s.`shorten`,s.`description` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? ORDER BY `description`");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'description' => $row['description']);
         }
@@ -164,7 +163,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 } else if ($ui->st('d', 'get') == 'md'){
-    include(EASYWIDIR . '/stuff/ssh_exec.php');
     $o = $ui->st('o', 'get');
     if ($ui->st('o', 'get') == 'ar') {
         $orderby = '`resellerid` ASC';
@@ -189,7 +187,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $o = 'ai';
     }
     $query = $sql->prepare("SELECT `id`,`ip`,`os`,`bitversion`,`description`,`active` FROM `rserverdata` WHERE `active`='Y' AND `resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
-    $query->execute(array($reseller_id));
+    $query->execute(array($resellerLockupID));
     $table = array();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $id = $row['id'];
@@ -204,7 +202,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $sshcheck = array();
         $description = $row['description'];
         $pselect2 = $sql->prepare("SELECT s.`shorten`,r.`installing`,r.`updating`,r.`installstarted` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? GROUP BY s.`shorten`");
-        $pselect2->execute(array($id,$reseller_id));
+        $pselect2->execute(array($id,$resellerLockupID));
         foreach ($pselect2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $shorten = $row2['shorten'];
             if ($row['active'] == 'N' or ($row2['installing'] == 'N' and $row2['updating'] == 'N')) {
@@ -239,7 +237,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
                 foreach ($games as $k => $v) {
                     if (!in_array($k, array('steamcmd','sync'))) {
-                        $query2->execute(array($k,$reseller_id,$ip));
+                        $query2->execute(array($k,$resellerLockupID,$ip));
                         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                             if (($v==0 and $row2['rupdates']!=4 and $row2['updates']!=4 and $row2['steamgame'] != 'S') or ($row2['steamgame'] == 'S' and (!isset($games['steamcmd']) or $games['steamcmd']==0)) or (($row2['rupdates']==4 or $row2['updates']==4) and (!isset($games['sync']) or $games['sync']==0))) {
                                 $statusList[$k] = '16_ok';
@@ -258,7 +256,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $next = $start+$amount;
     $countp = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
-    $countp->execute(array($reseller_id));
+    $countp->execute(array($resellerLockupID));
     foreach ($countp->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $colcount = $row['amount'];
     }
@@ -302,7 +300,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (is_object($ui->id('id',19, 'post')) or is_array($ui->id('id',19, 'post'))) {
         foreach($ui->id('id',19, 'post') as $id) {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($id,$reseller_id));
+            $query->execute(array($id,$resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $ips[$id] = $row['ip'];
             }
@@ -315,7 +313,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
     $query = $sql->prepare("SELECT s.`description`,s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` $where GROUP BY s.`description` ORDER BY s.`description` ASC");
-    $query->execute(array(':reseller_id' => $reseller_id));
+    $query->execute(array(':reseller_id' => $resellerLockupID));
     $table = array();
     $i = 0;
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -323,14 +321,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $i++;
     }
     $query = $sql->prepare("SELECT d.`id`,d.`ip` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` $where GROUP BY d.`id` ASC");
-    $query->execute(array(':reseller_id' => $reseller_id));
+    $query->execute(array(':reseller_id' => $resellerLockupID));
     $i2 = 0;
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $table[$i2]['server'] = array('id' => $row['id'], 'ip' => $row['ip']);
         $i2++;
     }
     $query5 = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`resellerid`=? GROUP BY s.`shorten` ORDER BY s.`shorten` ASC");
-    $query5->execute(array($reseller_id));
+    $query5->execute(array($resellerLockupID));
     $table3 = array();
     foreach ($query5->fetchAll(PDO::FETCH_ASSOC) as $row5) {
         $shorten = $row5['shorten'];
