@@ -40,43 +40,177 @@
 
 if (isset($include) and $include == true) {
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('4.11','<div align=\"right\">15.12.2013</div>
-Leider haben sich in der 4.10 einige Fehler eingeschlichen. Dazu hat sie deutlich aufgezeigt, das viele Admins noch alte PHP Versionen nutzen und Easy-WI inkompatibel geworden ist.<br>
-<br>
-4.11 ist ein Hotfix Release, dass diese Probleme addressiert.<br>
-<br>
+('4.20','<div align=\"right\">22.12.2013</div>
 <b>Änderungen:</b><br/>
 <ul>
-<li>Passwort Hash Fallback from Fallback</li>
-<li>register_globals wird deaktiviert wenn an</li>
+<li>Generell:
+<ul>
+<li>Benutzer, Vertreter, Gameserver und Voiceserver importer hinzugefügt</li>
+<li>Datenbank Menü um die Funktionen Game- und Addon Reparieren erweitert</li>
+<li>Erster Menüeintrag von \"Dashboard\" zu \"Home\" umbenannt.</li>
+<li>CMS und Lendserver active/inactive ins Modul Management ausgelagert.</li>
+<li>Neuer Web Installer</li>
+<li>Verbesserte template Header</li>
+<li>Verbesserte Easy-WI Settings Verwaltung</li>
+<li>Verbesserte Impressum Verwaltung</li>
+<li>Bootstrap wird über ein CDN geladen</li>
+<li>Font Awesome über CDN eingebunden</li>
+<li>Usability & Design Optimierungen im Userpanel</li>
+<li>Fehlerhandling bezüglich $template_to_use und $template_file verbessert</li>
+<li>Userpanel: Logübersicht überarbeitet</li>
+<li>Userpanel: Zahglreiche Infotexte hinzugefügt</li>
+</ul></li>
+<li>Gameserver:
+<ul>
+<li>Neue Gameserver Templates: Tekkit, Just Cause 2, sauerbratenremod, shootmania, trackmania, ut2004, ut99, warsow</li>
+<li>.lua Unterstützung für geschütze Configs hinzugefügt</li>
+<li>.lua wird kopiert an stelle von Symlink erstellt.</li>
+<li>Verbesserte Mapgroup Unterstützung</li>
+<li>Verbesserte Workshop Unterstützung</li>
+<li>\"Game Rootserver\" in Menü \"Gameserver\" verlagert</li>
+<li>game Templates werden standardmäßig nach ihrem shorten sortiert</li>
+<li>Voreingestellte Gameserver Addons im Installer</li>
+<li>Spinner in der GS mMasterserver Übersicht hinzugefügt</li>
+<li>Gameroots können nun Resellern zugewiesen werden</li>
+<li>Eingabe von FTP Daten verbessert</li>
+<li>Logdarstellung von Gameserver verbessert</li>
+<li>Game Templates können nun genauer definiert werden</li>
+<li>Maxram und OS können bei Gameroots verwaltet werden</li>
+<li>Userpanel: Fastdownload verbessert</li>
+<li>Tabellen Struktur in der Config Edit Übersicht entfernt.</li>
+<li>Infobubble bei den SteamApi Keys</li>
+<li>Userpanel: Gameserverübersicht neu gestaltet</li>
+<li>Quakestat durch GameQ ersetzt</li>
+<li>GameQ um Just Cause 2 Multiplayer erweitert</li>
+</ul></li>
+<li>Benutzer:
+<ul>
+<li>Reseller können sich nicht mehr selber in der User Übersicht bearbeiten</li>
+<li>Funktion User_Permissions verbessert</li>
+<li>CPU last durch password check und migration gesenkt</li>
+</ul></li>
+<li>Voiceserver:
+<ul>
+<li>Besseres Error Handling im Bereich Userpanel Voice > Backup</li>
+<li>Connectioncheck beim Anlegen eines TSDNS Masters</li>
+<li>Userpanel: Voiceserver Einstellungen verbessert</li>
+<li>Userpanel: Voiceserver Backup verbessert</li>
+<li>Userpanel: Voiceserver Übersicht verbessert</li>
+</ul></li>
 </ul>
 <br/><br/>
 <b>Bugfixes:</b><br/>
 <ul>
-<li>Vertreter Login schlägt fehl.</li>
-<li>GS Backup Templates enthalten falsche Variable server_id</li>
-<li>Falscher Link im Adminpanel für ESXI Host</li>
-<li>Minecraft Query funktioniert nicht</li>
-<li>Falscher tsdns_settings.ini Syntax</li>
+<li>Reseller support Tickets Templates fehlend</li>
+<li>Resellers Reseller kann keine Gruppen zu einem User hinzufügen</li>
+<li>Reseller hat keine eigenem Gametemplates</li>
+<li>Reseller eines Resellers kann keine Passwörter ändern</li>
+<li>Direkter Logout Nach Switch zu Reseller</li>
+<li>CFGs werden beim Starten des Protection Modus nicht transferiert</li>
+<li>Footbales und TR beim Restart Kalender fehlend</li>
+<li>TS3 Tokens können nicht erstellt werden</li>
+<li>Benutzer Sortier Funktion</li>
+<li>Voice + Usergroup Rechte werden nicht gespeichert</li>
+<li>Hinzufügen von Dedicated Servern</li>
+<li>Ausgeliehene TS3 Server zu früh gestoppt</li>
+<li>Falscher Redirect nach TS3 DNS hinzufügen</li>
+<li>_SERVER[REMOTE_ADDR] in der get_password.php</li>
+<li>&amp&amp; bei der Pagination</li>
+<li>Vertreter Hinzufügen mit bcrypt verwendet falschen SQL</li>
+<li>Restart Planer leitet auf das Dashboard um</li>
+<li>Beim GS Restart wird nicht resynct</li>
+<li>Check fehlt, ob Masterserver existiert</li>
+<li>TS3 Backup Modul</li>
+<li>Template Fehler beim Anlegen eines Gameservers</li>
+<li>Veraltertes Notice Icon beim Login</li>
+<li>Return Nachrichten funktionieren seit 4.11 nicht</li>
+<li>Userpanel: addons</li>
 </ul>
-','<div align=\"right\">12.15.2013</div>
-Unfortunately errors have slipped in 4.10. In addition the update revealed that there are still admins with old PHP versions around. Those admins could not login anymore since.<br>
-<br>
-4.11 is a hotfix release which addresses these problems.<br>
-<br>
+','<div align=\"right\">12.22.2013</div>
 <b>Changes:</b><br/>
 <ul>
-<li>password hash fallback from fallback</li>
-<li>deaktivate register_globals if on</li>
+<li>General:
+<ul>
+<li>Added user, substitute, gameserver and voiceserver importer</li>
+<li>Database menu add game and addon repair added</li>
+<li>Rename first menu entry \"Dashboard\" to \"Home\"</li>
+<li>CMS and Lendserver active/inactive through module management</li>
+<li>New WEB installer</li>
+<li>Enhanced Header</li>
+<li>Enhanced Easy-WI Settings</li>
+<li>Enhanced Imprint</li>
+<li>Included bootstrap with public CDN</li>
+<li>Include Font Awesome with bootstrap and load from CDN</li>
+<li>Usability & design optimisations at userpanel</li>
+<li>error handling regarding $template_to_use and $template_file</li>
+<li>userpanel: logoverview reworked</li>
+<li>userpanel: multiple infotexts are added</li>
+</ul></li>
+<li>Gameserver:
+<ul>
+<li>New gameserver templates: Tekkit, Just Cause 2, sauerbratenremod, shootmania, trackmania, ut2004, ut99, warsow</li>
+<li>added .lua support to protected configs</li>
+<li>.lua files will be copied</li>
+<li>Improved map group support</li>
+<li>Reworked workshop support</li>
+<li>\"Game Rootserver\" moved to \"Gameserver\" menu</li>
+<li>Sort by game images with shorten name by default</li>
+<li>Gameserver addons added with installer</li>
+<li>Spinner to GS masterserver overview</li>
+<li>Possible to assign gameroot to a reseller</li>
+<li>Entering FTP improved; Instead of string now multiple fields</li>
+<li>Enhanced gameserver log display</li>
+<li>Extend Game Images</li>
+<li>Add maxram and OS select to gameroots</li>
+<li>userpanel: fastdownload</li>
+<li>Removed tables from config edit</li>
+<li>Infobubble at SteamApi Keys</li>
+<li>userpanel: gameserveroverview reworked</li>
+<li>Replaced Quakestat with GameQ</li>
+<li>Enhanced GameQ with Just Cause 2 Multiplayer support</li>
+</ul></li>
+<li>User:
+<ul>
+<li>Resellers not allowed to edit themselves at useroverview</li>
+<li>Enhanced function User_Permissions</li>
+<li>Reduced CPU cost of password check and migration</li>
+</ul></li>
+<li>Voiceserver:
+<ul>
+<li>Better error handling at Userpanel Voice > Backup</li>
+<li>Check (SSH2) Login TSDNS Master</li>
+<li>userpanel: Voiceserver settings improved</li>
+<li>userpanel: Voiceserver backup improved</li>
+<li>userpanel: Voiceserver overview improved</li>
+</ul></li>
 </ul>
 <br/><br/>
 <b>Bugfixes:</b><br/>
 <ul>
-<li>Substitute login failing</li>
-<li>gs backup templates with incorrect variable server_id</li>
-<li>incorrect link at esxi host link</li>
-<li>Minecraft Query not working</li>
-<li>wrong tsdns_settings.ini syntax</li>
+<li>Reseller support tickets templates missing</li>
+<li>Reseller´s reseller cannot add groups to user</li>
+<li>Reseller cannot own gametemplate</li>
+<li>Reseller of a reseller cannot change password</li>
+<li>Direct logout after reseller login switch</li>
+<li>CFGs are not transferred on protection mode activation</li>
+<li>Add footbales to restart calendar, TR missing</li>
+<li>TS3 Tokens cannot be generated</li>
+<li>User sort function at overview adds additional whitespaces</li>
+<li>voice + usergroup permission not saved</li>
+<li>Adding dedicated servers</li>
+<li>Lended TS3 server with users connected stopped before time is up</li>
+<li>Redirect incorrect after TS3 DNS add</li>
+<li>_SERVER[REMOTE_ADDR] should not be used at get_password.php</li>
+<li>&amp&amp; at pagination</li>
+<li>Adding substitute with bcrypt hash with incorrect SQL</li>
+<li>Restart caclendar redirects to dashboard</li>
+<li>On GS restart resync is not done</li>
+<li>No check if masterserver exists</li>
+<li>TS3 Backup Module not working properly</li>
+<li>Template error when adding a gameserver</li>
+<li>old notice icon used at login</li>
+<li>Return messages broken since 4.11</li>
+<li>userpanel: addons</li>
 </ul>
 ')");
     $query->execute();

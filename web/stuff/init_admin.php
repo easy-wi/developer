@@ -54,9 +54,9 @@ $vserver_module = (is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs']
 $voserver_module = (is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo'] == 0) ? false : true;
 $dediserver_module = (is_numeric($licenceDetails['mD']) and $licenceDetails['mD'] == 0) ? false : true;
 
-$ewVersions['files'] = '4.11';
+$ewVersions['files'] = '4.20';
 
-$vcsprache = getlanguagefile('versioncheck',$user_language,$reseller_id);
+$vcsprache = getlanguagefile('versioncheck', $user_language, $reseller_id);
 $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
 $query->execute();
 $ewVersions['cVersion'] = $query->fetchColumn();
