@@ -246,7 +246,7 @@ Unfortunately errors have slipped in 4.10. In addition the update revealed that 
     $query = $sql->prepare("UPDATE `servertypes` SET `workShop`='Y' WHERE `appID`=730 OR `appID`=740");
     $query->execute();
 
-    // DROP as not needed anymore
+    // DROP qstatshorten as not needed anymore
     $query = $sql->prepare("DROP TABLE `qstatshorten`");
     $query->execute();
 

@@ -694,6 +694,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         }
         if (isset($rootID)) {
             $ports = array();
+            $cores = array();
             $query = $sql->prepare("SELECT `ip`,`altips`,`hyperthreading`,`cores` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($rootID,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

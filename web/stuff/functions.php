@@ -641,7 +641,7 @@ if (!function_exists('passwordgenerate')) {
         $tempCmds = array();
         $stopped = 'Y';
 
-        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`appID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`appID`,t.`workShop` AS `tWorkShop` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':serverid' => $switchID, ':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $serverid = $row['serverid'];
@@ -684,6 +684,7 @@ if (!function_exists('passwordgenerate')) {
                 $customer .= '-' . $row['switchID'];
             }
 
+
             $cores = ($row['taskset'] == 'Y') ? $row['cores'] : '';
             $maxcores = count(preg_split("/\,/", $cores, -1,PREG_SPLIT_NO_EMPTY));
             if ($maxcores == 0) {
@@ -705,7 +706,8 @@ if (!function_exists('passwordgenerate')) {
                 $slots++;
             }
             $modsCmds = array();
-            $cvars = array('%binary%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%');
+            $cvars = array('%binary%', '%tickrate%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%');
+
             $query2 = $sql->prepare("SELECT `cmd`,`modcmds`,`configedit` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
             $query2->execute(array($shorten, $reseller_id));
 
@@ -737,7 +739,7 @@ if (!function_exists('passwordgenerate')) {
                         }
 
                         if (isset($splitline[1])) {
-                            $replace=array($gamebinary, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
+                            $replace=array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
                             $cvar = str_replace($cvars, $replace, $splitline[1]);
                             foreach (customColumns('G', $switchID) as $cu) {
                                 $cvar = str_replace("%${cu['name']}%", $cu['value'], $cvar);
@@ -767,6 +769,12 @@ if (!function_exists('passwordgenerate')) {
 
                 if ($row['owncmd'] == 'N') {
                     $cmd = $row2['cmd'];
+                }
+
+                // https://github.com/easy-wi/developer/issues/205
+                // In case Workshop is on we need to remove workgroup
+                if ($row['workShop'] == 'Y' AND $row['tWorkShop'] == 'Y') {
+                    $cmd = str_replace(array('%mapgroup%', ' +mapgroup'), '', $cmd);
                 }
             }
             if ($gamebinary == 'srcds_run' and $tvenable == 'N') {
@@ -821,15 +829,17 @@ if (!function_exists('passwordgenerate')) {
                     $cmd .= ' ' . $singleModADD;
                 }
             }
-            if (in_array($row['appID'], array(730,740)) and isid($row['workshopCollection'], 10) and wpreg_check($row['dwebapiAuthkey'], 32) and strlen($row['dwebapiAuthkey'])>0 and $row['workshopCollection']>0) {
+
+            if ($row['workShop'] == 'Y' AND $row['tWorkShop'] == 'Y' and isid($row['workshopCollection'], 10) and wpreg_check($row['dwebapiAuthkey'], 32) and strlen($row['dwebapiAuthkey']) > 0 and $row['workshopCollection'] > 0) {
                 $cmd .= ' +host_workshop_collection ' . $row['workshopCollection'] . ' +workshop_start_map ' . $map . ' -authkey ' . $row['dwebapiAuthkey'];
                 $cmd = preg_replace('/[\s\s+]{1,}\+map[\s\s+]{1,}[\w-_!%]{1,}/', '', $cmd);
             }
+
             $rdata = serverdata('root', $rootid, $aeskey);
             $sship = $rdata['ip'];
             $ftpport = $rdata['ftpport'];
             $serverfolder = $gsip . '_' . $port . '/' . $folder . '/' . $binarydir;
-            $replace=array($gamebinary, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
+            $replace=array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
             $startline = str_replace($cvars, $replace, $cmd);
 
             foreach (customColumns('G', $switchID) as $cu) {
@@ -1084,6 +1094,7 @@ if (!function_exists('passwordgenerate')) {
             foreach ($tempCmds as $c) {
                 $cmds[] = $c;
             }
+
             return $cmds;
         }
 
