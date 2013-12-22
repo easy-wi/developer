@@ -19,8 +19,8 @@
 				$('#game').change(function() {
 					var shorten=$('#game').find(':selected').data('shorten');
 					$('#template1').text(shorten);
-					$('#template2').text(shorten+'-2');
-					$('#template3').text(shorten+'-3');
+					$('#template2').text(shorten + '-2');
+					$('#template3').text(shorten + '-3');
 				});		
 				$('div[data-toggle="buttons-radio"] .btn').click(function() {
 					$(this).parent().parent().find('input').val($(this).val());
@@ -57,8 +57,8 @@
                 <div class="controls">
                 	<input type="hidden" id="type" name="type" value="N">
                     <div class="btn-group" data-toggle="buttons-radio">
-		    			<button id="resync" type="button" class="btn btn-primary" value="N"><?php echo $sprache->resync;?></input>
-		    			<button id="reinstall" type="button" class="btn btn-primary" value="Y"><?php echo $sprache->reinstall;?></input>
+		    			<button id="resync" type="button" class="btn btn-primary" value="N"><?php echo $sprache->resync;?></button>
+		    			<button id="reinstall" type="button" class="btn btn-primary" value="Y"><?php echo $sprache->reinstall;?></button>
 					</div>
                 </div>
             </div>
