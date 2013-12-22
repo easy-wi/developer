@@ -46,6 +46,7 @@
 	<image_server>Image Server</image_server>
     <install_done>The installation is now completed. Please keep in mind to configure the cronjobs.</install_done>
     <install_done_folder>Please remove the folder "install/".</install_done_folder>
+    <installUrl>URL</installUrl>
 	<ip>Webserver IP</ip>
 	<language>Default language</language>
     <menu_welcome>Welcome</menu_welcome>
