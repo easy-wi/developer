@@ -55,9 +55,7 @@ if ($ui->st('w', 'get') == 'se') {
     } else {
         $logsubuser = 0;
     }
-    if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
-        $reseller_id = $admin_id;
-    }
+
 } else {
     if ((!isset($admin_id) or $main != 1)) {
         header('Location: admin.php');
@@ -78,6 +76,7 @@ if ($ui->st('w', 'get') == 'se') {
     }
 }
 $sprache = getlanguagefile('user',$user_language,$reseller_id);
+
 $lookUpID=($ui->st('w', 'get') == 'se') ? $user_id : $admin_id;
 
 if ($ui->st('d', 'get') == 'pw') {
@@ -87,17 +86,29 @@ if ($ui->st('d', 'get') == 'pw') {
 
     } else if ($ui->smallletters('action',2, 'post') == 'md'){
         $errors = array();
-        if (!$ui->password('password', 255, 'post')) $errors[] = $sprache->error_pass;
-        if (!$ui->password('pass2', 255, 'post')) $errors[] = $sprache->error_pas;
-        if ($ui->password('password', 255, 'post') != $ui->password('pass2', 255, 'post')) $errors[] = $sprache->error_passw_succ;
-        if (!token(true)) $errors[] = $spracheResponse->token;
+
+        if (!$ui->password('password', 255, 'post')) {
+            $errors[] = $sprache->error_pass;
+        }
+
+        if (!$ui->password('pass2', 255, 'post')) {
+            $errors[] = $sprache->error_pas;
+        }
+
+        if ($ui->password('password', 255, 'post') != $ui->password('pass2', 255, 'post')) {
+            $errors[] = $sprache->error_passw_succ;
+        }
+
+        if (!token(true)) {
+            $errors[] = $spracheResponse->token;
+        }
 
         if (count($errors)>0) {
             $template_file = implode('<br />',$errors);
         } else {
 
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($lookUpID,$reseller_id));
+            $query->execute(array($lookUpID, $reseller_id));
             $cname = $query->fetchColumn();
 
             $newHash = passwordCreate($cname, $ui->password('password', 255, 'post'));
@@ -124,7 +135,7 @@ if ($ui->st('d', 'get') == 'pw') {
 
 } else {
     $query = $sql->prepare("SELECT * FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query->execute(array($lookUpID,$reseller_id));
+    $query->execute(array($lookUpID, $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $cname = $row['cname'];
         $name = $row['name'];
@@ -145,7 +156,9 @@ if ($ui->st('d', 'get') == 'pw') {
 
         #https://github.com/easy-wi/developer/issues/5
         $oldValues = array();
-        foreach ($row as $k => $v) $oldValues[$k] = $v;
+        foreach ($row as $k => $v) {
+            $oldValues[$k] = $v;
+        }
     }
     if ($ui->smallletters('action',2, 'post') == 'md' and isset($oldValues)){
         if ($ui->ismail('mail', 'post') and token(true)) {
@@ -171,10 +184,16 @@ if ($ui->st('d', 'get') == 'pw') {
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_vserver`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$mail_gsupdate,$mail_securitybreach,$mail_vserver,$lookUpID,$reseller_id));
             }
+
             if ($query->rowCount() > 0) {
                 #https://github.com/easy-wi/developer/issues/5
                 $changed = array();
-                foreach ($oldValues as $k => $v) if (isset($$k) and "{$$k}" != $v) $changed[$k] = $v;
+                foreach ($oldValues as $k => $v) {
+                    if (isset($$k) and "{$$k}" != $v) {
+                        $changed[$k] = $v;
+                    }
+                }
+
                 $query = $sql->prepare("INSERT INTO `userdata_value_log` (`userID`,`date`,`json`,`resellerID`) VALUES (?,NOW(),?,?)");
                 $query->execute(array($lookUpID,json_encode($changed),$reseller_id));
 
