@@ -166,18 +166,27 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
                         if (preg_match('/^(.*)\.[\w]{1,}$/', $name) and $zeo) {
 
-                            $nf = fopen($name,'w');
-                            $fz = zip_entry_filesize($ze);
+                            $nf = @fopen($name,'w');
+                            if ($nf) {
+                                $fz = zip_entry_filesize($ze);
 
-                            if ($fz > 0) {
-                                fwrite($nf, zip_entry_read($ze, $fz), $fz);
-                                $response->add('Unpacking: '. $name);
+                                if ($fz > 0) {
+                                    if (@fwrite($nf, zip_entry_read($ze, $fz), $fz)) {
+                                        $response->add('Unpacking: '. $name);
+                                    } else {
+                                        $response->addError('Unpacking: '. $name);
+                                    }
+                                } else {
+                                    $response->addError('Unpacking: '. $name);
+                                }
+
+                                zip_entry_close($ze);
+                                if (is_resource($nf)) {
+                                    fclose($nf);
+                                }
                             } else {
                                 $response->addError('Unpacking: '. $name);
                             }
-
-                            zip_entry_close($ze);
-                            fclose($nf);
                         }
                     }
 
@@ -194,8 +203,10 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                     include(EASYWIDIR . '/stuff/tables_add.php');
                 }
 
-                if ($ewVersions['cVersion'] < $ewVersions['version']) {
+                if ($ewVersions['cVersion'] < $ewVersions['version'] and is_file(EASYWIDIR . '/install/update.php')) {
                     include(EASYWIDIR . '/install/update.php');
+                } else {
+                    $response->addError('Can not open: '. EASYWIDIR . '/install/update.php');
                 }
 
                 if (!isset($alreadyRepaired)) {
@@ -203,8 +214,12 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                     include(EASYWIDIR . '/stuff/tables_repair.php');
                 }
 
-            } else {
+            }
+            if ($fp != true) {
                 $response->add('Error: could not retrieve the update');
+            }
+            if ($zip != true) {
+                $response->add('Error: could not create the temporary zip file');
             }
 
             foreach (scandir(EASYWIDIR . '/tmp/') as $c) {
