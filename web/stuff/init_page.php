@@ -51,6 +51,7 @@ $page_sprache = getlanguagefile('page', $user_language, 0);
 $page_data = new PageSettings($user_language, $pageurl, $seo);
 
 if (isset($page_active) and $page_active == 'Y') {
+
     $easywiModules = array('gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
     $customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
 

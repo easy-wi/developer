@@ -213,7 +213,7 @@ if ($loguserip!='localhost') {
 
     if (isset($page_include)) {
 
-        $query = $sql->prepare("SELECT * FROM `page_settings` WHERE `resellerid`='0' LIMIT 1");
+        $query = $sql->prepare("SELECT * FROM `page_settings` WHERE `resellerid`=0 LIMIT 1");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
