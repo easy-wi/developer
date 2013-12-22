@@ -530,7 +530,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     }
 
 
-    while (substr($installUrl, -1, 2) == '//') {
+    while (substr($installUrl, -2) == '//') {
         $installUrl = substr($installUrl, 0, strlen($installUrl) -1 );
     }
 
