@@ -521,6 +521,18 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     $selectedCaptcha = '';
     $selectedPrefix = '';
 
+    $query = $sql->prepare("SELECT `pageurl` FROM `page_settings` WHERE `resellerid`=0");
+    $query->execute();
+    $installUrl = (string) $query->fetchColumn();
+
+    if (strlen($installUrl) == 0) {
+        $installUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/' . str_replace('install/install.php', '', $_SERVER['SCRIPT_NAME']);
+    }
+
+
+    while (substr($installUrl, -1, 2) == '//') {
+        $installUrl = substr($installUrl, 0, strlen($installUrl) -1 );
+    }
 
 
     $query = $sql->prepare("SELECT `mail` FROM `userdata` WHERE `id`=1");
@@ -571,6 +583,12 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
 
         $displayToUser .= "
 <form class='form-horizontal' role='form' action='install.php?step=7${languageGetParameter}' method='post'>
+  <div class='form-group'>
+    <label for='inputInstallUrl' class='col-sm-2 control-label'>{$languageObject->installUrl}</label>
+    <div class='col-sm-10'>
+      <input type='text' class='form-control' id='inputInstallUrl' name='installUrl' value='${installUrl}' required>
+    </div>
+  </div>
   <div class='form-group'>
     <label for='inputTitle' class='col-sm-2 control-label'>{$languageObject->title}</label>
     <div class='col-sm-10'>
@@ -642,8 +660,11 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
 
         try {
 
+            $query = $sql->prepare("INSERT INTO `page_settings` (`id`,`pageurl`,`resellerid`) VALUES (1,?,0) ON DUPLICATE KEY UPDATE `pageurl`=VALUES(`pageurl`)");
+            $query->execute(array($_POST['installUrl']));
+
             $query = $sql->prepare("INSERT INTO `settings` (`id`,`language`,`email`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`resellerid`) VALUES (1,?,?,?,?,?,?,0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`email`=VALUES(`email`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`)");
-            $query->execute(array($language, $email, $prefix1, $prefix2, $faillogins, $brandname));
+            $query->execute(array($_POST['language'], $_POST['email'], $_POST['prefix1'], $_POST['prefix2'], $_POST['faillogins'], $_POST['brandname']));
 
             $query = $sql->prepare("INSERT INTO `eac` (`id`,`resellerid`) VALUES (1,0) ON DUPLICATE KEY UPDATE `resellerid`=`resellerid`");
             $query->execute();
@@ -658,9 +679,6 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query->execute();
 
             $query = $sql->prepare("INSERT INTO `voice_stats_settings` (`id`,`resellerid`) VALUES (1,0) ON DUPLICATE KEY UPDATE `id`=`id`");
-            $query->execute();
-
-            $query = $sql->prepare("INSERT INTO `page_settings` (`id`,`resellerid`) VALUES (1,0) ON DUPLICATE KEY UPDATE `id`=`id`");
             $query->execute();
 
             $query = $sql->prepare("INSERT INTO `page_pages` (`id`,`authorid`,`type`) VALUES (1,0,'about') ON DUPLICATE KEY UPDATE `id`=`id`");
