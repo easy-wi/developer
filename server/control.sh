@@ -39,7 +39,7 @@ if [ "$1" == "install" ]; then
 		if command -v $TOOL >/dev/null 2>&1; then echo "required tool found: $TOOL"; else echo "required tool not found or no access to it: $TOOL"; fi
 	done
 fi
-CVERSION="4.1"
+CVERSION="4.2"
 IONICE=''
 HOMEFOLDER=$PWD
 LOGDIR=$HOMEFOLDER/logs
