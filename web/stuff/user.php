@@ -58,8 +58,6 @@ if ($reseller_id == 0) {
 	$logreseller = 0;
 }
 
-$resellerLockupID = ($reseller_id != 0 and $reseller_id != $admin_id) ? $admin_id : $reseller_id;
-
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 
@@ -272,7 +270,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 						$maxuserram = 0;
 						$maxusermhz = 0;
 					}
-                    function CopyAdminTable ($tablename,$id,$reseller_id,$limit,$sql,$where='') {
+                    function CopyAdminTable ($tablename,$id,$reseller_id,$limit,$where='') {
+                        global $sql;
                         $query = $sql->prepare("SELECT * FROM `$tablename` WHERE `resellerid`=? $where $limit");
                         $query->execute(array($reseller_id));
                         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -294,10 +293,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             $query->execute($intos);
                         }
                     }
-                    CopyAdminTable('servertypes',$id,$resellerLockupID,'',$sql);
-                    CopyAdminTable('settings',$id,$resellerLockupID,'LIMIT 1',$sql);
-                    CopyAdminTable('voice_stats_settings',$id,$resellerLockupID,'LIMIT 1',$sql);
-                    CopyAdminTable('usergroups',$id,$resellerLockupID,'',$sql,"AND `active`='Y' AND `name` IS NOT NULL AND `grouptype`='u'");
+                    CopyAdminTable('servertypes',$id,$resellerLockupID,'');
+                    CopyAdminTable('settings',$id,$resellerLockupID,'LIMIT 1');
+                    CopyAdminTable('voice_stats_settings',$id,$resellerLockupID,'LIMIT 1');
+
+                    if ($reseller_id > 0 and $reseller_id != $admin_id) {
+                        CopyAdminTable('usergroups',$id,$resellerLockupID,'', "AND `active`='Y' AND `name` IS NOT NULL AND `grouptype`='u'");
+                    } else {
+                        CopyAdminTable('usergroups',$id,$resellerLockupID,'', "AND `active`='Y' AND `name` IS NOT NULL AND `grouptype` IN ('u','r')");
+                    }
+
                     $query = $sql->prepare("SELECT * FROM `addons` WHERE `resellerid`=?");
                     $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`paddon`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?)");
                     $query3 = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=? LIMIT 1");
@@ -386,7 +391,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `id`,`grouptype`,`name`,`defaultgroup` FROM `usergroups` WHERE `active`='Y' AND `resellerid`=?");
         $query->execute(array($resellerLockupID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['defaultgroup'] == 'Y') $defaultGroups[$row['grouptype']][$row['id']] = $row['name'];
+            if ($row['defaultgroup'] == 'Y') {
+                $defaultGroups[$row['grouptype']][$row['id']] = $row['name'];
+            }
             $groups[$row['grouptype']][$row['id']] = $row['name'];
         }
         $availableips=freeips($resellerLockupID);
