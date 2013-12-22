@@ -114,21 +114,25 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $ftpAddress = $ui->post['ftpAddress'];
     }
+
     if (!$ui->port('ftpPort', 'post')) {
         $error[] = $sprache->ftp_port;
     } else {
         $ftpPort = $ui->port('ftpPort', 'post');
     }
+
     if (!$ui->config('ftpUser', 'post')) {
         $error[] = $sprache->ftp_user;
     } else {
         $ftpUser = $ui->config('ftpUser', 'post');
     }
+
     if (!$ui->config('ftpPassword', 'post')) {
         $error[] = $sprache->ftp_password;
     } else {
         $ftpPassword = $ui->config('ftpPassword', 'post');
     }
+
     if (!$ui->id('switchID', 10, 'post') or !isset($table[$ui->id('switchID', 10, 'post')])) {
         $error[] = $sprache->server;
     } else {
@@ -139,6 +143,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $customer = $table[$ui->id('switchID', 10, 'post')]['customer'];
         $cftppass = $table[$ui->id('switchID', 10, 'post')]['cftppass'];
     }
+
     if (!$ui->config('template', 'post',$thisID) or !isset($table[$ui->id('switchID', 10, 'post')]['games'])) {
         $error[] = $gsprache->template;
     } else if (isset($table[$ui->id('switchID', 10, 'post')]['games'])) {
