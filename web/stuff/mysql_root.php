@@ -37,23 +37,31 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main != 1 or $reseller_id != 0 or !$pa['root']) {
+if (!isset($admin_id) or $main != 1 or !isset($reseller_id) or !$pa['root']) {
     header('Location: admin.php');
     die('No acces');
 }
 
-if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu') {
-    $createBackup = true;
+
+if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $reseller_id == 0) {
+
     include(EASYWIDIR . '/stuff/mysql_backup_class.php');
-    $theBackup=new createDBDump($dbConnect['db'],$ewVersions['version'],$sql);
+    $createBackup = true;
+
     header('Content-type: application/sql; charset=utf-8');
     header('Content-Description: Downloaded File');
-    header('Content-Disposition: attachment; filename='.$dbConnect['db'].'.sql');
+    header('Content-Disposition: attachment; filename=' . $dbConnect['db'] . '.sql');
+
+    $theBackup = new createDBDump($dbConnect['db'], $ewVersions['version'], $sql);
     $theBackup->createDump();
     echo $theBackup->getDump();
+
     die();
-} else if ($ui->st('d', 'get') == 'rp' and $ui->st('action', 'post') == 'rp') {
+
+} else if ($ui->st('d', 'get') == 'rp' and $ui->st('action', 'post') == 'rp' and $reseller_id == 0) {
+
     $updateinclude = true;
+
     class UpdateResponse {
         public $response = '';
         function __construct() {
@@ -62,24 +70,149 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu') {
         function add ($newtext) {
             $this->response .= $newtext;
         }
-        function printresponse () {
-            return $this->response;
-        }
         function __destruct() {
             unset($this->response);
         }
     }
-    $response=new UpdateResponse();
+    $response = new UpdateResponse();
+
     $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
+
     if (!isset($alreadyRepaired)) {
         $response->add('Adding tables if needed.');
         include(EASYWIDIR . '/stuff/tables_add.php');
     }
+
     if (!isset($alreadyRepaired)) {
         $response->add('Repairing tables if needed.');
         include(EASYWIDIR . '/stuff/tables_repair.php');
     }
-    $template_file = $response->printresponse();
+
+    $template_file = $response->response;
+
+} else if ($ui->st('d', 'get') == 'rg') {
+
+    require_once(EASYWIDIR . '/stuff/gameslist.php');
+
+    if ($ui->st('action', 'post') == 'rg') {
+
+        $template_file = '';
+        $array = (array) $ui->pregw('games', 255, 'post');
+
+        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+        $query2 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`resellerid`) VALUES (:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:resellerid)");
+        $query3 = $sql->prepare("UPDATE `servertypes` SET `steamgame`=:steamgame,`appID`=:appID,`updates`=:updates,`shorten`=:shorten,`description`=:description,`gamebinary`=:gamebinary,`binarydir`=:binarydir,`modfolder`=:modfolder,`fps`=:fps,`slots`=:slots,`map`=:map,`cmd`=:cmd,`modcmds`=:modcmds,`tic`=:tic,`gameq`=:gameq,`gamemod`=:gamemod,`gamemod2`=:gamemod2,`configs`=:configs,`configedit`=:configedit,`portStep`=:portStep,`portMax`=:portMax,`portOne`=:portOne,`portTwo`=:portTwo,`portThree`=:portThree,`portFour`=:portFour,`portFive`=:portFive,`mapGroup`=:mapGroup,`protected`=:protected,`protectedSaveCFGs`=:protectedSaveCFGs,`ramLimited`=:ramLimited,`os`=:os WHERE `shorten`=:shorten AND `resellerid`=:resellerid LIMIT 1");
+
+        foreach ($gameImages as $image) {
+            if (in_array($image[':shorten'], $array) and count($image) == 31) {
+
+                $image[':resellerid'] = $resellerLockupID;
+
+                $query->execute(array($image[':shorten'], $resellerLockupID));
+                $imageExists = (int) $query->fetchColumn();
+
+                if ($imageExists == 0) {
+
+                    $query2->execute($image);
+
+                    if ($query2->rowCount() > 0) {
+                        $template_file .= $gsprache->add . ': ' . $image[':description'] .'<br>';
+                    } else {
+                        $template_file .= 'Error ' . $gsprache->add . ': ' . $image[':description'] .'<br>';
+                    }
+
+                } else if ($ui->id('actionType', 1 ,'post') == 2) {
+
+                    $query3->execute($image);
+
+                    if ($query3->rowCount() > 0) {
+                        $template_file .= $gsprache->mod . ': ' . $image[':description'] .'<br>';
+                    } else {
+                        $template_file .= 'Error ' . $gsprache->mod . ': ' . $image[':description'] .'<br>';
+                    }
+
+                } else {
+                    $template_file .= 'Skipped: ' . $image[':description'] .'<br>';
+                }
+            }
+        }
+
+    } else {
+
+        $template_file = 'admin_db_operations_gs.tpl';
+    }
+
+} else if ($ui->st('d', 'get') == 'ra') {
+
+    require_once(EASYWIDIR . '/stuff/addonslist.php');
+
+    if ($ui->st('action', 'post') == 'ra') {
+
+        $template_file = '';
+        $array = (array) $ui->pregw('addons', 255, 'post');
+
+        $query = $sql->prepare("SELECT `id` FROM `addons` WHERE `addon`=? AND `resellerid`=? LIMIT 1");
+        $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`depending`,`paddon`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`rmcmd`,`resellerid`) VALUES ('Y',?,?,?,?,?,?,?,?,?,?)");
+        $query3 = $sql->prepare("UPDATE `addons` SET `depending`=?,`type`=?,`paddon`=?,`folder`=?,`menudescription`=?,`configs`=?,`cmd`=?,`rmcmd`=? WHERE `addon`=? AND `resellerid`=? LIMIT 1");
+        $query4 = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+        $query5 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?)");
+
+        foreach ($gameAddons as $addon) {
+
+
+            if (in_array($addon[':addon'], $array) and count($addon) == 10) {
+
+                $query->execute(array($addon[':addon'], $resellerLockupID));
+                $addonID = (int) $query->fetchColumn();
+
+                $dependsID = 0;
+
+                if (strlen($addon[':depends']) > 0) {
+                    $query->execute(array($addon[':depends']));
+                    $dependsID = $query->fetchColumn();
+                }
+
+
+                if ($addonID == 0) {
+
+                    $query2->execute(array($dependsID, $addon[':paddon'], $addon[':addon'], $addon[':type'], $addon[':folder'], $addon[':menudescription'], $addon[':configs'], $addon[':cmd'], $addon[':rmcmd'], $resellerLockupID));
+
+                    if ($query2->rowCount() > 0) {
+                        $template_file .= $gsprache->add . ': ' . $addon[':menudescription'] .'<br>';
+                    } else {
+                        $template_file .= 'Error ' . $gsprache->add . ': ' . $addon[':menudescription'] .'<br>';
+                    }
+
+                    $addonID = $sql->lastInsertId();
+
+                    foreach ($addon[':supported'] as $supported) {
+
+                        $query4->execute(array($supported, $resellerLockupID));
+
+                        $query5->execute(array($addonID, $query4->fetchColumn(), $resellerLockupID));
+
+                    }
+                } else if ($ui->id('actionType', 1 ,'post') == 2) {
+
+                    $query3->execute(array($dependsID, $addon[':type'], $addon[':paddon'], $addon[':folder'], $addon[':menudescription'], $addon[':configs'], $addon[':cmd'], $addon[':rmcmd'], $addon[':addon'], $resellerLockupID));
+
+                    if ($query3->rowCount() > 0) {
+                        $template_file .= $gsprache->mod . ': ' . $addon[':menudescription'] .'<br>';
+                    } else {
+                        $template_file .= 'Error ' . $gsprache->mod . ': ' . $addon[':menudescription'] .'<br>';
+                    }
+
+                } else {
+                    $template_file .= 'Skipped: ' . $addon[':menudescription'] .'<br>';
+                }
+            }
+
+        }
+    } else {
+
+        $template_file = 'admin_db_operations_ao.tpl';
+    }
+
 } else {
     $template_file = 'admin_db_operations.tpl';
 }

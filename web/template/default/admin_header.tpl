@@ -124,9 +124,9 @@
                                     <?php if($pa['root'] and $reseller_id==0) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='vc') echo 'class="active"';?>><a href="admin.php?w=vc"><?php echo $gsprache->versioncheck;?></a></li>
                                     <li <?php if($ui->smallletters('w',255,'get')=='cc') echo 'class="active"';?>><a href="admin.php?w=cc"><?php echo $gsprache->columns;?></a></li>
-                                    <?php } ?>
-                                    <?php if($pa['root'] and $reseller_id==0) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='mo') echo 'class="active"';?>><a href="admin.php?w=mo"><?php echo $gsprache->modules;?></a></li>
+                                    <?php } ?>
+                                    <?php if($pa['root']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='bu') echo 'class="active"';?>><a href="admin.php?w=bu"><?php echo $gsprache->databases;?></a></li>
                                     <?php } ?>
                                 </ul>

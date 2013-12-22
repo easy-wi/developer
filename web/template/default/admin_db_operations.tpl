@@ -6,6 +6,7 @@
         </ul>
     </div>
 </div>
+<?php if($reseller_id==0){ ?>
 <div class="row-fluid">
     <div class="span11">
         <form class="form-horizontal" action="admin.php?w=bu&amp;d=bu" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
@@ -30,5 +31,24 @@
                 </div>
             </div>
         </form>
+    </div>
+</div>
+<?php } ?>
+<div class="row-fluid">
+    <div class="span11">
+        <div class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="inputGS"><?php echo $gsprache->gameserver.' '.$gsprache->template;?></label>
+                <div class="controls">
+                    <a href="admin.php?w=bu&amp;d=rg" id="inputGS"><button class="btn btn-primary" id="inputGS" type="submit"><i class="fa fa-refresh"></i></button></a>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputAO"><?php echo $gsprache->gameserver.' '.$gsprache->addon;?></label>
+                <div class="controls">
+                    <a href="admin.php?w=bu&amp;d=ra" id="inputGS"><button class="btn btn-primary" id="inputAO" type="submit"><i class="fa fa-refresh"></i></button></a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

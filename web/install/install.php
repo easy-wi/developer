@@ -771,7 +771,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
         try {
 
-            require_once(EASYWIDIR . '/install/gameslist.php');
+            require_once(EASYWIDIR . '/stuff/gameslist.php');
 
             $displayToUser .= "<div class='pager'><a href='?step=9${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
             $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_gameserver_data}</div>";
@@ -804,7 +804,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
             }
 
-            require_once(EASYWIDIR . '/install/addonslist.php');
+            require_once(EASYWIDIR . '/stuff/addonslist.php');
 
             $query = $sql->prepare("SELECT `id` FROM `addons` WHERE `addon`=? AND `resellerid`=0 LIMIT 1");
             $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`depending`,`paddon`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`rmcmd`,`resellerid`) VALUES ('Y',?,?,?,?,?,?,?,?,?,0)");
@@ -822,7 +822,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
                         $dependsID = 0;
 
-                        if (strlen($addon[':depends'])) {
+                        if (strlen($addon[':depends']) > 0) {
                             $query->execute(array($addon[':depends']));
                             $dependsID = $query->fetchColumn();
                         }

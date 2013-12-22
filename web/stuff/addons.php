@@ -183,7 +183,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $shorten = $row['shorten'];
                 $type = $row['type'];
                 $addon = $row['addon'];
                 $paddon = $row['paddon'];
