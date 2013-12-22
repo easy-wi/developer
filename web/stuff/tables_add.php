@@ -138,7 +138,7 @@ $query = "CREATE TABLE IF NOT EXISTS `badips` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `badip` varchar(15) NOT NULL,
   `bantime` datetime NOT NULL,
-  `failcount` smallint(2) unsigned DEFAULT '0',
+  `failcount` smallint(2) unsigned DEFAULT 0,
   `reason` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB";
@@ -182,7 +182,7 @@ $query = "CREATE TABLE IF NOT EXISTS `eac` (
   `hlds_4` enum('Y','N') DEFAULT 'Y',
   `hlds_5` enum('Y','N') DEFAULT 'Y',
   `hlds_6` enum('Y','N') DEFAULT 'Y',
-  `notified` int(11) unsigned DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
@@ -263,7 +263,7 @@ $query = "CREATE TABLE IF NOT EXISTS `gserver_restarts` (
   `map` varchar(30) DEFAULT NULL,
   `mapGroup` varchar(255) DEFAULT NULL,
   `userid` int(10) unsigned DEFAULT NULL,
-  `resellerid` int(10) unsigned NOT NULL DEFAULT '0',
+  `resellerid` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`switchID`),KEY(`userid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
@@ -302,7 +302,7 @@ $query = "CREATE TABLE IF NOT EXISTS `gsswitch` (
   `mfdldata` varchar(255) DEFAULT NULL,
   `taskset` enum('Y','N') DEFAULT 'N',
   `cores` varchar(255) DEFAULT NULL,
-  `notified` int(11) unsigned DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
   `secnotified` enum('Y','N') DEFAULT 'N',
   `newlayout` enum('Y','N') DEFAULT 'Y',
   `queryName` varchar(255) NOT NULL,
@@ -455,10 +455,10 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `password` blob,
   `ips` text COLLATE utf8_unicode_ci,
   `max_databases` bigint(19) unsigned DEFAULT '100',
-  `max_queries_per_hour` bigint(19) unsigned DEFAULT '0',
-  `max_updates_per_hour` bigint(19) unsigned DEFAULT '0',
-  `max_connections_per_hour` bigint(19) unsigned DEFAULT '0',
-  `max_userconnections_per_hour` bigint(19) unsigned DEFAULT '0',
+  `max_queries_per_hour` bigint(19) unsigned DEFAULT 0,
+  `max_updates_per_hour` bigint(19) unsigned DEFAULT 0,
+  `max_connections_per_hour` bigint(19) unsigned DEFAULT 0,
+  `max_userconnections_per_hour` bigint(19) unsigned DEFAULT 0,
   `externalID` varchar(255) DEFAULT NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,
@@ -476,10 +476,10 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
   `password` blob,
   `max_databases` bigint(19) unsigned DEFAULT '100',
   `interface` varchar(255) DEFAULT NULL,
-  `max_queries_per_hour` bigint(19) unsigned DEFAULT '0',
-  `max_updates_per_hour` bigint(19) unsigned DEFAULT '0',
-  `max_connections_per_hour` bigint(19) unsigned DEFAULT '0',
-  `max_userconnections_per_hour` bigint(19) unsigned DEFAULT '0',
+  `max_queries_per_hour` bigint(19) unsigned DEFAULT 0,
+  `max_updates_per_hour` bigint(19) unsigned DEFAULT 0,
+  `max_connections_per_hour` bigint(19) unsigned DEFAULT 0,
+  `max_userconnections_per_hour` bigint(19) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
@@ -618,9 +618,9 @@ $add = $sql->prepare($query);
 $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `page_terms_used` (
-  `page_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `term_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `language_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `page_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `term_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `language_id` int(10) unsigned NOT NULL DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`page_id`,`term_id`,`language_id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
@@ -681,8 +681,8 @@ $query = "CREATE TABLE IF NOT EXISTS `rserverdata` (
   `maxserver` smallint(4) unsigned DEFAULT NULL,
   `updates` smallint(1) unsigned DEFAULT '1',
   `updateMinute` smallint(2) unsigned DEFAULT NULL,
-  `alreadyStartedAt` smallint(2) unsigned DEFAULT '0',
-  `notified` int(11) unsigned DEFAULT '0',
+  `alreadyStartedAt` smallint(2) unsigned DEFAULT 0,
+  `notified` int(11) unsigned DEFAULT 0,
   `userID` int(10) unsigned DEFAULT 0,
   `externalID` varchar(255) DEFAULT NULL,
   `sourceSystemID` varchar(255) NULL,
@@ -729,8 +729,8 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsDedicated` (
   `mac` varchar(17) DEFAULT NULL,
   `externalID` varchar(255) DEFAULT NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
-  `notified` int(11) unsigned DEFAULT '0',
-  `resellerID` int(10) unsigned NOT NULL DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
+  `resellerID` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`dedicatedID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
@@ -751,7 +751,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsDHCP` (
   `dhcpFile` text,
   `subnetOptions` text,
   `description` text,
-  `notified` int(11) unsigned DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
@@ -770,7 +770,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsPXE` (
   `startCmd` text,
   `PXEFolder` text,
   `description` text,
-  `notified` int(11) unsigned DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
@@ -800,7 +800,7 @@ $query = "CREATE TABLE IF NOT EXISTS `serverlist` (
   `usermap` enum('Y','N') NOT NULL DEFAULT 'Y',
   `userconfig` enum('Y','N') NOT NULL DEFAULT 'Y',
   `user_uploaddir` enum('Y','N') DEFAULT 'N',
-  `upload` smallint(1) unsigned DEFAULT '0',
+  `upload` smallint(1) unsigned DEFAULT 0,
   `uploaddir` blob,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`switchID`),KEY(`servertype`),KEY(`resellerid`)
@@ -855,7 +855,7 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `version` decimal(4,2) DEFAULT '4.11',
+  `version` decimal(4,2) DEFAULT '4.20',
   `releasenotesDE` INT(11) unsigned NULL,
   `releasenotesEN` INT(11) unsigned NULL,
   `language` varchar(2) NOT NULL,
@@ -872,7 +872,7 @@ $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `faillogins` smallint(2) unsigned NOT NULL DEFAULT '5',
   `resellerid` int(10) unsigned DEFAULT 0,
   `brandname` varchar(50) DEFAULT NULL,
-  `timezone` varchar(3) DEFAULT '0',
+  `timezone` varchar(3) DEFAULT 0,
   `email` varchar(50) NOT NULL,
   `email_settings_host` varchar(255),
   `email_settings_password` blob,
@@ -959,8 +959,8 @@ $query = "CREATE TABLE IF NOT EXISTS `traffic_data` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `serverid` bigint(19) unsigned DEFAULT NULL,
   `ip` varchar(15) DEFAULT NULL,
-  `in` bigint(19) unsigned DEFAULT '0',
-  `out` bigint(19) unsigned DEFAULT '0',
+  `in` bigint(19) unsigned DEFAULT 0,
+  `out` bigint(19) unsigned DEFAULT 0,
   `day` datetime DEFAULT NULL,
   `userid` bigint(19) unsigned DEFAULT NULL,
   `resellerid` bigint(19) unsigned DEFAULT NULL,
@@ -973,8 +973,8 @@ $query = "CREATE TABLE IF NOT EXISTS `traffic_data_day` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `serverid` bigint(19) unsigned DEFAULT NULL,
   `ip` varchar(15) DEFAULT NULL,
-  `in` bigint(19) unsigned DEFAULT '0',
-  `out` bigint(19) unsigned DEFAULT '0',
+  `in` bigint(19) unsigned DEFAULT 0,
+  `out` bigint(19) unsigned DEFAULT 0,
   `day` datetime DEFAULT NULL,
   `userid` bigint(19) unsigned DEFAULT NULL,
   `resellerid` bigint(19) unsigned DEFAULT NULL,
@@ -996,27 +996,27 @@ $query = "CREATE TABLE IF NOT EXISTS `traffic_settings` (
   `column_destip` varchar(30) DEFAULT NULL,
   `column_byte` varchar(30) DEFAULT NULL,
   `column_date` varchar(30) DEFAULT NULL,
-  `text_colour_1` smallint(3) unsigned DEFAULT '0',
-  `text_colour_2` smallint(3) unsigned DEFAULT '0',
-  `text_colour_3` smallint(3) unsigned DEFAULT '0',
-  `barin_colour_1` smallint(3) unsigned DEFAULT '0',
-  `barin_colour_2` smallint(3) unsigned DEFAULT '206',
-  `barin_colour_3` smallint(3) unsigned DEFAULT '209',
-  `barout_colour_1` smallint(3) unsigned DEFAULT '0',
-  `barout_colour_2` smallint(3) unsigned DEFAULT '191',
-  `barout_colour_3` smallint(3) unsigned DEFAULT '255',
-  `bartotal_colour_1` smallint(3) unsigned DEFAULT '30',
-  `bartotal_colour_2` smallint(3) unsigned DEFAULT '144',
-  `bartotal_colour_3` smallint(3) unsigned DEFAULT '255',
-  `bg_colour_1` smallint(3) unsigned DEFAULT '240',
-  `bg_colour_2` smallint(3) unsigned DEFAULT '240',
-  `bg_colour_3` smallint(3) unsigned DEFAULT '255',
-  `border_colour_1` smallint(3) unsigned DEFAULT '200',
-  `border_colour_2` smallint(3) unsigned DEFAULT '200',
-  `border_colour_3` smallint(3) unsigned DEFAULT '200',
-  `line_colour_1` smallint(3) unsigned DEFAULT '220',
-  `line_colour_2` smallint(3) unsigned DEFAULT '220',
-  `line_colour_3` smallint(3) unsigned DEFAULT '220',
+  `text_colour_1` smallint(3) unsigned DEFAULT 0,
+  `text_colour_2` smallint(3) unsigned DEFAULT 0,
+  `text_colour_3` smallint(3) unsigned DEFAULT 0,
+  `barin_colour_1` smallint(3) unsigned DEFAULT 0,
+  `barin_colour_2` smallint(3) unsigned DEFAULT 206,
+  `barin_colour_3` smallint(3) unsigned DEFAULT 209,
+  `barout_colour_1` smallint(3) unsigned DEFAULT 0,
+  `barout_colour_2` smallint(3) unsigned DEFAULT 191,
+  `barout_colour_3` smallint(3) unsigned DEFAULT 255,
+  `bartotal_colour_1` smallint(3) unsigned DEFAULT 30,
+  `bartotal_colour_2` smallint(3) unsigned DEFAULT 144,
+  `bartotal_colour_3` smallint(3) unsigned DEFAULT 255,
+  `bg_colour_1` smallint(3) unsigned DEFAULT 240,
+  `bg_colour_2` smallint(3) unsigned DEFAULT 240,
+  `bg_colour_3` smallint(3) unsigned DEFAULT 255,
+  `border_colour_1` smallint(3) unsigned DEFAULT 200,
+  `border_colour_2` smallint(3) unsigned DEFAULT 200,
+  `border_colour_3` smallint(3) unsigned DEFAULT 200,
+  `line_colour_1` smallint(3) unsigned DEFAULT 220,
+  `line_colour_2` smallint(3) unsigned DEFAULT 220,
+  `line_colour_3` smallint(3) unsigned DEFAULT 220,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
@@ -1026,7 +1026,7 @@ $query = "CREATE TABLE IF NOT EXISTS `translations` (
   `type` varchar(2) NOT NULL,
   `lang` varchar(2) NOT NULL,
   `transID` varchar(255) NOT NULL,
-  `resellerID` int(10) unsigned NOT NULL DEFAULT '0',
+  `resellerID` int(10) unsigned NOT NULL DEFAULT 0,
   `text` text,
   PRIMARY KEY (`type`,`lang`,`transID`,`resellerID`)
 ) ENGINE=InnoDB";
@@ -1067,8 +1067,8 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata` (
   `mail_serverdown` enum('Y','N') DEFAULT 'Y',
   `mail_ticket` enum('Y','N') DEFAULT 'Y',
   `mail_vserver` enum('Y','N') DEFAULT 'Y',
-  `externalID` varchar(255) DEFAULT NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
+  `externalID` varchar(255) DEFAULT NULL,
   `sourceSystemID` varchar(255) NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
@@ -1100,6 +1100,8 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata_substitutes` (
   `language` varchar(2) DEFAULT NULL,
   `lastlogin` datetime NOT NULL,
   `logintime` datetime DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT NULL,
+  `sourceSystemID` varchar(255) NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`sID`),KEY(`userID`),KEY(`resellerID`),KEY(`loginName`)
 ) ENGINE=InnoDB";
@@ -1273,11 +1275,11 @@ $query = "CREATE TABLE IF NOT EXISTS `virtualcontainer` (
   `minram` smallint(6) DEFAULT NULL,
   `maxram` smallint(6) DEFAULT NULL,
   `status` smallint(1) unsigned DEFAULT NULL,
-  `notified` int(11) unsigned DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
   `externalID` varchar(255) DEFAULT NULL,
   `initialInstallPending` enum('Y','N') DEFAULT 'Y',
   `jobPending` enum('Y','N') DEFAULT 'N',
-  `resellerid` int(10) unsigned NOT NULL DEFAULT '0',
+  `resellerid` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`imageid`),KEY(`userid`),KEY(`hostid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
@@ -1303,8 +1305,8 @@ $query = "CREATE TABLE IF NOT EXISTS `virtualhosts` (
   `maxserver` smallint(3) unsigned DEFAULT NULL,
   `thin` enum('Y','N') DEFAULT 'N',
   `thinquota` smallint(2) unsigned DEFAULT '50',
-  `notified` int(11) unsigned DEFAULT '0',
-  `resellerid` int(10) unsigned NOT NULL DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
+  `resellerid` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
@@ -1360,7 +1362,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `bitversion` smallint(2) unsigned DEFAULT 64 NOT NULL,
   `serverdir` varchar(255) DEFAULT NULL,
   `keyname` varchar(50) DEFAULT NULL,
-  `notified` int(11) unsigned DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
   `autorestart` enum('Y','N') DEFAULT 'Y',
   `externalID` varchar(255) DEFAULT NULL,
   `sourceSystemID` varchar(255) NULL,
@@ -1392,7 +1394,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_server` (
   `flexSlots` enum('Y','N') DEFAULT 'N',
   `flexSlotsFree` int(11) unsigned DEFAULT '10',
   `flexSlotsPercent` smallint(3) unsigned DEFAULT '80',
-  `flexSlotsCurrent` int(19) unsigned DEFAULT '0',
+  `flexSlotsCurrent` int(19) unsigned DEFAULT 0,
   `max_download_total_bandwidth` bigint(19) DEFAULT '65536',
   `max_upload_total_bandwidth` bigint(19) DEFAULT '65536',
   `localserverid` int(10) unsigned,
@@ -1408,7 +1410,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_server` (
   `queryMaxplayers` smallint(3) unsigned NOT NULL,
   `queryPassword` enum('Y','N') NOT NULL,
   `queryUpdatetime` datetime DEFAULT NULL,
-  `notified` int(11) unsigned DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
   `externalID` varchar(255) DEFAULT NULL,
   `sourceSystemID` varchar(255) NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
@@ -1462,13 +1464,13 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `text_colour_1` smallint(3) unsigned DEFAULT '0',
-  `text_colour_2` smallint(3) unsigned DEFAULT '0',
-  `text_colour_3` smallint(3) unsigned DEFAULT '0',
-  `barin_colour_1` smallint(3) unsigned DEFAULT '0',
+  `text_colour_1` smallint(3) unsigned DEFAULT 0,
+  `text_colour_2` smallint(3) unsigned DEFAULT 0,
+  `text_colour_3` smallint(3) unsigned DEFAULT 0,
+  `barin_colour_1` smallint(3) unsigned DEFAULT 0,
   `barin_colour_2` smallint(3) unsigned DEFAULT '206',
   `barin_colour_3` smallint(3) unsigned DEFAULT '209',
-  `barout_colour_1` smallint(3) unsigned DEFAULT '0',
+  `barout_colour_1` smallint(3) unsigned DEFAULT 0,
   `barout_colour_2` smallint(3) unsigned DEFAULT '191',
   `barout_colour_3` smallint(3) unsigned DEFAULT '255',
   `bg_colour_1` smallint(3) unsigned DEFAULT '240',
@@ -1499,7 +1501,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_tsdns` (
   `bitversion` smallint(2) unsigned NOT NULL,
   `serverdir` varchar(255) DEFAULT NULL,
   `keyname` varchar(50) DEFAULT NULL,
-  `notified` int(11) unsigned DEFAULT '0',
+  `notified` int(11) unsigned DEFAULT 0,
   `autorestart` enum('Y','N') DEFAULT 'Y',
   `description` TEXT,
   `resellerid` int(10) unsigned DEFAULT 0,
