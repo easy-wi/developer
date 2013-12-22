@@ -207,7 +207,7 @@ class EasyWiFTP {
 
         $i = 0;
 
-        $splitConfig = preg_split('/\//', str_replace(array('//', '///', '////'), '/', $file), -1, PREG_SPLIT_NO_EMPTY);
+        $splitConfig = preg_split('/\//', $this->cleanSlashes($file), -1, PREG_SPLIT_NO_EMPTY);
         $folderFileCount = count($splitConfig) - 1;
 
         while ($i < $folderFileCount) {
@@ -215,8 +215,15 @@ class EasyWiFTP {
             $i++;
         }
 
-        return str_replace(array('//', '///', '////'), '/', $folders);
+        return $this->cleanSlashes($folders);
 
+    }
+
+    public function cleanSlashes ($folders) {
+        while (substr($folders, -2) == '//') {
+            $folders = substr($folders, 0, strlen($folders) -1 );
+        }
+        return $folders;
     }
 
     private function arrayToChDir ($folders) {
@@ -273,32 +280,33 @@ class EasyWiFTP {
                 if (preg_match('/^d[rwx\-]{9}+$/', $list[0]) and !preg_match('/^[\.\/]{0,}Steam[\/]{0,}+$/', $list[count($list) - 1]) and !in_array($list[count($list) - 1], $donotsearch)) {
 
                     if (substr($dir . $list[count($list) - 1], $spl) == $searchFor) {
-                        return $dir . $list[count($list) - 1];
+                        return $this->cleanSlashes($dir . $list[count($list) - 1]);
                     }
 
                     $folders[] = $dir . $list[count($list) - 1];
 
                     if (is_numeric($maxDepth) and $currentDepth < ($maxDepth + 1)) {
 
-                        $array = $this->checkFolders($dir . $list[count($list) - 1], $searchFor, $maxDepth, $currentDepth + 1);
+                        $array = $this->checkFolders($this->cleanSlashes($dir . $list[count($list) - 1]), $searchFor, $maxDepth, $currentDepth + 1);
 
                         if (is_array($array)) {
                             foreach ($array as $f){
                                 if (substr($f, $spl) == $searchFor) {
-                                    return $f;
+                                    return $this->cleanSlashes($f);
                                 }
                                 $folders[] = $f;
                             }
 
-                        } else if (substr($array,$spl) == $searchFor) {
-                            return $array;
+                        } else if (substr($array, $spl) == $searchFor) {
+                            return $this->cleanSlashes($array);
                         }
                     }
                 }
             }
             return $folders;
         }
-        return $dir;
+
+        return $this->cleanSlashes($dir);
     }
 
     public function getMapGroups () {

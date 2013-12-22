@@ -188,10 +188,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             if (!$ftpPath) {
 
-                $foundPath = $ftp->checkFolders($ftpPath, $searchFor, 5);
-                $ftpPath=(is_array($foundPath)) ? '' : $foundPath;
+                $foundPath = $ftp->checkFolders($ui->anyPath('ftpPath', 'post'), $searchFor, 5);
 
-                $error[] = $sprache->ftp_path . '. ' . $sprache->import_corrected;
+                $ftpPath = (is_array($foundPath)) ? '' : $foundPath;
+
+                if (strlen($searchFor) > 0 or strlen($ftpPath) == 0) {
+                    $error[] = $sprache->ftp_path . '. ' . $sprache->import_corrected;
+                }
             }
         }
 
@@ -210,16 +213,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
     if (count($error) == 0 and isset($rootID)) {
+
         $rdata = serverdata('root',$rootID,$aeskey);
         $sship = $rdata['ip'];
         $sshport = $rdata['port'];
         $sshuser = $rdata['user'];
         $sshpass = $rdata['pass'];
-        if ($ssl== 'N') {
-            $ftpConnect='ftp://';
-        } else {
-            $ftpConnect='ftps://';
-        }
+
+        $ftpConnect = ($ssl == 'N') ? 'ftp://' : 'ftps://';
+
         $ftpConnect.=str_replace('//','/',$ftpAddress . ':' . $ftpPort. '/' . $ftpPath);
         ssh2_execute('gs',$rootID,"sudo -u ${customer} ./control.sh migrateserver ${customer} 1_${shorten} ${gsfolder} ${template} ${ftpUser} ${ftpPassword} ${ftpConnect} ${modFolder}");
         $loguseraction="%import% %gserver% ${address}";
