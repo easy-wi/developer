@@ -448,13 +448,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $table = array();
     $ticketLinks['all'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3, 'get');
     $ticketLinks['amount'] = 'admin.php?w=ti&amp;d=md';
+
     $ticketLinks['A'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3, 'get');
     $ticketLinks['C'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3, 'get');
     $ticketLinks['D'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3, 'get');
     $ticketLinks['N'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3, 'get');
     $ticketLinks['P'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3, 'get');
     $ticketLinks['R'] = 'admin.php?w=ti&amp;d=md&amp;a='.$ui->id('a',3, 'get');
-    $where='WHERE t.`resellerid`=?';
+    $where = 'WHERE t.`resellerid`=?';
     if (isset($ui->get['ts'])) {
         foreach ($ui->get['ts'] as $get) {
             if (preg_match('/[ACDNPR]/',$get)) $selected[] = $get;
@@ -474,7 +475,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if ($i != 0) $where .= $temp;
     foreach ($ticketLinks as $k => $v) {
         foreach (array('A','C','D','N','P','R') as $s) {
-            if ((in_array($s,$selected) and $k != $s) or (!in_array($s,$selected) and $k==$s)) $ticketLinks[$k] .= '&amp;ts[] = '.$s;
+            if ((in_array($s,$selected) and $k != $s) or (!in_array($s,$selected) and $k==$s)) $ticketLinks[$k] .= '&amp;ts[]='.$s;
         }
     }
     $o = $ui->st('o', 'get');
