@@ -733,8 +733,16 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         // Substitutes
         unset($left);
         $start = 0;
-/**
+
         // Prepare queries only once to avoid overhead
+        $query2 = $sql->prepare("SELECT `sID` FROM `userdata_substitutes` WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerID`=? LIMIT 1");
+        $query4 = $sql->prepare("SELECT `id` FROM `userdata` WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerID`=? LIMIT 1");
+        $query3 = $sql->prepare("UPDATE `userdata_substitutes` SET `loginName`=?,`name`=?,`vname`=? WHERE `sID`=? LIMIT 1");
+        $query5 = $sql->prepare("INSERT INTO `userdata_substitutes` (`userID`,`loginName`,`name`,`vname`,`passwordHashed`,`sourceSystemID`,`externalID`,`resellerID`) VALUES (?,?,?,?,?,?,?,?)");
+        $query6 = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `sourceSystemID`=? AND `externalID`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
+        $query7 = $sql->prepare("INSERT INTO `userdata_substitutes_servers` (`sID`,`oType`,`oID`,`resellerID`) VALUE (?,'gs',?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
+        $query8 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `sourceSystemID`=? AND `externalID`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
+        $query9 = $sql->prepare("INSERT INTO `userdata_substitutes_servers` (`sID`,`oType`,`oID`,`resellerID`) VALUE (?,'vo',?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
 
         while (!isset($left) or $left > 0) {
 
@@ -768,29 +776,29 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                     if (isset($value->externalID)) {
 
-                        $query2 = $sql->prepare("SELECT `sID` FROM `userdata_substitutes` WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerID`=? LIMIT 1");
+                        $substituteImported = true;
+
                         $query2->execute(array(json_encode(array('I' => $row['importID'])), getParam('externalID'), $resellerID));
                         $localID = $query2->fetchColumn();
+
+                        $query4->execute(array(json_encode(array('I' => $row['importID'])), getParam('belongsToID'), $resellerID));
+                        $belongsToLocalID = $query4->fetchColumn();
 
                         // Check if substitute exists at easy-wi
                         if (isid($localID, 11) and $row['fetchUpdates'] == 'Y') {
 
-                            $query3 = $sql->prepare("UPDATE `userdata_substitutes` SET `loginName`=?,`name`=?,`vname`=? WHERE `sID`=? LIMIT 1");
                             $query3->execute(array(getParam('loginName'), getParam('lastName'), getParam('firstName'), $localID));
+
                             printText('Substitute updated. Loginname: ' . getParam('loginName'));
 
-                        } else if (isset($ts3ID) and isid($ts3ID, 11) and json_encode(array('I' => $row['importID'])) == $sourceSystemID and getParam('externalID') == $externalID) {
+                        } else if (isset($localID) and isid($localID, 11) and json_encode(array('I' => $row['importID'])) == $sourceSystemID and getParam('externalID') == $externalID) {
 
+                            $substituteImported = false;
                             printText('Substitute update skipped because import only mode. Loginname: ' . getParam('loginName'));
 
                         } else {
 
-                            $query4 = $sql->prepare("SELECT `id` FROM `userdata` WHERE `sourceSystemID`=? AND `externalID`=? AND `resellerID`=? LIMIT 1");
-                            $query4->execute(array(json_encode(array('I' => $row['importID'])), getParam('belongsToID'), $resellerID));
-                            $belongsToLocalID = $query4->fetchColumn();
-
                             if (isid($belongsToLocalID, 11)) {
-                                $query5 = $sql->prepare("INSERT INTO `userdata_substitutes` (`userID`,`loginName`,`name`,`vname`,`passwordHashed`,`sourceSystemID`,`externalID`,`resellerID`) VALUES (?,?,?,?,?,?,?,?)");
                                 $query5->execute(array($belongsToLocalID, getParam('loginName'), getParam('lastName'), getParam('firstName'), getParam('password'), json_encode(array('I' => $row['importID'])), getParam('belongsToID'), $resellerID));
                                 $localID = $sql->lastInsertId();
 
@@ -798,10 +806,45 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                             } else {
 
-                                $localID = false;
+                                $substituteImported = true;
 
                                 printText('Error: Cannot import substitute ' . getParam('loginName') . 'because there is no user with external ID ' . getParam('belongsToID'));
                             }
+                        }
+
+                        if ($substituteImported === true and isid($belongsToLocalID, 11)) {
+
+                            foreach ($value->serverAccess['gs'] as $externalGsID) {
+
+                                $query6->execute(array(json_encode(array('I' => $row['importID'])), $externalGsID, $belongsToLocalID, $resellerID));
+                                $localGsID = $query6->fetchColumn();
+
+                                if (isid($localGsID, 10)) {
+                                    $query7->execute(array($localID, $localGsID, $resellerID));
+
+                                    printText('Imported substitute gameserver server access. Local gameserverid is: ' . $localGsID);
+
+                                } else {
+                                    printText('Error: Importing substitute gameserver server access. Local gameserverid is: ' . $localGsID);
+                                }
+                            }
+
+                            foreach ($value->serverAccess['vo'] as $externalVoID) {
+
+                                $query8->execute(array(json_encode(array('I' => $row['importID'])), $externalVoID, $belongsToLocalID, $resellerID));
+                                $localVoID = $query8->fetchColumn();
+
+                                if (isid($localVoID, 10)) {
+
+                                    $query9->execute(array($localID, $localVoID, $resellerID));
+
+                                    printText('Imported substitute gameserver server access. Local gameserverid is: ' . $localVoID);
+
+                                } else {
+                                    printText('Error: Importing substitute gameserver server access. Local gameserverid is: ' . $localVoID);
+                                }
+                            }
+
                         }
                     }
                 }
@@ -825,8 +868,6 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                 }
             }
         }
-
-**/
 
     }
 
