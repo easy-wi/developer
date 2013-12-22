@@ -160,6 +160,13 @@ Unfortunately errors have slipped in 4.10. In addition the update revealed that 
             $query->execute(array($row['resellerid']));
         }
 
+        $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='tekkit' AND `resellerid`=? LIMIT 1");
+        $query->execute(array($row['resellerid']));
+        if ($query->rowCount() == 0) {
+            $query = $sql->prepare("INSERT INTO `servertypes` (`steamgame`, `appID`, `steamVersion`, `updates`, `shorten`, `description`, `type`, `gamebinary`, `binarydir`, `modfolder`, `fps`, `slots`, `map`, `cmd`, `modcmds`, `tic`, `qstat`, `gamemod`, `gamemod2`, `configs`, `configedit`, `qstatpassparam`, `portStep`, `portMax`, `portOne`, `portTwo`, `portThree`, `portFour`, `portFive`, `protected`, `resellerid`, `gameq`, `os`, `ftpAccess`, `ramLimited`, `downloadPath`, `protectedSaveCFGs`, `iptables`, `mapGroup`) VALUES ('N', NULL, NULL, 1, 'tekkit', 'MC Tekkit', '', 'Tekkit.jar', NULL, NULL, NULL, 0, NULL, 'java -Xincgc -Xmx%maxram%M -Xms%minram%M -jar %binary% -o true -h %ip% -p %port% -s %slots% --log-append false --log-limit 50000', NULL, NULL, 'minecraft', 'N', NULL, 'server.properties', '[server.properties] ini\r\nserver-port=%port%\r\nquery.port=%port%\r\nrcon.port=%port2%\r\nserver-ip=%ip%\r\nmax-players=%slots%\r\nenable-query=true', 100, 2, 25565, 25565, NULL, NULL, NULL, 'N', ?, 'N', 'minecraft', 'L', 'Y', 'Y', NULL, NULL, NULL, NULL);;");
+            $query->execute(array($row['resellerid']));
+        }
+
         // Loop to addons and add in case addons does not exist yet
         foreach ($gameAddons as $addon) {
 
@@ -193,6 +200,13 @@ Unfortunately errors have slipped in 4.10. In addition the update revealed that 
         }
 
     }
+    $query = $sql->prepare("SELECT `id`,AES_DECRYPT(`imageserver`,?) AS `decryptedimageserver` FROM `settings`");
+    $query2 = $sql->prepare("UPDATE `settings` SET `imageserver`=? WHERE `id`=? LIMIT 1");
+    $query->execute(array($aeskey));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $query2->execute(array($row['decryptedimageserver'], $row['id']));
+    }
+
 
 
     // Migrate existing Images from qstat to GameQ
