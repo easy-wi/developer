@@ -204,7 +204,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $ownerID = ($reseller_id == 0) ? 0 : $reseller_id;
             }
 
-        } else if (!isid($ownerID, 10) and $reseller_id > 0) {
+        } else if (!isid($ownerID, 10)) {
             $ownerID = $reseller_id;
         }
 
