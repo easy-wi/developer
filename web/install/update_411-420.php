@@ -232,6 +232,22 @@ if (isset($include) and $include == true) {
 
     $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `gameq` varchar(255) NULL AFTER `qstat`");
     $query->execute();
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `os` enum('B','L','W') NULL AFTER `gameq`");
+    $query->execute();
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `ftpAccess` enum('Y','N') NULL AFTER `os`");
+    $query->execute();
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `ramLimited` enum('Y','N') NULL AFTER `ftpAccess`");
+    $query->execute();
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `workShop` enum('Y','N') NULL AFTER `protected`");
+    $query->execute();
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `downloadPath` text NULL AFTER `protected`");
+    $query->execute();
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `protectedSaveCFGs` text NULL AFTER `protected`");
+    $query->execute();
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `iptables` text NULL AFTER `protected`");
+    $query->execute();
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `mapGroup` varchar(255) NULL AFTER `protected`");
+    $query->execute();
 
     require_once(EASYWIDIR . '/stuff/addonslist.php');
 
@@ -240,8 +256,9 @@ if (isset($include) and $include == true) {
     $query4 = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
     $query5 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?)");
 
-    $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `accounttype` IN ('a','r')");
+    $query = $sql->prepare("SELECT DISTINCT(`resellerid`) FROM `userdata` WHERE `accounttype` IN ('a','r')");
     $query->execute();
+
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
         // add additional game images
