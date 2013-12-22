@@ -116,8 +116,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			}
 		}
 
-		$query = $sql->prepare("UPDATE `settings` SET `cronjob_ips`=?,`template`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=AES_ENCRYPT(?,?),`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
-        $query->execute(array($cronjobIPs, $template, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $aeskey, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $reseller_id));
+		$query = $sql->prepare("UPDATE `settings` SET `cronjob_ips`=?,`template`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=?,`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
+        $query->execute(array($cronjobIPs, $template, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $reseller_id));
 
 		if ($query->rowCount() > 0) {
             $loguseraction = "%mod% %settings%";
@@ -146,13 +146,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-	$query = $sql->prepare("SELECT *,AES_DECRYPT(`imageserver`,?) AS `decryptedimageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
-	$query->execute(array($aeskey, $reseller_id));
+	$query = $sql->prepare("SELECT * FROM `settings`  WHERE `resellerid`=? LIMIT 1");
+	$query->execute(array($reseller_id));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$language_choosen = $row['language'];
 		$template_choosen = $row['template'];
         $selectlanguages = getlanguages($template_choosen);
-		$imageserver = $row['decryptedimageserver'];
+		$imageserver = $row['imageserver'];
 		$master = $row['master'];
 		$cronjobIPs = $row['cronjob_ips'];
 		$prefix1 = $row['prefix1'];

@@ -860,7 +860,7 @@ $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `releasenotesEN` INT(11) unsigned NULL,
   `language` varchar(2) NOT NULL,
   `template` varchar(50) DEFAULT 'default',
-  `imageserver` blob,
+  `imageserver` text,
   `cronjob_ips` text,
   `licence` text,
   `master` enum('Y','N') NOT NULL DEFAULT 'N',

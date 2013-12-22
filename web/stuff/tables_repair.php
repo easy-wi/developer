@@ -685,7 +685,7 @@ $defined['settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"N
     'releasenotesEN' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'template' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"default","Extra"=>""),
-    'imageserver' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'imageserver' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'cronjob_ips' => array("Type"=>"text","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'licence' => array("Type"=>"text","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'master' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),

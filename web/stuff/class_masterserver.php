@@ -87,8 +87,8 @@ class masterServer {
             // Get the imageserver if possible and use Easy-WI server as fallback
             $mainip=explode('.', $this->sship);
             $mainsubnet = $mainip[0] . '.' . $mainip[1] . '.' . $mainip[2];
-            $query = $sql->prepare("SELECT AES_DECRYPT(`imageserver`,?) AS `decryptedimageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
-            $query->execute(array($aeskey, $this->resellerID));
+            $query = $sql->prepare("SELECT `imageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
+            $query->execute(array($this->resellerID));
             $splitImageservers=preg_split('/\r\n/', $query->fetchColumn(), -1, PREG_SPLIT_NO_EMPTY);
             $imageservers = array();
             foreach ($splitImageservers as $server) {
