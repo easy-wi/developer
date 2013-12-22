@@ -15,21 +15,24 @@
     <?php echo implode(', ',$errors);?>
 </div>
 <?php }?>
-<!--
-<div class="row-fluid">
-    <div class="span6">
-        <dl class="dl-horizontal">
-            <dt><?php echo $gsprache->user;?></dt>
-            <dd><?php echo $ownerName;?></dd>
-        </dl>
-    </div>
-</div>
--->
 <div class="row-fluid">
     <div class="span8">
         <form class="form-horizontal" action="admin.php?w=ro&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ro" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
+            <?php if ($reseller_id==0 or $reseller_id==$admin_id){ ?>
+            <div class="control-group">
+                <label class="control-label" for="inputOwner"><?php echo $gsprache->user;?></label>
+                <div class="controls">
+                    <select class="span12" id="inputOwner" name="ownerID">
+                        <option></option>
+                        <?php foreach ($table as $k=>$v){ ?>
+                        <option value="<?php echo $k;?>" <?php if($k==$ownerID) echo 'selected="selected"'; ?>><?php echo $v;?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            <?php } ?>
             <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
                 <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
