@@ -59,16 +59,15 @@ if ($reseller_id == 0) {
 	$logreseller = 0;
 }
 
-if ($reseller_id != 0 and $admin_id != $reseller_id) {
-    $reseller_id = $admin_id;
-}
-
 if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
 
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
     $errors = array();
+    $table = array();
+    $ownerName = '';
 
     $id = $ui->id('id', 10, 'get');
     $cores = ($ui->id('cores', 3, 'post')) ? $ui->id('cores', 3, 'post') : 4;
@@ -85,7 +84,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $bit = $ui->id('bit', 2, 'post');
     $desc = $ui->description('desc', 'post');
     $ram = $ui->id('ram', 5, 'post');
-    $updates = $ui->id('updates',1, 'post');
+    $updates = $ui->id('updates', 1, 'post');
+    $ownerID = $ui->id('ownerID', 10, 'post');
 
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
     $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 0;
@@ -97,13 +97,42 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     if (!$ui->smallletters('action', 2, 'post')) {
 
+        if ($reseller_id == 0) {
+            $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `accounttype`='r' ORDER BY `id` DESC");
+            $query->execute();
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
+            }
+        } else {
+            $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='r' ORDER BY `id` DESC");
+            $query->execute(array($resellerLockupID));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
+            }
+        }
+
         if ($ui->st('d', 'get') == 'ad' and $reseller_id == 0) {
+
             $template_file = 'admin_roots_add.tpl';
 
         } else if ($ui->st('d', 'get') == 'md' and $id) {
-            $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-            $query2 = $sql->prepare("SELECT CONCAT(`cname`,' ',`vname`,' ',`name`)  FROM `userdata` WHERE `accounttype`='u' AND `resellerid`=? ORDER BY `id` DESC");
-            $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':reseller_id' => $reseller_id));
+
+            $query2 = $sql->prepare("SELECT CONCAT(`cname`,' ',`vname`,' ',`name`)  FROM `userdata` WHERE `accounttype`='r' AND `id`=? LIMIT 1");
+
+            if ($reseller_id == 0) {
+                $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id LIMIT 1");
+                $query->execute(array(':aeskey' => $aeskey, ':id' => $id));
+            } else {
+
+                if ($admin_id == $reseller_id) {
+                    $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` AS r WHERE `id`=:id AND (`resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`)) LIMIT 1");
+                    $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':reseller_id' => $resellerLockupID));
+                } else {
+                    $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+                    $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':reseller_id' => $resellerLockupID));
+                }
+            }
+
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $active = $row['active'];
                 $externalID = $row['externalID'];
@@ -129,11 +158,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $port = $row['dport'];
                 $user = $row['duser'];
                 $pass = $row['dpass'];
-                $ownerName = '';
-                if ($row['userID'] == '' or $row['userID'] == null) {
-                    $query2->execute(array($reseller_id));
-                    $ownerName = trim($query2->fetchColumn());
-                }
+                $ownerID = $row['resellerid'];
+                $query2->execute(array($row['resellerid']));
+                $ownerName = trim($query2->fetchColumn());
             }
             $template_file =  ($query->rowCount() > 0) ? 'admin_roots_md.tpl' : 'admin_404.tpl';
 
@@ -164,7 +191,25 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $errors['hyperthreading'] = 'Hyper Threading';
         }
 
+        if (isid($ownerID, 10)) {
+            if ($reseller_id == 0) {
+                $query = $sql->prepare("SELECT 1 FROM `userdata` WHERE `id`=? LIMIT 1");
+                $query->execute(array($ownerID));
+            } else {
+                $query = $sql->prepare("SELECT 1 FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($ownerID, $resellerLockupID));
+            }
+
+            if ($query->rowCount() == 0) {
+                $ownerID = ($reseller_id == 0) ? 0 : $reseller_id;
+            }
+
+        } else if (!isid($ownerID, 10) and $reseller_id > 0) {
+            $ownerID = $reseller_id;
+        }
+
         $ssh2Check = (count($errors) == 0) ? ssh_check($ip, $port, $user, $publickey, $keyname, $pass) : true;
+
         if ($ssh2Check !== true) {
 
             if ($ssh2Check == 'ipport') {
@@ -189,14 +234,21 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (count($errors) == 0) {
 
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
+                $insertOwner = (isid($ownerID, 10)) ? $ownerID : 0;
                 $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`ram`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:ram,:externalID,:reseller)");
-                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':reseller' => $reseller_id));
+                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':reseller' => $ownerID));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %root% ' . $ip;
 
             } else if ($ui->st('action', 'post') == 'md') {
-                $query = $sql->prepare("UPDATE `rserverdata` SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`externalID`=:externalID WHERE `id`=:id AND `resellerid`=:reseller_id");
-                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':id' => $id, ':reseller_id' => $reseller_id));
+
+                if ($reseller_id == 0) {
+                    $query = $sql->prepare("UPDATE `rserverdata` SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`externalID`=:externalID,`resellerid`=:reseller_id WHERE `id`=:id LIMIT 1");
+                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':reseller_id' => $ownerID, ':id' => $id));
+                } else {
+                    $query = $sql->prepare("UPDATE `rserverdata` AS r SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`externalID`=:externalID,`resellerid`=:ownerID WHERE `id`=:id AND (`resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`)) LIMIT 1");
+                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':ownerID' => $ownerID, ':id' => $id, ':reseller_id' => $resellerLockupID));
+                }
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %root% ' . $ip;
             }
@@ -213,13 +265,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
+} else if ($ui->st('d', 'get') == 'dl' and $reseller_id == 0 and $ui->id('id', 10, 'get')) {
 
     $id = $ui->id('id', 10, 'get');
 
     if (!$ui->st('action', 'post')) {
-        $query = $sql->prepare("SELECT `ip`,`description` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? AND (`userID` IS NULL OR `userID` IN ('',0)) LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query = $sql->prepare("SELECT `ip`,`description` FROM `rserverdata` WHERE `id`=? AND (`userID` IS NULL OR `userID` IN ('',0)) LIMIT 1");
+        $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $desc = $row['description'];
             $ip = $row['ip'];
@@ -228,31 +280,31 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else if ($ui->st('action', 'post') == 'dl') {
 
-        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? LIMIT 1");
+        $query->execute(array($id));
         $ip = $query->fetchColumn();
-        $query = $sql->prepare("DELETE FROM `rserverdata` WHERE `id`=? AND `resellerid`=? AND (`userID` IS NULL OR `userID` IN ('',0)) LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query = $sql->prepare("DELETE FROM `rserverdata` WHERE `id`=? AND (`userID` IS NULL OR `userID` IN ('',0)) LIMIT 1");
+        $query->execute(array($id));
 
         if ($query->rowCount() > 0) {
             $query = $sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
             $query->execute();
-            $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
-            $query2 = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? AND `resellerid`=?");
-            $query->execute(array($id,$reseller_id));
+            $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=?");
+            $query2 = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=?");
+            $query->execute(array($id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $query2->execute(array($row['id'],$reseller_id));
+                $query2->execute(array($row['id']));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
-                    $query->execute(array($row2['id'],$reseller_id));
+                    $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=?");
+                    $query->execute(array($row2['id']));
                 }
-                $query = $sql->prepare("DELETE FROM `serverlist` WHERE `switchID`=? AND `resellerid`=?");
-                $query->execute(array($row['id'],$reseller_id));
-                $query = $sql->prepare("DELETE FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
-                $query->execute(array($row['id'],$reseller_id));
+                $query = $sql->prepare("DELETE FROM `serverlist` WHERE `switchID`=?");
+                $query->execute(array($row['id']));
+                $query = $sql->prepare("DELETE FROM `gserver_restarts` WHERE `switchID`=?");
+                $query->execute(array($row['id']));
             }
-            $query = $sql->prepare("DELETE FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
-            $query->execute(array($id,$reseller_id));
+            $query = $sql->prepare("DELETE FROM `gsswitch` WHERE `rootID`=?");
+            $query->execute(array($id));
             $template_file = $spracheResponse->table_del;
             $loguseraction = '%del% %root% ' . $ip;
             $insertlog->execute();
@@ -268,10 +320,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $id = $ui->id('id', 10, 'get');
 
     if (!$ui->st('action', 'post')) {
+
         $table = array();
 
-        $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
-        $query->execute(array($id, $reseller_id));
+        if ($reseller_id == 0) {
+            $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `rootID`=?");
+            $query->execute(array($id));
+        } else {
+            $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
+            $query->execute(array($id, $resellerLockupID));
+        }
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip = $row['serverip'];
             $table[$row['id']] = array('ip' => $row['serverip'], 'port' => $row['port']);
@@ -284,9 +342,17 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $started = array();
         $serverIDs = (array) $ui->id('serverID', 10, 'post');
 
-        $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=? AND g.`resellerid`=?");
+        if ($reseller_id == 0) {
+            $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=?");
+        } else {
+            $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=? AND g.`resellerid`=?");
+        }
         foreach ($serverIDs as $serverID) {
-            $query->execute(array($aeskey, $aeskey, $serverID, $id, $reseller_id));
+            if ($reseller_id == 0) {
+                $query->execute(array($aeskey, $aeskey, $serverID, $id));
+            } else {
+                $query->execute(array($aeskey, $aeskey, $serverID, $id, $resellerLockupID));
+            }
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $started[] = $row['serverip'] . ':' . $row['port'];
                 $customer = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['userid'] : $row['cname'];
@@ -334,9 +400,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $orderby = 'r.`id` ASC';
         $o = 'ai';
     }
-    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
-    $query->execute(array($reseller_id));
+    if ($reseller_id == 0) {
+        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata`");
+        $query->execute();
+    } else {
+        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` AS r WHERE `resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`)");
+        $query->execute(array(':reseller_id' => $resellerLockupID));
+    }
+
     $colcount = $query->fetchColumn();
+
     if ($ui->id('p', 19, 'get') > $colcount) {
         $start = $colcount - $amount;
         if ($start < 0) {
@@ -345,9 +418,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $start = (int) $ui->id('p', 19, 'get');
     }
-    $query = $sql->prepare("SELECT r.*,u.`cname`,u.`name`,u.`vname` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`userID`=u.`id` WHERE r.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
-    $query2 = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`, ':',g.`port`) AS `address`,g.`active`,g.`stopped`,g.`queryName`,g.`queryNumplayers`,g.`slots`,g.`maxram`,t.`shorten` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`resellerid`=?");
-    $query->execute(array($reseller_id));
+    if ($reseller_id == 0) {
+        $query = $sql->prepare("SELECT r.*,u.`cname`,u.`name`,u.`vname` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`userID`=u.`id` ORDER BY $orderby LIMIT $start,$amount");
+        $query2 = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`, ':',g.`port`) AS `address`,g.`active`,g.`stopped`,g.`queryName`,g.`queryNumplayers`,g.`slots`,g.`maxram`,t.`shorten` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=?");
+        $query->execute();
+    } else {
+        $query = $sql->prepare("SELECT r.*,u.`cname`,u.`name`,u.`vname` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`userID`=u.`id` WHERE r.`resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`) ORDER BY $orderby LIMIT $start,$amount");
+        $query2 = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`, ':',g.`port`) AS `address`,g.`active`,g.`stopped`,g.`queryName`,g.`queryNumplayers`,g.`slots`,g.`maxram`,t.`shorten` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`resellerid`=?");
+        $query->execute(array(':reseller_id' => $resellerLockupID));
+    }
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $used = 0;
         $available = 0;
@@ -364,7 +443,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $deleteAllowed = false;
             $names = trim($row['name'] . ' ' . $row['vname']);
         }
-        $query2->execute(array($id,$reseller_id));
+        if ($reseller_id == 0) {
+            $query2->execute(array($id));
+        } else {
+            $query2->execute(array($id, $resellerLockupID));
+        }
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             if ($row2['active'] == 'N' or $row2['stopped'] == 'Y') {
                 $gsStatus = 2;
