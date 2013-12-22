@@ -56,7 +56,7 @@ if (isset($include) and $include == true) {
 <li>Bootstrap wird über ein CDN geladen</li>
 <li>Font Awesome über CDN eingebunden</li>
 <li>Usability & Design Optimierungen im Userpanel</li>
-<li>Fehlerhandling bezüglich $template_to_use und $template_file verbessert</li>
+<li>Fehlerhandling bezüglich template_to_use und template_file verbessert</li>
 <li>Userpanel: Logübersicht überarbeitet</li>
 <li>Userpanel: Zahglreiche Infotexte hinzugefügt</li>
 </ul></li>
@@ -142,7 +142,7 @@ if (isset($include) and $include == true) {
 <li>Included bootstrap with public CDN</li>
 <li>Include Font Awesome with bootstrap and load from CDN</li>
 <li>Usability & design optimisations at userpanel</li>
-<li>error handling regarding $template_to_use and $template_file</li>
+<li>error handling regarding template_to_use and template_file</li>
 <li>userpanel: logoverview reworked</li>
 <li>userpanel: multiple infotexts are added</li>
 </ul></li>
@@ -233,7 +233,7 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `gameq` varchar(255) NULL AFTER `qstat`");
     $query->execute();
 
-    require_once(EASYWIDIR . '/install/addonslist.php');
+    require_once(EASYWIDIR . '/stuff/addonslist.php');
 
     $query2 = $sql->prepare("SELECT `id` FROM `addons` WHERE `addon`=? AND `resellerid`=? LIMIT 1");
     $query3 = $sql->prepare("INSERT INTO `addons` (`active`,`depending`,`paddon`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`rmcmd`,`resellerid`) VALUES ('Y',?,?,?,?,?,?,?,?,?,?)");
