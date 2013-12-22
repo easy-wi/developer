@@ -49,6 +49,7 @@ $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
+
 if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
@@ -56,9 +57,11 @@ if ($reseller_id == 0) {
     $logsubuser =  (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
 	$logreseller = 0;
 }
+
 if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id = $admin_id;
 }
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 
@@ -224,7 +227,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                 $modfolder = $node->nodeValue;
                             }
                             if ($node->nodeName == 'fps') {
-                                $fps = $node->configs;
+                                $fps = $node->nodeValue;
                             }
                             if ($node->nodeName == 'slots') {
                                 $slots = $node->nodeValue;
@@ -402,7 +405,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         
         if (count($errors) == 0) {
 
-            if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
+            if ($ui->st('action', 'post') == 'ad') {
 
                 $query = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`workShop`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`ramLimited`,`ftpAccess`,`os`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                 $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $reseller_id));
