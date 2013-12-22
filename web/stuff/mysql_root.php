@@ -168,7 +168,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
                 $dependsID = 0;
 
                 if (strlen($addon[':depends']) > 0) {
-                    $query->execute(array($addon[':depends']));
+                    $query->execute(array($addon[':depends'], $resellerLockupID));
                     $dependsID = $query->fetchColumn();
                 }
 
