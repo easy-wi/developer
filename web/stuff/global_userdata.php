@@ -71,6 +71,9 @@ if ($ui->st('w', 'get') == 'se') {
         $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
         $logreseller = 0;
     }
+    if ($reseller_id != 0 and $admin_id != $reseller_id) {
+        $reseller_id = $admin_id;
+    }
 }
 $sprache = getlanguagefile('user',$user_language,$reseller_id);
 
@@ -131,7 +134,6 @@ if ($ui->st('d', 'get') == 'pw') {
     }
 
 } else {
-
     $query = $sql->prepare("SELECT * FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($lookUpID, $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
