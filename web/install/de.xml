@@ -44,7 +44,7 @@
 	<image_server2>Bei der Masterinstallation werden die Daten zuerst von diesem Server heruntergeladen.</image_server2>
 	<image_server3>Imageserver benutzen</image_server3>
 	<image_server>Imageserver</image_server>
-	<install_done>Die Installation ist nun abgeschlossen. Bitte denke daran die Cronjobs zu installieren.</install_done>
+	<install_done>Die Installation ist nun abgeschlossen. Bitte denke daran die Cronjobs zu installieren:</install_done>
     <install_done_folder>Bitte entferne nun den Ordner "install/".</install_done_folder>
     <installUrl>URL</installUrl>
 	<ip>Webserver IP</ip>
