@@ -155,7 +155,8 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
         $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`depending`,`paddon`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`rmcmd`,`resellerid`) VALUES ('Y',?,?,?,?,?,?,?,?,?,?)");
         $query3 = $sql->prepare("UPDATE `addons` SET `depending`=?,`type`=?,`paddon`=?,`folder`=?,`menudescription`=?,`configs`=?,`cmd`=?,`rmcmd`=? WHERE `addon`=? AND `resellerid`=? LIMIT 1");
         $query4 = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-        $query5 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?)");
+        $query5 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `servertype_id`=VALUES(`servertype_id`),`addon_id`=VALUES(`addon_id`)");
+        $query6 = $sql->prepare("DELETE FROM `addons_allowed` WHERE `addon_id`=? AND `reseller_id`=?");
 
         foreach ($gameAddons as $addon) {
 
@@ -196,8 +197,22 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
 
                     $query3->execute(array($dependsID, $addon[':type'], $addon[':paddon'], $addon[':folder'], $addon[':menudescription'], $addon[':configs'], $addon[':cmd'], $addon[':rmcmd'], $addon[':addon'], $resellerLockupID));
 
-                    if ($query3->rowCount() > 0) {
+                    $editCount = 0;
+
+                    foreach ($addon[':supported'] as $supported) {
+
+                        $query4->execute(array($supported, $resellerLockupID));
+
+                        $query6->execute(array($addonID, $resellerLockupID));
+
+                        $query5->execute(array($addonID, $query4->fetchColumn(), $resellerLockupID));
+
+                        $editCount += $query5->rowCount();
+                    }
+
+                    if ($query3->rowCount() > 0 or $editCount > 0) {
                         $template_file .= $gsprache->mod . ': ' . $addon[':menudescription'] .'<br>';
+
                     } else {
                         $template_file .= 'Error ' . $gsprache->mod . ': ' . $addon[':menudescription'] .'<br>';
                     }
