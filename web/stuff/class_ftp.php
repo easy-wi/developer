@@ -248,6 +248,11 @@ class EasyWiFTP {
     public function checkPath ($ftpPath, $searchFor) {
 
         if ($ftpPath != '') {
+
+            if (substr($ftpPath, 0, 1) != '/') {
+                $ftpPath = '/' . $ftpPath;
+            }
+
             @ftp_chdir($this->ftpConnection, $ftpPath);
         }
 
@@ -267,6 +272,11 @@ class EasyWiFTP {
         $spl = strlen($searchFor) * (-1);
 
         if ($dir != '/') {
+
+            if (substr($dir, 0, 1) != '/') {
+                $dir = '/' . $dir;
+            }
+
             $dir = $dir . '/';
         }
 
