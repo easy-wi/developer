@@ -158,20 +158,20 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if ($ui->st('d', 'get') == 'rs') {
 
             $template_file = 'Restart done';
-            $cmds=gsrestart($id,'re',$aeskey,$reseller_id);
-            $loguseraction="%start% %gserver% $gsip:$port";
+            $cmds = gsrestart($id,'re',$aeskey,$reseller_id);
+            $loguseraction = "%start% %gserver% $gsip:$port";
 
         } else if ($ui->st('d', 'get') == 'st') {
 
             $template_file = 'Stop done';
-            $cmds=gsrestart($id,'so',$aeskey,$reseller_id);
-            $loguseraction="%stop% %gserver% $gsip:$port";
+            $cmds = gsrestart($id,'so',$aeskey,$reseller_id);
+            $loguseraction = "%stop% %gserver% $gsip:$port";
 
         } else if ($ui->st('d', 'get') == 'du') {
 
             $template_file = 'SourceTV upload started';
-            $cmds=gsrestart($id,'du',$aeskey,$reseller_id);
-            $loguseraction="%movie% %gserver% $gsip:$port";
+            $cmds = gsrestart($id,'du',$aeskey,$reseller_id);
+            $loguseraction =" %movie% %gserver% $gsip:$port";
 
         }
 
