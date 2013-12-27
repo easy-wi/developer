@@ -660,7 +660,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                                 if ($usernew == true) {
 
-                                    $newHash = passwordCreate($ui->username("$virtualserver_id-username", 50, 'post'), passwordgenerate(10));
+                                    $initialpassword = passwordgenerate(10);
+
+                                    $newHash = passwordCreate($ui->username("$virtualserver_id-username", 50, 'post'), $initialpassword);
 
                                     if (is_array($newHash)) {
                                         $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`salt`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,?,'u',?)");
@@ -714,7 +716,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                                 $groupID = $query->fetchColumn();
 
                                 $query = $sql->prepare("UPDATE `userdata` SET `usergroup`=? WHERE id=? AND `resellerid`=? LIMIT 1");
-                                $query->execute(array($groupID, $customer, $reseller_id));
+                                $query->execute(array($customer, $reseller_id));
                             }
 
                             $added .= 'User ' . $cnamenew . ' ';
