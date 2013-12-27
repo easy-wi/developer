@@ -84,7 +84,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $ip = $ui->ip('ip', 'post');
     $user = $ui->username('user', 50, 'post');
     $externalID = $ui->escaped('externalID', 'post');
-    $newuser = $ui->id('newuser', 1, 'post');
     $ips = $ui->ips('ips', 'post');
     $addtype = 2;
     $addedby = 2;
@@ -338,8 +337,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                 if ($ui->st('d', 'get') == 'ri') {
 
-                    $prefix1 = $rSA['prefix1'];
-                    $newuser = ($prefix1 == 'Y') ? 1 : 2;
                     $masterid = $id;
 
                     $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
@@ -471,10 +468,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $insertlog->execute();
 
                     $template_file = 'admin_voicemasterserver_add2.tpl';
-                } else {
-
                 }
-
 
 
             } else if ($ui->w('action', 3, 'post') == 'md') {
@@ -654,33 +648,33 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                             $usernew = true;
 
-                            if ($ui->username("$virtualserver_id-username",50, 'post') and $ui->ismail("$virtualserver_id-email", 'post')) {
+                            if ($ui->username("$virtualserver_id-username", 50, 'post') and $ui->ismail("$virtualserver_id-email", 'post')) {
 
                                 $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? LIMIT 1");
-                                $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
+                                $query->execute(array($ui->username("$virtualserver_id-username", 50, 'post'), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
                                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                     $usernew = false;
                                     $customer = $row['id'];
-                                    $cnamenew = $ui->username("$virtualserver_id-username",50, 'post');
+                                    $cnamenew = $ui->username("$virtualserver_id-username", 50, 'post');
                                 }
 
                                 if ($usernew == true) {
 
-                                    $newHash = passwordCreate($ui->username("$virtualserver_id-username",50, 'post'), passwordgenerate(10));
+                                    $newHash = passwordCreate($ui->username("$virtualserver_id-username", 50, 'post'), passwordgenerate(10));
 
                                     if (is_array($newHash)) {
                                         $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`salt`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,?,'u',?)");
-                                        $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $newHash['hash'], $newHash['salt'], $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
+                                        $query->execute(array($ui->username("$virtualserver_id-username", 50, 'post'), $newHash['hash'], $newHash['salt'], $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
                                     } else {
                                         $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,'u',?)");
-                                        $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $newHash, $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
+                                        $query->execute(array($ui->username("$virtualserver_id-username", 50, 'post'), $newHash, $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
                                     }
 
                                     $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
-                                    $query->execute(array($ui->username("$virtualserver_id-username",50, 'post'), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
+                                    $query->execute(array($ui->username("$virtualserver_id-username", 50, 'post'), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
                                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                         $customer = $row['id'];
-                                        $cnamenew = $ui->username("$virtualserver_id-username",50, 'post');
+                                        $cnamenew = $ui->username("$virtualserver_id-username", 50, 'post');
                                         sendmail('emailuseradd', $customer, $cnamenew, $initialpassword);
                                     }
                                 }

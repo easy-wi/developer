@@ -30,7 +30,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputUser"><?php echo $gsprache->user ;?>:</label>
                 <div class="controls">
-                    <select id="inputUser" name="<?php echo $virtualserver_id;?>-customer">
+                    <select id="inputUser" name="<?php echo $virtualserver_id;?>-customer" onchange="SwitchShowHideRows(this.value,'<?php echo $virtualserver_id;?>-customer');">
                         <option value="0"><?php echo $sprache->newuser;?></option>
                         <?php foreach ($table as $key=>$value) { ?>
                         <option value="<?php echo $key;?>"><?php echo $value;?></option>
@@ -38,14 +38,14 @@
                     </select>
                 </div>
             </div>
-            <?php if ($newuser==2) { ?>
-            <div class="control-group">
+            <?php if ($rSA['prefix1']=='N') { ?>
+            <div class="0 <?php echo $virtualserver_id;?>-customer control-group">
                 <label class="control-label" for="inputUserName"><?php echo $sprache->user;?></label>
                 <div class="controls"><input id="inputUserName" type="text" name="<?php echo $virtualserver_id;?>-username"></div>
             </div>
-            <div class="control-group">
+            <div class="0 <?php echo $virtualserver_id;?>-customer control-group">
                 <label class="control-label" for="inputUserMail"><?php echo $usprache->email;?></label>
-                <div class="controls"><input id="inputUserMail" type="text" name="<?php echo $virtualserver_id;?>-email" value="ts3@import.mail"></div>
+                <div class="controls"><input id="inputUserMail" type="email" name="<?php echo $virtualserver_id;?>-email" value="ts3@import.mail"></div>
             </div>
             <?php } ?>
             <div class="control-group">
