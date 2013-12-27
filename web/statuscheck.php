@@ -87,7 +87,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=5 LIMIT 1");
     $query->execute();
     $lendActive = $query->fetchColumn();
-    $lendActive = (active_check($lendActive)) ? $lendActive : 'N';
+    $lendActive = (active_check($lendActive)) ? $lendActive : 'Y';
 
     # Pick up Reseller and Lend Settings
     $resellersettings = array();
