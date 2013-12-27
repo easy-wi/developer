@@ -259,13 +259,28 @@ if [ -f /etc/debian_version ]; then
 	if [ "$PROFTPD" == "yes" ]; then
 		if [ "$VARIABLE2" == "yesall" ]; then
 			apt-get install proftpd -y
+			ADDFTPRULES="yes"
 		else
 			apt-get install proftpd
+			echo "Add FTP rules? You might need to enhance them later. Enter \"yes\" or \"no\""
+			read ADDFTPRULES
 		fi
-		if [ "`grep '<Directory \/home\/\*\/pserver\/\*>' /etc/proftpd/proftpd.conf`" == "" ]; then
-		echo '
+		if [ "`grep 'DefaultRoot\s*\~' /etc/proftpd/proftpd.conf`" == "" ]; then
+				echo '
 DefaultRoot ~
-
+' >> /etc/proftpd/proftpd.conf
+		fi
+		if [ "`grep 'Include\s*\/etc\/proftpd\/conf.d\/' /etc/proftpd/proftpd.conf`" == "" ]; then
+				echo '
+Include /etc/proftpd/conf.d/
+' >> /etc/proftpd/proftpd.conf
+		fi
+		if [ "$ADDFTPRULES" == "yes" -a "`grep '<Directory \/home\/\*\/pserver\/\*>' /etc/proftpd/proftpd.conf`" == "" -a ! -f "/etc/proftpd/conf.d/easy-wi.conf" ]; then
+		if [ ! -d "/etc/proftpd/conf.d/" ]; then
+			mkdir -p "/etc/proftpd/conf.d/"
+			chmod 755 "/etc/proftpd/conf.d/"
+		fi
+		echo '
 <Directory ~>
         HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
         PathDenyFilter (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
@@ -414,7 +429,7 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 		AllowAll
 	</Limit>
 </Directory>
-' >> /etc/proftpd/proftpd.conf
+' > /etc/proftpd/conf.d/easy-wi.conf
 	fi
 	if [ -f /etc/init.d/proftpd ]; then /etc/init.d/proftpd restart; fi
 	fi
