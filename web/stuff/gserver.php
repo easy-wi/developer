@@ -347,7 +347,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $ftppass = $ui->password('password',50, 'post');
             $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=? AND `serverip`=? AND `port`=? AND `userid`!=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($serverid,$serverip,$port,$customer,$reseller_id));
-            if ($query->rowCount()==0) {
+            if ($query->rowCount() == 0) {
                 include(EASYWIDIR . '/stuff/ssh_exec.php');
                 $gamestring = array();
                 $template_file = '';
@@ -472,27 +472,41 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                     }
                     $i++;
                 }
+
                 $template_file = $spracheResponse->table_add;
+
                 if (isid($switchID,19)) {
+
                     if (!isset($lastServerID)) {
                         $query = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                         $query->execute(array($switchID,$reseller_id));
                         $lastServerID = $query->fetchColumn();
                     }
+
                     $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($customer,$reseller_id));
                     $cname = $query->fetchColumn();
+
                     $query = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($lastServerID,$switchID,$reseller_id));
-                    $ftppass2=passwordgenerate(10);
-                    $webhostdomain=webhostdomain($reseller_id);
+
+                    $webhostdomain = webhostdomain($reseller_id);
                     $gsuser = $cname . '-' . $switchID;
-                    $cmds = array();
-                    $cmds[]="./control.sh add ${gsuser} ${ftppass} ${sshuser} ${ftppass2}";
-                    if ($ui->id('installGames',1, 'post')==2) $gamestring=array($ui->escaped('primary', 'post'));
-                    $gamestring=count($gamestring) . '_' . implode('_',$gamestring);
-                    if ($ui->id('installGames',1, 'post')!=3) $cmds[]="sudo -u ${gsuser} ./control.sh addserver ${gsuser} ${gamestring} ${gsfolder}";
+
+                    $cmds = array("./control.sh add ${gsuser} ${ftppass} ${sshuser} " . passwordgenerate(10));
+
+                    if ($ui->id('installGames',1, 'post') == 2) {
+                        $gamestring = array($ui->escaped('primary', 'post'));
+                    }
+
+                    $gamestring = count($gamestring) . '_' . implode('_', $gamestring);
+
+                    if ($ui->id('installGames',1, 'post') != 3) {
+                        $cmds[]="sudo -u ${gsuser} ./control.sh addserver ${gsuser} ${gamestring} ${gsfolder} 1";
+                    }
+
                     $reply = ssh2_execute('gs', $serverid, $cmds);
+
                 } else {
                     $reply = "Could not insert data into database";
                 }
@@ -1034,7 +1048,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                 $ftppass = $row['cftppass'];
                 if ($row['newlayout'] == 'Y') $customer = $customer . '-' . $row['id'];
                 if ($ui->active('type', 'post') == 'Y') {
-                    $cmds=gsrestart($row['id'], 'so',$aeskey,$reseller_id);
+                    $cmds = gsrestart($row['id'], 'so',$aeskey,$reseller_id);
                     $cmds[]="./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10);
                     $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
                     $loguseraction="%reinstall% %gserver% ${serverip}:${port}";
