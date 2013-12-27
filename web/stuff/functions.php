@@ -720,7 +720,7 @@ if (!function_exists('passwordgenerate')) {
 
                 foreach (explode("\r\n", $row2['configedit']) as $line) {
 
-                    if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua))$/', $line)) {
+                    if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json))$/', $line)) {
                         $ex = preg_split("/\s+/", $line, -1,PREG_SPLIT_NO_EMPTY);
                         $cvartype = (isset($ex[1])) ? $ex[1] : 'cfg';
                         $config = substr($ex[0], 1, strlen($ex[0]) - 2);
@@ -734,6 +734,8 @@ if (!function_exists('passwordgenerate')) {
                             $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
                         } else if ($cvarprotect[$config]['type'] == 'lua') {
                             $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
+                        } else if ($cvarprotect[$config]['type'] == 'json') {
+                            $splitline = preg_split("/:/", $line, -1, PREG_SPLIT_NO_EMPTY);
                         } else if ($cvarprotect[$config]['type'] == 'xml') {
                             $ex1 = explode('>', $line);
                             if (isset($ex1[1])) {
@@ -843,7 +845,8 @@ if (!function_exists('passwordgenerate')) {
             $rdata = serverdata('root', $rootid, $aeskey);
             $sship = $rdata['ip'];
             $ftpport = $rdata['ftpport'];
-            $serverfolder = $gsip . '_' . $port . '/' . $folder . '/' . $binarydir;
+            $serverFolder = $gsip . '_' . $port . '/' . $folder;
+            $binaryFolder = $serverFolder . '/' . $binarydir;
             $replace=array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
             $startline = str_replace($cvars, $replace, $cmd);
 
@@ -879,7 +882,7 @@ if (!function_exists('passwordgenerate')) {
 
                     if ($ftp->loggedIn === true) {
 
-                        $ftp->downloadToTemp($pserver . $serverfolder . '/' . $config);
+                        $ftp->downloadToTemp($pserver . $serverFolder . '/' . $config);
                         $configfile = $ftp->getTempFileContent();
 
                         $configfile = str_replace(array("\0","\b","\r","\Z"), '', $configfile);
@@ -932,7 +935,7 @@ if (!function_exists('passwordgenerate')) {
                 $stopped = 'Y';
 
                 if ($action == 'so') {
-                    $tempCmds[]="sudo -u ${customer} ./control.sh gstop $customer \"$serverfolder\" $gamebinary $protectedString";
+                    $tempCmds[]="sudo -u ${customer} ./control.sh gstop $customer \"$binaryFolder\" $gamebinary $protectedString";
                     if ((isset($ftpupload) and $gamebinary == 'srcds_run')) {
                         $tempCmds[]="sudo -u ${customer} ./control.sh demoupload \"$bindir\" \"$ftpupload\" \"$modfolder\"";
                     }
@@ -945,9 +948,9 @@ if (!function_exists('passwordgenerate')) {
                 $stopped = 'N';
 
                 if ($protected == 'N' and count($installedaddons)>0) {
-                    $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$serverfolder\" \"".implode(' ', $installedaddons)."\"";
+                    $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$binaryFolder\" \"".implode(' ', $installedaddons)."\"";
                 }
-                $restartCmd = "sudo -u ${customer} ./control.sh grestart $customer \"$serverfolder\" \"$startline\" $protectedString $gamebinary \"$cores\"";
+                $restartCmd = "sudo -u ${customer} ./control.sh grestart $customer \"$binaryFolder\" \"$startline\" $protectedString $gamebinary \"$cores\"";
             }
 
             if (!isset($ftpupload) and $gamebinary == 'srcds_run' and isurl($uploaddir)) {
@@ -970,7 +973,7 @@ if (!function_exists('passwordgenerate')) {
             }
 
             foreach ($cvarprotect as $config => $values) {
-                if (count($values['cvars']) == 0) {
+                if (!isset($values['cvars']) or count($values['cvars']) == 0) {
                     unset($cvarprotect[$config]);
                 }
             }
@@ -994,7 +997,7 @@ if (!function_exists('passwordgenerate')) {
                         $folderfilecount = count($split_config)-1;
 
                         $i = 0;
-                        $folders = '/' . $pserver . $serverfolder;
+                        $folders = '/' . $pserver . $serverFolder;
 
                         while ($i<$folderfilecount) {
                             $folders .= '/' . $split_config[$i];
@@ -1003,7 +1006,7 @@ if (!function_exists('passwordgenerate')) {
 
                         $uploadfile = $split_config[$i];
 
-                        $ftp->downloadToTemp($folders . $uploadfile);
+                        $ftp->downloadToTemp($folders . '/' . $uploadfile);
 
                         $configfile = $ftp->getTempFileContent();
 
@@ -1044,6 +1047,14 @@ if (!function_exists('passwordgenerate')) {
                                     $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
 
                                     $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
+
+                                } else if ($cfgtype == 'json' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}:[\s+]{0,}(.*)[\,]{0,1}$/", $lline)) {
+
+                                    $edited = true;
+
+                                    $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
+
+                                    $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar. ' : ' .$value : $cvar . ':' . $value);
 
                                 } else if ($cfgtype == 'xml' and preg_match("/^(.*)<" . strtolower($cvar) . ">(.*)<\/" . strtolower($cvar) . ">(.*)$/", $lline)) {
 
