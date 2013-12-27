@@ -934,7 +934,7 @@ fi" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 if [ "$MODINSTALL" == "1" ]; then
 	echo "if [ -d $HOMEFOLDER/masterserver/$MODNAME ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "cd $HOMEFOLDER/masterserver/$MODNAME" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.ini" -o -name "*.conf" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "server.properties"  -o -name "*.example"| grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.config" -o -name "*.ini" -o -name "*.conf" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "server.properties"  -o -name "*.example"| grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
 	FOLDERNAME=`dirname "$FILTEREDFILES"`
 	if ([[ `find "$FOLDERNAME" -maxdepth 0 -type d` ]] && [[ ! -d "$SERVERDIR/$VARIABLE4/$GAMENAME/$FOLDERNAME" ]]); then
@@ -952,7 +952,7 @@ fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 fi
 echo "if [ -d $HOMEFOLDER/masterserver/$GAMENAME2 ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo "cd $HOMEFOLDER/masterserver/$GAMENAME2" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.ini" -o -name "*.conf" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "server.properties" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.config" -o -name "*.ini" -o -name "*.conf" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "server.properties" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
 	FOLDERNAME=`dirname "$FILTEREDFILES"`
 	if ([[ `find "$FOLDERNAME" -maxdepth 0 -type d` ]] && [[ ! -d "$SERVERDIR/$VARIABLE4/$GAMENAME/$FOLDERNAME" ]]); then

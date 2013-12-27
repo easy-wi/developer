@@ -110,7 +110,7 @@ class EasyWiFTP {
                 $startAtSize = ($startAt != 0 and $fileSize > $startAt) ? ($fileSize - $startAt) : 0;
                 $this->tempHandle = tmpfile();
 
-                $download = ftp_fget($this->ftpConnection, $this->tempHandle, $pathAndFile, FTP_BINARY, $startAtSize);
+                $download = @ftp_fget($this->ftpConnection, $this->tempHandle, $pathAndFile, FTP_BINARY, $startAtSize);
 
                 fseek($this->tempHandle, 0);
 
