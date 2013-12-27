@@ -642,9 +642,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                     if ($ui->active("$virtualserver_id-import", 'post') == 'Y' and $voiceleft > 0) {
 
-                        $customer = $ui->id("$virtualserver_id-customer",19, 'post');
+                        $customerID = $ui->id("$virtualserver_id-customer", 10, 'post');
 
-                        if ($customer==0 or $customer == false or $customer==null) {
+                        if ($customerID == 0 or $customerID == false or $customerID == null) {
 
                             $usernew = true;
 
@@ -654,7 +654,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                                 $query->execute(array($ui->username("$virtualserver_id-username", 50, 'post'), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
                                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                                     $usernew = false;
-                                    $customer = $row['id'];
+                                    $customerID = $row['id'];
                                     $cnamenew = $ui->username("$virtualserver_id-username", 50, 'post');
                                 }
 
@@ -675,9 +675,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                                     $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                                     $query->execute(array($ui->username("$virtualserver_id-username", 50, 'post'), $ui->ismail("$virtualserver_id-email", 'post'), $reseller_id));
                                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                                        $customer = $row['id'];
+                                        $customerID = $row['id'];
                                         $cnamenew = $ui->username("$virtualserver_id-username", 50, 'post');
-                                        sendmail('emailuseradd', $customer, $cnamenew, $initialpassword);
+                                        sendmail('emailuseradd', $customerID, $cnamenew, $initialpassword);
                                     }
                                 }
 
@@ -702,12 +702,12 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                                 $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`='ts3@import.mail' ORDER BY `id` DESC LIMIT 1");
                                 $query->execute(array($cnamenew));
                                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                                    $customer = $row['id'];
-                                    $cnamenew = $prefix . $customer;
+                                    $customerID = $row['id'];
+                                    $cnamenew = $prefix . $customerID;
                                 }
 
                                 $query = $sql->prepare("UPDATE `userdata` SET `cname`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                                $query->execute(array($cnamenew, $customer, $reseller_id));
+                                $query->execute(array($cnamenew, $customerID, $reseller_id));
                             }
 
                             if ($usernew == true) {
@@ -715,15 +715,15 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                                 $query->execute(array($reseller_id));
                                 $groupID = $query->fetchColumn();
 
-                                $query = $sql->prepare("UPDATE `userdata` SET `usergroup`=? WHERE id=? AND `resellerid`=? LIMIT 1");
-                                $query->execute(array($customer, $reseller_id));
+                                $query = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
+                                $query->execute(array($customerID, $groupID, $reseller_id));
                             }
 
                             $added .= 'User ' . $cnamenew . ' ';
 
                         } else {
                             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                            $query->execute(array($customer, $reseller_id));
+                            $query->execute(array($customerID, $reseller_id));
                             $cnamenew = $query->fetchColumn();
                         }
 
@@ -796,7 +796,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                             $added .= 'Server '.$ssh2ip . ':' . $port . '<br />';
 
                             $query = $sql->prepare("INSERT INTO `voice_server` (`userid`,`masterserver`,`ip`,`port`,`slots`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`dns`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`localserverid`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                            $query->execute(array($customer, $masterid, $ssh2ip, $port, $slots, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $serverdns, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $virtualserver_id, $reseller_id));
+                            $query->execute(array($customerID, $masterid, $ssh2ip, $port, $slots, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $serverdns, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $virtualserver_id, $reseller_id));
                         }
                         $i++;
                         $voiceleft--;
