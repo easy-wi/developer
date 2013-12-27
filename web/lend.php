@@ -780,17 +780,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                 $ftpipport = preg_split('/:/', $ftpipport, -1, PREG_SPLIT_NO_EMPTY);
 
-                $ftp_connect = (isset($ftpipport[1])) ? @ftp_connect($ftpipport[0], $ftpipport[1], 5) : @ftp_connect($ftpipport[0], 21, 5);
-                
-                if ($ftp_connect) {
-                    $ftp_login= @ftp_login($ftp_connect, $ftpuser, $ftppass);
-
-                    if ($ftp_login) {
-                        $ftpuploadpath = $postedftpuploadpath;
-                    }
+                if (checkFtpData($ftpipport[1], (isset($ftpipport[1])) ? isset($ftpipport[1]) : 21, $ftpuser, $ftppass) === true) {
+                    $ftpuploadpath = $postedftpuploadpath;
                 }
 
-                ftp_close($ftp_connect);
             }
 
             $free = $gscounts[$game] - $gsused[$game];
