@@ -394,7 +394,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
             echo $sprache->root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
         }
 
-        if (isset($debug) and $debug == 1) {
+        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
             echo '<br>' . implode('<br>', $rootServer->sshcmd);
         }
     }
