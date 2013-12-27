@@ -63,7 +63,6 @@ include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
 include(EASYWIDIR . '/stuff/class_voice.php');
-include(EASYWIDIR . '/stuff/queries.php');
 include(EASYWIDIR . '/third_party/gameq/GameQ.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
