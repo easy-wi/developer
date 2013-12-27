@@ -45,10 +45,10 @@
                 <label class="control-label" for="template"><?php echo $gsprache->template;?></label>
                 <div class="controls">
                     <select id="template" name="template">
-                    	<option value="4"><?php echo $gsprache->all;?></option>
                         <option id="template1" value="1"></option>
 						<option id="template2" value="2"></option>
 						<option id="template3" value="3"></option>
+                        <option value="4"><?php echo $gsprache->all;?></option>
                     </select>
                 </div>
             </div>    
