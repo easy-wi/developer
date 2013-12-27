@@ -150,6 +150,7 @@ $query2 = $sql->prepare("UPDATE `virtualcontainer` SET `imageid`=? WHERE `id`=? 
 $query3 = $sql->prepare("UPDATE `rootsDedicated` SET `imageID`=? WHERE `dedicatedID`=? LIMIT 1");
 foreach ($res as $row) {
     if (isset($row['type'])) {
+
         $query->execute(array($row['type'], $row['affectedID'], $row['name'], $row['hostID'], $row['userID'],json_encode($row['extraData']), $row['resellerID']));
 
         if ($row['type'] == 'de') {
