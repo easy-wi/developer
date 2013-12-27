@@ -288,8 +288,8 @@ Include /etc/proftpd/conf.d/
         <Limit RNTO RNFR STOR DELE CHMOD SITE_CHMOD MKD RMD>
                 DenyAll
         </Limit>
-</Directory>' > /etc/proftpd/proftpd.conf
-echo "<Directory /home/$INSTALLMASTER>" >> /etc/proftpd/proftpd.conf
+</Directory>' > /etc/proftpd/conf.d/easy-wi.conf
+echo "<Directory /home/$INSTALLMASTER>" >> /etc/proftpd/conf.d/easy-wi.conf
 echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 	PathDenyFilter (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 	HideNoAccess on
