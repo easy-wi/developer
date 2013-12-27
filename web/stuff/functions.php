@@ -636,6 +636,11 @@ if (!function_exists('passwordgenerate')) {
 
     function gsrestart($switchID, $action, $aeskey, $reseller_id) {
 
+
+        if (!class_exists('EasyWiFTP')) {
+            include(EASYWIDIR . '/stuff/class_ftp.php');
+        }
+
         global $sql;
 
         $tempCmds = array();
@@ -854,7 +859,7 @@ if (!function_exists('passwordgenerate')) {
                 $customerProtected = $customer . '-p';
             }
 
-            if ($action!='du' and $eacallowed == 'Y' and ($anticheat == 3 or $anticheat == 4 or $anticheat == 5 or $anticheat == 6) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run')) {
+            if ($action != 'du' and $eacallowed == 'Y' and in_array($anticheat, array(3, 4, 5, 6)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run')) {
 
                 if ($action == 'so' or $action == 'sp') {
                     $rcon = '';
@@ -870,17 +875,13 @@ if (!function_exists('passwordgenerate')) {
                         $config = 'main/server.cfg';
                     }
 
-                    $configfile = '';
-                    $fp = @fopen('ftp://' . $customer . ':' . $ftppass. '@' . $sship . ':' . $ftpport . '/' . $pserver. $serverfolder . '/' . $config, 'r');
-                    if ($fp == true) {
-                        stream_set_timeout($fp, 5);
-                        while (!feof($fp)) {
-                            $configfile .= fread($fp, 1024);
-                        }
-                        $info = stream_get_meta_data($fp);
-                        fclose($fp);
-                    }
-                    if (isset($info['timed_out']) and $info['timed_out'] == '') {
+                    $ftp = new EasyWiFTP($sship, $ftpport, $customer, $ftppass);
+
+                    if ($ftp->loggedIn === true) {
+
+                        $ftp->downloadToTemp($pserver . $serverfolder . '/' . $config);
+                        $configfile = $ftp->getTempFileContent();
+
                         $configfile = str_replace(array("\0","\b","\r","\Z"), '', $configfile);
                         $lines = explode("\n", $configfile);
                         $lines = preg_replace('/\s+/', ' ', $lines);
@@ -923,6 +924,7 @@ if (!function_exists('passwordgenerate')) {
                 $rcon = '';
                 eacchange('remove', $serverid, $rcon, $reseller_id);
             }
+
             $protectedString = ($protected == 'N') ? 'unprotected' : 'protected';
 
             if ($action == 'so' or $action == 'sp') {
@@ -974,107 +976,102 @@ if (!function_exists('passwordgenerate')) {
             }
             if (count($cvarprotect) > 0 and $action != 'du') {
 
-                $ftp_connect =  ($ftpport == 21 or $ftpport == '' or $ftpport == null) ? ftp_connect($sship) : ftp_connect($sship, $ftpport);
+                if (!isset($ftp)) {
+                    $ftp = new EasyWiFTP($sship, $ftpport, $customer, $ftppass);
+                }
 
-                if ($ftp_connect) {
-                    $ftp_login= @ftp_login($ftp_connect, $customer, $ftppass);
-                    if ($ftp_login) {
-                        foreach ($cvarprotect as $config => $values) {
-                            $temp = tmpfile();
-                            $temp2 = tmpfile();
-                            $cfgtype = $values['type'];
+                if ($ftp->loggedIn === true) {
 
-                            if ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') {
-                                $config = $modfolder . '/' . $config;
-                            }
+                    foreach ($cvarprotect as $config => $values) {
 
-                            $split_config = preg_split('/\//', $config, -1,PREG_SPLIT_NO_EMPTY);
-                            $folderfilecount = count($split_config)-1;
-                            $i = 0;
-                            $folders = '/' . $pserver . $serverfolder;
-                            while ($i<$folderfilecount) {
-                                $folders .= '/' . $split_config[$i];
-                                $i++;
-                            }
-                            $uploadfile = $split_config[$i];
+                        $cfgtype = $values['type'];
 
-                            @ftp_chdir($ftp_connect, $folders);
-
-                            if (strlen($uploadfile)>0 and @ftp_fget($ftp_connect, $temp, $uploadfile, FTP_ASCII, 0)) {
-
-                                fseek($temp, 0);
-                                fseek($temp, 0);
-                                $configfile = '';
-                                while (!feof($temp)) {
-                                    $configfile .= fread($temp, 1024);
-                                }
-                                fclose($temp);
-
-                                $configfile = str_replace(array("\0","\b","\r","\Z"),"", $configfile);
-
-                                $lines = explode("\n", $configfile);
-                                $linecount = count($lines) - 1;
-                                $i = 0;
-
-                                foreach ($lines as $singeline) {
-
-                                    $edited = false;
-                                    $lline = strtolower($singeline);
-
-                                    foreach ($values['cvars'] as $cvar => $value) {
-
-                                        if ($cfgtype == 'cfg' and preg_match("/^(.*)" . strtolower($cvar) . "\s+(.*)$/", $lline)) {
-
-                                            $edited = true;
-
-                                            $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
-
-                                            fwrite($temp2, (isset($splitline[1])) ? $splitline[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
-
-                                        } else if ($cfgtype == 'ini' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)$/", $lline)) {
-
-                                            $edited = true;
-
-                                            fwrite($temp2, $cvar . '=' . $value);
-
-                                        } else if ($cfgtype == 'lua' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)[\,]$/", $lline)) {
-
-                                            $edited = true;
-
-                                            $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
-
-                                            fwrite($temp2, (isset($splitline[1])) ? $splitline[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
-
-                                        } else if ($cfgtype == 'xml' and preg_match("/^(.*)<" . strtolower($cvar) . ">(.*)<\/" . strtolower($cvar) . ">(.*)$/", $lline)) {
-
-                                            $edited = true;
-
-                                            $splitline = preg_split("/\<$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
-
-                                            fwrite($temp2,  (isset($splitline[1])) ? $splitline[0] . '<' .$cvar . '>' . $value . '</' . $cvar . '>' : '<' . $cvar . '> ' . $value . '</' . $cvar . '>');
-                                        }
-                                    }
-
-                                    if ($edited == false) {
-                                        fwrite($temp2, $singeline);
-                                    }
-
-                                    if ($i < $linecount) {
-                                        fwrite($temp2, "\r\n");
-                                    }
-
-                                    $i++;
-                                }
-                                fseek($temp2, 0);
-                                fseek($temp2, 0);
-                                @ftp_fput($ftp_connect, $uploadfile, $temp2, FTP_BINARY);
-                            }
-                            fclose($temp2);
+                        if ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') {
+                            $config = $modfolder . '/' . $config;
                         }
+
+                        $split_config = preg_split('/\//', $config, -1,PREG_SPLIT_NO_EMPTY);
+                        $folderfilecount = count($split_config)-1;
+
+                        $i = 0;
+                        $folders = '/' . $pserver . $serverfolder;
+
+                        while ($i<$folderfilecount) {
+                            $folders .= '/' . $split_config[$i];
+                            $i++;
+                        }
+
+                        $uploadfile = $split_config[$i];
+
+                        $ftp->downloadToTemp($folders . $uploadfile);
+
+                        $configfile = $ftp->getTempFileContent();
+
+
+                        $ftp->tempHandle = null;
+
+                        $configfile = str_replace(array("\0","\b","\r","\Z"),"", $configfile);
+
+                        $lines = explode("\n", $configfile);
+                        $linecount = count($lines) - 1;
+                        $i = 0;
+
+                        foreach ($lines as $singeline) {
+
+                            $edited = false;
+                            $lline = strtolower($singeline);
+
+                            foreach ($values['cvars'] as $cvar => $value) {
+
+                                if ($cfgtype == 'cfg' and preg_match("/^(.*)" . strtolower($cvar) . "\s+(.*)$/", $lline)) {
+
+                                    $edited = true;
+
+                                    $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
+
+                                    $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
+
+                                } else if ($cfgtype == 'ini' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)$/", $lline)) {
+
+                                    $edited = true;
+
+                                    $ftp->writeContentToTemp($cvar . '=' . $value);
+
+                                } else if ($cfgtype == 'lua' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)[\,]$/", $lline)) {
+
+                                    $edited = true;
+
+                                    $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
+
+                                    $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
+
+                                } else if ($cfgtype == 'xml' and preg_match("/^(.*)<" . strtolower($cvar) . ">(.*)<\/" . strtolower($cvar) . ">(.*)$/", $lline)) {
+
+                                    $edited = true;
+
+                                    $splitline = preg_split("/\<$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
+
+                                    $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . '<' .$cvar . '>' . $value . '</' . $cvar . '>' : '<' . $cvar . '> ' . $value . '</' . $cvar . '>');
+                                }
+                            }
+
+                            if ($edited == false) {
+                                $ftp->writeContentToTemp($singeline);
+                            }
+
+                            if ($i < $linecount) {
+                                $ftp->writeContentToTemp("\r\n");
+                            }
+
+                            $i++;
+                        }
+
+                        $ftp->uploadFileFromTemp($folders, $uploadfile, false);
+
                     }
-                    ftp_close($ftp_connect);
                 }
             }
+
             $query = $sql->prepare("UPDATE `gsswitch` SET `stopped`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($stopped, $switchID, $reseller_id));
             $cmds = array();
