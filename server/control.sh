@@ -265,7 +265,7 @@ if [ -f /etc/debian_version ]; then
 			echo "Add FTP rules? You might need to enhance them later. Enter \"yes\" or \"no\""
 			read ADDFTPRULES
 		fi
-		if [ "`grep 'DefaultRoot\s*\~' /etc/proftpd/proftpd.conf`" == "" ]; then
+		if [ "`grep '^\s*DefaultRoot\s*\~' /etc/proftpd/proftpd.conf`" == "" ]; then
 				echo '
 DefaultRoot ~
 ' >> /etc/proftpd/proftpd.conf
