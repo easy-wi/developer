@@ -48,6 +48,7 @@ $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
 $logreseller = 0;
+
 if (isset($admin_id)) {
 	$logsubuser = $admin_id;
 } else if (isset($subuser_id)) {
@@ -56,9 +57,10 @@ if (isset($admin_id)) {
 	$logsubuser = 0;
 }
 
-if (isset($admin_id) and $reseller_id != 0) {
-    $reseller_id = $admin_id;
+if (isset($resellerLockupID)) {
+    $reseller_id = $resellerLockupID;
 }
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 
@@ -76,7 +78,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template = array();
 
         $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
-        $query->execute(array($aeskey,$aeskey,$ui->id('id', 10, 'get'),$user_id,$reseller_id));
+        $query->execute(array($aeskey,$aeskey,$ui->id('id', 10, 'get'), $user_id, $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $customer = $row['cname'];
             $ftppass=($row['pallowed'] == 'Y' and $row['protected'] == 'Y') ? $row['pftppass'] : $row['cftppass'];
@@ -142,32 +144,48 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = 'userpanel_404.tpl';
         }
     }
+
 } else if (($ui->st('d', 'get') == 'rs' or $ui->st('d', 'get') == 'st' or $ui->st('d', 'get') == 'du') and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
+
     $id = $ui->id('id', 10, 'get');
+
     $query = $sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $gsip = $row['serverip'];
         $port = $row['port'];
+
         if ($ui->st('d', 'get') == 'rs') {
+
             $template_file = 'Restart done';
             $cmds=gsrestart($id,'re',$aeskey,$reseller_id);
             $loguseraction="%start% %gserver% $gsip:$port";
+
         } else if ($ui->st('d', 'get') == 'st') {
+
             $template_file = 'Stop done';
             $cmds=gsrestart($id,'so',$aeskey,$reseller_id);
             $loguseraction="%stop% %gserver% $gsip:$port";
+
         } else if ($ui->st('d', 'get') == 'du') {
+
             $template_file = 'SourceTV upload started';
             $cmds=gsrestart($id,'du',$aeskey,$reseller_id);
             $loguseraction="%movie% %gserver% $gsip:$port";
+
         }
-        if (isset($cmds)) ssh2_execute('gs', $row['rootID'],$cmds);
+
+        if (isset($cmds)) {
+            ssh2_execute('gs', $row['rootID'],$cmds);
+        }
+
         $insertlog->execute();
     }
+
     if (!isset($gsip)) {
         $template_file = 'userpanel_404.tpl';
     }
+
 } else if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
 
     $id = $ui->id('id', 10, 'get');
@@ -529,7 +547,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         if ($protected == 'N' and $servertemplate > 1) {
             $ftpshorten = $row['shorten'] . '-' . $servertemplate;
-            $pserver="server/";
+            $pserver = 'server/';
         } else if ($protected == 'Y' and $pallowed == 'Y') {
             $ftpshorten = $row['shorten'];
             $username = $username . '-p';
@@ -537,7 +555,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $pserver = '';
         } else {
             $ftpshorten = $row['shorten'];
-            $pserver="server/";
+            $pserver = 'server/';
         }
     }
 
@@ -547,7 +565,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $serverID = $row['id'];
         $protected = $row['protected'];
-        $config_rows=explode("\r\n", $row['configs']);
+        $config_rows = explode("\r\n", $row['configs']);
         foreach ($config_rows as $configline) {
             $data_explode=explode(" ", $configline);
             $permission=(isset($data_explode[1])) ? $data_explode[1] : 'full';
@@ -584,7 +602,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $postconfig = null;
         }
 
-        if (in_array($postconfig,$configCheck) and $ui->smallletters('type', 4, 'get') and ($ui->smallletters('type', 4, 'get') == 'easy' or $ui->smallletters('type', 4, 'get') == 'full')) {
+        if (in_array($postconfig, $configCheck) and $ui->smallletters('type', 4, 'get') and ($ui->smallletters('type', 4, 'get') == 'easy' or $ui->smallletters('type', 4, 'get') == 'full')) {
 
             $explodeconfig = explode('/', $postconfig);
             $configname = $explodeconfig[(count($explodeconfig) - 1)];
@@ -598,7 +616,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             if ($gamebinary == 'srcds_run'){
                 $config = $binarydir. '/' . $modfolder. '/' . $postconfig;
-                if ($configname=="server.cfg" and $gamebinary == 'srcds_run') {
+                if ($configname == 'server.cfg' and $gamebinary == 'srcds_run') {
                     $general_cvar=array('hostname','sv_password','sv_contact','sv_tags','motdfile','mapcyclefile','sv_downloadurl','net_maxfilesize','rcon_password','sv_rcon_minfailures','sv_rcon_maxfailures','sv_rcon_banpenalty','sv_rcon_minfailuretime','sv_pure','sv_pure_kick_clients','sv_timeout','sv_voiceenable','sv_allowdownload','sv_allowupload','sv_region','sv_friction','sv_stopspeed','sv_gravity','sv_accelerate','sv_airaccelerate','sv_wateraccelerate','sv_allow_color_correction','sv_allow_wait_command','mp_flashlight','mp_footsteps','mp_falldamage','mp_limitteams','mp_limitteams','mp_friendlyfire','mp_autokick','mp_forcecamera','mp_fadetoblack','mp_allowspectators','mp_chattime','log','sv_log_onefile','sv_logfile','sv_logbans','sv_logecho','mp_logdetail','mp_timelimit','mp_winlimit','sv_minrate','sv_maxrate','sv_minupdaterate','sv_maxupdaterate','sv_mincmdrate','sv_maxcmdrate','sv_client_cmdrate_difference','sv_client_min_interp_ratio','sv_client_max_interp_ratio','mp_fraglimit','mp_maxrounds');
                 } else {
                     $general_cvar = array();
@@ -610,194 +628,231 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $general_cvar = array();
                 $config = $postconfig;
             }
-            if ($shorten == 'css' and $configname=="server.cfg") {
+            if ($shorten == 'css' and $configname == 'server.cfg') {
                 $game_cvars=array('motdfile_text','sv_disablefreezecam','sv_nonemesis','sv_nomvp','sv_nostats','sv_allowminmodels','sv_hudhint_sound','sv_competitive_minspec','sv_legacy_grenade_damage','sv_enableboost','sv_enablebunnyhopping','mp_forceautoteam','mp_enableroundwaittime','mp_startmoney','mp_roundtime','mp_buytime','mp_c4timer','mp_freezetime','mp_spawnprotectiontime','mp_hostagepenalty','mp_tkpunish');
-            } else if ($shorten=="dods" and $configname=="server.cfg") {
+            } else if ($shorten=="dods" and $configname == 'server.cfg') {
                 $game_cvars=array('mp_limit_allies_rocket','mp_limit_axis_rocket','mp_limit_axis_mg','mp_limit_axis_sniper','mp_limit_axis_assault','mp_limit_axis_support','mp_limit_axis_rifleman','mp_limit_allies_mg','mp_limit_allies_sniper','mp_limit_allies_assault','mp_limit_allies_support','mp_limit_allies_rifleman','dod_freezecam','dod_enableroundwaittime','dod_bonusroundtime','dod_bonusround');
             } else {
                 $game_cvars = array();
             }
-            if ($ui->smallletters('type', 4, 'get') == 'full' and isset($ui->post['update']) and $ui->post['update']==1) {
-                $configfile=stripslashes($ui->post['cleanedconfig']);
-                $fp = true;
-            } else {
-                $fp=@fopen("ftp://$username:$ftppass@$ip:$ftpport/$pserver".$serverip . '_' . "$port/$ftpshorten/$config",'r');
-                $configfile = '';
-            }
-            $noConfig=($fp == false) ? true: false;
+
+            $configfile = '';
             $cleanedconfig = '';
-            if ($noConfig === false and ($ui->smallletters('type', 4, 'get')=="easy" or ($ui->smallletters('type', 4, 'get')=="full" and !isset($ui->post['update'])))) {
-                stream_set_timeout($fp,5);
-                while (!feof($fp)) $configfile .=fread($fp,1024);
-                $info=stream_get_meta_data($fp);
-                fclose($fp);
-            }
-            if ($noConfig === false and isset($info['timed_out']) and $info['timed_out'] != '') {
-                $template_file = 'Connection timed out!';
-            } else {
-                $configfile=str_replace(array("\0" , "\b" , "\r", "\Z"),"",$configfile);
-                $lines=explode("\n", $configfile);
-            }
-            $lines=preg_replace('/\s+/',' ', $lines);
-            if (isset($ui->post['update']) and $ui->post['update']==1) {
-                $newconfig = '';
-                $setarray = array();
-                foreach ($lines as $singeline) {
-                    if (preg_match("/\w/", substr($singeline,0,1))) {
-                        if (preg_match("/\"/", $singeline)) {
-                            $split=explode('"', $singeline);
-                            $cvar=str_replace(" ", "", $split[0]);
-                            $value = $split[1];
-                            if ($cvar!="exec") {
-                                if (isset($ui->post[$cvar])) {
-                                    if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post[$cvar] != $ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
-                                        eacchange('change',$id,$ui->post[$cvar],$reseller_id);
-                                    }
-                                    $newconfig .= $cvar." \"".$ui->post[$cvar]."\""."\r\n";
-                                } else if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $value != $ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
-                                    eacchange('change',$id,$value,$reseller_id);
-                                } else {
-                                    $newconfig .= $singeline."\r\n";
-                                }
-                                array_push($setarray, $cvar);
-                            } else {
-                                $newconfig .= $singeline."\r\n";
-                            }
-                        } else {
-                            $split=explode(' ', $singeline);
-                            if (isset($split[0])) {
-                                $cvar = $split[0];
-                                if (isset($split[1])) {
-                                    $value = $split[1];
-                                } else {
-                                    $value = '';
-                                }
-                                if ($cvar!="exec") {
+            $newconfig = '';
+            $setarray = array();
+
+            $ftp = new EasyWiFTP($ip, $ftpport, $username, $ftppass);
+
+            if ($ftp->loggedIn === true) {
+
+                if ($ui->smallletters('type', 4, 'get') == 'full' and isset($ui->post['update']) and $ui->post['update'] == 1) {
+
+                    $configfile = stripslashes($ui->post['cleanedconfig']);
+
+                } else if ($ui->smallletters('type', 4, 'get') == 'easy' or ($ui->smallletters('type', 4, 'get') == 'full' and !isset($ui->post['update']))) {
+
+                    $ftp->downloadToTemp($pserver . $serverip . '_' . $port . '/' . $ftpshorten . '/' . $config);
+                    $configfile = $ftp->getTempFileContent();
+
+                }
+
+
+                if (strlen($configfile) > 0) {
+                    $configfile = str_replace(array("\0" , "\b" , "\r", "\Z"), '', $configfile);
+                    $lines = explode("\n", $configfile);
+                }
+
+                if (isset($ui->post['update']) and $ui->post['update'] == 1 and isset($lines)) {
+
+                    foreach ($lines as $singeline) {
+
+                        $singeline = preg_replace('/\s+/',' ', $singeline);
+
+                        if (preg_match("/\w/", substr($singeline, 0, 1))) {
+
+                            if (preg_match("/\"/", $singeline)) {
+
+                                $split = explode('"', $singeline);
+                                $cvar = str_replace(' ', '', $split[0]);
+                                $value = $split[1];
+
+                                if ($cvar != 'exec') {
+
                                     if (isset($ui->post[$cvar])) {
-                                        if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $ui->post[$cvar] != $ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
+                                        if (isset($ui->post['oldrcon']) and $cvar == 'rcon_password' and $ui->post[$cvar] != $ui->post['oldrcon'] and $configname == 'server.cfg' and in_array($anticheat, array(2, 3, 4, 5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
                                             eacchange('change',$id,$ui->post[$cvar],$reseller_id);
                                         }
-                                        $newconfig .= $cvar." \"".$ui->post[$cvar]."\""."\r\n";
-                                    } else if (isset($ui->post['oldrcon']) and $cvar=="rcon_password" and $value != $ui->post['oldrcon'] and $configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
-                                        eacchange('change',$id,$value,$reseller_id);
+                                        $newconfig .= $cvar . ' "' . $ui->post[$cvar] . '"' . "\r\n";
+
+                                    } else if (isset($ui->post['oldrcon']) and $cvar == 'rcon_password' and $value != $ui->post['oldrcon'] and $configname == 'server.cfg' and in_array($anticheat, array(2, 3, 4, 5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
+
+                                        eacchange('change', $id, $value, $reseller_id);
+
                                     } else {
-                                        $newconfig .= $singeline."\r\n";
+
+                                        $newconfig .= $singeline . "\r\n";
+
                                     }
+
                                     array_push($setarray, $cvar);
+
                                 } else {
-                                    $newconfig .= $singeline."\r\n";
+                                    $newconfig .= $singeline . "\r\n";
                                 }
-                            }
-                        }
-                    } else {
-                        $newconfig .= $singeline."\r\n";
-                    }
-                }
-                if ($ui->smallletters('type', 4, 'get')=="easy") {
-                    foreach ($general_cvar as $check_cvar) {
-                        if (!in_array($check_cvar, $setarray)) {
-                            $newconfig .= $check_cvar." \"".$ui->post[$check_cvar]."\""."\r\n";
-                        }
-                    }
-                    foreach ($game_cvars as $check_cvar) {
-                        if (!in_array($check_cvar, $setarray)) {
-                            $newconfig .= $check_cvar." \"".$ui->post[$check_cvar]."\""."\r\n";
-                        }
-                    }
-                }
-                $temp = tmpfile();
-                if ($ui->smallletters('type', 4, 'get')=="easy") {
-                    fwrite($temp, $newconfig);
-                } else if ($ui->smallletters('type', 4, 'get')=="full") {
-                    if (mb_strlen($ui->post['cleanedconfig'], 'UTF-8')<=16384) {
-                        fwrite($temp, stripslashes($ui->post['cleanedconfig']),16384);
-                    } else {
-                        $post_lines=explode("<br />",nl2br(stripslashes($ui->post['cleanedconfig'])));
-                        $post_lines[]="\r\n";
-                        $post_lines[]="\r\n";
-                        $post_lines[]="\r\n";
-                        foreach ($post_lines as $line) {
-                            if ($line == '\r\n') {
-                                fwrite($temp, $line,16384);
+
                             } else {
-                                fwrite($temp, $line."\r\n",16384);
-                            }
-                        }
-                    }
-                }
-                fseek($temp,0);
-                fseek($temp,0);
-                if ($ftpport==21 or $ftpport == '' or $ftpport==null) {
-                    $ftp_connect= @ftp_connect($ip);
-                } else {
-                    $ftp_connect= @ftp_connect($ip,$ftpport);
-                }
-                if ($ftp_connect) {
-                    $ftp_login= @ftp_login($ftp_connect,$username,$ftppass);
-                    if ($ftp_login) {
-                        $split_config=preg_split('/\//', $config, -1, PREG_SPLIT_NO_EMPTY);
-                        $folderfilecount=count($split_config)-1;
-                        $i = 0;
-                        $folders = $pserver.$serverip . '_' . $port. '/' . $ftpshorten;
-                        while ($i<$folderfilecount) {
-                            $folders .= '/' . $split_config[$i];
-                            $i++;
-                        }
-                        $uploadfile = $split_config[$i];
-                        ftp_chdir($ftp_connect,$folders);
-                        $checkupload=@ftp_fput($ftp_connect,$uploadfile,$temp,FTP_ASCII);
-                        $template_file = ($checkupload) ? $sprache->updated . '  ' . $uploadfile : $sprache->failed . '  ' . $folders. '/' . $uploadfile;
-                    } else {
-                        $template_file = 'Error: Logindata';
-                    }
-                    ftp_close($ftp_connect);
-                } else {
-                    $template_file = 'Error: FTP Connect';
-                }
-                fclose($temp);
-                $loguseraction="%cfg% $configname";
-                $insertlog->execute();
-            } else {
-                $linearray = array();
-                $unknownarray = array();
-                $cleanedconfig = '';
-                foreach ($lines as $singeline) {
-                    $cleanedconfig .= $singeline."\r\n";
-                    if (preg_match("/\w/", substr($singeline,0,1))) {
-                        if (preg_match("/\"/", $singeline)) {
-                            $split=explode('"', $singeline);
-                            $cvar=str_replace(" ", "", $split[0]);
-                            $value = $split[1];
-                            if ($cvar!="exec") {
-                                if (in_array($cvar, $general_cvar) or in_array($cvar, $game_cvars)) {
-                                    $linearray[$cvar] = $value;
-                                } else {
-                                    $unknownarray[$cvar] = $value;
+
+                                $split = explode(' ', $singeline);
+
+                                if (isset($split[0])) {
+
+                                    $cvar = $split[0];
+                                    $value = (isset($split[1])) ? $split[1] : '';
+
+                                    if ($cvar != 'exec') {
+
+                                        if (isset($ui->post[$cvar])) {
+
+                                            if (isset($ui->post['oldrcon']) and $cvar == 'rcon_password' and $ui->post[$cvar] != $ui->post['oldrcon'] and $configname == 'server.cfg' and in_array($anticheat, array(2, 3, 4, 5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
+                                                eacchange('change', $id, $ui->post[$cvar], $reseller_id);
+                                            }
+
+                                            $newconfig .= $cvar . ' "' . $ui->post[$cvar] . '"' . "\r\n";
+
+                                        } else if (isset($ui->post['oldrcon']) and $cvar == 'rcon_password' and $value != $ui->post['oldrcon'] and $configname == 'server.cfg' and in_array($anticheat, array(2, 3, 4, 5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
+
+                                            eacchange('change',$id,$value,$reseller_id);
+
+                                        } else {
+
+                                            $newconfig .= $singeline . "\r\n";
+
+                                        }
+
+                                        array_push($setarray, $cvar);
+
+                                    } else {
+                                        $newconfig .= $singeline . "\r\n";
+                                    }
                                 }
                             }
                         } else {
-                            $split=explode(' ', $singeline);
-                            if (isset($split[0])) {
-                                $cvar = $split[0];
-                                $value=(isset($split[1])) ? $split[1] : '';
-                                if ($cvar!="exec") {
+                            $newconfig .= $singeline . "\r\n";
+                        }
+                    }
+
+                    if ($ui->smallletters('type', 4, 'get') == 'easy') {
+
+                        foreach ($general_cvar as $check_cvar) {
+                            if (!in_array($check_cvar, $setarray)) {
+                                $newconfig .= $check_cvar . ' "' . $ui->post[$check_cvar] . '"' . "\r\n";
+                            }
+                        }
+
+                        foreach ($game_cvars as $check_cvar) {
+                            if (!in_array($check_cvar, $setarray)) {
+                                $newconfig .= $check_cvar . ' "' . $ui->post[$check_cvar] . '"' . "\r\n";
+                            }
+                        }
+                    }
+
+                    if ($ui->smallletters('type', 4, 'get') == 'easy') {
+
+                        $ftp->tempHandle = null;
+                        $ftp->writeContentToTemp($newconfig);
+
+                    } else if ($ui->smallletters('type', 4, 'get') == 'full') {
+
+                        $ftp->tempHandle = null;
+
+                        if (mb_strlen($ui->post['cleanedconfig'], 'UTF-8') < 16385) {
+
+                            $ftp->writeContentToTemp(stripslashes($ui->post['cleanedconfig']));
+
+                        } else {
+                            $post_lines = explode('<br />', nl2br(stripslashes($ui->post['cleanedconfig'])));
+                            $post_lines[] = "\r\n";
+                            $post_lines[] = "\r\n";
+                            $post_lines[] = "\r\n";
+
+                            foreach ($post_lines as $line) {
+                                $ftp->writeContentToTemp(($line == "\r\n") ? $line :  $line . "\r\n");
+                            }
+                        }
+                    }
+                    if ($ftp->uploadFileFromTemp($pserver . $serverip . '_' . $port . '/' . $ftpshorten . '/', $config, false)) {
+
+                        $template_file = 'Success: ' . $config;
+
+                        $loguseraction = '%cfg% ' . $configname;
+                        $insertlog->execute();
+
+                    } else {
+                        $template_file = 'Error writing config: ' . $config;
+                    }
+
+                } else if (isset($lines)) {
+
+                    $linearray = array();
+                    $unknownarray = array();
+                    $cleanedconfig = '';
+
+                    foreach ($lines as $singeline) {
+
+                        $cleanedconfig .= $singeline . "\r\n";
+
+                        if (preg_match("/\w/", substr($singeline, 0, 1))) {
+
+                            if (preg_match("/\"/", $singeline)) {
+
+                                $split = explode('"', $singeline);
+                                $cvar = str_replace(' ', '', $split[0]);
+                                $value = $split[1];
+
+                                if ($cvar != 'exec') {
                                     if (in_array($cvar, $general_cvar) or in_array($cvar, $game_cvars)) {
                                         $linearray[$cvar] = $value;
                                     } else {
                                         $unknownarray[$cvar] = $value;
                                     }
                                 }
+
+                            } else {
+
+                                $split = explode(' ', $singeline);
+
+                                if (isset($split[0])) {
+
+                                    $cvar = $split[0];
+                                    $value=(isset($split[1])) ? $split[1] : '';
+
+                                    if ($cvar != 'exec') {
+                                        if (in_array($cvar, $general_cvar) or in_array($cvar, $game_cvars)) {
+                                            $linearray[$cvar] = $value;
+                                        } else {
+                                            $unknownarray[$cvar] = $value;
+                                        }
+                                    }
+
+                                }
                             }
                         }
                     }
+
+                    $array_keys = array_keys($unknownarray);
+
+                    if ($configname == 'server.cfg' and in_array($anticheat, array(2, 3, 4, 5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
+                        $oldrcon = (array_key_exists('rcon_password', $linearray)) ? $linearray['rcon_password'] : 'unset';
+                    }
+
+                    if ($ui->smallletters('type', 4, 'get') == 'easy') {
+                        $template_file = 'userpanel_gserver_config_edit_easy.tpl';
+                    } else if ($ui->smallletters('type', 4, 'get') == 'full') {
+                        $template_file = 'userpanel_gserver_config_edit_full.tpl';
+                    }
                 }
-                $array_keys=array_keys($unknownarray);
-                if ($configname=="server.cfg" and (($anticheat==2 or $anticheat==3 or $anticheat==4 or $anticheat==5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') $oldrcon=(array_key_exists('rcon_password', $linearray)) ? $linearray['rcon_password'] : 'unset';
-                if ($ui->smallletters('type', 4, 'get')=="easy") {
-                    $template_file = 'userpanel_gserver_config_edit_easy.tpl';
-                } else if ($ui->smallletters('type', 4, 'get')=="full") {
-                    $template_file = 'userpanel_gserver_config_edit_full.tpl';
-                }
+            } else {
+                $template_file = 'Error: FTP Access';
             }
         } else {
             $template_file = 'userpanel_404.tpl';
@@ -808,7 +863,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else {
     $table = array();
-    if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
+
     $query = $sql->prepare("SELECT AES_DECRYPT(`ftppassword`,?) AS `cftppass`,g.*,s.`servertemplate`,s.`upload`,t.`id` AS `tid`,t.`ramLimited`,t.`shorten`,t.`protected` AS `tp`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=? ORDER BY g.`serverip`,g.`port`");
     $query2 = $sql->prepare("SELECT `ftpport` FROM `rserverdata` WHERE `id`=? LIMIT 1");
     $query3 = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `id`=? AND `ftpAccess`='N' LIMIT 1");

@@ -41,8 +41,7 @@ class EasyWiFTP {
 
 
     // define vars
-    public $ftpConnection = false, $ftpSecondConnection = false, $loggedIn = false, $secondLoggedIn = false;
-    private $tempHandle = null;
+    public $ftpConnection = false, $ftpSecondConnection = false, $loggedIn = false, $secondLoggedIn = false, $tempHandle = null;
 
     function __construct($ip, $port, $user, $pwd, $ssl = 'N') {
 
@@ -155,9 +154,34 @@ class EasyWiFTP {
         return false;
     }
 
-    public function uploadFileFromTemp ($folders, $file = '') {
+    public function writeContentToTemp ($content) {
 
-        if ($this->secondLoggedIn) {
+        if (is_array($this->tempHandle)) {
+            return false;
+        }
+
+        if ($this->tempHandle === null) {
+            $this->tempHandle = tmpfile();
+        }
+
+        $contentLength = strlen($content);
+
+        if ($this->tempHandle and $contentLength > 0) {
+
+            fwrite($this->tempHandle, $content, $contentLength);
+
+            return true;
+
+        }
+
+        return false;
+    }
+
+    public function uploadFileFromTemp ($folders, $file = '', $secondConnection = true) {
+
+        $useConnection = ($secondConnection === true) ? 'ftpSecondConnection' : 'ftpConnection';
+
+        if (($secondConnection === false and $this->loggedIn) or ($secondConnection === true and $this->secondLoggedIn)) {
 
             if (is_array($this->tempHandle)) {
 
@@ -165,15 +189,26 @@ class EasyWiFTP {
 
                     $combinedFolders = $this->combineFolderFile($folders, $k);
 
-                    $this->arrayToChDir($combinedFolders);
+                    $this->arrayToChDir($combinedFolders, $secondConnection);
 
                     fseek($this->tempHandle[$k], 0);
 
                     // only upload in case we have downloaded some data.
                     $fstats = fstat($this->tempHandle[$k]);
 
+                    $returns = array();
+
                     if ($fstats['size'] > 0) {
-                        @ftp_fput($this->ftpSecondConnection, $this->fileNameFromPath($k), $this->tempHandle[$k], FTP_BINARY, 0);
+
+                        if (@ftp_fput($this->$useConnection, $this->fileNameFromPath($k), $this->tempHandle[$k], FTP_BINARY, 0)) {
+                            $returns[] = true;
+                        } else {
+                            $returns[] = false;
+                        }
+
+                        if (!in_array(false, $returns)) {
+                            return true;
+                        }
                     }
 
                 }
@@ -181,7 +216,7 @@ class EasyWiFTP {
             } else {
 
                 $combinedFolders = $this->combineFolderFile($folders, $file);
-                $this->arrayToChDir($combinedFolders);
+                $this->arrayToChDir($combinedFolders, $secondConnection);
 
                 fseek($this->tempHandle, 0);
 
@@ -189,11 +224,17 @@ class EasyWiFTP {
                 $fstats = fstat($this->tempHandle);
 
                 if ($fstats['size'] > 0) {
-                    @ftp_fput($this->ftpSecondConnection, $this->fileNameFromPath($file), $this->tempHandle, FTP_BINARY, 0);
+                    if (@ftp_fput($this->$useConnection, $this->fileNameFromPath($file), $this->tempHandle, FTP_BINARY, 0)) {
+                        return true;
+                    }
                 }
 
             }
+
         }
+
+        return false;
+
     }
 
     private function fileNameFromPath ($fileWithPath) {
@@ -226,19 +267,21 @@ class EasyWiFTP {
         return $folders;
     }
 
-    private function arrayToChDir ($folders) {
+    private function arrayToChDir ($folders, $secondConnection = true) {
+
+        $useConnection = ($secondConnection === true) ? 'ftpSecondConnection' : 'ftpConnection';
 
         // only in case we cannot access the folder directly, loop and create
-        if (!@ftp_chdir($this->ftpSecondConnection, $folders)) {
+        if (!@ftp_chdir($this->$useConnection, $folders)) {
 
             // go back to home dir. otherwise we might create subfolders in wrong places
-            @ftp_chdir($this->ftpSecondConnection, '/');
+            @ftp_chdir($this->$useConnection, '/');
 
             foreach (preg_split('/\//', $folders, -1, PREG_SPLIT_NO_EMPTY) as $dir) {
 
-                if (!@ftp_chdir($this->ftpSecondConnection, $dir)) {
-                    @ftp_mkdir($this->ftpSecondConnection, $dir);
-                    @ftp_chdir($this->ftpSecondConnection, $dir);
+                if (!@ftp_chdir($this->$useConnection, $dir)) {
+                    @ftp_mkdir($this->$useConnection, $dir);
+                    @ftp_chdir($this->$useConnection, $dir);
                 }
 
             }
