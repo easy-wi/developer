@@ -64,7 +64,7 @@
                 <div class="control-group span6">
                     <label class="control-label" for="inputDelete"></label>
                     <div class="controls">
-                        <button class="btn btn-primary pull-right" id="inputDelete" type="submit"><i class="icon-remove icon-white"></i> <? echo $gsprache->del;?></button>
+                        <button class="btn btn-danger pull-right" id="inputDelete" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
                     </div>
                 </div>
             </div>
