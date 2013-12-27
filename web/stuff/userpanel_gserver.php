@@ -88,13 +88,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         # https://github.com/easy-wi/developer/issues/69
-        $template = $ui->id('template',10, 'post');
         $game = $ui->id('game',10, 'post');
+        $template = (in_array($ui->id('template', 10, 'post'), array(1, 2, 3, 4))) ? $ui->id('template', 10, 'post') : 4;
 
 		if ($ui->active('type', 'post') == 'Y') {
 		    $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=? AND `userid`=?");
-		    $query->execute(array($game,$reseller_id,$user_id));
+		    $query->execute(array($game, $reseller_id, $user_id));
 		}
+
 		$query = $sql->prepare("SELECT s.`gamemod`,s.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
 		$query->execute(array($game,$reseller_id));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -104,19 +105,19 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		}
 
 		if (isset($gsfolder) and count($gamestring)>0 and $ui->active('type', 'post')) {
-            $gamestring=count($gamestring) . '_' . implode('_',$gamestring);
-            $rdata=serverdata('root',$rootID,$aeskey);
+            $gamestring = count($gamestring) . '_' . implode('_',$gamestring);
+            $rdata = serverdata('root',$rootID,$aeskey);
             $sship = $rdata['ip'];
             $sshport = $rdata['port'];
             $sshuser = $rdata['user'];
             $sshpass = $rdata['pass'];
             $cmds = array();
             if ($ui->active('type', 'post') == 'Y') {
-                $cmds[]="./control.sh add ${customer} ${ftppass} ${sshuser} ".passwordgenerate(10);
-                $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
+                $cmds[]="./control.sh add ${customer} ${ftppass} ${sshuser} " . passwordgenerate(10);
+                $cmds[]="sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"${template}\"";
                 $loguseraction="%reinstall% %gserver% ${serverip}:${port}";
             } else {
-                $cmds[]="sudo -u ${customer} ./control.sh addserver ${customer} ${gamestring} ${gsfolder} \"".implode(' ',$template).'"';
+                $cmds[]="sudo -u ${customer} ./control.sh addserver ${customer} ${gamestring} ${gsfolder} \"${template}\"";
                 $loguseraction="%resync% %gserver% ${serverip}:${port}";
             }
             ssh2_execute('gs',$rootID,$cmds);
