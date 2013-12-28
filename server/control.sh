@@ -667,9 +667,9 @@ echo 'I=0
 for UPDATE in $VARIABLE3; do
 	if [ $I == 0 ]; then' >> $TEMPFOLDER/updateSteamCmd.sh
 echo '	LASTUPDATE=$UPDATE' >> $TEMPFOLDER/updateSteamCmd.sh
+echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -maxdepth 2 -type f -name "subscribed_file_ids.txt" -o -name "subscribed_collection_ids.txt" | while read file; do rm -f "$file"; done' >> $TEMPFOLDER/updateSteamCmd.sh
 echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type f \( -iname "srcds_*" -or -iname "hlds_*" -or -iname "*.run" -or -iname "*.sh" \) -print0 | xargs -0 chmod 750' >> $TEMPFOLDER/updateSteamCmd.sh
 echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type f ! -perm -750 ! -perm -755 -print0 | xargs -0 chmod 640' >> $TEMPFOLDER/updateSteamCmd.sh
-echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type f -name "subscribed_file_ids.txt" -o -name "subscribed_collection_ids.txt " | xargs -0 rm -f' >> $TEMPFOLDER/updateSteamCmd.sh
 echo "${IONICE}"'nice -n +19 find $MASTERSERVERDIR/$UPDATE -type d -print0 | xargs -0 chmod 750' >> $TEMPFOLDER/updateSteamCmd.sh
 echo '	ls $MASTERSERVERDIR/$UPDATE | while read dir; do' >> $TEMPFOLDER/updateSteamCmd.sh
 echo '		if [[ `echo $dir| grep '"'"'[a-z0-9]\{40\}'"'"'` ]]; then' >> $TEMPFOLDER/updateSteamCmd.sh
@@ -1811,6 +1811,7 @@ function sync_server {
 				echo "find $MASTERSERVERDIR/$SERVER -type f ! -perm -750 ! -perm -755 -print0 | xargs -0 chmod 640" >> $TEMPFOLDER/sync-server.sh
 				echo "find $MASTERSERVERDIR/$SERVER -name .listing -delete" >> $TEMPFOLDER/sync-server.sh
 			fi
+			echo "find $MASTERSERVERDIR/$SERVER/ -maxdepth 2 -type f -name 'subscribed_file_ids.txt' -o -name 'subscribed_collection_ids.txt' | while read file; do rm -f "'"$file"'"; done" >> $TEMPFOLDER/sync-server.sh
 			if [ "$VARIABLE4" != "" ]; then
 				echo "VARIABLE4=$VARIABLE4"  >> $TEMPFOLDER/sync-server.sh
 				echo "SERVER=$SERVER"  >> $TEMPFOLDER/sync-server.sh
