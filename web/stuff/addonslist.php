@@ -320,6 +320,20 @@ $gameAddons = array(
     ),
     array(
         ':paddon' => 'Y',
+        ':addon' => 'css-bhop-maps',
+        ':type' => 'map',
+        ':folder' => '',
+        ':menudescription' => 'Bhop Maps',
+        ':configs' => "",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => '',
+        ':supported' => array(
+            'css'
+        )
+    ),
+    array(
+        ':paddon' => 'Y',
         ':addon' => 'css-gungame',
         ':type' => 'map',
         ':folder' => '',
