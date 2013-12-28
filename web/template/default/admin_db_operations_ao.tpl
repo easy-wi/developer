@@ -20,7 +20,13 @@
                 </div>
             </div>
             <?php } ?>
-            <div id="typeGroup" class="control-group">
+            <div class="control-group">
+                <label class="control-label" for="checkAll"><?php echo $gsprache->all;?></label>
+                <div class="controls">
+                    <input id="checkAll" type="checkbox"  value="yes" onclick="checkall(this.checked,'addons[]')">
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="actionType"></label>
                 <div class="controls">
                     <select name="actionType" id="actionType">

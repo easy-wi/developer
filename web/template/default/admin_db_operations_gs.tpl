@@ -19,6 +19,12 @@
                 </div>
             </div>
             <?php } ?>
+            <div class="control-group">
+                <label class="control-label" for="checkAll"><?php echo $gsprache->all;?></label>
+                <div class="controls">
+                    <input id="checkAll" type="checkbox"  value="yes" onclick="checkall(this.checked,'games[]')">
+                </div>
+            </div>
             <div id="typeGroup" class="control-group">
                 <label class="control-label" for="actionType"></label>
                 <div class="controls">
