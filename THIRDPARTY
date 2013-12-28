@@ -27,6 +27,11 @@ https://github.com/Austinb/GameQ
 GNU GENERAL PUBLIC LICENSE Version 3
 https://www.gnu.org/licenses/gpl.html
 
+* PHPMailer
+https://github.com/PHPMailer/PHPMailer
+GNU Lesser General Public License (LGPL), Version 2.1
+http://www.gnu.org/licenses/lgpl-2.1.html
+
 
 Used but included with CDN servers:
 

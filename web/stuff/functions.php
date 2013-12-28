@@ -1132,65 +1132,15 @@ if (!function_exists('passwordgenerate')) {
         return $paneldomain;
     }
 
-    function smtpMail ($host, $port, $user, $pass, $to, $from, $subject, $mail, $ssl = 'N') {
-
-        $user = base64_encode($user);
-        $pass = base64_encode($pass);
-        $smtpSocket = fsockopen($host, $port, $errno, $errstr, 10);
-
-        if ($smtpSocket) {
-            stream_set_blocking($smtpSocket,true);
-            fputs($smtpSocket, "EHLO " . $host . "\r\n");
-
-            if ($ssl== 'T') {
-                fputs($smtpSocket, "STARTTLS\r\n");
-
-                $crypto = stream_socket_enable_crypto($smtpSocket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
-
-                fputs($smtpSocket, "EHLO ".$host."\r\n");
-            }
-
-            if ((isset($crypto) and $crypto != false) or $ssl == 'N') {
-
-                fputs($smtpSocket, "auth login\r\n");
-                fputs($smtpSocket, $user."\r\n");
-
-                fputs($smtpSocket, $pass."\r\n");
-
-                fputs($smtpSocket, "MAIL FROM: <${from}>\r\n");
-
-                fputs($smtpSocket, "RCPT TO: <${to}>\r\n");
-
-                fputs($smtpSocket, "DATA\r\n");
-                fputs($smtpSocket, "From: ${from}\r\n");
-                fputs($smtpSocket, "Subject: ${subject}\r\n");
-                fputs($smtpSocket, "To: ${to}\r\n");
-                fputs($smtpSocket, "X-Sender: <${from}>\r\n");
-                fputs($smtpSocket, "Return-Path: <${from}>\r\n");
-                fputs($smtpSocket, "Errors-To: <${from}>\r\n");
-                fputs($smtpSocket, "X-Mailer: Easy-Wi.com\r\n");
-                fputs($smtpSocket, "MIME-Version: 1.0\r\n");
-                fputs($smtpSocket, "Content-type: text/html; charset=UTF-8\r\n");
-
-                fputs($smtpSocket, iconv(mb_detect_encoding($mail, mb_detect_order(), true), 'UTF-8', $mail) . "\r\n.\r\n");
-
-                fputs($smtpSocket, "RSET\r\n");
-
-                fputs($smtpSocket, "QUIT\r\n");
-                fclose($smtpSocket);
-
-                return true;
-            }
-        }
-        return false;
-    }
-
     function sendmail($template, $userid, $server, $shorten) {
 
         global $sql;
 
         if (!isset($aeskey)) {
             include(EASYWIDIR . '/stuff/keyphrasefile.php');
+        }
+        if (!class_exists('PHPMailer')) {
+            include(EASYWIDIR . '/third_party/phpmailer/PHPMailerAutoload.php');
         }
 
         if ($template == 'emailnewticket') {
@@ -1244,7 +1194,6 @@ if (!function_exists('passwordgenerate')) {
                 $email_settings_port = $row['email_settings_port'];
                 $email_settings_user = $row['email_settings_user'];
                 $email_settings_password = $row['decryptedpassword'];
-                $email_settings_ssl = $row['email_settings_ssl'];
             }
         }
 
@@ -1257,7 +1206,25 @@ if (!function_exists('passwordgenerate')) {
                 $resellermail = $row['email'];
             }
 
-            if ($template != 'contact') {
+            if (!isset($resellerstimezone)) {
+                $resellerstimezone = 0;
+            }
+
+
+            $maildate = date('Y-m-d H:i:s',strtotime("$resellerstimezone hour"));
+
+            if ($template == 'contact') {
+
+                $startMail = true;
+
+                $topic = 'You\'ve been contacted by ' . $userid .'.';
+
+                $mailBody = $server;
+
+                $usermail = $resellermail;
+
+            } else {
+
                 if ($resellerid == $userid) {
                     $resellermail = $resellersmail;
                     $lookupID = $resellersid;
@@ -1283,18 +1250,6 @@ if (!function_exists('passwordgenerate')) {
                 $query = $sql->prepare("SELECT `$template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
                 $query->execute(array($lookupID));
                 $mailtext= @gzuncompress($query->fetchColumn());
-            }
-
-            $header = 'MIME-Version: 1.0' . "\n";
-            $header .="Content-type: text/html; charset=utf-8" . "\n";
-
-            if (!isset($resellerstimezone)) {
-                $resellerstimezone = 0;
-            }
-
-            $maildate = date('Y-m-d H:i:s',strtotime("$resellerstimezone hour"));
-
-            if (isset($sprache) and isset($sprache->topic) and isset($mailtext) and $mailtext != '') {
 
                 $keys = array('%server%', '%username%', '%date%', '%shorten%', '%emailregards%', '%emailfooter%');
                 $replacements = array($server, $username, $maildate, $shorten, $emailregards, $emailfooter);
@@ -1313,52 +1268,50 @@ if (!function_exists('passwordgenerate')) {
                     }
                 }
 
-                $mail = str_replace($keys, $replacements, $mailtext);
+                $mailBody = str_replace($keys, $replacements, $mailtext);
 
-                if (isset($usermail) and isset($mail) and $usermail != 'ts3@import.mail' and ismail($usermail)) {
-
-                    if ($email_settings_type == 'P') {
-                        if (isset($debug) and $debug==1) {
-                            $sended = mail($usermail, $topic, $mail, $header, '-f ' . $resellermail);
-                        } else {
-                            $sended = @mail($usermail, $topic, $mail, $header, '-f ' . $resellermail);
-                        }
-
-                    } else {
-                        if (isset($debug) and $debug==1) {
-                            $sended = smtpMail($email_settings_host, $email_settings_port, $email_settings_user, $email_settings_password, $usermail, $resellermail, $topic, $mail, $email_settings_ssl);
-                        } else {
-                            $sended = @smtpMail($email_settings_host, $email_settings_port, $email_settings_user, $email_settings_password, $usermail, $resellermail, $topic, $mail, $email_settings_ssl);
-                        }
-                    }
-
-                    if ($sended == true) {
-                        $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
-
-                        if ($resellerid == $userid) {
-                            $query->execute(array($userid, $topic, $resellersid));
-
-                        } else {
-                            $query->execute(array($userid, $topic, $resellerid));
-                        }
-                    }
+                if (isset($usermail) and $usermail != 'ts3@import.mail' and ismail($usermail) and isset($sprache) and isset($mailtext)) {
+                    $startMail = true;
                 }
 
-            } else if ($template == 'contact') {
+            }
 
-                if ($email_settings_type == 'P') {
-                    if (isset($debug) and $debug==1) {
-                        mail($resellermail,'You\'ve been contacted by ' . $userid .'.', $server, $header, '-f ' . $shorten);
+            if (isset($startMail)) {
+
+                $mail = new PHPMailer();
+
+                $mail->setFrom($resellermail);
+
+                $mail->addAddress($usermail);
+
+                $mail->Subject = $topic;
+
+                $mail->msgHTML($mailBody);
+
+                if ($email_settings_type == 'S') {
+
+                    $mail->isSMTP();
+
+                    $mail->Host = $email_settings_host;
+
+                    $mail->Port = $email_settings_port;
+
+                    $mail->SMTPAuth = true;
+
+                    $mail->Username = $email_settings_user;
+
+                    $mail->Password = $email_settings_password;
+
+                }
+
+                if ($mail->send() and $template != 'contact') {
+                    $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
+
+                    if ($resellerid == $userid) {
+                        $query->execute(array($userid, $topic, $resellersid));
 
                     } else {
-                        @mail($resellermail,'You\'ve been contacted by ' . $userid .'.', $server, $header, '-f ' . $shorten);
-                    }
-
-                } else {
-                    if (isset($debug) and $debug==1) {
-                        smtpMail($email_settings_host, $email_settings_port, $email_settings_user, $email_settings_password, $resellersmail, $resellermail, 'You\'ve been contacted by ' . $userid .'.', $server, $email_settings_ssl);
-                    } else {
-                        @smtpMail($email_settings_host, $email_settings_port, $email_settings_user, $email_settings_password, $resellersmail, $resellermail, 'You\'ve been contacted by ' . $userid .'.', $server, $email_settings_ssl);
+                        $query->execute(array($userid, $topic, $resellerid));
                     }
                 }
             }
