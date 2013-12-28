@@ -152,31 +152,36 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `serverip`,`port`,`rootID` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
         $gsip = $row['serverip'];
         $port = $row['port'];
 
         if ($ui->st('d', 'get') == 'rs') {
 
             $template_file = 'Restart done';
-            $cmds = gsrestart($id,'re',$aeskey,$reseller_id);
+            $cmds = gsrestart($id, 're', $aeskey, $reseller_id);
             $loguseraction = "%start% %gserver% $gsip:$port";
 
         } else if ($ui->st('d', 'get') == 'st') {
 
             $template_file = 'Stop done';
-            $cmds = gsrestart($id,'so',$aeskey,$reseller_id);
+            $cmds = gsrestart($id, 'so', $aeskey, $reseller_id);
             $loguseraction = "%stop% %gserver% $gsip:$port";
 
         } else if ($ui->st('d', 'get') == 'du') {
 
             $template_file = 'SourceTV upload started';
-            $cmds = gsrestart($id,'du',$aeskey,$reseller_id);
+            $cmds = gsrestart($id, 'du', $aeskey, $reseller_id);
             $loguseraction =" %movie% %gserver% $gsip:$port";
 
         }
 
         if (isset($cmds)) {
-            ssh2_execute('gs', $row['rootID'],$cmds);
+            ssh2_execute('gs', $row['rootID'], $cmds);
+
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                $template_file .= '<br>' . implode('<br>', $cmds);
+            }
         }
 
         $insertlog->execute();
@@ -223,7 +228,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $address = $row['serverip'] . ':' .$row['port'];
             $ftpUser = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['id'] : $row['cname'];
 
-            if ($row['protected']) {
+            if ($row['protected'] == 'Y') {
                 $ftpUser .= '-p';
                 $pserverFolder = '';
                 $ftpPWD = $row['pftppass'];
@@ -339,8 +344,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if (!in_array($row['defaultMapGroup'],array('',null))) {
 
                     if ($ftp->loggedIn) {
+
                         $serverTemplate = ($row['servertemplate'] == 1 or $protected == 'Y') ? $row['shorten'] : $row['shorten'] . '-' . $row['servertemplate'];
+
                         $ftp->downloadToTemp($pserverFolder . $gsIP . '_' . $gsPort . '/' . $serverTemplate . '/' . $row['modfolder'] . '/', 0, array('gamemodes.txt','gamemodes_server.txt'));
+
                         $mapGroupsAvailable = $ftp->getMapGroups();
                         $ftp->removeTempFiles();
                     }
