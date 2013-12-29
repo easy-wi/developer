@@ -72,7 +72,12 @@ if [ "$IONICEALLOWED" == "1" ]; then
 fi
 if [ "`id -u`" != "0" ]; then screen -wipe > /dev/null 2>&1; fi
 function wget_remove {
-	if [ "`id -u`" != "0" -a "`id -u`" == "`id -u $MASTERUSER`" -a ! -f $HOMEFOLDER/.updateLock ]; then
+    if [ "`id -u`" != "0" -a "`id -u`" == "`id -u $MASTERUSER`" ]; then
+		RETRY=0
+		while [ -f $HOMEFOLDER/.updateLock -a "$RETRY" -lt 10 ]; do
+			sleep 0.5
+			RETRY=$[RETRY+1]
+		done
 		rm wget-log > /dev/null 2>&1
 		find $HOMEFOLDER -maxdepth 1 -name "control_new.*" -delete
 		find $HOMEFOLDER \( -iname "wget-*" \) -delete
