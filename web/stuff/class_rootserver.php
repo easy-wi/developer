@@ -159,7 +159,7 @@ class rootServer {
         } else if (!in_array($action, array('re','st'))) {
 
             // get DHCP Data from DB
-            if ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['useDHCP'] == 'Y')) {
+            if ($action != 'rp' and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['useDHCP'] == 'Y'))) {
 
                 $ex = explode('.', $this->ID[$type][$ID]['ip']);
                 $subnet = $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.0';
@@ -231,7 +231,7 @@ class rootServer {
             }
 
             // Get PXE Data
-            if (!in_array($action, array('md', 'ad', 'rp')) and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['usePXE'] == 'Y')) and isid($imageID, 10)) {
+            if (!in_array($action, array('md')) and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['usePXE'] == 'Y')) and isid($imageID, 10)) {
 
                 if (isid($this->ID[$type][$ID]['pxeID'], 10)) {
                     $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' AND `id`=:pxeID LIMIT 1");
@@ -277,7 +277,7 @@ class rootServer {
                             $this->PXEData[$row['id']]['PXEFolder'] = $row['PXEFolder'];
                         }
 
-                        $this->PXEData[$row['id']]['actions'][] = array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID);
+                        $this->PXEData[$row['id']]['actions'][] = array('action' => $action, 'id' => $ID, 'type' => $type, 'imageID' => $imageID, 'hostID' => $hostID, 'userID' => $userID, 'resellerID' => $resellerID);
                     }
                 }
 
@@ -289,10 +289,12 @@ class rootServer {
         }
 
         if ($this->ID[$type][$ID]['restart'] == 'A' and $this->type == 'dedicated' and $action != 'rp') {
+
             $this->startStop[] = array(
                 'action' => ((isset($this->extraData['oldactive']) and $this->extraData['oldactive'] == 'Y') or in_array($action, array('ad','st','dl'))) ? 'st' : 're','id' => $ID
             );
-        } else if ($this->type == 'dedicated' and $action!='rp') {
+
+        } else if ($this->type == 'dedicated' and $action != 'rp') {
             return 'Restart not allowed for Server with ID: ' . $this->tempID;
         }
 
@@ -302,108 +304,132 @@ class rootServer {
 
     public function dhcpFiles () {
 
-        $removeArray = array();
-
         foreach ($this->dhcpData as $k => $v) {
 
-            unset($tempBad);
+            if (count($v['actions']) > 0) {
 
-            $i = 0;
+                unset($tempBad, $changed);
 
-            if ($v['publickey'] == 'Y') {
+                if ($v['publickey'] == 'Y') {
 
-                # https://github.com/easy-wi/developer/issues/70
-                $sshkey = removePub($v['keyname']);
-                $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-                $key = EASYWIDIR . '/keys/' . $sshkey;
+                    # https://github.com/easy-wi/developer/issues/70
+                    $sshkey = removePub($v['keyname']);
+                    $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
+                    $key = EASYWIDIR . '/keys/' . $sshkey;
 
-                $ssh2 = (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'], $v['port'], array('hostkey' => 'ssh-rsa')) : false;
+                    $ssh2 = (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'], $v['port'], array('hostkey' => 'ssh-rsa')) : false;
 
-            } else {
-                $ssh2 = @ssh2_connect($v['ip'], $v['port']);
-            }
+                } else {
+                    $ssh2 = @ssh2_connect($v['ip'], $v['port']);
+                }
 
-            if ($ssh2 == true) {
+                if ($ssh2 == true) {
 
-                $connect_ssh2 = ($v['publickey'] == 'Y' and isset($pubkey, $key)) ? @ssh2_auth_pubkey_file($ssh2, $v['user'], $pubkey, $key) : @ssh2_auth_password($ssh2, $v['user'], $v['pass']);
+                    $connect_ssh2 = ($v['publickey'] == 'Y' and isset($pubkey, $key)) ? @ssh2_auth_pubkey_file($ssh2, $v['user'], $pubkey, $key) : @ssh2_auth_password($ssh2, $v['user'], $v['pass']);
 
-                if ($connect_ssh2 == true) {
+                    if ($connect_ssh2 == true) {
 
-                    $sftp = ssh2_sftp($ssh2);
+                        $sftp = ssh2_sftp($ssh2);
 
-                    $file = (substr($v['dhcpFile'], 0, 1) == '/') ? 'ssh2.sftp://' . $sftp . $v['dhcpFile'] : 'ssh2.sftp://' . $sftp . '/home/' . $v['user'] . '/' . $v['dhcpFile'];
-                    $fileErrorOutput = (substr($v['dhcpFile'], 0, 1) == '/') ? $v['dhcpFile'] : '/home/' . $v['user']. '/' . $v['dhcpFile'];
+                        $file = (substr($v['dhcpFile'], 0, 1) == '/') ? 'ssh2.sftp://' . $sftp . $v['dhcpFile'] : 'ssh2.sftp://' . $sftp . '/home/' . $v['user'] . '/' . $v['dhcpFile'];
+                        $fileErrorOutput = (substr($v['dhcpFile'], 0, 1) == '/') ? $v['dhcpFile'] : '/home/' . $v['user']. '/' . $v['dhcpFile'];
 
-                    $buffer = '';
+                        $buffer = '';
 
-                    $fp = @fopen($file, 'r');
+                        $fp = @fopen($file, 'r');
 
-                    if ($fp) {
+                        if ($fp) {
 
-                        $filesize = filesize($file);
+                            $filesize = filesize($file);
 
-                        while (strlen($buffer) < $filesize) {
-                            $buffer .= fread($fp, $filesize);
-                        }
-
-                        fclose($fp);
-
-                        $config = $this->parseDhcpConfig(str_replace(array("\0", "\b", "\r", "\Z"),'', $buffer));
-
-                        if (is_array($config)) {
-                            foreach ($v['actions'] as $a) {
-
-                                if ($a['action'] == 'del' and isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
-
-                                    unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
-
-                                } else if (isset($this->ID[$a['type']][$a['id']])) {
-                                    $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'].';';
-                                    $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'].';';
-                                    if ($this->ID[$a['type']][$a['id']]['usePXE'] == 'Y' and (in_array($a['action'], array('ad','ri','rc')))) {
-                                        $removeArray[] = array('type' => ($a['type'] == 'dedicated') ? 'de' : 'vs','affectedID' => $a['id'], 'name' => $this->ID[$a['type']][$a['id']]['ip'], 'imageID' => $a['imageID'], 'hostID' => $a['hostID'], 'userID' => $a['userID'], 'resellerID' => $a['resellerID'], 'extraData' => array('runAt' => strtotime("+5 minutes")));
-                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
-                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'].';';
-                                    } else {
-                                        unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename']);
-                                        unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']);
-                                    }
-                                }
-                                $i++;
+                            while (strlen($buffer) < $filesize) {
+                                $buffer .= fread($fp, $filesize);
                             }
 
-                            $fp = @fopen($file, 'w');
-                            $write = @fwrite($fp, $this->assembleDhcpConfig($config, $k));
+                            fclose($fp);
 
-                            if ($write) {
-                                fclose($fp);
+                            $config = $this->parseDhcpConfig(str_replace(array("\0", "\b", "\r", "\Z"),'', $buffer));
+
+                            if (is_array($config)) {
+                                foreach ($v['actions'] as $a) {
+
+                                    if ($a['action'] == 'del' and isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
+
+                                        unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
+
+                                        $changed = true;
+
+                                    } else if (isset($this->ID[$a['type']][$a['id']])) {
+
+                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] != $this->ID[$a['type']][$a['id']]['mac'].';') {
+
+                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'].';';
+
+                                            $changed = true;
+
+                                        }
+
+                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] != $this->ID[$a['type']][$a['id']]['ip'].';') {
+
+                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'].';';
+
+                                            $changed = true;
+                                        }
+
+                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] != 'pxelinux.0;') {
+
+                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
+
+                                            $changed = true;
+                                        }
+
+                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] != $this->ID[$a['type']][$a['id']]['pxeIP'].';') {
+
+                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'].';';
+
+                                            $changed = true;
+                                        }
+
+                                    }
+                                }
+
+                                if (isset($changed)) {
+
+                                    $fp = @fopen($file, 'w');
+                                    $write = @fwrite($fp, $this->assembleDhcpConfig($config, $k));
+
+                                    if ($write) {
+                                        fclose($fp);
+                                    } else {
+                                        $tempBad[] = 'Could not write DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                                    }
+                                }
+
+
                             } else {
-                                $tempBad[] = 'Could not write DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                                $tempBad[] = 'Could not process DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
                             }
 
                         } else {
-                            $tempBad[] = 'Could not process DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                            $tempBad[] = 'Could not open DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                        }
+
+                        if (isset($changed) and !isset($tempBad)) {
+                            @ssh2_exec($ssh2, $v['startCmd'] . ' &');
                         }
 
                     } else {
-                        $tempBad[] = 'Could not open DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                        $tempBad[] = 'Could login to DHCP server: ' . $v['ip'] . ':' . $v['port'];
                     }
-
-                    if ($i>0 and !isset($tempBad)) {
-                        @ssh2_exec($ssh2, $v['startCmd'] . ' &');
-                    }
-
                 } else {
-                    $tempBad[] = 'Could login to DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                    $tempBad[] = 'Could not connect to DHCP server: ' . $v['ip'] . ':' . $v['port'];
                 }
-            } else {
-                $tempBad[] = 'Could not connect to DHCP server: ' . $v['ip'] . ':' . $v['port'];
-            }
 
-            if (isset($tempBad) and isset($bad)) {
-                $bad = array_merge($bad, $tempBad);
-            } else if (isset($tempBad) and !isset($bad)) {
-                $bad = $tempBad;
+                if (isset($tempBad) and isset($bad)) {
+                    $bad = array_merge($bad, $tempBad);
+                } else if (isset($tempBad) and !isset($bad)) {
+                    $bad = $tempBad;
+                }
             }
         }
 
@@ -411,11 +437,14 @@ class rootServer {
             return implode(' ', $bad);
         }
 
-        return $removeArray;
+        return true;
 
     }
 
     public function PXEFiles() {
+
+        $removeArray = array();
+
         foreach($this->PXEData as $k => $v) {
             if ($v['publickey'] == 'Y') {
 
@@ -445,11 +474,13 @@ class rootServer {
                         $file = (substr($v['PXEFolder'], 0, 1) == '/') ? 'ssh2.sftp://' . $sftp . $pathWithPXEMac : 'ssh2.sftp://' . $sftp . '/home/' . $v['user'] . '/' . $pathWithPXEMac;
                         $fileWithPath = (substr($v['PXEFolder'], 0, 1) == '/') ? $pathWithPXEMac : '/home/' . $v['user'] . '/' . $pathWithPXEMac;
 
-                        if (in_array($a['action'], array('dl', 'rt', 'md'))) {
+                        if (in_array($a['action'], array('dl', 'md', 'rp', 'rt'))) {
 
                             @ssh2_sftp_unlink($sftp, $fileWithPath);
 
-                        } else if (in_array($a['action'], array('ri','rc'))) {
+                        } else if (in_array($a['action'], array('ad','ri','rc'))) {
+
+                            $removeArray[] = array('type' => ($a['type'] == 'dedicated') ? 'de' : 'vs', 'affectedID' => $a['id'], 'name' => $this->ID[$a['type']][$a['id']]['ip'], 'imageID' => $a['imageID'], 'hostID' => $a['hostID'], 'userID' => $a['userID'], 'resellerID' => $a['resellerID'], 'extraData' => array('runAt' => strtotime("+5 minutes")));
 
                             $query = $this->sql->prepare("SELECT `pxelinux` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
                             $query->execute(array($a['imageID']));
@@ -509,7 +540,7 @@ class rootServer {
             return implode(' ', $bad);
         }
 
-        return true;
+        return $removeArray;
 
     }
 

@@ -57,7 +57,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
     if (!isset($extraData['runAt']) or strtotime('now') > $extraData['runAt']) {
 
-        $return = $rootObject->rootServer($row['affectedID'], $row['action'],$type,$extraData);
+        $return = $rootObject->rootServer($row['affectedID'], $row['action'], $type, $extraData);
 
         // bei add und mod restart Auftrag schreiben mit extra Data = timestamp
         if ($row['action'] == 'dl') {
@@ -140,10 +140,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 }
 
 print "\r\nApplyingPXE changes\r\n";
-$rootObject->PXEFiles();
-
-print "\r\nApplying DHCPchanges\r\n";
-$res = (array) $rootObject->dhcpFiles();
+$res = (array) $rootObject->PXEFiles();
 
 $query = $sql->prepare("INSERT INTO `jobs` (`action`,`date`,`status`,`api`,`type`,`affectedID`,`name`,`hostID`,`userID`,`extraData`,`resellerID`) VALUES ('rp',NOW(),NULL,'J',?,?,?,?,?,?,?)");
 $query2 = $sql->prepare("UPDATE `virtualcontainer` SET `imageid`=? WHERE `id`=? LIMIT 1");
@@ -151,7 +148,7 @@ $query3 = $sql->prepare("UPDATE `rootsDedicated` SET `imageID`=? WHERE `dedicate
 foreach ($res as $row) {
     if (isset($row['type'])) {
 
-        $query->execute(array($row['type'], $row['affectedID'], $row['name'], $row['hostID'], $row['userID'],json_encode($row['extraData']), $row['resellerID']));
+        $query->execute(array($row['type'], $row['affectedID'], $row['name'], $row['hostID'], $row['userID'], json_encode($row['extraData']), $row['resellerID']));
 
         if ($row['type'] == 'de') {
             $query2->execute(array($row['imageID'], $row['affectedID']));
@@ -160,6 +157,9 @@ foreach ($res as $row) {
         }
     }
 }
+
+print "\r\nApplying DHCPchanges\r\n";
+$rootObject->dhcpFiles();
 
 print "\r\n(Re)starting/Stopping dedicated server\r\n";
 $rootObject->startStop();
