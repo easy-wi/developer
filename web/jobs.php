@@ -59,10 +59,10 @@ if (isset($argv)) {
     }
 
     if ($deamon == false) {
-        print 'Running job management as cronjob'."\r\n";
+        print 'Running job management as cronjob' . "\r\n";
         set_time_limit($timelimit);
     } else {
-        print 'Running job management as Deamon'."\r\n";
+        print 'Running job management as Deamon' . "\r\n";
     }
 
     if (!isset($sleep)) {
@@ -78,7 +78,8 @@ include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/class_rootserver.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
-include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/class_ts3.php');
+include(EASYWIDIR . '/stuff/functions_ts3.php');
 include(EASYWIDIR . '/stuff/mysql_functions.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
@@ -86,53 +87,55 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $gsprache = getlanguagefile('general', 'uk', 0);
 
     class runGraph {
-        private $jobsDone = 0;
-        private $startTime = 0;
-        private $newLine="\r\n";
-        private $jobCount = 0;
-        private $spinnerCount = 0;
-        private $spinners=array('-','/','-','\\','|','/','-','\\','|','/');
-        private $spinner='-';
-        private $oneJobPercent = 1;
+
+        private $jobsDone = 0, $startTime = 0, $newLine = "\r\n", $jobCount = 0, $spinnerCount = 0, $spinners = array('-', '/', '-', '\\', '|', '/', '-', '\\', '|', '/'), $spinner = '-', $oneJobPercent = 1;
+
         function __construct($jobCount,$newLine) {
+
             $this->startTime=strtotime('now');
             $this->jobCount = $jobCount;
-            if ($jobCount>0) {
-                $this->oneJobPercent=100/$jobCount;
-            } else {
-                $this->oneJobPercent=100;
-            }
+
+            $this->oneJobPercent = ($jobCount > 0) ? 100 / $jobCount : 100;
+
             $this->newLine = $newLine;
-            $this->startTime=strtotime('now');
+            $this->startTime = strtotime('now');
+
         }
+
         public function updateCount($jobCount) {
             $this->jobCount = $jobCount;
-            if ($jobCount>0) {
-                $this->oneJobPercent=100/$jobCount;
-            } else {
-                $this->oneJobPercent=100;
-            }
+            $this->oneJobPercent = ($jobCount > 0) ? 100 / $jobCount : 100;
         }
+
         public function printGraph ($newCommand) {
-            $this->jobsDone = $this->jobsDone+1;
-            $percentDone=number_format($this->jobsDone*$this->oneJobPercent,2);
-            $elapsedSeconds=strtotime('now')-$this->startTime;
-            print $this->spinner . ' ' . $percentDone.'%'.' done; '.$elapsedSeconds.' Seconds elapsed; Last job: '.$newCommand.$this->newLine;
+
+            $this->jobsDone = $this->jobsDone + 1;
+            $percentDone = number_format($this->jobsDone * $this->oneJobPercent, 2);
+            $elapsedSeconds = strtotime('now') - $this->startTime;
+
+            print $this->spinner . ' ' . $percentDone . '% done; ' . $elapsedSeconds . ' Seconds elapsed; Last job: ' . $newCommand.$this->newLine;
             flush();
+
             $this->runSpinner();
+
         }
+
         private function runSpinner () {
-            if ($this->newLine=="\r") {
-                if ($this->spinnerCount<9) {
+            if ($this->newLine == "\r") {
+
+                if ($this->spinnerCount < 9) {
                     $this->spinnerCount++;
                 } else {
                     $this->spinnerCount = 0;
                 }
-                $this->spinner = $this->spinners[$this->spinnerCount].' ';
+
+                $this->spinner = $this->spinners[$this->spinnerCount] . ' ';
+
             } else {
                 $this->spinner = '';
             }
         }
+
         function __destruct() {
             $this->jobsDone = null;
             $this->startTime = null;
@@ -156,58 +159,68 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     $counJobs = $sql->prepare("SELECT COUNT(`jobID`) AS `jobCount` FROM `jobs` WHERE `status` IS NULL OR `status`='1'");
     while ($runJobs == true) {
+
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
-        print 'Total jobs open: '.$jobCount.'. Cleaning up outdated and duplicated entries'."\r\n";
+        print 'Total jobs open: ' . $jobCount . '. Cleaning up outdated and duplicated entries' . "\r\n";
         updateStates('dl','us');
         updateStates('dl');
         updateStates('ad');
         updateStates('md');
+
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
-        print "\r\n" . 'Total jobs open after cleanup: '.$jobCount."\r\n";
-        print 'Executing user cleanup jobs'."\r\n";
+        print "\r\n" . 'Total jobs open after cleanup: ' . $jobCount . "\r\n";
+        print 'Executing user cleanup jobs' . "\r\n";
         $startTime = strtotime('now');
         $theOutput = new runGraph($jobCount,$newLine);
+
         # us > vo > gs > my > vs
         include(EASYWIDIR . '/stuff/jobs_user.php');
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
-        print "\r\n" . 'Total jobs open after user cleanup jobs are done: '.$jobCount."\r\n";
-        print 'Executing voice jobs'."\r\n";
+        print "\r\n" . 'Total jobs open after user cleanup jobs are done: ' . $jobCount . "\r\n";
+
+        print 'Executing voice jobs' . "\r\n";
         include(EASYWIDIR . '/stuff/jobs_voice.php');
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
-        print "\r\n" . 'Total jobs open after voice jobs are done: '.$jobCount."\r\n";
-        print 'Executing TS DNS jobs'."\r\n";
+        print "\r\n" . 'Total jobs open after voice jobs are done: ' . $jobCount . "\r\n";
+
+        print 'Executing TS DNS jobs' . "\r\n";
         include(EASYWIDIR . '/stuff/jobs_tsdns.php');
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
-        print "\r\n" . 'Total jobs open after TS DNS jobs are done: '.$jobCount."\r\n";
-        print 'Executing mysql jobs'."\r\n";
+        print "\r\n" . 'Total jobs open after TS DNS jobs are done: ' . $jobCount . "\r\n";
+
+        print 'Executing mysql jobs' . "\r\n";
         include(EASYWIDIR . '/stuff/jobs_mysql.php');
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
-        print "\r\n" . 'Total jobs open after mysql jobs are done: '.$jobCount."\r\n";
-        print 'Executing gameserver jobs'."\r\n";
+        print "\r\n" . 'Total jobs open after mysql jobs are done: ' . $jobCount . "\r\n";
+
+        print 'Executing gameserver jobs' . "\r\n";
         include(EASYWIDIR . '/stuff/jobs_gserver.php');
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
-        print "\r\n" . 'Total jobs open after gameserver jobs are done: '.$jobCount."\r\n";
-        print 'Executing root server jobs'."\r\n";
+        print "\r\n" . 'Total jobs open after gameserver jobs are done: ' . $jobCount . "\r\n";
+
+        print 'Executing root server jobs' . "\r\n";
         include(EASYWIDIR . '/stuff/jobs_roots.php');
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
-        print "\r\n" . 'Total jobs open after root server jobs are done: '.$jobCount."\r\n";
-        print 'Executing user remove jobs'."\r\n";
+        print "\r\n" . 'Total jobs open after root server jobs are done: ' . $jobCount . "\r\n";
+
+        print 'Executing user remove jobs' . "\r\n";
         include(EASYWIDIR . '/stuff/jobs_user_rm.php');
         print "\n";
+
         if ($deamon == true) {
             $sql = null;
             $theOutput = null;
@@ -221,7 +234,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             }
             flush();
-            print "\r\n" . 'Deamon run finished. Current memory usage is: '.memory_get_usage().' Bytes. Waiting '.$sleep.' seconds before next job run'."\r\n\r\n";
+            print "\r\n" . 'Deamon run finished. Current memory usage is: '.memory_get_usage().' Bytes. Waiting ' . $sleep.' seconds before next job run'."\r\n\r\n";
             sleep($sleep);
         } else {
             $runJobs = false;

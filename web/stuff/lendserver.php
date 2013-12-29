@@ -42,7 +42,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and (!isset($pa) or (
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
-include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/class_ts3.php');
 
 $sprache = getlanguagefile('lendserver', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);

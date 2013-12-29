@@ -67,7 +67,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     include(EASYWIDIR . '/stuff/vorlage.php');
     include(EASYWIDIR . '/stuff/functions.php');
     include(EASYWIDIR . '/stuff/class_validator.php');
-    include(EASYWIDIR . '/stuff/class_voice.php');
+    include(EASYWIDIR . '/stuff/class_ts3.php');
     include(EASYWIDIR . '/stuff/settings.php');
     include(EASYWIDIR . '/stuff/ssh_exec.php');
     include(EASYWIDIR . '/stuff/keyphrasefile.php');

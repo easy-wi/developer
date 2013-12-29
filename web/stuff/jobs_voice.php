@@ -126,7 +126,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                     $delete = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $delete->execute(array($row3['id'], $row['resellerID']));
-                    tsbackup('delete',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$localserverid, $row3['id'], $row['resellerID'],$sql);
+                    tsbackup('delete',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$localserverid, $row3['id'], $row['resellerID']);
                 }
                 $query3 = $sql->prepare("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
                 $query3->execute();

@@ -41,7 +41,8 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['voiceserver
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/class_ts3.php');
+include(EASYWIDIR . '/stuff/functions_ts3.php');
 
 $sprache = getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid = $admin_id;
@@ -412,7 +413,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns),$reseller_id);
                 $query = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `resellerid`=?");
                 $query->execute(array($id,$reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) tsbackup('delete',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$localserverid, $row['id'],$reseller_id,$sql);
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) tsbackup('delete',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$localserverid, $row['id'],$reseller_id);
                 $query = $sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `userdata` u ON b.`uid`=u.`id` LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE u.`id` IS NULL OR  v.`id` IS NULL");
                 $query->execute();
             }

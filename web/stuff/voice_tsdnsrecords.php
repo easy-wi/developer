@@ -41,7 +41,8 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['voiceserver
 	header('Location: admin.php');
 	die;
 }
-include(EASYWIDIR . '/stuff/class_voice.php');
+
+include(EASYWIDIR . '/stuff/functions_ts3.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $sprache = getlanguagefile('voice',$user_language,$reseller_id);

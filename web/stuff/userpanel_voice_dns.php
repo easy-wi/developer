@@ -36,11 +36,15 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
+include(EASYWIDIR . '/stuff/functions_ts3.php');
+
 $sprache = getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
 $logreseller = 0;
+
 if (isset($admin_id)) {
     $logsubuser = $admin_id;
 } else if (isset($subuser_id)) {
@@ -48,11 +52,15 @@ if (isset($admin_id)) {
 } else {
     $logsubuser = 0;
 }
-include(EASYWIDIR . '/stuff/class_voice.php');
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
+
 } else if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['vd']))) {
+
     $id = $ui->id('id',19, 'get');
+
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));

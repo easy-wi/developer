@@ -39,7 +39,8 @@
  */
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/class_ts3.php');
+include(EASYWIDIR . '/stuff/functions_ts3.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
 include(EASYWIDIR . '/third_party/password_compat/password.php');
 

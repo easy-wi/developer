@@ -42,7 +42,8 @@ if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['voiceserver']
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/class_ts3.php');
+include(EASYWIDIR . '/stuff/functions_ts3.php');
 
 $sprache = getlanguagefile('voice', $user_language, $reseller_id);
 $loguserid = $user_id;
@@ -130,7 +131,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
                 $delete = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
                 $delete->execute(array($row['id'], $user_id, $reseller_id));
-                tsbackup('delete', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $row['id'], $reseller_id, $sql);
+                tsbackup('delete', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $row['id'], $reseller_id);
             }
         }
 
@@ -157,7 +158,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $query = $sql->prepare("INSERT INTO `voice_server_backup` (`sid`,`uid`,`name`,`snapshot`,`channels`,`date`,`resellerid`) VALUES(?,?,?,?,?,NOW(),?)");
                 $query->execute(array($id, $user_id, $name, $snapshot, $channelSnapshot, $reseller_id));
 
-                $return = tsbackup('create', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $sql->lastInsertId(), $reseller_id, $sql);
+                $return = tsbackup('create', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $sql->lastInsertId(), $reseller_id);
 
                 if ($return == 'ok') {
 
@@ -190,7 +191,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             $query = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($ui->id('id',10, 'post'), $user_id, $reseller_id));
 
-            tsbackup('delete', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $ui->id('id',10, 'post'), $reseller_id, $sql);
+            tsbackup('delete', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $ui->id('id',10, 'post'), $reseller_id);
 
             $query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($sid, $user_id, $reseller_id));
@@ -235,7 +236,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                         }
                     }
 
-                    tsbackup('deploy', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $ui->id('id',10, 'post'), $reseller_id, $sql, $move);
+                    tsbackup('deploy', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $notified, $serverdir, $volocalserverid, $ui->id('id',10, 'post'), $reseller_id, $move);
 
                     $query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($row['sid'], $user_id, $reseller_id));

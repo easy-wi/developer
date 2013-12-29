@@ -53,7 +53,7 @@ include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/ssh_exec.php');
 include(EASYWIDIR . '/stuff/class_masterserver.php');
-include(EASYWIDIR . '/stuff/class_voice.php');
+include(EASYWIDIR . '/stuff/class_ts3.php');
 include(EASYWIDIR . '/stuff/queries_updates.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
