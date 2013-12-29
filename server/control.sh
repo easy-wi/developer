@@ -77,6 +77,7 @@ function wget_remove {
 		find $HOMEFOLDER -maxdepth 1 -name "control_new.*" -delete
 		find $HOMEFOLDER \( -iname "wget-*" \) -delete
 		find $HOMEFOLDER/conf/ -maxdepth 1 -name "wget-*" -delete
+		find $HOMEFOLDER/logs/ $HOMEFOLDER/temp/ $HOMEFOLDER/fdl_data/ -type d -user `whoami` -print0 | xargs -0 chmod 770
 	fi
 }
 function updatecheck {
@@ -209,8 +210,8 @@ for CREATEDIR in ${CREATEDIRS[@]}; do
 	echo "Adding dir: /home/$INSTALLMASTER/$CREATEDIR"
 	mkdir -p /home/$INSTALLMASTER/$CREATEDIR
 done
-chmod -R 750 /home/$INSTALLMASTER/ /home/$INSTALLMASTER/fdl_data
-chmod 770 /home/$INSTALLMASTER/logs/ /home/$INSTALLMASTER/temp/
+chmod -R 750 /home/$INSTALLMASTER/
+chmod -R 770 /home/$INSTALLMASTER/logs/ /home/$INSTALLMASTER/temp/ /home/$INSTALLMASTER/fdl_data/
 LOGFILES=('addons' 'hl2' 'server' 'fdl' 'update' 'fdl-hl2')
 for LOGFILE in ${LOGFILES[@]}; do
 	touch "/home/$INSTALLMASTER/logs/$LOGFILE.log"
