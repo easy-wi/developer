@@ -78,11 +78,13 @@ function wget_remove {
 			sleep 0.5
 			RETRY=$[RETRY+1]
 		done
-		rm wget-log > /dev/null 2>&1
-		find $HOMEFOLDER -maxdepth 1 -name "control_new.*" -delete
-		find $HOMEFOLDER \( -iname "wget-*" \) -delete
-		find $HOMEFOLDER/conf/ -maxdepth 1 -name "wget-*" -delete
-		find $HOMEFOLDER/logs/ $HOMEFOLDER/temp/ $HOMEFOLDER/fdl_data/ -type d -user `whoami` -print0 | xargs -0 chmod 770
+		if [ "$RETRY" -lt 10 ]; then
+			rm wget-log > /dev/null 2>&1
+			find $HOMEFOLDER -maxdepth 1 -name "control_new.*" -delete
+			find $HOMEFOLDER \( -iname "wget-*" \) -delete
+			find $HOMEFOLDER/conf/ -maxdepth 1 -name "wget-*" -delete
+			find $HOMEFOLDER/logs/ $HOMEFOLDER/temp/ $HOMEFOLDER/fdl_data/ -type d -user `whoami` -print0 | xargs -0 chmod 770
+		fi
 	fi
 }
 function updatecheck {
