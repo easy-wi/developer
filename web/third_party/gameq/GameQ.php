@@ -291,7 +291,7 @@ class GameQ
 			|| !is_array($server_info[self::SERVER_OPTIONS])
 			|| empty($server_info[self::SERVER_OPTIONS]))
 		{
-			// Make an id so each server has an id when returned
+			// Default the options to an empty array
 			$server_info[self::SERVER_OPTIONS] = array();
 		}
 
@@ -793,6 +793,12 @@ class GameQ
 		$read = $sockets;
 		$write = NULL;
 		$except = NULL;
+
+		// Check to see if $read is empty, if so stream_select() will throw a warning
+		if(empty($read))
+		{
+		    return $responses;
+		}
 
 		// This is when it should stop
 		$time_stop = microtime(TRUE) + $this->timeout;

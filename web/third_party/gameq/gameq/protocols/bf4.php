@@ -17,111 +17,38 @@
  */
 
 /**
- * Battlefield 3 Protocol Class
+ * Battlefield 4 Protocol Class
  *
- * Good place for doc status and info is http://www.fpsadmin.com/forum/showthread.php?t=24134
+ * Good place for doc status and info is http://battlelog.battlefield.com/bf4/forum/view/2955064768683911198/
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Bf3 extends GameQ_Protocols
+class GameQ_Protocols_Bf4 extends GameQ_Protocols_Bf3
 {
-	/**
-	 * Normalization for this protocol class
-	 *
-	 * @var array
-	 */
-	protected $normalize = array(
-		// General
-		'general' => array(
-			'dedicated' => array('dedicated'),
-			'hostname' => array('hostname'),
-			'password' => array('password'),
-			'numplayers' => array('numplayers'),
-			'maxplayers' => array('maxplayers'),
-			'mapname' => array('map'),
-			'gametype' => array('gametype'),
-	        'players' => array('players'),
-			'teams' => array('team'),
-		),
-
-		// Player
-		'player' => array(
-	        'score' => array('score'),
-		),
-
-		// Team
-		'team' => array(
-			'score' => array('tickets'),
-		),
-	);
-
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_STATUS => "\x00\x00\x00\x00\x1b\x00\x00\x00\x01\x00\x00\x00\x0a\x00\x00\x00serverInfo\x00",
-		self::PACKET_VERSION => "\x00\x00\x00\x00\x18\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00version\x00",
-		self::PACKET_PLAYERS => "\x00\x00\x00\x00\x24\x00\x00\x00\x02\x00\x00\x00\x0b\x00\x00\x00listPlayers\x00\x03\x00\x00\x00\x61ll\x00",
-	);
-
-	/**
-	 * Set the transport to use TCP
-	 *
-	 * @var string
-	 */
-	protected $transport = self::TRANSPORT_TCP;
-
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_status",
-		"process_version",
-		"process_players",
-	);
-
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 47200; // Default port, used if not set when instanced
-
 	/**
 	 * The protocol being used
 	 *
 	 * @var string
 	 */
-	protected $protocol = 'bf3';
+	protected $protocol = 'bf4';
 
 	/**
 	 * String name of this protocol class
 	 *
 	 * @var string
 	 */
-	protected $name = 'bf3';
+	protected $name = 'bf4';
 
 	/**
 	 * Longer string name of this protocol class
 	 *
 	 * @var string
 	 */
-	protected $name_long = "Battlefield 3";
+	protected $name_long = "Battlefield 4";
 
 	/*
-	* Internal methods
-	*/
-	protected function preProcess_status($packets=array())
-	{
-		// Implode and return
-		return implode('', $packets);
-	}
-
+	 * Internal Methods
+	 */
     protected function process_status()
     {
     	// Make sure we have a valid response
@@ -188,7 +115,6 @@ class GameQ_Protocols_Bf3 extends GameQ_Protocols
     	$result->add('uptime', $words[$index_current + 5]);
     	$result->add('roundtime', $words[$index_current + 6]);
 
-    	// Added in R9
 	    $result->add('ip_port', $words[$index_current + 7]);
 	    $result->add('punkbuster_version', $words[$index_current + 8]);
     	$result->add('join_queue', $words[$index_current + 9] === 'true');
@@ -196,55 +122,13 @@ class GameQ_Protocols_Bf3 extends GameQ_Protocols
     	$result->add('pingsite', $words[$index_current + 11]);
     	$result->add('country', $words[$index_current + 12]);
 
-    	// Added in R29, No docs as of yet
-    	$result->add('quickmatch', $words[$index_current + 13] === 'true'); // Guessed from research
+    	// @todo: Supposed to be a field here <matchMakingEnabled: boolean>, its in R13 docs but doesnt return in response
+    	$result->add('blaze_player_count', $words[$index_current + 13]);
+    	$result->add('blaze_game_state', $words[$index_current + 14]);
 
     	unset($buf, $words);
 
     	return $result->fetch();
-    }
-
-    protected function preProcess_version($packets=array())
-    {
-    	// Implode and return
-    	return implode('', $packets);
-    }
-
-    protected function process_version()
-    {
-    	// Make sure we have a valid response
-    	if(!$this->hasValidResponse(self::PACKET_VERSION))
-    	{
-    		return array();
-    	}
-
-    	// Set the result to a new result instance
-    	$result = new GameQ_Result();
-
-    	// Make buffer for data
-    	$buf = new GameQ_Buffer($this->preProcess_version($this->packets_response[self::PACKET_VERSION]));
-
-    	$buf->skip(8); /* skip header */
-
-    	$words = $this->decodeWords($buf);
-
-    	// Not too important if version is missing
-    	if (!isset ($words[0]) || $words[0] != 'OK')
-    	{
-    		return array();
-    	}
-
-    	$result->add('version', $words[2]);
-
-    	unset($buf, $words);
-
-    	return $result->fetch();
-    }
-
-    protected function preProcess_players($packets=array())
-    {
-    	// Implode and return
-    	return implode('', $packets);
     }
 
     protected function process_players()
@@ -281,7 +165,7 @@ class GameQ_Protocols_Bf3 extends GameQ_Protocols
 		$tags = array_slice($words, 2, $num_tags);
 
 		// Just incase this changed between calls.
-		$result->add('numplayers', $words[9]);
+		$result->add('numplayers', $words[($num_tags+2)]);
 
 		// Loop until we run out of positions
 		for($pos=(3+$num_tags);$pos<=$words_total;$pos+=$num_tags)
@@ -294,9 +178,6 @@ class GameQ_Protocols_Bf3 extends GameQ_Protocols
 			{
 				$result->addPlayer($tag, $player[$tag_index]);
 			}
-
-			// No pings in this game
-			$result->addPlayer('ping', FALSE);
 		}
 
 		// @todo: Add some team definition stuff
@@ -304,26 +185,5 @@ class GameQ_Protocols_Bf3 extends GameQ_Protocols
     	unset($buf, $tags, $words, $player);
 
     	return $result->fetch();
-    }
-
-    /**
-     * Decode words from the response
-     *
-     * @param GameQ_Buffer $buf
-     */
-    protected function decodeWords(GameQ_Buffer &$buf)
-    {
-    	$result = array();
-
-    	$num_words = $buf->readInt32();
-
-    	for ($i = 0; $i < $num_words; $i++)
-    	{
-	    	$len = $buf->readInt32();
-	    	$result[] = $buf->read($len);
-	    	$buf->read(1); /* 0x00 string ending */
-    	}
-
-    	return $result;
     }
 }

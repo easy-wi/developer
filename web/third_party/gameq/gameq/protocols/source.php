@@ -91,6 +91,8 @@ class GameQ_Protocols_Source extends GameQ_Protocols
 	 */
 	protected $source_engine = self::SOURCE_ENGINE;
 
+	protected $join_link = "steam://connect/%s:%d/";
+
 	/**
 	 * Parse the challenge response and apply it to all the packet types
 	 * that require it.
@@ -200,15 +202,15 @@ class GameQ_Protocols_Source extends GameQ_Protocols
         $result->add('dedicated', $buf->read());
         $result->add('os', $buf->read());
         $result->add('password', $buf->readInt8());
-        
+
         // Check engine type
         if ($this->source_engine == self::GOLDSOURCE_ENGINE)
         {
         	$result->add('ismod', $buf->readInt8());
         }
-        
+
         $result->add('secure', $buf->readInt8());
-        
+
         // Check engine type
         if ($this->source_engine == self::GOLDSOURCE_ENGINE)
         {
@@ -415,7 +417,7 @@ class GameQ_Protocols_Source extends GameQ_Protocols
     			// Now verify the length
     			if(strlen($result) != $packet_length)
     			{
-    				throw new GameQ_ProtocolsException("Checksum for compressed packet failed! Length expected {$packet_length}, length returned".strlen($result));
+    				throw new GameQ_ProtocolsException("Checksum for compressed packet failed! Length expected: {$packet_length}, length returned: ".strlen($result));
     			}
 
     			// Set the new packs

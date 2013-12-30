@@ -17,24 +17,13 @@
  */
 
 /**
- * Just Cause 2 Multiplayer Protocol Class
+ * DayZ Mod Protocol Class
  *
- * @author Ulrich Block <ulblock@gmx.de>
+ * @author Marcel Bößendörfer <m.boessendoerfer@marbis.net>
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Jcmp extends GameQ_Protocols_Source
+class GameQ_Protocols_Dayzmod extends GameQ_Protocols_Armedassault2
 {
-    protected $name = "jcmp";
-    protected $name_long = "Just Cause 2 Multiplayer";
-
-    // Source Query is not able to return larger player amounts. Map field is used for player return.
-    function process_details()
-    {
-        $return = parent::process_details();
-
-        @list($return['num_players'], $return['max_players']) = explode('/', str_replace('Players: ', '', $return['map']));
-
-        $return['map'] = $return['game_dir'];
-
-        return $return;
-    }
+	protected $name = "dayzmod";
+	protected $name_long = "DayZ Mod";
 }

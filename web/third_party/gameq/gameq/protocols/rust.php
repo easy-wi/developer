@@ -17,12 +17,14 @@
  */
 
 /**
- * Starbound: Source Protocol Class
+ * Rust Protocol Class
  *
- * @author Ulrich Block <ulrich.block@easy-wi.com>
+ * Seems to respond to A2S but no rules, unsure if players is complete
+ *
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Starbound extends GameQ_Protocols_Source
+class GameQ_Protocols_Rust extends GameQ_Protocols_Source
 {
-    protected $name = "starbound";
-    protected $name_long = "Starbound";
+	protected $name = "rust";
+	protected $name_long = "Rust";
 }

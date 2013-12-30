@@ -17,16 +17,33 @@
  */
 
 /**
- * America's Army 3 Protocol Class (Version 3.2+)
+ * Just Cause 2 Multiplayer Protocol Class
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Aa3 extends GameQ_Protocols_Source
+class GameQ_Protocols_Jc2 extends GameQ_Protocols_Source
 {
-	protected $name = "aa3";
-	protected $name_long = " America's Army 3 (> 3.2)";
+	protected $name = "jc2";
+	protected $name_long = "Just Cause 2 Multiplayer";
 
-	protected $link_join = "aa3://%s:%d/";
+	protected function process_details()
+	{
+	    // Process the server details first
+	    $results = parent::process_details();
 
-	protected $port = 27020;
+	    // Now we need to fix the "map" for their hack
+	    if(preg_match('/(?P<cur>\d{1,})\/(?P<max>\d{1,})/i', trim($results['map']), $m))
+	    {
+	        // Define the player counts
+	        $results['num_players'] = $m['cur'];
+	        $results['max_players'] = $m['max'];
+
+	        // Reset map since we have no idea what it is
+	        $results['map'] = '';
+
+	        unset($m);
+	    }
+
+	    return $results;
+	}
 }

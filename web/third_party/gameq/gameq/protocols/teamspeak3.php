@@ -123,6 +123,8 @@ class GameQ_Protocols_Teamspeak3 extends GameQ_Protocols
 	 */
 	protected $name_long = "Teamspeak 3";
 
+	protected $join_link = "ts3server://%s?port=%d";
+
 	/**
 	 * Define the items being replaced to fix the return
 	 *
@@ -141,6 +143,26 @@ class GameQ_Protocols_Teamspeak3 extends GameQ_Protocols
       "\\r" => "\r",
       "\\t" => "\t"
     );
+
+	/**
+	 * Overload so we can check for some special options
+	 *
+	 * @param string $ip
+	 * @param int $port
+	 * @param array $options
+	 */
+	public function __construct($ip = FALSE, $port = FALSE, $options = array())
+	{
+	    // Got to do this first
+	    parent::__construct($ip, $port, $options);
+
+	    // Check for override in master server port (query)
+	    if(isset($this->options['master_server_port']) && !empty($this->options['master_server_port']))
+	    {
+	        // Override the master server port
+            $this->master_server_port = (int) $this->options['master_server_port'];
+	    }
+	}
 
 	/**
 	 * We need to affect the packets we are sending before they are sent
