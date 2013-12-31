@@ -208,7 +208,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
             foreach($gq->requestData() as $switchID => $v) {
 
-                unset($userid);
+                unset($userid, $stopserver);
                 $lid = 0;
                 $elapsed = 0;
                 $shutdownemptytime = 0;
