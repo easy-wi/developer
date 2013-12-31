@@ -255,7 +255,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query2->execute(array($serverid, $reseller_id));
                     foreach($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                         $cmds = gsrestart($row2['switchID'], 'so', $aeskey, $reseller_id);
-                        ssh2_execute('gs', $row['rootID'], $cmds);
+                        ssh2_execute('gs', $row2['rootID'], $cmds);
                     }
 
                 } else if ($servertype == 'v') {
