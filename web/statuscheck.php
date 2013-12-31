@@ -363,7 +363,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $query->execute(array($switchID));
                     }
 
-                    if (isset($stopserver)) {
+                    if (isset($stopserver) and $stopserver === true) {
 
                         $numplayers = 0;
                         $map = '';
