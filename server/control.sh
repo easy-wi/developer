@@ -1731,47 +1731,38 @@ EOF
 }
 
 function copy_addon_files {
-	cp -sr $ADDONFOLDER/* $GAMEDIR/ > /dev/null 2>&1
 	cd $ADDONFOLDER
-	FILELIST=''
-	EXTENSIONS=('xml' 'cfg' 'conf' 'gam' 'ini' 'txt' 'vdf' 'smx' 'sp' 'ext' 'sma' 'amxx' 'lua' 'config')
-	for EXT in ${EXTENSIONS[@]}; do
-		if [ "$FILELIST" == "" ]; then
-			FILELIST="-name \"*.$EXT\""
-		else
-			FILELIST="$FILELIST -o -name \"*.$EXT\""
-		fi
-	done
-	find $FILELIST -type f | sed 's/\.\///g' | while read FILES; do
-		FOLDER=`dirname $FILES`
-		FILENAME=`basename $FILES`
+	find -type f | grep -i -E -w 'xml|cfg|conf|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|config$' | sed 's/\.\///g' | while read FILE; do
+		FOLDER=`dirname $FILE`
+		FILENAME=`basename $FILE`
 		if [ ! -d $GAMEDIR/$FOLDER ]; then
 			mkdir -p $GAMEDIR/$FOLDER/
 		fi
-		find $GAMEDIR/$FILES -type l -delete > /dev/null 2>&1
+		find $GAMEDIR/$FILE -type l -delete > /dev/null 2>&1
 		if [ "$FILENAME" == "liblist.gam" -a "$MATCHADDONS" != "1" ]; then
-			mv $GAMEDIR/$FILES $GAMEDIR/$FILES.old
-			cp $ADDONFOLDER/$FILES $GAMEDIR/$FILES
+			mv $GAMEDIR/$FILE $GAMEDIR/$FILE.old
+			cp $ADDONFOLDER/$FILE $GAMEDIR/$FILE
 		elif [ "$FILENAME" == "plugins.ini" -a "$MATCHADDONS" != "1" ]; then
-			if [ -f $GAMEDIR/$FILES ]; then
-				cat $ADDONFOLDER/$FILES | while read $LINE; do
-					if [ `grep "$LINE" $GAMEDIR/$FILES` == "" ]; then
-						echo $LINE >> $GAMEDIR/$FILES
+			if [ -f $GAMEDIR/$FILE ]; then
+				cat $ADDONFOLDER/$FILE | while read $LINE; do
+					if [ `grep "$LINE" $GAMEDIR/$FILE` == "" ]; then
+						echo $LINE >> $GAMEDIR/$FILE
 					fi
 				done
 			else
-				cp $ADDONFOLDER/$FILES $GAMEDIR/$FILES
+				cp $ADDONFOLDER/$FILE $GAMEDIR/$FILE
 			fi
 		elif [ "$FILENAME" == "gametypes.txt" -a "$MATCHADDONS" != "1" ]; then
 			if [ "$FOLDER" != "cfg/mani_admin_plugin" ]; then
-				cp $ADDONFOLDER/$FILES $GAMEDIR/$FILES
+				cp $ADDONFOLDER/$FILE $GAMEDIR/$FILE
 			fi
-		elif [ "$MATCHADDONS" == "1" -a ! -f $GAMEDIR/$FILES -a ! -f "$GAMEDIR/$FOLDER/disabled/$FILENAME" ]; then
-			cp $ADDONFOLDER/$FILES $GAMEDIR/$FILES
-		elif [ "$MATCHADDONS" != "1" -a ! -f $GAMEDIR/$FILES ]; then
-			cp $ADDONFOLDER/$FILES $GAMEDIR/$FILES
+		elif [ "$MATCHADDONS" == "1" -a ! -f $GAMEDIR/$FILE -a ! -f "$GAMEDIR/$FOLDER/disabled/$FILENAME" ]; then
+			cp $ADDONFOLDER/$FILE $GAMEDIR/$FILE
+		elif [ "$MATCHADDONS" != "1" -a ! -f $GAMEDIR/$FILE ]; then
+			cp $ADDONFOLDER/$FILE $GAMEDIR/$FILE
 		fi
 	done
+	cp -sr $ADDONFOLDER/* $GAMEDIR/ > /dev/null 2>&1
 }
 
 function sync_addons {
