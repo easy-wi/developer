@@ -1732,7 +1732,7 @@ EOF
 
 function copy_addon_files {
 	cd $ADDONFOLDER
-	find -type f | grep -i -E -w 'xml|cfg|conf|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|config$' | sed 's/\.\///g' | while read FILE; do
+	find -type f | grep -i -E -w '(xml|cfg|conf|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|config)$' | sed 's/\.\///g' | while read FILE; do
 		FOLDER=`dirname $FILE`
 		FILENAME=`basename $FILE`
 		if [ ! -d $GAMEDIR/$FOLDER ]; then
