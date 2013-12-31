@@ -1074,7 +1074,7 @@ VARIABLE4=$VARIABLE4
 SERVERDIR=$SERVERDIR
 PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.inf\|/sound/\|steam_appid.txt\|/hl2/\|/overviews/\|/resource/\|/sprites/'" > $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo 'while [[ `screen -ls | grep "del-$VARIABLE2-$VARIABLE4"` ]]; do
-	sleep 5
+	sleep 1
 done' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 fi
 
