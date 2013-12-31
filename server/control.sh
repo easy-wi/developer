@@ -379,8 +379,8 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 	</Limit>
 </Directory>
 <Directory ~/*/*/>
-	HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll|\.so)$
-	PathDenyFilter (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll|\.so)$
+	HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
+	PathDenyFilter (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
 	HideNoAccess on
 </Directory>
 <Directory ~/*/*/*/*/addons>
@@ -1733,7 +1733,16 @@ EOF
 function copy_addon_files {
 	cp -sr $ADDONFOLDER/* $GAMEDIR/ > /dev/null 2>&1
 	cd $ADDONFOLDER
-	find -type f -name "*.xml" -o -name "*.cfg" -o -name "*.conf" -o -name "*.gam"  -o -name "*.ini" -o -name "*.txt" -o -name "*.vdf" -o -name "*.smx" -o -name "*.sp" -o -name "*.sma" -o -name "*.amxx" -o -name "*.lua" | sed 's/\.\///g' | while read FILES; do
+	FILELIST=''
+	EXTENSIONS=('xml' 'cfg' 'conf' 'gam' 'ini' 'txt' 'vdf' 'smx' 'sp' 'ext' 'sma' 'amxx' 'lua' 'config')
+	for EXT in ${EXTENSIONS[@]}; do
+		if [ "$FILELIST" == "" ]; then
+			FILELIST="-name \"*.$EXT\""
+		else
+			FILELIST="$FILELIST -o -name \"*.$EXT\""
+		fi
+	done
+	find $FILELIST -type f | sed 's/\.\///g' | while read FILES; do
 		FOLDER=`dirname $FILES`
 		FILENAME=`basename $FILES`
 		if [ ! -d $GAMEDIR/$FOLDER ]; then
