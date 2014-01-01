@@ -330,6 +330,18 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
                 AllowAll
         </Limit>
 </Directory>
+<Directory ~/server/*/tekkit*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/tekkit-classic*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
 <Directory ~/server/*/samp*/*>
         Umask 077 077
         <Limit RNFR RNTO STOR DELE MKD RMD>
