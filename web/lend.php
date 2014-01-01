@@ -821,7 +821,9 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                     foreach ($leftservers as $keys => $arrays) {
                         $percent = 0;
                         foreach ($arrays as $key => $count) {
-                            $percent = $percent + ((100 / $switchcount[$keys][$key]['exist']) * ($count));
+                            if (isset($switchcount[$keys][$key]['exist'])) {
+                                $percent = $percent + ((100 / $switchcount[$keys][$key]['exist']) * ($count));
+                            }
                         }
                         $mostleft[$keys] = $percent;
                     }
