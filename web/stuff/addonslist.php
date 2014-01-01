@@ -53,6 +53,20 @@ $gameAddons = array(
         )
     ),
     array(
+        ':paddon' => 'Y',
+        ':addon' => 'csgo-esl',
+        ':type' => 'tool',
+        ':folder' => '',
+        ':menudescription' => 'ESL Plugin',
+        ':configs' => "",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => '',
+        ':supported' => array(
+            'csgo'
+        )
+    ),
+    array(
         ':paddon' => 'N',
         ':addon' => 'metamod',
         ':type' => 'tool',
