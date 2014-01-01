@@ -156,14 +156,14 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                 }
                 $table = array();
                 $gamestring = $count;
-                foreach($ui->escaped('shorten', 'post') as $shortencase=>$shorten) {
-                    if (wpreg_check($shorten,30)) {
+                foreach($ui->escaped('shorten', 'post') as $shortencase => $shorten) {
+                    if (gamestring($shorten)) {
                         $query = $sql->prepare("SELECT t.*,r.`installing` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE t.`shorten`=? AND t.`resellerid`=? AND r.`serverid`=? LIMIT 1");
                         $query->execute(array($shorten,$reseller_id,$id));
                         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                             $steamgame = $row['steamgame'];
                             $gamemod = $row['gamemod'];
-                            if (!isset($portMax) or $portMax<$row['portMax']) {
+                            if (!isset($portMax) or $portMax < $row['portMax']) {
                                 $portStep = $row['portStep'];
                                 $portMax = $row['portMax'];
                                 $port = $row['portOne'];
@@ -223,20 +223,35 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                     $max += $row['slots'];
                     $installedserver++;
                 }
+
                 $query = $sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? ORDER BY `port`");
                 $query->execute(array($ip));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if (port($row['port'])) $ports[] = $row['port'];
-                    if (port($row['port2'])) $ports[] = $row['port2'];
-                    if (port($row['port3'])) $ports[] = $row['port3'];
-                    if (port($row['port4'])) $ports[] = $row['port4'];
-                    if (port($row['port5'])) $ports[] = $row['port5'];
+                    if (port($row['port'])) {
+                        $ports[] = $row['port'];
+                    }
+                    if (port($row['port2'])) {
+                        $ports[] = $row['port2'];
+                    }
+                    if (port($row['port3'])) {
+                        $ports[] = $row['port3'];
+                    }
+                    if (port($row['port4'])) {
+                        $ports[] = $row['port4'];
+                    }
+                    if (port($row['port5'])) {
+                        $ports[] = $row['port5'];
+                    }
                 }
+
                 $query = $sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
                 $query->execute(array($ip));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if (port($row['port'])) $ports[] = $row['port'];
+                    if (port($row['port'])) {
+                        $ports[] = $row['port'];
+                    }
                 }
+
                 if (isset($ports) and isset($portMax)) {
                     $ports=array_unique($ports);
                     asort($ports);
@@ -282,7 +297,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                     $ports=implode(", ",$ports);
                 } else {
                     if (!isset($portMax)) {
-                        $port1 = '';
+                        $port = '';
                         $port2 = '';
                         $port3 = '';
                         $port4 = '';
