@@ -216,17 +216,18 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
             foreach($gq->requestData() as $switchID => $v) {
 
-                unset($userid, $stopserver);
+                unset($userid, $stopserver, $doNotRestart);
                 $lid = 0;
                 $elapsed = 0;
                 $shutdownemptytime = 0;
                 $notified = 0;
 
-                $query = $sql->prepare("SELECT s.`id`,t.`description`,g.`serverip`,g.`port`,g.`port2`,g.`slots`,g.`war`,g.`brandname`,g.`secnotified`,g.`notified`,g.`lendserver`,g.`userid`,g.`resellerid`,g.`rootID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
+                $query = $sql->prepare("SELECT s.`id`,t.`description`,g.`autoRestart`,g.`serverip`,g.`port`,g.`port2`,g.`slots`,g.`war`,g.`brandname`,g.`secnotified`,g.`notified`,g.`lendserver`,g.`userid`,g.`resellerid`,g.`rootID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
                 $query2 = $sql->prepare("SELECT `id`,`started` FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
                 $query->execute(array($switchID));
                 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
                     $serverip = $row['serverip'];
+                    $autoRestart = $row['autoRestart'];
                     $port = $row['port'];
                     $address = $row['serverip'] . ':' . $row['port'];
                     $gametype = $row['description'];
@@ -392,7 +393,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $query->execute(array($switchID));
                     }
 
-                } else if (isset($userid)) {
+                } else if (isset($userid) and isset($autoRestart)) {
+
                     $name = 'OFFLINE';
                     $numplayers = 0;
                     $maxplayers = 0;
@@ -403,12 +405,12 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                         $notified++;
 
-                        $query = $sql->prepare("SELECT `autoRestart` FROM `gsswitch` WHERE `id`=? LIMIT 1");
-                        $query->execute(array($switchID));
+                        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                            print_r($v);
+                        }
 
-                        if ($query->fetchColumn() == 'Y' and $notified >= $resellersettings[$resellerid]['down_checks']) {
+                        if ($autoRestart == 'Y' and $notified >= $resellersettings[$resellerid]['down_checks']) {
                             print "Restarting: $address\r\n";
-
                             $tmp = gsrestart($switchID, 're', $aeskey, $resellerid);
                             if (is_array($tmp)) {
                                 foreach($tmp as $t) {
@@ -429,6 +431,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 }
                             }
                         }
+                    } else {
+                        print "Not Stopping as database leftover: $address\r\n";
                     }
                 }
 
@@ -442,6 +446,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
 
         unset($gq);
+
+        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+            print_r($shellCmds);
+        }
 
         foreach($shellCmds as $k => $v) {
             ssh2_execute('gs', $k, $v);
