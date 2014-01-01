@@ -56,7 +56,7 @@
             <span class="navbar-text">Easy-WI.com</span>
 
             <a href="login.php?w=lo" class="navbar-text pull-right navbar-logout">
-                <button class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</button>
+                <span class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</span>
             </a>
 
             <ul class="nav pull-right">

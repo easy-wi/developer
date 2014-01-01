@@ -44,7 +44,7 @@
             <?php if (isset($admin_id) or isset($user_id)) { ?>
 
             <a href="<?php echo $page_data->pageurl;?>/login.php?w=lo" class="navbar-text pull-right navbar-logout">
-                <button class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</button>
+                <span class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</span>
             </a>
             <ul class="nav pull-right">
                 <li class="dropdown">

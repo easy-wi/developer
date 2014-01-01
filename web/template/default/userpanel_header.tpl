@@ -11,6 +11,7 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="css/default/easy-wi.css" rel="stylesheet">
+    <?php echo implode('',$htmlExtraInformation['css']);?>
 
     <link rel="shortcut icon" href="images/favicon.ico" />
 
@@ -23,9 +24,10 @@
     <script src="js/default/footable.js" type="text/javascript"></script>
     <script type="text/javascript">$(function() { $('table').footable();});</script>
     <script src="js/default/main.js" type="text/javascript"></script>
+    <?php echo implode('',$htmlExtraInformation['js']);?>
     <script type="text/javascript">window.onDomReady(onReady); function onReady() { SwitchShowHideRows('init_ready');}</script>
 </head>
-<body>
+<body <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner text-center">
         <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -53,7 +55,7 @@
         	<span class="navbar-text">Easy-WI.com</span>
 
             <a href="login.php?w=lo" class="navbar-text pull-right navbar-logout">
-                <button class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</button>
+                <span class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</span>
             </a>
 
             <ul class="nav pull-right">
