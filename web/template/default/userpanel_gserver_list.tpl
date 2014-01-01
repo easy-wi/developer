@@ -21,6 +21,9 @@
             <?php if($table_row['stopped']=='N'){ ?><a href="userpanel.php?w=gs&amp;d=st&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->confirm_stop;?>');"><button class="btn btn-mini btn-danger"><i class="fa fa-power-off"></i> <?php echo $sprache->stop;?></button></a><?php } ?>
             <?php if(!empty($table_row['pro'])){ ?><a href="userpanel.php?w=pr&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->protect . ' '; echo ($table_row['imgp']=='16_protected') ? $sprache->off2 : $sprache->on;?>?');"><button class="btn btn-mini <?php if($table_row['imgp']=='16_protected')echo 'btn-info';else if($table_row['imgp']=='16_unprotected') echo 'btn-warning';?>"><i class="fa fa-shield"></i> <?php echo $sprache->protect.' '.$table_row['pro'];?></button></a><?php } ?>
             <a href="userpanel.php?w=gs&amp;d=cf&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="fa fa-cogs"></i> <?php echo $sprache->config;?></button></a>
+            <?php if(($pa['ftpaccess'] or $pa['miniroot']) and $table_row['imgp']!='16_protected' and $table_row['ftpAllowed']) { ?>
+            <a href="userpanel.php?w=gs&amp;d=wf&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="fa fa-files-o"></i> <?php echo $sprache->webFtp;?></button></a>
+            <?php } ?>
             <?php if($pa['useraddons']){ ?><a href="userpanel.php?w=ao&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="fa fa-puzzle-piece"></i> <?php echo $gsprache->addon;?></button></a><?php } ?>
             <a href="userpanel.php?w=ca&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-primary"><i class="fa fa-calendar"></i> <?php echo $sprache->restarttime;?></button></a>    
             <div class="btn-group">

@@ -1,0 +1,239 @@
+
+/* General Format */
+
+	a:link {
+		color: #2075B8;
+	}
+	
+	hr {
+		background-color: silver;
+		color: silver;
+	}
+
+	progress {
+		background-color: #FCFFD2;
+	}
+
+/* AJAX Content Window */
+	
+	#ajaxContentWindow {
+		border-bottom-color: #404040;
+		border-top-color: #404040;
+	}
+	
+/* Form Error Background */
+
+	.bgFormError {
+		background-color: red;
+	}
+	
+/* Context Menu */
+
+	#contextMenu {
+		background-color: #F0F0EE;
+		border-color: #CCCCCC;
+	}
+	
+/* Context Menu Divider */
+	
+	.contextMenuDivider {
+		border-top-color: #322F30;
+	}
+	
+/* Context Menu Inactive */
+
+	.contextMenuDivInactive {
+		color: grey;
+	}
+	
+/* Context Menu MouseOver */
+	
+	.contextMenuDivMouseOver {
+		background-color: blue;
+		color: white;
+	}
+	
+/* Drag & Drop Check */
+
+	#dropFilesCheckDiv {
+		background-color: white;
+		border-color: #404040;
+	}
+	
+	.dropFilesCheckPassColor {
+		color: green;
+	}
+	
+	.dropFilesCheckFailColor {
+		color: red;
+	}
+	
+/* File Edit Window */
+
+	#editContent { 
+		border-color: #404040;
+	}
+	
+/* Footer Div */
+	
+	#footerDiv {
+		background-color: #D1D2D4;
+	}
+	
+/* FTP Action Buttons */	
+	
+	#ftpActionButtonsDiv {
+		background-color: #D1D2D4;
+		border-top-color: #404040;
+	}
+
+/* FTP File Listing Table */
+
+	#ftpTable {
+		border-top-color: #404040;
+	}
+	
+/* FTP File Listing Header & Rows */
+
+	.ftpTableHeading {
+		background-color: #404040;
+		border-left-color: white;
+		color: white;
+	}
+	
+	/* header with no formatting */
+	.ftpTableHeadingNf {
+		background-color: #404040;
+	}
+	
+	.trBg0 {
+		background-color: #EAEAEA;
+	}
+	
+	.trBg1 {
+		background-color: white;
+	}
+	
+
+/* Host/User Info Box */
+	
+	#hostInfoDiv {
+		background-color: white;
+		border-color: #404040;
+		color: green;
+	}
+	
+		#hostInfoDiv span {
+			color: black;
+		}
+		
+/* Login Form */
+		
+	#loginForm {
+		border-color: #404040;
+	}
+	
+/* Login Form Error */
+
+	#loginFormError {
+		background-color: white;
+		border-color: red;
+		color: red;
+	}
+	
+/* Login Form Title */
+
+	#loginFormTitle {
+		background-color: #404040;
+		border-bottom-color: #404040;
+		color: white;
+	}
+	
+/* Login Form Content */
+	
+	#loginFormContent {
+		background-color: #EAEAEA
+	}
+	
+/* Pop-up Border */
+
+	#popupFrame {
+		border-color: black;
+	}
+	
+/* Pop-up Body */
+
+	#popupBodyAction {
+		background-color: white;
+		border-left-color: green;
+		border-right-color: green;
+	}
+	
+	#popupBodyError {
+		background-color: white;
+		border-left-color: red;
+		border-right-color: red;
+	}
+	
+/* Pop-up Footer */
+
+	#popupFooterAction {
+		background-color: white;
+		border-left-color: green;
+		border-bottom-color: green;
+		border-right-color: green;
+	}
+	
+	#popupFooterError {
+		background-color: white;
+		border-left-color: red;
+		border-bottom-color: red;
+		border-right-color: red;
+	}
+
+/* Pop-up Header */
+
+	#popupHeaderAction {
+		background-color: white;
+		color: green;
+		border-color-left: green;
+		border-color-right: green;
+	}
+	
+	#popupHeaderError {
+		background-color: white;
+		color: red;
+		border-color-left: red;
+		border-color-right: red;
+	}
+	
+	
+/* Progress Close Button */
+
+	.progressClose {
+		border-color: gray;
+		color: gray;
+	}
+	
+	.progressClose:hover {
+		border-color: black;
+		color: black;
+	}
+	
+/* Size Error Span */
+
+	.sizeErrorSpan {
+		color: red;
+	}
+
+/* Transferring to FTP */
+	
+	.transferringSpan {
+		color: green;
+	}
+	
+/* Upload Progress Window */
+	
+	#uploadProgressDiv {
+		border-bottom-color: #404040;
+	}

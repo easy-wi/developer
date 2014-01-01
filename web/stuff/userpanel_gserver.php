@@ -64,8 +64,30 @@ if (isset($resellerLockupID)) {
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 
-} else if ($ui->st('d', 'get') == 'ri' and !$ui->id('id', 10, 'get')) {
+} else if (in_array($ui->st('d', 'get'), array('ri', 'wf')) and !$ui->id('id', 10, 'get')) {
     $template_file = $sprache->error_id;
+
+} else if ($ui->st('d', 'get') == 'wf' and $ui->id('id', 10, 'get') and ($pa['ftpaccess'] or $pa['miniroot'])) {
+
+    $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,u.`cname`,r.`ftpport`,s.`servertemplate`,t.`shorten` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? AND g.`protected`='N' AND t.`ftpAccess`='Y' LIMIT 1");
+    $query->execute(array($aeskey, $ui->id('id', 10, 'get'), $user_id, $reseller_id));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $ftpIP = $row['serverip'];
+        $ftpPort = $row['ftpport'];
+        $ftpPass = $row['cftppass'];
+        $ftpUser = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['id'] : $row['cname'];
+        $gsFolder = '/server/' . $row['serverip'] . '_' . $row['port'] . '/';
+        $gsFolder .= ($row['servertemplate'] == 1) ? $row['shorten'] : $row['shorten'] . '-' . $row['servertemplate'];
+        $address = $row['serverip'] . ':' . $row['port'];
+    }
+
+    if ($query->rowCount() > 0) {
+        $userPanelInclude = true;
+        include(EASYWIDIR . '/third_party/monstaftp/class_monstaftp.php');
+        include(EASYWIDIR . '/third_party/monstaftp/monstaftp.php');
+    } else {
+        $template_file = 'userpanel_404.tpl';
+    }
 
 } else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
 
@@ -78,15 +100,18 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template = array();
 
         $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
-        $query->execute(array($aeskey,$aeskey,$ui->id('id', 10, 'get'), $user_id, $reseller_id));
+        $query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $user_id, $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $customer = $row['cname'];
-            $ftppass=($row['pallowed'] == 'Y' and $row['protected'] == 'Y') ? $row['pftppass'] : $row['cftppass'];
+            $ftppass = ($row['pallowed'] == 'Y' and $row['protected'] == 'Y') ? $row['pftppass'] : $row['cftppass'];
             $rootID = $row['rootID'];
             $serverip = $row['serverip'];
             $port = $row['port'];
             $gsfolder = $serverip . '_' . $port;
-            if ($row['newlayout'] == 'Y') $customer = $customer . '-' . $row['id'];
+
+            if ($row['newlayout'] == 'Y') {
+                $customer = $customer . '-' . $row['id'];
+            }
         }
 
         # https://github.com/easy-wi/developer/issues/69
@@ -664,6 +689,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 }
 
+                $lines = array();
 
                 if (strlen($configfile) > 0) {
                     $configfile = str_replace(array("\0" , "\b" , "\r", "\Z"), '', $configfile);
@@ -859,6 +885,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         $template_file = 'userpanel_gserver_config_edit_full.tpl';
                     }
                 }
+
             } else {
                 $template_file = 'Error: FTP Access';
             }

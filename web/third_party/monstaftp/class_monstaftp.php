@@ -57,15 +57,17 @@
 class Monsta {
 
     private $upload_limit, $ftpConnection, $dateFormatUsa, $lang_size_kb, $lang_size_mb, $lang_size_gb, $ftpIP, $ftpPort, $ftpUser, $ftpPass;
+    private $win_lin, $serverID;
     private $actionTarget = 'userpanel.php?w=gs&amp;d=wf&amp;id=', $platformTestCount = 0, $trCount = 0;
     public $loggedIn = false, $errorResponse = false;
 
-    public function __construct ($ftpIP, $ftpPort, $ftpUser, $ftpPass, $language, $startDir = '') {
+    public function __construct ($serverID, $ftpIP, $ftpPort, $ftpUser, $ftpPass, $language, $startDir = '') {
 
         $this->ftpIP = $ftpIP;
         $this->ftpPort = $ftpPort;
         $this->ftpUser = $ftpUser;
         $this->ftpPass = $ftpPass;
+        $this->serverID = $serverID;
 
         $this->setDateFormatUsa($language);
 
@@ -136,7 +138,6 @@ class Monsta {
 ###############################################
     private function connectFTP() {
 
-
         $this->ftpConnection = @ftp_connect($this->ftpIP, $this->ftpPort, 3);
 
         if ($this->ftpConnection) {
@@ -162,24 +163,30 @@ class Monsta {
     private function setInitialDir ($ftpDir) {
 
         // Change dir if one set
-        if ($ftpDir != "") {
-            if (@ftp_chdir($this->ftpConnection, $ftpDir)) {
-                $_SESSION["monstaftp"]["dir_current"] = $ftpDir;
-            } else if (@ftp_chdir($this->ftpConnection, "~".$ftpDir)) {
-                $_SESSION["monstaftp"]["dir_current"] = "~".$ftpDir;
+        if (!isset($_SESSION["monstaftp"][$this->serverID]["dir_current"])) {
+            if ($ftpDir != "") {
+                if (@ftp_chdir($this->ftpConnection, $ftpDir)) {
+                    $_SESSION["monstaftp"][$this->serverID]["dir_current"] = $ftpDir;
+                } else if (@ftp_chdir($this->ftpConnection, "~".$ftpDir)) {
+                    $_SESSION["monstaftp"][$this->serverID]["dir_current"] = "~".$ftpDir;
+                }
+            } else {
+                $_SESSION["monstaftp"][$this->serverID]["dir_current"] = "";
             }
-        } else {
-            $_SESSION["monstaftp"]["dir_current"] = "";
         }
-    }
 
-    private function adjustButtonWidth($str) {
-        return (strlen(utf8_decode($str)) > 12) ? "inputButtonNf" : "inputButton";
+        if (!isset($_SESSION["monstaftp"][$this->serverID]["dir_history"])) {
+            $_SESSION["monstaftp"][$this->serverID]["dir_history"] = array();
+        }
+
+        if (!isset($_SESSION["monstaftp"][$this->serverID]["errors"])) {
+            $_SESSION["monstaftp"][$this->serverID]["errors"] = array();
+        }
     }
 
     private function getPlatform() {
 
-        if ($this->loggedIn === true and $_SESSION["monstaftp"]["win_lin"] == "") {
+        if ($this->loggedIn === true and $this->win_lin == "") {
             $ftp_rawlist = ftp_rawlist($this->ftpConnection, ".");
 
             // Check for content in array
@@ -216,7 +223,7 @@ class Monsta {
                     $win_lin = "lin";
                 }
 
-                $_SESSION["monstaftp"]["win_lin"] = $win_lin;
+                $this->win_lin = $win_lin;
             }
         }
     }
@@ -227,20 +234,16 @@ class Monsta {
 
     public function displayFtpActions () {
 
-        global $lang_btn_refresh, $lang_btn_cut, $lang_btn_copy, $lang_btn_paste, $lang_btn_rename, $lang_btn_delete, $lang_btn_chmod, $lang_btn_logout;
+        global $lang_btn_refresh, $lang_btn_cut, $lang_btn_copy, $lang_btn_paste, $lang_btn_rename, $lang_btn_delete;
 
-        $return = '<div id="ftpActionButtonsDiv">
-            <input type="button" value="' . $lang_btn_refresh . '" onClick="refreshListing()" class="' . $this->adjustButtonWidth($lang_btn_refresh) . '">
-            <input type="button" id="actionButtonCut" value="' . $lang_btn_cut . '" onClick="actionFunctionCut(\'\',\'\');" disabled class="' . $this->adjustButtonWidth($lang_btn_cut) . '">
-            <input type="button" id="actionButtonCopy" value="' . $lang_btn_copy . '" onClick="actionFunctionCopy(\'\',\'\');" disabled class="' . $this->adjustButtonWidth($lang_btn_copy) . '">
-            <input type="button" id="actionButtonPaste" value="' . $lang_btn_paste . '" onClick="actionFunctionPaste(\'\');" disabled class="' . $this->adjustButtonWidth($lang_btn_paste) . '">
-            <input type="button" id="actionButtonRename" value="' . $lang_btn_rename . '" onClick="actionFunctionRename(\'\',\'\');" disabled class="' . $this->adjustButtonWidth($lang_btn_rename) . '">
-            <input type="button" id="actionButtonDelete" value="' . $lang_btn_delete . '" onClick="actionFunctionDelete(\'\',\'\');" disabled class="' . $this->adjustButtonWidth($lang_btn_delete) . '">
+        $return = '<div id="ftpActionButtonsDiv" class="alert alert-info">
+            <input type="button" value="' . $lang_btn_refresh . '" onClick="refreshListing()" class="btn btn-primary">
+            <input type="button" id="actionButtonCut" value="' . $lang_btn_cut . '" onClick="actionFunctionCut(\'\',\'\');" disabled class="btn btn-primary">
+            <input type="button" id="actionButtonCopy" value="' . $lang_btn_copy . '" onClick="actionFunctionCopy(\'\',\'\');" disabled class="btn btn-primary">
+            <input type="button" id="actionButtonPaste" value="' . $lang_btn_paste . '" onClick="actionFunctionPaste(\'\');" disabled class="btn btn-primary">
+            <input type="button" id="actionButtonRename" value="' . $lang_btn_rename . '" onClick="actionFunctionRename(\'\',\'\');" disabled class="btn btn-primary">
+            <input type="button" id="actionButtonDelete" value="' . $lang_btn_delete . '" onClick="actionFunctionDelete(\'\',\'\');" disabled class="btn btn-danger">
             ';
-
-        if ($_SESSION["monstaftp"]["win_lin"] == "lin") {
-            $return .= '<input type="button" id="actionButtonChmod" value="' . $lang_btn_chmod . '" onClick="actionFunctionChmod(\'\',\'\');" disabled class="' . $this->adjustButtonWidth($lang_btn_chmod) . '">';
-        }
 
         $return .= '</div>';
 
@@ -249,11 +252,11 @@ class Monsta {
 
     private function assignWinLinNum() {
 
-        if ($_SESSION["monstaftp"]["win_lin"] == "lin") {
+        if ($this->win_lin == "lin") {
             return 1;
         }
 
-        if ($_SESSION["monstaftp"]["win_lin"] == "win") {
+        if ($this->win_lin == "win") {
             return 0;
         }
 
@@ -276,6 +279,46 @@ class Monsta {
         return $str;
     }
 
+
+//##############################################
+// GET MAX STR LENGTH FROM ARRAY
+//##############################################
+
+    private function getMaxStrLen($array) {
+
+        $maxLen = 0;
+
+        foreach ($array AS $str) {
+
+            $thisLen = strlen($str);
+
+            if ($thisLen > $maxLen)
+                $maxLen = $thisLen;
+        }
+
+        return $maxLen;
+    }
+
+//##############################################
+// GET FILE/FOLDER NAME
+//##############################################
+
+    private function getFileFromPath($str) {
+
+        $str = preg_replace("/^(.)+\//","",$str);
+        $str = preg_replace("/^~/","",$str);
+
+        return $str;
+    }
+
+//##############################################
+// PARENT OPEN FOLDER
+//##############################################
+
+    public function parentOpenFolder() {
+        return "<html><body><script type=\"text/javascript\">parent.processForm('&ftpAction=openFolder');</script></body></html>";
+    }
+
     private function replaceTilde($str) {
 
         $str = str_replace("~","/",$str);
@@ -288,9 +331,9 @@ class Monsta {
 
         $return = '<select onChange="openThisFolder(this.options[this.selectedIndex].value,1)" id="ftpHistorySelect">';
 
-        if (isset($_SESSION["monstaftp"]["dir_history"]) and is_array($_SESSION["monstaftp"]["dir_history"])) {
+        if (isset($_SESSION["monstaftp"][$this->serverID]["dir_history"]) and is_array($_SESSION["monstaftp"][$this->serverID]["dir_history"])) {
 
-            foreach ($_SESSION["monstaftp"]["dir_history"] as $dir) {
+            foreach ($_SESSION["monstaftp"][$this->serverID]["dir_history"] as $dir) {
 
                 $dir_display = $this->sanitizeStr($dir);
                 $dir_display = $this->replaceTilde($dir_display);
@@ -298,7 +341,7 @@ class Monsta {
                 $return .= "<option value=\"".rawurlencode($dir)."\"";
 
                 // Check if this is current directory
-                if ($_SESSION["monstaftp"]["dir_current"] == $dir) {
+                if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == $dir) {
                     $return .= " selected";
                 }
 
@@ -322,7 +365,7 @@ class Monsta {
 
             if (!@ftp_chdir($this->ftpConnection, $folder_path)) {
                 if ($this->checkFirstCharTilde($folder_path) == 1) {
-                    if (!@ftp_chdir($this->ftpConnection, replaceTilde($folder_path))) {
+                    if (!@ftp_chdir($this->ftpConnection, $this->replaceTilde($folder_path))) {
                         $this->recordFileError("folder",$folder_path,$lang_folder_cant_access);
                         $isError=1;
                     }
@@ -356,7 +399,7 @@ class Monsta {
 
     private function recordFileError($str,$file_name,$error) {
 
-        $_SESSION["monstaftp"]["errors"][] = str_replace("[".$str."]","<strong>".$file_name."</strong>",$error);
+        $_SESSION["monstaftp"][$this->serverID]["errors"][] = str_replace("[".$str."]","<strong>".$file_name."</strong>",$error);
     }
 
     private function getFtpColumnSpan($sort,$name) {
@@ -366,14 +409,14 @@ class Monsta {
         // Check current column
         $ord = ($ui->w('sort', 1, 'post') == $sort and $ui->w('ord', 4, 'post') == 'desc') ? 'asc' : 'desc';
 
-        return "<span onclick=\"processForm('&amp;ftpAction=openFolder&amp;openFolder=".rawurlencode($_SESSION["monstaftp"]["dir_current"])."&amp;sort=".$sort."&amp;ord=".$ord."')\" class=\"cursorPointer\">".$name."</span>";
+        return "<span onclick=\"processForm('&amp;ftpAction=openFolder&amp;openFolder=".rawurlencode($_SESSION["monstaftp"][$this->serverID]["dir_current"])."&amp;sort=".$sort."&amp;ord=".$ord."')\" class=\"cursorPointer\">".$name."</span>";
     }
 
     public function displayFiles() {
 
         global $lang_table_name, $lang_table_size, $lang_table_date, $lang_table_time;
 
-        $ftp_rawlist = $this->getFtpRawList($_SESSION["monstaftp"]["dir_current"]);
+        $ftp_rawlist = $this->getFtpRawList($_SESSION["monstaftp"][$this->serverID]["dir_current"]);
 
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # FOLDER/FILES TABLE HEADER
@@ -394,7 +437,7 @@ class Monsta {
         # FOLDER UP BUTTON
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        if ($_SESSION["monstaftp"]["dir_current"] != "/" && $_SESSION["monstaftp"]["dir_current"] != "~") {
+        if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] != "/" && $_SESSION["monstaftp"][$this->serverID]["dir_current"] != "~") {
 
             $return .= "<tr>"."\n";
             $return .= "<td width=\"16\"></td>"."\n";
@@ -418,14 +461,14 @@ class Monsta {
         if (sizeof($ftp_rawlist) > 0) {
 
             // Linux
-            if ($_SESSION["monstaftp"]["win_lin"] == "lin") {
+            if ($this->win_lin == "lin") {
                 $return .= $this->createFileFolderArrayLin($ftp_rawlist,"folders");
                 $return .= $this->createFileFolderArrayLin($ftp_rawlist,"links");
                 $return .= $this->createFileFolderArrayLin($ftp_rawlist,"files");
             }
 
             // Windows
-            if ($_SESSION["monstaftp"]["win_lin"] == "win") {
+            if ($this->win_lin == "win") {
                 $return .= $this->createFileFolderArrayWin($ftp_rawlist,"folders");
                 $return .= $this->createFileFolderArrayWin($ftp_rawlist,"files");
             }
@@ -479,7 +522,7 @@ class Monsta {
 
             // Check if file starts with a dot
             $dot_prefix=0;
-            if (preg_match("/^\.+/",$file) && $_SESSION["monstaftp"]["interface"] == "bas")
+            if (preg_match("/^\.+/",$file) && $_SESSION["monstaftp"][$this->serverID]["interface"] == "bas")
                 $dot_prefix=1;
 
             if ($file != "." && $file != ".." && $dot_prefix == 0) {
@@ -867,10 +910,10 @@ class Monsta {
 
             } else {
 
-                if ($_SESSION["monstaftp"]["dir_current"] == "/")
+                if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == "/")
                     $file_path = "/".$file;
                 else
-                    $file_path = $_SESSION["monstaftp"]["dir_current"]."/".$file;
+                    $file_path = $_SESSION["monstaftp"][$this->serverID]["dir_current"]."/".$file;
             }
 
             if ($this->trCount == 0) {
@@ -883,10 +926,7 @@ class Monsta {
 
             // Check for checkbox check (only if action button clicked"
             if ($ui->w('ftpAction', 255, 'post') != "") {
-                if (
-                    (sizeof($_SESSION["monstaftp"]["clipboard_rename"]) > 1 && in_array($file,$_SESSION["monstaftp"]["clipboard_rename"]))
-                    ||
-                    (sizeof($_SESSION["monstaftp"]["clipboard_chmod"]) > 1 && in_array($file_path,$_SESSION["monstaftp"]["clipboard_chmod"])))
+                if (isset($_SESSION["monstaftp"][$this->serverID]["clipboard_rename"]) and sizeof($_SESSION["monstaftp"][$this->serverID]["clipboard_rename"]) > 1 and in_array($file,$_SESSION["monstaftp"][$this->serverID]["clipboard_rename"]))
                     $checked = "checked";
                 else
                     $checked = "";
@@ -955,7 +995,7 @@ class Monsta {
                 $file_path = substr($file_path,3,strlen($file_path));
             }
 
-            $dir_current = $_SESSION["monstaftp"]["dir_current"];
+            $dir_current = $_SESSION["monstaftp"][$this->serverID]["dir_current"];
 
             // Get the real parent
             for ($j=0;$j<$i;$j++) {
@@ -983,13 +1023,13 @@ class Monsta {
 
     private function getParentDir() {
 
-        if ($_SESSION["monstaftp"]["dir_current"] == "/") {
+        if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == "/") {
 
             $parent = "/";
 
         } else {
 
-            $path_parts = pathinfo($_SESSION["monstaftp"]["dir_current"]);
+            $path_parts = pathinfo($_SESSION["monstaftp"][$this->serverID]["dir_current"]);
             $parent = $path_parts['dirname'];
         }
 
@@ -1031,21 +1071,21 @@ class Monsta {
 
         global $lang_title_errors;
 
-        $sizeAr = sizeof($_SESSION["monstaftp"]["errors"]);
+        $sizeAr = sizeof($_SESSION["monstaftp"][$this->serverID]["errors"]);
 
         $return = '';
 
         if ($sizeAr > 0) {
 
-            $width = (getMaxStrLen($_SESSION["monstaftp"]["errors"]) * 10) + 30;
-            $height = sizeof($_SESSION["monstaftp"]["errors"]) * 25;
+            $width = ($this->getMaxStrLen($_SESSION["monstaftp"][$this->serverID]["errors"]) * 10) + 30;
+            $height = sizeof($_SESSION["monstaftp"][$this->serverID]["errors"]) * 25;
 
             $title = $lang_title_errors;
 
             // Display pop-up
             $return .= $this->displayPopupOpen(1,$width,$height,1,$title);
 
-            $errors = array_reverse($_SESSION["monstaftp"]["errors"]);
+            $errors = array_reverse($_SESSION["monstaftp"][$this->serverID]["errors"]);
 
             foreach($errors AS $error) {
                 $return .= $error."<br>";
@@ -1055,7 +1095,7 @@ class Monsta {
 
             $return .=$this->displayPopupClose(1,$vars,0);
         }
-
+        $_SESSION["monstaftp"][$this->serverID]["errors"] = array();
         return $return;
 
     }
@@ -1132,11 +1172,11 @@ class Monsta {
 
         // OK button
         if ($vars != "")
-            $return .= "<input type=\"button\" class=\"popUpBtn\" value=\"".$lang_btn_ok."\" onClick=\"processForm('".$vars."'); activateActionButtons(0,0);\"> ";
+            $return .= "<input type=\"button\" class=\"btn btn-primary\" value=\"".$lang_btn_ok."\" onClick=\"processForm('".$vars."'); activateActionButtons(0,0);\"> ";
 
         // Cancel button
         if ($btnCancel == 1)
-            $return .= "<input type=\"button\" class=\"popUpBtn\" value=\"".$lang_btn_cancel."\" onClick=\"processForm('&amp;ftpAction=openFolder');\"> ";
+            $return .= "<input type=\"button\" class=\"btn btn-danger\" value=\"".$lang_btn_cancel."\" onClick=\"processForm('&amp;ftpAction=openFolder');\"> ";
 
         $return .= "</div>";
 
@@ -1200,21 +1240,17 @@ class Monsta {
         global $lang_info_host;
         global $lang_info_user;
         global $lang_info_upload_limit;
-        global $lang_info_drag_drop;
 
         return '<div id="footerDiv">
         <div id="hostInfoDiv">
-            <span>' . $lang_info_host . ':</span> ' . $this->ftpIP . '
-            <span>' . $lang_info_user . ':</span> ' . $this->ftpUser .'
             <span>' . $lang_info_upload_limit . ':</span> ' . round(($this->upload_limit /(1024 * 1024) ) * 0.9) . ' MB' . '
-            <!-- <span>' . $lang_info_drag_drop . ':</span> <div id="dropFilesCheckDiv"></div> --> <!-- Drag & Drop check commented out as considered redundant -->
         </div>
         <div class="floatLeft10">
-            <input type="button" value="' . $lang_btn_new_folder . '" onClick="processForm(\'&amp;ftpAction=newFolder\')" class="' . $this->adjustButtonWidth($lang_btn_new_folder) . '">
+            <input type="button" value="' . $lang_btn_new_folder . '" onClick="processForm(\'&amp;ftpAction=newFolder\')" class="btn btn-primary">
         </div>
 
         <div class="floatLeft10">
-            <input type="button" value="' .  $lang_btn_new_file . '" onClick="processForm(\'&amp;ftpAction=newFile\')" class="' . $this->adjustButtonWidth($lang_btn_new_file) . '">
+            <input type="button" value="' .  $lang_btn_new_file . '" onClick="processForm(\'&amp;ftpAction=newFile\')" class="btn btn-primary">
         </div>
 
         <div id="uploadButtonsDiv"></div>';
@@ -1298,6 +1334,34 @@ class Monsta {
     }
 
 ###############################################
+# UNESCAPE QUOTES
+###############################################
+
+    private function quotesUnescape($str) {
+
+        $str = str_replace("\'","'",$str);
+        $str = str_replace('\"','"',$str);
+
+        return $str;
+    }
+
+###############################################
+# REPLACE QUOTES
+###############################################
+
+    private function quotesReplace($str,$type) {
+
+        $str = $this->quotesUnescape($str);
+
+        if ($type == "s")
+            $str = str_replace("'","&acute;",$str);
+        if ($type == "d")
+            $str = str_replace('"','&quot;',$str);
+
+        return $str;
+    }
+
+###############################################
 # LOAD AJAX
 ###############################################
 
@@ -1326,5 +1390,1626 @@ class Monsta {
 
     function displayFormEnd() {
         return '</form>';
+    }
+
+###############################################
+# PROCESS ACTIONS
+###############################################
+
+    public function processActions() {
+
+        global $ui;
+
+        $ftpAction = $ui->w('ftpAction', 255, 'post');
+
+        if ($ftpAction == "")
+            $ftpAction = $ui->w('ftpAction', 255, 'get');
+
+        // Open folder (always called)
+        if ($this->openFolder() == 1) {
+
+            // New file
+            if ($ftpAction == "newFile")
+                return $this->newFile();
+
+            // New folder
+            if ($ftpAction == "newFolder")
+                return $this->newFolder();
+
+            // Upload file
+            if ($ftpAction == "upload")
+                return $this->uploadFile();
+
+            // Cut
+            if ($ftpAction == "cut")
+                return $this->cutFilesPre();
+
+            // Copy
+            if ($ftpAction == "copy")
+                return $this->copyFilesPre();
+
+            // Paste
+            if ($ftpAction == "paste")
+                return $this->pasteFiles();
+
+            // Delete
+            if ($ftpAction == "delete")
+                return $this->deleteFiles();
+
+            // Rename
+            if ($ftpAction == "rename")
+                return $this->renameFiles();
+
+            // Drag & Drop
+            if ($ftpAction == "dragDrop")
+                return $this->dragDropFiles();
+
+            // Edit
+            if ($ftpAction == "edit")
+                return $this->editFile();
+        }
+
+        return '';
+    }
+
+###############################################
+# CHANGE FTP DIRECTORY (OPEN FOLDER)
+###############################################
+
+    private function openFolder() {
+
+        global $ui;
+        global $lang_folder_doesnt_exist;
+
+        $isError=0;
+
+        if ($this->loggedIn === true) {
+
+            // Set the folder to open
+            if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] != "")
+                $dir = $_SESSION["monstaftp"][$this->serverID]["dir_current"];
+            if (isset($ui->post['openFolder']) and $ui->post['openFolder'] != "")
+                $dir = $this->quotesUnescape($ui->post['openFolder']);
+
+            // Check dir is set
+            if (!isset($dir)) {
+
+                $dir = "";
+
+                // No folder set (must be first login), so set home dir
+                if ($this->win_lin == "lin")
+                    $dir = "~";
+                if ($this->win_lin == "win")
+                    $dir = "/";
+            }
+
+            // Attempt to change directory
+            if (!@ftp_chdir($this->ftpConnection, $dir)) {
+                if ($this->checkFirstCharTilde($dir) == 1) {
+                    if (!@ftp_chdir($this->ftpConnection, $this->replaceTilde($dir))) {
+                        $this->recordFileError("folder",$dir,$lang_folder_doesnt_exist);
+                        $isError=1;
+                    }
+                } else {
+                    $this->recordFileError("folder",$dir,$lang_folder_doesnt_exist);
+                    $isError=1;
+                }
+            }
+
+            if ($isError == 0) {
+
+                // Set new directory
+                $_SESSION["monstaftp"][$this->serverID]["dir_current"] = $dir;
+
+                // Record new directory to history
+                if (!is_array($_SESSION["monstaftp"][$this->serverID]["dir_history"])) // array check
+                    $_SESSION["monstaftp"][$this->serverID]["dir_history"] = array();
+                if (!in_array($dir,$_SESSION["monstaftp"][$this->serverID]["dir_history"])) {
+                    $_SESSION["monstaftp"][$this->serverID]["dir_history"][] = $dir;
+                    asort($_SESSION["monstaftp"][$this->serverID]["dir_history"]); // sort array
+                }
+
+                return 1;
+
+            } else {
+
+                // Delete item from history
+                $this->deleteFtpHistory($dir);
+
+                // Change to previous directory (if folder to open is currently open)
+                if ((isset($ui->post['openFolder']) and $ui->post['openFolder'] == $_SESSION["monstaftp"][$this->serverID]["dir_current"]) or !isset($ui->post['openFolder']) or $ui->post['openFolder'] == "")
+                    $_SESSION["monstaftp"][$this->serverID]["dir_current"] = $this->getParentDir();
+
+                return 0;
+            }
+        }
+
+        return 0;
+    }
+
+###############################################
+# DELETE FTP HISTORY
+###############################################
+
+    private function deleteFtpHistory($dirDelete) {
+
+        $dirDelete = str_replace("/","\/",$dirDelete);
+
+        // Check each item in the history
+        if (is_array($_SESSION["monstaftp"][$this->serverID]["dir_history"])) {
+            foreach($_SESSION["monstaftp"][$this->serverID]["dir_history"] AS $dir) {
+
+                if (!@preg_match("/^".$dirDelete."/", $dir))
+                    $dir_history[] = $dir;
+            }
+
+            // Set new array
+            if (isset($dir_history)) {
+
+                $_SESSION["monstaftp"][$this->serverID]["dir_history"] = $dir_history;
+
+                // Sort array
+                if (is_array($_SESSION["monstaftp"][$this->serverID]["dir_history"]))
+                    asort($_SESSION["monstaftp"][$this->serverID]["dir_history"]);
+
+            }
+        }
+    }
+
+###############################################
+# NEW FILE
+###############################################
+
+    function newFile() {
+
+        global $ui;
+
+        global $lang_title_new_file;
+        global $lang_new_file_name;
+        global $lang_template;
+        global $lang_no_template;
+        global $lang_file_exists;
+        global $lang_file_cant_make;
+
+        $isError=0;
+
+        $return = '';
+
+        // Set vars
+        $vars = "&ftpAction=newFile";
+
+        // Display templates
+        $templates_dir = EASYWIDIR . "/third_party/monstaftp/templates";
+
+        $file_name = trim($this->quotesUnescape($ui->escaped("newFile","post")));
+        $file_names = array();
+
+        $langs = '';
+
+        if (is_dir($templates_dir)) {
+
+            if ($dh = opendir($templates_dir)) {
+
+                while (($file = readdir($dh)) !== false) {
+
+                    if ($file != "" && $file != "." && $file != ".." && $file != "index.html") {
+
+                        $file_names[] = $file;
+
+                        $langs .= "<option value=\"".$file."\">".$file."</option>";
+
+                    }
+                }
+                closedir($dh);
+            }
+        }
+
+        if ($file_name == "") {
+
+            $title = $lang_title_new_file;
+            $width = 400;
+            $height = 95;
+
+            // Display pop-up
+            $this->displayPopupOpen(0,$width,$height,0,$title);
+
+            $return .= "<input type=\"text\" name=\"newFile\" id=\"newFile\" placeholder=\"".$lang_new_file_name."\" onkeypress=\"if (event.keyCode==13){ processForm('".$vars."'); return false;}\">";
+
+
+            $return .= "<p>".$lang_template.": ";
+            $return .= "<select name=\"template\">";
+            $return .= "<option value=\"\">".$lang_no_template."</option>";
+            $return .= $langs;
+            $return .= "</select>";
+
+            $return .= $this->displayPopupClose(0,$vars,1);
+
+        } else {
+
+            // md5 to unify and catch any uncaught path traversal attacks
+            $fp1 = EASYWIDIR . "/tmp/" . md5($_SESSION['userid'] . $file_name) . '.tmp';
+
+            if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == "/")
+                $fp2 = "/".$file_name;
+            else
+                $fp2 = $_SESSION["monstaftp"][$this->serverID]["dir_current"]."/".$file_name;
+
+            // Check if file already exists
+            if ($this->checkFileExists("f",$file_name,$_SESSION["monstaftp"][$this->serverID]["dir_current"]) == 1) {
+                $this->recordFileError("file",$file_name,$lang_file_exists);
+            } else {
+
+                $content = '';
+
+                // Get template
+                if (in_array($ui->config('template', 'post'), $file_names) and $ui->config('template', 'post') != $lang_no_template) {
+
+                    $file_name = $templates_dir."/".$ui->config('template', 'post');
+                    $fd = @fopen($file_name,"r");
+                    $content = @fread($fd,filesize($file_name));
+                    @fclose($fd);
+                }
+
+                // Write file to server
+                $tmpFile = @fopen($fp1,"w+");
+                @fputs($tmpFile,$content);
+                @fclose($tmpFile);
+
+                // Upload the file
+                if (!@ftp_put($this->ftpConnection, $fp2, $fp1, FTP_BINARY)) {
+                    if ($this->checkFirstCharTilde($fp2) == 1) {
+                        if (!@ftp_put($this->ftpConnection, $this->replaceTilde($fp2), $fp1, FTP_BINARY)) {
+                            $this->recordFileError("file",$file_name,$lang_file_cant_make);
+                            $isError=1;
+                        }
+                    } else {
+                        $this->recordFileError("file",$file_name,$lang_file_cant_make);
+                        $isError=1;
+                    }
+                }
+
+                if ($isError == 0) {
+
+                    // Open editor
+                    $file = $fp2;
+                    $return .= $this->displayEditFileForm($file,$content);
+                }
+
+                // Delete tmp file
+                unlink($fp1);
+            }
+
+        }
+
+        return $return;
+
+    }
+
+###############################################
+# CHECK IF FILE EXISTS
+###############################################
+
+    function checkFileExists($type,$file_name,$folder_path) {
+
+        $ftp_rawlist = $this->getFtpRawList($folder_path);
+
+        if (is_array($ftp_rawlist)) {
+
+            $fileNameAr = array();
+
+            // Go through array of files/folders
+            foreach($ftp_rawlist AS $ff) {
+
+                // Lin
+                if ($this->win_lin == "lin") {
+
+                    // Split up array into values
+                    $ff = preg_split("/[\s]+/",$ff,9);
+
+                    $perms = $ff[0];
+                    $file = $ff[8];
+
+                    if ($file != "." && $file != "..") {
+
+                        if ($type == "f" && $this->getFileType($perms) == "f")
+                            $fileNameAr[] = $file;
+
+                        if ($type == "d" && $this->getFileType($perms) == "d")
+                            $fileNameAr[] = $file;
+                    }
+                }
+
+                // Win
+                if ($this->win_lin == "win") {
+
+                    // Split up array into values
+                    $ff = preg_split("/[\s]+/",$ff,4);
+
+                    $size = $ff[2];
+                    $file = $ff[3];
+
+                    if ($size == "<DIR>")
+                        $size = "d";
+
+                    if ($type == "d" && $size == "d")
+                        $fileNameAr[] = $file;
+
+                    if ($type == "f" && $size != "d")
+                        $fileNameAr[] = $file;
+                }
+            }
+
+            // Check if file is in array
+            if (in_array($file_name,$fileNameAr))
+                return 1;
+
+        } else {
+            return 0;
+        }
+
+        return false;
+    }
+
+###############################################
+# EDIT FILE PROCESS (EDIT FILE)
+###############################################
+
+    function displayEditFileForm($file,$content) {
+
+        global $ui;
+
+        global $lang_title_edit_file;
+        global $lang_btn_save;
+        global $lang_btn_close;
+
+        $return = '';
+
+        $width = ($ui->id('windowWidth',255,'post') > 250) ? $ui->id('windowWidth',255,'post') - 250 : 250;
+        $height = ($ui->id('windowHeight',255,'post') > 220) ? $ui->id('windowHeight',255,'post') - 220 : 220;
+        $editorHeight = (int) $height - 85;
+
+        $file_display = $this->sanitizeStr($file);
+        $file_display = $this->replaceTilde($file_display);
+        $title = $lang_title_edit_file.": ".$file_display;
+
+        // Display pop-up
+        $return .= $this->displayPopupOpen(0,$width,$height,0,$title);
+
+        $return .= "<input type=\"hidden\" name=\"file\" value=\"".$this->sanitizeStr($file)."\">";
+        $return .= "<textarea name=\"editContent\" id=\"editContent\" style=\"height: ".$editorHeight."px;\">".$this->sanitizeStr($content)."</textarea>";
+
+        // Save button
+        $return .= "<input type=\"button\" value=\"".$lang_btn_save."\" class=\"btn btn-primary\" onClick=\"submitToIframe('ftpAction=editProcess');\"> ";
+
+        // Close button
+        $return .= "<input type=\"button\" value=\"".$lang_btn_close."\" class=\"btn btn-danger\" onClick=\"processForm('ftpAction=openFolder');\"> ";
+
+        $return .=$this->displayPopupClose(0,"",0);
+
+        return $return;
+    }
+
+###############################################
+# EDIT FILE PROCESS (SAVE FILE)
+###############################################
+
+// Saving the file to the iframe preserves the cursor position in the edit div.
+
+    public function editProcess() {
+
+        global $ui;
+        global $lang_server_error_up;
+
+        if ($this->loggedIn) {
+            // Get file contents
+            $file = $this->quotesUnescape($ui->escaped('file','post'));
+            $file_name = $this->getFileFromPath($file);
+
+            // user md5 to mask file and also to catch any uncaught path traversal attacks
+            $fp1 = EASYWIDIR . "/tmp/" . md5($_SESSION['userid'] . $file_name) . '.tmp';
+            $fp2 = $file;
+
+            // Write content to a file
+            $tmpFile = @fopen($fp1,"w+");
+            @fputs($tmpFile,$ui->escaped('editContent','post'));
+            @fclose($tmpFile);
+
+            if (!@ftp_put($this->ftpConnection, $fp2, $fp1, FTP_BINARY)) {
+                if ($this->checkFirstCharTilde($fp2) == 1) {
+                    if (!@ftp_put($this->ftpConnection, $this->replaceTilde($fp2), $fp1, FTP_BINARY)) {
+                        $this->recordFileError("file",$file_name,$lang_server_error_up);
+                    }
+                } else {
+                    $this->recordFileError("file",$file_name,$lang_server_error_up);
+                }
+            }
+
+            // Delete tmp file
+            unlink($fp1);
+        }
+
+        return '';
+    }
+
+###############################################
+# DOWNLOAD FILE
+###############################################
+
+    public function downloadFile() {
+
+        global $ui;
+        global $lang_server_error_down;
+
+        if ($this->loggedIn) {
+
+            $isError=0;
+
+            $file = $this->quotesUnescape($ui->escaped("dl","get"));
+            $file_name = $this->getFileFromPath($file);
+            $fp1 = EASYWIDIR . "/tmp/" . md5($_SESSION['userid'] . $file_name) . '.tmp';
+            $fp2 = $file;
+
+            // Download the file
+            if (!@ftp_get($this->ftpConnection, $fp1, $fp2, FTP_BINARY)) {
+                if ($this->checkFirstCharTilde($fp2) == 1) {
+                    if (!@ftp_get($this->ftpConnection, $fp1, $this->replaceTilde($fp2), FTP_BINARY)) {
+                        $this->recordFileError("file",$this->quotesEscape($file,"s"),$lang_server_error_down);
+                        $isError=1;
+                    }
+                } else {
+                    $this->recordFileError("file",$this->quotesEscape($file,"s"),$lang_server_error_down);
+                    $isError=1;
+                }
+            }
+
+            if ($isError == 0) {
+
+                header("Content-Type: application/octet-stream");
+                header("Content-Disposition: attachment; filename=\"".$this->quotesEscape($file_name,"d")."\""); // quotes required for spacing in filename
+                header("Content-Type: application/force-download");
+                header("Content-Type: application/octet-stream");
+                header("Content-Type: application/download");
+                header("Content-Description: File Transfer");
+                header("Content-Length: ".filesize($fp1));
+
+                flush();
+
+                $fp = @fopen($fp1, "r");
+                while (!feof($fp)) {
+                    echo @fread($fp, 65536);
+                    @flush();
+                }
+                @fclose($fp);
+            }
+
+            // Delete tmp file
+            unlink($fp1);
+        }
+
+        return '';
+    }
+
+###############################################
+# NEW FOLDER
+###############################################
+
+    private function newFolder() {
+
+        global $ui;
+        global $lang_title_new_folder;
+        global $lang_new_folder_name;
+        global $lang_folder_exists;
+        global $lang_folder_cant_make;
+
+        // Set vars
+        $vars = "&ftpAction=newFolder";
+
+        $return = '';
+
+        $folder = trim($this->quotesUnescape($ui->escaped("newFolder","post")));
+
+        if ($folder == "") {
+
+            $title = $lang_title_new_folder;
+            $width = 400;
+            $height = 40;
+
+            // Display pop-up
+            $return .= $this->displayPopupOpen(0,$width,$height,0,$title);
+
+            $return .= "<input type=\"text\" name=\"newFolder\" id=\"newFolder\" placeholder=\"".$lang_new_folder_name."\" onkeypress=\"if (event.keyCode==13){ processForm('".$vars."'); return false;}\">";
+
+            $return .= $this->displayPopupClose(0,$vars,1);
+
+        } else {
+
+            // Check if folder exists
+            if ($this->checkFileExists("d",$folder,$_SESSION["monstaftp"][$this->serverID]["dir_current"]) == 1 || $folder == "..") {
+                $this->recordFileError("folder",$folder,$lang_folder_exists);
+            } else {
+
+                if (!@ftp_mkdir($this->ftpConnection, $folder))
+                    $this->recordFileError("folder",$folder,$lang_folder_cant_make);
+            }
+        }
+        return $return;
+    }
+
+###############################################
+# DELETE FILES & FOLDERS
+###############################################
+
+    private function deleteFiles () {
+
+        global $lang_file_doesnt_exist;
+        global $lang_cant_delete;
+
+        $folderArray = $this->recreateFileFolderArrays("folder");
+        $fileArray = $this->recreateFileFolderArrays("file");
+
+        // folders
+        foreach($folderArray AS $folder) {
+
+            $folder = $this->getFileFromPath($folder);
+
+            $this->deleteFolder($folder,$_SESSION["monstaftp"][$this->serverID]["dir_current"]);
+        }
+
+        // files
+        foreach($fileArray AS $file) {
+
+            $isError=0;
+            $file_decoded = urldecode($file);
+
+            if ($file != "") {
+
+                // Check if file exists
+                if ($this->checkFileExists("f",$file,$_SESSION["monstaftp"][$this->serverID]["dir_current"]) == 1) {
+                    $this->recordFileError("file",$file,$lang_file_doesnt_exist);
+                } else {
+
+                    if (!@ftp_delete($this->ftpConnection, $file_decoded)) {
+                        if ($this->checkFirstCharTilde($file_decoded) == 1) {
+                            if (!@ftp_delete($this->ftpConnection, $this->replaceTilde($file_decoded))) {
+                                $isError=1;
+                            }
+                        } else {
+                            $isError=1;
+                        }
+                    }
+
+                    // If deleting decoded file fails, try original file name
+                    if ($isError == 1) {
+
+                        if (!@ftp_delete($this->ftpConnection, "".$file."")) {
+                            if ($this->checkFirstCharTilde($file) == 1) {
+                                if (!@ftp_delete($this->ftpConnection, "".$this->replaceTilde($file)."")) {
+                                    $this->recordFileError("file",$this->getFileFromPath($file),$lang_cant_delete);
+                                }
+                            } else {
+                                $this->recordFileError("file",$this->getFileFromPath($file),$lang_cant_delete);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return '';
+    }
+
+###############################################
+# DELETE FOLDER
+###############################################
+
+    private function deleteFolder($folder,$path) {
+
+        global $lang_cant_delete;
+        global $lang_folder_doesnt_exist;
+        global $lang_folder_cant_delete;
+
+        $isError=0;
+        $folder_path = '';
+
+        // List contents of folder
+        if ($path != "/" && $path != "~") {
+
+            $folder_path = $path."/".$folder;
+
+        } else {
+
+            if ($this->win_lin == "lin")
+
+                if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == "/")
+                    $folder_path = "/".$folder;
+            if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == "~")
+                $folder_path = "~/".$folder;
+
+            if ($this->win_lin == "win")
+                $folder_path = "/".$folder;
+        }
+
+        $ftp_rawlist = $this->getFtpRawList($folder_path);
+
+        // Go through array of files/folders
+        if (sizeof($ftp_rawlist) > 0) {
+
+            foreach($ftp_rawlist AS $ff) {
+
+                $isFolder=0;
+                $file = '';
+
+                // Split up array into values (Lin)
+                if ($this->win_lin == "lin") {
+
+                    $ff = preg_split("/[\s]+/",$ff,9);
+                    $perms = $ff[0];
+                    $file = $ff[8];
+
+                    if ($this->getFileType($perms) == "d")
+                        $isFolder=1;
+                }
+
+                // Split up array into values (Win)
+                if ($this->win_lin == "win") {
+
+                    $ff = preg_split("/[\s]+/",$ff,4);
+                    $size = $ff[2];
+                    $file = $ff[3];
+
+                    if ($size == "<DIR>")
+                        $isFolder=1;
+                }
+
+                if ($file != "." && $file != "..") {
+
+                    // Check for sub folders and then perform this function
+                    if ($isFolder == 1) {
+                        $this->deleteFolder($file,$folder_path);
+                    } else {
+                        // otherwise delete file
+                        $file_path = $folder_path."/".$file;
+                        if (!@ftp_delete($this->ftpConnection, "".$file_path.""))  {
+                            if ($this->checkFirstCharTilde($file_path) == 1) {
+                                if (!@ftp_delete($this->ftpConnection, "".$this->replaceTilde($file_path)."")) {
+                                    $this->recordFileError("file",$file_path,$lang_cant_delete);
+                                }
+                            } else {
+                                $this->recordFileError("file",$file_path,$lang_cant_delete);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check if file exists
+        if ($this->checkFileExists("d",$folder,$folder_path) == 1) {
+
+            $_SESSION["monstaftp"][$this->serverID]["errors"][] = str_replace("[file]","<strong>".$this->tidyFolderPath($folder_path,$folder)."</strong>",$lang_folder_doesnt_exist);
+
+        } else {
+
+            // Chage dir up before deleting
+            ftp_cdup($this->ftpConnection);
+
+            // Delete the empty folder
+            if (!@ftp_rmdir($this->ftpConnection, "".$folder_path."")) {
+                if ($this->checkFirstCharTilde($folder_path) == 1) {
+                    if (!@ftp_rmdir($this->ftpConnection, "".$this->replaceTilde($folder_path)."")) {
+                        $this->recordFileError("folder",$folder_path,$lang_folder_cant_delete);
+                        $isError=1;
+                    }
+                } else {
+                    $this->recordFileError("folder",$folder_path,$lang_folder_cant_delete);
+                    $isError=1;
+                }
+            }
+
+            // Remove directory from history
+            if ($isError == 0)
+                $this->deleteFtpHistory($folder_path);
+        }
+    }
+
+###############################################
+# RECREATE FOLDER & FILE ARRAYS
+###############################################
+
+    private function recreateFileFolderArrays($type) {
+
+        global $ui;
+
+        $array = false;
+        $arrayNew = array();
+
+        if ($ui->escaped("fileSingle","post") != "" || $ui->escaped("folderSingle","post") != "") {
+
+            // Single file/folder
+            if ($type == "file" && $ui->escaped("fileSingle","post") != "") {
+                $file = $this->quotesUnescape($ui->escaped("fileSingle","post"));
+                $arrayNew[] = $file;
+            }
+            if ($type == "folder" && $ui->escaped("folderSingle","post") != "")
+                $arrayNew[] = $this->quotesUnescape($ui->escaped("folderSingle","post"));
+
+        } else {
+
+            // Array file/folder
+            if ($type == "file")
+                $array = (array) $ui->escaped("fileAction","post");
+            if ($type == "folder")
+                $array = (array) $ui->escaped("folderAction","post");
+
+            if (is_array($array) and count($array) > 0) {
+
+                foreach($array AS $file) {
+
+                    $file = $this->quotesUnescape($file);
+
+                    if ($file != "")
+                        $arrayNew[] = $file;
+                }
+            }
+        }
+
+        return $arrayNew;
+    }
+
+###############################################
+# RENAME FILES
+###############################################
+
+    private function renameFiles() {
+
+        global $ui;
+        global $lang_file_exists;
+        global $lang_folder_exists;
+        global $lang_cant_rename;
+        global $lang_title_rename;
+
+        $return = '';
+
+        // Check for processing of form
+        if ($ui->id('processAction',1,'post') == 1) {
+
+            $i=0;
+
+            // Go through array of saved names
+            foreach ($_SESSION["monstaftp"][$this->serverID]["clipboard_rename"] AS $file) {
+
+                $isError=0;
+
+                $file_name = trim($ui->escaped('file'.$i,'post'));
+                $file_name = $this->quotesUnescape($file_name);
+                $file = $this->quotesUnescape($file);
+                $fileExists=0;
+
+                // Check for a different name
+                if ($file_name != $file) {
+
+                    if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == "/")
+                        $file_to_move = "/".$file;
+                    if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == "~")
+                        $file_to_move = "~/".$file;
+                    if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] != "/" && $_SESSION["monstaftp"][$this->serverID]["dir_current"] != "~")
+                        $file_to_move = $_SESSION["monstaftp"][$this->serverID]["dir_current"]."/".$file;
+
+                    $file_destination = $_SESSION["monstaftp"][$this->serverID]["dir_current"]."/".$file_name;
+
+                    // Check if file exists
+                    if ($this->checkFileExists("f",$file_name,$_SESSION["monstaftp"][$this->serverID]["dir_current"]) == 1) {
+                        $this->recordFileError("file",$this->sanitizeStr($file_name),$lang_file_exists);
+                        $fileExists=1;
+                    }
+
+                    // Check if folder exists
+                    if ($this->checkFileExists("d",$file_name,$_SESSION["monstaftp"][$this->serverID]["dir_current"]) == 1) {
+                        $this->recordFileError("folder",$this->sanitizeStr($file_name),$lang_folder_exists);
+                        $fileExists=1;
+                    }
+
+                    if ($fileExists == 0 and isset($file_to_move)) {
+
+                        if (!@ftp_rename($this->ftpConnection, $file_to_move, $file_destination)) {
+                            if ($this->checkFirstCharTilde($file_to_move) == 1) {
+                                if (!@ftp_rename($this->ftpConnection, $this->replaceTilde($file_to_move), $this->replaceTilde($file_destination))) {
+                                    $this->recordFileError("file",$this->sanitizeStr($file),$lang_cant_rename);
+                                    $isError=1;
+                                }
+                            } else {
+                                $this->recordFileError("file",$this->sanitizeStr($file),$lang_cant_rename);
+                                $isError=1;
+                            }
+                        }
+
+                        if ($isError == 0) {
+
+                            // Delete item from history
+                            $this->deleteFtpHistory($file_to_move);
+                        }
+                    }
+                }
+
+                $i++;
+            }
+
+            // Reset var
+            $_SESSION["monstaftp"][$this->serverID]["clipboard_rename"] = array();
+
+        } else {
+
+            // Recreate arrays
+            $fileArray = $this->recreateFileFolderArrays("file");
+            $folderArray = $this->recreateFileFolderArrays("folder");
+            $_SESSION["monstaftp"][$this->serverID]["clipboard_rename"] = array();
+
+            $n = sizeof($fileArray) + sizeof($folderArray);
+            $height = $n * 35;
+
+            $width = 565;
+            $title = $lang_title_rename;
+
+            // Display pop-up
+            $return .= $this->displayPopupOpen(1,$width,$height,0,$title);
+
+            $i=0;
+
+            // Set vars
+            $vars = "&ftpAction=rename&processAction=1";
+            $onKeyPress = "onkeypress=\"if (event.keyCode==13){ processForm('".$vars."'); activateActionButtons(0,0); return false; }\"";
+
+            // Display folders
+            foreach($folderArray AS $folder) {
+
+                $folder = $this->getFileFromPath($folder);
+
+                $return .= "<i class='fa fa-folder-o'></i> ";
+                $return .= "<input type=\"text\" name=\"file".$i."\" class=\"inputRename\" value=\"".$this->quotesReplace($folder,"d")."\" ".$onKeyPress."><br>";
+                $_SESSION["monstaftp"][$this->serverID]["clipboard_rename"][] = $folder;
+                $i++;
+            }
+
+            // Display files
+            foreach($fileArray AS $file) {
+
+                $file = $this->getFileFromPath($file);
+
+                $return .= "<i class='fa fa-file'></i> ";
+                $return .= "<input type=\"text\" name=\"file".$i."\" class=\"inputRename\" value=\"".$this->quotesReplace($file,"d")."\" ".$onKeyPress."><br>";
+                $_SESSION["monstaftp"][$this->serverID]["clipboard_rename"][] = $file;
+                $i++;
+            }
+
+            $return .= $this->displayPopupClose(0,$vars,1);
+        }
+        return $return;
+    }
+
+
+###############################################
+# CLIPBOARD FILES
+###############################################
+
+    private function clipboard_files () {
+
+        // Recreate arrays
+        $folderArray = $this->recreateFileFolderArrays("folder");
+        $fileArray = $this->recreateFileFolderArrays("file");
+
+        // Reset cut session var
+        $_SESSION["monstaftp"][$this->serverID]["clipboard_folders"] = array();
+        $_SESSION["monstaftp"][$this->serverID]["clipboard_files"] = array();
+
+        // Folders
+        foreach($folderArray AS $folder) {
+            $_SESSION["monstaftp"][$this->serverID]["clipboard_folders"][] = $this->quotesUnescape($folder);
+        }
+
+        // Files
+        foreach($fileArray AS $file) {
+            $_SESSION["monstaftp"][$this->serverID]["clipboard_files"][] = $this->quotesUnescape($file);
+        }
+
+        return '';
+
+    }
+
+###############################################
+# CUT FILES & FOLDERS
+###############################################
+
+    private function cutFilesPre() {
+
+        $_SESSION["monstaftp"][$this->serverID]["copy"] = 0;
+        return $this->clipboard_files();
+    }
+
+###############################################
+# COPY FILES & FOLDERS
+###############################################
+
+    private function copyFilesPre() {
+
+        $_SESSION["monstaftp"][$this->serverID]["copy"] = 1;
+        return $this->clipboard_files();
+    }
+
+###############################################
+# PASTE FILES
+###############################################
+
+    private function pasteFiles() {
+
+        if ($_SESSION["monstaftp"][$this->serverID]["copy"] == 1)
+            return $this->copyFiles();
+
+        return $this->moveFiles();
+    }
+
+###############################################
+# COPY FILES
+###############################################
+
+    private function copyFiles() {
+
+        // As there is no PHP function to copy files by FTP on a remote server, the files
+        // need to be downloaded to the client server and then uploaded to the copy location.
+
+        global $ui;
+        global $lang_folder_exists;
+        global $lang_file_exists;
+        global $lang_server_error_down;
+        global $lang_server_error_up;
+
+        // Check for a right-clicked folder (else it's current)
+        if ($ui->escaped('rightClickFolder', 'post'))
+            $folderMoveTo = $this->quotesUnescape($ui->escaped('rightClickFolder', 'post'));
+        else
+            $folderMoveTo = $_SESSION["monstaftp"][$this->serverID]["dir_current"];
+
+        // Folders
+        foreach ($_SESSION["monstaftp"][$this->serverID]["clipboard_folders"] as $folder) {
+
+            $folder_name = $this->getFileFromPath($folder);
+
+            $path_parts = pathinfo($folder);
+            $dir_source = $path_parts['dirname'];
+
+            // Check if folder exists
+            if ($this->checkFileExists("f",$folder_name,$folderMoveTo) == 1) {
+                $this->recordFileError("folder",$this->tidyFolderPath($folderMoveTo,$folder_name),$lang_folder_exists);
+            } else {
+                $this->copyFolder($folder_name,$folderMoveTo,$dir_source);
+            }
+        }
+
+        // Files
+        foreach ($_SESSION["monstaftp"][$this->serverID]["clipboard_files"] as $file) {
+
+            $isError=0;
+
+            $file_name = $this->getFileFromPath($file);
+            $fp1 = EASYWIDIR . "/tmp/" . md5($_SESSION['userid'] . $file_name) . '.tmp';
+            $fp2 = $file;
+            $fp3 = $folderMoveTo."/".$file_name;
+
+            // Check if file exists
+            if ($this->checkFileExists("f",$file_name,$folderMoveTo) == 1) {
+                $this->recordFileError("file",$this->tidyFolderPath($folderMoveTo,$file_name),$lang_file_exists);
+            } else {
+
+                // Download file to client server
+                if (!@ftp_get($this->ftpConnection, $fp1, $fp2, FTP_BINARY)) {
+                    if ($this->checkFirstCharTilde($fp2) == 1) {
+                        if (!@ftp_get($this->ftpConnection, $fp1, $this->replaceTilde($fp2), FTP_BINARY)) {
+                            $this->recordFileError("file",$file_name,$lang_server_error_down);
+                            $isError=1;
+                        }
+                    } else {
+                        $this->recordFileError("file",$file_name,$lang_server_error_down);
+                        $isError=1;
+                    }
+                }
+
+                if ($isError == 0) {
+
+                    // Upload file to remote server
+                    if (!@ftp_put($this->ftpConnection, $fp3, $fp1, FTP_BINARY)) {
+                        if ($this->checkFirstCharTilde($fp3) == 1) {
+                            if (!@ftp_put($this->ftpConnection, $this->replaceTilde($fp3), $fp1, FTP_BINARY))
+                                $this->recordFileError("file",$file_name,$lang_server_error_up);
+                        } else {
+                            $this->recordFileError("file",$file_name,$lang_server_error_up);
+                        }
+                    }
+                }
+
+                // Delete tmp file
+                unlink($fp1);
+            }
+        }
+        return '';
+    }
+
+###############################################
+# MOVE FILES (CUT)
+###############################################
+
+    private function moveFiles() {
+
+        global $ui;
+        global $lang_move_conflict;
+        global $lang_folder_exists;
+        global $lang_folder_cant_move;
+        global $lang_file_exists;
+        global $lang_file_cant_move;
+
+        $moveError = 0;
+        // Check for a right-clicked folder (else it's current)
+        if ($ui->escaped('rightClickFolder', 'post'))
+            $folderMoveTo = $this->quotesUnescape($ui->escaped('rightClickFolder', 'post'));
+        else
+            $folderMoveTo = $_SESSION["monstaftp"][$this->serverID]["dir_current"];
+
+        // Check if destination folder is a sub-folder
+        if (sizeof($_SESSION["monstaftp"][$this->serverID]["clipboard_folders"]) > 0) {
+
+            $sourceFolder = str_replace("/","\/",$_SESSION["monstaftp"][$this->serverID]["clipboard_folders"][0]);
+
+            if (preg_match("/".$sourceFolder."/", $folderMoveTo)) {
+
+                $_SESSION["monstaftp"][$this->serverID]["errors"][] = $lang_move_conflict;
+
+                $moveError=1;
+            }
+        }
+
+        if ($moveError != 1) {
+
+            // Folders
+            foreach ($_SESSION["monstaftp"][$this->serverID]["clipboard_folders"] as $folder_to_move) {
+
+                $isError=0;
+
+                // Create the new filename and path
+                $file_destination = $this->getFileFromPath($folder_to_move);
+                $folder = $this->getFileFromPath($folder_to_move);
+
+                // Check if folder exists
+                if ($this->checkFileExists("d",$folder,$folderMoveTo) == 1) {
+                    $this->recordFileError("folder",$this->tidyFolderPath($folderMoveTo,$folder),$lang_folder_exists);
+                } else {
+
+                    if (!@ftp_rename($this->ftpConnection, $folder_to_move, $file_destination)) {
+                        if ($this->checkFirstCharTilde($folder_to_move) == 1) {
+                            if (!@ftp_rename($this->ftpConnection, $this->replaceTilde($folder_to_move), $this->replaceTilde($file_destination))) {
+                                $this->recordFileError("folder",$this->tidyFolderPath($file_destination,$folder_to_move),$lang_folder_cant_move);
+                                $isError=1;
+                            }
+                        } else {
+                            $this->recordFileError("folder",$this->tidyFolderPath($file_destination,$folder_to_move),$lang_folder_cant_move);
+                            $isError=1;
+                        }
+                    }
+
+                    if ($isError == 0)
+                        $this->deleteFtpHistory($folder_to_move);
+                }
+            }
+
+            // Files
+            foreach ($_SESSION["monstaftp"][$this->serverID]["clipboard_files"] as $file_to_move) {
+
+                // Create the new filename and path
+                $file_destination = $folderMoveTo."/".$this->getFileFromPath($file_to_move);
+                $file = $this->getFileFromPath($file_to_move);
+
+                // Check if file exists
+                if ($this->checkFileExists("f",$file,$folderMoveTo) == 1) {
+                    $this->recordFileError("file",$file,$lang_file_exists);
+                } else {
+
+                    if (!@ftp_rename($this->ftpConnection, $file_to_move, $file_destination)) {
+                        if ($this->checkFirstCharTilde($file_to_move) == 1) {
+                            if (!@ftp_rename($this->ftpConnection, $this->replaceTilde($file_to_move), $this->replaceTilde($file_destination))) {
+                                $this->recordFileError("file",$file_to_move,$lang_file_cant_move);
+                            }
+                        } else {
+                            $this->recordFileError("file",$file_to_move,$lang_file_cant_move);
+                        }
+                    }
+                }
+            }
+        }
+
+        $_SESSION["monstaftp"][$this->serverID]["clipboard_folders"] = array();
+        $_SESSION["monstaftp"][$this->serverID]["clipboard_files"] = array();
+
+        return '';
+    }
+
+###############################################
+# COPY FOLDERS
+###############################################
+
+    private function copyFolder($folder,$dir_destin,$dir_source) {
+
+        global $lang_folder_cant_access;
+        global $lang_folder_exists;
+        global $lang_folder_cant_chmod;
+        global $lang_folder_cant_make;
+        global $lang_server_error_down;
+        global $lang_file_cant_chmod;
+        global $lang_chmod_no_support;
+
+        $isError=0;
+
+        // Check if ftp_chmod() exists
+        if (!function_exists('ftp_chmod')) {
+            $_SESSION["errors"][] = $lang_chmod_no_support;
+        }
+
+        // Check source folder exists
+        if (!@ftp_chdir($this->ftpConnection, $dir_source."/".$folder)) {
+            if ($this->checkFirstCharTilde($dir_source) == 1) {
+                if (!@ftp_chdir($this->ftpConnection, $this->replaceTilde($dir_source)."/".$folder)) {
+                    $this->recordFileError("folder",$this->tidyFolderPath($dir_destin,$folder),$lang_folder_cant_access);
+                    $isError=1;
+                }
+            } else {
+                $this->recordFileError("folder",$this->tidyFolderPath($dir_destin,$folder),$lang_folder_cant_access);
+                $isError=1;
+            }
+        }
+
+        if ($isError == 0) {
+
+            // Check if destination folder exists
+            if ($this->checkFileExists("d",$folder,$dir_destin) == 1) {
+                $this->recordFileError("folder",$this->tidyFolderPath($dir_destin,$folder),$lang_folder_exists);
+            } else {
+
+                // Create the new folder
+                if (!@ftp_mkdir($this->ftpConnection, $dir_destin."/".$folder)) {
+                    if ($this->checkFirstCharTilde($dir_destin) == 1) {
+                        if (!@ftp_mkdir($this->ftpConnection, $this->replaceTilde($dir_destin)."/".$folder)) {
+                            $this->recordFileError("folder",$this->tidyFolderPath($dir_destin,$folder),$lang_folder_cant_make);
+                            $isError=1;
+                        }
+                    } else {
+                        $this->recordFileError("folder",$this->tidyFolderPath($dir_destin,$folder),$lang_folder_cant_make);
+                        $isError=1;
+                    }
+                }
+            }
+        }
+
+        if ($isError == 0) {
+
+            // Copy permissions (Lin)
+            if ($this->win_lin == "lin") {
+
+                $mode = $this->getPerms($dir_source,$folder);
+                $lang_folder_cant_chmod = str_replace("[perms]",$mode,$lang_folder_cant_chmod);
+
+                if (function_exists('ftp_chmod')) {
+                    if (!ftp_chmod($this->ftpConnection, $mode, $dir_destin."/".$folder)) {
+                        if ($this->checkFirstCharTilde($dir_destin) == 1) {
+                            if (!@ftp_chmod($this->ftpConnection, $mode, $this->replaceTilde($dir_destin)."/".$folder)) {
+                                $this->recordFileError("folder",$folder,$lang_folder_cant_chmod);
+                            }
+                        } else {
+                            $this->recordFileError("folder",$folder,$lang_folder_cant_chmod);
+                        }
+                    }
+                }
+            }
+
+            // Go through array of files/folders
+            $ftp_rawlist = $this->getFtpRawList($dir_source."/".$folder);
+
+            if (is_array($ftp_rawlist)) {
+
+                foreach($ftp_rawlist AS $ff) {
+
+                    $isError=0;
+                    $perms = false;
+                    $file = false;
+                    $isDir = 0;
+
+                    // Split up array into values (Lin)
+                    if ($this->win_lin == "lin") {
+
+                        $ff = preg_split("/[\s]+/",$ff,9);
+                        $perms = $ff[0];
+                        $file = $ff[8];
+
+                        if ($this->getFileType($perms) == "d")
+                            $isDir=1;
+                    }
+
+                    // Split up array into values (Win)
+                    if ($this->win_lin == "win") {
+
+                        $ff = preg_split("/[\s]+/",$ff,4);
+                        $size = $ff[2];
+                        $file = $ff[3];
+
+                        if ($size == "<DIR>")
+                            $isDir=1;
+                    }
+
+                    if ($file != "." && $file != "..") {
+
+                        // Check for sub folders and then perform this function
+                        if ($isDir == 1) {
+                            if ($file != $folder) {
+                                $this->copyFolder($file,$dir_destin."/".$folder,$dir_source."/".$folder);
+                            }
+                        } else {
+
+                            $fp1 = EASYWIDIR . "/tmp/" . md5($_SESSION['userid'] . $file) . '.tmp';
+                            $fp2 = $dir_source."/".$folder."/".$file;
+                            $fp3 = $dir_destin."/".$folder."/".$file;
+
+                            // Download
+                            if (!@ftp_get($this->ftpConnection, $fp1, $fp2, FTP_BINARY)) {
+                                if ($this->checkFirstCharTilde($fp2) == 1) {
+                                    if (!@ftp_get($this->ftpConnection, $fp1, $this->replaceTilde($fp2), FTP_BINARY)) {
+                                        $this->recordFileError("file",$file,$lang_server_error_down);
+                                        $isError=1;
+                                    }
+                                } else {
+                                    $this->recordFileError("file",$file,$lang_server_error_down);
+                                    $isError=1;
+                                }
+                            }
+
+                            // Upload
+                            if ($isError == 0) {
+
+                                if (!@ftp_put($this->ftpConnection, $fp3, $fp1, FTP_BINARY)) {
+                                    if ($this->checkFirstCharTilde($fp3) == 1) {
+                                        if (!@ftp_put($this->ftpConnection, $this->replaceTilde($fp3), $fp1, FTP_BINARY)) {
+                                            $this->recordFileError("file",$file,$lang_server_error_down);
+                                            $isError=1;
+                                        }
+                                    } else {
+                                        $this->recordFileError("file",$file,$lang_server_error_down);
+                                        $isError=1;
+                                    }
+                                }
+                            }
+
+                            if ($isError == 0) {
+
+                                // Chmod files (Lin)
+                                if ($this->win_lin == "lin") {
+
+                                    $perms = $this->getChmodNumber($perms);
+                                    $mode = $this->formatChmodNumber($perms);
+
+                                    $lang_file_cant_chmod = str_replace("[perms]",$perms,$lang_file_cant_chmod);
+
+                                    if (function_exists('ftp_chmod')) {
+                                        if (!@ftp_chmod($this->ftpConnection, $mode, $fp3)) {
+                                            if ($this->checkFirstCharTilde($fp3) == 1) {
+                                                if (!@ftp_chmod($this->ftpConnection, $mode, $this->replaceTilde($fp3))) {
+                                                    $this->recordFileError("file",$file,$lang_server_error_down);
+                                                }
+                                            } else {
+                                                $this->recordFileError("file",$file,$lang_server_error_down);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Delete tmp file
+                            unlink($fp1);
+                        }
+                    }
+                }
+            }
+            unset($_SESSION["monstaftp"][$this->serverID]["ftp_rawlist"]);
+        }
+        return '';
+    }
+
+###############################################
+# GET PERMISSIONS OF FILE/FOLDER
+###############################################
+
+    private function getPerms($folder,$file_name) {
+
+        $ftp_rawlist = $this->getFtpRawList($folder);
+
+        if (is_array($ftp_rawlist)) {
+
+            foreach($ftp_rawlist AS $ff) {
+
+                // Split up array into values
+                $ff = preg_split("/[\s]+/",$ff,9);
+
+                $perms = $ff[0];
+                $file = $ff[8];
+
+                if ($file == $file_name) {
+                    $perms = $this->getChmodNumber($perms);
+                    $perms = $this->formatChmodNumber($perms);
+                    return $perms;
+                }
+            }
+        }
+        return false;
+    }
+
+###############################################
+# FORMAT CHMOD NUMBER
+###############################################
+
+    function formatChmodNumber($str) {
+
+        $str = trim($str);
+        $str = octdec ( str_pad ( $str, 4, '0', STR_PAD_LEFT ) );
+        $str = (int) $str;
+
+        return $str;
+    }
+
+###############################################
+# GET CHMOD NUMBER
+###############################################
+
+    function getChmodNumber($str) {
+
+        $j=0;
+        $strlen = strlen($str);
+        for ($i=0;$i<$strlen;$i++) {
+
+            $m = 0;
+
+            if ($i>=1&&$i<=3)
+                $m=100;
+            if ($i>=4&&$i<=6)
+                $m=10;
+            if ($i>=7&&$i<=9)
+                $m=1;
+
+            $l = substr($str,$i,1);
+
+            if ($l != "d" && $l != "-") {
+
+                $n = 0;
+
+                if ($l=="r")
+                    $n=4;
+                if ($l=="w")
+                    $n=2;
+                if ($l=="x")
+                    $n=1;
+
+                $j = $j+($n*$m);
+            }
+        }
+
+        return $j;
+    }
+
+//##############################################
+// TIDY FOLDER PATH
+//##############################################
+    function tidyFolderPath($str1,$str2) {
+        $str1 = $this->replaceTilde($str1);
+        return ($str1 == "/") ? "/".$str2 : $str1."/".$str2;
+    }
+
+###############################################
+# EDIT FILE
+###############################################
+
+    private function editFile() {
+
+        global $ui;
+        global $lang_server_error_down;
+
+        $return = '';
+        $isError=0;
+
+        $file = $this->quotesUnescape($ui->escaped("file","post"));
+        $file_name = $this->getFileFromPath($file);
+        $fp1 = EASYWIDIR."/tmp/".md5($_SESSION["userid"].$file_name).'.tmp';
+        $fp2 = $file;
+
+        // Download the file
+        if (!@ftp_get($this->ftpConnection, $fp1, $fp2, FTP_BINARY)) {
+
+            if ($this->checkFirstCharTilde($fp2) == 1) {
+                if (!@ftp_get($this->ftpConnection, $fp1, $this->replaceTilde($fp2), FTP_BINARY)) {
+                    $this->recordFileError("file",$this->quotesEscape($file,"s"),$lang_server_error_down);
+                    $isError=1;
+                }
+            } else {
+                $this->recordFileError("file",$this->quotesEscape($file,"s"),$lang_server_error_down);
+                $isError=1;
+            }
+        }
+
+        if ($isError == 0) {
+
+            $content = '';
+
+            // Check file has contents
+            if (filesize($fp1) > 0) {
+
+                $fd = @fopen($fp1,"r");
+                $content = @fread($fd, filesize($fp1));
+                @fclose($fd);
+            }
+
+            $return = $this->displayEditFileForm($file,$content);
+        }
+
+        // Delete tmp file
+        unlink($fp1);
+
+        return $return;
+    }
+
+###############################################
+# UPLOAD FILE
+###############################################
+
+    private function uploadFile() {
+
+        global $ui;
+        global $lang_server_error_up;
+        global $lang_browser_error_up;
+
+        $file_name = (string) $ui->escaped('HTTP_X_FILENAME','server');
+        $path = (string) $ui->escaped('filePath','get');
+
+        if ($file_name) {
+
+            $fp1 = EASYWIDIR."/tmp/".md5($_SESSION["userid"].$file_name).'.tmp';
+
+            // Check if a folder is being uploaded
+            if ($path != "") {
+
+                // Check to see folder path exists (and create)
+                $this->createFolderHeirarchy($path);
+                $fp2 = $_SESSION["monstaftp"][$this->serverID]["dir_current"]."/".$path.$file_name;
+
+            } else {
+
+                if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] == "/")
+                    $fp2 = "/".$file_name;
+                else
+                    $fp2 = $_SESSION["monstaftp"][$this->serverID]["dir_current"]."/".$file_name;
+            }
+
+            // Check if file reached server
+            if (file_put_contents($fp1,file_get_contents('php://input'))) {
+
+                if (!@ftp_put($this->ftpConnection, $fp2, $fp1, FTP_BINARY)) {
+                    if ($this->checkFirstCharTilde($fp2) == 1) {
+                        if (!@ftp_put($this->ftpConnection, $this->replaceTilde($fp2), $fp1, FTP_BINARY)) {
+                            $this->recordFileError("file",$file_name,$lang_server_error_up);
+                        }
+                    } else {
+                        $this->recordFileError("file",$file_name,$lang_server_error_up);
+                    }
+                }
+            } else {
+                $this->recordFileError("file",$file_name,$lang_browser_error_up);
+            }
+
+            // Delete tmp file
+            unlink($fp1);
+        }
+    }
+
+###############################################
+# CREATE FOLDER HEIRARCHY
+###############################################
+
+    function createFolderHeirarchy($path) {
+
+        $folderAr = explode("/",$path);
+
+        $n = sizeof($folderAr);
+        for ($i=0;$i<$n;$i++) {
+
+            if (isset($folder))
+                $folder .= "/".$folderAr[$i];
+            else
+                $folder = $folderAr[$i];
+
+            if (!@ftp_mkdir($this->ftpConnection, $folder)) {
+                if ($this->checkFirstCharTilde($folder) == 1)
+                    @ftp_mkdir($this->ftpConnection, replaceTilde($folder));
+            }
+        }
+    }
+
+###############################################
+# DRAG & DROP FILES
+###############################################
+
+    private function dragDropFiles() {
+
+        global $ui;
+        global $lang_file_exists;
+        global $lang_folder_exists;
+        global $lang_file_cant_move;
+
+        $fileExists=0;
+        $dragFile = $this->quotesUnescape($ui->escaped('dragFile','post'));
+        $dropFolder = $this->quotesUnescape($ui->escaped('dropFolder','post'));
+        $file_name = $this->getFileFromPath($dragFile);
+
+        // Check if file exists
+        if ($this->checkFileExists("f",$file_name,$dropFolder) == 1) {
+            $this->recordFileError("file",$this->tidyFolderPath($dropFolder,$file_name),$lang_file_exists);
+            $fileExists=1;
+        }
+
+        // Check if folder exists
+        if ($this->checkFileExists("d",$file_name,$dropFolder) == 1) {
+            $this->recordFileError("folder",$this->tidyFolderPath($dropFolder,$file_name),$lang_folder_exists);
+            $fileExists=1;
+        }
+
+        if ($fileExists == 0) {
+
+            $isError=0;
+
+            if (!@ftp_rename($this->ftpConnection, $dragFile, $dropFolder."/".$file_name)) {
+                if ($this->checkFirstCharTilde($dragFile) == 1) {
+                    if (!@ftp_rename($this->ftpConnection, $this->replaceTilde($dragFile), $this->replaceTilde($dropFolder)."/".$file_name)) {
+                        $this->recordFileError("file",$this->getFileFromPath($dragFile),$lang_file_cant_move);
+                        $isError=1;
+                    }
+                } else {
+                    $this->recordFileError("file",$this->getFileFromPath($dragFile),$lang_file_cant_move);
+                    $isError=1;
+                }
+            }
+
+            if ($isError == 0) {
+
+                // Delete item from history
+                $this->deleteFtpHistory($dragFile);
+            }
+        }
+    }
+
+###############################################
+# UPLOAD FILE (IFRAME)
+###############################################
+
+    public function iframeUpload() {
+
+        global $lang_server_error_up;
+        global $lang_browser_error_up;
+
+        $fp1 = $_FILES["uploadFile"]["tmp_name"];
+        $fp2 = $_SESSION["dir_current"]."/".$_FILES["uploadFile"]["name"];
+
+        if ($fp1 != "") {
+
+            if (!@ftp_put($this->ftpConnection, $fp2, $fp1, FTP_BINARY)) {
+                if ($this->checkFirstCharTilde($fp2) == 1) {
+                    if (!@ftp_put($this->ftpConnection, $this->replaceTilde($fp2), $fp1, FTP_BINARY)) {
+                        $this->recordFileError("file",$_FILES["uploadFile"]["name"],$lang_server_error_up);
+                    }
+                } else {
+                    $this->recordFileError("file",$_FILES["uploadFile"]["name"],$lang_server_error_up);
+                }
+            }
+
+        } else {
+            $this->recordFileError("file",$_FILES["uploadFile"]["name"],$lang_browser_error_up);
+        }
     }
 }
