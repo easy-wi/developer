@@ -282,6 +282,7 @@ $pwd = "' . $_POST['pwd'] . '";
 $captcha = 0;
 $title = "";
 $debug = 0;
+$timezone = "Europe/Berlin";
 ';
 
             @fwrite($configFp, $configdata);
@@ -590,6 +591,20 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     </div>
   </div>
   <div class='form-group'>
+    <label for='inputInstallTimezone' class='col-sm-2 control-label'>{$languageObject->timezone}</label>
+    <div class='col-sm-10'>
+    <select id='inputInstallTimezone' name='timezone'>";
+
+        $timezoneDefined = ini_get('date.timezone');
+        foreach (timezone_identifiers_list() as $time) {
+            $displayToUser .= ($time == $timezoneDefined) ? "<option selected='selected'>{$time}</option>" : "<option>{$time}</option>";
+        }
+
+        $displayToUser .= "
+    </select>
+    </div>
+  </div>
+  <div class='form-group'>
     <label for='inputTitle' class='col-sm-2 control-label'>{$languageObject->title}</label>
     <div class='col-sm-10'>
       <input type='text' class='form-control' id='inputTitle' name='title' value='${title}' required>
@@ -751,6 +766,7 @@ $pwd = "' . $pwd . '";
 $captcha = "' . $_POST['captcha'] . '";
 $title = "' . $_POST['title'] . '";
 $debug = 0;
+$timezone = "' . $_POST['timezone'] . '";
 ';
 
                 @fwrite($configFp, $configdata);
@@ -1015,6 +1031,7 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
             <li><a href="http://wiki.easy-wi.com" target="_blank" title="easy-wi.com forum"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
             <li><a href="?step=<?php echo $currentStep;?>&amp;language=de"><img src="../images/flags/de.png"></a></li>
             <li><a href="?step=<?php echo $currentStep;?>&amp;language=en"><img src="../images/flags/uk.png"></a></li>
+            <li><a href="?step=<?php echo $currentStep;?>&amp;language=dk"><img src="../images/flags/dk.png"></a></li>
         </ul>
         <h3 class="text-muted">Easy-WI.com Installer</h3>
     </div>
