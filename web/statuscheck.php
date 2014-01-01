@@ -222,7 +222,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $shutdownemptytime = 0;
                 $notified = 0;
 
-                $query = $sql->prepare("SELECT s.`id`,t.`description`,g.`autoRestart`,g.`serverip`,g.`port`,g.`port2`,g.`slots`,g.`war`,g.`brandname`,g.`secnotified`,g.`notified`,g.`lendserver`,g.`userid`,g.`resellerid`,g.`rootID` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
+                $query = $sql->prepare("SELECT s.`id` AS `serverID`,t.`description`,t.`gamebinary`,g.* FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
                 $query2 = $sql->prepare("SELECT `id`,`started` FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
                 $query->execute(array($switchID));
                 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -234,16 +234,20 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $notified = $row['notified'];
                     $secnotified = $row['secnotified'];
                     $lendserver = $row['lendserver'];
-                    $slots = $row['slots'];
                     $userid = $row['userid'];
                     $resellerid = $row['resellerid'];
                     $brandname = $row['brandname'];
                     $rootID = $row['rootID'];
                     $war = $row['war'];
+                    $slots = $row['slots'];
+
+                    if (($row['gamebinary'] == 'hlds_run' or $row['gamebinary'] == 'srcds_run') and $row['tvenable'] == 'Y') {
+                        $slots++;
+                    }
 
                     if ($lendserver == 'Y' and $lendActive == 'Y' and $resellersettings[$resellerid]['shutdownempty'] == 'Y') {
                         $shutdownemptytime = $resellersettings[$resellerid]['shutdownemptytime'];
-                        $query2->execute(array($row['id']));
+                        $query2->execute(array($row['serverID']));
                         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                             $lid = $row2['id'];
                             $elapsed = round((strtotime('now') - strtotime($row2['started'])) / 60);
