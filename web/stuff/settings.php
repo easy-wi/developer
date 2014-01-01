@@ -109,10 +109,14 @@ catch(PDOException $error) {
 
 // many peaple do not know how to properly configure their servers, so we need to help them and set the timezone
 $timezoneDefined = ini_get('date.timezone');
-if (!isset($dbConnect['timezone']) and $timezoneDefined == '') {
-    $query = $sql->prepare("SELECT IF(@@session.time_zone = 'SYSTEM', @@system_time_zone, @@session.time_zone)");
-    $query->execute();
-    $dbConnect['timezone'] = $query->fetchColumn();
+if (!isset($dbConnect['timezone'])) {
+    if ($timezoneDefined == '') {
+        $query = $sql->prepare("SELECT IF(@@session.time_zone = 'SYSTEM', @@system_time_zone, @@session.time_zone)");
+        $query->execute();
+        $dbConnect['timezone'] = $query->fetchColumn();
+    } else {
+        $dbConnect['timezone'] = $timezoneDefined;
+    }
 }
 if ($dbConnect['timezone'] != $timezoneDefined) {
     date_default_timezone_set($dbConnect['timezone']);
