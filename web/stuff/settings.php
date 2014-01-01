@@ -107,7 +107,18 @@ catch(PDOException $error) {
     die($error->getMessage());
 }
 
-$page_url=($ui->escaped ('HTTPS', 'server')) ? 'https://'.$ui->domain('HTTP_HOST', 'server') : 'http://'.$ui->domain('HTTP_HOST', 'server');
+// many peaple do not know how to properly configure their servers, so we need to help them and set the timezone
+$timezoneDefined = ini_get('date.timezone');
+if (!isset($dbConnect['timezone']) and $timezoneDefined == '') {
+    $query = $sql->prepare("SELECT IF(@@session.time_zone = 'SYSTEM', @@system_time_zone, @@session.time_zone)");
+    $query->execute();
+    $dbConnect['timezone'] = $query->fetchColumn();
+}
+if ($dbConnect['timezone'] != $timezoneDefined) {
+    date_default_timezone_set($dbConnect['timezone']);
+}
+
+$page_url = ($ui->escaped ('HTTPS', 'server')) ? 'https://'.$ui->domain('HTTP_HOST', 'server') : 'http://'.$ui->domain('HTTP_HOST', 'server');
 
 if ($loguserip != 'localhost') {
 
@@ -152,6 +163,11 @@ if ($loguserip != 'localhost') {
 }
 
 $rSA = array();
+$htmlExtraInformation = array(
+    'body' => array(),
+    'css' => array(),
+    'js' => array()
+);
 
 if (isset($reseller_id)) {
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=? LIMIT 1");
