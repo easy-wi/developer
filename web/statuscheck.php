@@ -44,14 +44,22 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 } else {
     $timelimit = 600;
 }
+
 if (isset($argv)) {
+
     $args = array();
+
     foreach ($argv as $a) {
-        if ($a == 'gs' or $a == 'vs') $checkTypeOfServer = $a;
-        else if (is_numeric($a)) $sleep = $a;
-        else {
+        if ($a == 'gs' or $a == 'vs') {
+            $checkTypeOfServer = $a;
+        } else if (is_numeric($a)) {
+            $sleep = $a;
+        } else {
+
             $e = explode(':', $a);
-            if (isset($e[1])) $args[$e[0]] = $e[1];
+            if (isset($e[1])) {
+                $args[$e[0]] = $e[1];
+            }
         }
     }
 }

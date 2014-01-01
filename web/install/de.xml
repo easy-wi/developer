@@ -85,6 +85,7 @@
     <system_ok_php_version>Es wird mindestens PHP 5.3 benötigt. PHP Version neu genug: </system_ok_php_version>
     <system_ok_SimpleXML>Extension SimpleXMLis installed.</system_ok_SimpleXML>
     <system_ok_ssh2>SSH2 Extension ist installiert.</system_ok_ssh2>
+    <timezone>Zeitzone</timezone>
 	<title>Homepage Titel</title>
 	<user>Databankuser</user>
 	<user2>Admin Username</user2>

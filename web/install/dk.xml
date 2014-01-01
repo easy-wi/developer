@@ -85,6 +85,7 @@
     <system_ok_php_version>Mindst er PHP 5,3 påkrævet. Din PHP version er ok: </system_ok_php_version>
     <system_ok_SimpleXML>SimpleXML udvidelse er installeret.</system_ok_SimpleXML>
     <system_ok_ssh2>SSH2 udvidelse er installeret.</system_ok_ssh2>
+    <timezone>Tidszone</timezone>
 	<title>Hjemmeside overskrift</title>
 	<user>DatabaseBruger</user>
 	<user2>Admin Brugernavn</user2>
