@@ -1042,6 +1042,11 @@ class Monsta {
 
     private function formatFileSize($size) {
 
+        global $lang_size_b;
+        global $lang_size_kb;
+        global $lang_size_mb;
+        global $lang_size_gb;
+
         if ($size == "d" || $size == "l") {
 
             $size="";
@@ -1049,14 +1054,13 @@ class Monsta {
         } else {
 
             if ($size < 1024) {
-                $size = round($size,2);
-                //$size = round($size,2).$lang_size_b;
+                $size = round($size,2).$lang_size_b;
             } elseif ($size < (1024*1024)) {
-                $size = round(($size/1024),0).$this->lang_size_kb;
+                $size = round(($size/1024),0).' '.$lang_size_kb;
             } elseif ($size < (1024*1024*1024)) {
-                $size = round((($size/1024)/1024),0).$this->lang_size_mb;
+                $size = round((($size/1024)/1024),0).' '.$lang_size_mb;
             } elseif ($size < (1024*1024*1024*1024)) {
-                $size = round(((($size/1024)/1024)/1024),0).$this->lang_size_gb;
+                $size = round(((($size/1024)/1024)/1024),0).' '.$lang_size_gb;
             }
         }
 
@@ -2907,6 +2911,7 @@ class Monsta {
             // Delete tmp file
             unlink($fp1);
         }
+        return '';
     }
 
 ###############################################
@@ -2982,6 +2987,7 @@ class Monsta {
                 $this->deleteFtpHistory($dragFile);
             }
         }
+        return '';
     }
 
 ###############################################
