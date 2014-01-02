@@ -465,6 +465,10 @@ class TS3 {
 
     public function ImportData ($dnsarray) {
 
+        if (!is_array($dnsarray)) {
+            $dnsarray = (array) $dnsarray;
+        }
+
         $serverdetails = array();
 
         $serverlist = $this->SendCommand('serverlist');
