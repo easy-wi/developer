@@ -79,7 +79,7 @@
 
 .contextMenuDivInactive {
     padding: 4px 15px 4px 15px;
-    width: 110px;
+    width: 150px;
 }
 
 .contextMenuDivider {
@@ -90,7 +90,7 @@
 
 .contextMenuDivMouseOver {
     padding: 4px 15px 4px 15px;
-    width: 110px;
+    width: 150px;
 }
 
 .cursorPointer {

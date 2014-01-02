@@ -141,5 +141,6 @@ $lang_context_paste = "붙혀넣기";
 $lang_context_rename = "이름 변경";
 $lang_context_delete = "삭제";
 $lang_context_chmod = "권한 변경";
+$lang_context_template = "";
 
 ?>

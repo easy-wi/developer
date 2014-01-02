@@ -124,7 +124,7 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThree"><i class="fa fa-gamepad fa-fw"></i> <?php echo $gsprache->gameserver;?></a>
                         </div>
-                        <div id="collapseThree" class="accordion-body collapse <?php if(in_array($w,array('gs','fd','ao','ca','bu','ms'))) echo 'in';?>">
+                        <div id="collapseThree" class="accordion-body collapse <?php if(in_array($w,array('gs','gt','fd','ao','ca','bu','ms'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['restart']) { ?>
@@ -135,6 +135,7 @@
                                     <?php } ?>
                                     <?php if($pa['restart']) { ?>
                                     <li <?php if($w=='ms') echo 'class="active"';?>><a href="userpanel.php?w=ms"><?php echo $gsprache->migration;?></a></li>
+                                    <li <?php if($w=='gt') echo 'class="active"';?>><a href="userpanel.php?w=gt"><?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
                                     <?php } ?>
                                     <?php foreach ($customModules['gs'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>

@@ -43,7 +43,10 @@ if (!isset($admin_id) or !isset($reseller_id)) {
     die;
 }
 
+$adminInclude = true;
+
 $pa = User_Permissions($admin_id);
+
 if (!isanyadmin($admin_id) and count($pa) == 0) {
     redirect('login.php');
 }
@@ -140,6 +143,7 @@ if ($easywiModules['gs'] === true) {
     $what_to_be_included_array['ro'] = 'roots.php';
     $what_to_be_included_array['ma'] = 'masterserver.php';
     $what_to_be_included_array['gs'] = 'gserver.php';
+    $what_to_be_included_array['gt'] = 'global_gserver_file_templates.php';
     $what_to_be_included_array['ad'] = 'addons.php';
     $what_to_be_included_array['im'] = 'images.php';
 }

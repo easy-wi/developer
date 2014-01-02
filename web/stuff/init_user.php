@@ -43,6 +43,8 @@ if (!isset($user_id)) {
     die;
 }
 
+$userInclude = true;
+
 $pa = User_Permissions($user_id);
 
 $query = $sql->prepare("SELECT ((UNIX_TIMESTAMP(`lastcheck`)-UNIX_TIMESTAMP(`oldcheck`))/60)-((UNIX_TIMESTAMP()-UNIX_TIMESTAMP(`lastcheck`))/60) AS `nextRunInMinutes` FROM `lendsettings` LIMIT 1");
@@ -174,6 +176,7 @@ if (!isset($_SESSION['sID'])) {
 # modules based on count. No servers, no modules
 if ($gscount > 0 and $easywiModules['gs'] === true) {
     $what_to_be_included_array['gs'] = 'userpanel_gserver.php';
+    $what_to_be_included_array['gt'] = 'global_gserver_file_templates.php';
     $what_to_be_included_array['fd'] = 'userpanel_fdl.php';
     $what_to_be_included_array['ao'] = 'userpanel_ao.php';
     $what_to_be_included_array['ca'] = 'userpanel_restartcalendar.php';

@@ -142,5 +142,6 @@ $lang_context_paste = "Wklej";
 $lang_context_rename = "Zmień nazwę";
 $lang_context_delete = "Usuń";
 $lang_context_chmod = "Chmod";
+$lang_context_template = "";
 
 ?>

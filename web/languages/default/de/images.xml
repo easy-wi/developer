@@ -63,7 +63,7 @@
 	<steam>Steamspiel</steam>
 	<sure2>Achtung! Das Addon wird auch bei den Usern entfernt!</sure2>
 	<sure3>Achtung! Das Spiel wird auch bei den Usern entfernt!</sure3>
-	<tick>Tickrate</tick>
+    <tick>Tickrate</tick>
 	<tool>Servertool</tool>
 	<tools>Servertool, Addons, Configpakete</tools>
 	<tvport>SourceTV Port</tvport>

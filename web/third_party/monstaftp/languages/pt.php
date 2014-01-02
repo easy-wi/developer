@@ -141,5 +141,6 @@ $lang_context_paste = "Colar";
 $lang_context_rename = "Renomear";
 $lang_context_delete = "Deletar";
 $lang_context_chmod = "Chmod";
+$lang_context_template = "";
 
 ?>

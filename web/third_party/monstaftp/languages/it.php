@@ -142,5 +142,6 @@ $lang_context_paste = "Incolla";
 $lang_context_rename = "Rinomina";
 $lang_context_delete = "Cancella";
 $lang_context_chmod = "Chmod";
+$lang_context_template = "";
 
 ?>

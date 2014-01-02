@@ -84,6 +84,11 @@ if ($ui->escaped('ftpAction', 'get') == "editProcess") {
     $ftpAction = "editProcess";
 }
 
+// Check for iFrame edit
+if ($ui->escaped('ftpAction', 'get') == "templateProcess") {
+    $ftpAction = "templateProcess";
+}
+
 // Check for AJAX post
 if ($ui->escaped('ftpAction', 'post') != "" || $ui->escaped('ftpAction', 'get') != "") {
     $ajaxRequest=1;
@@ -102,7 +107,7 @@ $monsta = new Monsta($ui->id('id', 10, 'get'), $ftpIP, $ftpPort, $ftpUser, $ftpP
 
 $template_file = 'userpanel_gserver_monstaftp.tpl';
 
-if ($monsta->loggedIn === true and in_array($ftpAction, array("download", "iframe_upload", "editProcess"))) {
+if ($monsta->loggedIn === true and in_array($ftpAction, array("download", "iframe_upload", "editProcess", "templateProcess"))) {
 
     if ($ftpAction == "download") {
         $monstaDisplay .= $monsta->downloadFile();
@@ -117,6 +122,11 @@ if ($monsta->loggedIn === true and in_array($ftpAction, array("download", "ifram
     if ($ftpAction == "editProcess") {
         $monstaDisplay .= $monsta->editProcess();
     }
+
+    if ($ftpAction == "templateProcess") {
+        $monstaDisplay .= $monsta->editProcessTemplate();
+    }
+
 
     if ($ajaxRequest == 1) {
         die($monstaDisplay);
@@ -137,7 +147,7 @@ if ($monsta->loggedIn === true and in_array($ftpAction, array("download", "ifram
 
     if ($ajaxRequest == 0) {
         $monstaDisplay .= $monsta->displayFormStart();
-        $monstaDisplay .= $monsta->displayFtpActions();
+        #$monstaDisplay .= $monsta->displayFtpActions();
         $monstaDisplay .= $monsta->displayAjaxDivOpen();
     }
 

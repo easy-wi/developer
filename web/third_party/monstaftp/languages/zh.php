@@ -143,5 +143,6 @@ $lang_context_paste = "粘贴";
 $lang_context_rename = "重命名";
 $lang_context_delete = "删除";
 $lang_context_chmod = "更改权限";
+$lang_context_template = "";
 
 ?>

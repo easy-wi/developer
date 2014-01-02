@@ -142,5 +142,6 @@ $lang_context_paste = "Вставить";
 $lang_context_rename = "Переименовать";
 $lang_context_delete = "Удалить";
 $lang_context_chmod = "Права доступа";
+$lang_context_template = "";
 
 ?>

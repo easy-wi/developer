@@ -248,6 +248,18 @@ $query = "CREATE TABLE IF NOT EXISTS `feeds_url` (
 $add = $sql->prepare($query);
 $add->execute();
 
+$query = "CREATE TABLE IF NOT EXISTS `gserver_file_templates` (
+  `templateID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userID` int(10) unsigned NULL,
+  `servertype` varchar(255) NULL,
+  `name` varchar(255) NOT NULL,
+  `content` text NULL,
+  `resellerID` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`templateID`),KEY(`userID`),KEY(`resellerID`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
 $query = "CREATE TABLE IF NOT EXISTS `gserver_restarts` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
   `template` smallint(1) unsigned NOT NULL,

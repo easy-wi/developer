@@ -424,7 +424,7 @@ class Monsta {
 
         $return = "<table width=\"100%\" cellpadding=\"7\" cellspacing=\"0\" id=\"ftpTable\">";
         $return .= "<tr>"."\n";
-        $return .= "<td width=\"16\" class=\"ftpTableHeadingNf\"><input type=\"checkbox\" id=\"checkboxSelector\" onClick=\"checkboxSelectAll()\"></td>"."\n";
+        #$return .= "<td width=\"16\" class=\"ftpTableHeadingNf\"><input type=\"checkbox\" id=\"checkboxSelector\" onClick=\"checkboxSelectAll()\"></td>"."\n";
         $return .= "<td width=\"16\" class=\"ftpTableHeadingNf\"></td>"."\n";
         $return .= "<td class=\"ftpTableHeading\">".$this->getFtpColumnSpan("n",$lang_table_name)."</td>"."\n";
         $return .= "<td width=\"10%\" class=\"ftpTableHeading\">".$this->getFtpColumnSpan("s",$lang_table_size)."</td>"."\n";
@@ -440,7 +440,7 @@ class Monsta {
         if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] != "/" && $_SESSION["monstaftp"][$this->serverID]["dir_current"] != "~") {
 
             $return .= "<tr>"."\n";
-            $return .= "<td width=\"16\"></td>"."\n";
+            #$return .= "<td width=\"16\"></td>"."\n";
             $return .= "<td width=\"16\"><i class='fa fa-folder-o'></i></td>"."\n";
 
             $return .= "<td colspan=\"7\">"."\n";
@@ -923,7 +923,7 @@ class Monsta {
                 $trClass = "trBg1";
                 $this->trCount=0;
             }
-
+/**
             // Check for checkbox check (only if action button clicked"
             if ($ui->w('ftpAction', 255, 'post') != "") {
                 if (isset($_SESSION["monstaftp"][$this->serverID]["clipboard_rename"]) and sizeof($_SESSION["monstaftp"][$this->serverID]["clipboard_rename"]) > 1 and in_array($file,$_SESSION["monstaftp"][$this->serverID]["clipboard_rename"]))
@@ -934,7 +934,7 @@ class Monsta {
             } else {
                 $checked = "";
             }
-
+**/
             // Set the date
             if ($this->dateFormatUsa == 1)
                 $date = substr($date,4,2)."/".substr($date,6,2)."/".substr($date,2,2);
@@ -942,12 +942,12 @@ class Monsta {
                 $date = substr($date,6,2)."/".substr($date,4,2)."/".substr($date,2,2);
 
             $html .= "<tr class=\"".$trClass."\">"."\n";
-            $html .= "<td>"."\n";
+/**            $html .= "<td>"."\n";
 
             if ($action != "linkAction")
                 $html .= "<input type=\"checkbox\" name=\"".$action."[]\" value=\"".rawurlencode($file_path)."\" onclick=\"checkFileChecked()\" ".$checked.">"."\n";
 
-            $html .= "</td>"."\n";
+            $html .= "</td>"."\n";**/
             $html .= "<td>".$image."</td>"."\n";
             $html .= "<td>"."\n";
 
@@ -1054,7 +1054,7 @@ class Monsta {
         } else {
 
             if ($size < 1024) {
-                $size = round($size,2).$lang_size_b;
+                $size = round($size,2).' '. $lang_size_b;
             } elseif ($size < (1024*1024)) {
                 $size = round(($size/1024),0).' '.$lang_size_kb;
             } elseif ($size < (1024*1024*1024)) {
@@ -1241,13 +1241,15 @@ class Monsta {
 
         global $lang_btn_new_folder;
         global $lang_btn_new_file;
-        global $lang_info_host;
-        global $lang_info_user;
+        global $lang_btn_refresh;
         global $lang_info_upload_limit;
 
         return '<div id="footerDiv">
         <div id="hostInfoDiv">
             <span>' . $lang_info_upload_limit . ':</span> ' . round(($this->upload_limit /(1024 * 1024) ) * 0.9) . ' MB' . '
+        </div>
+        <div class="floatLeft10">
+            <input type="button" value="' . $lang_btn_refresh . '" onClick="refreshListing()" class="btn btn-primary">
         </div>
         <div class="floatLeft10">
             <input type="button" value="' . $lang_btn_new_folder . '" onClick="processForm(\'&amp;ftpAction=newFolder\')" class="btn btn-primary">
@@ -1291,6 +1293,7 @@ class Monsta {
         global $lang_btn_upload_repeat;
         global $lang_btn_upload_folder;
         global $lang_file_size_error;
+        global $lang_context_template;
 
         return "<script type=\"text/javascript\">
         var lang_no_xmlhttp = '" . $this->quotesEscape($lang_no_xmlhttp,"s") . "';
@@ -1318,6 +1321,7 @@ class Monsta {
         var lang_btn_upload_repeat = '" . $this->quotesEscape($lang_btn_upload_repeat,"s") . "';
         var lang_btn_upload_folder = '" . $this->quotesEscape($lang_btn_upload_folder,"s") . "';
         var lang_file_size_error = '" . $this->quotesEscape($lang_file_size_error,"s") . "';
+        var lang_context_template = '" . $this->quotesEscape($lang_context_template,"s") . "';
 
         var upload_limit = '" . $this->upload_limit . "';
     </script>";
@@ -1451,6 +1455,10 @@ class Monsta {
             // Edit
             if ($ftpAction == "edit")
                 return $this->editFile();
+
+            // Template create
+            if ($ftpAction == "template")
+                return $this->editTemplate();
         }
 
         return '';
@@ -1564,9 +1572,13 @@ class Monsta {
 # NEW FILE
 ###############################################
 
-    function newFile() {
+    private function newFile() {
 
         global $ui;
+        global $sql;
+        global $user_id;
+        global $resellerLockupID;
+        global $shorten;
 
         global $lang_title_new_file;
         global $lang_new_file_name;
@@ -1582,31 +1594,11 @@ class Monsta {
         // Set vars
         $vars = "&ftpAction=newFile";
 
-        // Display templates
-        $templates_dir = EASYWIDIR . "/third_party/monstaftp/templates";
-
         $file_name = trim($this->quotesUnescape($ui->escaped("newFile","post")));
         $file_names = array();
 
         $langs = '';
 
-        if (is_dir($templates_dir)) {
-
-            if ($dh = opendir($templates_dir)) {
-
-                while (($file = readdir($dh)) !== false) {
-
-                    if ($file != "" && $file != "." && $file != ".." && $file != "index.html") {
-
-                        $file_names[] = $file;
-
-                        $langs .= "<option value=\"".$file."\">".$file."</option>";
-
-                    }
-                }
-                closedir($dh);
-            }
-        }
 
         if ($file_name == "") {
 
@@ -1623,6 +1615,13 @@ class Monsta {
             $return .= "<p>".$lang_template.": ";
             $return .= "<select name=\"template\">";
             $return .= "<option value=\"\">".$lang_no_template."</option>";
+
+            $query = $sql->prepare("SELECT `templateID`,`name` FROM `gserver_file_templates` WHERE `servertype`=? AND  (`userID` IS NULL OR `userID`=?) AND `resellerID`=?");
+            $query->execute(array($shorten, $user_id, $resellerLockupID));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $return .= "<option value=\"".$row['templateID']."\">".$row['name']."</option>";
+            }
+
             $return .= $langs;
             $return .= "</select>";
 
@@ -1646,12 +1645,10 @@ class Monsta {
                 $content = '';
 
                 // Get template
-                if (in_array($ui->config('template', 'post'), $file_names) and $ui->config('template', 'post') != $lang_no_template) {
-
-                    $file_name = $templates_dir."/".$ui->config('template', 'post');
-                    $fd = @fopen($file_name,"r");
-                    $content = @fread($fd,filesize($file_name));
-                    @fclose($fd);
+                if ($ui->id('template', 10, 'post') and $ui->config('template', 'post') != $lang_no_template) {
+                    $query = $sql->prepare("SELECT `content` FROM `gserver_file_templates` WHERE `templateID`=? AND `servertype`=? AND (`userID` IS NULL OR `userID`=?) AND `resellerID`=?");
+                    $query->execute(array($ui->id('template', 10, 'post'), $shorten, $user_id, $resellerLockupID));
+                    $content = $query->fetchColumn();
                 }
 
                 // Write file to server
@@ -1830,6 +1827,37 @@ class Monsta {
 
             // Delete tmp file
             unlink($fp1);
+        }
+
+        return '';
+    }
+
+###############################################
+# EDIT TEMPLATE PROCESS (SAVE FILE)
+###############################################
+
+// Saving the file to the iframe preserves the cursor position in the edit div.
+
+    public function editProcessTemplate() {
+
+        global $ui;
+        global $sql;
+        global $user_id;
+        global $shorten;
+        global $resellerLockupID;
+        global $lang_server_error_up;
+
+
+        $file = $this->quotesUnescape($ui->escaped('templateName','post'));
+        $file_name = $this->getFileFromPath($file);
+
+        if ($this->loggedIn) {
+
+            $query = $sql->prepare("INSERT INTO `gserver_file_templates` (`userID`,`servertype`,`name`,`content`,`resellerID`) VALUES (?,?,?,?,?)");
+            $query->execute(array($user_id, $shorten, $file_name, $ui->escaped('editContent','post'), $resellerLockupID));
+
+        } else {
+            $this->recordFileError("file",$file_name,$lang_server_error_up);
         }
 
         return '';
@@ -2861,6 +2889,98 @@ class Monsta {
     }
 
 ###############################################
+# CREATE TEMPLATE
+###############################################
+
+    private function editTemplate() {
+
+        global $ui;
+        global $lang_server_error_down;
+
+        $return = '';
+        $isError=0;
+
+        $file = $this->quotesUnescape($ui->escaped("file","post"));
+        $file_name = $this->getFileFromPath($file);
+        $fp1 = EASYWIDIR."/tmp/".md5($_SESSION["userid"].$file_name).'.tmp';
+        $fp2 = $file;
+
+        // Download the file
+        if (!@ftp_get($this->ftpConnection, $fp1, $fp2, FTP_BINARY)) {
+
+            if ($this->checkFirstCharTilde($fp2) == 1) {
+                if (!@ftp_get($this->ftpConnection, $fp1, $this->replaceTilde($fp2), FTP_BINARY)) {
+                    $this->recordFileError("file",$this->quotesEscape($file,"s"),$lang_server_error_down);
+                    $isError=1;
+                }
+            } else {
+                $this->recordFileError("file",$this->quotesEscape($file,"s"),$lang_server_error_down);
+                $isError=1;
+            }
+        }
+
+        if ($isError == 0) {
+
+            $content = '';
+
+            // Check file has contents
+            if (filesize($fp1) > 0) {
+
+                $fd = @fopen($fp1,"r");
+                $content = @fread($fd, filesize($fp1));
+                @fclose($fd);
+            }
+
+            $return = $this->displayTemplateFileFileForm($file,$content);
+        }
+
+        // Delete tmp file
+        unlink($fp1);
+
+        return $return;
+    }
+
+###############################################
+# EDIT FILE PROCESS (EDIT FILE)
+###############################################
+
+    function displayTemplateFileFileForm($file,$content) {
+
+        global $ui;
+
+        global $lang_btn_save;
+        global $lang_btn_close;
+        global $lang_context_template;
+
+        $return = '';
+
+
+        $width = ($ui->id('windowWidth',255,'post') > 250) ? $ui->id('windowWidth',255,'post') - 250 : 250;
+        $height = ($ui->id('windowHeight',255,'post') > 220) ? $ui->id('windowHeight',255,'post') - 220 : 220;
+        $editorHeight = (int) $height - 105;
+
+        $fileExplode = preg_split('/\//', $file, -1, PREG_SPLIT_NO_EMPTY);
+        $file_display = $this->sanitizeStr($fileExplode[(count($fileExplode)-1)]);
+        $file_display = $this->replaceTilde($file_display);
+        $title = $lang_context_template.": ".$file_display;
+
+        // Display pop-up
+        $return .= $this->displayPopupOpen(0,$width,$height,0,$title);
+
+        $return .= "<input type=\"text\" class=\"span12\" name=\"templateName\" value=\"".$this->sanitizeStr($file_display)."\">";
+        $return .= "<textarea name=\"editContent\" id=\"editContent\" style=\"height: ".$editorHeight."px;\">".$this->sanitizeStr($content)."</textarea>";
+
+        // Save button
+        $return .= "<input type=\"button\" value=\"".$lang_btn_save."\" class=\"btn btn-primary\" onClick=\"submitToIframe('ftpAction=templateProcess');\"> ";
+
+        // Close button
+        $return .= "<input type=\"button\" value=\"".$lang_btn_close."\" class=\"btn btn-danger\" onClick=\"processForm('ftpAction=openFolder');\"> ";
+
+        $return .=$this->displayPopupClose(0,"",0);
+
+        return $return;
+    }
+###############################################
 # UPLOAD FILE
 ###############################################
 
@@ -2932,7 +3052,7 @@ class Monsta {
 
             if (!@ftp_mkdir($this->ftpConnection, $folder)) {
                 if ($this->checkFirstCharTilde($folder) == 1)
-                    @ftp_mkdir($this->ftpConnection, replaceTilde($folder));
+                    @ftp_mkdir($this->ftpConnection, $this->replaceTilde($folder));
             }
         }
     }
@@ -3017,5 +3137,6 @@ class Monsta {
         } else {
             $this->recordFileError("file",$_FILES["uploadFile"]["name"],$lang_browser_error_up);
         }
+        return '';
     }
 }

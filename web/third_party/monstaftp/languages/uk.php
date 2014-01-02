@@ -142,5 +142,6 @@ $lang_context_paste = "Paste";
 $lang_context_rename = "Rename";
 $lang_context_delete = "Delete";
 $lang_context_chmod = "Chmod";
+$lang_context_template = "Create Template";
 
 ?>

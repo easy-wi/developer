@@ -143,5 +143,6 @@ $lang_context_paste = "Einf&uuml;gen";
 $lang_context_rename = "Umbenennen";
 $lang_context_delete = "L&ouml;schen";
 $lang_context_chmod = "Rechte";
+$lang_context_template = "Erstelle Template";
 
 ?>

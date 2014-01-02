@@ -141,5 +141,6 @@ $lang_context_paste = "Pegar";
 $lang_context_rename = "Renombrar";
 $lang_context_delete = "Borrar";
 $lang_context_chmod = "Permisos";
+$lang_context_template = "";
 
 ?>

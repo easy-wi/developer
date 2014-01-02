@@ -977,8 +977,9 @@ function showFileContextMenu(e,file,folder,isLin) {
     editableExts[10] = 'sp';
     editableExts[11] = 'db';
     editableExts[12] = 'lua';
-    editableExts[13] = 'server.properties';
-    editableExts[14] = 'example';
+    editableExts[13] = 'prop';
+    editableExts[14] = 'properties';
+    editableExts[15] = 'example';
 
 	globalContextHeight=12; // top and bottom padding
 	// Set function for paste
@@ -1000,8 +1001,10 @@ function showFileContextMenu(e,file,folder,isLin) {
 		// Check if file is editable
 		if (file != "") {
 			var extension = file.substring(file.lastIndexOf('.')+1);
-			if (editableExts.indexOf(extension) > -1)
-				menuHTML += createContextMenuItem(lang_context_edit,"actionFunctionEdit('"+file+"')",1);
+			if (editableExts.indexOf(extension) > -1) {
+                menuHTML += createContextMenuItem(lang_context_edit,"actionFunctionEdit('"+file+"')",1);
+                menuHTML += createContextMenuItem(lang_context_template,"actionFunctionTemplate('"+file+"')",1);
+            }
 		}
 	
 		menuHTML += createContextMenuItem(lang_context_cut,"actionFunctionCut('"+file+"','"+folder+"')",0);
@@ -1056,6 +1059,17 @@ function actionFunctionEdit(file) {
 
 	var vars = '&ftpAction=edit&file='+file;
 	processForm(vars);
+}
+
+
+//##############################################
+// ACTION FUNCTION - TEMPLATE CREATE
+//##############################################
+
+function actionFunctionTemplate(file) {
+
+    var vars = '&ftpAction=template&file='+file;
+    processForm(vars);
 }
 
 //##############################################

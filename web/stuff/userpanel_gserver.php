@@ -79,6 +79,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $gsFolder = '/server/' . $row['serverip'] . '_' . $row['port'] . '/';
         $gsFolder .= ($row['servertemplate'] == 1) ? $row['shorten'] : $row['shorten'] . '-' . $row['servertemplate'];
         $address = $row['serverip'] . ':' . $row['port'];
+        $shorten = $row['shorten'];
     }
 
     if ($query->rowCount() > 0) {

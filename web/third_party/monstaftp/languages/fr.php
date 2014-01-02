@@ -141,5 +141,6 @@ $lang_context_paste = "Coller";
 $lang_context_rename = "Renommer";
 $lang_context_delete = "Supprimer";
 $lang_context_chmod = "Permissions";
+$lang_context_template = "";
 
 ?>
