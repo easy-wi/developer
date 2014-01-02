@@ -919,11 +919,13 @@ if ($currentStep == 9 and count($systemCheckError) == 0) {
 
     $displayToUser .= "<div class='alert alert-success'>{$languageObject->install_done}</div>";
 
+    $displayPHPUser = (isset($_SERVER['USER'])) ? $_SERVER['USER'] : 'changeToPHPUser';
+
     $displayToUser .= "<div class='alert alert-success'>0 */1 * * * ${_SERVER['USER']} cd " . EASYWIDIR . " && timeout 300 php ./reboot.php >/dev/null 2>&1<br>
-*/5 * * * * ${_SERVER['USER']} cd " . EASYWIDIR . " && timeout 290 php ./statuscheck.php >/dev/null 2>&1<br>
-*/1 * * * * ${_SERVER['USER']} cd " . EASYWIDIR . " && timeout 290 php ./startupdates.php >/dev/null 2>&1<br>
-*/5 * * * * ${_SERVER['USER']} cd " . EASYWIDIR . " && timeout 290 php ./jobs.php >/dev/null 2>&1<br>
-*/10 * * * * ${_SERVER['USER']} cd " . EASYWIDIR . " && timeout 290 php ./cloud.php >/dev/null 2>&1<br></div>";
+*/5 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./statuscheck.php >/dev/null 2>&1<br>
+*/1 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./startupdates.php >/dev/null 2>&1<br>
+*/5 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./jobs.php >/dev/null 2>&1<br>
+*/10 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./cloud.php >/dev/null 2>&1<br></div>";
 
 }
 
