@@ -259,13 +259,15 @@
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['gserver']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='gs') echo 'class="active"';?>><a href="admin.php?w=gs&amp;d=md"><?php echo $gsprache->overview;?></a></li>
-                                    <li <?php if($ui->smallletters('w',255,'get')=='gt') echo 'class="active"';?>><a href="admin.php?w=gt"><?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['gimages']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='im') echo 'class="active"';?>><a href="admin.php?w=im&amp;d=md"><?php echo $gsprache->gameserver.' '.$gsprache->template;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['addons']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=ad"><?php echo $gsprache->addon;?></a></li>
+                                    <?php } ?>
+                                    <?php if($pa['gserver']) { ?>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='gt') echo 'class="active"';?>><a href="admin.php?w=gt"><?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
                                     <?php } ?>
                                     <?php if($easywiModules['ea'] and $pa['eac']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='ea') echo 'class="active"';?>><a href="admin.php?w=ea">Easy Anti Cheat</a></li>
