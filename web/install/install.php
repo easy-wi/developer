@@ -61,7 +61,7 @@ if ($currentStep == 0) {
 } else {
 
     if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
-        $systemCheckOk['php'] = $languageObject->error_system_php_version . PHP_VERSION;
+        $systemCheckOk['php'] = $languageObject->system_ok_php_version . PHP_VERSION;
     } else {
         $systemCheckError['php'] = $languageObject->error_system_php_version . PHP_VERSION;
     }
@@ -81,55 +81,55 @@ if ($currentStep == 0) {
     if (extension_loaded('json')) {
         $systemCheckOk['json'] = $languageObject->system_ok_json;
     } else {
-        $systemCheckError['json'] = $languageObject->system_ok_json;
+        $systemCheckError['json'] = $languageObject->error_system_json;
     }
 
     if (extension_loaded('hash')) {
         $systemCheckOk['hash'] = $languageObject->system_ok_hash;
     } else {
-        $systemCheckError['hash'] = $languageObject->system_ok_hash;
+        $systemCheckError['hash'] = $languageObject->error_system_hash;
     }
 
     if (extension_loaded('ftp')) {
         $systemCheckOk['ftp'] = $languageObject->system_ok_ftp;
     } else {
-        $systemCheckError['ftp'] = $languageObject->system_ok_ftp;
+        $systemCheckError['ftp'] = $languageObject->error_system_ftp;
     }
 
     if (extension_loaded('SimpleXML')) {
         $systemCheckOk['SimpleXML'] = $languageObject->system_ok_SimpleXML;
     } else {
-        $systemCheckError['SimpleXML'] = $languageObject->system_ok_SimpleXML;
+        $systemCheckError['SimpleXML'] = $languageObject->error_system_SimpleXML;
     }
 
     if (extension_loaded('curl')) {
         $systemCheckOk['curl'] = $languageObject->system_ok_curl;
     } else {
-        $systemCheckError['curl'] = $languageObject->system_ok_curl;
+        $systemCheckError['curl'] = $languageObject->error_system_curl;
     }
 
     if (extension_loaded('gd')) {
         $systemCheckOk['gd'] = $languageObject->system_ok_gd;
     } else {
-        $systemCheckError['gd'] = $languageObject->system_ok_gd;
+        $systemCheckError['gd'] = $languageObject->error_system_gd;
     }
 
     if (extension_loaded('PDO')) {
         $systemCheckOk['PDO'] = $languageObject->system_ok_PDO;
     } else {
-        $systemCheckError['PDO'] = $languageObject->system_ok_PDO;
+        $systemCheckError['PDO'] = $languageObject->error_system_PDO;
     }
 
     if (extension_loaded('pdo_mysql')) {
         $systemCheckOk['pdo_mysql'] = $languageObject->system_ok_pdo_mysql;
     } else {
-        $systemCheckError['pdo_mysql'] = $languageObject->system_ok_pdo_mysql;
+        $systemCheckError['pdo_mysql'] = $languageObject->error_system_pdo_mysql;
     }
 
     if (function_exists('fopen')) {
         $systemCheckOk['fopen'] = $languageObject->system_ok_fopen;
     } else {
-        $systemCheckError['fopen'] = $languageObject->system_ok_fopen;
+        $systemCheckError['fopen'] = $languageObject->error_system_fopen;
     }
 
     $folderArray = array(
