@@ -90,6 +90,7 @@
 	<user>Databaseuser</user>
 	<user2>Admin Username</user2>
     <welcome_header>Welcome to the Easy-WI installer!</welcome_header>
+    <welcome_old_version>Warning you are going to install an outdated version. The current is: </welcome_old_version>
     <welcome_text>At first we will run a system check that will ensure your webspace offers the required functionality. Afterwards database tables will be created and the initial data inserted and configured.</welcome_text>
     <yes>Yes</yes>
 </sprache>

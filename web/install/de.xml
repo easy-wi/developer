@@ -90,6 +90,7 @@
 	<user>Databankuser</user>
 	<user2>Admin Username</user2>
     <welcome_header>Willkommen beim Installer für Easy-WI!</welcome_header>
+    <welcome_old_version>Achtung Sie sind dabei eine veraltete Version von Easy-WI zu installieren. Die aktuelle ist: </welcome_old_version>
     <welcome_text>Im ersten Schritt wird getestet, ob der Webspace die benötigten Funktionen bereit stellt. Im Anschluss werden Tabellen angelegt und initiale Daten konfiguriert.</welcome_text>
 	<yes>Ja</yes>
 </sprache>

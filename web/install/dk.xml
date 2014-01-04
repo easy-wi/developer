@@ -90,6 +90,7 @@
 	<user>DatabaseBruger</user>
 	<user2>Admin Brugernavn</user2>
     <welcome_header>Velkommen til Easy-WI installer!</welcome_header>
+    <welcome_old_version>Warning you are going to install an outdated version. The current is: </welcome_old_version>
     <welcome_text>I første omgang vil vi køre en systemkontrol, der vil sikre dit webhotel giver den nødvendige funktionalitet. Bagefter vil blive oprettet database tabeller og de ​​oprindelige data indsat og konfigureret.</welcome_text>
     <yes>Ja</yes>
 </sprache>

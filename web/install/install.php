@@ -43,6 +43,7 @@ error_reporting(E_ALL|E_STRICT);
 define('EASYWIDIR', dirname(dirname(__FILE__)));
 
 require_once(EASYWIDIR . '/stuff/functions.php');
+require_once(EASYWIDIR . '/stuff/vorlage.php');
 
 $currentStep = (isset($_GET['step']) and $_GET['step'] > 0 and $_GET['step'] < 10) ? (int) $_GET['step'] : 0;
 $progressPercent = (100 / 9) * $currentStep ;
@@ -56,7 +57,15 @@ $systemCheckError = array();
 
 if ($currentStep == 0) {
 
-    $displayToUser = "<div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
+    $licencecode = webhostRequest('l.easy-wi.com', $_SERVER['HTTP_HOST'], '/version.php', null, 80);
+    $licencecode = cleanFsockOpenRequest($licencecode, '{', '}');
+    $json = @json_decode($licencecode);
+
+    if (!$json or $json->v >= '4.20') {
+        $displayToUser = "<div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
+    } else {
+        $displayToUser = "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://easy-wi.com/uk/downloads/' target='_blank'>{$json->v}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
+    }
 
 } else {
 
@@ -153,6 +162,7 @@ if ($currentStep == 0) {
         'third_party/',
         'tmp/'
     );
+
     foreach ($folderArray as $folder) {
         if (is_dir(EASYWIDIR . "/${folder}")) {
             $handle = @fopen(EASYWIDIR . "/${folder}test.txt", "w+");
