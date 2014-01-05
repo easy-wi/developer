@@ -14,7 +14,7 @@
  * Here's a short example of how to use this library:
  * <code>
  * <?php
- *    include('Net/SFTP.php');
+ *    include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
  *
  *    $sftp = new Net_SFTP('www.domain.tld');
  *    if (!$sftp->login('username', 'password')) {
@@ -57,7 +57,7 @@
  * Include Net_SSH2
  */
 if (!class_exists('Net_SSH2')) {
-    include_once EASYWIDIR . '/third_party/phpseclib/SSH2.php';
+    include_once 'SSH2.php';
 }
 
 /**#@+

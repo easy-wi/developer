@@ -8,7 +8,7 @@
  * Here's a short example of how to use this library:
  * <code>
  * <?php
- *    include('Net/SSH1.php');
+ *    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH1.php');
  *
  *    $ssh = new Net_SSH1('www.domain.tld');
  *    if (!$ssh->login('username', 'password')) {
@@ -22,7 +22,7 @@
  * Here's another short example:
  * <code>
  * <?php
- *    include('Net/SSH1.php');
+ *    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH1.php');
  *
  *    $ssh = new Net_SSH1('www.domain.tld');
  *    if (!$ssh->login('username', 'password')) {
@@ -473,7 +473,7 @@ class Net_SSH1
     function Net_SSH1($host, $port = 22, $timeout = 10, $cipher = NET_SSH1_CIPHER_3DES)
     {
         if (!class_exists('Math_BigInteger')) {
-            include_once EASYWIDIR . '/third_party/phpseclib/Math/BigInteger.php';
+            include_once 'Math/BigInteger.php';
         }
 
         // Include Crypt_Random
@@ -482,7 +482,7 @@ class Net_SSH1
         // call function_exists() a second time to stop the include_once from being called outside
         // of the auto loader
         if (!function_exists('crypt_random_string') && !class_exists('Crypt_Random') && !function_exists('crypt_random_string')) {
-            include_once EASYWIDIR . '/third_party/phpseclib/Crypt/Random.php';
+            include_once 'Crypt/Random.php';
         }
 
         $this->protocol_flags = array(
@@ -627,7 +627,7 @@ class Net_SSH1
             //    break;
             case NET_SSH1_CIPHER_DES:
                 if (!class_exists('Crypt_DES')) {
-                    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/DES.php';
+                    include_once 'Crypt/DES.php';
                 }
                 $this->crypto = new Crypt_DES();
                 $this->crypto->disablePadding();
@@ -636,7 +636,7 @@ class Net_SSH1
                 break;
             case NET_SSH1_CIPHER_3DES:
                 if (!class_exists('Crypt_TripleDES')) {
-                    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/TripleDES.php';
+                    include_once 'Crypt/TripleDES.php';
                 }
                 $this->crypto = new Crypt_TripleDES(CRYPT_DES_MODE_3CBC);
                 $this->crypto->disablePadding();
@@ -1277,7 +1277,7 @@ class Net_SSH1
     {
         /*
         if (!class_exists('Crypt_RSA')) {
-            include_once EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php';
+            include_once 'Crypt/RSA.php';
         }
 
         $rsa = new Crypt_RSA();
