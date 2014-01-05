@@ -939,11 +939,11 @@ if ($currentStep == 9 and count($systemCheckError) == 0) {
 
     $displayToUser .= "<div class='alert alert-success'><h4>{$languageObject->cron_external}</h4>
 <strong>{$languageObject->cron_external_text}</strong><br>
-0 */1 * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}reboot.php >/dev/null 2>&1<br>
-*/5 * * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}statuscheck.php >/dev/null 2>&1<br>
-*/1 * * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}startupdates.php >/dev/null 2>&1<br>
-*/5 * * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}jobs.php >/dev/null 2>&1<br>
-*/10 * * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}cloud.php >/dev/null 2>&1</div>";
+0 */1 * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}reboot.php >/dev/null 2>&1<br>
+*/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}statuscheck.php >/dev/null 2>&1<br>
+*/1 * * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}startupdates.php >/dev/null 2>&1<br>
+*/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}jobs.php >/dev/null 2>&1<br>
+*/10 * * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}cloud.php >/dev/null 2>&1</div>";
 
 }
 
