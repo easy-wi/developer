@@ -75,14 +75,14 @@
 // call function_exists() a second time to stop the include_once from being called outside
 // of the auto loader
 if (!function_exists('crypt_random_string')) {
-    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/Random.php';
+    include_once EASYWIDIR . '/third_party/phpseclib/Random.php';
 }
 
 /**
  * Include Crypt_Hash
  */
 if (!class_exists('Crypt_Hash')) {
-    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/Hash.php';
+    include_once EASYWIDIR . '/third_party/phpseclib/Hash.php';
 }
 
 /**#@+

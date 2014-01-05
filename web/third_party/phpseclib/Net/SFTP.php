@@ -57,7 +57,7 @@
  * Include Net_SSH2
  */
 if (!class_exists('Net_SSH2')) {
-    include_once EASYWIDIR . '/third_party/phpseclib/SSH2.php';
+    include_once 'SSH2.php';
 }
 
 /**#@+
