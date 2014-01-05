@@ -34,7 +34,6 @@
     <error_system_pdo_mysql>pdo_mysql Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_pdo_mysql>
     <error_system_php_version>Es wird mindestens PHP 5.3 benötigt. PHP Version zu alt: </error_system_php_version>
     <error_system_SimpleXML>SimpleXML Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_SimpleXML>
-    <error_system_ssh2>SSH2 Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_ssh2>
     <faillogins>Fehlerhafte Logins</faillogins>
 	<faillogins2>Anzahl von erlaubten fehlerhaften Logins am Stück</faillogins2>
 	<finished>Die Installation ist abgeschlossen, bitte entfernen Sie den "install" Ordner.</finished>
@@ -84,7 +83,6 @@
     <system_ok_pdo_mysql>pdo_mysql Extension ist installiert.</system_ok_pdo_mysql>
     <system_ok_php_version>Es wird mindestens PHP 5.3 benötigt. PHP Version neu genug: </system_ok_php_version>
     <system_ok_SimpleXML>Extension SimpleXMLis installed.</system_ok_SimpleXML>
-    <system_ok_ssh2>SSH2 Extension ist installiert.</system_ok_ssh2>
     <timezone>Zeitzone</timezone>
 	<title>Homepage Titel</title>
 	<user>Databankuser</user>

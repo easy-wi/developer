@@ -75,12 +75,6 @@ if ($currentStep == 0) {
         $systemCheckError['php'] = $languageObject->error_system_php_version . PHP_VERSION;
     }
 
-    if (extension_loaded('ssh2')) {
-        $systemCheckOk['ssh2'] = $languageObject->system_ok_ssh2;
-    } else {
-        $systemCheckError['ssh2'] = $languageObject->error_system_ssh2;
-    }
-
     if (extension_loaded('openssl')) {
         $systemCheckOk['openssl'] = $languageObject->system_ok_openssl;
     } else {
