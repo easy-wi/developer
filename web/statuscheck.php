@@ -498,53 +498,37 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 } else {
                     $tsdnsbin='tsdnsserver_linux_amd64';
                 }
-                $ssh2_2 = false;
-                if ($row['publickey'] == 'Y') {
 
-                    # https://github.com/easy-wi/developer/issues/70
-                    $sshkey = removePub($row['keyname']);
-                    $pubkey = 'keys/' . $sshkey . '.pub';
-                    $key = 'keys/' . $sshkey;
+                $split_config=preg_split('/\//', $row['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
+                $folderfilecount=count($split_config)-1;
+                $i = 0;
+                unset($folders);
+                $folders=(substr($row['serverdir'],0,1) == '/') ? 'cd  /' : 'cd ';
+                $lastFolder = '';
+                while ($i <= $folderfilecount) {
+                    $folders = $folders.$split_config[$i] . '/';
+                    $lastFolder = $split_config[$i];
+                    $i++;
+                }
+                if ($folders == 'cd ') {
+                    $folders = '';
+                } else if ($lastFolder!='tsdns' or substr($row['serverdir'],0,1) != '/') {
+                    $folders = $folders .'tsdns/ && ';
+                } else {
+                    $folders = $folders  . ' && ';
+                }
+                $ssh2cmd = $folders.'function r () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; r& ';
 
-                    if (file_exists($pubkey) and file_exists($key)) {
-                        $ssh2_2 = @ssh2_connect($row['ssh2ip'], $row['decryptedssh2port'], array('hostkey' => 'ssh-rsa'));
-                    }
+                if (ssh2_execute('vd', $row['id'], $ssh2cmd)) {
+                    print "Restarting TSDNS: {$row['ssh2ip']}\r\n";
                 } else {
-                    $ssh2_2 = @ssh2_connect($row['ssh2ip'], $row['decryptedssh2port']);
+                    print "Failed restarting TSDNS: {$row['ssh2ip']}\r\n";
                 }
-                if ($ssh2_2 == true) {
-                    $connect_ssh2_2=($row['publickey'] == 'Y') ? @ssh2_auth_pubkey_file($ssh2_2, $row['decryptedssh2user'], $pubkey, $key) : @ssh2_auth_password($ssh2_2, $row['decryptedssh2user'], $row['decryptedssh2password']);
-                    if ($connect_ssh2_2 == true) {
-                        $split_config=preg_split('/\//', $row['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
-                        $folderfilecount=count($split_config)-1;
-                        $i = 0;
-                        unset($folders);
-                        $folders=(substr($row['serverdir'],0,1) == '/') ? 'cd  /' : 'cd ';
-                        $lastFolder = '';
-                        while ($i <= $folderfilecount) {
-                            $folders = $folders.$split_config[$i] . '/';
-                            $lastFolder = $split_config[$i];
-                            $i++;
-                        }
-                        if ($folders == 'cd ') {
-                            $folders = '';
-                        } else if ($lastFolder!='tsdns' or substr($row['serverdir'],0,1) != '/') {
-                            $folders = $folders .'tsdns/ && ';
-                        } else {
-                            $folders = $folders  . ' && ';
-                        }
-                        $ssh2cmd = $folders.'function r () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; r& ';
-                        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                            echo $ssh2cmd . "\r\n";
-                        }
-                        ssh2_exec($ssh2_2, $ssh2cmd);
-                        $ssh2_2 = null;
-                    } else {
-                        print "Error: Bad logindata for external tsdns ".$row['ssh2ip'] . "\r\n";
-                    }
-                } else {
-                    print "Error: Can not connect to external tsdns server ".$row['ssh2ip']." via ssh2\r\n";
+
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    echo $ssh2cmd . "\r\n";
                 }
+
             } else {
                 print "TSDNS ${row['ssh2ip']} is up and running\r\n";
                 $query3 = $sql->prepare("UPDATE `voice_tsdns` SET `notified`=0 WHERE `id`=? LIMIT 1");
@@ -553,7 +537,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
 
         /* Voice Server */
-        if ((isset($args['tsDebug']) and $args['tsDebug'] == 1)) print "Checking voice server with debug on\r\n";
+        if ((isset($args['tsDebug']) and $args['tsDebug'] == 1)) {
+            print "Checking voice server with debug on\r\n";
+        }
+
         $vselect = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `active`='Y'");
         $vselect->execute(array(':aeskey' => $aeskey));
         foreach ($vselect->fetchall(PDO::FETCH_ASSOC) as $vrow) {
@@ -635,75 +622,61 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $query2->execute(array($ts3masterid));
                     $query2 = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=? WHERE `id`=? LIMIT 1");
                     $query2->execute(array($ts3masternotified, $ts3masterid));
-                    if (($autorestart == 'Y' and $ts3masternotified>=$resellersettings[$resellerid]['down_checks']) or ($tsdown != true and $tsdnsdown == true)) {
-                        if ($vrow['publickey'] == 'Y') {
 
-                            # https://github.com/easy-wi/developer/issues/70
-                            $sshkey=removePub($vrow['keyname']);
-                            $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-                            $key = EASYWIDIR . '/keys/' . $sshkey;
+                    if (($autorestart == 'Y' and $ts3masternotified >= $resellersettings[$resellerid]['down_checks'])) {
 
-                            $ssh2=(file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($queryip, $vrow['decryptedssh2port'], array('hostkey' => 'ssh-rsa')) : false;
-                        } else {
-                            $ssh2= @ssh2_connect($queryip, $vrow['decryptedssh2port']);
+                        $cmds = array();
+
+                        $split_config=preg_split('/\//', $vrow['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
+                        $folderfilecount=count($split_config)-1;
+                        $i = 0;
+                        $folders = (substr($vrow['serverdir'], 0, 1) == '/') ? 'cd  /' : 'cd ';
+                        while ($i <= $folderfilecount) {
+                            $folders = $folders.$split_config[$i] . '/';
+                            $i++;
                         }
-                        if ($ssh2) {
-                            if ($vrow['publickey'] == 'Y') {
-                                $connect_ssh2= @ssh2_auth_pubkey_file($ssh2, $vrow['decryptedssh2user'], $pubkey, $key);
-                            } else {
-                                $connect_ssh2= @ssh2_auth_password($ssh2, $vrow['decryptedssh2user'], $vrow['decryptedssh2password']);
-                            }
-                            if ($connect_ssh2) {
-                                $split_config=preg_split('/\//', $vrow['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
-                                $folderfilecount=count($split_config)-1;
-                                $i = 0;
-                                $folders = (substr($vrow['serverdir'], 0, 1) == '/') ? 'cd  /' : 'cd ';
-                                while ($i <= $folderfilecount) {
-                                    $folders = $folders.$split_config[$i] . '/';
-                                    $i++;
-                                }
-                                if ($folders == 'cd ') {
-                                    $folders = '';
-                                    $tsdnsFolders='cd tsdns && ';
-                                } else {
-                                    $tsdnsFolders = $folders.'tsdns && ';
-                                    $folders = $folders . ' && ';
-                                }
-                                if ($vrow['bitversion'] == '32') {
-                                    $tsbin='ts3server_linux_x86';
-                                    $tsdnsbin='tsdnsserver_linux_x86';
-                                } else {
-                                    $tsbin='ts3server_linux_amd64';
-                                    $tsdnsbin='tsdnsserver_linux_amd64';
-                                }
-                                $ssh2cmd = $folders.'function r () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; r& ';
-                                if ($vrow['usedns'] == 'Y') {
-                                    $tsndsserver=" and TSDNS";
-                                    $ssh2cmd2 = $tsdnsFolders.'function r () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; r& ';
-                                }
-                                if ($tsdown == true) {
-                                    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                                        echo $ssh2cmd . "\r\n";
-                                    }
-                                    ssh2_exec($ssh2, $ssh2cmd);
-                                }
-                                if ($tsdnsdown == true) {
-                                    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                                        echo $ssh2cmd2 . "\r\n";
-                                    }
-                                    ssh2_exec($ssh2, $ssh2cmd2);
-                                }
-                                print 'Restarting: '.$restartreturn . "\r\n";
-                            } else {
-                                print "Error: Bad logindata\r\n";
-                            }
+
+                        if ($folders == 'cd ') {
+                            $folders = '';
+                            $tsdnsFolders='cd tsdns && ';
                         } else {
-                            print "Error: Can not connect via ssh2\r\n";
+                            $tsdnsFolders = $folders.'tsdns && ';
+                            $folders = $folders . ' && ';
+                        }
+
+                        if ($vrow['bitversion'] == '32') {
+                            $tsbin='ts3server_linux_x86';
+                            $tsdnsbin='tsdnsserver_linux_x86';
+                        } else {
+                            $tsbin='ts3server_linux_amd64';
+                            $tsdnsbin='tsdnsserver_linux_amd64';
+                        }
+
+                        if ($tsdown == true) {
+                            $cmds[] = $folders.'function r () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; r& ';
+                        }
+
+                        if ($vrow['usedns'] == 'Y' and $tsdnsdown == true) {
+                            $cmds[] = $tsdnsFolders.'function r () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; r& ';
+                        }
+
+                        if (count($cmds) > 0) {
+
+                            if (ssh2_execute('vm', $ts3masterid, $cmds)) {
+                                print "Restarting: $restartreturn $queryip\r\n";
+                            } else {
+                                print "Failed restarting: $restartreturn $queryip\r\n";
+                            }
+
+                            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                                print_r($cmds);
+                            }
                         }
                     } else {
-                        print "Down but no Restart triggert\r\n";
+                        print "$restartreturn $queryip down but no Restart triggert\r\n";
                     }
                 }
+
                 if ($tsdown != true) {
                     if ($ts3masternotified>0) {
                         $pupdate = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `id`=? LIMIT 1");
