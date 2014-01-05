@@ -41,6 +41,9 @@ if (!function_exists('ssh2_execute')) {
     if (!class_exists('Net_SSH2')) {
         include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
     }
+    if (!class_exists('Crypt_RSA')) {
+        include(EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php');
+    }
 
     function ssh2_execute($type, $id, $cmds) {
 

@@ -37,6 +37,18 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+if (!class_exists('Net_SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
+}
+
+if (!class_exists('Crypt_RSA')) {
+    include(EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php');
+}
+
+if (!class_exists('Net_SFTP')) {
+    include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
+}
+
 function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $backupid, $move = array()) {
 
     $split_config = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);
@@ -101,14 +113,6 @@ function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $b
 }
 
 function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $notified, $path, $bitversion, $tsip, $tsport, $tsdns, $reseller_id, $maxnotified = 2) {
-
-    if (!class_exists('Net_SSH2')) {
-        include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
-    }
-
-    if (!class_exists('Net_SFTP')) {
-        include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
-    }
 
     global $sql;
 
