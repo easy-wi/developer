@@ -74,6 +74,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
 } else if ($ui->st('d', 'get') == 'ad' or (($ui->st('d', 'get') == 'ri' or $ui->st('d', 'get') == 'md') and $ui->id('id', 10, 'get'))) {
 
+    $oldactive = 'Y';
     $resellerToBeWritten = null;
     $externalDNS = array();
     $dnsarray = array();
@@ -274,6 +275,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         }
 
         if (($ui->w('action', 3, 'post') == 'ad' and $ui->id('addtype', 1, 'post') == 2) or $ui->w('action', 3, 'post') == 'md') {
+
             if (!$ui->active('publickey', 'post')) {
                 $errors['publickey'] = $sprache->keyuse;
             }
@@ -296,19 +298,27 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             if (count($errors) == 0 and $ui->st('d', 'get') != 'ri') {
 
-                $connection = new TS3($ip, $queryport, 'serveradmin', $querypassword);
+                if ($ui->w('action', 3, 'post') == 'md') {
+                    $query = $sql->prepare("SELECT `active` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $query->execute(array($id, $reseller_id));
+                    $oldactive = $query->fetchColumn();
+                }
 
-                if ($connection->socketConnected !== true) {
-                    $errors['ip'] = $sprache->ssh_ip;
-                    $errors['queryport'] = $sprache->queryport;
+                if ($oldactive != 'N' and $active == 'Y') {
+                    $connection = new TS3($ip, $queryport, 'serveradmin', $querypassword);
 
-                } else if (strpos($connection->errorcode,'error id=0') === false) {
-                    $errors['querypassword'] = $sprache->querypassword;
+                    if ($connection->socketConnected !== true) {
+                        $errors['ip'] = $sprache->ssh_ip;
+                        $errors['queryport'] = $sprache->queryport;
 
+                    } else if (strpos($connection->errorcode,'error id=0') === false) {
+                        $errors['querypassword'] = $sprache->querypassword;
+
+                    }
                 }
             }
 
-            $ssh2Check = (count($errors) == 0 and $ui->st('d', 'get') != 'ri') ? ssh_check($ui->ip('ip', 'post'), $ui->port('port', 'post'), $ui->username('user', 20, 'post'), $ui->active('publickey', 'post'), $ui->startparameter('keyname', 'post'), $ui->password('pass', 255, 'post')) : true;
+            $ssh2Check = (count($errors) == 0 and $ui->st('d', 'get') != 'ri' and $active == 'Y') ? ssh_check($ui->ip('ip', 'post'), $ui->port('port', 'post'), $ui->username('user', 20, 'post'), $ui->active('publickey', 'post'), $ui->startparameter('keyname', 'post'), $ui->password('pass', 255, 'post')) : true;
 
             if ($ssh2Check !== true) {
 
@@ -474,85 +484,53 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             } else if ($ui->w('action', 3, 'post') == 'md') {
 
-                $query = $sql->prepare("SELECT `active`,`type`,`rootid`,`addedby`,`ssh2ip`,`notified`,`usedns`,`publickey`,`keyname`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`bitversion` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id");
-                $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $oldactive = $row['active'];
-                    $ts3masternotified = $row['notified'];
-                    $addedby = $row['addedby'];
-                    $queryip = $row['ssh2ip'];
+                if (($oldactive == 'Y' and $active == 'N') or ($oldactive == 'N' and $active == 'Y')) {
 
-                    if ($addedby == 1) {
-                        $query2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                        $query2->execute(array($row['rootid'], $reseller_id));
-                        $queryip = $query->fetchColumn();
-                    }
 
-                    if (($oldactive == 'Y' and $active == 'N') or ($oldactive == 'N' and $active == 'Y')) {
-                        if ($row['publickey'] == 'Y') {
+                    $split_config = preg_split('/\//', $serverdir, -1, PREG_SPLIT_NO_EMPTY);
+                    $folderfilecount = count($split_config)-1;
 
-                            # https://github.com/easy-wi/developer/issues/70
-                            $sshkey = removePub($row['keyname']);
-                            $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-                            $key = EASYWIDIR . '/keys/' . $sshkey;
-
-                            $ssh2 = (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($queryip, $row['decryptedssh2port'], array('hostkey' => 'ssh-rsa')) : false;
-
+                    $i = 0;
+                    while ($i <= $folderfilecount) {
+                        if (isset($commandFolders)) {
+                            $commandFolders .= $split_config[$i] . '/';
                         } else {
-                            $ssh2= @ssh2_connect($queryip, $row['decryptedssh2port']);
+                            $commandFolders = 'cd ' . $split_config[$i] . '/';
                         }
-
-                        if ($ssh2 == true) {
-
-                            $connect_ssh2 = ($row['publickey'] == 'Y') ? @ssh2_auth_pubkey_file($ssh2, $row['decryptedssh2user'], $pubkey, $key) : @ssh2_auth_password($ssh2, $row['decryptedssh2user'], $row['decryptedssh2password']);
-
-                            if ($connect_ssh2 == true) {
-                                $split_config = preg_split('/\//', $row['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
-                                $folderfilecount = count($split_config)-1;
-
-                                $i = 0;
-                                while ($i <= $folderfilecount) {
-                                    if (isset($folders)) {
-                                        $folders .= $split_config[$i] . '/';
-                                    } else {
-                                        $folders = 'cd ' . $split_config[$i] . '/';
-                                    }
-                                    $i++;
-                                }
-
-                                if (isset($folders)) {
-                                    $folders .= $folders . ' && ';
-                                } else {
-                                    $folders = '';
-                                }
-
-                                if ($row['bitversion'] == '32') {
-                                    $tsbin = 'ts3server_linux_x86';
-                                    $tsdnsbin = 'tsdnsserver_linux_x86';
-
-                                } else {
-                                    $tsbin = 'ts3server_linux_amd64';
-                                    $tsdnsbin = 'tsdnsserver_linux_amd64';
-                                }
-
-                                if ($active == 'N') {
-                                    $ssh2cmd="ps fx | grep '$tsbin' | grep -v 'grep' | awk '{print $1}' | while read pid; do kill ".'$pid'."; done";
-                                    $ssh2cmd2="ps fx | grep '$tsdnsbin' | grep -v 'grep' | awk '{print $1}' | while read pid; do kill ".'$pid'."; done";
-
-                                } else if ($active == 'Y') {
-                                    $ssh2cmd = $folders.'function restart1 () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; restart1& ';
-                                    $ssh2cmd2='cd tsdns && function restart2 () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; restart2& ';
-                                }
-
-                                ssh2_exec($ssh2, $ssh2cmd);
-
-                                if ($row['usedns'] == 'Y') {
-                                    ssh2_exec($ssh2, $ssh2cmd2);
-                                }
-
-                            }
-                        }
+                        $i++;
                     }
+
+                    if (isset($commandFolders)) {
+                        $commandFolders .= ' && ';
+                    } else {
+                        $commandFolders = '';
+                    }
+
+                    if ($bit == '32') {
+                        $tsbin = 'ts3server_linux_x86';
+                        $tsdnsbin = 'tsdnsserver_linux_x86';
+
+                    } else {
+                        $tsbin = 'ts3server_linux_amd64';
+                        $tsdnsbin = 'tsdnsserver_linux_amd64';
+                    }
+
+                    if ($active == 'N') {
+                        $ssh2cmd = "ps fx | grep '$tsbin' | grep -v 'grep' | awk '{print $1}' | while read pid; do kill ".'$pid'."; done";
+                        $ssh2cmd2 = "ps fx | grep '$tsdnsbin' | grep -v 'grep' | awk '{print $1}' | while read pid; do kill ".'$pid'."; done";
+
+                    } else if ($active == 'Y') {
+                        $ssh2cmd = $commandFolders . 'function restart1 () { if [ "`ps fx | grep ' . $tsbin . ' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; restart1& ';
+                        $ssh2cmd2 = $commandFolders . ' cd tsdns && function restart2 () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; restart2& ';
+                    }
+
+                    if ($usedns == 'Y') {
+                        $cmds = array($ssh2cmd, $ssh2cmd2);
+                    } else {
+                        $cmds = array($ssh2cmd);
+                    }
+
+                    ssh2_execute('vm', $id, $cmds);
                 }
 
                 // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
