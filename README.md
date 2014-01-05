@@ -9,7 +9,7 @@ The development goal is always to automate as far as possible. The daily work wh
 
 Requirements
 -------
-* Web installation requires PHP 5.3.7 or later and [PECL SSH2] (http://pecl.php.net/package/ssh2)
+* Web installation requires PHP 5.3.7 or later where the extensions openssl, json, hash, ftp, SimpleXML, curl, gd, PDO, pdo_mysql and fopen are installed
 * The gameserver module requires sudo, cron, proftpd and the bash shell at the game root
 * The Voicemodule works best with a linux based TS3 server
 
