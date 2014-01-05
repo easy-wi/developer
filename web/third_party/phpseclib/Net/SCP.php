@@ -1,5 +1,4 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * Pure-PHP implementation of SCP.
@@ -42,12 +41,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @category   Net
- * @package    Net_SCP
- * @author     Jim Wigginton <terrafrost@php.net>
- * @copyright  MMX Jim Wigginton
- * @license    http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link       http://phpseclib.sourceforge.net
+ * @category  Net
+ * @package   Net_SCP
+ * @author    Jim Wigginton <terrafrost@php.net>
+ * @copyright MMX Jim Wigginton
+ * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @link      http://phpseclib.sourceforge.net
  */
 
 /**#@+
@@ -82,12 +81,13 @@ define('NET_SCP_SSH2',  2);
 /**
  * Pure-PHP implementations of SCP.
  *
+ * @package Net_SCP
  * @author  Jim Wigginton <terrafrost@php.net>
  * @version 0.1.0
  * @access  public
- * @package Net_SCP
  */
-class Net_SCP {
+class Net_SCP
+{
     /**
      * SSH Object
      *
@@ -151,7 +151,7 @@ class Net_SCP {
      * So, for example, if you set $data to 'filename.ext' and then do Net_SCP::get(), you will get a file, twelve bytes
      * long, containing 'filename.ext' as its contents.
      *
-     * Setting $mode to NET_SFTP_LOCAL_FILE will change the above behavior.  With NET_SFTP_LOCAL_FILE, $remote_file will 
+     * Setting $mode to NET_SCP_LOCAL_FILE will change the above behavior.  With NET_SCP_LOCAL_FILE, $remote_file will 
      * contain as many bytes as filename.ext does on your local filesystem.  If your filename.ext is 1MB then that is how
      * large $remote_file will be, as well.
      *
@@ -161,16 +161,19 @@ class Net_SCP {
      * @param String $remote_file
      * @param String $data
      * @param optional Integer $mode
+     * @param optional Callable $callback
      * @return Boolean
      * @access public
      */
-    function put($remote_file, $data, $mode = NET_SCP_STRING)
+    function put($remote_file, $data, $mode = NET_SCP_STRING, $callback = null)
     {
         if (!isset($this->ssh)) {
             return false;
         }
 
-        $this->ssh->exec('scp -t ' . $remote_file, false); // -t = to
+        if (!$this->ssh->exec('scp -t ' . $remote_file, false)) { // -t = to
+            return false;
+        }
 
         $temp = $this->_receive();
         if ($temp !== chr(0)) {
@@ -178,35 +181,51 @@ class Net_SCP {
         }
 
         if ($this->mode == NET_SCP_SSH2) {
-            $this->packet_size = $this->ssh->packet_size_client_to_server[NET_SSH2_CHANNEL_EXEC];
+            $this->packet_size = $this->ssh->packet_size_client_to_server[NET_SSH2_CHANNEL_EXEC] - 4;
         }
 
         $remote_file = basename($remote_file);
-        $this->_send('C0644 ' . strlen($data) . ' ' . $remote_file . "\n");
+
+        if ($mode == NET_SCP_STRING) {
+            $size = strlen($data);
+        } else {
+            if (!is_file($data)) {
+                user_error("$data is not a valid file", E_USER_NOTICE);
+                return false;
+            }
+
+            $fp = @fopen($data, 'rb');
+            if (!$fp) {
+                fclose($fp);
+                return false;
+            }
+            $size = filesize($data);
+        }
+
+        $this->_send('C0644 ' . $size . ' ' . $remote_file . "\n");
 
         $temp = $this->_receive();
         if ($temp !== chr(0)) {
             return false;
         }
 
-        if ($mode == NET_SCP_STRING) {
-            $this->_send($data);
-        } else {
-            if (!is_file($data)) {
-                user_error("$data is not a valid file", E_USER_NOTICE);
-                return false;
+        $sent = 0;
+        while ($sent < $size) {
+            $temp = $mode & NET_SCP_STRING ? substr($data, $sent, $this->packet_size) : fread($fp, $this->packet_size);
+            $this->_send($temp);
+            $sent+= strlen($temp);
+
+            if (is_callable($callback)) {
+                $callback($sent);
             }
-            $fp = @fopen($data, 'rb');
-            if (!$fp) {
-                return false;
-            }
-            $size = filesize($data);
-            for ($i = 0; $i < $size; $i += $this->packet_size) {
-                $this->_send(fgets($fp, $this->packet_size));
-            }
-            fclose($fp);	
         }
         $this->_close();
+
+        if ($mode != NET_SCP_STRING) {
+            fclose($fp);
+        }
+
+        return true;
     }
 
     /**
@@ -227,7 +246,9 @@ class Net_SCP {
             return false;
         }
 
-        $this->ssh->exec('scp -f ' . $remote_file, false); // -f = from
+        if (!$this->ssh->exec('scp -f ' . $remote_file, false)) { // -f = from
+            return false;
+        }
 
         $this->_send("\0");
 
@@ -332,7 +353,7 @@ class Net_SCP {
     {
         switch ($this->mode) {
             case NET_SCP_SSH2:
-                $this->ssh->_close_channel(NET_SSH2_CHANNEL_EXEC);
+                $this->ssh->_close_channel(NET_SSH2_CHANNEL_EXEC, true);
                 break;
             case NET_SCP_SSH1:
                 $this->ssh->disconnect();

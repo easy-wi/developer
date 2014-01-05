@@ -1,5 +1,4 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * Pure-PHP arbitrary precision integer arithmetic library.
@@ -9,7 +8,7 @@
  *
  * PHP versions 4 and 5
  *
- * {@internal (all DocBlock comments regarding implementation - such as the one that follows - refer to the 
+ * {@internal (all DocBlock comments regarding implementation - such as the one that follows - refer to the
  * {@link MATH_BIGINTEGER_MODE_INTERNAL MATH_BIGINTEGER_MODE_INTERNAL} mode)
  *
  * Math_BigInteger uses base-2**26 to perform operations such as multiplication and division and
@@ -53,10 +52,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -65,12 +64,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @category   Math
- * @package    Math_BigInteger
- * @author     Jim Wigginton <terrafrost@php.net>
- * @copyright  MMVI Jim Wigginton
- * @license    http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link       http://pear.php.net/package/Math_BigInteger
+ * @category  Math
+ * @package   Math_BigInteger
+ * @author    Jim Wigginton <terrafrost@php.net>
+ * @copyright MMVI Jim Wigginton
+ * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @link      http://pear.php.net/package/Math_BigInteger
  */
 
 /**#@+
@@ -174,12 +173,13 @@ define('MATH_BIGINTEGER_KARATSUBA_CUTOFF', 25);
  * Pure-PHP arbitrary precision integer arithmetic library. Supports base-2, base-10, base-16, and base-256
  * numbers.
  *
+ * @package Math_BigInteger
  * @author  Jim Wigginton <terrafrost@php.net>
  * @version 1.0.0RC4
  * @access  public
- * @package Math_BigInteger
  */
-class Math_BigInteger {
+class Math_BigInteger
+{
     /**
      * Holds the BigInteger's value.
      *
@@ -223,7 +223,7 @@ class Math_BigInteger {
     /**
      * Mode independent value used for serialization.
      *
-     * If the bcmath or gmp extensions are installed $this->value will be a non-serializable resource, hence the need for 
+     * If the bcmath or gmp extensions are installed $this->value will be a non-serializable resource, hence the need for
      * a variable that'll be serializable regardless of whether or not extensions are being used.  Unlike $this->value,
      * however, $this->hex is only calculated when $this->__sleep() is called.
      *
@@ -272,7 +272,31 @@ class Math_BigInteger {
         }
 
         if (function_exists('openssl_public_encrypt') && !defined('MATH_BIGINTEGER_OPENSSL_DISABLE') && !defined('MATH_BIGINTEGER_OPENSSL_ENABLED')) {
-            define('MATH_BIGINTEGER_OPENSSL_ENABLED', true);
+            // some versions of XAMPP have mismatched versions of OpenSSL which causes it not to work
+            ob_start();
+            phpinfo();
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            preg_match_all('#OpenSSL (Header|Library) Version(.*)#im', $content, $matches);
+
+            $versions = array();
+            if (!empty($matches[1])) {
+                for ($i = 0; $i < count($matches[1]); $i++) {
+                    $versions[$matches[1][$i]] = trim(str_replace('=>', '', strip_tags($matches[2][$i])));
+                }
+            }
+
+            // it doesn't appear that OpenSSL versions were reported upon until PHP 5.3+
+            switch (true) {
+                case !isset($versions['Header']):
+                case !isset($versions['Library']):
+                case $versions['Header'] == $versions['Library']:
+                    define('MATH_BIGINTEGER_OPENSSL_ENABLED', true);
+                    break;
+                default:
+                    define('MATH_BIGINTEGER_OPENSSL_DISABLE', true);
+            }
         }
 
         if (!defined('PHP_INT_SIZE')) {
@@ -438,7 +462,6 @@ class Math_BigInteger {
                         }
 
                         $x = str_pad($x, strlen($x) + ((MATH_BIGINTEGER_MAX10_LEN - 1) * strlen($x)) % MATH_BIGINTEGER_MAX10_LEN, 0, STR_PAD_LEFT);
-
                         while (strlen($x)) {
                             $temp = $temp->multiply($multiplier);
                             $temp = $temp->add(new Math_BigInteger($this->_int2bytes(substr($x, 0, MATH_BIGINTEGER_MAX10_LEN)), 256));
@@ -774,7 +797,7 @@ class Math_BigInteger {
             $vars[] = 'precision';
         }
         return $vars;
-        
+
     }
 
     /**
@@ -2256,7 +2279,7 @@ class Math_BigInteger {
     /**
      * Montgomery Multiply
      *
-     * Interleaves the montgomery reduction and long multiplication algorithms together as described in 
+     * Interleaves the montgomery reduction and long multiplication algorithms together as described in
      * {@link http://www.cacr.math.uwaterloo.ca/hac/about/chap14.pdf#page=13 HAC 14.36}
      *
      * @see _prepMontgomery()
@@ -2336,7 +2359,7 @@ class Math_BigInteger {
      * {@link http://groups.google.com/group/sci.crypt/msg/7a137205c1be7d85}
      *
      * As for why we do all the bitmasking...  strange things can happen when converting from floats to ints. For
-     * instance, on some computers, var_dump((int) -4294967297) yields int(-1) and on others, it yields 
+     * instance, on some computers, var_dump((int) -4294967297) yields int(-1) and on others, it yields
      * int(-2147483648).  To avoid problems stemming from this, we use bitmasks to guarantee that ints aren't
      * auto-converted to floats.  The outermost bitmask is present because without it, there's no guarantee that
      * the "residue" returned would be the so-called "common residue".  We use fmod, in the last step, because the
@@ -3029,6 +3052,37 @@ class Math_BigInteger {
     }
 
     /**
+     * Generates a random BigInteger
+     *
+     * Byte length is equal to $length. Uses crypt_random if it's loaded and mt_rand if it's not.
+     *
+     * @param Integer $length
+     * @return Math_BigInteger
+     * @access private
+     */
+    function _random_number_helper($size)
+    {
+        $crypt_random = function_exists('crypt_random_string') || (!class_exists('Crypt_Random') && function_exists('crypt_random_string'));
+        if ($crypt_random) {
+            $random = crypt_random_string($size);
+        } else {
+            $random = '';
+
+            if ($size & 1) {
+                $random.= chr(mt_rand(0, 255));
+            }
+
+            $blocks = $size >> 1;
+            for ($i = 0; $i < $blocks; ++$i) {
+                // mt_rand(-2147483648, 0x7FFFFFFF) always produces -2147483648 on some systems
+                $random.= pack('n', mt_rand(0, 0xFFFF));
+            }
+        }
+
+        return new Math_BigInteger($random, 256);
+    }
+
+    /**
      * Generate a random number
      *
      * @param optional Integer $min
@@ -3057,46 +3111,45 @@ class Math_BigInteger {
             $min = $temp;
         }
 
-        $max = $max->subtract($min);
-        $max = ltrim($max->toBytes(), chr(0));
-        $size = strlen($max) - 1;
-
-        $crypt_random = function_exists('crypt_random_string') || (!class_exists('Crypt_Random') && function_exists('crypt_random_string'));
-        if ($crypt_random) {
-            $random = crypt_random_string($size);
-        } else {
-            $random = '';
-
-            if ($size & 1) {
-                $random.= chr(mt_rand(0, 255));
-            }
-
-            $blocks = $size >> 1;
-            for ($i = 0; $i < $blocks; ++$i) {
-                // mt_rand(-2147483648, 0x7FFFFFFF) always produces -2147483648 on some systems
-                $random.= pack('n', mt_rand(0, 0xFFFF));
-            }
+        static $one;
+        if (!isset($one)) {
+            $one = new Math_BigInteger(1);
         }
 
-        $fragment = new Math_BigInteger($random, 256);
-        $leading = $fragment->compare(new Math_BigInteger(substr($max, 1), 256)) > 0 ?
-            ord($max[0]) - 1 : ord($max[0]);
+        $max = $max->subtract($min->subtract($one));
+        $size = strlen(ltrim($max->toBytes(), chr(0)));
 
-        if (!$crypt_random) {
-            $msb = chr(mt_rand(0, $leading));
-        } else {
-            $cutoff = floor(0xFF / $leading) * $leading;
-            while (true) {
-                $msb = ord(crypt_random_string(1));
-                if ($msb <= $cutoff) {
-                    $msb%= $leading;
-                    break;
-                }
-            }
-            $msb = chr($msb);
+        /*
+            doing $random % $max doesn't work because some numbers will be more likely to occur than others.
+            eg. if $max is 140 and $random's max is 255 then that'd mean both $random = 5 and $random = 145
+            would produce 5 whereas the only value of random that could produce 139 would be 139. ie.
+            not all numbers would be equally likely. some would be more likely than others.
+
+            creating a whole new random number until you find one that is within the range doesn't work
+            because, for sufficiently small ranges, the likelihood that you'd get a number within that range
+            would be pretty small. eg. with $random's max being 255 and if your $max being 1 the probability
+            would be pretty high that $random would be greater than $max.
+
+            phpseclib works around this using the technique described here:
+
+            http://crypto.stackexchange.com/questions/5708/creating-a-small-number-from-a-cryptographically-secure-random-string
+        */
+        $random_max = new Math_BigInteger(chr(1) . str_repeat("\0", $size), 256);
+        $random = $this->_random_number_helper($size);
+
+        list($max_multiple) = $random_max->divide($max);
+        $max_multiple = $max_multiple->multiply($max);
+
+        while ($random->compare($max_multiple) >= 0) {
+            $random = $random->subtract($max_multiple);
+            $random_max = $random_max->subtract($max_multiple);
+            $random = $random->bitwise_leftShift(8);
+            $random = $random->add($this->_random_number_helper(1));
+            $random_max = $random_max->bitwise_leftShift(8);
+            list($max_multiple) = $random_max->divide($max);
+            $max_multiple = $max_multiple->multiply($max);
         }
-
-        $random = new Math_BigInteger($msb . $random, 256);
+        list(, $random) = $random->divide($max);
 
         return $this->_normalize($random->add($min));
     }
@@ -3147,6 +3200,7 @@ class Math_BigInteger {
 
         // gmp_nextprime() requires PHP 5 >= 5.2.0 per <http://php.net/gmp-nextprime>.
         if ( MATH_BIGINTEGER_MODE == MATH_BIGINTEGER_MODE_GMP && function_exists('gmp_nextprime') ) {
+            $p = new Math_BigInteger();
             $p->value = gmp_nextprime($x->value);
 
             if ($p->compare($max) <= 0) {
@@ -3236,7 +3290,7 @@ class Math_BigInteger {
      * @return Boolean
      * @access public
      * @internal Uses the
-     *     {@link http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test Miller-Rabin primality test}.  See 
+     *     {@link http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test Miller-Rabin primality test}.  See
      *     {@link http://www.cacr.math.uwaterloo.ca/hac/about/chap4.pdf#page=8 HAC 4.24}.
      */
     function isPrime($t = false)
@@ -3245,6 +3299,7 @@ class Math_BigInteger {
 
         if (!$t) {
             // see HAC 4.49 "Note (controlling the error probability)"
+            // @codingStandardsIgnoreStart
                  if ($length >= 163) { $t =  2; } // floor(1300 / 8)
             else if ($length >= 106) { $t =  3; } // floor( 850 / 8)
             else if ($length >= 81 ) { $t =  4; } // floor( 650 / 8)
@@ -3257,6 +3312,7 @@ class Math_BigInteger {
             else if ($length >= 25 ) { $t = 15; } // floor( 200 / 8)
             else if ($length >= 18 ) { $t = 18; } // floor( 150 / 8)
             else                     { $t = 27; }
+            // @codingStandardsIgnoreEnd
         }
 
         // ie. gmp_testbit($this, 0)
@@ -3285,16 +3341,16 @@ class Math_BigInteger {
 
         if (!isset($primes)) {
             $primes = array(
-                3,    5,    7,    11,   13,   17,   19,   23,   29,   31,   37,   41,   43,   47,   53,   59,   
-                61,   67,   71,   73,   79,   83,   89,   97,   101,  103,  107,  109,  113,  127,  131,  137,  
-                139,  149,  151,  157,  163,  167,  173,  179,  181,  191,  193,  197,  199,  211,  223,  227,  
-                229,  233,  239,  241,  251,  257,  263,  269,  271,  277,  281,  283,  293,  307,  311,  313,  
-                317,  331,  337,  347,  349,  353,  359,  367,  373,  379,  383,  389,  397,  401,  409,  419,  
-                421,  431,  433,  439,  443,  449,  457,  461,  463,  467,  479,  487,  491,  499,  503,  509,  
-                521,  523,  541,  547,  557,  563,  569,  571,  577,  587,  593,  599,  601,  607,  613,  617,  
-                619,  631,  641,  643,  647,  653,  659,  661,  673,  677,  683,  691,  701,  709,  719,  727,  
-                733,  739,  743,  751,  757,  761,  769,  773,  787,  797,  809,  811,  821,  823,  827,  829,  
-                839,  853,  857,  859,  863,  877,  881,  883,  887,  907,  911,  919,  929,  937,  941,  947,  
+                3,    5,    7,    11,   13,   17,   19,   23,   29,   31,   37,   41,   43,   47,   53,   59,
+                61,   67,   71,   73,   79,   83,   89,   97,   101,  103,  107,  109,  113,  127,  131,  137,
+                139,  149,  151,  157,  163,  167,  173,  179,  181,  191,  193,  197,  199,  211,  223,  227,
+                229,  233,  239,  241,  251,  257,  263,  269,  271,  277,  281,  283,  293,  307,  311,  313,
+                317,  331,  337,  347,  349,  353,  359,  367,  373,  379,  383,  389,  397,  401,  409,  419,
+                421,  431,  433,  439,  443,  449,  457,  461,  463,  467,  479,  487,  491,  499,  503,  509,
+                521,  523,  541,  547,  557,  563,  569,  571,  577,  587,  593,  599,  601,  607,  613,  617,
+                619,  631,  641,  643,  647,  653,  659,  661,  673,  677,  683,  691,  701,  709,  719,  727,
+                733,  739,  743,  751,  757,  761,  769,  773,  787,  797,  809,  811,  821,  823,  827,  829,
+                839,  853,  857,  859,  863,  877,  881,  883,  887,  907,  911,  919,  929,  937,  941,  947,
                 953,  967,  971,  977,  983,  991,  997
             );
 

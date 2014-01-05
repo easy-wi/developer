@@ -1,5 +1,4 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
  * Pure-PHP ANSI Decoder
@@ -29,23 +28,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @category   File
- * @package    File_ANSI
- * @author     Jim Wigginton <terrafrost@php.net>
- * @copyright  MMXII Jim Wigginton
- * @license    http://www.opensource.org/licenses/mit-license.html  MIT License
- * @link       http://phpseclib.sourceforge.net
+ * @category  File
+ * @package   File_ANSI
+ * @author    Jim Wigginton <terrafrost@php.net>
+ * @copyright MMXII Jim Wigginton
+ * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @link      http://phpseclib.sourceforge.net
  */
 
 /**
  * Pure-PHP ANSI Decoder
  *
+ * @package File_ANSI
  * @author  Jim Wigginton <terrafrost@php.net>
  * @version 0.3.0
  * @access  public
- * @package File_ANSI
  */
-class File_ANSI {
+class File_ANSI
+{
     /**
      * Max Width
      *
@@ -351,7 +351,7 @@ class File_ANSI {
                                             $this->attrs[$this->y][$this->x] = '';
 
                                             if ($this->bold) $this->attrs[$this->y][$this->x].= '</b>';
-                                            if ($this->underline) $this->attrs[$this->y][$this->x].= '</underline>';
+                                            if ($this->underline) $this->attrs[$this->y][$this->x].= '</u>';
                                             if ($this->blink) $this->attrs[$this->y][$this->x].= '</blink>';
                                             if ($this->color) $this->attrs[$this->y][$this->x].= '</span>';
 
