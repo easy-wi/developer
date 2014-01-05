@@ -9,6 +9,10 @@
 	<captcha_2>Captcha beim Login benutzen</captcha_2>
 	<confirm_change>Änderungen speichern?</confirm_change>
     <continue>Weiter</continue>
+    <cron_external>Externe Cronjobs</cron_external>
+    <cron_external_text>Falls keine Internen Cronjobs möglich sind, können die Dateien auch von extern aufgerufen werden. In diesem Fall muss man die aufrufende IP noch in den Einstellungen erlauben:</cron_external_text>
+    <cron_internal>Interne Cronjobs</cron_internal>
+    <cron_internal_text>Die empfohlende Methode sind interne Cronjobs. Diese wären z.B. so einzutragen:</cron_internal_text>
 	<data>Bitte füllen Sie alle Formularfelder aus</data>
 	<db>Datenbankname</db>
 	<domain>Webadresse</domain>

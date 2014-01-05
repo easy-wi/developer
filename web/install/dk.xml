@@ -9,6 +9,10 @@
 	<captcha_2>Brug en Captcha på login</captcha_2>
 	<confirm_change>Gem ændringer?</confirm_change>
     <continue>Fortsæt</continue>
+    <cron_external>External cronjobs</cron_external>
+    <cron_external_text>In case you cannot make use of internal cronjobs, the same files can be called with an external cronjob. If you want to make use of this you need to whitelist the calling IP(s) at the Easy-Wi settings:</cron_external_text>
+    <cron_internal>Internal Cronjobs</cron_internal>
+    <cron_internal_text>The recommended method is to use internal cronjobs. Those could be installed like:</cron_internal_text>
 	<data>Udfyld venligst følgende datafelter. Alle er påkrævet</data>
 	<db>Databasenavn</db>
 	<domain>Aktuelle domæne</domain>

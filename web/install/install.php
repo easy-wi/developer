@@ -925,11 +925,25 @@ if ($currentStep == 9 and count($systemCheckError) == 0) {
 
     $displayPHPUser = (isset($_SERVER['USER'])) ? $_SERVER['USER'] : 'changeToPHPUser';
 
-    $displayToUser .= "<div class='alert alert-success'>0 */1 * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 300 php ./reboot.php >/dev/null 2>&1<br>
+    $displayToUser .= "<div class='alert alert-success'><h4>{$languageObject->cron_internal}</h4>
+<strong>{$languageObject->cron_internal_text}</strong><br>
+0 */1 * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 300 php ./reboot.php >/dev/null 2>&1<br>
 */5 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./statuscheck.php >/dev/null 2>&1<br>
 */1 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./startupdates.php >/dev/null 2>&1<br>
 */5 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./jobs.php >/dev/null 2>&1<br>
-*/10 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./cloud.php >/dev/null 2>&1<br></div>";
+*/10 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./cloud.php >/dev/null 2>&1</div>";
+
+    $query = $sql->prepare("SELECT `pageurl` FROM `page_settings` WHERE `id`=1 LIMIT 1");
+    $query->execute();
+    $pageUrl = $query->fetchColumn();
+
+    $displayToUser .= "<div class='alert alert-success'><h4>{$languageObject->cron_external}</h4>
+<strong>{$languageObject->cron_external_text}</strong><br>
+0 */1 * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}reboot.php >/dev/null 2>&1<br>
+*/5 * * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}statuscheck.php >/dev/null 2>&1<br>
+*/1 * * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}startupdates.php >/dev/null 2>&1<br>
+*/5 * * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}jobs.php >/dev/null 2>&1<br>
+*/10 * * * * anySSH2User wget wget -q --no-check-certificate -O - ${pageUrl}cloud.php >/dev/null 2>&1</div>";
 
 }
 
