@@ -206,7 +206,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`user`,?) AS `duser`,AES_DECRYPT(`pass`,?) AS `dpass` FROM `rserverdata` WHERE `resellerid`=?");
         $query2->execute(array($aeskey, $aeskey, $resellerID));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            if (($row2['publickey'] == 'Y' and strlen($row2['keyname']) > 0) or ($row2['publickey'] == 'N' and strlen($row2['dpass']) > 0)) {
+            if (($row2['publickey'] != 'N' and strlen($row2['keyname']) > 0) or ($row2['publickey'] == 'N' and strlen($row2['dpass']) > 0)) {
                 $gameRootIPs[$row2['ip']] = array('id' => $row2['id'], 'ftpPort' => $row2['ftpport'], 'user' => $row2['duser'], 'sourceSystemID' => $row2['sourceSystemID'], 'externalID' => $row2['externalID']);
                 foreach (ipstoarray($row2['altips']) as $ip) {
                     $gameRootIPs[$ip] = array('id' => $row2['id'], 'ftpPort' => $row2['ftpport'], 'user' => $row2['duser'], 'sourceSystemID' => $row2['sourceSystemID'], 'externalID' => $row2['externalID']);

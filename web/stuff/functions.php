@@ -41,11 +41,6 @@
 if (!defined('EASYWIDIR')) {
     define('EASYWIDIR', '');
 }
-if (!extension_loaded('ssh2')) {
-    function ssh2_connect ($ip = '', $port = '', $params = '') {
-        return null;
-    }
-}
 
 if (!function_exists('passwordgenerate')) {
 

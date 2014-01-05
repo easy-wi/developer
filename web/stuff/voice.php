@@ -410,10 +410,11 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                         $bitversion = $row['bitversion'];
                     }
                 }
+
                 tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns),$reseller_id);
-                $query = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `resellerid`=?");
-                $query->execute(array($id,$reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) tsbackup('delete',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$localserverid, $row['id'],$reseller_id);
+
+				tsbackup('delete', $ssh2user, $serverdir, $masterserver, $localserverid, '*');
+				
                 $query = $sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `userdata` u ON b.`uid`=u.`id` LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE u.`id` IS NULL OR  v.`id` IS NULL");
                 $query->execute();
             }

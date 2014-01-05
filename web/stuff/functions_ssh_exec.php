@@ -56,6 +56,12 @@ if (!function_exists('ssh2_execute')) {
 
         } else if ($type == 'vh') {
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
+
+        } else if ($type == 'vd') {
+            $query = $sql->prepare("SELECT *,`ssh2ip` AS `ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedpass` FROM `voice_tsdns` WHERE `id`=:serverID LIMIT 1");
+
+        } else if ($type == 'vm') {
+            $query = $sql->prepare("SELECT *,`ssh2ip` AS `ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedpass` FROM `voice_masterserver` WHERE `id`=:serverID LIMIT 1");
         }
 
         if (isset($query)) {
@@ -79,22 +85,20 @@ if (!function_exists('ssh2_execute')) {
 
                 if ($sshObject->error === false) {
 
-                    if ($ssh2Publickey == 'N') {
+                    if ($ssh2Publickey != 'N') {
 
-                        $loginSucces = $sshObject->login($ssh2User, $ssh2Pass);
-
-                    } else {
-
-                        $key = new Crypt_RSA();
-                        $key->loadKey(file_get_contents($privateKey));
-
-                        $loginSucces = $sshObject->login($ssh2User, $key);
+                        $ssh2Pass = new Crypt_RSA();
+                        $ssh2Pass->loadKey(file_get_contents($privateKey));
 
                     }
 
-                    if ($loginSucces) {
+                    if ($sshObject->login($ssh2User, $ssh2Pass)) {
 
                         $notified = 0;
+
+                        if (!is_array($cmds)) {
+                            $cmds = array($cmds);
+                        }
 
                         foreach ($cmds as $c) {
 
@@ -116,7 +120,7 @@ if (!function_exists('ssh2_execute')) {
                 }
 
                 if ($notified == $rSA['down_checks']) {
-                    $query=($resellerID==0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${resellerID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
+                    $query = ($resellerID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${resellerID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
                     $query->execute();
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                         if ($row2['mail_serverdown'] == 'Y') {
@@ -131,10 +135,14 @@ if (!function_exists('ssh2_execute')) {
                     $query = $sql->prepare("UPDATE `eac` SET `notified`=? WHERE `id`=? LIMIT 1");
                 } else if ($type == 'vh') {
                     $query = $sql->prepare("UPDATE `virtualhosts` SET `notified`=? WHERE `id`=? LIMIT 1");
+                } else if ($type == 'vd') {
+                    $query = $sql->prepare("UPDATE `voice_tsdns` SET `notified`=? WHERE `id`=? LIMIT 1");
+                } else if ($type == 'vm') {
+                    $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=? WHERE `id`=? LIMIT 1");
                 }
                 $query->execute(array($notified, $serverID));
 
-                return ($notified == 0) ? false: $return;
+                return ($notified == 0 or $sshObject->error === false) ? $return : false;
 
             }
         }

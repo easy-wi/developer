@@ -87,7 +87,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' AND `hostID`=?");
         $query2->execute(array($row['hostID']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            $query3 = $sql->prepare("SELECT `localserverid`,`active`,`backup`,`lendserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`dns`,`localserverid`,`maxtraffic`,`filetraffic` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query3 = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($row2['affectedID'], $row2['resellerID']));
             foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                 $active = $row3['active'];
@@ -108,6 +108,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $max_download_total_bandwidth = $row3['max_download_total_bandwidth'];
                 $max_upload_total_bandwidth = $row3['max_upload_total_bandwidth'];
                 $dns = $row3['dns'];
+                $masterserver = $row['masterserver'];
             }
             if ($row2['action'] == 'dl' and isset($localserverid) and isid($localserverid,30)) {
                 $command = $gsprache->del.' voiceserverID: '.$row2['affectedID'].' name:'.$row2['name'];
@@ -118,18 +119,16 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $update = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                 $update->execute(array($row2['jobID']));
                 $template_file = $spracheResponse->table_del;
+
                 if ($usedns == 'Y') {
                     $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns), $row['resellerID']);
                 }
-                $query3 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `resellerid`=?");
-                $query3->execute(array($row2['affectedID'], $row['resellerID']));
-                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                    $delete = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                    $delete->execute(array($row3['id'], $row['resellerID']));
-                    tsbackup('delete',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$localserverid, $row3['id'], $row['resellerID']);
-                }
+
+				tsbackup('delete', $ssh2user, $serverdir, $masterserver, $localserverid, '*');
+
                 $query3 = $sql->prepare("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
                 $query3->execute();
+
             } else if ($row2['action'] == 'ad' and isset($active)) {
                 if (isid($localserverid,30)) {
                     $command = $gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Skipping, virtual ID already exists in Easy-WI DB: '.$localserverid;

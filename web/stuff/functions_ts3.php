@@ -37,335 +37,273 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-function tsbackup ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $notified, $path, $virtualserver_id, $backupid, $reseller_id, $move = array()) {
+function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $backupid, $move = array()) {
 
-    global $sql;
+    $split_config = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);
+    $folderfilecount = count($split_config) - 1;
+    $i = 0;
 
-    if ($keyuse == 'Y') {
-        # https://github.com/easy-wi/developer/issues/70
-        $sshkey = removePub($sshkey);
-        $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-        $key = EASYWIDIR . '/keys/' . $sshkey;
+    $folders = (substr($path, 0, 1) == '/') ? '/' : '/home/'.$sshuser . '/';
 
-        $ssh2 = (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($sship, $sshport, array('hostkey' => 'ssh-rsa')) : false;
-
-    } else {
-        $ssh2 = @ssh2_connect($sship, $sshport);
+    while ($i <= $folderfilecount) {
+        $folders .= $split_config[$i] . '/';
+        $i++;
     }
 
-    if ($ssh2 == true) {
+    if ($folders == '') {
+        $folders='.';
+    }
 
-        $connect_ssh2 = ($keyuse== 'Y' and isset($pubkey) and isset($key)) ? @ssh2_auth_pubkey_file($ssh2, $sshuser, $pubkey, $key) : @ssh2_auth_password($ssh2, $sshuser, $sshpw);
+    if (substr($folders, -1) != '/') {
+        $folders = $folders . '/';
+    }
 
-        if ($connect_ssh2 == true) {
+    $filefolder = $folders . 'files/virtualserver_' . $virtualserver_id . '/';
 
-            $split_config = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);
-            $folderfilecount = count($split_config) - 1;
-            $i = 0;
+    $backupfolder = $folders . 'backups/virtualserver_' . $virtualserver_id . '/';
 
-            $folders = (substr($path, 0, 1) == '/') ? '/' : '/home/'.$sshuser . '/';
+    if ($action == 'create') {
 
-            while ($i <= $folderfilecount) {
-                $folders .= $split_config[$i] . '/';
-                $i++;
+        $function = 'function backup () { mkdir -p ' . $backupfolder . ' && nice -n +19 tar cfj ' . $backupfolder . $backupid . '.tar.bz2 ' . $filefolder . '; }';
+
+    } else if ($action == 'delete') {
+
+        $function = 'function backup () { nice -n +19 rm -f ' . $backupfolder . $backupid . '.tar.bz2; }';
+
+    } else if ($action == 'deploy') {
+
+        $function = 'function backup () { nice -n +19 rm -rf ' . $filefolder . '* && nice -n +19 tar xfj ' . $backupfolder . $backupid . '.tar.bz2 -C /';
+
+        if (count($move) > 0) {
+            foreach ($move as $o => $n) {
+                $function .= ' && mv ' . $o . ' ' . $n;
             }
+        }
 
-            if ($folders == '') {
-                $folders='.';
-            }
+        $function .= '; }';
 
-            if (substr($folders, -1) != '/') {
-                $folders = $folders . '/';
-            }
+    }
 
-            $filefolder = $folders . 'files/virtualserver_' . $virtualserver_id . '/';
+    if (isset($function)) {
 
-            $backupfolder = $folders . 'backups/virtualserver_' . $virtualserver_id . '/';
+        $ssh2cmd = 'cd ' . $folders . ' && ' . $function . '; backup& ';
 
-            if ($action == 'create') {
-
-                $function = 'function backup () { mkdir -p ' . $backupfolder . ' && nice -n +19 tar cfj ' . $backupfolder . $backupid . '.tar.bz2 ' . $filefolder . '; }';
-
-            } else if ($action == 'delete') {
-
-                $function = 'function backup () { nice -n +19 rm -f ' . $backupfolder . $backupid . '.tar.bz2; }';
-
-            } else if ($action == 'deploy') {
-
-                $function = 'function backup () { nice -n +19 rm -rf ' . $filefolder . '* && nice -n +19 tar xfj ' . $backupfolder . $backupid . '.tar.bz2 -C /';
-
-                if (count($move) > 0) {
-                    foreach ($move as $o => $n) {
-                        $function .= ' && mv ' . $o . ' ' . $n;
-                    }
-                }
-
-                $function .= '; }';
-
-            }
-
-            if (isset($function)) {
-
-                $ssh2cmd = 'cd ' . $folders . ' && ' . $function . '; backup& ';
-
-                ssh2_exec($ssh2, $ssh2cmd);
-
-                if ($notified == 'Y') {
-                    $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`='N' WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array($sship, $reseller_id));
-                }
-
-            } else {
-                $bad = 'Incorrect action';
-            }
-
+        if (ssh2_execute('vm', $ts3MasterID, $ssh2cmd) !== false) {
+            return 'ok';
         } else {
-            $bad = 'The login data does not work';
+            return 'The login data does not work';
         }
 
-    } else {
-        $bad = 'Could not connect to Server';
     }
 
-    if (isset($bad) and $notified != 'Y') {
+    return 'Incorrect action';
 
-        if ($reseller_id == 0) {
-            $query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'");
-            $query->execute();
-        } else {
-            $query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`=0 AND `accounttype`='a')");
-            $query->execute(array($reseller_id));
-        }
-
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['mail_serverdown'] == 'Y') {
-                sendmail('emaildown', $row['id'], 'TS3 Master ' . $sship . ' ( ' . $bad . ' )', '');
-            }
-        }
-
-        $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`='Y' WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($sship, $reseller_id));
-
-        return $bad;
-
-    } else {
-        return 'ok';
-    }
 }
 
 function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $notified, $path, $bitversion, $tsip, $tsport, $tsdns, $reseller_id, $maxnotified = 2) {
 
-    global $sql;
-
-    if ($keyuse == 'Y') {
-
-        $sshkey = removePub($sshkey);
-        $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-        $key = EASYWIDIR . '/keys/' . $sshkey;
-
-        $ssh2 = (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($sship, $sshport, array('hostkey' => 'ssh-rsa')) : false;
-
-    } else {
-        $ssh2 = @ssh2_connect($sship, $sshport);
+    if (!class_exists('Net_SSH2')) {
+        include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
     }
 
-    if ($ssh2 == true) {
+    if (!class_exists('Net_SFTP')) {
+        include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
+    }
 
-        $connect_ssh2 = ($keyuse == 'Y') ? @ssh2_auth_pubkey_file($ssh2, $sshuser, $pubkey, $key) : @ssh2_auth_password($ssh2, $sshuser, $sshpw);
+    global $sql;
 
-        if ($connect_ssh2 == true) {
+    $sshSftpObject = new Net_SFTP($sship, $sshport);
 
-            $split_config = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);
-            $folderfilecount = count($split_config) - 1;
+    if ($keyuse != 'N') {
 
-            $i = 0;
+        $privateKey = EASYWIDIR . '/keys/' . removePub($sshkey);
 
-            $folders = (substr($path,0,1) == '/') ? '/' : '';
-            $lastFolder = '';
+        $sshpw = new Crypt_RSA();
+        $sshpw->loadKey(file_get_contents($privateKey));
 
-            while ($i <= $folderfilecount) {
-                $folders .= $split_config[$i] . '/';
-                $lastFolder = $split_config[$i];
-                $i++;
-            }
+    }
 
-            if ($lastFolder != 'tsdns' or substr($path, 0, 1) != '/') {
-                $folders .= 'tsdns/';
-            }
+    if ($sshSftpObject->login($sshuser, $sshpw)) {
 
-            $bin = ($bitversion == 32) ? 'tsdnsserver_linux_x86' : 'tsdnsserver_linux_amd64';
 
-            $ssh2cmd = 'cd ' . $folders . ' && function restart () { if [ "`ps fx | grep ' . $bin . ' | grep -v grep`" == "" ]; then ./' . $bin . ' > /dev/null & else ./' . $bin . ' --update > /dev/null & fi }; restart& ';
+        $split_config = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);
+        $folderfilecount = count($split_config) - 1;
 
-            if ($action == 'md' or $action == 'dl') {
+        $i = 0;
 
-                $newip = $tsip[0];
-                $oldip = (isset($tsip[1])) ? $tsip[1] : '';
+        $folders = (substr($path,0,1) == '/') ? '/' : '';
+        $lastFolder = '';
 
-                $newport = $tsport[0];
-                $oldport = (isset($tsport[1])) ? $tsport[1] : '';
+        while ($i <= $folderfilecount) {
+            $folders .= $split_config[$i] . '/';
+            $lastFolder = $split_config[$i];
+            $i++;
+        }
 
-                $newdns = $tsdns[0];
-                $olddns = (isset($tsdns[1])) ? $tsdns[1] : '';
+        if ($lastFolder != 'tsdns' or substr($path, 0, 1) != '/') {
+            $folders .= 'tsdns/';
+        }
 
-            } else {
-                $dnsarray = array();
-            }
+        if ($action == 'md' or $action == 'dl') {
 
-            $sftp = ssh2_sftp($ssh2);
-            $file = (substr($path,0,1) == '/') ? 'ssh2.sftp://' . $sftp . $folders . 'tsdns_settings.ini' : 'ssh2.sftp://' . $sftp . '/home/' . $sshuser . '/' . $folders . 'tsdns_settings.ini';
+            $newip = $tsip[0];
+            $oldip = (isset($tsip[1])) ? $tsip[1] : '';
 
-            if ($action != 'rs') {
+            $newport = $tsport[0];
+            $oldport = (isset($tsport[1])) ? $tsport[1] : '';
 
-                $tsdns_read= @fopen($file, 'r');
-                $buffer = '';
+            $newdns = $tsdns[0];
+            $olddns = (isset($tsdns[1])) ? $tsdns[1] : '';
 
-                if ($tsdns_read) {
+        } else {
+            $dnsarray = array();
+        }
 
-                    $filesize = filesize($file);
+        $file = (substr($path,0,1) == '/') ? $folders . 'tsdns_settings.ini' : '/home/' . $sshuser . '/' . $folders . 'tsdns_settings.ini';
 
-                    if ($filesize > 0) {
-                        while (strlen($buffer) < $filesize) {
-                            $buffer .= fread($tsdns_read, $filesize);
-                        }
-                    }
+        if ($action != 'rs') {
+            $data = $sshSftpObject->get($file);
+            $data = str_replace(array("\0", "\b", "\r", "\Z"), '', $data);
+        }
 
-                    fclose($tsdns_read);
-                    $data = str_replace(array("\0", "\b", "\r", "\Z"), '', $buffer);
-                }
-            }
 
-            if ($action != 'rs' and $action != 'mw' and isset($tsdns_read) and isset($data) and $tsdns_read) {
 
-                $edited = false;
-                $ca = array();
+        if ($action != 'rs' and $action != 'mw') {
 
-                foreach (preg_split('/\n/', $data, -1, PREG_SPLIT_NO_EMPTY) as $configLine) {
+            $edited = false;
+            $ca = array();
 
-                    if ($action != 'li' and $configLine != $olddns . '=' . $oldip . ':' . $oldport and $configLine != $newdns . '=' . $newip . ':' . $newport) {
-                        $ca[] = $configLine . "\r\n";
-                    } else if ($action == 'md' and $edited == false and ($configLine == $olddns . '=' . $oldip . ':' . $oldport or $configLine == $newdns . '=' . $newip . ':' . $newport)) {
-                        $edited = true;
-                        $ca[] = $newdns . '=' . $newip . ':' . $newport . "\r\n";
-                    }
+            foreach (preg_split('/\n/', $data, -1, PREG_SPLIT_NO_EMPTY) as $configLine) {
 
-                    if ($action == 'li' and $configLine != '' and !preg_match('/^#(|\s+)(.*)$/', $configLine)) {
-                        $dnsconfig = explode('=', $configLine);
-                        if (isset($dnsconfig[1])) {
-                            $linedns = $dnsconfig[0];
-                            $lineserver = $dnsconfig[1];
-                            $dnsarray[$lineserver] = $linedns;
-                        }
-                    }
-                }
-
-                if ($action == 'md' and $edited == false) {
+                if ($action != 'li' and $configLine != $olddns . '=' . $oldip . ':' . $oldport and $configLine != $newdns . '=' . $newip . ':' . $newport) {
+                    $ca[] = $configLine . "\r\n";
+                } else if ($action == 'md' and $edited == false and ($configLine == $olddns . '=' . $oldip . ':' . $oldport or $configLine == $newdns . '=' . $newip . ':' . $newport)) {
+                    $edited = true;
                     $ca[] = $newdns . '=' . $newip . ':' . $newport . "\r\n";
                 }
 
-                if ($action != 'li') {
-
-                    $ca = array_unique($ca);
-                    sort($ca);
-
-                    $newcfg = '';
-
-                    foreach ($ca as $line) {
-                        $newcfg .= $line;
+                if ($action == 'li' and $configLine != '' and !preg_match('/^#(|\s+)(.*)$/', $configLine)) {
+                    $dnsconfig = explode('=', $configLine);
+                    if (isset($dnsconfig[1])) {
+                        $linedns = $dnsconfig[0];
+                        $lineserver = $dnsconfig[1];
+                        $dnsarray[$lineserver] = $linedns;
                     }
-
-                    if ($newcfg == '') {
-                        $newcfg = '# No TSDNS data entered';
-                    }
-
-                    $tsdns_write = fopen($file, 'w');
-                    $writefile = fwrite($tsdns_write, $newcfg);
-
-                    if ($writefile == false) {
-                        $bad = 'Could not upload tsdns_settings.ini';
-                    }
-
-                    fclose($tsdns_write);
                 }
             }
 
-            if ($action == 'mw' and isset($data)) {
+            if ($action == 'md' and $edited == false) {
+                $ca[] = $newdns . '=' . $newip . ':' . $newport . "\r\n";
+            }
 
-                $usedIPs = array();
+            if ($action != 'li') {
 
-                foreach (preg_split('/\n/', $data,-1,PREG_SPLIT_NO_EMPTY) as $configLine) {
+                $ca = array_unique($ca);
+                sort($ca);
 
-                    if ($configLine != '' and !preg_match('/^#(|\s+)(.*)$/', $configLine)) {
+                $newcfg = '';
 
-                        $splittedLine = preg_split('/\=/', $configLine, -1, PREG_SPLIT_NO_EMPTY);
-
-                        $usedIPs[] = (isset($splittedLine[1])) ? array('dns' => $splittedLine[0], 'address' => $splittedLine[1]) : $configLine;
-
-                    } else {
-                        $usedIPs[] = $configLine;
-                    }
+                foreach ($ca as $line) {
+                    $newcfg .= $line;
                 }
 
-                foreach ($tsip as $newLine) {
-
-                    $splittedLine = preg_split('/\=/', strtolower($newLine), -1, PREG_SPLIT_NO_EMPTY);
-
-                    if (isset($splittedLine[1]) and !array_key_exists($splittedLine[1], $usedIPs)) {
-                        $usedIPs[] = array('dns' => $splittedLine[0], 'address' => $splittedLine[1]);
-                    }
+                if ($newcfg == '') {
+                    $newcfg = '# No TSDNS data entered';
                 }
 
-                function array_multi_dimensional_unique($multi){
+                $sshSftpObject->put($file, $newcfg);
 
-                    $unique = array();
+            }
+        }
 
-                    foreach($multi as $sub){
-                        if (!in_array($sub, $unique)){
-                            $unique[] = $sub;
-                        }
-                    }
+        if ($action == 'mw' and isset($data)) {
 
-                    return $unique;
+            $usedIPs = array();
 
-                }
+            foreach (preg_split('/\n/', $data,-1,PREG_SPLIT_NO_EMPTY) as $configLine) {
 
-                $newCfg = '';
+                if ($configLine != '' and !preg_match('/^#(|\s+)(.*)$/', $configLine)) {
 
-                $usedIPs = array_multi_dimensional_unique($usedIPs);
-                sort($usedIPs);
+                    $splittedLine = preg_split('/\=/', $configLine, -1, PREG_SPLIT_NO_EMPTY);
 
-                foreach ($usedIPs as $value) {
-                    $newCfg .= (isset($value['dns']) and isset($value['address']) and !preg_match('/^#(|\s+)(.*)$/', $value['dns'])) ? $value['dns'] . '=' . $value['address'] . "\r\n" : $value . "\r\n";
-                }
+                    $usedIPs[] = (isset($splittedLine[1])) ? array('dns' => $splittedLine[0], 'address' => $splittedLine[1]) : $configLine;
 
-                if ($newCfg== '') {
-                    $bad = 'Nothing to write';
                 } else {
+                    $usedIPs[] = $configLine;
+                }
+            }
 
-                    $tsdns_write= @fopen($file, 'w');
-                    $writefile= @fwrite($tsdns_write, $newCfg);
+            foreach ($tsip as $newLine) {
 
-                    if ($writefile == false) {
-                        $bad = 'Could not upload tsdns_settings.ini';
-                    } else {
-                        fclose($tsdns_write);
+                $splittedLine = preg_split('/\=/', strtolower($newLine), -1, PREG_SPLIT_NO_EMPTY);
+
+                if (isset($splittedLine[1]) and !array_key_exists($splittedLine[1], $usedIPs)) {
+                    $usedIPs[] = array('dns' => $splittedLine[0], 'address' => $splittedLine[1]);
+                }
+            }
+
+            function array_multi_dimensional_unique($multi){
+
+                $unique = array();
+
+                foreach($multi as $sub){
+                    if (!in_array($sub, $unique)){
+                        $unique[] = $sub;
+                    }
+                }
+
+                return $unique;
+
+            }
+
+            $newCfg = '';
+
+            $usedIPs = array_multi_dimensional_unique($usedIPs);
+            sort($usedIPs);
+
+            foreach ($usedIPs as $value) {
+                $newCfg .= (isset($value['dns']) and isset($value['address']) and !preg_match('/^#(|\s+)(.*)$/', $value['dns'])) ? $value['dns'] . '=' . $value['address'] . "\r\n" : $value . "\r\n";
+            }
+
+            if ($newCfg== '') {
+
+                $bad = 'Nothing to write';
+
+            } else {
+
+                $sshSftpObject->put($file, $newCfg);
+
+            }
+        }
+
+        if (!isset($bad) and $action != 'li') {
+
+
+            $sshObject = new Net_SSH2($sship, $sshport);
+
+            if ($sshObject->error === false) {
+                if ($sshObject->login($sshuser, $sshpw)) {
+
+                    $bin = ($bitversion == 32) ? 'tsdnsserver_linux_x86' : 'tsdnsserver_linux_amd64';
+
+                    $ssh2cmd = 'cd ' . $folders . ' && function restart () { if [ "`ps fx | grep ' . $bin . ' | grep -v grep`" == "" ]; then ./' . $bin . ' > /dev/null & else ./' . $bin . ' --update > /dev/null & fi }; restart& ';
+
+                    $sshObject->exec($ssh2cmd);
+
+                    if ($notified > 0) {
+                        $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
+                        $query->execute(array($sship, $reseller_id));
                     }
 
+                } else {
+                    $bad = 'The login data does not work';
+                    $notified++;
                 }
+
+            } else {
+                $bad = 'Could not connect to Server';
+                $notified++;
             }
-
-            if (!isset($bad) and $action != 'li') {
-
-                ssh2_exec($ssh2, $ssh2cmd);
-
-                if ($notified > 0) {
-                    $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array($sship, $reseller_id));
-                }
-            }
-
-        } else {
-            $bad = 'The login data does not work';
         }
 
     } else {
@@ -398,9 +336,10 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
     } else if ($action == 'li' and isset($dnsarray)) {
         return $dnsarray;
 
-    } else {
-        return 'ok';
     }
+
+    return 'ok';
+
 }
 
 function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
@@ -483,8 +422,8 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
             unset($temp);
 
             if ((isset($tsdnsServerID) and $id != null and $row['id'] == $tsdnsServerID) or ($type == 'dns' and $id != null and $row['id'] == $masterID)) {
-                $defaultdns=strtolower($id . '-' . getusername($user_id) . '.' . $row['defaultdns']);
-                $partCount=count(explode('.', $defaultdns));
+                $defaultdns = strtolower($id . '-' . getusername($user_id) . '.' . $row['defaultdns']);
+                $partCount = count(explode('.', $defaultdns));
             }
 
             $ex = explode('.', $row['defaultdns']);
