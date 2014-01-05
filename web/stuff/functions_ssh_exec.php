@@ -78,8 +78,7 @@ if (!function_exists('ssh2_execute')) {
                 $ssh2Publickey = $row['publickey'];
 
                 # https://github.com/easy-wi/developer/issues/70
-                $sshkey = removePub($row['keyname']);
-                $privateKey = EASYWIDIR . '/keys/' . $sshkey;
+                $privateKey = EASYWIDIR . '/keys/' . removePub($row['keyname']);
 
                 $sshObject = new Net_SSH2($ssh2IP, $ssh2Port);
 
@@ -153,8 +152,7 @@ if (!function_exists('ssh2_execute')) {
 
     function ssh_check ($ssh2IP, $ssh2Port, $ssh2User, $sshPublickey, $sshKey, $ssh2Pass) {
 
-        $sshKey = removePub($sshKey);
-        $privateKey = EASYWIDIR . '/keys/' . $sshKey;
+        $privateKey = EASYWIDIR . '/keys/' . removePub($sshKey);
 
         $sshObject = new Net_SSH2($ssh2IP, $ssh2Port);
 

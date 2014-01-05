@@ -37,6 +37,14 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+if (!class_exists('Net_SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
+}
+
+if (!class_exists('Net_SFTP')) {
+    include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
+}
+
 class rootServer {
 
     // Data
@@ -310,116 +318,105 @@ class rootServer {
 
                 unset($tempBad, $changed);
 
-                if ($v['publickey'] == 'Y') {
+                # https://github.com/easy-wi/developer/issues/70
+                $privateKey = EASYWIDIR . '/keys/' . removePub($v['keyname']);
 
-                    # https://github.com/easy-wi/developer/issues/70
-                    $sshkey = removePub($v['keyname']);
-                    $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-                    $key = EASYWIDIR . '/keys/' . $sshkey;
+                $sftpObject = new Net_SFTP($v['ip'], $v['port']);
 
-                    $ssh2 = (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'], $v['port'], array('hostkey' => 'ssh-rsa')) : false;
+                if (file_exists($privateKey) and $sftpObject->error === false) {
 
-                } else {
-                    $ssh2 = @ssh2_connect($v['ip'], $v['port']);
-                }
+                    if ($v['publickey'] != 'N') {
 
-                if ($ssh2 == true) {
+                        $ssh2Pass = new Crypt_RSA();
+                        $ssh2Pass->loadKey(file_get_contents($privateKey));
 
-                    $connect_ssh2 = ($v['publickey'] == 'Y' and isset($pubkey, $key)) ? @ssh2_auth_pubkey_file($ssh2, $v['user'], $pubkey, $key) : @ssh2_auth_password($ssh2, $v['user'], $v['pass']);
+                    } else {
+                        $ssh2Pass = $v['pass'];
+                    }
 
-                    if ($connect_ssh2 == true) {
+                    if ($sftpObject->login($v['user'], $ssh2Pass)) {
 
-                        $sftp = ssh2_sftp($ssh2);
+                        $file = (substr($v['dhcpFile'], 0, 1) == '/') ? $v['dhcpFile'] : '/home/' . $v['user']. '/' . $v['dhcpFile'];
 
-                        $file = (substr($v['dhcpFile'], 0, 1) == '/') ? 'ssh2.sftp://' . $sftp . $v['dhcpFile'] : 'ssh2.sftp://' . $sftp . '/home/' . $v['user'] . '/' . $v['dhcpFile'];
-                        $fileErrorOutput = (substr($v['dhcpFile'], 0, 1) == '/') ? $v['dhcpFile'] : '/home/' . $v['user']. '/' . $v['dhcpFile'];
+                        $buffer = $sftpObject->get($file);
+                        $config = $this->parseDhcpConfig(str_replace(array("\0", "\b", "\r", "\Z"),'', $buffer));
 
-                        $buffer = '';
+                        if (is_array($config)) {
+                            foreach ($v['actions'] as $a) {
 
-                        $fp = @fopen($file, 'r');
+                                if ($a['action'] == 'del' and isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
 
-                        if ($fp) {
+                                    unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
 
-                            $filesize = filesize($file);
+                                    $changed = true;
 
-                            while (strlen($buffer) < $filesize) {
-                                $buffer .= fread($fp, $filesize);
-                            }
+                                } else if (isset($this->ID[$a['type']][$a['id']])) {
 
-                            fclose($fp);
+                                    if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] != $this->ID[$a['type']][$a['id']]['mac'].';') {
 
-                            $config = $this->parseDhcpConfig(str_replace(array("\0", "\b", "\r", "\Z"),'', $buffer));
-
-                            if (is_array($config)) {
-                                foreach ($v['actions'] as $a) {
-
-                                    if ($a['action'] == 'del' and isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
-
-                                        unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
+                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'].';';
 
                                         $changed = true;
 
-                                    } else if (isset($this->ID[$a['type']][$a['id']])) {
-
-                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] != $this->ID[$a['type']][$a['id']]['mac'].';') {
-
-                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'].';';
-
-                                            $changed = true;
-
-                                        }
-
-                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] != $this->ID[$a['type']][$a['id']]['ip'].';') {
-
-                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'].';';
-
-                                            $changed = true;
-                                        }
-
-                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] != 'pxelinux.0;') {
-
-                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
-
-                                            $changed = true;
-                                        }
-
-                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] != $this->ID[$a['type']][$a['id']]['pxeIP'].';') {
-
-                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'].';';
-
-                                            $changed = true;
-                                        }
-
                                     }
-                                }
 
-                                if (isset($changed)) {
+                                    if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] != $this->ID[$a['type']][$a['id']]['ip'].';') {
 
-                                    $fp = @fopen($file, 'w');
-                                    $write = @fwrite($fp, $this->assembleDhcpConfig($config, $k));
+                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'].';';
 
-                                    if ($write) {
-                                        fclose($fp);
-                                    } else {
-                                        $tempBad[] = 'Could not write DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                                        $changed = true;
                                     }
+
+                                    if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] != 'pxelinux.0;') {
+
+                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
+
+                                        $changed = true;
+                                    }
+
+                                    if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] != $this->ID[$a['type']][$a['id']]['pxeIP'].';') {
+
+                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'].';';
+
+                                        $changed = true;
+                                    }
+
                                 }
-
-
-                            } else {
-                                $tempBad[] = 'Could not process DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
                             }
 
+                            if (isset($changed)) {
+
+                                $sftpObject->put($file, $this->assembleDhcpConfig($config, $k));
+
+                                $sshObject = new Net_SSH2($v['ip'], $v['port']);
+
+                                if ($sshObject->error === false) {
+
+                                    if ($v['publickey'] != 'N') {
+
+                                        $ssh2Pass = new Crypt_RSA();
+                                        $ssh2Pass->loadKey(file_get_contents($privateKey));
+
+                                    } else {
+                                        $ssh2Pass = $v['pass'];
+                                    }
+
+                                    if ($sshObject->login($v['user'], $ssh2Pass)) {
+                                        $sshObject->exec($v['startCmd'] . ' &');
+                                    } else {
+                                        $tempBad[] = 'Could login to DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                                    }
+                                } else {
+                                    $tempBad[] = 'Could not connect to DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                                }
+                            }
+
+
                         } else {
-                            $tempBad[] = 'Could not open DHCP file ' . $fileErrorOutput . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                            $tempBad[] = 'Could not process DHCP file ' . $file . ' at DHCP server: ' . $v['ip'] . ':' . $v['port'];
                         }
-
-                        if (isset($changed) and !isset($tempBad)) {
-                            @ssh2_exec($ssh2, $v['startCmd'] . ' &');
-                        }
-
                     } else {
-                        $tempBad[] = 'Could login to DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                        $tempBad[] = 'Could not login to DHCP server: ' . $v['ip'] . ':' . $v['port'];
                     }
                 } else {
                     $tempBad[] = 'Could not connect to DHCP server: ' . $v['ip'] . ':' . $v['port'];
@@ -446,37 +443,35 @@ class rootServer {
         $removeArray = array();
 
         foreach($this->PXEData as $k => $v) {
-            if ($v['publickey'] == 'Y') {
 
-                # https://github.com/easy-wi/developer/issues/70
-                $sshkey = removePub($v['keyname']);
-                $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-                $key = EASYWIDIR . '/keys/' . $sshkey;
+            $privateKey = EASYWIDIR . '/keys/' . removePub($v['keyname']);
 
-                $ssh2 = (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($v['ip'], $v['port'], array('hostkey' => 'ssh-rsa')) : false;
+            $sftpObject = new Net_SFTP($v['ip'], $v['port']);
 
-            } else {
-                $ssh2 = @ssh2_connect($v['ip'], $v['port']);
-            }
+            if (file_exists($privateKey) and $sftpObject->error === false) {
 
-            if ($ssh2 == true) {
+                if ($v['publickey'] != 'N') {
 
-                $connect_ssh2 = ($v['publickey'] == 'Y' and isset($pubkey, $key)) ? @ssh2_auth_pubkey_file($ssh2, $v['user'], $pubkey, $key) : @ssh2_auth_password($ssh2, $v['user'], $v['pass']);
+                    $ssh2Pass = new Crypt_RSA();
+                    $ssh2Pass->loadKey(file_get_contents($privateKey));
 
-                if ($connect_ssh2 == true) {
+                } else {
+                    $ssh2Pass = $v['pass'];
+                }
 
-                    $sftp = ssh2_sftp($ssh2);
+                if ($sftpObject->login($v['user'], $ssh2Pass)) {
+
 
                     foreach($v['actions'] as $a) {
 
                         $extraSlash = (substr($v['PXEFolder'], -1) != '/' and strlen($v['PXEFolder']) > 0) ? '/' : '';
                         $pathWithPXEMac = $v['PXEFolder'] . $extraSlash . '01-' . str_replace(':', '-', $this->ID[$a['type']][$a['id']]['mac']);
-                        $file = (substr($v['PXEFolder'], 0, 1) == '/') ? 'ssh2.sftp://' . $sftp . $pathWithPXEMac : 'ssh2.sftp://' . $sftp . '/home/' . $v['user'] . '/' . $pathWithPXEMac;
+
                         $fileWithPath = (substr($v['PXEFolder'], 0, 1) == '/') ? $pathWithPXEMac : '/home/' . $v['user'] . '/' . $pathWithPXEMac;
 
                         if (in_array($a['action'], array('dl', 'md', 'rp', 'rt'))) {
 
-                            @ssh2_sftp_unlink($sftp, $fileWithPath);
+                            $sftpObject->delete($pathWithPXEMac);
 
                         } else if (in_array($a['action'], array('ad','ri','rc'))) {
 
@@ -500,31 +495,16 @@ class rootServer {
                                     $query->execute(array($newPass, $this->aeskey, $k, $a['id']));
                                 }
 
-                                $fp = @fopen($file, 'w');
-
-                                if ($fp) {
-                                    $write = @fwrite($fp, $pxeconfig);
-
-                                    if ($write) {
-                                        fclose($fp);
-                                    } else {
-                                        $tempBad[] = 'Could not write PXE file ' . $fileWithPath . ' at PXE server: ' . $v['ip'] . ':' . $v['port'];
-                                    }
-
-                                } else {
-                                    $tempBad[] = 'Could not write PXE file ' . $fileWithPath . ' at PXE server: ' . $v['ip'] . ':' . $v['port'];
-                                }
+                                $sftpObject->put($fileWithPath, $pxeconfig);
 
                             } else {
                                 $tempBad[] = 'pxefile template empty for imageID: '.$a['imageID'];
                             }
                         }
                     }
-
                 } else {
                     $tempBad[] = 'Could login to PXE server: ' . $v['ip'] . ':' . $v['port'];
                 }
-
             } else {
                 $tempBad[] = 'Could not connect to PXE server: ' . $v['ip'] . ':' . $v['port'];
             }
@@ -674,186 +654,169 @@ class rootServer {
 
         foreach ($this->vmwareHosts as $hID => $h) {
 
-            if ($this->vmwareHosts[$hID]['vmIDs']['publickey'] == 'Y') {
+            $privateKey = EASYWIDIR . '/keys/' .  removePub($this->vmwareHosts[$hID['hostID']]['vmIDs']['keyname']);
 
-                # https://github.com/easy-wi/developer/issues/70
-                $sshkey = removePub($this->vmwareHosts[$hID['hostID']]['vmIDs']['keyname']);
-                $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-                $key = EASYWIDIR . '/keys/' . $sshkey;
+            $sftpObject = new Net_SFTP($this->vmwareHosts[$hID]['vmIDs']['ip'], $this->vmwareHosts[$hID]['vmIDs']['dport']);
 
-                $ssh2 = (file_exists($pubkey) and file_exists($key)) ? @ssh2_connect($this->vmwareHosts[$hID]['vmIDs']['ip'], $this->vmwareHosts[$hID]['vmIDs']['dport'], array('hostkey' => 'ssh-rsa')) : false;
+            if (file_exists($privateKey) and $sftpObject->error === false) {
 
-            } else {
+                if ($this->vmwareHosts[$hID]['vmIDs']['publickey'] != 'N') {
 
-                $ssh2 = @ssh2_connect($this->vmwareHosts[$hID]['vmIDs']['ip'], $this->vmwareHosts[$hID]['vmIDs']['dport']);
+                    $ssh2Pass = new Crypt_RSA();
+                    $ssh2Pass->loadKey(file_get_contents($privateKey));
 
-            }
+                } else {
+                    $ssh2Pass = $this->vmwareHosts[$hID]['vmIDs']['dpass'];
+                }
 
-            if ($ssh2 == true) {
+                if ($sftpObject->login($this->vmwareHosts[$hID]['vmIDs']['duser'], $ssh2Pass)) {
 
-                $connectSSH2=($this->vmwareHosts[$hID]['vmIDs']['publickey'] == 'Y' and isset($pubkey, $key)) ? @ssh2_auth_pubkey_file($ssh2, $this->vmwareHosts[$hID]['vmIDs']['duser'], $pubkey, $key) : @ssh2_auth_password($ssh2, $this->vmwareHosts[$hID]['vmIDs']['duser'], $this->vmwareHosts[$hID]['vmIDs']['dpass']);
+                    $sshObject = new Net_SSH2($this->vmwareHosts[$hID]['vmIDs']['ip'], $this->vmwareHosts[$hID]['vmIDs']['dport']);
 
-                if ($connectSSH2 == true) {
+                    if (file_exists($privateKey) and $sshObject->error === false) {
 
-                    print "Prepare: unregister any invalid vms\r\n";
+                        if ($sshObject->login($this->vmwareHosts[$hID]['vmIDs']['duser'], $ssh2Pass)) {
 
-                    $cmd = 'vim-cmd vmsvc/getallvms | grep \'Skipping\' | while read line; do vim-cmd vmsvc/unregister `echo $line | grep \'Skipping\' |  awk -F "\'" \'{print $2}\'`; done';
-                    $this->execCmd($cmd, $ssh2);
+                            print "Prepare: unregister any invalid vms\r\n";
 
-                    foreach ($h['actions'] as $v) {
+                            $cmd = 'vim-cmd vmsvc/getallvms | grep \'Skipping\' | while read line; do vim-cmd vmsvc/unregister `echo $line | grep \'Skipping\' |  awk -F "\'" \'{print $2}\'`; done';
+                            $sshObject->exec($cmd);
 
-                        $dir='/vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint']. '/' . $this->ID['vmware'][$v['id']]['hostname'];
+                            foreach ($h['actions'] as $v) {
 
-                        if (in_array($v['action'], array('md', 'dl', 'st', 'ri', 're'))) {
+                                $dir='/vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint']. '/' . $this->ID['vmware'][$v['id']]['hostname'];
 
-                            print "Step 1: Stop and remove if needed\r\n";
+                                if (in_array($v['action'], array('md', 'dl', 'st', 'ri', 're'))) {
 
-                            // Get current VM ID
-                            $cmd = 'i(){ echo `vim-cmd vmsvc/getallvms 2> /dev/null | grep -v \'Skipping\' | grep \'' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmx\' | awk \'{print $1}\'`;};';
+                                    print "Step 1: Stop and remove if needed\r\n";
 
-                            // Stop the VM
-                            $cmd .= ' o(){ vim-cmd vmsvc/power.off `i ' . $this->ID['vmware'][$v['id']]['hostname'] . '`; vim-cmd vmsvc/unregister `i ' . $this->ID['vmware'][$v['id']]['hostname'] . '`;}; o;';
+                                    // Get current VM ID
+                                    $cmd = 'i(){ echo `vim-cmd vmsvc/getallvms 2> /dev/null | grep -v \'Skipping\' | grep \'' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmx\' | awk \'{print $1}\'`;};';
 
-                            if (in_array($v['action'], array('dl','ri','re'))) {
-                                $cmd .= ' rm -rf /vmfs/volumes/' . $this->ID['vmware'][$v['id']]['mountpoint'] . '/' . $this->ID['vmware'][$v['id']]['hostname'];
-                            }
+                                    // Stop the VM
+                                    $cmd .= ' o(){ vim-cmd vmsvc/power.off `i ' . $this->ID['vmware'][$v['id']]['hostname'] . '`; vim-cmd vmsvc/unregister `i ' . $this->ID['vmware'][$v['id']]['hostname'] . '`;}; o;';
 
-                            $this->execCmd($cmd, $ssh2);
-                        }
+                                    if (in_array($v['action'], array('dl','ri','re'))) {
+                                        $cmd .= ' rm -rf /vmfs/volumes/' . $this->ID['vmware'][$v['id']]['mountpoint'] . '/' . $this->ID['vmware'][$v['id']]['hostname'];
+                                    }
 
-                        if (in_array($v['action'], array('md', 'ad', 'ri', 're'))) {
-
-                            $harddisk = ($this->ID['vmware'][$v['id']]['distro'] == 'windows7srv-64') ? 'lsisas1068' : 'lsilogic';
-                            $sftp = ssh2_sftp($ssh2);
-
-                            ssh2_sftp_mkdir($sftp, rtrim($dir, '/'), 0774, true);
-
-                            $fp = fopen('ssh2.sftp://' . $sftp . '/vmfs/volumes/' . $this->ID['vmware'][$v['id']]['mountpoint'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmx', 'w');
-
-                            if ($fp) {
-                                $vmxFile = '.encoding = "UTF-8"' . "\n";
-                                $vmxFile .= 'config.version = "8"' . "\n";
-                                $vmxFile .= 'displayName = "' . $this->ID['vmware'][$v['id']]['hostname'] . '"' . "\n";
-                                $vmxFile .= 'ethernet0.present = "TRUE"' . "\n";
-                                $vmxFile .= 'ethernet0.virtualDev = "e1000"' . "\n";
-                                $vmxFile .= 'ethernet0.networkName = "VM Network"' . "\n";
-                                $vmxFile .= 'ethernet0.addressType = "static"' . "\n";
-                                $vmxFile .= 'ethernet0.Address = "' . $this->ID['vmware'][$v['id']]['mac'] . '"' . "\n";
-                                $vmxFile .= 'extendedConfigFile = "' . $this->ID['vmware'][$v['id']]['hostname'] .'.vmxf"' . "\n";
-                                $vmxFile .= 'floppy0.clientDevice = "TRUE"' . "\n";
-                                $vmxFile .= 'floppy0.fileName = ""' . "\n";
-                                $vmxFile .= 'floppy0.present = "TRUE"' . "\n";
-                                $vmxFile .= 'floppy0.startConnected = "FALSE"' . "\n";
-                                $vmxFile .= 'guestOS = "' . $this->ID['vmware'][$v['id']]['guestos'] . '"' . "\n";
-                                $vmxFile .= 'ide1:0.present = "TRUE"' . "\n";
-                                $vmxFile .= 'ide1:0.clientDevice = "TRUE"' . "\n";
-                                $vmxFile .= 'ide1:0.deviceType = "cdrom-raw"' . "\n";
-                                $vmxFile .= 'ide1:0.startConnected = "FALSE"' . "\n";
-                                $vmxFile .= 'memsize = "' . $this->ID['vmware'][$v['id']]['ram'] . '"' . "\n";
-                                $vmxFile .= 'numvcpus = "' . $this->ID['vmware'][$v['id']]['cores'] . '"' . "\n";
-                                $vmxFile .= 'nvram = "' . $this->ID['vmware'][$v['id']]['hostname'] .'.nvram"' . "\n";
-                                $vmxFile .= 'pciBridge0.present = "TRUE"' . "\n";
-                                $vmxFile .= 'pciBridge4.present = "TRUE"' . "\n";
-                                $vmxFile .= 'pciBridge4.virtualDev = "pcieRootPort"' . "\n";
-                                $vmxFile .= 'pciBridge4.functions = "8"' . "\n";
-                                $vmxFile .= 'pciBridge5.present = "TRUE"' . "\n";
-                                $vmxFile .= 'pciBridge5.virtualDev = "pcieRootPort"' . "\n";
-                                $vmxFile .= 'pciBridge5.functions = "8"' . "\n";
-                                $vmxFile .= 'pciBridge6.present = "TRUE"' . "\n";
-                                $vmxFile .= 'pciBridge6.virtualDev = "pcieRootPort"' . "\n";
-                                $vmxFile .= 'pciBridge6.functions = "8"' . "\n";
-                                $vmxFile .= 'pciBridge7.present = "TRUE"' . "\n";
-                                $vmxFile .= 'pciBridge7.virtualDev = "pcieRootPort"' . "\n";
-                                $vmxFile .= 'pciBridge7.functions = "8"' . "\n";
-                                $vmxFile .= 'powerType.powerOff = "soft"' . "\n";
-                                $vmxFile .= 'powerType.powerOn = "hard"' . "\n";
-                                $vmxFile .= 'powerType.suspend = "hard"' . "\n";
-                                $vmxFile .= 'powerType.reset = "soft"' . "\n";
-                                $vmxFile .= 'sched.cpu.min = "' . $this->ID['vmware'][$v['id']]['minmhz'] . '"' . "\n";
-                                $vmxFile .= 'sched.cpu.units = "mhz"' . "\n";
-                                $vmxFile .= 'sched.cpu.shares = "normal"' . "\n";
-                                $vmxFile .= 'sched.cpu.max = "' . $this->ID['vmware'][$v['id']]['maxmhz'] . '"' . "\n";
-                                $vmxFile .= 'sched.cpu.affinity = "all"' . "\n";
-                                $vmxFile .= 'sched.mem.max = "' . $this->ID['vmware'][$v['id']]['maxram'] . '"' . "\n";
-                                $vmxFile .= 'sched.mem.minsize = "' . $this->ID['vmware'][$v['id']]['minram'] . '"' . "\n";
-                                $vmxFile .= 'sched.mem.shares = "normal"' . "\n";
-                                $vmxFile .= 'scsi0.present = "TRUE"' . "\n";
-                                $vmxFile .= 'scsi0.sharedBus = "none"' . "\n";
-                                $vmxFile .= 'scsi0.virtualDev = "' . $harddisk . '"' . "\n";
-                                $vmxFile .= 'scsi0:0.present = "TRUE"' . "\n";
-                                $vmxFile .= 'scsi0:0.fileName = "' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmdk"' . "\n";
-                                $vmxFile .= 'scsi0:0.deviceType = "scsi-hardDisk"' . "\n";
-                                $vmxFile .= 'uuid.location = "56 4d ce 4e ce 1e 51 4b-3f 61 d8 45 c0 c8 93 90"' . "\n";
-                                $vmxFile .= 'uuid.bios = "56 4d ce 4e ce 1e 51 4b-3f 61 d8 45 c0 c8 93 90"' . "\n";
-                                $vmxFile .= 'vc.uuid = "52 9c 06 a8 19 e6 40 c0-61 1b 6e 23 34 c8 c7 f9"' . "\n";
-                                $vmxFile .= 'virtualHW.productCompatibility = "hosted"' . "\n";
-                                $vmxFile .= 'virtualHW.version = "7"' . "\n";
-                                $vmxFile .= 'vmci0.present = "TRUE"' . "\n";
-                                $vmxFile .= 'uuid.action = "create"' . "\n";
-                                $vmxFile .= 'bios.bootOrder = "ethernet0"' . "\n";
-
-                                if (fwrite($fp, $vmxFile)) {
-                                    print "Step 2: Create/edit vmx file (OK)\r\n";
-                                } else {
-                                    print "Step 2: Create/edit vmx file (FAILED)\r\n";
+                                    $sshObject->exec($cmd);
                                 }
 
-                                unset($fp);
+                                if (in_array($v['action'], array('md', 'ad', 'ri', 're'))) {
 
-                            } else {
-                                print 'could not open: /vmfs/volumes/'.$this->ID['vmware'][$v['id']]['mountpoint']. '/' . $this->ID['vmware'][$v['id']]['hostname'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmx' . "\r\n";
+                                    $harddisk = ($this->ID['vmware'][$v['id']]['distro'] == 'windows7srv-64') ? 'lsisas1068' : 'lsilogic';
+
+                                    if ($sftpObject->mkdir(rtrim($dir, '/'), -1, true)) {
+
+                                        $vmxFile = '.encoding = "UTF-8"' . "\n";
+                                        $vmxFile .= 'config.version = "8"' . "\n";
+                                        $vmxFile .= 'displayName = "' . $this->ID['vmware'][$v['id']]['hostname'] . '"' . "\n";
+                                        $vmxFile .= 'ethernet0.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'ethernet0.virtualDev = "e1000"' . "\n";
+                                        $vmxFile .= 'ethernet0.networkName = "VM Network"' . "\n";
+                                        $vmxFile .= 'ethernet0.addressType = "static"' . "\n";
+                                        $vmxFile .= 'ethernet0.Address = "' . $this->ID['vmware'][$v['id']]['mac'] . '"' . "\n";
+                                        $vmxFile .= 'extendedConfigFile = "' . $this->ID['vmware'][$v['id']]['hostname'] .'.vmxf"' . "\n";
+                                        $vmxFile .= 'floppy0.clientDevice = "TRUE"' . "\n";
+                                        $vmxFile .= 'floppy0.fileName = ""' . "\n";
+                                        $vmxFile .= 'floppy0.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'floppy0.startConnected = "FALSE"' . "\n";
+                                        $vmxFile .= 'guestOS = "' . $this->ID['vmware'][$v['id']]['guestos'] . '"' . "\n";
+                                        $vmxFile .= 'ide1:0.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'ide1:0.clientDevice = "TRUE"' . "\n";
+                                        $vmxFile .= 'ide1:0.deviceType = "cdrom-raw"' . "\n";
+                                        $vmxFile .= 'ide1:0.startConnected = "FALSE"' . "\n";
+                                        $vmxFile .= 'memsize = "' . $this->ID['vmware'][$v['id']]['ram'] . '"' . "\n";
+                                        $vmxFile .= 'numvcpus = "' . $this->ID['vmware'][$v['id']]['cores'] . '"' . "\n";
+                                        $vmxFile .= 'nvram = "' . $this->ID['vmware'][$v['id']]['hostname'] .'.nvram"' . "\n";
+                                        $vmxFile .= 'pciBridge0.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'pciBridge4.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'pciBridge4.virtualDev = "pcieRootPort"' . "\n";
+                                        $vmxFile .= 'pciBridge4.functions = "8"' . "\n";
+                                        $vmxFile .= 'pciBridge5.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'pciBridge5.virtualDev = "pcieRootPort"' . "\n";
+                                        $vmxFile .= 'pciBridge5.functions = "8"' . "\n";
+                                        $vmxFile .= 'pciBridge6.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'pciBridge6.virtualDev = "pcieRootPort"' . "\n";
+                                        $vmxFile .= 'pciBridge6.functions = "8"' . "\n";
+                                        $vmxFile .= 'pciBridge7.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'pciBridge7.virtualDev = "pcieRootPort"' . "\n";
+                                        $vmxFile .= 'pciBridge7.functions = "8"' . "\n";
+                                        $vmxFile .= 'powerType.powerOff = "soft"' . "\n";
+                                        $vmxFile .= 'powerType.powerOn = "hard"' . "\n";
+                                        $vmxFile .= 'powerType.suspend = "hard"' . "\n";
+                                        $vmxFile .= 'powerType.reset = "soft"' . "\n";
+                                        $vmxFile .= 'sched.cpu.min = "' . $this->ID['vmware'][$v['id']]['minmhz'] . '"' . "\n";
+                                        $vmxFile .= 'sched.cpu.units = "mhz"' . "\n";
+                                        $vmxFile .= 'sched.cpu.shares = "normal"' . "\n";
+                                        $vmxFile .= 'sched.cpu.max = "' . $this->ID['vmware'][$v['id']]['maxmhz'] . '"' . "\n";
+                                        $vmxFile .= 'sched.cpu.affinity = "all"' . "\n";
+                                        $vmxFile .= 'sched.mem.max = "' . $this->ID['vmware'][$v['id']]['maxram'] . '"' . "\n";
+                                        $vmxFile .= 'sched.mem.minsize = "' . $this->ID['vmware'][$v['id']]['minram'] . '"' . "\n";
+                                        $vmxFile .= 'sched.mem.shares = "normal"' . "\n";
+                                        $vmxFile .= 'scsi0.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'scsi0.sharedBus = "none"' . "\n";
+                                        $vmxFile .= 'scsi0.virtualDev = "' . $harddisk . '"' . "\n";
+                                        $vmxFile .= 'scsi0:0.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'scsi0:0.fileName = "' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmdk"' . "\n";
+                                        $vmxFile .= 'scsi0:0.deviceType = "scsi-hardDisk"' . "\n";
+                                        $vmxFile .= 'uuid.location = "56 4d ce 4e ce 1e 51 4b-3f 61 d8 45 c0 c8 93 90"' . "\n";
+                                        $vmxFile .= 'uuid.bios = "56 4d ce 4e ce 1e 51 4b-3f 61 d8 45 c0 c8 93 90"' . "\n";
+                                        $vmxFile .= 'vc.uuid = "52 9c 06 a8 19 e6 40 c0-61 1b 6e 23 34 c8 c7 f9"' . "\n";
+                                        $vmxFile .= 'virtualHW.productCompatibility = "hosted"' . "\n";
+                                        $vmxFile .= 'virtualHW.version = "7"' . "\n";
+                                        $vmxFile .= 'vmci0.present = "TRUE"' . "\n";
+                                        $vmxFile .= 'uuid.action = "create"' . "\n";
+                                        $vmxFile .= 'bios.bootOrder = "ethernet0"' . "\n";
+
+                                        $filename = '/vmfs/volumes/' . $this->ID['vmware'][$v['id']]['mountpoint'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmx';
+
+                                        if ($sftpObject->put($filename, $vmxFile)) {
+                                            print "Step 2: Create/edit vmx file (OK)\r\n";
+                                        } else {
+                                            print "Step 2: Create/edit vmx file (FAILED)\r\n";
+                                        }
+
+                                    } else {
+                                        print "Step 2: Create/edit vmx file (FAILED)\r\n";
+                                    }
+
+                                    print "Step 3: create volume\r\n";
+
+                                    $cmd = 'a() { vmkfstools -c ' . $this->ID['vmware'][$v['id']]['hddsize'] . ' -a lsilogic -d thin /vmfs/volumes/' . $this->ID['vmware'][$v['id']]['mountpoint'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmdk >/dev/null 2>&1;}; a';
+                                    $sshObject->exec($cmd);
+
+                                } else {
+                                    print "Step 2-3: skipped as not required\r\n";
+                                }
+
+                                if (in_array($v['action'], array('md', 'ad', 're', 'ri', 'rc'))) {
+
+                                    print "Step 4: Start VM\r\n";
+
+                                    $cmd = 'a() { vim-cmd vmsvc/power.on `vim-cmd solo/registervm /vmfs/volumes/' . $this->ID['vmware'][$v['id']]['mountpoint'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmx 2> /dev/null` >/dev/null 2>&1;}; a&';
+                                    $sshObject->exec($cmd);
+
+                                } else {
+                                    print "Step 4: skipped as not required\r\n";
+                                }
                             }
-
-                            if (is_resource($sftp)) {
-                                fclose($sftp);
-                            } else {
-                                unset ($sftp);
-                            }
-
-                            print "Step 3: create volume\r\n";
-
-                            $cmd = 'a() { vmkfstools -c ' . $this->ID['vmware'][$v['id']]['hddsize'] . ' -a lsilogic -d thin /vmfs/volumes/' . $this->ID['vmware'][$v['id']]['mountpoint'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmdk >/dev/null 2>&1;}; a';
-                            $this->execCmd($cmd, $ssh2);
-
                         } else {
-                            print "Step 2-3: skipped as not required\r\n";
+                            print "No Login\r\n";
                         }
-
-                        if (in_array($v['action'], array('md', 'ad', 're', 'ri', 'rc'))) {
-
-                            print "Step 4: Start VM\r\n";
-
-                            $cmd = 'a() { vim-cmd vmsvc/power.on `vim-cmd solo/registervm /vmfs/volumes/' . $this->ID['vmware'][$v['id']]['mountpoint'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '/' . $this->ID['vmware'][$v['id']]['hostname'] . '.vmx 2> /dev/null` >/dev/null 2>&1;}; a&';
-                            $this->execCmd($cmd, $ssh2);
-
-                        } else {
-                            print "Step 4: skipped as not required\r\n";
-                        }
+                    } else {
+                        print "No connection\r\n";
                     }
-
-                    if (is_resource($ssh2)) {
-                        @ssh2_exec($ssh2, 'exit');
-                    }
-
-                } else print "No connection\r\n";
+                } else {
+                    print "No login connection\r\n";
+                }
+            } else {
+                print "No connection\r\n";
             }
         }
 
         return true;
-
-    }
-
-    private function execCmd($cmd, $ssh2) {
-
-        $return = @ssh2_exec($ssh2, $cmd);
-
-        stream_set_blocking($return, true);
-
-        $errorOK = ($return) ? 'ok: '  : 'failed: ';
-        print $errorOK . $cmd . "\r\n";
-        print 'Reply from ESX(i) host was: '.stream_get_contents($return)."\r\n";
-
-        fclose($return);
 
     }
 }
