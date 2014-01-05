@@ -60,7 +60,7 @@
  * Base cipher class
  */
 if (!class_exists('Crypt_Base')) {
-    include_once EASYWIDIR . '/third_party/phpseclib/Base.php';
+    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/Base.php';
 }
 
 /**#@+

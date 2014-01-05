@@ -56,7 +56,7 @@
  * Include Crypt_DES
  */
 if (!class_exists('Crypt_DES')) {
-    include_once EASYWIDIR . '/third_party/phpseclib/DES.php';
+    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/DES.php';
 }
 
 /**

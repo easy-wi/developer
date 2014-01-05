@@ -139,7 +139,7 @@ class Net_SFTP_Stream
         }
 
         if (!class_exists('Net_SFTP')) {
-            include_once 'Net/SFTP.php';
+            include_once EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php';
         }
     }
 

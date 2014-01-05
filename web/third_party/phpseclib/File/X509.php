@@ -46,7 +46,7 @@
  * Include File_ASN1
  */
 if (!class_exists('File_ASN1')) {
-    include_once 'ASN1.php';
+    include_once EASYWIDIR . '/third_party/phpseclib/ASN1.php';
 }
 
 /**
@@ -307,7 +307,7 @@ class File_X509
     function File_X509()
     {
         if (!class_exists('Math_BigInteger')) {
-            include_once 'Math/BigInteger.php';
+            include_once EASYWIDIR . '/third_party/phpseclib/Math/BigInteger.php';
         }
 
         // Explicitly Tagged Module, 1988 Syntax
@@ -2121,7 +2121,7 @@ class File_X509
         switch ($publicKeyAlgorithm) {
             case 'rsaEncryption':
                 if (!class_exists('Crypt_RSA')) {
-                    include_once 'Crypt/RSA.php';
+                    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php';
                 }
                 $rsa = new Crypt_RSA();
                 $rsa->loadKey($publicKey);
@@ -2523,7 +2523,7 @@ class File_X509
             case FILE_X509_DN_HASH:
                 $dn = $this->getDN(FILE_X509_DN_CANON, $dn);
                 if (!class_exists('Crypt_Hash')) {
-                    include_once 'Crypt/Hash.php';
+                    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/Hash.php';
                 }
                 $hash = new Crypt_Hash('sha1');
                 $hash = $hash->hash($dn);
@@ -2791,7 +2791,7 @@ class File_X509
         switch ($keyinfo['algorithm']['algorithm']) {
             case 'rsaEncryption':
                 if (!class_exists('Crypt_RSA')) {
-                    include_once 'Crypt/RSA.php';
+                    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php';
                 }
                 $publicKey = new Crypt_RSA();
                 $publicKey->loadKey($key);
@@ -2864,7 +2864,7 @@ class File_X509
         switch ($algorithm) {
             case 'rsaEncryption':
                 if (!class_exists('Crypt_RSA')) {
-                    include_once 'Crypt/RSA.php';
+                    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php';
                 }
                 $this->publicKey = new Crypt_RSA();
                 $this->publicKey->loadKey($key);
@@ -2989,7 +2989,7 @@ class File_X509
         switch ($algorithm) {
             case 'rsaEncryption':
                 if (!class_exists('Crypt_RSA')) {
-                    include_once 'Crypt/RSA.php';
+                    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php';
                 }
                 $this->publicKey = new Crypt_RSA();
                 $this->publicKey->loadKey($key);
@@ -4062,7 +4062,7 @@ class File_X509
                 $raw = base64_decode($raw);
                 // If the key is private, compute identifier from its corresponding public key.
                 if (!class_exists('Crypt_RSA')) {
-                    include_once 'Crypt/RSA.php';
+                    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php';
                 }
                 $key = new Crypt_RSA();
                 if (!$key->loadKey($raw)) {
@@ -4094,7 +4094,7 @@ class File_X509
 
         // Now we have the key string: compute its sha-1 sum.
         if (!class_exists('Crypt_Hash')) {
-            include_once 'Crypt/Hash.php';
+            include_once EASYWIDIR . '/third_party/phpseclib/Crypt/Hash.php';
         }
         $hash = new Crypt_Hash('sha1');
         $hash = $hash->hash($key);

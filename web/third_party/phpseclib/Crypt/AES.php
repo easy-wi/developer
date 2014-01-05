@@ -65,7 +65,7 @@
  * Include Crypt_Rijndael
  */
 if (!class_exists('Crypt_Rijndael')) {
-    include_once EASYWIDIR . '/third_party/phpseclib/Rijndael.php';
+    include_once EASYWIDIR . '/third_party/phpseclib/Crypt/Rijndael.php';
 }
 
 /**#@+
