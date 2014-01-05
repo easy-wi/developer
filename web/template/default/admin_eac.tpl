@@ -34,17 +34,18 @@
                 <div class="controls"><input id="inputUserSSH2" type="text" name="user" value="<?php echo $eac_user?>" maxlength="15" required="required"></div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputPassSSH2"><?php echo $sprache->ssh_pass;?></label>
-                <div class="controls"><input id="inputPassSSH2" type="password" name="pass" value="<?php echo $eac_pass?>"></div>
-            </div>
-            <div class="control-group">
                 <label class="control-label" for="inputKeyuseSSH2"><?php echo $sprache->keyuse;?></label>
                 <div class="controls">
                     <select id="inputKeyuseSSH2" name="publickey">
                         <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="B" <?php if ($eac_publickey=="B") echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?> + <?php echo $gsprache->password;?></option>
                         <option value="N" <?php if ($eac_publickey=="N") echo 'selected="selected"'; ?>><?php echo $gsprache->no;?></option>
                     </select>
                 </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPassSSH2"><?php echo $sprache->ssh_pass;?></label>
+                <div class="controls"><input id="inputPassSSH2" type="password" name="pass" value="<?php echo $eac_pass?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputKeynameSSH2"><?php echo $sprache->keyname;?></label>

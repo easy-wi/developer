@@ -68,17 +68,18 @@
             <div class="control-group<?php if(isset($errors['publickey'])) echo ' error';?>">
                 <label class="control-label" for="inputKeyUse"><?php echo $sprache->keyuse;?></label>
                 <div class="controls">
-                    <select class="span12" id="inputKeyUse" name="publickey" onchange="SwitchShowHideRows(this.value)">
+                    <select class="span12" id="inputKeyUse" name="publickey">
                         <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="B" <?php if ($publickey=="B") echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?> + <?php echo $gsprache->password;?></option>
                         <option value="N" <?php if ($publickey=="N") echo 'selected="selected"'; ?>><?php echo $gsprache->no;?></option>
                     </select>
                 </div>
             </div>
-            <div class="N <?php if ($publickey=='Y') echo 'display_none';?> switch control-group<?php if(isset($errors['pass'])) echo ' error';?>">
+            <div class="control-group<?php if(isset($errors['pass'])) echo ' error';?>">
                 <label class="control-label" for="inputSSH2Pass"><?php echo $sprache->ssh_pass;?>:</label>
                 <div class="controls"><input class="span12" id="inputSSH2Pass" type="password" name="pass" value="<?php echo $pass?>" maxlength="50"></div>
             </div>
-            <div class="Y <?php if ($publickey=='N') echo 'display_none';?> switch control-group<?php if(isset($errors['keyname'])) echo ' error';?>">
+            <div class="control-group<?php if(isset($errors['keyname'])) echo ' error';?>">
                 <label class="control-label" for="inputSSH2Key"><?php echo $sprache->keyname;?></label>
                 <div class="controls"><input class="span12" id="inputSSH2Key" type="text" name="keyname" maxlength="20" value="<?php echo $keyname;?>"/></div>
             </div>

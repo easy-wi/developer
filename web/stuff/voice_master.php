@@ -112,7 +112,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $filetransferport = ($ui->port('filetransferport', 'post')) ? $ui->port('filetransferport', 'post') : 30033;
     $defaultname = ($ui->startparameter('defaultname', 'post')) ? $ui->startparameter('defaultname', 'post') : $rSA['brandname'];
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
-    $publickey = ($ui->active('publickey', 'post')) ? $ui->active('publickey', 'post') : 'N';
+    $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
     $maxserver = ($ui->id('maxserver', 30, 'post')) ? $ui->id('maxserver', 30, 'post') : 10;
     $maxslots = ($ui->id('maxslots', 30, 'post')) ? $ui->id('maxslots', 30, 'post') : 512;
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
@@ -276,7 +276,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         if (($ui->w('action', 3, 'post') == 'ad' and $ui->id('addtype', 1, 'post') == 2) or $ui->w('action', 3, 'post') == 'md') {
 
-            if (!$ui->active('publickey', 'post')) {
+            if (!$ui->w('publickey', 1, 'post')) {
                 $errors['publickey'] = $sprache->keyuse;
             }
 
@@ -330,11 +330,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $errors['user'] = $sprache->ssh_user;
                     $errors['publickey'] = $sprache->keyuse;
 
-                    if (!$ui->active('publickey', 'post') == 'Y') {
-                        $errors['keyname'] = $sprache->keyname;
-
-                    } else {
+                    if (!$ui->active('publickey', 'post') == 'N') {
                         $errors['pass'] = $sprache->ssh_pass;
+                    } else if (!$ui->active('publickey', 'post') == 'B') {
+                        $errors['pass'] = $sprache->ssh_pass;
+                        $errors['keyname'] = $sprache->keyname;
+                    } else {
+                        $errors['keyname'] = $sprache->keyname;
                     }
                 }
             }

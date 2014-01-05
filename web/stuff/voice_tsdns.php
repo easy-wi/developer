@@ -88,7 +88,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $bit = $ui->id('bit',2, 'post');
 
     // Default variables. Mostly needed for the add operation
-    $publickey = ($ui->active('publickey', 'post')) ? $ui->active('publickey', 'post') : 'Y';
+    $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
 
     // Add or mod is opened
     if (!$ui->smallletters('action', 2, 'post')) {
@@ -134,7 +134,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         if (!$ui->active('autorestart', 'post')) {
             $errors['autorestart'] = $sprache->autorestart;
         }
-        if (!$ui->active('publickey', 'post')) {
+        if (!$ui->w('publickey', 1, 'post')) {
             $errors['publickey'] = $sprache->keyuse;
         }
         if (!$ui->ip('ip', 'post')) {
@@ -162,11 +162,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $errors['user'] = $sprache->ssh_user;
                 $errors['publickey'] = $sprache->keyuse;
 
-                if ($ui->active('publickey', 'post') == 'Y') {
-                    $errors['keyname'] = $sprache->keyname;
-
-                } else {
+                if ($ui->active('publickey', 'post') == 'N') {
                     $errors['pass'] = $sprache->ssh_pass;
+                } else if (!$ui->active('publickey', 'post') == 'B') {
+                    $errors['pass'] = $sprache->ssh_pass;
+                    $errors['keyname'] = $sprache->keyname;
+                } else {
+                    $errors['keyname'] = $sprache->keyname;
                 }
             }
         }

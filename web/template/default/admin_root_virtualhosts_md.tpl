@@ -61,7 +61,8 @@
                 <div class="controls">
                     <select id="inputKeyUse" class="span11" name="publickey">
                         <option value="N"><?php echo $gsprache->no;?></option>
-                        <option value="Y" <?php if ($publickey=="N") echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                        <option value="Y" <?php if ($publickey=="Y") echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                        <option value="B" <?php if ($publickey=="B") echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?> + <?php echo $gsprache->password;?></option>
                     </select>
                 </div>
             </div>

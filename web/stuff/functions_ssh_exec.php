@@ -74,7 +74,6 @@ if (!function_exists('ssh2_execute')) {
                 $ssh2IP = $row['ip'];
                 $ssh2Port = $row['decryptedport'];
                 $ssh2User = $row['decrypteduser'];
-                $ssh2Pass = $row['decryptedpass'];
                 $ssh2Publickey = $row['publickey'];
 
                 # https://github.com/easy-wi/developer/issues/70
@@ -87,8 +86,15 @@ if (!function_exists('ssh2_execute')) {
                     if ($ssh2Publickey != 'N') {
 
                         $ssh2Pass = new Crypt_RSA();
+
+                        if ($ssh2Publickey == 'B') {
+                            $ssh2Pass->setPassword($row['decryptedpass']);
+                        }
+
                         $ssh2Pass->loadKey(file_get_contents($privateKey));
 
+                    } else {
+                        $ssh2Pass = $row['decryptedpass'];
                     }
 
                     if ($sshObject->login($ssh2User, $ssh2Pass)) {
@@ -158,20 +164,22 @@ if (!function_exists('ssh2_execute')) {
 
         if ($sshObject->error === false) {
 
-            if ($sshPublickey == 'N') {
+            if ($sshPublickey != 'N') {
 
-                $loginSucces = $sshObject->login($ssh2User, $ssh2Pass);
-
-            } else {
 
                 $key = new Crypt_RSA();
+
+                if ($sshPublickey == 'B') {
+                    $key->setPassword($ssh2Pass);
+                }
+
                 $key->loadKey(file_get_contents($privateKey));
 
-                $loginSucces = $sshObject->login($ssh2User, $key);
+                $ssh2Pass = $key;
 
             }
 
-            return ($loginSucces) ?  true : 'login';
+            return ($sshObject->login($ssh2User, $ssh2Pass)) ?  true : 'login';
 
         }
 

@@ -87,7 +87,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $fail = 1;
             $template_file .="User <br />";
         }
-        if (!active_check($ui->post['publickey'])) {
+        if (!wpreg_check($ui->post['publickey'], 1)) {
             $fail = 1;
             $template_file .="Key <br />";
         }
@@ -104,7 +104,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         if ($fail!="1") {
             $publickey = $ui->post['publickey'];
-            $keyname=startparameter($ui->post['keyname']);
+            $keyname = $ui->startparameter('keyname', 'post');
             $active = $ui->post['active'];
             $reseller = $ui->post['reseller'];
             $ip = $ui->post['ip'];
@@ -116,9 +116,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $esxi = $ui->post['esxi'];
             $pass=password_check($ui->post['pass'],255);
             $os="linux";
-            $description=description($ui->post['description']);
-            $cores=isid($ui->post['cores'],"5");
-            $cpu=description($ui->post['cpu']);
+            $description = $ui->description('description', 'post');
+            $cores = isid($ui->post['cores'],"5");
+            $cpu = $ui->description('cpu', 'post');
             $mhz=isid($ui->post['mhz'],"5");
             $ram=isinteger($ui->post['ram']);
             $pinsert = $sql->prepare("INSERT INTO `virtualhosts` (`active`,`esxi`,`ip`,`port`,`user`,`pass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid`) VALUES (:active, :esxi, :ip, AES_ENCRYPT(:port, :aeskey),AES_ENCRYPT(:user, :aeskey),AES_ENCRYPT(:pass, :aeskey),:os, :description, :publickey, :keyname, :cpu, :cores, :mhz, :ram, :maxserver, :thin, :thinquota, :reseller)");
@@ -242,7 +242,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $fail = 1;
             $template_file .="User <br />";
         }
-        if (!active_check($ui->post['publickey'])) {
+        if (!wpreg_check($ui->post['publickey'], 1)) {
             $fail = 1;
             $template_file .="Key <br />";
         }
@@ -257,9 +257,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (!active_check($ui->post['thin'])) {
             $fail = 1;
         }
-        if ($fail!="1") {
+        if ($fail != 1) {
             $publickey = $ui->post['publickey'];
-            $keyname=startparameter($ui->post['keyname']);
+            $keyname=$ui->startparameter('keyname', 'post');
             $active = $ui->post['active'];
             $esxi = $ui->post['esxi'];
             $ip = $ui->post['ip'];
@@ -268,14 +268,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $port = $ui->post['port'];
             $reseller = $ui->post['reseller'];
             $user = $ui->post['user'];
-            $pass=startparameter($ui->post['pass']);
+            $pass = $ui->startparameter('pass', 'post');
             $os="linux";
-            $description=description($ui->post['description']);
+            $description = $ui->description('description', 'post');
             $cores=isid($ui->post['cores'],"5");
-            $cpu=description($ui->post['cpu']);
+            $cpu = $ui->description('cpu', 'post');
             $mhz=isid($ui->post['mhz'],"5");
             $ram=isid($ui->post['ram'],"5");
-            $hdd=startparameter($ui->post['hdd']);
+            $hdd = $ui->startparameter('hdd', 'post');
             $maxserver=isid($ui->post['maxserver'],"3");
             $pinsert = $sql->prepare("UPDATE `virtualhosts` SET `active`=:active,`esxi`=:esxi,`ip`=:ip,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`os`=:os,`description`=:description,`publickey`=:publickey,`keyname`=:keyname,`cpu`=:cpu,`cores`=:cores,`mhz`=:mhz,`hdd`=:hdd,`ram`=:ram,`maxserver`=:maxserver,`thin`=:thin,`thinquota`=:thinquota,`resellerid`=:reseller WHERE `id`=:id LIMIT 1");
             $pinsert->execute(array(':active' => $active,':esxi' => $esxi,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':os' => $os,':description' => $description,':publickey' => $publickey,':keyname' => $keyname,  ':cpu' => $cpu,  ':cores' => $cores,':mhz' => $mhz,':hdd' => $hdd,':ram' => $ram,':maxserver' => $maxserver,':id' => $id,':thin' => $thin,':thinquota' => $thinquota,':reseller' => $reseller));

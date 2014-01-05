@@ -328,6 +328,11 @@ class rootServer {
                     if ($v['publickey'] != 'N') {
 
                         $ssh2Pass = new Crypt_RSA();
+
+                        if ($v['publickey'] == 'B') {
+                            $ssh2Pass->setPassword($v['pass']);
+                        }
+
                         $ssh2Pass->loadKey(file_get_contents($privateKey));
 
                     } else {
@@ -395,6 +400,11 @@ class rootServer {
                                     if ($v['publickey'] != 'N') {
 
                                         $ssh2Pass = new Crypt_RSA();
+
+                                        if ($v['publickey'] == 'B') {
+                                            $ssh2Pass->setPassword($v['pass']);
+                                        }
+
                                         $ssh2Pass->loadKey(file_get_contents($privateKey));
 
                                     } else {
@@ -453,6 +463,11 @@ class rootServer {
                 if ($v['publickey'] != 'N') {
 
                     $ssh2Pass = new Crypt_RSA();
+
+                    if ($v['publickey'] == 'B') {
+                        $ssh2Pass->setPassword($v['pass']);
+                    }
+
                     $ssh2Pass->loadKey(file_get_contents($privateKey));
 
                 } else {
@@ -663,6 +678,11 @@ class rootServer {
                 if ($this->vmwareHosts[$hID]['vmIDs']['publickey'] != 'N') {
 
                     $ssh2Pass = new Crypt_RSA();
+
+                    if ($this->vmwareHosts[$hID]['vmIDs']['publickey'] == 'B') {
+                        $ssh2Pass->setPassword($this->vmwareHosts[$hID]['vmIDs']['dpass']);
+                    }
+
                     $ssh2Pass->loadKey(file_get_contents($privateKey));
 
                 } else {

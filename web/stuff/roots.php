@@ -87,9 +87,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $updates = $ui->id('updates', 1, 'post');
     $ownerID = $ui->id('ownerID', 10, 'post');
 
+    $publickey = ($ui->w('publickey',1 , 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
     $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 0;
-    $publickey = ($ui->active('publickey', 'post')) ? $ui->active('publickey', 'post') : 'N';
     $ftpport = ($ui->port('ftpport', 'post')) ? $ui->port('ftpport', 'post') : 21;
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
     $maxserver = ($ui->id('maxserver',4, 'post')) ? $ui->id('maxserver',4, 'post') : 10;
@@ -181,7 +181,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (!$ui->username('user', 20, 'post')) {
             $errors['user'] = $sprache->ssh_user;
         }
-        if (!$ui->active('publickey', 'post')) {
+        if (!$ui->w('publickey', 1, 'post')) {
             $errors['publickey'] = $sprache->keyuse;
         }
         if (!$ui->id('bit', 2, 'post')) {
@@ -220,11 +220,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $errors['user'] = $sprache->ssh_user;
                 $errors['publickey'] = $sprache->keyuse;
 
-                if ($publickey == 'Y') {
-                    $errors['keyname'] = $sprache->keyname;
-
-                } else {
+                if ($publickey == 'N') {
                     $errors['pass'] = $sprache->ssh_pass;
+                } else if (!$ui->active('publickey', 'post') == 'B') {
+                    $errors['pass'] = $sprache->ssh_pass;
+                    $errors['keyname'] = $sprache->keyname;
+                } else {
+                    $errors['keyname'] = $sprache->keyname;
                 }
             }
         }

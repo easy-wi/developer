@@ -80,7 +80,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	$template_file = "admin_eac.tpl";
 } else if ($ui->w('action', 4, 'post')=="md") {
 	$fail = 0;
-	if (!active_check($ui->post['publickey'])) {
+	if (!wpreg_check($ui->post['publickey'], 1)) {
 		$fail = 1;
 	}
 	if (!active_check($ui->post['active'])) {
@@ -126,14 +126,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		} else {
 			$hlds_6="N";
 		}
-		$keyname=startparameter($ui->post['keyname']);
+		$keyname = $ui->startparameter('keyname','post');
 		$publickey = $ui->post['publickey'];
 		$active = $ui->post['active'];	
 		$ip = $ui->post['ip'];
 		$port = $ui->post['port'];
 		$user = $ui->post['user'];
-		$pass=startparameter($ui->post['pass']);
-		$cfgdir=folder($ui->post['cfgdir']);
+		$pass =  $ui->startparameter('pass','post');
+		$cfgdir = $ui->folder('cfgdir','post');
 		$pupdate = $sql->prepare("UPDATE `eac` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port, :aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`publickey`=:publickey,`keyname`=:keyname,`cfgdir`=:cfgdir,`normal_3`=:normal_3,`normal_4`=:normal_4,`hlds_3`=:hlds_3,`hlds_4`=:hlds_4,`hlds_5`=:hlds_5,`hlds_6`=:hlds_6 WHERE resellerid=:reseller_id");
 		$pupdate->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':cfgdir' => $cfgdir,':normal_3' => $normal_3,':normal_4' => $normal_4,':hlds_3' => $hlds_3,':hlds_4' => $hlds_4,':hlds_5' => $hlds_5,':hlds_6' => $hlds_6,':reseller_id' => $reseller_id));
 		$template_file = $spracheResponse->table_add;

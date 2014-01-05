@@ -58,18 +58,19 @@
                 <label class="control-label" for="inputSshUser"><?php echo $sprache->ssh_user;?></label>
                 <div class="controls"><input id="inputSshUser" type="text" name="user" maxlength="15" value="<?php echo $ssh2user;?>"></div>
             </div>
-            <div class="control-group<?php if(isset($errors['pass'])) echo ' error';?>">
-                <label class="control-label" for="inputSshPass"><?php echo $sprache->ssh_pass;?></label>
-                <div class="controls"><input id="inputSshPass" type="password" name="pass" value="<?php echo $ssh2password;?>"></div>
-            </div>
             <div class="control-group">
                 <label class="control-label" for="inputKeyUse"><?php echo $sprache->keyuse;?></label>
                 <div class="controls">
                     <select id="inputKeyUse" name="publickey">
                         <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="B" <?php if ($publickey=="B") echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?> + <?php echo $gsprache->password;?></option>
                         <option value="N" <?php if($publickey=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
                     </select>
                 </div>
+            </div>
+            <div class="control-group<?php if(isset($errors['pass'])) echo ' error';?>">
+                <label class="control-label" for="inputSshPass"><?php echo $sprache->ssh_pass;?></label>
+                <div class="controls"><input id="inputSshPass" type="password" name="pass" value="<?php echo $ssh2password;?>"></div>
             </div>
             <div class="control-group<?php if(isset($errors['keyname'])) echo ' error';?>">
                 <label class="control-label" for="inputKeyName"><?php echo $sprache->keyname;?></label>

@@ -78,7 +78,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_root_pxe_ad.tpl';
     } else if (in_array($ui->smallletters('action',2, 'post'), array('md','ad'))) {
         $error = array();
-        if (!$ui->active('publickey', 'post')) {
+        if (!$ui->w('publickey', 1, 'post')) {
             $error[] = 'Publickey';
         }
         if (!$ui->active('active', 'post')) {
@@ -99,7 +99,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (count($error)>0) {
             $template_file = 'Error: '.implode('<br />',$error);
         } else {
-            $publickey = $ui->active('publickey', 'post');
+            $publickey = $ui->w('publickey', 1, 'post');
             $keyname = $ui->startparameter('keyname', 'post');
             $active = $ui->active('active', 'post');
             $ip = $ui->ip('ip', 'post');
