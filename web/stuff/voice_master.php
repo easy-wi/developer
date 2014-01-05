@@ -41,7 +41,7 @@
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/class_ts3.php');
 include(EASYWIDIR . '/stuff/functions_ts3.php');
-include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['voicemasterserver'])) {

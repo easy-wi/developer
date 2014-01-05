@@ -351,7 +351,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 
 } else if ($ui->username('gamestring', 50, 'get') and $ui->id('id',19, 'get') and ($pa['roots'] or $pa['root'])) {
 
-    include(EASYWIDIR . '/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
     include(EASYWIDIR . '/stuff/class_masterserver.php');
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
 

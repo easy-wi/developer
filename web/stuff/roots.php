@@ -42,7 +42,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['roots'])) {
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 
 $sprache = getlanguagefile('roots', $user_language, $reseller_id);
 $gsSprache = getlanguagefile('gserver', $user_language, $reseller_id);
@@ -361,7 +361,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
         }
         if (count($cmds) > 0) {
-            include(EASYWIDIR . '/stuff/ssh_exec.php');
+            include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
             ssh2_execute('gs', $id, $cmds);
             $template_file = $gsSprache->reinstall . ': ' . implode('<br>', $started);
         } else {

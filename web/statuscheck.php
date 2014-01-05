@@ -69,7 +69,7 @@ include(EASYWIDIR . '/stuff/vorlage.php');
 include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/settings.php');
-include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/class_ts3.php');
 include(EASYWIDIR . '/third_party/gameq/GameQ.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');

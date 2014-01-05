@@ -363,7 +363,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=? AND `serverip`=? AND `port`=? AND `userid`!=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($serverid,$serverip,$port,$customer,$reseller_id));
             if ($query->rowCount() == 0) {
-                include(EASYWIDIR . '/stuff/ssh_exec.php');
+                include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
                 $gamestring = array();
                 $template_file = '';
                 $rdata=serverdata('root',$serverid,$aeskey);
@@ -561,7 +561,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $template_file = 'admin_404.tpl';
         }
     } else if ($action == 'dl') {
-        if ($ui->w('safeDelete',1, 'post') != 'D') include(EASYWIDIR . "/stuff/ssh_exec.php");
+        if ($ui->w('safeDelete',1, 'post') != 'D') include(EASYWIDIR . "/stuff/functions_ssh_exec.php");
         $query = $sql->prepare("SELECT `newlayout`,`serverip`,`port`,`userid`,`rootID`,AES_DECRYPT(`ppassword`,?) AS `protectedpw`,AES_DECRYPT(`ftppassword`,?) AS `ftpPWD` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -651,7 +651,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $template_file = $sprache->no_server_left;
         }
         if (isset($rootID)) {
-            include (EASYWIDIR . '/stuff/ssh_exec.php');
+            include (EASYWIDIR . '/stuff/functions_ssh_exec.php');
             ssh2_execute('gs', $rootID, $cmds);
         }
         $loguseraction="%del% %gserver% $serverip:$port";
@@ -825,7 +825,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $pallowed = ($ui->active('pallowed', 'post')) ? $ui->active('pallowed', 'post') : 'N';
             $ftppass = $ui->password('password',50, 'post');
             $pallowed = $ui->active('pallowed', 'post');
-            include(EASYWIDIR . '/stuff/ssh_exec.php');
+            include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
             $query = $sql->prepare("SELECT `newlayout`,`userid`,AES_DECRYPT(`ftppassword`,?) AS `ftp`,AES_DECRYPT(`ppassword`,?) AS `ppass`,`active`,`rootID`,`serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`userid`,`slots` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -1050,7 +1050,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             }
         }
         if (count($gamestring)>0 and $ui->active('type', 'post')) {
-            include(EASYWIDIR . '/stuff/ssh_exec.php');
+            include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
             $gamestring=count($gamestring) . '_' . implode('_',$gamestring);
             $rdata=serverdata('root',$serverid,$aeskey);
             $sship = $rdata['ip'];
@@ -1094,7 +1094,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         $rootID = $row['rootID'];
     }
     if (isset($gsip) and isset($port)) {
-        include(EASYWIDIR . '/stuff/ssh_exec.php');
+        include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
         if ($ui->st('d', 'get') == 'rs') {
             $template_file = 'Restart done';
             $cmds=gsrestart($id,'re',$aeskey,$reseller_id);

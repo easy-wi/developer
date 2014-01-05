@@ -42,7 +42,7 @@ if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['fastdl'])) {
 }
 
 require_once(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 
 $sprache = getlanguagefile('fastdl', $user_language, $reseller_id);
 $gameSprache = getlanguagefile('gserver', $user_language, $reseller_id);

@@ -43,7 +43,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['masterServe
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/class_masterserver.php');
-include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 
 $sprache = getlanguagefile('roots',$user_language,$reseller_id);
 $loguserid = $admin_id;

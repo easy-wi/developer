@@ -624,7 +624,7 @@ if (!function_exists('passwordgenerate')) {
 
                 if (isset($ssh2cmd) and $active == 'Y') {
                     if (!function_exists('ssh2_execute')) {
-                        include(EASYWIDIR . '/stuff/ssh_exec.php');
+                        include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
                     }
                     if (isset($ssh2cmd)) {
                         ssh2_execute('eac', $reseller_id, $ssh2cmd);

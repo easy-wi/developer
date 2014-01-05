@@ -36,7 +36,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['useraddons'])) {

@@ -69,7 +69,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     include(EASYWIDIR . '/stuff/class_validator.php');
     include(EASYWIDIR . '/stuff/class_ts3.php');
     include(EASYWIDIR . '/stuff/settings.php');
-    include(EASYWIDIR . '/stuff/ssh_exec.php');
+    include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
     printText('File include and parameters fetched. Start connecting to external systems.');

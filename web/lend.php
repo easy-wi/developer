@@ -65,7 +65,7 @@ if (isset($page_include)) {
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/ssh_exec.php');
+include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/class_ts3.php');
 
 $validacces = false;
