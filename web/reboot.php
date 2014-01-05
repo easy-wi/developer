@@ -164,238 +164,221 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $tsdnsExternalActive = true;
                     }
                 }
-                $ssh2 = false;
-                if ($row2['publickey'] == 'Y') {
 
-                    # https://github.com/easy-wi/developer/issues/70
-                    $sshkey=removePub($row2['keyname']);
-                    $pubkey = EASYWIDIR . '/keys/' . $sshkey . '.pub';
-                    $key = EASYWIDIR . '/keys/' . $sshkey;
+                $split_config=preg_split('/\//', $row2['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
+                $folderfilecount=count($split_config)-1;
+                $i = 0;
+                $folders= (substr($row2['serverdir'],0,1) == '/') ? 'cd  /' : 'cd ';
 
-                    if (file_exists($pubkey) and file_exists($key)) {
-                        $ssh2= @ssh2_connect($queryip, $row2['decryptedssh2port'], array('hostkey' => 'ssh-rsa'));
-                    }
-
-                } else {
-                    $ssh2= @ssh2_connect($queryip, $row2['decryptedssh2port']);
+                while ($i<=$folderfilecount) {
+                    $folders = $folders.$split_config[$i] . '/';
+                    $i++;
                 }
 
-                if ($ssh2) {
-                    $connect_ssh2=($row2['publickey'] == 'Y') ? @ssh2_auth_pubkey_file($ssh2, $row2['decryptedssh2user'], $pubkey, $key) : @ssh2_auth_password($ssh2, $row2['decryptedssh2user'], $row2['decryptedssh2password']);
+                $folders =  ($folders == 'cd ') ? '' : $folders . ' && ';
 
-                    if ($connect_ssh2) {
-                        $split_config=preg_split('/\//', $row2['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
-                        $folderfilecount=count($split_config)-1;
-                        $i = 0;
-                        $folders= (substr($row2['serverdir'],0,1) == '/') ? 'cd  /' : 'cd ';
 
-                        while ($i<=$folderfilecount) {
-                            $folders = $folders.$split_config[$i] . '/';
-                            $i++;
-                        }
+                $tsdown = false;
+                $tsdnsdown = false;
+                $connection = new TS3($queryip, $queryport, 'serveradmin', $querypassword);
+                $errorcode = $connection->errorcode;
 
-                        $folders =  ($folders == 'cd ') ? '' : $folders . ' && ';
-                    } else {
-                        $badLogin = true;
-                        print "Error: Bad logindata\r\n";
-                    }
-                } else {
-                    $badLogin = true;
-                    print "Error: Can not connect via ssh2\r\n";
-                }
-
-                if (!isset($badLogin) and isset($connect_ssh2) and $connect_ssh2) {
-
-                    $tsdown = false;
-                    $tsdnsdown = false;
+                if (strpos($errorcode,'error id=0') === false) {
+                    $connection->CloseConnection();
+                    unset($connection);
+                    sleep(1);
                     $connection=new TS3($queryip, $queryport, 'serveradmin', $querypassword);
                     $errorcode = $connection->errorcode;
+                }
 
-                    if (strpos($errorcode,'error id=0') === false) {
-                        $connection->CloseConnection();
-                        unset($connection);
+                if (strpos($errorcode,'error id=0') === false) {
+                    $connection->CloseConnection();
+                    unset($connection);
+                    $tsdown = true;
+                    print "TS3 Query Error: ".$errorcode."\r\n";
+                    $restartreturn="TS3";
+                }
+
+                if ($row2['usedns'] == 'Y' and $tsdnsExternalActive == false) {
+                    $tsdnscheck = @fsockopen ($queryip,41144, $errno, $errstr,5);
+
+                    if (!is_resource($tsdnscheck)) {
                         sleep(1);
-                        $connection=new TS3($queryip, $queryport, 'serveradmin', $querypassword);
-                        $errorcode = $connection->errorcode;
+                        $tsdnscheck = @fsockopen ($queryip,41144, $errno, $errstr,5);
                     }
 
-                    if (strpos($errorcode,'error id=0') === false) {
-                        $connection->CloseConnection();
-                        unset($connection);
-                        $tsdown = true;
-                        print "TS3 Query Error: ".$errorcode."\r\n";
-                        $restartreturn="TS3";
+                    if (!is_resource($tsdnscheck)) {
+                        print "TSDNS Error: ".$errno.' ('.$errstr.")\r\n";
+                        $tsdnsdown = true;
+
+                        if (isset($restartreturn)) {
+                            $restartreturn .=" and internal TSDNS";
+                        } else {
+                            $restartreturn="internal TSDNS";
+                        }
                     }
-                    
-                    if ($row2['usedns'] == 'Y' and $tsdnsExternalActive == false) {
-                        $tsdnscheck=@fsockopen ($queryip,41144, $errno, $errstr,5);
-                        
-                        if (!is_resource($tsdnscheck)) {
-                            sleep(1);
-                            $tsdnscheck=@fsockopen ($queryip,41144, $errno, $errstr,5);
+
+                } else if ($row2['usedns'] == 'Y' and $tsdnsExternalActive == true) {
+                    print "Skip TSDNS since external is used\r\n";
+                }
+
+                $cmds = array();
+
+                if ($tsdown == true or $tsdnsdown == true) {
+
+                    $ts3masternotified++;
+
+                    if ($ts3masternotified==$down_checks) {
+
+                        if ($resellerid==0) {
+                            $query3 = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `accounttype`='a' AND `resellerid`=0");
+                            $query3->execute();
+
+                        } else {
+                            $query3 = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
+                            $query3->execute(array($resellerid));
                         }
-                        
-                        if (!is_resource($tsdnscheck)) {
-                            print "TSDNS Error: ".$errno.' ('.$errstr.")\r\n";
-                            $tsdnsdown = true;
-                            
-                            if (isset($restartreturn)) {
-                                $restartreturn .=" and internal TSDNS";
-                            } else {
-                                $restartreturn="internal TSDNS";
-                            }
-                        }
-                        
-                    } else if ($row2['usedns'] == 'Y' and $tsdnsExternalActive == true) {
-                        print "Skip TSDNS since external is used\r\n";
-                    }
-                    
-                    if ($tsdown == true or $tsdnsdown == true) {
-                        $ts3masternotified++;
-                        
-                        if ($ts3masternotified==$down_checks) {
-                            
-                            if ($resellerid==0) {
-                                $query3 = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `accounttype`='a' AND `resellerid`=0");
-                                $query3->execute();
-                                
-                            } else {
-                                $query3 = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
-                                $query3->execute(array($resellerid));
-                            }
-                            
-                            foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                                if ($row3['mail_serverdown'] == 'Y') {
-                                    sendmail('emaildownrestart', $row3['id'], $queryip.' ('.$restartreturn.')','');
-                                }
-                            }
-                        }
-                        
-                        $query3 = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=? WHERE `id`=? LIMIT 1");
-                        $query3->execute(array($ts3masternotified, $ts3masterid));
-                        
-                        if ($autorestart == 'Y' and $ts3masternotified>=$down_checks) {
 
-                            if ($row2['bitversion'] == '32') {
-                                $tsbin='ts3server_linux_x86';
-                                $tsdnsbin='tsdnsserver_linux_x86';
-
-                            } else {
-                                $tsbin='ts3server_linux_amd64';
-                                $tsdnsbin='tsdnsserver_linux_amd64';
-                            }
-
-                            $ssh2cmd = $folders.'function restart1 () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; restart1& ';
-
-                            if ($tsdown == true) {
-                                echo ssh2_exec($ssh2, $ssh2cmd);
-                            }
-
-                            if ($row2['usedns'] == 'Y') {
-
-                                if ($tsdnsdown == true) {
-                                    $ssh2cmd2 = $folders.'cd tsdns && function restart2 () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; restart2& ';
-                                    echo ssh2_exec($ssh2, $ssh2cmd2);
-                                }
-                            }
-                            print "Restarting: $restartreturn\r\n";
-                        }
-                    } else {
-                        if ($ts3masternotified>0) {
-                            $query3 = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `id`=? LIMIT 1");
-                            $query3->execute(array($ts3masterid));
-                        }
-                        $query3 = $sql->prepare("SELECT `active`,`backup`,`id`,`ip`,`port`,`slots`,`userid`,`localserverid`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`serverCreated` FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
-                        $query3->execute(array($ts3masterid, $resellerid));
                         foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                            $ts3id = $row3['id'];
-                            $serverCreated = $row3['serverCreated'];
-                            $ts3userid = $row3['userid'];
-                            $localserverid = $row3['localserverid'];
-                            if ($stunde == '00' or $serverCreated==null) {
-                                $resetTraffic = false;
-                                if (version_compare(PHP_VERSION,'5.3.0')>=0){
-                                    $createdTime=new DateTime($serverCreated);
-                                    $interval = $createdTime->diff($currentTime);
-                                    if ($interval->d==0 and $interval->m>0) {
-                                        $resetTraffic = true;
-                                    }
-                                } else {
-                                    $createdDay=date('j',strtotime($serverCreated));
-                                    $createdDays=date('t',strtotime($serverCreated));
-                                    if (($createdDay==$createdDays and $currentDays==$currentDay) or ($createdDay != $createdDays and $createdDay==$currentDay)) {
-                                        $resetTraffic = true;
-                                    }
-                                }
-                                if ($resetTraffic == true and $serverCreated != null) {
-                                    $query4 = $sql->prepare("UPDATE `voice_server` SET `filetraffic`=0,`lastfiletraffic`=0 WHERE `id`=? LIMIT 1");
-                                    $query4->execute(array($ts3id));
-                                    $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'], 'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
-                                } else if ($serverCreated==null) {
-                                    $query4 = $sql->prepare("UPDATE `voice_server` SET `filetraffic`=0,`lastfiletraffic`=0,`serverCreated`=NOW() WHERE `id`=? LIMIT 1");
-                                    $query4->execute(array($ts3id));
-                                    $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'], 'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
-                                }
+                            if ($row3['mail_serverdown'] == 'Y') {
+                                sendmail('emaildownrestart', $row3['id'], $queryip.' ('.$restartreturn.')','');
                             }
-                            if ($voice_autobackup == 'Y' and $stunde == '5' and $row3['active'] == 'Y' and $row3['backup'] == 'Y') {
-                                $name='Autobackup';
-                                $backupcount = 0;
-                                unset($last);
-                                $query4 = $sql->prepare("SELECT `id`,`date`,`name` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC");
+                        }
+                    }
+
+                    $query3 = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=? WHERE `id`=? LIMIT 1");
+                    $query3->execute(array($ts3masternotified, $ts3masterid));
+
+                    if ($autorestart == 'Y' and $ts3masternotified >= $down_checks) {
+
+                        if ($row2['bitversion'] == '32') {
+                            $tsbin='ts3server_linux_x86';
+                            $tsdnsbin='tsdnsserver_linux_x86';
+
+                        } else {
+                            $tsbin='ts3server_linux_amd64';
+                            $tsdnsbin='tsdnsserver_linux_amd64';
+                        }
+
+
+                        if ($tsdown == true) {
+                            $cmds[] = $folders . 'function restart1 () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; restart1& ';
+                        }
+
+                        if ($row2['usedns'] == 'Y' and $tsdnsdown == true) {
+                            $cmds[] = $folders.'cd tsdns && function restart2 () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; restart2& ';
+                        }
+
+                    } else if ($autorestart == 'Y') {
+                        print "Do not restart TS3/TSDNS ${queryip} since failcount is only ${ts3masternotified} and ${down_checks} is required for restart \r\n";
+                    }
+                }
+
+
+
+                if ($ts3masternotified > 0 and $tsdown !== true and $tsdnsdown !== true) {
+                    $query3 = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `id`=? LIMIT 1");
+                    $query3->execute(array($ts3masterid));
+                }
+
+                $query3 = $sql->prepare("SELECT `active`,`backup`,`id`,`ip`,`port`,`slots`,`userid`,`localserverid`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`serverCreated` FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
+                $query3->execute(array($ts3masterid, $resellerid));
+                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                    $ts3id = $row3['id'];
+                    $serverCreated = $row3['serverCreated'];
+                    $ts3userid = $row3['userid'];
+                    $localserverid = $row3['localserverid'];
+                    if ($stunde == '00' or $serverCreated==null) {
+                        $resetTraffic = false;
+                        if (version_compare(PHP_VERSION,'5.3.0')>=0){
+                            $createdTime=new DateTime($serverCreated);
+                            $interval = $createdTime->diff($currentTime);
+                            if ($interval->d==0 and $interval->m>0) {
+                                $resetTraffic = true;
+                            }
+                        } else {
+                            $createdDay=date('j',strtotime($serverCreated));
+                            $createdDays=date('t',strtotime($serverCreated));
+                            if (($createdDay==$createdDays and $currentDays==$currentDay) or ($createdDay != $createdDays and $createdDay==$currentDay)) {
+                                $resetTraffic = true;
+                            }
+                        }
+                        if ($resetTraffic == true and $serverCreated != null) {
+                            $query4 = $sql->prepare("UPDATE `voice_server` SET `filetraffic`=0,`lastfiletraffic`=0 WHERE `id`=? LIMIT 1");
+                            $query4->execute(array($ts3id));
+                            $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'], 'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
+                        } else if ($serverCreated==null) {
+                            $query4 = $sql->prepare("UPDATE `voice_server` SET `filetraffic`=0,`lastfiletraffic`=0,`serverCreated`=NOW() WHERE `id`=? LIMIT 1");
+                            $query4->execute(array($ts3id));
+                            $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'], 'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
+                        }
+                    }
+                    if ($voice_autobackup == 'Y' and $stunde == '5' and $row3['active'] == 'Y' and $row3['backup'] == 'Y') {
+                        $name='Autobackup';
+                        $backupcount = 0;
+                        unset($last);
+                        $query4 = $sql->prepare("SELECT `id`,`date`,`name` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC");
+                        $query4->execute(array($ts3id, $ts3userid, $resellerid));
+                        foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+                            $backupcount++;
+                            $date = $row4['date'];
+                            if ($row4['name'] == 'Autobackup') {
+                                $last=date('Y-m-d',strtotime($date));
+                            }
+                        }
+                        $stunde=date('G',strtotime("$resellerstimezone hour"));
+                        if ($backupcount==0 or !isset($last) or (isset($last) and $last<$next)) {
+                            $toomuch = $backupcount+1-$voice_maxbackup;
+                            if ($toomuch>0) {
+                                $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC LIMIT $toomuch");
                                 $query4->execute(array($ts3id, $ts3userid, $resellerid));
                                 foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                                    $backupcount++;
-                                    $date = $row4['date'];
-                                    if ($row4['name'] == 'Autobackup') {
-                                        $last=date('Y-m-d',strtotime($date));
-                                    }
+                                    $query5 = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
+                                    $query5->execute(array($row4['id'], $ts3userid, $resellerid));
+                                    $backupfolder='backups/virtualserver_'.$localserverid . '/';
+                                    $cmds[] = 'cd '.$folders.' && function backup () { nice -n +19 rm -f '.$backupfolder.$row4['id'].'.tar.bz2; }; backup& ';
                                 }
-                                $stunde=date('G',strtotime("$resellerstimezone hour"));
-                                if ($backupcount==0 or !isset($last) or (isset($last) and $last<$next)) {
-                                    $toomuch = $backupcount+1-$voice_maxbackup;
-                                    if ($toomuch>0) {
-                                        $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC LIMIT $toomuch");
-                                        $query4->execute(array($ts3id, $ts3userid, $resellerid));
-                                        foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                                            $query5 = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
-                                            $query5->execute(array($row4['id'], $ts3userid, $resellerid));
-                                            $backupfolder='backups/virtualserver_'.$localserverid . '/';
-                                            $delcmd='cd '.$folders.' && function backup () { nice -n +19 rm -f '.$backupfolder.$row4['id'].'.tar.bz2; }; backup& ';
-                                            $shell=ssh2_exec($ssh2, $delcmd);
-                                        }
-                                    }
-                                    $rawsnapshot = $connection->Snapshotcreate($localserverid);
-                                    $snapshot=gzcompress($rawsnapshot,9);
-                                    $query4 = $sql->prepare("INSERT INTO `voice_server_backup` (`sid`,`uid`,`name`,`snapshot`,`date`,`resellerid`) VALUES(?,?,?,?,NOW(),?)");
-                                    $query4->execute(array($ts3id, $ts3userid, $name, $snapshot, $resellerid));
-                                    $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
-                                    $query4->execute(array($ts3id, $ts3userid, $resellerid));
-                                    foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                                        $filefolder='files/virtualserver_'.$localserverid . '/';
-                                        $backupfolder='backups/virtualserver_'.$localserverid . '/';
-                                        $createcmd='cd '.$folders.' && function backup () { mkdir -p '.$backupfolder.' && nice -n +19 tar cfj '.$backupfolder.$row4['id'].'.tar.bz2 '.$filefolder.'; }; backup& ';
-                                        $shell=ssh2_exec($ssh2, $createcmd);
-                                        print "Creating backup for ts3 server: ".$row3['ip'] . ':' . $row3['port']."\r\n";
-                                        usleep(500000);
-                                    }
-                                }
+                            }
+                            $rawsnapshot = $connection->Snapshotcreate($localserverid);
+                            $snapshot=gzcompress($rawsnapshot,9);
+                            $query4 = $sql->prepare("INSERT INTO `voice_server_backup` (`sid`,`uid`,`name`,`snapshot`,`date`,`resellerid`) VALUES(?,?,?,?,NOW(),?)");
+                            $query4->execute(array($ts3id, $ts3userid, $name, $snapshot, $resellerid));
+                            $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
+                            $query4->execute(array($ts3id, $ts3userid, $resellerid));
+                            foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+                                $filefolder='files/virtualserver_'.$localserverid . '/';
+                                $backupfolder='backups/virtualserver_'.$localserverid . '/';
+                                $cmds[] ='cd '.$folders.' && function backup () { mkdir -p '.$backupfolder.' && nice -n +19 tar cfj '.$backupfolder.$row4['id'].'.tar.bz2 '.$filefolder.'; }; backup& ';
+                                print "Creating backup for ts3 server: ".$row3['ip'] . ':' . $row3['port']."\r\n";
                             }
                         }
                     }
+                }
 
-                    $ssh2 = null;
-                    if (isset($connection) and is_object($connection)) {
-                        $connection->CloseConnection();
+
+                if (count($cmds) > 0) {
+
+                    if (ssh2_execute('vm', $ts3masterid, $cmds)) {
+                        print "Restarting: $restartreturn\r\n";
+                    } else {
+                        print "Failed restarting: $restartreturn\r\n";
                     }
 
-                    usleep(500000);
-
-                } else {
-                    print "Error: Cannot connect to masterserver $queryip\r\n";
+                    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                        print_r($cmds);
+                    }
                 }
+
+                if (isset($connection) and is_object($connection)) {
+                    $connection->CloseConnection();
+                }
+
+                usleep(500000);
+
             }
         }
-        $currenttime=strtolower(date('D',strtotime("$resellerstimezone hour"))) . '_' . date('G',strtotime("$resellerstimezone hour"));
+
+        $currenttime = strtolower(date('D', strtotime("$resellerstimezone hour"))) . '_' . date('G',strtotime("$resellerstimezone hour"));
         $query1 = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `active`='Y'");
         $query1->execute();
         foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
@@ -496,15 +479,27 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 $shortens[] = $row3['shorten'];
                             }
                             $cmds[]="sudo -u ${SSH2customer} ./control.sh backup ${gsfolder} \"".implode(' ', $shortens)."\" \"${webhostdomain}\" \"${ftpbackup}\"";
-                            echo "Backup started for $server\r\n";
+                            echo "Backup for $server\r\n";
                         }
                     }
                 } else {
                     echo "$currenttime Not the restart time for $server\r\n";
                 }
             }
-            if (count($cmds)>0) ssh2_execute('gs', $rootID, $cmds);
+
+            if (count($cmds)>0) {
+                if (ssh2_execute('gs', $rootID, $cmds)) {
+                    echo "Commands executed for server $server\r\n";
+                } else {
+                    echo "Executing commands for server $server failed \r\n";
+                }
+
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    print_r($cmds);
+                }
+            }
         }
+
         echo "Executing Updates if neccessary\r\n";
         $query2 = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `resellerid`=? AND `updates`!=3 AND (`updateMinute`=0 OR `updateMinute` IS NULL)");
         $query2->execute(array($resellerid));
@@ -512,13 +507,19 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $rootServer=new masterServer($row2['id'], $aeskey);
             $rootServer->collectData();
             $sshcmd=(4==$stunde) ? $rootServer->returnCmds('update','all') : $rootServer->returnCmds();
-            if ($rootServer->sshcmd!==null) {
+            if ($rootServer->sshcmd !== null) {
+
                 echo "Starting updates for ".$rootServer->sship."\r\n";
+
                 if (ssh2_execute('gs', $row2['id'], $rootServer->sshcmd) !== false) {
                     $rootServer->setUpdating();
                     echo "Updater started for ".$rootServer->sship."\r\n";
                 } else {
                     echo "Updating failed for: ".$rootServer->sship."\r\n";
+                }
+
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    print_r($rootServer->sshcmd);
                 }
             }
             unset($rootServer);
