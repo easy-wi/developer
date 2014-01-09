@@ -82,6 +82,30 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     // Add or mod is opened
     if (!$ui->smallletters('action', 2, 'post')) {
 
+        /**if (is_file(EASYWIDIR . '/css/' . $template_to_use . '/summernote.css')) {
+            $htmlExtraInformation['css'][] = '<link href="css/' . $template_to_use . '/summernote.css" rel="stylesheet">' . "\n";
+        } else {
+            $htmlExtraInformation['css'][] = '<link href="css/default/summernote.css" rel="stylesheet">' . "\n";
+        }
+
+        if (is_file(EASYWIDIR . '/js/' . $template_to_use . '/summernote.js')) {
+            $htmlExtraInformation['js'][] = '<link href="js/' . $template_to_use . '/summernote.js"  type="text/javascript">' . "\n";
+        } else {
+            $htmlExtraInformation['js'][] = '<link href="js/default/summernote.js"  type="text/javascript">' . "\n";
+        }
+
+        if  ($user_language == 'de') {
+            if (is_file(EASYWIDIR . '/js/' . $template_to_use . '/summernote-de-DE.js')) {
+                $htmlExtraInformation['js'][] = '<link href="js/' . $template_to_use . '/summernote-de-DE.js" type="text/javascript">' . "\n";
+            } else {
+                $htmlExtraInformation['js'][] = '<link href="js/default/summernote-de-DE.js" type="text/javascript">' . "\n";
+            }
+        }
+
+        foreach ($lang_avail as $lg) {
+            $htmlExtraInformation['js'][] = "<script type=\"text/javascript\"> $(document).ready(function() { $('#text[{$lg}]').summernote({height: 300});});</script>" . "\n";
+        }**/
+
         // Gather data for adding if needed and define add template
         if ($ui->st('d', 'get') == 'ad') {
 

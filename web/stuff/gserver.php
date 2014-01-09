@@ -156,13 +156,17 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                 }
                 $table = array();
                 $gamestring = $count;
+
                 foreach($ui->escaped('shorten', 'post') as $shortencase => $shorten) {
+
                     if (gamestring($shorten)) {
+
                         $query = $sql->prepare("SELECT t.*,r.`installing` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE t.`shorten`=? AND t.`resellerid`=? AND r.`serverid`=? LIMIT 1");
                         $query->execute(array($shorten,$reseller_id,$id));
                         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                             $steamgame = $row['steamgame'];
                             $gamemod = $row['gamemod'];
+
                             if (!isset($portMax) or $portMax < $row['portMax']) {
                                 $portStep = $row['portStep'];
                                 $portMax = $row['portMax'];
@@ -172,34 +176,33 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                                 $port4 = $row['portFour'];
                                 $port5 = $row['portFive'];
                             }
+
                             $gamestring .= '_';
                             $gamestring .= ($gamemod == 'Y' and $row['gamemod2'] != '') ? $shorten . '.' . $row['gamemod2']: $shorten;
                             $cmd = stripslashes($row['cmd']);
-                            if ($row['installing'] == 'N') {
-                                $installing = false;
-                            } else {
-                                $installing = true;
-                            }
 
-                            if ($row['gamebinary'] == 'srcds_run') {
-                                $upload = 1;
-                            } else {
-                                $upload = 0;
-                            }
+                            $installing = ($row['installing'] == 'N') ? false : true;
+                            $upload = ($row['gamebinary'] == 'srcds_run') ? 1 : 0;
+
                             $table[] = array('description' => $row['description'], 'id' => $row['id'], 'steamgame' => $row['steamgame'], 'shorten' => $shorten,'gamebinary' => $row['gamebinary'], 'binarydir' => $row['binarydir'], 'modfolder' => $row['modfolder'], 'fps' => $row['fps'], 'slots' => $row['slots'], 'map' => $row['map'], 'mapGroup' => $row['mapGroup'], 'cmd' => $cmd,'tic' => $row['tic'], 'upload' => $upload,'installing' => $installing);
                             $i++;
                         }
-                        if ($query->rowcount()==0) {
+
+                        if ($query->rowcount() == 0) {
                             $table[] = array('installing' => true);
                         }
+
                     }
                 }
+
                 $used = 0;
                 $max = 0;
                 $unbound = 0;
                 $c = 0;
                 $installedserver = 0;
                 $numplayers = 0;
+                $cores = array();
+
                 $query = $sql->prepare("SELECT `maxslots`,`maxserver`,`cores`,`hyperthreading` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($id,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -212,13 +215,21 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                     }
                     $c--;
                 }
+
                 $query = $sql->prepare("SELECT `slots`,`cores`,`taskset`,`queryNumplayers` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
                 $query->execute(array($id,$reseller_id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $ce=explode(',', $row['cores']);
-                    $cc=count($ce);
-                    if ($row['taskset'] == 'Y' and $cc>0) foreach ($ce as $uc) $cores[$uc] = $cores[$uc]+round(1/$cc,2);
-                    else $unbound++;
+                    $ce = explode(',', $row['cores']);
+                    $cc = count($ce);
+
+                    if ($row['taskset'] == 'Y' and $cc > 0) {
+                        foreach ($ce as $uc) {
+                            $cores[$uc] = $cores[$uc] + round(1 / $cc, 2);
+                        }
+                    } else {
+                        $unbound++;
+                    }
+
                     $used += $row['queryNumplayers'];
                     $max += $row['slots'];
                     $installedserver++;

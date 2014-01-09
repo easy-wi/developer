@@ -57,7 +57,7 @@ if ($ui->id('id', 10, 'get')) {
     }
 }
 
-if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($page_id) and is_numeric($page_id)) or $ui->id('id', 10, 'get')) {
+if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($page_id) and is_numeric($page_id)) or $ui->id('id', 10, 'get')) {
 
     $query = $sql->prepare("SELECT p.`date`,p.`comments`,p.`authorname`,t.`id` AS `textID`,t.`title`,t.`text`,t.`id`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='news' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`=0 LIMIT 1");
     $query2 = $sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`='0' ORDER BY t.`name` DESC");
@@ -252,7 +252,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
 
     $template_file = (isset($page_title)) ? 'page_news_single.tpl' : 'page_404.tpl';
 
-} else if (!$ui->smallletters('preview',4, 'get')) {
+} else {
 
     $news = array();
     $category_tags = array();
@@ -268,7 +268,7 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
 
     if (isset($page_name) and $page_name == szrp($page_sprache->older) and (isset($page_count) and isid($page_count, 255)) or ($ui->id('start', 255, 'get'))) {
 
-        if ($ui->id('start', 255, 'get') and $ui->id('start', 255, 'get')<=$pagesCount) {
+        if ($ui->id('start', 255, 'get') and $ui->id('start', 255, 'get') <= $pagesCount) {
             $pageOpen = $ui->id('start', 255, 'get');
         } else if (isset($page_count) and $page_count <= $pagesCount) {
             $pageOpen = $page_count;
@@ -356,6 +356,4 @@ if ((isset($page_name) and $page_name!=szrp($page_sprache->older) and isset($pag
 
     $template_file = 'page_news.tpl';
 
-} else {
-    $template_file = 'page_404.tpl';
 }
