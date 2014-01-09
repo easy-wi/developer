@@ -917,6 +917,10 @@ if ($currentStep == 9 and count($systemCheckError) == 0) {
 
     rmr(EASYWIDIR . "/install");
 
+    $query = $sql->prepare("UPDATE `settings` SET `lastCronReboot`=:futuretime,`lastCronCloud`=:futuretime,`lastCronJobs`=:futuretime,`lastCronUpdates`=:futuretime,`lastCronStatus`=:futuretime");
+    $query->execute(array(':futuretime' => strtotime("+2 hours")));
+
+
     if (file_exists(EASYWIDIR . "/install")) {
         $displayToUser .= "<div class='alert alert-warning'>{$languageObject->install_done_folder}</div>";
     }
