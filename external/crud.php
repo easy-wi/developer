@@ -87,7 +87,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %root% ' . $ip;
 
-            } else if ($ui->st('action', 'post') == 'md') {
+            } else if ($ui->st('action', 'post') == 'md' and $id) {
 
                $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %root% ' . $ip;
