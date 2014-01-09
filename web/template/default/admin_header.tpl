@@ -11,7 +11,8 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="css/default/easy-wi.css" rel="stylesheet">
-    <link rel="shortcut icon" href="images/favicon.ico" />
+    <?php echo implode('',$htmlExtraInformation['css']);?>
+
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -19,12 +20,16 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
     <script src="js/default/footable.js" type="text/javascript"></script>
-    <script type="text/javascript">$(function() { $('table').footable();});</script>
     <script src="js/default/main.js" type="text/javascript"></script>
+    <?php echo implode('',$htmlExtraInformation['js']);?>
+
+    <script type="text/javascript">$(function() { $('table').footable();});</script>
+
     <?php if(isset($ajaxonload)) echo $ajaxonload; ?>
+
     <script type="text/javascript">window.onDomReady(onReady); function onReady() { SwitchShowHideRows('init_ready');}</script>
 </head>
-<body>
+<body <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 <div class="nav navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner text-center">
         <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">

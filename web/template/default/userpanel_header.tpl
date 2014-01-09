@@ -13,8 +13,6 @@
     <link href="css/default/easy-wi.css" rel="stylesheet">
     <?php echo implode('',$htmlExtraInformation['css']);?>
 
-    <link rel="shortcut icon" href="images/favicon.ico" />
-
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,7 +23,9 @@
     <script type="text/javascript">$(function() { $('table').footable();});</script>
     <script src="js/default/main.js" type="text/javascript"></script>
     <?php echo implode('',$htmlExtraInformation['js']);?>
+
     <script type="text/javascript">window.onDomReady(onReady); function onReady() { SwitchShowHideRows('init_ready');}</script>
+
 </head>
 <body <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 <div class="navbar navbar-inverse navbar-fixed-top">

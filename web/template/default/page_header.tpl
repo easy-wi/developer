@@ -8,14 +8,20 @@
     <meta name="robots" content="index,follow,noodp,noydir" />
     <meta name="description" content="">
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php echo $page_data->title; ?>">
+
+    <link rel="canonical" href="<?php echo $page_data->canurl;?>" />
+
     <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link href="<?php echo $page_data->pageurl;?>/css/default/easy-wi.css" rel="stylesheet">
+    <?php echo implode('',$htmlExtraInformation['css']);?>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+
     <script src="<?php echo $page_data->pageurl;?>/js/default/footable.js" type="text/javascript"></script>
-    <link rel="shortcut icon" href="<?php echo $page_data->pageurl;?>/images/favicon.ico" />
-    <link rel="canonical" href="<?php echo $page_data->canurl;?>" />
+    <?php echo implode('',$htmlExtraInformation['js']);?>
+
     <?php if(isset($page_feeds)) echo $page_feeds; ?>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -24,7 +30,7 @@
     <![endif]-->
     <script type="text/javascript">$(function() { $('table').footable();});</script>
 </head>
-<body>
+<body <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner text-center">
         <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
