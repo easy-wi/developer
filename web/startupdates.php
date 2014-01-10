@@ -107,6 +107,6 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         unset($rootServer);
     }
 
-    $query = $sql->prepare("UPDATE `settings` SET `lastCronUpdates`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("UPDATE `settings` SET `lastCronUpdates`=UNIX_TIMESTAMP()");
     $query->execute();
 }

@@ -239,7 +239,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         } else {
             $runJobs = false;
         }
-        $query = $sql->prepare("UPDATE `settings` SET `lastCronJobs`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
+        $query = $sql->prepare("UPDATE `settings` SET `lastCronJobs`=UNIX_TIMESTAMP()");
         $query->execute();
     }
 }

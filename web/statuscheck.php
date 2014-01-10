@@ -109,8 +109,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
             $shutdownempty = $row2['shutdownempty'];
             $shutdownemptytime = $row2['shutdownemptytime'];
-            $firstcheck='00-00-'.round(2*(strtotime($row2['lastcheck'])-strtotime($row2['oldcheck']))/60);
-            $firstchecktime=date('d-G-i');
+            $firstcheck = '00-00-' . round(2 * (strtotime($row2['lastcheck']) - strtotime($row2['oldcheck'])) / 60);
+            $firstchecktime = date('d-G-i');
         }
         if (isset($shutdownempty)) {
             $resellersettings[$resellerid] = array('shutdownempty' => $shutdownempty,'shutdownemptytime' => $shutdownemptytime,'firstchecktime' => $firstchecktime,'firstcheck' => $firstcheck,'brandname' => $row['brandname'], 'noservertag' => $row['noservertag'], 'nopassword' => $row['nopassword'], 'tohighslots' => $row['tohighslots'], 'down_checks' => $row['down_checks']);
@@ -738,7 +738,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 $sd = $connection->ServerDetails($virtualserver_id);
                                 $newtrafficdata=round(($sd['connection_filetransfer_bytes_sent_total']+$sd['connection_filetransfer_bytes_received_total']) / 1024);
 
-                                if ($resellersettings[$resellerid]['firstchecktime']<$resellersettings[$resellerid]['firstcheck']) {
+                                if (isset($resellersettings[$resellerid]['firstchecktime']) and isset($resellersettings[$resellerid]['firstcheck']) and $resellersettings[$resellerid]['firstchecktime'] < $resellersettings[$resellerid]['firstcheck']) {
                                     $filetraffic = 0;
                                 }
 
@@ -971,7 +971,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
     }
     flush();
-    $query = $sql->prepare("UPDATE `settings` SET `lastCronStatus`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("UPDATE `settings` SET `lastCronStatus`=UNIX_TIMESTAMP()");
     $query->execute();
 } else {
 	header('Location: login.php');

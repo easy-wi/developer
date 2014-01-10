@@ -870,7 +870,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
     }
 
-    $query = $sql->prepare("UPDATE `settings` SET `lastCronCloud`=UNIX_TIMESTAMP() WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("UPDATE `settings` SET `lastCronCloud`=UNIX_TIMESTAMP()");
     $query->execute();
 
 } else {
