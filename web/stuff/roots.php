@@ -208,6 +208,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $ownerID = $reseller_id;
         }
 
+        if ($publickey != 'N' and !is_file(EASYWIDIR . '/keys/' . $keyname)) {
+            $errors['keyname'] = $sprache->keyname;
+        }
+
         $ssh2Check = (count($errors) == 0) ? ssh_check($ip, $port, $user, $publickey, $keyname, $pass) : true;
 
         if ($ssh2Check !== true) {

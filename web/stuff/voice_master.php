@@ -318,6 +318,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 }
             }
 
+            if ($publickey != 'N' and !is_file(EASYWIDIR . '/keys/' . $keyname)) {
+                $errors['keyname'] = $sprache->keyname;
+            }
+
             $ssh2Check = (count($errors) == 0 and $ui->st('d', 'get') != 'ri' and $active == 'Y') ? ssh_check($ui->ip('ip', 'post'), $ui->port('port', 'post'), $ui->username('user', 20, 'post'), $ui->active('publickey', 'post'), $ui->startparameter('keyname', 'post'), $ui->password('pass', 255, 'post')) : true;
 
             if ($ssh2Check !== true) {

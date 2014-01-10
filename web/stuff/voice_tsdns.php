@@ -150,6 +150,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $errors['active'] = $sprache->active;
         }
 
+        if ($publickey != 'N' and !is_file(EASYWIDIR . '/keys/' . $keyname)) {
+            $errors['keyname'] = $sprache->keyname;
+        }
+
         $ssh2Check = (count($errors) == 0) ? ssh_check($ssh2ip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password) : true;
 
         if ($ssh2Check !== true) {
