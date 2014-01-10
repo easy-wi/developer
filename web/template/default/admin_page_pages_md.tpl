@@ -4,7 +4,7 @@
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
             <li><a href="admin.php?w=pp"><?php echo $gsprache->pages;?></a> <span class="divider">/</span></li>
             <li><?php echo $gsprache->mod;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $table[$default_language]['title'];?></li>
+            <li class="active"><?php echo $pageTitle;?></li>
         </ul>
     </div>
 </div>

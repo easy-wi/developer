@@ -322,6 +322,7 @@ if ($loguserip!='localhost') {
             $query->execute(array($user_language, $user_id, $reseller_id));
         }
     }
+
     $default_language = (!empty($user_language)) ? $user_language : $rSA['language'];
 
     if (!isset($user_language) or empty($user_language)) {
