@@ -88,6 +88,9 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
         include(EASYWIDIR . '/stuff/tables_repair.php');
     }
 
+    $response->add('Fixing data entries if needed.');
+    include(EASYWIDIR . '/stuff/tables_entries_repair.php');
+
     $template_file = $response->response;
 
 } else if ($ui->st('d', 'get') == 'rg') {
