@@ -641,6 +641,8 @@ if (!function_exists('passwordgenerate')) {
         $tempCmds = array();
         $stopped = 'Y';
 
+        $oldSocketTimeout = ini_get('default_socket_timeout');
+
         $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`appID`,t.`workShop` AS `tWorkShop` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':serverid' => $switchID, ':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -873,12 +875,12 @@ if (!function_exists('passwordgenerate')) {
                         $config = 'main/server.cfg';
                     }
 
-                    $ftp = new EasyWiFTP($sship, $ftpport, $customer, $ftppass);
+                    $ftpObect = new EasyWiFTP($sship, $ftpport, $customer, $ftppass);
 
-                    if ($ftp->loggedIn === true) {
+                    if ($ftpObect->loggedIn === true) {
 
-                        $ftp->downloadToTemp($pserver . $serverFolder . '/' . $config);
-                        $configfile = $ftp->getTempFileContent();
+                        $ftpObect->downloadToTemp($pserver . $serverFolder . '/' . $config);
+                        $configfile = $ftpObect->getTempFileContent();
 
                         $configfile = str_replace(array("\0","\b","\r","\Z"), '', $configfile);
                         $lines = explode("\n", $configfile);
@@ -974,11 +976,11 @@ if (!function_exists('passwordgenerate')) {
             }
             if (count($cvarprotect) > 0 and $action != 'du') {
 
-                if (!isset($ftp)) {
-                    $ftp = new EasyWiFTP($sship, $ftpport, $customer, $ftppass);
+                if (!isset($ftpObect)) {
+                    $ftpObect = new EasyWiFTP($sship, $ftpport, $customer, $ftppass);
                 }
 
-                if ($ftp->loggedIn === true) {
+                if ($ftpObect->loggedIn === true) {
 
                     foreach ($cvarprotect as $config => $values) {
 
@@ -1001,12 +1003,12 @@ if (!function_exists('passwordgenerate')) {
 
                         $uploadfile = $split_config[$i];
 
-                        $ftp->downloadToTemp($folders . '/' . $uploadfile);
+                        $ftpObect->downloadToTemp($folders . '/' . $uploadfile);
 
-                        $configfile = $ftp->getTempFileContent();
+                        $configfile = $ftpObect->getTempFileContent();
 
 
-                        $ftp->tempHandle = null;
+                        $ftpObect->tempHandle = null;
 
                         $configfile = str_replace(array("\0","\b","\r","\Z"),"", $configfile);
 
@@ -1027,13 +1029,13 @@ if (!function_exists('passwordgenerate')) {
 
                                     $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
 
-                                    $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
+                                    $ftpObect->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
 
                                 } else if ($cfgtype == 'ini' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)$/", $lline)) {
 
                                     $edited = true;
 
-                                    $ftp->writeContentToTemp($cvar . '=' . $value);
+                                    $ftpObect->writeContentToTemp($cvar . '=' . $value);
 
                                 } else if ($cfgtype == 'lua' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)[\,]$/", $lline)) {
 
@@ -1041,7 +1043,7 @@ if (!function_exists('passwordgenerate')) {
 
                                     $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
 
-                                    $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
+                                    $ftpObect->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
 
                                 } else if ($cfgtype == 'json' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}:[\s+]{0,}(.*)[\,]{0,1}$/", $lline)) {
 
@@ -1049,7 +1051,7 @@ if (!function_exists('passwordgenerate')) {
 
                                     $splitline = preg_split("/$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
 
-                                    $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar. ' : ' .$value : $cvar . ':' . $value);
+                                    $ftpObect->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . $cvar. ' : ' .$value : $cvar . ':' . $value);
 
                                 } else if ($cfgtype == 'xml' and preg_match("/^(.*)<" . strtolower($cvar) . ">(.*)<\/" . strtolower($cvar) . ">(.*)$/", $lline)) {
 
@@ -1057,24 +1059,32 @@ if (!function_exists('passwordgenerate')) {
 
                                     $splitline = preg_split("/\<$cvar/", $singeline, -1,PREG_SPLIT_NO_EMPTY);
 
-                                    $ftp->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . '<' .$cvar . '>' . $value . '</' . $cvar . '>' : '<' . $cvar . '> ' . $value . '</' . $cvar . '>');
+                                    $ftpObect->writeContentToTemp((isset($splitline[1])) ? $splitline[0] . '<' .$cvar . '>' . $value . '</' . $cvar . '>' : '<' . $cvar . '> ' . $value . '</' . $cvar . '>');
                                 }
                             }
 
                             if ($edited == false) {
-                                $ftp->writeContentToTemp($singeline);
+                                $ftpObect->writeContentToTemp($singeline);
                             }
 
                             if ($i < $linecount) {
-                                $ftp->writeContentToTemp("\r\n");
+                                $ftpObect->writeContentToTemp("\r\n");
                             }
 
                             $i++;
                         }
 
-                        $ftp->uploadFileFromTemp($folders, $uploadfile, false);
+                        $ftpObect->uploadFileFromTemp($folders, $uploadfile, false);
 
                     }
+                }
+            }
+
+            if (isset($ftpObect)) {
+                $ftpObect->logOut();
+
+                if (isid($oldSocketTimeout, 20)) {
+                    @ini_set('default_socket_timeout', $oldSocketTimeout);
                 }
             }
 

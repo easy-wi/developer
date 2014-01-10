@@ -71,17 +71,20 @@ if (!function_exists('ssh2_execute')) {
         if (isset($query)) {
 
             $query->execute(array(':serverID' => $id,':aeskey' => $aeskey));
+
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $serverID = $row['id'];
-                $resellerID = $row['resellerid'];
-                $notified = $row['notified'];
-                $ssh2IP = $row['ip'];
-                $ssh2Port = $row['decryptedport'];
-                $ssh2User = $row['decrypteduser'];
-                $ssh2Publickey = $row['publickey'];
+                $serverID = (int) $row['id'];
+                $resellerID = (int) $row['resellerid'];
+                $notified = (int) $row['notified'];
+                $ssh2IP = (string) $row['ip'];
+                $ssh2Port = (int) $row['decryptedport'];
+                $ssh2User = (string) $row['decrypteduser'];
+                $ssh2Publickey = (string) $row['publickey'];
+                $ssh2DecryptedPass = (string) $row['decryptedpass'];
+                $ssh2KeyName = (string) $row['keyname'];
 
                 # https://github.com/easy-wi/developer/issues/70
-                $privateKey = EASYWIDIR . '/keys/' . removePub($row['keyname']);
+                $privateKey = EASYWIDIR . '/keys/' . removePub($ssh2KeyName);
 
                 $sshObject = new Net_SSH2($ssh2IP, $ssh2Port);
 
@@ -92,13 +95,13 @@ if (!function_exists('ssh2_execute')) {
                         $ssh2Pass = new Crypt_RSA();
 
                         if ($ssh2Publickey == 'B') {
-                            $ssh2Pass->setPassword($row['decryptedpass']);
+                            $ssh2Pass->setPassword($ssh2DecryptedPass);
                         }
 
                         $ssh2Pass->loadKey(file_get_contents($privateKey));
 
                     } else {
-                        $ssh2Pass = $row['decryptedpass'];
+                        $ssh2Pass = $ssh2DecryptedPass;
                     }
 
                     if ($sshObject->login($ssh2User, $ssh2Pass)) {
@@ -110,13 +113,8 @@ if (!function_exists('ssh2_execute')) {
                         }
 
                         foreach ($cmds as $c) {
-
-                            if (!is_array($cmds)) {
-                                $cmds = array($cmds);
-                            }
-
                             if (is_string($c) and $c != '') {
-                                $sshObject->exec($c);
+                                $return .= $sshObject->exec($c);
                             }
                         }
 

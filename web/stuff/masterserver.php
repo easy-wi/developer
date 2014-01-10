@@ -208,23 +208,26 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($row['active'] == 'N' or ($row2['installing'] == 'N' and $row2['updating'] == 'N')) {
                 $statusList[$row2['shorten']] = '16_ok';
             } else {
-                $toolong=date($row2['installstarted'],strtotime("+15 minutes"));
-                if (strtotime($logdate)>strtotime($toolong) or $row2['updating'] == 'Y') {
+                $toolong = date($row2['installstarted'], strtotime("+15 minutes"));
+
+                if (strtotime($logdate) > strtotime($toolong) or $row2['updating'] == 'Y') {
                     $sshcheck[] = $row2['shorten'];
                 } else {
                     $statusList[$row2['shorten']] = '16_installing';
                 }
             }
         }
-        if (count($sshcheck)>0) {
-            $serverdata=serverdata('root',$id,$aeskey);
+        if (count($sshcheck) > 0) {
+
+            $serverdata = serverdata('root', $id, $aeskey);
             $ip = $serverdata['ip'];
             $user = $serverdata['user'];
             $port = $serverdata['port'];
             $pass = $serverdata['pass'];
-            $check=ssh2_execute('gs',$id,'./control.sh updatestatus "'.implode(' ',$sshcheck).'"');
+            $check = ssh2_execute('gs', $id, './control.sh updatestatus "' . implode(' ', $sshcheck) . '"');
+
             if ($check === false) {
-                $description="The login data does not work";
+                $description = "The login data does not work";
             } else if (preg_match('/^[\w\:\-\=]+$/',$check)) {
                 $games = array();
                 $query2 = $sql->prepare("SELECT r.`id`,s.`steamgame`,s.`updates`,d.`updates` AS `rupdates` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND r.`resellerid`=? AND d.`ip`=? LIMIT 1");

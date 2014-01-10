@@ -430,6 +430,19 @@ class EasyWiFTP {
         }
     }
 
+    public function logOut () {
+
+        if (is_resource($this->ftpConnection)) {
+            ftp_close($this->ftpConnection);
+        }
+
+        if (is_resource($this->ftpSecondConnection)) {
+            ftp_close($this->ftpSecondConnection);
+        }
+
+        $this->removeTempFiles();
+    }
+
     function __destruct() {
 
         if (is_resource($this->ftpConnection)) {
