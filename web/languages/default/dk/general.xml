@@ -39,6 +39,7 @@
 	<master>Master</master>
     <migration>Flytningsservice</migration>
 	<mod>Rediger</mod>
+    <network>Network</network>
 	<news>Nyheder</news>
 	<no>Nej</no>
 	<overview>Oversigt</overview>

@@ -162,7 +162,7 @@
                     <?php if($easywiModules['my'] and $dbcount>0 and ($pa['mysql'] or $pa['mysql'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive"><i class="fa fa-sitemap fa-fw"> </i> MySQL</a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive"><i class="fa fa-hdd-o fa-fw"> </i> MySQL</a>
                         </div>
                         <div id="collapseFive" class="accordion-body collapse <?php if($w=='my') echo 'in';?>">
                             <div class="accordion-inner">

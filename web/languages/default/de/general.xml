@@ -47,6 +47,7 @@
     <migration>Umzugsservice</migration>
 	<mod>Ändern</mod>
     <modules>Module</modules>
+    <network>Netzwerk</network>
 	<news>News</news>
 	<no>Nein</no>
 	<overview>Übersicht</overview>
