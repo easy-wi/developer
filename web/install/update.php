@@ -240,6 +240,8 @@ $response->add('Repairing tables if needed.');
 
 include(EASYWIDIR . '/stuff/tables_repair.php');
 
+include(EASYWIDIR . '/stuff/tables_entries_repair.php');
+
 # Ende
 if (!isset($updateinclude) or $updateinclude == false) {
     $response->add("<br />Database successfully updated!<br /> <b> Please remove the \"install/\" folder and all of it´s content.</b>");
