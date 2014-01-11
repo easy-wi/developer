@@ -47,7 +47,9 @@ require_once(EASYWIDIR . '/stuff/vorlage.php');
 
 $currentStep = (isset($_GET['step']) and $_GET['step'] > 0 and $_GET['step'] < 10) ? (int) $_GET['step'] : 0;
 $progressPercent = (100 / 9) * $currentStep ;
-$menuLanguage = (isset($_GET['language']) and strlen($_GET['language']) == 2 and file_exists(EASYWIDIR . '/install/' . $_GET['language'] . '.xml')) ? $_GET['language'] : strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0 , 2));
+$acceptLanguage = strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0 , 2));
+$fallbackLanguage = (file_exists(EASYWIDIR . '/install/' . $acceptLanguage . '.xml')) ? $acceptLanguage : 'en';
+$menuLanguage = (isset($_GET['language']) and strlen($_GET['language']) == 2 and file_exists(EASYWIDIR . '/install/' . $_GET['language'] . '.xml')) ? $_GET['language'] : $fallbackLanguage;
 $languageGetParameter = '&amp;language=' . $menuLanguage;
 $languageObject = simplexml_load_file(EASYWIDIR . '/install/' . $menuLanguage . '.xml');
 
