@@ -45,8 +45,6 @@ class EasyWiFTP {
 
     function __construct($ip, $port, $user, $pwd, $ssl = 'N') {
 
-        @ini_set('default_socket_timeout', 5);
-
         $this->ftpConnection = ($ssl == 'N') ? @ftp_connect($ip, $port, 5) :  @ftp_ssl_connect($ip, $port, 5);
 
         if ($this->ftpConnection) {
