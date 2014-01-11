@@ -36,6 +36,9 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+
+// Define the ID variable which will be used at the form and SQLs
+$id = $ui->id('id', 10, 'get');
  
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action',4, 'post') and !token(true)) {
@@ -48,7 +51,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $errors = array();
 
 	// At this point all variables are defined that can come from the user
-    $id = $ui->id('id', 10, 'get');
 
 	// Default variables. Mostly needed for the add operation
     $defaultVar = ($ui->id('id', 10, 'get')) ? $ui->id('id', 10, 'get') : 10;
@@ -111,10 +113,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     }
 
 // Remove entries in case we have an ID given with the GET request
-} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
-
-	// Define the ID variable which will be used at the form and SQLs
-    $id = $ui->id('id', 10, 'get');
+} else if ($ui->st('d', 'get') == 'dl' and $id) {
 
 	// Nothing submitted yet, display the delete form
     if (!$ui->st('action', 'post')) {
