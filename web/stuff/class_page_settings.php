@@ -404,8 +404,8 @@ function checkForSpam ($checkURL = null) {
                         3 => 'Suspicious & Harvester',
                         4 => 'Comment Spammer',
                         5 => 'Suspicious & Comment Spammer',
-                        6=>'Harvester & Comment Spammer',
-                        7=>'Suspicious & Harvester & Comment Spammer'
+                        6 => 'Harvester & Comment Spammer',
+                        7 => 'Suspicious & Harvester & Comment Spammer'
                     );
 
                     if ($ex[3] != 0) {

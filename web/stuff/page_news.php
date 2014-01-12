@@ -111,6 +111,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
         $tempLanguage = getlanguagefile('general', $row['language'], 0);
         $langLinks[$row['language']] = ($page_data->seo== 'Y') ? szrp($tempLanguage->news) . '/' . szrp($row['title'])  : '?s=news&amp;id='.$page_id;
     }
+
     $page_data->langLinks($langLinks);
 
     if (isset($textID) or isset($comments)) {
@@ -164,19 +165,21 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
                     }
 
                     if ($ui->domain('url', 'post')) {
-                        $url='http://'.$ui->domain('url', 'post');
+                        $url = 'http://' . $ui->domain('url', 'post');
                     }
 
-                    $spamArray = checkForSpam();
+                    if (isset($spamFilter) and $spamFilter != 'Y') {
+                        $spamArray = checkForSpam();
 
-                    if (count($spamArray)>0) {
-                        $isSpam = 'Y';
-                    } else {
-
-                        $spamArray = checkForSpam($url);
-
-                        if (count($spamArray)>0) {
+                        if (count($spamArray) > 0) {
                             $isSpam = 'Y';
+                        } else {
+
+                            $spamArray = checkForSpam($url);
+
+                            if (count($spamArray)>0) {
+                                $isSpam = 'Y';
+                            }
                         }
                     }
 

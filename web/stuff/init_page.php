@@ -266,9 +266,9 @@ if (isset($page_active) and $page_active == 'Y') {
             $great_user = ($row['name'] != '' or $row['vname'] != '') ? trim ($row['vname'] . ' ' . $row['name']) : $row['cname'];
 
             if ($row['lastlogin'] != null and $row['lastlogin'] != '0000-00-00 00:00:00') {
-                $great_last=($user_language == 'de') ? date('d.m.Y H:m:s', strtotime($row['lastlogin'])) : $row['lastlogin'];
+                $great_last = ($user_language == 'de') ? date('d.m.Y H:m:s', strtotime($row['lastlogin'])) : $row['lastlogin'];
             } else {
-                $great_last=($user_language == 'de') ? 'Niemals' : 'Never';
+                $great_last = ($user_language == 'de') ? 'Niemals' : 'Never';
             }
         }
     }
