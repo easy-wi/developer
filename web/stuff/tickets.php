@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: tickets.php.
  * Author: Ulrich Block
@@ -34,24 +35,29 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
 if (!isset($admin_id) or $main != 1 or (isset($admin_id) and !$pa['tickets'])) {
     header('Location: admin.php');
     die;
 }
+
 $sprache = getlanguagefile('tickets',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
+
 if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
 } else {
-    $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
+    $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
-if ($reseller_id != 0 and $admin_id != $reseller_id) $reseller_id = $admin_id;
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
+
 } else if ($ui->st('d', 'get') == 'at') {
     if (!$ui->smallletters('action',2, 'post')) {
         $foundlanguages = array();
@@ -69,13 +75,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $query = $sql->prepare("SELECT `id`,`topic` FROM `ticket_topics` WHERE `id`=maintopic AND `resellerid`=?");
         $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
-        $query->execute(array($reseller_id));
+        $query->execute(array($resellerLockupID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $topic = '';
-            $query2->execute(array($user_language, $row['id'],$reseller_id));
+            $query2->execute(array($user_language, $row['id'],$resellerLockupID));
             $topic = $query2->fetchColumn();
             if (empty($topic)) {
-                $query2->execute(array($rSA['language'], $row['id'],$reseller_id));
+                $query2->execute(array($rSA['language'], $row['id'],$resellerLockupID));
                 $topic = $query2->fetchColumn();
             }
             if (empty($topic)) {
@@ -90,24 +96,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $priority = isid($ui->post['priority'],1);
             $maintopic = $ui->description('maintopic', 'post');
             $query = $sql->prepare("SELECT `id` FROM `ticket_topics` WHERE `topic`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($topic_name,$reseller_id));
+            $query->execute(array($topic_name,$resellerLockupID));
             $num = $query->rowCount();
             if ($num==1) {
                 $template_file = $sprache->error_exist;
             } else {
                 $query = $sql->prepare("INSERT INTO `ticket_topics` (`topic`,`maintopic`,`priority`,`resellerid`) VALUES (?,?,?,?)");
-                $query->execute(array($topic_name,$maintopic,$priority,$reseller_id));
+                $query->execute(array($topic_name,$maintopic,$priority,$resellerLockupID));
                 $id = $sql->lastInsertId();
                 if ($maintopic=="none") {
                     $query = $sql->prepare("UPDATE `ticket_topics` SET `maintopic`=:id, priority='NULL' WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                    $query->execute(array(':id' => $id,':reseller_id' => $reseller_id));
+                    $query->execute(array(':id' => $id,':reseller_id' => $resellerLockupID));
                 }
                 if (isset($ui->post['language'])) {
                     $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
                     foreach($ui->post['language'] as $language) {
                         if (small_letters_check($language, '2')) {
                             $subject = $ui->description('subject_'.$language, 'post');
-                            $query->execute(array($id, $language, $subject, $reseller_id));
+                            $query->execute(array($id, $language, $subject, $resellerLockupID));
                         }
                     }
                 }
@@ -126,30 +132,30 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!isset($action)) {
         $topic = '';
         $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
-        $query->execute(array($user_language,$id,$reseller_id));
+        $query->execute(array($user_language,$id,$resellerLockupID));
         $topic = $query->fetchColumn();
         if (empty($topic)) {
-            $query->execute(array($rSA['language'],$id,$reseller_id));
+            $query->execute(array($rSA['language'],$id,$resellerLockupID));
             $topic = $query->fetchColumn();
         }
         if (empty($topic)) {
             $query = $sql->prepare("SELECT `topic` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($id,$reseller_id));
+            $query->execute(array($id,$resellerLockupID));
             $topic = stripslashes($query->fetchColumn());
         }
         $template_file = "admin_ticket_topic_dl.tpl";
     } else if ($action == 'dl'){
         $query = $sql->prepare("SELECT `topic` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         $topic = stripslashes($query->fetchColumn());
         $query = $sql->prepare("DELETE FROM `tickets` WHERE `topic`=? AND `resellerid`=?");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         $query = $sql->prepare("DELETE FROM `ticket_topics` WHERE `maintopic`=? AND `resellerid`=?");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         $query = $sql->prepare("DELETE FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='ti' AND `transID`=? AND `resellerID`=?");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         $loguseraction="%del% %ticket_subject% $topic";
         $insertlog->execute();
         $template_file = $spracheResponse->table_del;
@@ -160,7 +166,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post') and $ui->id('id',19, 'get')) {
         $id = $ui->id('id',19, 'get');
         $query = $sql->prepare("SELECT `topic`,`maintopic`,`priority` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $topic = $row['topic'];
             $priority = $row['priority'];
@@ -171,14 +177,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
         }
         $query = $sql->prepare("SELECT `id`,`topic` FROM `ticket_topics` WHERE `id`=`maintopic` AND `resellerid`=?");
-        $query->execute(array($reseller_id));
+        $query->execute(array($resellerLockupID));
         $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $topics = '';
-            $query2->execute(array($user_language, $row['id'],$reseller_id));
+            $query2->execute(array($user_language, $row['id'],$resellerLockupID));
             $topic = $query2->fetchColumn();
             if (empty($topics)) {
-                $query2->execute(array($rSA['language'], $row['id'],$reseller_id));
+                $query2->execute(array($rSA['language'], $row['id'],$resellerLockupID));
                 $topic = $query2->fetchColumn();
             }
             if (empty($topics)) {
@@ -195,7 +201,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         foreach (getlanguages($template_to_use) as $langrow2) {
             unset($lang);
             $subject = '';
-            $query->execute(array($id,$langrow2,$reseller_id));
+            $query->execute(array($id,$langrow2,$resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $lang = $row['lang'];
                 $subject = $row['text'];
@@ -223,26 +229,26 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $priority = '';
             }
             $query = $sql->prepare("UPDATE `ticket_topics` SET `topic`=:topic,`maintopic`=:maintopic,`priority`=:priority WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-            $query->execute(array(':topic' => $topic_name, ':maintopic' => $maintopic, ':priority' => $priority, ':id' => $id, ':reseller_id' => $reseller_id));
+            $query->execute(array(':topic' => $topic_name, ':maintopic' => $maintopic, ':priority' => $priority, ':id' => $id, ':reseller_id' => $resellerLockupID));
             if (isset($ui->post['language'])) {
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 foreach($ui->post['language'] as $language) {
                     if (small_letters_check($language, '2')) {
                         $subject = $ui->description('subject_'.$language, 'post');
-                        $query->execute(array($id,$language,$subject,$reseller_id));
+                        $query->execute(array($id,$language,$subject,$resellerLockupID));
                     }
                 }
                 $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='ti' AND `transID`=? AND `resellerID`=?");
-                $query->execute(array($id,$reseller_id));
+                $query->execute(array($id,$resellerLockupID));
                 $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=?");
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     if (!in_array($row['lang'],(array)$ui->post['language'])) {
-                        $query2->execute(array($row['lang'],$id,$reseller_id));
+                        $query2->execute(array($row['lang'],$id,$resellerLockupID));
                     }
                 }
             } else {
                 $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='ti' AND `transID`=? AND `resellerID`=?");
-                $query->execute(array($id,$reseller_id));
+                $query->execute(array($id,$resellerLockupID));
             }
 
             $template_file = $spracheResponse->table_add;
@@ -271,7 +277,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $table = array();
         $query2 = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject` FROM `ticket_topics` t LEFT JOIN `translations` l ON t.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? WHERE t.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
-        $query2->execute(array($user_language,$rSA['language'],$reseller_id));
+        $query2->execute(array($user_language,$rSA['language'],$resellerLockupID));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $priority = '';
             $topic = '';
@@ -296,7 +302,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $mTopic = '';
             } else {
                 $query3 = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject` FROM `ticket_topics` t LEFT JOIN `translations` l ON t.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? WHERE t.`id`=?  AND t.`resellerid`=? LIMIT 1");
-                $query3->execute(array($user_language,$rSA['language'], $row2['maintopic'],$reseller_id));
+                $query3->execute(array($user_language,$rSA['language'], $row2['maintopic'],$resellerLockupID));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                     if ($row3['text'] != null and $row3['text'] != '') {
                         $mTopic = $row3['text'];
@@ -312,7 +318,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
         $next = $start+$amount;
         $countp = $sql->prepare("SELECT `id` FROM `ticket_topics` WHERE `resellerid`=?");
-        $countp->execute(array($reseller_id));
+        $countp->execute(array($resellerLockupID));
         $colcount = $countp->rowCount();
         if ($colcount>$next) {
             $vor = $start+$amount;
@@ -357,7 +363,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $supporterList = array();
         if (!$ui->smallletters('action',2, 'post')) {
             $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='a' ORDER BY `id` DESC");
-            $query->execute(array($reseller_id));
+            $query->execute(array($resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $supporterList[$row['id']]=(trim($row['vname'] . ' ' . $row['name']) != '') ? trim($row['vname'] . ' ' . $row['name']) : $row['cname'];
             }
@@ -368,11 +374,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query2 = $sql->prepare("SELECT t.*,u.`cname`,u.`name`,u.`vname` FROM `tickets_text` t LEFT JOIN `userdata` u ON t.`userID`=u.`id` WHERE t.`ticketID`=? AND t.`resellerID`=? ORDER BY t.`writeDate`");
         $query3 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
         $query4 = $sql->prepare("SELECT `topic` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $supporter = $row['supporter'];
             $state = $row['state'];
-            $query2->execute(array($id,$reseller_id));
+            $query2->execute(array($id,$resellerLockupID));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 $table[] = array('writedate' => ($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'], 'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
             }
@@ -397,14 +403,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             else $open = 'Y';
             if (is_numeric($row['topic'])) {
                 $topic = '';
-                $query3->execute(array($user_language, $row['id'],$reseller_id));
+                $query3->execute(array($user_language, $row['id'],$resellerLockupID));
                 $topic = $query3->fetchColumn();
                 if (empty($topic)) {
-                    $query3->execute(array($default_language, $row['id'],$reseller_id));
+                    $query3->execute(array($default_language, $row['id'],$resellerLockupID));
                     $topic = $query3->fetchColumn();
                 }
                 if (empty($topic)) {
-                    $query4->execute(array($row['topic'],$reseller_id));
+                    $query4->execute(array($row['topic'],$resellerLockupID));
                     $topic = stripslashes($query4->fetchColumn());
                 }
                 if (empty($topic)) {
@@ -414,25 +420,44 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $topic = $row['topic'];
             }
         }
-        if (isset($priority)) $template_file = ($ui->smallletters('action',2, 'get') == 'md') ? 'admin_tickets_md.tpl' : 'admin_tickets_view.tpl';
-        else $template_file = 'admin_404.tpl';
+
+        if (isset($priority)) {
+            $template_file = ($ui->smallletters('action',2, 'get') == 'md') ? 'admin_tickets_md.tpl' : 'admin_tickets_view.tpl';
+        } else {
+            $template_file = 'admin_404.tpl';
+        }
+
     } else if ($ui->smallletters('action',2, 'post') == 'wr') {
+
         $query = $sql->prepare("SELECT `userid`,`state` FROM `tickets` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id,$resellerLockupID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $userid = $row['userid'];
             $state = $row['state'];
         }
-        if (isset($state) and $state!='C' and $ui->w('state',1, 'post') != 'C') {
+
+        if (isset($state) and $state != 'C' and $ui->w('state',1, 'post') != 'C') {
+
+            $affectedRows = 0;
+
             if ($ui->id('priority',1, 'post')) {
+
                 $query = $sql->prepare("UPDATE `tickets` SET `state`=?,`supporter`=?,`priority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($ui->w('state',1, 'post'),$ui->id('supporter',10, 'post'),$ui->id('priority',1, 'post'),$id,$reseller_id));
+                $query->execute(array($ui->w('state',1, 'post'),$ui->id('supporter',10, 'post'),$ui->id('priority',1, 'post'), $id, $resellerLockupID));
+
+                $affectedRows += $query->rowCount();
             }
-            $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+
             if (isset($ui->post['ticket']) and strlen($ui->post['ticket'])>0) {
+
                 $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`message`,`writeDate`,`userID`,`resellerid`) VALUES (?,?,?,?,?)");
-                $query->execute(array($id,$ui->post['ticket'],$logdate,$admin_id,$reseller_id));
+                $query->execute(array($id,$ui->post['ticket'],$logdate,$admin_id,$resellerLockupID));
+
+                $affectedRows += $query->rowCount();
             }
+
+            $template_file = ($affectedRows > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+
             if (isid($userid,10)) {
                 $query = $sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($userid));

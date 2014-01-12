@@ -263,22 +263,25 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         if (isset($state) and $state != 'C') {
 
+            $affectedRows = 0;
+
             if ($ui->id('userPriority', 1, 'post')) {
 
                 $query=($state == 'A') ? $sql->prepare("UPDATE `tickets` SET `state`='P',`userPriority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1") : $sql->prepare("UPDATE `tickets` SET `userPriority`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ui->id('userPriority', 1, 'post'), $id, $reseller_id));
 
-                $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+                $affectedRows += $query->rowCount();
             }
 
             if (isset($ui->post['ticket']) and strlen($ui->post['ticket']) > 0) {
 
                 $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`message`,`writeDate`,`userID`,`resellerid`) VALUES (?,?,?,?,?)");
                 $query->execute(array($id,$ui->post['ticket'],$logdate,$user_id,$reseller_id));
-                $count = $query->rowCount();
 
-                $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+                $affectedRows += $query->rowCount();
             }
+
+            $template_file = ($affectedRows > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
 
             if (isid($userid, 10)) {
 
