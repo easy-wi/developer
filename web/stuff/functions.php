@@ -808,6 +808,7 @@ if (!function_exists('passwordgenerate')) {
                     }
                 }
             }
+
             foreach ($rmarray as $rm) {
                 $cmd = str_replace($rm, '', $cmd);
             }
@@ -815,14 +816,19 @@ if (!function_exists('passwordgenerate')) {
             $query2 = $sql->prepare("SELECT `rcon`,`password`,`slots`,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' AND `resellerid`=? LIMIT 1");
             $query2->execute(array($aeskey, $serverid, $reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
                 $slots = $row2['slots'];
+
                 if ($row2['decyptedftpuploadpath'] != null and $row2['decyptedftpuploadpath'] != '' and $row2['decyptedftpuploadpath'] != 'ftp://username:password@1.1.1.1/demos') {
                     $ftpupload = $row2['decyptedftpuploadpath'];
                 }
+
                 if ($gamebinary == 'srcds_run') {
                     $cmd .= ' +rcon_password ' .$row2['rcon'] . ' +sv_password ' . $row2['password']. ' +tv_enable 1 +tv_autorecord 1';
                 } else if ($gamebinary == 'hlds_run') {
                     $cmd .= ' +rcon_password ' . $row2['rcon'] . ' +sv_password ' . $row2['password'];
+                } else if ($gamebinary == 'cod4_lnxded') {
+                    $cmd .= ' +set rcon_password ' . $row2['rcon'] . ' +set g_password ' . $row2['password'];
                 }
             }
 
