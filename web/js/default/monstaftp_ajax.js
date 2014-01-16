@@ -993,8 +993,8 @@ function showFileContextMenu(e,file,folder,isLin) {
 	// Open folder or Download file
 	if (folder != "")
 		menuHTML += createContextMenuItem(lang_context_open,"openThisFolder('"+folder+"',1)",1);
-	if (file != "")	
-		menuHTML += createContextMenuItem(lang_context_download,"window.location='?dl="+file+"'",1);
+	if (file != "")
+		menuHTML += createContextMenuItem(lang_context_download,"window.location='" + urlWithID + "&dl="+file+"'",1);
 	
 	if (folder != "" || file != "") {
 	

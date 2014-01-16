@@ -1885,11 +1885,11 @@ class Monsta {
             if (!@ftp_get($this->ftpConnection, $fp1, $fp2, FTP_BINARY)) {
                 if ($this->checkFirstCharTilde($fp2) == 1) {
                     if (!@ftp_get($this->ftpConnection, $fp1, $this->replaceTilde($fp2), FTP_BINARY)) {
-                        $this->recordFileError("file",$this->quotesEscape($file,"s"),$lang_server_error_down);
+                        $this->recordFileError("file", $this->quotesEscape($file,"s"), $lang_server_error_down);
                         $isError=1;
                     }
                 } else {
-                    $this->recordFileError("file",$this->quotesEscape($file,"s"),$lang_server_error_down);
+                    $this->recordFileError("file", $this->quotesEscape($file,"s"), $lang_server_error_down);
                     $isError=1;
                 }
             }
@@ -1897,21 +1897,21 @@ class Monsta {
             if ($isError == 0) {
 
                 header("Content-Type: application/octet-stream");
-                header("Content-Disposition: attachment; filename=\"".$this->quotesEscape($file_name,"d")."\""); // quotes required for spacing in filename
+                header("Content-Disposition: attachment; filename=\"" . $this->quotesEscape($file_name, "d") . "\""); // quotes required for spacing in filename
                 header("Content-Type: application/force-download");
                 header("Content-Type: application/octet-stream");
                 header("Content-Type: application/download");
                 header("Content-Description: File Transfer");
-                header("Content-Length: ".filesize($fp1));
+                header("Content-Length: " . filesize($fp1));
 
                 flush();
 
-                $fp = @fopen($fp1, "r");
+                $fp = fopen($fp1, "rb");
                 while (!feof($fp)) {
-                    echo @fread($fp, 65536);
-                    @flush();
+                    echo fread($fp, 1024);
+                    flush();
                 }
-                @fclose($fp);
+                fclose($fp);
             }
 
             // Delete tmp file

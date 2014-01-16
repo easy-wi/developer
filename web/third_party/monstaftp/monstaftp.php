@@ -127,7 +127,6 @@ if ($monsta->loggedIn === true and in_array($ftpAction, array("download", "ifram
         $monstaDisplay .= $monsta->editProcessTemplate();
     }
 
-
     if ($ajaxRequest == 1) {
         die($monstaDisplay);
     }
