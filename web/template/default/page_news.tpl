@@ -23,7 +23,7 @@
 <div class="row-fluid">
     <div class="pagination">
         <ul>
-            <?php $links=array(); for($i=0;$i<$pagesCount;$i++){ $a=$i+1; if($i==$pageOpen){ $links[]='<li class="disabled"><span>'.$a.'</span></li>';} else { $links[]='<li class="active"><span><a href="'.$paginationLink.$i.'/">'.$a.'</a></span></li>';}} echo implode(' | ',$links);?>
+            <?php $links=array(); for($i=0;$i<$pagesCount;$i++){ $a=$i+1; if($i==$pageOpen){ $links[]='<li class="disabled"><span>'.$a.'</span></li>';} else { $links[]='<li class="active"><span><a href="'.$paginationLink.$i.'">'.$a.'</a></span></li>';}} echo implode(' | ',$links);?>
         </ul>
     </div>
 </div>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: page_page.php.
  * Author: Ulrich Block

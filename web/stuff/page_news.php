@@ -115,16 +115,18 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
     $page_data->langLinks($langLinks);
 
     if (isset($textID) or isset($comments)) {
+
         $email = '';
         $author = '';
         $url = '';
         $comment = '';
         if (isset($comments) and $comments == 'Y') {
+
             if ($ui->escaped('comment', 'post')) {
 
                 $comment = $ui->escaped('comment', 'post');
 
-                if (strlen($ui->escaped('comment', 'post'))<=$commentMinLength) {
+                if (strlen($ui->escaped('comment', 'post')) <= $commentMinLength) {
                     $error = true;
                 }
 
@@ -133,7 +135,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
                     $email = $ui->ismail('email', 'post');
                     $author = $ui->names('author', 255, 'post');
 
-                    if ($mailRequired== 'Y' and !$ui->ismail('email', 'post')) {
+                    if ($mailRequired == 'Y' and !$ui->ismail('email', 'post')) {
                         $error = true;
                     }
 
@@ -167,7 +169,6 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
                     if ($ui->domain('url', 'post')) {
                         $url = 'http://' . $ui->domain('url', 'post');
                     }
-
                     if (isset($spamFilter) and $spamFilter != 'Y') {
                         $spamArray = checkForSpam();
 
@@ -177,10 +178,13 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
 
                             $spamArray = checkForSpam($url);
 
-                            if (count($spamArray)>0) {
+                            if (count($spamArray) > 0) {
                                 $isSpam = 'Y';
                             }
                         }
+
+                    } else {
+                        $spamArray = array();
                     }
 
                     $spamReason = implode(', ', $spamArray);
@@ -188,13 +192,13 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
                     if (isset($commentsModerated) and $commentsModerated == 'Y' and (!isset($admin_id) and !isset($user_id))) {
 
                         $query = $sql->prepare("INSERT INTO `page_comments` (`date`,`moderateAccepted`,`pageTextID`,`replyTo`,`authorname`,`homepage`,`comment`,`ip`,`dns`,`markedSpam`,`spamReason`,`email`) VALUES (NOW(),'N',?,?,?,?,?,?,?,?,?,?)");
-                        $query->execute(array($textID,$replyTo,$author,$url,$ui->escaped('comment', 'post'),$ui->ip('REMOTE_ADDR', 'server'),gethostbyaddr($ui->ip4('REMOTE_ADDR', 'server')),$isSpam,$spamReason,$email));
+                        $query->execute(array($textID, $replyTo, $author, $url, $ui->escaped('comment', 'post'), $ui->ip('REMOTE_ADDR', 'server'), gethostbyaddr($ui->ip4('REMOTE_ADDR', 'server')), $isSpam, $spamReason, $email));
 
                         $_SESSION['toBeModerated'][] = $sql->lastInsertId();
 
                     } else {
                         $query = $sql->prepare("INSERT INTO `page_comments` (`date`,`moderateAccepted`,`pageTextID`,`replyTo`,`authorname`,`homepage`,`comment`,`ip`,`dns`,`markedSpam`,`spamReason`,`email`) VALUES (NOW(),'Y',?,?,?,?,?,?,?,?,?,?)");
-                        $query->execute(array($textID,$replyTo,$author,$url,$ui->escaped('comment', 'post'),$ui->ip('REMOTE_ADDR', 'server'),gethostbyaddr($ui->ip4('REMOTE_ADDR', 'server')),$isSpam,$spamReason,$email));
+                        $query->execute(array($textID, $replyTo, $author, $url, $ui->escaped('comment', 'post'), $ui->ip('REMOTE_ADDR', 'server'), gethostbyaddr($ui->ip4('REMOTE_ADDR', 'server')), $isSpam, $spamReason, $email));
                     }
 
                 }
@@ -207,10 +211,11 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
 
             $OR = '';
 
-            if (isset($_SESSION['toBeModerated']) and count($_SESSION['toBeModerated'])>0) {
+            if (isset($_SESSION['toBeModerated']) and count($_SESSION['toBeModerated']) > 0) {
+
                 foreach ($_SESSION['toBeModerated'] as $id) {
-                    if (isid($id,19)) {
-                        $OR .= ' OR `commentID`=$id';
+                    if (isid($id, 19)) {
+                        $OR .= ' OR `commentID`=' . $id;
                     }
                 }
             }
@@ -218,7 +223,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
             $query = $sql->prepare("SELECT `commentID`,`replyTo`,`date`,`authorname`,`homepage`,`comment` FROM `page_comments` WHERE `pageTextID`=? AND ((`markedSpam`!='Y' AND `moderateAccepted`='Y') $OR) AND `resellerid`=0 ORDER BY `replyTo` DESC,`commentID` DESC");
             $query->execute(array($textID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $commentDate = (isset($pageLanguage) and $pageLanguage == 'de') ? date('d.m.Y H:i',strtotime($row['date'])) : date('m.d.Y H:i',strtotime($row['date']));
+                $commentDate = (isset($pageLanguage) and $pageLanguage == 'de') ? date('d.m.Y H:i', strtotime($row['date'])) : date('m.d.Y H:i', strtotime($row['date']));
                 $commentArray[] = array('commentID' => $row['commentID'], 'replyTo' => $row['replyTo'], 'homepage' => $row['homepage'], 'date' => $commentDate,'author' => htmlentities($row['authorname']),'comment' => htmlentities($row['comment']));
             }
         }
@@ -285,6 +290,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
     if (!isset($startLooking) or $startLooking < 0) {
         $startLooking = 0;
     }
+
     if (!isset($pageOpen) or $pageOpen < 0) {
         $pageOpen = 0;
     }
@@ -292,6 +298,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
     $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`comments`,p.`authorname`,t.`id` AS `textID`,t.`title`,t.`text`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0 ORDER BY `date` DESC LIMIT $startLooking,$maxnews");
     $query2 = $sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`=0 ORDER BY t.`name` DESC");
     $query3 = $sql->prepare("SELECT COUNT(`commentID`) as `amount` FROM `page_comments` WHERE `pageTextID`=? AND `resellerID`=0");
+
     $query->execute(array($user_language));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
