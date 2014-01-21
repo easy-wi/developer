@@ -189,11 +189,11 @@ if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get')
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
 
                     if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                        $text = substr($row3['content'],0, $row['maxChars']);
+                        $text = substr($row3['content'], 0, $row['maxChars']);
                     } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){
                         $text = $row3['content'];
                     } else if ($row['displayContent'] == 'N' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                        $text = substr($row3['description'],0, $row['maxChars']);
+                        $text = substr($row3['description'], 0, $row['maxChars']);
                     } else {
                         $text = $row3['description'];
                     }
@@ -215,16 +215,16 @@ if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get')
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
                 if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                    $text = substr(preg_replace('/<(.*?)>/','',preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1', $row2['content'],-1),-1),0, $row['maxChars']);
+                    $text = substr(preg_replace('/<(.*?)>/', '', preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1', $row2['content'], -1), -1), 0, $row['maxChars']);
                 } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){
                     $text = $row2['content'];
                 } else if ($row['displayContent'] == 'N' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                    $text = substr(preg_replace('/<(.*?)>/','',preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1', $row2['description'],-1),-1),0, $row['maxChars']);
+                    $text = substr(preg_replace('/<(.*?)>/', '', preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/', '$1', $row2['description'], -1), -1), 0, $row['maxChars']);
                 } else {
                     $text = $row2['description'];
                 }
 
-                $url = ($row2['twitter'] == 'N') ? $row2['feedUrl'] : 'https://twitter.com/'.$row2['loginName'];
+                $url = ($row2['twitter'] == 'N') ? $row2['feedUrl'] : 'https://twitter.com/' . $row2['loginName'];
                 $title = $row2['title'];
 
                 if (strlen($row2['title']) <= 1) {

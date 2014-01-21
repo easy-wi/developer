@@ -504,9 +504,10 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
     $text = imagecolorallocate($bild, 0, 0, 0);
     $font = 20;
     $a = 2;
-    $x = floor($bildbreite/strlen($captcha))-0;
-    for($b = 0; $b < strlen($captcha); $b++) {
-        $c = mt_rand(2, $bildhoehe-20);
+    $x = floor($bildbreite / strlen($captcha))-0;
+    $captchaLength = strlen($captcha);
+    for($b = 0; $b < $captchaLength; $b++) {
+        $c = mt_rand(0,2);
         imagestring ($bild, $font, $a, $c, $captcha{$b}, $text);
         $a = $a + $x;
     }

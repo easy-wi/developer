@@ -158,12 +158,16 @@ if ($easywiModules['my'] === true) {
 
 if ($easywiModules['ro'] === true) {
     $what_to_be_included_array['rh'] = 'root_dedicated.php';
-    $what_to_be_included_array['rd'] = 'root_dhcp.php';
-    $what_to_be_included_array['rp'] = 'root_pxe.php';
-    $what_to_be_included_array['vh'] = 'root_virtual_hosts.php';
     $what_to_be_included_array['vs'] = 'root_virtual_server.php';
-    $what_to_be_included_array['ot'] = 'roots_os_templates.php';
     $what_to_be_included_array['tf'] = 'traffic.php';
+
+    if ($reseller_id == 0) {
+        $what_to_be_included_array['rd'] = 'root_dhcp.php';
+        $what_to_be_included_array['rp'] = 'root_pxe.php';
+        $what_to_be_included_array['ot'] = 'roots_os_templates.php';
+        $what_to_be_included_array['vh'] = 'root_virtual_hosts.php';
+        $what_to_be_included_array['sn'] = 'roots_subnets.php';
+    }
 }
 
 if ($easywiModules['ti'] === true) {
