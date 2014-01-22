@@ -1258,18 +1258,23 @@ if (!function_exists('passwordgenerate')) {
 
                 $keys = array('%server%', '%username%', '%date%', '%shorten%', '%emailregards%', '%emailfooter%');
                 $replacements = array($server, $username, $maildate, $shorten, $emailregards, $emailfooter);
-                $topic = $sprache->topic;
 
-                foreach ($sprache as $key => $value) {
-                    if ($key != 'server' and $key != 'title' and $key != 'username' and $key != 'shorten' and $key != 'date' and $key != 'emailregards' and $key != 'emailfooter') {
+                if (is_object($sprache)) {
+                    $topic = $sprache->topic;
 
-                        if ($template == 'emailnewticket' and $key == 'topic') {
-                            $value = $sprache->topic . ' #' . $shorten;
-                            $topic = $value;
+                    $sprache = (array) $sprache;
+
+                    foreach ($sprache as $key => $value) {
+                        if ($key != 'server' and $key != 'title' and $key != 'username' and $key != 'shorten' and $key != 'date' and $key != 'emailregards' and $key != 'emailfooter') {
+
+                            if ($template == 'emailnewticket' and $key == 'topic') {
+                                $value = $sprache->topic . ' #' . $shorten;
+                                $topic = $value;
+                            }
+
+                            $keys[] = '%' . $key . '%';
+                            $replacements[] = htmlentities($value, null, 'UTF-8');
                         }
-
-                        $keys[] = '%' . $key . '%';
-                        $replacements[] = htmlentities($value, null, 'UTF-8');
                     }
                 }
 
