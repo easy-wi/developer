@@ -77,34 +77,48 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $lastUpdateRun--;
     }
 
-    $query = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `updates`!=3 AND (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<?");
+    $query = $sql->prepare("SELECT `id`,`updates` FROM `rserverdata` WHERE (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<?");
     $query2 = $sql->prepare("UPDATE `rserverdata` SET `alreadyStartedAt`=? WHERE `id`=? LIMIT 1");
+
     $query->execute(array($currentHour, $lastUpdateRun, ($currentMinute + 1)));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-        $rootServer = new masterServer($row['id'],$aeskey);
-        $rootServer->collectData();
-        $sshcmd = $rootServer->returnCmds();
+        $rootServer = new masterServer($row['id'], $aeskey);
 
-        echo "Starting updates for {$rootServer->sship}\r\n";
+        if ($row['updates'] == 3) {
 
-        if ($rootServer->sshcmd !== null) {
-            $update=ssh2_execute('gs', $row['id'], $rootServer->sshcmd);
+            echo "Updates deactivated for: " . $rootServer->sship . "\r\n";
 
-            if ($update !== false) {
+        } else {
 
-                $rootServer->setUpdating();
+            $rootServer->collectData();
+            $sshcmd = $rootServer->returnCmds();
 
-                echo "Updater started for ".$rootServer->sship."\r\n";
+            if ($rootServer->sshcmd !== null) {
+
+                $update = ssh2_execute('gs', $row['id'], $rootServer->sshcmd);
+
+                if ($update !== false) {
+
+                    $rootServer->setUpdating();
+
+                    echo "Updater started for " . $rootServer->sship . "\r\n";
+
+                } else {
+
+                    echo "Updating failed for: " . $rootServer->sship . "\r\n";
+
+                }
 
             } else {
-                echo "Updating failed for: ".$rootServer->sship."\r\n";
+
+                echo "No updates to be executed for " . $rootServer->sship . "\r\n";
             }
+
+            $query2->execute(array($currentHour, $row['id']));
+
+            $rootServer = null;
         }
-
-        $query2->execute(array($currentHour, $row['id']));
-
-        unset($rootServer);
     }
 
     $query = $sql->prepare("UPDATE `settings` SET `lastCronUpdates`=UNIX_TIMESTAMP()");
