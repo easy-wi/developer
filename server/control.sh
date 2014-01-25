@@ -39,7 +39,7 @@ if [ "$1" == "install" ]; then
 		if command -v $TOOL >/dev/null 2>&1; then echo "required tool found: $TOOL"; else echo "required tool not found or no access to it: $TOOL"; fi
 	done
 fi
-CVERSION="4.4"
+CVERSION="4.5"
 IONICE=''
 HOMEFOLDER=$PWD
 LOGDIR=$HOMEFOLDER/logs
@@ -2023,7 +2023,7 @@ function fdl_update {
 			SEARCHFOLDERS="usermaps/ mods/"
 		fi
 		echo "SEARCHFOLDERS='$SEARCHFOLDERS'" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
-		echo "PATTERN=$PATTERN" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
+		echo "PATTERN='$PATTERN'" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 		if [ "$GAMETYPE" == "hl2" ]; then
 			echo 'find $SEARCHFOLDERS -type f 2> /dev/null | grep -v "$PATTERN" | while read FILTEREDFILE1; do' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '	FILTEREDFILES=${FILTEREDFILE1//\.\//}' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
