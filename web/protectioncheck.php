@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: protectioncheck.php.
  * Author: Ulrich Block
@@ -38,21 +39,29 @@
 if (isset($page_include)) {
     $default_language = $user_language;
     $reseller_id = 0;
-    $protection_link = ($seo == 'N') ? $page_url . '/protectioncheck.php' : $page_url . '/' . $user_language . '/' . $page_category . '/';
+
+    $protection_link = ($page_data->seo == 'N') ? 'protectioncheck.php' : $page_data->pageurl . '/' . $user_language . '/' . $page_category . '/';
+
 } else {
+
     define('EASYWIDIR', dirname(__FILE__));
+
     if (is_dir(EASYWIDIR . '/install')) {
         die('Please remove the "install" folder');
     }
+
     $logininclude = true;
+
     include(EASYWIDIR . '/stuff/vorlage.php');
     include(EASYWIDIR . '/stuff/class_validator.php');
     include(EASYWIDIR . '/stuff/functions.php');
     include(EASYWIDIR . '/stuff/settings.php');
+
     if (!isset($user_language)) {
         $user_language = $rSA['language'];
     }
 }
+
 if ($ui->escaped('email', 'post') != '') {
     $fullday=date('Y-m-d H:i:s',strtotime("+1 day"));
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
@@ -65,8 +74,10 @@ if ($ui->escaped('email', 'post') != '') {
     $query->execute(array($fullday, $loguserip));
     die('IP banned');
 }
+
 $sprache = getlanguagefile('gserver', $user_language, 0);
 $ipvalue = '111.111.111.111:27015';
+
 if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port('po', 'get'))) {
     if ($ui->ipport('serveraddress', 'post')) {
         $serveraddress = $ui->ipport('serveraddress', 'post');
