@@ -58,7 +58,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         unset($customer, $i);
 
         $extraData = @json_decode($row2['extraData']);
-        $installGames = (is_object($extraData) and isset($extraData->installGames)) ? $extraData->installGames : 'A';
+        $installGames = (is_object($extraData) and preg_match('/[AP]/', $extraData->installGames)) ? $extraData->installGames : 'A';
 
         $query3->execute(array($aeskey, $aeskey, $row2['affectedID']));
         foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
@@ -74,18 +74,18 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             if ($installGames == 'P') {
 
-                $query4 = $sql->prepare("SELECT t.`gamemod`,t.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND t.`gamemod2` IS NOT NULL AND t.`gamemod2`!='' LIMIT 1");
+                $query4 = $sql->prepare("SELECT t.`gamemod`,t.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? LIMIT 1");
                 $query4->execute(array($row3['serverid']));
                 foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                    $gamestring .= ($row4['gamemod'] == 'Y') ?  '_' . $row4['shorten'] . $row4['gamemod2'] : '_' . $row4['shorten'];
+                    $gamestring .= ($row4['gamemod'] == 'Y' and strlen($row4['gamemod']) > 0) ?  '_' . $row4['shorten'] . $row4['gamemod2'] : '_' . $row4['shorten'];
                 }
 
             } else {
 
-                $query4 = $sql->prepare("SELECT t.`gamemod`,t.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND t.`gamemod2` IS NOT NULL AND t.`gamemod2`!=''");
+                $query4 = $sql->prepare("SELECT t.`gamemod`,t.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
                 $query4->execute(array($row2['affectedID']));
                 foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                    $gamestring .= ($row4['gamemod'] == 'Y') ?  '_' . $row4['shorten'] . $row4['gamemod2'] : '_' . $row4['shorten'];
+                    $gamestring .= ($row4['gamemod'] == 'Y' and strlen($row4['gamemod']) > 0) ?  '_' . $row4['shorten'] . $row4['gamemod2'] : '_' . $row4['shorten'];
                 }
 
             }
@@ -209,6 +209,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         }
 
         $theOutput->printGraph($command);
+    }
+
+    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+        print_r($cmds);
     }
 
     if (count($cmds)>0) {
