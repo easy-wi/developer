@@ -155,19 +155,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $reflection = new ReflectionClass($class_name);
 
             // Check to make sure we can actually load the class
-            if(!$reflection->IsInstantiable())
-            {
-                continue;
+            try {
+
+                if(!$reflection->IsInstantiable()) {
+                    continue;
+                }
+
+                // Load up the class so we can get info
+                $class = new $class_name;
+
+                // Add it to the list
+                $protocols[$class->name()] = $class->name_long();
+
+                // Unset the class
+                unset($class);
+            } catch (ReflectionException $e) {
+                $errors['reflection'] = $e->getMessage();
             }
 
-            // Load up the class so we can get info
-            $class = new $class_name;
-
-            // Add it to the list
-            $protocols[$class->name()] = $class->name_long();
-
-            // Unset the class
-            unset($class);
         }
 
         // Close the directory
