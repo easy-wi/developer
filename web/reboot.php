@@ -499,49 +499,6 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
             }
         }
-
-        echo "Executing Updates if neccessary\r\n";
-        $query2 = $sql->prepare("SELECT `id`,`updates` FROM `rserverdata` WHERE `resellerid`=? AND (`updateMinute`=0 OR `updateMinute` IS NULL)");
-        $query2->execute(array($resellerid));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-
-            $rootServer = new masterServer($row2['id'], $aeskey);
-
-            if ($row2['updates'] == 3) {
-
-                echo "Updates deactivated for: " . $rootServer->sship . "\r\n";
-
-            } else {
-
-                $rootServer->collectData();
-
-                $sshcmd = (4 == $stunde) ? $rootServer->returnCmds('update', 'all') : $rootServer->returnCmds();
-
-                if ($rootServer->sshcmd !== null) {
-
-
-                    if (ssh2_execute('gs', $row2['id'], $rootServer->sshcmd) !== false) {
-
-                        $rootServer->setUpdating();
-
-                        echo "Updater started for " . $rootServer->sship . "\r\n";
-
-                    } else {
-                        echo "Updating failed for: " . $rootServer->sship . "\r\n";
-                    }
-
-                    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                        print_r($rootServer->sshcmd);
-                    }
-
-                } else {
-
-                    echo "No updates to be executed for " . $rootServer->sship . "\r\n";
-                }
-
-                $rootServer = null;;
-            }
-        }
     }
     
     $newsInclude = true;

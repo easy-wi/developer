@@ -96,23 +96,34 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
             if ($rootServer->sshcmd !== null) {
 
-                $update = ssh2_execute('gs', $row['id'], $rootServer->sshcmd);
+                $sshcmd = (4 == $currentHour) ? $rootServer->returnCmds('update', 'all') : $rootServer->returnCmds();
 
-                if ($update !== false) {
+                if ($rootServer->sshcmd !== null) {
 
-                    $rootServer->setUpdating();
+                    if (ssh2_execute('gs', $row['id'], $rootServer->sshcmd) !== false) {
 
-                    echo "Updater started for " . $rootServer->sship . "\r\n";
+                        $rootServer->setUpdating();
+
+                        echo "Updater started for " . $rootServer->sship . "\r\n";
+
+                    } else {
+                        echo "Updating failed for: " . $rootServer->sship . "\r\n";
+                    }
+
+                    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                        print_r($rootServer->sshcmd);
+                    }
 
                 } else {
 
-                    echo "Updating failed for: " . $rootServer->sship . "\r\n";
+                    echo "No updates to be executed for " . $rootServer->sship . "\r\n";
 
                 }
 
             } else {
 
                 echo "No updates to be executed for " . $rootServer->sship . "\r\n";
+
             }
 
             $query2->execute(array($currentHour, $row['id']));
