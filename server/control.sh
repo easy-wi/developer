@@ -39,7 +39,7 @@ if [ "$1" == "install" ]; then
 		if command -v $TOOL >/dev/null 2>&1; then echo "required tool found: $TOOL"; else echo "required tool not found or no access to it: $TOOL"; fi
 	done
 fi
-CVERSION="4.5"
+CVERSION="4.6"
 IONICE=''
 HOMEFOLDER=$PWD
 LOGDIR=$HOMEFOLDER/logs
@@ -1300,6 +1300,7 @@ USERNAME=$USERNAME" > $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 	else
 		QUERY="id=$PORT\\&ip=$IP"
 	fi
+	VARIABLE4=`echo $VARIABLE4 | tr -d ' '`
 	echo "wget -q --timeout=10 --no-check-certificate -O - $VARIABLE4/get_password.php?w=bu\\&shorten=$USERNAME\\&$QUERY" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 	chmod +x $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 	screen -dmS $SCREENNAME $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
@@ -1314,18 +1315,20 @@ function restore_backup {
 	else
 		QUERY="id=$PORT\\&ip=$IP"
 	fi
+	VARIABLE4=`echo $VARIABLE4 | tr -d ' '`
 	SCREENNAME=restorerestore-$VARIABLE2-$VARIABLE3
 	if ([[ ! `screen -ls | grep "$SCREENNAME"` ]] && [[ ! `screen -ls | grep "backup-$VARIABLE2-$SHORTEN"` ]]); then
 		echo "#!/bin/bash" > $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		echo "rm $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		if [ "$VARIABLE5" != "" ]; then
+			echo "if [ ! -f /home/$USERNAME/backup/ ]; then mkdir -p /home/$USERNAME/backup/; fi" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "cd /home/$USERNAME/backup/" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "mv /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "mv /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 /home/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "wget -q --timeout=10 --no-check-certificate $VARIABLE5/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "if [ -f /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 ]; then" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "	rm /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "	rm /home/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "else" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "	mv /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3_old.tar.bz2 /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "	mv /home/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2 /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "fi" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		fi
 		echo "if [ -f /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 ]; then" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
