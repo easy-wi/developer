@@ -77,6 +77,7 @@ include(EASYWIDIR . '/stuff/functions.php');
 include(EASYWIDIR . '/stuff/class_validator.php');
 include(EASYWIDIR . '/stuff/class_rootserver.php');
 include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/functions_gs.php');
 include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/class_ts3.php');
 include(EASYWIDIR . '/stuff/functions_ts3.php');

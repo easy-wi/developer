@@ -42,6 +42,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['gserver']))
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/functions_gs.php');
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);

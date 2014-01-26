@@ -41,6 +41,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and (!isset($pa) or (
     die;
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/functions_gs.php');
 include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/class_ts3.php');
 
