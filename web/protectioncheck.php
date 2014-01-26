@@ -38,7 +38,7 @@
 if (isset($page_include)) {
     $default_language = $user_language;
     $reseller_id = 0;
-    $protection_link= ($seo == 'N') ? $page_url . '/protectioncheck.php' : $page_url . '/' . $user_language . '/' . $page_category . '/';
+    $protection_link = ($seo == 'N') ? $page_url . '/protectioncheck.php' : $page_url . '/' . $user_language . '/' . $page_category . '/';
 } else {
     define('EASYWIDIR', dirname(__FILE__));
     if (is_dir(EASYWIDIR . '/install')) {
