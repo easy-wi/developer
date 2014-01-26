@@ -344,6 +344,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = ($query->rowCount() > 0) ? 'admin_roots_ri.tpl' : 'admin_404.tpl';
 
     } else if ($ui->st('action', 'post') == 'ri' and $ui->id('serverID', 10, 'post')) {
+
         $cmds = array();
         $started = array();
         $serverIDs = (array) $ui->id('serverID', 10, 'post');
@@ -353,23 +354,36 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=? AND g.`resellerid`=?");
         }
+
         foreach ($serverIDs as $serverID) {
+
             if ($reseller_id == 0) {
                 $query->execute(array($aeskey, $aeskey, $serverID, $id));
             } else {
                 $query->execute(array($aeskey, $aeskey, $serverID, $id, $resellerLockupID));
             }
+
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $started[] = $row['serverip'] . ':' . $row['port'];
-                $customer = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['userid'] : $row['cname'];
+                $customer = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['id'] : $row['cname'];
                 $cmds[] = './control.sh add ' . $customer . ' ' . $row['dftp'] . ' ' . $row['duser'] . ' ' . passwordgenerate(10);
                 $cmds[] = 'sudo -u ' . $customer . ' ./control.sh reinstserver ' . $customer . ' 1_' . $row['shorten'] .' ' . $row['serverip'] . '_' . $row['port'];
             }
         }
+
         if (count($cmds) > 0) {
+
             include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
-            ssh2_execute('gs', $id, $cmds);
+
+            $return = ssh2_execute('gs', $id, $cmds);
+
             $template_file = $gsSprache->reinstall . ': ' . implode('<br>', $started);
+
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                $template_file .= '<br>' . $return;
+                $template_file .= '<br>' . implode('<br>', $cmds);
+            }
+
         } else {
             $template_file = 'admin_404.tpl';
         }
@@ -377,6 +391,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $template_file = 'admin_404.tpl';
     }
+
 } else {
     $table = array();
     $o = $ui->st('o', 'get');
