@@ -561,8 +561,8 @@ if (!function_exists('gsrestart')) {
                     $subfolder = 'hl1';
                 } else if ($row['shorten'] == 'css' or $row['shorten'] == 'tf') {
                     $subfolder = 'hl2';
-                } else if ($row['shorten'] == 'cod4') {
-                    $subfolder = 'cod4';
+                } else if ($row['shorten'] == 'csgo') {
+                    $subfolder = 'csgo';
                 }
 
                 $file = $cfgdir . '/' . $subfolder . '/' . $gsip . '-' . $gsport;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: userpanel_gserver.php.
  * Author: Ulrich Block
@@ -133,7 +134,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		    $gamestring[]=($row['gamemod'] == 'Y') ? $shorten.$gamemod2 : $shorten;
 		}
 
-		if (isset($gsfolder) and count($gamestring)>0 and $ui->active('type', 'post')) {
+		if (isset($gsfolder) and count($gamestring) > 0 and $ui->active('type', 'post')) {
             $gamestring = count($gamestring) . '_' . implode('_',$gamestring);
             $rdata = serverdata('root',$rootID,$aeskey);
             $sship = $rdata['ip'];
@@ -315,36 +316,36 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
 
 
-                if ($rowcount > 0 and $eacallowed == 'Y' and ($gshorten == 'css' or $gshorten == 'cod4' or $gshorten == 'cstrike' or $gshorten == 'czero' or $gshorten == 'tf')) {
+                if ($rowcount > 0 and $eacallowed == 'Y' and in_array($gshorten, array('css', 'csgo', 'cstrike', 'czero', 'tf'))) {
 
                     if ($gshorten == 'cstrike' or $gshorten == 'czero') {
-                        if ($anticheat==3 and $hlds_3 == 'Y') {
+                        if ($anticheat == 3 and $hlds_3 == 'Y') {
                             $eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
                         } else if ($hlds_3 == 'Y') {
                             $eac[] = '<option value="3">Easy Anti Cheat</option>';
                         }
-                        if ($anticheat==4 and $hlds_4 == 'Y') {
+                        if ($anticheat == 4 and $hlds_4 == 'Y') {
                             $eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
                         } else if ($hlds_4 == 'Y') {
                             $eac[] = '<option value="4">Easy Anti Cheat Public</option>';
                         }
-                        if ($anticheat==5 and $hlds_5 == 'Y') {
+                        if ($anticheat == 5 and $hlds_5 == 'Y') {
                             $eac[] = '<option value="5" selected="selected">Easy Anti Cheat 32Bit</option>';
                         } else if ($hlds_5 == 'Y') {
                             $eac[] = '<option value="5">Easy Anti Cheat 32Bit</option>';
                         }
-                        if ($anticheat==6 and $hlds_6 == 'Y') {
+                        if ($anticheat == 6 and $hlds_6 == 'Y') {
                             $eac[] = '<option value="6" selected="selected">Easy Anti Cheat Public 32Bit</option>';
                         } else if ($hlds_6 == 'Y') {
                             $eac[] = '<option value="6">Easy Anti Cheat Public 32Bit</option>';
                         }
                     } else {
-                        if ($anticheat==3 and $normal_3 == 'Y') {
+                        if ($anticheat == 3 and $normal_3 == 'Y') {
                             $eac[] = '<option value="3" selected="selected">Easy Anti Cheat</option>';
                         } else if ($normal_3 == 'Y') {
                             $eac[] = '<option value="3">Easy Anti Cheat</option>';
                         }
-                        if ($anticheat==4 and $normal_4 == 'Y') {
+                        if ($anticheat == 4 and $normal_4 == 'Y') {
                             $eac[] = '<option value="4" selected="selected">Easy Anti Cheat Public</option>';
                         } else if ($normal_4 == 'Y') {
                             $eac[] = '<option value="4">Easy Anti Cheat Public</option>';
@@ -440,47 +441,48 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $webapiAuthkey = $ui->w("webapiAuthkey_${switchID}", 32, 'post');
 
             if ($ui->id("anticheat_${switchID}", 1, 'post')) {
+
                 $anticheat=($ui->id("anticheat_${switchID}", 1, 'post')>0) ? $ui->id("anticheat_${switchID}", 1, 'post') : 1;
 
                 if ($row['shorten'] == 'cstrike' or $row['shorten'] == 'czero') {
 
-                    if ($anticheat==3 and $hlds_3== 'N' and $hlds_5 == 'Y' and $active == 'Y') {
+                    if ($anticheat == 3 and $hlds_3 == 'N' and $hlds_5 == 'Y' and $active == 'Y') {
                         $anticheat = 5;
-                    } else if ($anticheat==3 and $hlds_3== 'N' and $hlds_5== 'N' and $active == 'Y') {
+                    } else if ($anticheat == 3 and $hlds_3 == 'N' and $hlds_5 == 'N' and $active == 'Y') {
                         $anticheat = 1;
                     } else if ($anticheat>1 and $active == 'N') {
                         $anticheat = 1;
                     }
 
-                    if ($anticheat==4 and $hlds_4== 'N' and $hlds_6 == 'Y' and $active == 'Y') {
+                    if ($anticheat == 4 and $hlds_4 == 'N' and $hlds_6 == 'Y' and $active == 'Y') {
                         $anticheat = 6;
-                    } else if ($anticheat==4 and $hlds_4== 'N' and $hlds_6== 'N' and $active == 'Y') {
+                    } else if ($anticheat == 4 and $hlds_4 == 'N' and $hlds_6 == 'N' and $active == 'Y') {
                         $anticheat = 1;
-                    } else if ($anticheat>1 and $active == 'N') {
-                        $anticheat = 1;
-                    }
-
-                    if ($anticheat==5 and $hlds_5== 'N' and $active == 'Y') {
+                    } else if ($anticheat > 1 and $active == 'N') {
                         $anticheat = 1;
                     }
 
-                    if ($anticheat==6 and $hlds_6== 'N' and $active == 'Y') {
+                    if ($anticheat == 5 and $hlds_5 == 'N' and $active == 'Y') {
                         $anticheat = 1;
                     }
 
-                    if (($anticheat>6 and $active == 'Y') or $anticheat>2 and $active == 'N') {
+                    if ($anticheat == 6 and $hlds_6 == 'N' and $active == 'Y') {
+                        $anticheat = 1;
+                    }
+
+                    if (($anticheat > 6 and $active == 'Y') or $anticheat > 2 and $active == 'N') {
                         $anticheat = 1;
                     }
                 } else {
-                    if ($anticheat==3 and $normal_3== 'N' and $active == 'Y') {
+                    if ($anticheat == 3 and $normal_3 == 'N' and $active == 'Y') {
                         $anticheat = 1;
                     }
 
-                    if ($anticheat==4 and $normal_4== 'N' and $active == 'Y') {
+                    if ($anticheat == 4 and $normal_4 == 'N' and $active == 'Y') {
                         $anticheat = 1;
                     }
 
-                    if (($anticheat>4 and $active == 'Y') or $anticheat>2 and $active == 'N') {
+                    if (($anticheat > 4 and $active == 'Y') or $anticheat>2 and $active == 'N') {
                         $anticheat = 1;
                     }
                 }
@@ -553,6 +555,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $template_file = 'Error: No such game!';
     }
+
 } else if ($ui->st('d', 'get') == 'cf' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
 
     $id = $ui->id('id', 10, 'get');
