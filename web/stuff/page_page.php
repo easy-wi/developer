@@ -43,7 +43,7 @@ if (!isset($page_include)) {
 if (isset($default_page_id)) {
 	$page_id = $default_page_id;
 } else if (isset($page_category,$page_data->pages_array['pages']) and in_array($page_category,$page_data->pages_array['pages'])) {
-	$page_id=array_search($page_category,$page_data->pages_array['pages']);
+	$page_id = array_search($page_category,$page_data->pages_array['pages']);
 } else {
 	$page_id = $ui->id('id',19, 'get');
 }
