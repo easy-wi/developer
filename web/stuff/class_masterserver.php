@@ -85,7 +85,7 @@ class masterServer {
             $this->resellerID = $row['resellerid'];
 
             // Get the imageserver if possible and use Easy-WI server as fallback
-            $mainip=explode('.', $this->sship);
+            $mainip = explode('.', $this->sship);
             $mainsubnet = $mainip[0] . '.' . $mainip[1] . '.' . $mainip[2];
             $query = $sql->prepare("SELECT `imageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($this->resellerID));
@@ -111,7 +111,7 @@ class masterServer {
                         $noSync = true;
                         
                     } else if (isip($splitip,'all')) {
-                        $ipparts=explode('.', $splitip);
+                        $ipparts = explode('.', $splitip);
                         $subnet = $ipparts[0] . '.' . $ipparts[1] . '.' . $ipparts[2];
                         
                         if ($mainsubnet == $subnet) {
@@ -178,6 +178,7 @@ class masterServer {
 
             // Defined as Sync Only
             if (($row['supdates'] == 4 and $row['updates'] == 1) or (($row['supdates'] == 1 or $row['supdates'] == 4) and $row['updates'] == 4)) {
+
                 $this->syncList[] = $row['shorten'];
 
                 // Games defined to sync with 2 or 1
@@ -202,10 +203,10 @@ class masterServer {
                     $lookUpAppID=($row['appID'] == 90) ? $row['appID'] . '-' . $row['shorten'] : $row['appID'];
                     
                     if ($row['localVersion'] == null or ($row['localVersion'] != null and $row['localVersion'] < $row['steamVersion'])) {
-                        if ($updateType == 1) {
+                        if ($updateType == 1 and !isset($this->steamCmdOutdated['sync'][$lookUpAppID])) {
                             $this->steamCmdOutdated['sync'][$lookUpAppID] = $row['shorten'];
                             
-                        } else if ($updateType == 2) {
+                        } else if ($updateType == 2 and !isset($this->steamCmdOutdated['nosync'][$lookUpAppID])) {
                             $this->steamCmdOutdated['nosync'][$lookUpAppID] = $row['shorten'];
                         }
                         
@@ -213,10 +214,10 @@ class masterServer {
                         $this->syncList[] = $row['shorten'];
                     }
                     
-                    if ($updateType == 1) {
+                    if ($updateType == 1 and !isset($this->steamCmdTotal['sync'][$lookUpAppID])) {
                         $this->steamCmdTotal['sync'][$lookUpAppID] = $row['shorten'];
                         
-                    } else if ($updateType == 2) {
+                    } else if ($updateType == 2 and !isset($this->steamCmdTotal['nosync'][$lookUpAppID])) {
                         $this->steamCmdTotal['nosync'][$lookUpAppID] = $row['shorten'];
                     }
 
@@ -295,6 +296,17 @@ class masterServer {
                 }
             }
         }
+
+        $this->syncList = array_unique($this->syncList);
+        $this->hldsTotal['sync'] = array_unique($this->hldsOutdated['sync']);
+        $this->hldsTotal['nosync'] = array_unique($this->hldsOutdated['nosync']);
+        $this->hldsOutdated['sync'] = array_unique($this->hldsOutdated['sync']);
+        $this->hldsOutdated['nosync'] = array_unique($this->hldsOutdated['nosync']);
+        $this->noSteam['sync'] = array_unique( $this->noSteam['sync']);
+        $this->noSteam['nosync'] = array_unique($this->noSteam['nosync']);
+        $this->maps = array_unique($this->maps);
+        $this->addons = array_unique($this->addons);
+
     }
 
     // return command only for outdated servers
