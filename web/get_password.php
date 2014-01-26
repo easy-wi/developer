@@ -72,7 +72,8 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
         }
 	}
 	echo 'ok';
-} else if ($ui->st('w', 'get')=="bu" and $ui->id('id',19, 'get') and $ui->username('shorten', 50, 'get') and $ui->ip('ip', 'get')) {
+
+} else if ($ui->st('w', 'get') == 'bu' and $ui->id('id',19, 'get') and $ui->username('shorten', 50, 'get') and $ui->ip('ip', 'get')) {
     $query = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`,':',g.`port`) AS `server`,g.`userid` FROM `gsswitch` g INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE r.`ip`=? AND s.`customer`=? AND g.`port`=? AND g.`serverip`=? LIMIT 1");
     $query->execute(array($ip,$ui->username('shorten', 50, 'get'),$ui->id('id',19, 'get'),$ui->ip('ip', 'get')));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -83,19 +84,19 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
 		}
 	}
     echo 'ok';
-} else if ($ui->st('w', 'get')=="rb" and $ui->id('id',19, 'get') and $ui->username('shorten', 50, 'get') and $ui->ip('ip', 'get')) {
-    $query = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`,':',g.`port`) AS `server`,g.`userid` FROM `gsswitch` s INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE r.`ip`=? AND u.`cname`=? AND g.`port`=? AND g.`serverip`=? LIMIT 1");
+
+} else if ($ui->st('w', 'get') == 'rb' and $ui->id('id',19, 'get') and $ui->username('shorten', 50, 'get') and $ui->ip('ip', 'get')) {
+    $query = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`,':',g.`port`) AS `server`,g.`userid` FROM `gsswitch` g INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE r.`ip`=? AND u.`cname`=? AND g.`port`=? AND g.`serverip`=? LIMIT 1");
     $query->execute(array($ip,$ui->username('shorten', 50, 'get'),$ui->id('id',19, 'get'),$ui->ip('ip', 'get')));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-		$server = $row['server'];
-		$userid = $row['userid'];
         $query = $sql->prepare("SELECT `mail_backup` FROM `userdata` WHERE `mail_backup`='Y' AND `id`=? LIMIT 1");
-        $query->execute(array($userid));
+        $query->execute(array($row['userid']));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-			sendmail('emailbackuprestore',$userid,$server,'');
+			sendmail('emailbackuprestore', $row['userid'], $row['server'], '');
 		}
 	}
     echo 'ok';
+
 } else {
     $query = $sql->prepare("SELECT AES_DECRYPT(`pass`,?) AS `decryptedpass`,`ip`,`userid` FROM `virtualcontainer` WHERE `ip`=? AND `status`='2' LIMIT 1");
     $query->execute(array($aeskey,$ip));

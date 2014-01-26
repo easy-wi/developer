@@ -1524,7 +1524,7 @@ else
 		echo "${IONICE}find $CLEANUPDIR -type f -name '*.dem' $DEMOTIME -delete" >> $STARTFILE
 		echo "${IONICE}find $CLEANUPDIR -type f -name '*.ztmp' $ZTMPTIME -delete" >> $STARTFILE
 		if [ "$VARIABLE5" != "protected" ]; then
-			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -maxdepth 1  \( -type f -or -type l \) ! \( -name ".bashrc" -or -name \".bash_history\" -or -name \".profile\" -or -name \".bash_logout\" \) -delete" >> $STARTFILE
+			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -maxdepth 1  \( -type f -or -type l \) ! \( -name \".bashrc\" -or -name \".bash_history\" -or -name \".profile\" -or -name \".bash_logout\" \) -delete" >> $STARTFILE
 			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete" >> $STARTFILE
 			echo "${IONICE}nice -n +19 find $DATADIR -type f -user `whoami` ! -name \"*.bz2\" -delete" >> $STARTFILE
 		fi
