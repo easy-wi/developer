@@ -57,10 +57,10 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
 
-    echo "Start Syncs and Updates loading...\r\n";
-
     $currentHour = date('G');
     $currentMinute = (int) date('i');
+
+    echo "Start Syncs and Updates. Hour is ${currentHour} and minute is ${currentMinute}\r\n";
 
     $query = $sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
