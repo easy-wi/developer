@@ -53,7 +53,7 @@ $crashed = array();
 $i_crashed = 0;
 $tag_removed = array();
 $i_tag_removed = 0;
-$crashedArray = array('gsCrashed' => 0,'gsPWD' => 0,'gsTag' => 0,'ticketsOpen' => 0,'tickets' => 0,'ts3' => 0);
+$crashedArray = array('all' => 0, 'gsTotal' => 0, 'gsCrashed' => 0,'gsPWD' => 0,'gsTag' => 0,'ticketsOpen' => 0,'tickets' => 0,'ts3' => 0);
 
 $query = $sql->prepare("SELECT `stopped`,`serverid`,CONCAT(`serverip`,':',`port`) AS `server`,`userid`,`war`,`brandname`,`queryName`,`queryPassword` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
 $query->execute(array($user_id,$reseller_id));
@@ -108,6 +108,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
 $crashedArray['ts3'] = $crached_ts3_virtual;
 $feedArray = array();
+
+$crashedArray['gsTotal'] = $crashedArray['gsTag'] + $crashedArray['gsCrashed'] + $crashedArray['gsPWD'];
+$crashedArray['all'] = $crashedArray['gsTotal'] + $crashedArray['ticketsOpen'] + $crashedArray['tickets'] + $crashedArray['ts3'];
 
 if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get') and !$ui->smallletters('d',2, 'get'))) {
     $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
