@@ -37,90 +37,90 @@
  */
 
 function uname_check($value, $laeng) {
-    return  (preg_match("/^[\w\-\_\.]+$/", $value) and strlen($value) <= $laeng) ? true : false;
+    return  (preg_match("/^[\w\-\_\.]+$/", $value) and strlen($value) <= $laeng) ? $value : false;
 }
 
 function isip($value, $ipx) {
     switch ($ipx) {
         case 'ip4':
-            return (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) ? true : false;
+            return (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) ? $value : false;
 
         case 'ip6':
-            return (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) ? true : false;
+            return (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) ? $value : false;
 
         case 'all':
-            return (filter_var($value, FILTER_VALIDATE_IP) !== false) ? true : false;
+            return (filter_var($value, FILTER_VALIDATE_IP) !== false) ? $value : false;
     }
 
     return false;
 }
 
 function isips($value) {
-    return (preg_match("/^[\r\n\.\/0-9]+$/", $value) !== false) ? true : false;
+    return (preg_match("/^[\r\n\.\/0-9]+$/", $value) !== false) ? $value : false;
 }
 
 function ismac($value) {
-    return (preg_match("/^[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}$/", $value) !== false) ? true : false;
+    return (preg_match("/^[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}$/", $value) !== false) ? $value : false;
 }
 
 function ismail($value) {
-    return (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) ? true : false;
+    return (filter_var($value, FILTER_VALIDATE_EMAIL) !== false) ? $value : false;
 }
 
 function isurl($value) {
-    return (filter_var($value, FILTER_VALIDATE_URL) !== false) ? true : false;
+    return (filter_var($value, FILTER_VALIDATE_URL) !== false) ? $value : false;
 }
 
 function isdomain($value) {
-    return (preg_match("/^[a-z0-9\-\.]+\.[a-z]{1,5}$/", $value) !== false) ? true : false;
+    return (preg_match("/^[a-z0-9\-\.]+\.[a-z]{1,5}$/", $value) !== false) ? $value : false;
 }
 
 function isRsync($value) {
-    return (preg_match('/^(rsync\:\/\/|)[\w\.\-\_]{1,}(::[][\w\.\-\_\/]{1,}|)$/', $value) !== false) ? true : false;
+    return (preg_match('/^(rsync\:\/\/|)[\w\.\-\_]{1,}(::[][\w\.\-\_\/]{1,}|)$/', $value) !== false) ? $value : false;
 }
 
 function is_number($value, $max = 100, $min = 0) {
-    return (is_numeric($value) && $value > $min && strlen($value) <= $max) ? true : false;
+    return (is_numeric($value) && $value > $min && strlen($value) <= $max) ? $value : false;
 }
 
 function validate_int($value, $min, $max) {
     $value = str_replace(',', '.', $value);
-    return (preg_match("/^[\d+(.\d+|$)]+$/", $value) !== false && is_number($value, $max, $min)) ? true : false;
+    return (preg_match("/^[\d+(.\d+|$)]+$/", $value) !== false && is_number($value, $max, $min)) ? $value : false;
 }
 
 function isinteger($value) {
-    return is_int($value);
+    return (is_int($value)) ? $value : false;
 }
 
 function active_check($value) {
-    return (strlen($value) == 1 && preg_match("/[N,Y]/", $value) !== false) ? true : false;
+    return (strlen($value) == 1 && preg_match("/[N,Y]/", $value) !== false) ? $value : false;
 }
 
 function small_letters_check($value, $laeng) {
-    return (strlen($value) <= $laeng && preg_match("/^[a-z]+$/", $value)) ? true : false;
+    return (strlen($value) <= $laeng && preg_match("/^[a-z]+$/", $value)) ? $value : false;
 }
 
 function wpreg_check($value, $laeng) {
-    return (strlen($value) <= $laeng && preg_match("/^[\w]+$/", $value)) ? true : false;
+    return (strlen($value) <= $laeng && preg_match("/^[\w]+$/", $value)) ? $value : false;
 }
 function password_check($value,$laeng) {
-    return (strlen($value) <= $laeng and strlen($value) > 4 and preg_match("/[A-Za-z0-9]/", $value)) ? true : false;
+    return (strlen($value) <= $laeng and strlen($value) > 4 and preg_match("/[A-Za-z0-9]/", $value)) ? $value : false;
 }
 function is_password ($value,$laeng) {
-    return (preg_match("/^[\w\[\]\(\)\<\>!\"§$%&\/=\?*+#]{1,".$laeng."}$/", $value)) ? true : false;
+    return (preg_match("/^[\w\[\]\(\)\<\>!\"§$%&\/=\?*+#]{1,".$laeng."}$/", $value)) ? $value : false;
 }
 function captchac($value) {
-    return (strlen($value) == "4" and preg_match("/[a-zA-Z0-9]/", $value)) ? true : false;
+    return (strlen($value) == "4" and preg_match("/[a-zA-Z0-9]/", $value)) ? $value : false;
 }
 function cores($value) {
-    return (preg_match("/^[0-9\,]+$/", $value)) ? true : false;
+    return (preg_match("/^[0-9\,]+$/", $value)) ? $value : false;
 }
 function ipport($value) {
     $adresse_awk=explode(':',preg_replace(array('/\s+/',' '), '', $value));
-    return ((!isset($adresse_awk[0]) or !filter_var($adresse_awk[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) or (!isset($adresse_awk[1]) or !preg_match("/^(0|([1-9]\d{0,3}|[1-5]\d{4}|[6][0-5][0-5]([0-2]\d|[3][0-5])))$/",$adresse_awk[1]))) ? false : true;
+    return ((!isset($adresse_awk[0]) or !filter_var($adresse_awk[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) or (!isset($adresse_awk[1]) or !preg_match("/^(0|([1-9]\d{0,3}|[1-5]\d{4}|[6][0-5][0-5]([0-2]\d|[3][0-5])))$/", $adresse_awk[1]))) ? false : $value;
 }
 function port($value) {
-    return (preg_match("/^(0|([1-9]\d{0,3}|[1-5]\d{4}|[6][0-5][0-5]([0-2]\d|[3][0-5])))$/", $value)) ? true : false;
+    return (preg_match("/^(0|([1-9]\d{0,3}|[1-5]\d{4}|[6][0-5][0-5]([0-2]\d|[3][0-5])))$/", $value)) ? $value : false;
 }
 function names($value,$laeng) {
     return(strlen($value)<=$laeng and preg_match('/^[\p{L}\p{N}][\p{L}\p{N}  _.-]+$/u',$value)) ? $value : false;
