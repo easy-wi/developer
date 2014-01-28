@@ -156,22 +156,29 @@ if (!function_exists('gsrestart')) {
                         }
 
                         if (isset($splitline[1])) {
-                            $replace=array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
+
+                            $replace = array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
                             $cvar = str_replace($cvars, $replace, $splitline[1]);
+
                             foreach (customColumns('G', $switchID) as $cu) {
                                 $cvar = str_replace("%${cu['name']}%", $cu['value'], $cvar);
                             }
+
                             $cvarprotect[$config]['cvars'][$splitline[0]] = $cvar;
+
                         }
                     }
                 }
 
                 foreach (explode("\r\n", $row2['modcmds']) as $line) {
+
                     if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/', $line)) {
+
                         $name = trim($line,'[]');
                         $ex = preg_split("/\=/", $name, -1,PREG_SPLIT_NO_EMPTY);
                         $name = trim($ex[0]);
-                        if (isset($ex[1]) and trim($ex[1]) == 'default' and ($modcmd===null or $modcmd== '')) {
+
+                        if (isset($ex[1]) and trim($ex[1]) == 'default' and ($modcmd === null or $modcmd == '')) {
                             $modcmd = $ex[0];
                         }
 
@@ -217,7 +224,7 @@ if (!function_exists('gsrestart')) {
                         $cmd .= ' ' . $row3['cmd'];
                     }
                     if ($row3['rmcmd'] != null) {
-                        foreach (preg_split("/\r\n/", $row3['rmcmd'], -1,PREG_SPLIT_NO_EMPTY) as $rm) {
+                        foreach (preg_split("/\r\n/", $row3['rmcmd'], -1, PREG_SPLIT_NO_EMPTY) as $rm) {
                             $rmarray[] = $rm;
                         }
                     }
@@ -254,7 +261,7 @@ if (!function_exists('gsrestart')) {
             }
 
             if ($row['workShop'] == 'Y' AND $row['tWorkShop'] == 'Y' and isid($row['workshopCollection'], 10) and wpreg_check($row['dwebapiAuthkey'], 32) and strlen($row['dwebapiAuthkey']) > 0 and $row['workshopCollection'] > 0) {
-                $cmd .= ' +host_workshop_collection ' . $row['workshopCollection'] . ' +workshop_start_map ' . $map . ' -authkey ' . $row['dwebapiAuthkey'];
+                $cmd .= ' -nodefaultmap +host_workshop_collection ' . $row['workshopCollection'] . ' +workshop_start_map ' . $map . ' -authkey ' . $row['dwebapiAuthkey'];
                 $cmd = preg_replace('/[\s\s+]{1,}\+map[\s\s+]{1,}[\w-_!%]{1,}/', '', $cmd);
             }
 
@@ -263,7 +270,7 @@ if (!function_exists('gsrestart')) {
             $ftpport = $rdata['ftpport'];
             $serverFolder = $gsip . '_' . $port . '/' . $folder;
             $binaryFolder = $serverFolder . '/' . $binarydir;
-            $replace=array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
+            $replace = array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
             $startline = str_replace($cvars, $replace, $cmd);
 
             foreach (customColumns('G', $switchID) as $cu) {
