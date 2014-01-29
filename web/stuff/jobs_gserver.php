@@ -58,7 +58,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         unset($customer, $i);
 
         $extraData = @json_decode($row2['extraData']);
-        $installGames = (is_object($extraData) and preg_match('/[AP]/', $extraData->installGames)) ? $extraData->installGames : 'A';
+        $installGames = (is_object($extraData) and property_exists($extraData, 'installGames') and preg_match('/[APN]/', $extraData->installGames)) ? $extraData->installGames : 'N';
 
         $query3->execute(array($aeskey, $aeskey, $row2['affectedID']));
         foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
@@ -97,21 +97,14 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
         if (isset($i) and $row2['action'] == 'dl' and isset($customer)) {
 
-            $cmds[] = 'su -u ' . $customer . ' ./control.sh delscreen ' . $customer;
-            $cmds[] = 'su -u ' . $customer . '-p ./control.sh delscreen ' . $customer . '-p';
+            $cmds[] = 'sudo -u ' . $customer . ' ./control.sh stopall ' . $customer;
+            $cmds[] = 'sudo -u ' . $customer . '-p ./control.sh stopall ' . $customer . '-p';
             $cmds[] = './control.sh delCustomer ' . $customer;
 
             $query4 = $sql->prepare("DELETE FROM `gsswitch` WHERE `id`=? LIMIT 1");
             $query4->execute(array($row2['affectedID']));
 
             customColumns('G', $row2['affectedID'], 'del');
-
-            $query4 = $sql->prepare("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
-            $query4->execute();
-            $query4 = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
-            $query4->execute();
-            $query4 = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
-            $query4->execute();
 
             $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));
