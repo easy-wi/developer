@@ -157,6 +157,9 @@ $sql->exec("DELETE g.* FROM `userdata_groups` g LEFT JOIN `userdata` u ON g.`use
 $sql->exec("DELETE s.* FROM `userdata_substitutes` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE u.`id` IS NULL");
 $sql->exec("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata_substitutes` s ON o.`sID`=s.`sID` WHERE s.`sID` IS NULL");
 $sql->exec("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
+$sql->exec("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
+$sql->exec("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
 $sql->exec("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
 $sql->exec("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
 $sql->exec("DELETE a.* FROM `addons` a LEFT JOIN `userdata` u ON a.`resellerid`=u.`id` WHERE a.`resellerid` IS NULL OR (a.`resellerid`!=0 AND u.`id` IS NULL)");

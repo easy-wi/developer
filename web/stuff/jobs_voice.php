@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: jobs_voice.php.
  * Author: Ulrich Block
@@ -38,11 +39,14 @@
  */
 
 $query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' GROUP BY `hostID`");
+$query2 = $sql->prepare("SELECT `active`,`usedns`,`defaultdns`,`bitversion`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`maxserver`,`maxslots`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $query2 = $sql->prepare("SELECT `active`,`usedns`,`defaultdns`,`bitversion`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`maxserver`,`maxslots`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+
     $query2->execute(array(':aeskey' => $aeskey,':id' => $row['hostID'], ':reseller_id' => $row['resellerID']));
     foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
         $active = $row2['active'];
         $addedby = $row2['addedby'];
         $usedns = $row2['usedns'];
@@ -60,6 +64,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $hostbutton_tooltip = $row2['defaulthostbutton_tooltip'];
         $hostbutton_url = $row2['defaulthostbutton_url'];
         $hostbutton_gfx_url = $row2['defaulthostbutton_gfx_url'];
+
         if ($addedby==2) {
             $publickey = $row2['publickey'];
             $queryip = $row2['ssh2ip'];
@@ -76,10 +81,12 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             }
         }
     }
+
     if (isset($queryport)) {
         $connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
         $errorcode = $connection->errorcode;
     }
+
     if (!isset($errorcode) or strpos($errorcode,'error id=0') === false) {
         $update = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='vo' AND `hostID`=?");
         $update->execute(array($row['hostID']));
@@ -108,7 +115,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $max_download_total_bandwidth = $row3['max_download_total_bandwidth'];
                 $max_upload_total_bandwidth = $row3['max_upload_total_bandwidth'];
                 $dns = $row3['dns'];
-                $masterserver = $row['masterserver'];
+                $masterserver = $row3['masterserver'];
             }
             if ($row2['action'] == 'dl' and isset($localserverid) and isid($localserverid,30)) {
                 $command = $gsprache->del.' voiceserverID: '.$row2['affectedID'].' name:'.$row2['name'];
@@ -118,10 +125,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 customColumns('T', $row2['affectedID'], 'del');
                 $update = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                 $update->execute(array($row2['jobID']));
-                $template_file = $spracheResponse->table_del;
 
                 if ($usedns == 'Y') {
-                    $template_file = tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns), $row['resellerID']);
+                   tsdns('dl',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip), array($port), array($dns), $row['resellerID']);
                 }
 
 				tsbackup('delete', $ssh2user, $serverdir, $masterserver, $localserverid, '*');
@@ -130,7 +136,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $query3->execute();
 
             } else if ($row2['action'] == 'ad' and isset($active)) {
-                if (isid($localserverid,30)) {
+                if (isid($localserverid, 30)) {
                     $command = $gsprache->add.' voiceserverID: '.$row2['affectedID'].'; Skipping, virtual ID already exists in Easy-WI DB: '.$localserverid;
                     $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type`='vo' LIMIT 1");
                     $update->execute(array($row2['jobID']));
