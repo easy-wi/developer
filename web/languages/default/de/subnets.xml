@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <help_vlan>Easy-WI konfiguriert ausschließlich den DHCP Server. Etwaige Switche und Router müssen manuel konfiguriert und Vlans bei diesen eingetragen werden.</help_vlan>
+    <netmask>Netzwerkmakse</netmask>
+    <subnet>Subnet</subnet>
+    <subnetOptions>Subnet Optionen</subnetOptions>
+    <vlan>Vlan</vlan>
+    <vlanName>Vlan Name</vlanName>
+</sprache>
