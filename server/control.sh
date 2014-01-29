@@ -937,6 +937,7 @@ function del_customer_screen {
 		kill $PID
 	done
 	screen -wipe > /dev/null 2>&1
+	pkill -u `whoami`
 }
 
 function mod_customer {
