@@ -151,11 +151,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
                     $typeIDList[] = $row['id'];
                     $shortenToID[$row['id']] = $singleShorten;
-                    $typeIDs[$singleShorten] = array('id' => $row['id'], 'map' => $row['map'], 'mapGroup' => $row['mapGroup'], 'tic' => $row['tic'], 'cmd' => $row['cmd'], 'gamemod' => $row['gamemod'], 'gamemod2' => $row['gamemod2']);
+                    $typeIDs[$singleShorten] = array('id' => $row['id'], 'map' => $row['map'], 'mapGroup' => $row['mapGroup'], 'tic' => $row['tic'], 'fps' => $row['fps'], 'cmd' => $row['cmd'], 'gamemod' => $row['gamemod'], 'gamemod2' => $row['gamemod2'], 'modcmds' => $row['modcmds']);
                 }
 
                 if (!isset($typeIDs[$singleShorten])) {
-                    $success['false'][] = 'image with the shorten '.$singleShorten.' does not exists';
+                    $success['false'][] = 'image with the shorten ' . $singleShorten . ' does not exists';
                 }
 
             }
@@ -360,9 +360,27 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
                 if (isid($localServerID, 19)) {
 
-                    $query = $sql->prepare("INSERT INTO `serverlist` (`servertype`,`switchID`,`map`,`mapGroup`,`cmd`,`tic`,`gamemod`,`gamemod2`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?)");
-                    foreach ($typeIDs as $shorten=>$array) {
-                        $query->execute(array($array['id'], $localServerID, $array['map'], $array['mapGroup'], $array['cmd'], $array['tic'], $array['gamemod'], $array['gamemod2'], $resellerID));
+                    $query = $sql->prepare("INSERT INTO `serverlist` (`servertype`,`switchID`,`map`,`mapGroup`,`cmd`,`modcmd`,`tic`,`fps`,`gamemod`,`gamemod2`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+                    foreach ($typeIDs as $shorten => $array) {
+
+                        $modcmd = '';
+
+                        foreach (explode("\r\n", $array['modcmds']) as $line) {
+
+                            if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/', $line)) {
+
+                                $name = trim($line, '[]');
+                                $ex = preg_split("/\=/", $name, -1,PREG_SPLIT_NO_EMPTY);
+
+                                if (isset($ex[1]) and trim($ex[1]) == 'default') {
+                                    $modcmd = trim($ex[0]);
+                                    break;
+                                }
+
+                            }
+                        }
+
+                        $query->execute(array($array['id'], $localServerID, $array['map'], $array['mapGroup'], $array['cmd'], $modcmd, $array['tic'], $array['fps'], $array['gamemod'], $array['gamemod2'], $resellerID));
 
                         if (!isset($lastServerID) or (isset($data['primary']) and gamestring($data['primary']) and $shorten == $data['primary'])) {
                             $lastServerID = $sql->lastInsertId();
@@ -422,7 +440,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
     if (dataExist('identify_server_by', $data)) {
 
-        $query = $sql->prepare("SELECT r.`externalID`,g.`id`,g.`serverip`,g.`port`,g.`userid`,g.`active`,g.`slots`,g.`rootID`,g.`war` FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT r.`externalID`,g.* FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -433,7 +451,9 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $oldSlots = $row['slots'];
             $name = $row['serverip'] . ':' . $row['port'];
             $oldActive = $row['active'];
+            $active = $row['active'];
             $oldPort = $row['port'];
+            $port = $row['port'];
             $usedPorts = usedPorts(array($row['serverip']));
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
@@ -445,104 +465,102 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $updateArray = array();
             $eventualUpdate = '';
 
-            if (isset($data['private']) and active_check($data['private'])) {
+            if (isset($data['private']) and active_check($data['private']) and $data['private'] != $row['war']) {
                 $updateArray[] = $data['private'];
                 $eventualUpdate .= ',`war`=?';
                 $private = $data['private'];
             }
 
-            if (isset($data['slots']) and isid($data['slots'], 11)) {
+            if (isset($data['slots']) and isid($data['slots'], 11) and $data['slots'] != $row['slots']) {
                 $updateArray[] = $data['slots'];
                 $eventualUpdate .= ',`slots`=?';
                 $slots = $data['slots'];
             }
 
-            if (isset($data['taskset']) and active_check($data['taskset'])) {
+            if (isset($data['taskset']) and active_check($data['taskset']) and $data['taskset'] != $row['taskset']) {
                 $updateArray[] = $data['taskset'];
                 $eventualUpdate .= ',`taskset`=?';
                 $taskset = $data['taskset'];
             }
 
-            if (isset($data['eacallowed']) and active_check($data['eacallowed'])) {
+            if (isset($data['eacallowed']) and active_check($data['eacallowed']) and $data['eacallowed'] != $row['eacallowed']) {
                 $updateArray[] = $data['eacallowed'];
                 $eventualUpdate .= ',`eacallowed`=?';
                 $eacallowed = $data['eacallowed'];
             }
 
-            if (isset($data['brandname']) and active_check($data['brandname'])) {
+            if (isset($data['brandname']) and active_check($data['brandname']) and $data['brandname'] != $row['brandname']) {
                 $updateArray[] = $data['brandname'];
                 $eventualUpdate .= ',`brandname`=?';
                 $brandname = $data['brandname'];
             }
 
-            if (isset($data['tvenable']) and active_check($data['tvenable'])) {
+            if (isset($data['tvenable']) and active_check($data['tvenable']) and $data['tvenable'] != $row['tvenable']) {
                 $updateArray[] = $data['tvenable'];
                 $eventualUpdate .= ',`tvenable`=?';
                 $tvenable = $data['tvenable'];
             }
 
-            if (isset($data['pallowed']) and active_check($data['pallowed'])) {
+            if (isset($data['pallowed']) and active_check($data['pallowed']) and $data['pallowed'] != $row['pallowed']) {
                 $updateArray[] = $data['pallowed'];
                 $eventualUpdate .= ',`pallowed`=?';
                 $pallowed = $data['pallowed'];
             }
 
-            if (isset($data['autoRestart']) and active_check($data['autoRestart'])) {
+            if (isset($data['autoRestart']) and active_check($data['autoRestart']) and $data['autoRestart'] != $row['autoRestart']) {
                 $updateArray[] = $data['autoRestart'];
                 $eventualUpdate .= ',`autoRestart`=?';
                 $autoRestart = $data['autoRestart'];
             }
 
-            if (isset($data['minram']) and isid($data['minram'], 10)) {
+            if (isset($data['minram']) and isid($data['minram'], 10) and $data['minram'] != $row['minram']) {
                 $updateArray[] = $data['minram'];
                 $eventualUpdate .= ',`minram`=?';
                 $minram = $data['minram'];
             }
 
-            if (isset($data['maxram']) and isid($data['maxram'], 10)) {
+            if (isset($data['maxram']) and isid($data['maxram'], 10) and $data['maxram'] != $row['maxram']) {
                 $updateArray[] = $data['maxram'];
                 $eventualUpdate .= ',`maxram`=?';
                 $maxram = $data['maxram'];
             }
 
-            if (isset($data['cores']) and cores($data['cores'])) {
+            if (isset($data['cores']) and cores($data['cores']) and $data['cores'] != $row['cores']) {
                 $updateArray[] = $data['cores'];
                 $eventualUpdate .= ',`cores`=?';
                 $cores = $data['cores'];
             }
 
-            if (isset($data['port']) and port($data['port']) and !in_array($data['port'], $usedPorts)) {
-                $updateArray[] = $data['port'];
-                $eventualUpdate .= ',`port`=?';
+            if (isset($data['active']) and active_check($data['active']) and $data['active'] != $row['active']) {
+                $active = $data['active'];
+            }
+
+            if (isset($data['port']) and port($data['port']) and $data['port'] != $row['port'] and !in_array($data['port'], $usedPorts)) {
                 $port = $data['port'];
             }
 
-            if (isset($data['port2']) and port($data['port2']) and !in_array($data['port'], $usedPorts)) {
+            if (isset($data['port2']) and port($data['port2']) and $data['port2'] != $row['port2'] and !in_array($data['port'], $usedPorts)) {
                 $updateArray[] = $data['port2'];
                 $eventualUpdate .= ',`port2`=?';
                 $port2 = $data['port2'];
             }
 
-            if (isset($data['port3']) and port($data['port3']) and !in_array($data['port'], $usedPorts)) {
+            if (isset($data['port3']) and port($data['port3']) and $data['port3'] != $row['port3'] and !in_array($data['port'], $usedPorts)) {
                 $updateArray[] = $data['port3'];
                 $eventualUpdate .= ',`port3`=?';
                 $port3 = $data['port3'];
             }
 
-            if (isset($data['port4']) and port($data['port4']) and !in_array($data['port'], $usedPorts)) {
+            if (isset($data['port4']) and port($data['port4']) and $data['port4'] != $row['port4'] and !in_array($data['port'], $usedPorts)) {
                 $updateArray[] = $data['port4'];
                 $eventualUpdate .= ',`port4`=?';
                 $port4 = $data['port4'];
             }
 
-            if (isset($data['port5']) and port($data['port5']) and !in_array($data['port'], $usedPorts)) {
+            if (isset($data['port5']) and port($data['port5']) and $data['port5'] != $row['port5'] and !in_array($data['port'], $usedPorts)) {
                 $updateArray[] = $data['port5'];
                 $eventualUpdate .= ',`port5`=?';
                 $port5 = $data['port5'];
-            }
-
-            if (isset($data['active']) and active_check($data['active'])) {
-                $active = $data['active'];
             }
 
             if (count($updateArray)>0) {
@@ -560,19 +578,20 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             $customID = $localID;
 
-            if ((isset($active) and ($active == 'Y' or $active == 'N') and $active != $oldActive) or $slots != $oldSlots or (isset($port) and $port != $oldPort)) {
+            if ((($active == 'Y' or $active == 'N') and $active != $oldActive) or $slots != $oldSlots or $port != $oldPort) {
 
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `action`!='ad' AND `affectedID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
 
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerID`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'md',?,?)");
-                $query->execute(array($hostID, $resellerID, $localID, $userID, $name,json_encode(array('newActive' => $active,'newPort' => $port)), $resellerID));
+                $query->execute(array($hostID, $resellerID, $localID, $userID, $name, json_encode(array('newActive' => $active, 'newPort' => $port, 'installGames' => 'N')), $resellerID));
             }
         }
 
         if (!isset($oldSlots)) {
             $success['false'][] = 'No server can be found to edit';
         }
+
     } else {
         $success['false'][] = 'No data for this method: ' . $data['action'];
     }
