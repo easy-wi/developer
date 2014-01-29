@@ -544,7 +544,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     } else if ($o == 'ad') {
         $orderby = 'p.`id` ASC';
     } else {
-        $orderby = 'p.`id` ASC';
+        $orderby = 'p.`id` DESC';
     }
 
     $query = $sql->prepare("SELECT `seo` FROM `page_settings` WHERE `resellerid`=? LIMIT 1");

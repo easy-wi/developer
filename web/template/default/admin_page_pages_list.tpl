@@ -32,13 +32,13 @@
             <table class="table table-bordered table-hover table-striped footable">
                 <thead>
                 <tr>
-                    <th data-class="expand"><a href="admin.php?w=pp&d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='at') { echo 'dt'; } else { echo 'at'; } ?>"><?php echo $sprache->title;?></a></th>
-                    <th data-hide="phone,tablet"><a href="admin.php?w=pp&d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='ai') { echo 'di'; } else { echo 'ai'; } ?>">ID</a></th>
-                    <th data-hide="phone,tablet"><a href="admin.php?w=pp&d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='al') { echo 'dl'; } else { echo 'al'; } ?>"><?php echo $sprache->languages;?></a></th>
-                    <th data-hide="phone,tablet"><a href="admin.php?w=pp&d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='ar') { echo 'dr'; } else { echo 'ar'; } ?>"><?php echo $sprache->released;?></a></th>
-                    <th data-hide="phone"><a href="admin.php?w=pp&d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='aa') { echo 'da'; } else { echo 'aa'; } ?>"><?php echo $sprache->author;?></a></th>
-                    <th data-hide="phone,tablet"><a href="admin.php?w=pp&d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='ad') { echo 'dd'; } else { echo 'ad'; } ?>"><?php echo $sprache->date;?></a></th>
-                    <th data-hide="phone"><a href="admin.php?w=pp&d=md&a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='as') { echo 'ds'; } else { echo 'as'; } ?>"><?php echo $sprache->sort;?></a></th>
+                    <th data-class="expand"><a href="admin.php?w=pp&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='at') { echo 'dt'; } else { echo 'at'; } ?>"><?php echo $sprache->title;?></a></th>
+                    <th data-hide="phone,tablet"><a href="admin.php?w=pp&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='ai') { echo 'di'; } else { echo 'ai'; } ?>">ID</a></th>
+                    <th data-hide="phone,tablet"><a href="admin.php?w=pp&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='al') { echo 'dl'; } else { echo 'al'; } ?>"><?php echo $sprache->languages;?></a></th>
+                    <th data-hide="phone,tablet"><a href="admin.php?w=pp&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='ar') { echo 'dr'; } else { echo 'ar'; } ?>"><?php echo $sprache->released;?></a></th>
+                    <th data-hide="phone"><a href="admin.php?w=pp&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='aa') { echo 'da'; } else { echo 'aa'; } ?>"><?php echo $sprache->author;?></a></th>
+                    <th data-hide="phone,tablet"><a href="admin.php?w=pp&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='ad') { echo 'dd'; } else { echo 'ad'; } ?>"><?php echo $sprache->date;?></a></th>
+                    <th data-hide="phone"><a href="admin.php?w=pp&a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&p=<?php echo $start;?>&amp;o=<?php if ($o=='as') { echo 'ds'; } else { echo 'as'; } ?>"><?php echo $sprache->sort;?></a></th>
                     <th><?php echo $gsprache->del;?></th>
                     <th><?php echo $gsprache->mod;?></th>
                 </tr>

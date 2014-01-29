@@ -179,7 +179,7 @@ if (!function_exists('gsrestart')) {
                         $name = trim($ex[0]);
 
                         if (isset($ex[1]) and trim($ex[1]) == 'default' and ($modcmd === null or $modcmd == '')) {
-                            $modcmd = $ex[0];
+                            $modcmd = trim($ex[0]);
                         }
 
                         if (!isset($modsCmds[$name])) {
