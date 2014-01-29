@@ -120,9 +120,8 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
                     }
                     $placeholders1 = array('%start%', '%stop%', ' ' . $serveraddress, ' %gserver%');
                     $placeholders2 = array('%start%', '%stop%', '%addon%', '%del%', '%add%', ' %ok%', ' ' . $serveraddress,' %gserver%');
-                    $replace1 = array('<img src="'.$page_url.'/images/16_restart.png" alt="start" />', '<img src="'.$page_url.'/images/16_stop.png" alt="stop" />', '', '');
                     $replace2 = array('(Re)Start', 'Stop', 'Addon', 'Delete', 'Add', '', '', '');
-                    $replacedpics=str_replace($placeholders1, $replace1, $row['useraction']);
+                    $replacedpics=str_replace($placeholders1, '', $row['useraction']);
                     $replacedwords=str_replace($placeholders2, $replace2, $row['useraction']);
                     if (!empty($replacedpics)) {
                         if ($logentry[1] == '%gserver%') {
