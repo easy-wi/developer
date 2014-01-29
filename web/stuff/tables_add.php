@@ -770,6 +770,15 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsDHCP` (
 $add = $sql->prepare($query);
 $add->execute();
 
+$query = "CREATE TABLE IF NOT EXISTS `rootsIP4` (
+  `subnetID` int(10) unsigned,
+  `ip` varchar(15) DEFAULT NULL,
+  `resellerID` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`subnetID`,`ip`),KEY(`resellerID`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
 $query = "CREATE TABLE IF NOT EXISTS `rootsPXE` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
@@ -785,6 +794,19 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsPXE` (
   `notified` int(11) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
+$query = "CREATE TABLE IF NOT EXISTS `rootsSubnets` (
+  `subnetID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `active` enum('Y','N') DEFAULT 'Y',
+  `subnet` varchar(15) DEFAULT NULL,
+  `netmask` varchar(15) DEFAULT NULL,
+  `subnetOptions` text,
+  `vlan` enum('Y','N') DEFAULT 'N',
+  `vlanName` varchar(255),
+  PRIMARY KEY (`subnetID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
@@ -867,7 +889,7 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `version` decimal(4,2) DEFAULT '4.20',
+  `version` decimal(4,2) DEFAULT '4.30',
   `releasenotesDE` INT(11) unsigned NULL,
   `releasenotesEN` INT(11) unsigned NULL,
   `language` varchar(2) NOT NULL,
