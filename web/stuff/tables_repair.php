@@ -171,6 +171,12 @@ $defined['rootsDHCP'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
+$defined['rootsIP4'] = array(
+    'vlanID' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'ip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
+);
+
 $defined['rootsPXE'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -184,6 +190,16 @@ $defined['rootsPXE'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"N
     'description' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'notified' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
+);
+
+$defined['rootsSubnets'] = array(
+    'subnetID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+    'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'subnet' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'subnetOptions' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'netmask' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'vlan' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'vlanName' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );
 
 $defined['eac'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
@@ -628,7 +644,7 @@ $defined['serverlist'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>
     'fps' => array("Type"=>"varchar(5)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'map' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'mapGroup' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'workShop' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
+    'workShop' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'workshopCollection' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'webapiAuthkey' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'cmd' => array("Type"=>"text","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -688,7 +704,7 @@ $defined['servertypes'] = array('id' => array("Type"=>"int(10) unsigned","Null"=
 );
 
 $defined['settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'version' => array("Type"=>"decimal(4,2)","Null"=>"YES","Key"=>"","Default"=>"4.20","Extra"=>""),
+    'version' => array("Type"=>"decimal(4,2)","Null"=>"YES","Key"=>"","Default"=>"4.30","Extra"=>""),
     'releasenotesDE' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'releasenotesEN' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
