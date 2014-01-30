@@ -242,7 +242,7 @@ if (array_value_exists('action', 'add', $data)) {
 
             $password = (!isset($data['password']) or in_array($data['password'], $bad)) ? passwordgenerate(10) : $data['password'];
 
-            $newHash = passwordCreate($name, $data['password']);
+            $newHash = passwordCreate($name, $password);
 
             if (is_array($newHash)) {
 
