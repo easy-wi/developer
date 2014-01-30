@@ -263,7 +263,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
 
                 if ($v['gq_online'] == 1) {
-                    $name = str_replace(array('^0', '^1', '^2', '^3', '^4', '^5', '^6', '^7', '^8', '^9'), '', $v['gq_hostname']);
+                    $name = normalizeName($v['gq_hostname']);
                     $numplayers = $v['gq_numplayers'];
                     $maxplayers = $v['gq_maxplayers'];
                     $map = $v['gq_mapname'];

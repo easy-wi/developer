@@ -592,4 +592,25 @@ if (!function_exists('gsrestart')) {
             }
         }
     }
+
+    function normalizeName ($value) {
+
+        // control characters
+        $value = str_replace(array("\r", "\n"), '', $value);
+
+        // COD colors
+        $value = preg_replace('/\^[0-9]/i', '', $value);
+
+        // Unreal Tournament Colors
+        $value = preg_replace('/\x1B...|\^\d/', '', $value);
+
+        // Minecraft Motd Colors
+        $value = preg_replace('/\\[u]00A7[\w]/i', '', $value);
+
+        // Minecraft standard colors
+        $value = preg_replace('/§[0-9a-f]/i', '', $value);
+
+        return $value;
+
+    }
 }
