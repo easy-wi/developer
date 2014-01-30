@@ -1219,7 +1219,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $imgName = '16_bad';
             $imgAlt = 'Stopped';
 
-        } else if (($name == 'OFFLINE' or $name == '') and $notified >= $rSA['down_checks'] and $stopped== 'N') {
+        } else if ($name == 'OFFLINE' and $notified >= $rSA['down_checks'] and $stopped== 'N') {
             $imgName = '16_error';
             $imgAlt = 'Crashed';
 
