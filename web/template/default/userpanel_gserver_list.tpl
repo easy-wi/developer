@@ -29,7 +29,7 @@
             <div class="btn-group">
               <button data-toggle="dropdown" class="btn btn-mini btn-primary dropdown-toggle"><i class="fa fa-floppy-o"></i> <?php echo $gsprache->backup;?> <span class="caret"></span></button>
               <ul class="dropdown-menu">
-                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=mb"><i class="fa fa-plus-circle fa-fw"></i> <?php echo $sprache->create;?></a></li>
+                <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=mb&amp;r=gs"><i class="fa fa-plus-circle fa-fw"></i> <?php echo $sprache->create;?></a></li>
                 <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=rb"><i class="fa fa-refresh fa-fw"></i> <?php echo $sprache->recover;?></a></li>
                 <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=md"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
               </ul>
