@@ -15,7 +15,7 @@
 <hr>
 <div class="row-fluid">
     <div class="span8">
-        <form class="form-horizontal" action="userpanel.php?w=ca&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+        <form class="form-horizontal" action="userpanel.php?w=ca&amp;id=<?php echo $id;?>&amp;r=ca" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <script type="text/javascript">
 			$(document).ready(function (){
 				$('#inputSwitch').change(function() {

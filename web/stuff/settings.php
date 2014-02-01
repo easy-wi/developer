@@ -350,7 +350,8 @@ if (isset($logininclude) and $logininclude == true) {
     }
 }
 if ($ui->st('r', 'get')) {
-    $header = '<meta http-equiv="refresh" content="3; URL=' . $ui->escaped('SCRIPT_NAME', 'server') . '?w=' . $ui->st('r', 'get') . '">';
+    $redirectID = ($ui->id('id', 30, 'get')) ? '&id=' . $ui->id('id', 30, 'get') : '';
+    $header = '<meta http-equiv="refresh" content="3; URL=' . $ui->escaped('SCRIPT_NAME', 'server') . '?w=' . $ui->st('r', 'get') . $redirectID. '">';
     if (!isset($user_language)) {
         $user_language = $rSA['language'];
     }
