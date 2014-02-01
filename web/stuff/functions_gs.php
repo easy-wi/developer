@@ -539,54 +539,114 @@ if (!function_exists('gsrestart')) {
     function eacchange($what, $serverid, $rcon, $reseller_id) {
 
         global $sql;
+        global $dbConnect;
         $subfolder = '';
         $parameter = '';
 
-        $query = $sql->prepare("SELECT `active`,`cfgdir` FROM `eac` WHERE `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `active`,`cfgdir`,`type`,`mysql_server`,`mysql_port`,`mysql_db`,`mysql_table`,`mysql_user`,`mysql_password` FROM `eac` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $cfgdir = $row['cfgdir'];
             $active = $row['active'];
+            $type = $row['type'];
+            $mysql_server = $row['mysql_server'];
+            $mysql_port = $row['mysql_port'];
+            $mysql_db = $row['mysql_db'];
+            $mysql_table = $row['mysql_table'];
+            $mysql_user = $row['mysql_user'];
+            $mysql_password = $row['mysql_password'];
 
             $query = $sql->prepare("SELECT g.`serverip`,g.`port`,s.`anticheat`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
             $query->execute(array($serverid, $reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
                 $gsip = $row['serverip'];
                 $gsport = $row['port'];
+                $sqlParameter = 0;
 
                 if ($row['anticheat'] == 3) {
                     $parameter = '';
                 } else if ($row['anticheat'] == 4) {
                     $parameter = '-2';
+                    $sqlParameter = 2;
                 } else if ($row['anticheat'] == 5) {
                     $parameter = '-1';
+                    $sqlParameter = 1;
                 } else if ($row['anticheat'] == 6) {
                     $parameter = '-3';
+                    $sqlParameter = 3;
                 }
+
+                $gameID = 0;
 
                 if ($row['shorten'] == 'cstrike' or $row['shorten'] == 'czero') {
+
                     $subfolder = 'hl1';
+                    $gameID = 1;
+
                 } else if ($row['shorten'] == 'css' or $row['shorten'] == 'tf') {
+
                     $subfolder = 'hl2';
+                    $gameID = 2;
+
                 } else if ($row['shorten'] == 'csgo') {
+
                     $subfolder = 'csgo';
+                    $gameID = 4;
+
                 }
 
-                $file = $cfgdir . '/' . $subfolder . '/' . $gsip . '-' . $gsport;
-                $file = preg_replace('/\/\//', '/', $file);
+                if ($type == 'M') {
 
-                if ($what == 'change') {
-                    $ssh2cmd = 'echo "'.$gsip . ':' . $gsport . '-' . $rcon . $parameter . '" > '.$file;
-                } else if ($what == 'remove') {
-                    $ssh2cmd='rm -f '.$file;
-                }
+                    $mysql_port = (port($mysql_port)) ? $mysql_port : 3306;
 
-                if (isset($ssh2cmd) and $active == 'Y') {
-                    if (!function_exists('ssh2_execute')) {
-                        include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
+                    $eacSql = new PDO("mysql:host=${mysql_server};dbname=${mysql_db};port=${mysql_port}", $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+
+                    if ($dbConnect['debug'] == 1) {
+                        $eacSql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                     }
-                    if (isset($ssh2cmd)) {
-                        ssh2_execute('eac', $reseller_id, $ssh2cmd);
+
+                    $query = $eacSql->prepare("SELECT 1 FROM `" . $mysql_table . "` WHERE `IP`=? LIMIT 1");
+                    $query->execute(array($gsip . ':' . $gsport));
+                    $entryExists = $query->rowCount();
+
+                    if ($entryExists > 0 and $what == 'change') {
+
+                        $query = $eacSql->prepare("UPDATE `" . $mysql_table . "` SET `GAME`=?,`RCONPWD`=?,`FLAGS`=?,`EAC_ENABLED`=1 WHERE `IP`=? LIMIT 1");
+                        $query->execute(array($gameID, $rcon, $sqlParameter, $gsip . ':' . $gsport));
+
+                    } else if ($entryExists == 0 and $what == 'change') {
+
+                        $query = $eacSql->prepare("INSERT INTO `" . $mysql_table . "` (`GAME`,`IP`,`RCONPWD`,`FLAGS`,`EAC_ENABLED`) VALUES (?,?,?,?,1)");
+                        $query->execute(array($gameID, $gsip . ':' . $gsport, $rcon, $sqlParameter));
+
+                    } else if ($entryExists > 0 and $what == 'remove') {
+
+                        $query = $eacSql->prepare("DELETE FROM `" . $mysql_table . "` WHERE `IP`=?");
+                        $query->execute(array($gsip . ':' . $gsport));
+
+                    }
+
+                } else {
+
+                    $file = $cfgdir . '/' . $subfolder . '/' . $gsip . '-' . $gsport;
+                    $file = preg_replace('/\/\//', '/', $file);
+
+                    if ($what == 'change') {
+                        $ssh2cmd = 'echo "' . $gsip . ':' . $gsport . '-' . $rcon . $parameter . '" > '.$file;
+                    } else if ($what == 'remove') {
+                        $ssh2cmd = 'rm -f ' . $file;
+                    }
+
+                    if (isset($ssh2cmd) and $active == 'Y') {
+
+                        if (!function_exists('ssh2_execute')) {
+                            include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
+                        }
+
+                        if (isset($ssh2cmd)) {
+                            ssh2_execute('eac', $reseller_id, $ssh2cmd);
+                        }
                     }
                 }
             }

@@ -117,7 +117,7 @@
     <resync>Resyncronisation</resync>
     <root>Rootserver</root>
     <saturday>Samstag</saturday>
-    <server>Gameserver Adresse</server>
+    <server>Adresse</server>
     <serverinstalled>Installierte Gameserver</serverinstalled>
     <servername>Servername</servername>
     <serverrestart>Der Gameserver wird neu gestartet</serverrestart>

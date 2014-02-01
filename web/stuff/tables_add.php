@@ -183,6 +183,13 @@ $query = "CREATE TABLE IF NOT EXISTS `eac` (
   `hlds_5` enum('Y','N') DEFAULT 'Y',
   `hlds_6` enum('Y','N') DEFAULT 'Y',
   `notified` int(11) unsigned DEFAULT 0,
+  `type` enum('M','S') DEFAULT 'S',
+  `mysql_server` varchar(255) DEFAULT NULL,
+  `mysql_port` int(5) unsigned,
+  `mysql_db` varchar(255) DEFAULT NULL,
+  `mysql_table` varchar(255) DEFAULT NULL,
+  `mysql_user` varchar(255) DEFAULT NULL,
+  `mysql_password` blob,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`resellerid`)
 ) ENGINE=InnoDB";

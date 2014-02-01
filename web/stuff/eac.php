@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: eac.php.
  * Author: Ulrich Block
@@ -39,12 +40,17 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['eac'])) {
 	header('Location: admin.php');
 	die('No acces');
 }
+
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-$sprache = getlanguagefile('roots',$user_language,$reseller_id);
-$gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
+
+$sprache = getlanguagefile('roots', $user_language, $reseller_id);
+$gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
+$mysprache = getlanguagefile('mysql', $user_language, $reseller_id);
+
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
+
 if ($reseller_id == 0) {
 	$logreseller = 0;
 	$logsubuser = 0;
@@ -56,12 +62,16 @@ if ($reseller_id == 0) {
 	}
 	$logreseller = 0;
 }
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
+
 } else if (!$ui->w('action', 4, 'post')) {
-	$pselect = $sql->prepare("SELECT `active`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,`publickey`,`keyname`,`cfgdir`,`normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE resellerid=:reseller_id LIMIT 1");
-	$pselect->execute(array(':aeskey' => $aeskey,':reseller_id' => $reseller_id));
-	foreach ($pselect->fetchAll() as $row) {
+
+	$query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `eac` WHERE resellerid=:reseller_id LIMIT 1");
+    $query->execute(array(':aeskey' => $aeskey,':reseller_id' => $reseller_id));
+	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$eac_active = $row['active'];
 		$eac_ip = $row['ip'];
 		$eac_port = $row['dport'];
@@ -76,70 +86,34 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 		$eac_publickey = $row['publickey'];
 		$eac_keyname = $row['keyname'];
 		$eac_cfgdir = $row['cfgdir'];
+        $type = $row['type'];
+        $mysql_server = $row['mysql_server'];
+        $mysql_port = $row['mysql_port'];
+        $mysql_db = $row['mysql_db'];
+        $mysql_table = $row['mysql_table'];
+        $mysql_user = $row['mysql_user'];
+        $mysql_password = $row['mysql_password'];
 	}
-	$template_file = "admin_eac.tpl";
-} else if ($ui->w('action', 4, 'post')=="md") {
-	$fail = 0;
-	if (!wpreg_check($ui->post['publickey'], 1)) {
-		$fail = 1;
-	}
-	if (!active_check($ui->post['active'])) {
-		$fail = 1;
-	}
-	if (!isip($ui->post['ip'],"all")) {
-		$fail = 1;
-	}
-	if (!isid($ui->post['port'],"5")) {
-		$fail = 1;
-	}
-	if (!uname_check($ui->post['user'],"20")) {
-		$fail = 1;
-	}
-	if ($fail!="1") {
-		if (isset($ui->post['normal_3'])) {
-			$normal_3=active_check($ui->post['normal_3']);
-		} else {
-			$normal_3="N";
-		}
-		if (isset($ui->post['normal_4'])) {
-			$normal_4=active_check($ui->post['normal_4']);
-		} else {
-			$normal_4="N";
-		}
-		if (isset($ui->post['hlds_3'])) {
-			$hlds_3=active_check($ui->post['hlds_3']);
-		} else {
-			$hlds_3="N";
-		}
-		if (isset($ui->post['hlds_4'])) {
-			$hlds_4=active_check($ui->post['hlds_4']);
-		} else {
-			$hlds_4="N";
-		}
-		if (isset($ui->post['hlds_5'])) {
-			$hlds_5=active_check($ui->post['hlds_5']);
-		} else {
-			$hlds_5="N";
-		}
-		if (isset($ui->post['hlds_6'])) {
-			$hlds_6=active_check($ui->post['hlds_6']);
-		} else {
-			$hlds_6="N";
-		}
-		$keyname = $ui->startparameter('keyname','post');
-		$publickey = $ui->post['publickey'];
-		$active = $ui->post['active'];	
-		$ip = $ui->post['ip'];
-		$port = $ui->post['port'];
-		$user = $ui->post['user'];
-		$pass =  $ui->startparameter('pass','post');
-		$cfgdir = $ui->folder('cfgdir','post');
-		$pupdate = $sql->prepare("UPDATE `eac` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port, :aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`publickey`=:publickey,`keyname`=:keyname,`cfgdir`=:cfgdir,`normal_3`=:normal_3,`normal_4`=:normal_4,`hlds_3`=:hlds_3,`hlds_4`=:hlds_4,`hlds_5`=:hlds_5,`hlds_6`=:hlds_6 WHERE resellerid=:reseller_id");
-		$pupdate->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':cfgdir' => $cfgdir,':normal_3' => $normal_3,':normal_4' => $normal_4,':hlds_3' => $hlds_3,':hlds_4' => $hlds_4,':hlds_5' => $hlds_5,':hlds_6' => $hlds_6,':reseller_id' => $reseller_id));
-		$template_file = $spracheResponse->table_add;
-		$loguseraction="%mod% %eac%";
-		$insertlog->execute();
-	} else {
-		$template_file = 'admin_404.tpl';
-	}
+
+	$template_file = 'admin_eac.tpl';
+
+} else if ($ui->w('action', 4, 'post') == 'md') {
+
+    $normal_3 = ($ui->active('normal_3', 'post')) ? $ui->active('normal_3', 'post') : 'N';
+    $normal_4 = ($ui->active('normal_4', 'post')) ? $ui->active('normal_4', 'post') : 'N';
+    $hlds_3 = ($ui->active('hlds_3', 'post')) ? $ui->active('hlds_3', 'post') : 'N';
+    $hlds_4 = ($ui->active('hlds_4', 'post')) ? $ui->active('hlds_4', 'post') : 'N';
+    $hlds_5 = ($ui->active('hlds_5', 'post')) ? $ui->active('hlds_5', 'post') : 'N';
+    $hlds_6 = ($ui->active('hlds_6', 'post')) ? $ui->active('hlds_6', 'post') : 'N';
+
+    $query = $sql->prepare("UPDATE `eac` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port, :aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`publickey`=:publickey,`keyname`=:keyname,`cfgdir`=:cfgdir,`normal_3`=:normal_3,`normal_4`=:normal_4,`hlds_3`=:hlds_3,`hlds_4`=:hlds_4,`hlds_5`=:hlds_5,`hlds_6`=:hlds_6,`type`=:type,`mysql_server`=:mysql_server,`mysql_port`=:mysql_port,`mysql_db`=:mysql_db,`mysql_table`=:mysql_table,`mysql_user`=:mysql_user,`mysql_password`=:mysql_password WHERE resellerid=:reseller_id");
+    $query->execute(array(':active' => $ui->active('active', 'post'), ':ip' => $ui->ip4('ip', 'post'), ':port' => $ui->port('port', 'post'), ':aeskey' => $aeskey, ':user' => $ui->pregw('user', 255, 'post'), ':pass' => $ui->password('pass', 255, 'post') ,':publickey' => $ui->active('publickey', 'post'), ':keyname' => $ui->startparameter('keyname', 'post'), ':cfgdir' => $ui->folder('cfgdir','post'), ':normal_3' => $normal_3, ':normal_4' => $normal_4, ':hlds_3' => $hlds_3, ':hlds_4' => $hlds_4, ':hlds_5' => $hlds_5, ':hlds_6' => $hlds_6, ':type' => $ui->w('type', 1, 'post'), ':mysql_server' => $ui->w('mysql_server', 255, 'post'), ':mysql_port' => $ui->port('mysql_port', 'post'), ':mysql_db' => $ui->w('mysql_db', 255, 'post'), ':mysql_table' => $ui->w('mysql_table', 255, 'post'), ':mysql_user' => $ui->startparameter('mysql_user', 'post'), ':mysql_password' => $ui->password('mysql_password', 255, 'post'), ':reseller_id' => $reseller_id));
+
+    if ($query->rowCount() > 0) {
+        $template_file = $spracheResponse->table_add;
+        $loguseraction="%mod% %eac%";
+        $insertlog->execute();
+    } else {
+        $template_file = $spracheResponse->error_table;
+    }
 }

@@ -22,18 +22,27 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputType"><?php echo $gssprache->type;?></label>
+                <div class="controls">
+                    <select id="inputType" name="type" onchange="SwitchShowHideRows(this.value)">
+                        <option value="M">MySQL</option>
+                        <option value="S" <?php if ($type=='S') echo 'selected="selected"'; ?>>SSH2</option>
+                    </select>
+                </div>
+            </div>
+            <div class="S switch<?php if($type=='M') echo 'display_none';?> control-group">
                 <label class="control-label" for="inputIP"><?php echo $sprache->haupt_ip;?></label>
-                <div class="controls"><input id="inputIP" type="text" name="ip" value="<?php echo $eac_ip?>" maxlength="15" required="required"></div>
+                <div class="controls"><input id="inputIP" type="text" name="ip" value="<?php echo $eac_ip;?>" maxlength="15" required="required"></div>
             </div>
-            <div class="control-group">
+            <div class="S switch<?php if($type=='M') echo 'display_none';?> control-group">
                 <label class="control-label" for="inputPortSSH2"><?php echo $sprache->ssh_port;?></label>
-                <div class="controls"><input id="inputPortSSH2" type="text" name="port" value="<?php echo $eac_port?>" maxlength="5" required="required"></div>
+                <div class="controls"><input id="inputPortSSH2" type="text" name="port" value="<?php echo $eac_port;?>" maxlength="5" required="required"></div>
             </div>
-            <div class="control-group">
+            <div class="S switch<?php if($type=='M') echo 'display_none';?> control-group">
                 <label class="control-label" for="inputUserSSH2"><?php echo $sprache->ssh_user;?></label>
-                <div class="controls"><input id="inputUserSSH2" type="text" name="user" value="<?php echo $eac_user?>" maxlength="15" required="required"></div>
+                <div class="controls"><input id="inputUserSSH2" type="text" name="user" value="<?php echo $eac_user;?>" maxlength="15" required="required"></div>
             </div>
-            <div class="control-group">
+            <div class="S switch<?php if($type=='M') echo 'display_none';?> control-group">
                 <label class="control-label" for="inputKeyuseSSH2"><?php echo $sprache->keyuse;?></label>
                 <div class="controls">
                     <select id="inputKeyuseSSH2" name="publickey">
@@ -43,24 +52,48 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="S switch<?php if($type=='M') echo 'display_none';?> control-group">
                 <label class="control-label" for="inputPassSSH2"><?php echo $sprache->ssh_pass;?></label>
-                <div class="controls"><input id="inputPassSSH2" type="password" name="pass" value="<?php echo $eac_pass?>"></div>
+                <div class="controls"><input id="inputPassSSH2" type="password" name="pass" value="<?php echo $eac_pass;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="S switch<?php if($type=='M') echo 'display_none';?> control-group">
                 <label class="control-label" for="inputKeynameSSH2"><?php echo $sprache->keyname;?></label>
                 <div class="controls"><input id="inputKeynameSSH2" type="text" name="keyname" maxlength="20" value="<?php echo $eac_keyname;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="S switch<?php if($type=='M') echo 'display_none';?> control-group">
                 <label class="control-label" for="inputCFGDir"><?php echo $sprache->cfgdir;?></label>
-                <div class="controls"><input id="inputCFGDir" type="text" name="cfgdir" value="<?php echo $eac_cfgdir?>" required></div>
+                <div class="controls"><input id="inputCFGDir" type="text" name="cfgdir" value="<?php echo $eac_cfgdir;?>" ></div>
+            </div>
+            <div class="M switch<?php if($type=='S') echo 'display_none';?> control-group">
+                <label class="control-label" for="inputMysqlServer">MySQL <?php echo $gssprache->server;?></label>
+                <div class="controls"><input id="inputMysqlServer" type="text" name="mysql_server" value="<?php echo $mysql_server;?>"></div>
+            </div>
+            <div class="M switch<?php if($type=='S') echo 'display_none';?> control-group">
+                <label class="control-label" for="inputMysqlPort">MySQL <?php echo $gssprache->port;?></label>
+                <div class="controls"><input id="inputMysqlPort" type="text" name="mysql_port" value="<?php echo $mysql_port;?>"></div>
+            </div>
+            <div class="M switch<?php if($type=='S') echo 'display_none';?> control-group">
+                <label class="control-label" for="inputMysqlDB">MySQL <?php echo $mysprache->dbname;?></label>
+                <div class="controls"><input id="inputMysqlDB" type="number" name="mysql_db" value="<?php echo $mysql_db;?>"></div>
+            </div>
+            <div class="M switch<?php if($type=='S') echo 'display_none';?> control-group">
+                <label class="control-label" for="inputMysqlTable">MySQL <?php echo $mysprache->table;?></label>
+                <div class="controls"><input id="inputMysqlTable" type="number" name="mysql_table" value="<?php echo $mysql_table;?>"></div>
+            </div>
+            <div class="M switch<?php if($type=='S') echo 'display_none';?> control-group">
+                <label class="control-label" for="inputMysqlUser">MySQL <?php echo $mysprache->user;?></label>
+                <div class="controls"><input id="inputMysqlUser" type="number" name="mysql_user" value="<?php echo $mysql_user;?>"></div>
+            </div>
+            <div class="M switch<?php if($type=='S') echo 'display_none';?> control-group">
+                <label class="control-label" for="inputMysqlPassword">MySQL <?php echo $mysprache->password;?></label>
+                <div class="controls"><input id="inputMysqlPassword" type="number" name="mysql_password" value="<?php echo $mysql_password;?>"></div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputSrcdsCOD4War">SRCDS/COD4 <?php echo $gssprache->war?></label>
+                <label class="control-label" for="inputSrcdsCOD4War">SRCDS <?php echo $gssprache->war?></label>
                 <div class="controls"><input id="inputSrcdsCOD4War" type="checkbox" name="normal_3" value="Y" <?php if ($normal_3=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputSrcdsCOD4Pub">SRCDS/COD4 Public</label>
+                <label class="control-label" for="inputSrcdsCOD4Pub">SRCDS Public</label>
                 <div class="controls"><input id="inputSrcdsCOD4Pub" type="checkbox" name="normal_4" value="Y" <?php if ($normal_4=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <div class="control-group">

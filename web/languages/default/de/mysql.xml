@@ -12,6 +12,7 @@
 	<max_connections_per_hour>Maximale Verbindungen je Stunde</max_connections_per_hour>
 	<max_userconnections_per_hour>Maximale User Verbindungen je Stunde</max_userconnections_per_hour>
 	<password>Passwort</password>
+    <table>Tabelle</table>
 	<usage>Belegung</usage>
 	<user>Benutzername</user>
 </sprache>

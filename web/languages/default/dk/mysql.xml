@@ -11,6 +11,7 @@
 	<max_connections_per_hour>Maksimalt forbindelser i timen</max_connections_per_hour>
 	<max_userconnections_per_hour>Maksimalt brugerforbindelser i timen</max_userconnections_per_hour>
 	<password>Adgangskode</password>
+    <table>Table</table>
 	<usage>Brug</usage>
 	<user>Brugernavn</user>
 </sprache>
