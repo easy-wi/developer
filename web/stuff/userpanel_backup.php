@@ -102,13 +102,14 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
             $sshReply = ssh2_execute('gs', $rootID, $sshCmd);
 
-            $template_file = ($sshReply === false) ? 'Unkown Error' : $template_file = $gsprache->backup . ' ' . $sprache->create;
+            $template_file = ($sshReply === false) ? 'Unkown Error' : $sprache->backup_create;
 
         } else {
             $template_file = 'userpanel_404.tpl';
         }
 
     } else if ($ui->w('action',3, 'get') == 'md' and isset($rootID)) {
+
         $template_file = 'userpanel_gserver_backup_md.tpl';
 
     } else if ($ui->w('action',3, 'post') == 'md2' and isset($rootID)) {
@@ -202,7 +203,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
             $sshReply = ssh2_execute('gs', $rootID, $sshCmd);
 
-            $template_file = ($sshReply === false) ? 'Unkown Error: ' : $gsprache->backup . ' ' . $sprache->recover;
+            $template_file = ($sshReply === false) ? 'Unkown Error: ' : $sprache->backup_recover;
 
         } else {
             $template_file = 'userpanel_404.tpl';

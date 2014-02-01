@@ -6,6 +6,8 @@
 	<all>Vælg alle spil</all>
 	<anticheat>AntiSnyd</anticheat>
     <authkey_info></authkey_info>
+    <backup_create></backup_create>
+    <backup_recover></backup_recover>
 	<belegt2>Eksisterende mapper</belegt2>
 	<belegt>Brugt porte</belegt>
 	<beschr>Beskrivelse</beschr>

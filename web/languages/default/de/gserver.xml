@@ -6,6 +6,8 @@
     <all>Alle Spiele auswählen</all>
     <anticheat>Anticheat</anticheat>
     <authkey_info><![CDATA[Ihr Persoenlicher Webapi Authkey zum Download der Maps von Steam. Weitere Informationen finden Sie <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators#Getting_your_web_api_authorization_key" target="_blank">hier</a>.]]></authkey_info>
+    <backup_create>Backup wird erstellt.</backup_create>
+    <backup_recover>Backup wird wieder hergestellt.</backup_recover>
     <belegt2>Vorhandene Verzeichnisse</belegt2>
     <belegt>Belegte Ports</belegt>
     <beschr>Beschreibung</beschr>
