@@ -327,19 +327,26 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             if ($ssh2Check !== true) {
 
                 if ($ssh2Check == 'ipport') {
+
                     $errors['ip'] = $sprache->ssh_ip;
                     $errors['port'] = $sprache->ssh_port;
 
                 } else {
+
                     $errors['user'] = $sprache->ssh_user;
-                    $errors['publickey'] = $sprache->keyuse;
 
                     if (!$ui->active('publickey', 'post') == 'N') {
+
                         $errors['pass'] = $sprache->ssh_pass;
+
                     } else if (!$ui->active('publickey', 'post') == 'B') {
+
                         $errors['pass'] = $sprache->ssh_pass;
+                        $errors['publickey'] = $sprache->keyuse;
                         $errors['keyname'] = $sprache->keyname;
+
                     } else {
+                        $errors['publickey'] = $sprache->keyuse;
                         $errors['keyname'] = $sprache->keyname;
                     }
                 }
