@@ -7,80 +7,68 @@
         </ul>
     </div>
 </div>
+<?php if (count($errors)>0){ ?>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4>Error(s)</h4>
+    <?php echo implode(', ',$errors);?>
+</div>
+<?php }?>
 <div class="row-fluid">
     <div class="span11">
         <form class="form-horizontal" action="admin.php?w=rd&amp;d=ad&amp;r=rd" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ad">
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
                 <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" class="span11" name="active">
                         <option value="Y"><?php echo $gsprache->yes;?></option>
-                        <option value="N"><?php echo $gsprache->no;?></option>
+                        <option value="N" <?php if ($active=="N") echo 'selected="selected";'?>><?php echo $gsprache->no;?></option>
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['ip'])) echo ' error';?>">
                 <label class="control-label" for="inputSshIP"><?php echo $sprache->ssh_ip;?></label>
-                <div class="controls"><input id="inputSshIP" class="span11" type="text" name="ip" value="" maxlength="15"></div>
+                <div class="controls"><input id="inputSshIP" class="span11" type="text" name="ip" value="<?php echo $ip;?>" maxlength="15"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['port'])) echo ' error';?>">
                 <label class="control-label" for="inputSshPort"><?php echo $sprache->ssh_port;?></label>
-                <div class="controls"><input id="inputSshPort" class="span11" type="number" name="port" value="22" maxlength="5"></div>
+                <div class="controls"><input id="inputSshPort" class="span11" type="number" name="port" value="<?php echo $port;?>" maxlength="5"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['user'])) echo ' error';?>">
                 <label class="control-label" for="inputSshUser"><?php echo $sprache->ssh_user;?></label>
-                <div class="controls"><input id="inputSshUser" class="span11" type="text" name="user" value=""></div>
+                <div class="controls"><input id="inputSshUser" class="span11" type="text" name="user" value="<?php echo $user;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['pass'])) echo ' error';?>">
                 <label class="control-label" for="inputSshPass"><?php echo $sprache->ssh_pass;?></label>
-                <div class="controls"><input id="inputSshPass" class="span11" type="password" name="pass" value=""></div>
+                <div class="controls"><input id="inputSshPass" class="span11" type="password" name="pass" value="<?php echo $pass;?>"></div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['publickey'])) echo ' error';?>">
                 <label class="control-label" for="inputKeyUse"><?php echo $sprache->keyuse;?></label>
                 <div class="controls">
                     <select id="inputKeyUse" class="span11" name="publickey">
                         <option value="N"><?php echo $gsprache->no;?></option>
-                        <option value="Y"><?php echo $gsprache->yes;?></option>
-                        <option value="B"><?php echo $gsprache->yes;?> + <?php echo $gsprache->password;?></option>
+                        <option value="Y" <?php if ($publickey=="Y") echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                        <option value="B" <?php if ($publickey=="B") echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?> + <?php echo $gsprache->password;?></option>
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group<?php if(isset($errors['keyname'])) echo ' error';?>">
                 <label class="control-label" for="inputKeyName"><?php echo $sprache->keyname;?></label>
-                <div class="controls"><input id="inputKeyName" class="span11" type="text" name="keyname" maxlength="20" value=""></div>
+                <div class="controls"><input id="inputKeyName" class="span11" type="text" name="keyname" maxlength="20" value="<?php echo $keyname;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputDesc"><?php echo $sprache->description;?></label>
-                <div class="controls"><input id="inputDesc" class="span11" type="text" name="description" value=""></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputNetMask"><?php echo $sprache->netmask;?></label>
-                <div class="controls"><input id="inputNetMask" class="span11" type="text" name="netmask" value="255.255.255.0" maxlength="15"></div>
+                <div class="controls"><input id="inputDesc" class="span11" type="text" name="description" value="<?php echo $description;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputDesc"><?php echo $sprache->startCmd;?></label>
-                <div class="controls"><input id="inputDesc" class="span11" type="text" name="startCmd" value="/etc/init.d/isc-dhcp-server restart"></div>
+                <div class="controls"><input id="inputDesc" class="span11" type="text" name="startCmd" value="<?php echo $startCmd;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputDhcpFile"><?php echo $sprache->dhcpFile;?></label>
-                <div class="controls"><input id="inputDhcpFile" class="span11" type="text" name="dhcpFile" value="/etc/dhcp/dhcpd.conf"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputIps"><?php echo $sprache->ips;?></label>
-                <div class="controls"><textarea id="inputIps" class="span11" name="ips" rows="5" cols="23" ></textarea></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputSubnet">Subnet Options</label>
-                <div class="controls">
-                    <textarea id="inputSubnet" class="span11" name="subnetOptions" rows="5">
-option subnet-mask %subnet-mask%;
-option broadcast-address 1.1.1.1;
-option routers 1.1.1.1;
-option domain-name-servers 1.1.1.1;
-                    </textarea>
-                </div>
+                <div class="controls"><input id="inputDhcpFile" class="span11" type="text" name="dhcpFile" value="<?php echo $dhcpFile;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>

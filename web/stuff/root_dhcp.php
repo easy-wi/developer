@@ -43,8 +43,9 @@ if (!isset($admin_id) or $main != 1 or  $reseller_id != 0 or !$pa['vserversettin
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 
-$sprache = getlanguagefile('reseller',$user_language,$reseller_id);
+$sprache = getlanguagefile('reseller', $user_language, $reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
@@ -55,110 +56,212 @@ if ($reseller_id == 0) {
     $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
-if (in_array($ui->st('d', 'get'), array('md','ad'))){
-    if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'md') {
-        $id = $ui->id('id',19, 'get');
-        $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `rootsDHCP` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-        $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $active = $row['active'];
-            $ip = $row['ip'];
-            $port = $row['decryptedport'];
-            $user = $row['decrypteduser'];
-            $pass = $row['decryptedpass'];
-            $publickey = $row['publickey'];
-            $keyname = $row['keyname'];
-            $ips = $row['ips'];
-            $netmask = $row['netmask'];
-            $startCmd = $row['startCmd'];
-            $dhcpFile = $row['dhcpFile'];
-            $description = $row['description'];
-            $subnetOptions = $row['subnetOptions'];
-        }
-        $template_file = (isset($dhcpFile)) ? 'admin_root_dhcp_md.tpl' : 'admin_404.tpl';
-    } else if (!in_array($ui->smallletters('action',2, 'post'), array('md','ad')) and $ui->st('d', 'get') == 'ad') {
-        $template_file = 'admin_root_dhcp_ad.tpl';
-    } else if (in_array($ui->smallletters('action',2, 'post'), array('md','ad'))) {
-        $error = array();
-        if (!$ui->w('publickey', 1, 'post')) {
-            $error[] = 'Publickey';
-        }
-        if (!$ui->active('active', 'post')) {
-            $error[] = 'Active';
-        }
-        if (!$ui->ip('ip', 'post')) {
-            $error[] = 'IP';
-        }
-        if (!$ui->port('port', 'post')) {
-            $error[] = 'Port';
-        }
-        if (!$ui->password('pass',255, 'post')) {
-            $error[] = 'Password';
-        }
-        if (!$ui->username('user',255, 'post')) {
-            $error[] = 'Username';
-        }
-        if (count($error)>0) {
-            $template_file = 'Error: '.implode('<br />',$error);
-        } else {
-            $publickey = $ui->w('publickey', 1, 'post');
-            $keyname = $ui->startparameter('keyname', 'post');
-            $active = $ui->active('active', 'post');
-            $ip = $ui->ip('ip', 'post');
-            $ips = $ui->ips('ips', 'post');
-            $netmask = $ui->ips('netmask', 'post');
-            $port = $ui->port('port', 'post');
-            $user = $ui->username('user',255, 'post');
-            $pass = $ui->password('pass',255, 'post');
-            $startCmd = $ui->startparameter('startCmd', 'post');
-            $dhcpFile = $ui->startparameter('dhcpFile', 'post');
-            $description = $ui->escaped('description', 'post');
-            $subnetOptions = $ui->escaped('subnetOptions', 'post');
-            if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get')) {
-                $id = $ui->id('id',19, 'get');
-                $query = $sql->prepare("UPDATE `rootsDHCP` SET `active`=:active,`ip`=:ip,`ips`=:ips,`netmask`=:netmask,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`startCmd`=:startCmd,`dhcpFile`=:dhcpFile,`description`=:description,`subnetOptions`=:subnetOptions WHERE `id`=:id AND `resellerid`=:reseller_id");
-                $query->execute(array(':active' => $active,':ip' => $ip,':ips' => $ips,':netmask' => $netmask,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':startCmd' => $startCmd,':dhcpFile' => $dhcpFile,':description' => $description,':subnetOptions' => $subnetOptions,':id' => $id,':reseller_id' => $reseller_id));
-                $loguseraction="%mod% DHCP";
-            } else if ($ui->st('d', 'get') == 'ad') {
-                $query = $sql->prepare("INSERT INTO `rootsDHCP` (`active`,`ip`,`ips`,`netmask`,`port`,`user`,`pass`,`publickey`,`keyname`,`startCmd`,`dhcpFile`,`description`,`subnetOptions`,`resellerid`) VALUES (:active,:ip,:ips,:netmask,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:startCmd,:dhcpFile,:description,:subnetOptions,:reseller_id)");
-                $query->execute(array(':active' => $active,':ip' => $ip,':ips' => $ips,':netmask' => $netmask,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':startCmd' => $startCmd,':dhcpFile' => $dhcpFile,':description' => $description,':subnetOptions' => $subnetOptions,':reseller_id' => $reseller_id));
-                $loguseraction="%add% DHCP";
-            } else {
-                $template_file = 'admin_404.tpl';
+
+// Define the ID variable which will be used at the form and SQLs
+$id = $ui->id('id', 10, 'get');
+$publickey = $ui->w('publickey', 1, 'post');
+$keyname = $ui->startparameter('keyname', 'post');
+$active = $ui->active('active', 'post');
+$ip = $ui->ip('ip', 'post');
+$port = $ui->port('port', 'post');
+$user = $ui->username('user',255, 'post');
+$pass = $ui->password('pass',255, 'post');
+$startCmd = $ui->startparameter('startCmd', 'post');
+$dhcpFile = $ui->startparameter('dhcpFile', 'post');
+$description = $ui->escaped('description', 'post');
+
+// CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
+if ($ui->w('action',4, 'post') and !token(true)) {
+    $template_file = $spracheResponse->token;
+
+// Add and modify entries. Same validation can be used.
+} else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
+
+    // Error handling. Check if required attributes are set and can be validated
+    $errors = array();
+
+    // At this point all variables are defined that can come from the user
+
+    // Default variables. Mostly needed for the add operation
+    $defaultVar = ($ui->id('id', 10, 'get')) ? $ui->id('id', 10, 'get') : 10;
+
+    // Add or mod is opened
+    if (!$ui->smallletters('action', 2, 'post')) {
+
+        // Gather data for adding if needed and define add template
+        if ($ui->st('d', 'get') == 'ad') {
+            $template_file = 'admin_root_dhcp_ad.tpl';
+
+            // Gather data for modding in case we have an ID and define mod template
+        } else if ($ui->st('d', 'get') == 'md' and $id) {
+
+            $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `rootsDHCP` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+            $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $active = $row['active'];
+                $ip = $row['ip'];
+                $port = $row['decryptedport'];
+                $user = $row['decrypteduser'];
+                $pass = $row['decryptedpass'];
+                $publickey = $row['publickey'];
+                $keyname = $row['keyname'];
+                $ips = $row['ips'];
+                $netmask = $row['netmask'];
+                $startCmd = $row['startCmd'];
+                $dhcpFile = $row['dhcpFile'];
+                $description = $row['description'];
+                $subnetOptions = $row['subnetOptions'];
             }
-            if (!isset($template_file) and $query->rowCount() > 0) {
+
+            // Check if database entry exists and if not display 404 page
+            $template_file =  ($query->rowCount() > 0) ? 'admin_root_dhcp_md.tpl' : 'admin_404.tpl';
+
+            // Show 404 if GET parameters did not add up or no ID was given with mod
+        } else {
+            $template_file = 'admin_404.tpl';
+        }
+
+        // Form is submitted
+    } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
+
+        if (!$ui->active('active', 'post')) {
+            $errors['active'] = $sprache->active;
+        }
+
+        if (!$ui->w('publickey', 1, 'post')) {
+            $errors['publickey'] = $sprache->keyuse;
+        }
+
+        if (!$ui->ip('ip', 'post')) {
+            $errors['ip'] = $sprache->ssh_ip;
+        }
+
+        if (!$ui->port('port', 'post')) {
+            $errors['port'] = $sprache->ssh_port;
+        }
+
+        if (!$ui->username('user', 255, 'post')) {
+            $errors['user'] = $sprache->ssh_user;
+        }
+
+
+        if ($publickey != 'N' and !is_file(EASYWIDIR . '/keys/' . $keyname)) {
+            $errors['keyname'] = $sprache->keyname;
+        }
+
+        $ssh2Check = (count($errors) == 0) ? ssh_check($ip, $port, $user, $publickey, $keyname, $pass) : true;
+
+        if ($ssh2Check !== true) {
+
+            if ($ssh2Check == 'ipport') {
+                $errors['ip'] = $sprache->ssh_ip;
+                $errors['port'] = $sprache->ssh_port;
+
+            } else {
+
+                $errors['user'] = $sprache->ssh_user;
+                $errors['publickey'] = $sprache->keyuse;
+
+                if ($publickey == 'N') {
+
+                    $errors['pass'] = $sprache->ssh_pass;
+
+                } else if (!$ui->active('publickey', 'post') == 'B') {
+
+                    $errors['pass'] = $sprache->ssh_pass;
+                    $errors['keyname'] = $sprache->keyname;
+
+                } else {
+
+                    $errors['keyname'] = $sprache->keyname;
+
+                }
+            }
+        }
+
+        // Submitted values are OK
+        if (count($errors) == 0) {
+
+            // Make the inserts or updates define the log entry and get the affected rows from insert
+            if ($ui->st('action', 'post') == 'ad') {
+
+                $query = $sql->prepare("INSERT INTO `rootsDHCP` (`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`startCmd`,`dhcpFile`,`description`,`resellerid`) VALUES (:active,:ip,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:startCmd,:dhcpFile,:description,:reseller_id)");
+                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':startCmd' => $startCmd,':dhcpFile' => $dhcpFile,':description' => $description,':reseller_id' => $reseller_id));
+
+                $rowCount = $query->rowCount();
+                $loguseraction = '%add% DHCP ' . $ip;
+
+            } else if ($ui->st('action', 'post') == 'md' and $id) {
+
+                $query = $sql->prepare("UPDATE `rootsDHCP` SET `active`=:active,`ip`=:ip,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`startCmd`=:startCmd,`dhcpFile`=:dhcpFile,`description`=:description WHERE `id`=:id AND `resellerid`=:reseller_id");
+                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':startCmd' => $startCmd,':dhcpFile' => $dhcpFile,':description' => $description,':id' => $id,':reseller_id' => $reseller_id));
+
+                $rowCount = $query->rowCount();
+                $loguseraction = '%mod% DHCP ' . $ip;
+            }
+
+            // Check if a row was affected during insert or update
+            if (isset($rowCount) and $rowCount > 0) {
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
-            } else if (!isset($template_file)) {
+
+                // No update or insert failed
+            } else {
                 $template_file = $spracheResponse->error_table;
             }
+
+            // An error occurred during validation unset the redirect information and display the form again
+        } else {
+            unset($header, $text);
+            $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_root_dhcp_ad.tpl' : 'admin_root_dhcp_md.tpl';
         }
     }
-} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')) {
-    $id = $ui->id('id',19, 'get');
-    if (!$ui->smallletters('action',2, 'post')) {
-        $id = $ui->id('id',19, 'get');
-        $query = $sql->prepare("SELECT `ip`,`description` FROM `rootsDHCP` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $ip = $row['ip'];
-            $description = $row['description'];
-        }
-        $template_file = (isset($ip)) ? 'admin_root_dhcp_dl.tpl' : 'admin_404.tpl';
-    } else if ($ui->smallletters('action',2, 'post') == 'dl') {
+
+// Remove entries in case we have an ID given with the GET request
+} else if ($ui->st('d', 'get') == 'dl' and $id) {
+
+
+    $query = $sql->prepare("SELECT `ip`,`description` FROM `rootsDHCP` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query->execute(array($id, $reseller_id));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $ip = $row['ip'];
+        $description = $row['description'];
+    }
+
+    // Nothing submitted yet, display the delete form
+    if (!$ui->st('action', 'post')) {
+
+        // Check if we could find an entry and if not display 404 page
+        $template_file = ($query->rowCount() > 0) ? 'admin_root_dhcp_dl.tpl' : 'admin_404.tpl';
+
+        // User submitted remove the entry
+    } else if ($ui->st('action', 'post') == 'dl') {
+
         $query = $sql->prepare("DELETE FROM `rootsDHCP` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id, $reseller_id));
+
+        // Check if a row was affected meaning an entry could be deleted. If yes add log entry and display success message
         if ($query->rowCount() > 0) {
-            $loguseraction="%del% DHCP";
-            $insertlog->execute();
+
             $template_file = $spracheResponse->table_del;
+            $loguseraction = '%del% DHCP ' . $ip;
+            $insertlog->execute();
+
+            // Nothing was deleted, display an error
         } else {
             $template_file = $spracheResponse->error_table;
         }
+
+        // GET Request did not add up. Display 404 error.
     } else {
         $template_file = 'admin_404.tpl';
     }
+
+// List the available entries
 } else {
+
+    $table = array();
+
     $o = $ui->st('o', 'get');
     if ($ui->st('o', 'get') == 'dd') {
         $orderby = '`description` DESC';
@@ -178,11 +281,12 @@ if (in_array($ui->st('d', 'get'), array('md','ad'))){
         $orderby = '`id` ASC';
         $o = 'ai';
     }
-    $table = array();
+
     $query = $sql->prepare("SELECT `active`,`id`,`ip`,`description`,`notified` FROM `rootsDHCP` WHERE `resellerid`=? ORDER BY $orderby");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['active'] == 'Y' and $row['notified']>0) {
+
+        if ($row['active'] == 'Y' and $row['notified'] > 0) {
             $imgName = '16_error';
             $imgAlt = 'Crashed';
         } else if ($row['active'] == 'Y') {
@@ -192,7 +296,11 @@ if (in_array($ui->st('d', 'get'), array('md','ad'))){
             $imgName = '16_bad';
             $imgAlt = 'Inactive';
         }
+
         $table[] = array('id' => $row['id'], 'active' => $row['active'], 'ip' => $row['ip'], 'description' => $row['description'], 'img' => $imgName,'alt' => $imgAlt);
+
     }
+
     $template_file = 'admin_root_dhcp_list.tpl';
+
 }
