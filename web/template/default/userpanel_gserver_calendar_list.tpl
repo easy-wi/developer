@@ -92,7 +92,7 @@ $(document).ready(function (){
 								<?php echo $restarts[$i][$day]['protected']; ?>
 							</td>
 							<td class="span1">
-				                <form action="userpanel.php?w=ca&amp;id=<?php echo $id;?>&amp;r=gs" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
+				                <form action="userpanel.php?w=ca&amp;id=<?php echo $id;?>&amp;r=ca" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
 				                    <input type="hidden" name="date" value="mon_<?php echo $i;?>"/>
 				                    <input type="hidden" name="delete" value="delete" />
 				                    <button class="btn btn-danger btn-mini"><i class="icon-trash icon-white"></i> <?php echo $gsprache->del;?></button>
