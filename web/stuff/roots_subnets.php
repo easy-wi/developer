@@ -61,24 +61,52 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     // Error handling. Check if required attributes are set and can be validated
     $errors = array();
+    $dhcpServers = array();
 
     // At this point all variables are defined that can come from the user
+    $dhcpServer = (int) $ui->id('dhcpServer', 10, 'post');
     $subnet = (string) $ui->ip4('subnet', 'post');
-    $subnetOptions = $ui->escaped('subnetOptions', 'post');
     $netmask = (string) $ui->ip4('netmask', 'post');
     $active = (string) $ui->active('active', 'post');
     $vlan = (string) $ui->active('vlan', 'post');
     $vlanName = (string) $ui->description('vlanName', 'post');
+
+    if ($ui->escaped('subnetOptions', 'post')) {
+        $subnetOptions = $ui->escaped('subnetOptions', 'post');
+    } else {
+        $subnetOptions = 'option broadcast-address 1.1.1.1;
+option routers 1.1.1.1;
+option domain-name-servers 1.1.1.1;';
+    }
+
+    $query = $sql->prepare("SELECT `id`,`description` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
+    $query->execute(array($id));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $dhcpServers[$row['id']] = $row['description'];
+    }
 
     // Add or mod is opened
     if (!$ui->smallletters('action', 2, 'post')) {
 
         // Gather data for adding if needed and define add template
         if ($ui->st('d', 'get') == 'ad') {
+
             $template_file = 'admin_root_subnets_add.tpl';
 
             // Gather data for modding in case we have an ID and define mod template
         } else if ($ui->st('d', 'get') == 'md' and $id) {
+
+            $query = $sql->prepare("SELECT * FROM `rootsSubnets` WHERE `subnetID`=? LIMIT 1");
+            $query->execute(array($id));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $dhcpServer = (int) $row['dhcpServer'];
+                $subnet = (string) $row['subnet'];
+                $netmask = (string) $row['netmask'];
+                $active = (string) $row['active'];
+                $vlan = (string) $row['vlan'];
+                $vlanName = (string) $row['vlanName'];
+                $subnetOptions = (string) $row['subnetOptions'];
+            }
 
             // Check if database entry exists and if not display 404 page
             $template_file =  ($query->rowCount() > 0) ? 'admin_root_subnets_md.tpl' : 'admin_404.tpl';
@@ -90,6 +118,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         // Form is submitted
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
+
+        if (!$dhcpServer or !isset($dhcpServers[$dhcpServer])) {
+            $errors['dhcpServer'] = 'DHCP';
+        }
 
         if (!$active) {
             $errors['active'] = $gsprache->active;
@@ -136,16 +168,16 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `rootsSubnets` (`active`,`subnet`,`subnetOptions`,`netmask`,`vlan`,`vlanName`) VALUES (?,?,?,?,?,?)");
-                $query->execute(array($active, $subnet, $subnetOptions, $netmask, $vlan, $vlanName));
+                $query = $sql->prepare("INSERT INTO `rootsSubnets` (`dhcpServer`,`active`,`subnet`,`subnetOptions`,`netmask`,`vlan`,`vlanName`) VALUES (?,?,?,?,?,?,?)");
+                $query->execute(array($dhcpServer, $active, $subnet, $subnetOptions, $netmask, $vlan, $vlanName));
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%add% %subnets% ' . $subnet;
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `rootsSubnets` SET `active`=?,`subnet`=?,`subnetOptions`=?,`netmask`=?,`vlan`=?,`vlanName`=? WHERE `subnetID` =? LIMIT 1");
-                $query->execute(array($active, $subnet, $subnetOptions, $netmask, $vlan, $vlanName, $id));
+                $query = $sql->prepare("UPDATE `rootsSubnets` SET `dhcpServer`=?,`active`=?,`subnet`=?,`subnetOptions`=?,`netmask`=?,`vlan`=?,`vlanName`=? WHERE `subnetID` =? LIMIT 1");
+                $query->execute(array($dhcpServer, $active, $subnet, $subnetOptions, $netmask, $vlan, $vlanName, $id));
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%mod% %subnets% ' . $subnet;
@@ -171,6 +203,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 // Remove entries in case we have an ID given with the GET request
 } else if ($ui->st('d', 'get') == 'dl' and $id) {
 
+    $query = $sql->prepare("SELECT `subnet`,`netmask` FROM `rootsSubnets` WHERE `subnetID`=? LIMIT 1");
+    $query->execute(array($id));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $subnet = (string) $row['subnet'];
+        $netmask = (string) $row['netmask'];
+    }
+
     // Nothing submitted yet, display the delete form
     if (!$ui->st('action', 'post')) {
 
@@ -180,8 +219,11 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         // User submitted remove the entry
     } else if ($ui->st('action', 'post') == 'dl') {
 
+        $query = $sql->prepare("DELETE FROM `rootsSubnets` WHERE `subnetID`=? LIMIT 1");
+        $query->execute(array($id));
+
         // Check if a row was affected meaning an entry could be deleted. If yes add log entry and display success message
-        if ($query->rowCount()>0) {
+        if ($query->rowCount() > 0) {
 
             $template_file = $spracheResponse->table_del;
             $loguseraction = '%del% %subnets% ' . $subnet;
