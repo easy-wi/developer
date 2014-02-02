@@ -20,9 +20,9 @@
 <?php }?>
 <div class="row-fluid">
     <div class="span8">
-        <form class="form-horizontal" action="admin.php?w=sn&amp;d=ad&amp;r=sn" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+        <form class="form-horizontal" action="admin.php?w=sn&amp;d=md&amp;id=<?php echo $id;?>&amp;r=sn" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="ad">
+            <input type="hidden" name="action" value="md">
             <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
                 <label class="control-label" for="inputActive"><?php echo $gsprache->active;?></label>
                 <div class="controls">
@@ -72,7 +72,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i> <?php echo $gsprache->add;?></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
                 </div>
             </div>
         </form>

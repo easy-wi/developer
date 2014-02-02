@@ -807,6 +807,7 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `rootsSubnets` (
   `subnetID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `dhcpServer` int(10) unsigned NOT NULL,
   `active` enum('Y','N') DEFAULT 'Y',
   `subnet` varchar(15) DEFAULT NULL,
   `netmask` varchar(15) DEFAULT NULL,

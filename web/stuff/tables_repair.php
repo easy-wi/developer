@@ -194,6 +194,7 @@ $defined['rootsPXE'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"N
 
 $defined['rootsSubnets'] = array(
     'subnetID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+    'dhcpServer' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'subnet' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'subnetOptions' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
