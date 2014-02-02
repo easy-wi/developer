@@ -16,7 +16,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputEdit"><?php echo $sprache->domain.' '.$ssl.$domain;?></label>
                 <div class="controls">
-                    <button class="btn btn-danger pull-right" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i></button>
+                    <button class="btn btn-danger pull-left" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
                 </div>
             </div>
         </form>
