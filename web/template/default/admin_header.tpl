@@ -380,13 +380,14 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFourteen"><i class="fa fa-sitemap fa-fw"></i> <?php echo $gsprache->network;?></a>
                         </div>
-                        <div id="collapseFourteen" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('rd','rp','tf'))) echo 'in';?>">
+                        <div id="collapseFourteen" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('rd','rp','sn','tf'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['traffic']) { ?><li <?php if($ui->smallletters('w',255,'get')=='tf' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=tf"><?php echo $gsprache->traffic;?></a></li><?php } ?>
                                     <?php if($reseller_id=='0' and $pa['trafficsettings']) { ?><li <?php if($ui->smallletters('w',255,'get')=='tf' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=tf&amp;d=se"><?php echo $gsprache->traffic.' '.$gsprache->settings;?></a></li><?php } ?>
                                     <?php if($pa['dhcpServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rd') echo 'class="active"';?>><a href="admin.php?w=rd">DHCP</a></li><?php } ?>
                                     <?php if($pa['pxeServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rp') echo 'class="active"';?>><a href="admin.php?w=rp">PXE</a></li><?php } ?>
+                                    <?php if($pa['root'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='sn') echo 'class="active"';?>><a href="admin.php?w=sn"><?php echo $gsprache->subnets;?></a></li><?php } ?>
                                 </ul>
                             </div>
                         </div>
