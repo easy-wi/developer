@@ -171,13 +171,22 @@ option domain-name-servers 1.1.1.1;';
                 $query = $sql->prepare("INSERT INTO `rootsSubnets` (`dhcpServer`,`active`,`subnet`,`subnetOptions`,`netmask`,`vlan`,`vlanName`) VALUES (?,?,?,?,?,?,?)");
                 $query->execute(array($dhcpServer, $active, $subnet, $subnetOptions, $netmask, $vlan, $vlanName));
                 $rowCount = $query->rowCount();
-
                 $loguseraction = '%add% %subnets% ' . $subnet;
+
+                $id = $sql->lastInsertId();
+
+                $ex = explode('.', $subnet);
+                if (isset($ex[2])) {
+                    $query = $sql->prepare("INSERT INTO `rootsIP4` (`subnetID`,`ip`) VALUES (?,?) ON DUPLICATE KEY UPDATE `ip`=VALUES(`ip`)");
+                    for ($lastTriple = 2; $lastTriple < 255; $lastTriple++) {
+                        $query->execute(array($id, $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.' . $lastTriple));
+                    }
+                }
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `rootsSubnets` SET `dhcpServer`=?,`active`=?,`subnet`=?,`subnetOptions`=?,`netmask`=?,`vlan`=?,`vlanName`=? WHERE `subnetID` =? LIMIT 1");
-                $query->execute(array($dhcpServer, $active, $subnet, $subnetOptions, $netmask, $vlan, $vlanName, $id));
+                $query = $sql->prepare("UPDATE `rootsSubnets` SET `dhcpServer`=?,`active`=?,`subnetOptions`=?,`netmask`=?,`vlan`=?,`vlanName`=? WHERE `subnetID` =? LIMIT 1");
+                $query->execute(array($dhcpServer, $active, $subnetOptions, $netmask, $vlan, $vlanName, $id));
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%mod% %subnets% ' . $subnet;
@@ -217,21 +226,42 @@ option domain-name-servers 1.1.1.1;';
         $template_file = ($query->rowCount() > 0) ? 'admin_root_subnets_dl.tpl' : 'admin_404.tpl';
 
         // User submitted remove the entry
-    } else if ($ui->st('action', 'post') == 'dl') {
+    } else if ($ui->st('action', 'post') == 'dl' and $subnet) {
 
-        $query = $sql->prepare("DELETE FROM `rootsSubnets` WHERE `subnetID`=? LIMIT 1");
-        $query->execute(array($id));
+        $serversLeftCount = 0;
 
-        // Check if a row was affected meaning an entry could be deleted. If yes add log entry and display success message
-        if ($query->rowCount() > 0) {
+        $ex = explode('.', $subnet);
 
-            $template_file = $spracheResponse->table_del;
-            $loguseraction = '%del% %subnets% ' . $subnet;
-            $insertlog->execute();
+        if (isset($ex[2])) {
 
-            // Nothing was deleted, display an error
+            $query = $sql->prepare("SELECT 1 FROM `virtualcontainer` WHERE `ip` LIKE :sub OR `ips` LIKE :sub LIMIT 1");
+            $query->execute(array(':sub' => $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.%'));
+            $serversLeftCount += $query->rowCount();
+
+            $query = $sql->prepare("SELECT 1 FROM `rootsDedicated` WHERE `ip` LIKE :sub OR `ips` LIKE :sub LIMIT 1");
+            $query->execute(array(':sub' => $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.%'));
+            $serversLeftCount += $query->rowCount();
+
+        }
+
+        if ($serversLeftCount == 0) {
+            $query = $sql->prepare("DELETE FROM `rootsSubnets` WHERE `subnetID`=? LIMIT 1");
+            $query->execute(array($id));
+            $query2 = $sql->prepare("DELETE FROM `rootsIP4` WHERE `subnetID`=?");
+            $query2->execute(array($id));
+
+            // Check if a row was affected meaning an entry could be deleted. If yes add log entry and display success message
+            if ($query->rowCount() > 0) {
+                $template_file = $spracheResponse->table_del;
+                $loguseraction = '%del% %subnets% ' . $subnet;
+                $insertlog->execute();
+
+                // Nothing was deleted, display an error
+            } else {
+                $template_file = $spracheResponse->error_table;
+            }
         } else {
-            $template_file = $spracheResponse->error_table;
+            $template_file = $sprache->error_server_exists;
         }
 
         // GET Request did not add up. Display 404 error.

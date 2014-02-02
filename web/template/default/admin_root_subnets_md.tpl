@@ -19,6 +19,14 @@
 </div>
 <?php }?>
 <div class="row-fluid">
+    <div class="span6">
+        <dl class="dl-horizontal">
+            <dt><?php echo $sprache->subnet;?></dt>
+            <dd><?php echo $subnet;?></dd>
+        </dl>
+    </div>
+</div>
+<div class="row-fluid">
     <div class="span8">
         <form class="form-horizontal" action="admin.php?w=sn&amp;d=md&amp;id=<?php echo $id;?>&amp;r=sn" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
@@ -41,10 +49,6 @@
                         <?php } ?>
                     </select>
                 </div>
-            </div>
-            <div class="control-group<?php if(isset($errors['subnet'])) echo ' error';?>">
-                <label class="control-label" for="inputSubnet"><?php echo $sprache->subnet;?></label>
-                <div class="controls"><input id="inputSubnet" type="text" name="subnet" value="<?php echo $subnet;?>" maxlength="15" required></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputSubnetOptions"><?php echo $sprache->subnetOptions;?></label>
