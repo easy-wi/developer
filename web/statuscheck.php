@@ -104,8 +104,11 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query2 = $sql->prepare("SELECT `shutdownempty`,`shutdownemptytime`,`lastcheck`,`oldcheck` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
     $query->execute();
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+
         unset($shutdownempty);
+
         $resellerid = $row['resellerid'];
+
         $query2->execute(array($resellerid));
         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
             $shutdownempty = $row2['shutdownempty'];
@@ -113,10 +116,12 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $firstcheck = '00-00-' . round(2 * (strtotime($row2['lastcheck']) - strtotime($row2['oldcheck'])) / 60);
             $firstchecktime = date('d-G-i');
         }
+
         if (isset($shutdownempty)) {
             $resellersettings[$resellerid] = array('shutdownempty' => $shutdownempty,'shutdownemptytime' => $shutdownemptytime,'firstchecktime' => $firstchecktime,'firstcheck' => $firstcheck,'brandname' => $row['brandname'], 'noservertag' => $row['noservertag'], 'nopassword' => $row['nopassword'], 'tohighslots' => $row['tohighslots'], 'down_checks' => $row['down_checks']);
         }
     }
+
     $query = $sql->prepare("UPDATE `lendsettings` SET `oldcheck`=`lastcheck`,`lastcheck`=NOW()");
     $query->execute();
 
@@ -211,6 +216,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         print "Checking $totalCount server(s) with GameQ query\r\n";
 
         foreach ($allServersArray as $servers) {
+
             $gq = new GameQ();
             $gq->setOption('timeout', 3);
 
@@ -224,6 +230,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             foreach($gq->requestData() as $switchID => $v) {
 
                 unset($userid, $stopserver, $doNotRestart);
+
                 $lid = 0;
                 $elapsed = 0;
                 $shutdownemptytime = 0;
@@ -233,6 +240,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $query2 = $sql->prepare("SELECT `id`,`started` FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
                 $query->execute(array($switchID));
                 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+
                     $serverip = $row['serverip'];
                     $autoRestart = $row['autoRestart'];
                     $port = $row['port'];
@@ -253,7 +261,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     }
 
                     if ($lendserver == 'Y' and $lendActive == 'Y' and $resellersettings[$resellerid]['shutdownempty'] == 'Y') {
+
                         $shutdownemptytime = $resellersettings[$resellerid]['shutdownemptytime'];
+
                         $query2->execute(array($row['serverID']));
                         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                             $lid = $row2['id'];
@@ -475,18 +485,27 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y'");
         $query->execute(array(':aeskey' => $aeskey));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $resellerid = $row['resellerid'];
-            $tsdnscheck=@fsockopen ($row['ssh2ip'],41144, $errno, $errstr,5);
+
+            $tsdnscheck = @fsockopen ($row['ssh2ip'], 41144, $errno, $errstr,5);
+
             if (!is_resource($tsdnscheck) and $row['autorestart'] == 'Y') {
                 sleep(1);
-                $tsdnscheck=@fsockopen ($row['ssh2ip'],41144, $errno, $errstr,5);
+                $tsdnscheck = @fsockopen ($row['ssh2ip'], 41144, $errno, $errstr,5);
             }
+
             if (!is_resource($tsdnscheck) and $row['autorestart'] == 'Y') {
+
                 print "TSDNS Error: ".$row['ssh2ip'] . ' ' . $errno.' ('.$errstr.")\r\n";
+
                 $query3 = $sql->prepare("UPDATE `voice_tsdns` SET `notified`=`notified`+1 WHERE `id`=? LIMIT 1");
                 $query3->execute(array($row['id']));
+
                 $tsdnsDownCheck = $row['notified']+1;
+
                 if ($tsdnsDownCheck == $resellersettings[$resellerid]['down_checks']) {
+
                     if ($resellerid==0) {
                         $query3 = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `accounttype`='a' AND `resellerid`=0");
                         $query3->execute();
@@ -494,37 +513,39 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $query3 = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
                         $query3->execute(array($resellerid));
                     }
+
                     foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
                         if ($row3['mail_serverdown'] == 'Y') {
                             sendmail('emaildownrestart', $row3['id'], $row['ssh2ip'].' (External TSDNS)','');
                         }
                     }
                 }
-                if ($row['bitversion'] == '32') {
-                    $tsdnsbin='tsdnsserver_linux_x86';
-                } else {
-                    $tsdnsbin='tsdnsserver_linux_amd64';
-                }
 
-                $split_config=preg_split('/\//', $row['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
-                $folderfilecount=count($split_config)-1;
-                $i = 0;
                 unset($folders);
-                $folders=(substr($row['serverdir'],0,1) == '/') ? 'cd  /' : 'cd ';
+
+                $i = 0;
                 $lastFolder = '';
+
+                $tsdnsbin= ($row['bitversion'] == '32') ? 'tsdnsserver_linux_x86' : 'tsdnsserver_linux_amd64';
+                $split_config = preg_split('/\//', $row['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
+                $folderfilecount = count($split_config) - 1;
+                $folders = (substr($row['serverdir'], 0, 1) == '/') ? 'cd  /' : 'cd ';
+
                 while ($i <= $folderfilecount) {
                     $folders = $folders.$split_config[$i] . '/';
                     $lastFolder = $split_config[$i];
                     $i++;
                 }
+
                 if ($folders == 'cd ') {
                     $folders = '';
-                } else if ($lastFolder!='tsdns' or substr($row['serverdir'],0,1) != '/') {
-                    $folders = $folders .'tsdns/ && ';
+                } else if ($lastFolder != 'tsdns' or substr($row['serverdir'], 0, 1) != '/') {
+                    $folders = $folders . 'tsdns/ && ';
                 } else {
                     $folders = $folders  . ' && ';
                 }
-                $ssh2cmd = $folders.'function r () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; r& ';
+
+                $ssh2cmd = $folders . 'function r () { if [ "`ps fx | grep ' . $tsdnsbin . ' | grep -v grep`" == "" ]; then ./' . $tsdnsbin . ' > /dev/null & else ./' . $tsdnsbin . ' --update > /dev/null & fi }; r& ';
 
                 if (ssh2_execute('vd', $row['id'], $ssh2cmd)) {
                     print "Restarting TSDNS: {$row['ssh2ip']}\r\n";
@@ -537,7 +558,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
 
             } else {
+
                 print "TSDNS ${row['ssh2ip']} is up and running\r\n";
+
                 $query3 = $sql->prepare("UPDATE `voice_tsdns` SET `notified`=0 WHERE `id`=? LIMIT 1");
                 $query3->execute(array($row['id']));
             }
@@ -548,10 +571,12 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             print "Checking voice server with debug on\r\n";
         }
 
-        $vselect = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `active`='Y'");
-        $vselect->execute(array(':aeskey' => $aeskey));
-        foreach ($vselect->fetchall(PDO::FETCH_ASSOC) as $vrow) {
+        $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `active`='Y'");
+        $query->execute(array(':aeskey' => $aeskey));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $vrow) {
+
             unset($connect_ssh2, $ssh2, $badLogin);
+
             $ts3masterid = $vrow['id'];
             $ts3masternotified = $vrow['notified'];
             $addedby = $vrow['addedby'];
@@ -560,58 +585,77 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $resellerid = $vrow['resellerid'];
             $autorestart = $vrow['autorestart'];
 
-            if ($addedby == 2) {
-                $queryip = $vrow['ssh2ip'];
-            } else if ($addedby == 1) {
+            if ($addedby == 1) {
                 $vselect2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $vselect2->execute(array($vrow['rootid'], $resellerid));
                 $queryip = $vselect2->fetchColumn();
+            } else {
+                $queryip = $vrow['ssh2ip'];
             }
 
             if ($vrow['type'] == 'ts3') {
+
+                print "Connecting to TS3 server $queryip\r\n";
+
                 $tsdown = false;
                 $tsdnsdown = false;
                 $defaultwelcome = $vrow['defaultwelcome'];
 
                 $default = array('virtualserver_hostbanner_url' => $vrow['defaulthostbanner_url'], 'virtualserver_hostbanner_gfx_url' => $vrow['defaulthostbanner_gfx_url'], 'virtualserver_hostbutton_tooltip' => $vrow['defaulthostbutton_tooltip'], 'virtualserver_hostbutton_url' => $vrow['defaulthostbutton_url'], 'virtualserver_hostbutton_gfx_url' => $vrow['defaulthostbutton_gfx_url'], 'defaultwelcome' => $vrow['defaultwelcome']);
-                print "Connecting to TS3 server $queryip\r\n";
-                $connection=new TS3($queryip, $queryport,'serveradmin', $querypassword,(isset($args['tsDebug']) and $args['tsDebug'] == 1) ? true : false);
+
+                $connection = new TS3($queryip, $queryport,'serveradmin', $querypassword, (isset($args['tsDebug']) and $args['tsDebug'] == 1) ? true : false);
                 $errorcode = $connection->errorcode;
+
                 if (strpos($errorcode,'error id=0') === false) {
+
                     $connection->CloseConnection();
                     unset($connection);
+
                     sleep(1);
-                    $connection=new TS3($queryip, $queryport,'serveradmin', $querypassword);
+
+                    $connection = new TS3($queryip, $queryport,'serveradmin', $querypassword);
                     $errorcode = $connection->errorcode;
                 }
-                if (strpos($errorcode,'error id=0') === false) {
+
+                if (strpos($errorcode, 'error id=0') === false) {
                     $connection->CloseConnection();
                     unset($connection);
                 }
-                if (strpos($errorcode,'error id=0') === false) {
-                    print "TS3 Query Error: ".$errorcode . "\r\n";
+
+                if (strpos($errorcode, 'error id=0') === false) {
+                    print "TS3 Query Error: " . $errorcode . "\r\n";
                     $tsdown = true;
-                    $restartreturn="TS3";
+                    $restartreturn = "TS3";
                 }
+
                 if ($vrow['usedns'] == 'Y') {
-                    $tsdnscheck=@fsockopen ($queryip,41144, $errno, $errstr,5);
+
+                    $tsdnscheck = @fsockopen ($queryip,41144, $errno, $errstr,5);
+
                     if (!is_resource($tsdnscheck)) {
                         sleep(1);
-                        $tsdnscheck=@fsockopen ($queryip,41144, $errno, $errstr,5);
+                        $tsdnscheck = @fsockopen ($queryip,41144, $errno, $errstr,5);
                     }
                     if (!is_resource($tsdnscheck)) {
+
                         print "TSDNS Error: ".$errno.' ('.$errstr.")\r\n";
+
                         $tsdnsdown = true;
+
                         if (isset($restartreturn)) {
-                            $restartreturn .=" and TSDNS";
+                            $restartreturn .= " and TSDNS";
                         } else {
-                            $restartreturn="TSDNS";
+                            $restartreturn = "TSDNS";
                         }
                     }
                 }
+
                 if ($tsdown == true or $tsdnsdown == true) {
+
                     $ts3masternotified++;
+
                     if ($ts3masternotified == $resellersettings[$resellerid]['down_checks']) {
+
                         if ($resellerid == 0) {
                             $query2 = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `accounttype`='a' AND `resellerid`=0");
                             $query2->execute();
@@ -619,12 +663,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $query2 = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
                             $query2->execute(array($resellerid));
                         }
+
                         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                             if ($row2['mail_serverdown'] == 'Y') {
-                                sendmail('emaildownrestart', $row2['id'], $queryip.' ('.$restartreturn.')','');
+                                sendmail('emaildownrestart', $row2['id'], $queryip . ' (' . $restartreturn . ')', '');
                             }
                         }
                     }
+
                     $query2 = $sql->prepare("UPDATE `voice_server` SET `uptime`=0 WHERE `masterserver`=?");
                     $query2->execute(array($ts3masterid));
                     $query2 = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=? WHERE `id`=? LIMIT 1");
@@ -634,37 +680,38 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                         $cmds = array();
 
-                        $split_config=preg_split('/\//', $vrow['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
-                        $folderfilecount=count($split_config)-1;
                         $i = 0;
+                        $split_config = preg_split('/\//', $vrow['serverdir'], -1, PREG_SPLIT_NO_EMPTY);
+                        $folderfilecount = count($split_config) - 1;
                         $folders = (substr($vrow['serverdir'], 0, 1) == '/') ? 'cd  /' : 'cd ';
+
                         while ($i <= $folderfilecount) {
-                            $folders = $folders.$split_config[$i] . '/';
+                            $folders = $folders . $split_config[$i] . '/';
                             $i++;
                         }
 
                         if ($folders == 'cd ') {
                             $folders = '';
-                            $tsdnsFolders='cd tsdns && ';
+                            $tsdnsFolders = 'cd tsdns && ';
                         } else {
                             $tsdnsFolders = $folders.'tsdns && ';
                             $folders = $folders . ' && ';
                         }
 
                         if ($vrow['bitversion'] == '32') {
-                            $tsbin='ts3server_linux_x86';
-                            $tsdnsbin='tsdnsserver_linux_x86';
+                            $tsbin = 'ts3server_linux_x86';
+                            $tsdnsbin = 'tsdnsserver_linux_x86';
                         } else {
-                            $tsbin='ts3server_linux_amd64';
-                            $tsdnsbin='tsdnsserver_linux_amd64';
+                            $tsbin = 'ts3server_linux_amd64';
+                            $tsdnsbin = 'tsdnsserver_linux_amd64';
                         }
 
                         if ($tsdown == true) {
-                            $cmds[] = $folders.'function r () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; r& ';
+                            $cmds[] = $folders . 'function r () { if [ "`ps fx | grep ' . $tsbin . ' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; r& ';
                         }
 
                         if ($vrow['usedns'] == 'Y' and $tsdnsdown == true) {
-                            $cmds[] = $tsdnsFolders.'function r () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; r& ';
+                            $cmds[] = $tsdnsFolders . 'function r () { if [ "`ps fx | grep ' . $tsdnsbin . ' | grep -v grep`" == "" ]; then ./' . $tsdnsbin . ' > /dev/null & else ./' . $tsdnsbin . ' --update > /dev/null & fi }; r& ';
                         }
 
                         if (count($cmds) > 0) {
@@ -685,7 +732,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
 
                 if ($tsdown != true) {
-                    if ($ts3masternotified>0) {
+
+                    if ($ts3masternotified > 0) {
                         $pupdate = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `id`=? LIMIT 1");
                         $pupdate->execute(array($ts3masterid));
                     }
@@ -695,13 +743,16 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     if (!isset($serverlist[0]['id']) or $serverlist[0]['id'] == 0) {
 
                         foreach ($serverlist as $server) {
-                            unset($modbadserver);
+
+                            unset($newtrafficdata, $newtraffic, $ts3id);
+
                             $modbadserver = array();
+                            $newnotified = 'N';
+
                             $virtualserver_id = $server['virtualserver_id'];
                             $vs = $server['virtualserver_status'];
-                            $uptime=(isset($server['virtualserver_uptime'])) ? $server['virtualserver_uptime'] : 0;
-                            $newnotified = 'N';
-                            unset($newtrafficdata, $newtraffic, $ts3id);
+                            $uptime = (isset($server['virtualserver_uptime'])) ? $server['virtualserver_uptime'] : 0;
+
                             $vselect2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `localserverid`=? AND `masterserver`=? AND `resellerid`=? AND `autoRestart`='Y' LIMIT 1");
                             $vselect2->execute(array($virtualserver_id, $vrow['id'], $resellerid));
                             foreach ($vselect2->fetchall(PDO::FETCH_ASSOC) as $vrow2) {
@@ -727,23 +778,36 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 $olduptime = $vrow2['uptime'];
                                 $initialpassword = $vrow2['initialpassword'];
                                 $maxtrafficmb = $vrow2['maxtraffic'];
-                                $maxtraffic = $maxtrafficmb*1024;
-                                $filetraffic=($vrow2['filetraffic'] == null) ? 0 : $vrow2['filetraffic'];
-                                $lastfiletraffic=($vrow2['lastfiletraffic'] == null) ? 0 : $vrow2['lastfiletraffic'];
+                                $maxtraffic = $maxtrafficmb * 1024;
+                                $filetraffic = ($vrow2['filetraffic'] == null) ? 0 : $vrow2['filetraffic'];
+                                $lastfiletraffic = ($vrow2['lastfiletraffic'] == null) ? 0 : $vrow2['lastfiletraffic'];
                                 $newtrafficdata = $lastfiletraffic;
                                 $newtraffic = $filetraffic;
                             }
 
                             if (isset($ts3id) and $vs == 'online' and $active == 'N') {
+
                                 print "Inactive TS3 server $address running. Stopping it.\r\n";
                                 $connection->StopServer($virtualserver_id);
+
                             } else if (isset($ts3id) and $vs == 'online' and $active == 'Y') {
+
                                 unset($rulebreak, $changeSlots);
+
                                 $queryName = $server['virtualserver_name'];
                                 $usedslots = (isset($server['virtualserver_clientsonline'])) ? $server['virtualserver_clientsonline'] : 0;
 
+                                if ($lendserver == 'Y') {
+
+                                    $vselect2 = $sql->prepare("SELECT `slots` FROM `lendedserver` WHERE `servertype`='v' AND `serverid`=? AND `resellerid`=? LIMIT 1");
+                                    $vselect2->execute(array($ts3id, $resellerid));
+                                    $lendslots = $vselect2->fetchColumn();
+                                } else {
+                                    $lendslots = 0;
+                                }
+
                                 $sd = $connection->ServerDetails($virtualserver_id);
-                                $newtrafficdata=round(($sd['connection_filetransfer_bytes_sent_total']+$sd['connection_filetransfer_bytes_received_total']) / 1024);
+                                $newtrafficdata = round(($sd['connection_filetransfer_bytes_sent_total'] + $sd['connection_filetransfer_bytes_received_total']) / 1024);
 
                                 if (isset($resellersettings[$resellerid]['firstchecktime']) and isset($resellersettings[$resellerid]['firstcheck']) and $resellersettings[$resellerid]['firstchecktime'] < $resellersettings[$resellerid]['firstcheck']) {
                                     $filetraffic = 0;
@@ -781,101 +845,134 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 }
 
                                 if ($maxtraffic > 0 and $newtraffic > $maxtraffic and $sd['virtualserver_max_download_total_bandwidth'] > 1 and $sd['virtualserver_max_upload_total_bandwidth'] > 1) {
+
                                     $virtualserver_max_download_total_bandwidth = 1;
                                     $virtualserver_max_upload_total_bandwidth = 1;
-                                    $traffictext="and has now reached the traffic limit ".$newtrafficmb. '/' . $maxtrafficmb." MB";
+
+                                    $traffictext = 'and has now reached the traffic limit ' . $newtrafficmb . '/' . $maxtrafficmb." MB";
+
                                     if (isset($rulebreak)) {
-                                        $rulebreak .="<br />Traffic Limit".$newtrafficmb. '/' . $maxtrafficmb." MB";
+                                        $rulebreak .= '<br />Traffic Limit' . $newtrafficmb . '/' . $maxtrafficmb." MB";
                                     } else {
-                                        $rulebreak = "<br />Traffic Limit".$newtrafficmb. '/' . $maxtrafficmb." MB";
+                                        $rulebreak = '<br />Traffic Limit' . $newtrafficmb . '/' . $maxtrafficmb." MB";
                                     }
-                                } else if ($maxtraffic>0 and $newtraffic>$maxtraffic and $sd['virtualserver_max_download_total_bandwidth']<2 and $sd['virtualserver_max_upload_total_bandwidth']<2) {
+
+                                } else if ($maxtraffic > 0 and $newtraffic > $maxtraffic and $sd['virtualserver_max_download_total_bandwidth'] < 2 and $sd['virtualserver_max_upload_total_bandwidth'] < 2) {
+
                                     $virtualserver_max_download_total_bandwidth = 1;
                                     $virtualserver_max_upload_total_bandwidth = 1;
-                                    $traffictext="and has still reached the traffic limit ".$newtrafficmb. '/' . $maxtrafficmb." MB";
-                                } else if ($maxtraffic>0) {
-                                    $traffictext="and has not reached traffic limit ".$newtrafficmb. '/' . $maxtrafficmb." MB";
+                                    $traffictext = 'and has still reached the traffic limit ' . $newtrafficmb . '/' . $maxtrafficmb." MB";
+
+                                } else if ($maxtraffic > 0) {
+                                    $traffictext = 'and has not reached traffic limit ' . $newtrafficmb . '/' . $maxtrafficmb." MB";
                                 } else {
-                                    $traffictext="and has traffic limit ".$newtrafficmb. '/' . $maxtrafficmb." MB";
+                                    $traffictext = 'and has traffic limit ' . $newtrafficmb . '/' . $maxtrafficmb." MB";
                                 }
+
                                 if ($sd['virtualserver_max_download_total_bandwidth'] != $virtualserver_max_download_total_bandwidth or $sd['virtualserver_max_upload_total_bandwidth'] != $virtualserver_max_download_total_bandwidth) {
                                     $modbadserver['virtualserver_max_download_total_bandwidth'] = $virtualserver_max_download_total_bandwidth;
                                     $modbadserver['virtualserver_max_upload_total_bandwidth'] = $virtualserver_max_download_total_bandwidth;
                                 }
+
                                 if ($forceservertag == 'Y' and $resellersettings[$resellerid]['brandname'] != '' and strpos(strtolower($server['virtualserver_name']), strtolower($resellersettings[$resellerid]['brandname'])) === false) {
-                                    print $vrow['type']." server $address illegal without servertag. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
+                                    print $vrow['type'] . ' server $address illegal without servertag. The name converted to ISO-8859-1 is ' . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
                                     if (isset($rulebreak)) {
-                                        $rulebreak .="<br />".$ssprache->noservertag;
+                                        $rulebreak .= '<br />' . $ssprache->noservertag;
                                     } else {
                                         $rulebreak = $ssprache->noservertag;
                                     }
+
                                     $modbadserver['virtualserver_name'] = $server['virtualserver_name'] . ' ' . $resellersettings[$resellerid]['brandname'];
                                 }
+
                                 if (isset($ts3id) and $forcebanner == 'Y') {
-                                    foreach (array('virtualserver_hostbanner_url','virtualserver_hostbanner_gfx_url') as $param) {
+                                    foreach (array('virtualserver_hostbanner_url', 'virtualserver_hostbanner_gfx_url') as $param) {
                                         if ($default[$param] != '' and $sd[$param] != $default[$param]) {
+
                                             $modbadserver[$param] = $default[$param];
+
                                             print $vrow['type']." server $address $param != ".$default[$param].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
                                             if (isset($rulebreak)) {
-                                                $rulebreak .="<br />".$param . '  ' . $vosprache->isnot . '  ' . $default[$param];
+                                                $rulebreak .= '<br />' . $param . '  ' . $vosprache->isnot . '  ' . $default[$param];
                                             } else {
                                                 $rulebreak = $param . '  ' . $vosprache->isnot . '  ' . $default[$param];
                                             }
                                         }
                                     }
                                 }
+
                                 if (isset($ts3id) and $forcebutton == 'Y') {
-                                    foreach (array('virtualserver_hostbutton_tooltip','virtualserver_hostbutton_url','virtualserver_hostbutton_gfx_url') as $param) {
+                                    foreach (array('virtualserver_hostbutton_tooltip', 'virtualserver_hostbutton_url', 'virtualserver_hostbutton_gfx_url') as $param) {
                                         if ($default[$param] != '' and $sd[$param] != $default[$param]) {
                                             $modbadserver[$param] = $default[$param];
-                                            print $vrow['type']." server $address $param != ".$default[$param].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+                                            print $vrow['type'] . " server $address $param != " . $default[$param] . ". The name converted to ISO-8859-1 is " . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
                                             if (isset($rulebreak)) {
-                                                $rulebreak .="<br />".$param . '  ' . $vosprache->isnot . '  ' . $default[$param];
+                                                $rulebreak .='<br />' . $param . '  ' . $vosprache->isnot . '  ' . $default[$param];
                                             } else {
                                                 $rulebreak = $param . '  ' . $vosprache->isnot . '  ' . $default[$param];
                                             }
                                         }
                                     }
                                 }
+
                                 if (isset($ts3id) and $forcewelcome == 'Y' and $default['defaultwelcome'] != '' and $sd['virtualserver_welcomemessage'] != $default['defaultwelcome']) {
                                     $modbadserver['virtualserver_welcomemessage'] = $default['defaultwelcome'];
-                                    print $vrow['type']." server $address $param != ".$default['defaultwelcome'].". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+                                    print $vrow['type'] . " server $address $param != ".$default['defaultwelcome'] . '. The name converted to ISO-8859-1 is ' . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
                                     if (isset($rulebreak)) {
-                                        $rulebreak .="<br />virtualserver_welcomemessage ".$vosprache->isnot . '  ' . $default['defaultwelcome'];
+                                        $rulebreak .= '<br />virtualserver_welcomemessage ' . $vosprache->isnot . '  ' . $default['defaultwelcome'];
                                     } else {
-                                        $rulebreak="virtualserver_welcomemessage ".$vosprache->isnot . '  ' . $default['defaultwelcome'];
+                                        $rulebreak = 'virtualserver_welcomemessage ' . $vosprache->isnot . '  ' . $default['defaultwelcome'];
                                     }
                                 }
-                                if (isset($ts3id, $lendserver) and $lendserver == 'N' and $slots<$server['virtualserver_maxclients']) {
-                                    print $vrow['type']." server $address virtualserver_maxclients ${sd['virtualserver_maxclients']}!= ".$slots.". The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
+                                if (isset($ts3id, $lendserver) and (($lendserver == 'N' and $slots < $server['virtualserver_maxclients']) or ($lendserver == 'Y' and $lendslots < $server['virtualserver_maxclients']))) {
+
+                                    $showSlots = ($lendserver == 'Y') ? $lendslots : $slots;
+                                    print $vrow['type'] . " server $address virtualserver_maxclients ${sd['virtualserver_maxclients']}!= " . $showSlots . ". The name converted to ISO-8859-1 is " . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
                                     if (isset($rulebreak)) {
-                                        $rulebreak .="<br />virtualserver_maxclients ".$vosprache->isnot . '  ' . $slots;
+                                        $rulebreak .= '<br />virtualserver_maxclients ' . $vosprache->isnot . '  ' . $showSlots;
                                     } else {
-                                        $rulebreak="virtualserver_maxclients ".$vosprache->isnot . '  ' . $slots;
+                                        $rulebreak = 'virtualserver_maxclients ' . $vosprache->isnot . '  ' . $showSlots;
                                     }
                                 }
+
                                 if (isset($ts3id) and $password == 'Y' and $sd['virtualserver_flag_password'] != '1') {
                                     $modbadserver['virtualserver_password'] = $initialpassword;
-                                    print $vrow['type']." server $address virtualserver_flag_password != 1. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+                                    print $vrow['type'] . " server $address virtualserver_flag_password != 1. The name converted to ISO-8859-1 is " . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
                                     if (isset($rulebreak)) {
                                         $rulebreak .="<br />virtualserver_flag_password ".$vosprache->isnot." 1";
                                     } else {
                                         $rulebreak="virtualserver_flag_password ".$vosprache->isnot." 1";
                                     }
                                 }
+
                                 if (isset($ts3id) and $lendserver == 'N' and !isset($rulebreak)) {
+
                                     if (isset($changeSlots)) {
-                                        print $vrow['type']." server $address Changing Flex Slots to ${changeSlots}. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
+                                        print $vrow['type'] . " server $address Changing Flex Slots to ${changeSlots}. The name converted to ISO-8859-1 is " . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
                                         $connection->ImportModServer($virtualserver_id, $changeSlots, $vrow2['ip'], $vrow2['port'], array());
+
                                         $pupdate2 = $sql->prepare("UPDATE `voice_server` SET `notified`=0,`flexSlotsCurrent`=? WHERE `id`=? LIMIT 1");
                                         $pupdate2->execute(array($changeSlots, $ts3id));
-                                    } else if ($notified>0) {
+
+                                    } else if ($notified > 0) {
                                         $pupdate2 = $sql->prepare("UPDATE `voice_server` SET `notified`=0 WHERE `id`=? LIMIT 1");
                                         $pupdate2->execute(array($ts3id));
                                     }
+
                                     print $vrow['type']." server $address is running $traffictext. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+
                                 } else if (isset($ts3id) and $notified == 0 and isset($rulebreak)) {
-                                    $connection->ImportModServer($virtualserver_id, $slots, $vrow2['ip'], $vrow2['port'], $modbadserver);
+
+                                    $connection->ImportModServer($virtualserver_id,($lendserver == 'Y') ? $lendslots : $slots, $vrow2['ip'], $vrow2['port'], $modbadserver);
+
                                     if ($resellerid==0) {
                                         $query2 = $sql->prepare("SELECT `id`,`mail_securitybreach` FROM `userdata` WHERE `id`=? OR (`resellerid`=0 AND `accounttype`='a')");
                                         $query2->execute(array($userid));
@@ -883,6 +980,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                         $query2 = $sql->prepare("SELECT `id`,`mail_securitybreach` FROM `userdata` WHERE `id`=? OR (`id`=? AND `accounttype`='r')");
                                         $query2->execute(array($userid, $resellerid));
                                     }
+
                                     foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                                         if ($row2['mail_securitybreach'] == 'Y' or $row2['id'] == $userid) {
                                             sendmail('emailsecuritybreach', $row2['id'], $address, $rulebreak);

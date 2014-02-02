@@ -1172,7 +1172,8 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                         $connecterror = $errorcode;
 
                     } else {
-                        $query2 = $sql->prepare("SELECT `ip`,`port`,`dns`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
+
+                        $query2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                         $query2->execute(array($tousevoiceid, $reseller_id));
                         foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
                             $voip = $row2['ip'];
@@ -1181,12 +1182,54 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                             $max_download_total_bandwidth = $row2['max_download_total_bandwidth'];
                             $max_upload_total_bandwidth = $row2['max_upload_total_bandwidth'];
                             $volocalserverid = $row2['localserverid'];
+                            $forcebanner = $row2['forcebanner'];
+                            $forcebutton = $row2['forcebutton'];
+                            $forcewelcome = $row2['forcewelcome'];
                             $server = ($usedns == 'N' or $vodns == null or $vodns == '') ? $voip . ':' . $voport : $vodns;
                         }
 
                         $connection->StartServer($volocalserverid);
                         $connection->ModServer($volocalserverid, $slots, $voip, $voport, $password, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip);
                         $reply = $connection->PermReset($volocalserverid);
+
+                        if (isset($reply[0]['token'])) {
+
+                            $template_file = $spracheResponse->ts_query_success . $reply[0]['token'];
+
+                            if ($forcebanner == 'Y') {
+                                $removelist[] = 'b_virtualserver_modify_hostbanner';
+                                $removelist[] = 'i_needed_modify_power_virtualserver_modify_hostbanner';
+                            } else if ($forcebanner == 'N') {
+                                $addlist[] = 'b_virtualserver_modify_hostbanner';
+                                $addlist[] = 'i_needed_modify_power_virtualserver_modify_hostbanner';
+                            }
+
+                            if ($forcebutton == 'Y') {
+                                $removelist[] = 'b_virtualserver_modify_hostbutton';
+                                $removelist[] = 'i_needed_modify_power_virtualserver_modify_hostbutton';
+                            } else if ($forcebutton == 'N') {
+                                $addlist[] = 'b_virtualserver_modify_hostbutton';
+                                $addlist[] = 'i_needed_modify_power_virtualserver_modify_hostbutton';
+                            }
+
+                            if ($forcewelcome == 'Y') {
+                                $removelist[] = 'b_virtualserver_modify_welcomemessage';
+                                $removelist[] = 'i_needed_modify_power_virtualserver_modify_welcomemessage';
+                            } else if ($forcewelcome == 'N') {
+                                $addlist[] = 'b_virtualserver_modify_welcomemessage';
+                                $addlist[] = 'i_needed_modify_power_virtualserver_modify_welcomemessage';
+                            }
+
+                            if (isset($addlist)) {
+                                $connection->AdminPermissions ($volocalserverid, 'add', $addlist);
+                            }
+
+                            if (isset($removelist)) {
+                                $connection->AdminPermissions ($volocalserverid, 'del', $removelist);
+                            }
+
+                        }
+
                         $connection->CloseConnection();
 
                         $rcon = $reply[0]['token'];

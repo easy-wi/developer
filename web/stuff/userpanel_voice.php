@@ -387,6 +387,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
     }
 
     if (isset($queryip, $queryport, $querypassword)) {
+
         $connection = new TS3($queryip, $queryport,'serveradmin', $querypassword);
         $errorcode = $connection->errorcode;
 
@@ -405,7 +406,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
                 $template_file = $spracheResponse->ts_query_success . $reply[0]['token'];
 
-                if ($forcebanner== 'Y') {
+                if ($forcebanner == 'Y') {
                     $removelist[] = 'b_virtualserver_modify_hostbanner';
                     $removelist[] = 'i_needed_modify_power_virtualserver_modify_hostbanner';
                 } else if ($forcebanner== 'N') {
@@ -430,11 +431,11 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 }
 
                 if (isset($addlist)) {
-                    $connection->AdminPermissions ($volocalserverid,'add', $addlist);
+                    $connection->AdminPermissions ($volocalserverid, 'add', $addlist);
                 }
 
                 if (isset($removelist)) {
-                    $connection->AdminPermissions ($volocalserverid,'del', $removelist);
+                    $connection->AdminPermissions ($volocalserverid, 'del', $removelist);
                 }
 
             } else {

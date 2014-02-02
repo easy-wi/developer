@@ -238,8 +238,8 @@ class TS3 {
                 $servergroups = $this->SendCommand('servergrouplist');
 
                 foreach ($servergroups as $servegroup) {
-                    if ($servegroup['type']==1) {
-                        $delcommand="servergroupdelperm sgid=".$servegroup['sgid']." permsid=".implode('|permsid=', $remove);
+                    if ($servegroup['type'] == 1) {
+                        $delcommand = "servergroupdelperm sgid=" . $servegroup['sgid']." permsid=" . implode('|permsid=', $remove);
                         $this->SendCommand($delcommand);
                     }
                 }
@@ -424,17 +424,28 @@ class TS3 {
                 }
             }
 
+            if ($what == 'del') {
+                $remove = array('b_virtualserver_start','i_needed_modify_power_virtualserver_start',
+                    'b_virtualserver_stop','i_needed_modify_power_virtualserver_stop',
+                    'b_virtualserver_modify_maxclients','i_needed_modify_power_virtualserver_modify_maxclients',
+                    'b_virtualserver_modify_port','i_needed_modify_power_virtualserver_modify_port',
+                    'b_virtualserver_modify_autostart','i_needed_modify_power_virtualserver_modify_autostart',
+                    'b_virtualserver_modify_ft_settings','i_needed_modify_power_virtualserver_modify_ft_settings'
+                );
+                $permlist = array_merge($permlist, $remove);
+            }
+
             if (isset($admingroupid) and is_array($admingroupid)) {
                 foreach ($admingroupid as $id) {
                     if ($what == 'add') {
 
-                        $command = 'servergroupaddperm sgid=' . $id . ' permsid='.implode(' permvalue=1 permnegated=0 permskip=0|permsid=', $permlist) . ' permvalue=1 permnegated=0 permskip=0';
+                        $command = 'servergroupaddperm sgid=' . $id . ' permsid=' . implode(' permvalue=1 permnegated=0 permskip=0|permsid=', $permlist) . ' permvalue=1 permnegated=0 permskip=0';
 
                         $this->SendCommand($command);
 
                     } else if ($what == 'del') {
 
-                        $command = 'servergroupdelperm sgid=' . $id . ' permsid='.implode('|permsid=', $permlist);
+                        $command = 'servergroupdelperm sgid=' . $id . ' permsid=' . implode('|permsid=', $permlist);
 
                         $this->SendCommand($command);
                     }
@@ -444,13 +455,13 @@ class TS3 {
 
                 if ($what == 'add') {
 
-                    $command='servergroupaddperm sgid=' . $admingroupid . ' permsid='.implode(' permvalue=1 permnegated=0 permskip=0|permsid=', $permlist) . ' permvalue=1 permnegated=0 permskip=0';
+                    $command = 'servergroupaddperm sgid=' . $admingroupid . ' permsid=' . implode(' permvalue=1 permnegated=0 permskip=0|permsid=', $permlist) . ' permvalue=1 permnegated=0 permskip=0';
 
                     $this->SendCommand($command);
 
                 } else if ($what == 'del') {
 
-                    $command='servergroupdelperm sgid=' . $admingroupid . ' permsid='.implode('|permsid=', $permlist);
+                    $command = 'servergroupdelperm sgid=' . $admingroupid . ' permsid=' . implode('|permsid=', $permlist);
 
                     $this->SendCommand($command);
 
