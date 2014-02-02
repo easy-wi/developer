@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<gserver_crashed> potentielle nedbrud spilserver:</gserver_crashed>
-	<gserver_removed> spilserver med fjernet adgangskode:</gserver_removed>
-	<gserver_tag_removed> spilserver med fjernet servertag:</gserver_tag_removed>
+	<gserver_crashed> potentielle nedbrud spilserver</gserver_crashed>
+	<gserver_removed> spilserver med fjernet adgangskode</gserver_removed>
+	<gserver_tag_removed> spilserver med fjernet servertag</gserver_tag_removed>
 	<host_crashed>nedstyrtede værter</host_crashed>
 	<master_crashed>styrtede masterserver</master_crashed>
 	<tickets>Billetter</tickets>

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <action>Action:</action>
-    <active>Active:</active>
-    <activeExternal>Activate external authentication:</activeExternal>
+    <action>Action</action>
+    <active>Active</active>
+    <activeExternal>Activate external authentication</activeExternal>
     <all>All</all>
-    <chunkSize>User chunksize:</chunkSize>
-    <date>Date:</date>
-    <domain>Domain:</domain>
-    <fetchUpdates>Fetch updates:</fetchUpdates>
-    <file>File:</file>
+    <chunkSize>User chunksize</chunkSize>
+    <date>Date</date>
+    <domain>Domain</domain>
+    <fetchUpdates>Fetch updates</fetchUpdates>
+    <file>File</file>
     <groupID>User Group</groupID>
     <ipAdd>Add IP</ipAdd>
-    <ips>Allowed IPs:</ips>
+    <ips>Allowed IPs</ips>
     <lastCheck>Last Check</lastCheck>
     <lastExternalID>Last external ID</lastExternalID>
-    <name>Name:</name>
-    <pwd>Password:</pwd>
-    <ssl>SSL:</ssl>
-    <status>Status:</status>
-    <type>Type:</type>
-    <user>Username:</user>
+    <name>Name</name>
+    <pwd>Password</pwd>
+    <ssl>SSL</ssl>
+    <status>Status</status>
+    <type>Type</type>
+    <user>Username</user>
 </sprache>

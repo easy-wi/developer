@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<brandname>Servertag:</brandname>
+	<brandname>Servertag</brandname>
 	<confirm_change>Gem ændringer?</confirm_change>
-	<eachday>Hver X dage:</eachday>
+	<eachday>Hver X dage</eachday>
 	<email2>Denne e-mail vil blive brugt, når du sender data til brugerne.</email2>
-	<email>Email:</email>
+	<email>Email</email>
 	<emaildown>Kunne ikke nå server</emaildown>
 	<emaildownrestart>Server er nede og kunne ikke genstartes</emaildownrestart>
 	<emailfooter2>Denne tekst er anvendt ved sidefoden i en Mail sendt af panelet. For eksempel kan du tilføje dine juridiske informationer her.</emailfooter2>
-	<emailfooter>E-Mail Footer:</emailfooter>
+	<emailfooter>E-Mail Footer</emailfooter>
 	<emailnewticket>Ny support billet modtaget</emailnewticket>
 	<emailpasswordrecovery>Gendannelse af adgangskoden</emailpasswordrecovery>
 	<emailregards2>Denne tekst anvendes ved afslutningen af ​​en mail sendt af panelet. Et eksempel: "Venlig hilsen"</emailregards2>
-	<emailregards>E-Mail hilsener:</emailregards>
+	<emailregards>E-Mail hilsener</emailregards>
 	<emailsecuritybreach>Server manipulation blev påvist</emailsecuritybreach>
 	<emailvrescue>Redning-system startede</emailvrescue>
 	<faillogins>Mulige mislykkede Logins i træk</faillogins>
 	<header>Indstillinger</header>
 	<image_server2>Hvis masterinstallation ikke er sat op af data vil blive hentet fra denne server.</image_server2>
-	<image_server3>Brug en billedserver:</image_server3>
-	<image_server>Billede Server:</image_server>
-	<language>Standard sprog:</language>
+	<image_server3>Brug en billedserver</image_server3>
+	<image_server>Billede Server</image_server>
+	<language>Standard sprog</language>
     <lastCronWarnStatus>statuscheck.php advarsel</lastCronWarnStatus>
     <lastCronWarnReboot>reboot.php advarsel</lastCronWarnReboot>
     <lastCronWarnUpdates>startupdates.php advarsel</lastCronWarnUpdates>
     <lastCronWarnJobs>jobs.php advarsel</lastCronWarnJobs>
     <lastCronWarnCloud>cloud.php advarsel</lastCronWarnCloud>
-	<maxbackups>Maksimalt backup beløb:</maxbackups>
+	<maxbackups>Maksimalt backup beløb</maxbackups>
 	<nopassword>Adgangskode fjernet</nopassword>
 	<noservertag>Servertag fjernet</noservertag>
     <password>Adgangskode</password>
-	<prefix1>Definer brugernavne:</prefix1>
+	<prefix1>Definer brugernavne</prefix1>
 	<prefix2>Hvis du definerer et brugernavn brugerne unikke id'er vil blive tilføjet til den definerede navn. Kun små bogstaver og tal er tilladt. Eksempel: kunden vil være kunde2 og tælle</prefix2>
-	<prefix3>Standard brugernavn:</prefix3>
+	<prefix3>Standard brugernavn</prefix3>
     <protocol>Protokol</protocol>
 	<shutdown>Sluk server ned</shutdown>
-	<supportnumber>Support telefonnummer:</supportnumber>
-	<timezone>tidszone:</timezone>
+	<supportnumber>Support telefonnummer</supportnumber>
+	<timezone>tidszone</timezone>
 	<tohighslots>Antal manipuleret</tohighslots>
 	<warn>Advar bruger</warn>
     <down_checks>Offline kontrol</down_checks>

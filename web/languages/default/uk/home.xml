@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<gserver_crashed> potential crashed gameserver:</gserver_crashed>
-	<gserver_removed> gameserver with removed password:</gserver_removed>
-	<gserver_tag_removed> gameserver with removed servertag:</gserver_tag_removed>
+	<gserver_crashed> potential crashed gameserver</gserver_crashed>
+	<gserver_removed> gameserver with removed password</gserver_removed>
+	<gserver_tag_removed> gameserver with removed servertag</gserver_tag_removed>
 	<host_crashed>crashed hosts</host_crashed>
 	<master_crashed>crashed masterserver</master_crashed>
 	<tickets>Tickets</tickets>

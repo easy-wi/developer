@@ -19,7 +19,7 @@
 	<maxnews>Vis den sidste X nyheder</maxnews>
     <message>Meddelelse</message>
 	<MSIE>Internet Explorer stadig ikke undtagen W3C specifikationerne. På grund af dette faktum visning af siden kan blive beskadiget. Brug venligst en anden browser.</MSIE>
-    <moderate>Moderation kræves:</moderate>
+    <moderate>Moderation kræves</moderate>
     <name>Navn</name>
     <naviDisplay>Visning på Navi</naviDisplay>
     <newer>Nyere</newer>

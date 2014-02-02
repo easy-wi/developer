@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<changelog>Changelog:</changelog>
+	<changelog>Changelog</changelog>
 	<filesoutdated>Ihre Dateien sind veraltet.</filesoutdated>
-	<latestversion>Die aktuelle Version ist:</latestversion>
+	<latestversion>Die aktuelle Version ist</latestversion>
 	<newversion>Eine neue Version ist verfügbar: </newversion>
-	<ok>Ihre Version ist auf dem neuesten Stand:</ok>
+	<ok>Ihre Version ist auf dem neuesten Stand</ok>
 	<outdated>Ihre Version ist veraltet: </outdated>
 	<prepare1>Bei einem Update kann es zu Fehlfunktionen kommen. Beugen Sie einem Verlust von Daten, oder einer irreperabel beschädigten Datenbak vor.</prepare1>
 	<prepare2>Sichern Sie deswegen vor dem Update alle ihre Dateien und legen ein Backup von der Datenbank an.</prepare2>

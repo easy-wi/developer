@@ -20,7 +20,7 @@
 	<maxnews>Show the last X news</maxnews>
     <message>Message</message>
 	<MSIE>The Internet Explorer still does not except the W3C specifications. Because of this fact the display of the page can be corrupted. Please use a different browser.</MSIE>
-    <moderate>Moderation required:</moderate>
+    <moderate>Moderation required</moderate>
     <name>Name</name>
     <naviDisplay>Display at Navi</naviDisplay>
     <newer>Newer</newer>

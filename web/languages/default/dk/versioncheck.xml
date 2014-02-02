@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<changelog>Ændringslog:</changelog>
+	<changelog>Ændringslog</changelog>
 	<filesoutdated>Du kører en version med forældede filer.</filesoutdated>
-	<latestversion>Den nyeste version er:</latestversion>
+	<latestversion>Den nyeste version er</latestversion>
 	<newversion>En ny version er tilgængelig: </newversion>
 	<ok>Du kører den nyeste version.</ok>
 	<outdated>Du kører en forældet version: </outdated>

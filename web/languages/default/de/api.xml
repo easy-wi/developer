@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <action>Aktion:</action>
-    <active>Aktivieren:</active>
-    <activeExternal>Externe Authentifizierung aktivieren:</activeExternal>
+    <action>Aktion</action>
+    <active>Aktivieren</active>
+    <activeExternal>Externe Authentifizierung aktivieren</activeExternal>
     <all>Alle</all>
-    <chunkSize>Benutzer Chunkgröße:</chunkSize>
-    <date>Datum:</date>
-    <domain>Domain:</domain>
-    <fetchUpdates>Updates nachladen:</fetchUpdates>
-    <file>Datei:</file>
+    <chunkSize>Benutzer Chunkgröße</chunkSize>
+    <date>Datum</date>
+    <domain>Domain</domain>
+    <fetchUpdates>Updates nachladen</fetchUpdates>
+    <file>Datei</file>
     <groupID>Benutzer Gruppe</groupID>
     <ipAdd>IP hinzufügen</ipAdd>
-    <ips>Zulässige IPs:</ips>
+    <ips>Zulässige IPs</ips>
     <lastCheck>Letzte Überprüfung</lastCheck>
     <lastExternalID>Letzte externe ID</lastExternalID>
-    <name>Name:</name>
-    <pwd>Passwort:</pwd>
-    <ssl>SSL:</ssl>
-    <status>Status:</status>
-    <type>Typ:</type>
-    <user>Benutzername:</user>
+    <name>Name</name>
+    <pwd>Passwort</pwd>
+    <ssl>SSL</ssl>
+    <status>Status</status>
+    <type>Typ</type>
+    <user>Benutzername</user>
 </sprache>

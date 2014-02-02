@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <active>Feeds aktivieren:</active>
-    <displayContent>Zeige Volltext:</displayContent>
-    <limitDisplay>Feed einschränken:</limitDisplay>
-    <maxChars>Maximale Zeichen:</maxChars>
-    <maxKeep>Maximal gespeicherte Beiträge:</maxKeep>
-    <merge>Feeds zusammenführen:</merge>
-    <newsAmount>Anzahl der Feedbeiträge:</newsAmount>
-    <orderBy>Sortieren nach:</orderBy>
-    <pubDate>Veröffentlicht:</pubDate>
-    <status>Status:</status>
-    <title>Titel:</title>
-    <updateMinutes>Alle X Minuten nach neuen Feeds suchen:</updateMinutes>
-    <useLocal>Zeige lokale News:</useLocal>
+    <active>Feeds aktivieren</active>
+    <displayContent>Zeige Volltext</displayContent>
+    <limitDisplay>Feed einschränken</limitDisplay>
+    <maxChars>Maximale Zeichen</maxChars>
+    <maxKeep>Maximal gespeicherte Beiträge</maxKeep>
+    <merge>Feeds zusammenführen</merge>
+    <newsAmount>Anzahl der Feedbeiträge</newsAmount>
+    <orderBy>Sortieren nach</orderBy>
+    <pubDate>Veröffentlicht</pubDate>
+    <status>Status</status>
+    <title>Titel</title>
+    <updateMinutes>Alle X Minuten nach neuen Feeds suchen</updateMinutes>
+    <useLocal>Zeige lokale News</useLocal>
 </sprache>

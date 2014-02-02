@@ -20,8 +20,8 @@
 	<installing>Installiere</installing>
 	<ip>IP</ip>
 	<ips>IPs und IP Ranges</ips>
-	<keyname>Name der Public Keyfile:</keyname>
-	<keyuse>Public Keyfile benutzen:</keyuse>
+	<keyname>Name der Public Keyfile</keyname>
+	<keyuse>Public Keyfile benutzen</keyuse>
 	<mac>Mac Adresse</mac>
 	<maxmhz>Maximum MHz</maxmhz>
 	<maxram>Maximum Ram</maxram>
@@ -43,7 +43,7 @@
 	<rescue_start>Rescue starten</rescue_start>
 	<rescue_stop>Rescue stoppen</rescue_stop>
 	<restart>(Re)Start</restart>
-	<shown>Ergebnisse pro Seite:</shown>
+	<shown>Ergebnisse pro Seite</shown>
 	<ssh_ip>SSH2 IP</ssh_ip>
 	<ssh_pass>SSH2 Passwort</ssh_pass>
 	<ssh_port>SSH2 Port</ssh_port>

@@ -1,42 +1,42 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<brandname>Servertag:</brandname>
+	<brandname>Servertag</brandname>
 	<confirm_change>Änderungen speichern?</confirm_change>
-	<eachday>Alle X Tage:</eachday>
+	<eachday>Alle X Tage</eachday>
 	<email2>Diese Email wird beim Versenden von Nachrichten an User benutzt.</email2>
-	<email>Email:</email>
+	<email>Email</email>
 	<emaildown>Server nicht erreichbar</emaildown>
 	<emaildownrestart>Server abgestürzt und neu gestartet</emaildownrestart>
 	<emailfooter2>Dieser Text erscheint im Footer einer vom Panel versendeten Email. Er kann Daten wie die UStIDNr. und der Verantwortlichen enthalten.</emailfooter2>
-	<emailfooter>E-Mail Footer:</emailfooter>
+	<emailfooter>E-Mail Footer</emailfooter>
 	<emailnewticket>Neues Ticket</emailnewticket>
 	<emailpasswordrecovery>Passwort Recovery</emailpasswordrecovery>
 	<emailregards2>Dieser Text wird am Ende einer vom Panel versendeten Email eingefügt. Beispiel: "Mit freundlichen Grüßen"</emailregards2>
-	<emailregards>E-Mail Grußformel:</emailregards>
+	<emailregards>E-Mail Grußformel</emailregards>
 	<emailsecuritybreach>Manipulation am Server entdeckt</emailsecuritybreach>
 	<emailvrescue>Rescue System gestartet</emailvrescue>
 	<faillogins>Anzahl erlaubter wiederholter fehlerhafter Logins</faillogins>
 	<header>Einstellungen</header>
 	<image_server2>Von diesem Server werden Images und Gameserver gezogen, wenn sie auf im Masterordner des Gameroots noch nicht vorhanden sind.</image_server2>
-	<image_server3>Image Server benutzen:</image_server3>
-	<image_server>Image Server:</image_server>
-	<language>Standard Sprache:</language>
+	<image_server3>Image Server benutzen</image_server3>
+	<image_server>Image Server</image_server>
+	<language>Standard Sprache</language>
     <lastCronWarnStatus>statuscheck.php Warnung</lastCronWarnStatus>
     <lastCronWarnReboot>reboot.php Warnung</lastCronWarnReboot>
     <lastCronWarnUpdates>startupdates.php Warnung</lastCronWarnUpdates>
     <lastCronWarnJobs>jobs.php Warnung</lastCronWarnJobs>
     <lastCronWarnCloud>cloud.php Warnung</lastCronWarnCloud>
-	<maxbackups>Maximale Backups:</maxbackups>
+	<maxbackups>Maximale Backups</maxbackups>
 	<nopassword>Passwort entfernt</nopassword>
 	<noservertag>Servertag entfernt</noservertag>
     <password>Passwort</password>
-	<prefix1>Benutzername vorgeben:</prefix1>
+	<prefix1>Benutzername vorgeben</prefix1>
 	<prefix2>Wird der Benutzername vorgegeben, wird beim Anlegen neuer Benutzer an den vorgegebenen Namen nur noch eine fortzählende Nummer angehängt. Es dürfen nur kleine Buchstaben und Zahlen benutzt werden.</prefix2>
-	<prefix3>Benutzername:</prefix3>
+	<prefix3>Benutzername</prefix3>
     <protocol>Protokoll</protocol>
 	<shutdown>Server beenden</shutdown>
-	<supportnumber>Telefonnummer des Supports:</supportnumber>
-	<timezone>Zeitzone:</timezone>
+	<supportnumber>Telefonnummer des Supports</supportnumber>
+	<timezone>Zeitzone</timezone>
 	<tohighslots>Slots manipuliert</tohighslots>
 	<warn>Benutzer warnen</warn>
     <down_checks>Offline Checks</down_checks>

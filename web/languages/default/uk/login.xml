@@ -22,6 +22,6 @@
 	<sus>Your account is suspendet. Please contact your hoster.</sus>
 	<sus_heading>Attention!</sus_heading>
 	<user>Username</user>
-    <urlBad>Incorrect URL in use:</urlBad>
+    <urlBad>Incorrect URL in use</urlBad>
     <urlOK>Correct URL is </urlOK>
 </sprache>

@@ -20,8 +20,8 @@
 	<installing>Installation</installing>
 	<ip>IP</ip>
 	<ips>IP og IP-områder</ips>
-	<keyname>Key Filnavn:</keyname>
-	<keyuse>Brug keyfile:</keyuse>
+	<keyname>Key Filnavn</keyname>
+	<keyuse>Brug keyfile</keyuse>
 	<mac>Mac Adresse</mac>
 	<maxmhz>Maksimalt MHz</maxmhz>
 	<maxram>Maksimalt Ram</maxram>
@@ -43,7 +43,7 @@
 	<rescue_start>Start Redning </rescue_start>
 	<rescue_stop>Stop Redning </rescue_stop>
 	<restart>Genstart</restart>
-	<shown>Resultater pr side:</shown>
+	<shown>Resultater pr side</shown>
 	<ssh_ip>SSH IP Adresse</ssh_ip>
 	<ssh_pass>SSH Adgangskode</ssh_pass>
 	<ssh_port>SSH Port</ssh_port>

@@ -10,7 +10,7 @@
 	<addon>Addonverwaltung</addon>
 	<adresse>Serveradresse</adresse>
 	<badlogins>Es wurde die zulässige Anzahl falscher Passworteingaben in Folge erreicht!</badlogins>
-	<badloginsreset>Wert zurücksetzen:</badloginsreset>
+	<badloginsreset>Wert zurücksetzen</badloginsreset>
 	<bear2>Daten bearbeiten</bear2>
 	<bez>Bezahlart</bez>
     <birthday>Geburtstag</birthday>
@@ -25,7 +25,7 @@
     <error_mail_exists>E-Mail wird bereits bei einem anderen User verwendet</error_mail_exists>
 	<error_pass>Es wurde kein, oder ein unzulässiges Passwort eingegeben.</error_pass>
 	<error_passw_succ>Die eingegebenen Passwörter stimmen nicht überein</error_passw_succ>
-	<example>Beispiel:</example>
+	<example>Beispiel</example>
 	<fastdl2>Fastdownload Zugangsdaten</fastdl2>
 	<fastdl>Fastdownload benutzen</fastdl>
 	<fname>Familienname</fname>
@@ -41,7 +41,7 @@
 	<help_substitutes_list>Hier können weitere Nutzer hinzugefügt werden, die ebenfalls Zugriff auf einzelne Dienste erhalten sollen.</help_substitutes_list>
 	<hnum>Hausnummer</hnum>
 	<inst>Installierte Server</inst>
-	<ips>IP4 Adressen:</ips>
+	<ips>IP4 Adressen</ips>
 	<ips_possible1>1.1.1.1</ips_possible1>
 	<ips_possible2>1.1.1.3/6</ips_possible2>
 	<mail_backup>Mail senden bei Backup erstellt/eingespielt</mail_backup>
@@ -71,7 +71,7 @@
 	<server>Server</server>
 	<serverdata>Installierte Server</serverdata>
 	<settings>Panel Einstellungen</settings>
-	<shown>Ergebnisse je Seite:</shown>
+	<shown>Ergebnisse je Seite</shown>
 	<stadt>Stadt</stadt>
 	<str>Straße</str>
 	<switch>Zum Benutzer wechseln</switch>
@@ -85,7 +85,7 @@
 	<usersettings>Benutzerdaten</usersettings>
 	<usertickets>Supporttickets</usertickets>
 	<user_create>Folgender User wurde erfolgreich erstellt</user_create>
-	<user_server>Gameserver gelöscht von:</user_server>
+	<user_server>Gameserver gelöscht von</user_server>
 	<vname>Vorname</vname>
 	<wipsw>Webinterface Passwort</wipsw>
 </sprache>

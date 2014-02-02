@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <action>Handling:</action>
-    <active>Aktiv:</active>
-    <activeExternal>Activate external authentication:</activeExternal>
+    <action>Handling</action>
+    <active>Aktiv</active>
+    <activeExternal>Activate external authentication</activeExternal>
     <all>Alle</all>
-    <chunkSize>Bruger luns størrelse:</chunkSize>
-    <date>Dato:</date>
-    <domain>Domæne:</domain>
-    <fetchUpdates>Hent opdateringer:</fetchUpdates>
-    <file>Fil:</file>
+    <chunkSize>Bruger luns størrelse</chunkSize>
+    <date>Dato</date>
+    <domain>Domæne</domain>
+    <fetchUpdates>Hent opdateringer</fetchUpdates>
+    <file>Fil</file>
     <groupID>Bruger Gruppe</groupID>
     <ipAdd>Tilføj IP</ipAdd>
-    <ips>Tilladt IP'er:</ips>
+    <ips>Tilladt IP'er</ips>
     <lastCheck>Sidste Tjek</lastCheck>
     <lastExternalID>Sidste eksterne id</lastExternalID>
-    <name>Navn:</name>
-    <pwd>Adgangskode:</pwd>
-    <ssl>SSL:</ssl>
-    <status>Status:</status>
-    <type>Typer:</type>
-    <user>Brugernavn:</user>
+    <name>Navn</name>
+    <pwd>Adgangskode</pwd>
+    <ssl>SSL</ssl>
+    <status>Status</status>
+    <type>Typer</type>
+    <user>Brugernavn</user>
 </sprache>

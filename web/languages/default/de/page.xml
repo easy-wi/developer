@@ -20,7 +20,7 @@
 	<maxnews>Die letzten X News anzeigen</maxnews>
     <message>Nachricht</message>
 	<MSIE>Der Internet Explorer hält nach wie vor nicht gänzlich die W3C Spezifikationen zur standardkonformen Darstellungen von Web-Inhalten ein. Deswegen kann es zu Darstellungsfehlern kommen. Es ist nur zu raten, auf einen Browser umzusteigen, der sich an die W3C Standards hält.</MSIE>
-    <moderate>Moderation erforderlich:</moderate>
+    <moderate>Moderation erforderlich</moderate>
     <name>Name</name>
     <naviDisplay>In der Navi anzeigen</naviDisplay>
     <newer>Neuere Beiträge</newer>
