@@ -780,8 +780,9 @@ $add->execute();
 $query = "CREATE TABLE IF NOT EXISTS `rootsIP4` (
   `subnetID` int(10) unsigned,
   `ip` varchar(15) DEFAULT NULL,
+  `ownerID` int(10) unsigned DEFAULT 0,
   `resellerID` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`subnetID`,`ip`),KEY(`resellerID`)
+  PRIMARY KEY (`subnetID`,`ip`),KEY(`ownerID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();

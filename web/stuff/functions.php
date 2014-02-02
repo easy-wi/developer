@@ -477,100 +477,115 @@ if (!function_exists('passwordgenerate')) {
         global $sql;
 
         $userips = array();
-        $usedips = array();
 
         if ($value == 0) {
-            $userips = array();
 
-            $query = $sql->prepare("SELECT `ips` FROM `rootsDHCP` WHERE `active`='Y' AND `resellerid`=0");
+            $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=0");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                foreach (ipstoarray($row['ips']) as $ip) {
-                    $userips[] = $ip;
-                }
-            }
-
-            $query = $sql->prepare("SELECT `ips` FROM `resellerdata`");
-            $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                foreach (ipstoarray($row['ips']) as $usedip) {
-                    $usedips[] = $usedip;
-                }
+                $userips[] = $row['ip'];
             }
 
             $query = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer`");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $usedips[] = $row['ip'];
+
+                $key = array_search($row['ip'], $userips);
+                if (false !== $key) {
+                    unset($userips[$key]);
+                }
 
                 foreach (ipstoarray($row['ips']) as $usedip) {
-                    $usedips[] = $usedip;
+                    $key = array_search($usedip, $userips);
+                    if (false !== $key) {
+                        unset($userips[$key]);
+                    }
                 }
             }
 
             $query = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated`");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $usedips[] = $row['ip'];
+
+                $key = array_search($row['ip'], $userips);
+                if (false !== $key) {
+                    unset($userips[$key]);
+                }
+
                 foreach (ipstoarray($row['ips']) as $usedip) {
-                    $usedips[] = $usedip;
+                    $key = array_search($usedip, $userips);
+                    if (false !== $key) {
+                        unset($userips[$key]);
+                    }
                 }
             }
 
         } else {
+
             $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($value));
             $resellerid = $query->fetchColumn();
 
-            $query = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
-            $query->execute(array($resellerid));
+
+            $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=?");
+            $query->execute(array($resellerid,$resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $userips = ipstoarray($row['ips']);
+                $userips[] = $row['ip'];
             }
 
             $query = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer` WHERE `resellerid`=?");
             $query->execute(array($resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $usedips[] = $row['ip'];
+
+                $key = array_search($row['ip'], $userips);
+                if (false !== $key) {
+                    unset($userips[$key]);
+                }
+
                 foreach (ipstoarray($row['ips']) as $usedip) {
-                    $usedips[] = $usedip;
+                    $key = array_search($usedip, $userips);
+                    if (false !== $key) {
+                        unset($userips[$key]);
+                    }
                 }
             }
 
             $query = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated` WHERE `resellerid`=?");
             $query->execute(array($resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $usedips[] = $row['ip'];
+
+                $key = array_search($row['ip'], $userips);
+                if (false !== $key) {
+                    unset($userips[$key]);
+                }
+
                 foreach (ipstoarray($row['ips']) as $usedip) {
-                    $usedips[] = $usedip;
+                    $key = array_search($usedip, $userips);
+                    if (false !== $key) {
+                        unset($userips[$key]);
+                    }
                 }
             }
 
             $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE accounttype='r' AND `resellerid`=:id AND `id`!=:id");
-            $query2 = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
+            $query2 = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=? AND `ownerID`!=`resellerID`");
             $query->execute(array(':id' => $resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $query2->execute(array($row['id']));
 
+                $query2->execute(array($row['id']));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    foreach (ipstoarray($row2['ips']) as $usedip) {
-                        $usedips[] = $usedip;
+                    $key = array_search($row2['ip'], $userips);
+                    if (false !== $key) {
+                        unset($userips[$key]);
                     }
                 }
             }
         }
 
-        $checkedips = array();
-        foreach (array_unique($userips) as $userip) {
-            if (!in_array($userip, $usedips)) {
-                $checkedips[] = $userip;
-            }
-        }
+        $userips = array_unique($userips);
+        natsort($userips);
 
-        $checkedips = array_unique($checkedips);
-        natsort($checkedips);
-
-        return $checkedips;
+        return $userips;
     }
 
     function webhostdomain($resellerid) {

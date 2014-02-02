@@ -172,8 +172,9 @@ $defined['rootsDHCP'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"
 );
 
 $defined['rootsIP4'] = array(
-    'vlanID' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'subnetID' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"PRI","Default"=>"","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'ownerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
