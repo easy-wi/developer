@@ -71,7 +71,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $shorten = $row['shorten'];
         foreach ($row as $k => $v) {
-            if (!in_array($k, array('id', 'resellerid', 'steamVersion'))) {
+            if (!in_array($k, array('id', 'resellerid', 'steamVersion', 'downloadPath'))) {
                 $key = $xml->createElement($k, $v);
                 $element->appendChild($key);
             }
