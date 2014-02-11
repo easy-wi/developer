@@ -282,28 +282,26 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $query3->execute(array($ts3masterid));
                 }
 
-                $query3 = $sql->prepare("SELECT `active`,`backup`,`id`,`ip`,`port`,`slots`,`userid`,`localserverid`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`serverCreated` FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
+                $query3 = $sql->prepare("SELECT * FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
                 $query3->execute(array($ts3masterid, $resellerid));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+
                     $ts3id = $row3['id'];
                     $serverCreated = $row3['serverCreated'];
                     $ts3userid = $row3['userid'];
                     $localserverid = $row3['localserverid'];
-                    if ($stunde == '00' or $serverCreated==null) {
+
+                    if ($stunde == '00' or $serverCreated == null) {
+
                         $resetTraffic = false;
-                        if (version_compare(PHP_VERSION,'5.3.0')>=0){
-                            $createdTime=new DateTime($serverCreated);
-                            $interval = $createdTime->diff($currentTime);
-                            if ($interval->d==0 and $interval->m>0) {
-                                $resetTraffic = true;
-                            }
-                        } else {
-                            $createdDay=date('j',strtotime($serverCreated));
-                            $createdDays=date('t',strtotime($serverCreated));
-                            if (($createdDay==$createdDays and $currentDays==$currentDay) or ($createdDay != $createdDays and $createdDay==$currentDay)) {
-                                $resetTraffic = true;
-                            }
+
+                        $createdTime = new DateTime($serverCreated);
+                        $interval = $createdTime->diff($currentTime);
+
+                        if ($interval->d == 0 and $interval->m>0) {
+                            $resetTraffic = true;
                         }
+
                         if ($resetTraffic == true and $serverCreated != null) {
                             $query4 = $sql->prepare("UPDATE `voice_server` SET `filetraffic`=0,`lastfiletraffic`=0 WHERE `id`=? LIMIT 1");
                             $query4->execute(array($ts3id));
@@ -314,23 +312,34 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $connection->ImportModServer($localserverid, $row3['slots'], $row3['ip'], $row3['port'], array('virtualserver_max_download_total_bandwidth' => $row3['max_download_total_bandwidth'], 'virtualserver_max_upload_total_bandwidth' => $row3['max_upload_total_bandwidth']));
                         }
                     }
-                    if ($voice_autobackup == 'Y' and $stunde == '5' and $row3['active'] == 'Y' and $row3['backup'] == 'Y') {
-                        $name='Autobackup';
+
+                    if ($voice_autobackup == 'Y' and $stunde == 5 and $row3['active'] == 'Y' and $row3['backup'] == 'Y') {
+
+                        $name = 'Autobackup';
                         $backupcount = 0;
+
                         unset($last);
+
                         $query4 = $sql->prepare("SELECT `id`,`date`,`name` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC");
                         $query4->execute(array($ts3id, $ts3userid, $resellerid));
                         foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+
                             $backupcount++;
                             $date = $row4['date'];
+
                             if ($row4['name'] == 'Autobackup') {
-                                $last=date('Y-m-d',strtotime($date));
+                                $last=date('Y-m-d', strtotime($date));
                             }
                         }
-                        $stunde=date('G',strtotime("$resellerstimezone hour"));
-                        if ($backupcount==0 or !isset($last) or (isset($last) and $last<$next)) {
-                            $toomuch = $backupcount+1-$voice_maxbackup;
-                            if ($toomuch>0) {
+
+                        $stunde = date('G', strtotime("$resellerstimezone hour"));
+
+                        if ($backupcount == 0 or !isset($last) or (isset($last) and $last < $next)) {
+
+                            $toomuch = $backupcount + 1 - $voice_maxbackup;
+
+                            if ($toomuch > 0) {
+
                                 $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC LIMIT $toomuch");
                                 $query4->execute(array($ts3id, $ts3userid, $resellerid));
                                 foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
@@ -339,19 +348,26 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                     $backupfolder='backups/virtualserver_'.$localserverid . '/';
                                     $cmds[] = 'cd '.$folders.' && function backup () { nice -n +19 rm -f '.$backupfolder.$row4['id'].'.tar.bz2; }; backup& ';
                                 }
+
                             }
+
                             $rawsnapshot = $connection->Snapshotcreate($localserverid);
-                            $snapshot=gzcompress($rawsnapshot,9);
+                            $snapshot = gzcompress($rawsnapshot, 9);
+
                             $query4 = $sql->prepare("INSERT INTO `voice_server_backup` (`sid`,`uid`,`name`,`snapshot`,`date`,`resellerid`) VALUES(?,?,?,?,NOW(),?)");
                             $query4->execute(array($ts3id, $ts3userid, $name, $snapshot, $resellerid));
+
                             $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                             $query4->execute(array($ts3id, $ts3userid, $resellerid));
                             foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
-                                $filefolder='files/virtualserver_'.$localserverid . '/';
-                                $backupfolder='backups/virtualserver_'.$localserverid . '/';
-                                $cmds[] ='cd '.$folders.' && function backup () { mkdir -p '.$backupfolder.' && nice -n +19 tar cfj '.$backupfolder.$row4['id'].'.tar.bz2 '.$filefolder.'; }; backup& ';
-                                print "Creating backup for ts3 server: ".$row3['ip'] . ':' . $row3['port']."\r\n";
+                                $filefolder = 'files/virtualserver_' . $localserverid . '/';
+                                $backupfolder = 'backups/virtualserver_' . $localserverid . '/';
+
+                                $cmds[] ='cd '.$folders.' && function backup () { mkdir -p ' . $backupfolder . ' && nice -n +19 tar cfj ' . $backupfolder . $row4['id'] . '.tar.bz2 ' . $filefolder . '; }; backup& ';
+
+                                print "Creating backup for ts3 server: " . $row3['ip'] . ':' . $row3['port'] . "\r\n";
                             }
+
                         }
                     }
                 }
@@ -380,14 +396,15 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
 
         $currenttime = strtolower(date('D', strtotime("$resellerstimezone hour"))) . '_' . date('G',strtotime("$resellerstimezone hour"));
-        $query1 = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `active`='Y'");
-        $query1->execute();
-        foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
+        $query = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `active`='Y'");
+        $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`ftppassword`,?) AS `decryptedftppass`,AES_DECRYPT(`ppassword`,?) AS `decryptedppassword` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=? AND `active`='Y' AND `lendserver`='N' AND `stopped`='N' ORDER BY `userid`,`serverid`");
+
+        $query->execute();
+        foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row1) {
 
             $cmds = array();
             $rootID = $row1['id'];
 
-            $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`ftppassword`,?) AS `decryptedftppass`,AES_DECRYPT(`ppassword`,?) AS `decryptedppassword` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=? AND `active`='Y' AND `lendserver`='N' ORDER BY `userid`,`serverid`");
             $query2->execute(array($aeskey, $aeskey, $rootID, $resellerid));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
