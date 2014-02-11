@@ -547,9 +547,15 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $orderby = 'p.`id` DESC';
     }
 
-    $query = $sql->prepare("SELECT `seo` FROM `page_settings` WHERE `resellerid`=? LIMIT 1");
+    $seo = 'N';
+    $pageUrl = 'http://' . $ui->escaped('SERVER_NAME', 'server') . '/' . str_replace(array('/admin.php', 'admin.php'), '', $ui->escaped('SCRIPT_NAME', 'server'));
+
+    $query = $sql->prepare("SELECT `seo`,`pageurl` FROM `page_settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($resellerLockupID));
-    $seo = $query->fetchColumn();
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $seo = $row['seo'];
+        $pageUrl = $row['pageurl'];
+    }
 
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `page_pages` WHERE `type`='news' AND `resellerid`=?");
     $query->execute(array($resellerLockupID));
