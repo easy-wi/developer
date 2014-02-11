@@ -191,7 +191,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             // without the gameq value we cannot query. So this results need to be sorted out.
             if (!in_array($row['gameq'], array('', null, false))) {
 
-                if ($row['gameq'] == 'ut' or $row['gameq'] =='ut2004' or $row['gameq'] =='ut3')  {
+                if (in_array($row['gameq'], array('cube2', 'ut', 'ut2004', 'ut3')))  {
                     $checkAtIPPort = $row['serverip'] . ':' . $row['port2'];
                 } else {
                     $checkAtIPPort = $row['serverip'] . ':' . $row['port'];
