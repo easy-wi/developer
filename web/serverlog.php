@@ -100,6 +100,7 @@ if ($ui->id('id', 10, 'get')) {
         $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($rootID, $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $ftpport = $row['ftpport'];
             $ip = $row['ip'];
 
