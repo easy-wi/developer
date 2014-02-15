@@ -71,16 +71,16 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     echo "Checking for servers to be updated and or synced at hour ${currentHour} and between minutes ${lastUpdateRun} and ${currentMinute}\r\n";
 
+    // avoid less/more OR equal in SQL. We want only less/more to eliminate the OR comparison
     $currentMinute++;
+    $lastUpdateRun--;
 
-    if ($lastUpdateRun != null and $lastUpdateRun != 0) {
-        $lastUpdateRun--;
-    }
+    echo "Altered minutes for running a more efficient query will be  updateMinute > ${lastUpdateRun} AND updateMinute < ${currentMinute}\r\n";
 
     $query = $sql->prepare("SELECT `id`,`updates` FROM `rserverdata` WHERE (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<?");
     $query2 = $sql->prepare("UPDATE `rserverdata` SET `alreadyStartedAt`=? WHERE `id`=? LIMIT 1");
 
-    $query->execute(array($currentHour, $lastUpdateRun, ($currentMinute + 1)));
+    $query->execute(array($currentHour, $lastUpdateRun, $currentMinute));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
         $rootServer = new masterServer($row['id'], $aeskey);
