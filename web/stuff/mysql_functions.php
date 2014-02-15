@@ -37,10 +37,11 @@
  */
 
 class ExternalSQL {
-	function __construct($ip,$port,$user,$password) {
+
+	function __construct($ip, $port, $user, $password) {
 		try {
 
-			$this->remotesql = new PDO('mysql:host=' .$ip . ';' . $port . '=' . $port,$user,$password);
+			$this->remotesql = new PDO('mysql:host=' .$ip . ';' . $port . '=' . $port, $user, $password);
             $this->remotesql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
         } catch(PDOException $error) {
@@ -51,7 +52,8 @@ class ExternalSQL {
 			$this->error='ok';
 		}
 	}
-	function AddUser ($username,$password,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour) {
+
+	function AddUser ($username, $password, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
 
         if ($this->error!='ok') {
 			return $this->error;
@@ -60,10 +62,10 @@ class ExternalSQL {
         try {
 
             $query = $this->remotesql->prepare("CREATE USER ?@'' IDENTIFIED BY ?");
-            $query->execute(array($username,$password));
+            $query->execute(array($username, $password));
 
             $query = $this->remotesql->prepare("GRANT USAGE ON *.* TO ?@'' IDENTIFIED BY ? WITH MAX_QUERIES_PER_HOUR $max_queries_per_hour MAX_CONNECTIONS_PER_HOUR $max_connections_per_hour MAX_UPDATES_PER_HOUR $max_updates_per_hour MAX_USER_CONNECTIONS $max_userconnections_per_hour");
-            $query->execute(array($username,$password));
+            $query->execute(array($username, $password));
 
             $this->remotesql->exec("FLUSH PRIVILEGES; FLUSH HOSTS;");
 
@@ -73,21 +75,23 @@ class ExternalSQL {
             return $error->getMessage();
         }
 	}
-	function AddDB ($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour) {
-		if ($this->error!='ok') {
+
+	function AddDB ($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+
+		if ($this->error != 'ok') {
 			return $this->error;
 		}
 
         try {
 
             $query = $this->remotesql->prepare("CREATE USER ?@'' IDENTIFIED BY ?");
-            $query->execute(array($dbname,$password));
+            $query->execute(array($dbname, $password));
 
             $query = $this->remotesql->prepare("GRANT USAGE ON *.* TO ?@'' IDENTIFIED BY ? WITH MAX_QUERIES_PER_HOUR $max_queries_per_hour MAX_CONNECTIONS_PER_HOUR $max_connections_per_hour MAX_UPDATES_PER_HOUR $max_updates_per_hour MAX_USER_CONNECTIONS $max_userconnections_per_hour");
-            $query->execute(array($dbname,$password));
+            $query->execute(array($dbname, $password));
 
             $query = $this->remotesql->prepare("GRANT USAGE ON *.* TO ?@'localhost' IDENTIFIED BY ? WITH MAX_QUERIES_PER_HOUR $max_queries_per_hour MAX_CONNECTIONS_PER_HOUR $max_connections_per_hour MAX_UPDATES_PER_HOUR $max_updates_per_hour MAX_USER_CONNECTIONS $max_userconnections_per_hour");
-            $query->execute(array($dbname,$password));
+            $query->execute(array($dbname, $password));
 
             $query = $this->remotesql->prepare("SELECT `host` FROM `mysql`.`host` WHERE `host`='localhost' AND `db`='%' LIMIT 1");
             $query->execute(array());
@@ -105,10 +109,10 @@ class ExternalSQL {
             $query2 = $this->remotesql->prepare("INSERT INTO `mysql`.`host` (`host`,`db`,`Select_priv`,`Insert_priv`,`Update_priv`,`Delete_priv`,`Create_priv`,`Drop_priv`,`Alter_priv`) VALUES (?,?,'Y','Y','Y','Y','Y','Y','Y')");
             foreach (ipstoarray($ips) as $ip) {
 
-                $query->execute(array($ip,$dbname));
+                $query->execute(array($ip, $dbname));
 
                 if ($query->rowCount()==0) {
-                    $query2->execute(array($ip,$dbname));
+                    $query2->execute(array($ip, $dbname));
                 }
             }
             $this->remotesql->exec("FLUSH PRIVILEGES; FLUSH HOSTS;");
@@ -119,7 +123,8 @@ class ExternalSQL {
 
         return 'ok';
 	}
-	function ModDB ($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour) {
+
+	function ModDB ($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
 
         if ($this->error!='ok') {
 			return $this->error;
@@ -128,14 +133,14 @@ class ExternalSQL {
         try {
 
             $query = $this->remotesql->prepare("SET PASSWORD FOR ?@'' = PASSWORD(?)");
-            $query->execute(array($dbname,$password));
+            $query->execute(array($dbname, $password));
 
             $this->remotesql->exec("GRANT USAGE ON * . * TO '$dbname'@'' WITH MAX_QUERIES_PER_HOUR $max_queries_per_hour MAX_CONNECTIONS_PER_HOUR $max_connections_per_hour MAX_UPDATES_PER_HOUR $max_updates_per_hour MAX_USER_CONNECTIONS $max_userconnections_per_hour");
 
             $query = $this->remotesql->prepare("GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,INDEX,ALTER,CREATE TEMPORARY TABLES,LOCK TABLES,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,EXECUTE ON `$dbname`.* TO ?@''");
             $query->execute(array($dbname));
 
-            $iparray=ipstoarray($ips);
+            $iparray = ipstoarray($ips);
             $allowedips = array();
 
             $query = $this->remotesql->prepare("SELECT `host` FROM `mysql`.`host` WHERE `db`=?");
@@ -146,15 +151,15 @@ class ExternalSQL {
 
             $query = $this->remotesql->prepare("INSERT INTO `mysql`.`host` (`host`,`db`,`Select_priv`,`Insert_priv`,`Update_priv`,`Delete_priv`,`Create_priv`,`Drop_priv`,`Alter_priv`) VALUES (?,?,'Y','Y','Y','Y','Y','Y','Y')");
             foreach ($iparray as $ip) {
-                if (!in_array($ip,$allowedips)) {
-                    $query->execute(array($ip,$dbname));
+                if (!in_array($ip, $allowedips)) {
+                    $query->execute(array($ip, $dbname));
                 }
             }
 
             $query = $this->remotesql->prepare("DELETE FROM `mysql`.`host` WHERE `host`=? AND `db`=? LIMIT 1");
             foreach ($allowedips as $ip) {
-                if (!in_array($ip,$iparray)) {
-                    $query->execute(array($ip,$dbname));
+                if (!in_array($ip, $iparray)) {
+                    $query->execute(array($ip, $dbname));
                 }
             }
 
@@ -166,6 +171,7 @@ class ExternalSQL {
 
         return 'ok';
 	}
+
 	function DelDB ($dbname) {
 
 		if ($this->error!='ok') {

@@ -74,7 +74,7 @@ if (array_value_exists('action', 'add', $data)) {
 
         $localID = '';
         $userGroupIDs = array();
-        $salt = md5(mt_rand().date('Y-m-d H:i:s:u'));
+        $salt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
 
         $email = $data['email'];
         $identifyBy = $data['identify_by'];
@@ -96,6 +96,7 @@ if (array_value_exists('action', 'add', $data)) {
         }
 
         if (!isset($success['false']) and !in_array($externalID, $bad)) {
+
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount`,`mail`,`cname` FROM `userdata` WHERE `externalID`=? LIMIT 1");
             $query->execute(array($externalID));
             $amount2 = (int) $query->fetchColumn();
@@ -110,7 +111,9 @@ if (array_value_exists('action', 'add', $data)) {
         }
 
         if (!in_array($username, $bad)) {
+
             $tmpName = $username;
+
         } else {
 
             $query = $sql->prepare("SELECT `prefix2` FROM `settings` WHERE `resellerid`=? LIMIT 1");
@@ -449,6 +452,7 @@ if (array_value_exists('action', 'add', $data)) {
             }
 
             $extraUpdate = '';
+
             foreach($what as $key => $value) {
                 $extraUpdate .= ",`" . $key . "`='" . $value . "'";
             }

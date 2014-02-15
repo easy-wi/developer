@@ -68,6 +68,8 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
         $allTags = array();
         $allCategories = array();
 
+        $page_data->title = $row['title'];
+
         $page_title = $row['title'];
         $page_text = nl2br($row['text']);
         $comments = $row['comments'];
@@ -243,13 +245,19 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
 } else if (isset($admin_id) and $ui->smallletters('preview',4, 'get') == 'true') {
 
     if (is_array($ui->escaped('text', 'post')) or is_object($ui->escaped('text', 'post'))) {
+
         foreach ($ui->escaped('text', 'post') as $key=>$value) {
             $page_title = $ui->htmlcode('title', 'post',$key);
-            $page_text=nl2br($value);
+            $page_data->title = $ui->htmlcode('title', 'post',$key);
+            $page_text = nl2br($value);
         }
+
     } else {
+
         $page_title = $ui->escaped('title', 'post');
+        $page_data->title = $ui->escaped('title', 'post');
         $page_text=nl2br($ui->escaped('text', 'post'));
+
     }
 
     $allTags = array();
@@ -362,6 +370,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
     }
 
     $page_data->langLinks($langLinks);
+    $page_data->title = $gsprache->news;
     $page_data->setCanonicalUrl($s);
 
     $template_file = 'page_news.tpl';

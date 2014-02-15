@@ -64,7 +64,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     $query = $sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
-    $lastUpdateRun= (int) $query->fetchColumn();
+    $lastUpdateRun = (int) $query->fetchColumn();
 
     $query = $sql->prepare("UPDATE `settings` SET `lastUpdateRun`=? WHERE `resellerid`=0 LIMIT 1");
     $query->execute(array($currentMinute));

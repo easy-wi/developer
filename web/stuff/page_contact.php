@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: page_contact.php.
  * Author: Ulrich Block
@@ -37,39 +38,60 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-
 $name = $ui->names('name',255, 'post');
 $email = $ui->ismail('email', 'post');
-$comments=nl2br(htmlentities(trim($ui->escaped('comments', 'post')),ENT_QUOTES,'UTF-8'));
+$comments = nl2br(htmlentities(trim($ui->escaped('comments', 'post')), ENT_QUOTES, 'UTF-8'));
+
 if ($ui->escaped('email', 'post')) {
+
     $error = array();
-    if (!$ui->ismail('email', 'post'))$error[] = 'Mail';
+
+    if (!$ui->ismail('email', 'post')) {
+        $error[] = 'Mail';
+    }
+
     if (!$ui->names('name',255, 'post')) $error[] = 'Name';
-    if (!isset($_SESSION['token'])) $error[] = 'No Token';
-    else if ($_SESSION['token'] != $ui->escaped('token', 'post')) $error[] = 'Spamprotect';
-    if (isset($_SESSION['token'])) unset($_SESSION['token']);
-    if (count($error)>0) {
-        $token=md5(passwordgenerate(32));
+
+    if (!isset($_SESSION['token'])) {
+        $error[] = 'No Token';
+    } else if ($_SESSION['token'] != $ui->escaped('token', 'post')) {
+        $error[] = 'Spamprotect';
+    }
+
+    if (isset($_SESSION['token'])) {
+        unset($_SESSION['token']);
+    }
+
+    if (count($error) > 0) {
+
+        $token = md5(passwordgenerate(32));
         $_SESSION['token'] = $token;
-        $comments=str_replace('<br />','',$comments);
+        $comments = str_replace('<br />', '', $comments);
+
     } else {
+
         unset($error);
         $success = true;
-        $comments = $name.' ('.$email.'):<br />'.$comments;
-        sendmail('contact',$name,$comments,$rSA['email']);
+        $comments = $name . ' (' . $email . '):<br />' . $comments;
+        sendmail('contact', $name, $comments, $rSA['email']);
+
     }
+
 } else {
-    $token=md5(passwordgenerate(32));
+    $token = md5(passwordgenerate(32));
     $_SESSION['token'] = $token;
 }
+
+$page_data->title = $page_sprache->contact;
 $page_data->setCanonicalUrl($s);
 
 // https://github.com/easy-wi/developer/issues/62
 $langLinks = array();
 foreach ($languages as $l) {
-    $tempLanguage = getlanguagefile('page',$l,0);
-    $langLinks[$l]=($page_data->seo== 'Y') ? szrp($tempLanguage->$s)  : '?s='.$s;
+    $tempLanguage = getlanguagefile('page', $l, 0);
+    $langLinks[$l]=($page_data->seo == 'Y') ? szrp($tempLanguage->$s)  : '?s=' . $s;
 }
+
 $page_data->langLinks($langLinks);
 
 $template_file = 'contact.tpl';

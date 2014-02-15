@@ -40,6 +40,7 @@ if (isset($page_include)) {
     $default_language = $user_language;
     $reseller_id = 0;
 
+    $page_data->title = $page_sprache->protectioncheck;
     $protection_link = ($page_data->seo == 'N') ? 'protectioncheck.php' : $page_data->pageurl . '/' . $user_language . '/' . $page_category . '/';
 
 } else {

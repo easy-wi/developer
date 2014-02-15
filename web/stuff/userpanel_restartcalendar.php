@@ -299,11 +299,14 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
         $pupdate->execute(array($template, $anticheat, $protected, $gsswitch, $map, $ui->mapname('mapGroup', 'post'), $restart, $backup, $worldsafe, $stvupload, $date, $id, $user_id, $reseller_id));
     }
     $template_file = $spracheResponse->table_add;
-} else if ($ui->smallletters('delete',6, 'post') == 'delete' and $ui->gamestring('date', 'post') and isset($serverip) and isset($port)) {
+
+} else if ($ui->smallletters('delete', 6, 'post') == 'delete' and $ui->gamestring('date', 'post') and isset($serverip) and isset($port)) {
+
     $date = $ui->gamestring('date', 'post');
     $pdelete = $sql->prepare("DELETE FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
     $pdelete->execute(array($date, $id, $reseller_id));
     $template_file = $spracheResponse->table_del;;
+
 } else if (isset($serverip) and isset($port)){
 
     $backup = 'N';

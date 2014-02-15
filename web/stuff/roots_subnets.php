@@ -54,6 +54,7 @@ $id = $ui->id('id', 10, 'get');
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action',4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
 
 // Add and modify entries. Same validation can be used.
@@ -190,6 +191,10 @@ option domain-name-servers 1.1.1.1;';
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%mod% %subnets% ' . $subnet;
+
+                if ($rowCount > 0) {
+                    # insert job to change dhcp server config
+                }
             }
 
             // Check if a row was affected during insert or update

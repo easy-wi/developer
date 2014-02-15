@@ -135,16 +135,16 @@ if (isset($page_active) and $page_active == 'Y') {
         }
 
         if ($easywiModules['ip'] === true) {
-            $page_data->SetMenu($gsprache->imprint, $gsprache->imprint,'imprint');
+            $page_data->SetMenu($gsprache->imprint, $gsprache->imprint, 'imprint');
         }
 
-        $page_data->SetMenu($gsprache->downloads, $gsprache->downloads,'downloads');
-        $page_data->SetMenu($page_sprache->about, $page_sprache->about,'about');
-        $page_data->SetMenu($page_sprache->sitemap, $page_sprache->sitemap,'sitemap');
-        $page_data->SetMenu($page_sprache->gallery, $page_sprache->gallery,'gallery');
-        $page_data->SetMenu($page_sprache->contact, $page_sprache->contact,'contact');
-        $page_data->SetMenu($page_sprache->search, $page_sprache->search,'search');
-        $page_data->SetMenu($page_sprache->register, $page_sprache->register,'register');
+        $page_data->SetMenu($gsprache->downloads, $gsprache->downloads, 'downloads');
+        $page_data->SetMenu($page_sprache->about, $page_sprache->about, 'about');
+        $page_data->SetMenu($page_sprache->sitemap, $page_sprache->sitemap, 'sitemap');
+        $page_data->SetMenu($page_sprache->gallery, $page_sprache->gallery, 'gallery');
+        $page_data->SetMenu($page_sprache->contact, $page_sprache->contact, 'contact');
+        $page_data->SetMenu($page_sprache->search, $page_sprache->search, 'search');
+        $page_data->SetMenu($page_sprache->register, $page_sprache->register, 'register');
 
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row['naviDisplay'] == 'Y') {
@@ -154,7 +154,7 @@ if (isset($page_active) and $page_active == 'Y') {
             }
         }
 
-        if (isset($admin_id) and $ui->smallletters('preview',4, 'get') == 'true') {
+        if (isset($admin_id) and $ui->smallletters('preview', 4, 'get') == 'true') {
             $preview = 1;
 
         } else if (count($ui->get)>0 and isset($s) and isset($page_data->pages[$s])) {
