@@ -493,13 +493,17 @@ echo "Please add the user $INSTALLMASTER to your AllowUsers entries in the file 
 if [ -d /root/masterserver ]; then
 	rm -rf /root/masterserver
 fi
-if [ "$VARIABLE2" == "yesall" ]; then
-echo "no autoinstall"
-else
-if [ -f /etc/crontab ]; then
-echo "Enter yes if you want to install cleanup cronjobs"
-read READCRON
+
+if [ "$VARIABLE2" != "yesall" ]; then
+	echo "Enter yes if you want to install cleanup cronjobs"
+	read READCRON
+
+	echo "Enter yes if you want the autoupdater being active"
+	read READUPDATES
+fi
+
 if [ "$VARIABLE2" == "yesall" -o "$READCRON" == "yes" ]; then
+if [ -f /etc/crontab ]; then
 echo "#Minecraft can easily produce 1GB+ logs within one hour
 */5 * * * * root nice -n +19 ionice -n 7 find /home/*/server/*/*/ -maxdepth 2 -type f -name \"screenlog.0\" -size +100M -delete
 
@@ -509,14 +513,15 @@ echo "#Minecraft can easily produce 1GB+ logs within one hour
 /etc/init.d/cron restart
 fi
 fi
-echo "Enter yes if you want the autoupdater being active"
-read READUPDATES
-if [ "$VARIABLE2" == "yesall" -o "$READUPDATES" == "yes" ]; then
+
+if [ "$READUPDATES" == "yes" ]; then
+	UPDATES=0
+elif [ "$VARIABLE2" == "yesall" -a "$VARIABLE5" == "noupdates" ]; then
 	UPDATES=0
 else
 	UPDATES=1
 fi
-fi
+
 cat > /home/$INSTALLMASTER/conf/config.cfg <<EOF
 # Binary/Runscript list for chmod and exploit protection
 BINS="srcds_run srcds_linux hlds_run hlds_amd hlds_i686 ucc-bin ucc-bin-real"
