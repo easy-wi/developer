@@ -2,9 +2,9 @@
 <sprache>
     <error_server_exists>Fehler: Es existiert ein oder mehrere Root bzw. Vserver mit IP(s) aus diesem Subnetz!</error_server_exists>
     <help_vlan>Easy-WI konfiguriert ausschließlich den DHCP Server. Etwaige Switche und Router müssen manuel konfiguriert und Vlans bei diesen eingetragen werden.</help_vlan>
-    <netmask>Netzwerkmakse</netmask>
+    <netmask>Netzwerkmaske</netmask>
     <subnet>Subnetz</subnet>
-    <subnetOptions>Subnet Optionen</subnetOptions>
+    <subnetOptions>Subnetz Optionen</subnetOptions>
     <vlan>Vlan</vlan>
     <vlanName>Vlan Name</vlanName>
 </sprache>

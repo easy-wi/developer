@@ -60,7 +60,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
 $langObject = getlanguagefile('user', (isset($user_language)) ? $user_language : $default_language, 0);
 
-if (isset($registration) and in_array($registration, array('A','M','D'))) {
+if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
 
     $activationToken = (isset($page_name) and isset($page_count) and $page_name == 'activate' and wpreg_check($page_count, 100)) ? $page_count : $ui->pregw('activate', 100, 'get');
 
@@ -96,22 +96,23 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
 
     } else {
 
+        $error = array();
+        $alert = array();
+        $tous = array();
+
         $selectlanguages = getlanguages($template_to_use);
 
         // default values in case an input error appears so that the user only needs to enter false data
-        $loginname = $ui->username('loginname',255, 'post');
         $mail = $ui->ismail('mail', 'post');
         $password = $ui->password('password', 100, 'post');
         $passwordsecond = $ui->password('passwordsecond', 100, 'post');
         $name = $ui->names('name',255, 'post');
         $vname = $ui->names('vname',255, 'post');
         $vname = $ui->names('vname',255, 'post');
-        $bday=date('Y-m-d',strtotime($ui->isDate('birthday', 'post')));
+        $bday = date('Y-m-d', strtotime($ui->isDate('birthday', 'post')));
+        $cname = $ui->username('cname', 255, 'post');
 
-        $bdayShow=(isset($user_language) and $user_language == 'de') ? date('d.m.Y',strtotime($ui->isDate('birthday', 'post'))) : date('Y-m-d',strtotime($ui->isDate('birthday', 'post')));
-        $error = array();
-        $alert = array();
-        $tous = array();
+        $bdayShow = (isset($user_language) and $user_language == 'de') ? date('d.m.Y', strtotime($ui->isDate('birthday', 'post'))) : date('Y-m-d', strtotime($ui->isDate('birthday', 'post')));
 
         $query = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='to'");
         $query->execute();
@@ -141,12 +142,12 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
                 $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `mail`=? LIMIT 1");
                 $query->execute(array($ui->ismail('mail', 'post')));
 
-                if ($query->fetchColumn()>0) {
+                if ($query->fetchColumn() > 0) {
                     $error[] = $page_sprache->registerErrorMail;
                     $alert['email'] = true;
 
                 } else {
-                    foreach (explode("\r\n",$registrationBadEmail) as $row) {
+                    foreach (explode("\r\n", $registrationBadEmail) as $row) {
                         if (strlen($row)>0 and substr($ui->ismail('mail', 'post'), -1 * strlen($row)) === $row and !in_array($page_sprache->registerErrorMail, $error)) {
                             $error[] = $page_sprache->registerErrorMail;
                             $alert['email'] = true;
@@ -157,6 +158,20 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
             } else {
                 $error[] = $page_sprache->registerErrorMail;
                 $alert['email'] = true;
+            }
+
+            if ($rSA['prefix1'] == 'N') {
+                if ($cname) {
+                    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `cname`=? LIMIT 1");
+                    $query->execute(array($cname));
+
+                    if ($query->fetchColumn() > 0) {
+                        $error[] = $page_sprache->registerErrorCname;
+                        $alert['cname'] = true;
+                    }
+                } else {
+                    $error[] = $page_sprache->registerErrorCname;
+                }
             }
 
             // TOU?
@@ -203,10 +218,11 @@ if (isset($registration) and in_array($registration, array('A','M','D'))) {
 
                 // insert data
                 $query = $sql->prepare("INSERT INTO `userdata` (`accounttype`,`active`,`mail`,`token`,`creationTime`,`updateTime`,`salutation`,`country`,`name`,`vname`,`birthday`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`) VALUES ('u','R',?,?,NOW(),NOW(),?,?,?,?,?,?,?,?,?,?,?,?)");
-                $query->execute(array($mail,$activeHash,$salutation = $ui->id('salutation',1, 'post'),$ui->st('country', 'post'),$name,$vname,$bday,$ui->phone('phone',50, 'post'),$ui->phone('fax',50, 'post'),$ui->phone('handy',50, 'post'),$ui->names('city',50, 'post'),$ui->id('cityn',6, 'post'),$ui->names('street',50, 'post'),$ui->w('streetn',6, 'post')));
+                $query->execute(array($mail, $activeHash, $ui->id('salutation', 1, 'post'), $ui->st('country', 'post'), $name, $vname, $bday, $ui->phone('phone', 50, 'post'), $ui->phone('fax', 50, 'post'), $ui->phone('handy', 50, 'post'), $ui->names('city', 50, 'post'), $ui->id('cityn', 6, 'post'), $ui->names('street', 50, 'post'), $ui->w('streetn', 6, 'post')));
 
                 $userID = $sql->lastInsertId();
-                $cname = $rSA['prefix2'] . $userID;
+
+                $cname = ($rSA['prefix1'] == 'Y') ? $rSA['prefix2'] . $userID : $ui->username('cname', 255, 'post');
 
                 $newHash = passwordCreate($cname, $ui->password('password', 255, 'post'));
 

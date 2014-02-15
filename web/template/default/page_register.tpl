@@ -12,22 +12,30 @@
         <form class="form-horizontal" action="<?php echo $page_data->pages['register']['link'];?>" method="post">
             <input type="hidden" name="token" value="<?php echo $token;?>">
 
+            <?php if ($rSA['prefix1'] == 'N') { ?>
+            <div class="control-group <?php if(isset($alert['cname'])) echo 'error';?>">
+                <label class="control-label" for="inputCname"><?php echo $langObject->nickname;?></label>
+                <div class="controls">
+                    <input type="text" id="inputCname" name="cname" value="<?php echo $cname;?>" required>
+                </div>
+            </div>
+            <?php } ?>
             <div class="control-group <?php if(isset($alert['email'])) echo 'error';?>">
                 <label class="control-label" for="inputMail"><?php echo $langObject->email;?></label>
                 <div class="controls">
-                    <input type="text" id="inputMail" name="mail" value="<?php echo $mail;?>" placeholder="Email Address*" required>
+                    <input type="email" id="inputMail" name="mail" value="<?php echo $mail;?>" required>
                 </div>
             </div>
             <div class="control-group <?php if(isset($alert['password'])) echo 'error';?>">
                 <label class="control-label" for="inputPassword"><?php echo $langObject->password;?></label>
                 <div class="controls">
-                    <input type="text" id="inputPassword" name="password" value="<?php echo $password;?>" placeholder="Passwort*" required>
+                    <input type="text" id="inputPassword" name="password" value="<?php echo $password;?>" required>
                 </div>
             </div>
             <div class="control-group <?php if(isset($alert['password2'])) echo 'error';?>">
                 <label class="control-label" for="inputPasswordSecond"><?php echo $langObject->passw_2;?></label>
                 <div class="controls">
-                    <input type="text" id="inputPasswordSecond" name="passwordsecond" value="<?php echo $passwordsecond;?>" placeholder="Passwort wiederhohlen*" required>
+                    <input type="text" id="inputPasswordSecond" name="passwordsecond" value="<?php echo $passwordsecond;?>" required>
                 </div>
             </div>
             <div class="control-group">

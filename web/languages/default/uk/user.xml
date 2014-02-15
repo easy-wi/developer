@@ -53,6 +53,7 @@
 	<max>Maximum</max>
 	<miniroot>Root</miniroot>
 	<modfastdl>Edit Fastdownload Accessdata</modfastdl>
+    <nickname>Nickname</nickname>
 	<passw>Change panelpassword</passw>
 	<passw_1>Enter new password</passw_1>
 	<passw_2>Repeat new password</passw_2>

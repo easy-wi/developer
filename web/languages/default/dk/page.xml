@@ -45,6 +45,7 @@
     <registerDirectActive>Direkte</registerDirectActive>
     <registerErrorActivatedFailed>Ingen konto kan findes til at blive aktiveret.</registerErrorActivatedFailed>
     <registerErrorBot>I tilfælde af at du ikke bør være en Bot Aktiver venligst JavaScript.</registerErrorBot>
+    <registerErrorCname>Please use another nickname.</registerErrorCname>
     <registerErrorCookies>Aktiver venligst (Session) Cookies.</registerErrorCookies>
     <registerErrorMail>Brug venligst en anden e-mail.</registerErrorMail>
     <registerErrorTou>Venligst acceptere betingelserne for brug!</registerErrorTou>

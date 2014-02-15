@@ -64,24 +64,62 @@ if (isset($include) and $include == true) {
     $response->add('Action: insert_easywi_version done: ');
     $query->closecursor();
 
+    $query = $sql->prepare("DROP TABLE IF EXISTS `rootsSubnets`");
+    $query = $sql->prepare("DROP TABLE IF EXISTS `rootsIP4`");
+
+    $query = $sql->prepare("CREATE TABLE IF NOT EXISTS `rootsSubnets` (
+  `subnetID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `dhcpServer` int(10) unsigned NOT NULL,
+  `active` enum('Y','N') DEFAULT 'Y',
+  `subnet` varchar(15) DEFAULT NULL,
+  `netmask` varchar(15) DEFAULT NULL,
+  `subnetOptions` text,
+  `vlan` enum('Y','N') DEFAULT 'N',
+  `vlanName` varchar(255),
+  PRIMARY KEY (`subnetID`)
+) ENGINE=InnoDB");
+    $query->execute();
+
+    $query = $sql->prepare("CREATE TABLE IF NOT EXISTS `rootsIP4` (
+  `subnetID` int(10) unsigned,
+  `ip` varchar(15) DEFAULT NULL,
+  `ownerID` int(10) unsigned DEFAULT 0,
+  `resellerID` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`subnetID`,`ip`),KEY(`ownerID`),KEY(`resellerID`)
+) ENGINE=InnoDB");
+    $query->execute();
+
     $query = $sql->prepare("SELECT `active`,`subnetOptions`,`ips`,`netmask`,`resellerid` FROM `rootsDHCP`");
     $query2 = $sql->prepare("SELECT 1 FROM `rootsSubnets` WHERE `subnet`=? LIMIT 1");
     $query3 = $sql->prepare("INSERT INTO `rootsSubnets` (`active`,`subnet`,`subnetOptions`,`netmask`,`vlan`,`vlanName`) VALUES (?,?,?,?,'N','')");
+    $query4 = $sql->prepare("INSERT INTO `rootsIP4` (`subnetID`,`ip`) VALUES (?,?) ON DUPLICATE KEY UPDATE `ip`=VALUES(`ip`)");
 
     $query->execute();
+    $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
         foreach (explode("\r\n", $row['ips']) as $exip) {
 
             $ex = explode('.', $exip);
 
             if (isset($ex[2])) {
                 $query2->execute(array($ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.0'));
-
                 if ($query2->rowCount() == 0) {
                     $query3->execute(array($row['active'], $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.0', str_replace("option subnet-mask %subnet-mask%;\r\n", '', $row['subnetOptions']), $row['netmask']));
+                    $lastID = $sql->lastInsertId();
+                    for ($lastTriple = 2; $lastTriple < 255; $lastTriple++) {
+                        $query4->execute(array($lastID, $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.' . $lastTriple));
+                    }
                 }
             }
+        }
+    }
+
+    $query = $sql->prepare("SELECT `ips`,`resellerid`,`resellersid` FROM `resellerdata`");
+    $query2 = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=?,`resellerID`=? WHERE `ip`=? LIMIT 1");
+    $query->execute();
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach (ipstoarray($row['ips']) as $usedip) {
+            $query2->execute(array($row['resellerid'], $row['resellersid'], $usedip));
         }
     }
 

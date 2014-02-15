@@ -46,6 +46,7 @@
     <registerDirectActive>Direct</registerDirectActive>
     <registerErrorActivatedFailed>No account could be found to be activated.</registerErrorActivatedFailed>
     <registerErrorBot>In case you should not be a Bot please activate Javascript.</registerErrorBot>
+    <registerErrorCname>Please use another nickname.</registerErrorCname>
     <registerErrorCookies>Please activated (Session) Cookies.</registerErrorCookies>
     <registerErrorMail>Please use another email.</registerErrorMail>
     <registerErrorTou>Please accept the terms of use!</registerErrorTou>

@@ -46,6 +46,7 @@
     <registerDirectActive>Direkt</registerDirectActive>
     <registerErrorActivatedFailed>Es konnte kein Account zum aktivieren gefunden werden.</registerErrorActivatedFailed>
     <registerErrorBot>Falls du kein Bot sein solltest, aktiviere bitte Javascript.</registerErrorBot>
+    <registerErrorCname>Bitte einen anderen Nickname angeben.</registerErrorCname>
     <registerErrorCookies>Bitte aktiviere (Session) Cookies.</registerErrorCookies>
     <registerErrorMail>Bitte eine andere E-Mail Adresse angeben.</registerErrorMail>
     <registerErrorTou>Bitte Nutzungsbedingung akzeptieren!</registerErrorTou>
