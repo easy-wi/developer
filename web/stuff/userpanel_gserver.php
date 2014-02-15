@@ -45,7 +45,11 @@ include(EASYWIDIR . '/stuff/functions_gs.php');
 include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-$sprache = getlanguagefile('gserver',$user_language,$reseller_id);
+if (isset($resellerLockupID)) {
+    $reseller_id = $resellerLockupID;
+}
+
+$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
@@ -57,10 +61,6 @@ if (isset($admin_id)) {
 	$logsubuser = $subuser_id;
 } else {
 	$logsubuser = 0;
-}
-
-if (isset($resellerLockupID)) {
-    $reseller_id = $resellerLockupID;
 }
 
 if ($ui->w('action', 4, 'post') and !token(true)) {

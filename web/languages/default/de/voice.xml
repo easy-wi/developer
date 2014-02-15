@@ -7,6 +7,14 @@
 	<backup>Backup</backup>
     <backups>Backups</backups>
     <backupname>Backupname</backupname>
+    <ban>Bannen</ban>
+    <banAdd>Bann hinzufügen</banAdd>
+    <banErrorData>Kann Daten nicht für einen Bann verwenden</banErrorData>
+    <banList>Bann Liste</banList>
+    <banReason>Banngrund</banReason>
+    <banTime>Banndauer</banTime>
+    <banType>Bann Typ</banType>
+    <blocked>Geblockt</blocked>
 	<date>Datum</date>
 	<defaultdns>Standard TSDNS</defaultdns>
 	<defaulthostbanner_gfx_url>Standard Hostbanner GFX URL</defaulthostbanner_gfx_url>
@@ -21,6 +29,8 @@
     <description>Beschreibung</description>
 	<dns>Aktueller TSDNS</dns>
     <dnsError>Server DNS nicht erlaubt</dnsError>
+    <duration>Dauer</duration>
+    <ends>Endet</ends>
 	<enter>Eingabe</enter>
     <externalDefaultDNS>Externe default TSDNS nutzen</externalDefaultDNS>
 	<filetransferport>Filetransferport</filetransferport>
@@ -73,6 +83,7 @@
 	<recover>Wiederherstellen</recover>
     <reset>Reset</reset>
 	<rootserver>Rootserver</rootserver>
+    <seconds>Sekunden</seconds>
 	<server>Server</server>
 	<serverdir>Pfad zum Server</serverdir>
 	<slots>Serverslots</slots>

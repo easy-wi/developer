@@ -43,7 +43,7 @@ class TS3 {
 
     public $errorcode = false, $socketConnected = false;
 
-    private function ReplaceToTS3 ($value) {
+    public function ReplaceToTS3 ($value) {
         $return = str_replace(array('\\', '/', ' ', '|'), array('\\\\', '\/', '\s', '\p'), $value);
         return $return;
     }
@@ -930,7 +930,7 @@ class TS3 {
                 }
             }
 
-            $return=json_encode($channels);
+            $return = json_encode($channels);
 
         } else {
             $return = $useserver;
@@ -939,4 +939,94 @@ class TS3 {
         return $return;
 
     }
+
+    public function getClientList ($virtualserver_id) {
+
+        $useserver = $this->UseServer($virtualserver_id);
+
+        if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
+
+            $returnRaw = $this->SendCommand('clientlist client_type=0');
+
+            if (is_array($returnRaw)) {
+
+                $return = array();
+
+                foreach ($returnRaw as $row) {
+                    if ($row['client_type'] == 0) {
+                        $return[] = array('cid' => $row['cid'], 'clid' => $row['clid'], 'client_nickname' => $row['client_nickname']);
+                    }
+                }
+
+                return $return;
+            }
+
+        }
+
+        return array();
+    }
+
+    public function banList ($virtualserver_id) {
+
+        $useserver = $this->UseServer($virtualserver_id);
+
+        if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
+
+            $rawReturn = $this->SendCommand('banlist');
+
+            if (is_array($rawReturn)) {
+
+                $return = array();
+
+                foreach ($rawReturn as $r) {
+                    if (isset($r['banid'])) {
+                        $return[$r['banid']] = array('ip' => $r['ip'], 'name' => $r['name'], 'lastnickname' => $r['lastnickname'], 'blocked' => $r['enforcements'], 'duration' => $r['duration'], 'ends' => date('Y-m-d H:m:s', ($r['created'] + $r['duration'])));
+                    }
+                }
+
+                return $return;
+
+            }
+
+        }
+
+        return array();
+
+    }
+
+    public function banAdd ($virtualserver_id, $cmd) {
+
+        $useserver = $this->UseServer($virtualserver_id);
+
+        if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
+            return $this->SendCommand($cmd);
+        }
+
+        return false;
+
+    }
+
+    public function banDel ($virtualserver_id, $bandID) {
+
+        $useserver = $this->UseServer($virtualserver_id);
+
+        if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
+            return $this->SendCommand('bandel banid=' . $bandID);
+        }
+
+        return false;
+
+    }
+
+    public function clientKick ($virtualserver_id, $userID) {
+
+        $useserver = $this->UseServer($virtualserver_id);
+
+        if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
+            return $this->SendCommand('clientkick clid=' . $userID . ' reasonid=5');
+        }
+
+        return false;
+    }
+
 }

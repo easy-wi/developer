@@ -7,6 +7,14 @@
 	<backup>Sikkerhedskopi</backup>
     <backups>Sikkerhedskopi</backups>
     <backupname>Backupnavn</backupname>
+    <ban>Ban</ban>
+    <banAdd>Add ban</banAdd>
+    <banList>Banlist</banList>
+    <banErrorData>Cannot use this data for a ban</banErrorData>
+    <banReason>Banreason</banReason>
+    <banTime>Ban time</banTime>
+    <banType>Bann type</banType>
+    <blocked>Blocked</blocked>
 	<date>Dato</date>
 	<defaultdns>Standard TSDNS</defaultdns>
 	<defaulthostbanner_gfx_url>Standard Hostbanner GFX URL</defaulthostbanner_gfx_url>
@@ -21,6 +29,8 @@
     <description>Beskrivelse</description>
 	<dns>Server TSDNS</dns>
     <dnsError>Server TSDNS ikke tilladt</dnsError>
+    <duration>Duration</duration>
+    <ends>Ends</ends>
 	<enter>Indtaste</enter>
     <externalDefaultDNS>Brug eksterne standard TSDNS</externalDefaultDNS>
 	<filetransferport>File Transfer Port</filetransferport>
@@ -65,6 +75,7 @@
     <reset>Nulstil</reset>
 	<rootserver>Rootserver</rootserver>
 	<server>Server</server>
+    <seconds>Seconds</seconds>
 	<serverdir>Sti til server</serverdir>
 	<slots>Serverslots</slots>
 	<ssh_ip>SSH IP</ssh_ip>

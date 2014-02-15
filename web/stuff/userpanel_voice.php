@@ -37,8 +37,8 @@
  */
 
 if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['voiceserver'])) {
-	header('Location: userpanel.php');
-	die('No acces');
+    header('Location: userpanel.php');
+    die('No acces');
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -53,11 +53,11 @@ $logusertype = 'user';
 $logreseller = 0;
 
 if (isset($admin_id)) {
-	$logsubuser = $admin_id;
+    $logsubuser = $admin_id;
 } else if (isset($subuser_id)) {
-	$logsubuser = $subuser_id;
+    $logsubuser = $subuser_id;
 } else {
-	$logsubuser = 0;
+    $logsubuser = 0;
 }
 
 if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
@@ -98,6 +98,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             $queryip = $query->fetchColumn();
         }
     }
+
     $query = $sql->prepare("SELECT `voice_maxbackup` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
     $voice_maxbackup = $query->fetchColumn();
@@ -128,14 +129,14 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         $toomuch = $backupcount + 1 - $voice_maxbackup;
 
         if ($toomuch > 0) {
-            $query = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC LIMIT $toomuch");
+            $query = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC LIMIT " . $toomuch);
             $query->execute(array($id, $user_id, $reseller_id));
             foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 
                 $delete = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
                 $delete->execute(array($row['id'], $user_id, $reseller_id));
 
-				tsbackup('delete', $ssh2user, $serverdir, $masterserver, $volocalserverid, $row['id']);
+                tsbackup('delete', $ssh2user, $serverdir, $masterserver, $volocalserverid, $row['id']);
             }
         }
 
@@ -162,7 +163,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $query = $sql->prepare("INSERT INTO `voice_server_backup` (`sid`,`uid`,`name`,`snapshot`,`channels`,`date`,`resellerid`) VALUES(?,?,?,?,?,NOW(),?)");
                 $query->execute(array($id, $user_id, $name, $snapshot, $channelSnapshot, $reseller_id));
 
-				$return = tsbackup('create', $ssh2user, $serverdir, $masterserver, $volocalserverid, $sql->lastInsertId());
+                $return = tsbackup('create', $ssh2user, $serverdir, $masterserver, $volocalserverid, $sql->lastInsertId());
 
                 if ($return == 'ok') {
 
@@ -195,7 +196,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             $query = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($ui->id('id',10, 'post'), $user_id, $reseller_id));
 
-			tsbackup('delete', $ssh2user, $serverdir, $masterserver, $volocalserverid, $ui->id('id',10, 'post'));
+            tsbackup('delete', $ssh2user, $serverdir, $masterserver, $volocalserverid, $ui->id('id',10, 'post'));
 
             $query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($sid, $user_id, $reseller_id));
@@ -760,6 +761,116 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
     }
 
     if ($query->rowCount() == 0) {
+        $template_file = 'userpanel_404.tpl';
+    }
+
+} else if ($ui->st('d', 'get') == 'bl' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
+
+    $id = $ui->id('id', 10, 'get');
+
+    $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,v.`localserverid`,v.`masterserver`,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,:aeskey) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip`,m.`type`,m.`usedns`,m.`publickey`,m.`ssh2ip`,AES_DECRYPT(m.`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(m.`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(m.`ssh2password`,:aeskey) AS `decryptedssh2password`,m.`serverdir`,m.`keyname`,m.`notified` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`backup`='Y' AND v.`id`=:server_id AND v.`userid`=:user_id AND v.`resellerid`=:reseller_id LIMIT 1");
+    $query->execute(array(':aeskey' => $aeskey,':server_id' => $id,':user_id' => $user_id,':reseller_id' => $reseller_id));
+    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+
+        if ($row['type'] == 'ts3') {
+            $type = $sprache->ts3;
+            $server=($row['usedns'] == 'N' or $row['dns']==null or $row['dns'] == '') ? $row['ip'] . ':' . $row['port'] : $row['dns'] . ' (' . $row['ip'] . ':' . $row['port'] . ')';
+        }
+
+        $dns = $row['dns'];
+        $serverdir = $row['serverdir'];
+        $addedby = $row['addedby'];
+        $queryport = $row['queryport'];
+        $querypassword = $row['decryptedquerypassword'];
+        $volocalserverid = $row['localserverid'];
+        $notified = $row['notified'];
+        $masterserver = $row['masterserver'];
+
+        if ($addedby==2) {
+
+            $queryip = $row['ssh2ip'];
+            $publickey = $row['publickey'];
+            $queryip = $row['ssh2ip'];
+            $ssh2port = $row['decryptedssh2port'];
+            $ssh2user = $row['decryptedssh2user'];
+            $ssh2password = $row['decryptedssh2password'];
+            $keyname = $row['keyname'];
+
+        } else if ($addedby == 1) {
+            $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array($row['rootid'], $reseller_id));
+            $queryip = $query->fetchColumn();
+        }
+    }
+
+    if (isset($queryip, $volocalserverid)) {
+
+        $connection = new TS3($queryip, $queryport,'serveradmin', $querypassword);
+        $errorcode = $connection->errorcode;
+
+        if (strpos($errorcode,'error id=0') === false) {
+            $template_file = $spracheResponse->error_ts_query_connect . $errorcode;
+
+        } else {
+
+            if ($ui->st('action', 'post') == 'dl') {
+
+                $template_file = $connection->banDel($volocalserverid, $ui->id('bannID', 19, 'post'));
+
+            } else if ($ui->st('action', 'post') == 'ad') {
+
+                if ($ui->w('banType', 1 , 'post') == 'I' and $ui->ip4('ip', 'post')) {
+
+                    $banCmd = 'banadd ip=' . $ui->ip4('ip', 'post');
+
+                } else if ($ui->w('banType', 1 , 'post') == 'N' and strlen($ui->escaped('name', 'post')) > 0) {
+
+                    $banCmd = 'banadd name=' . $connection->ReplaceToTS3($ui->escaped('name', 'post'));
+
+                } else if ($ui->w('banType', 1 , 'post') == 'U' and $ui->id('clientUID', 19, 'post')) {
+
+                    $banCmd = 'banclient clid=' . $ui->id('clientUID', 19, 'post');
+
+                }
+
+                if (isset($banCmd)) {
+
+                    if ($ui->id('time', 19, 'post') > 0) {
+                        $banCmd .= ' time=' . $ui->id('time', 19, 'post');
+                    }
+
+                    if (strlen($ui->escaped('name', 'post')) > 0) {
+
+                        $banCmd .= ' banreason=' . $connection->ReplaceToTS3($ui->escaped('banReason', 'post'));
+                    }
+
+                    $connection->banAdd($volocalserverid, $banCmd);
+
+                    if ($ui->w('banType', 1 , 'post') == 'U') {
+                        $return = $connection->clientKick($volocalserverid, $ui->id('clientUID', 19, 'post'));
+                    }
+
+                } else {
+
+                    $error = $sprache->banErrorData;
+                    $template_file = 'userpanel_voiceserver_ban_ad.tpl';
+                }
+
+            } else if (!$ui->st('action', 'post') and $ui->st('e', 'get') == 'ad') {
+
+                $userList = $connection->getClientList($volocalserverid);
+
+                $template_file = 'userpanel_voiceserver_ban_ad.tpl';
+
+            } else {
+
+                $banList = $connection->banList($volocalserverid);
+
+                $template_file = 'userpanel_voiceserver_ban_list.tpl';
+
+            }
+        }
+    } else {
         $template_file = 'userpanel_404.tpl';
     }
 
