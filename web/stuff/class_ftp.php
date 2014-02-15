@@ -141,11 +141,14 @@ class EasyWiFTP {
 
         } else if (is_resource($this->tempHandle)) {
 
-            fseek($this->tempHandle, 0);
-
             $fstats = fstat($this->tempHandle);
 
-            return ($fstats['size'] > 0) ? fread($this->tempHandle, $fstats['size']) : '';
+            $startAtSize = ($fstats['size'] > 32768) ? ($fstats['size'] - 32768) : 0;
+            fseek($this->tempHandle, $startAtSize);
+            fseek($this->tempHandle, $startAtSize);
+
+
+            return ($fstats['size'] > 0) ? fread($this->tempHandle, 32768) : '';
 
         }
 
