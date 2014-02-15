@@ -108,9 +108,7 @@ if ($ui->id('id', 10, 'get')) {
 
             if ($ftpConnect->ftpConnection) {
 
-                if ($ftpConnect->downloadToTemp('/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', 16384)) {
-                    $screenlog = nl2br($ftpConnect->getTempFileContent());
-                } else {
+                if (!$ftpConnect->downloadToTemp('/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', 16384)) {
                     $error = 'Cannot download screenlog from /' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0';
                 }
 
@@ -118,10 +116,13 @@ if ($ui->id('id', 10, 'get')) {
                 $error = 'Cannot connect to FTP Server ' . $ip . ':' . $ftpport;
             }
 
-            $ftpConnect = null;
         }
 
-        echo (isset($error)) ? $error : '<html><head><title>' . $ewCfg['title'] . ' ' . $serverip .':' . $port . '</title><meta http-equiv="refresh" content="3"></head><body>' . $screenlog . '</body></html>';
+        echo (isset($error)) ? $error : '<html><head><title>' . $ewCfg['title'] . ' ' . $serverip .':' . $port . '</title><meta http-equiv="refresh" content="3"></head><body>' . nl2br($ftpConnect->getTempFileContent()) . '</body></html>';
+
+        if (isset($ftpConnect)) {
+            $ftpConnect = null;
+        }
 
     } else {
         echo 'Error: ID';
