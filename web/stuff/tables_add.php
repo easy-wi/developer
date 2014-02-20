@@ -1114,18 +1114,30 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata` (
   `externalID` varchar(255) DEFAULT NULL,
   `sourceSystemID` varchar(255) NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`id`),KEY(`resellerid`)
+  PRIMARY KEY (`id`),KEY(`active`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
 
-#https://github.com/easy-wi/developer/issues/5
-$query = "CREATE TABLE IF NOT EXISTS `userdata_value_log` (
+#https://github.com/easy-wi/developer/issues/1
+$query = "CREATE TABLE IF NOT EXISTS `userdata_social_identities` (
   `userID` int(10) unsigned NOT NULL,
-  `date` datetime NOT NULL,
-  `json` text NOT NULL,
+  `serviceProviderID` int(10) unsigned NOT NULL,
+  `serviceUserID` varchar(255) DEFAULT NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
-  KEY (`userID`),KEY(`resellerID`)
+  PRIMARY KEY (`userID`,`serviceProviderID`,`serviceUserID`),KEY(`resellerID`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
+$query = "CREATE TABLE IF NOT EXISTS `userdata_social_providers` (
+  `serviceProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `identifier` varchar(255) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `filename` varchar(255) DEFAULT NULL,
+  `resellerID` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`serviceProviderID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
@@ -1166,6 +1178,17 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata_groups` (
   `groupID` int(10) unsigned NOT NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`userID`,`groupID`),KEY(`resellerID`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
+#https://github.com/easy-wi/developer/issues/5
+$query = "CREATE TABLE IF NOT EXISTS `userdata_value_log` (
+  `userID` int(10) unsigned NOT NULL,
+  `date` datetime NOT NULL,
+  `json` text NOT NULL,
+  `resellerID` int(10) unsigned DEFAULT 0,
+  KEY (`userID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();

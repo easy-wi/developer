@@ -73,6 +73,9 @@
 	<serverdata>Installed Servers</serverdata>
 	<settings>Panel Settings</settings>
 	<shown>Results per page</shown>
+    <socialConnect>Connect with</socialConnect>
+    <socialRemove>Remove connection with</socialRemove>
+    <socialSignin>Sign in with</socialSignin>
 	<stadt>Town</stadt>
 	<str>Street</str>
 	<switch>Switch to user</switch>

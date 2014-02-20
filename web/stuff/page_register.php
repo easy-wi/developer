@@ -103,16 +103,55 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
         $selectlanguages = getlanguages($template_to_use);
 
         // default values in case an input error appears so that the user only needs to enter false data
-        $mail = $ui->ismail('mail', 'post');
-        $password = $ui->password('password', 100, 'post');
-        $passwordsecond = $ui->password('passwordsecond', 100, 'post');
-        $name = $ui->names('name',255, 'post');
-        $vname = $ui->names('vname',255, 'post');
-        $vname = $ui->names('vname',255, 'post');
-        $bday = date('Y-m-d', strtotime($ui->isDate('birthday', 'post')));
-        $cname = $ui->username('cname', 255, 'post');
+        if (!$ui->escaped('mail', 'post') and !$ui->escaped('password', 'post') and isset($_SESSION['serviceProviderData'])) {
 
-        $bdayShow = (isset($user_language) and $user_language == 'de') ? date('d.m.Y', strtotime($ui->isDate('birthday', 'post'))) : date('Y-m-d', strtotime($ui->isDate('birthday', 'post')));
+            $streetn = '';
+            $fax = '';
+            $handy = '';
+            $password = '';
+            $passwordsecond = '';
+
+            $userProfile = $_SESSION['serviceProviderData']['userProfile'];
+
+            $displayNameSplit = preg_split("/\s/", $userProfile['displayName'], -1, PREG_SPLIT_NO_EMPTY);
+            $vname = (strlen($userProfile['firstName']) == 0 and isset($displayNameSplit[0]) and strlen($displayNameSplit[0]) > 0) ? $displayNameSplit[0] : $userProfile['firstName'];
+            $name = (strlen($userProfile['lastName']) == 0 and isset($displayNameSplit[1]) and strlen($displayNameSplit[1]) > 0) ? $displayNameSplit[1] : $userProfile['lastName'];
+            $cname = str_replace(' ', '', $userProfile['displayName']);
+
+            $salutation = ($userProfile['gender'] == 'female') ? 2 : 1;
+
+            $bday = $userProfile['birthYear'] . '-' . $userProfile['birthMonth'] . '-' . $userProfile['birthDay'];
+            $bdayShow = (isset($user_language) and $user_language == 'de') ? date('d.m.Y', strtotime($bday)) :  date('Y-m-d', strtotime($bday));
+
+            $mail = $userProfile['email'];
+            $flagmenu = $userProfile['language'];
+            $phone = $userProfile['phone'];
+            $city = $userProfile['city'];
+            $cityn = $userProfile['zip'];
+            $street = $userProfile['address'];
+
+        } else {
+
+            $mail = $ui->ismail('mail', 'post');
+            $password = $ui->password('password', 100, 'post');
+            $passwordsecond = $ui->password('passwordsecond', 100, 'post');
+            $name = $ui->names('name',255, 'post');
+            $vname = $ui->names('vname',255, 'post');
+            $bday = date('Y-m-d', strtotime($ui->isDate('birthday', 'post')));
+            $cname = $ui->username('cname', 255, 'post');
+            $salutation = $ui->id('salutation', 1, 'post');
+            $flagmenu = $ui->st('flagmenu', 'post');
+            $phone = $ui->phone('phone', 50, 'post');
+            $fax = $ui->phone('fax', 50, 'post');
+            $handy = $ui->phone('handy', 50, 'post');
+            $city = $ui->names('city', 50, 'post');
+            $cityn = $ui->id('cityn', 6, 'post');
+            $street = $ui->names('street', 50, 'post');
+            $streetn = $ui->w('streetn', 6, 'post');
+
+            $bdayShow = (isset($user_language) and $user_language == 'de') ? date('d.m.Y', strtotime($ui->isDate('birthday', 'post'))) : date('Y-m-d', strtotime($ui->isDate('birthday', 'post')));
+
+        }
 
         $query = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='to'");
         $query->execute();
@@ -218,7 +257,7 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
 
                 // insert data
                 $query = $sql->prepare("INSERT INTO `userdata` (`accounttype`,`active`,`mail`,`token`,`creationTime`,`updateTime`,`salutation`,`country`,`name`,`vname`,`birthday`,`phone`,`fax`,`handy`,`city`,`cityn`,`street`,`streetn`) VALUES ('u','R',?,?,NOW(),NOW(),?,?,?,?,?,?,?,?,?,?,?,?)");
-                $query->execute(array($mail, $activeHash, $ui->id('salutation', 1, 'post'), $ui->st('country', 'post'), $name, $vname, $bday, $ui->phone('phone', 50, 'post'), $ui->phone('fax', 50, 'post'), $ui->phone('handy', 50, 'post'), $ui->names('city', 50, 'post'), $ui->id('cityn', 6, 'post'), $ui->names('street', 50, 'post'), $ui->w('streetn', 6, 'post')));
+                $query->execute(array($mail, $activeHash, $salutation, $flagmenu, $name, $vname, $bday, $phone, $fax, $handy, $city, $cityn, $street, $streetn));
 
                 $userID = $sql->lastInsertId();
 
@@ -241,38 +280,72 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
                 $groupID = $query->fetchColumn();
 
                 $query = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,0)");
-                $query->execute(array($userID,$groupID));
+                $query->execute(array($userID, $groupID));
 
-                // If is is in DB and mail could be send
+                // If usergroup is in DB and mail could be send
                 if ($query->rowCount() > 0) {
-                    if ($registration == 'A') {
+
+                    if (isset($_SESSION['serviceProviderData'])) {
+
+                        $query = $sql->prepare("INSERT INTO `userdata_social_identities` (`userID`,`serviceProviderID`,`serviceUserID`,`resellerID`) VALUES (?,?,?,0)");
+                        $query->execute(array($userID, $_SESSION['serviceProviderData']['serviceProviderID'], $_SESSION['serviceProviderData']['userProfile']['identifier']));
+
+                        $directLogin = true;
+
+                    } else if ($registration == 'A') {
+
                         $template_file = $page_sprache->registerAdmin;
+
                     } else if ($registration == 'M') {
+
                         $template_file = $page_sprache->registerMailSend;
 
                         $activationLink = $page_data->pages['register']['link'];
-                        $activationLink .= ($page_data->seo == 'Y') ? 'activate/' . $activeHash.'/' : '&amp;activate=' . $activeHash;
+                        $activationLink .= ($page_data->seo == 'Y') ? 'activate/' . $activeHash . '/' : '&amp;activate=' . $activeHash;
 
                         // send Mail
                         sendmail('emailregister',$userID,'', $activationLink);
+
                     } else {
+                        $directLogin = true;
+                    }
+
+                    if (isset($directLogin)) {
+
+                        $query = $sql->prepare("UPDATE `userdata` SET `active`='Y',`token`=null,`updateTime`=NOW() WHERE `id`=? LIMIT 1");
+                        $query->execute(array($userID));
+
                         $_SESSION['userid'] = $userID;
                         $_SESSION['resellerid'] = 0;
                         $template_file = $page_sprache->registerAccountOK;
+
+                        $header = '<meta http-equiv="refresh" content="3; URL=' . $page_data->pageurl . '/userpanel.php">';
+                        $text = $rsprache->refresh;
+
                     }
+
                 } else {
+
                     $error[] = $page_sprache->registerErrorUnknown;
                     $token = md5(date('Y-d-m H:i:s u') . md5(mt_rand()));
+
                     $_SESSION['registerToken'] = $token;
+
                     $template_file = 'page_register.tpl';
+
                 }
             }
+
         } else if ($ui->escaped('email', 'post')) {
+
             $template_file = $page_sprache->registerErrorBot;
+
         } else {
+
             $token = md5(date('Y-d-m H:i:s u').md5(mt_rand()));
             $_SESSION['registerToken'] = $token;
             $template_file = 'page_register.tpl';
+
         }
     }
 }

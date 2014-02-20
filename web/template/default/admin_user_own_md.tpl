@@ -12,6 +12,60 @@
         <form class="form-horizontal" action="admin.php?w=su&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <div class="control-group">
+                <label class="control-label" for="mail_backup"><?php echo $sprache->mail_backup;?></label>
+                <div class="controls">
+                    <input id="mail_backup" type="checkbox" name="mail_backup" value="Y" <?php if ($mail_backup=="Y") echo 'checked="checked"'; ?>>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="mail_serverdown"><?php echo $sprache->mail_serverdown;?></label>
+                <div class="controls">
+                    <input id="mail_serverdown" type="checkbox" name="mail_serverdown" value="Y" <?php if ($mail_serverdown=="Y") echo 'checked="checked"'; ?>>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="mail_ticket"><?php echo $sprache->mail_ticket;?></label>
+                <div class="controls">
+                    <input id="mail_ticket" type="checkbox" name="mail_ticket" value="Y" <?php if ($mail_ticket=="Y") echo 'checked="checked"'; ?>>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMailUpdate"><?php echo $sprache->mail_gsupdate;?></label>
+                <div class="controls">
+                    <input id="inputMailUpdate" type="checkbox" name="mail_gsupdate" value="Y" <?php if ($mail_gsupdate=="Y") echo 'checked="checked"'; ?>>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMailSecurity"><?php echo $sprache->mail_securitybreach;?></label>
+                <div class="controls">
+                    <input id="inputMailSecurity" type="checkbox" name="mail_securitybreach" value="Y" <?php if ($mail_securitybreach=="Y") echo 'checked="checked"'; ?>>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMailVserver"><?php echo $sprache->mail_vserver;?></label>
+                <div class="controls">
+                    <input id="inputMailVserver" type="checkbox" name="mail_vserver" value="Y" <?php if ($mail_vserver=="Y") echo 'checked="checked"'; ?>>
+                </div>
+            </div>
+            <hr>
+            <?php foreach($serviceProviders as $sp){ ?>
+            <div class="control-group">
+                <label class="control-label" for="sp<?php echo $sp['sp'];?>"><?php echo $sp['sp'];?></label>
+                <div class="controls">
+                    <?php if (strlen($sp['spUserId'])==0){ ?>
+                    <a class="btn btn-block btn-social btn-<?php echo strtolower($sp['sp']);?> span10" href="login.php?serviceProvider=<?php echo $sp['sp'];?>" id="sp<?php echo $sp['sp'];?>">
+                        <i class="fa fa-<?php echo strtolower($sp['sp']);?>"></i> <?php echo $sprache->socialConnect.' '.$sp['sp'];?>
+                    </a>
+                    <?php } else { ?>
+                    <a class="btn btn-block btn-social btn-<?php echo strtolower($sp['sp']);?> span10" href="admin.php?w=su&amp;spUser=<?php echo $sp['spUserId'];?>&amp;spId=<?php echo $sp['spId'];?>&amp;r=su" id="sp<?php echo $sp['sp'];?>">
+                        <i class="fa fa-<?php echo strtolower($sp['sp']);?>"></i> <?php echo $sprache->socialRemove.' '.$sp['sp'];?>
+                    </a>
+                    <?php } ?>
+                </div>
+            </div>
+            <?php } ?>
+            <?php if(count($serviceProviders) > 0 ) echo '<hr>';?>
+            <div class="control-group">
                 <label class="control-label" for="fname"><?php echo $sprache->fname;?></label>
                 <div class="controls">
                     <input class="span10" id="fname" type="text" name="name" value="<?php echo $name;?>">
@@ -63,42 +117,6 @@
                 <label class="control-label" for="streetn"><?php echo $sprache->hnum;?></label>
                 <div class="controls">
                     <input class="span10" id="streetn" type="text" name="streetn" value="<?php echo $streetn;?>">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="mail_backup"><?php echo $sprache->mail_backup;?></label>
-                <div class="controls">
-                    <input id="mail_backup" type="checkbox" name="mail_backup" value="Y" <?php if ($mail_backup=="Y") echo 'checked="checked"'; ?>>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="mail_serverdown"><?php echo $sprache->mail_serverdown;?></label>
-                <div class="controls">
-                    <input id="mail_serverdown" type="checkbox" name="mail_serverdown" value="Y" <?php if ($mail_serverdown=="Y") echo 'checked="checked"'; ?>>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="mail_ticket"><?php echo $sprache->mail_ticket;?></label>
-                <div class="controls">
-                    <input id="mail_ticket" type="checkbox" name="mail_ticket" value="Y" <?php if ($mail_ticket=="Y") echo 'checked="checked"'; ?>>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputMailUpdate"><?php echo $sprache->mail_gsupdate;?></label>
-                <div class="controls">
-                    <input id="inputMailUpdate" type="checkbox" name="mail_gsupdate" value="Y" <?php if ($mail_gsupdate=="Y") echo 'checked="checked"'; ?>>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputMailSecurity"><?php echo $sprache->mail_securitybreach;?></label>
-                <div class="controls">
-                    <input id="inputMailSecurity" type="checkbox" name="mail_securitybreach" value="Y" <?php if ($mail_securitybreach=="Y") echo 'checked="checked"'; ?>>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputMailVserver"><?php echo $sprache->mail_vserver;?></label>
-                <div class="controls">
-                    <input id="inputMailVserver" type="checkbox" name="mail_vserver" value="Y" <?php if ($mail_vserver=="Y") echo 'checked="checked"'; ?>>
                 </div>
             </div>
             <div class="control-group">

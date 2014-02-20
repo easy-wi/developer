@@ -73,6 +73,9 @@
 	<serverdata>Installierte Server</serverdata>
 	<settings>Panel Einstellungen</settings>
 	<shown>Ergebnisse je Seite</shown>
+    <socialConnect>Verknüpfung herstellen mit</socialConnect>
+    <socialRemove>Verknüpfung entfernen mit</socialRemove>
+    <socialSignin>Einloggen mit</socialSignin>
 	<stadt>Stadt</stadt>
 	<str>Straße</str>
 	<switch>Zum Benutzer wechseln</switch>

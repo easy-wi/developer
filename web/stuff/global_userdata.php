@@ -40,14 +40,17 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 if ($ui->st('w', 'get') == 'se') {
+
     if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['usersettings'])) {
         header('Location: userpanel.php');
         die();
     }
+
     $loguserid = $user_id;
     $logusername = getusername($user_id);
     $logusertype = 'user';
     $logreseller = 0;
+
     if (isset($admin_id)) {
         $logsubuser = $admin_id;
     } else if (isset($subuser_id)) {
@@ -57,13 +60,16 @@ if ($ui->st('w', 'get') == 'se') {
     }
 
 } else {
+
     if ((!isset($admin_id) or $main != 1)) {
         header('Location: admin.php');
         die();
     }
+
     $loguserid = $admin_id;
     $logusername = getusername($admin_id);
     $logusertype = 'admin';
+
     if ($reseller_id == 0) {
         $logreseller = 0;
         $logsubuser = 0;
@@ -72,9 +78,10 @@ if ($ui->st('w', 'get') == 'se') {
         $logreseller = 0;
     }
 }
-$sprache = getlanguagefile('user',$user_language,$reseller_id);
 
-$lookUpID=($ui->st('w', 'get') == 'se') ? $user_id : $admin_id;
+$sprache = getlanguagefile('user', $user_language, $reseller_id);
+
+$lookUpID = ($ui->st('w', 'get') == 'se') ? $user_id : $admin_id;
 
 if ($ui->st('d', 'get') == 'pw') {
 
@@ -101,7 +108,7 @@ if ($ui->st('d', 'get') == 'pw') {
         }
 
         if (count($errors)>0) {
-            $template_file = implode('<br />',$errors);
+            $template_file = implode('<br />', $errors);
         } else {
 
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -128,6 +135,16 @@ if ($ui->st('d', 'get') == 'pw') {
         }
     } else {
         $template_file = 'userpanel_404.tpl';
+    }
+} else if ($ui->w('spUser', 255, 'get') and $ui->id('spId', 10, 'get')) {
+
+    $query = $sql->prepare("DELETE FROM `userdata_social_identities` WHERE `userID`=? AND `serviceProviderID`=? AND `serviceUserID`=? AND `resellerID`=? LIMIT 1");
+    $query->execute(array($lookUpID, $ui->id('spId', 10, 'get'), $ui->w('spUser', 255, 'get'), $reseller_id));
+
+    if ($query->rowCount() > 0) {
+        $template_file = $spracheResponse->table_del;
+    } else {
+        $template_file = $spracheResponse->error_table;
     }
 
 } else {
@@ -158,11 +175,40 @@ if ($ui->st('d', 'get') == 'pw') {
             $oldValues[$k] = $v;
         }
     }
-    if ($ui->smallletters('action',2, 'post') == 'md' and isset($oldValues)){
+
+    if ($ui->smallletters('action', 2, 'post') != 'md' and $ui->w('added', 255, 'get')) {
+
+        $template_file = $spracheResponse->table_add;
+
+    } else if ($ui->smallletters('action', 2, 'post') != 'md') {
+
+        $serviceProviders = array();
+
+        $htmlExtraInformation['css'][] = '<link href="css/default/social_buttons.css" rel="stylesheet">';
+
+        $query = $sql->prepare("SELECT `serviceProviderID`,`filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
+        $query2 = $sql->prepare("SELECT `serviceUserID` FROM `userdata_social_identities` WHERE `serviceProviderID`=? AND `userID`=? LIMIT 1");
+
+
+        $query->execute();
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+            $query2->execute(array($row['serviceProviderID'], $lookUpID));
+
+            $serviceProviders[] = array(
+                'spId' => $row['serviceProviderID'],
+                'sp' => $row['filename'],
+                'spUserId' => $query2->fetchColumn()
+            );
+        }
+    }
+
+    if ($ui->smallletters('action', 2, 'post') == 'md' and isset($oldValues)) {
+
         if ($ui->ismail('mail', 'post') and token(true)) {
-            $mail_backup=($ui->active('mail_backup', 'post')) ? $ui->active('mail_backup', 'post') : 'N';
-            $mail_serverdown=($ui->active('mail_serverdown', 'post')) ? $ui->active('mail_serverdown', 'post') : 'N';
-            $mail_ticket=($ui->active('mail_ticket', 'post')) ? $ui->active('mail_ticket', 'post') : 'N';
+            $mail_backup = ($ui->active('mail_backup', 'post')) ? $ui->active('mail_backup', 'post') : 'N';
+            $mail_serverdown = ($ui->active('mail_serverdown', 'post')) ? $ui->active('mail_serverdown', 'post') : 'N';
+            $mail_ticket = ($ui->active('mail_ticket', 'post')) ? $ui->active('mail_ticket', 'post') : 'N';
             $name = $ui->names('name', 30, 'post');
             $vname = $ui->names('vname', 30, 'post');
             $mail = $ui->ismail('mail', 'post');
@@ -172,15 +218,21 @@ if ($ui->st('d', 'get') == 'pw') {
             $cityn = $ui->isinteger('cityn', 'post');
             $street = $ui->names('street', 40, 'post');
             $streetn = $ui->streetNumber('streetn', 'post');
+
             if (($ui->st('w', 'get') == 'se')) {
+
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$lookUpID,$reseller_id));
+                $query->execute(array($name, $vname, $mail, $phone, $handy, $city, $cityn, $street, $streetn, $mail_backup, $mail_serverdown, $mail_ticket, $lookUpID, $reseller_id));
+
             } else {
-                $mail_gsupdate=($ui->active('mail_gsupdate', 'post')) ? $ui->active('mail_gsupdate', 'post') : 'N';
-                $mail_securitybreach=($ui->active('mail_securitybreach', 'post')) ? $ui->active('mail_securitybreach', 'post') : 'N';
-                $mail_vserver=($ui->active('mail_vserver', 'post')) ? $ui->active('mail_vserver', 'post') : 'N';
+
+                $mail_gsupdate = ($ui->active('mail_gsupdate', 'post')) ? $ui->active('mail_gsupdate', 'post') : 'N';
+                $mail_securitybreach = ($ui->active('mail_securitybreach', 'post')) ? $ui->active('mail_securitybreach', 'post') : 'N';
+                $mail_vserver = ($ui->active('mail_vserver', 'post')) ? $ui->active('mail_vserver', 'post') : 'N';
+
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_vserver`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$mail_backup,$mail_serverdown,$mail_ticket,$mail_gsupdate,$mail_securitybreach,$mail_vserver,$lookUpID,$reseller_id));
+                $query->execute(array($name, $vname, $mail, $phone, $handy, $city, $cityn, $street, $streetn, $mail_backup, $mail_serverdown, $mail_ticket, $mail_gsupdate, $mail_securitybreach, $mail_vserver, $lookUpID, $reseller_id));
+
             }
 
             if ($query->rowCount() > 0) {
@@ -193,18 +245,21 @@ if ($ui->st('d', 'get') == 'pw') {
                 }
 
                 $query = $sql->prepare("INSERT INTO `userdata_value_log` (`userID`,`date`,`json`,`resellerID`) VALUES (?,NOW(),?,?)");
-                $query->execute(array($lookUpID,json_encode($changed),$reseller_id));
+                $query->execute(array($lookUpID, json_encode($changed), $reseller_id));
 
                 $template_file = $spracheResponse->table_add;
-                $loguseraction="%mod% %user% $cname";
+                $loguseraction = '%mod% %user% ' . $cname;
                 $insertlog->execute();
+
             } else {
                 $template_file = $spracheResponse->error_table;
             }
+
         } else {
             $template_file = (!token(true)) ? $spracheResponse->token : $sprache->error_mail;
         }
-    } else {
+
+    } else if (!isset($template_file)) {
         $template_file = ($logusertype == 'user') ? 'userpanel_user_md.tpl' : 'admin_user_own_md.tpl';
     }
 }

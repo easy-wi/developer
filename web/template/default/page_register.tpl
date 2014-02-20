@@ -43,7 +43,7 @@
                 <div class="controls">
                     <select id="inputSalutation" name="salutation">
                         <option value="1"><?php echo $langObject->salutation2;?></option>
-                        <option value="2"><?php echo $langObject->salutation3;?></option>
+                        <option value="2"<?php if($salutation==2) echo ' selected="selected"';?>><?php echo $langObject->salutation3;?></option>
                     </select>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                 <div class="controls">
                     <select id="inputCountry" name="flagmenu">
                         <?php foreach ($selectlanguages as $la) { ?>
-                        <option value="<?php echo $la;?>"><?php echo $la;?></option>
+                        <option value="<?php echo $la;?>"<?php if($la==$flagmenu) echo ' selected="selected"';?>><?php echo $la;?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -78,43 +78,43 @@
             <div class="control-group">
                 <label class="control-label" for="inputTel"><?php echo $langObject->tel;?></label>
                 <div class="controls">
-                    <input id="inputTel" type="tel" name="phone" value="">
+                    <input id="inputTel" type="tel" name="phone" value="<?php echo $phone;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputFax">Fax</label>
                 <div class="controls">
-                    <input id="inputFax" type="tel" name="fax" value="">
+                    <input id="inputFax" type="tel" name="fax" value="<?php echo $fax;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputHandy"><?php echo $langObject->han;?></label>
                 <div class="controls">
-                    <input id="inputHandy" type="tel" name="handy" value="">
+                    <input id="inputHandy" type="tel" name="handy" value="<?php echo $handy;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputCity"><?php echo $langObject->stadt;?></label>
                 <div class="controls">
-                    <input id="inputCity" type="text" name="city" value="">
+                    <input id="inputCity" type="text" name="city" value="<?php echo $city;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputCityn"><?php echo $langObject->plz;?></label>
                 <div class="controls">
-                    <input id="inputCityn" type="text" name="cityn" value="">
+                    <input id="inputCityn" type="text" name="cityn" value="<?php echo $cityn;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputStreet"><?php echo $langObject->str;?></label>
                 <div class="controls">
-                    <input id="inputStreet" type="text" name="street" value="">
+                    <input id="inputStreet" type="text" name="street" value="<?php echo $street;?>">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputHnum"><?php echo $langObject->hnum;?></label>
                 <div class="controls">
-                    <input id="inputHnum" type="text" name="streetn" value="">
+                    <input id="inputHnum" type="text" name="streetn" value="<?php echo $streetn;?>">
                 </div>
             </div>
             <?php if(isset($tou)) { ?>

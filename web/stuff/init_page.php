@@ -55,11 +55,19 @@ if (isset($page_active) and $page_active == 'Y') {
     $easywiModules = array('gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
     $customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
 
+    $what_to_be_included_array = array('news' => 'page_news.php','contact' => 'page_contact.php',
+        'page' => 'page_page.php','home' => 'page_page.php','about' => 'page_page.php','gallery' => 'page_page.php','sitemap' => 'page_page.php','search' => 'page_page.php',
+        'tag' => 'page_tag.php','categories' => 'page_tag.php','downloads' => 'page_download.php',
+        'protectioncheck' => 'protectioncheck.php',
+        'register' => 'page_register.php'
+    );
+
     $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('P','C')");
     $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR . '/stuff/' . $row['file'])) {
+
+        if ($row['active'] == 'Y' and $row['type'] == 'P' and is_file(EASYWIDIR . '/stuff/' . $row['file'])) {
             $query2->execute(array($row['id'], $user_language));
             $name = $query2->fetchColumn();
 
@@ -79,16 +87,10 @@ if (isset($page_active) and $page_active == 'Y') {
         }
     }
 
-    $what_to_be_included_array = array('news' => 'page_news.php','contact' => 'page_contact.php',
-        'page' => 'page_page.php','home' => 'page_page.php','about' => 'page_page.php','gallery' => 'page_page.php','sitemap' => 'page_page.php','search' => 'page_page.php',
-        'tag' => 'page_tag.php','categories' => 'page_tag.php','downloads' => 'page_download.php',
-        'protectioncheck' => 'protectioncheck.php',
-        'register' => 'page_register.php'
-    );
-
     if ($easywiModules['ip'] === true) {
         $what_to_be_included_array['imprint'] = 'imprint.php';
     }
+
     if ($easywiModules['le'] === true) {
         $what_to_be_included_array['lendserver'] = 'lend.php';
     }
@@ -99,6 +101,7 @@ if (isset($page_active) and $page_active == 'Y') {
         $page_data->SetData('lendactiveGS', $row['activeGS']);
         $page_data->SetData('lendactiveVS', $row['activeVS']);
     }
+
     $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=5 LIMIT 1");
     $query->execute();
     $lendActive = $query->fetchColumn();
@@ -192,7 +195,6 @@ if (isset($page_active) and $page_active == 'Y') {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row['naviDisplay'] == 'Y') {
                 $page_data->SetMenu($row['title'], $row['id'], $row['subpage'], $row['id']);
-
             } else {
                 $page_data->SetMenu($row['title'], $row['id'], $row['subpage'], $row['id'], false);
             }
@@ -215,37 +217,39 @@ if (isset($page_active) and $page_active == 'Y') {
 
     if (isset($page_category)) {
         if ($page_category == szrp($gsprache->imprint)) {
-            $s='imprint';
+            $s = 'imprint';
         } else if ($page_category == szrp($page_sprache->contact)) {
-            $s='contact';
+            $s = 'contact';
         } else if ($page_category == szrp($gsprache->downloads)) {
-            $s='downloads';
+            $s = 'downloads';
         } else if ($page_category == szrp($page_sprache->protectioncheck)) {
-            $s='protectioncheck';
+            $s = 'protectioncheck';
         } else if ($page_category == szrp($page_sprache->tag)) {
-            $s='tag';
+            $s = 'tag';
         } else if ($page_category == szrp($page_sprache->categories)) {
-            $s='categories';
+            $s = 'categories';
         } else if ($page_category == szrp($page_sprache->about)) {
-            $s='about';
+            $s = 'about';
         } else if ($page_category == szrp($gsprache->lendserver)) {
-            $s='lendserver';
+            $s = 'lendserver';
         } else if ($page_category == szrp($gsprache->news)) {
-            $s='news';
+            $s = 'news';
         } else if ($page_category == szrp($page_sprache->sitemap)) {
-            $s='sitemap';
+            $s = 'sitemap';
         } else if ($page_category == szrp($page_sprache->search)) {
-            $s='search';
+            $s = 'search';
         } else if ($page_category == szrp($page_sprache->gallery)) {
-            $s='gallery';
+            $s = 'gallery';
         } else if ($page_category == szrp($page_sprache->sitemap)) {
-            $s='sitemap';
+            $s = 'sitemap';
         } else if ($page_category == szrp($page_sprache->search)) {
-            $s='search';
+            $s = 'search';
         } else if ($page_category == szrp($page_sprache->register)) {
-            $s='register';
+            $s = 'register';
         } else if (isset($page_data->pages_array['pages']) and in_array($page_category, $page_data->pages_array['pages'])) {
-            $s='page';
+            $s = 'page';
+        } else if (isset($what_to_be_included_array[$page_category])) {
+            $s = $page_category;
         }
     }
 
@@ -254,11 +258,26 @@ if (isset($page_active) and $page_active == 'Y') {
 
     } else if (isset($user_id)) {
         $page_lookupid = $user_id;
+    } else {
+
+        $serviceProviders = array();
+
+        $query = $sql->prepare("SELECT `filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
+        $query->execute();
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $serviceProviders[$row['filename']] = strtolower($row['filename']);
+        }
+
+        if (count($serviceProviders) > 0) {
+            $htmlExtraInformation['css'][] = '<link href="' . $page_data->pageurl . '/css/default/social_buttons.css" rel="stylesheet">';
+        }
     }
 
     if (isset($page_lookupid)) {
+
         $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($page_lookupid));
+
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $great_name = $row['name'];
             $great_vname = $row['vname'];
@@ -272,13 +291,20 @@ if (isset($page_active) and $page_active == 'Y') {
             }
         }
     }
-    if (!isset($s) and !isset($page_category) and isset($page_default) and isid($page_default,19)) {
+
+    if (!isset($s) and !isset($page_category) and isset($page_default) and isid($page_default, 19)) {
+
         $s = 'page';
         $default_page_id = $page_default;
+
     } else if (!isset($s) and !isset($page_category) and isset($page_default)) {
+
         $s = $page_default;
+
     } else if (!isset($s) and isset($page_category) and $page_category != '' and $page_category != null) {
+
         $s = 404;
         $throw404 = true;
+
     }
 }

@@ -193,11 +193,182 @@ if ($ui->st('w', 'get') == 'lo') {
 
 } else {
 
-	if (!$ui->username('username', 255, 'post') and !$ui->ismail('username', 255, 'post') and !$ui->password('password', 255, 'post') and !isset($_SESSION['sessionid'])) {
+    $serviceProvider = (string) $ui->w('serviceProvider', 255, 'get');
 
-		$include = 'login.tpl';
+    if ($serviceProvider and file_exists(EASYWIDIR . '/third_party/hybridauth/Hybrid/Providers/' . $serviceProvider . '.php')) {
+        $_SERVER = $ui->server;
 
-	} else if (($ui->username('username', 255, 'post') or $ui->ismail('username', 'post')) and $ui->password('password', 255, 'post') and !isset($_SESSION['sessionid'])) {
+        $pageUrl = '';
+
+        $query = $sql->prepare("SELECT `pageurl`,`seo`,`registration` FROM `page_settings` WHERE `resellerid`=0 LIMIT 1");
+        $query->execute();
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $pageUrl = $row['pageurl'];
+            $seo = $row['seo'];
+            $registration = $row['registration'];
+        }
+
+        $serviceProviderConfig = array(
+            'base_url' => $pageUrl . '/login.php?endpoint=1',
+            'debug_mode' => (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) ? true : false,
+            'debug_file' => EASYWIDIR . '/third_party/hybridauth/log/hybridauth.log',
+            'providers' => array()
+        );
+
+        $query = $sql->prepare("SELECT `serviceProviderID`,`filename`,`identifier`,`token` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
+        $query->execute();
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $serviceProviderConfig['providers'][$row['filename']] = array(
+                'internalID' => $row['serviceProviderID'],
+                'enabled' => true,
+                'keys' => array(
+                    'id' => $row['identifier'],
+                    'secret' => $row['token']
+                )
+            );
+        }
+    }
+
+    if (isset($serviceProviderConfig['providers'][$serviceProvider]) and $ui->id('loginUserId', 10, 'get')) {
+
+        if (isset($_SESSION['loginUserAllowed'][$ui->id('loginUserId', 10, 'get')])) {
+
+            $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `id`=? LIMIT 1");
+            $query->execute(array($ui->id('loginUserId', 10, 'get')));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                $username = $row['cname'];
+                $id = $row['id'];
+                $active = $row['active'];
+                $mail = $row['mail'];
+                $externalID = $row['externalID'];
+                $resellerid = $row['resellerid'];
+                $accounttype = $row['accounttype'];
+
+                $passwordCorrect = true;
+            }
+        }
+
+        unset($_SESSION['loginUserAllowed']);
+
+    } else if (isset($serviceProviderConfig['providers'][$serviceProvider])) {
+
+        include(EASYWIDIR . '/third_party/hybridauth/Hybrid/Auth.php');
+
+        try{
+
+            $connectedUsers = array();
+
+            // initialize Hybrid_Auth with a given file
+            $hybridauth = new Hybrid_Auth($serviceProviderConfig);
+
+            // try to authenticate with the selected provider
+            $serviceProviderAdapter = $hybridauth->authenticate($serviceProvider);
+            $userProfile = $serviceProviderAdapter->getUserProfile();
+            $serviceProviderAdapter->logout();
+
+            // get all user for this identifier and service provider. User should be able to select the user he is going to logon to
+            $serviceProviderID = $serviceProviderConfig['providers'][$serviceProvider]['internalID'];
+
+            if ((isset($user_id) or isset($admin_id)) and strlen($userProfile->identifier) > 0) {
+
+                $query = $sql->prepare("INSERT INTO `userdata_social_identities` (`userID`,`serviceProviderID`,`serviceUserID`,`resellerID`) VALUES (?,?,?,?)");
+                $query->execute(array((isset($admin_id)) ? $admin_id : $user_id, $serviceProviderID, $userProfile->identifier, $reseller_id));
+
+                $redirectURL = (isset($admin_id)) ? $pageUrl . '/admin.php?w=su&added=' . $serviceProvider . '&r=su' : $pageUrl . '/userpanel.php?w=se&added=' . $serviceProvider . '&r=se';
+
+                redirect($redirectURL);
+
+            } else {
+
+                $query = $sql->prepare("SELECT u.`id`,u.`cname`,`mail`,CONCAT(u.`vname`,' ',u.`name`) AS `username` FROM `userdata_social_identities` AS s INNER JOIN `userdata` AS u ON u.`id`=s.`userID` WHERE s.`serviceProviderID`=? AND s.`serviceUserID`=? AND u.`active`='Y'");
+                $query->execute(array($serviceProviderID, $userProfile->identifier));
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                    $username = trim($row['username']);
+                    $username = (strlen($username) > 0) ? $username : $row['cname'];
+
+                    $connectedUsers[$row['id']] = $username . ' (' . $row['mail'] . ')';
+
+                }
+
+                $connectedUserCount = count($connectedUsers);
+
+                // no user has been found. Check if registration is allowed. If yes display registration form
+                if ($connectedUserCount == 0) {
+
+                    if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
+
+                        $page_sprache = getlanguagefile('page', $user_language, 0);
+
+                        $_SESSION['serviceProviderData']['userProfile'] = (array) $userProfile;
+                        $_SESSION['serviceProviderData']['serviceProviderID'] = (string) $serviceProviderID;
+
+                        $redirectURL = ($seo == 'Y') ? $pageUrl . '/' . $user_language . '/' . szrp($page_sprache->register) .'/' : $pageUrl . '/index.php?site=register';
+
+                        redirect($redirectURL);
+                    }
+
+                    // multiple active users are connected, let the user pick one
+                }  else if ($connectedUserCount > 1) {
+
+                    $sprache->multipleHelper = str_replace('%sp%', $serviceProvider, $sprache->multipleHelper);
+
+                    $_SESSION['loginUserAllowed'] = $connectedUsers;
+
+                    $include = 'login_mutiple.tpl';
+
+                    // exactly one user connected, login
+                } else {
+
+                    $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `id`=? LIMIT 1");
+                    $query->execute(array(key($connectedUsers)));
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                        $username = $row['cname'];
+                        $id = $row['id'];
+                        $active = $row['active'];
+                        $mail = $row['mail'];
+                        $externalID = $row['externalID'];
+                        $resellerid = $row['resellerid'];
+                        $accounttype = $row['accounttype'];
+
+                        $passwordCorrect = true;
+                    }
+
+                }
+            }
+        }
+        catch( Exception $e ){
+            $include = 'login.tpl';
+        }
+
+    } else if ($ui->escaped('endpoint', 'get')) {
+
+        $_SERVER = $ui->server;
+        include(EASYWIDIR . '/third_party/hybridauth/Hybrid/Auth.php');
+        include(EASYWIDIR . '/third_party/hybridauth/Hybrid/Endpoint.php');
+
+        Hybrid_Endpoint::process();
+    }
+
+    if (!isset($include) and !isset($passwordCorrect) and !$ui->username('username', 255, 'post') and !$ui->ismail('username', 255, 'post') and !$ui->password('password', 255, 'post') and !isset($_SESSION['sessionid'])) {
+
+        $serviceProviders = array();
+        $query = $sql->prepare("SELECT `filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
+        $query->execute();
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $serviceProviders[$row['filename']] = strtolower($row['filename']);
+        }
+
+        if (count($serviceProviders) > 0) {
+            $htmlExtraInformation['css'][] = '<link href="css/default/social_buttons.css" rel="stylesheet">';
+        }
+
+        $include = 'login.tpl';
+
+	} else if (!isset($include) and (isset($passwordCorrect) or (($ui->username('username', 255, 'post') or $ui->ismail('username', 'post')) and $ui->password('password', 255, 'post') and !isset($_SESSION['sessionid'])))) {
+
 		$password = $ui->password('password', 255, 'post');
 
 		if (isset($ewCfg) and $ewCfg['captcha'] == 1) {
@@ -207,7 +378,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
 				$query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
                 $query->execute(array($loguserip));
-				$rowcount = $query->rowcount();
+				$rowcount = $query->rowCount();
 
                 $query=($rowcount==0) ? $sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','password',?)") : $sql->prepare("UPDATE `badips` SET `bantime`=?, `failcount`=`failcount`+1, `reason`='password' WHERE `badip`=? LIMIT 1");
                 $query->execute(array($halfhour, $loguserip));
@@ -220,7 +391,7 @@ if ($ui->st('w', 'get') == 'lo') {
         $salt = '';
 
         $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
-        $query->execute(array($ui->username('username', 255, 'post'),$ui->ismail('username', 'post')));
+        $query->execute(array($ui->username('username', 255, 'post'), $ui->ismail('username', 'post')));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $username = $row['cname'];
@@ -272,6 +443,7 @@ if ($ui->st('w', 'get') == 'lo') {
                 }
             }
         }
+
         if (!isset($sID) and isset($active) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect === false) {
 
             $authLookupID = ($resellerid == $id) ? 0 : $resellerid;
@@ -335,7 +507,8 @@ if ($ui->st('w', 'get') == 'lo') {
             }
         }
 
-		if (isset($active) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect) {
+		if (isset($active, $id, $resellerid) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect) {
+
 			session_unset();
 			session_destroy();
 			session_start();
@@ -416,6 +589,7 @@ if ($ui->st('w', 'get') == 'lo') {
 				redirect('userpanel.php');
 
 			} else if (isset($admin_id)) {
+
 				$folders = explode('/', $ui->server['SCRIPT_NAME']);
 				$amount = count($folders) - 1;
 				$i = 0;
@@ -463,10 +637,10 @@ if ($ui->st('w', 'get') == 'lo') {
             redirect('login.php?w=up&r=lo');
 		}
 
-    } else if ($ui->escaped('username', 'post') and $ui->escaped('password', 'post')) {
+    } else if (!isset($include) and $ui->escaped('username', 'post') and $ui->escaped('password', 'post')) {
         redirect('login.php?w=up&r=lo');
 
-	} else {
+	} else if(!isset($include)) {
         redirect('login.php?w=lo');
 	}
 }

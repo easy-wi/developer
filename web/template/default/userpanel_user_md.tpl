@@ -17,6 +17,24 @@
                     <input id="mail_backup" type="checkbox" name="mail_backup" value="Y" <?php if ($mail_backup=="Y") echo 'checked="checked"'; ?>>
                 </div>
             </div>
+            <hr>
+            <?php foreach($serviceProviders as $sp){ ?>
+            <div class="control-group">
+                <label class="control-label" for="sp<?php echo $sp['sp'];?>"><?php echo $sp['sp'];?></label>
+                <div class="controls">
+                    <?php if (strlen($sp['spUserId'])==0){ ?>
+                    <a class="btn btn-block btn-social btn-<?php echo strtolower($sp['sp']);?> span10" href="login.php?serviceProvider=<?php echo $sp['sp'];?>" id="sp<?php echo $sp['sp'];?>">
+                        <i class="fa fa-<?php echo strtolower($sp['sp']);?>"></i> <?php echo $sprache->socialConnect.' '.$sp['sp'];?>
+                    </a>
+                    <?php } else { ?>
+                    <a class="btn btn-block btn-social btn-<?php echo strtolower($sp['sp']);?> span10" href="userpanel.php?w=se&amp;spUser=<?php echo $sp['spUserId'];?>&amp;spId=<?php echo $sp['spId'];?>&amp;r=se" id="sp<?php echo $sp['sp'];?>">
+                        <i class="fa fa-<?php echo strtolower($sp['sp']);?>"></i> <?php echo $sprache->socialRemove.' '.$sp['sp'];?>
+                    </a>
+                    <?php } ?>
+                </div>
+            </div>
+            <?php } ?>
+            <?php if(count($serviceProviders) > 0 ) echo '<hr>';?>
             <div class="control-group">
                 <label class="control-label" for="mail_serverdown"><?php echo $sprache->mail_serverdown;?></label>
                 <div class="controls">

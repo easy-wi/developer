@@ -239,7 +239,7 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSeven"><i class="fa fa-users fa-fw"></i> <?php echo $gsprache->user;?></a>
                         </div>
-                        <div id="collapseSeven" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('us','ug')) or isset($customModules['us'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
+                        <div id="collapseSeven" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('up','us','ug')) or isset($customModules['us'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['user'] or $pa['user_users']) { ?>
@@ -247,6 +247,9 @@
                                     <?php } ?>
                                     <?php if($pa['userGroups']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='ug') echo 'class="active"';?>><a href="admin.php?w=ug"><?php echo $gsprache->groups;?></a></li>
+                                    <?php } ?>
+                                    <?php if($pa['root'] and $reseller_id==0) { ?>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='up') echo 'class="active"';?>><a href="admin.php?w=up">Social Auth Provider</a></li>
                                     <?php } ?>
                                     <?php foreach ($customModules['us'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>

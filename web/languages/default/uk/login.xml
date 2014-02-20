@@ -11,6 +11,9 @@
     <ipBad>Incorrect IP: </ipBad>
     <ipOK>Permitted IP(s) is/are </ipOK>
 	<linkexpired>Link is expired.</linkexpired>
+    <multipleHeader>Multiple users found</multipleHeader>
+    <multipleHelper>Multiple users could be found connected to the login for %sp%. Please pick one.</multipleHelper>
+    <multipleHelperEndpoint>Usually you will have to register an app at the service provider. During creating you will be provided with a key and access token. Both need to be entered at Easy-Wi. At the app you need to configure an endpoint. The endpoint for Easy-Wi is %url%</multipleHelperEndpoint>
 	<nouser>A user with the entered name or email does not exist.</nouser>
 	<password>Password</password>
 	<passwordr>Passwort Recovery</passwordr>

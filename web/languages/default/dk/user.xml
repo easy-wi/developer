@@ -73,6 +73,9 @@
 	<serverdata>Installerede servere</serverdata>
 	<settings>Panelindstillinger</settings>
 	<shown>Resultater pr side</shown>
+    <socialConnect>Connect with</socialConnect>
+    <socialRemove>Remove connection with</socialRemove>
+    <socialSignin>Sign in with</socialSignin>
 	<stadt>By</stadt>
 	<str>Gade</str>
 	<switch>Skift til bruger</switch>

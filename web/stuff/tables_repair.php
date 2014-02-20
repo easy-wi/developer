@@ -43,7 +43,8 @@ if (!isset($displayToUser) and (!isset($admin_id) or $main != 1 or $reseller_id 
     die('No acces');
 }
 
-$defined['addons'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['addons'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'paddon' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'addon' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -57,12 +58,14 @@ $defined['addons'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO"
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['addons_allowed'] = array('addon_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['addons_allowed'] = array(
+    'addon_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'servertype_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'reseller_id' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['addons_installed'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['addons_installed'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'userid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'addonid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'serverid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
@@ -71,11 +74,13 @@ $defined['addons_installed'] = array('id' => array("Type"=>"int(10) unsigned","N
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['api_ips'] = array('ip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['api_ips'] = array(
+    'ip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>"")
 );
 
-$defined['api_settings'] = array('resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['api_settings'] = array(
+    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'userID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'user' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -93,7 +98,8 @@ $defined['api_external_auth'] = array(
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['api_import'] = array('importID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['api_import'] = array(
+    'importID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'fetchUpdates' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'token' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -107,19 +113,22 @@ $defined['api_import'] = array('importID' => array("Type"=>"int(10) unsigned","N
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['badips'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['badips'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'badip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'bantime' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'failcount' => array("Type"=>"smallint(2) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'reason' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['custom_columns'] = array('customID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['custom_columns'] = array(
+    'customID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'itemID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'var' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['custom_columns_settings'] = array('customID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['custom_columns_settings'] = array(
+    'customID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'item' => array("Type"=>"enum('D','G','S','T','U','V')","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'type' => array("Type"=>"enum('I','V')","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -127,7 +136,8 @@ $defined['custom_columns_settings'] = array('customID' => array("Type"=>"int(10)
     'name' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['rootsDedicated'] = array('dedicatedID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['rootsDedicated'] = array(
+    'dedicatedID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'status' => array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'userID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
@@ -153,7 +163,8 @@ $defined['rootsDedicated'] = array('dedicatedID' => array("Type"=>"int(10) unsig
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['rootsDHCP'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['rootsDHCP'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'port' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -178,7 +189,8 @@ $defined['rootsIP4'] = array(
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['rootsPXE'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['rootsPXE'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'port' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -204,7 +216,8 @@ $defined['rootsSubnets'] = array(
     'vlanName' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['eac'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['eac'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'port' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -230,13 +243,15 @@ $defined['eac'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","K
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['easywi_version'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['easywi_version'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'version' => array("Type"=>"decimal(4,2)","Null"=>"NO","Key"=>"","Default"=>"3.30","Extra"=>""),
     'de' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'en' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['feeds_news'] = array('newsID' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['feeds_news'] = array(
+    'newsID' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'feedID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'title' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -248,7 +263,8 @@ $defined['feeds_news'] = array('newsID' => array("Type"=>"bigint(19) unsigned","
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['feeds_settings'] = array('settingsID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['feeds_settings'] = array(
+    'settingsID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'merge' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'displayContent' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
@@ -264,7 +280,8 @@ $defined['feeds_settings'] = array('settingsID' => array("Type"=>"int(10) unsign
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['feeds_url'] = array('feedID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['feeds_url'] = array(
+    'feedID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'twitter' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'feedUrl' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -273,7 +290,8 @@ $defined['feeds_url'] = array('feedID' => array("Type"=>"int(10) unsigned","Null
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['gserver_file_templates'] = array('templateID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['gserver_file_templates'] = array(
+    'templateID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'userID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'servertype' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'name' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -281,7 +299,8 @@ $defined['gserver_file_templates'] = array('templateID' => array("Type"=>"int(10
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['gserver_restarts'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['gserver_restarts'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'template' => array("Type"=>"smallint(1) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'anticheat' => array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),
     'protected' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
@@ -298,7 +317,8 @@ $defined['gserver_restarts'] = array('id' => array("Type"=>"bigint(19) unsigned"
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['gsswitch'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['gsswitch'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'autoRestart' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'userid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
@@ -345,13 +365,15 @@ $defined['gsswitch'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"N
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['imprints'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['imprints'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'imprint' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['jobs'] = array('jobID' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['jobs'] = array(
+    'jobID' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'hostID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'affectedID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'userID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
@@ -366,7 +388,8 @@ $defined['jobs'] = array('jobID' => array("Type"=>"bigint(19) unsigned","Null"=>
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['lendedserver'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['lendedserver'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'serverid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'servertype' => array("Type"=>"varchar(1)","Null"=>"NO","Key"=>"","Default"=>"g","Extra"=>""),
     'rcon' => array("Type"=>"varchar(60)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -379,7 +402,8 @@ $defined['lendedserver'] = array('id' => array("Type"=>"bigint(19) unsigned","Nu
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['lendsettings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['lendsettings'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'activeGS' => array("Type"=>"enum('A','R','B','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'activeVS' => array("Type"=>"enum('A','R','B','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'userGame' => array("Type"=>"enum('A','B','R')","Null"=>"NO","Key"=>"","Default"=>"B","Extra"=>""),
@@ -418,7 +442,8 @@ $defined['lendsettings'] = array('id' => array("Type"=>"int(10) unsigned","Null"
     'oldcheck' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['lendstats'] = array('lendDate' => array("Type"=>"datetime","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['lendstats'] = array(
+    'lendDate' => array("Type"=>"datetime","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'serverID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'serverType' => array("Type"=>"enum('v','g')","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'lendtime' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -426,7 +451,8 @@ $defined['lendstats'] = array('lendDate' => array("Type"=>"datetime","Null"=>"NO
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>"")
 );
 
-$defined['mail_log'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['mail_log'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'uid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'topic' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'date' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -434,7 +460,8 @@ $defined['mail_log'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=
 );
 
 #https://github.com/easy-wi/developer/issues/61 add module management
-$defined['modules'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['modules'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'get' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'file' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'sub' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -443,7 +470,8 @@ $defined['modules'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO
 );
 
 #https://github.com/easy-wi/developer/issues/42 column description added
-$defined['mysql_external_dbs'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['mysql_external_dbs'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'uid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
@@ -462,7 +490,8 @@ $defined['mysql_external_dbs'] = array('id' => array("Type"=>"int(10) unsigned",
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['mysql_external_servers'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['mysql_external_servers'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'port' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"3306","Extra"=>""),
@@ -477,7 +506,8 @@ $defined['mysql_external_servers'] = array('id' => array("Type"=>"int(10) unsign
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['page_comments'] = array('commentID' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['page_comments'] = array(
+    'commentID' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'pageTextID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'replyTo' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'date' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -493,7 +523,8 @@ $defined['page_comments'] = array('commentID' => array("Type"=>"bigint(19) unsig
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['page_downloads'] = array('fileID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['page_downloads'] = array(
+    'fileID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'show' => array("Type"=>"enum('A','R','N','E')","Null"=>"YES","Key"=>"","Default"=>"E","Extra"=>""),
     'order' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'count' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -504,14 +535,16 @@ $defined['page_downloads'] = array('fileID' => array("Type"=>"int(10) unsigned",
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['page_downloads_log'] = array('fileID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
+$defined['page_downloads_log'] = array(
+    'fileID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'date' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'hostname' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>"")
 );
 
-$defined['page_pages'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['page_pages'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'subpage' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'released' => array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),
     'sort' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -525,7 +558,8 @@ $defined['page_pages'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['page_pages_text'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['page_pages_text'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'pageid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'title' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -534,12 +568,14 @@ $defined['page_pages_text'] = array('id' => array("Type"=>"int(10) unsigned","Nu
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['page_register_questions'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['page_register_questions'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'question' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'answer' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['page_settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['page_settings'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'seo' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'rssfeed' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'rssfeed_fulltext' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
@@ -566,7 +602,8 @@ $defined['page_settings'] = array('id' => array("Type"=>"int(10) unsigned","Null
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['page_terms'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['page_terms'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'name' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'search_name' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -576,13 +613,15 @@ $defined['page_terms'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['page_terms_used'] = array('page_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
+$defined['page_terms_used'] = array(
+    'page_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
     'term_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
     'language_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['resellerdata'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['resellerdata'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'useractive' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'ips' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'maxuser' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -596,7 +635,8 @@ $defined['resellerdata'] = array('id' => array("Type"=>"int(10) unsigned","Null"
     'resellersid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>"")
 );
 
-$defined['resellerimages'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['resellerimages'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'distro' => array("Type"=>"varchar(50)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'description' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -604,7 +644,8 @@ $defined['resellerimages'] = array('id' => array("Type"=>"int(10) unsigned","Nul
     'pxelinux' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['rserverdata'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['rserverdata'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'hyperthreading' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'cores' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"4","Extra"=>""),
@@ -635,7 +676,8 @@ $defined['rserverdata'] = array('id' => array("Type"=>"int(10) unsigned","Null"=
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['rservermasterg'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['rservermasterg'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'serverid' => array("Type"=>"varchar(11)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'servertypeid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'localVersion' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -645,7 +687,8 @@ $defined['rservermasterg'] = array('id' => array("Type"=>"int(10) unsigned","Nul
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['serverlist'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['serverlist'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'switchID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'servertype' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'anticheat' => array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),
@@ -671,7 +714,8 @@ $defined['serverlist'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>
     'uploaddir' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
-$defined['servertypes'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['servertypes'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'steamgame' => array("Type"=>"enum('Y','N','S')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'appID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'steamVersion' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -712,7 +756,8 @@ $defined['servertypes'] = array('id' => array("Type"=>"int(10) unsigned","Null"=
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['settings'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'version' => array("Type"=>"decimal(4,2)","Null"=>"YES","Key"=>"","Default"=>"4.30","Extra"=>""),
     'releasenotesDE' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'releasenotesEN' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -771,7 +816,8 @@ $defined['settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"N
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['tickets'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['tickets'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'writedate' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'topic' => array("Type"=>"varchar(30)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'userid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
@@ -784,21 +830,24 @@ $defined['tickets'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>
     'resellerid' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>"")
 );
 
-$defined['tickets_text'] = array('ticketID' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
+$defined['tickets_text'] = array(
+    'ticketID' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'writeDate' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'message' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerID' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>"")
 );
 
-$defined['ticket_topics'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['ticket_topics'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'topic' => array("Type"=>"varchar(30)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'maintopic' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'priority' => array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['traffic_data'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['traffic_data'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'serverid' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'in' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
@@ -808,7 +857,8 @@ $defined['traffic_data'] = array('id' => array("Type"=>"bigint(19) unsigned","Nu
     'resellerid' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['traffic_data_day'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['traffic_data_day'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'serverid' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'in' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
@@ -818,7 +868,8 @@ $defined['traffic_data_day'] = array('id' => array("Type"=>"bigint(19) unsigned"
     'resellerid' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['traffic_settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['traffic_settings'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'type' => array("Type"=>"varchar(30)","Null"=>"NO","Key"=>"","Default"=>"mysql","Extra"=>""),
     'statip' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'dbname' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -853,17 +904,19 @@ $defined['traffic_settings'] = array('id' => array("Type"=>"int(10) unsigned","N
     'line_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"220","Extra"=>"")
 );
 
-$defined['translations'] = array('type' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['translations'] = array(
+    'type' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'lang' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'transID' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
     'text' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );
 
-$defined['userdata'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['userdata'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'creationTime' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'updateTime' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'active' => array("Type"=>"enum('Y','N','R')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
+    'active' => array("Type"=>"enum('Y','N','R')","Null"=>"NO","Key"=>"MUL","Default"=>"Y","Extra"=>""),
     'salutation' => array("Type"=>"int(1)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'cname' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'security' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -899,15 +952,26 @@ $defined['userdata'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"N
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-#https://github.com/easy-wi/developer/issues/5
-$defined['userdata_value_log'] = array('userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
-    'date' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'json' => array("Type"=>"text","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
+#https://github.com/easy-wi/developer/issues/1
+$defined['userdata_social_identities'] = array(
+    'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'serviceProviderID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'serviceUserID' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")
+);
+
+$defined['userdata_social_providers'] = array(
+    'serviceProviderID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+    'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
+    'identifier' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'token' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'filename' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
 #https://github.com/easy-wi/developer/issues/2
-$defined['userdata_substitutes'] = array('sID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['userdata_substitutes'] = array(
+    'sID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'loginName' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
@@ -922,18 +986,30 @@ $defined['userdata_substitutes'] = array('sID' => array("Type"=>"int(10) unsigne
     'sourceSystemID' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
-$defined['userdata_substitutes_servers'] = array('sID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+
+$defined['userdata_substitutes_servers'] = array(
+    'sID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'oType' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'oID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['userdata_groups'] = array('userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['userdata_groups'] = array(
+    'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'groupID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['usergroups'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+#https://github.com/easy-wi/developer/issues/5
+$defined['userdata_value_log'] = array(
+    'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'date' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'json' => array("Type"=>"text","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
+);
+
+$defined['usergroups'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'defaultgroup' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'name' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -994,7 +1070,8 @@ $defined['usergroups'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['userlog'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['userlog'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'userid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'subuser' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'reseller' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
@@ -1007,7 +1084,8 @@ $defined['userlog'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>"")
 );
 
-$defined['userpermissions'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['userpermissions'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'userid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'root' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'miniroot' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
@@ -1063,7 +1141,8 @@ $defined['userpermissions'] = array('id' => array("Type"=>"int(10) unsigned","Nu
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['virtualcontainer'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['virtualcontainer'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'imageid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'userid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'hostid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
@@ -1090,7 +1169,8 @@ $defined['virtualcontainer'] = array('id' => array("Type"=>"int(10) unsigned","N
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['virtualhosts'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['virtualhosts'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'esxi' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -1113,7 +1193,8 @@ $defined['virtualhosts'] = array('id' => array("Type"=>"int(10) unsigned","Null"
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_dns'] = array('dnsID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['voice_dns'] = array(
+    'dnsID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'dns' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -1126,7 +1207,8 @@ $defined['voice_dns'] = array('dnsID' => array("Type"=>"int(10) unsigned","Null"
 );
 
 // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
-$defined['voice_masterserver'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['voice_masterserver'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'type' => array("Type"=>"varchar(30)","Null"=>"NO","Key"=>"","Default"=>"ts3","Extra"=>""),
     'usedns' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
@@ -1167,7 +1249,8 @@ $defined['voice_masterserver'] = array('id' => array("Type"=>"int(10) unsigned",
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_server'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['voice_server'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'autoRestart' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'backup' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
@@ -1209,7 +1292,8 @@ $defined['voice_server'] = array('id' => array("Type"=>"int(10) unsigned","Null"
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_server_backup'] = array('id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['voice_server_backup'] = array(
+    'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'uid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'name' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -1219,7 +1303,8 @@ $defined['voice_server_backup'] = array('id' => array("Type"=>"bigint(19) unsign
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_server_stats'] = array('sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['voice_server_stats'] = array(
+    'sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'date' => array("Type"=>"datetime","Null"=>"NO","Key"=>"PRI","Default"=>"0000-00-00 00:00:00","Extra"=>""),
     'mid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'installed' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -1230,7 +1315,8 @@ $defined['voice_server_stats'] = array('sid' => array("Type"=>"int(10) unsigned"
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_server_stats_hours'] = array('sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+$defined['voice_server_stats_hours'] = array(
+    'sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'date' => array("Type"=>"datetime","Null"=>"NO","Key"=>"PRI","Default"=>"0000-00-00 00:00:00","Extra"=>""),
     'mid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'installed' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -1241,7 +1327,8 @@ $defined['voice_server_stats_hours'] = array('sid' => array("Type"=>"int(10) uns
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_stats_settings'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['voice_stats_settings'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'text_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'text_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'text_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
@@ -1263,7 +1350,8 @@ $defined['voice_stats_settings'] = array('id' => array("Type"=>"int(10) unsigned
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_tsdns'] = array('id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+$defined['voice_tsdns'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'defaultdns' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'rootid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),

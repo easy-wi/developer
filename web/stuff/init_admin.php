@@ -129,6 +129,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
 if ($reseller_id == 0) {
     $what_to_be_included_array['mo'] = 'admin_modules.php';
+    $what_to_be_included_array['up'] = 'admin_social_provider.php';
 
     if ($easywiModules['pn'] === true) {
         $what_to_be_included_array['ps'] = 'page_settings.php';

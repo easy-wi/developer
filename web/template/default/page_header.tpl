@@ -20,6 +20,7 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
     <script src="<?php echo $page_data->pageurl;?>/js/default/footable.js" type="text/javascript"></script>
+    <script src="<?php echo $page_data->pageurl;?>/js/default/main.js" type="text/javascript"></script>
     <?php echo implode('',$htmlExtraInformation['js']);?>
 
     <?php if(isset($page_feeds)) echo $page_feeds; ?>
@@ -28,6 +29,7 @@
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <script type="text/javascript">window.onDomReady(onReady); function onReady() { SwitchShowHideRows('init_ready');}</script>
     <script type="text/javascript">$(function() { $('table').footable();});</script>
 </head>
 <body <?php echo implode(' ',$htmlExtraInformation['body']);?>>
@@ -58,7 +60,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                         <li class="divider"></li>
-                        <li><a href="<?php echo (isset($admin_id)) ? $page_data->pageurl.'/admin.php' : $page_data->url.'/userpanel.php';?>"><i class="fa fa-sign-in fa-fw"></i> Backend</a></li>
+                        <li><a href="<?php echo (isset($admin_id)) ? $page_data->pageurl.'/admin.php' : $page_data->pageurl.'/userpanel.php';?>"><i class="fa fa-sign-in fa-fw"></i> Backend</a></li>
                         <li class="divider"></li>
                         <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
                         <li class="divider"></li>
@@ -87,43 +89,59 @@
         <h3 id="myModalLabel">Login</h3>
     </div>
     <div class="modal-body">
-        <div class="control-group">
-            <div class="controls">
-                <label class="control-label" for="inputUser"></label>
-                <div class="input-prepend">
-                    <span class="add-on"><i class="icon-user"></i></span>
-                    <input name="username" id="inputUser" type="text" class="input-block-level" placeholder="User/Email" required >
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="control-label" for="inputUser"></label>
+                        <div class="input-prepend">
+                            <span class="add-on"><i class="icon-user"></i></span>
+                            <input name="username" id="inputUser" type="text" class="input-block-level" placeholder="User/Email" required >
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="control-label" for="inputPassword"></label>
+                        <div class="input-prepend">
+                            <span class="add-on"><i class="icon-lock"></i></span>
+                            <input name="password" id="inputPassword" type="password" class="input-block-level" placeholder="Password" required >
+                        </div>
+                    </div>
+                </div>
+                <?php if ($ewCfg['captcha']==1) { ?>
+                <div class="control-group">
+                    <label class="control-label" for="inputCaptcha"></label>
+                    <div class="controls">
+                        <div class="input-prepend">
+                            <span class="add-on"><img src="images.php" alt="Captcha" /></span>
+                            <input name="captcha" id="inputCaptcha" type="text" class="input-block-level" placeholder="Captcha" pattern="^[\w]{4}$" required >
+                        </div>
+                    </div>
+                </div>
+                <div class="hide">
+                    <label><input type="text" name="email"></label>
+                </div>
+                <?php } ?>
+                <div class="control-group">
+                    <label class="control-label" for="inputLogin"></label>
+                    <div class="controls">
+                        <button id="inputLogin" class="btn btn-primary pull-left">Login</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-                <label class="control-label" for="inputPassword"></label>
-                <div class="input-prepend">
-                    <span class="add-on"><i class="icon-lock"></i></span>
-                    <input name="password" id="inputPassword" type="password" class="input-block-level" placeholder="Password" required >
-                </div>
+            <div class="span6">
+                <?php foreach($serviceProviders as $k=>$css){ ?>
+                <a class="btn btn-block btn-social btn-<?php echo $css;?>" href="login.php?serviceProvider=<?php echo $k;?>">
+                    <i class="fa fa-<?php echo $css;?>"></i> Sign in with <?php echo $k;?>
+                </a>
+                <?php } ?>
             </div>
         </div>
-        <?php if ($ewCfg['captcha']==1) { ?>
-        <div class="control-group">
-            <label class="control-label" for="inputCaptcha"></label>
-            <div class="controls">
-                <div class="input-prepend">
-                    <span class="add-on"><img src="images.php" alt="Captcha" /></span>
-                    <input name="captcha" id="inputCaptcha" type="text" class="input-block-level" placeholder="Captcha" pattern="^[\w]{4}$" required >
-                </div>
-            </div>
-        </div>
-        <div class="hide">
-            <label><input type="text" name="email"></label>
-        </div>
-        <?php } ?>
     </div>
     <div class="modal-footer">
         <a class="btn pull-left btn-info" href="<?php echo $page_data->pages['register']['link'];?>"><?php echo $page_data->pages['register']['linkname'];?></a>
         <a class="btn pull-left" href="<?php echo $page_data->pageurl;?>/login.php?w=pr" >Lost PW</a>
-        <button class="btn btn-primary pull-right">Login</button>
     </div>
     </form>
 </div>
