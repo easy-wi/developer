@@ -954,7 +954,7 @@ class TS3 {
 
                 foreach ($returnRaw as $row) {
                     if ($row['client_type'] == 0) {
-                        $return[] = array('cid' => $row['cid'], 'clid' => $row['clid'], 'client_nickname' => $row['client_nickname']);
+                        $return[] = array('cid' => $row['cid'], 'clid' => $row['clid'], 'client_nickname' => $this->ReplaceFromTS3($row['client_nickname']));
                     }
                 }
 
@@ -980,7 +980,7 @@ class TS3 {
 
                 foreach ($rawReturn as $r) {
                     if (isset($r['banid'])) {
-                        $return[$r['banid']] = array('ip' => $r['ip'], 'name' => $r['name'], 'lastnickname' => $r['lastnickname'], 'blocked' => $r['enforcements'], 'duration' => $r['duration'], 'ends' => date('Y-m-d H:m:s', ($r['created'] + $r['duration'])));
+                        $return[$r['banid']] = array('ip' => $r['ip'], 'name' => $this->ReplaceFromTS3($r['name']), 'lastnickname' => $this->ReplaceFromTS3($r['lastnickname']), 'blocked' => $r['enforcements'], 'duration' => $r['duration'], 'ends' => date('Y-m-d H:m:s', ($r['created'] + $r['duration'])));
                     }
                 }
 

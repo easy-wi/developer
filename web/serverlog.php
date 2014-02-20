@@ -49,8 +49,8 @@ if (!isset($user_id) and !isset($admin_id)) {
 	die('Please allow redirection');
 }
 
-if (isset($resellerLockupID)) {
-    $reseller_id = $resellerLockupID;
+if (!isset($resellerLockupID)) {
+    $resellerLockupID = $reseller_id;
 }
 
 if ($ui->id('id', 10, 'get')) {
@@ -58,7 +58,7 @@ if ($ui->id('id', 10, 'get')) {
 	if (isset($admin_id)) {
         
         $query = $sql->prepare("SELECT u.`id`,u.`cname` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('id', 10, 'get'), $reseller_id));
+        $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$username = $row['cname'];
             $user_id = $row['id'];
@@ -69,7 +69,7 @@ if ($ui->id('id', 10, 'get')) {
 	}
     
     $query = $sql->prepare("SELECT g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `decryptedftppass`,s.`servertemplate`,t.`binarydir`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
-    $query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $user_id, $reseller_id));
+    $query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $user_id, $resellerLockupID));
 	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$protected = $row['protected'];
 		$servertemplate = $row['servertemplate'];
@@ -99,7 +99,7 @@ if ($ui->id('id', 10, 'get')) {
     if (isset($rootID)) {
 
         $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($rootID, $reseller_id));
+        $query->execute(array($rootID, $resellerLockupID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $ftpport = $row['ftpport'];

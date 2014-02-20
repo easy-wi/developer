@@ -33,7 +33,7 @@
                 <div class="controls">
                     <select id="inputType" name="type">
                         <option value="A"><?php echo $sprache->type_admin;?></option>
-                        <!--<option value="P" <?php if ($type=='P') echo 'selected="selected"'; ?>><?php echo $sprache->type_cms;?></option>-->
+                        <option value="P" <?php if ($type=='P') echo 'selected="selected"'; ?>><?php echo $sprache->type_cms;?></option>
                         <option value="U" <?php if ($type=='U') echo 'selected="selected"'; ?>><?php echo $sprache->type_user;?></option>
                     </select>
                 </div>

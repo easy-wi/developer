@@ -1180,7 +1180,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         $numplayers = $row['queryNumplayers'];
         $maxplayers = $row['queryMaxplayers'];
         $password = $row['queryPassword'];
-        $lendserver=($row['lendserver'] == 'Y') ? $gsprache->yes : $gsprache->no;
+        $lendserver = ($row['lendserver'] == 'Y') ? $gsprache->yes : $gsprache->no;
         if (!isset($name)) $name = '';
         if (!isset($type)) $type = '';
         if (!isset($map)) $map = '';

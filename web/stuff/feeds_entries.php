@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: feeds_entries.php.
  * Author: Ulrich Block

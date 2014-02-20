@@ -199,7 +199,7 @@ if ($ui->st('action', 'post') and !token(true)) {
                 }
 
                 if ($dbSuccess === true) {
-                    $loguseraction = ($ui->st('d', 'get') == 'md') ? '%mod% %modules% '.$file : '%add% %modules% '.$file;
+                    $loguseraction = ($ui->st('d', 'get') == 'md') ? '%mod% %modules% ' . $file : '%add% %modules% ' . $file;
                     $insertlog->execute();
                     $template_file = $spracheResponse->table_add;
                 } else {

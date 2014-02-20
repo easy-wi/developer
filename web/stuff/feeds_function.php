@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: feeds_function.php.
  * Author: Ulrich Block
@@ -36,6 +37,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
 if (isset($newsInclude) and $newsInclude == true) {
     $update = $sql->prepare("UPDATE `feeds_settings` SET `lastUpdate`=NOW() WHERE `resellerID`=? LIMIT 1");
     $update2 = $sql->prepare("UPDATE `feeds_url` SET `modified`=NOW() WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
@@ -47,8 +49,11 @@ if (isset($newsInclude) and $newsInclude == true) {
     if (isset($lookUpID)) {
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
         $query->execute(array($lookUpID));
+
     } else {
+
         $steamNews = array();
+
         $query = $sql->prepare("SELECT `newsAmount` FROM `feeds_settings` WHERE `active`='Y' AND `steamFeeds`='Y' ORDER BY `newsAmount` DESC LIMIT 1");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -57,10 +62,10 @@ if (isset($newsInclude) and $newsInclude == true) {
             $query2->execute();
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 if (!in_array($row2['appID'], array(null,'', false))) {
-                    $lookUpAppID=workAroundForValveChaos($row2['appID'], $row2['shorten']);
-                    $json=webhostRequest('api.steampowered.com','easy-wi.com','/ISteamNews/GetNewsForApp/v0002/?appid='.$lookUpAppID.'&format=json&count='.$newsAmount);
-                    $json=cleanFsockOpenRequest($json,'{','}');
-                    $json=@json_decode($json);
+                    $lookUpAppID = workAroundForValveChaos($row2['appID'], $row2['shorten']);
+                    $json = webhostRequest('api.steampowered.com', 'easy-wi.com', '/ISteamNews/GetNewsForApp/v0002/?appid=' . $lookUpAppID . '&format=json&count=' . $newsAmount);
+                    $json = cleanFsockOpenRequest($json, '{', '}');
+                    $json = @json_decode($json);
                     if ($json and isset($json->appnews->newsitems) and $json->appnews->appid==$lookUpAppID) {
                         if (isset($printToConsole)) print "Getting Feed Updates for Steamgame with AppID ${lookUpAppID}\r\n";
                         $theCount = 0;
@@ -79,6 +84,7 @@ if (isset($newsInclude) and $newsInclude == true) {
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `active`='Y' ORDER BY `resellerID`");
         $query->execute();
     }
+
     $checkedFeeds = 0;
     $skippedFeeds = 0;
     $skipEntries = 0;
@@ -226,46 +232,57 @@ if (isset($newsInclude) and $newsInclude == true) {
                                     }
                                 }
                             }
-                            $doc=new SimpleXmlElement($buffer);
-                            $theCount = 0;
-                            if (isset($doc->channel->item)) {
-                                foreach ($doc->channel->item as $item) {
-                                    $namespaces = $item->getNameSpaces(true);
-                                    if (isset($namespaces['content'])) {
-                                        $content=(string)$item->children($namespaces['content']);
-                                        if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$content)) {
-                                            $content=base64_decode($content);
-                                        }
-                                    } else {
-                                        $content = '';
-                                    }
-                                    if (isset($namespaces['dc'])) {
-                                        $dc = $item->children($namespaces['dc']);
-                                        $author=(string)$dc->publisher;
-                                        $creator=(string)$dc->creator;
-                                    } else {
-                                        $author = '';
-                                        $creator = '';
-                                    }
-                                    $feedTitle=(string)$item->title;
-                                    if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$feedTitle)) {
-                                        $feedTitle=base64_decode($feedTitle);
-                                    }
-                                    $pubDate=date('Y-m-d H:i:s',strtotime((string)$item->pubDate));
-                                    $link=(string)$item->link;
-                                    if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$link)) {
-                                        $link=base64_decode($link);
-                                    }
-                                    $description=(string)$item->description;
-                                    if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$description)) {
-                                        $description=base64_decode($description);
-                                    }
-                                    if ($theCount<$newsAmount) {
-                                        $feedsArray[$feedID][] = array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
-                                    }
-                                    $theCount++;
-                                }
 
+                            try {
+
+                                $doc = new SimpleXmlElement($buffer);
+                                $theCount = 0;
+
+                                if (isset($doc->channel->item)) {
+                                    foreach ($doc->channel->item as $item) {
+                                        $namespaces = $item->getNameSpaces(true);
+                                        if (isset($namespaces['content'])) {
+                                            $content=(string)$item->children($namespaces['content']);
+                                            if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$content)) {
+                                                $content=base64_decode($content);
+                                            }
+                                        } else {
+                                            $content = '';
+                                        }
+
+                                        if (isset($namespaces['dc'])) {
+                                            $dc = $item->children($namespaces['dc']);
+                                            $author=(string)$dc->publisher;
+                                            $creator=(string)$dc->creator;
+                                        } else {
+                                            $author = '';
+                                            $creator = '';
+                                        }
+
+                                        $feedTitle = (string) $item->title;
+
+                                        if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $feedTitle)) {
+                                            $feedTitle = base64_decode($feedTitle);
+                                        }
+
+                                        $pubDate=date('Y-m-d H:i:s', strtotime((string) $item->pubDate));
+                                        $link = (string) $item->link;
+                                        if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$link)) {
+                                            $link=base64_decode($link);
+                                        }
+                                        $description=(string)$item->description;
+                                        if ((bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/',$description)) {
+                                            $description=base64_decode($description);
+                                        }
+                                        if ($theCount<$newsAmount) {
+                                            $feedsArray[$feedID][] = array('title' => $feedTitle,'description' => $description,'link' => $link,'pubDate' => $pubDate,'content' => $content,'author' => $author,'creator' => $creator);
+                                        }
+                                        $theCount++;
+                                    }
+
+                                }
+                            } catch (Exception $e) {
+                                $errors[] = $e->getMessage();
                             }
                         }
                     }
