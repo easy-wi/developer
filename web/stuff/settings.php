@@ -37,6 +37,7 @@
  */
 
 // We cannot wait until it is removed from PHP and need to protect admins from themselves
+
 if (ini_get('register_globals') == 'on') {
     @ini_set('register_globals', 'off');
 
@@ -45,16 +46,6 @@ if (ini_get('register_globals') == 'on') {
         die('register_globals ist set to <b>on</b>. This setting is very dangerous. Easy-WI refuses to work in such an insecure inviroment');
     }
 }
-
-if (isset($_SERVER['QUERY_STRING'])) {
-    $queries = strtolower($_SERVER['QUERY_STRING']);
-    $badcontent = array("http://", "ftp://", "https://", "ftps://", "delete ", "from ", "into ", "userdata ", "userdata(", "userdata`", "userpermissions ", "userpermissions(", "userpermissions`", "select ", "set ", "where ", "update ", "union ", "*", ".ssh", "~", "chmod ", "passwd", "fclose", "fopen", "fwrite", "getenv", "locate", "passthru", "phpinfo", "proc_close", "proc_get_status", "proc_nice", "proc_open", "proc_terminate", "shell_exec(", "system(");
-    $check_bad = str_replace($badcontent, 'bad', $queries);
-    if ($queries != $check_bad) {
-        die();
-    }
-}
-
 
 $ui = new ValidateUserinput($_GET, $_POST, $_SERVER, array(), $_ENV);
 unset($_GET, $_POST, $_SERVER, $_ENV, $type, $host, $user, $pwd, $db);

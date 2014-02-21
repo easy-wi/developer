@@ -136,10 +136,10 @@ if ($ui->st('d', 'get') == 'pw') {
     } else {
         $template_file = 'userpanel_404.tpl';
     }
-} else if ($ui->w('spUser', 255, 'get') and $ui->id('spId', 10, 'get')) {
+} else if ($ui->escaped('spUser', 'get') and $ui->id('spId', 10, 'get')) {
 
     $query = $sql->prepare("DELETE FROM `userdata_social_identities` WHERE `userID`=? AND `serviceProviderID`=? AND `serviceUserID`=? AND `resellerID`=? LIMIT 1");
-    $query->execute(array($lookUpID, $ui->id('spId', 10, 'get'), $ui->w('spUser', 255, 'get'), $reseller_id));
+    $query->execute(array($lookUpID, $ui->id('spId', 10, 'get'), $ui->escaped('spUser', 'get'), $reseller_id));
 
     if ($query->rowCount() > 0) {
         $template_file = $spracheResponse->table_del;
@@ -198,7 +198,7 @@ if ($ui->st('d', 'get') == 'pw') {
             $serviceProviders[] = array(
                 'spId' => $row['serviceProviderID'],
                 'sp' => $row['filename'],
-                'spUserId' => $query2->fetchColumn()
+                'spUserId' => urlencode($query2->fetchColumn())
             );
         }
     }

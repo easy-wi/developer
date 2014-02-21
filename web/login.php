@@ -60,11 +60,11 @@ if ((!isset($ui->get['w']) and isset($ui->post['username'])) or (isset($ui->get[
 }
 
 if ($ui->ismail('email', 'post')) {
-	$fullday = date('Y-m-d H:i:s', strtotime('+1 day'));
+    $fullday = date('Y-m-d H:i:s', strtotime('+1 day'));
 
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
     $query->execute(array($loguserip));
-	$rowcount = $query->rowcount();
+    $rowcount = $query->rowcount();
 
     $query = ($rowcount == 0) ? $sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','bot',?)") : $sql->prepare("UPDATE `badips` SET `bantime`=?, `failcount`=failcount+1, `reason`='bot' WHERE `badip`=? LIMIT 1");
     $query->execute(array($fullday,$loguserip));
@@ -76,78 +76,78 @@ $vosprache = getlanguagefile('voice', $default_language, 0);
 
 if ($ui->st('w', 'get') == 'lo') {
 
-	if (isset($ui->server['HTTP_REFERER'])) {
-		$refstring = explode('/', substr(str_replace(array('http://' . $ui->domain('HTTP_HOST', 'server'), 'https://' . $ui->domain('HTTP_HOST', 'server'), '//'), array('', '', '/'), strtolower($ui->server['HTTP_REFERER'])), strlen($ewInstallPath)));
-		$referrer = (isset($refstring[1])) ? explode('?',$refstring[1]) : '';
-	} else {
-		$referrer[0] = 'login.php';
-	}
+    if (isset($ui->server['HTTP_REFERER'])) {
+        $refstring = explode('/', substr(str_replace(array('http://' . $ui->domain('HTTP_HOST', 'server'), 'https://' . $ui->domain('HTTP_HOST', 'server'), '//'), array('', '', '/'), strtolower($ui->server['HTTP_REFERER'])), strlen($ewInstallPath)));
+        $referrer = (isset($refstring[1])) ? explode('?',$refstring[1]) : '';
+    } else {
+        $referrer[0] = 'login.php';
+    }
 
-	if (isset($_SESSION['resellerid']) and isset($_SESSION['adminid']) and isset($_SESSION['oldid']) and isset($_SESSION['oldresellerid']) and !isset($_SESSION['userid']) and $_SESSION['resellerid'] != 0 and $referrer[0] == 'admin.php') {
-		$_SESSION['adminid'] = $_SESSION['oldid'];
-		$_SESSION['resellerid'] = $_SESSION['oldresellerid'];
+    if (isset($_SESSION['resellerid']) and isset($_SESSION['adminid']) and isset($_SESSION['oldid']) and isset($_SESSION['oldresellerid']) and !isset($_SESSION['userid']) and $_SESSION['resellerid'] != 0 and $referrer[0] == 'admin.php') {
+        $_SESSION['adminid'] = $_SESSION['oldid'];
+        $_SESSION['resellerid'] = $_SESSION['oldresellerid'];
 
-		if ($_SESSION['oldresellerid'] != 0 and $_SESSION['oldid'] == $_SESSION['oldresellerid']) {
-			$_SESSION['oldresellerid'] = 0;
-			$_SESSION['oldid'] = $_SESSION['oldadminid'];
-			unset($_SESSION['oldadminid']);
-		}
+        if ($_SESSION['oldresellerid'] != 0 and $_SESSION['oldid'] == $_SESSION['oldresellerid']) {
+            $_SESSION['oldresellerid'] = 0;
+            $_SESSION['oldid'] = $_SESSION['oldadminid'];
+            unset($_SESSION['oldadminid']);
+        }
 
-		redirect('admin.php');
+        redirect('admin.php');
 
-	} else if (isset($_SESSION['adminid']) and isset($_SESSION['userid']) and $referrer[0] == 'userpanel.php') {
-		unset($_SESSION['userid']);
-		redirect('admin.php');
+    } else if (isset($_SESSION['adminid']) and isset($_SESSION['userid']) and $referrer[0] == 'userpanel.php') {
+        unset($_SESSION['userid']);
+        redirect('admin.php');
 
-	} else {
-		session_unset();
-		session_destroy();
-		redirect($page_url . '/' . $ewInstallPath);
-	}
+    } else {
+        session_unset();
+        session_destroy();
+        redirect($page_url . '/' . $ewInstallPath);
+    }
 
 } else if ($ui->st('w', 'get') == 'ba') {
-	$sus = $sprache->banned;
-	$include = 'login.tpl';
+    $sus = $sprache->banned;
+    $include = 'login.tpl';
 
 } else if ($ui->st('w', 'get') == 'up') {
     $sus=($ui->escaped('error', 'get')) ? 'External Auth failed: ' . htmlentities(base64_decode(urldecode($ui->escaped('error', 'get')))) : $sprache->bad_up;
-	$include = 'login.tpl';
+    $include = 'login.tpl';
 
 } else if ($ui->st('w', 'get') == 'pr') {
 
     $token = '';
 
-	if (($ui->ismail('um', 'post') or $ui->username('um', 50, 'post')) and !$ui->w('gamestring', 32, 'get')) {
+    if (($ui->ismail('um', 'post') or $ui->username('um', 50, 'post')) and !$ui->w('gamestring', 32, 'get')) {
 
         # https://github.com/easy-wi/developer/issues/43
         $send = true;
         $text = $sprache->send;
 
-		$query = $sql->prepare("SELECT `id`,`cname`,`logintime`,`lastlogin` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
+        $query = $sql->prepare("SELECT `id`,`cname`,`logintime`,`lastlogin` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
         $query->execute(array($ui->username('um',50, 'post'), $ui->ismail('um', 'post')));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$userid = $row['id'];
-			$md5 = md5($userid . $row['logintime'] . $row['cname'] . $row['lastlogin'] . mt_rand());
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $userid = $row['id'];
+            $md5 = md5($userid . $row['logintime'] . $row['cname'] . $row['lastlogin'] . mt_rand());
 
-			$folders = explode('/', $ui->server['SCRIPT_NAME']);
-			$amount = count($folders) - 1;
-			$i = 0;
-			$path = '';
+            $folders = explode('/', $ui->server['SCRIPT_NAME']);
+            $amount = count($folders) - 1;
+            $i = 0;
+            $path = '';
 
-			while ($i < $amount) {
-				$path .= $folders[$i] . '/';
-				$i++;
-			}
+            while ($i < $amount) {
+                $path .= $folders[$i] . '/';
+                $i++;
+            }
 
             $webhostdomain = (isset($ui->server['HTTPS'])) ? 'https://' . $ui->server['HTTP_HOST'] . $path : 'http://' . $ui->server['HTTP_HOST'] . $path;
-			$link = $webhostdomain . 'login.php?w=pr&amp;gamestring=' . $md5;
-			$htmllink = '<a href="' . $link . '">' . $link . '</a>';
+            $link = $webhostdomain . 'login.php?w=pr&amp;gamestring=' . $md5;
+            $htmllink = '<a href="' . $link . '">' . $link . '</a>';
 
             $query2 = $sql->prepare("UPDATE `userdata` SET `token`=? WHERE `id`=? LIMIT 1");
             $query2->execute(array($md5, $userid));
 
-			sendmail('emailpwrecovery', $userid, $htmllink, '');
-		}
+            sendmail('emailpwrecovery', $userid, $htmllink, '');
+        }
 
     } else if ($ui->password('password1', 255, 'post') and $ui->password('password2', 255, 'post') and $ui->w('token', 32, 'get')) {
 
@@ -218,14 +218,19 @@ if ($ui->st('w', 'get') == 'lo') {
         $query = $sql->prepare("SELECT `serviceProviderID`,`filename`,`identifier`,`token` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $serviceProviderConfig['providers'][$row['filename']] = array(
                 'internalID' => $row['serviceProviderID'],
-                'enabled' => true,
-                'keys' => array(
-                    'id' => $row['identifier'],
-                    'secret' => $row['token']
-                )
+                'enabled' => true
             );
+
+            if (strlen($row['identifier']) > 0) {
+                $serviceProviderConfig['providers'][$row['filename']]['keys']['id'] = $row['identifier'];
+            }
+
+            if (strlen($row['token']) > 0) {
+                $serviceProviderConfig['providers'][$row['filename']]['keys']['secret'] = $row['token'];
+            }
         }
     }
 
@@ -253,6 +258,10 @@ if ($ui->st('w', 'get') == 'lo') {
 
     } else if (isset($serviceProviderConfig['providers'][$serviceProvider])) {
 
+        $_SERVER = $ui->server;
+        $_GET = $ui->get;
+        $_POST = $ui->post;
+
         include(EASYWIDIR . '/third_party/hybridauth/Hybrid/Auth.php');
 
         try{
@@ -264,6 +273,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             // try to authenticate with the selected provider
             $serviceProviderAdapter = $hybridauth->authenticate($serviceProvider);
+
             $userProfile = $serviceProviderAdapter->getUserProfile();
             $serviceProviderAdapter->logout();
 
@@ -340,12 +350,28 @@ if ($ui->st('w', 'get') == 'lo') {
             }
         }
         catch( Exception $e ){
+
+            $sus = $e;
+
+            $serviceProviders = array();
+            $query = $sql->prepare("SELECT `filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
+            $query->execute();
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $serviceProviders[$row['filename']] = strtolower($row['filename']);
+            }
+
+            if (count($serviceProviders) > 0) {
+                $htmlExtraInformation['css'][] = '<link href="css/default/social_buttons.css" rel="stylesheet">';
+            }
+
             $include = 'login.tpl';
         }
 
     } else if ($ui->escaped('endpoint', 'get')) {
 
         $_SERVER = $ui->server;
+        $_GET = $ui->get;
+        $_POST = $ui->post;
         include(EASYWIDIR . '/third_party/hybridauth/Hybrid/Auth.php');
         include(EASYWIDIR . '/third_party/hybridauth/Hybrid/Endpoint.php');
 
@@ -367,39 +393,39 @@ if ($ui->st('w', 'get') == 'lo') {
 
         $include = 'login.tpl';
 
-	} else if (!isset($include) and (isset($passwordCorrect) or (($ui->username('username', 255, 'post') or $ui->ismail('username', 'post')) and $ui->password('password', 255, 'post') and !isset($_SESSION['sessionid'])))) {
+    } else if (!isset($include) and (isset($passwordCorrect) or (($ui->username('username', 255, 'post') or $ui->ismail('username', 'post')) and $ui->password('password', 255, 'post') and !isset($_SESSION['sessionid'])))) {
 
-		$password = $ui->password('password', 255, 'post');
+        $password = $ui->password('password', 255, 'post');
 
-		if (isset($ewCfg) and $ewCfg['captcha'] == 1) {
+        if (isset($ewCfg) and $ewCfg['captcha'] == 1) {
 
-			if (md5($ui->w('captcha', 4, 'post')) != $_SESSION['captcha']) {
-				$halfhour = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+            if (md5($ui->w('captcha', 4, 'post')) != $_SESSION['captcha']) {
+                $halfhour = date('Y-m-d H:i:s', strtotime('+30 minutes'));
 
-				$query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
                 $query->execute(array($loguserip));
-				$rowcount = $query->rowCount();
+                $rowcount = $query->rowCount();
 
                 $query=($rowcount==0) ? $sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','password',?)") : $sql->prepare("UPDATE `badips` SET `bantime`=?, `failcount`=`failcount`+1, `reason`='password' WHERE `badip`=? LIMIT 1");
                 $query->execute(array($halfhour, $loguserip));
 
-				redirect('login.php?w=ca&r=lo');
+                redirect('login.php?w=ca&r=lo');
 
-			}
-		}
+            }
+        }
 
         $salt = '';
 
         $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
         $query->execute(array($ui->username('username', 255, 'post'), $ui->ismail('username', 'post')));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $username = $row['cname'];
-			$id = $row['id'];
-			$active = $row['active'];
+            $id = $row['id'];
+            $active = $row['active'];
             $mail = $row['mail'];
             $externalID = $row['externalID'];
-			$resellerid = $row['resellerid'];
+            $resellerid = $row['resellerid'];
             $accounttype = $row['accounttype'];
 
             $passwordCorrect = passwordCheck($password, $row['security'], $row['cname'], $row['salt']);
@@ -507,11 +533,11 @@ if ($ui->st('w', 'get') == 'lo') {
             }
         }
 
-		if (isset($active, $id, $resellerid) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect) {
+        if (isset($active, $id, $resellerid) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect) {
 
-			session_unset();
-			session_destroy();
-			session_start();
+            session_unset();
+            session_destroy();
+            session_start();
 
             # https://github.com/easy-wi/developer/issues/2
             if (isset($sID)) {
@@ -549,55 +575,55 @@ if ($ui->st('w', 'get') == 'lo') {
             $query = $sql->prepare("DELETE FROM `badips` WHERE `badip`=?");
             $query->execute(array($loguserip));
 
-			if (isanyadmin($id) or rsellerpermisions($id)) {
-				$_SESSION['adminid'] = $id;
+            if (isanyadmin($id) or rsellerpermisions($id)) {
+                $_SESSION['adminid'] = $id;
 
-				if (isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) {
+                if (isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) {
                     $admin_id = $_SESSION['adminid'];
                 }
 
-			} else if (isanyuser($id)) {
-				$_SESSION['userid'] = $id;
+            } else if (isanyuser($id)) {
+                $_SESSION['userid'] = $id;
 
-				if (isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) {
+                if (isset($_SESSION['userid']) and is_numeric($_SESSION['userid'])) {
                     $user_id = $_SESSION['userid'];
                 }
 
                 if (isset($sID)) {
                     $_SESSION['sID'] = $sID;
                 }
-			}
+            }
 
             $ref = '';
 
-			if ($ui->url('HTTP_REFERER', 'server')) {
-				$ref = $ui->url('HTTP_REFERER', 'server');
-			} else if ($ui->domain('HTTP_REFERER', 'server')) {
-				$ref = $ui->domain('HTTP_REFERER', 'server');
-			}
+            if ($ui->url('HTTP_REFERER', 'server')) {
+                $ref = $ui->url('HTTP_REFERER', 'server');
+            } else if ($ui->domain('HTTP_REFERER', 'server')) {
+                $ref = $ui->domain('HTTP_REFERER', 'server');
+            }
 
-			$referrer = explode('/', str_replace(array('http://', 'https://'), '', strtolower($ref)));
+            $referrer = explode('/', str_replace(array('http://', 'https://'), '', strtolower($ref)));
 
-			if (isset($referrer[1]) and $referrer[1] == 'login.php') {
+            if (isset($referrer[1]) and $referrer[1] == 'login.php') {
                 $topanel = true;
             }
 
-			if (!isset($user_id) and !isset($admin_id)) {
-				header('Location: login.php&r=lo');
+            if (!isset($user_id) and !isset($admin_id)) {
+                header('Location: login.php&r=lo');
 
-			} else if (isset($user_id)) {
-				redirect('userpanel.php');
+            } else if (isset($user_id)) {
+                redirect('userpanel.php');
 
-			} else if (isset($admin_id)) {
+            } else if (isset($admin_id)) {
 
-				$folders = explode('/', $ui->server['SCRIPT_NAME']);
-				$amount = count($folders) - 1;
-				$i = 0;
-				$path = '';
-				while ($i < $amount) {
-					$path .= $folders[$i] . '/';
-					$i++;
-				}
+                $folders = explode('/', $ui->server['SCRIPT_NAME']);
+                $amount = count($folders) - 1;
+                $i = 0;
+                $path = '';
+                while ($i < $amount) {
+                    $path .= $folders[$i] . '/';
+                    $i++;
+                }
 
                 $webhostdomain = (isset($ui->server['HTTPS'])) ? 'https://' . $ui->server['HTTP_HOST'] . $path : 'http://' . $ui->server['HTTP_HOST'] . $path;
 
@@ -606,20 +632,20 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 $params = @json_decode(licenceRequest(true));
 
-				if (isanyadmin($admin_id) or rsellerpermisions($admin_id)) {
-					redirect('admin.php');
-				} else {
+                if (isanyadmin($admin_id) or rsellerpermisions($admin_id)) {
+                    redirect('admin.php');
+                } else {
                     redirect('login.php&r=lo');
-				}
-			}
+                }
+            }
 
-		} else if (!isset($passwordCorrect) or $passwordCorrect === false) {
+        } else if (!isset($passwordCorrect) or $passwordCorrect === false) {
 
-			$halfhour = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+            $halfhour = date('Y-m-d H:i:s', strtotime('+30 minutes'));
 
             $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
             $query->execute(array($loguserip));
-			$rowcount = $query->rowCount();
+            $rowcount = $query->rowCount();
 
             $query = ($rowcount == 0) ? $sql->prepare("INSERT INTO `badips` (bantime,failcount,reason,badip) VALUES (?,'1','password',?)") : $sql->prepare("UPDATE `badips` SET `bantime`=?,`failcount`=`failcount`+1, `reason`='password' WHERE `badip`=? LIMIT 1");
             $query->execute(array($halfhour,$loguserip));
@@ -630,29 +656,29 @@ if ($ui->st('w', 'get') == 'lo') {
                 redirect('login.php?w=up&r=lo');
             }
 
-		} else if (isset($active) and $active == 'N') {
+        } else if (isset($active) and $active == 'N') {
             redirect('login.php?w=su&r=lo');
 
-		} else {
+        } else {
             redirect('login.php?w=up&r=lo');
-		}
+        }
 
     } else if (!isset($include) and $ui->escaped('username', 'post') and $ui->escaped('password', 'post')) {
         redirect('login.php?w=up&r=lo');
 
-	} else if(!isset($include)) {
+    } else if(!isset($include)) {
         redirect('login.php?w=lo');
-	}
+    }
 }
 
 if (isset($include) and isset($template_to_use)) {
-	if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $include)) {
-		include(EASYWIDIR . '/template/' . $template_to_use . '/' . $include);
-	} else if (is_file(EASYWIDIR . '/template/default/' . $include)) {
-		include(EASYWIDIR . '/template/default/' . $include);
-	} else {
-		include(EASYWIDIR . '/template/' . $include);
-	}
+    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $include)) {
+        include(EASYWIDIR . '/template/' . $template_to_use . '/' . $include);
+    } else if (is_file(EASYWIDIR . '/template/default/' . $include)) {
+        include(EASYWIDIR . '/template/default/' . $include);
+    } else {
+        include(EASYWIDIR . '/template/' . $include);
+    }
 }
 
 $sql = null;
