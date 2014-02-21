@@ -256,6 +256,32 @@ if ($ui->st('w', 'get') == 'lo') {
 
         unset($_SESSION['loginUserAllowed']);
 
+    } else if (isset($serviceProviderConfig['providers'][$serviceProvider]) and $ui->id('loginSubstituteId', 10, 'get')) {
+
+        if (isset($_SESSION['loginSubstitutesAllowed'][$ui->id('loginSubstituteId', 10, 'get')])) {
+
+            $query = $sql->prepare("SELECT * FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
+            $query->execute(array($ui->id('loginSubstituteId', 10, 'get')));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                $mail = '';
+                $externalID = 0;
+                $accounttype = 'v';
+
+                $sID = $row['sID'];
+                $id = $row['userID'];
+                $username = $row['loginName'];
+                $active = $row['active'];
+                $resellerid = $row['resellerID'];
+
+                $passwordCorrect = true;
+
+            }
+
+        }
+
+        unset($_SESSION['loginSubstitutesAllowed']);
+
     } else if (isset($serviceProviderConfig['providers'][$serviceProvider])) {
 
         $_SERVER = $ui->server;
@@ -267,6 +293,7 @@ if ($ui->st('w', 'get') == 'lo') {
         try{
 
             $connectedUsers = array();
+            $connectedSubstitutes = array();
 
             // initialize Hybrid_Auth with a given file
             $hybridauth = new Hybrid_Auth($serviceProviderConfig);
@@ -282,8 +309,17 @@ if ($ui->st('w', 'get') == 'lo') {
 
             if ((isset($user_id) or isset($admin_id)) and strlen($userProfile->identifier) > 0) {
 
-                $query = $sql->prepare("INSERT INTO `userdata_social_identities` (`userID`,`serviceProviderID`,`serviceUserID`,`resellerID`) VALUES (?,?,?,?)");
-                $query->execute(array((isset($admin_id)) ? $admin_id : $user_id, $serviceProviderID, $userProfile->identifier, $reseller_id));
+                if (isset($_SESSION['sID'])) {
+
+                    $query = $sql->prepare("INSERT INTO `userdata_social_identities_substitutes` (`userID`,`serviceProviderID`,`serviceUserID`,`resellerID`) VALUES (?,?,?,?)");
+                    $query->execute(array($_SESSION['sID'], $serviceProviderID, $userProfile->identifier, $reseller_id));
+
+                } else {
+
+                    $query = $sql->prepare("INSERT INTO `userdata_social_identities` (`userID`,`serviceProviderID`,`serviceUserID`,`resellerID`) VALUES (?,?,?,?)");
+                    $query->execute(array((isset($admin_id)) ? $admin_id : $user_id, $serviceProviderID, $userProfile->identifier, $reseller_id));
+
+                }
 
                 $redirectURL = (isset($admin_id)) ? $pageUrl . '/admin.php?w=su&added=' . $serviceProvider . '&r=su' : $pageUrl . '/userpanel.php?w=se&added=' . $serviceProvider . '&r=se';
 
@@ -304,8 +340,18 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 $connectedUserCount = count($connectedUsers);
 
+                $query = $sql->prepare("SELECT u.`sID`,u.`loginName`,CONCAT(u.`vname`,' ',u.`name`) AS `username` FROM `userdata_social_identities_substitutes` AS s INNER JOIN `userdata_substitutes` AS u ON u.`sID`=s.`userID` WHERE s.`serviceProviderID`=? AND s.`serviceUserID`=? AND u.`active`='Y'");
+                $query->execute(array($serviceProviderID, $userProfile->identifier));
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                    $connectedSubstitutes[$row['sID']] = (strlen(trim($row['username'])) > 0) ? trim($row['username']) . ' (' . $row['loginName'] . ')' : $row['loginName'];
+
+                }
+
+                $connectedSubstituteCount = count($connectedSubstitutes);
+
                 // no user has been found. Check if registration is allowed. If yes display registration form
-                if ($connectedUserCount == 0) {
+                if ($connectedUserCount == 0 and $connectedSubstituteCount == 0) {
 
                     if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
 
@@ -320,16 +366,17 @@ if ($ui->st('w', 'get') == 'lo') {
                     }
 
                     // multiple active users are connected, let the user pick one
-                }  else if ($connectedUserCount > 1) {
+                }  else if (($connectedUserCount + $connectedSubstituteCount) > 1) {
 
                     $sprache->multipleHelper = str_replace('%sp%', $serviceProvider, $sprache->multipleHelper);
 
                     $_SESSION['loginUserAllowed'] = $connectedUsers;
+                    $_SESSION['loginSubstitutesAllowed'] = $connectedSubstitutes;
 
                     $include = 'login_mutiple.tpl';
 
                     // exactly one user connected, login
-                } else {
+                } else if ($connectedUserCount == 1 and $connectedSubstituteCount == 0) {
 
                     $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `id`=? LIMIT 1");
                     $query->execute(array(key($connectedUsers)));
@@ -346,6 +393,24 @@ if ($ui->st('w', 'get') == 'lo') {
                         $passwordCorrect = true;
                     }
 
+                } else if ($connectedUserCount == 0 and $connectedSubstituteCount == 1) {
+
+                    $query = $sql->prepare("SELECT * FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
+                    $query->execute(array(key($connectedSubstitutes)));
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                        $mail = '';
+                        $externalID = 0;
+                        $accounttype = 'v';
+
+                        $sID = $row['sID'];
+                        $id = $row['userID'];
+                        $username = $row['loginName'];
+                        $active = $row['active'];
+                        $resellerid = $row['resellerID'];
+
+                        $passwordCorrect = true;
+                    }
                 }
             }
         }

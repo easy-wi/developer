@@ -35,6 +35,9 @@
                 <?php foreach($connectedUsers as $k=>$v){ ?>
                 <li><a href="login.php?serviceProvider=<?php echo $serviceProvider;?>&amp;loginUserId=<?php echo $k;?>"><?php echo $v;?></a></li>
                 <?php }?>
+                <?php foreach($connectedSubstitutes as $k=>$v){ ?>
+                <li><a href="login.php?serviceProvider=<?php echo $serviceProvider;?>&amp;loginSubstituteId=<?php echo $k;?>"><?php echo $v;?></a></li>
+                <?php }?>
             </ul>
         </div>
         <hr>

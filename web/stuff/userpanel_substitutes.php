@@ -176,7 +176,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             if ($ui->password('security',255, 'post') != '(encrypted)') {
 
-                $salt=md5(mt_rand().date('Y-m-d H:i:s:u'));
+                $salt = md5(mt_rand().date('Y-m-d H:i:s:u'));
                 $query = $sql->prepare("SELECT `loginName` FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id,$reseller_id));
                 $loginName = $query->fetchColumn();

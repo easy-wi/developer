@@ -133,9 +133,11 @@ if ($ui->st('d', 'get') == 'pw') {
                 $template_file = $spracheResponse->error_table;
             }
         }
+
     } else {
         $template_file = 'userpanel_404.tpl';
     }
+
 } else if ($ui->escaped('spUser', 'get') and $ui->id('spId', 10, 'get')) {
 
     $query = $sql->prepare("DELETE FROM `userdata_social_identities` WHERE `userID`=? AND `serviceProviderID`=? AND `serviceUserID`=? AND `resellerID`=? LIMIT 1");

@@ -11,13 +11,7 @@
     <div class="span12">
         <form class="form-horizontal" action="userpanel.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
-            <div class="control-group">
-                <label class="control-label" for="mail_backup"><?php echo $sprache->mail_backup;?></label>
-                <div class="controls">
-                    <input id="mail_backup" type="checkbox" name="mail_backup" value="Y" <?php if ($mail_backup=="Y") echo 'checked="checked"'; ?>>
-                </div>
-            </div>
-            <hr>
+            <?php if(count($serviceProviders) > 0 ) echo '<h2>Social Auth</h2>';?>
             <?php foreach($serviceProviders as $sp){ ?>
             <div class="control-group">
                 <label class="control-label" for="sp<?php echo $sp['sp'];?>"><?php echo $sp['sp'];?></label>
@@ -35,6 +29,13 @@
             </div>
             <?php } ?>
             <?php if(count($serviceProviders) > 0 ) echo '<hr>';?>
+            <h2>Mail</h2>
+            <div class="control-group">
+                <label class="control-label" for="mail_backup"><?php echo $sprache->mail_backup;?></label>
+                <div class="controls">
+                    <input id="mail_backup" type="checkbox" name="mail_backup" value="Y" <?php if ($mail_backup=="Y") echo 'checked="checked"'; ?>>
+                </div>
+            </div>
             <div class="control-group">
                 <label class="control-label" for="mail_serverdown"><?php echo $sprache->mail_serverdown;?></label>
                 <div class="controls">
@@ -47,6 +48,8 @@
                     <input id="mail_ticket" type="checkbox" name="mail_ticket" value="Y" <?php if ($mail_ticket=="Y") echo 'checked="checked"'; ?>>
                 </div>
             </div>
+            <hr>
+            <h2><?php echo $gsprache->user;?></h2>
             <div class="control-group">
                 <label class="control-label" for="fname"><?php echo $sprache->fname;?></label>
                 <div class="controls">

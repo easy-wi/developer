@@ -1152,22 +1152,24 @@ if (!function_exists('passwordgenerate')) {
 
         global $_SESSION;
 
-        if ($id != '' and $d != '') {
-            unset($_SESSION[$w][$d][$id]);
+        if ($w != 'sID') {
+            if ($id != '' and $d != '') {
+                unset($_SESSION[$w][$d][$id]);
 
-        } else if ($id == '' and $d != '') {
-            unset($_SESSION[$w][$d]);
+            } else if ($id == '' and $d != '') {
+                unset($_SESSION[$w][$d]);
 
-        } else if ($id != '' and $d == '') {
-            unset($_SESSION[$w][$id]);
+            } else if ($id != '' and $d == '') {
+                unset($_SESSION[$w][$id]);
 
-        } else if ($id == '' and $d == '') {
-            unset($_SESSION[$w]);
+            } else if ($id == '' and $d == '') {
+                unset($_SESSION[$w]);
+            }
         }
 
         foreach ($_SESSION as $k => $v) {
 
-            if (wpreg_check($k, 4) and ((isset($_SESSION[$k]['t']) and $_SESSION[$k]['d'] < strtotime('now')) or (is_array($_SESSION[$k]) and count($_SESSION[$k]) == 0))) {
+            if (wpreg_check($k, 4) and $k != 'sID' and ((isset($_SESSION[$k]['t']) and $_SESSION[$k]['d'] < strtotime('now')) or (is_array($_SESSION[$k]) and count($_SESSION[$k]) == 0))) {
                 unset($_SESSION[$k]);
 
             } else if (wpreg_check($k, 4) and is_array($_SESSION[$k]) and count($_SESSION[$k]) > 0) {

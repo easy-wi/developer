@@ -135,7 +135,7 @@ if (isset($lastlogin) and $lastlogin != null and $lastlogin != '0000-00-00 00:00
 
 # https://github.com/easy-wi/developer/issues/61
 # basic modules array. available at any time to anyone
-$what_to_be_included_array = array('lo' => 'userpanel_logdata.php','ti' => 'userpanel_tickets.php');
+$what_to_be_included_array = array('lo' => 'userpanel_logdata.php', 'ti' => 'userpanel_tickets.php');
 
 
 $easywiModules = array('gs' => true, 'ip' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
@@ -168,7 +168,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 }
 
 # modules meant only for user only
-if (!isset($_SESSION['sID'])) {
+if (isset($_SESSION['sID'])) {
+    $what_to_be_included_array['se'] = 'userpanel_substitutes_own.php';
+} else {
     $what_to_be_included_array['su'] = 'userpanel_substitutes.php';
     $what_to_be_included_array['se'] = 'global_userdata.php';
 }

@@ -1130,6 +1130,16 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata_social_identities` (
 $add = $sql->prepare($query);
 $add->execute();
 
+$query = "CREATE TABLE IF NOT EXISTS `userdata_social_identities_substitutes` (
+  `userID` int(10) unsigned NOT NULL,
+  `serviceProviderID` int(10) unsigned NOT NULL,
+  `serviceUserID` varchar(255) DEFAULT NULL,
+  `resellerID` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`userID`,`serviceProviderID`,`serviceUserID`),KEY(`resellerID`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
 $query = "CREATE TABLE IF NOT EXISTS `userdata_social_providers` (
   `serviceProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',

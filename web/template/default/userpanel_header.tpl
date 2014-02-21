@@ -65,11 +65,9 @@
                         <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                         <li class="divider"></li>
                         <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>
-                        <?php if($pa['usersettings'] and !isset($_SESSION['sID'])) { ?>
                         <li><a href="userpanel.php?w=se&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                         <li><a href="userpanel.php?w=se"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                         <li class="divider"></li>
-                        <?php } ?>
                         <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info-circle fa-fw"></i> About</a></li>
                         <li><a href="https://easy-wi.com/forum/" target="_blank"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
                         <li><a href="http://wiki.easy-wi.com" target="_blank"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
