@@ -66,7 +66,7 @@ class Hybrid_Endpoint {
 	*/
 	public static function processOpenidPolicy()
 	{
-		$output = file_get_contents( dirname(__FILE__) . "/resources/openid_policy.html" ); 
+		$output = file_get_contents(EASYWIDIR . '/third_party/hybridauth/Hybrid/resources/openid_policy.html' );
 		print $output;
 		die();
 	}
@@ -85,7 +85,7 @@ class Hybrid_Endpoint {
 				array("<", ">", "\"", "'", "&"), array("&lt;", "&gt;", "&quot;", "&apos;", "&amp;"), 
 				Hybrid_Auth::getCurrentUrl( false )
 			),
-			file_get_contents( dirname(__FILE__) . "/resources/openid_xrds.xml" )
+			file_get_contents(EASYWIDIR . '/third_party/hybridauth/Hybrid/resources/openid_xrds.xml' )
 		);
 		print $output;
 		die();
@@ -100,7 +100,7 @@ class Hybrid_Endpoint {
 		(
 			"{X_XRDS_LOCATION}",
 			htmlentities( Hybrid_Auth::getCurrentUrl( false ), ENT_QUOTES, 'UTF-8' ) . "?get=openid_xrds&v=" . Hybrid_Auth::$version,
-			file_get_contents( dirname(__FILE__) . "/resources/openid_realm.html" )
+			file_get_contents(EASYWIDIR . '/third_party/hybridauth/Hybrid/resources/openid_realm.html' )
 		); 
 		print $output;
 		die();
