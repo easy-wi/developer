@@ -43,20 +43,24 @@ if (is_dir(EASYWIDIR . '/install')) {
     die('Please remove the "install" folder');
 }
 
-include(EASYWIDIR . '/stuff/functions.php');
-include(EASYWIDIR . '/stuff/class_validator.php');
-include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
-include(EASYWIDIR . '/stuff/init_user.php');
-include(EASYWIDIR . '/stuff/userpanel_home.php');
+include(EASYWIDIR . '/stuff/user/init_user.php');
+include(EASYWIDIR . '/stuff/user/userpanel_home.php');
 
-if (isset($what_to_be_included_array[$w])) {
-    include(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$w]);
-    unset($dbConnect);
+if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui->smallletters('w', 255, 'get')]) and is_file(EASYWIDIR . '/stuff/user/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')])) {
+    include(EASYWIDIR . '/stuff/user/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]);
+} else if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui->smallletters('w', 255, 'get')]) and is_file(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')])) {
+    include(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]);
+} else if ($ui->smallletters('w', 255, 'get') and isset($customFiles[$ui->smallletters('w', 255, 'get')]) and is_file((EASYWIDIR . '/stuff/custom_modules/' . $customFiles[$ui->smallletters('w', 255, 'get')]))) {
+    include(EASYWIDIR . '/stuff/custom_modules/' . $customFiles[$ui->smallletters('w', 255, 'get')]);
 } else {
-    unset($dbConnect);
     $template_file = 'userpanel_home.tpl';
 }
+
+unset($dbConnect);
 
 if (!isset($template_to_use) or !isset($template_to_use) ) {
     $template_to_use = 'default';
@@ -68,8 +72,8 @@ if (!isset($template_file) or is_array($template_file)) {
     $template_file = (string) $template_file;
 }
 
-include(IncludeTemplate($template_to_use, 'userpanel_header.tpl'));
-include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'general.tpl'));
-include(IncludeTemplate($template_to_use, 'userpanel_footer.tpl'));
+include(IncludeTemplate($template_to_use, 'userpanel_header.tpl', 'user'));
+include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'general.tpl', 'user'));
+include(IncludeTemplate($template_to_use, 'userpanel_footer.tpl', 'user'));
 
 $sql = null;

@@ -50,9 +50,9 @@ if (isset($page_include)) {
 
     $logininclude = 1;
 
-    include(EASYWIDIR . '/stuff/vorlage.php');
-    include(EASYWIDIR . '/stuff/class_validator.php');
-    include(EASYWIDIR . '/stuff/functions.php');
+    include(EASYWIDIR . '/stuff/methods/vorlage.php');
+    include(EASYWIDIR . '/stuff/methods/class_validator.php');
+    include(EASYWIDIR . '/stuff/methods/functions.php');
     include(EASYWIDIR . '/stuff/settings.php');
 
     $query = $sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
@@ -65,9 +65,9 @@ if (isset($page_include)) {
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/functions_gs.php');
-include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
-include(EASYWIDIR . '/stuff/class_ts3.php');
+include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 
 $validacces = false;
 
@@ -425,7 +425,9 @@ if (isset($servertype)) {
 
                 $tFile = (isset($lendIPBlock)) ? 'lenddata_ipblock.tpl' : 'lenddata.tpl';
 
-                if (isset($template_to_use) and is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $tFile)) {
+                if (isset($template_to_use) and is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $tFile)) {
+                    include(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $tFile);
+                } else if (isset($template_to_use) and is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $tFile)) {
                     include(EASYWIDIR . '/template/' . $template_to_use . '/' . $tFile);
                 } else if (is_file(EASYWIDIR . '/template/default/' . $tFile)) {
                     include(EASYWIDIR . '/template/default/' . $tFile);
@@ -908,7 +910,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                     } else {
 
-                        if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
+                        if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/lenddata.tpl')) {
+                            include(EASYWIDIR . '/template/' . $template_to_use . '/cms/lenddata.tpl');
+
+                        } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
                             include(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl');
 
                         } else if (is_file(EASYWIDIR . '/template/default/lenddata.tpl')) {
@@ -953,7 +958,12 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 $template_file = 'page_lend.tpl';
 
             } else {
-                if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
+
+                if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/lend.tpl')) {
+
+                    include(EASYWIDIR . '/template/' . $template_to_use . '/cms/lend.tpl');
+
+                } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
                     include(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl');
 
                 } else if (is_file(EASYWIDIR . '/template/default/lend.tpl')) {
@@ -1302,7 +1312,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                     } else {
 
-                        if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
+                        if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/lenddata.tpl')) {
+                            include(EASYWIDIR . '/template/' . $template_to_use . '/cms/lenddata.tpl');
+
+                        } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
                             include(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl');
 
                         } else if (is_file(EASYWIDIR . '/template/default/lenddata.tpl')) {
@@ -1341,7 +1354,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                 } else {
 
-                    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
+                    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/lend.tpl')) {
+                        include(EASYWIDIR . '/template/' . $template_to_use . '/cms/lend.tpl');
+
+                    } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
                         include(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl');
 
                     } else if (is_file(EASYWIDIR . '/template/default/lend.tpl')) {

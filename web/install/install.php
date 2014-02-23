@@ -42,8 +42,8 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL|E_STRICT);
 define('EASYWIDIR', dirname(dirname(__FILE__)));
 
-require_once(EASYWIDIR . '/stuff/functions.php');
-require_once(EASYWIDIR . '/stuff/vorlage.php');
+require_once(EASYWIDIR . '/stuff/methods/functions.php');
+require_once(EASYWIDIR . '/stuff/methods/vorlage.php');
 
 $currentStep = (isset($_GET['step']) and $_GET['step'] > 0 and $_GET['step'] < 10) ? (int) $_GET['step'] : 0;
 $progressPercent = (100 / 9) * $currentStep ;
@@ -153,6 +153,13 @@ if ($currentStep == 0) {
         'languages/default/dk/',
         'languages/default/uk',
         'stuff/',
+        'stuff/admin/',
+        'stuff/api/',
+        'stuff/cms/',
+        'stuff/custom_modules/',
+        'stuff/jobs/',
+        'stuff/methods/',
+        'stuff/user/',
         'template/',
         'template/default/',
         'third_party/',
@@ -360,7 +367,7 @@ if ($currentStep == 4 and count($systemCheckError) == 0) {
 
     try {
 
-        require_once(EASYWIDIR . '/stuff/tables_add.php');
+        require_once(EASYWIDIR . '/stuff/methods/tables_add.php');
 
         $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_db_tables_create}</div>";
         $displayToUser .= "<div class='pager'><a href='?step=5${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
@@ -391,7 +398,7 @@ if ($currentStep == 5 and count($systemCheckError) == 0) {
 
         $response = new UpdateResponse();
 
-        require_once(EASYWIDIR . '/stuff/tables_repair.php');
+        require_once(EASYWIDIR . '/stuff/methods/tables_repair.php');
 
         if (strpos($response->response, 'Error: no such table:') !== false) {
 
@@ -811,7 +818,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
         try {
 
-            require_once(EASYWIDIR . '/stuff/gameslist.php');
+            include(EASYWIDIR . '/stuff/methods/gameslist.php');
 
             $displayToUser .= "<div class='pager'><a href='?step=9${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
             $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_gameserver_data}</div>";

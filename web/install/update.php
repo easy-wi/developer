@@ -170,7 +170,7 @@ if (versioncheck ($version, '2.10', 'update_209-210.php', $response)) {
     $version = '2.10';
 }
 
-include(EASYWIDIR . '/stuff/tables_add.php');
+include(EASYWIDIR . '/stuff/methods/tables_add.php');
 
 if (versioncheck ($version, '2.11', 'update_210-211.php', $response)) {
     $version = '2.11';
@@ -241,9 +241,9 @@ if (versioncheck ($version, '4.30', 'update_420-430.php', $response)) {
 
 $response->add('Repairing tables if needed.');
 
-include(EASYWIDIR . '/stuff/tables_repair.php');
+include(EASYWIDIR . '/stuff/methods/tables_repair.php');
 
-include(EASYWIDIR . '/stuff/tables_entries_repair.php');
+include(EASYWIDIR . '/stuff/methods/tables_entries_repair.php');
 
 # Ende
 if (!isset($updateinclude) or $updateinclude == false) {

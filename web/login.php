@@ -48,10 +48,10 @@ if (is_dir(EASYWIDIR . '/install')) {
     die('Please remove the "install" folder');
 }
 
-include(EASYWIDIR . '/stuff/vorlage.php');
-include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/third_party/password_compat/password.php');
-include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
@@ -422,7 +422,17 @@ if ($ui->st('w', 'get') == 'lo') {
             $query = $sql->prepare("SELECT `filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
             $query->execute();
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $serviceProviders[$row['filename']] = strtolower($row['filename']);
+
+                $cssIcon = strtolower($row['filename']);
+
+                if ($cssIcon == 'google') {
+                    $cssIcon = 'google-plus';
+                } else if ($cssIcon == 'live') {
+                    $cssIcon = 'windows';
+                }
+
+                $serviceProviders[$row['filename']] = strtolower($cssIcon);
+
             }
 
             if (count($serviceProviders) > 0) {
@@ -446,10 +456,21 @@ if ($ui->st('w', 'get') == 'lo') {
     if (!isset($include) and !isset($passwordCorrect) and !$ui->username('username', 255, 'post') and !$ui->ismail('username', 255, 'post') and !$ui->password('password', 255, 'post') and !isset($_SESSION['sessionid'])) {
 
         $serviceProviders = array();
+
         $query = $sql->prepare("SELECT `filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $serviceProviders[$row['filename']] = strtolower($row['filename']);
+
+            $cssIcon = strtolower($row['filename']);
+
+            if ($cssIcon == 'google') {
+                $cssIcon = 'google-plus';
+            } else if ($cssIcon == 'live') {
+                $cssIcon = 'windows';
+            }
+
+            $serviceProviders[$row['filename']] = strtolower($cssIcon);
+
         }
 
         if (count($serviceProviders) > 0) {
@@ -737,7 +758,9 @@ if ($ui->st('w', 'get') == 'lo') {
 }
 
 if (isset($include) and isset($template_to_use)) {
-    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $include)) {
+    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $include)) {
+        include(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $include);
+    } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $include)) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/' . $include);
     } else if (is_file(EASYWIDIR . '/template/default/' . $include)) {
         include(EASYWIDIR . '/template/default/' . $include);

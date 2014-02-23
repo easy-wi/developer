@@ -46,9 +46,9 @@ if (is_dir(EASYWIDIR . '/install')) {
 
 $logininclude = true;
 
-include(EASYWIDIR . '/stuff/vorlage.php');
-include(EASYWIDIR . '/stuff/class_validator.php');
-include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 
 if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post')) {
@@ -136,13 +136,13 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
 
     if ($type == 'user') {
 
-        include(EASYWIDIR . '/stuff/api_users.php');
+        include(EASYWIDIR . '/stuff/api/api_users.php');
 
     } else if ($type == 'voice') {
 
         if ($voModule == true) {
 
-            include(EASYWIDIR . '/stuff/api_voice.php');
+            include(EASYWIDIR . '/stuff/api/api_voice.php');
 
         } else {
 
@@ -153,13 +153,13 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
 
     } else if ($type == 'mysql') {
 
-        include(EASYWIDIR . '/stuff/api_mysql.php');
+        include(EASYWIDIR . '/stuff/api/api_mysql.php');
 
     } else if ($type == 'gserver') {
 
         if ($gsModule == true) {
 
-            include(EASYWIDIR . '/stuff/api_gserver.php');
+            include(EASYWIDIR . '/stuff/api/api_gserver.php');
 
         } else {
 

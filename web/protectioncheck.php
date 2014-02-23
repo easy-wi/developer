@@ -53,9 +53,9 @@ if (isset($page_include)) {
 
     $logininclude = true;
 
-    include(EASYWIDIR . '/stuff/vorlage.php');
-    include(EASYWIDIR . '/stuff/class_validator.php');
-    include(EASYWIDIR . '/stuff/functions.php');
+    include(EASYWIDIR . '/stuff/methods/vorlage.php');
+    include(EASYWIDIR . '/stuff/methods/class_validator.php');
+    include(EASYWIDIR . '/stuff/methods/functions.php');
     include(EASYWIDIR . '/stuff/settings.php');
 
     if (!isset($user_language)) {
@@ -147,10 +147,16 @@ if (!isset($protected)) {
     $imgAlt = 'protected';
 }
 if ($ui->ipport('serveraddress', 'post')) {
+
     if (isset($page_include)) {
+
         $template_file = 'page_protectioncheck.tpl';
+
     } else {
-        if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
+
+        if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl')) {
+            include(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl');
+        } else if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
             include(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl');
         } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
             include(EASYWIDIR . '/template/default/protectioncheck.tpl');
@@ -158,7 +164,8 @@ if ($ui->ipport('serveraddress', 'post')) {
             include(EASYWIDIR . '/template/protectioncheck.tpl');
         }
     }
-} else if (!isset($page_include) and $ui->ip('ip', 'get') and $ui->port('po', 'get')) {
+
+    } else if (!isset($page_include) and $ui->ip('ip', 'get') and $ui->port('po', 'get')) {
     if ($ui->username('gamestring', 50, 'get') == 'xml') {
         if (!isset($protected)) {
             echo 'unknown';
@@ -225,8 +232,11 @@ XML;
     $page_data->langLinks($langLinks);
 
     $template_file = 'page_protectioncheck.tpl';
+
 } else {
-    if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
+    if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl')) {
+        include(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl');
+    } else if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl');
     } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
         include(EASYWIDIR . '/template/default/protectioncheck.tpl');

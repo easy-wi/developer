@@ -43,26 +43,32 @@ define('EASYWIDIR', dirname(__FILE__));
 $main = 1;
 $page_include = 1;
 
-include(EASYWIDIR . '/stuff/vorlage.php');
-include(EASYWIDIR . '/stuff/class_validator.php');
-include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
-include(EASYWIDIR . '/stuff/class_page_settings.php');
-include(EASYWIDIR . '/stuff/init_page.php');
+include(EASYWIDIR . '/stuff/methods/class_page_settings.php');
+include(EASYWIDIR . '/stuff/cms/init_page.php');
 
 
 if (isset($page_active) and $page_active == 'Y') {
+
     if (isset($throw404)) {
         $template_file = 'page_404.tpl';
+    } else if (isset($what_to_be_included_array[$s]) and is_file(EASYWIDIR . '/stuff/cms/' . $what_to_be_included_array[$s])) {
+        include(EASYWIDIR . '/stuff/cms/' . $what_to_be_included_array[$s]);
     } else if (isset($what_to_be_included_array[$s]) and is_file(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$s])) {
         include(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$s]);
     } else if (isset($what_to_be_included_array[$s]) and is_file(EASYWIDIR . '/' . $what_to_be_included_array[$s])) {
         include(EASYWIDIR . '/' . $what_to_be_included_array[$s]);
+    } else if (isset($customFiles[$s])) {
+        include(EASYWIDIR . '/stuff/custom_modules/' . $customFiles[$s]);
     } else if (isset($s) and !isset($what_to_be_included_array[$s])) {
         $template_file = 'page_404.tpl';
     } else {
         $template_file = 'page_home.tpl';
     }
+
     unset($dbConnect);
 
     if (!isset($template_to_use) or !isset($template_to_use) ) {
@@ -75,9 +81,9 @@ if (isset($page_active) and $page_active == 'Y') {
         $template_file = (string) $template_file;
     }
 
-    include(IncludeTemplate($template_to_use,'page_header.tpl'));
-    include(IncludeTemplate($template_to_use,(preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'page_general.tpl'));
-    include(IncludeTemplate($template_to_use,'page_footer.tpl'));
+    include(IncludeTemplate($template_to_use, 'page_header.tpl', 'cms'));
+    include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'page_general.tpl', 'cms'));
+    include(IncludeTemplate($template_to_use, 'page_footer.tpl', 'cms'));
 
 } else {
     redirect($page_data->pageurl . '/login.php');

@@ -41,10 +41,10 @@
 
 define('EASYWIDIR', dirname(__FILE__));
 
-include(EASYWIDIR . '/stuff/vorlage.php');
-include(EASYWIDIR . '/stuff/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/config.php');
-include(EASYWIDIR . '/stuff/functions.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 

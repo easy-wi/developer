@@ -37,9 +37,9 @@
  */
 
 define('EASYWIDIR', dirname(__FILE__));
-include(EASYWIDIR . '/stuff/functions.php');
-include(EASYWIDIR . '/stuff/class_validator.php');
-include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
 
 if (!isset($admin_id) or !isset($reseller_id)) {

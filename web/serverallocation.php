@@ -37,9 +37,9 @@
  */
 
 define('EASYWIDIR', dirname(__FILE__));
-include(EASYWIDIR . '/stuff/functions.php');
-include(EASYWIDIR . '/stuff/class_validator.php');
-include(EASYWIDIR . '/stuff/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/config.php');
 include(EASYWIDIR . '/stuff/settings.php');
 
@@ -78,7 +78,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['mapGroup'] != null) {
             $mapGroup = $row['mapGroup'];
-            require_once IncludeTemplate($template_to_use,'ajax_userpanel_mapgroup.tpl');
+            require_once IncludeTemplate($template_to_use,'ajax_userpanel_mapgroup.tpl', 'ajax');
         }
     }
 
@@ -169,7 +169,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 			$best_hdd[] = $mountpoint;
 		}
 	}
-    require_once IncludeTemplate($template_to_use,'ajax_admin_vserver_allocation.tpl');
+    require_once IncludeTemplate($template_to_use,'ajax_admin_vserver_allocation.tpl', 'ajax');
 
 } else if ($ui->st('d', 'get')=="ui" and $ui->id('id',19, 'get')) {
 	foreach (freeips($ui->id('id',19, 'get')) as $ip) echo $ip."<br />";
@@ -185,7 +185,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		$installed = 0;
 		$max_databases = 0;
 	}
-    require_once IncludeTemplate($template_to_use,'ajax_admin_mysql_server.tpl');
+    require_once IncludeTemplate($template_to_use,'ajax_admin_mysql_server.tpl', 'ajax');
 
 } else if ($ui->st('d', 'get')=="tr" and $ui->st('w', 'get')) {
 	if ($ui->st('w', 'get')=="su") {
@@ -263,7 +263,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		natsort($ips);
 		foreach ($ips as $ip) $data[] = '<option>'.$ip.'</option>';
 	}
-    require_once IncludeTemplate($template_to_use,'ajax_admin_traffic.tpl');
+    require_once IncludeTemplate($template_to_use,'ajax_admin_traffic.tpl', 'ajax');
 } else if ($ui->st('d', 'get')=="vu" and $ui->st('w', 'get')) {
 	if ($ui->st('w', 'get')=="us") {
 		$query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
@@ -281,7 +281,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
         $query->execute(array($reseller_id));
 		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';
 	}
-    require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl');
+    require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl', 'ajax');
 } else if ($ui->username('distro', 50, 'get') and $ui->id('id',19, 'get') and ($pa['vserversettings'] or $pa['root']) and $reseller_id == 0) {
 	$pselect = $sql->prepare("SELECT `pxeautorun` FROM `resellerimages` WHERE `bitversion`=? AND `distro`=?");
 	$pselect->execute(array($ui->id('id',19, 'get'), $ui->username('distro', 50, 'get')));
@@ -351,8 +351,8 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 
 } else if ($ui->username('gamestring', 50, 'get') and $ui->id('id',19, 'get') and ($pa['roots'] or $pa['root'])) {
 
-    include(EASYWIDIR . '/stuff/functions_ssh_exec.php');
-    include(EASYWIDIR . '/stuff/class_masterserver.php');
+    include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+    include(EASYWIDIR . '/stuff/methods/class_masterserver.php');
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 	$sprache = getlanguagefile('roots', $user_language, $reseller_id);
@@ -420,7 +420,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		} else {
 			$uslots = $row['uslots'];
 		}
-        require_once IncludeTemplate($template_to_use,'ajax_admin_voiceserver_usage.tpl');
+        require_once IncludeTemplate($template_to_use,'ajax_admin_voiceserver_usage.tpl', 'ajax');
 	}
 } else if ($pa['gserver'] and $ui->st('d', 'get')!="vs" and $ui->st('d', 'get')!="vo" and ($ui->id('id',19, 'get') or $ui->ip('ip', 'get'))) {
 	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
@@ -446,7 +446,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
             $max+=$row['slots'];
             $installedserver++;
         }
-        require_once IncludeTemplate($template_to_use,'ajax_admin_gserver_usage.tpl');
+        require_once IncludeTemplate($template_to_use,'ajax_admin_gserver_usage.tpl', 'ajax');
 	} else if ($ui->ip('ip', 'get') and $ui->st('d', 'get')!="vs") {
 		$query = $sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? AND `resellerid`=? ORDER BY `port`");
         $query->execute(array($ui->ip('ip', 'get'), $reseller_id));
@@ -481,7 +481,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		} else {
 			$ports = '';
 		}
-        require_once IncludeTemplate($template_to_use,'ajax_admin_gserver_ports.tpl');
+        require_once IncludeTemplate($template_to_use,'ajax_admin_gserver_ports.tpl', 'ajax');
 	}
 } else if (($pa['usertickets'] or $pa['usertickets']) and $ui->port('po', 'get') and ($ui->st('d', 'get') == 'ut' or $ui->st('d', 'get') == 'rt')) {
 	if ($reseller_id != 0 and $admin_id==$reseller_id and $ui->st('d', 'get') == 'rt') {
@@ -511,6 +511,6 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
             $table[] = array('id' => $row['id'], 'topic' => $topic);
         }
         $ticketTemplate=($ui->id('r',1, 'get') != 1) ? 'ajax_userpanel_ticket_category.tpl' : 'ajax_admin_reseller_ticket_category.tpl';
-        require_once IncludeTemplate($template_to_use, $ticketTemplate);
+        require_once IncludeTemplate($template_to_use, $ticketTemplate, 'ajax');
     }
 }
