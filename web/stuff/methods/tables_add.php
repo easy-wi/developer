@@ -860,6 +860,7 @@ $query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `description` varchar(255) NULL,
   `type` varchar(12) NOT NULL,
   `gamebinary` varchar(255) NOT NULL,
+  `gamebinaryWin` varchar(255) NOT NULL,
   `binarydir` varchar(255) DEFAULT NULL,
   `modfolder` varchar(255) DEFAULT NULL,
   `fps` varchar(5) DEFAULT NULL,
