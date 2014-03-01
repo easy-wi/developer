@@ -104,7 +104,7 @@ class PageSettings {
 				$link = '/' . $this->AddPageToArray('pages', $id, $this->NameToLink($request));
 			}
 
-			$subdata['link'] = $this->pageurl. '/' . $this->language.$link . '/';
+			$subdata['link'] = removeDoubleSlashes($this->pageurl. '/' . $this->language.$link . '/');
 
 		} else {
 
@@ -127,7 +127,7 @@ class PageSettings {
                 $getparams = '?site=' . $request;
             }
 
-			$subdata['link'] = $this->pageurl . '/index.php' . $getparams;
+			$subdata['link'] = removeDoubleSlashes($this->pageurl . '/index.php' . $getparams);
 		}
 
 		$subdata['href'] = '<a href="' . $subdata['link'] . '" title="' . $linkname . '">' . $linkname . '</a>';
@@ -147,7 +147,7 @@ class PageSettings {
     function SetNewsPost ($id, $title, $text, $cutOff) {
         $this->last_news[$id]['title'] = $title;
         $this->last_news[$id]['text'] = (strlen($text) <= $cutOff) ? $text : substr($text,0, $cutOff) . ' ...';
-        $this->last_news[$id]['link'] = ($this->seo == 'Y') ? $this->pages['news']['link'].$this->NameToLink($title) . '/' : $this->pages['news']['link'] . '&amp;id=' . $id;
+        $this->last_news[$id]['link'] = ($this->seo == 'Y') ? $this->pages['news']['link'] . $this->NameToLink($title) . '/' : $this->pages['news']['link'] . '&amp;id=' . $id;
         $this->last_news[$id]['href'] = '<a href="' . $this->last_news[$id]['link'] . '" title="' . $title . '">' . $title . '</a>';
     }
 
@@ -169,7 +169,7 @@ class PageSettings {
 				$link = '/' . $this->AddPageToArray($var, $id, $this->NameToLink($request));
 			}
 
-			$subdata[$id]['link'] = $this->pageurl. '/' . $this->language.$link . '/';
+			$subdata[$id]['link'] = removeDoubleSlashes($this->pageurl. '/' . $this->language.$link . '/');
 
 		} else {
 
@@ -191,7 +191,7 @@ class PageSettings {
 				$getparams='?site=' . $request;
 			}
 
-			$subdata[$id]['link'] = $this->pageurl . '/index.php' . $getparams;
+			$subdata[$id]['link'] = removeDoubleSlashes($this->pageurl . '/index.php' . $getparams);
 		}
 
 		$subdata[$id]['href'] = '<a href="' . $subdata[$id]['link'] . '" title="' . $linkname . '">' . $linkname . '</a>';
@@ -226,7 +226,7 @@ class PageSettings {
                 $addToUrl = '?s=' . $s;
             }
 
-            $this->canurl = $this->pageurl.$addToUrl;
+            $this->canurl = removeDoubleSlashes($this->pageurl . $addToUrl);
         }
     }
 
@@ -273,11 +273,15 @@ class PageSettings {
         global $languages;
 
         foreach ($languages as $l) {
+
             if ($this->seo == 'Y') {
-                $this->languageLinks[$l]=(isset($links[$l])) ? $this->pageurl. '/' . $l. '/' . $links[$l] . '/' : $this->pageurl. '/' . $l . '/';
+                $this->languageLinks[$l] = (isset($links[$l])) ? $this->pageurl. '/' . $l. '/' . $links[$l] . '/' : $this->pageurl. '/' . $l . '/';
             } else {
-                $this->languageLinks[$l]=(isset($links[$l])) ? $this->pageurl . '/index.php' . $links[$l] . '&amp;l=' . $l : $this->pageurl . '/index.php?l=' . $l;
+                $this->languageLinks[$l] = (isset($links[$l])) ? $this->pageurl . '/index.php' . $links[$l] . '&amp;l=' . $l : $this->pageurl . '/index.php?l=' . $l;
             }
+
+            $this->languageLinks[$l] = removeDoubleSlashes($this->languageLinks[$l]);
+
         }
     }
 

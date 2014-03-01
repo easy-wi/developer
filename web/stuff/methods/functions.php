@@ -148,7 +148,13 @@ if (!function_exists('passwordgenerate')) {
         return strtolower(preg_replace('/[^a-zA-Z0-9]{1}/', '-', strtr($value, $szrm)));
     }
 
+    function removeDoubleSlashes ($value) {
+        return preg_replace('/([^:])(\/{2,})/', '$1/', $value);
+    }
+
     function redirect($value, $sendHTTP301 = false) {
+
+        $value = removeDoubleSlashes($value);
 
         if ($value == 'login.php') {
             session_unset();

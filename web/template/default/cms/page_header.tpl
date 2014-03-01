@@ -51,7 +51,7 @@
 
             <?php if (isset($admin_id) or isset($user_id)) { ?>
 
-            <a href="<?php echo $page_data->pageurl;?>/login.php?w=lo" class="navbar-text pull-right navbar-logout">
+            <a href="<?php echo removeDoubleSlashes($page_data->pageurl . '/login.php?w=lo');?>" class="navbar-text pull-right navbar-logout">
                 <span class="btn btn-mini btn-danger"><i class="fa fa-sign-out"></i> Logout</span>
             </a>
             <ul class="nav pull-right">
@@ -60,7 +60,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                         <li class="divider"></li>
-                        <li><a href="<?php echo (isset($admin_id)) ? $page_data->pageurl.'/admin.php' : $page_data->pageurl.'/userpanel.php';?>"><i class="fa fa-sign-in fa-fw"></i> Backend</a></li>
+                        <li><a href="<?php echo (isset($admin_id)) ? removeDoubleSlashes($page_data->pageurl.'/admin.php') : removeDoubleSlashes($page_data->pageurl.'/userpanel.php');?>"><i class="fa fa-sign-in fa-fw"></i> Backend</a></li>
                         <li class="divider"></li>
                         <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
                         <li class="divider"></li>
