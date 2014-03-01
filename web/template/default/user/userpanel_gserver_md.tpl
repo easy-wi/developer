@@ -133,7 +133,7 @@
                     <div class="controls">
                         <select id="mapGroup_<?php echo $table_row['id'];?>" name="mapGroup_<?php echo $table_row['id'];?>">
                             <?php foreach($table_row['mapGroupsAvailable'] as $g){ ?>
-                            <option<?php if($g==$table_row['mapGroup']) echo 'selected="selected"';?>><?php echo $g;?></option>
+                            <option<?php if($g==$table_row['mapGroup']) echo ' selected="selected"';?>><?php echo $g;?></option>
                             <?php }?>
                         </select>
                     </div>
