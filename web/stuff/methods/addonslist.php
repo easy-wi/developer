@@ -77,7 +77,7 @@ $gameAddons = array(
         ':rmcmd' => null,
         ':depends' => '',
         ':supported' => array(
-            'ageofchivalry','css','csgo','dods','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
         )
     ),
     array(
@@ -91,7 +91,7 @@ $gameAddons = array(
         ':rmcmd' => null,
         ':depends' => 'metamod',
         ':supported' => array(
-            'ageofchivalry','css','csgo','dods','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
         )
     ),
     array(
@@ -133,7 +133,7 @@ $gameAddons = array(
         ':rmcmd' => null,
         ':depends' => 'sourcemod',
         ':supported' => array(
-            'ageofchivalry','css','csgo','dods','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
         )
     ),
     array(
@@ -147,7 +147,7 @@ $gameAddons = array(
         ':rmcmd' => null,
         ':depends' => 'sourcemod',
         ':supported' => array(
-            'ageofchivalry','css','csgo','dods','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
         )
     ),
     array(
@@ -161,7 +161,7 @@ $gameAddons = array(
         ':rmcmd' => null,
         ':depends' => 'sourcemod',
         ':supported' => array(
-            'ageofchivalry','css','csgo','dods','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
         )
     ),
     array(
@@ -175,7 +175,7 @@ $gameAddons = array(
         ':rmcmd' => null,
         ':depends' => 'smac',
         ':supported' => array(
-            'ageofchivalry','css','csgo','dods','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
         )
     ),
     array(

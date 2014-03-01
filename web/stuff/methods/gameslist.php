@@ -69,7 +69,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -102,7 +102,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -135,7 +135,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -168,7 +168,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -201,7 +201,40 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'main/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
+        ':os' => 'L'
+    ),
+    array(
+        ':steamgame' => 'S',
+        ':appID' => 4020,
+        ':updates' => 1,
+        ':shorten' => 'gmod',
+        ':description' => 'Garrysmod',
+        ':gamebinary' => 'srcds_run',
+        ':binarydir' => '',
+        ':modfolder' => 'garrysmod',
+        ':fps' => null,
+        ':slots' => 0,
+        ':map' => 'gm_flatgrass',
+        ':cmd' => './%binary% -game garrysmod -ip %ip% -port %port% -hostport %port% +maxplayers %slots% +map %map% +tv_port %tvport% +tv_maxclients 1 +clientport %port3%',
+        ':modcmds' => "[Sandbox = default]\r\n+gamemode sandbox\r\n\r\n[Terrortown]\r\n+gamemode terrortown\r\n\r\n[Murder]\r\n+gamemode murder\r\n\r\n[Dark RP]\r\n+gamemode darkrp",
+        ':tic' => null,
+        ':gameq' => 'gmod',
+        ':gamemod' => 'N',
+        ':gamemod2' => null,
+        ':configs' => "cfg/server.cfg both\r\nmaplist.txt full\r\nmapcycle.txt full\r\ncfg/mount.cfg full\r\ncfg/banned_user.cfg full\r\ncfg/skill.cfg full",
+        ':configedit' => null,
+        ':portStep' => 10,
+        ':portMax' => 3,
+        ':portOne' => 27015,
+        ':portTwo' => 27016,
+        ':portThree' => 27017,
+        ':portFour' => null,
+        ':portFive' => null,
+        ':mapGroup' => null,
+        ':protected' => 'N',
+        ':protectedSaveCFGs' => '',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -234,7 +267,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -267,7 +300,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -300,7 +333,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -333,7 +366,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -366,7 +399,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -399,7 +432,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -432,7 +465,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -465,7 +498,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -498,7 +531,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -531,7 +564,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -564,7 +597,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -597,7 +630,7 @@ $gameImages = array(
         ':mapGroup' => 'mg_demolition',
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -630,7 +663,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'Y',
+        ':ramLimited' => 'Y',
         ':os' => 'L'
     ),
     array(
@@ -663,7 +696,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'Y',
+        ':ramLimited' => 'Y',
         ':os' => 'L'
     ),
     array(
@@ -696,7 +729,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'Y',
+        ':ramLimited' => 'Y',
         ':os' => 'L'
     ),
     array(
@@ -729,7 +762,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'Y',
+        ':ramLimited' => 'Y',
         ':os' => 'L'
     ),
     array(
@@ -762,7 +795,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -795,7 +828,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -828,7 +861,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -861,7 +894,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -894,7 +927,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -927,7 +960,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -960,7 +993,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -993,7 +1026,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -1026,7 +1059,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -1059,7 +1092,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     ),
     array(
@@ -1092,7 +1125,7 @@ $gameImages = array(
         ':mapGroup' => null,
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
-        'ramLimited' => 'N',
+        ':ramLimited' => 'N',
         ':os' => 'L'
     )
 );

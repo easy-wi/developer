@@ -95,13 +95,15 @@ if (!function_exists('gsrestart')) {
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($user_id));
             $customer = $query->fetchColumn();
+
             if ($row['newlayout'] == 'Y') {
                 $customer .= '-' . $row['switchID'];
             }
 
 
             $cores = ($row['taskset'] == 'Y') ? $row['cores'] : '';
-            $maxcores = count(preg_split("/\,/", $cores, -1,PREG_SPLIT_NO_EMPTY));
+            $maxcores = count(preg_split("/\,/", $cores, -1, PREG_SPLIT_NO_EMPTY));
+
             if ($maxcores == 0) {
                 $maxcores = 1;
             }
@@ -115,11 +117,14 @@ if (!function_exists('gsrestart')) {
                 $pserver = 'server/';
                 $absolutepath = '/home/' . $customer . '/server/' . $gsip . '_' . $port . '/' . $folder;
             }
+
             $bindir = $absolutepath. '/' . $binarydir;
             $cvarprotect = array();
+
             if ($gamebinary == 'hlds_run' and $tvenable == 'Y') {
                 $slots++;
             }
+
             $modsCmds = array();
             $cvars = array('%binary%', '%tickrate%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%');
 
@@ -131,6 +136,7 @@ if (!function_exists('gsrestart')) {
                 foreach (explode("\r\n", $row2['configedit']) as $line) {
 
                     if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json))$/', $line)) {
+
                         $ex = preg_split("/\s+/", $line, -1,PREG_SPLIT_NO_EMPTY);
                         $cvartype = (isset($ex[1])) ? $ex[1] : 'cfg';
                         $config = substr($ex[0], 1, strlen($ex[0]) - 2);
@@ -261,8 +267,12 @@ if (!function_exists('gsrestart')) {
             }
 
             if ($row['workShop'] == 'Y' AND $row['tWorkShop'] == 'Y' and isid($row['workshopCollection'], 10) and wpreg_check($row['dwebapiAuthkey'], 32) and strlen($row['dwebapiAuthkey']) > 0 and $row['workshopCollection'] > 0) {
-                $cmd .= ' -nodefaultmap +host_workshop_collection ' . $row['workshopCollection'] . ' +workshop_start_map ' . $map . ' -authkey ' . $row['dwebapiAuthkey'];
-                $cmd = preg_replace('/[\s\s+]{1,}\+map[\s\s+]{1,}[\w-_!%]{1,}/', '', $cmd);
+                if ($shorten == 'gmod' or  $shorten == 'garrysmod') {
+                    $cmd .= ' -nodefaultmap +host_workshop_collection ' . $row['workshopCollection'] . ' -authkey ' . $row['dwebapiAuthkey'];
+                } else {
+                    $cmd .= ' -nodefaultmap +host_workshop_collection ' . $row['workshopCollection'] . ' +workshop_start_map ' . $map . ' -authkey ' . $row['dwebapiAuthkey'];
+                    $cmd = preg_replace('/[\s\s+]{1,}\+map[\s\s+]{1,}[\w-_!%]{1,}/', '', $cmd);
+                }
             }
 
             $rdata = serverdata('root', $rootid, $aeskey);

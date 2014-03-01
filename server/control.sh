@@ -378,17 +378,23 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 		AllowAll
 	</Limit>
 </Directory>
+<Directory ~/server/*/*/czero/*>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE MKD RMD>
+		AllowAll
+	</Limit>
+</Directory>
 <Directory ~/server/*/*/dod/*>
 	Umask 077 077
 	<Limit RNFR RNTO STOR DELE MKD RMD>
 		AllowAll
 	</Limit>
 </Directory>
-<Directory ~/server/*/*/czero/*>
-	Umask 077 077
-	<Limit RNFR RNTO STOR DELE MKD RMD>
-		AllowAll
-	</Limit>
+<Directory ~/server/*/*/garrysmod/*>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE>
+        AllowAll
+    </Limit>
 </Directory>
 <Directory ~/*/*/>
 	HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
@@ -437,13 +443,13 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 		AllowAll
 	</Limit>
 </Directory>
-<Directory ~/*/*/dod/*>
+<Directory ~/*/*/czero/*>
 	Umask 077 077
 	<Limit RNFR RNTO STOR DELE>
 		AllowAll
 	</Limit>
 </Directory>
-<Directory ~/*/*/czero/*>
+<Directory ~/*/*/dod/*>
 	Umask 077 077
 	<Limit RNFR RNTO STOR DELE>
 		AllowAll
