@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: class_rootserver.php.
  * Author: Ulrich Block
@@ -101,9 +102,10 @@ class rootServer {
             $query->execute(array($this->tempID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $this->ID[$type][$ID]['useDHCP'] = $row['useDHCP'];
-                $this->ID[$type][$ID]['hostname'] = 'dedi-'.$ID;
+                $this->ID[$type][$ID]['hostname'] = 'dedi-' . $ID;
                 $this->ID[$type][$ID]['usePXE'] = $row['usePXE'];
                 $this->ID[$type][$ID]['pxeID'] = $row['pxeID'];
+                $this->ID[$type][$ID]['pxeIP'] = '';
                 $this->ID[$type][$ID]['mac'] = $row['mac'];
                 $this->ID[$type][$ID]['ip'] = $row['ip'];
                 $this->ID[$type][$ID]['restart'] = $row['restart'];
@@ -118,9 +120,11 @@ class rootServer {
 
             // Get VMware Data
         } else if ($this->type == 'vmware') {
+
             $query = $this->sql->prepare("SELECT c.*,u.`id` AS `userID`,u.`cname`,h.`cores` AS `hcore`,h.`esxi`,h.`id` AS `hostID`,h.`ip` AS `hip`,AES_DECRYPT(h.`port`,:aeskey) AS `dport`,AES_DECRYPT(h.`user`,:aeskey) AS `duser`,AES_DECRYPT(h.`pass`,:aeskey) AS `dpass`,h.`publickey`,h.`keyname` FROM `virtualcontainer` c INNER JOIN `userdata` u ON c.`userid`=u.`id` INNER JOIN `virtualhosts` h ON c.`hostid`=h.`id` WHERE c.`id`=:vmID LIMIT 1");
             $query->execute(array(':aeskey' => $this->aeskey,':vmID' => $this->tempID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
                 if (!isset($this->vmwareHosts[$row['hostID']])) {
                     $this->vmwareHosts[$row['hostID']]['vmIDs']['ip'] = $row['hip'];
                     $this->vmwareHosts[$row['hostID']]['vmIDs']['dport'] = $row['dport'];
@@ -129,6 +133,7 @@ class rootServer {
                     $this->vmwareHosts[$row['hostID']]['vmIDs']['publickey'] = $row['publickey'];
                     $this->vmwareHosts[$row['hostID']]['vmIDs']['keyname'] = $row['keyname'];
                 }
+
                 $this->ID[$type][$ID]['cores'] = $row['cores'];
                 $this->ID[$type][$ID]['mountpoint'] = $row['mountpoint'];
                 $this->ID[$type][$ID]['hostname'] = $row['cname'] . '-' . $this->tempID;
@@ -140,7 +145,7 @@ class rootServer {
                 $this->ID[$type][$ID]['hddsize'] = $row['hddsize'].'GB';
                 $this->ID[$type][$ID]['mac'] = $row['mac'];
                 $this->ID[$type][$ID]['pxeID'] = $row['pxeID'];
-                $this->ID[$type][$ID]['hostname'] = 'vmware-'.$ID;
+                $this->ID[$type][$ID]['hostname'] = 'vmware-' . $ID;
                 $this->ID[$type][$ID]['mac'] = $row['mac'];
                 $this->ID[$type][$ID]['ip'] = $row['ip'];
                 $this->ID[$type][$ID]['usePXE'] = 'Y';
@@ -150,7 +155,7 @@ class rootServer {
                 $hostID = $row['hostid'];
                 $userID = $row['userid'];
                 $resellerID = $row['resellerid'];
-                $this->vmwareHosts[$row['hostID']]['actions'][] = array('action' => $action,'id' => $ID);
+                $this->vmwareHosts[$row['hostID']]['actions'][] = array('action' => $action, 'id' => $ID);
             }
         }
 
@@ -163,28 +168,56 @@ class rootServer {
             unset($this->ID[$type][$ID]);
             return 'Image Error: No imageID defined for Server with ID: ' . $this->tempID;
 
-        } else if (!in_array($action, array('md','ad','dl','rp')) and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['usePXE'] == 'Y')) and !isset($guestos)) {
+        } else if (!in_array($action, array('md', 'ad', 'dl', 'rp')) and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['usePXE'] == 'Y')) and !isset($guestos)) {
 
             unset($this->ID[$type][$ID]);
-            return 'Image Error: Cannot find image with imageID '.$imageID.' defined for Server with ID: ' . $this->tempID;
+            return 'Image Error: Cannot find image with imageID ' . $imageID . ' defined for Server with ID: ' . $this->tempID;
 
-        } else if (!in_array($action, array('re','st'))) {
+        } else if (!in_array($action, array('re', 'st'))) {
 
             // get DHCP Data from DB
             if ($action != 'rp' and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['useDHCP'] == 'Y'))) {
 
-                $ex = explode('.', $this->ID[$type][$ID]['ip']);
-                $subnet = $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.0';
-                $this->ID[$type][$ID]['subnet'] = $subnet;
-                $searchFor = $ex[0] . '.' . $ex[1] . '.' . $ex[2].'.';
-
-                $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsDHCP` WHERE `active`='Y' AND (`ips` LIKE :ip OR `ips` LIKE :subnet)");
-                $query->execute(array(':aeskey' => $this->aeskey, ':ip' => '%' . $this->ID[$type][$ID]['ip'] . '%', ':subnet' => '%' . $searchFor . '%'));
+                $query = $this->sql->prepare("SELECT s.*,d.*,AES_DECRYPT(d.`port`,:aeskey) AS `dport`,AES_DECRYPT(d.`user`,:aeskey) AS `duser`,AES_DECRYPT(d.`pass`,:aeskey) AS `dpass` FROM `rootsIP4` i INNER JOIN `rootsSubnets` s ON i.`subnetID`=s.`subnetID` INNER JOIN `rootsDHCP` d ON s.`dhcpServer`=d.`id` WHERE i.`ip`=:ip AND d.`active`='Y' LIMIT 1");
+                $query->execute(array(':aeskey' => $this->aeskey, ':ip' => $this->ID[$type][$ID]['ip']));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    if (!isset($foundDHCP) and in_array($this->ID[$type][$ID]['ip'], ipstoarray($row['ips']))) {
+
+                    $foundDHCP = true;
+
+                    $modID = $row['id'];
+
+                    if (!isset($this->dhcpData[$row['id']])) {
+
+                        $this->dhcpData[$row['id']]['ip'] = $row['ip'];
+                        $this->dhcpData[$row['id']]['port'] = $row['dport'];
+                        $this->dhcpData[$row['id']]['user'] = $row['duser'];
+                        $this->dhcpData[$row['id']]['pass'] = $row['dpass'];
+                        $this->dhcpData[$row['id']]['publickey'] = $row['publickey'];
+                        $this->dhcpData[$row['id']]['keyname'] = $row['keyname'];
+                        $this->dhcpData[$row['id']]['startCmd'] = $row['startCmd'];
+                        $this->dhcpData[$row['id']]['dhcpFile'] = $row['dhcpFile'];
+
+                        $this->dhcpData[$row['id']]['subnets'][$row['subnet']] = array('netmask' => $row['netmask'], 'subnetOptions' => $row['subnetOptions']);
+
+                    }
+
+                    if ($row['vlan'] == 'Y') {
+                        $this->ID[$type][$ID]['vlan'] = $row['vlanName'];
+                    }
+
+                    $this->ID[$type][$ID]['subnet'] = $row['subnet'];
+
+                    $this->dhcpData[$row['id']]['actions'][] = array('action' => $action, 'id' => $ID, 'type' => $type, 'imageID' => $imageID, 'hostID' => $hostID, 'userID' => $userID, 'resellerID' => $resellerID);
+
+                }
+
+                if ($action == 'md' and isset($this->extraData['oldip']) and $this->extraData['oldip'] != $this->ID[$type][$ID]['ip']) {
+
+                    $query = $this->sql->prepare("SELECT s.*,d.*,AES_DECRYPT(d.`port`,:aeskey) AS `dport`,AES_DECRYPT(d.`user`,:aeskey) AS `duser`,AES_DECRYPT(d.`pass`,:aeskey) AS `dpass` FROM `rootsIP4` i INNER JOIN `rootsSubnets` s ON i.`subnetID`=s.`subnetID` INNER JOIN `rootsDHCP` d ON s.`dhcpServer`=d.`id` WHERE i.`ip`=:ip AND d.`active`='Y' LIMIT 1");
+                    $query->execute(array(':aeskey' => $this->aeskey, ':ip' => $this->extraData['oldip']));
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
                         $foundDHCP = true;
-                        $modID = $row['id'];
 
                         if (!isset($this->dhcpData[$row['id']])) {
                             $this->dhcpData[$row['id']]['ip'] = $row['ip'];
@@ -196,58 +229,32 @@ class rootServer {
                             $this->dhcpData[$row['id']]['netmask'] = $row['netmask'];
                             $this->dhcpData[$row['id']]['startCmd'] = $row['startCmd'];
                             $this->dhcpData[$row['id']]['dhcpFile'] = $row['dhcpFile'];
-                            $this->dhcpData[$row['id']]['subnetOptions'] = $row['subnetOptions'];
                         }
 
-                        $this->dhcpData[$row['id']]['actions'][] = array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
+                        if ($row['vlan'] == 'Y') {
+                            $this->ID[$type][$ID]['oldVlan'] = $row['vlanName'];
+                        }
 
-                    }
-                }
+                        $this->ID[$type][$ID]['oldSubnet'] = $row['subnet'];
 
-                if (isset($foundDHCP) and $action == 'md' and isset($this->extraData['oldip']) and $this->extraData['oldip'] != $this->ID[$type][$ID]['ip']) {
-
-                    $ex = explode('.', $this->extraData['oldip']);
-                    $searchForOld = $ex[0] . '.' . $ex[1] . '.' . $ex[2].'.';
-
-                    $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsDHCP` WHERE `active`='Y' AND (`ips` LIKE :ip OR `ips` LIKE :subnet)");
-                    $query->execute(array(':aeskey' => $this->aeskey, ':ip' => '%' . $this->extraData['oldip'] . '%', ':subnet' => '%' . $searchForOld . '%'));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-                        if (in_array($this->extraData['oldip'],ipstoarray($row['ips']))) {
-
-                            if (!isset($this->dhcpData[$row['id']])) {
-                                $this->dhcpData[$row['id']]['ip'] = $row['ip'];
-                                $this->dhcpData[$row['id']]['port'] = $row['dport'];
-                                $this->dhcpData[$row['id']]['user'] = $row['duser'];
-                                $this->dhcpData[$row['id']]['pass'] = $row['dpass'];
-                                $this->dhcpData[$row['id']]['publickey'] = $row['publickey'];
-                                $this->dhcpData[$row['id']]['keyname'] = $row['keyname'];
-                                $this->dhcpData[$row['id']]['netmask'] = $row['netmask'];
-                                $this->dhcpData[$row['id']]['startCmd'] = $row['startCmd'];
-                                $this->dhcpData[$row['id']]['dhcpFile'] = $row['dhcpFile'];
-                                $this->dhcpData[$row['id']]['subnetOptions'] = $row['subnetOptions'];
-                            }
-
-                            if (isset($modID) and $modID != $row['id']) {
-                                $this->dhcpData[$row['id']]['actions'][] = array('action' => 'del','id' => $ID,'type' => $type,'imageID' => $imageID,'hostID' => $hostID,'userID' => $userID,'resellerID' => $resellerID);
-                            }
-
+                        if (isset($modID) and $modID != $row['id']) {
+                            $this->dhcpData[$row['id']]['actions'][] = array('action' => 'del', 'id' => $ID, 'type' => $type, 'imageID' => $imageID, 'hostID' => $hostID, 'userID' => $userID, 'resellerID' => $resellerID);
                         }
                     }
                 }
 
                 if (!isset($foundDHCP)) {
                     unset($this->ID[$type][$ID]);
-                    return 'Database Error: Could not find DHCP Server with Subnet: '.$subnet;
+                    return 'Database Error: Could not find DHCP Server for IP: ' . $this->extraData['oldip'];
                 }
             }
 
             // Get PXE Data
-            if (!in_array($action, array('md')) and ($this->type == 'vmware' or ($this->type == 'dedicated' and $this->ID[$type][$ID]['usePXE'] == 'Y')) and isid($imageID, 10)) {
+            if ($this->ID[$type][$ID]['usePXE'] == 'Y') {
 
                 if (isid($this->ID[$type][$ID]['pxeID'], 10)) {
                     $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' AND `id`=:pxeID LIMIT 1");
-                    $query->execute(array(':aeskey' => $this->aeskey,':pxeID' => $this->ID[$type][$ID]['pxeID']));
+                    $query->execute(array(':aeskey' => $this->aeskey, ':pxeID' => $this->ID[$type][$ID]['pxeID']));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
                         $foundPXE = true;
@@ -265,11 +272,11 @@ class rootServer {
                             $this->PXEData[$row['id']]['PXEFolder'] = $row['PXEFolder'];
                         }
 
-                        $this->PXEData[$row['id']]['actions'][] = array('action' => $action,'id' => $ID,'type' => $type,'imageID' => $imageID);
+                        $this->PXEData[$row['id']]['actions'][] = array('action' => $action, 'id' => $ID,'type' => $type,'imageID' => $imageID, 'hostID' => $hostID, 'userID' => $userID, 'resellerID' => $resellerID);
                     }
                 }
 
-                if (!isset($foundPXE) and $action != 'dl') {
+                if ((!isset($foundPXE) or !isip($this->ID[$type][$ID]['pxeIP'], 'ip4')) and $action != 'dl') {
                     $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' ORDER BY RAND() LIMIT 1");
                     $query->execute(array(':aeskey' => $this->aeskey));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -348,48 +355,99 @@ class rootServer {
                         $file = (substr($v['dhcpFile'], 0, 1) == '/') ? $v['dhcpFile'] : '/home/' . $v['user']. '/' . $v['dhcpFile'];
 
                         $buffer = $sftpObject->get($file);
-                        $config = $this->parseDhcpConfig(str_replace(array("\0", "\b", "\r", "\Z"),'', $buffer));
+                        $config = $this->parseDhcpConfig(str_replace(array("\0", "\b", "\r", "\Z"), '', $buffer));
 
                         if (is_array($config)) {
                             foreach ($v['actions'] as $a) {
 
-                                if ($a['action'] == 'del' and isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
+                                if ($a['action'] == 'del') {
 
-                                    unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
+                                    if (isset($config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
 
-                                    $changed = true;
+                                        unset($config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
+                                        $changed = true;
+
+                                    } else if (isset($config['vlan'][$this->ID[$a['type']][$a['id']]['oldVlan']][$this->ID[$a['type']][$a['id']]['oldSubnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
+
+                                        unset($config['vlan'][$this->ID[$a['type']][$a['id']]['oldVlan']][$this->ID[$a['type']][$a['id']]['oldSubnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
+                                        $changed = true;
+
+                                    } else if (isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
+
+                                        unset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
+                                        $changed = true;
+
+                                    } else if (isset($config['subnet'][$this->ID[$a['type']][$a['id']]['oldSubnet']][$this->ID[$a['type']][$a['id']]['hostname']])) {
+
+                                        unset($config['subnet'][$this->ID[$a['type']][$a['id']]['oldSubnet']][$this->ID[$a['type']][$a['id']]['hostname']]);
+                                        $changed = true;
+
+                                    }
 
                                 } else if (isset($this->ID[$a['type']][$a['id']])) {
 
-                                    if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] != $this->ID[$a['type']][$a['id']]['mac'].';') {
+                                    if (isset($this->ID[$a['type']][$a['id']]['vlan'])) {
 
-                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'].';';
+                                        if (!isset($config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet']) or $config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] != $this->ID[$a['type']][$a['id']]['mac'].';') {
 
-                                        $changed = true;
+                                            $config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'] . ';';
 
+                                            $changed = true;
+
+                                        }
+
+                                        if (!isset($config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address']) or $config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] != $this->ID[$a['type']][$a['id']]['ip'].';') {
+
+                                            $config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'] . ';';
+
+                                            $changed = true;
+                                        }
+
+                                        if ($this->ID[$a['type']][$a['id']]['usePXE'] == 'Y' and (!isset($config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename']) or $config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] != 'pxelinux.0;')) {
+
+                                            $config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
+
+                                            $changed = true;
+                                        }
+
+                                        if ($this->ID[$a['type']][$a['id']]['usePXE'] == 'Y' and (!isset($config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']) or $config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] != $this->ID[$a['type']][$a['id']]['pxeIP'].';')) {
+
+                                            $config['vlan'][$this->ID[$a['type']][$a['id']]['vlan']][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'] . ';';
+
+                                            $changed = true;
+                                        }
+
+                                    } else {
+
+                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] != $this->ID[$a['type']][$a['id']]['mac'].';') {
+
+                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['hardware ethernet'] = $this->ID[$a['type']][$a['id']]['mac'] . ';';
+
+                                            $changed = true;
+
+                                        }
+
+                                        if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] != $this->ID[$a['type']][$a['id']]['ip'].';') {
+
+                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'] . ';';
+
+                                            $changed = true;
+                                        }
+
+                                        if ($this->ID[$a['type']][$a['id']]['usePXE'] == 'Y' and (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] != 'pxelinux.0;')) {
+
+                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
+
+                                            $changed = true;
+                                        }
+
+                                        if ($this->ID[$a['type']][$a['id']]['usePXE'] == 'Y' and (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] != $this->ID[$a['type']][$a['id']]['pxeIP'].';')) {
+
+                                            $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'] . ';';
+
+                                            $changed = true;
+                                        }
                                     }
-
-                                    if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] != $this->ID[$a['type']][$a['id']]['ip'].';') {
-
-                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['fixed-address'] = $this->ID[$a['type']][$a['id']]['ip'].';';
-
-                                        $changed = true;
-                                    }
-
-                                    if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] != 'pxelinux.0;') {
-
-                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['filename'] = 'pxelinux.0;';
-
-                                        $changed = true;
-                                    }
-
-                                    if (!isset($config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server']) or $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] != $this->ID[$a['type']][$a['id']]['pxeIP'].';') {
-
-                                        $config['subnet'][$this->ID[$a['type']][$a['id']]['subnet']][$this->ID[$a['type']][$a['id']]['hostname']]['next-server'] = $this->ID[$a['type']][$a['id']]['pxeIP'].';';
-
-                                        $changed = true;
-                                    }
-
                                 }
                             }
 
@@ -462,9 +520,9 @@ class rootServer {
 
             $sftpObject = new Net_SFTP($v['ip'], $v['port']);
 
-            if (file_exists($privateKey) and $sftpObject->error === false) {
+            if ($sftpObject->error === false) {
 
-                if ($v['publickey'] != 'N') {
+                if ($v['publickey'] == 'Y' and file_exists($privateKey)) {
 
                     $ssh2Pass = new Crypt_RSA();
 
@@ -478,9 +536,8 @@ class rootServer {
                     $ssh2Pass = $v['pass'];
                 }
 
+
                 if ($sftpObject->login($v['user'], $ssh2Pass)) {
-
-
                     foreach($v['actions'] as $a) {
 
                         $extraSlash = (substr($v['PXEFolder'], -1) != '/' and strlen($v['PXEFolder']) > 0) ? '/' : '';
@@ -492,13 +549,14 @@ class rootServer {
 
                             $sftpObject->delete($pathWithPXEMac);
 
-                        } else if (in_array($a['action'], array('ad','ri','rc'))) {
+                        } else if (in_array($a['action'], array('ad', 'ri', 'rc'))) {
 
                             $removeArray[] = array('type' => ($a['type'] == 'dedicated') ? 'de' : 'vs', 'affectedID' => $a['id'], 'name' => $this->ID[$a['type']][$a['id']]['ip'], 'imageID' => $a['imageID'], 'hostID' => $a['hostID'], 'userID' => $a['userID'], 'resellerID' => $a['resellerID'], 'extraData' => array('runAt' => strtotime("+5 minutes")));
 
                             $query = $this->sql->prepare("SELECT `pxelinux` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
                             $query->execute(array($a['imageID']));
                             $pxeconfig = $query->fetchColumn();
+
 
                             if (strlen($pxeconfig) > 0) {
 
@@ -507,7 +565,7 @@ class rootServer {
                                 $pxeconfig = str_replace('%rescuepass%', $newPass, $pxeconfig);
 
                                 if ($a['type'] == 'dedicated') {
-                                    $query = $this->sql->prepare("UPDATE `rootsDedicated` SET `initialPass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `id`=? LIMIT 1");
+                                    $query = $this->sql->prepare("UPDATE `rootsDedicated` SET `initialPass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `dedicatedID`=? LIMIT 1");
                                     $query->execute(array($newPass, $this->aeskey, $k, $a['id']));
                                 } else {
                                     $query = $this->sql->prepare("UPDATE `virtualcontainer` SET `pass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `id`=? LIMIT 1");
@@ -536,7 +594,7 @@ class rootServer {
         }
 
         if (isset($bad)) {
-            return implode(' ', $bad);
+            print_r(implode(' ', $bad));
         }
 
         return $removeArray;
@@ -548,7 +606,7 @@ class rootServer {
             $postParams = array();
             $file = '';
             $requestString=($a['action'] == 're') ? $this->ID['dedicated'][$a['id']]['apiRequestRestart'] : $this->ID['dedicated'][$a['id']]['apiRequestStop'];
-            $apiPath=str_replace(array('http://','https://',':8080',':80',':443'),'', $this->ID['dedicated'][$a['id']]['apiURL']);
+            $apiPath=str_replace(array('http://', 'https://', ':8080', ':80', ':443'), '', $this->ID['dedicated'][$a['id']]['apiURL']);
             $ex=preg_split("/\//", $apiPath,-1,PREG_SPLIT_NO_EMPTY);
             $i = 1;
             $exCount = count($ex);
@@ -570,70 +628,188 @@ class rootServer {
         return true;
     }
 
+    private function getKeyValue ($line) {
+        $line = trim($line);
+
+        $ex = explode(' ', $line);
+        $k = $ex[0];
+        $count = count($ex);
+        $last = $count - 1;
+
+        if (strpos($line, ',') !== false) {
+
+            $i = 1;
+            $v = array();
+
+            while ($i < $last and strpos($ex[$i], ',') === false) {
+                $k .= ' ' . $ex[$i];
+                $i++;
+            }
+
+            while ($i < $count) {
+                $v[] = $ex[$i];
+                $i++;
+            }
+
+            $v = implode(' ', $v);
+
+        } else {
+
+            $i = 1;
+            $v = $ex[$last];
+
+            while ($i < $last) {
+                $k .= ' ' . $ex[$i];
+                $i++;
+            }
+        }
+        return array('k' => $k, 'v' => $v);
+    }
+
     private function parseDhcpConfig ($dhcpConfig) {
 
-        $config = array();
+        $subnets = array();
+        $vlans = array();
         $doNotTouch = array();
+        $subnetOptions = array();
 
         $splitConfig = preg_split('/\n/', str_replace("\r", '', $dhcpConfig), -1, PREG_SPLIT_NO_EMPTY);
 
         foreach ($splitConfig as $split) {
 
-            if (isset($subnetStart) and isset($subnet)){
+            if (isset($subnetStart) and isset($subnet)) {
 
-                if (isset($hostStart, $host)){
+                if (isset($hostStart, $host)) {
 
-                    if (strpos($split,'}') !== false) {
+                    if (strpos($split, '}') !== false) {
 
                         unset($hostStart, $host);
 
                     } else {
 
-                        $cleanedLine = preg_replace('/^[\s+]{1,}(.*?)$/', '$1', preg_replace('/\s+/',' ', $split));
+                        $cleanedLine = preg_replace('/^[\s+]{1,}(.*?)$/', '$1', preg_replace('/\s+/', ' ', $split));
 
                         if (strpos($split, '#') !== false) {
 
-                            $config[$subnet][$host]['comment'][] = $cleanedLine;
+                            if (isset($vlanStart) and isset($vlan)) {
+                                $vlans[$vlan][$subnet][$host]['comment'][] = $cleanedLine;
+                            } else {
+                                $subnets[$subnet][$host]['comment'][] = $cleanedLine;
+                            }
 
                         } else {
 
-                            $ex = explode(' ', $cleanedLine);
-                            $v = $ex[count($ex)-1];
+                            $return = $this->getKeyValue($split);
 
-                            unset($ex[count($ex)-1]);
-
-                            $k = implode(' ', $ex);
-
-                            $config[$subnet][$host][$k] = $v;
-
+                            if (isset($vlanStart) and isset($vlan)) {
+                                $vlans[$vlan][$subnet][$host][$return['k']] = $return['v'];
+                            } else {
+                                $subnets[$subnet][$host][$return['k']] = $return['v'];
+                            }
                         }
-
                     }
 
-                } else if (preg_match('/^(\s+|)host[\s+]{1,}[\w\-\_]{1,}[\s+]{1,}[\{]$/', $split)) {
+                } else if (preg_match('/^(\s+|)host[\s+]{1,}[\w\-\_\.]{1,}[\s+]{1,}[\{]$/', $split)) {
 
                     $hostStart = true;
                     $host = preg_replace('/\s+/','',preg_replace('/host[\s+]{1,}(.*?)[\s+]{1,}[\{]/','$1', $split, -1));
-                    $config[$subnet][$host] = array();
 
-                } else if (strpos($split,'}') !== false) {
+                    if (isset($vlanStart) and isset($vlan)) {
+                        $vlans[$vlan][$subnet][$host] = array();
+                    } else {
+                        $subnets[$subnet][$host] = array();
+                    }
+
+                } else if (strpos($split, '}') !== false) {
 
                     unset($subnetStart, $subnet);
 
+                } else {
+
+                    $return = $this->getKeyValue($split);
+                    $subnetOptions[$subnet][$return['k']] = $return['v'];
+
                 }
 
-            } else if (preg_match('/^[\s+]{0,}subnet[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[0][\s+]{1,}netmask[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[0][\s+]{0,}[\{]$/', $split)) {
+            } else if (isset($vlanStart) and !isset($subnetStart) and strpos($split, '}') !== false) {
+
+                unset($vlanStart, $vlan);
+
+            } else if (preg_match('/^[\s+]{0,}subnet[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3}[\s+]{1,}netmask[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[\d]{1,3}[\s+]{0,}[\{]$/', $split)) {
 
                 $subnetStart = true;
 
-                $subnet = preg_replace('/^[\s+]{0,}subnet[\s+]{1,}(.*)[\s+]{1,}netmask[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[0][\s+]{0,}[\{]$/', '\1', $split);
+                $subnet = preg_replace('/^[\s+]{0,}subnet[\s+]{1,}(.*)[\s+]{1,}netmask[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[\d]{1,3}[\s+]{0,}[\{]$/', '\1', $split);
+                $subnetOptions[$subnet]['netmask'] = preg_replace('/^[\s+]{0,}subnet[\s+]{1,}[\d]{1,3}.[\d]{1,3}.[\d]{1,3}\.[\d]{1,3}[\s+]{1,}netmask[\s+]{1,}(.*)[\s+]{0,}[\{]$/', '\1', $split);
+
+                if (isset($vlanStart) and isset($vlan) and !isset($vlans[$vlan][$subnet])) {
+                    $vlans[$vlan][$subnet] = array();
+                } else if (!isset($subnets[$subnet])) {
+                    $subnets[$subnet] = array();
+                }
+
+            } else if (preg_match('/^[\s+]{0,}shared-network[\s+]{1,}[\w\-\_\.]{1,}[\s+]{0,}[\{]$/', $split)) {
+
+                $vlanStart = true;
+
+                $vlan =  preg_replace('/^[\s+]{0,}shared-network[\s+]{1,}(.*)[\s+]{1,}[\s+]{0,}[\{]$/', '\1', $split);
 
             } else {
                 $doNotTouch[] = $split;
             }
         }
 
-        return array('raw' => $doNotTouch,'subnet' => $config);
+        return array('raw' => $doNotTouch, 'subnet' => $subnets, 'vlan' => $vlans, 'subnetOptions' => $subnetOptions);
+
+    }
+
+    private function removeDoubleSemicolon ($value) {
+
+        while (strpos($value, ';;') != false) {
+            $value = str_replace(';;', ';', $value);
+        }
+
+        return $value;
+
+    }
+
+    private function subnetToConfig ($array, $options, $id) {
+
+        $config = '';
+
+        foreach($array as $subnets => $hosts) {
+
+            $netmask = (isset($this->dhcpData[$id]['subnets'][$subnets]['netmask'])) ? $this->dhcpData[$id]['subnets'][$subnets]['netmask'] : $options[$subnets]['netmask'];
+
+            $config .= 'subnet ' . $subnets . ' netmask ' . $netmask . " {\r\n";
+
+            if (isset($this->dhcpData[$id]['subnets'][$subnets]['subnetOptions'])) {
+                $config .= $this->removeDoubleSemicolon(str_replace('%subnet-mask%', $netmask, $this->dhcpData[$id]['subnets'][$subnets]['subnetOptions'])) . "\r\n";
+            } else {
+                foreach ($options[$subnets] as $k => $sub) {
+                    if ($k != 'netmask') {
+                        $config .= $this->removeDoubleSemicolon($k . ' ' . $sub . ";\r\n");
+                    }
+                }
+            }
+
+            foreach ($hosts as $host => $values) {
+
+                $config .= '  host ' . $host . " {\r\n";
+
+                foreach ($values as $opt => $val) {
+                    $config .= $this->removeDoubleSemicolon('      ' . $opt . ' ' . $val . "\r\n");
+                }
+
+                $config .= "  }\r\n";
+
+            }
+
+            $config .= "}\r\n";
+
+        }
+
+        return $config;
 
     }
 
@@ -645,25 +821,15 @@ class rootServer {
             $config .= $l . "\r\n";
         }
 
-        foreach($array['subnet'] as $subnets => $hosts) {
+        $config .= $this->subnetToConfig($array['subnet'], $array['subnetOptions'], $id);
 
-            $config .= 'subnet ' . $subnets . ' netmask ' . $this->dhcpData[$id]['netmask'] . " {\r\n";
-            $config .= str_replace('%subnet-mask%', $this->dhcpData[$id]['netmask'], $this->dhcpData[$id]['subnetOptions']) . "\r\n";
+        foreach ($array['vlan'] as $vlanName => $data) {
 
-            foreach ($hosts as $host => $values) {
+            $config .= 'shared-network ' . $vlanName . " {\r\n";
 
-                $config .= '  host ' . $host . " {\r\n";
-
-                foreach ($values as $opt => $val) {
-                    $config .= '      ' . $opt . ' ' . $val . "\r\n";
-                }
-
-                $config .= "  }\r\n";
-
-            }
+            $config .= $this->subnetToConfig($data, $array['subnetOptions'], $id);
 
             $config .= "}\r\n";
-
         }
 
         return $config;
