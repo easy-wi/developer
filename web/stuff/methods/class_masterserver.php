@@ -73,6 +73,7 @@ class masterServer {
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $rootID));
         foreach ($query->fetchAll() as $row) {
+
             $active = $row['active'];
             $this->sship = $row['ip'];
             $this->sshport = $row['dport'];
@@ -87,9 +88,11 @@ class masterServer {
             // Get the imageserver if possible and use Easy-WI server as fallback
             $mainip = explode('.', $this->sship);
             $mainsubnet = $mainip[0] . '.' . $mainip[1] . '.' . $mainip[2];
-            $query = $sql->prepare("SELECT `imageserver` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
+
+            $query = $sql->prepare("SELECT `imageserver` FROM `settings` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($this->resellerID));
-            $splitImageservers=preg_split('/\r\n/', $query->fetchColumn(), -1, PREG_SPLIT_NO_EMPTY);
+
+            $splitImageservers = preg_split('/\r\n/', $query->fetchColumn(), -1, PREG_SPLIT_NO_EMPTY);
             $imageservers = array();
             foreach ($splitImageservers as $server) {
                 $split2 = array();

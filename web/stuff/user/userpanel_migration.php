@@ -95,7 +95,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $search = str_replace(array('//', '///'), '', $search);
             }
 
-            $temp[$row2['shorten']] = array('shorten' => $row2['shorten'], 'description' => $row2['description'], 'searchFor' => $search,'modfolder' => $row2['modfolder']);
+            $temp[$row2['shorten']] = array('shorten' => $row2['shorten'], 'description' => $row2['description'], 'searchFor' => $search, 'modfolder' => $row2['modfolder']);
         }
 
         $table[$row['id']] = array('id' => $row['id'], 'address' => $row['serverip'] . ':' . $row['port'], 'games' => $temp,'rootID' => $row['rootID'], 'gsfolder' => $row['serverip'] . '_' . $row['port'], 'customer' => $customer,'cftppass' => $row['cftppass']);
@@ -134,7 +134,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
     if (!$ui->id('switchID', 10, 'post') or !isset($table[$ui->id('switchID', 10, 'post')])) {
+
         $error[] = $sprache->server;
+
     } else {
         $thisID = $ui->id('switchID', 10, 'post');
         $address = $table[$ui->id('switchID', 10, 'post')]['address'];
@@ -145,17 +147,19 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
     if (!$ui->config('template', 'post',$thisID) or !isset($table[$ui->id('switchID', 10, 'post')]['games'])) {
+
         $error[] = $gsprache->template;
+
     } else if (isset($table[$ui->id('switchID', 10, 'post')]['games'])) {
 
         foreach($table[$ui->id('switchID', 10, 'post')]['games'] as $game) {
             unset($temp);
 
-            if ($ui->config('template', 'post',$thisID)==$game['shorten']) {
+            if ($ui->config('template', 'post',$thisID) == $game['shorten']) {
                 $temp = 1;
-            } else if ($ui->config('template', 'post',$thisID)==$game['shorten'].'-2') {
+            } else if ($ui->config('template', 'post',$thisID) == $game['shorten'] . '-2') {
                 $temp = 2;
-            } else if ($ui->config('template', 'post',$thisID)==$game['shorten'].'-3') {
+            } else if ($ui->config('template', 'post',$thisID) == $game['shorten'] . '-3') {
                 $temp = 3;
             }
 
@@ -184,7 +188,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         if (isset($searchFor)) {
 
-            $ftpPath = $ftp->checkPath ($ftpPath, $searchFor);
+            $ftpPath = $ftp->checkPath($ftpPath, $searchFor);
 
             if (!$ftpPath) {
 
@@ -214,7 +218,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     if (count($error) == 0 and isset($rootID)) {
 
-        $rdata = serverdata('root',$rootID,$aeskey);
+        $rdata = serverdata('root', $rootID, $aeskey);
         $sship = $rdata['ip'];
         $sshport = $rdata['port'];
         $sshuser = $rdata['user'];
@@ -222,15 +226,21 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $ftpConnect = ($ssl == 'N') ? 'ftp://' : 'ftps://';
 
-        $ftpConnect.=str_replace('//','/',$ftpAddress . ':' . $ftpPort. '/' . $ftpPath);
-        ssh2_execute('gs',$rootID,"sudo -u ${customer} ./control.sh migrateserver ${customer} 1_${shorten} ${gsfolder} ${template} ${ftpUser} ${ftpPassword} ${ftpConnect} ${modFolder}");
-        $loguseraction="%import% %gserver% ${address}";
+        $ftpConnect .= str_replace('//', '/', $ftpAddress . ':' . $ftpPort. '/' . $ftpPath);
+
+        ssh2_execute('gs', $rootID, "sudo -u ${customer} ./control.sh migrateserver ${customer} 1_${shorten} ${gsfolder} ${template} ${ftpUser} ${ftpPassword} ${ftpConnect} ${modFolder}");
+
+        $loguseraction = '%import% %gserver% ' . $address;
         $template_file = $sprache->import_start;
         $insertlog->execute();
+
     }
 }
+
 if (!isset($template_file) and isset($customer)) {
-    $template_file = "userpanel_gserver_migration.tpl";
-} else if (!isset($template_file)) {
+    $template_file = 'userpanel_gserver_migration.tpl';
+}
+
+if (!isset($template_file)) {
     $template_file = 'userpanel_404.tpl';
 }

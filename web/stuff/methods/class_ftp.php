@@ -291,6 +291,7 @@ class EasyWiFTP {
 
     public function checkPath ($ftpPath, $searchFor) {
 
+
         if ($ftpPath != '') {
 
             if (substr($ftpPath, 0, 1) != '/') {
@@ -302,6 +303,10 @@ class EasyWiFTP {
 
         $currentPath = @ftp_pwd($this->ftpConnection);
 
+        if (strlen($searchFor) == 0 and $currentPath) {
+            return $ftpPath;
+        }
+
         if (substr($currentPath, strlen($searchFor) * (-1)) == $searchFor) {
             return $currentPath;
         }
@@ -312,7 +317,8 @@ class EasyWiFTP {
     public function checkFolders ($dir, $searchFor, $maxDepth = false, $currentDepth = 0) {
 
         $folders = array();
-        $donotsearch = array('bin','cfg','cl_dlls','dlls','gfx','hl2','manual','maps','materials','models','particles','recource','scenes','scripts','sound','sounds','textures','valve','reslists');
+        $donotsearch = array('bin', 'cfg', 'cl_dlls', 'dlls', 'gfx', 'hl2', 'manual', 'maps', 'materials', 'models', 'particles', 'recource', 'scenes', 'scripts', 'sound', 'sounds', 'textures', 'valve', 'reslists');
+
         $spl = strlen($searchFor) * (-1);
 
         if ($dir != '/') {
