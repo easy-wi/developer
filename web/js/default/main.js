@@ -35,6 +35,7 @@
  */
 
 window.onDomReady = initReady;
+
 function initReady(fn) {
     if(document.addEventListener) {
         document.addEventListener("DOMContentLoaded", fn, false);
@@ -42,11 +43,13 @@ function initReady(fn) {
         document.onreadystatechange = function(){readyState(fn)}
     }
 }
+
 function readyState(func) {
     if(document.readyState == "interactive" || document.readyState == "complete") {
         func();
     }
 }
+
 function textdrop(id) {
     if (document.getElementById(id).style.display == "") {
         document.getElementById(id).style.display = "none";
@@ -54,6 +57,7 @@ function textdrop(id) {
         document.getElementById(id).style.display = "";
     }
 }
+
 function getdetails(file, str) {
     if (str=="") {
         document.getElementById("information").innerHTML="";
@@ -70,6 +74,7 @@ function getdetails(file, str) {
     xmlhttp.open("GET",file,true);
     xmlhttp.send();
 }
+
 function getdetails2(file, str, id) {
     if (str=="") {
         document.getElementById(id).innerHTML="";
@@ -86,6 +91,7 @@ function getdetails2(file, str, id) {
     xmlhttp2.open("GET",file,true);
     xmlhttp2.send();
 }
+
 function onloaddata(file, str, id) {
     file += str;
     var xmlhttp = id;
@@ -100,6 +106,7 @@ function onloaddata(file, str, id) {
     xmlhttp.open("GET",file,true);
     xmlhttp.send();
 }
+
 function details(select) {
     var details = document.getElementsByTagName("table");
     for(var x=0; x<details.length; x++) {
@@ -113,6 +120,7 @@ function details(select) {
         }
     }
 }
+
 function details2(select,namevalue) {
     var details = document.getElementsByTagName("table");
     for(var x=0; x<details.length; x++) {
@@ -126,6 +134,7 @@ function details2(select,namevalue) {
         }
     }
 }
+
 function checkall(checked,check) {
     var checkBoxes = document.getElementsByTagName('input');
     for(var i=0; i<checkBoxes.length; i++) {
@@ -138,19 +147,24 @@ function checkall(checked,check) {
         }
     }
 }
+
 function popup(url) {
     window.open(url, "popup_id", "scrollbars,resizable,width=1024,height=756");
     return false;
 }
+
 function SwitchShowHideRows (Element, change) {
+
     var TheRest = document.getElementsByTagName('div');
+    var amount = TheRest.length;
     var ElementLenght = Element.length;
+    var changed = 0;
 
     if(typeof(change)==='undefined') {
         change = 'switch';
     }
 
-    for(var x=0; x<TheRest.length; x++) {
+    for(var x=0; x<amount; x++) {
         var TheClass = TheRest[x].getAttribute('class');
         if (TheClass != null) {
             if (Element == 'init_ready') {
@@ -160,10 +174,11 @@ function SwitchShowHideRows (Element, change) {
                     TheRest[x].style.display = '';
                 }
             } else {
-                if (TheClass.indexOf(change)!=-1) {
-                    if (TheClass.substring(0,ElementLenght) == Element) {
+                if (TheClass.indexOf(change)!= -1) {
+                    if (TheClass.substring(0, ElementLenght) == Element) {
                         if (TheRest[x].style.display == 'none') {
                             TheRest[x].style.display = '';
+                            changed++;
                         } else {
                             TheRest[x].style.display = 'none';
                         }
@@ -174,10 +189,23 @@ function SwitchShowHideRows (Element, change) {
             }
         }
     }
+
+    if (Element != 'init_ready' && changed == 0) {
+        for(x=0; x<amount; x++) {
+            TheClass = TheRest[x].getAttribute('class');
+            if (TheClass != null) {
+                if (TheClass.indexOf(change)!= -1) {
+                    TheRest[x].style.display = '';
+                }
+            }
+        }
+    }
 }
+
 function trim(Trim) {
     return Trim.replace(/^\s+|\s+$/g,'');
 }
+
 function TextToHtml(Text) {
     Text = Text.replace(/\</g,"&lt;");
     Text = Text.replace(/\>/g,"&gt");
