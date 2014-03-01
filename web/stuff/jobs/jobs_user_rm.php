@@ -65,7 +65,16 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $query2 = $sql->prepare("SELECT `accounttype`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
+            $query3 = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=0 WHERE `ownerID`=?");
+            $query3->execute(array($row['affectedID']));
+
             if ($row2['accounttype'] == 'r') {
+
+                if ($row2['resellerid'] == $row['affectedID']) {
+                    $query3 = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=0,`resellerID`=0 WHERE `resellerID`=?");
+                    $query3->execute(array($row['affectedID']));
+                }
 
                 removeUser($row['affectedID'], array(
                     'userdata' => 'id',
@@ -126,7 +135,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 }
             }
         }
+
         customColumns('U', $row['affectedID'], 'del');
+
         $query2 = $sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         $command = $gsprache->del.' userID: ' . $row['affectedID'] . ' name:' . $row['name'];

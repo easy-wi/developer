@@ -534,7 +534,7 @@ if (!function_exists('passwordgenerate')) {
 
 
             $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=?");
-            $query->execute(array($resellerid,$resellerid));
+            $query->execute(array($resellerid));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $userips[] = $row['ip'];
             }

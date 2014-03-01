@@ -101,30 +101,23 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     // Add or mod is opened
     if (!$ui->smallletters('action', 2, 'post')) {
 
+        $table = array();
+        $query = ($reseller_id == 0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` and  `accounttype`='r') OR (`resellerid`=? and `accounttype`='u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
+        $query->execute(array($reseller_id));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $type = ($row['accounttype'] == 'u') ? $gsprache->user : $gsprache->reseller;
+            $table[$row['id']] = $type . ' ' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
+        }
+
         // Gather data for adding if needed and define add template
         if ($ui->st('d', 'get') == 'ad') {
 
-            $table = array();
-
-            $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `id`=`resellerid` AND `accounttype`='r' ORDER BY `id` DESC");
-            $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
-            }
+            $ipsAvailable = freeips(0);
 
             $template_file = 'admin_root_dedicated_ad.tpl';
 
             // Gather data for modding in case we have an ID and define mod template
         } else if ($ui->st('d', 'get') == 'md' and $id) {
-
-            $table = array();
-
-            $query=($reseller_id == 0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` OR `resellerid`=?) AND `accounttype` IN ('r','u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
-            $query->execute(array($reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $type = ($row['accounttype'] == 'u') ? $gsprache->user : $gsprache->reseller;
-                $table[$row['id']] = $type . ' ' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
-            }
 
             $query = $sql->prepare("SELECT * FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
@@ -159,6 +152,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             // Check if database entry exists and if not display 404 page
             $template_file =  ($query->rowCount() > 0) ? 'admin_root_dedicated_md.tpl' : 'admin_404.tpl';
 
+            $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
+            $query->execute(array($userID));
+            $ipsAvailable = freeips($query->fetchColumn());
+            $ipsAvailable[] = $ip;
+
             // Show 404 if GET parameters did not add up or no ID was given with mod
         } else {
             $template_file = 'admin_404.tpl';
@@ -173,6 +171,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (!$ui->ip('ip', 'post')) {
             $errors['ip'] = $sprache->ip;
         } else {
+
             if ($ui->st('action', 'post') == 'ad' and $ui->ip('ip', 'post')) {
                 $query = $sql->prepare("SELECT 1 FROM `rootsDedicated` WHERE `ip`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($ip, $reseller_id));
@@ -180,10 +179,22 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("SELECT 1 FROM `rootsDedicated` WHERE `dedicatedID`!=? AND `ip`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id, $ip, $reseller_id));
             }
+
             if ($query->rowCount() > 0) {
+
                 $errors['ip'] = $sprache->ip;
+
+            } else {
+
+                $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
+                $query->execute(array($userID));
+
+                if (!in_array($ip, freeips(($query->fetchColumn())))) {
+                    $errors['ip'] = $sprache->ip;
+                }
             }
         }
+
         if (!$ui->w('restart', 1, 'post')) {
             $errors['restart'] = $sprache->restart;
         }
@@ -219,6 +230,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% ' . $gsprache->dedicated . $ip;
             }
+
+            $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
+            $query->execute(array($userID));
+
+            $query2 = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=?,`resellerID`=? WHERE `ip`=? LIMIT 1");
+            $query2->execute(array($userID, $query->fetchColumn(), $ip));
 
             // Check if a row was affected during insert or update
             if (isset($rowCount) and $rowCount > 0) {

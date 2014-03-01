@@ -47,6 +47,10 @@ $query = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`
 $query2 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
 $query3 = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
 $query4 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `jobID`=? AND `type` IN ('de','vs') LIMIT 1");
+$query5 = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated` WHERE `dedicatedID`=? LIMIT 1");
+$query6 = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer` WHERE `id`=? LIMIT 1");
+$query7 = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=0 WHERE `ip`=? LIMIT 1");
+
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -69,6 +73,32 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $command = $gsprache->del . ' ' . $type . ' server: ' . $row['affectedID'] . ' name:' . $row['name'];
 
                 $removeIDs[$row['type']][] = $row['affectedID'];
+
+                $ips = array();
+
+                if ($type == 'dedicated') {
+
+                    $query5->execute(array($row['affectedID']));
+                    foreach ($query5->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                        $ips[] = $row2['ip'];
+                        foreach (ipstoarray($row2['ips']) as $ip) {
+                            $ips[] = $ip;
+                        }
+                    }
+
+                } else {
+                    $query6->execute(array($row['affectedID']));
+                    foreach ($query6->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                        $ips[] = $row2['ip'];
+                        foreach (ipstoarray($row2['ips']) as $ip) {
+                            $ips[] = $ip;
+                        }
+                    }
+                }
+
+                foreach ($ips as $ip) {
+                    $query7->execute(array($ip));
+                }
 
             } else {
 
@@ -162,10 +192,10 @@ print "\r\nApplying DHCPchanges\r\n";
 $rootObject->dhcpFiles();
 
 print "\r\n(Re)starting/Stopping dedicated server\r\n";
-$rootObject->startStop();
+#$rootObject->startStop();
 
 print "\r\nAdding, Altering, Removing, (Re)starting and Stopping VMWare Virtual Container\r\n";
-$rootObject->VMWare();
+#$rootObject->VMWare();
 
 print "\r\nRemoving VMWare Virtual Container/Dedicated Server from DB \r\n";
 

@@ -176,14 +176,13 @@ $defined['rootsDHCP'] = array(
     'netmask' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"255.255.255.0","Extra"=>""),
     'startCmd' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'dhcpFile' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'subnetOptions' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'description' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'notified' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
 $defined['rootsIP4'] = array(
-    'subnetID' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'subnetID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'ownerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")

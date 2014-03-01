@@ -80,7 +80,7 @@ option routers 1.1.1.1;
 option domain-name-servers 1.1.1.1;';
     }
 
-    $query = $sql->prepare("SELECT `id`,`description` FROM `rootsDHCP` WHERE `active`='Y' LIMIT 1");
+    $query = $sql->prepare("SELECT `id`,`description` FROM `rootsDHCP` WHERE `active`='Y'");
     $query->execute(array($id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $dhcpServers[$row['id']] = $row['description'];
@@ -128,7 +128,7 @@ option domain-name-servers 1.1.1.1;';
             $errors['active'] = $gsprache->active;
         }
 
-        if (!$subnet) {
+        if (!$subnet and $ui->st('action', 'post') == 'ad') {
             $errors['subnet'] = $sprache->subnet;
         }
 

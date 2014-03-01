@@ -90,6 +90,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         // Gather data for adding if needed and define add template
         if ($ui->st('d', 'get') == 'ad') {
+
             $template_file = 'admin_root_dhcp_ad.tpl';
 
             // Gather data for modding in case we have an ID and define mod template
@@ -110,7 +111,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $startCmd = $row['startCmd'];
                 $dhcpFile = $row['dhcpFile'];
                 $description = $row['description'];
-                $subnetOptions = $row['subnetOptions'];
             }
 
             // Check if database entry exists and if not display 404 page

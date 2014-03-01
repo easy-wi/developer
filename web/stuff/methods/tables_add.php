@@ -768,7 +768,6 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsDHCP` (
   `netmask` varchar(15) DEFAULT '255.255.255.0',
   `startCmd` text,
   `dhcpFile` text,
-  `subnetOptions` text,
   `description` text,
   `notified` int(11) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,

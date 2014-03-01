@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: root_virtual_server.php.
  * Author: Ulrich Block
@@ -36,6 +37,7 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['addvserver'] and !$pa['modvserver'] and !$pa['delvserver'] and !$pa['usevserver'])) {
     header('Location: admin.php');
     die;
@@ -49,21 +51,31 @@ $logusername = getusername($admin_id);
 $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
+
 if ($reseller_id != 0) {
-    $logsubuser=(isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
+    $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
     $logreseller = 0;
 }
+
 if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $licenceDetails['lVs']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
+
     $template_file = $gsprache->licence;
+
 } else if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
+
 } else if ($ui->st('d', 'get') == 'ad' and ($reseller_id == 0 or $admin_id==$reseller_id) and $pa['addvserver'] and (!is_numeric($licenceDetails['lVs']) or $licenceDetails['lVs']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
+
     if (!$ui->smallletters('action',2, 'post')) {
+
         $table = array();
         $table2 = array();
         $besthostcpu = '';
+
         $query = $sql->prepare("SELECT h.`id`, h.`ip`, h.`description`, h.`cores`, h.`mhz`, h.`hdd`, h.`ram`, h.`maxserver`, h.`maxserver`-COUNT(DISTINCT v.`id`) AS `freeserver`, h.`ram`-SUM(v.`minram`) AS `freeram`, h.`cores`*h.`mhz`-SUM(v.`cores`*v.`minmhz`) AS `freecpu`, h.`active` AS `active`, h.`resellerid` AS `resellerid`,h.`thin`,h.`thinquota` FROM `virtualhosts` h LEFT JOIN `virtualcontainer` v ON v.`hostid`=h.`id` GROUP BY h.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`freecpu` > 0 OR `freecpu` IS NULL) AND (`freeram` > 0 OR `freeram` IS NULL) AND `active`='Y' AND (`resellerid`=? OR `resellerid`='0')) ORDER BY `freeram` DESC,`freecpu` DESC,`freeserver` DESC");
         $query->execute(array($reseller_id));
+
         if ($query->rowCount() > 0) {
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 unset($ramused);
@@ -159,8 +171,10 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                 }
             }
             if (isset($serverusage) and is_array($serverusage)) {
+
                 asort($serverusage);
-                $bestserver=key($serverusage);
+                $bestserver = key($serverusage);
+
                 $query = $sql->prepare("SELECT `cores`,`cpu`,`esxi`,`mhz`,`hdd`,`ram`,`maxserver` FROM `virtualhosts` WHERE `id`=:bestserver LIMIT 1");
                 $query->execute(array(':bestserver' => $bestserver));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -203,9 +217,12 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                     $firstpoint = $hdd[0];
                 }
             }
-            if ($reseller_id != 0 and (!isset($bestserver) or !isid($bestserver,10))) {
+
+            if ($reseller_id != 0 and (!isset($bestserver) or !isid($bestserver, 10))) {
+
                 asort($serverusage2);
-                $bestserver=key($serverusage2);
+                $bestserver = key($serverusage2);
+
                 $query = $sql->prepare("SELECT `esxi`,`cpu`,`ip`,`cores`,`mhz`,`hdd`,`ram`,`maxserver` FROM `virtualhosts` WHERE `id`=? LIMIT 1");
                 $query->execute(array($bestserver));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -259,8 +276,11 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             $serverused[1] = array('ram' => "",'cpu' => "", 'server' => "",'hdd' => "");
             $bestserver = 1;
         }
+
         $reseller = array();
+
         if ($reseller_id != 0) {
+
             $query = $sql->prepare("SELECT `maxvserver`, `maxuserram`, `maxusermhz` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -268,54 +288,57 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                 $maxuserram = $row['maxuserram'];
                 $maxusermhz = $row['maxusermhz'];
             }
+
             $query = $sql->prepare("SELECT COUNT( DISTINCT `id` ) AS `usedservers`, SUM( `minram` ) AS `usedram`, SUM( `cores` * `minmhz` ) AS `usedcpu` FROM `virtualcontainer` WHERE `resellerid`=? LIMIT 1 ");
             $query->execute(array($reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usedservers = $row['usedservers'];
-                if ($row['usedram'] != null){
-                    $useduserram = $row['usedram'];
-                } else {
-                    $useduserram = 0;
-                }
-                if ($row['usedcpu'] != null){
-                    $usedusercpu = $row['usedcpu'];
-                } else {
-                    $usedusercpu = 0;
-                }
+                $useduserram = ($row['usedram'] != null) ? $row['usedram'] : 0;
+                $usedusercpu = ($row['usedcpu'] != null) ? $row['usedcpu'] : 0;
             }
-        } else {
         }
+
         $checkedips = array();
-        $query=($reseller_id == 0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` OR `resellerid`=?) AND `accounttype` IN ('r','u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
+
+        $query = ($reseller_id == 0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` OR `resellerid`=?) AND `accounttype` IN ('r','u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             if (!isset($firstresellerip)) {
-                if ($row['accounttype'] == 'u') $checkedips=freeips($reseller_id);
-                else $checkedips=freeips($row['id']);
-                $firstresellerip=current($checkedips);
+                $checkedips = freeips(($row['accounttype'] == 'u') ? $reseller_id : $row['id']);
+                $firstresellerip = current($checkedips);
             }
+
             $type=($row['accounttype'] == 'u') ? $gsprache->user : $gsprache->reseller;
             $reseller[$row['id']] = $type . ' ' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
+
         if (!isset($firstresellerip) or !isip($firstresellerip,'all')) {
             $checkedips = array();
-            $firstresellerip=current(freeips($reseller_id));
+            $firstresellerip = current(freeips($reseller_id));
         }
+
         $templates = array();
+
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $templates[] = array('id' => $row['id'], 'description' => $row['description'] . '  ' . $row['bitversion']." Bit");
         }
-        $template_file = "admin_root_vserver_add.tpl";
-    } else if ($ui->smallletters('action',2, 'post') == 'ad'){
+
+        $template_file = 'admin_root_vserver_add.tpl';
+
+    } else if ($ui->smallletters('action',2, 'post') == 'ad') {
+
         $template_file = "Error: ";
         $fail = 0;
+
         if (!isid($ui->post['hostid'],10)) {
             $fail = 1;
         } else {
             $hostid = $ui->post['hostid'];
         }
+
         if (isid($ui->post['userid'],10)) {
             $userid = $ui->post['userid'];
             $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
@@ -324,11 +347,13 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         } else {
             $fail = 1;
         }
-        if (!startparameter($ui->post['mount'])) {
+
+        if (!($ui->startparameter('mount', 'post'))) {
             $fail = 1;
         } else {
             $mountpoint = $ui->post['mount'];
         }
+
         if (!isid($ui->post['cores'],1) or (!isid($ui->post['minmhz'],"5") and $ui->post['minmhz'] != 0)) {
             $fail = 1;
             $template_file .="<br/ >MinMHZ";
@@ -367,8 +392,11 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         } else {
             $maxram = $ui->post['maxram'];
         }
+
         if (isips($ui->post['ips']) or empty($ui->post['ips'])) {
-            $freeips=($reseller_id == 0) ? freeips($reseller_id) : freeips($userid);
+
+            $freeips = ($reseller_id == 0) ? freeips($reseller_id) : freeips($userid);
+
             if (isips($ui->post['ips'])) {
                 $posted_ip=ipstoarray($ui->post['ips']);
                 foreach ($posted_ip as $ip_row) {
@@ -382,6 +410,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                     }
                 }
             }
+
             if (!isset($ip)) {
                 if (isip(current($freeips), 'all')) {
                     $ip=current($freeips);
@@ -403,6 +432,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             $fail = 1;
             $template_file .="IPs";
         }
+
         if ($reseller_id != 0) {
             $query = $sql->prepare("SELECT `maxvserver`, `maxuserram`, `maxusermhz` FROM `resellerdata` WHERE `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':reseller_id' => $reseller_id));

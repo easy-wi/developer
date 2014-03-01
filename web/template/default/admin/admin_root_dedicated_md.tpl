@@ -40,7 +40,7 @@
             <div class="control-group">
                 <label class="control-label" for="inputReseller"><?php echo $gsprache->user.'/'.$gsprache->reseller;?></label>
                 <div class="controls">
-                    <select id="inputReseller" class="span11" name="userID">
+                    <select id="inputReseller" class="span11" name="userID" onchange="getdetails('ajax.php?d=freeips&userID=', this.value)">
                         <option value="N"><?php echo $gsprache->no;?></option>
                         <?php foreach ($table as $key=>$val){ ?><option value="<?php echo $key;?>" <?php if($key==$userID) echo 'selected="selected"'; ?>><?php echo $val;?></option><?php } ?>
                     </select>
@@ -56,7 +56,13 @@
             </div>
             <div class="control-group<?php if(isset($errors['ip'])) echo ' error';?>">
                 <label class="control-label" for="inputIp"><?php echo $sprache->ip;?></label>
-                <div class="controls"><input id="inputIp" type="text" class="span11" name="ip" maxlength="15" value="<?php echo $ip; ?>"></div>
+                <div class="controls" id="information">
+                    <select id="inputIp" class="span11" name="ip">
+                        <?php foreach($ipsAvailable as $i){ ?>
+                        <option<?php if($i==$ip) echo ' selected="selected"';?>><?php echo $i;?></option>
+                        <?php } ?>
+                    </select>
+                </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputIps"><?php echo $sprache->ips;?></label>
