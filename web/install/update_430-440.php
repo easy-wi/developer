@@ -123,6 +123,24 @@ if (isset($include) and $include == true) {
         }
     }
 
+    $dirSource = EASYWIDIR . '/stuff/';
+    $dirTarget = EASYWIDIR . '/stuff/custom_modules/';
+
+    if (!is_dir($dirTarget)) {
+        @mkdir($dirTarget);
+    }
+
+    if (is_dir($dirTarget)) {
+
+        $query = $sql->prepare("SELECT `file` FROM `modules`");
+        $query->execute();
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            if (is_file($dirSource . $row['file'])) {
+                rename($dirSource . $row['file'], $dirTarget . $row['file']);
+            }
+        }
+    }
+
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
 }

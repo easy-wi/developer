@@ -107,6 +107,18 @@ if ($ui->st('action', 'post') and !token(true)) {
         $get = $ui->smallletters('get', 255, 'post');
         $type = $ui->w('type', 1, 'post');
 
+        $files = array();
+        $dir = EASYWIDIR . '/stuff/custom_modules/';
+
+        if (is_dir($dir)){
+            $dirs = scandir($dir);
+            foreach ($dirs as $row) {
+                if (substr($row, -4) == '.php') {
+                    $files[] = $row;
+                }
+            }
+        }
+
         if ($ui->st('action', 'post')) {
 
             if (!$sub or !in_array($sub, array('gs', 'mo', 'my', 'ro', 'ti', 'us', 'vo', 'pa')) ) {
@@ -127,12 +139,14 @@ if ($ui->st('action', 'post') and !token(true)) {
                 $errors['get'] = $sprache->get;
             }
 
-            if ($file and substr(strtolower($file), -4) == '.php') {
+            if (in_array($file, $files)) {
+
                 $query = $sql->prepare("SELECT 1 FROM `modules` WHERE `file`=? AND `id`!=? LIMIT 1");
                 $query->execute(array($file, $id));
                 if ($query->rowCount() > 0) {
                     $errors['file'] = $sprache->file;
                 }
+
             } else {
                 $errors['file'] = $sprache->file;
             }

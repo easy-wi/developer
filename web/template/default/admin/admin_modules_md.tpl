@@ -58,7 +58,11 @@
             <div class="control-group<?php if(isset($errors['file'])) echo ' error';?>">
                 <label class="control-label" for="inputFile"><?php echo $sprache->file;?></label>
                 <div class="controls">
-                    <input id=inputFile type="text" name="file" value="<?php echo $file;?>">
+                    <select id="inputFile" name="file">
+                        <?php foreach($files as $row){ ?>
+                        <option <?php if($file==$row) echo 'selected="selected"';?>><?php echo $row;?></option>
+                        <?php } ?>
+                    </select>
                 </div>
             </div>
             <div class="control-group<?php if(isset($errors['get'])) echo ' error';?>">
