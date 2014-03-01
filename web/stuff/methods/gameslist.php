@@ -46,6 +46,7 @@ $gameImages = array(
         ':shorten' => 'css',
         ':description' => 'Counter-Strike: Source',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => '',
         ':modfolder' => 'cstrike',
         ':fps' => 67,
@@ -70,7 +71,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -79,6 +80,7 @@ $gameImages = array(
         ':shorten' => 'cstrike',
         ':description' => 'Counter-Strike 1.6',
         ':gamebinary' => 'hlds_run',
+        ':gamebinaryWin' => 'hlds.exe',
         ':binarydir' => null,
         ':modfolder' => 'cstrike',
         ':fps' => 100,
@@ -103,7 +105,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -112,6 +114,7 @@ $gameImages = array(
         ':shorten' => 'czero',
         ':description' => 'Counter-Strike: Condition Zero',
         ':gamebinary' => 'hlds_run',
+        ':gamebinaryWin' => 'hlds.exe',
         ':binarydir' => null,
         ':modfolder' => 'czero',
         ':fps' => 100,
@@ -136,7 +139,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -145,6 +148,7 @@ $gameImages = array(
         ':shorten' => 'dods',
         ':description' => 'Day of Defeat: Source',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => null,
         ':modfolder' => 'dod',
         ':fps' => null,
@@ -169,7 +173,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'N',
@@ -211,6 +215,7 @@ $gameImages = array(
         ':shorten' => 'gmod',
         ':description' => 'Garrysmod',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => '',
         ':modfolder' => 'garrysmod',
         ':fps' => null,
@@ -235,7 +240,7 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -244,6 +249,7 @@ $gameImages = array(
         ':shorten' => 'left4dead',
         ':description' => 'Left 4 Dead',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => '',
         ':modfolder' => 'l4d',
         ':fps' => null,
@@ -268,7 +274,7 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -277,6 +283,7 @@ $gameImages = array(
         ':shorten' => 'left4dead2',
         ':description' => 'Left 4 Dead 2',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => '',
         ':modfolder' => 'left4dead2',
         ':fps' => null,
@@ -301,7 +308,7 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -310,6 +317,7 @@ $gameImages = array(
         ':shorten' => 'pvkii',
         ':description' => 'Pirates, Vikings, and Knights II',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => '',
         ':modfolder' => 'pvkii',
         ':fps' => null,
@@ -334,7 +342,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -343,6 +351,7 @@ $gameImages = array(
         ':shorten' => 'ageofchivalry',
         ':description' => 'Age Of Chivalry',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => '',
         ':modfolder' => 'ageofchivalry',
         ':fps' => 75,
@@ -367,7 +376,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -376,6 +385,7 @@ $gameImages = array(
         ':shorten' => 'dod',
         ':description' => 'Day of Defeat',
         ':gamebinary' => 'hlds_run',
+        ':gamebinaryWin' => 'hlds.exe',
         ':binarydir' => null,
         ':modfolder' => 'dod',
         ':fps' => 100,
@@ -400,7 +410,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -409,6 +419,7 @@ $gameImages = array(
         ':shorten' => 'hl2mp',
         ':description' => 'HL2 Deathmatch',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => null,
         ':modfolder' => 'hl2mp',
         ':fps' => null,
@@ -433,7 +444,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -442,6 +453,7 @@ $gameImages = array(
         ':shorten' => 'insurgency',
         ':description' => 'Insurgency',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => null,
         ':modfolder' => 'insurgency',
         ':fps' => 100,
@@ -466,7 +478,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -475,6 +487,7 @@ $gameImages = array(
         ':shorten' => 'tf',
         ':description' => 'Team Fortress 2',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => null,
         ':modfolder' => 'tf',
         ':fps' => null,
@@ -499,7 +512,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' =>  'S',
@@ -508,6 +521,7 @@ $gameImages = array(
         ':shorten' => 'tfc',
         ':description' => 'Team Fortress Classic',
         ':gamebinary' => 'hlds_run',
+        ':gamebinaryWin' => 'hlds.exe',
         ':binarydir' => null,
         ':modfolder' => 'tfc',
         ':fps' => 100,
@@ -532,7 +546,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -541,6 +555,7 @@ $gameImages = array(
         ':shorten' => 'zps',
         ':description' => 'Zombie Panic Source',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => null,
         ':modfolder' => 'zps',
         ':fps' => 100,
@@ -565,7 +580,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'S',
@@ -607,6 +622,7 @@ $gameImages = array(
         ':shorten' => 'csgo',
         ':description' => 'Counter-Strike: Global Offensive',
         ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => null,
         ':modfolder' => 'csgo',
         ':fps' => null,
@@ -631,7 +647,7 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'B'
     ),
     array(
         ':steamgame' => 'N',

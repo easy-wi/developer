@@ -141,6 +141,56 @@ if (isset($include) and $include == true) {
         }
     }
 
+    foreach (array('admin', 'api', 'cms', 'custom_modules', 'jobs', 'methods', 'user') as $dir) {
+        if (is_dir(EASYWIDIR . '/stuff/' . $dir . '/')) {
+            foreach (scandir(EASYWIDIR . '/stuff/' . $dir . '/') as $row) {
+                if (substr($row, -4) == '.php') {
+                    @unlink($dirSource . $row);
+                }
+            }
+        }
+    }
+
+    $customDirs = array();
+
+    foreach (scandir(EASYWIDIR . '/template/') as $row) {
+        if (strpos($row, '.') === false) {
+            $customDirs[] = $row;
+            foreach (array('admin', 'ajax', 'cms', 'custom_modules', 'user') as $dir) {
+                @mkdir(EASYWIDIR . '/template/' . $row);
+            }
+        }
+    }
+
+    foreach (array('admin', 'ajax', 'cms', 'custom_modules', 'user') as $dir) {
+
+        if (is_dir(EASYWIDIR . '/template/default/' . $dir . '/')) {
+
+            foreach (scandir(EASYWIDIR . '/template/default/' . $dir . '/') as $row) {
+
+                if (substr($row, -4) == '.tpl') {
+
+                    @unlink(EASYWIDIR . '/template/default/' . $row);
+
+                    foreach ($customDirs as $custom) {
+                        if (is_dir(EASYWIDIR . '/template/' . $custom) and is_file(EASYWIDIR . '/template/' . $custom . '/' . $row)) {
+                            @rename(EASYWIDIR . '/template/' . $custom . '/' . $row, EASYWIDIR . '/template/' . $custom . '/' . $dir . '/' . $row);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `gamebinaryWin` varchar(255) NOT NULL AFTER `gamebinary`");
+    $query->execute();
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `gamebinaryWin`='hlds.exe',`os`='B' WHERE `gamebinary`='hlds_run'");
+    $query->execute();
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `gamebinaryWin`='srcds.exe',`os`='B' WHERE `gamebinary`='srcds_run'");
+    $query->execute();
+
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
 }
