@@ -11,6 +11,7 @@
         <form class="form-horizontal" action="admin.php?w=ps&amp;r=ps" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
+            <h3>CMS</h3>
             <div class="control-group">
                 <label class="control-label" for="inputURL">URL</label>
                 <div class="controls">
@@ -27,15 +28,6 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputProtectioncheck"><?php echo $sprache->protectioncheck;?></label>
-                <div class="controls">
-                    <select id="inputProtectioncheck" name="protectioncheck">
-                        <option value="Y"><?php echo $gsprache->yes;?></option>
-                        <option value="N" <?php if ($protectioncheck=='N') echo 'selected="selected"'; ?>><?php echo $gsprache->no;?></option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label" for="inputDefault"><?php echo $sprache->defaultpage;?></label>
                 <div class="controls">
                     <select id="inputDefault" name="defaultpage">
@@ -47,6 +39,17 @@
                     </select>
                 </div>
             </div>
+            <div class="control-group">
+                <label class="control-label" for="inputProtectioncheck"><?php echo $sprache->protectioncheck;?></label>
+                <div class="controls">
+                    <select id="inputProtectioncheck" name="protectioncheck">
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                        <option value="N" <?php if ($protectioncheck=='N') echo 'selected="selected"'; ?>><?php echo $gsprache->no;?></option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <h3><?php echo $gsprache->news;?></h3>
             <div class="control-group">
                 <label class="control-label" for="inputMaxNews"><?php echo $sprache->maxnews;?></label>
                 <div class="controls">
@@ -65,6 +68,8 @@
                     <input id="inputNewsSidebarTextlength" type="text" name="newssidebar_textlength" value="<?php echo $newssidebar_textlength;?>">
                 </div>
             </div>
+            <hr>
+            <h3><?php echo $gsprache->comments;?></h3>
             <div class="control-group">
                 <label class="control-label" for="inputMailRequired"><?php echo $sprache->mailRequired;?></label>
                 <div class="controls">
@@ -137,6 +142,8 @@
                     <textarea id="inputinputBlockWords" name="blockWords" rows="4"><?php echo $blockWords;?></textarea>
                 </div>
             </div>
+            <hr>
+            <h3><?php echo $sprache->about;?></h3>
             <div class="control-group">
                 <label class="control-label"><?php echo $sprache->about;?></label>
                 <div class="controls">
@@ -155,6 +162,8 @@
                 </div>
             </div>
             <?php } ?>
+            <hr>
+            <h3><?php echo $sprache->register;?></h3>
             <div class="control-group">
                 <label class="control-label" for="inputRegister"><?php echo $sprache->register;?></label>
                 <div class="controls">
