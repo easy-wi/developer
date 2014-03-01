@@ -104,9 +104,10 @@
             <div class="control-group">
                 <label class="control-label" for="inputOS"><?php echo $rsprache->os;?></label>
                 <div class="controls">
-                    <select class="span12" id="inputOS" name="os">
+                    <select class="span12" id="inputOS" name="os" onchange="SwitchShowHideRows(this.value);">
                         <option value="L">Linux</option>
-                        <!--<option value="W" <?php if($os=='W') echo 'selected="selected"';?>>Windows</option>-->
+                        <option value="W" <?php if($os=='W') echo 'selected="selected"';?>>Windows</option>
+                        <option value="B" <?php if($os=='B') echo 'selected="selected"';?>>Linux + Windows</option>
                     </select>
                 </div>
             </div>
@@ -129,9 +130,13 @@
                 <label class="control-label" for="inputDesc"><?php echo $sprache->description;?></label>
                 <div class="controls"><input class="span12" id="inputDesc" type="text" name="description" value="<?php echo $description;?>"></div>
             </div>
-            <div class="control-group<?php if(isset($errors['gamebinary'])) echo ' error';?>">
-                <label class="control-label" for="inputBin"><?php echo $sprache->bin;?></label>
+            <div class="L control-group switch <?php if($os=='W') echo 'display_none';if(isset($errors['gamebinary'])) echo 'error';?>">
+                <label class="control-label" for="inputBin">Linux <?php echo $sprache->bin;?></label>
                 <div class="controls"><input class="span12" id="inputBin" type="text" name="gamebinary" value="<?php echo $gamebinary;?>"></div>
+            </div>
+            <div class="W control-group switch <?php if($os=='L') echo 'display_none';if(isset($errors['gamebinaryWin'])) echo 'error';?>">
+                <label class="control-label" for="inputBinWin">Windows <?php echo $sprache->bin;?></label>
+                <div class="controls"><input class="span12" id="inputBinWin" type="text" name="gamebinaryWin" value="<?php echo $gamebinaryWin;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputBinDir"><?php echo $sprache->bin_folder;?></label>

@@ -100,6 +100,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $steamgame = $ui->w('steamgame', 1, 'post');
     $updates = $ui->id('updates', 1, 'post');
     $gamebinary = $ui->startparameter('gamebinary', 'post');
+    $gamebinaryWin = $ui->startparameter('gamebinaryWin', 'post');
     $cmd = $ui->startparameter('cmd', 'post');
     $iptables = $ui->startparameter('iptables', 'post');
     $protectedSaveCFGs = $ui->startparameter('protectedSaveCFGs', 'post');
@@ -221,6 +222,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             if ($node->nodeName == 'gamebinary') {
                                 $gamebinary = $node->nodeValue;
                             }
+                            if ($node->nodeName == 'gamebinaryWin') {
+                                $gamebinaryWin = $node->nodeValue;
+                            }
                             if ($node->nodeName == 'binarydir') {
                                 $binarydir = $node->nodeValue;
                             }
@@ -317,6 +321,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $shorten = $row['shorten'];
                 $description = $row['description'];
                 $gamebinary = $row['gamebinary'];
+                $gamebinaryWin = $row['gamebinaryWin'];
                 $binarydir = $row['binarydir'];
                 $modfolder = $row['modfolder'];
                 $fps = $row['fps'];
@@ -367,34 +372,39 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
 
-        if (!$ui->w('steamgame', 1, 'post')) {
+        if (!$steamgame) {
             $errors['steamgame'] = $sprache->steam;
         }
-        if (!$ui->active('gamemod', 'post')) {
+        if (!$gamemod) {
             $errors['gamemod'] = $sprache->mods;
         }
-        if (!$ui->id('updates', 1, 'post')) {
+        if (!$updates) {
             $errors['updates'] = 'Autoupdate';
         }
-        if (!$ui->startparameter('cmd', 'post')) {
+        if (!$cmd) {
             $errors['cmd'] = $sprache->start;
         }
-        if (!$ui->startparameter('gamebinary', 'post')) {
+        if (!$gamebinary and $os != 'W') {
             $errors['gamebinary'] = $sprache->bin;
+        }
+        if (!$gamebinaryWin and $os != 'L') {
+            $errors['gamebinaryWin'] = $sprache->bin;
         }
         
         if ($ui->gamestring('shorten', 'post') and $ui->smallletters('action',2, 'post') == 'ad') {
-            
-            $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($shorten, $resellerLockupID));
+
+            $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND (`os`=? OR `os`='B') AND `resellerid`=? LIMIT 1");
+            $query->execute(array($shorten, $os, $resellerLockupID));
+
             if ($query->rowCount() > 0) {
                 $errors['shorten'] = $sprache->abkuerz;
             }
             
         } else if ($ui->gamestring('shorten', 'post') and $ui->smallletters('action',2, 'post') == 'md') {
             
-            $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `id`!=? AND `shorten`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($id, $shorten, $resellerLockupID));
+            $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `id`!=? AND `shorten`=? AND (`os`=? OR `os`='B') AND `resellerid`=? LIMIT 1");
+            $query->execute(array($id, $shorten, $os, $resellerLockupID));
+
             if ($query->rowCount() > 0) {
                 $errors['shorten'] = $sprache->abkuerz;
             }
@@ -402,6 +412,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             
             $errors['shorten'] = $sprache->abkuerz;
+
         }
         
         if (count($errors) == 0) {
@@ -428,14 +439,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
 
                 $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-                $query2 = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`binarydir`,`modfolder`,`map`,`mapGroup`,`workShop`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`ramLimited`,`ftpAccess`,`os`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                $query2 = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`map`,`mapGroup`,`workShop`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`protected`,`ramLimited`,`ftpAccess`,`os`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
                 foreach ($resellerInsertIDs as $rID) {
 
                     $query->execute(array($shorten, $rID));
 
                     if ($query->rowCount() == 0) {
-                        $query2->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $rID));
+                        $query2->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $gamebinaryWin,$binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $rID));
                         $rowCount += $query2->rowCount();
                     }
 
@@ -445,8 +456,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             } else if ($ui->st('action', 'post') == 'md') {
                 
-                $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`workShop`=?,`cmd`=?,`modcmds`=?,`gameq`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`protected`=?,`ramLimited`=?,`ftpAccess`=?,`os`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $ui->id('id', 10, 'get'), $resellerLockupID));
+                $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`gamebinaryWin`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`workShop`=?,`cmd`=?,`modcmds`=?,`gameq`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`protected`=?,`ramLimited`=?,`ftpAccess`=?,`os`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $gamebinaryWin, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $ui->id('id', 10, 'get'), $resellerLockupID));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %template% ' . $shorten;
             }
