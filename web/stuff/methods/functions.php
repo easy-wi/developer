@@ -219,7 +219,7 @@ if (!function_exists('passwordgenerate')) {
         $serverdata = array();
 
         if ($type == 'root') {
-            $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT `os`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
 
         } else if ($type == 'virtualhost') {
             $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`notified`,`resellerid` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
@@ -233,6 +233,7 @@ if (!function_exists('passwordgenerate')) {
 
         $query->execute(array(':serverID' => $serverID, ':aeskey' => $aeskey));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $cores = '';
             $hyperthreading = '';
             $steamAccount = '';
@@ -253,9 +254,13 @@ if (!function_exists('passwordgenerate')) {
                 $ftpport = '';
             }
 
-            $serverdata = array('ip' => $row['ip'], 'port' => $row['decryptedport'], 'user' => $row['decrypteduser'], 'pass' => $row['decryptedpass'], 'publickey' => $row['publickey'], 'keyname' => $row['keyname'], 'notified' => $row['notified'], 'resellerid' => $row['resellerid'], 'hyperthreading' => $hyperthreading,'cores' => $cores,'ftpport' => $ftpport,'steamAccount' => $steamAccount,'steamPassword' => $steamPassword);
+            $os = (isset($row['os'])) ? $row['os'] : '';
+
+            $serverdata = array('os' => $os, 'ip' => $row['ip'], 'port' => $row['decryptedport'], 'user' => $row['decrypteduser'], 'pass' => $row['decryptedpass'], 'publickey' => $row['publickey'], 'keyname' => $row['keyname'], 'notified' => $row['notified'], 'resellerid' => $row['resellerid'], 'hyperthreading' => $hyperthreading,'cores' => $cores,'ftpport' => $ftpport,'steamAccount' => $steamAccount,'steamPassword' => $steamPassword);
         }
+
         return $serverdata;
+
     }
 
     function serverAmount($resellerid) {
@@ -825,6 +830,9 @@ if (!function_exists('passwordgenerate')) {
 
         } else if (is_file(EASYWIDIR . '/template/' . $use. '/' . $file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
             return EASYWIDIR . '/template/' . $use. '/' . $file;
+
+        } else if (is_file(EASYWIDIR . '/template/default/' . $location. '/' . $file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
+            return EASYWIDIR . '/template/default/' . $location. '/' . $file;
 
         } else if (is_file(EASYWIDIR . '/template/default/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
             return EASYWIDIR . '/template/default/'.$file;
