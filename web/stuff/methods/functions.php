@@ -619,7 +619,7 @@ if (!function_exists('passwordgenerate')) {
 
     function sendmail($template, $userid, $server, $shorten) {
 
-        global $sql;
+        global $sql, $rSA;
 
         if (!isset($aeskey)) {
             include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -632,19 +632,24 @@ if (!function_exists('passwordgenerate')) {
             $writerid = $shorten[1];
             $shorten = $shorten[0];
         }
-        $userLanguage = '';
-        $resellerLanguage = '';
+
+        $userLanguage = $rSA['language'];
+        $resellerLanguage = $rSA['language'];
 
         $query = $sql->prepare("SELECT `mail`,`vname`,`name`,`cname`,`language`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $usermail = $row['mail'];
             $username = $row['vname'] . '  ' . $row['name'];
+
             if ($username == ' ' or $username == '') {
                 $username = $row['cname'];
             }
+
             $userLanguage = $row['language'];
             $resellerid = $row['resellerid'];
+
         }
 
         if ($template == 'emailnewticket' and isset($writerid)) {
@@ -656,11 +661,14 @@ if (!function_exists('passwordgenerate')) {
             }
         }
 
-        if (!isset($resellerid) or $resellerid==$userid) {
+        if (!isset($resellerid) or $resellerid == $userid) {
+
             $resellersid = 0;
+
             if (!isset($resellerid)) {
                 $resellerid = 0;
             }
+
         } else {
             $resellersid = $resellerid;
         }
@@ -668,8 +676,10 @@ if (!function_exists('passwordgenerate')) {
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $resellersid));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $emailregards = nl2br($row['emailregards']);
             $emailfooter = nl2br($row['emailfooter']);
+
             $resellersmail = $row['email'];
             $resellerLanguage = $row['language'];
             $email_settings_type = $row['email_settings_type'];
@@ -734,12 +744,12 @@ if (!function_exists('passwordgenerate')) {
 
                 $query = $sql->prepare("SELECT `$template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
                 $query->execute(array($lookupID));
-                $mailtext= @gzuncompress($query->fetchColumn());
+                $mailtext = @gzuncompress($query->fetchColumn());
 
                 $keys = array('%server%', '%username%', '%date%', '%shorten%', '%emailregards%', '%emailfooter%');
                 $replacements = array($server, $username, $maildate, $shorten, $emailregards, $emailfooter);
 
-                if (is_object($sprache)) {
+                if ($sprache) {
                     $topic = $sprache->topic;
 
                     $sprache = (array) $sprache;
@@ -760,7 +770,7 @@ if (!function_exists('passwordgenerate')) {
 
                 $mailBody = str_replace($keys, $replacements, $mailtext);
 
-                if (isset($usermail) and $usermail != 'ts3@import.mail' and ismail($usermail) and isset($sprache) and isset($mailtext)) {
+                if (isset($usermail) and $usermail != 'ts3@import.mail' and ismail($usermail)) {
                     $startMail = true;
                 }
 
