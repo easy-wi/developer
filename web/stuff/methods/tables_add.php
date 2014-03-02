@@ -852,7 +852,7 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `steamgame` enum('Y','N','S') NOT NULL DEFAULT 'Y',
+  `steamgame` enum('N','S') NOT NULL DEFAULT 'S',
   `appID` int(10) unsigned,
   `steamVersion` varchar(20) NULL,
   `updates` smallint(1) unsigned DEFAULT '1',

@@ -715,7 +715,7 @@ $defined['serverlist'] = array(
 );
 $defined['servertypes'] = array(
     'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'steamgame' => array("Type"=>"enum('Y','N','S')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
+    'steamgame' => array("Type"=>"enum('N','S')","Null"=>"NO","Key"=>"","Default"=>"S","Extra"=>""),
     'appID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'steamVersion' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'updates' => array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),

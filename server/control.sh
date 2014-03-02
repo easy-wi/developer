@@ -472,15 +472,6 @@ fi
 mv $HOMEFOLDER/control.sh /home/$INSTALLMASTER/control.sh
 chmod 770 /home/$INSTALLMASTER/control.sh
 cd /home/$INSTALLMASTER/masterserver
-echo "Downloading hldsupdatetool"
-sleep 1
-wget -q --timeout=10 http://storefront.steampowered.com/download/hldsupdatetool.bin
-if [ -f hldsupdatetool.bin ]; then
-	chmod 777 hldsupdatetool.bin
-	chown -R $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER/masterserver
-	su -c "./hldsupdatetool.bin <<< yes" $INSTALLMASTER
-fi
-sleep 1
 echo "Downloading SteamCmd"
 mkdir -p /home/$INSTALLMASTER/masterserver/steamCMD/
 cd /home/$INSTALLMASTER/masterserver/steamCMD/
@@ -493,8 +484,6 @@ if [ -f steamcmd_linux.tar.gz ]; then
 fi
 sleep 1
 chown -R $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER
-echo "Updating the hldsupdatetool with the User $INSTALLMASTER in the screen \"hldsupdate\""
-su -c "screen -dmS hldsupdate ./steam -command update" $INSTALLMASTER
 echo "Please add the user $INSTALLMASTER to your AllowUsers entries in the file /etc/ssh/sshd_config"
 if [ -d /root/masterserver ]; then
 	rm -rf /root/masterserver
@@ -758,13 +747,6 @@ screen -d -m -S SteamCmdUpdate-Screen $TEMPFOLDER/updateSteamCmd.sh
 }
 
 function noSteamCmdUpdate {
-if [ ! -f $MASTERSERVERDIR/hldsupdatetool.bin ]; then
-	cd $MASTERSERVERDIR
-	wget -q --timeout=10 http://storefront.steampowered.com/download/hldsupdatetool.bin
-	chmod +x hldsupdatetool.bin
-	./hldsupdatetool.bin >/dev/null 2>/dev/null <<< yes
-	cd
-fi
 if [ "$VARIABLE5" == "" -o  "$VARIABLE4" == "easywi" ]; then
 	VARIABLE4="ftp://imageuser:BMpRP4HEORkKGj@84.200.78.232"
 fi
@@ -812,38 +794,6 @@ EOF
 			echo 'cd $UPDATE' >> $TEMPFOLDER/update_$UPDATE.sh
 			echo "wget $DOWNLOADURL --output-document $SAVEAS" >> $TEMPFOLDER/update_$UPDATE.sh
 			echo "chmod 750 $SAVEAS" >> $TEMPFOLDER/update_$UPDATE.sh
-		# HLDS
-		elif [ "$VARIABLE1" == "hldsCmd" ]; then
-
-			# Update the game and updater
-			if [ "$UPDATE" = "css" ]; then
-				echo "${IONICE}"'nice -n +19 ./steam -command update -game "Counter-Strike Source" -dir $MASTERSERVERDIR/$UPDATE -verify_all -retry >> $LOGDIR/update-$UPDATE.log' >> $TEMPFOLDER/update_$UPDATE.sh
-				echo 'FDLFOLDER="cstrike"' >> $TEMPFOLDER/update_$UPDATE.sh
-				FDLFOLDER="cstrike"
-			else
-				if [ "$UPDATE" = "dods" ]; then
-					echo 'FDLFOLDER="dod"' >> $TEMPFOLDER/update_$UPDATE.sh
-					FDLFOLDER="dod"
-				fi
-				echo "${IONICE}"'nice -n +19 ./steam -command update -game $UPDATE -dir $MASTERSERVERDIR/$UPDATE -verify_all -retry >> $LOGDIR/update-$UPDATE.log' >> $TEMPFOLDER/update_$UPDATE.sh
-			fi
-
-			echo 'TEXT="downloading"' >> $TEMPFOLDER/update_$UPDATE.sh
-
-			# Create FDL Folders in advance
-			echo 'cd $MASTERSERVERDIR/$UPDATE' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo 'if [[ `find -maxdepth 2 -name srcds_run | head -n 1` ]]; then' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '	cd `dirname */*/steam.inf | head -n 1`' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '	if [ ! -f cfg/server.cfg ]; then' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '		touch cfg/server.cfg' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '	fi' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '	find particles/ maps/ materials/ resource/ models/ sound/ -type d 2> /dev/null | while read FOLDERS; do' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '		if [[ ! -d $DATADIR/hl2/$UPDATE/$FOLDERS ]]; then' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '			mkdir -p $DATADIR/hl2/$UPDATE/$FOLDERS' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '			chmod 770 $DATADIR/hl2/$UPDATE/$FOLDERS' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '		fi' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo '	done' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo 'fi' >> $TEMPFOLDER/update_$UPDATE.sh
 		fi
 		echo 'if [ -f $LOGDIR/update-$UPDATE.log ]; then' >> $TEMPFOLDER/update_$UPDATE.sh
 		echo '	if [[ `grep "$TEXT" $LOGDIR/update-$UPDATE.log | grep -v "No files"` ]]; then'  >> $TEMPFOLDER/update_$UPDATE.sh
@@ -2193,11 +2143,6 @@ case "$1" in
 		wget_remove &
 	;;
 	noSteamCmd)
-		rsyncExists
-		noSteamCmdUpdate
-		wget_remove &
-	;;
-	hldsCmd)
 		rsyncExists
 		noSteamCmdUpdate
 		wget_remove &

@@ -36,7 +36,6 @@
                 <div class="controls">
                     <select class="span12" id="inputSteamGame" name="steamgame">
                         <option value="N"><?php echo $gsprache->no;?></option>
-                        <option value="Y" <?php if ($steamgame=='Y') echo 'selected="selected"'; ?>>HLDSUpdater</option>
                         <option value="S" <?php if ($steamgame=="S") echo 'selected="selected"'; ?>>SteamCmd</option>
                     </select>
                 </div>

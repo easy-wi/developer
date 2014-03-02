@@ -47,7 +47,7 @@ class masterServer {
     public $sship, $sshport, $sshuser, $sshpass, $publickey, $keyname;
     
     // master gamedata
-    private $updateIDs = array(), $syncList = array(), $steamCmdTotal = array('sync' => array(), 'nosync' => array()), $steamCmdOutdated = array('sync' => array(),'nosync' => array()), $hldsTotal = array('sync' => array(),'nosync' => array()), $hldsOutdated = array('sync' => array(),'nosync' => array()), $mcTotal = array('sync' => array(),'nosync' => array()), $mcOutdated = array('sync' => array(),'nosync' => array()), $noSteam = array('sync' => array(),'nosync' => array()), $maps = array(), $addons = array(), $aeskey;
+    private $updateIDs = array(), $syncList = array(), $steamCmdTotal = array('sync' => array(), 'nosync' => array()), $steamCmdOutdated = array('sync' => array(),'nosync' => array()), $mcTotal = array('sync' => array(),'nosync' => array()), $mcOutdated = array('sync' => array(),'nosync' => array()), $noSteam = array('sync' => array(),'nosync' => array()), $maps = array(), $addons = array(), $aeskey;
     
     //ssh command
     public $sshcmd;
@@ -168,11 +168,11 @@ class masterServer {
         // if an ID is given collect only data for this ID, else collect all game data for this rootserver
         if ($all === true) {
             
-            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? ${extraSQL}");
+            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? " . $extraSQL);
             $query->execute(array($this->rootID));
             
         } else {
-            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? ${extraSQL} LIMIT 1");
+            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? " . $extraSQL . " LIMIT 1");
             $query->execute(array($this->rootID, $all));
         }
         
@@ -223,29 +223,6 @@ class masterServer {
                     } else if ($updateType == 2 and !isset($this->steamCmdTotal['nosync'][$lookUpAppID])) {
                         $this->steamCmdTotal['nosync'][$lookUpAppID] = $row['shorten'];
                     }
-
-                    // hlds installations
-                } else if ($row['steamgame'] == 'Y') {
-                    
-                    if ($row['localVersion'] == null or ($row['localVersion'] != null and $row['localVersion'] < $row['steamVersion'])) {
-                        if ($updateType == 1) {
-                            $this->hldsOutdated['sync'][] = $row['shorten'];
-                            
-                        } else if ($updateType == 2) {
-                            $this->hldsOutdated['nosync'][] = $row['shorten'];
-                        }
-
-                    } else if ($updateType == 1) {
-                        $this->syncList[] = $row['shorten'];
-                    }
-
-                    if ($updateType == 1) {
-                        $this->hldsTotal['sync'][] = $row['shorten'];
-                        
-                    } else if ($updateType == 2) {
-                        $this->hldsTotal['nosync'][] = $row['shorten'];
-                    }
-
 
                 // Minecraft and Craftbukkit autoupdater
                 // https://github.com/easy-wi/developer/issues/90 https://github.com/easy-wi/developer/issues/91
@@ -301,10 +278,6 @@ class masterServer {
         }
 
         $this->syncList = array_unique($this->syncList);
-        $this->hldsTotal['sync'] = array_unique($this->hldsOutdated['sync']);
-        $this->hldsTotal['nosync'] = array_unique($this->hldsOutdated['nosync']);
-        $this->hldsOutdated['sync'] = array_unique($this->hldsOutdated['sync']);
-        $this->hldsOutdated['nosync'] = array_unique($this->hldsOutdated['nosync']);
         $this->noSteam['sync'] = array_unique( $this->noSteam['sync']);
         $this->noSteam['nosync'] = array_unique($this->noSteam['nosync']);
         $this->maps = array_unique($this->maps);
@@ -324,22 +297,18 @@ class masterServer {
         // Update if needed
         if ($update === true) {
             $steamCmdCount = count($this->steamCmdOutdated['sync']) + count($this->steamCmdOutdated['nosync']);
-            $hldsCount = count($this->hldsOutdated['sync']) + count($this->hldsOutdated['nosync']);
             $mcCount = count($this->mcOutdated['sync']) + count($this->mcOutdated['nosync']);
             $steam = 'steamCmdOutdated';
-            $hlds = 'hldsOutdated';
             $mc = 'mcOutdated';
 
         // Update in any case
         } else {
             $steamCmdCount = count($this->steamCmdTotal['sync']) + count($this->steamCmdTotal['nosync']);
-            $hldsCount = count($this->hldsTotal['sync']) + count($this->hldsTotal['nosync']);
             $mcCount = count($this->mcTotal['sync']) + count($this->mcTotal['nosync']);
             $steam = 'steamCmdTotal';
-            $hlds = 'hldsTotal';
             $mc = 'mcTotal';
             
-            foreach (array_unique(array_merge($this->steamCmdTotal['sync'], $this->steamCmdTotal['nosync'], $this->hldsTotal['sync'], $this->hldsTotal['nosync'], $this->noSteam['sync'], $this->noSteam['nosync'])) as $shorten) {
+            foreach (array_unique(array_merge($this->steamCmdTotal['sync'], $this->steamCmdTotal['nosync'], $this->noSteam['sync'], $this->noSteam['nosync'])) as $shorten) {
                 if (in_array($shorten, $this->syncList)) {
                     unset($this->syncList[array_search($shorten, $this->syncList)]);
                 }
@@ -353,7 +322,7 @@ class masterServer {
         $query = $sql->prepare("SELECT r.`id` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` WHERE r.`serverid`=? AND t.`shorten`=? LIMIT 1");
 
         // Nothing to update
-        if ($syncCount == 0 and $noSteamCount == 0 and $steamCmdCount == 0 and $hldsCount == 0 and $mcCount == 0) {
+        if ($syncCount == 0 and $noSteamCount == 0 and $steamCmdCount == 0 and $mcCount == 0) {
             $this->sshcmd = null;
             
         } else {
@@ -371,7 +340,7 @@ class masterServer {
             }
 
             // No Steam games
-            if ($noSteamCount>0) {
+            if ($noSteamCount > 0) {
                 foreach (array_unique(array_merge($this->noSteam['sync'], $this->noSteam['nosync'])) as $k) {
                     $query->execute(array($this->rootID, $k));
                     $this->updateIDs[] = $query->fetchColumn();
@@ -431,7 +400,7 @@ class masterServer {
             }
 
             // steamCmd updates
-            if ($steamCmdCount>0) {
+            if ($steamCmdCount > 0) {
                 
                 $goFor = $this->$steam;
                 
@@ -465,34 +434,8 @@ class masterServer {
                 }
             }
 
-            // hlds Updates
-            if ($hldsCount>0) {
-                
-                $goFor = $this->$hlds;
-                
-                foreach (array_unique(array_merge($goFor['sync'], $goFor['nosync'])) as $k) {
-                    $query->execute(array($this->rootID, $k));
-                    $this->updateIDs[] = $query->fetchColumn();
-                }
-                
-                if ($this->imageserver ==  'none') {
-                    $tempCmd[] = './control.sh hldsCmd '.$install . ' "' . implode(' ', array_unique(array_merge($goFor['sync'], $goFor['nosync']))) . '" ' . $this->webhost . ' ' . $this->imageserver;
-                
-                } else if (count($goFor['sync']) > 0 and count($goFor['nosync']) > 0) {
-                    $tempCmd[] = './control.sh hldsCmd '.$install . ' "' . implode(' ', $goFor['sync']) . '" ' . $this->webhost . ' ' . $this->imageserver;
-                    $tempCmd[] = './control.sh hldsCmd '.$install . ' "' . implode(' ', $goFor['nosync']) . '" ' . $this->webhost.' none';
-                
-                } else if (count($goFor['sync']) > 0 and count($goFor['nosync']) == 0) {
-                    $tempCmd[] = './control.sh hldsCmd '.$install . ' "' . implode(' ', $goFor['sync']) . '" ' . $this->webhost . ' ' . $this->imageserver;
-                
-                } else if (count($goFor['sync']) == 0 and count($goFor['nosync']) > 0) {
-                    $tempCmd[] = './control.sh hldsCmd '.$install . ' "' . implode(' ', $goFor['nosync']) . '" ' . $this->webhost.' none';
-                }
-            }
-
-
             // sync maps and addons
-            if ($addonCount>0) {
+            if ($addonCount > 0) {
                 $tempCmd[] = './control.sh syncaddons '.$this->imageserver . ' "' . implode(' ', $this->maps).'" "'.implode(' ', $this->addons).'"';
             }
 
@@ -532,6 +475,6 @@ class masterServer {
     }
 
     function __destruct() {
-        unset($this->updateIDs, $this->aeskey, $this->imageserver, $this->resellerID, $this->webhost, $this->rootID, $this->steamAccount, $this->steamPassword, $this->sship, $this->sshport, $this->sshuser, $this->sshpass, $this->publickey, $this->keyname, $this->syncList, $this->steamCmdTotal, $this->steamCmdOutdated, $this->hldsTotal, $this->hldsOutdated, $this->noSteam, $this->maps, $this->addons, $this->sshcmd);
+        unset($this->updateIDs, $this->aeskey, $this->imageserver, $this->resellerID, $this->webhost, $this->rootID, $this->steamAccount, $this->steamPassword, $this->sship, $this->sshport, $this->sshuser, $this->sshpass, $this->publickey, $this->keyname, $this->syncList, $this->steamCmdTotal, $this->steamCmdOutdated, $this->noSteam, $this->maps, $this->addons, $this->sshcmd);
     }
 }
