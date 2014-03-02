@@ -89,6 +89,7 @@ class EasyWiFTP {
             foreach ($files as $file) {
 
                 $arrayCombined = str_replace(array('//', '///', '////'), '/', $pathAndFile . '/' . $file);
+
                 $fileSize = @ftp_size($this->ftpConnection, $arrayCombined);
 
                 if ($fileSize != -1) {
@@ -178,15 +179,22 @@ class EasyWiFTP {
         return false;
     }
 
-    public function uploadFileFromTemp ($folders, $file = '', $secondConnection = true) {
+    public function displayTemp () {
+        return $this->tempHandle;
+    }
 
+    public function uploadFileFromTemp ($folders, $file = '', $secondConnection = true) {
         $useConnection = ($secondConnection === true) ? 'ftpSecondConnection' : 'ftpConnection';
 
         if (($secondConnection === false and $this->loggedIn) or ($secondConnection === true and $this->secondLoggedIn)) {
 
             if (is_array($this->tempHandle)) {
 
-                foreach (array_keys($this->tempHandle) as $k) {
+                $returns = array();
+
+                $fileNames = array_keys($this->tempHandle);
+
+                foreach ($fileNames as $k) {
 
                     $combinedFolders = $this->combineFolderFile($folders, $k);
 
@@ -197,8 +205,6 @@ class EasyWiFTP {
                     // only upload in case we have downloaded some data.
                     $fstats = fstat($this->tempHandle[$k]);
 
-                    $returns = array();
-
                     if ($fstats['size'] > 0) {
 
                         if (@ftp_fput($this->$useConnection, $this->fileNameFromPath($k), $this->tempHandle[$k], FTP_BINARY, 0)) {
@@ -206,12 +212,12 @@ class EasyWiFTP {
                         } else {
                             $returns[] = false;
                         }
-
-                        if (!in_array(false, $returns)) {
-                            return true;
-                        }
                     }
 
+                }
+
+                if (!in_array(false, $returns)) {
+                    return true;
                 }
 
             } else {
@@ -271,6 +277,8 @@ class EasyWiFTP {
     private function arrayToChDir ($folders, $secondConnection = true) {
 
         $useConnection = ($secondConnection === true) ? 'ftpSecondConnection' : 'ftpConnection';
+
+        @ftp_chdir($this->$useConnection, '/');
 
         // only in case we cannot access the folder directly, loop and create
         if (!@ftp_chdir($this->$useConnection, $folders)) {
