@@ -47,9 +47,9 @@ $die = false;
 if (!isset($admin_id) and !isset($user_id)) {
     redirect('login.php');
 } else if (isset($admin_id)) {
-    $pa=User_Permissions($admin_id);
+    $pa = User_Permissions($admin_id);
 } else if (isset($user_id)) {
-    $pa=User_Permissions($user_id);
+    $pa = User_Permissions($user_id);
 } else {
     $die = true;
 }

@@ -39,55 +39,47 @@
  */
 
 define('EASYWIDIR', dirname(__FILE__));
-if (is_dir(EASYWIDIR . '/install')) die('Please remove the "install" folder');
+
+if (is_dir(EASYWIDIR . '/install')) {
+    die('Please remove the "install" folder');
+}
+
 include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/config.php');
 include(EASYWIDIR . '/stuff/settings.php');
-if (isset($admin_id)) {
-    $permissionid=(isset($_SESSION['oldid']))  ? (isset($_SESSION['oldadminid'])) ? $_SESSION['oldadminid'] : $_SESSION['oldid'] : $admin_id;
-	$userpermissionquery = $sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
-	$userpermissionquery->execute(array($permissionid));
-	foreach ($userpermissionquery->fetchall() as $userpermissionrow) {
-		if ($userpermissionrow['root'] == 'Y') {
-			foreach ($userpermissionrow as $key => $value) {
-				$pa[$key] = true;
-			}
-		} else {
-			foreach ($userpermissionrow as $key => $value) {
-				if ($value == 'Y') {
-					$pa[$key] = true;
-				} else {
-					$pa[$key] = false;
-				}
-			}
-		}
-	}
+
+if (!isset($admin_id) and !isset($user_id)) {
+    redirect('login.php');
+} else if (isset($admin_id)) {
+    $pa = User_Permissions($admin_id);
+} else if (isset($user_id)) {
+    $pa = User_Permissions($user_id);
 }
-if (isset($user_id)) {
-	$userpermissionquery = $sql->prepare("SELECT * FROM `userpermissions` WHERE `userid`=? LIMIT 1");
-	$userpermissionquery->execute(array($user_id));
-	foreach ($userpermissionquery->fetchall() as $userpermissionrow) {
-		if ($userpermissionrow['miniroot'] == 'Y') {
-			foreach ($userpermissionrow as $key => $value) {
-				$pau[$key] = true;
-			}
-		} else {
-			foreach ($userpermissionrow as $key => $value) {
-				if (isset($admin_id)) {
-					$pau[$key] = true;
-				} else {
-					if ($value == 'Y') {
-						$pau[$key] = true;
-					} else {
-						$pau[$key] = false;
-					}
-				}
-			}
-		}
-	}
+
+if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {
+
+    if ($ui->id('userID', 10, 'get')) {
+
+        $query = $sql->prepare("SELECT `resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query->execute(array($ui->id('userID', 10, 'get')));
+
+        $ipsAvailable = freeips(($query->fetchColumn()));
+
+    } else {
+        $ipsAvailable = array();
+    }
+
+    $template_file = 'ajax_admin_roots_ips.tpl';
 }
-if (((!isset($admin_id) and !isset($user_id)) or (((!$pa['gserver']) and !$pa['voiceserver'] and !$pa['voicemasterserver'] and !$pa['traffic'] and !$pa['user'] and !rsellerpermisions($admin_id) and !$pa['usertickets']) and (!$pau['restart'] and !$pau['usertickets'])))) {
-	die('No acces');
+
+if (isset($template_file)) {
+
+    require_once IncludeTemplate($template_to_use, $template_file, 'ajax');
+
+} else {
+
+    die('No Access');
+
 }
