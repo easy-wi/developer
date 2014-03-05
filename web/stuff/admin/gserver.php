@@ -573,7 +573,11 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $template_file = 'admin_404.tpl';
         }
     } else if ($action == 'dl') {
-        if ($ui->w('safeDelete',1, 'post') != 'D') include(EASYWIDIR . "/stuff/functions_ssh_exec.php");
+
+        if ($ui->w('safeDelete',1, 'post') != 'D') {
+            include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+        }
+
         $query = $sql->prepare("SELECT `newlayout`,`serverip`,`port`,`userid`,`rootID`,AES_DECRYPT(`ppassword`,?) AS `protectedpw`,AES_DECRYPT(`ftppassword`,?) AS `ftpPWD` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -813,7 +817,10 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         if (!$ui->port('port', 'post')) {
             $error[] = 'Port';
         }
-        if (count($error)==0) {
+        if (count($error) == 0) {
+
+            include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+
             $serverip_new = $ui->ip('ip', 'post');
             $gamestring = $ui->gamestring('gamestring', 'post');
             $ftppassword_new = $ui->password('password',50, 'post');
@@ -837,7 +844,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $pallowed = ($ui->active('pallowed', 'post')) ? $ui->active('pallowed', 'post') : 'N';
             $ftppass = $ui->password('password',50, 'post');
             $pallowed = $ui->active('pallowed', 'post');
-            include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+
             $query = $sql->prepare("SELECT `newlayout`,`userid`,AES_DECRYPT(`ftppassword`,?) AS `ftp`,AES_DECRYPT(`ppassword`,?) AS `ppass`,`active`,`rootID`,`serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`userid`,`slots` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -862,7 +869,8 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                     $server_customer = $server_customer . '-' . $server_id;
                 }
             }
-            $rdata=serverdata('root',$rootID,$aeskey);
+
+            $rdata = serverdata('root', $rootID, $aeskey);
             $sship = $rdata['ip'];
             $sshport = $rdata['port'];
             $sshuser = $rdata['user'];
@@ -870,14 +878,19 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $hyperthreading = $rdata['hyperthreading'];
             $rootcores = $rdata['cores'];
             $c = 0;
-            $corecount=($hyperthreading== 'Y') ? $rootcores*2 : $rootcores;
+            $corecount = ($hyperthreading== 'Y') ? $rootcores*2 : $rootcores;
             $postCores = (isset($ui->post['cores'])) ? (array) $ui->post['cores'] : array();
             $usedcores = array();
-            while ($c<$corecount) {
-                if (in_array($c,$postCores)) $usedcores[] = $c;
+
+            while ($c < $corecount) {
+                if (in_array($c, $postCores)) {
+                    $usedcores[] = $c;
+                }
                 $c++;
             }
-            $usedcores=implode(',',$usedcores);
+
+            $usedcores = implode(',', $usedcores);
+
             $template_file = '';
             $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE (`port`=:port OR `port2`=:port OR `port3`=:port OR `port4`=:port OR `port5`=:port) AND `id`!=:switchID AND `serverip`=:serverip AND `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':port' => $port_new,':switchID' => $server_id,':serverip' => $serverip_new,':reseller_id' => $reseller_id));
