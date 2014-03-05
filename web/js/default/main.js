@@ -158,7 +158,7 @@ function SwitchShowHideRows (Element, change) {
     var TheRest = document.getElementsByTagName('div');
     var amount = TheRest.length;
     var ElementLenght = Element.length;
-    var changed = 0;
+    var foundAmount = 0;
 
     if(typeof(change)==='undefined') {
         change = 'switch';
@@ -175,14 +175,16 @@ function SwitchShowHideRows (Element, change) {
                 }
             } else {
                 if (TheClass.indexOf(change)!= -1) {
-                    if (TheClass.substring(0, ElementLenght) == Element) {
-                        if (TheRest[x].style.display == 'none') {
-                            TheRest[x].style.display = '';
-                            changed++;
-                        } else {
-                            TheRest[x].style.display = 'none';
-                        }
-                    } else {
+
+                    foundElement=TheClass.substring(0, ElementLenght);
+
+                    if (foundElement == Element) {
+                        foundAmount++;
+                    }
+
+                    if (foundElement == Element && TheRest[x].style.display == 'none') {
+                        TheRest[x].style.display = '';
+                    } else if (foundElement != Element && TheRest[x].style.display != 'none') {
                         TheRest[x].style.display = 'none';
                     }
                 }
@@ -190,7 +192,7 @@ function SwitchShowHideRows (Element, change) {
         }
     }
 
-    if (Element != 'init_ready' && changed == 0) {
+    if (Element != 'init_ready' && foundAmount == 0) {
         for(x=0; x<amount; x++) {
             TheClass = TheRest[x].getAttribute('class');
             if (TheClass != null) {

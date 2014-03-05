@@ -56,7 +56,7 @@ if (!function_exists('gsrestart')) {
         $tempCmds = array();
         $stopped = 'Y';
 
-        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`modfolder`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`shorten`,t.`appID`,t.`workShop` AS `tWorkShop` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`cmd`,t.`modcmds`,t.`configedit`,t.`modfolder`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`shorten`,t.`appID`,t.`workShop` AS `tWorkShop` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':serverid' => $switchID, ':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $serverid = $row['serverid'];
@@ -75,8 +75,6 @@ if (!function_exists('gsrestart')) {
             $port5 = $row['port5'];
             $minram = ($row['minram'] > 0) ? $row['minram'] : 512;
             $maxram = ($row['maxram'] > 0) ? $row['maxram'] : 1024;
-            $gamebinary = $row['gamebinary'];
-            $gamebinaryWin = $row['gamebinaryWin'];
             $binarydir = $row['binarydir'];
             $eacallowed = $row['eacallowed'];
             $fps = $row['fps'];
@@ -84,7 +82,7 @@ if (!function_exists('gsrestart')) {
             $map = $row['map'];
             $mapGroup = $row['mapGroup'];
             $tic = $row['tic'];
-            $rootid = $row['rootID'];
+
             $modfolder = $row['modfolder'];
             $ftppass = $row['decryptedftppass'];
             $decryptedftppass = $row['decryptedppass'];
@@ -92,6 +90,23 @@ if (!function_exists('gsrestart')) {
             $modcmd = $row['modcmd'];
             $pallowed = $row['pallowed'];
             $user_id = $row['userid'];
+
+            $rdata = serverdata('root', $row['rootID'], $aeskey);
+            $sship = $rdata['ip'];
+            $ftpport = $rdata['ftpport'];
+            $rootOS = $rdata['os'];
+
+            if ($rootOS == 'W') {
+
+                if (substr($cmd, 0, 2) == './') {
+                    $cmd = substr($cmd, 3);
+                }
+
+                $gamebinary = $row['gamebinaryWin'];
+
+            } else {
+                $gamebinary = $row['gamebinary'];
+            }
 
             $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($user_id));
@@ -129,85 +144,82 @@ if (!function_exists('gsrestart')) {
             $modsCmds = array();
             $cvars = array('%binary%', '%tickrate%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%');
 
-            $query2 = $sql->prepare("SELECT `cmd`,`modcmds`,`configedit` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-            $query2->execute(array($shorten, $reseller_id));
 
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
-                foreach (explode("\r\n", $row2['configedit']) as $line) {
+            foreach (explode("\r\n", $row['configedit']) as $line) {
 
-                    if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json))$/', $line)) {
+                if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json))$/', $line)) {
 
-                        $ex = preg_split("/\s+/", $line, -1,PREG_SPLIT_NO_EMPTY);
-                        $cvartype = (isset($ex[1])) ? $ex[1] : 'cfg';
-                        $config = substr($ex[0], 1, strlen($ex[0]) - 2);
-                        $cvarprotect[$config]['type'] = $cvartype;
+                    $ex = preg_split("/\s+/", $line, -1,PREG_SPLIT_NO_EMPTY);
+                    $cvartype = (isset($ex[1])) ? $ex[1] : 'cfg';
+                    $config = substr($ex[0], 1, strlen($ex[0]) - 2);
+                    $cvarprotect[$config]['type'] = $cvartype;
 
-                    } else if (isset($config)) {
-                        unset($splitline);
-                        if ($cvarprotect[$config]['type'] == 'cfg') {
-                            $splitline = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
-                        } else if ($cvarprotect[$config]['type'] == 'ini') {
-                            $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
-                        } else if ($cvarprotect[$config]['type'] == 'lua') {
-                            $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
-                        } else if ($cvarprotect[$config]['type'] == 'json') {
-                            $splitline = preg_split("/:/", $line, -1, PREG_SPLIT_NO_EMPTY);
-                        } else if ($cvarprotect[$config]['type'] == 'xml') {
-                            $ex1 = explode('>', $line);
-                            if (isset($ex1[1])) {
-                                $c = str_replace('<', '', $ex1[0]);
-                                list($v) = explode('<', $ex1[1]);
-                                $splitline= array($c, $v);
-                            }
-                        }
-
-                        if (isset($splitline[1])) {
-
-                            $replace = array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
-                            $cvar = str_replace($cvars, $replace, $splitline[1]);
-
-                            foreach (customColumns('G', $switchID) as $cu) {
-                                $cvar = str_replace("%${cu['name']}%", $cu['value'], $cvar);
-                            }
-
-                            $cvarprotect[$config]['cvars'][$splitline[0]] = $cvar;
-
+                } else if (isset($config)) {
+                    unset($splitline);
+                    if ($cvarprotect[$config]['type'] == 'cfg') {
+                        $splitline = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
+                    } else if ($cvarprotect[$config]['type'] == 'ini') {
+                        $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
+                    } else if ($cvarprotect[$config]['type'] == 'lua') {
+                        $splitline = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
+                    } else if ($cvarprotect[$config]['type'] == 'json') {
+                        $splitline = preg_split("/:/", $line, -1, PREG_SPLIT_NO_EMPTY);
+                    } else if ($cvarprotect[$config]['type'] == 'xml') {
+                        $ex1 = explode('>', $line);
+                        if (isset($ex1[1])) {
+                            $c = str_replace('<', '', $ex1[0]);
+                            list($v) = explode('<', $ex1[1]);
+                            $splitline= array($c, $v);
                         }
                     }
-                }
 
-                foreach (explode("\r\n", $row2['modcmds']) as $line) {
+                    if (isset($splitline[1])) {
 
-                    if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/', $line)) {
+                        $replace = array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
+                        $cvar = str_replace($cvars, $replace, $splitline[1]);
 
-                        $name = trim($line,'[]');
-                        $ex = preg_split("/\=/", $name, -1,PREG_SPLIT_NO_EMPTY);
-                        $name = trim($ex[0]);
-
-                        if (isset($ex[1]) and trim($ex[1]) == 'default' and ($modcmd === null or $modcmd == '')) {
-                            $modcmd = trim($ex[0]);
+                        foreach (customColumns('G', $switchID) as $cu) {
+                            $cvar = str_replace("%${cu['name']}%", $cu['value'], $cvar);
                         }
 
-                        if (!isset($modsCmds[$name])) {
-                            $modsCmds[$name] = array();
-                        }
+                        $cvarprotect[$config]['cvars'][$splitline[0]] = $cvar;
 
-                    } else if (isset($name) and isset ($modsCmds[$name]) and $line!='') {
-                        $modsCmds[$name][] = $line;
                     }
-                }
-
-                if ($row['owncmd'] == 'N') {
-                    $cmd = $row2['cmd'];
-                }
-
-                // https://github.com/easy-wi/developer/issues/205
-                // In case Workshop is on we need to remove workgroup
-                if ($row['workShop'] == 'Y' AND $row['tWorkShop'] == 'Y') {
-                    $cmd = str_replace(array('%mapgroup%', ' +mapgroup'), '', $cmd);
                 }
             }
+
+            foreach (explode("\r\n", $row['modcmds']) as $line) {
+
+                if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/', $line)) {
+
+                    $name = trim($line,'[]');
+                    $ex = preg_split("/\=/", $name, -1,PREG_SPLIT_NO_EMPTY);
+                    $name = trim($ex[0]);
+
+                    if (isset($ex[1]) and trim($ex[1]) == 'default' and ($modcmd === null or $modcmd == '')) {
+                        $modcmd = trim($ex[0]);
+                    }
+
+                    if (!isset($modsCmds[$name])) {
+                        $modsCmds[$name] = array();
+                    }
+
+                } else if (isset($name) and isset ($modsCmds[$name]) and $line!='') {
+                    $modsCmds[$name][] = $line;
+                }
+            }
+
+            if ($row['owncmd'] == 'N') {
+                $cmd = $row['cmd'];
+            }
+
+            // https://github.com/easy-wi/developer/issues/205
+            // In case Workshop is on we need to remove workgroup
+            if ($row['workShop'] == 'Y' AND $row['tWorkShop'] == 'Y') {
+                $cmd = str_replace(array('%mapgroup%', ' +mapgroup'), '', $cmd);
+            }
+
             if ($gamebinary == 'srcds_run' and $tvenable == 'N') {
                 $cmd .= ' -nohltv -tvdisable';
             }
@@ -218,7 +230,7 @@ if (!function_exists('gsrestart')) {
             $installedaddons = array();
             $rmarray = array();
 
-            $query2=($protected == 'Y') ? $sql->prepare("SELECT `addonid` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `paddon`='Y' AND `resellerid`=?") : $sql->prepare("SELECT `addonid` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `paddon`='N' AND `resellerid`=?");
+            $query2 = ($protected == 'Y') ? $sql->prepare("SELECT `addonid` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `paddon`='Y' AND `resellerid`=?") : $sql->prepare("SELECT `addonid` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `paddon`='N' AND `resellerid`=?");
             $query3 = $sql->prepare("SELECT `cmd`,`rmcmd`,`addon`,`type` FROM `addons` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
             $query2->execute(array($user_id, $serverid, $reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
@@ -276,9 +288,6 @@ if (!function_exists('gsrestart')) {
                 }
             }
 
-            $rdata = serverdata('root', $rootid, $aeskey);
-            $sship = $rdata['ip'];
-            $ftpport = $rdata['ftpport'];
             $serverFolder = $gsip . '_' . $port . '/' . $folder;
             $binaryFolder = $serverFolder . '/' . $binarydir;
             $replace = array($gamebinary, $tic, $tic, $gsip, $port, $port2, $port2, $port3, $port4, $port5, $slots, $map, $mapGroup, $fps, $minram, $maxram, $maxcores, $folder, $customer, $absolutepath);
@@ -381,7 +390,7 @@ if (!function_exists('gsrestart')) {
 
                 $stopped = 'N';
 
-                if ($protected == 'N' and count($installedaddons)>0) {
+                if ($protected == 'N' and count($installedaddons) > 0) {
                     $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$binaryFolder\" \"".implode(' ', $installedaddons)."\"";
                 }
                 $restartCmd = "sudo -u ${customer} ./control.sh grestart $customer \"$binaryFolder\" \"$startline\" $protectedString $gamebinary \"$cores\"";

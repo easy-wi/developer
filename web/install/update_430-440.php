@@ -182,6 +182,9 @@ if (isset($include) and $include == true) {
         }
     }
 
+    $query = $sql->prepare("UPDATE `servertypes` SET `steamgame`='S' WHERE `steamgame`='Y'");
+    $query->execute();
+
     $query = $sql->prepare("ALTER TABLE `servertypes` ADD COLUMN `gamebinaryWin` varchar(255) NOT NULL AFTER `gamebinary`");
     $query->execute();
 

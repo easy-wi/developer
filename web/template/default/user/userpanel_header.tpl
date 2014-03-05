@@ -122,11 +122,11 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThree"><i class="fa fa-gamepad fa-fw"></i> <?php echo $gsprache->gameserver;?></a>
                         </div>
-                        <div id="collapseThree" class="accordion-body collapse <?php if(in_array($w,array('gs','gt','fd','ao','ca','bu','ms'))) echo 'in';?>">
+                        <div id="collapseThree" class="accordion-body collapse <?php if(in_array($w,array('gs','gt','fd','ao','ca','bu','ms','pr'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['restart']) { ?>
-                                    <li <?php if(in_array($w,array('gs','ao','ca','bu'))) echo 'class="active"';?>><a href="userpanel.php?w=gs"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if(in_array($w,array('gs','ao','ca','bu','pr'))) echo 'class="active"';?>><a href="userpanel.php?w=gs"><?php echo $gsprache->overview;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['fastdl']) { ?>
                                     <li <?php if($w=='fd') echo 'class="active"';?>><a href="userpanel.php?w=fd"><?php echo $gsprache->fastdownload;?></a></li>

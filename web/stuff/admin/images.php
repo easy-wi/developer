@@ -414,7 +414,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $errors['shorten'] = $sprache->abkuerz;
 
         }
-        
+
         if (count($errors) == 0) {
 
             if ($ui->st('action', 'post') == 'ad') {
@@ -453,6 +453,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
 
                 $loguseraction = '%add% %template% ' . $shorten;
+                $actionText = $gsprache->add;
 
             } else if ($ui->st('action', 'post') == 'md') {
                 
@@ -460,16 +461,19 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $gamebinaryWin, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $protected, $ramLimited, $ftpAccess, $os, $ui->id('id', 10, 'get'), $resellerLockupID));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %template% ' . $shorten;
+
+                $actionText = $gsprache->mod;
             }
 
             if (isset($rowCount) and $rowCount > 0) {
                 $insertlog->execute();
-                $template_file = $spracheResponse->table_add;
+                $template_file = $actionText . ' ' . $spracheResponse->table_add;
             } else {
-                $template_file = $spracheResponse->error_table;
+                $template_file = $actionText . ' ' . $spracheResponse->error_table;
             }
         } else {
 
+            $token = token();
             unset($header, $text);
             $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_images_add.tpl' : 'admin_images_md.tpl';
         }

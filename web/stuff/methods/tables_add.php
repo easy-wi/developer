@@ -174,7 +174,7 @@ $query = "CREATE TABLE IF NOT EXISTS `eac` (
   `user` blob,
   `pass` blob,
   `publickey` enum('B','Y','N') DEFAULT NULL,
-  `keyname` varchar(15) DEFAULT NULL,
+  `keyname` varchar(255) DEFAULT NULL,
   `cfgdir` varchar(255) DEFAULT NULL,
   `normal_3` enum('Y','N') DEFAULT 'Y',
   `normal_4` enum('Y','N') DEFAULT 'Y',
@@ -202,6 +202,33 @@ $query = "CREATE TABLE IF NOT EXISTS `easywi_version` (
   `de` text COLLATE utf8_unicode_ci,
   `en` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
+$query = "CREATE TABLE IF NOT EXISTS `fastdlMaster` (
+  `fastdlMasterID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `active` enum('Y','N') DEFAULT 'Y',
+  `ip` varchar(15),
+  `port` int(5) unsigned,
+  `user` blob,
+  `pass` blob,
+  `publickey` enum('B','Y','N') DEFAULT 'N',
+  `keyname` varchar(255),
+  `maxVhost` int(10) unsigned,
+  `maxHDD` int(10) unsigned,
+  `defaultdns` varchar(255),
+  `httpdCmd` varchar(255),
+  `userGroup` varchar(255),
+  `vhostStoragePath` varchar(255),
+  `vhostConfigPath` varchar(255),
+  `vhostTemplate` text,
+  `quotaActive` enum('Y','N') DEFAULT 'Y',
+  `quotaCmd` varchar(255),
+  `description` text,
+  `notified` int(10) unsigned,
+  `resellerID` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`fastdlMasterID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
@@ -695,7 +722,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rserverdata` (
   `description` varchar(255) DEFAULT NULL,
   `ftpport` smallint(5) unsigned NOT NULL DEFAULT '21',
   `publickey` enum('B','Y','N') NOT NULL,
-  `keyname` varchar(15) DEFAULT NULL,
+  `keyname` varchar(255) DEFAULT NULL,
   `maxslots` smallint(5) unsigned DEFAULT NULL,
   `maxserver` smallint(4) unsigned DEFAULT NULL,
   `updates` smallint(1) unsigned DEFAULT '1',
@@ -763,7 +790,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsDHCP` (
   `user` blob,
   `pass` blob,
   `publickey` enum('B','Y','N') DEFAULT NULL,
-  `keyname` varchar(15) DEFAULT NULL,
+  `keyname` varchar(255) DEFAULT NULL,
   `ips` text CHARACTER SET utf8,
   `netmask` varchar(15) DEFAULT '255.255.255.0',
   `startCmd` text,
@@ -794,7 +821,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsPXE` (
   `user` blob,
   `pass` blob,
   `publickey` enum('B','Y','N') DEFAULT NULL,
-  `keyname` varchar(15) DEFAULT NULL,
+  `keyname` varchar(255) DEFAULT NULL,
   `startCmd` text,
   `PXEFolder` text,
   `description` text,
@@ -859,8 +886,8 @@ $query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `shorten` varchar(20) NOT NULL,
   `description` varchar(255) NULL,
   `type` varchar(12) NOT NULL,
-  `gamebinary` varchar(255) NOT NULL,
-  `gamebinaryWin` varchar(255) NOT NULL,
+  `gamebinary` varchar(255) NULL,
+  `gamebinaryWin` varchar(255) NULL,
   `binarydir` varchar(255) DEFAULT NULL,
   `modfolder` varchar(255) DEFAULT NULL,
   `fps` varchar(5) DEFAULT NULL,

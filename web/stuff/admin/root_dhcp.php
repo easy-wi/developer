@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: root_dhcp.php.
  * Author: Ulrich Block
@@ -219,7 +220,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
 // Remove entries in case we have an ID given with the GET request
 } else if ($ui->st('d', 'get') == 'dl' and $id) {
-
 
     $query = $sql->prepare("SELECT `ip`,`description` FROM `rootsDHCP` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id, $reseller_id));

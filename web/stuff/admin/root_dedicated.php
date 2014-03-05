@@ -122,6 +122,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT * FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
                 $active = $row['active'];
                 $ip = $row['ip'];
                 $ips = $row['ips'];
