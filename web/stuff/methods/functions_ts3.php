@@ -49,6 +49,10 @@ if (!class_exists('Net_SFTP')) {
     include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
 }
 
+if (!function_exists('ssh2_execute')) {
+    include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+}
+
 function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $backupid, $move = array()) {
 
     $split_config = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);

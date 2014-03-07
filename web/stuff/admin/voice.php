@@ -43,6 +43,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['voiceserver
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
+include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 
 $sprache = getlanguagefile('voice',$user_language,$reseller_id);
 $loguserid = $admin_id;
@@ -339,7 +340,9 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         $template_file = "Error: No User or Server selected";
     }
 } else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
+
     $id = $ui->id('id', 10, 'get');
+
     $query = $sql->prepare("SELECT `ip`,`port`,`dns`,`masterserver`,`localserverid` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -350,9 +353,13 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         $masterserver = $row['masterserver'];
         $localserverid = $row['localserverid'];
     }
+
     if (!$ui->w('action',2, 'post') and isset($server)) {
+
         $template_file = 'admin_voiceserver_dl.tpl';
+
     } else if ($ui->w('action',2, 'post') == 'dl' and isset($server)) {
+
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $masterserver,':reseller_id' => $reseller_id,':managedForID' => $admin_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -381,6 +388,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 }
             }
         }
+
         if (isset($queryip) and $ui->w('safeDelete',1, 'post') != 'D') {
             $connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
             $errorcode = $connection->errorcode;
@@ -390,6 +398,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $connection->CloseConnection();
             }
         }
+
         if (($ui->w('safeDelete',1, 'post') != 'S' or (isset($errorcode) and strpos($errorcode,'error id=0') !== false))) {
             $query = $sql->prepare("DELETE FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
@@ -422,14 +431,19 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $query = $sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `userdata` u ON b.`uid`=u.`id` LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE u.`id` IS NULL OR  v.`id` IS NULL");
                 $query->execute();
             }
+
         } else if ( $ui->w('safeDelete',1, 'post') == 'S' and (!isset($errorcode) or strpos($errorcode,'error id=0') === false)) {
             $template_file = (isset($errorcode)) ? 'Error: '.$errorcode : 'Error: Could not connect to TS3 masterserver';
         }
+
     } else {
         $template_file = 'admin_404.tpl';
     }
+
 } else if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get')) {
+
     $id = $ui->id('id', 10, 'get');
+
     if (!$ui->w('action',2, 'post')) {
         $ips = array();
         $query = $sql->prepare("SELECT v.*,u.`cname` FROM `voice_server` v INNER JOIN `userdata` u ON v.`userid`=u.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
