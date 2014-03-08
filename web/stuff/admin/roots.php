@@ -61,7 +61,11 @@ if ($reseller_id == 0) {
 
 if ($ui->w('action', 4, 'post') and !token(true)) {
 
-    $template_file = $spracheResponse->token;
+	unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_roots_add.tpl' : 'admin_roots_md.tpl';
 
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 

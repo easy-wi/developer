@@ -59,7 +59,14 @@ if ($reseller_id == 0) {
 }
 
 if ($ui->w('action', 4, 'post') and !token(true)) {
-    $template_file = $spracheResponse->token;
+
+    $token = token();
+
+	unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_images_add.tpl' : 'admin_images_md.tpl';
 
 } else if ($ui->st('d', 'get') == 'ex' and $ui->id('id', 10, 'get')) {
 

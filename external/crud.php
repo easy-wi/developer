@@ -39,21 +39,27 @@
 
 // Define the ID variable which will be used at the form and SQLs
 $id = $ui->id('id', 10, 'get');
+
+// Default variables. Mostly needed for the add operation
+$defaultVar = ($ui->id('id', 10, 'get')) ? $ui->id('id', 10, 'get') : 10;
+
+// At this point all variables are defined that can come from the user
  
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action',4, 'post') and !token(true)) {
-    $template_file = $spracheResponse->token;
+
+    unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_roots_add.tpl' : 'admin_roots_md.tpl';
+
 
 // Add and modify entries. Same validation can be used.
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
 	// Error handling. Check if required attributes are set and can be validated
     $errors = array();
-
-	// At this point all variables are defined that can come from the user
-
-	// Default variables. Mostly needed for the add operation
-    $defaultVar = ($ui->id('id', 10, 'get')) ? $ui->id('id', 10, 'get') : 10;
 
 	// Add or mod is opened
     if (!$ui->smallletters('action', 2, 'post')) {

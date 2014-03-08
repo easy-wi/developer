@@ -81,7 +81,11 @@ $sprache = getlanguagefile('images', $user_language, $resellerLockupID);
 
 if ($ui->w('action', 4, 'post') and !token(true)) {
 
-    $template_file = $spracheResponse->token;
+	unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'global_gserver_file_template_add.tpl' : 'global_gserver_file_template_md.tpl';
 
 } else if ($ui->st('d', 'get') == 'ad' or ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get'))) {
 

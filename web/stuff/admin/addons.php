@@ -58,7 +58,14 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action',4, 'post') and !token(true)) {
-    $template_file = $spracheResponse->token;
+
+    $token = token();
+
+	unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_addons_add.tpl' : 'admin_addons_md.tpl';
 
 // A simple exporter. Offers the current addon settings as download
 } else if ($ui->st('d', 'get') == 'ex' and $ui->id('id', 10, 'get')) {

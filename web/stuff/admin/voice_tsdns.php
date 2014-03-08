@@ -65,7 +65,12 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action',4, 'post') and !token(true)) {
-    $template_file = $spracheResponse->token;
+
+	unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_voice_tsdns_add.tpl' : 'admin_voice_tsdns_md.tpl';
 
 // Add and modify entries. Same validation can be used.
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {

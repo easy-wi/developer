@@ -71,7 +71,12 @@ $providerToken = $ui->escaped('providerToken', 'post');
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action',4, 'post') and !token(true)) {
-    $template_file = $spracheResponse->token;
+
+	unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_social_provider_add.tpl' : 'admin_social_provider_md.tpl';
 
 // Add and modify entries. Same validation can be used.
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {

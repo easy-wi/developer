@@ -70,7 +70,12 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 
 
 if ($ui->w('action',4, 'post') and !token(true)) {
-    $template_file = $spracheResponse->token;
+
+	unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'md') ? 'admin_voicemasterserver_md.tpl' : 'admin_voicemasterserver_add.tpl';
 
 } else if ($ui->st('d', 'get') == 'ad' or (($ui->st('d', 'get') == 'ri' or $ui->st('d', 'get') == 'md') and $ui->id('id', 10, 'get'))) {
 
