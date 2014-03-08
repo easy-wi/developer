@@ -137,6 +137,11 @@
                     <input id="inputMYSQLServer" type="checkbox" name="mysql_settings" value="Y">
                 </div>
             </div>
+            <?php };if($pa['fastdl']) { ?>
+            <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
+                <label class="control-label" for="inputAFastDL"><?php echo $sprache->fastdl;?></label>
+                <div class="controls"><input id="inputAFastDL" type="checkbox" name="fastdl" value="Y" <?php if ($fastdl=='Y') echo 'checked="checked"'; ?>></div>
+            </div>
             <?php };if($pa['tickets']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputTickets"><?php echo $sprache->tickets;?></label>
@@ -390,7 +395,7 @@
             </div>
             <div class="u switch control-group">
                 <label class="control-label" for="inputUFastDL"><?php echo $sprache->fastdl;?></label>
-                <div class="controls"><input id="inputUFastDL" type="checkbox" name="fastdl" value="Y"></div>
+                <div class="controls"><input id="inputUFastDL" type="checkbox" name="ufastdl" value="Y"></div>
             </div>
             <div class="u switch control-group">
                 <label class="control-label" for="inputUmodFastDL"><?php echo $sprache->modfastdl;?></label>
@@ -466,6 +471,11 @@
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputResellerMysqlServer">MySQL Server</label>
                 <div class="controls"><input id="inputResellerMysqlServer" type="checkbox" name="rmysql_settings" value="Y"></div>
+            </div>
+            <?php };if($pa['fastdl']) { ?>
+            <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
+                <label class="control-label" for="inputRFastDL"><?php echo $sprache->fastdl;?></label>
+                <div class="controls"><input id="inputRFastDL" type="checkbox" name="rfastdl" value="Y" <?php if ($fastdl=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <?php };if($pa['roots']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">

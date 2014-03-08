@@ -83,7 +83,7 @@
 <?php if (!isset($admin_id) and !isset($user_id)) { ?>
 <!-- Modal -->
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <form action="<?php echo $page_data->pageurl;?>/login.php" method="post">
+    <form action="<?php echo removeDoubleSlashes($page_data->pageurl.'/login.php');?>" method="post">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalLabel">Login</h3>

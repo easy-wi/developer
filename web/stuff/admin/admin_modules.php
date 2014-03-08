@@ -62,12 +62,17 @@ $table = array(
     6 => array('id' => 6, 'active' => 'Y', 'name' => $gsprache->support, 'sub' => 'ti', 'type' => $sprache->type_core),
     7 => array('id' => 7, 'active' => 'Y', 'name' => 'Rootserver', 'sub' => 'ro', 'type' => $sprache->type_core),
     8 => array('id' => 8, 'active' => 'Y', 'name' => $gsprache->imprint, 'sub' => 'ip', 'type' => $sprache->type_core),
-    9 => array('id' => 9, 'active' => 'Y', 'name' => 'CMS', 'sub' => 'pn', 'type' => $sprache->type_core)
+    9 => array('id' => 9, 'active' => 'Y', 'name' => 'CMS', 'sub' => 'pn', 'type' => $sprache->type_core),
+    10 => array('id' => 9, 'active' => 'Y', 'name' => $gsprache->fastdownload, 'sub' => 'fd', 'type' => $sprache->type_core)
 );
     
 if ($ui->st('action', 'post') and !token(true)) {
 
-    $template_file = $spracheResponse->token;
+    unset($header, $text);
+
+    $errors = array($spracheResponse->token);
+
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_modules_ad.tpl' : 'admin_modules_md.tpl';
 
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 

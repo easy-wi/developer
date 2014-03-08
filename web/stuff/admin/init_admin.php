@@ -100,8 +100,8 @@ $what_to_be_included_array = array(
     'su' => 'global_userdata.php'
 );
 
-$easywiModules = array('gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'pn' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
-$customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
+$easywiModules = array('fd' => true, 'gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'pn' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
+$customModules = array('fd' => array(), 'gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
 $customFiles = array();
 
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('A','C')");
@@ -152,6 +152,11 @@ if ($easywiModules['gs'] === true) {
 
 if ($easywiModules['ea'] === true) {
     $what_to_be_included_array['ea'] = 'eac.php';
+}
+
+if ($easywiModules['fd'] === true) {
+    $what_to_be_included_array['fm'] = 'fastdl_master.php';
+    $what_to_be_included_array['fv'] = 'fastdl_vhost.php';
 }
 
 if ($easywiModules['my'] === true) {

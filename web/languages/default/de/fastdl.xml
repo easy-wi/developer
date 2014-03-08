@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
 	<chfdluser>FTP Zugang ändern?</chfdluser>
+    <defaultdns>Standard Domain</defaultdns>
+    <dns>Domain</dns>
 	<example>Beispiel: ftp://Deinusername:Deinftppasswort@Adresse/Pfad</example>
 	<fdlfailed>Fastdownload Abgleich fehlgeschlagen</fdlfailed>
 	<fdlstarted>Fastdownload Abgleich gestartet</fdlstarted>
@@ -17,11 +19,27 @@
 	Damit diese Einstellung auf Ihrem Gameserver aktiv wird, muss die entsprechende <strong>HTTP-URL</strong> auch in der <strong>server.cfg</strong> oder <strong>dedicated.cfg</strong> am Gameserver eingetragen werden.
     ]]>
     </help_fdl>
+    <httpdCmd>HTTPD Start/Reload Befehl</httpdCmd>
+    <installedHDD>Zugewiesene HDD</installedHDD>
+    <installedVhost>Installierte Vhosts</installedVhost>
+    <maxHDD>Vorhandener Speicherplatz</maxHDD>
+    <maxVhost>Maximale Vhosts</maxVhost>
 	<neben>FTP Zugang zum Fastdownload Webspace für</neben>
 	<noset>Keine FTP Daten hinterlegt</noset>
 	<own2>Eigener Fastdownload Speicher</own2>
 	<own>Haupt FTP nutzen</own>
-	<server>Server</server>
+    <quotaActive>Quotas Aktivieren</quotaActive>
+    <quotaCmd>Quota Befehl</quotaCmd>
+    <quotaWarning>Achtung! Ohne Quotas kann der User unbegrenzt Dateien hochladen!</quotaWarning>
+    <recreate>Wiederherstellen</recreate>
+    <server>Server</server>
 	<startfdl>Abgleich starten</startfdl>
-	<udsuc>FTP Daten erfolgreich geändert</udsuc>
+    <udsuc>FTP Daten erfolgreich geändert</udsuc>
+    <userAddCmd>Hinzufügen Befehl</userAddCmd>
+    <userDelCmd>Löschen Befehl</userDelCmd>
+    <userModCmd>Bearbeiten Befehl</userModCmd>
+    <userGroup>Webserver Gruppe</userGroup>
+    <vhostConfigPath>Vhost Config Speicherpfad</vhostConfigPath>
+    <vhostTemplate>Vhost Template</vhostTemplate>
+    <vhostStoragePath>Vhost Speicherpfad</vhostStoragePath>
 </sprache>

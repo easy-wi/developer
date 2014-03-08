@@ -198,6 +198,22 @@
                         </div>
                     </div>
                     <?php } ?>
+                    <?php if($easywiModules['fd'] and $pa['fastdl']) { ?>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive"><i class="fa fa-clipboard fa-fw"></i> <?php echo $gsprache->fastdownload;?></a>
+                        </div>
+                        <div id="collapseFive" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('fv','fm')) or isset($customModules['fd'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
+                            <div class="accordion-inner">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li <?php if($ui->smallletters('w',255,'get')=='fv') echo 'class="active"';?>><a href="admin.php?w=fv">Vhosts</a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='fm') echo 'class="active"';?>><a href="admin.php?w=fm"><?php echo $gsprache->master;?></a></li>
+                                    <?php foreach ($customModules['fd'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <?php if($easywiModules['my'] and ($pa['mysql_settings'] or $pa['mysql'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">

@@ -200,6 +200,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $jobs = 'N';
             $updateEW = 'N';
             $ipBans = 'N';
+
             if ($ui->smallletters('grouptype',1, 'post') == 'a') {
                 $root=yesNo('root');
                 $user=yesNo('user');
@@ -243,12 +244,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $ipBans=yesNo('ipBans');
                 $mysql=yesNo('mysql');
                 $mysql_settings=yesNo('mysql_settings');
+                $fastdl=yesNo('fastdl');
+
             } else if ($ui->smallletters('grouptype',1, 'post') == 'u') {
                 $log=yesNo('ulog');
                 $restart=yesNo('restart');
                 $reset=yesNo('reset');
                 $miniroot=yesNo('miniroot');
-                $fastdl=yesNo('fastdl');
                 $modfastdl=yesNo('modfastdl');
                 $useraddons=yesNo('useraddons');
                 $usersettings=yesNo('usersettings');
@@ -260,6 +262,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $jobs=yesNo('ujobs');
                 $mysql=yesNo('umysql');
                 $roots=yesNo('uroots');
+                $fastdl=yesNo('ufastdl');
             } else if ($ui->smallletters('grouptype',1, 'post') == 'r') {
                 $user=yesNo('ruser');
                 $user_users=yesNo('ruser_users');
@@ -292,7 +295,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $jobs=yesNo('rjobs');
                 $mysql=yesNo('rmysql');
                 $mysql_settings=yesNo('rmysql_settings');
+                $fastdl=yesNo('rfastdl');
             }
+
             if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get')) {
                 $id = $ui->id('id',19, 'get');
                 $defaultgroup = $ui->active('defaultgroup', 'post');
@@ -330,7 +335,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 } else if ($ui->st('d', 'get') == 'dl' and $ui->id('id','30', 'get')) {
+
     $id = $ui->id('id','30', 'get');
+
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT `active`,`grouptype`,`name` FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$lookIpID));
