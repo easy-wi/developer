@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main != 1 or  $reseller_id != 0 or !$pa['gserver']) {
+if (!isset($admin_id) or $main != 1 or !isset($admin_id) or !isset($reseller_id) or !$pa['fastdl']) {
     header('Location: admin.php');
     die;
 }
@@ -67,9 +67,11 @@ $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') :
 $keyname = $ui->startparameter('keyname', 'post');
 $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
 $ip = $ui->ip('ip', 'post');
-$port = $ui->port('port', 'post');
-$user = $ui->username('user',255, 'post');
-$pass = $ui->password('pass',255, 'post');
+$port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
+$user = $ui->username('user', 255, 'post');
+$pass = $ui->password('pass', 255, 'post');
+$ftpIP = $ui->ip('ftpIP', 'post');
+$ftpPort = ($ui->port('ftpPort', 'post')) ? $ui->port('ftpPort', 'post') : 21;
 $description = $ui->escaped('description', 'post');
 $maxVhost = ($ui->id('maxVhost', 10, 'post')) ? $ui->id('maxVhost', 10, 'post') : 100;
 $maxHDD = ($ui->id('maxHDD', 10, 'post')) ? $ui->id('maxHDD', 10, 'post') : 10000;
@@ -142,6 +144,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $user = $row['decrypteduser'];
                 $pass = $row['decryptedpass'];
                 $description = $row['description'];
+                $ftpIP = $row['ftpIP'];
+                $ftpPort = $row['ftpPort'];
                 $publickey = $row['publickey'];
                 $keyname = $row['keyname'];
                 $maxVhost = $row['maxVhost'];
@@ -171,16 +175,23 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
 
         if (!$ip) {
-            $errors['ip'] = $sprache->haupt_ip;
+            $errors['ip'] = $dedicatedLanguage->ssh_ip;
         }
+
         if (!$port) {
-            $errors['port'] = $sprache->ssh_port;
+            $errors['port'] = $dedicatedLanguage->ssh_port;
         }
+
         if (!$user) {
-            $errors['user'] = $sprache->ssh_user;
+            $errors['user'] = $dedicatedLanguage->ssh_user;
         }
+
         if (!$publickey) {
-            $errors['publickey'] = $sprache->keyuse;
+            $errors['publickey'] = $dedicatedLanguage->keyuse;
+        }
+
+        if (!$ftpPort) {
+            $errors['ftpPort'] = $sprache->ftpPort;
         }
 
         $ssh2Check = (count($errors) == 0) ? ssh_check($ip, $port, $user, $publickey, $keyname, $pass) : true;
@@ -188,23 +199,38 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         if ($ssh2Check !== true) {
 
             if ($ssh2Check == 'ipport') {
-                $errors['ip'] = $sprache->haupt_ip;
-                $errors['port'] = $sprache->ssh_port;
+                $errors['ip'] = $dedicatedLanguage->ssh_ip;
+                $errors['port'] = $dedicatedLanguage->ssh_port;
 
             } else {
-                $errors['user'] = $sprache->ssh_user;
-                $errors['publickey'] = $sprache->keyuse;
+                $errors['user'] = $dedicatedLanguage->ssh_user;
+                $errors['publickey'] = $dedicatedLanguage->keyuse;
 
                 if ($publickey == 'N') {
-                    $errors['pass'] = $sprache->ssh_pass;
+                    $errors['pass'] = $dedicatedLanguage->ssh_pass;
 
                 } else if (!$ui->active('publickey', 'post') == 'B') {
-                    $errors['pass'] = $sprache->ssh_pass;
-                    $errors['keyname'] = $sprache->keyname;
+                    $errors['pass'] = $dedicatedLanguage->ssh_pass;
+                    $errors['keyname'] = $dedicatedLanguage->keyname;
 
                 } else {
-                    $errors['keyname'] = $sprache->keyname;
+                    $errors['keyname'] = $dedicatedLanguage->keyname;
                 }
+            }
+        }
+
+        if ($ui->st('action', 'post') == 'md' and $id) {
+
+            $query = $sql->prepare("SELECT `active`,`vhostTemplate` FROM `fastdlMaster` WHERE `fastdlMasterID`=? AND `resellerID`=? LIMIT 1");
+            $query->execute(array($id, $resellerLockupID));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $oldActive = $row['active'];
+                $oldVhostTemplate = $row['vhostTemplate'];
+            }
+
+            // This should only be true in case of REQUEST data manipulation
+            if (!isset($oldActive) or !isset($oldVhostTemplate)) {
+                $errors['keyname'] = 'ID';
             }
         }
 
@@ -214,16 +240,37 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `fastdlMaster` (`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`maxVhost`,`maxHDD`,`defaultdns`,`httpdCmd`,`vhostStoragePath`,`vhostConfigPath`,`vhostTemplate`,`quotaActive`,`quotaCmd`,`description`,`userGroup`,`userAddCmd`,`userModCmd`,`userDelCmd`,`resellerID`) VALUES (:active,:ip,:port,AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:maxVhost,:maxHDD,:defaultdns,:httpdCmd,:vhostStoragePath,:vhostConfigPath,:vhostTemplate,:quotaActive,:quotaCmd,:description,:userGroup,:userAddCmd,:userModCmd,:userDelCmd,:resellerID)");
-                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':maxVhost' => $maxVhost,':maxHDD' => $maxHDD,':defaultdns' => $defaultdns,':httpdCmd' => $httpdCmd,':vhostStoragePath' => $vhostStoragePath,':vhostConfigPath' => $vhostConfigPath,':vhostTemplate' => $vhostTemplate,':quotaActive' => $quotaActive,':quotaCmd' => $quotaCmd,':description' => $description,':userGroup' => $userGroup,':userAddCmd' => $userAddCmd,':userModCmd' => $userModCmd,':userDelCmd' => $userDelCmd,':resellerID' => $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `fastdlMaster` (`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`ftpIP`,`ftpPort`,`maxVhost`,`maxHDD`,`defaultdns`,`httpdCmd`,`vhostStoragePath`,`vhostConfigPath`,`vhostTemplate`,`quotaActive`,`quotaCmd`,`description`,`userGroup`,`userAddCmd`,`userModCmd`,`userDelCmd`,`resellerID`) VALUES (:active,:ip,:port,AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:ftpIP,:ftpPort,:maxVhost,:maxHDD,:defaultdns,:httpdCmd,:vhostStoragePath,:vhostConfigPath,:vhostTemplate,:quotaActive,:quotaCmd,:description,:userGroup,:userAddCmd,:userModCmd,:userDelCmd,:resellerID)");
+                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort,':maxVhost' => $maxVhost,':maxHDD' => $maxHDD,':defaultdns' => $defaultdns,':httpdCmd' => $httpdCmd,':vhostStoragePath' => $vhostStoragePath,':vhostConfigPath' => $vhostConfigPath,':vhostTemplate' => $vhostTemplate,':quotaActive' => $quotaActive,':quotaCmd' => $quotaCmd,':description' => $description,':userGroup' => $userGroup,':userAddCmd' => $userAddCmd,':userModCmd' => $userModCmd,':userDelCmd' => $userDelCmd,':resellerID' => $resellerLockupID));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %fastdlmaster% ' . $ip;
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `fastdlMaster` SET `active`=:active,`ip`=:ip,`port`=:port,`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`maxVhost`=:maxVhost,`maxHDD`=:maxHDD,`defaultdns`=:defaultdns,`httpdCmd`=:httpdCmd,`vhostStoragePath`=:vhostStoragePath,`vhostConfigPath`=:vhostConfigPath,`vhostTemplate`=:vhostTemplate,`quotaActive`=:quotaActive,`quotaCmd`=:quotaCmd,`description`=:description,`userGroup`=:userGroup,`userAddCmd`=:userAddCmd,`userModCmd`=:userModCmd,`userDelCmd`=:userDelCmd WHERE `fastdlMasterID`=:id AND `resellerID`=:resellerID LIMIT 1");
-                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':maxVhost' => $maxVhost,':maxHDD' => $maxHDD,':defaultdns' => $defaultdns,':httpdCmd' => $httpdCmd,':vhostStoragePath' => $vhostStoragePath,':vhostConfigPath' => $vhostConfigPath,':vhostTemplate' => $vhostTemplate,':quotaActive' => $quotaActive,':quotaCmd' => $quotaCmd,':description' => $description, ':userGroup' => $userGroup,':userAddCmd' => $userAddCmd,':userModCmd' => $userModCmd,':userDelCmd' => $userDelCmd,':id' => $id,':resellerID' => $resellerLockupID));
+                // In case the template has been changed we need to add change jobs for every vhost that uses the global template.
+                if ($oldVhostTemplate != $vhostTemplate) {
+
+                    $query = $sql->prepare("SELECT `fastdlVhostID`,`userID`,`dns` FROM `fastdlVhost` WHERE `fastdlMasterID`=? AND `resellerID`=? AND `ownVhost`='N'");
+                    $query2 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','fd',?,?,?,?,?,NULL,NOW(),'md','',?)");
+
+                    $query->execute(array($id, $resellerLockupID));
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        $query2->execute(array($admin_id, $row['fastdlVhostID'], $row['fastdlMasterID'], $row['userID'], $row['dns'], $resellerLockupID));
+                    }
+
+                    $query = $sql->prepare("UPDATE `fastdlVhost` SET `vhostTemplate`=? WHERE `fastdlMasterID`=? AND `resellerID`=? AND `ownVhost`='N'");
+                    $query->execute(array($vhostTemplate, $id, $resellerLockupID));
+                }
+
+                // Update Vhosts in case active changed
+                if ($oldActive != $active) {
+                    $query = $sql->prepare("UPDATE `fastdlVhost` SET `active`=? WHERE `fastdlMasterID`=? AND `resellerID`=?");
+                    $query->execute(array($active, $id, $resellerLockupID));
+                }
+
+                $query = $sql->prepare("UPDATE `fastdlMaster` SET `active`=:active,`ip`=:ip,`port`=:port,`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`ftpIP`=:ftpIP,`ftpPort`=:ftpPort,`maxVhost`=:maxVhost,`maxHDD`=:maxHDD,`defaultdns`=:defaultdns,`httpdCmd`=:httpdCmd,`vhostStoragePath`=:vhostStoragePath,`vhostConfigPath`=:vhostConfigPath,`vhostTemplate`=:vhostTemplate,`quotaActive`=:quotaActive,`quotaCmd`=:quotaCmd,`description`=:description,`userGroup`=:userGroup,`userAddCmd`=:userAddCmd,`userModCmd`=:userModCmd,`userDelCmd`=:userDelCmd WHERE `fastdlMasterID`=:id AND `resellerID`=:resellerID LIMIT 1");
+                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort,':maxVhost' => $maxVhost,':maxHDD' => $maxHDD,':defaultdns' => $defaultdns,':httpdCmd' => $httpdCmd,':vhostStoragePath' => $vhostStoragePath,':vhostConfigPath' => $vhostConfigPath,':vhostTemplate' => $vhostTemplate,':quotaActive' => $quotaActive,':quotaCmd' => $quotaCmd,':description' => $description, ':userGroup' => $userGroup,':userAddCmd' => $userAddCmd,':userModCmd' => $userModCmd,':userDelCmd' => $userDelCmd,':id' => $id,':resellerID' => $resellerLockupID));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %fastdlmaster% ' . $ip;
@@ -340,7 +387,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     }
 
     $query = $sql->prepare("SELECT `active`,`fastdlMasterID`,`ip`,`maxVhost`,`maxHDD`,`description` FROM `fastdlMaster` WHERE `resellerID`=? ORDER BY " . $orderby);
-    $query2 = $sql->prepare("SELECT `fastdlVhostID`,`active`,`dns` FROM `fastdlVhost` WHERE `fastdlMasterID`=? AND `resellerID`=?");
+    $query2 = $sql->prepare("SELECT `fastdlVhostID`,`active`,`dns`,`hdd` FROM `fastdlVhost` WHERE `fastdlMasterID`=? AND `resellerID`=?");
 
     $query->execute(array($resellerLockupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -349,6 +396,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $hddSum = 0;
         $vhostCount = 0;
 
+        $query2->execute(array($row['fastdlMasterID'], $resellerLockupID));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             $hddSum += $row2['hdd'];
             $vhostCount++;

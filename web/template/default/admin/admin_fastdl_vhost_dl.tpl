@@ -2,25 +2,25 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=fm"><?php echo $gsprache->fastdownload." ".$gsprache->master;?></a> <span class="divider">/</span></li>
-            <li><?php echo $gsprache->mod;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $ip;?></li>
+            <li><a href="admin.php?w=fv"><?php echo $gsprache->fastdownload;?> Vhost</a> <span class="divider">/</span></li>
+            <li><?php echo $gsprache->del;?> <span class="divider">/</span></li>
+            <li class="active"><?php echo $dns;?></li>
         </ul>
     </div>
 </div>
 <div class="row-fluid">
     <div class="span6">
         <dl class="dl-horizontal">
-            <dt><?php echo $dedicatedLanguage->ssh_ip?></dt>
-            <dd><?php echo $ip;?></dd>
-            <dt><?php echo $dedicatedLanguage->description?></dt>
-            <dd><?php echo $description;?></dd>
+            <dt><?php echo $sprache->dns?></dt>
+            <dd><?php echo $dns;?></dd>
+            <dt><?php echo $dedicatedLanguage->user?></dt>
+            <dd><?php echo $user;?></dd>
         </dl>
     </div>
 </div>
 <div class="row-fluid">
     <div class="span6">
-        <form class="form-horizontal" action="admin.php?w=fm&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=fm" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+        <form class="form-horizontal" action="admin.php?w=fv&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=fv" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="dl">
             <div class="control-group">

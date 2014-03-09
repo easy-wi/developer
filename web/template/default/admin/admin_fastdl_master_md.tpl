@@ -8,6 +8,9 @@
         </ul>
     </div>
 </div>
+<div class="alert alert-info">
+    <?php echo $sprache->help_fdl_master;?>
+</div>
 <?php if (count($errors)>0){ ?>
 <div class="alert alert-error">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -58,6 +61,14 @@
             <div class="N switch control-group<?php if(isset($errors['pass'])) echo ' error';?><?php if($publickey=='Y') echo ' display_none';?>">
                 <label class="control-label" for="inputSshPass"><?php echo $dedicatedLanguage->ssh_pass;?></label>
                 <div class="controls"><input id="inputSshPass" class="span11" type="password" name="pass" value="<?php echo $pass;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputftpIP"><?php echo $sprache->ftpIP.' '.$sprache->optional;?></label>
+                <div class="controls"><input id="inputftpIP" class="span11" type="text" name="ftpIP" value="<?php echo $ftpIP;?>" maxlength="15" ></div>
+            </div>
+            <div class="control-group<?php if(isset($errors['ftpPort'])) echo ' error';?>">
+                <label class="control-label" for="inputftpPort"><?php echo $sprache->ftpPort;?></label>
+                <div class="controls"><input id="inputftpPort" class="span11" type="number" name="ftpPort" value="<?php echo $ftpPort;?>" maxlength="5" required></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputDesc"><?php echo $dedicatedLanguage->description;?></label>

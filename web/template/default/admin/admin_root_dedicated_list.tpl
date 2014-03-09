@@ -9,7 +9,7 @@
 </div>
 <div class="row-fluid">
     <div class="span6">
-        <?php echo $gsprache->dedicated;?> <a href="admin.php?w=rh&amp;d=ad"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a>
+        <?php echo $gsprache->dedicated;?> <a href="admin.php?w=rh&amp;d=ad"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $gsprache->add;?></span></a>
     </div>
 </div>
 <hr>

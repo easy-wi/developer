@@ -215,6 +215,8 @@ $query = "CREATE TABLE IF NOT EXISTS `fastdlMaster` (
   `pass` blob,
   `publickey` enum('B','Y','N') DEFAULT 'N',
   `keyname` varchar(255),
+  `ftpIP` varchar(15),
+  `ftpPort` int(5) unsigned,
   `maxVhost` int(10) unsigned,
   `maxHDD` int(10) unsigned,
   `defaultdns` varchar(255),
@@ -232,6 +234,24 @@ $query = "CREATE TABLE IF NOT EXISTS `fastdlMaster` (
   `notified` int(10) unsigned,
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`fastdlMasterID`),KEY(`resellerID`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
+$query = "CREATE TABLE IF NOT EXISTS `fastdlVhost` (
+  `fastdlVhostID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `fastdlMasterID` int(10) unsigned NOT NULL,
+  `userID` int(10) unsigned NOT NULL,
+  `active` enum('Y','N') DEFAULT 'Y',
+  `jobPending` enum('Y','N') DEFAULT 'N',
+  `hdd` int(10) unsigned DEFAULT 0,
+  `dns` varchar(255),
+  `ftpUser` varchar(255),
+  `ftpPassword` blob,
+  `ownVhost` enum('Y','N') DEFAULT 'N',
+  `vhostTemplate` text,
+  `resellerID` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`fastdlVhostID`),KEY(`fastdlMasterID`),KEY(`userID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
