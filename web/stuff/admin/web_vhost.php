@@ -1,7 +1,7 @@
 <?php
 
 /**
- * File: fastdl_vhost.php.
+ * File: web_vhost.php.
  * Author: Ulrich Block
  * Date: 02.03.14
  * Contact: <ulrich.block@easy-wi.com>
@@ -45,7 +45,7 @@ if (!isset($admin_id) or $main != 1 or !isset($admin_id) or !isset($reseller_id)
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $dedicatedLanguage = getlanguagefile('reseller', $user_language, $resellerLockupID);
-$sprache = getlanguagefile('fastdl', $user_language, $resellerLockupID);
+$sprache = getlanguagefile('web', $user_language, $resellerLockupID);
 
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
@@ -61,7 +61,7 @@ if ($reseller_id == 0) {
 
 // Define the ID variable which will be used at the form and SQLs
 $id = $ui->id('id', 10, 'get');
-$fastdlMasterID = $ui->id('fastdlMasterID', 10, 'post');
+$webMasterID = $ui->id('webMasterID', 10, 'post');
 $userID = $ui->id('userID', 10, 'post');
 $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
 $hdd = ($ui->id('hdd', 10, 'post')) ? $ui->id('hdd', 10, 'post') : 1000;
@@ -110,17 +110,17 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
             // Get masterserver. Sort by usage.
 
-            $query = $sql->prepare("SELECT m.`fastdlMasterID`,m.`ip`,m.`description`,(SELECT COUNT(v.`fastdlVhostID`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`)/(m.`maxHDD`/100) AS `percentHDDUsage` FROM `fastdlMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`fastdlMasterID` HAVING (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC");
+            $query = $sql->prepare("SELECT m.`webMasterID`,m.`ip`,m.`description`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxHDD`/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC");
             $query->execute(array($resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $table2[$row['fastdlMasterID']] = trim($row['ip'] . ' ' . $row['description']);
+                $table2[$row['webMasterID']] = trim($row['ip'] . ' ' . $row['description']);
             }
 
             if (count($table2) > 0) {
 
                 $bestID = key($table2);
 
-                $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`fastdlVhostID`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`) AS `totalHDD` FROM `fastdlMaster` AS m WHERE m.`fastdlMasterID`=? AND m.`resellerID`=? LIMIT 1");
+                $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
                 $query->execute(array($bestID, $resellerLockupID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $vhostTemplate = $row['vhostTemplate'];
@@ -133,12 +133,12 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 }
             }
 
-            $template_file = 'admin_fastdl_vhost_add.tpl';
+            $template_file = 'admin_web_vhost_add.tpl';
 
             // Gather data for modding in case we have an ID and define mod template
         } else if ($ui->st('d', 'get') == 'md' and $id) {
 
-            $query = $sql->prepare("SELECT v.*,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`description`,m.`maxHDD`,m.`quotaActive`,(SELECT SUM(v.`hdd`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`) AS `totalHDD`,u.`cname`,u.`vname`,u.`name` FROM `fastdlVhost` AS v INNER JOIN `fastdlMaster` AS m ON m.`fastdlMasterID`=v.`fastdlMasterID` INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`fastdlVhostID`=? AND v.`resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT v.*,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`description`,m.`maxHDD`,m.`quotaActive`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -163,7 +163,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             }
 
             // Check if database entry exists and if not display 404 page
-            $template_file = ($query->rowCount() > 0) ? 'admin_fastdl_vhost_md.tpl' : 'admin_404.tpl';
+            $template_file = ($query->rowCount() > 0) ? 'admin_web_vhost_md.tpl' : 'admin_404.tpl';
 
             // Show 404 if GET parameters did not add up or no ID was given with mod
         } else {
@@ -202,18 +202,18 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 $errors['userID'] = $dedicatedLanguage->user;
             }
 
-            if ($fastdlMasterID) {
+            if ($webMasterID) {
 
-                $query = $sql->prepare("SELECT `defaultdns` FROM `fastdlMaster` WHERE `fastdlMasterID`=? AND `resellerID`=? LIMIT 1");
-                $query->execute(array($fastdlMasterID, $resellerLockupID));
+                $query = $sql->prepare("SELECT `defaultdns` FROM `webMaster` WHERE `webMasterID`=? AND `resellerID`=? LIMIT 1");
+                $query->execute(array($webMasterID, $resellerLockupID));
                 $defaultDns = (string) $query->fetchColumn();
 
                 if (strlen($defaultDns) < 1) {
-                    $errors['fastdlMasterID'] = $gsprache->master;
+                    $errors['webMasterID'] = $gsprache->master;
                 }
 
             } else {
-                $errors['fastdlMasterID'] = $gsprache->master;
+                $errors['webMasterID'] = $gsprache->master;
             }
         }
 
@@ -223,8 +223,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `fastdlVhost` (`fastdlMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?)");
-                $query->execute(array($fastdlMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?)");
+                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $resellerLockupID));
 
                 $id = (int) $sql->lastInsertId();
 
@@ -234,19 +234,19 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                     $dns = str_replace('..', '.', $ftpUser . '.' .$defaultDns);
                 }
 
-                $query = $sql->prepare("UPDATE `fastdlVhost` SET `dns`=?,`ftpUser`=? WHERE `fastdlVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query = $sql->prepare("UPDATE `webVhost` SET `dns`=?,`ftpUser`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($dns, $ftpUser, $id, $resellerLockupID));
 
                 $rowCount = $query->rowCount();
-                $loguseraction = '%add% %fastdlvhost% ' . $dns;
+                $loguseraction = '%add% %webvhost% ' . $dns;
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("SELECT `active` FROM `fastdlVhost` WHERE `fastdlVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query = $sql->prepare("SELECT `active` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id, $resellerLockupID));
                 $oldActive = $query->fetchColumn();
 
-                $query = $sql->prepare("UPDATE `fastdlVhost` SET `active`=?,`hdd`=?,`dns`=?,`ftpPassword`=AES_ENCRYPT(?,?),`ownVhost`=?,`vhostTemplate`=? WHERE `fastdlVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`dns`=?,`ftpPassword`=AES_ENCRYPT(?,?),`ownVhost`=?,`vhostTemplate`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($active, $hdd, $dns, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $id, $resellerLockupID));
 
                 // in case vhost is deactivated change password to random for later processing
@@ -255,7 +255,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 }
 
                 $rowCount = $query->rowCount();
-                $loguseraction = '%mod% %fastdlvhost% ' . $dns;
+                $loguseraction = '%mod% %webvhost% ' . $dns;
             }
 
             // Check if a row was affected during insert or update
@@ -280,7 +280,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 $maxVhost = 0;
                 $maxHDD = 0;
-                $fastdlVhosts = 0;
+                $webVhosts = 0;
                 $leftHDD = 0;
                 $totalHDD = 0;
                 $totalVhosts = 0;
@@ -296,17 +296,17 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 // Get masterserver. Sort by usage.
 
-                $query = $sql->prepare("SELECT m.`fastdlMasterID`,m.`ip`,m.`description`,(SELECT COUNT(v.`fastdlVhostID`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`)/(m.`maxHDD`/100) AS `percentHDDUsage` FROM `fastdlMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`fastdlMasterID` HAVING (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC");
+                $query = $sql->prepare("SELECT m.`webMasterID`,m.`ip`,m.`description`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxHDD`/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC");
                 $query->execute(array($resellerLockupID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $table2[$row['fastdlMasterID']] = trim($row['ip'] . ' ' . $row['description']);
+                    $table2[$row['webMasterID']] = trim($row['ip'] . ' ' . $row['description']);
                 }
 
                 if (count($table2) > 0) {
 
                     $bestID = key($table2);
 
-                    $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`fastdlVhostID`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`) AS `totalHDD` FROM `fastdlMaster` AS m WHERE m.`fastdlMasterID`=? AND m.`resellerID`=? LIMIT 1");
+                    $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
                     $query->execute(array($bestID, $resellerLockupID));
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                         $vhostTemplate = $row['vhostTemplate'];
@@ -319,10 +319,10 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                     }
                 }
 
-                $template_file = 'admin_fastdl_vhost_add.tpl';
+                $template_file = 'admin_web_vhost_add.tpl';
 
             } else {
-                $template_file = 'admin_fastdl_vhost_md.tpl';
+                $template_file = 'admin_web_vhost_md.tpl';
             }
         }
     }
@@ -330,7 +330,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 // Remove entries in case we have an ID given with the GET request
 } else if (!isset($tokenError) and $ui->st('d', 'get') == 'dl' and $id) {
 
-    $query = $sql->prepare("SELECT v.`dns`,u.`cname`,u.`vname`,u.`name` FROM `fastdlVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`fastdlVhostID`=? AND v.`resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT v.`dns`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
     $query->execute(array($id, $resellerLockupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $dns = $row['dns'];
@@ -342,19 +342,19 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
     if (!$ui->st('action', 'post') and isset($user)) {
 
         // Check if we could find an entry and if not display 404 page
-        $template_file = ($query->rowCount() > 0) ? 'admin_fastdl_vhost_dl.tpl' : 'admin_404.tpl';
+        $template_file = ($query->rowCount() > 0) ? 'admin_web_vhost_dl.tpl' : 'admin_404.tpl';
 
         // User submitted remove the entry
     } else if ($ui->st('action', 'post') == 'dl' and isset($user)) {
 
-        $query = $sql->prepare("DELETE FROM `fastdlVhost` WHERE `fastdlVhostID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("DELETE FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
 
         // Check if a row was affected meaning an entry could be deleted. If yes add log entry and display success message
         if ($query->rowCount() > 0) {
 
             $template_file = $spracheResponse->table_del;
-            $loguseraction = '%del% %fastdlvhost% ' . $dns;
+            $loguseraction = '%del% %webvhost% ' . $dns;
             $insertlog->execute();
 
             // Nothing was deleted, display an error
@@ -372,7 +372,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
     $table = array();
 
-    $query = $sql->prepare("SELECT COUNT(`fastdlVhostID`) AS `amount` FROM `fastdlVhost` WHERE `resellerID`=?");
+    $query = $sql->prepare("SELECT COUNT(`webVhostID`) AS `amount` FROM `webVhost` WHERE `resellerID`=?");
     $query->execute(array($resellerLockupID));
     $colcount = $query->fetchColumn();
 
@@ -412,13 +412,13 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
     } else if ($ui->st('o', 'get') == 'as') {
         $orderby = 'v.`active` ASC';
     } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = 'v.`fastdlVhostID` DESC';
+        $orderby = 'v.`webVhostID` DESC';
     } else {
-        $orderby = 'v.`fastdlVhostID` ASC';
+        $orderby = 'v.`webVhostID` ASC';
         $o = 'ai';
     }
 
-    $query = $sql->prepare("SELECT v.*,u.`cname` FROM `fastdlVhost` AS v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE v.`resellerID`=? ORDER BY " . $orderby . " LIMIT " . $start . "," . $amount);
+    $query = $sql->prepare("SELECT v.*,u.`cname` FROM `webVhost` AS v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE v.`resellerID`=? ORDER BY " . $orderby . " LIMIT " . $start . "," . $amount);
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='fd' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
 
     $query->execute(array($resellerLockupID));
@@ -451,7 +451,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $active = 'N';
         }
 
-        $table[] = array('id' => $row['fastdlVhostID'], 'active' => $row['active'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'jobPending' => $jobPending, 'userID' => $row['userID'], 'cname' => $row['cname']);
+        $table[] = array('id' => $row['webVhostID'], 'active' => $row['active'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'jobPending' => $jobPending, 'userID' => $row['userID'], 'cname' => $row['cname']);
     }
 
     $pageamount = ceil($colcount / $amount);
@@ -471,5 +471,5 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
     $pages = implode(', ',$pages);
 
-    $template_file = 'admin_fastdl_vhost_list.tpl';
+    $template_file = 'admin_web_vhost_list.tpl';
 }

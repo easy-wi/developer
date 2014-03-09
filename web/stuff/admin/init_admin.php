@@ -155,8 +155,8 @@ if ($easywiModules['ea'] === true) {
 }
 
 if ($easywiModules['fd'] === true) {
-    $what_to_be_included_array['fm'] = 'fastdl_master.php';
-    $what_to_be_included_array['fv'] = 'fastdl_vhost.php';
+    $what_to_be_included_array['fm'] = 'web_master.php';
+    $what_to_be_included_array['fv'] = 'web_vhost.php';
 }
 
 if ($easywiModules['my'] === true) {

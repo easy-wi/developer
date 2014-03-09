@@ -8,7 +8,7 @@
     </div>
 </div>
 <div class="alert alert-info">
-    <?php echo $sprache->help_fdl_master;?>
+    <?php echo $sprache->help_web_master;?>
 </div>
 <?php if (count($errors)>0){ ?>
 <div class="alert alert-error">

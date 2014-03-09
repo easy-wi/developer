@@ -42,12 +42,12 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group<?php if(isset($errors['fastdlMasterID'])) echo ' error';?>">
-                <label class="control-label" for="inputFastdlMasterID"><?php echo $gsprache->master;?></label>
+            <div class="control-group<?php if(isset($errors['webMasterID'])) echo ' error';?>">
+                <label class="control-label" for="inputWebMasterID"><?php echo $gsprache->master;?></label>
                 <div class="controls">
-                    <select id="inputFastdlMasterID" name="fastdlMasterID" class="span11" onchange="getdetails('ajax.php?d=fastdlmaster&id=', this.value)">
+                    <select id="inputWebMasterID" name="webMasterID" class="span11" onchange="getdetails('ajax.php?d=webmaster&id=', this.value)">
                         <?php foreach ($table2 as $k=>$v){ ?>
-                        <option value="<?php echo $k;?>" <?php if ($fastdlMasterID==$k) echo 'selected="selected";'?>><?php echo $v;?></option>
+                        <option value="<?php echo $k;?>" <?php if ($webMasterID==$k) echo 'selected="selected";'?>><?php echo $v;?></option>
                         <?php } ?>
                     </select>
                 </div>

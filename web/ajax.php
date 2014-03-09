@@ -73,20 +73,20 @@ if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'g
 
     $template_file = 'ajax_admin_roots_ips.tpl';
 
-} else if (isset($admin_id) and $pa['fastdl'] and $ui->smallletters('d', 12, 'get') == 'fastdlmaster' and $ui->id('id', 10, 'get')) {
+} else if (isset($admin_id) and $pa['fastdl'] and $ui->smallletters('d', 8, 'get') == 'webmaster' and $ui->id('id', 10, 'get')) {
 
-    $sprache = getlanguagefile('fastdl', $user_language, $resellerLockupID);
+    $sprache = getlanguagefile('web', $user_language, $resellerLockupID);
 
     $maxVhost = 0;
     $maxHDD = 0;
-    $fastdlVhosts = 0;
+    $webVhosts = 0;
     $leftHDD = 0;
     $totalHDD = 0;
     $totalVhosts = 0;
     $quotaActive = 'N';
     $dns = '';
 
-    $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`fastdlVhostID`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `fastdlVhost` AS v WHERE v.`fastdlMasterID`=m.`fastdlMasterID`) AS `totalHDD` FROM `fastdlMaster` AS m WHERE m.`fastdlMasterID`=? AND m.`resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
     $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $vhostTemplate = $row['vhostTemplate'];
@@ -98,7 +98,7 @@ if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'g
         $dns = $row['defaultdns'];
     }
 
-    $template_file = 'ajax_admin_fastdlmaster.tpl';
+    $template_file = 'ajax_admin_web_master.tpl';
 
 }
 

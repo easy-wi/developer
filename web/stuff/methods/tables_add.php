@@ -206,8 +206,8 @@ $query = "CREATE TABLE IF NOT EXISTS `easywi_version` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query = "CREATE TABLE IF NOT EXISTS `fastdlMaster` (
-  `fastdlMasterID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+$query = "CREATE TABLE IF NOT EXISTS `webMaster` (
+  `webMasterID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `ip` varchar(15),
   `port` int(5) unsigned,
@@ -233,14 +233,14 @@ $query = "CREATE TABLE IF NOT EXISTS `fastdlMaster` (
   `description` text,
   `notified` int(10) unsigned,
   `resellerID` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`fastdlMasterID`),KEY(`resellerID`)
+  PRIMARY KEY (`webMasterID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
 
-$query = "CREATE TABLE IF NOT EXISTS `fastdlVhost` (
-  `fastdlVhostID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `fastdlMasterID` int(10) unsigned NOT NULL,
+$query = "CREATE TABLE IF NOT EXISTS `webVhost` (
+  `webVhostID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `webMasterID` int(10) unsigned NOT NULL,
   `userID` int(10) unsigned NOT NULL,
   `active` enum('Y','N') DEFAULT 'Y',
   `jobPending` enum('Y','N') DEFAULT 'N',
@@ -251,7 +251,7 @@ $query = "CREATE TABLE IF NOT EXISTS `fastdlVhost` (
   `ownVhost` enum('Y','N') DEFAULT 'N',
   `vhostTemplate` text,
   `resellerID` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`fastdlVhostID`),KEY(`fastdlMasterID`),KEY(`userID`),KEY(`resellerID`)
+  PRIMARY KEY (`webVhostID`),KEY(`webMasterID`),KEY(`userID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();

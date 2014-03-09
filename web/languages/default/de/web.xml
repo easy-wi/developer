@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <defaultdns>Standard Domain</defaultdns>
+    <dns>Domain</dns>
+    <ftpIP>FTP Adresse (optional)</ftpIP>
+    <ftpPassword>FTP Passwort</ftpPassword>
+    <ftpPort>FTP Port</ftpPort>
+    <hdd>Speicherplatz</hdd>
+    <help_web_master>Achtung, es wird empfohlen den Host ausschließlich für Fastdownload zu nutzen. Andere Panels und Dienste könnten ansonsten Konflikte und Probleme verursachen. Des Weiteren verursacht Fastdownload regelmäßige Lastspitzen in der Bandbreite, die andere Serverdienste zum Laggen bringen können.</help_web_master>
+    <httpdCmd>HTTPD Start/Reload Befehl</httpdCmd>
+    <installedHDD>Zugewiesene HDD</installedHDD>
+    <installedVhost>Installierte Vhosts</installedVhost>
+    <maxHDD>Vorhandener Speicherplatz</maxHDD>
+    <maxVhost>Maximale Vhosts</maxVhost>
+    <optional>(optional)</optional>
+    <ownVhost>Eigenes Vhosttemplate</ownVhost>
+    <quotaActive>Quotas Aktivieren</quotaActive>
+    <quotaCmd>Quota Befehl</quotaCmd>
+    <quotaWarning>Achtung! Ohne Quotas kann der User unbegrenzt Dateien hochladen!</quotaWarning>
+    <recreate>Wiederherstellen</recreate>
+    <usage>Belegung</usage>
+    <userGroup>Webserver Gruppe</userGroup>
+    <userAddCmd>Hinzufügen Befehl</userAddCmd>
+    <userDelCmd>Löschen Befehl</userDelCmd>
+    <userModCmd>Bearbeiten Befehl</userModCmd>
+    <vhostConfigPath>Vhost Config Speicherpfad</vhostConfigPath>
+    <vhostTemplate>Vhost Template</vhostTemplate>
+    <vhostStoragePath>Vhost Speicherpfad</vhostStoragePath>
+</sprache>

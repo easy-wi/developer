@@ -1,17 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
 	<chfdluser>FTP Zugang ändern?</chfdluser>
-    <defaultdns>Standard Domain</defaultdns>
-    <dns>Domain</dns>
 	<example>Beispiel: ftp://Deinusername:Deinftppasswort@Adresse/Pfad</example>
 	<fdlfailed>Fastdownload Abgleich fehlgeschlagen</fdlfailed>
 	<fdlstarted>Fastdownload Abgleich gestartet</fdlstarted>
-    <ftpIP>FTP Adresse</ftpIP>
-    <ftpPassword>FTP Passwort</ftpPassword>
-    <ftpPort>FTP Port</ftpPort>
 	<haupt>Standard Fastdownload Speicher</haupt>
     <haupt2>Standard Fastdownload Speicher benutzen?</haupt2>
-    <hdd>Speicherplatz</hdd>
     <help_fdl>
         <![CDATA[
 	Mittels Fastdownload können Spieler auf Ihrem Gameserver Zusatz-Dateien schneller herunterladen.<br />
@@ -23,31 +17,11 @@
 	Damit diese Einstellung auf Ihrem Gameserver aktiv wird, muss die entsprechende <strong>HTTP-URL</strong> auch in der <strong>server.cfg</strong> oder <strong>dedicated.cfg</strong> am Gameserver eingetragen werden.
     ]]>
     </help_fdl>
-    <help_fdl_master>Achtung, es wird empfohlen den Host ausschließlich für Fastdownload zu nutzen. Andere Panels und Dienste könnten ansonsten Konflikte und Probleme verursachen. Des Weiteren verursacht Fastdownload regelmäßige Lastspitzen in der Bandbreite, die andere Serverdienste zum Laggen bringen können.</help_fdl_master>
-    <httpdCmd>HTTPD Start/Reload Befehl</httpdCmd>
-    <installedHDD>Zugewiesene HDD</installedHDD>
-    <installedVhost>Installierte Vhosts</installedVhost>
-    <maxHDD>Vorhandener Speicherplatz</maxHDD>
-    <maxVhost>Maximale Vhosts</maxVhost>
 	<neben>FTP Zugang zum Fastdownload Webspace für</neben>
 	<noset>Keine FTP Daten hinterlegt</noset>
-    <optional>(optional)</optional>
 	<own>Haupt FTP nutzen</own>
     <own2>Eigener Fastdownload Speicher</own2>
-    <ownVhost>Eigenes Vhosttemplate</ownVhost>
-    <quotaActive>Quotas Aktivieren</quotaActive>
-    <quotaCmd>Quota Befehl</quotaCmd>
-    <quotaWarning>Achtung! Ohne Quotas kann der User unbegrenzt Dateien hochladen!</quotaWarning>
-    <recreate>Wiederherstellen</recreate>
     <server>Server</server>
 	<startfdl>Abgleich starten</startfdl>
     <udsuc>FTP Daten erfolgreich geändert</udsuc>
-    <usage>Belegung</usage>
-    <userAddCmd>Hinzufügen Befehl</userAddCmd>
-    <userDelCmd>Löschen Befehl</userDelCmd>
-    <userModCmd>Bearbeiten Befehl</userModCmd>
-    <userGroup>Webserver Gruppe</userGroup>
-    <vhostConfigPath>Vhost Config Speicherpfad</vhostConfigPath>
-    <vhostTemplate>Vhost Template</vhostTemplate>
-    <vhostStoragePath>Vhost Speicherpfad</vhostStoragePath>
 </sprache>
