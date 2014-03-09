@@ -498,6 +498,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
         $jobPending = $gsprache->no;
 
         if ($row['jobPending'] == 'Y') {
@@ -528,10 +529,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $imgAlt = 'Active';
         $active = 'Y';
 
-        if (($row['active'] == 'Y' and $row['jobPending'] == 'N' and $row['notified']<=$rSA['down_checks']) or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
+        if (($row['active'] == 'Y' and $row['jobPending'] == 'N' and $row['notified'] <= $rSA['down_checks']) or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
             $imgName = '16_ok';
             $imgAlt = 'Active';
-        } else if (($row['active'] == 'Y' and $row['jobPending'] == 'N' and $row['notified']>$rSA['down_checks']) or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
+        } else if (($row['active'] == 'Y' and $row['jobPending'] == 'N' and $row['notified'] > $rSA['down_checks']) or ($row['jobPending'] == 'Y') and isset($tobeActive) and $tobeActive == 'Y') {
             $imgName = '16_error';
             $imgAlt = 'Crashed';
             $active='C';
@@ -551,7 +552,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $status = $sprache->ok;
         }
 
-        $table[] = array('id' => $row['dedicatedID'], 'ip' => $row['ip'], 'description' => $row['description'], 'status' => $status,'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'active' => $active,'jobPending' => $jobPending);
+        $table[] = array('id' => $row['dedicatedID'], 'ip' => $row['ip'], 'description' => $row['description'], 'status' => $status,'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']), 'active' => $active, 'jobPending' => $jobPending);
 
     }
 

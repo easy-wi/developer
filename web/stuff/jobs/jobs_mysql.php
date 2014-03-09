@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: jobs_mysql.php.
  * Author: Ulrich Block
@@ -38,57 +39,79 @@
  */
 
 $query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='my' GROUP BY `hostID`");
+$query2 = $sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+$query3 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='my' AND `hostID`=?");
+$query4 = $sql->prepare("SELECT e.`active`,e.`dbname`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,e.`max_queries_per_hour`,e.`max_updates_per_hour`,e.`max_connections_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
+$query5 = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? LIMIT 1");
+$query6 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
+$query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='my' AND `hostID`=?");
+
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $query2 = $sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+
+    unset($remotesql);
+
     $query2->execute(array($aeskey, $row['hostID'], $row['resellerID']));
     foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-        $ip = $row2['ip'];
-        $port = $row2['port'];
-        $user = $row2['user'];
-        $pwd = $row2['decryptedpassword'];
+        $remotesql = new ExternalSQL ($row2['ip'], $row2['port'], $row2['user'], $row2['decryptedpassword']);
     }
-    $remotesql=new ExternalSQL ($ip,$port,$user,$pwd);
-    if ($remotesql->error== 'ok') {
-        $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='my' AND `hostID`=?");
-        $query2->execute(array($row['hostID']));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            $pselect = $sql->prepare("SELECT e.`active`,e.`dbname`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,e.`max_queries_per_hour`,e.`max_updates_per_hour`,e.`max_connections_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
-            $pselect->execute(array($aeskey, $row2['affectedID'], $row2['resellerID']));
-            foreach ($pselect->fetchall(PDO::FETCH_ASSOC) as $row) {
-                $ip = $row['ip'];
-                $ips = $row['ips'];
-                $cname = $row['cname'];
-                $dbname = $row['dbname'];
-                $password = $row['decryptedpassword'];
-                $extraData=@json_decode($row['extraData']);
+
+
+    if (isset($remotesql) and $remotesql->error == 'ok') {
+
+        $query3->execute(array($row['hostID']));
+        foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
+            $query4->execute(array($aeskey, $row2['affectedID'], $row2['resellerID']));
+            foreach ($query4->fetchall(PDO::FETCH_ASSOC) as $row4) {
+
+                $ip = $row4['ip'];
+                $ips = $row4['ips'];
+                $cname = $row4['cname'];
+                $dbname = $row4['dbname'];
+                $password = $row4['decryptedpassword'];
+                $max_queries_per_hour = $row4['max_queries_per_hour'];
+                $max_updates_per_hour = $row4['max_updates_per_hour'];
+                $max_connections_per_hour = $row4['max_connections_per_hour'];
+                $max_userconnections_per_hour = $row4['max_userconnections_per_hour'];
+
+                $extraData = @json_decode($row4['extraData']);
                 if (is_object($extraData->newActive) and isset($extraData->newActive) and $extraData->newActive == 'N') {
                     $password=passwordgenerate(20);
                 }
-                $max_queries_per_hour = $row['max_queries_per_hour'];
-                $max_updates_per_hour = $row['max_updates_per_hour'];
-                $max_connections_per_hour = $row['max_connections_per_hour'];
-                $max_userconnections_per_hour = $row['max_userconnections_per_hour'];
+
                 if ($row2['action'] == 'dl') {
-                    $command = $gsprache->del.' MySQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+
+                    $command = $gsprache->del . ' MySQLDBID: ' . $row2['affectedID'] . ' DBName: ' . $row4['dbname'];
+
                     $remotesql->DelDB($dbname);
-                    $delete = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? LIMIT 1");
-                    $delete->execute(array($row2['affectedID']));
+
+                    $query5->execute(array($row2['affectedID']));
+
                     customColumns('M', $row2['affectedID'], 'del');
+
                 } else if ($row2['action'] == 'ad') {
-                    $command = $gsprache->add.' MySQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+
+                    $command = $gsprache->add.' MySQLDBID: '.$row2['affectedID'].' DBName: '.$row4['dbname'];
+
                     $remotesql->AddDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
+
                 } else {
-                    $command = $gsprache->mod.' MySQLDBID: '.$row2['affectedID'].' DBName: '.$row['dbname'];
+
+                    $command = $gsprache->mod.' MySQLDBID: '.$row2['affectedID'].' DBName: '.$row4['dbname'];
+
                     $remotesql->ModDB($dbname,$password,$ips,$max_queries_per_hour,$max_connections_per_hour,$max_updates_per_hour,$max_userconnections_per_hour);
+
                 }
+
                 $theOutput->printGraph($command);
+
             }
-            $update = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
-            $update->execute(array($row2['jobID']));
+
+            $query6->execute(array($row2['jobID']));
         }
+
     } else {
-        $update = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='my' AND `hostID`=?");
         $update->execute(array($row['hostID']));
     }
 }
