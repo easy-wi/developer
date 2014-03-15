@@ -124,9 +124,9 @@ if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
     listen 80;
     server_name %url%;
     autoindex off;
-    access_log %vhostpath%/%url%/logs/access.log;
-    error_log %vhostpath%/%url%/logs/error.log;
-    root %vhostpath%/%url%/htdocs/;
+    access_log %vhostpath%/%user%/logs/access.log;
+    error_log %vhostpath%/%user%/logs/error.log;
+    root %vhostpath%/%user%/htdocs/;
     if ($http_user_agent != "Half-Life 2") {
         return 403;
     }
@@ -137,11 +137,11 @@ if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
     } else if ($serverType == 'A') {
         $vhostTemplate = '<VirtualHost *:80>
     ServerAdmin %email%
-    DocumentRoot "%vhostpath%/%url%/htdocs"
+    DocumentRoot "%vhostpath%/%user%/htdocs"
     ServerName %url%
-    ErrorLog "%vhostpath%/%url%/logs/error.log"
-    CustomLog "%vhostpath%/%url%/logs/access.log" common
-    <Directory %vhostpath%/%url%/htdocs>
+    ErrorLog "%vhostpath%/%user%/logs/error.log"
+    CustomLog "%vhostpath%/%user%/logs/access.log" common
+    <Directory %vhostpath%/%user%/htdocs>
         Options -Indexes FollowSymLinks Includes
         AllowOverride All
         Order allow,deny
@@ -150,17 +150,17 @@ if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
 </VirtualHost>';
     } else if ($serverType == 'L') {
         $vhostTemplate = '$HTTP["host"] == "%url%" {
-    server.document-root = "%vhostpath%/%url%/htdocs"
-    server.errorlog = "%vhostpath%/%url%/logs/error.log"
-    accesslog.filename = "%vhostpath%/%url%/logs/access.log"
+    server.document-root = "%vhostpath%/%user%/htdocs"
+    server.errorlog = "%vhostpath%/%user%/logs/error.log"
+    accesslog.filename = "%vhostpath%/%user%/logs/access.log"
     dir-listing.activate = "disable"
 }';
     } else if ($serverType == 'H') {
         $vhostTemplate = 'VirtualHost {
     Hostname = %url%
-    WebsiteRoot = %vhostpath%/%url%/htdocs
-    AccessLogfile = %vhostpath%/%url%/logs/access.log
-    ErrorLogfile = %vhostpath%/%url%/logs/error.log
+    WebsiteRoot = %vhostpath%/%user%/htdocs
+    AccessLogfile = %vhostpath%/%user%/logs/access.log
+    ErrorLogfile = %vhostpath%/%user%/logs/error.log
     ShowIndex = No
 }';
     } else {
@@ -316,7 +316,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 // In case the template has been changed we need to add change jobs for every vhost that uses the global template.
                 if ($oldVhostTemplate != $vhostTemplate) {
 
-                    $query = $sql->prepare("SELECT `webVhostID`,`userID`,`dns` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=? AND `ownVhost`='N'");
+                    $query = $sql->prepare("SELECT `webVhostID`,`webMasterID`,`userID`,`dns` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=? AND `ownVhost`='N'");
                     $query2 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','fd',?,?,?,?,?,NULL,NOW(),'md','',?)");
 
                     $query->execute(array($id, $resellerLockupID));

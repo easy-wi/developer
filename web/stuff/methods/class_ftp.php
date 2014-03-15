@@ -433,6 +433,21 @@ class EasyWiFTP {
 
     }
 
+    public function createDirs ($dirs) {
+
+        if (!is_array($dirs)) {
+            $dirs = (array) $dirs;
+        }
+
+        if ($this->loggedIn == true) {
+
+            foreach ($dirs as $dir) {
+                ftp_mkdir($this->ftpConnection, $dir);
+            }
+        }
+
+    }
+
     public function removeTempFiles () {
         if (is_array($this->tempHandle)) {
             foreach (array_keys($this->tempHandle) as $k) {

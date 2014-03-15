@@ -43,6 +43,7 @@ if (!isset($admin_id) or $main != 1 or !isset($admin_id) or !isset($reseller_id)
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/methods/class_httpd.php');
 
 $dedicatedLanguage = getlanguagefile('reseller', $user_language, $resellerLockupID);
 $sprache = getlanguagefile('web', $user_language, $resellerLockupID);
@@ -215,6 +216,20 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             } else {
                 $errors['webMasterID'] = $gsprache->master;
             }
+
+        } else {
+
+            $query = $sql->prepare("SELECT `webMasterID`,`active`,`hdd`,`dns`,`ownVhost`,`vhostTemplate`,AES_DECRYPT(`ftpPassword`,?) AS `decryptedFTPPass` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+            $query->execute(array($aeskey, $id, $resellerLockupID));
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $webMasterID = $row['webMasterID'];
+                $oldActive = $row['active'];
+                $oldHdd = $row['hdd'];
+                $oldDns = $row['dns'];
+                $oldFtpPassword = $row['decryptedFTPPass'];
+                $oldOwnVhost = $row['ownVhost'];
+                $oldVhostTemplate = $row['vhostTemplate'];
+            }
         }
 
         // Submitted values are OK
@@ -242,17 +257,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("SELECT `active` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
-                $query->execute(array($id, $resellerLockupID));
-                $oldActive = $query->fetchColumn();
-
                 $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`dns`=?,`ftpPassword`=AES_ENCRYPT(?,?),`ownVhost`=?,`vhostTemplate`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($active, $hdd, $dns, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $id, $resellerLockupID));
-
-                // in case vhost is deactivated change password to random for later processing
-                if ($oldActive == 'Y' and $oldActive != $active) {
-                    $ftpPassword = passwordgenerate(10);
-                }
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %webvhost% ' . $dns;
@@ -260,8 +266,34 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
             // Check if a row was affected during insert or update
             if (isset($rowCount) and $rowCount > 0) {
+
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
+
+                $vhostObject = new HttpdManagement($webMasterID, $resellerLockupID);
+
+                if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+
+                    if ($ui->st('action', 'post') == 'ad') {
+
+                        $vhostObject->vhostCreate($id);
+
+                    } else {
+
+                        if ($oldActive == 'Y' and $oldActive != $active) {
+
+                            $vhostObject->setInactive($id);
+
+                        } else {
+
+                            $vhostObject->vhostMod($id);
+
+                        }
+
+                    }
+
+                    $vhostObject->restartHttpdServer();
+                }
 
                 // No update or insert failed
             } else {
@@ -330,10 +362,11 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 // Remove entries in case we have an ID given with the GET request
 } else if (!isset($tokenError) and $ui->st('d', 'get') == 'dl' and $id) {
 
-    $query = $sql->prepare("SELECT v.`dns`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT v.`dns`,v.`webMasterID`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
     $query->execute(array($id, $resellerLockupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $dns = $row['dns'];
+        $webMasterID = $row['webMasterID'];
         $user = trim($row['cname'] . ' ' . trim($row['vname'] . ' ' . $row['name']));
     }
 
@@ -346,6 +379,13 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         // User submitted remove the entry
     } else if ($ui->st('action', 'post') == 'dl' and isset($user)) {
+
+        $vhostObject = new HttpdManagement($webMasterID, $resellerLockupID);
+
+        if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+            $vhostObject->vhostDelete($id);
+            $vhostObject->restartHttpdServer();
+        }
 
         $query = $sql->prepare("DELETE FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
