@@ -63,6 +63,37 @@ if ($reseller_id == 0) {
 
 // Define the ID variable which will be used at the form and SQLs
 $id = $ui->id('id', 10, 'get');
+
+$serverType = ($ui->w('serverType', 1, 'post') and in_array($ui->w('serverType', 1, 'post'), array('A','H','L','N','O'))) ? $ui->w('serverType', 1, 'post') : 'N';
+$createDirs = ($ui->startparameter('createDirs', 'post')) ? $ui->startparameter('createDirs', 'post') : 'htdocs;logs';
+
+if ($serverType == 'N') {
+
+    $defaultRestartCMD = 'sudo /etc/init.d/nginx reload';
+    $defaultVhostConfigPath = '/etc/nginx/sites-enabled/';
+
+} else if ($serverType == 'A') {
+
+    $defaultRestartCMD = 'sudo /etc/init.d/apache reload';
+    $defaultVhostConfigPath = '/etc/apache/sites-enabled/';
+
+} else if ($serverType == 'L') {
+
+    $defaultRestartCMD = 'sudo /etc/init.d/lighttpd reload';
+    $defaultVhostConfigPath = '/etc/lighttpd/sites-enabled/';
+
+} else if ($serverType == 'H') {
+
+    $defaultRestartCMD = 'sudo /etc/init.d/hiawatha reload';
+    $defaultVhostConfigPath = '/etc/hiawatha/sites-enabled/';
+
+} else {
+
+    $defaultRestartCMD = 'sudo /etc/init.d/toBeReplaced reload';
+    $defaultVhostConfigPath = '/etc/other/sites-enabled/';
+
+}
+
 $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
 $keyname = $ui->startparameter('keyname', 'post');
 $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
@@ -78,35 +109,63 @@ $maxHDD = ($ui->id('maxHDD', 10, 'post')) ? $ui->id('maxHDD', 10, 'post') : 1000
 $defaultdns = strtolower($ui->domain('defaultdns', 'post'));
 $quotaActive = ($ui->active('quotaActive', 'post')) ? $ui->active('quotaActive', 'post') : 'N';
 $quotaCmd = ($ui->startparameter('quotaCmd', 'post')) ? $ui->startparameter('quotaCmd', 'post') : 'sudo quotatool %cmd%';
-$httpdCmd = ($ui->startparameter('httpdCmd', 'post')) ? $ui->startparameter('httpdCmd', 'post') : 'sudo /etc/init.d/nginx reload';
+$httpdCmd = ($ui->startparameter('httpdCmd', 'post')) ? $ui->startparameter('httpdCmd', 'post') : $defaultRestartCMD;
 $userGroup = ($ui->startparameter('userGroup', 'post')) ? $ui->startparameter('userGroup', 'post') : 'www-data';
 $userAddCmd = ($ui->startparameter('userAddCmd', 'post')) ? $ui->startparameter('userAddCmd', 'post') : 'sudo /usr/sbin/useradd %cmd%';
 $userModCmd = ($ui->startparameter('userModCmd', 'post')) ? $ui->startparameter('userModCmd', 'post') : 'sudo /usr/sbin/usermod %cmd%';
 $userDelCmd = ($ui->startparameter('userDelCmd', 'post')) ? $ui->startparameter('userDelCmd', 'post') : 'sudo /usr/sbin/userdel %cmd%';
 $vhostStoragePath = ($ui->startparameter('vhostStoragePath', 'post')) ? $ui->startparameter('vhostStoragePath', 'post') : '/home/';
-$vhostConfigPath = ($ui->startparameter('vhostConfigPath', 'post')) ? $ui->startparameter('vhostConfigPath', 'post') : '/etc/nginx/sites-enabled/';
+$vhostConfigPath = ($ui->startparameter('vhostConfigPath', 'post')) ? $ui->startparameter('vhostConfigPath', 'post') : $defaultVhostConfigPath;
 $vhostTemplate = $ui->escaped('vhostTemplate', 'post');
 
-if (!$vhostTemplate) {
-    $vhostTemplate = 'server {
-
+if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
+    if ($serverType == 'N') {
+        $vhostTemplate = 'server {
     listen 80;
     server_name %url%;
-
     autoindex off;
-
     access_log %vhostpath%/%url%/logs/access.log;
     error_log %vhostpath%/%url%/logs/error.log;
     root %vhostpath%/%url%/htdocs/;
-
     if ($http_user_agent != "Half-Life 2") {
         return 403;
     }
-
     location / {
         index index.html index.htm;
     }
 }';
+    } else if ($serverType == 'A') {
+        $vhostTemplate = '<VirtualHost *:80>
+    ServerAdmin %email%
+    DocumentRoot "%vhostpath%/%url%/htdocs"
+    ServerName %url%
+    ErrorLog "%vhostpath%/%url%/logs/error.log"
+    CustomLog "%vhostpath%/%url%/logs/access.log" common
+    <Directory %vhostpath%/%url%/htdocs>
+        Options -Indexes FollowSymLinks Includes
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>';
+    } else if ($serverType == 'L') {
+        $vhostTemplate = '$HTTP["host"] == "%url%" {
+    server.document-root = "%vhostpath%/%url%/htdocs"
+    server.errorlog = "%vhostpath%/%url%/logs/error.log"
+    accesslog.filename = "%vhostpath%/%url%/logs/access.log"
+    dir-listing.activate = "disable"
+}';
+    } else if ($serverType == 'H') {
+        $vhostTemplate = 'VirtualHost {
+    Hostname = %url%
+    WebsiteRoot = %vhostpath%/%url%/htdocs
+    AccessLogfile = %vhostpath%/%url%/logs/access.log
+    ErrorLogfile = %vhostpath%/%url%/logs/error.log
+    ShowIndex = No
+}';
+    } else {
+        $vhostTemplate = '';
+    }
 }
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
@@ -126,6 +185,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     // Add or mod is opened
     if (!$ui->smallletters('action', 2, 'post')) {
+
+        $htmlExtraInformation['js'][] = '<script src="js/default/httpd_default_values.js" type="text/javascript"></script>';
 
         // Gather data for adding if needed and define add template
         if ($ui->st('d', 'get') == 'ad') {
@@ -153,6 +214,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $defaultdns = $row['defaultdns'];
                 $quotaActive = $row['quotaActive'];
                 $quotaCmd = $row['quotaCmd'];
+                $serverType = $row['serverType'];
+                $createDirs = $row['createDirs'];
                 $httpdCmd = $row['httpdCmd'];
                 $userGroup = $row['userGroup'];
                 $userAddCmd = $row['userAddCmd'];
@@ -240,8 +303,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `webMaster` (`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`ftpIP`,`ftpPort`,`maxVhost`,`maxHDD`,`defaultdns`,`httpdCmd`,`vhostStoragePath`,`vhostConfigPath`,`vhostTemplate`,`quotaActive`,`quotaCmd`,`description`,`userGroup`,`userAddCmd`,`userModCmd`,`userDelCmd`,`resellerID`) VALUES (:active,:ip,:port,AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:ftpIP,:ftpPort,:maxVhost,:maxHDD,:defaultdns,:httpdCmd,:vhostStoragePath,:vhostConfigPath,:vhostTemplate,:quotaActive,:quotaCmd,:description,:userGroup,:userAddCmd,:userModCmd,:userDelCmd,:resellerID)");
-                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort,':maxVhost' => $maxVhost,':maxHDD' => $maxHDD,':defaultdns' => $defaultdns,':httpdCmd' => $httpdCmd,':vhostStoragePath' => $vhostStoragePath,':vhostConfigPath' => $vhostConfigPath,':vhostTemplate' => $vhostTemplate,':quotaActive' => $quotaActive,':quotaCmd' => $quotaCmd,':description' => $description,':userGroup' => $userGroup,':userAddCmd' => $userAddCmd,':userModCmd' => $userModCmd,':userDelCmd' => $userDelCmd,':resellerID' => $resellerLockupID));
+                $serverType = $row['serverType'];
+                $createDirs = $row['createDirs'];
+                $query = $sql->prepare("INSERT INTO `webMaster` (`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`ftpIP`,`ftpPort`,`maxVhost`,`maxHDD`,`defaultdns`,`httpdCmd`,`serverType`,`createDirs`,`vhostStoragePath`,`vhostConfigPath`,`vhostTemplate`,`quotaActive`,`quotaCmd`,`description`,`userGroup`,`userAddCmd`,`userModCmd`,`userDelCmd`,`resellerID`) VALUES (:active,:ip,:port,AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:ftpIP,:ftpPort,:maxVhost,:maxHDD,:defaultdns,:httpdCmd,:serverType,:createDirs,:vhostStoragePath,:vhostConfigPath,:vhostTemplate,:quotaActive,:quotaCmd,:description,:userGroup,:userAddCmd,:userModCmd,:userDelCmd,:resellerID)");
+                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort,':maxVhost' => $maxVhost,':maxHDD' => $maxHDD,':defaultdns' => $defaultdns,':httpdCmd' => $httpdCmd,':serverType' => $serverType, ':createDirs' => $createDirs,':vhostStoragePath' => $vhostStoragePath,':vhostConfigPath' => $vhostConfigPath,':vhostTemplate' => $vhostTemplate,':quotaActive' => $quotaActive,':quotaCmd' => $quotaCmd,':description' => $description,':userGroup' => $userGroup,':userAddCmd' => $userAddCmd,':userModCmd' => $userModCmd,':userDelCmd' => $userDelCmd,':resellerID' => $resellerLockupID));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %webmaster% ' . $ip;
@@ -269,8 +334,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $query->execute(array($active, $id, $resellerLockupID));
                 }
 
-                $query = $sql->prepare("UPDATE `webMaster` SET `active`=:active,`ip`=:ip,`port`=:port,`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`ftpIP`=:ftpIP,`ftpPort`=:ftpPort,`maxVhost`=:maxVhost,`maxHDD`=:maxHDD,`defaultdns`=:defaultdns,`httpdCmd`=:httpdCmd,`vhostStoragePath`=:vhostStoragePath,`vhostConfigPath`=:vhostConfigPath,`vhostTemplate`=:vhostTemplate,`quotaActive`=:quotaActive,`quotaCmd`=:quotaCmd,`description`=:description,`userGroup`=:userGroup,`userAddCmd`=:userAddCmd,`userModCmd`=:userModCmd,`userDelCmd`=:userDelCmd WHERE `webMasterID`=:id AND `resellerID`=:resellerID LIMIT 1");
-                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort,':maxVhost' => $maxVhost,':maxHDD' => $maxHDD,':defaultdns' => $defaultdns,':httpdCmd' => $httpdCmd,':vhostStoragePath' => $vhostStoragePath,':vhostConfigPath' => $vhostConfigPath,':vhostTemplate' => $vhostTemplate,':quotaActive' => $quotaActive,':quotaCmd' => $quotaCmd,':description' => $description, ':userGroup' => $userGroup,':userAddCmd' => $userAddCmd,':userModCmd' => $userModCmd,':userDelCmd' => $userDelCmd,':id' => $id,':resellerID' => $resellerLockupID));
+                $query = $sql->prepare("UPDATE `webMaster` SET `active`=:active,`ip`=:ip,`port`=:port,`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`ftpIP`=:ftpIP,`ftpPort`=:ftpPort,`maxVhost`=:maxVhost,`maxHDD`=:maxHDD,`defaultdns`=:defaultdns,`httpdCmd`=:httpdCmd,`serverType`=:serverType,`createDirs`=:createDirs,`vhostStoragePath`=:vhostStoragePath,`vhostConfigPath`=:vhostConfigPath,`vhostTemplate`=:vhostTemplate,`quotaActive`=:quotaActive,`quotaCmd`=:quotaCmd,`description`=:description,`userGroup`=:userGroup,`userAddCmd`=:userAddCmd,`userModCmd`=:userModCmd,`userDelCmd`=:userDelCmd WHERE `webMasterID`=:id AND `resellerID`=:resellerID LIMIT 1");
+                $query->execute(array(':active' => $active,':ip' => $ip,':port' => $port,':aeskey' => $aeskey,':user' => $user,':pass' => $pass,':publickey' => $publickey,':keyname' => $keyname,':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort,':maxVhost' => $maxVhost,':maxHDD' => $maxHDD,':defaultdns' => $defaultdns,':httpdCmd' => $httpdCmd,':serverType' => $serverType, ':createDirs' => $createDirs,':vhostStoragePath' => $vhostStoragePath,':vhostConfigPath' => $vhostConfigPath,':vhostTemplate' => $vhostTemplate,':quotaActive' => $quotaActive,':quotaCmd' => $quotaCmd,':description' => $description, ':userGroup' => $userGroup,':userAddCmd' => $userAddCmd,':userModCmd' => $userModCmd,':userDelCmd' => $userDelCmd,':id' => $id,':resellerID' => $resellerLockupID));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %webmaster% ' . $ip;

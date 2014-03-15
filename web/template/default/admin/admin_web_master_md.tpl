@@ -9,7 +9,7 @@
     </div>
 </div>
 <div class="alert alert-info">
-    <?php echo $sprache->help_fdl_master;?>
+    <?php echo $sprache->help_web_master;?>
 </div>
 <?php if (count($errors)>0){ ?>
 <div class="alert alert-error">
@@ -107,9 +107,25 @@
                 <label class="control-label" for="inputuserDelCmd"><?php echo $sprache->userDelCmd;?></label>
                 <div class="controls"><input id="inputuserDelCmd" class="span11" type="text" name="userDelCmd" value="<?php echo $userDelCmd;?>" required></div>
             </div>
+            <div class="control-group<?php if(isset($errors['publickey'])) echo ' error';?>">
+                <label class="control-label" for="inputServerType"><?php echo $sprache->serverType;?></label>
+                <div class="controls">
+                    <select id="inputServerType" class="span11" name="serverType" onchange="loadServerSettings(this.value);">
+                        <option value="N">Nginx</option>
+                        <option value="L" <?php if ($serverType=='L') echo 'selected="selected"';?>>Lighttpd</option>
+                        <option value="H" <?php if ($serverType=='H') echo 'selected="selected"'; ?>>Hiawatha</option>
+                        <option value="A" <?php if ($serverType=='A') echo 'selected="selected"'; ?>>Apache</option>
+                        <option value="O" <?php if ($serverType=='O') echo 'selected="selected"'; ?>><?php echo $sprache->other;?></option>
+                    </select>
+                </div>
+            </div>
             <div class="control-group">
-                <label class="control-label" for="inputhttpdCmd"><?php echo $sprache->httpdCmd;?></label>
-                <div class="controls"><input id="inputhttpdCmd" class="span11" type="text" name="httpdCmd" value="<?php echo $httpdCmd;?>" required></div>
+                <label class="control-label" for="inputCreateDirs"><?php echo $sprache->createDirs;?></label>
+                <div class="controls"><input id="inputCreateDirs" class="span11" type="text" name="createDirs" value="<?php echo $createDirs;?>" required><span class="help-block"><?php echo $sprache->help_create_dirs;?></span></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputHttpdCmd"><?php echo $sprache->httpdCmd;?></label>
+                <div class="controls"><input id="inputHttpdCmd" class="span11" type="text" name="httpdCmd" value="<?php echo $httpdCmd;?>" required></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputVhostStoragePath"><?php echo $sprache->vhostStoragePath;?></label>
@@ -120,9 +136,9 @@
                 <div class="controls"><input id="inputVhostConfigPath" class="span11" type="text" name="vhostConfigPath" value="<?php echo $vhostConfigPath;?>" required></div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputvhostTemplate"><?php echo $sprache->vhostTemplate;?></label>
+                <label class="control-label" for="inputVhostTemplate"><?php echo $sprache->vhostTemplate;?></label>
                 <div class="controls">
-                    <textarea id="inputvhostTemplate" class="span11" name="vhostTemplate" rows="20" required><?php echo $vhostTemplate;?></textarea>
+                    <textarea id="inputVhostTemplate" class="span11" name="vhostTemplate" rows="20" required><?php echo $vhostTemplate;?></textarea>
                 </div>
             </div>
             <div class="control-group">
