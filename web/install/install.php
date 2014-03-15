@@ -851,7 +851,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
             }
 
-            require_once(EASYWIDIR . '/stuff/addonslist.php');
+            require_once(EASYWIDIR . '/stuff/methods/addonslist.php');
 
             $query = $sql->prepare("SELECT `id` FROM `addons` WHERE `addon`=? AND `resellerid`=0 LIMIT 1");
             $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`depending`,`paddon`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`rmcmd`,`resellerid`) VALUES ('Y',?,?,?,?,?,?,?,?,?,0)");
