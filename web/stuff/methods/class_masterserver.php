@@ -72,7 +72,7 @@ class masterServer {
         // fetch rootserverdata
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $rootID));
-        foreach ($query->fetchAll() as $row) {
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $active = $row['active'];
             $this->sship = $row['ip'];
