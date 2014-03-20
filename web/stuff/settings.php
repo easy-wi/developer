@@ -323,49 +323,54 @@ if ($loguserip!='localhost') {
 
 }
 
+if (!isset($user_language)) {
+    $user_language = $rSA['language'];
+}
+
 if (isset($logininclude) and $logininclude == true) {
+
     $query = $sql->prepare("DELETE FROM `badips` WHERE `bantime` <= ?");
     $query->execute(array($logdate));
+
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? AND reason='bot' LIMIT 1");
     $query->execute(array($loguserip));
     if ($query->rowCount() > 0) {
         die();
     }
+
     $query = $sql->prepare("SELECT `faillogins` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
     $allowedfails = $query->fetchColumn();
+
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? AND `reason`='password' AND `failcount`>=? LIMIT 1");
     $query->execute(array($loguserip, $allowedfails));
     if ($query->rowCount() > 0) {
         die('Your IP is banned');
     }
 }
+
 if ($ui->st('r', 'get')) {
+
     $redirectID = ($ui->id('id', 30, 'get')) ? '&id=' . $ui->id('id', 30, 'get') : '';
-    $header = '<meta http-equiv="refresh" content="3; URL=' . $ui->escaped('SCRIPT_NAME', 'server') . '?w=' . $ui->st('r', 'get') . $redirectID. '">';
-    if (!isset($user_language)) {
-        $user_language = $rSA['language'];
-    }
+    $actionParam = ($redirectID != '' and $ui->smallletters('d', 10, 'get') == 'md') ? '&d=' . $ui->smallletters('d', 10, 'get') : '';
+
+    $header = '<meta http-equiv="refresh" content="3; URL=' . $ui->escaped('SCRIPT_NAME', 'server') . '?w=' . $ui->st('r', 'get') . $redirectID . $actionParam . '">';
+
     $rsprache = getlanguagefile('redirect', $user_language, 0);
     $text = $rsprache->refresh;
 }
+
 if ($ui->w('action', 4, 'post')) {
     $action = $ui->w('action', 4, 'post');
 }
+
 if ($ui->smallletters('site', 50, 'get')) {
     $s = $ui->smallletters('site', 50, 'get');
 }
-if ($ui->st('w', 'get')) {
-    $w = $ui->st('w', 'get');
-} else {
-    $w = 'ho';
-}
-if ($ui->st('d', 'get')) {
-    $d = $ui->st('d', 'get');
-} else {
-    $d = 'md';
-}
 
+$w = ($ui->st('w', 'get')) ? $ui->st('w', 'get') : 'ho';
+$d = ($ui->st('d', 'get')) ? $ui->st('d', 'get') : 'md';
+$start = ($ui->id('p', 19, 'get')) ? $ui->id('p', 19, 'get') : 0;
 
 if ($ui->smallletters('t','1', 'get')) {
     $list_type = $ui->smallletters('t','1', 'get');
@@ -381,6 +386,7 @@ if ($ui->smallletters('t','1', 'get')) {
     $list_type="a";
     $where = '';
 }
+
 if ($ui->pregw('g','14', 'get')) {
     $list_gtype = $ui->pregw('g','14', 'get');
     if ($where != '') {
@@ -395,6 +401,7 @@ if ($ui->pregw('g','14', 'get')) {
 } else {
     $list_gtype = '';
 }
+
 if ($ui->pregw('m','20', 'get')) {
     $list_gtype = $ui->pregw('m','20', 'get');
     if ($where != '') {
@@ -405,6 +412,7 @@ if ($ui->pregw('m','20', 'get')) {
 } else {
     $list_gtype = '';
 }
+
 if (empty($where) and $w!="lo" and $w!="rs" and ($w!="ma" and $d!="ud")) {
     $where="WHERE `resellerid`=:reseller_id";
 } else if (empty($where) and $w!="lo" and $w!="rs" and ($w=="ma" and $d=="ud")) {
@@ -414,6 +422,7 @@ if (empty($where) and $w!="lo" and $w!="rs" and ($w!="ma" and $d!="ud")) {
 } else if ($w!="lo" and ($w=="ma" and $d=="ud")) {
     $where .=" AND r.`resellerid`=:reseller_id";
 }
+
 if ($ui->isinteger('a', 'get')) {
     $a = (int) $ui->isinteger('a', 'get');
     $amount = $a;
@@ -421,26 +430,28 @@ if ($ui->isinteger('a', 'get')) {
 } else {
     $amount = (isset($_SESSION['amount']) and is_int($_SESSION['amount'])) ? $_SESSION['amount'] : 20;
 }
-if ($ui->id('p', 19, 'get')) {
-    $start = $ui->id('p', 19, 'get');
-} else {
-    $start = 0;
-}
+
 $dirs = array();
+$languages = array();
+
 if (is_dir(EASYWIDIR . '/languages/' . $template_to_use . '/')) {
     $dirs = array_merge($dirs, scandir(EASYWIDIR . '/languages/' . $template_to_use . '/'));
 }
 if (is_dir(EASYWIDIR . '/languages/default/')) {
-    $dirs=array_merge($dirs , scandir(EASYWIDIR . '/languages/default/'));
+    $dirs = array_merge($dirs , scandir(EASYWIDIR . '/languages/default/'));
 }
 if (is_dir(EASYWIDIR . '/languages/')) {
-    $dirs=array_merge($dirs , scandir(EASYWIDIR . '/languages/'));
+    $dirs = array_merge($dirs , scandir(EASYWIDIR . '/languages/'));
 }
+
 $dirs = array_unique($dirs);
-$languages = array();
+
 foreach ($dirs as $row) {
-    if (small_letters_check($row,2)) $languages[] = $row;
+    if (small_letters_check($row, 2)) {
+        $languages[] = $row;
+    }
 }
+
 if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->description('description', 'post') and $ui->id('id',19, 'post')) {
     $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r LEFT JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`description`=? AND r.`serverid`=? AND r.`installing`='N' AND r.`resellerid`=?");
     $ajaxonload = '<script type="text/javascript">window.onload = function() {';

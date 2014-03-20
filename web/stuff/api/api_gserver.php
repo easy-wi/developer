@@ -89,6 +89,7 @@ $installGames = 'A';
 $autoRestart = '';
 
 if (!isset($success['false']) and array_value_exists('action', 'add', $data) and 1 > $licenceDetails['lG']) {
+
     $success['false'][] = 'licence limit reached';
 
 } else if (!isset($success['false']) and array_value_exists('action', 'add', $data) and $licenceDetails['lG'] > 0) {

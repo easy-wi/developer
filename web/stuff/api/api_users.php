@@ -509,9 +509,6 @@ if (array_value_exists('action', 'add', $data)) {
 
             updateJobs($localID, $resellerID);
 
-            #$query = $sql->prepare("DELETE FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
-            #$query->execute(array($data[$data['identify_by']],$resellerID));
-
         } else {
             $success['false'][] = 'No user can be found to delete';
         }
@@ -604,7 +601,7 @@ if (array_value_exists('action', 'add', $data)) {
 if ($apiType == 'xml' and !isset($list)) {
 
     if (isset($success['false'])) {
-        $errors = implode(', ',$success['false']);
+        $errors = implode(', ', $success['false']);
         $action = 'fail';
     } else {
         $errors = '';
