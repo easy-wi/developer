@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main != 1 or !isset($admin_id) or !isset($reseller_id) or !$pa['fastdl']) {
+if (!isset($admin_id) or $main != 1 or !isset($admin_id) or !isset($reseller_id) or !$pa['webvhost']) {
     header('Location: admin.php');
     die;
 }
@@ -219,16 +219,12 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         } else {
 
-            $query = $sql->prepare("SELECT `webMasterID`,`active`,`hdd`,`dns`,`ownVhost`,`vhostTemplate`,AES_DECRYPT(`ftpPassword`,?) AS `decryptedFTPPass` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `webMasterID`,`active`,AES_DECRYPT(`ftpPassword`,?) AS `decryptedFTPPass` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $webMasterID = $row['webMasterID'];
                 $oldActive = $row['active'];
-                $oldHdd = $row['hdd'];
-                $oldDns = $row['dns'];
                 $oldFtpPassword = $row['decryptedFTPPass'];
-                $oldOwnVhost = $row['ownVhost'];
-                $oldVhostTemplate = $row['vhostTemplate'];
             }
         }
 
@@ -283,6 +279,10 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                         if ($oldActive == 'Y' and $oldActive != $active) {
 
                             $vhostObject->setInactive($id);
+
+                        } else if ($oldFtpPassword != $ftpPassword) {
+
+                            $vhostObject->changePassword($id, $ftpPassword);
 
                         } else {
 

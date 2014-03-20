@@ -59,6 +59,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $db = array();
         $gs = array();
+        $wv = array();
         $vo = array();
         $vd = array();
         $vs = array();
@@ -74,6 +75,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($user_id,$reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $gs[$row['id']] = $row['address'];
+        }
+
+        $query = $sql->prepare("SELECT `webVhostID`,`dns` FROM `webVhost` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
+        $query->execute(array($user_id,$reseller_id));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $wv[$row['webVhostID']] = $row['dns'];
         }
 
         $query = $sql->prepare("SELECT `id`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
@@ -118,7 +125,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         if ($ui->st('d', 'get') == 'md') {
+
             $as = array();
+
             $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=? AND `resellerID`=?");
             $query->execute(array($id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -204,8 +213,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         if ($id) {
+
             $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=? AND `resellerID`=?");
             $query2 = $sql->prepare("DELETE FROM `userdata_substitutes_servers` WHERE `oType`=? AND `oID`=? AND `sID`=? AND `resellerID`=?");
+
             $query->execute(array($id,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if (!$ui->id($row['oType'],10, 'post') or !in_array($row['oID'],(array)$ui->id($row['oType'],10, 'post'))) {
@@ -215,13 +226,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     }
                 }
             }
-            foreach (array('gs','db','vo','vd','vs','ro') as $v) {
-                if ($ui->id($v,10, 'post')) {
+
+            foreach (array('gs','wv','db','vo','vd','vs','ro') as $v) {
+
+                if ($ui->id($v, 10, 'post')) {
+
                     $query = $sql->prepare("INSERT INTO `userdata_substitutes_servers` (`sID`,`oType`,`oID`,`resellerID`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `sID`=`sID`");
-                    foreach ($ui->id($v,10, 'post') as $oID) $query->execute(array($id,$v,$oID,$reseller_id));
-                    if ($query->rowCount() > 0) $changed = true;
+
+                    foreach ($ui->id($v, 10, 'post') as $oID) {
+
+                        $query->execute(array($id, $v, $oID, $reseller_id));
+
+                        if ($query->rowCount() > 0) {
+                            $changed = true;
+                        }
+                    }
                 }
             }
+
             $template_file = (isset($changed)) ? $spracheResponse->table_add : $spracheResponse->error_table;
         }
 

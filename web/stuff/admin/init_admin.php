@@ -100,15 +100,17 @@ $what_to_be_included_array = array(
     'su' => 'global_userdata.php'
 );
 
-$easywiModules = array('fd' => true, 'gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'pn' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
-$customModules = array('fd' => array(), 'gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
+$easywiModules = array('ws' => true, 'gs' => true, 'ip' => true, 'ea' => true, 'my' => true, 'pn' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
+$customModules = array('ws' => array(), 'gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array(), 'pa' => array());
 $customFiles = array();
 
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('A','C')");
 $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
     if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR . '/stuff/custom_modules/' . $row['file'])) {
+
         $query2->execute(array($row['id'], $user_language));
         $name = $query2->fetchColumn();
 
@@ -154,9 +156,9 @@ if ($easywiModules['ea'] === true) {
     $what_to_be_included_array['ea'] = 'eac.php';
 }
 
-if ($easywiModules['fd'] === true) {
-    $what_to_be_included_array['fm'] = 'web_master.php';
-    $what_to_be_included_array['fv'] = 'web_vhost.php';
+if ($easywiModules['ws'] === true) {
+    $what_to_be_included_array['wm'] = 'web_master.php';
+    $what_to_be_included_array['wv'] = 'web_vhost.php';
 }
 
 if ($easywiModules['my'] === true) {

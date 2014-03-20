@@ -157,6 +157,21 @@
                         </div>
                     </div>
                     <?php } ?>
+                    <?php if($easywiModules['ws'] and $vhostcount>0 and $pa['webvhost']) { ?>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive"><i class="fa fa-clipboard fa-fw"></i> <?php echo $gsprache->webspace;?></a>
+                        </div>
+                        <div id="collapseFive" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('wv')) or isset($customModules['ws'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
+                            <div class="accordion-inner">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li <?php if($ui->smallletters('w',255,'get')=='wv') echo 'class="active"';?>><a href="userpanel.php?w=wv"><?php echo $gsprache->webspace;?></a></li>
+                                    <?php foreach ($customModules['wv'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <?php if($easywiModules['my'] and $dbcount>0 and ($pa['mysql'] or $pa['mysql'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">

@@ -292,6 +292,7 @@ $defined['webVhost'] = array(
     'ftpPassword' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'ownVhost' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'vhostTemplate' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'externalID' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
@@ -970,7 +971,7 @@ $defined['userdata'] = array(
     'token' => array("Type"=>"varchar(32)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'name' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'vname' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'birthday' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'birthday' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'mail' => array("Type"=>"varchar(50)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'phone' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'fax' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -1102,6 +1103,8 @@ $defined['usergroups'] = array(
     'ftpaccess' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'tickets' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'usertickets' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
+    'webmaster' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
+    'webvhost' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'addvserver' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'modvserver' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'delvserver' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
@@ -1334,7 +1337,7 @@ $defined['voice_server'] = array(
     'filetraffic' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'lastfiletraffic' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'serverCreated' => array("Type"=>"date","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'queryName' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'queryName' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'queryNumplayers' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'queryMaxplayers' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'queryPassword' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
@@ -1424,45 +1427,63 @@ $defined['voice_tsdns'] = array(
 );
 
 foreach ($defined as $table => $t_p) {
-    $query = $sql->prepare("SHOW TABLE STATUS LIKE '$table'");
+
+    $query = $sql->prepare("SHOW TABLE STATUS LIKE '${table}'");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
         if ($row['Engine'] == 'MyISAM') {
-            $sqlStatement="ALTER TABLE `$table` ENGINE = InnoDB";
+
+            $sqlStatement = "ALTER TABLE `${table}` ENGINE = InnoDB";
             $query2 = $sql->prepare($sqlStatement);
             $query2->execute();
+
             $response->add($sqlStatement.'<br />');
         }
+
         if ($row['Collation'] != 'utf8_general_ci') {
-            $sqlStatement="ALTER TABLE `$table` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
+
+            $sqlStatement = "ALTER TABLE `${table}` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
             $query2 = $sql->prepare($sqlStatement);
             $query2->execute();
+
             $response->add($sqlStatement.'<br />');
         }
     }
+
     if ($query->rowCount() == 0) {
-        $response->add('<b>Error: no such table: '.$table.'</b><br />');
+
+        $response->add('<b>Error: no such table: ' . $table . '</b><br />');
+
     } else {
-        $query = $sql->prepare("SHOW COLUMNS FROM `$table`");
-        $query->execute();
+
         $key_differ = array();
         $drop_key = array();
         $add_keys = array();
         $change = array();
         $addIndex = array();
         $removeIndex = array();
-        $keys_should_exist=array_keys($t_p);
+
+        $keys_should_exist = array_keys($t_p);
+
+        $query = $sql->prepare("SHOW COLUMNS FROM `${table}`");
+        $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $array = '';
             $Field = $row['Field'];
-            $unset=array_search($Field,$keys_should_exist);
+
+            $unset = array_search($Field, $keys_should_exist);
             if ($unset !== false) {
                 unset($keys_should_exist[$unset]);
             }
+
             if (isset($t_p[$Field])) {
+
                 $properties = $t_p[$Field];
-                foreach ($row as $key=>$value) {
-                    if ($key != 'Field' and $key != 'Key' and !in_array($Field,$key_differ) and $properties[$key] != $value) {
+
+                foreach ($row as $key => $value) {
+                    if ($key != 'Field' and $key != 'Key' and !in_array($Field, $key_differ) and $properties[$key] != $value) {
                         $key_differ[] = $Field;
                     } else if ($key == 'Key' and $value == '' and $properties['Key'] == 'MUL') {
                         $addIndex[] = $Field;
@@ -1470,107 +1491,87 @@ foreach ($defined as $table => $t_p) {
                         $removeIndex[] = $Field;
                     }
                 }
+
             } else {
-                $drop_key[] = 'DROP `'.$Field.'`';
+                $drop_key[] = 'DROP `' . $Field . '`';
             }
         }
+
         foreach ($key_differ as $key) {
-            if ($t_p[$key]['Null'] == 'NO') {
-                $NULL='NOT NULL';
-            } else {
-                $NULL='NULL';
-            }
-            if ($t_p[$key]['Default'] == '') {
-                $DEFAULT = '';
-            } else {
-                $DEFAULT="DEFAULT '".$t_p[$key]['Default']."'";
-            }
-            if ($t_p[$key]['Extra'] == '') {
-                $AUTO_INCREMENT = '';
-            } else {
-                $AUTO_INCREMENT=" AUTO_INCREMENT";
-            }
-            $change[] = 'CHANGE `'.$key.'` `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AUTO_INCREMENT;
+
+            $NULL = ($t_p[$key]['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
+            $DEFAULT = ($t_p[$key]['Default'] == '') ? '' : "DEFAULT '" . $t_p[$key]['Default'] . "'";
+            $AUTO_INCREMENT = ($t_p[$key]['Extra'] == '') ? '' : ' AUTO_INCREMENT';
+
+            $change[] = 'CHANGE `' . $key . '` `' . $key . '` ' . $t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT . $AUTO_INCREMENT;
         }
+
         if (count($change) > 0) {
-            $alter_query='ALTER TABLE `'.$table.'` '.implode(', ',$change);
-            $response->add('CHANGE: '.$alter_query.'<br />');
+
+            $alter_query = 'ALTER TABLE `' . $table . '` ' . implode(', ', $change);
             $alter = $sql->prepare($alter_query);
             $alter->execute();
+
+            $response->add('CHANGE: ' . $alter_query . '<br />');
         }
+
         if (count($drop_key) > 0) {
-            $drop_query='ALTER TABLE `'.$table.'` '.implode(', ',$drop_key);
-            $response->add('DROP: '.$drop_query.'<br />');
+
+            $drop_query='ALTER TABLE `' . $table . '` ' . implode(', ', $drop_key);
             $drop = $sql->prepare($drop_query);
             $drop->execute();
+
+            $response->add('DROP: ' . $drop_query . '<br />');
         }
+
         foreach ($keys_should_exist as $key) {
+
             $i = 0;
-            $current=current($t_p);
-            $current_key=array_search($current,$t_p);
+            $current = current($t_p);
+            $current_key = array_search($current, $t_p);
+
             while ($current !== false and $current_key != $key) {
                 $prev = $current_key;
-                $current=next($t_p);
-                $current_key=array_search($current,$t_p);
+                $current = next($t_p);
+                $current_key = array_search($current, $t_p);
             }
-            if (isset($prev)) {
-                $AFTER=' AFTER `'.$prev.'`';
-            } else {
-                $AFTER = '';
-            }
-            $next=array_search(next($t_p),$t_p);
-            $before=array_search(prev($t_p),$t_p);
-            if ($t_p[$key]['Null'] == 'NO') {
-                $NULL='NOT NULL';
-            } else {
-                $NULL='NULL';
-            }
-            if ($t_p[$key]['Default'] == '') {
-                $DEFAULT = '';
-            } else {
-                $DEFAULT="DEFAULT '".$t_p[$key]['Default']."'";
-            }
-            $add_keys[] = 'ADD COLUMN `'.$key.'` '.$t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT.$AFTER;
+
+            $AFTER = (isset($prev)) ? ' AFTER `' . $prev . '`' : '';
+
+            $next = array_search(next($t_p), $t_p);
+            $before = array_search(prev($t_p), $t_p);
+
+            $NULL = ($t_p[$key]['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
+            $DEFAULT = ($t_p[$key]['Default'] == '') ? '' : "DEFAULT '" . $t_p[$key]['Default'] . "'";
+
+            $add_keys[] = 'ADD COLUMN `' . $key . '` ' . $t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT . $AFTER;
         }
+
         if (count($add_keys) > 0) {
-            $add_query='ALTER TABLE `'.$table.'` '.implode(', ',$add_keys);
-            $response->add('ADD: '.$add_query.'<br />');
+
+            $add_query = 'ALTER TABLE `' . $table . '` ' . implode(', ', $add_keys);
             $add = $sql->prepare($add_query);
             $add->execute();
+
+            $response->add('ADD: ' . $add_query . '<br />');
         }
+
         if (count($addIndex) > 0) {
-            $add_query='ALTER TABLE `'.$table.'` ADD INDEX(`'.implode('`),ADD INDEX(`',$addIndex).'`)';
-            $response->add('ADD: '.$add_query.'<br />');
+
+            $add_query = 'ALTER TABLE `' . $table . '` ADD INDEX(`' . implode('`),ADD INDEX(`', $addIndex) . '`)';
             $add = $sql->prepare($add_query);
             $add->execute();
+
+            $response->add('ADD: ' . $add_query . '<br />');
         }
+
         if (count($removeIndex) > 0) {
-            $remove_query='ALTER TABLE `'.$table.'` DROP INDEX `'.implode('`,DROP INDEX `',$removeIndex).'`';
-            $response->add('ADD: '.$remove_query.'<br />');
+
+            $remove_query = 'ALTER TABLE `' . $table . '` DROP INDEX `' . implode('`,DROP INDEX `', $removeIndex) . '`';
             $remove = $sql->prepare($remove_query);
             $remove->execute();
+
+            $response->add('ADD: ' . $remove_query . '<br />');
         }
     }
-    $query = $sql->prepare("DELETE p.* FROM `userpermissions` p LEFT JOIN `userdata` u ON p.`userid`=u.`id` WHERE u.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE d.* FROM `mysql_external_dbs` d LEFT JOIN `userdata` u ON d.`uid`=u.`id` WHERE u.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE v.* FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE v.* FROM `voice_dns` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
-    $query->execute();
-    $query = $sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `userdata` u ON b.`uid`=u.`id` LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE u.`id` IS NULL OR  v.`id` IS NULL");
-    $query->execute();
 }

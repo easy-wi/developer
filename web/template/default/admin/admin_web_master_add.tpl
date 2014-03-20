@@ -2,7 +2,7 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=fm"><?php echo $gsprache->fastdownload." ".$gsprache->master;?></a> <span class="divider">/</span></li>
+            <li><a href="admin.php?w=fm"><?php echo $gsprache->webspace." ".$gsprache->master;?></a> <span class="divider">/</span></li>
             <li class="active"><?php echo $gsprache->add;?></li>
         </ul>
     </div>
@@ -19,7 +19,7 @@
 <?php }?>
 <div class="row-fluid">
     <div class="span11">
-        <form class="form-horizontal" action="admin.php?w=fm&amp;d=ad&amp;r=fm" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+        <form class="form-horizontal" action="admin.php?w=wm&amp;d=ad&amp;r=wm" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ad">
             <div class="control-group">
@@ -120,7 +120,7 @@
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputCreateDirs"><?php echo $sprache->createDirs;?></label>
-                <div class="controls"><input id="inputCreateDirs" class="span11" type="text" name="createDirs" value="<?php echo $createDirs;?>" required><span class="help-block"><?php echo $sprache->help_create_dirs;?></span></div>
+                <div class="controls"><input id="inputCreateDirs" class="span11" type="text" name="createDirs" value="<?php echo $createDirs;?>"><span class="help-block alert alert-info"><?php echo $sprache->help_create_dirs;?></span></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputHttpdCmd"><?php echo $sprache->httpdCmd;?></label>

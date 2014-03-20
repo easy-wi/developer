@@ -56,6 +56,17 @@
                 </div>
             </div>
             <?php }}?>
+            <?php if(count($fd)>0){ ?>
+            <hr>
+            <h4><?php echo $gsprache->webspace;?></h4>
+            <?php foreach($wv as $k=>$v){ ?>
+            <div class="control-group">
+                <label class="control-label" for="inputWeb-<?php echo $k;?>"><?php echo $v;?></label>
+                <div class="controls">
+                    <input id="inputWeb-<?php echo $k;?>" type="checkbox" name="wv[]" value="<?php echo $k;?>">
+                </div>
+            </div>
+            <?php }}?>
             <?php if(count($vo)>0){ ?>
             <hr>
             <h4><?php echo $gsprache->voiceserver;?></h4>

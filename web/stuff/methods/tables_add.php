@@ -252,6 +252,7 @@ $query = "CREATE TABLE IF NOT EXISTS `webVhost` (
   `ftpPassword` blob,
   `ownVhost` enum('Y','N') DEFAULT 'N',
   `vhostTemplate` text,
+  `externalID` varchar(255) DEFAULT NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`webVhostID`),KEY(`webMasterID`),KEY(`userID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
@@ -376,7 +377,7 @@ $query = "CREATE TABLE IF NOT EXISTS `gsswitch` (
   `notified` int(11) unsigned DEFAULT 0,
   `secnotified` enum('Y','N') DEFAULT 'N',
   `newlayout` enum('Y','N') DEFAULT 'Y',
-  `queryName` varchar(255) NOT NULL,
+  `queryName` varchar(255) NULL,
   `queryNumplayers` smallint(3) unsigned NOT NULL,
   `queryMaxplayers` smallint(3) unsigned NOT NULL,
   `queryMap` varchar(40) NOT NULL,
@@ -1295,6 +1296,8 @@ $query = "CREATE TABLE IF NOT EXISTS `usergroups` (
   `ftpaccess` enum('Y','N') DEFAULT 'N',
   `tickets` enum('Y','N') DEFAULT 'N',
   `usertickets` enum('Y','N') DEFAULT 'N',
+  `webmaster` enum('Y','N') DEFAULT 'N',
+  `webvhost` enum('Y','N') DEFAULT 'Y',
   `addvserver` enum('Y','N') DEFAULT 'N',
   `modvserver` enum('Y','N') DEFAULT 'N',
   `delvserver` enum('Y','N') DEFAULT 'N',

@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($admin_id) or $main != 1 or !isset($admin_id) or !isset($reseller_id) or !$pa['fastdl']) {
+if (!isset($admin_id) or $main != 1 or !isset($admin_id) or !isset($reseller_id) or !$pa['webmaster']) {
     header('Location: admin.php');
     die;
 }
@@ -65,7 +65,7 @@ if ($reseller_id == 0) {
 $id = $ui->id('id', 10, 'get');
 
 $serverType = ($ui->w('serverType', 1, 'post') and in_array($ui->w('serverType', 1, 'post'), array('A','H','L','N','O'))) ? $ui->w('serverType', 1, 'post') : 'N';
-$createDirs = ($ui->startparameter('createDirs', 'post')) ? $ui->startparameter('createDirs', 'post') : 'htdocs;logs';
+$createDirs = ($ui->startparameter('createDirs', 'post')) ? $ui->startparameter('createDirs', 'post') : '';
 
 if ($serverType == 'N') {
 

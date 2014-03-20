@@ -138,10 +138,15 @@
                     <input id="inputMYSQLServer" type="checkbox" name="mysql_settings" value="Y" <?php if ($mysql_settings=='Y') echo 'checked="checked"'; ?>>
                 </div>
             </div>
-            <?php };if($pa['fastdl']) { ?>
+            <?php };if($pa['webmaster']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputAFastDL"><?php echo $sprache->fastdl;?></label>
-                <div class="controls"><input id="inputAFastDL" type="checkbox" name="fastdl" value="Y" <?php if ($fastdl=='Y') echo 'checked="checked"'; ?>></div>
+                <label class="control-label" for="inputAWebMaster"><?php echo $sprache->webspace.' '.$sprache->master;?></label>
+                <div class="controls"><input id="inputAWebMaster" type="checkbox" name="webmaster" value="Y" <?php if ($webmaster=='Y') echo 'checked="checked"'; ?>></div>
+            </div>
+            <?php };if($pa['webvhost']) { ?>
+            <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
+                <label class="control-label" for="inputAWebVhost"><?php echo $sprache->webspace;?></label>
+                <div class="controls"><input id="inputAWebVhost" type="checkbox" name="webvhost" value="Y" <?php if ($webvhost=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <?php };if($pa['tickets']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
@@ -403,6 +408,10 @@
                 <div class="controls"><input id="inputUmodFastDL" type="checkbox" name="modfastdl" value="Y" <?php if ($modfastdl=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <div class="u <?php if ($grouptype!='u') echo 'display_none';?> switch control-group">
+                <label class="control-label" for="inputUWebVhost"><?php echo $sprache->webspace;?></label>
+                <div class="controls"><input id="inputUWebVhost" type="checkbox" name="uwebvhost" value="Y" <?php if ($webvhost=='Y') echo 'checked="checked"'; ?>></div>
+            </div>
+            <div class="u <?php if ($grouptype!='u') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputUserSettings"><?php echo $sprache->usersettings;?></label>
                 <div class="controls"><input id="inputUserSettings" type="checkbox" name="usersettings" value="Y" <?php if ($usersettings=='Y') echo 'checked="checked"'; ?>></div>
             </div>
@@ -473,10 +482,15 @@
                 <label class="control-label" for="inputResellerMysqlServer">MySQL Server</label>
                 <div class="controls"><input id="inputResellerMysqlServer" type="checkbox" name="rmysql_settings" value="Y"  <?php if ($mysql_settings=='Y') echo 'checked="checked"'; ?>></div>
             </div>
-            <?php };if($pa['fastdl']) { ?>
+            <?php };if($pa['webmaster']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputRFastDL"><?php echo $sprache->fastdl;?></label>
-                <div class="controls"><input id="inputRFastDL" type="checkbox" name="rfastdl" value="Y" <?php if ($fastdl=='Y') echo 'checked="checked"'; ?>></div>
+                <label class="control-label" for="inputRWebMaster"><?php echo $sprache->webspace.' '.$sprache->master;?></label>
+                <div class="controls"><input id="inputRWebMaster" type="checkbox" name="rwebmaster" value="Y" <?php if ($webmaster=='Y') echo 'checked="checked"'; ?>></div>
+            </div>
+            <?php };if($pa['webvhost']) { ?>
+            <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
+                <label class="control-label" for="inputRWebVhost"><?php echo $sprache->webspace;?></label>
+                <div class="controls"><input id="inputRWebVhost" type="checkbox" name="rwebvhost" value="Y" <?php if ($webvhost=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <?php };if($pa['roots']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">

@@ -55,7 +55,7 @@ $gsprache->help_sidebar = str_replace('%n%', $statusTime, $gsprache->help_sideba
 
 # https://github.com/easy-wi/developer/issues/2
 if (isset($_SESSION['sID'])) {
-    $substituteAccess = array('gs' => array(), 'db' => array(), 'vo' => array(), 'vd' => array(), 'vs' => array(), 'ro' => array());
+    $substituteAccess = array('wv' => array(), 'gs' => array(), 'db' => array(), 'vo' => array(), 'vd' => array(), 'vs' => array(), 'ro' => array());
 
     $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=?");
     $query->execute(array($_SESSION['sID']));
@@ -74,11 +74,13 @@ if (isset($_SESSION['sID'])) {
     }
 
     $gscount = count($substituteAccess['gs']);
+    $vhostcount = count($substituteAccess['wv']);
     $voicecount = count($substituteAccess['vo']);
     $tsdnscount = count($substituteAccess['vd']);
     $dbcount = count($substituteAccess['db']);
     $rootcount = count($substituteAccess['ro']);
     $virtualcount = count($substituteAccess['vs']);
+
 } else {
     $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($user_id));
@@ -93,6 +95,10 @@ if (isset($_SESSION['sID'])) {
     $query = $sql->prepare("SELECT COUNT(g.`id`) AS `amount` FROM `gsswitch` g INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE r.`active`='Y' AND g.`active`='Y' AND g.`userid`=? LIMIT 1");
     $query->execute(array($user_id));
     $gscount = $query->fetchColumn();
+
+    $query = $sql->prepare("SELECT COUNT(`webVhostID`) AS `amount` FROM `webVhost` WHERE `active`='Y' AND `userID`=? LIMIT 1");
+    $query->execute(array($user_id));
+    $vhostcount = $query->fetchColumn();
 
     $query = $sql->prepare("SELECT COUNT(v.`id`) AS `amount` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`userid`=? LIMIT 1");
     $query->execute(array($user_id));
@@ -138,8 +144,8 @@ if (isset($lastlogin) and $lastlogin != null and $lastlogin != '0000-00-00 00:00
 $what_to_be_included_array = array('lo' => 'userpanel_logdata.php', 'ti' => 'userpanel_tickets.php');
 
 
-$easywiModules = array('gs' => true, 'ip' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
-$customModules = array('gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array());
+$easywiModules = array('ws' => true, 'gs' => true, 'ip' => true, 'my' => true, 'ro' => true, 'ti' => true, 'le' => true, 'vo' => true);
+$customModules = array('ws' => array(), 'gs' => array(), 'mo' => array(), 'my' => array(), 'ro' => array(), 'ti' => array(), 'us' => array(), 'vo' => array());
 $customFiles = array();
 
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('U','C')");
@@ -186,6 +192,10 @@ if ($gscount > 0 and $easywiModules['gs'] === true) {
     $what_to_be_included_array['pr'] = 'userpanel_protectionmode.php';
     $what_to_be_included_array['bu'] = 'userpanel_backup.php';
     $what_to_be_included_array['ms'] = 'userpanel_migration.php';
+}
+
+if ($vhostcount > 0 and $easywiModules['ws'] === true) {
+    $what_to_be_included_array['wv'] = 'userpanel_web_vhost.php';
 }
 
 if ($voicecount > 0 and $easywiModules['vo'] === true) {

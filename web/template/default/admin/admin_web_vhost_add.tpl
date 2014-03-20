@@ -2,7 +2,7 @@
     <div class="span12">
         <ul class="breadcrumb">
             <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=fv"><?php echo $gsprache->fastdownload;?> Vhost</a> <span class="divider">/</span></li>
+            <li><a href="admin.php?w=wv"><?php echo $gsprache->webspace;?> Vhost</a> <span class="divider">/</span></li>
             <li class="active"><?php echo $gsprache->add;?></li>
         </ul>
     </div>
@@ -16,7 +16,7 @@
 <?php }?>
 <div class="row-fluid">
     <div class="span11">
-        <form class="form-horizontal" action="admin.php?w=fv&amp;d=ad&amp;r=fv" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+        <form class="form-horizontal" action="admin.php?w=wv&amp;d=ad&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ad">
             <div class="control-group<?php if(isset($errors['userID'])) echo ' error';?>">

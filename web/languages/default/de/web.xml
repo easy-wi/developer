@@ -8,7 +8,7 @@
     <ftpPort>FTP Port</ftpPort>
     <hdd>Speicherplatz</hdd>
     <help_web_master>Achtung, es wird empfohlen den Host ausschließlich für Fastdownload zu nutzen. Andere Panels und Dienste könnten ansonsten Konflikte und Probleme verursachen. Des Weiteren verursacht Fastdownload regelmäßige Lastspitzen in der Bandbreite, die andere Serverdienste zum Laggen bringen können.</help_web_master>
-    <help_create_dirs>Semikolon getrennte Liste</help_create_dirs>
+    <help_create_dirs>Semikolon getrennte Liste. Es ist besser, die Ordner einmalig in /home/deinMasterUser/skel/ zu erstellen.</help_create_dirs>
     <httpdCmd>HTTPD Start/Reload Befehl</httpdCmd>
     <installedHDD>Zugewiesene HDD</installedHDD>
     <installedVhost>Installierte Vhosts</installedVhost>
