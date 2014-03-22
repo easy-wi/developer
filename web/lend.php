@@ -58,10 +58,6 @@ if (isset($page_include)) {
     $query = $sql->prepare("SELECT `language` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $user_language = $query->fetchColumn();
 
-    if (!small_letters_check($user_language, 2)) {
-        $user_language = 'en';
-    }
-
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
