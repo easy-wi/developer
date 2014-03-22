@@ -39,10 +39,6 @@
 
 $pages = array();
 
-if (!isset($user_language)) {
-    $user_language = $default_language;
-}
-
 if (!isurl($pageurl) or (!isdomain($pageurl) and (!isurl($pageurl)))) {
     $pageurl = $page_url;
 }

@@ -42,7 +42,7 @@
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/third_party/password_compat/password.php');
 
-if (!isset($main) or $main != 1 or !isset($user_id) or !isset($user_language) or !isset($reseller_id) or isset($_SESSION['substitute'])) {
+if (!isset($main) or $main != 1 or !isset($user_id) or !isset($reseller_id) or isset($_SESSION['substitute'])) {
     header('Location: userpanel.php');
     die;
 }

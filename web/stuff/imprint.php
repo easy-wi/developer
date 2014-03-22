@@ -40,7 +40,7 @@ if (!isset($reseller_id)) {
     $reseller_id = 0;
 }
 
-$sprache = (isset($user_language)) ? getlanguagefile('images', $user_language, $reseller_id) : getlanguagefile('images', $page_language, $reseller_id);
+$sprache = getlanguagefile('images', $user_language, $reseller_id);
 
 if (isset($admin_id) and $admin_id == $reseller_id) {
 	$resellerid = 0;

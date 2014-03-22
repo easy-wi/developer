@@ -58,7 +58,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $registrationBadIP = $row['registrationBadIP'];
 }
 
-$langObject = getlanguagefile('user', (isset($user_language)) ? $user_language : $default_language, 0);
+$langObject = getlanguagefile('user', $user_language, 0);
 
 if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
 
@@ -80,7 +80,7 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
             $_SESSION['resellerid'] = 0;
 
             $template_file = $page_sprache->registerActivated;
-            $langObjectTemp = getlanguagefile('redirect',(isset($user_language)) ? $user_language : $default_language,0);
+            $langObjectTemp = getlanguagefile('redirect', $user_language, 0);
             $text = $langObjectTemp->refresh;
             $langObjectTemp = null;
 
@@ -121,7 +121,7 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
             $salutation = ($userProfile['gender'] == 'female') ? 2 : 1;
 
             $bday = $userProfile['birthYear'] . '-' . $userProfile['birthMonth'] . '-' . $userProfile['birthDay'];
-            $bdayShow = (isset($user_language) and $user_language == 'de') ? date('d.m.Y', strtotime($bday)) :  date('Y-m-d', strtotime($bday));
+            $bdayShow = ($user_language == 'de') ? date('d.m.Y', strtotime($bday)) :  date('Y-m-d', strtotime($bday));
 
             $mail = $userProfile['email'];
             $flagmenu = $userProfile['language'];
@@ -149,7 +149,7 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
             $street = $ui->names('street', 50, 'post');
             $streetn = $ui->w('streetn', 6, 'post');
 
-            $bdayShow = (isset($user_language) and $user_language == 'de') ? date('d.m.Y', strtotime($ui->isDate('birthday', 'post'))) : date('Y-m-d', strtotime($ui->isDate('birthday', 'post')));
+            $bdayShow = ($user_language == 'de') ? date('d.m.Y', strtotime($ui->isDate('birthday', 'post'))) : date('Y-m-d', strtotime($ui->isDate('birthday', 'post')));
 
         }
 
@@ -159,9 +159,9 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
             $tous[$row['lang']] = $row['text'];
         }
 
-        if (isset($user_language) and isset($tous[$user_language])) {
+        if (isset($tous[$user_language])) {
             $tou = $tous[$user_language];
-        } else if (isset($default_language) and isset($tous[$default_language])) {
+        } else if (isset($tous[$default_language])) {
             $tou = $tous[$default_language];
         } else if (count($tous) > 0) {
             $tou = key($tous);

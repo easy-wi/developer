@@ -57,10 +57,6 @@ if (isset($page_include)) {
     include(EASYWIDIR . '/stuff/methods/class_validator.php');
     include(EASYWIDIR . '/stuff/methods/functions.php');
     include(EASYWIDIR . '/stuff/settings.php');
-
-    if (!isset($user_language)) {
-        $user_language = $rSA['language'];
-    }
 }
 
 if ($ui->escaped('email', 'post') != '') {
