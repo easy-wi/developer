@@ -25,8 +25,6 @@
 
     <script type="text/javascript">$(function() { $('table').footable();});</script>
 
-    <?php if(isset($ajaxonload)) echo $ajaxonload; ?>
-
     <script type="text/javascript">window.onDomReady(onReady); function onReady() { SwitchShowHideRows('init_ready');}</script>
 </head>
 <body <?php echo implode(' ',$htmlExtraInformation['body']);?>>

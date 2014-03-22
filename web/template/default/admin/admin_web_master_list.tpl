@@ -51,8 +51,8 @@
                                 <?php foreach($table_row['dns'] as $row){ ?>
                                 <tr class="<?php if($row['active']=='Y') echo 'success'; else echo 'warning';?>">
                                     <td><?php echo $row['dns'];?></td>
-                                    <td><a href="admin.php?w=fv&amp;d=dl&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
-                                    <td><a href="admin.php?w=fv&amp;d=md&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
+                                    <td><a href="admin.php?w=wv&amp;d=dl&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
+                                    <td><a href="admin.php?w=wv&amp;d=md&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
                                 </tr>
                                 <?php }?>
                                 </tbody>

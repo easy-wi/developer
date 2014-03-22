@@ -20,6 +20,7 @@
     <delDB>Fjern fra database</delDB>
     <feeds>Feeds</feeds>
 	<edit>Rediger</edit>
+    <errors></errors>
 	<exec></exec>
 	<fastdownload>Fastdownload</fastdownload>
 	<game></game>

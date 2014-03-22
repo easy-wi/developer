@@ -11,7 +11,7 @@
 <?php if (count($errors)>0){ ?>
 <div class="alert alert-error">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <h4>Error(s)</h4>
+    <h4><?php echo $gsprache->errors;?></h4>
     <?php echo implode(', ',$errors);?>
 </div>
 <?php }?>
