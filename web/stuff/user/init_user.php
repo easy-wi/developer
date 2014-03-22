@@ -188,7 +188,7 @@ if (isset($_SESSION['sID'])) {
 if ($gscount > 0 and $easywiModules['gs'] === true) {
     $what_to_be_included_array['gs'] = 'userpanel_gserver.php';
     $what_to_be_included_array['gt'] = 'global_gserver_file_templates.php';
-    $what_to_be_included_array['fd'] = 'userpanel_webspace.php';
+    $what_to_be_included_array['fd'] = 'userpanel_fdl.php';
     $what_to_be_included_array['ao'] = 'userpanel_ao.php';
     $what_to_be_included_array['ca'] = 'userpanel_restartcalendar.php';
     $what_to_be_included_array['pr'] = 'userpanel_protectionmode.php';
