@@ -369,7 +369,40 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-    $template_file = (isset($ips)) ? 'admin_master_ud2.tpl' : 'Error: No server selected or the server(s) are already updating';
+
+    if ((isset($ips))) {
+
+        $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r LEFT JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`description`=? AND r.`serverid`=? AND r.`installing`='N' AND r.`resellerid`=?");
+        $ajax = '<script type="text/javascript">window.onload = function() {';
+        foreach($ui->id('id',19, 'post') as $id) {
+
+            $i = 0;
+            $gamestring_buf = '';
+
+            foreach($ui->description('description', 'post') as $description) {
+
+                $query->execute(array($description, $id, ($reseller_id == 0) ? 0 : $admin_id));
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $gamestring_buf .= '_' . $row['shorten'];
+                    $i++;
+                }
+            }
+
+            if ($i > 0) {
+                $posted_gamestring = $i . $gamestring_buf;
+                $ajax .= "onloaddata('serverallocation.php?gamestring=$posted_gamestring&id=','$id','$id');";
+            }
+        }
+
+        $ajax .= '}</script>';
+
+        $htmlExtraInformation['js'][] = $ajax;
+
+        $template_file = 'admin_master_ud2.tpl';
+
+    } else {
+        $template_file ='Error: No server selected or the server(s) are already updating';
+    }
 
 } else {
 

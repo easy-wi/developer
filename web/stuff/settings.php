@@ -61,19 +61,23 @@ $dbConnect['user'] = $user;
 $dbConnect['pwd'] = $pwd;
 $dbConnect['db'] = $db;
 
-if (isset($debug) and $debug==1) {
+if (isset($debug) and $debug == 1) {
+
     $dbConnect['debug'] = 1;
     ini_set('display_errors',1);
     error_reporting(E_ALL|E_STRICT);
+
 } else {
     $dbConnect['debug'] = 0;
 }
 try {
     $dbConnect['connect']="${dbConnect['type']}:host=${dbConnect['host']};dbname=${dbConnect['db']}";
     $sql = ($dbConnect['type'] == 'mysql') ? new PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd'], array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8")) : new PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd']);
+
     if ($dbConnect['debug'] == 1) {
         $sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
+
     $insertlog = $sql->prepare("INSERT INTO userlog (`userid`,`reseller`,`subuser`,`username`,`usertype`,`useraction`,`ip`,`hostname`,`logdate`,`resellerid`) VALUES (:userid,:reseller,:subuser,:username,:usertype,:useraction,:ip,:hostname,NOW(),:reseller_id)");
     $insertlog->bindParam(':userid', $loguserid);
     $insertlog->bindParam(':reseller', $logreseller);
@@ -100,20 +104,26 @@ catch(PDOException $error) {
 
 // many peaple do not know how to properly configure their servers, so we need to help them and set the timezone
 $timezoneDefined = ini_get('date.timezone');
+
 if (!isset($dbConnect['timezone'])) {
+
     if ($timezoneDefined == '') {
+
         $query = $sql->prepare("SELECT IF(@@session.time_zone = 'SYSTEM', @@system_time_zone, @@session.time_zone)");
         $query->execute();
+
         $dbConnect['timezone'] = $query->fetchColumn();
+
     } else {
         $dbConnect['timezone'] = $timezoneDefined;
     }
 }
+
 if ($dbConnect['timezone'] != $timezoneDefined) {
     date_default_timezone_set($dbConnect['timezone']);
 }
 
-$page_url = ($ui->escaped ('HTTPS', 'server')) ? 'https://'.$ui->domain('HTTP_HOST', 'server') : 'http://'.$ui->domain('HTTP_HOST', 'server');
+$page_url = ($ui->escaped ('HTTPS', 'server')) ? 'https://' . $ui->domain('HTTP_HOST', 'server') : 'http://' . $ui->domain('HTTP_HOST', 'server');
 
 if ($loguserip != 'localhost') {
 
@@ -158,6 +168,7 @@ if ($loguserip != 'localhost') {
 }
 
 $rSA = array();
+
 $htmlExtraInformation = array(
     'body' => array(),
     'css' => array(),
@@ -165,6 +176,7 @@ $htmlExtraInformation = array(
 );
 
 if (isset($reseller_id)) {
+
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -183,13 +195,16 @@ if (isset($reseller_id)) {
     }
 
     if (isset($user_id) and !isset($admin_id)) {
+
         $lookupid = $reseller_id;
 
     } else {
+
         $check_split = preg_split("/\//", $ui->escaped('SCRIPT_NAME', 'server'), -1, PREG_SPLIT_NO_EMPTY);
         $which_file = $check_split[count($check_split) - 1];
 
         if ($which_file == 'userpanel.php') {
+
             $lookupid = $reseller_id;
 
         } else {
@@ -203,6 +218,7 @@ if (isset($reseller_id)) {
 
 
 } else {
+
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -344,6 +360,7 @@ if (isset($logininclude) and $logininclude == true) {
 
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? AND `reason`='password' AND `failcount`>=? LIMIT 1");
     $query->execute(array($loguserip, $allowedfails));
+
     if ($query->rowCount() > 0) {
         die('Your IP is banned');
     }
@@ -452,30 +469,6 @@ foreach ($dirs as $row) {
     }
 }
 
-if ($w=="ma" and $d=="ud" and isset($action) and $action=="ud" and $ui->description('description', 'post') and $ui->id('id',19, 'post')) {
-    $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r LEFT JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`description`=? AND r.`serverid`=? AND r.`installing`='N' AND r.`resellerid`=?");
-    $ajaxonload = '<script type="text/javascript">window.onload = function() {';
-    foreach($ui->id('id',19, 'post') as $id) {
-        $i = 0;
-        $gamestring_buf = '';
-        foreach($ui->description('description', 'post') as $description) {
-            if ($reseller_id == 0) {
-                $query->execute(array($description, $id, 0));
-            } else {
-                $query->execute(array($description, $id, $admin_id));
-            }
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $gamestring_buf .= '_' . $row['shorten'];
-                $i++;
-            }
-        }
-        if ($i>0) {
-            $posted_gamestring = $i . $gamestring_buf;
-            $ajaxonload .= "onloaddata('serverallocation.php?gamestring=$posted_gamestring&id=','$id','$id');";
-        }
-    }
-    $ajaxonload .= '}</script>';
-}
 if ($ui->escaped('HTTP_REFERER', 'server')) {
     $referrer = $ui->escaped('HTTP_REFERER', 'server');
 }
