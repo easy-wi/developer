@@ -43,8 +43,11 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['jobs'])) {
     die('No acces');
 }
 $sprache = getlanguagefile('api', $user_language, $reseller_id);
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
+
 } else if ($ui->w('action', 4, 'post') == 'dl' and !$ui->id('id', 19, 'get')) {
     $i = 0;
     if ($ui->id('id',30, 'post')) {
@@ -75,9 +78,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $text= @gzuncompress($row['text']);
     }
     $template_file = $text;
+
 } else {
+
     $table = array();
+
     $o = $ui->st('o', 'get');
+
+    $type = array('de' => $gsprache->dedicated, 'ds' => 'TS3 DNS', 'gs' => $gsprache->gameserver, 'fd' => $gsprache->fastdownload, 'my' => 'MySQL', 'us' => $gsprache->user, 'vo' => $gsprache->voiceserver, 'vs' => $gsprache->virtual);
+
     if ($ui->st('o', 'get') == 'dn') {
         $orderby = '`name` DESC';
     } else if ($ui->st('o', 'get') == 'an') {
@@ -116,11 +125,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $o = 'di';
         $orderby = '`jobID` DESC';
     }
-    if ($reseller_id == 0) {
-        $where = '';
-    } else {
-        $where='WHERE `resellerID`=?';
-    }
+
+    $where = ($reseller_id == 0) ? '' : 'WHERE `resellerID`=?';
+
     if ($reseller_id == 0) {
         $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
         $query->execute();
@@ -128,18 +135,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
         $query->execute(array($reseller_id));
     }
-    $type=array('de' => $gsprache->dedicated,'ds' => 'TS3 DNS','gs' => $gsprache->gameserver,'my' => 'MySQL','us' => $gsprache->user,'vo' => $gsprache->voiceserver,'vs' => $gsprache->virtual);
+
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($user_language == 'de') {
-            $date=date('Y-d-m H:m:s',strtotime($row['date']));
-        } else {
-            $date = $row['date'];
-        }
-        if ($row['api'] == 'A'){
-            $api = $gsprache->yes;
-        } else {
-            $api = $gsprache->no;
-        }
+
+        $date = ($user_language == 'de') ? date('Y-d-m H:m:s', strtotime($row['date'])) : $row['date'];
+        $api = ($row['api'] == 'A') ? $gsprache->yes : $gsprache->no;
+
         if ($row['status'] == null or $row['status']==4) {
             $imgName = '16_ok';
             $imgAlt='Running';
@@ -153,62 +154,73 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName='16_check';
             $imgAlt='Done';
         }
-        if ($row['action'] == 'ad') $action = $gsprache->add;
-        else if ($row['action'] == 'dl') $action = $gsprache->del;
-        else if ($row['action'] == 'md') $action = $gsprache->mod;
-        else if ($row['action'] == 'st') $action='Stop';
-        else if ($row['action'] == 're') $action='(Re)Start';
-        else if ($row['action'] == 'rp') $action='Remove PXE from DHCP';
-        else if ($row['action'] == 'ri') $action='(Re)Install';
-        else if ($row['action'] == 'rc') $action='Recovery Mode';
-        else $action = '';
+
+        if ($row['action'] == 'ad') {
+            $action = $gsprache->add;
+        } else if ($row['action'] == 'dl') {
+            $action = $gsprache->del;
+        } else if ($row['action'] == 'md') {
+            $action = $gsprache->mod;
+        } else if ($row['action'] == 'st') {
+            $action = 'Stop';
+        } else if ($row['action'] == 're') {
+            $action = '(Re)Start';
+        } else if ($row['action'] == 'rp') {
+            $action = 'Remove PXE from DHCP';
+        } else if ($row['action'] == 'ri') {
+            $action = '(Re)Install';
+        } else if ($row['action'] == 'rc') {
+            $action = 'Recovery Mode';
+        } else {
+            $action = '';
+        }
+
         $table[] = array('jobID' => $row['jobID'], 'date' => $date,'name' => $row['name'], 'api' => $api,'status' => $row['status'], 'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'type' => $type[$row['type']], 'action' => $action);
     }
-    $next = $start+$amount;
+
+    $next = $start + $amount;
+
     if ($reseller_id == 0) {
-        $countp = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs`");
-        $countp->execute();
+        $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs`");
+        $query->execute();
     } else {
-        $countp = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `resellerID`=?");
-        $countp->execute(array($reseller_id));
+        $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `resellerID`=?");
+        $query->execute(array($reseller_id));
     }
-    foreach ($countp->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $colcount = $row['amount'];
-    }
-    if ($colcount>$next) {
-        $vor = $start+$amount;
-    } else {
-        $vor = $start;
-    }
+
+    $colcount = $query->fetchColumn();
+
+    $vor = ($colcount > $next) ? $start + $amount : $start;
     $back = $start - $amount;
-    if ($back>=0){
-        $zur = $start - $amount;
-    } else {
-        $zur = $start;
-    }
+    $zur = ($back >= 0) ? $start - $amount : $start;
     $pageamount = ceil($colcount / $amount);
-    $link='<a href="admin.php?w=jb&amp;o='.$o.'&amp;a=';
+
+    $link='<a href="admin.php?w=jb&amp;o=' . $o . '&amp;a=';
     if (!isset($amount)) {
         $link .="20";
     } else {
         $link .= $amount;
     }
+
     if ($start==0) {
         $link .= '&amp;p=0" class="bold">1</a>';
     } else {
         $link .= '&amp;p=0">1</a>';
     }
+
     $pages[] = $link;
     $i = 2;
     while ($i<=$pageamount) {
         $selectpage = ($i - 1) * $amount;
         if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=jb&amp;o='.$o.'&amp;a=' . $amount . '&amp;p=' . $selectpage . '" class="bold">' . $i . '</a>';
+            $pages[] = '<a href="admin.php?w=jb&amp;o=' . $o . '&amp;a=' . $amount . '&amp;p=' . $selectpage . '" class="bold">' . $i . '</a>';
         } else {
-            $pages[] = '<a href="admin.php?w=jb&amp;o='.$o.'&amp;a=' . $amount . '&amp;p=' . $selectpage . '">' . $i . '</a>';
+            $pages[] = '<a href="admin.php?w=jb&amp;o=' . $o . '&amp;a=' . $amount . '&amp;p=' . $selectpage . '">' . $i . '</a>';
         }
         $i++;
     }
-    $pages=implode(', ', $pages);
-    $template_file = "admin_jobs_list.tpl";
+
+    $pages = implode(', ', $pages);
+
+    $template_file = 'admin_jobs_list.tpl';
 }

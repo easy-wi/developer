@@ -909,6 +909,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
     $query = $sql->prepare("SELECT v.*,m.`type`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`userid`=? AND v.`resellerid`=? ORDER BY $orderby");
     $query->execute(array($user_id, $reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+
         if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['vo'])) {
             $dns = $row['dns'];
 

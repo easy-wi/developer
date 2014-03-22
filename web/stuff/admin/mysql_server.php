@@ -40,7 +40,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['mysql_setti
     die;
 }
 
-include(EASYWIDIR . '/stuff/methods/mysql_functions.php');
+include(EASYWIDIR . '/stuff/methods/class_mysql.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $sprache = getlanguagefile('mysql',$user_language,$reseller_id);
