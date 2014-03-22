@@ -129,7 +129,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else if ($ui->st('d', 'get') == 'dt' and $ui->id('id',19, 'get')) {
     $id = $ui->id('id',19, 'get');
-    if (!isset($action)) {
+    if (!$ui->w('action', 4, 'post')) {
         $topic = '';
         $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($user_language,$id,$resellerLockupID));
@@ -144,7 +144,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $topic = stripslashes($query->fetchColumn());
         }
         $template_file = "admin_ticket_topic_dl.tpl";
-    } else if ($action == 'dl'){
+    } else if ($ui->w('action', 4, 'post') == 'dl'){
         $query = $sql->prepare("SELECT `topic` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$resellerLockupID));
         $topic = stripslashes($query->fetchColumn());

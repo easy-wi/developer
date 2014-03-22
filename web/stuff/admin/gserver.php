@@ -554,7 +554,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
     }
 } else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
     $server_id = $ui->id('id', 10, 'get');
-    if (!isset($action)) {
+    if (!$ui->w('action', 4, 'post')) {
         $table = array();
         $query = $sql->prepare("SELECT `serverip`,`port`,`serverid` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($server_id,$reseller_id));
@@ -572,7 +572,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         } else {
             $template_file = 'admin_404.tpl';
         }
-    } else if ($action == 'dl') {
+    } else if ($ui->w('action', 4, 'post') == 'dl') {
 
         if ($ui->w('safeDelete',1, 'post') != 'D') {
             include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
@@ -678,7 +678,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
     }
 } else if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get')) {
     $server_id = $ui->id('id', 10, 'get');
-    if (!isset($action)) {
+    if (!$ui->w('action', 4, 'post')) {
         $table = array();
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ftppassword`,?) AS `ftp` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey,$server_id,$reseller_id));
@@ -803,7 +803,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         } else {
             $template_file = 'admin_404.tpl';
         }
-    } else if ($action == 'md'){
+    } else if ($ui->w('action', 4, 'post') == 'md'){
         $error = array();
         if (!$ui->gamestring('gamestring', 'post')) {
             $error[] = 'Gamestring';
@@ -1019,7 +1019,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
     }
 } else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get')) {
     $server_id = $ui->id('id', 10, 'get');
-    if (!isset($action)) {
+    if (!$ui->w('action', 4, 'post')) {
         $table = array();
         $query = $sql->prepare("SELECT `serverip`,`port`,`serverid` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query2 = $sql->prepare("SELECT s.`id`,s.`servertemplate`,t.`shorten`,t.`description` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
@@ -1038,7 +1038,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
         } else {
             $template_file = 'admin_404.tpl';
         }
-    } else if ($action == 'ri') {
+    } else if ($ui->w('action', 4, 'post') == 'ri') {
         $gamestring = array();
         $template = array();
         $i = 0;

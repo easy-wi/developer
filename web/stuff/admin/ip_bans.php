@@ -43,7 +43,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['ipBans'] an
 }
 $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($action) and $action == 'dl') {
+if ($ui->w('action', 4, 'post') == 'dl') {
     $i = 0;
     if ($ui->id('id',30, 'post')) {
         if (token(true)) {

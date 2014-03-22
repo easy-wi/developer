@@ -41,7 +41,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['log'])) {
 }
 $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 $gssprache = getlanguagefile('gserver',$user_language,$reseller_id);
-if (isset($action) and $action == 'dl' and $ui->id('id',30, 'post')) {
+if ($ui->w('action', 4, 'post') == 'dl' and $ui->id('id',30, 'post')) {
 	$i = 0;
     if ($ui->id('id',30, 'post')) {
         $delete = $sql->prepare("DELETE FROM `mail_log` WHERE `id`=? LIMIT 1");

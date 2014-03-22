@@ -50,7 +50,7 @@ $logsubuser = 0;
 
 if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($ewVersions['cVersion'] < $ewVersions['version'] or $ewVersions['files'] < $ewVersions['version'])) {
 
-    if (isset($action) and $action == 'ud') {
+    if ($ui->w('action', 4, 'post') == 'ud') {
 
         $updateinclude = true;
 

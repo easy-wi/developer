@@ -377,10 +377,6 @@ if ($ui->st('r', 'get')) {
     $text = $rsprache->refresh;
 }
 
-if ($ui->w('action', 4, 'post')) {
-    $action = $ui->w('action', 4, 'post');
-}
-
 if ($ui->smallletters('site', 50, 'get')) {
     $s = $ui->smallletters('site', 50, 'get');
 }
