@@ -93,6 +93,8 @@ class HttpdManagement {
             $this->hostData['vhostStoragePath'] = $row['vhostStoragePath'];
             $this->hostData['vhostConfigPath'] = $row['vhostConfigPath'];
             $this->hostData['vhostTemplate'] = $row['vhostTemplate'];
+            $this->hostData['blocksize'] = $row['blocksize'];
+            $this->hostData['inodeBlockRatio'] = $row['inodeBlockRatio'];
             $this->hostData['skelDir'] = $this->removeNotNeededSlashes($this->hostData['vhostStoragePath'] . '/' . $this->hostData['user'] . '/skel/');
 
             if ($row['quotaActive'] == 'Y') {
@@ -191,7 +193,16 @@ class HttpdManagement {
 
                 if (isset($this->hostData['quotaCmd']) and strlen($this->hostData['quotaCmd']) > 0) {
 
-                    $cmd = 'q() { ' . str_replace('%cmd%', ' -u ' . $this->vhostData['ftpUser'] . ' -b -l ' . $this->vhostData['hdd'] . 'M /', $this->hostData['quotaCmd']) . ' > /dev/null 2>&1; }; q&';
+                    // Quotatool is broken in Ubuntu and Debian
+                    #$cmd = 'q() { ' . str_replace('%cmd%', ' -u ' . $this->vhostData['ftpUser'] . ' -b -l ' . $this->vhostData['hdd'] . 'M /', $this->hostData['quotaCmd']) . ' > /dev/null 2>&1; }; q&';
+
+                    // setquota works in kibibyte and inodes
+                    $sizeInKibiByte = $this->vhostData['hdd'] * 1024;
+                    $sizeInByte = $this->vhostData['hdd'] * 1048576;
+                    $blockAmount = round(($sizeInByte / $this->hostData['blocksize']));
+                    $inodeAmount = round($blockAmount / $this->hostData['inodeBlockRatio']);
+
+                    $cmd = 'q() { ' . str_replace('%cmd%', ' -u ' . $this->vhostData['ftpUser'] . ' ' . $sizeInKibiByte . ' ' . $sizeInKibiByte . ' ' . $inodeAmount . ' ' . $inodeAmount . ' -a ' . $this->removeNotNeededSlashes($this->hostData['vhostStoragePath'] . '/'), $this->hostData['quotaCmd']) . ' > /dev/null 2>&1; }; q&';
 
                     $this->ssh2Object->exec($cmd);
                 }

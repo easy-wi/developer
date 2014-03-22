@@ -252,6 +252,7 @@ $defined['easywi_version'] = array(
 $defined['webMaster'] = array(
     'webMasterID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'usageType' => array("Type"=>"enum('F','W')","Null"=>"YES","Key"=>"","Default"=>"F","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'port' => array("Type"=>"int(5)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'user' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -272,6 +273,8 @@ $defined['webMaster'] = array(
     'createDirs' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'quotaActive' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'quotaCmd' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'blocksize' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"4096","Extra"=>""),
+    'inodeBlockRatio' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"4","Extra"=>""),
     'userAddCmd' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'userModCmd' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'userDelCmd' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),

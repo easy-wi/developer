@@ -199,9 +199,9 @@
                     <?php if($easywiModules['ws'] and ($pa['webvhost'] or $pa['webmaster'])) { ?>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive"><i class="fa fa-clipboard fa-fw"></i> <?php echo $gsprache->webspace;?></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseWeb"><i class="fa fa-clipboard fa-fw"></i> <?php echo $gsprache->webspace;?></a>
                         </div>
-                        <div id="collapseFive" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('wv','wm')) or isset($customModules['ws'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
+                        <div id="collapseWeb" class="accordion-body collapse <?php if(in_array($ui->smallletters('w',255,'get'),array('wv','wm')) or isset($customModules['ws'][$ui->smallletters('w',255,'get')])) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <li <?php if($ui->smallletters('w',255,'get')=='wv') echo 'class="active"';?>><a href="admin.php?w=wv">Vhosts</a></li>

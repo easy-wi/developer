@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
+    <blocksize>Block Größe</blocksize>
     <createDirs>Zu erstellende Ordner</createDirs>
     <defaultdns>Standard Domain</defaultdns>
     <dns>Domain</dns>
@@ -12,12 +13,15 @@
     <ftpPasswordRepeat>FTP Passwort wiederholen</ftpPasswordRepeat>
     <ftpPort>FTP Port</ftpPort>
     <hdd>Speicherplatz</hdd>
+    <help_blocksize>Bei den meisten Systemen beträgt die Block Größe 4096. D.h. ein Block enthält 4096 Byte an Daten.</help_blocksize>
     <help_create_dirs>Semikolon getrennte Liste. Es ist besser, die Ordner einmalig in /home/deinMasterUser/skel/ zu erstellen.</help_create_dirs>
     <help_fdl_attention>Achtung! Es wird empfohlen, dass man je Spiel einen eigenen Unterordner wie cod4, cstrike, css, etc. erstellt und den Ordner in der Config mit angibt.</help_fdl_attention>
     <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) und Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) basierende Server brauchen folgenden Eintrag in der server.cfg</help_fdl_hl>
     <help_fdl_cod>Call of Duty Server brauchen folgenden Eintrag in der server.cfg</help_fdl_cod>
+    <help_inode_block_ratio>Bei den meisten Systemen ist das Verhältnis 4. D.h. auf 4 Blöcke kommt ein Inode</help_inode_block_ratio>
     <help_web_master>Achtung, es wird empfohlen den Host ausschließlich für Fastdownload zu nutzen. Andere Panels und Dienste könnten ansonsten Konflikte und Probleme verursachen. Des Weiteren verursacht Fastdownload regelmäßige Lastspitzen in der Bandbreite, die andere Serverdienste zum Laggen bringen können.</help_web_master>
     <httpdCmd>HTTPD Start/Reload Befehl</httpdCmd>
+    <inodeBlockRatio>Block/Inode Verhätnis</inodeBlockRatio>
     <installedHDD>Zugewiesene HDD</installedHDD>
     <installedVhost>Installierte Vhosts</installedVhost>
     <maxHDD>Vorhandener Speicherplatz</maxHDD>
@@ -31,6 +35,7 @@
     <recreate>Wiederherstellen</recreate>
     <serverType>Servertyp</serverType>
     <usage>Belegung</usage>
+    <usageType>Vhostgebrauch</usageType>
     <userGroup>Webserver Gruppe</userGroup>
     <userAddCmd>Hinzufügen Befehl</userAddCmd>
     <userDelCmd>Löschen Befehl</userDelCmd>

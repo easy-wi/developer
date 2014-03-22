@@ -209,6 +209,7 @@ $add->execute();
 $query = "CREATE TABLE IF NOT EXISTS `webMaster` (
   `webMasterID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
+  `usageType` enum('F','W') DEFAULT 'F',
   `ip` varchar(15),
   `port` int(5) unsigned,
   `user` blob,
@@ -229,6 +230,8 @@ $query = "CREATE TABLE IF NOT EXISTS `webMaster` (
   `createDirs` text,
   `quotaActive` enum('Y','N') DEFAULT 'Y',
   `quotaCmd` varchar(255),
+  `blocksize` int(10) unsigned DEFAULT 4096,
+  `inodeBlockRatio` int(10) unsigned DEFAULT 4,
   `userAddCmd` varchar(255),
   `userModCmd` varchar(255),
   `userDelCmd` varchar(255),

@@ -415,8 +415,8 @@ if ($ui->pregw('g','14', 'get')) {
     $list_gtype = '';
 }
 
-if ($ui->pregw('m','20', 'get')) {
-    $list_gtype = $ui->pregw('m','20', 'get');
+if ($ui->pregw('m', 20, 'get')) {
+    $list_gtype = $ui->pregw('m', 20, 'get');
     if ($where != '') {
         $where .=" AND s.`shorten`='$list_gtype'";
     } else if ($list_gtype!="all") {
