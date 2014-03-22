@@ -166,7 +166,7 @@
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <li <?php if($ui->smallletters('w',255,'get')=='wv') echo 'class="active"';?>><a href="userpanel.php?w=wv"><?php echo $gsprache->webspace;?></a></li>
-                                    <?php foreach ($customModules['wv'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                                    <?php foreach ($customModules['ws'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>
                             </div>
                         </div>

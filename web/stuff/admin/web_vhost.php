@@ -193,9 +193,9 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($userID, $resellerLockupID));
-                $ftpUser = $query->fetchColumn();
+                $dnsUser = $query->fetchColumn();
 
-                if (strlen($ftpUser) < 1) {
+                if (strlen($dnsUser) < 1) {
                     $errors['userID'] = $dedicatedLanguage->user;
                 }
 
@@ -239,10 +239,11 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 $id = (int) $sql->lastInsertId();
 
-                $ftpUser .= '-' . $id;
+                $dnsUser .= '-' . $id;
+                $ftpUser = 'web-' . $id;
 
                 if ($defaultDns == $dns) {
-                    $dns = str_replace('..', '.', $ftpUser . '.' .$defaultDns);
+                    $dns = str_replace('..', '.', $dnsUser . '.' .$defaultDns);
                 }
 
                 $query = $sql->prepare("UPDATE `webVhost` SET `dns`=?,`ftpUser`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");

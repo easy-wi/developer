@@ -3,12 +3,20 @@
     <createDirs>Zu erstellende Ordner</createDirs>
     <defaultdns>Standard Domain</defaultdns>
     <dns>Domain</dns>
+    <error_password_not_match>FTP Passwörter stimmen nicht überein</error_password_not_match>
+    <error_password_not_set>FTP Passwort unzulässig, nicht angegeben, oder Wiederholung nicht angegeben.</error_password_not_set>
+    <fdlInfo>FastDL Info</fdlInfo>
     <ftpIP>FTP Adresse</ftpIP>
     <ftpPassword>FTP Passwort</ftpPassword>
+    <ftpPasswordChanged>FTP Passwort geändert</ftpPasswordChanged>
+    <ftpPasswordRepeat>FTP Passwort wiederholen</ftpPasswordRepeat>
     <ftpPort>FTP Port</ftpPort>
     <hdd>Speicherplatz</hdd>
-    <help_web_master>Achtung, es wird empfohlen den Host ausschließlich für Fastdownload zu nutzen. Andere Panels und Dienste könnten ansonsten Konflikte und Probleme verursachen. Des Weiteren verursacht Fastdownload regelmäßige Lastspitzen in der Bandbreite, die andere Serverdienste zum Laggen bringen können.</help_web_master>
     <help_create_dirs>Semikolon getrennte Liste. Es ist besser, die Ordner einmalig in /home/deinMasterUser/skel/ zu erstellen.</help_create_dirs>
+    <help_fdl_attention>Achtung! Es wird empfohlen, dass man je Spiel einen eigenen Unterordner wie cod4, cstrike, css, etc. erstellt und den Ordner in der Config mit angibt.</help_fdl_attention>
+    <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) und Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) basierende Server brauchen folgenden Eintrag in der server.cfg</help_fdl_hl>
+    <help_fdl_cod>Call of Duty Server brauchen folgenden Eintrag in der server.cfg</help_fdl_cod>
+    <help_web_master>Achtung, es wird empfohlen den Host ausschließlich für Fastdownload zu nutzen. Andere Panels und Dienste könnten ansonsten Konflikte und Probleme verursachen. Des Weiteren verursacht Fastdownload regelmäßige Lastspitzen in der Bandbreite, die andere Serverdienste zum Laggen bringen können.</help_web_master>
     <httpdCmd>HTTPD Start/Reload Befehl</httpdCmd>
     <installedHDD>Zugewiesene HDD</installedHDD>
     <installedVhost>Installierte Vhosts</installedVhost>

@@ -55,6 +55,7 @@ $gsprache->help_sidebar = str_replace('%n%', $statusTime, $gsprache->help_sideba
 
 # https://github.com/easy-wi/developer/issues/2
 if (isset($_SESSION['sID'])) {
+
     $substituteAccess = array('wv' => array(), 'gs' => array(), 'db' => array(), 'vo' => array(), 'vd' => array(), 'vs' => array(), 'ro' => array());
 
     $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=?");
@@ -74,7 +75,7 @@ if (isset($_SESSION['sID'])) {
     }
 
     $gscount = count($substituteAccess['gs']);
-    $vhostcount = count($substituteAccess['wv']);
+    $vhostcount = count($substituteAccess['ws']);
     $voicecount = count($substituteAccess['vo']);
     $tsdnscount = count($substituteAccess['vd']);
     $dbcount = count($substituteAccess['db']);
@@ -82,6 +83,7 @@ if (isset($_SESSION['sID'])) {
     $virtualcount = count($substituteAccess['vs']);
 
 } else {
+
     $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($user_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -186,7 +188,7 @@ if (isset($_SESSION['sID'])) {
 if ($gscount > 0 and $easywiModules['gs'] === true) {
     $what_to_be_included_array['gs'] = 'userpanel_gserver.php';
     $what_to_be_included_array['gt'] = 'global_gserver_file_templates.php';
-    $what_to_be_included_array['fd'] = 'userpanel_fdl.php';
+    $what_to_be_included_array['fd'] = 'userpanel_webspace.php';
     $what_to_be_included_array['ao'] = 'userpanel_ao.php';
     $what_to_be_included_array['ca'] = 'userpanel_restartcalendar.php';
     $what_to_be_included_array['pr'] = 'userpanel_protectionmode.php';
