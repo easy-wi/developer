@@ -44,7 +44,7 @@ $query3 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status
 $query4 = $sql->prepare("SELECT e.`active`,e.`dbname`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,e.`max_queries_per_hour`,e.`max_updates_per_hour`,e.`max_connections_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
 $query5 = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? LIMIT 1");
 $query6 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
-$query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE `status` IS NULL AND `type`='my' AND `hostID`=?");
+$query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE (`status` IS NULL OR `status`='1') AND `type`='my' AND `hostID`=?");
 
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -112,6 +112,6 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         }
 
     } else {
-        $update->execute(array($row['hostID']));
+        $query7->execute(array($row['hostID']));
     }
 }

@@ -427,7 +427,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $flexSlots = $data['autoRestart'];
             }
 
-            if (count($updateArray)>0) {
+            if (count($updateArray) > 0) {
                 $eventualUpdate = trim($eventualUpdate,',');
                 $eventualUpdate .= ',';
             }

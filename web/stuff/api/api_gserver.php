@@ -38,8 +38,6 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-include(EASYWIDIR . '/stuff/keyphrasefile.php');
-
 $minimumArray = array('action', 'identify_server_by', 'server_local_id', 'server_external_id');
 $editArray = array('active', 'private', 'slots', 'shorten', 'identify_user_by', 'user_localid', 'user_externalid', 'username');
 
@@ -180,7 +178,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                     $implodedQuery = '(m.`servertypeid`=' . implode(' OR m.`servertypeid`=', $typeIDList) . ')';
                 }
 
-                if (isset($data['master_server_id']) and isid($data['master_server_id'], 19)) {
+                if (isset($data['master_server_id']) and isid($data['master_server_id'], 10)) {
 
                     $query = $sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (r.`id`=? AND `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
                     $query->execute(array($data['master_server_id'], $resellerID, $slots, $masterServerCount));
@@ -213,7 +211,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                     $ip = $used['ip'];
                     $ports = $used['ports'];
 
-                } else if (isset($data['master_server_id']) and isid($data['master_server_id'], 19)) {
+                } else if (isset($data['master_server_id']) and isid($data['master_server_id'], 10)) {
 
                     $missing = array();
 
