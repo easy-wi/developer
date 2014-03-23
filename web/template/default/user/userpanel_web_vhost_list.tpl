@@ -13,7 +13,8 @@
     <div class="row-fluid">
         <div class="span12 btn-group-vertical">
             <a href="userpanel.php?w=wv&amp;d=pw&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-primary"><i class="fa fa-lock"></i> <?php echo $sprache->ftpPassword;?></span></a>
-            <a href="userpanel.php?w=wv&amp;d=if&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-info"><i class="fa fa-info-circle"></i> <?php echo $sprache->fdlInfo;?></button></a>
+            <?php if($table_row['usageType']=='F'){ ?><a href="userpanel.php?w=wv&amp;d=if&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-info"><i class="fa fa-info-circle"></i> <?php echo $sprache->fdlInfo;?></button></a><?php }?>
+            <a href="userpanel.php?w=wv&amp;d=ri&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-mini btn-warning"><i class="fa fa-refresh"></i> <?php echo $dedicatedLanguage->reinstall;?></button></a>
             <!--<a href="userpanel.php?w=wv&amp;d=bu&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-primary"><i class="fa fa-floppy-o"></i> <?php echo $sprache->backup;?></span></a>-->
         </div>
     </div>

@@ -23,6 +23,7 @@
     <errors>Error(s)</errors>
     <exec>Execute</exec>
     <export>Export</export>
+    <externalID>External ID</externalID>
     <fastdownload>Fastdownload</fastdownload>
     <feeds>Feeds</feeds>
     <file>File</file>

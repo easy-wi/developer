@@ -56,7 +56,8 @@ if (!class_exists('EasyWiFTP')) {
 class HttpdManagement {
 
     // Data
-    private $sql, $aeskey, $resellerID, $hostID, $ssh2Pass, $hostData = array(), $ssh2Object = false, $sftpObject = false, $vhostData = false, $dataPrepared = false;
+    private $sql, $aeskey, $resellerID, $hostID, $ssh2Pass, $hostData = array(), $vhostData = false, $dataPrepared = false;
+    public $ssh2Object = false, $sftpObject = false;
 
     public function __destruct() {
         unset($this->sql, $this->aeskey, $this->hostID, $this->sshConnection, $this->sftpConnection);
@@ -146,10 +147,6 @@ class HttpdManagement {
             $query->execute(array($this->aeskey, $vhostID, $this->resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-                if ($row['active'] == 'N') {
-                    return false;
-                }
-
                 $this->vhostData['hdd'] = $row['hdd'];
                 $this->vhostData['dns'] = $row['dns'];
                 $this->vhostData['ftpUser'] = $row['ftpUser'];
@@ -172,7 +169,7 @@ class HttpdManagement {
         return false;
     }
 
-    private function addVhost ($vhostID, $fullAdd = true) {
+    private function addVhost ($vhostID, $fullAdd = true, $reinstall = false) {
 
         if ($this->getVhostData($vhostID) != false) {
 
@@ -180,7 +177,13 @@ class HttpdManagement {
 
                 if ($fullAdd == true) {
 
-                    $cmd = 'a() { ' . str_replace('%cmd%', ' -md ' . $this->vhostData['vhostHomeDir'] . ' -p `perl -e \'print crypt("' . $this->vhostData['ftpPassword'] . '","Sa")\'` -g ' . $this->hostData['userGroup'] . ' -s /bin/false -k ' . $this->hostData['skelDir'] . ' '. $this->vhostData['ftpUser'], $this->hostData['userAddCmd']) . ' > /dev/null 2>&1; }; a';
+                    $removeCmd = '';
+
+                    if ($reinstall == true) {
+                        $removeCmd = str_replace('%cmd%', ' -fr ' . $this->vhostData['ftpUser'], $this->hostData['userDelCmd']) . ' > /dev/null 2>&1; ';
+                    }
+
+                    $cmd = 'a() { ' . $removeCmd . str_replace('%cmd%', ' -md ' . $this->vhostData['vhostHomeDir'] . ' -p `perl -e \'print crypt("' . $this->vhostData['ftpPassword'] . '","Sa")\'` -g ' . $this->hostData['userGroup'] . ' -s /bin/false -k ' . $this->hostData['skelDir'] . ' '. $this->vhostData['ftpUser'], $this->hostData['userAddCmd']) . ' > /dev/null 2>&1; }; a';
 
                     $this->ssh2Object->exec($cmd);
 
@@ -196,7 +199,7 @@ class HttpdManagement {
                     // Quotatool is broken in Ubuntu and Debian
                     #$cmd = 'q() { ' . str_replace('%cmd%', ' -u ' . $this->vhostData['ftpUser'] . ' -b -l ' . $this->vhostData['hdd'] . 'M /', $this->hostData['quotaCmd']) . ' > /dev/null 2>&1; }; q&';
 
-                    // setquota works in kibibyte and inodes
+                    // setquota works with KibiByte and Inodes
                     $sizeInKibiByte = $this->vhostData['hdd'] * 1024;
                     $sizeInByte = $this->vhostData['hdd'] * 1048576;
                     $blockAmount = round(($sizeInByte / $this->hostData['blocksize']));
@@ -313,6 +316,13 @@ class HttpdManagement {
     public function vhostDelete ($vhostID) {
 
         $this->removeVhost($vhostID);
+
+        $this->vhostData = false;
+    }
+
+    public function vhostReinstall ($vhostID) {
+
+        $this->addVhost($vhostID, true, true);
 
         $this->vhostData = false;
     }

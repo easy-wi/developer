@@ -442,7 +442,7 @@ class EasyWiFTP {
         if ($this->loggedIn == true) {
 
             foreach ($dirs as $dir) {
-                ftp_mkdir($this->ftpConnection, $dir);
+                @ftp_mkdir($this->ftpConnection, $dir);
             }
         }
 

@@ -77,6 +77,13 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $insert->execute(array($row['invoicedByID'], $row2['id'], $row2['sid'], $row['affectedID'], $row2['dbname'], $row['action'], $row['extraData'], $row2['resellerid']));
     }
 
+    $query2 = $sql->prepare("SELECT `webVhostID`,`webMasterID`,`dns`,`resellerID` FROM `webVhost` WHERE `userID`=?");
+    $query2->execute(array($row['affectedID']));
+    $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','wv',?,?,?,?,?,NULL,NOW(),?,?,?)");
+    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        $insert->execute(array($row['invoicedByID'], $row2['webVhostID'], $row2['webMasterID'], $row['affectedID'], $row2['dns'], $row['action'], $row['extraData'], $row2['resellerid']));
+    }
+
     $update = $sql->prepare("UPDATE `jobs` SET `status`='4' WHERE `jobID`=? LIMIT 1");
     $update->execute(array($row['jobID']));
 

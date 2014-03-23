@@ -85,7 +85,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $o = $ui->st('o', 'get');
 
-    $type = array('de' => $gsprache->dedicated, 'ds' => 'TS3 DNS', 'gs' => $gsprache->gameserver, 'fd' => $gsprache->fastdownload, 'my' => 'MySQL', 'us' => $gsprache->user, 'vo' => $gsprache->voiceserver, 'vs' => $gsprache->virtual);
+    $type = array('de' => $gsprache->dedicated, 'ds' => 'TS3 DNS', 'gs' => $gsprache->gameserver, 'wv' => $gsprache->webspace, 'my' => 'MySQL', 'us' => $gsprache->user, 'vo' => $gsprache->voiceserver, 'vs' => $gsprache->virtual);
 
     if ($ui->st('o', 'get') == 'dn') {
         $orderby = '`name` DESC';

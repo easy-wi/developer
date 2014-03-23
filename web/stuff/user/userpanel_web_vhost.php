@@ -47,6 +47,8 @@ include(EASYWIDIR . '/stuff/methods/class_httpd.php');
 
 $sprache = getlanguagefile('web', $user_language, $reseller_id);
 $gsSprache = getlanguagefile('gserver', $user_language, $reseller_id);
+$dedicatedLanguage = getlanguagefile('reseller', $user_language, $reseller_id);
+
 $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
@@ -60,13 +62,17 @@ if (isset($admin_id)) {
     $logsubuser = 0;
 }
 
-if ($ui->id('id', 10, 'get') and in_array($ui->st('d', 'get'), array('if', 'pw'))) {
-    $query = $sql->prepare("SELECT `dns` FROM `webVhost` WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? AND `active`='Y'");
+if ($ui->id('id', 10, 'get') and in_array($ui->st('d', 'get'), array('if', 'pw', 'ri'))) {
+
+    $query = $sql->prepare("SELECT `dns`,`webMasterID` FROM `webVhost` WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? AND `active`='Y'");
     $query->execute(array($ui->id('id', 10, 'get'), $user_id, $reseller_id));
-    $dns = $query->fetchColumn();
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $dns = $row['dns'];
+        $webMasterID = $row['webMasterID'];
+    }
 }
 
-if ($ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
+if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
 
     $id = $ui->id('id', 10, 'get');
 
@@ -121,34 +127,61 @@ if ($ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         $template_file = 'userpanel_web_vhost_pw.tpl';
     }
 
-} else if ($ui->st('d', 'get') == 'if' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
+} else if (isset($webMasterID, $dns) and $ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
 
-    if ( ($query->rowCount() > 0)) {
+    $id = $ui->id('id', 10, 'get');
 
-        $hlCfg = 'sv_downloadurl "http://' . $dns . '/"
+    // Nothing submitted yet, display the delete form
+    if (!$ui->st('action', 'post')) {
+
+        // Check if we could find an entry and if not display 404 page
+        $template_file = 'userpanel_web_vhost_ri.tpl';
+
+        // User submitted remove the entry
+    } else if ($ui->st('action', 'post') == 'ri') {
+
+        $vhostObject = new HttpdManagement($webMasterID, $reseller_id);
+
+        if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+
+            $vhostObject->vhostReinstall($id);
+            $vhostObject->restartHttpdServer();
+
+            $template_file = $spracheResponse->table_del;
+            $loguseraction = '%ri% %webvhost% ' . $dns;
+            $insertlog->execute();
+
+        } else {
+            $template_file = $spracheResponse->error_table;
+        }
+
+        // GET Request did not add up. Display 404 error.
+    } else {
+        $template_file = 'userpanel_404.tpl';
+    }
+
+} else if (isset($dns) and $ui->st('d', 'get') == 'if' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
+
+    $hlCfg = 'sv_downloadurl "http://' . $dns . '/"
 sv_allowdownload "1"
 sv_allowupload "1"';
 
-        $codCfg = 'set sv_allowDownload "1"
+    $codCfg = 'set sv_allowDownload "1"
 set sv_wwwBaseURL "http://' . $dns . '/"
 set sv_wwwDlDisconnected "0"
 set sv_wwwDownload "1"';
 
-        $template_file = 'userpanel_web_vhost_info.tpl';
-
-    } else {
-        $template_file = 'userpanel_404.tpl';
-    }
+    $template_file = 'userpanel_web_vhost_info.tpl';
 
 } else {
 
     $table = array();
 
-    $query = $sql->prepare("SELECT v.`webVhostID`,v.`dns`,v.`hdd`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`quotaActive` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
+    $query = $sql->prepare("SELECT v.`webVhostID`,v.`dns`,v.`hdd`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`quotaActive`,m.`usageType` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
     $query->execute(array($aeskey, $user_id, $reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         if (!isset($_SESSION['sID']) or in_array($row['webVhostID'], $substituteAccess['ws'])) {
-            $table[] = array('id' => $row['webVhostID'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'quotaActive' => $row['quotaActive'], 'ftpIP' => (isip($row['ftpIP'], 'ip4')) ? $row['ftpIP'] : $row['ip'], 'ftpPort' => $row['ftpPort'], 'ftpUser' => $row['ftpUser'], 'ftpPass' => $row['decryptedFTPPass']);
+            $table[] = array('id' => $row['webVhostID'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'quotaActive' => $row['quotaActive'], 'ftpIP' => (isip($row['ftpIP'], 'ip4')) ? $row['ftpIP'] : $row['ip'], 'ftpPort' => $row['ftpPort'], 'ftpUser' => $row['ftpUser'], 'ftpPass' => $row['decryptedFTPPass'], 'usageType' => $row['usageType']);
         }
     }
 

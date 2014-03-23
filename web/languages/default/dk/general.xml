@@ -22,6 +22,7 @@
 	<edit>Rediger</edit>
     <errors></errors>
 	<exec></exec>
+    <externalID></externalID>
 	<fastdownload>Fastdownload</fastdownload>
 	<game></game>
 	<gameserver>Spilserver</gameserver>

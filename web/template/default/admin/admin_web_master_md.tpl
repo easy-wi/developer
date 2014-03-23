@@ -24,6 +24,10 @@
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
             <div class="control-group">
+                <label class="control-label" for="inputExternalID"><?php echo $gsprache->externalID;?></label>
+                <div class="controls"><input id="inputExternalID" class="span11" type="text" name="externalID" value="<?php echo $externalID;?>" maxlength="255"></div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputUsageType"><?php echo $sprache->usageType;?></label>
                 <div class="controls">
                     <select id="inputUsageType" class="span11" name="usageType">

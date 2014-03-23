@@ -237,8 +237,9 @@ $query = "CREATE TABLE IF NOT EXISTS `webMaster` (
   `userDelCmd` varchar(255),
   `description` text,
   `notified` int(10) unsigned,
+  `externalID` varchar(255) DEFAULT NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`webMasterID`),KEY(`resellerID`)
+  PRIMARY KEY (`webMasterID`),KEY(`externalID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
@@ -257,7 +258,7 @@ $query = "CREATE TABLE IF NOT EXISTS `webVhost` (
   `vhostTemplate` text,
   `externalID` varchar(255) DEFAULT NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`webVhostID`),KEY(`webMasterID`),KEY(`userID`),KEY(`resellerID`)
+  PRIMARY KEY (`webVhostID`),KEY(`webMasterID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();

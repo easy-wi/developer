@@ -408,6 +408,45 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
         $template_file = 'admin_404.tpl';
     }
 
+} else if (!isset($tokenError) and $ui->st('d', 'get') == 'ri' and $id) {
+
+    $query = $sql->prepare("SELECT `dns`,`webMasterID` FROM `webVhost` WHERE`webVhostID`=? AND `resellerID`=? LIMIT 1");
+    $query->execute(array($id, $resellerLockupID));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $dns = $row['dns'];
+        $webMasterID = $row['webMasterID'];
+    }
+
+
+    // Nothing submitted yet, display the delete form
+    if (!$ui->st('action', 'post')) {
+
+        // Check if we could find an entry and if not display 404 page
+        $template_file = ($query->rowCount() > 0) ? 'admin_web_vhost_ri.tpl' : 'admin_404.tpl';
+
+        // User submitted remove the entry
+    } else if ($ui->st('action', 'post') == 'ri') {
+
+        $vhostObject = new HttpdManagement($webMasterID, $resellerLockupID);
+
+        if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+
+            $vhostObject->vhostReinstall($id);
+            $vhostObject->restartHttpdServer();
+
+            $template_file = $spracheResponse->table_del;
+            $loguseraction = '%ri% %webvhost% ' . $dns;
+            $insertlog->execute();
+
+        } else {
+            $template_file = $spracheResponse->error_table;
+        }
+
+        // GET Request did not add up. Display 404 error.
+    } else {
+        $template_file = 'admin_404.tpl';
+    }
+
 // List the available entries
 } else {
 
@@ -460,7 +499,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
     }
 
     $query = $sql->prepare("SELECT v.*,u.`cname` FROM `webVhost` AS v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE v.`resellerID`=? ORDER BY " . $orderby . " LIMIT " . $start . "," . $amount);
-    $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='fd' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
+    $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='wv' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
 
     $query->execute(array($resellerLockupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -468,7 +507,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
         $jobPending = $gsprache->no;
 
         if ($row['jobPending'] == 'Y') {
-            $query2->execute(array($row['dedicatedID']));
+            $query2->execute(array($row['webVhostID']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
                 if ($row2['action'] == 'ad') {

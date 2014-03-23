@@ -50,6 +50,7 @@ include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post')) {
 
@@ -72,7 +73,7 @@ if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post')) {
     die('403 Forbidden: No valid access data');
 }
 
-if ($ui->smallletters('type', 10, 'post') and ($ui->smallletters('type', 4, 'post') == 'user' or $ui->smallletters('type', 5, 'post') == 'voice' or $ui->smallletters('type', 7, 'post') == 'gserver' or $ui->smallletters('type', 5, 'post') == 'mysql')) {
+if (in_array($ui->smallletters('type', 10, 'post'), array('gserver', 'mysql', 'user', 'voice', 'web'))) {
     $type = $ui->smallletters('type', 7, 'post');
 }
 
@@ -137,6 +138,10 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
     if ($type == 'user') {
 
         include(EASYWIDIR . '/stuff/api/api_users.php');
+
+    } else if ($type == 'web') {
+
+        include(EASYWIDIR . '/stuff/api/api_web.php');
 
     } else if ($type == 'voice') {
 

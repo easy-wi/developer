@@ -63,7 +63,7 @@
                 <td><?php echo $table_row['id'];?></td>
                 <td><?php echo $table_row['description'];?></td>
                 <td><?php echo $table_row['maxVhost'];?></td>
-                <td><?php echo $table_row['maxHDD'];?></td>
+                <td><?php echo $table_row['maxHDD'];?> MB</td>
                 <td><a href="admin.php?w=wm&amp;d=ri&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-warning"><i class="fa fa-refresh"></i></span></a></td>
                 <td><a href="admin.php?w=wm&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                 <td><a href="admin.php?w=wm&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></td>

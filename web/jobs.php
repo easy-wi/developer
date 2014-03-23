@@ -39,22 +39,32 @@
  */
 
 if (isset($_SERVER['REMOTE_ADDR'])) {
+
     $ip = $_SERVER['REMOTE_ADDR'];
     $timelimit = ini_get('max_execution_time') - 10;
+
 } else {
     $timelimit = 600;
 }
+
 $deamon = false;
+
 if (isset($argv)) {
+
     $args = array();
+
     foreach ($argv as $a) {
         if ($a == 'deamon') {
             $deamon = true;
         } else if (is_numeric($a)) {
             $sleep = $a;
         } else {
-            $e=explode(':',$a);
-            if (isset($e[1])) $args[$e[0]] = $e[1];
+
+            $e = explode(':', $a);
+
+            if (isset($e[1])) {
+                $args[$e[0]] = $e[1];
+            }
         }
     }
 
@@ -76,15 +86,17 @@ include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/class_rootserver.php');
+include(EASYWIDIR . '/stuff/methods/class_httpd.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
-include(EASYWIDIR . '/stuff/methods/mysql_functions.php');
+include(EASYWIDIR . '/stuff/methods/class_mysql.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
+
     $gsprache = getlanguagefile('general', 'uk', 0);
 
     class runGraph {
@@ -152,11 +164,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     $runJobs = true;
 
-    if (isset($ip)) {
-        $newLine = "\r\n";
-    } else {
-        $newLine = "\r";
-    }
+    $newLine = (isset($ip)) ? "\r\n" : "\r";
 
     $counJobs = $sql->prepare("SELECT COUNT(`jobID`) AS `jobCount` FROM `jobs` WHERE `status` IS NULL OR `status`='1'");
     while ($runJobs == true) {
@@ -176,7 +184,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $startTime = strtotime('now');
         $theOutput = new runGraph($jobCount,$newLine);
 
-        # us > vo > gs > my > vs
+        # us > vo > gs > my > vs > wv
         include(EASYWIDIR . '/stuff/jobs/jobs_user.php');
         $counJobs->execute();
         $jobCount = $counJobs->rowCount();
@@ -217,6 +225,13 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $jobCount = $counJobs->rowCount();
         $theOutput->updateCount($jobCount);
         print "\r\n" . 'Total jobs open after root server jobs are done: ' . $jobCount . "\r\n";
+
+        print 'Executing Fastdownload jobs' . "\r\n";
+        include(EASYWIDIR . '/stuff/jobs/jobs_webspace.php');
+        $counJobs->execute();
+        $jobCount = $counJobs->rowCount();
+        $theOutput->updateCount($jobCount);
+        print "\r\n" . 'Total jobs open after Fastdownload jobs are done: ' . $jobCount . "\r\n";
 
         print 'Executing user remove jobs' . "\r\n";
         include(EASYWIDIR . '/stuff/jobs/jobs_user_rm.php');

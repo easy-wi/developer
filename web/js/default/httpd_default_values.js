@@ -50,9 +50,6 @@ function loadServerSettings (serverType) {
         defaultVhostTemplate += '   access_log %vhostpath%/%user%/logs/access.log;\r\n';
         defaultVhostTemplate += '   error_log %vhostpath%/%user%/logs/error.log;\r\n';
         defaultVhostTemplate += '   root %vhostpath%/%user%/htdocs/;\r\n';
-        defaultVhostTemplate += '   if ($http_user_agent != "Half-Life 2") {\r\n';
-        defaultVhostTemplate += '      return 403;\r\n';
-        defaultVhostTemplate += '   }\r\n';
         defaultVhostTemplate += '   location / {\r\n';
         defaultVhostTemplate += '      index index.html index.htm;\r\n';
         defaultVhostTemplate += '   }\r\n';
