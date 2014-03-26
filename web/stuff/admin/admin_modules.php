@@ -63,7 +63,7 @@ $table = array(
     7 => array('id' => 7, 'active' => 'Y', 'name' => 'Rootserver', 'sub' => 'ro', 'type' => $sprache->type_core),
     8 => array('id' => 8, 'active' => 'Y', 'name' => $gsprache->imprint, 'sub' => 'ip', 'type' => $sprache->type_core),
     9 => array('id' => 9, 'active' => 'Y', 'name' => 'CMS', 'sub' => 'pn', 'type' => $sprache->type_core),
-    10 => array('id' => 9, 'active' => 'Y', 'name' => $gsprache->webspace, 'sub' => 'ws', 'type' => $sprache->type_core)
+    10 => array('id' => 10, 'active' => 'Y', 'name' => $gsprache->webspace, 'sub' => 'ws', 'type' => $sprache->type_core)
 );
     
 if ($ui->st('action', 'post') and !token(true)) {

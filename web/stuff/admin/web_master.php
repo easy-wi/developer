@@ -70,27 +70,22 @@ $createDirs = ($ui->startparameter('createDirs', 'post')) ? $ui->startparameter(
 if ($serverType == 'N') {
 
     $defaultRestartCMD = 'sudo /etc/init.d/nginx reload';
-    $defaultVhostConfigPath = '/etc/nginx/sites-enabled/';
 
 } else if ($serverType == 'A') {
 
     $defaultRestartCMD = 'sudo /etc/init.d/apache reload';
-    $defaultVhostConfigPath = '/etc/apache/sites-enabled/';
 
 } else if ($serverType == 'L') {
 
     $defaultRestartCMD = 'sudo /etc/init.d/lighttpd reload';
-    $defaultVhostConfigPath = '/etc/lighttpd/sites-enabled/';
 
 } else if ($serverType == 'H') {
 
     $defaultRestartCMD = 'sudo /etc/init.d/hiawatha reload';
-    $defaultVhostConfigPath = '/etc/hiawatha/sites-enabled/';
 
 } else {
 
     $defaultRestartCMD = 'sudo /etc/init.d/toBeReplaced reload';
-    $defaultVhostConfigPath = '/etc/other/sites-enabled/';
 
 }
 
@@ -119,7 +114,7 @@ $userAddCmd = ($ui->startparameter('userAddCmd', 'post')) ? $ui->startparameter(
 $userModCmd = ($ui->startparameter('userModCmd', 'post')) ? $ui->startparameter('userModCmd', 'post') : 'sudo /usr/sbin/usermod %cmd%';
 $userDelCmd = ($ui->startparameter('userDelCmd', 'post')) ? $ui->startparameter('userDelCmd', 'post') : 'sudo /usr/sbin/userdel %cmd%';
 $vhostStoragePath = ($ui->startparameter('vhostStoragePath', 'post')) ? $ui->startparameter('vhostStoragePath', 'post') : '/home/';
-$vhostConfigPath = ($ui->startparameter('vhostConfigPath', 'post')) ? $ui->startparameter('vhostConfigPath', 'post') : $defaultVhostConfigPath;
+$vhostConfigPath = ($ui->startparameter('vhostConfigPath', 'post')) ? $ui->startparameter('vhostConfigPath', 'post') : '/home/YourMasterUser/sites-enabled/';
 $vhostTemplate = $ui->escaped('vhostTemplate', 'post');
 
 if (!$vhostTemplate or strlen($vhostTemplate) < 2) {

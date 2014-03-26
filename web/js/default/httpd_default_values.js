@@ -41,8 +41,6 @@ function loadServerSettings (serverType) {
 
         defaultRestartCMD = 'sudo /etc/init.d/nginx reload';
 
-        defaultVhostConfigPath ='/etc/nginx/sites-enabled/';
-
         defaultVhostTemplate = 'server {\r\n';
         defaultVhostTemplate += '   listen 80;\r\n';
         defaultVhostTemplate += '   server_name %url%;\r\n';
@@ -58,8 +56,6 @@ function loadServerSettings (serverType) {
     } else if (serverType == 'A') {
 
         defaultRestartCMD = 'sudo /etc/init.d/apache reload';
-
-        defaultVhostConfigPath ='/etc/apache/sites-enabled/';
 
         defaultVhostTemplate = '<VirtualHost *:80>\r\n';
         defaultVhostTemplate += '    ServerAdmin %email%\r\n';
@@ -79,8 +75,6 @@ function loadServerSettings (serverType) {
 
         defaultRestartCMD = 'sudo /etc/init.d/lighttpd reload';
 
-        defaultVhostConfigPath ='/etc/lighttpd/sites-enabled/';
-
         defaultVhostTemplate = '$HTTP["host"] == "%url%" {\r\n';
         defaultVhostTemplate += '    server.document-root = "%vhostpath%/%user%/htdocs"\r\n';
         defaultVhostTemplate += '    server.errorlog = "%vhostpath%/%user%/logs/error.log"\r\n';
@@ -91,8 +85,6 @@ function loadServerSettings (serverType) {
     } else if (serverType == 'H') {
 
         defaultRestartCMD = 'sudo /etc/init.d/hiawatha reload';
-
-        defaultVhostConfigPath ='/etc/hiawatha/sites-enabled/';
 
         defaultVhostTemplate = 'VirtualHost {\r\n';
         defaultVhostTemplate += '    Hostname = %url%\r\n';
@@ -106,15 +98,11 @@ function loadServerSettings (serverType) {
 
         defaultRestartCMD = 'sudo /etc/init.d/toBeReplaced reload';
 
-        defaultVhostConfigPath ='/etc/toBeReplaced/sites-enabled/';
-
         defaultVhostTemplate = '';
 
     }
 
     document.getElementById("inputHttpdCmd").value = defaultRestartCMD;
-
-    document.getElementById("inputVhostConfigPath").value = defaultVhostConfigPath;
 
     document.getElementById("inputVhostTemplate").value = defaultVhostTemplate;
 

@@ -140,14 +140,13 @@ if [ "$OPTION" == "Yes" ]; then
     apt-get install proftpd
 	
 	if [ -f /etc/proftpd/modules.conf ]; then
-		sed 's/.*LoadModule mod_tls_memcache.c.*/#LoadModule mod_tls_memcache.c/g' /etc/proftpd/modules.conf > /etc/proftpd/modules.conf
+		mv /etc/proftpd/modules.conf /etc/proftpd/modules.conf.backup
+		sed 's/.*LoadModule mod_tls_memcache.c.*/#LoadModule mod_tls_memcache.c/g' /etc/proftpd/modules.conf.backup > /etc/proftpd/modules.conf
 	fi
 
 	if [ -f /etc/proftpd/proftpd.conf ]; then
-		sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf > /etc/proftpd/proftpd.conf
-		sed 's/Umask.*/Umask 037 027/g' /etc/proftpd/proftpd.conf > /etc/proftpd/proftpd.conf
-		sed 's/.*DefaultRoot.*/DefaultRoot ~/g' /etc/proftpd/proftpd.conf > /etc/proftpd/proftpd.conf
-		sed 's/# RequireValidShell.*/RequireValidShell off/g' /etc/proftpd/proftpd.conf > /etc/proftpd/proftpd.conf
+		mv /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.backup
+		sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.backup | sed 's/Umask.*/Umask 037 027/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' | sed 's/# RequireValidShell.*/RequireValidShell off/g' > /etc/proftpd/proftpd.conf
 	fi
 
 	/etc/init.d/proftpd restart
@@ -205,6 +204,7 @@ if [ "$QUOTAINSTALL" == "Yes" ]; then
 	done
 
 	if [ "$QUOTAFSTAB" == "Yes" ]; then
+		mv /root/fstab /etc/fstab.backup
 		mv /root/tempfstab /etc/fstab
 
 		cat /root/tempmountpoints | while read LINE; do
@@ -311,8 +311,9 @@ if [ "$WEBSERVER" == "Nginx" ]; then
 	if [ -f /etc/nginx/sites-available/default ]; then
 		mv /etc/nginx/sites-available/default /home/$MASTERUSER/sites-enabled/
 	fi
-	
-	sed "s/\/etc\/nginx\/sites-enabled\/\*;/\/home\/$MASTERUSER\/sites-enabled\/\*;/g" /etc/nginx/nginx.conf > /etc/nginx/nginx.conf
+
+	mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
+	sed "s/\/etc\/nginx\/sites-enabled\/\*;/\/home\/$MASTERUSER\/sites-enabled\/\*;/g" /etc/nginx/nginx.conf.backup > /etc/nginx/nginx.conf
 
 elif [ "$WEBSERVER" == "Lighttpd" ]; then
 
