@@ -74,7 +74,7 @@ apt-get install sudo
 if [ "$OS" == "debian" ]; then
 
         echo " "
-        echo "Use dotdeb.org repository for newer server versions?"
+        echo "Use dotdeb.org repository for more up to date server and PHP versions?"
 
         OPTIONS=("Yes" "No" "Quit")
         select OPTION in "${OPTIONS[@]}"; do
@@ -101,8 +101,10 @@ fi
 
 echo " "
 echo "Please select the webserver you would like to use"
+echo "Nginx is recommended for FastDL and few but high efficient vhosts"
+echo "Apache is recommended in case you want to run many PHP supporting Vhosts aka mass web hosting"
 
-OPTIONS=("Apache" "Nginx" "Lighttpd" "None" "Quit")
+OPTIONS=("Nginx" "Apache" "Lighttpd" "None" "Quit")
 select WEBSERVER in "${OPTIONS[@]}"; do
     case "$REPLY" in
         1 ) break;;
@@ -330,3 +332,23 @@ elif [ "$WEBSERVER" == "Apache" ]; then
 fi
 
 chown -R $MASTERUSER:$WEBGROUPID /home/$MASTERUSER/
+
+echo "Following data need to be configured at the easy-wi.com panel:"
+
+echo "The path to the folder \"sites-enabled\" is:"
+echo "/home/$MASTERUSER/sites-enabled/"
+
+echo "The useradd command is:"
+echo "sudo `which useradd` %cmd%"
+
+echo "The usermod command is:"
+echo "sudo `which usermod` %cmd%"
+
+echo "The userdel command is:"
+echo "sudo `which userdel` %cmd%"
+
+echo "The setquota command is:"
+echo "sudo `which setquota` %cmd%"
+
+echo "The HTTPD restart command is:"
+echo "sudo $HTTPDSCRIPT reload"
