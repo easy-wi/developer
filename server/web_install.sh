@@ -323,11 +323,21 @@ elif [ "$WEBSERVER" == "Lighttpd" ]; then
 		mv /etc/lighttpd/sites-available/default /home/$MASTERUSER/sites-enabled/
 	fi
 
+	cp /etc/lighttpd/lighttpd.conf /etc/nginx/lighttpd.conf.backup
+	echo "include_shell \"find /home/$MASTERUSER/sites-enabled/ -maxdepth 1 -type f -exec cat {} \;\"" >> /etc/lighttpd/lighttpd.conf
+
 elif [ "$WEBSERVER" == "Apache" ]; then
 
 	if [ -f /etc/apache2/sites-available/default ]; then
 		mv /etc/apache2/sites-available/default /home/$MASTERUSER/sites-enabled/
 	fi
+
+	if [ -f /etc/apache2/sites-available/default-ssl ]; then
+		mv /etc/apache2/sites-available/default-ssl /home/$MASTERUSER/sites-enabled/
+	fi
+
+	mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.backup
+	sed "s/Include sites-enabled\//Include \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf.backup | sed "s/Include \/etc\/apache2\/sites-enabled\//\/home\/$MASTERUSER\/sites-enabled\//g" > /etc/apache2/apache2.conf
 
 fi
 
