@@ -868,12 +868,15 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsSubnets` (
   `subnetID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `dhcpServer` int(10) unsigned NOT NULL,
   `active` enum('Y','N') DEFAULT 'Y',
-  `subnet` varchar(15) DEFAULT NULL,
+  `subnet` varchar(11) DEFAULT NULL,
+  `subnetStart` smallint(3) unsigned NOT NULL DEFAULT 1,
+  `subnetStop` smallint(3) unsigned NOT NULL DEFAULT 254,
   `netmask` varchar(15) DEFAULT NULL,
   `subnetOptions` text,
   `vlan` enum('Y','N') DEFAULT 'N',
   `vlanName` varchar(255),
-  PRIMARY KEY (`subnetID`)
+  `resellerID` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`subnetID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();

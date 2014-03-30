@@ -285,14 +285,6 @@
                 </select>
             </div>
         </div>
-        <div class="r display_none switch control-group">
-            <label class="control-label" for="inputIPS"><?php echo $sprache->ips;?></label>
-            <div class="controls">
-                <select id="inputIPS" multiple="multiple" name="ips[]">
-                    <?php foreach ($availableips as $ip){ ?><option><?php echo $ip;?></option><?php }?>
-                </select>
-            </div>
-        </div>
         <?php foreach(customColumns('U') as $row){ ?>
         <div class="control-group">
             <label class="control-label" for="inputCustom-<?php echo $row['customID'];?>"><?php echo $row['menu'];?></label>

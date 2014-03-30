@@ -5,6 +5,8 @@
     <netmask></netmask>
     <subnet></subnet>
     <subnetOptions></subnetOptions>
+    <subnetStart></subnetStart>
+    <subnetStop></subnetStop>
     <vlan></vlan>
     <vlanName></vlanName>
 </sprache>

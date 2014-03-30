@@ -283,6 +283,19 @@ class ValidateUserinput {
         return false;
     }
 
+    function subnetFirstThree ($value, $type, $object = false) {
+
+        $check = $this->if_obj_or_str($value, $type, $object);
+
+        if ($check and is_string($check) and preg_match("/^[\d]{1,3}.[\d]{1,3}.[\d]{1,3}+$/", $check)) {
+            return $check;
+        } else if ($check) {
+            return $this->loop($check, 'subnetFirstThree', $type);
+        }
+
+        return false;
+    }
+
     function mac ($value, $type, $object = false) {
 
         $check = $this->if_obj_or_str($value, $type, $object);

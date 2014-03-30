@@ -208,11 +208,14 @@ $defined['rootsSubnets'] = array(
     'subnetID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'dhcpServer' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
-    'subnet' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'subnet' => array("Type"=>"varchar(11)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'subnetStart' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"1","Extra"=>""),
+    'subnetStop' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"254","Extra"=>""),
     'subnetOptions' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'netmask' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'vlan' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
-    'vlanName' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
+    'vlanName' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
 $defined['eac'] = array(

@@ -67,14 +67,18 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     // Error handling. Check if required attributes are set and can be validated
     $errors = array();
     $dhcpServers = array();
+    $resellerList = array(0 => $gsprache->no);
 
     // At this point all variables are defined that can come from the user
     $dhcpServer = (int) $ui->id('dhcpServer', 10, 'post');
-    $subnet = (string) $ui->ip4('subnet', 'post');
+    $subnet = ($ui->subnetFirstThree('subnet', 'post')) ? (string) $ui->subnetFirstThree('subnet', 'post') : '1.1.1';
+    $subnetStart = ($ui->id('subnetStart', 3, 'post')) ? (int) $ui->id('subnetStart', 3, 'post') : 1;
+    $subnetStop = ($ui->id('subnetStop', 3, 'post')) ? (int) $ui->id('subnetStop', 3, 'post') : 254;
     $netmask = (string) $ui->ip4('netmask', 'post');
     $active = (string) $ui->active('active', 'post');
     $vlan = (string) $ui->active('vlan', 'post');
     $vlanName = (string) $ui->description('vlanName', 'post');
+    $ownerID = (int) $ui->description('resellerID', 'post');
 
     if ($ui->escaped('subnetOptions', 'post')) {
         $subnetOptions = $ui->escaped('subnetOptions', 'post');
@@ -82,6 +86,12 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $subnetOptions = 'option broadcast-address 1.1.1.1;
 option routers 1.1.1.1;
 option domain-name-servers 1.1.1.1;';
+    }
+
+    $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=`id` AND `accounttype`='r' AND `active`='Y' ORDER BY `id` DESC");
+    $query->execute(array($reseller_id));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $resellerList[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
     }
 
     $query = $sql->prepare("SELECT `id`,`description` FROM `rootsDHCP` WHERE `active`='Y'");
@@ -106,11 +116,14 @@ option domain-name-servers 1.1.1.1;';
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $dhcpServer = (int) $row['dhcpServer'];
                 $subnet = (string) $row['subnet'];
+                $subnetStart = $row['subnetStart'];
+                $subnetStop = $row['subnetStop'];
                 $netmask = (string) $row['netmask'];
                 $active = (string) $row['active'];
                 $vlan = (string) $row['vlan'];
                 $vlanName = (string) $row['vlanName'];
                 $subnetOptions = (string) $row['subnetOptions'];
+                $ownerID = (string) $row['resellerID'];
             }
 
             // Check if database entry exists and if not display 404 page
@@ -134,6 +147,14 @@ option domain-name-servers 1.1.1.1;';
 
         if (!$subnet and $ui->st('action', 'post') == 'ad') {
             $errors['subnet'] = $sprache->subnet;
+        }
+
+        if (!$subnetStart) {
+            $errors['subnetStart'] = $sprache->subnetStart;
+        }
+
+        if (!$subnetStop) {
+            $errors['subnetStop'] = $sprache->subnetStop;
         }
 
         if (!$netmask) {
@@ -173,25 +194,18 @@ option domain-name-servers 1.1.1.1;';
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `rootsSubnets` (`dhcpServer`,`active`,`subnet`,`subnetOptions`,`netmask`,`vlan`,`vlanName`) VALUES (?,?,?,?,?,?,?)");
-                $query->execute(array($dhcpServer, $active, $subnet, $subnetOptions, $netmask, $vlan, $vlanName));
+
+                $query = $sql->prepare("INSERT INTO `rootsSubnets` (`dhcpServer`,`active`,`subnet`,`subnetStart`,`subnetStop`,`subnetOptions`,`netmask`,`vlan`,`vlanName`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,?,?)");
+                $query->execute(array($dhcpServer, $active, $subnet, $subnetStart, $subnetStop, $subnetOptions, $netmask, $vlan, $vlanName, $ownerID));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %subnets% ' . $subnet;
 
                 $id = $sql->lastInsertId();
 
-                $ex = explode('.', $subnet);
-                if (isset($ex[2])) {
-                    $query = $sql->prepare("INSERT INTO `rootsIP4` (`subnetID`,`ip`) VALUES (?,?) ON DUPLICATE KEY UPDATE `ip`=VALUES(`ip`)");
-                    for ($lastTriple = 2; $lastTriple < 255; $lastTriple++) {
-                        $query->execute(array($id, $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.' . $lastTriple));
-                    }
-                }
-
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `rootsSubnets` SET `dhcpServer`=?,`active`=?,`subnetOptions`=?,`netmask`=?,`vlan`=?,`vlanName`=? WHERE `subnetID` =? LIMIT 1");
-                $query->execute(array($dhcpServer, $active, $subnetOptions, $netmask, $vlan, $vlanName, $id));
+                $query = $sql->prepare("UPDATE `rootsSubnets` SET `dhcpServer`=?,`active`=?,`subnetStart`=?,`subnetStop`=?,`subnetOptions`=?,`netmask`=?,`vlan`=?,`vlanName`=?,`resellerID`=? WHERE `subnetID`=? LIMIT 1");
+                $query->execute(array($dhcpServer, $active, $subnetStart, $subnetStop, $subnetOptions, $netmask, $vlan, $vlanName, $ownerID, $id));
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%mod% %subnets% ' . $subnet;
@@ -203,6 +217,20 @@ option domain-name-servers 1.1.1.1;';
 
             // Check if a row was affected during insert or update
             if (isset($rowCount) and $rowCount > 0) {
+
+                $query = $sql->prepare("SELECT `subnet` FROM `rootsSubnets` WHERE `subnetID`=? LIMIT 1");
+                $query->execute(array($id));
+                $subnet = $query->fetchColumn();
+
+                $query = $sql->prepare("DELETE FROM `rootsIP4` WHERE `subnetID`=?");
+                $query->execute(array($id));
+
+                $lastTripleStop = $subnetStop + 1;
+                $query = $sql->prepare("INSERT INTO `rootsIP4` (`subnetID`,`ip`,`ownerID`,`resellerID`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `ip`=VALUES(`ip`)");
+                for ($lastTriple = $subnetStart; $lastTriple < $lastTripleStop; $lastTriple++) {
+                    $query->execute(array($id, $subnet . '.' . $lastTriple, $ownerID, $ownerID));
+                }
+
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
 

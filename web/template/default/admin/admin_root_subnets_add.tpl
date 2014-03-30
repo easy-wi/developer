@@ -32,6 +32,16 @@
                     </select>
                 </div>
             </div>
+            <div class="control-group">
+                <label class="control-label" for="inputResellerID">Reseller</label>
+                <div class="controls">
+                    <select id="inputResellerID" name="resellerID">
+                        <?php foreach($resellerList as $k=>$v){ ?>
+                        <option value="<?php echo $k;?>" <?php if ($k==$ownerID) echo 'selected="selected"'; ?>><?php echo $v;?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
             <div class="control-group<?php if(isset($errors['dhcpServer'])) echo ' error';?>">
                 <label class="control-label" for="inputDHCP">DHCP</label>
                 <div class="controls">
@@ -46,15 +56,23 @@
                 <label class="control-label" for="inputSubnet"><?php echo $sprache->subnet;?></label>
                 <div class="controls"><input id="inputSubnet" type="text" name="subnet" value="<?php echo $subnet;?>" maxlength="15" required></div>
             </div>
+            <div class="control-group<?php if(isset($errors['subnetStart'])) echo ' error';?>">
+                <label class="control-label" for="inputSubnetStart"><?php echo $sprache->subnetStart;?></label>
+                <div class="controls"><input id="inputSubnetStart" type="number" name="subnet" value="<?php echo $subnetStart;?>" maxlength="3" min="1" max="254" step="1"  required></div>
+            </div>
+            <div class="control-group<?php if(isset($errors['subnetStop'])) echo ' error';?>">
+                <label class="control-label" for="inputSubnetStop"><?php echo $sprache->subnetStop;?></label>
+                <div class="controls"><input id="inputSubnetStop" type="number" name="subnetStop" value="<?php echo $subnetStop;?>" maxlength="3" min="1" max="254" step="1" required></div>
+            </div>
+            <div class="control-group<?php if(isset($errors['netmask'])) echo ' error';?>">
+                <label class="control-label" for="inputNetmask"><?php echo $sprache->netmask;?></label>
+                <div class="controls"><input id="inputNetmask" type="text" name="netmask" value="<?php echo $netmask;?>" maxlength="15" required></div>
+            </div>
             <div class="control-group">
                 <label class="control-label" for="inputSubnetOptions"><?php echo $sprache->subnetOptions;?></label>
                 <div class="controls">
                     <textarea id="inputSubnetOptions" rows="5" name="subnetOptions"><?php echo $subnetOptions;?></textarea>
                 </div>
-            </div>
-            <div class="control-group<?php if(isset($errors['netmask'])) echo ' error';?>">
-                <label class="control-label" for="inputNetmask"><?php echo $sprache->netmask;?></label>
-                <div class="controls"><input id="inputNetmask" type="text" name="netmask" value="<?php echo $netmask;?>" maxlength="15" required></div>
             </div>
             <div class="control-group<?php if(isset($errors['vlan'])) echo ' error';?>">
                 <label class="control-label" for="inputVlan"><?php echo $sprache->vlan;?></label>

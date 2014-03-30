@@ -244,18 +244,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         } else {
                             $maxdedis = $ui->id('maxdedis',10, 'post');
                         }
-						$post_ips = array_unique((array)$ui->ips('ips', 'post'));
 						$maxuserram = $ui->id('maxuserram',255, 'post');
 						$maxusermhz = $ui->id('maxusermhz',255, 'post');
 
-						if ($reseller_id == 0 or $reseller_id==$admin_id) {
-							$availableips = freeips($reseller_id);
-						} else {
-							$availableips = freeips($admin_id);
-						}
 					} else {
-                        $post_ips = array();
-                        $availableips = array();
 						$maxvdedis = 0;
                         $maxvserver = 0;
 						$maxuserram = 0;
@@ -329,13 +321,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query->execute(array($useractive,$maxuser,$maxgserver,$maxvoserver,$maxdedis,$maxvserver,$maxuserram,$maxusermhz,$resellerid,$resellersid));
                     $query = $sql->prepare("INSERT INTO `eac` (`resellerid`) VALUES (?)");
                     $query->execute(array($resellerid));
-
-                    foreach ($post_ips as $ip) {
-                        $query = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=?,`resellerID`=? WHERE `ip`=? LIMIT 1");
-                        if (in_array($ip, $availableips)) {
-                            $query->execute(array($resellerid, $resellersid, $ip));
-                        }
-                    }
 				}
 
 				if (!isset($resellersid)) {
@@ -397,7 +382,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
             $groups[$row['grouptype']][$row['id']] = $row['name'];
         }
-        $availableips=freeips($resellerLockupID);
         $selectlanguages=getlanguages($template_to_use);
         $template_file = 'admin_user_add.tpl';
     }
@@ -541,9 +525,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             if ($accounttype == 'r') {
 
-                $ipsAssigned = array();
-                $ips = freeips($resellerLockupID);
-
                 $query = $sql->prepare("SELECT * FROM `resellerdata` WHERE `resellerid`=?");
                 $query->execute(array($id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -556,18 +537,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $maxuserram = $row['maxuserram'];
                     $maxusermhz = $row['maxusermhz'];
                 }
-
-                $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `ownerID`=?");
-                $query->execute(array($id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $ipsAssigned[] = $row['ip'];
-                    $ips[] = $row['ip'];
-                }
-
-                $ipsAssigned = array_unique($ipsAssigned);
-                $ips = array_unique($ips);
-                natsort($ipsAssigned);
-                natsort($ips);
             }
 
             $selectlanguages = getlanguages($template_to_use);
@@ -640,15 +609,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $fax = $ui->phone('fax',50, 'post');
                 $useractive = ($ui->active('useractive', 'post')) ? $ui->active('useractive', 'post') : 'N';
 
-                if ($ui->ips('ips', 'post') or $ui->id('maxuser',10, 'post') and $accounttype == 'r') {
-
-                    $availableips=freeips($resellerLockupID);
+                if ($ui->id('maxuser',10, 'post') and $accounttype == 'r') {
 
                     if ($resellerlockupid==0) {
                         $resellerlockupid = $id;
                     }
-
-                    $post_ips = array_unique( (array) $ui->ips('ips', 'post'));
 
                     $maxuser = $ui->id('maxuser',10, 'post');
                     $maxgserver = $ui->id('maxgserver',10, 'post');
@@ -673,36 +638,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query = $sql->prepare("UPDATE `resellerdata` SET `useractive`=?,`maxuser`=?,`maxgserver`=?,`maxvoserver`=?,`maxdedis`=?,`maxvserver`=?,`maxuserram`=?,`maxusermhz`=? WHERE `resellerid`=? LIMIT 1");
                     $query->execute(array($useractive,$maxuser,$maxgserver,$maxvoserver,$maxdedis,$maxvserver,$maxuserram,$maxusermhz,$id));
 
-                    if (count($post_ips) > 0) {
-                        $oldips = array();
-
-                        $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `ownerID`=?");
-                        $query->execute(array($id));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                            $oldips[] = $row['ip'];
-                        }
-
-                        if ($reseller_id == 0) {
-                            $query = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=0,`resellerID`=0 WHERE `ownerID`=?");
-                            $query->execute(array($id));
-                        } else {
-                            $query = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=:id WHERE `resellerID`=:id");
-                            $query->execute(array(':id' => $resellerLockupID));
-                        }
-
-                        $query = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=?,`resellerID`=? WHERE `ip`=? LIMIT 1");
-
-                        foreach ($post_ips as $ip) {
-                            if (in_array($ip, $availableips) or in_array($ip, $oldips)) {
-                                if ($reseller_id == 0) {
-                                    $query->execute(array($id, $id, $ip));
-                                } else {
-                                    $query->execute(array($id, $resellerLockupID, $ip));
-                                }
-                            }
-                        }
-                    }
                 }
+
                 if ($oldactive != $active) {
                     $jobPending=",`jobPending`='Y'";
                     $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
@@ -711,6 +648,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $insert->execute(array($admin_id,$id,$id,$cname,json_encode(array('newActive' => $active)),$resellerLockupID));
                     updateJobs($id,$resellerLockupID);
                 }
+
                 $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`salutation`=?,`birthday`=?,`country`=?,`fax`=?,`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`fdlpath`=?,`mail_backup`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_vserver`=?$jobPending WHERE `id`=? and `resellerid`=? LIMIT 1");
                 $query->execute(array($salutation,$birthday,$country,$fax,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$id,$resellerlockupid));
                 customColumns('U', $id, 'save');
