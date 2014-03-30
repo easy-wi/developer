@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
 	<active>Active</active>
+    <dbSize>Database size</dbSize>
 	<interface>phpMyAdmin</interface>
 	<ips>Allowed IPs</ips>
 	<dbname>Databasename</dbname>

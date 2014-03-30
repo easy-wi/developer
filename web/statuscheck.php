@@ -50,7 +50,7 @@ if (isset($argv)) {
     $args = array();
 
     foreach ($argv as $a) {
-        if ($a == 'gs' or $a == 'vs') {
+        if ($a == 'gs' or $a == 'vs' or $a == 'my') {
             $checkTypeOfServer = $a;
         } else if (is_numeric($a)) {
             $sleep = $a;
@@ -73,14 +73,24 @@ include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/third_party/gameq/GameQ.php');
+include(EASYWIDIR . '/stuff/methods/class_mysql.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 set_time_limit($timelimit);
 
+$query = $sql->prepare("UPDATE `settings` SET `lastCronStatus`=UNIX_TIMESTAMP()");
+$query->execute();
+
 if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
 
     if (isset($checkTypeOfServer)) {
-        print ($checkTypeOfServer == 'gs') ? 'Checking Gameserver' . "\r\n" : 'Checking Voiceserver' . "\r\n";
+        if ($checkTypeOfServer == 'gs') {
+            print 'Checking Gameserver' . "\r\n";
+        } else if ($checkTypeOfServer == 'vs') {
+            print 'Checking Voiceserver' . "\r\n";
+        } else {
+            print 'Getting MySQL DB sizes' . "\r\n";
+        }
     } else {
         $checkTypeOfServer='all';
         print 'Checking Gameserver and Voiceserver' . "\r\n";
@@ -1056,19 +1066,24 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 $query2->execute(array($usedslots, $uptime, $newnotified, $newtraffic, $newtrafficdata, $queryName,((isset($server['virtualserver_clientsonline'])) ? $server['virtualserver_clientsonline'] : 0 - 1),(isset($server['virtualserver_maxclients'])) ? $server['virtualserver_maxclients'] : 0, $flagPassword, $ts3id, $resellerid));
                             }
                             if (isset($args['coolDown'])) {
+
                                 $nano = time_nanosleep(0, $args['coolDown']);
+
                                 if ($nano === true) {
-                                    echo 'Slept for '.$args['coolDown'].' microseconds' . "\r\n";
+                                    echo 'Slept for ' . $args['coolDown'] . ' microseconds' . "\r\n";
                                 } elseif ($nano === false) {
                                     echo 'Sleeping failed' . "\r\n";
                                 } elseif (is_array($nano)) {
                                     echo 'Interrupted by a signal' . "\r\n";
-                                    echo 'Time remaining: '.$nano['seconds'].' seconds, '.$nano['nanoseconds'].' nanoseconds' . "\r\n";
+                                    echo 'Time remaining: ' . $nano['seconds'] . ' seconds, ' . $nano['nanoseconds'] . ' nanoseconds' . "\r\n";
                                 }
                             }
                         }
-                    } else print "Error: ".$serverlist[0]['msg'] . "\r\n";
+                    } else {
+                        print "Error: " . $serverlist[0]['msg'] . "\r\n";
+                    }
                 }
+
                 if (isset($connection)) {
                     $connection->CloseConnection();
                     sleep(1);
@@ -1076,9 +1091,57 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             }
         }
     }
+
     flush();
+
+    # MySQL table sizes
+    if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'my') {
+
+        $query = $sql->prepare("SELECT `id`,`ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `active`='Y'");
+        $query2 = $sql->prepare("SELECT `id` FROM `mysql_external_dbs` WHERE `sid`=? AND `dbname`=? LIMIT 1");
+        $query3 = $sql->prepare("UPDATE `mysql_external_dbs` SET `dbSize`=? WHERE `id`=? LIMIT 1");
+
+        $query->execute(array($aeskey));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+            $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword']);
+
+            if ($remotesql->error == 'ok') {
+
+                $list = $remotesql->getDBSizeList();
+
+                if (is_array($list)) {
+
+                    foreach ($list as $db) {
+
+                        $query2->execute(array($row['id'], $db['dbName']));
+                        $dbID = $query2->fetchColumn();
+
+                        if (isid($dbID, 10)) {
+
+                            echo 'Found DB ' . $db['dbName'] . ' with size ' . $db['dbSize'] . "\r\n";
+
+                            $query3->execute(array(round($db['dbSize']), $dbID));
+
+                        } else {
+                            echo 'Cannot find DB ' . $db['dbName'] . ' with size ' . $db['dbSize'] . "\r\n";
+                        }
+                    }
+                } else {
+                    echo 'Error getting DB list for DB Server ' . $row['ip'] . ':' . $row['port'] . ': ' . $list . "\r\n";
+                }
+
+            } else {
+
+                echo 'Error connecting to DB Server ' . $row['ip'] . ':' . $row['port'] . ': ' . $remotesql->error . "\r\n";
+
+            }
+        }
+    }
+
     $query = $sql->prepare("UPDATE `settings` SET `lastCronStatus`=UNIX_TIMESTAMP()");
     $query->execute();
+
 } else {
 	header('Location: login.php');
 	die('Statuscheck can only be run via console or a cronjob');

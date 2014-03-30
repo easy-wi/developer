@@ -57,6 +57,24 @@ class ExternalSQL {
 		}
 	}
 
+    public function getDBSizeList () {
+
+        if ($this->error != 'ok') {
+            return $this->error;
+        }
+
+        try {
+
+            $query = $this->remotesql->prepare("SELECT `table_schema` AS `dbName`,ROUND(SUM(`data_length` + `index_length`)/1048576, 1) AS `dbSize` FROM `information_schema`.`tables` GROUP BY `table_schema`");
+            $query->execute();
+
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $error) {
+            return $error->getMessage();
+        }
+    }
+
     public function AddUser ($username, $password, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
 
         if ($this->error != 'ok') {

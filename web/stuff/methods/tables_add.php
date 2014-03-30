@@ -536,6 +536,7 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `max_updates_per_hour` bigint(19) unsigned DEFAULT 0,
   `max_connections_per_hour` bigint(19) unsigned DEFAULT 0,
   `max_userconnections_per_hour` bigint(19) unsigned DEFAULT 0,
+  `dbSize` int(10) unsigned DEFAULT 0,
   `externalID` varchar(255) DEFAULT NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,

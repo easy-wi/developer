@@ -117,7 +117,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                         #https://github.com/easy-wi/developer/issues/42 column description added
                         $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `description`=?,`password`=AES_ENCRYPT(?,?),`ips`=? WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
-                        $query->execute(array($ui->names('description',255, 'post'), $password, $aeskey, $ips, $id, $user_id, $reseller_id));
+                        $query->execute(array($ui->startparameter('description', 'post'), $password, $aeskey, $ips, $id, $user_id, $reseller_id));
 
                         $remotesql->ModDB($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
 
@@ -147,11 +147,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $table = array();
 
-    $query = $sql->prepare("SELECT e.`id`,e.`dbname`,e.`description`,s.`ip`,s.`interface` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=?");
+    $query = $sql->prepare("SELECT e.`id`,e.`dbname`,e.`description`,e.`dbSize`,s.`ip`,s.`port`,s.`interface` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=?");
     $query->execute(array($user_id, $reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['db'])) {
-            $table[] = array('id' => $row['id'], 'dbname' => $row['dbname'], 'ip' => $row['ip'], 'description' => $row['description'], 'interface' => $row['interface']);
+            $table[] = array('id' => $row['id'], 'dbname' => $row['dbname'], 'dbSize' => $row['dbSize'], 'ip' => $row['ip'], 'port' => $row['port'], 'description' => $row['description'], 'interface' => $row['interface']);
         }
     }
 

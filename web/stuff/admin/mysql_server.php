@@ -63,7 +63,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($ui->st('d', 'get') == 'ms' and !$ui->id('id', 10, 'get') and $pa['mysql_settings']) {
 
+    $table = array();
+
     $o = $ui->st('o', 'get');
+
 	if ($ui->st('o', 'get') == 'ap') {
 		$orderby = '`ip` ASC';
 	} else if ($ui->st('o', 'get') == 'af') {
@@ -82,11 +85,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_servers` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));
     $colcount = $query->fetchColumn();
-    if ($start>$colcount) {
-        $start = $colcount-$amount;
-        if ($start<0)$start = 0;
+
+    if ($start > $colcount) {
+
+        $start = $colcount - $amount;
+
+        if ($start < 0) {
+            $start = 0;
+        }
     }
-	$table = array();
+
 	$query = $sql->prepare("SELECT * FROM `mysql_external_servers` WHERE `resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query2 = $sql->prepare("SELECT `id`,`active`,`dbname` FROM `mysql_external_dbs` WHERE `sid`=? AND `resellerid`=?");
 	$query->execute(array($reseller_id));
@@ -107,6 +115,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 		$table[] = array('id' => $row['id'], 'img' => $imgName,'alt' => $imgAlt,'max_databases' => $row['max_databases'], 'dbcount' => $i,'ip' => $row['ip'], 'interface' => $row['interface'], 'active' => $row['active'], 'server' => $ds);
 	}
+
 	$next = $start+$amount;
     $vor=($colcount>$next) ? $start+$amount : $start;
     $back = $start - $amount;
@@ -444,7 +453,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 } else if ($pa['mysql']) {
+
+    $table = array();
+
     $o = $ui->st('o', 'get');
+
     if ($ui->st('o', 'get') == 'as') {
         $orderby = 'e.`active` ASC';
     } else if ($ui->st('o', 'get') == 'ds') {
@@ -479,9 +492,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $orderby = 'e.`dbname` ASC';
         $o = 'an';
     }
-    $table = array();
+
     #https://github.com/easy-wi/developer/issues/42 column description added
-    $query = $sql->prepare("SELECT e.`id`,e.`uid`,e.`active`,e.`dbname`,e.`description`,e.`jobPending`,s.`ip`,s.`interface`,u.`cname`,u.`name`,u.`vname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
+    $query = $sql->prepare("SELECT e.`id`,e.`uid`,e.`active`,e.`dbname`,e.`description`,e.`jobPending`,e.`dbSize`,s.`ip`,s.`interface`,u.`cname`,u.`name`,u.`vname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='my' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
@@ -507,7 +520,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $dbname = $row['dbname'];
         $jobPending=($row['jobPending'] == 'Y') ? $gsprache->yes: $gsprache->no;
         #https://github.com/easy-wi/developer/issues/42 column description added
-        $table[] = array('id' => $row['id'], 'uid' => $row['uid'], 'img' => $imgName,'description' => $row['description'], 'alt' => $imgAlt,'dbname' => $dbname,'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'ip' => $row['ip'], 'interface' => $row['interface'], 'jobPending' => $jobPending,'active' => $row['active']);
+        $table[] = array('id' => $row['id'], 'uid' => $row['uid'], 'img' => $imgName, 'description' => $row['description'], 'alt' => $imgAlt, 'dbname' => $dbname ,'dbSize' => $row['dbSize'], 'cname' => $row['cname'], 'names' => trim($row['name'] . ' ' . $row['vname']),'ip' => $row['ip'], 'interface' => $row['interface'], 'jobPending' => $jobPending,'active' => $row['active']);
     }
     $next = $start+$amount;
     $countp = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `mysql_external_dbs` WHERE `resellerid`=?");
