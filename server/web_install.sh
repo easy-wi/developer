@@ -323,7 +323,7 @@ elif [ "$WEBSERVER" == "Lighttpd" ]; then
 		mv /etc/lighttpd/sites-available/default /home/$MASTERUSER/sites-enabled/
 	fi
 
-	cp /etc/lighttpd/lighttpd.conf /etc/nginx/lighttpd.conf.backup
+	cp /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.backup
 	echo "include_shell \"find /home/$MASTERUSER/sites-enabled/ -maxdepth 1 -type f -exec cat {} \;\"" >> /etc/lighttpd/lighttpd.conf
 
 elif [ "$WEBSERVER" == "Apache" ]; then

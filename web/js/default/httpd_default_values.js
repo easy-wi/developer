@@ -45,9 +45,9 @@ function loadServerSettings (serverType) {
         defaultVhostTemplate += '   listen 80;\r\n';
         defaultVhostTemplate += '   server_name %url%;\r\n';
         defaultVhostTemplate += '   autoindex off;\r\n';
-        defaultVhostTemplate += '   access_log %vhostpath%/%user%/logs/access.log;\r\n';
-        defaultVhostTemplate += '   error_log %vhostpath%/%user%/logs/error.log;\r\n';
-        defaultVhostTemplate += '   root %vhostpath%/%user%/htdocs/;\r\n';
+        defaultVhostTemplate += '   access_log %vhostpath%/%user%/%logDir%/access.log;\r\n';
+        defaultVhostTemplate += '   error_log %vhostpath%/%user%/%logDir%/error.log;\r\n';
+        defaultVhostTemplate += '   root %vhostpath%/%user%/%htdocs%/;\r\n';
         defaultVhostTemplate += '   location / {\r\n';
         defaultVhostTemplate += '      index index.html index.htm;\r\n';
         defaultVhostTemplate += '   }\r\n';
@@ -59,11 +59,11 @@ function loadServerSettings (serverType) {
 
         defaultVhostTemplate = '<VirtualHost *:80>\r\n';
         defaultVhostTemplate += '    ServerAdmin %email%\r\n';
-        defaultVhostTemplate += '    DocumentRoot "%vhostpath%/%user%/htdocs"\r\n';
+        defaultVhostTemplate += '    DocumentRoot "%vhostpath%/%user%/%htdocs%"\r\n';
         defaultVhostTemplate += '    ServerName %url%\r\n';
-        defaultVhostTemplate += '    ErrorLog "%vhostpath%/%user%/logs/error.log"\r\n';
-        defaultVhostTemplate += '    CustomLog "%vhostpath%/%user%/logs/access.log" common\r\n';
-        defaultVhostTemplate += '    <Directory %vhostpath%/%user%/htdocs>\r\n';
+        defaultVhostTemplate += '    ErrorLog "%vhostpath%/%user%/%logDir%/error.log"\r\n';
+        defaultVhostTemplate += '    CustomLog "%vhostpath%/%user%/%logDir%/access.log" common\r\n';
+        defaultVhostTemplate += '    <Directory %vhostpath%/%user%/%htdocs%>\r\n';
         defaultVhostTemplate += '        Options -Indexes FollowSymLinks Includes\r\n';
         defaultVhostTemplate += '        AllowOverride All\r\n';
         defaultVhostTemplate += '        Order allow,deny\r\n';
@@ -76,9 +76,9 @@ function loadServerSettings (serverType) {
         defaultRestartCMD = 'sudo /etc/init.d/lighttpd reload';
 
         defaultVhostTemplate = '$HTTP["host"] == "%url%" {\r\n';
-        defaultVhostTemplate += '    server.document-root = "%vhostpath%/%user%/htdocs"\r\n';
-        defaultVhostTemplate += '    server.errorlog = "%vhostpath%/%user%/logs/error.log"\r\n';
-        defaultVhostTemplate += '    accesslog.filename = "%vhostpath%/%user%/logs/access.log"\r\n';
+        defaultVhostTemplate += '    server.document-root = "%vhostpath%/%user%/%htdocs%"\r\n';
+        defaultVhostTemplate += '    server.errorlog = "%vhostpath%/%user%/%logDir%/error.log"\r\n';
+        defaultVhostTemplate += '    accesslog.filename = "%vhostpath%/%user%/%logDir%/access.log"\r\n';
         defaultVhostTemplate += '    dir-listing.activate = "disable""\r\n';
         defaultVhostTemplate += '}';
 
@@ -88,9 +88,9 @@ function loadServerSettings (serverType) {
 
         defaultVhostTemplate = 'VirtualHost {\r\n';
         defaultVhostTemplate += '    Hostname = %url%\r\n';
-        defaultVhostTemplate += '    WebsiteRoot = %vhostpath%/%user%/htdocs\r\n';
-        defaultVhostTemplate += '    AccessLogfile = %vhostpath%/%user%/logs/access.log\r\n';
-        defaultVhostTemplate += '    ErrorLogfile = %vhostpath%/%user%/logs/error.log\r\n';
+        defaultVhostTemplate += '    WebsiteRoot = %vhostpath%/%user%/%htdocs%\r\n';
+        defaultVhostTemplate += '    AccessLogfile = %vhostpath%/%user%/%logDir%/access.log\r\n';
+        defaultVhostTemplate += '    ErrorLogfile = %vhostpath%/%user%/%logDir%/error.log\r\n';
         defaultVhostTemplate += '    ShowIndex = No\r\n';
         defaultVhostTemplate += '}';
 

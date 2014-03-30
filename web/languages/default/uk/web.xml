@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <blocksize>Blocksize</blocksize>
-    <createDirs>Folders to be created</createDirs>
     <defaultdns>Default Domain</defaultdns>
+    <dirHttpd>Htdocs Folder</dirHttpd>
+    <dirLogs>Logs Folder</dirLogs>
     <dns>Domain</dns>
     <error_password_not_match>FTP passwords does not match</error_password_not_match>
     <error_password_not_set>FTP password not allowed, not set, or not repeated.</error_password_not_set>
@@ -14,7 +15,6 @@
     <ftpPort>FTP Port</ftpPort>
     <hdd>Diskspace</hdd>
     <help_blocksize>Most filesystems are configured with a blocksize of 4096. This means one block contains 4096 Byte data.</help_blocksize>
-    <help_create_dirs>Semicolon separated list. Recommended method is to create folders once at /home/yourMasterUser/skel/.</help_create_dirs>
     <help_fdl_attention>Warning! Recommended method is to create a subfolder for each game. Naming could be like cod4, cstrike, css, etc.</help_fdl_attention>
     <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) and Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) based servers need entries like this at the server.cfg</help_fdl_hl>
     <help_fdl_cod>Call of Duty Server require eintries like this at the server.cfg</help_fdl_cod>

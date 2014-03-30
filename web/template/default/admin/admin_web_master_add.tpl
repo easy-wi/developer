@@ -131,8 +131,12 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="inputCreateDirs"><?php echo $sprache->createDirs;?></label>
-                <div class="controls"><input id="inputCreateDirs" class="span11" type="text" name="createDirs" value="<?php echo $createDirs;?>"><span class="help-block alert alert-info"><?php echo $sprache->help_create_dirs;?></span></div>
+                <label class="control-label" for="inputDirHttpd"><?php echo $sprache->dirHttpd;?></label>
+                <div class="controls"><input id="inputDirHttpd" class="span11" type="text" name="dirHttpd" value="<?php echo $dirHttpd;?>"></div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputDirLogs"><?php echo $sprache->dirLogs;?></label>
+                <div class="controls"><input id="inputDirLogs" class="span11" type="text" name="dirLogs" value="<?php echo $dirLogs;?>"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputHttpdCmd"><?php echo $sprache->httpdCmd;?></label>

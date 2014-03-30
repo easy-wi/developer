@@ -183,3 +183,5 @@ $sql->exec("DELETE v.* FROM `virtualcontainer` v LEFT JOIN `userdata` u ON v.`us
 $sql->exec("DELETE v.* FROM `voice_dns` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
 $sql->exec("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid`=u.`id` WHERE u.`id` IS NULL");
 $sql->exec("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE v.* FROM `webVhost` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE v.* FROM `webVhost` v LEFT JOIN `webMaster` m ON v.`webMasterID`=m.`webMasterID` WHERE m.`webMasterID` IS NULL");

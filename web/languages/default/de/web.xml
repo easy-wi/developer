@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <blocksize>Block Größe</blocksize>
-    <createDirs>Zu erstellende Ordner</createDirs>
     <defaultdns>Standard Domain</defaultdns>
+    <dirHttpd>Htdocs Verzeichnis</dirHttpd>
+    <dirLogs>Logs Verzeichnis</dirLogs>
     <dns>Domain</dns>
     <error_password_not_match>FTP Passwörter stimmen nicht überein</error_password_not_match>
     <error_password_not_set>FTP Passwort unzulässig, nicht angegeben, oder Wiederholung nicht angegeben.</error_password_not_set>
@@ -14,7 +15,6 @@
     <ftpPort>FTP Port</ftpPort>
     <hdd>Speicherplatz</hdd>
     <help_blocksize>Bei den meisten Systemen beträgt die Block Größe 4096. D.h. ein Block enthält 4096 Byte an Daten.</help_blocksize>
-    <help_create_dirs>Semikolon getrennte Liste. Es ist besser, die Ordner einmalig in /home/deinMasterUser/skel/ zu erstellen.</help_create_dirs>
     <help_fdl_attention>Achtung! Es wird empfohlen, dass man je Spiel einen eigenen Unterordner wie cod4, cstrike, css, etc. erstellt und den Ordner in der Config mit angibt.</help_fdl_attention>
     <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) und Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) basierende Server brauchen folgenden Eintrag in der server.cfg</help_fdl_hl>
     <help_fdl_cod>Call of Duty Server brauchen folgenden Eintrag in der server.cfg</help_fdl_cod>
