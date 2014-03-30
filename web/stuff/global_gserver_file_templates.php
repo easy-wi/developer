@@ -71,9 +71,9 @@ if (isset($userInclude)) {
     }
 }
 
-if (!isset($main) or $main != 1 or !isset($targetFile) or !$pa['gserver']) {
+if (!isset($main) or $main != 1 or !isset($targetFile) or (!$pa['gserver'] and !$pa['restart'])) {
     $targetFile = (isset($targetFile)) ? $targetFile : 'login.php';
-    header('Location: ' . $targetFile . '');
+    header('Location: ' . $targetFile);
     die;
 }
 
