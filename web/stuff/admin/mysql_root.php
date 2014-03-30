@@ -138,6 +138,8 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
                 } else {
                     $template_file .= 'Skipped: ' . $image[':description'] .'<br>';
                 }
+            } else if (in_array($image[':shorten'], $array) and count($image) != 32) {
+                $template_file .= 'Skipped: ' . $image[':description'] .'. Array size is ' . count($image) . ' instead of 32<br>';
             }
         }
 
