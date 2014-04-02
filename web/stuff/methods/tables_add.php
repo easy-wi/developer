@@ -1589,21 +1589,6 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_server_stats` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query = "CREATE TABLE IF NOT EXISTS `voice_server_stats_hours` (
-  `sid` int(10) unsigned NOT NULL,
-  `mid` int(10) unsigned NOT NULL,
-  `installed` decimal(6,2) unsigned NOT NULL,
-  `used` decimal(6,2) unsigned NOT NULL,
-  `traffic` bigint(19) unsigned NOT NULL,
-  `date` datetime DEFAULT NULL,
-  `uid` int(10) unsigned DEFAULT NULL,
-  `count` bigint(19) unsigned DEFAULT 0,
-  `resellerid` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`sid`,`date`),KEY(`mid`),KEY(`uid`),KEY(`resellerid`)
-) ENGINE=InnoDB";
-$add = $sql->prepare($query);
-$add->execute();
-
 $query = "CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `text_colour_1` smallint(3) unsigned DEFAULT 0,
@@ -1615,6 +1600,9 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
   `barout_colour_1` smallint(3) unsigned DEFAULT 0,
   `barout_colour_2` smallint(3) unsigned DEFAULT '191',
   `barout_colour_3` smallint(3) unsigned DEFAULT '255',
+  `bartraffic_colour_1` smallint(3) unsigned DEFAULT 0,
+  `bartraffic_colour_2` smallint(3) unsigned DEFAULT 0,
+  `bartraffic_colour_3` smallint(3) unsigned DEFAULT 0,
   `bg_colour_1` smallint(3) unsigned DEFAULT '240',
   `bg_colour_2` smallint(3) unsigned DEFAULT '240',
   `bg_colour_3` smallint(3) unsigned DEFAULT '255',

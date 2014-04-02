@@ -1381,18 +1381,6 @@ $defined['voice_server_stats'] = array(
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_server_stats_hours'] = array(
-    'sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
-    'date' => array("Type"=>"datetime","Null"=>"NO","Key"=>"PRI","Default"=>"0000-00-00 00:00:00","Extra"=>""),
-    'mid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
-    'installed' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'used' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'traffic' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'uid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
-    'count' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),
-    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
-);
-
 $defined['voice_stats_settings'] = array(
     'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'text_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
@@ -1404,6 +1392,9 @@ $defined['voice_stats_settings'] = array(
     'barout_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'barout_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"191","Extra"=>""),
     'barout_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"255","Extra"=>""),
+    'bartraffic_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
+    'bartraffic_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
+    'bartraffic_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'bg_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"240","Extra"=>""),
     'bg_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"240","Extra"=>""),
     'bg_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"255","Extra"=>""),

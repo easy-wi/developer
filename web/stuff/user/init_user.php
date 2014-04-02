@@ -202,6 +202,7 @@ if ($vhostcount > 0 and $easywiModules['ws'] === true) {
 
 if ($voicecount > 0 and $easywiModules['vo'] === true) {
     $what_to_be_included_array['vo'] = 'userpanel_voice.php';
+    $what_to_be_included_array['vu'] = 'userpanel_voice_usage.php';
 }
 
 if ($tsdnscount > 0 and $easywiModules['vo'] === true) {

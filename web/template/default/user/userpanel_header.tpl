@@ -146,10 +146,11 @@
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour"><i class="fa fa-microphone fa-fw"></i> <?php echo $gsprache->voiceserver;?></a>
                         </div>
-                        <div id="collapseFour" class="accordion-body collapse <?php if(in_array($w,array('vo','vd'))) echo 'in';?>">
+                        <div id="collapseFour" class="accordion-body collapse <?php if(in_array($w,array('vo','vu','vd'))) echo 'in';?>">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($voicecount>0) { ?><li <?php if($w=='vo') echo 'class="active"';?>><a href="userpanel.php?w=vo"><?php echo $gsprache->overview;?></a></li><?php } ?>
+                                    <?php if($voicecount>0) { ?><li <?php if($w=='vu') echo 'class="active"';?>><a href="userpanel.php?w=vu"><?php echo $gsprache->stats;?></a></li><?php } ?>
                                     <?php if($tsdnscount>0) { ?><li <?php if($w=='vd') echo 'class="active"';?>><a href="userpanel.php?w=vd">TS3 DNS</a></li><?php } ?>
                                     <?php foreach ($customModules['vo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>

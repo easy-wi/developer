@@ -351,10 +351,10 @@ option domain-name-servers 1.1.1.1;';
     }
     $pages = implode(', ', $pages);
 
-    $query = $sql->prepare("SELECT * FROM `rootsSubnets` ORDER BY $orderby LIMIT $start,$amount");
+    $query = $sql->prepare("SELECT * FROM `rootsSubnets` ORDER BY $orderby LIMIT " . $start . "," . $amount);
     $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[] = array('id' => $row['subnetID'], 'active' => $row['active'], 'subnet' => $row['subnet'], 'vlanName' => $row['vlanName']);
+        $table[] = array('id' => $row['subnetID'], 'active' => $row['active'], 'subnet' => $row['subnet'] . '.' . $row['subnetStart'] . ' - ' . $row['subnet'] . '.' . $row['subnetStop'], 'vlanName' => $row['vlanName']);
     }
 
     $template_file = 'admin_root_subnets_list.tpl';

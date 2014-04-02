@@ -100,6 +100,51 @@ if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'g
 
     $template_file = 'ajax_admin_web_master.tpl';
 
+} else if (isset($user_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 14, 'get') == 'uservoicestats' and $ui->st('w', 'get')) {
+
+    $data = array();
+
+    if ($ui->st('w', 'get') == 'se') {
+
+        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`userid`=? AND v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' ORDER BY v.`ip`,v.`port`");
+        $query->execute(array($user_id, $resellerLockupID));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $data[] = '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
+        }
+    }
+
+    require_once IncludeTemplate($template_to_use,'ajax_userpanel_voice_stats.tpl', 'ajax');
+
+} else if (isset($admin_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 15, 'get') == 'adminvoicestats' and $ui->st('w', 'get')) {
+
+    $data = array();
+
+    if ($ui->st('w', 'get') == 'us') {
+        $query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
+        $query->execute(array($resellerLockupID));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $data[] = '<option value=' . $row['id'] . '>' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']) . '</option>';
+        }
+
+    } else if ($ui->st('w', 'get') == 'se') {
+
+        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
+        $query->execute(array($resellerLockupID));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $data[] = '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
+        }
+
+    } else if ($ui->st('w', 'get') == 'ma') {
+
+        $query = $sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? AND `active`='Y' ORDER BY `ssh2ip`");
+        $query->execute(array($resellerLockupID));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $data[] = '<option value=' . $row['id'] . '>' . $row['ssh2ip'] . '</option>';
+        }
+
+    }
+
+    require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl', 'ajax');
 }
 
 if (isset($template_file)) {

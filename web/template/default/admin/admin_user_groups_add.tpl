@@ -381,6 +381,12 @@
                 </div>
             </div>
             <div class="u switch control-group">
+                <label class="control-label" for="inputUVoiceserverStats"><?php echo $gsprache->voiceserver." ".$gsprache->stats;?></label>
+                <div class="controls">
+                    <input id="inputUVoiceserverStats" type="checkbox" name="uvoiceserverStats" value="Y">
+                </div>
+            </div>
+            <div class="u switch control-group">
                 <label class="control-label" for="inputURestart"><?php echo $gsprache->gameserver." ".$sprache->restart;?></label>
                 <div class="controls">
                     <input id="inputURestart" type="checkbox" name="restart" value="Y">

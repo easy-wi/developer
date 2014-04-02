@@ -3,6 +3,8 @@
 	<all>All</all>
 	<barin_colour>Incomming traffic</barin_colour>
 	<barout_colour>Outgoing traffic</barout_colour>
+    <bar_slots_total_colour>Total Slots</bar_slots_total_colour>
+    <bar_slots_usage_colour>Used Slots</bar_slots_usage_colour>
 	<bartotal_colour>Total traffic</bartotal_colour>
 	<bg_colour>Background</bg_colour>
     <blue>Blue</blue>

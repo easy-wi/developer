@@ -436,6 +436,6 @@ if ($d== 'se' and $reseller_id == 0) {
 		$startdate="$year-$month-$day";
 		$stopdate="$yearstop-$monthstop-$daystop";
 	}
-	$trafficdata="images.php?img=tr&amp;d=$dmy&amp;w = $unit&amp;p=$year&amp;id=$day&amp;po=$month&amp;m=$amount$whichdata";
+	$trafficdata = "images.php?img=tr&amp;from=admin&amp;d={$dmy}&amp;w={$unit}&amp;p={$year}&amp;id={$day}&amp;po={$month}&amp;m={$amount}{$whichdata}";
 	$template_file = "admin_traffic.tpl";
 }

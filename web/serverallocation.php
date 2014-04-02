@@ -264,24 +264,7 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 		foreach ($ips as $ip) $data[] = '<option>'.$ip.'</option>';
 	}
     require_once IncludeTemplate($template_to_use,'ajax_admin_traffic.tpl', 'ajax');
-} else if ($ui->st('d', 'get')=="vu" and $ui->st('w', 'get')) {
-	if ($ui->st('w', 'get')=="us") {
-		$query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
-        $query->execute(array($reseller_id));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
-	} else if ($ui->st('w', 'get')=="se") {
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
-        $query->execute(array($reseller_id));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $server = $row['ip'] . ':' . $row['port'];
-			$data[] = '<option value='.$row['id'].'>'.$server.'</option>';
-		}
-	} else if ($ui->st('w', 'get')=="ma") {
-        $query = $sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? ORDER BY `ssh2ip`");
-        $query->execute(array($reseller_id));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $data[] = '<option value='.$row['id'].'>'.$row['ssh2ip'].'</option>';
-	}
-    require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl', 'ajax');
+
 } else if ($ui->username('distro', 50, 'get') and $ui->id('id',19, 'get') and ($pa['vserversettings'] or $pa['root']) and $reseller_id == 0) {
 	$pselect = $sql->prepare("SELECT `pxeautorun` FROM `resellerimages` WHERE `bitversion`=? AND `distro`=?");
 	$pselect->execute(array($ui->id('id',19, 'get'), $ui->username('distro', 50, 'get')));

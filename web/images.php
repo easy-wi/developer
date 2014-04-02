@@ -45,11 +45,16 @@ include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
 
-if (isset($admin_id) and $ui->st('img', 'get')) {
-    $pa = User_Permissions($admin_id);
+if (((isset($admin_id) and $ui->w('from', 5,'get') == 'admin') or (isset($user_id) and $ui->w('from', 5,'get') == 'user')) and $ui->st('img', 'get')) {
+
+    $pa = User_Permissions((isset($user_id) and $ui->w('from', 5,'get') == 'user') ? $user_id : $admin_id);
+
     $multiplier = 1;
-    if ($ui->st('img', 'get') == 'tr' and ($pa['traffic'] or $pa['root'])) {
+
+    if ($ui->st('img', 'get') == 'tr' and ($pa['traffic'] or $pa['root']) and isset($admin_id)) {
+
         $values = array();
+
         $query = $sql->prepare("SELECT `multiplier`,`text_colour_1`,`text_colour_2`,`text_colour_3`,`barin_colour_1`,`barin_colour_2`,`barin_colour_3`,`barout_colour_1`,`barout_colour_2`,`barout_colour_3`,`bartotal_colour_1`,`bartotal_colour_2`,`bartotal_colour_3`,`bg_colour_1`,`bg_colour_2`,`bg_colour_3`,`border_colour_1`,`border_colour_2`,`border_colour_3`,`line_colour_1`,`line_colour_2`,`line_colour_3` FROM `traffic_settings` LIMIT 1");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -76,6 +81,7 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
             $line_colour_2 = $row['line_colour_2'];
             $line_colour_3 = $row['line_colour_3'];
         }
+
         if ($ui->id('id', 19, 'get') and $list_gtype != '' and $ui->id('p', 19, 'get') . '-' . $ui->port('po', 'get') . '-' . $ui->id('id',19, 'get') > 0) {
             $i = 0;
             $stop = $list_gtype;
@@ -230,10 +236,13 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
                 $i++;
             }
         }
+
         foreach($values as $value) {
             $max_values[] = max($value);
         }
+
         $total_bars = count($max_values);
+
         if ($total_bars > 0) {
             $img_width = 725;
             $margintop = 30;
@@ -330,7 +339,9 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
             imagepng($img);
         }
     } else if ($ui->st('img', 'get') == 'vo' and ($pa['voicemasterserver'] or $pa['voiceserver'] or $pa['root'])) {
+
         $values = array();
+
         $query = $sql->prepare("SELECT * FROM `voice_stats_settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -343,6 +354,9 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
             $barout_colour_1 = $row['barout_colour_1'];
             $barout_colour_2 = $row['barout_colour_2'];
             $barout_colour_3 = $row['barout_colour_3'];
+            $bartraffic_colour_1 = $row['bartraffic_colour_1'];
+            $bartraffic_colour_2 = $row['bartraffic_colour_2'];
+            $bartraffic_colour_3 = $row['bartraffic_colour_3'];
             $bg_colour_1 = $row['bg_colour_1'];
             $bg_colour_2 = $row['bg_colour_2'];
             $bg_colour_3 = $row['bg_colour_3'];
@@ -353,24 +367,29 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
             $line_colour_2 = $row['line_colour_2'];
             $line_colour_3 = $row['line_colour_3'];
         }
-        if ($ui->id('id', 19, 'get') and $list_gtype != '' and $start>0) {
+
+        if ($ui->id('id', 19, 'get') and $start > 0) {
+
             $i = 0;
-            $stop = $list_gtype;
+            $stop = ($ui->pregw('m', 14, 'get')) ? $ui->pregw('m', 14, 'get') : 1;
+
             if ($ui->st('d', 'get') == 'md' or $ui->st('d', 'get') == 'to') {
                 $stop = 23;
-                $starttime = strtotime($ui->id('p', 19, 'get') . '-' . $ui->port('po', 'get') . '-' . $ui->id('id',19, 'get'));
+                $starttime = strtotime($ui->id('p', 19, 'get') . '-' . $ui->id('po', 19, 'get') . '-' . $ui->id('id', 19, 'get'));
                 $now = date('Y-m-d H');
             } else if ($ui->st('d', 'get') == 'da') {
-                $starttime = strtotime($ui->id('p', 19, 'get') . '-' . $ui->port('po', 'get') . '-' . $ui->id('id',19, 'get'));
+                $starttime = strtotime($ui->id('p', 19, 'get') . '-' . $ui->id('po', 19, 'get') . '-' . $ui->id('id', 19, 'get'));
                 $now = date('Y-m-d');
             } else if ($ui->st('d', 'get') == 'mo') {
-                $starttime = strtotime($ui->id('p', 19, 'get') . '-' . $ui->port('po', 'get'));
+                $starttime = strtotime($ui->id('p', 19, 'get') . '-' . $ui->id('po', 19, 'get'));
                 $now = date('Y-m-d');
             } else if ($ui->st('d', 'get') == 'ye') {
                 $starttime = strtotime($ui->id('p', 19, 'get'));
                 $now = date('Y-m-d');
             }
+
             while ($i < $stop) {
+
                 if ($ui->st('d', 'get') == 'md' or $ui->st('d', 'get') == 'to') {
                     $day1 = date('Y-m-d H',strtotime("+$i hour", $starttime));
                 } else if ($ui->st('d', 'get') == 'da') {
@@ -380,45 +399,82 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
                 } else if ($ui->st('d', 'get') == 'ye') {
                     $day1 = date('Y',strtotime("+$i year", $starttime));
                 }
+
                 if ($day1 <= $now) {
+
                     $like = $day1 . '%';
+
                     if ($ui->st('d', 'get') == 'md' or $ui->st('d', 'get') == 'to') {
-                        $day2 = date('H',strtotime($day1.':00:00')).':00:00';
+                        $day2 = date('H', strtotime($day1.':00:00')).':00:00';
                     } else if ($ui->st('d', 'get') == 'da') {
-                        $day2 = date('d.m.Y',strtotime($day1));
+                        $day2 = date('d.m.Y', strtotime($day1));
                     } else if ($ui->st('d', 'get') == 'mo') {
-                        $day2 = date('m.Y',strtotime($day1));
+                        $day2 = date('m.Y', strtotime($day1));
                     } else if ($ui->st('d', 'get') == 'ye') {
-                        $day2 = date('Y',strtotime($day1));
+                        $day2 = date('Y', strtotime($day1));
                     }
+
+                    $values[$day2] = array(0, 0, 0);
+
                     if ($ui->username('shorten', 50, 'get')) {
-                        $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`installed`)/COUNT(`sid`) AS `averageinstalled` FROM `voice_server_stats` WHERE `date` LIKE ? AND `sid`=? AND `resellerid`=?");
-                        $query->execute(array($like, $ui->username('shorten', 50, 'get'), $reseller_id));
-                    } else if ($ui->username('distro', 50, 'get')) {
-                        $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageused`,SUM(`installed`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageinstalled` FROM `voice_server_stats` WHERE `date` LIKE ? AND `uid`=? AND `resellerid`=?");
+
+                        if ($ui->w('from', 5,'get') == 'admin' and isset($admin_id)) {
+
+                            $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`installed`)/COUNT(`sid`) AS `averageinstalled`,SUM(`traffic`)/1048576 as `fileTrafficGB` FROM `voice_server_stats` WHERE `date` LIKE ? AND `sid`=? AND `resellerid`=?");
+                            $query->execute(array($like, $ui->username('shorten', 50, 'get'), $reseller_id));
+
+                        } else {
+
+                            $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`installed`)/COUNT(`sid`) AS `averageinstalled`,SUM(`traffic`)/1048576 as `fileTrafficGB` FROM `voice_server_stats` WHERE `date` LIKE ? AND `sid`=? AND `uid`=? AND `resellerid`=?");
+                            $query->execute(array($like, $ui->username('shorten', 50, 'get'), $user_id, $reseller_id));
+
+                        }
+
+                    } else if ($ui->username('distro', 50, 'get') and isset($admin_id) and $ui->w('from', 5,'get') == 'admin') {
+
+                        $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageused`,SUM(`installed`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageinstalled`,SUM(`traffic`)/1048576 as `fileTrafficGB` FROM `voice_server_stats` WHERE `date` LIKE ? AND `uid`=? AND `resellerid`=?");
                         $query->execute(array($like, $ui->username('distro', 50, 'get'), $reseller_id));
-                    } else if ($ui->username('short', 50, 'get')) {
-                        $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageused`,SUM(`installed`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageinstalled` FROM `voice_server_stats` WHERE `date` LIKE ? AND `mid`=? AND `resellerid`=?");
+
+                    } else if ($ui->username('short', 50, 'get') and isset($admin_id) and $ui->w('from', 5,'get') == 'admin') {
+
+                        $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageused`,SUM(`installed`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageinstalled`,SUM(`traffic`)/1048576 as `fileTrafficGB` FROM `voice_server_stats` WHERE `date` LIKE ? AND `mid`=? AND `resellerid`=?");
                         $query->execute(array($like, $ui->username('short', 50, 'get'), $reseller_id));
+
                     } else {
-                        $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageused`,SUM(`installed`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageinstalled` FROM `voice_server_stats` WHERE `date` LIKE ? AND `resellerid`=?");
-                        $query->execute(array($like, $reseller_id));
+
+                        if ($ui->w('from', 5,'get') == 'admin' and isset($admin_id)) {
+
+                            $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageused`,SUM(`installed`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageinstalled`,SUM(`traffic`)/1048576 as `fileTrafficGB` FROM `voice_server_stats` WHERE `date` LIKE ? AND `resellerid`=?");
+                            $query->execute(array($like, $reseller_id));
+
+                        } else {
+                            $query = $sql->prepare("SELECT SUM(`used`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageused`,SUM(`installed`)/COUNT(`sid`)*COUNT(DISTINCT(`sid`)) AS `averageinstalled`,SUM(`traffic`)/1048576 as `fileTrafficGB` FROM `voice_server_stats` WHERE `date` LIKE ? AND `uid`=? AND `resellerid`=?");
+                            $query->execute(array($like, $user_id, $reseller_id));
+                        }
                     }
+
                     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
                         $averageused = (isset($row['averageused'])) ? round($row['averageused']) : 0;
                         $averageinstalled = (isset($row['averageinstalled'])) ? round($row['averageinstalled']) : 0;
-                        $values[$day2] = array($averageused, $averageinstalled);
+                        $fileTrafficGB = (isset($row['fileTrafficGB'])) ? $row['fileTrafficGB'] : 0;
+                        $values[$day2] = array($averageused, $averageinstalled, $fileTrafficGB);
                     }
                 }
+
                 $i++;
             }
         }
+
         $max_values = array();
+
         foreach($values as $value) {
             $max_values[] = max($value);
         }
+
         $total_bars = count($max_values);
-        if ($total_bars>0) {
+
+        if ($total_bars > 0) {
+
             $img_width = 725;
             $margintop = 30;
             $marginbottom = 30;
@@ -427,25 +483,32 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
             $bar_heigth = 10;
             $spacing1 = 2;
             $spacing2 = 20;
+
             $textspacingleft = ($marginleft / 10) + 2;
-            $img_height = $margintop + $marginbottom + ($total_bars * 2 * $bar_heigth) + ((( $total_bars * 2 ) - $total_bars) * $spacing1 ) + ( ( $total_bars - 1 ) * $spacing2 );
-            $graph_width = $img_width - ($marginleft + $marginright);
+            $img_height = $margintop + $marginbottom + ($total_bars * 3 * $bar_heigth) + ((( $total_bars * 3 ) - $total_bars) * $spacing1 ) + ( ( $total_bars - 1 ) * $spacing2 );
+            $graph_width = $img_width - ($marginleft + $marginright + 40);
             $img = imagecreate($img_width, $img_height);
             $text_color = imagecolorallocate($img, $text_colour_1, $text_colour_2, $text_colour_3);
             $bar_in = imagecolorallocate($img, $barin_colour_1, $barin_colour_2, $barin_colour_3);
             $bar_out = imagecolorallocate($img, $barout_colour_1, $barout_colour_2, $barout_colour_3);
+            $bar_traffic = imagecolorallocate($img, $bartraffic_colour_1, $bartraffic_colour_2, $bartraffic_colour_3);
             $background_color = imagecolorallocate($img, $bg_colour_1, $bg_colour_2, $bg_colour_3);
             $border_color = imagecolorallocate($img, $border_colour_1, $border_colour_2, $border_colour_3);
             $line_color = imagecolorallocate($img, $line_colour_1, $line_colour_2, $line_colour_3);
             $max_value = max($max_values);
+
             if ($max_value == 0) {
-                $max_value=0.000001;
+                $max_value = 0.000001;
             }
+
             $ratio = $graph_width / $max_value;
+
             imagefilledrectangle($img, 0, 0, $img_width, $img_height, $background_color);
             $lines = 10;
-            $vertical_gap = $graph_width/$lines;
+
+            $vertical_gap = $graph_width / $lines;
             $i = 1;
+
             while ($i <= $lines) {
                 $key = round(($max_value / $lines ) * ($lines - $i));
                 $x = $img_width - $marginright - $vertical_gap * $i ;
@@ -455,35 +518,53 @@ if (isset($admin_id) and $ui->st('img', 'get')) {
                 $v = intval($vertical_gap * $i /$ratio);
                 $i++;
             }
+
             $i = 0;
             $more = 0;
+
             while ($i < $total_bars) {
-                foreach ($values as $key=>$array) {
+
+                foreach ($values as $key => $array) {
+
                     $i2 = 0;
+
                     foreach ($array as $amount) {
+
                         $x1 = $marginleft;
                         $x2 = $marginleft + $amount * $ratio ;
-                        $y1 = $margintop + $i * $bar_heigth ;
-                        $y1new = $y1+$more;
-                        $y1 = $y1new;
+                        $y1 = $margintop + ($i * $bar_heigth) + $more;
                         $y2= $y1 + $bar_heigth;
-                        if ($i2 == 1) {
-                            $morenew = $more+$spacing2;
+
+                        if ($i2 == 2) {
+                            $morenew = $more + $spacing2;
                             $more = $morenew;
                         } else {
-                            $morenew = $more+$spacing1;
+                            $morenew = $more + $spacing1;
                             $more = $morenew;
                         }
-                        $display = round($amount);
-                        imagestring($img,0, $x2+5, $y1, $display, $text_color);
+
                         if ($i2 == 0) {
-                            imagestring($img, $y1+$spacing1+$bar_heigth,2, $y1+$spacing1, $key, $text_color);
+                            imagestring($img, 0, $x2 + 5, $y1, round($amount) . ' Used', $text_color);
+                        } else if ($i2 == 1) {
+                            imagestring($img, 0, $x2 + 5, $y1, round($amount) . ' Installed', $text_color);
+                        } else if ($i2 == 2) {
+                            imagestring($img, 0, $x2 + 5, $y1, $amount . 'GB Filetraffic', $text_color);
                         }
+
+
+
+                        if ($i2 == 0) {
+                            imagestring($img, $y1 + $spacing1 + $bar_heigth, 2, $y1 + $spacing1, $key, $text_color);
+                        }
+
                         if ($i2 == 0) {
                             imagefilledrectangle($img, $x1, $y1, $x2, $y2, $bar_in);
                         } else if ($i2 == 1) {
                             imagefilledrectangle($img, $x1, $y1, $x2, $y2, $bar_out);
+                        } else if ($i2 == 2) {
+                            imagefilledrectangle($img, $x1, $y1, $x2, $y2, $bar_traffic);
                         }
+
                         $i++;
                         $i2++;
                     }

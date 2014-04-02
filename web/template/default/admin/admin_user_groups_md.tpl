@@ -382,6 +382,12 @@
                 </div>
             </div>
             <div class="u <?php if ($grouptype!='u') echo 'display_none';?> switch control-group">
+                <label class="control-label" for="inputUVoiceserverStats"><?php echo $gsprache->voiceserver." ".$gsprache->stats;?></label>
+                <div class="controls">
+                    <input id="inputUVoiceserverStats" type="checkbox" name="uvoiceserverStats" value="Y" <?php if ($voiceserverStats=='Y') echo 'checked="checked"'; ?>>
+                </div>
+            </div>
+            <div class="u <?php if ($grouptype!='u') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputURestart"><?php echo $gsprache->gameserver." ".$sprache->restart;?></label>
                 <div class="controls">
                     <input id="inputURestart" type="checkbox" name="restart" value="Y" <?php if ($restart=='Y') echo 'checked="checked"'; ?>>

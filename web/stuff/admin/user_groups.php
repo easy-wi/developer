@@ -278,6 +278,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $usertickets = yesNo('usertickets');
                 $ftpbackup = yesNo('ftpbackup');
                 $voiceserver = yesNo('voiceserver');
+                $voiceserverStats = yesNo('uvoiceserverStats');
                 $apiSettings = yesNo('uapiSettings');
                 $jobs = yesNo('ujobs');
                 $mysql = yesNo('umysql');

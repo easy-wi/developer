@@ -108,7 +108,6 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     'voice_masterserver' => 'resellerid',
                     'translations' => 'resellerID',
                     'voice_server_stats' => 'resellerid',
-                    'voice_server_stats_hours' => 'resellerid',
                     'voice_stats_settings' => 'resellerid',
                     'mysql_external_servers' => 'resellerid',
                     'mysql_external_dbs' => 'resellerid',

@@ -24,28 +24,40 @@
                 <div class="controls"><input id="inputTextColourBlue" type="number" name="text_colour_3" value="<?php echo $text_colour_3?>" min="0" max="255" step="1" required></div>
             </div>
             <div class="control-group error">
-                <label class="control-label" for="inputBarInColourRed"><?php echo $sprache->barin_colour.' '.$sprache->red;?></label>
+                <label class="control-label" for="inputBarInColourRed"><?php echo $sprache->bar_slots_usage_colour.' '.$sprache->red;?></label>
                 <div class="controls"><input id="inputBarInColourRed" type="number" name="barin_colour_1" value="<?php echo $barin_colour_1?>" min="0" max="255" step="1" required></div>
             </div>
             <div class="control-group info">
-                <label class="control-label" for="inputBarInColourGreen"><?php echo $sprache->barin_colour.' '.$sprache->blue;?></label>
+                <label class="control-label" for="inputBarInColourGreen"><?php echo $sprache->bar_slots_usage_colour.' '.$sprache->blue;?></label>
                 <div class="controls"><input id="inputBarInColourGreen" type="number" name="barin_colour_2" value="<?php echo $barin_colour_2?>" min="0" max="255" step="1" required></div>
             </div>
             <div class="control-group success">
-                <label class="control-label" for="inputBarInColourBlue"><?php echo $sprache->barin_colour.' '.$sprache->green;?></label>
+                <label class="control-label" for="inputBarInColourBlue"><?php echo $sprache->bar_slots_usage_colour.' '.$sprache->green;?></label>
                 <div class="controls"><input id="inputBarInColourBlue" type="number" name="barin_colour_3" value="<?php echo $barin_colour_3?>" min="0" max="255" step="1" required></div>
             </div>
             <div class="control-group error">
-                <label class="control-label" for="inputBarOutColourRed"><?php echo $sprache->barout_colour.' '.$sprache->red;?></label>
+                <label class="control-label" for="inputBarOutColourRed"><?php echo $sprache->bar_slots_total_colour.' '.$sprache->red;?></label>
                 <div class="controls"><input id="inputBarOutColourRed" type="number" name="barout_colour_1" value="<?php echo $barout_colour_1?>" min="0" max="255" step="1" required></div>
             </div>
             <div class="control-group info">
-                <label class="control-label" for="inputBarOutColourGreen"><?php echo $sprache->barout_colour.' '.$sprache->blue;?></label>
+                <label class="control-label" for="inputBarOutColourGreen"><?php echo $sprache->bar_slots_total_colour.' '.$sprache->blue;?></label>
                 <div class="controls"><input id="inputBarOutColourGreen" type="number" name="barout_colour_2" value="<?php echo $barout_colour_2?>" min="0" max="255" step="1" required></div>
             </div>
             <div class="control-group success">
-                <label class="control-label" for="inputBarOutColourBlue"><?php echo $sprache->barout_colour.' '.$sprache->green;?></label>
+                <label class="control-label" for="inputBarOutColourBlue"><?php echo $sprache->bar_slots_total_colour.' '.$sprache->green;?></label>
                 <div class="controls"><input id="inputBarOutColourBlue" type="number" name="barout_colour_3" value="<?php echo $barout_colour_3?>" min="0" max="255" step="1" required></div>
+            </div>
+            <div class="control-group error">
+                <label class="control-label" for="inputBarTrafficColourRed"><?php echo $sprache->bartotal_colour.' '.$sprache->red;?></label>
+                <div class="controls"><input id="inputBarTrafficColourRed" type="number" name="bartraffic_colour_1" value="<?php echo $bartraffic_colour_1?>" min="0" max="255" step="1" required></div>
+            </div>
+            <div class="control-group info">
+                <label class="control-label" for="inputBarTrafficColourGreen"><?php echo $sprache->bartotal_colour.' '.$sprache->blue;?></label>
+                <div class="controls"><input id="inputBarTrafficColourGreen" type="number" name="bartraffic_colour_2" value="<?php echo $bartraffic_colour_2?>" min="0" max="255" step="1" required></div>
+            </div>
+            <div class="control-group success">
+                <label class="control-label" for="inputBarTrafficColourBlue"><?php echo $sprache->bartotal_colour.' '.$sprache->green;?></label>
+                <div class="controls"><input id="inputBarTrafficColourBlue" type="number" name="bartraffic_colour_3" value="<?php echo $bartraffic_colour_3?>" min="0" max="255" step="1" required></div>
             </div>
             <div class="control-group error">
                 <label class="control-label" for="inputBGColourRed"><?php echo $sprache->bg_colour.' '.$sprache->red;?></label>

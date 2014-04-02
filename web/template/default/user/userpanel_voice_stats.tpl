@@ -1,7 +1,7 @@
 <div class="row-fluid">
     <div class="span12">
         <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
+            <li><a href="userpanel.php">Home</a> <span class="divider">/</span></li>
             <li><?php echo $gsprache->voiceserver." ".$gsprache->stats;?></li>
         </ul>
     </div>
@@ -16,7 +16,8 @@
 </div>
 <div class="row-fluid">
     <div class="span11">
-        <form class="form-horizontal" action="admin.php?w=vu" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+        <form class="form-horizontal" action="userpanel.php?w=vu" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+            <input type="hidden" name="token" value="<?php echo token();?>">
             <div class="control-group">
                 <label class="control-label" for="inputFormat"><?php echo $sprache->dmy;?></label>
                 <div class="controls">
@@ -42,11 +43,9 @@
             <div class="control-group">
                 <label class="control-label" for="inputStats"><?php echo $gsprache->stats;?></label>
                 <div class="controls">
-                    <select id="inputStats" name="kind" onchange="getdetails('ajax.php?d=adminvoicestats&amp;w=',this.value)">
+                    <select id="inputStats" name="kind" onchange="getdetails('ajax.php?d=uservoicestats&amp;w=',this.value)">
                         <option value="al"><?php echo $sprache->all;?></option>
-                        <option value="ma" <?php if ($kind=='ma') echo 'selected="selected"'?>><?php echo $gsprache->master;?></option>
                         <option value="se" <?php if ($kind=='se') echo 'selected="selected"'?>><?php echo $sprache->server;?></option>
-                        <option value="us" <?php if ($kind=='us') echo 'selected="selected"'?>><?php echo $sprache->user;?></option>
                     </select>
                 </div>
             </div>
