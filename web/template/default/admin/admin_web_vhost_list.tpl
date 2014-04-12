@@ -33,6 +33,7 @@
                 <th data-hide="phone,tablet"><a href="admin.php?w=wv&amp;a=<?php echo $amount;?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ai') { echo 'di'; } else { echo 'ai'; } ?>">ID</a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=wv&amp;a=<?php echo $amount;?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='as') { echo 'ds'; } else { echo 'as'; } ?>"><?php echo $gsprache->status;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=wv&amp;a=<?php echo $amount;?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ac') { echo 'dc'; } else { echo 'ac'; } ?>"><?php echo $dedicatedLanguage->user;?></a></th>
+                <th data-hide="phone,tablet"><?php echo $sprache->hddUsage;?></th>
                 <th data-hide="phone,tablet"><?php echo $gsprache->jobPending;?></th>
                 <th><?php echo $dedicatedLanguage->reinstall;?></th>
                 <th><?php echo $gsprache->del;?></th>
@@ -46,6 +47,7 @@
                 <td><?php echo $table_row['id'];?></td>
                 <td><i class="<?php if($table_row['active']=='Y') echo 'fa fa-check'; else echo 'fa fa-ban';?>"></i></td>
                 <td><?php if(isid($table_row['userID'], 10)) { ?><a href="switch.php?id=<?php echo $table_row['userID'];?>"><?php echo $table_row['cname'];?></a><?php }?></td>
+                <td><?php echo $table_row['hddUsage'];?> MB</td>
                 <td><?php echo $table_row['jobPending'];?></td>
                 <td><a href="admin.php?w=wv&amp;d=ri&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-warning"><i class="fa fa-refresh"></i></span></a></td>
                 <td><a href="admin.php?w=wv&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>

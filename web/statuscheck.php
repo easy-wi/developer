@@ -50,7 +50,7 @@ if (isset($argv)) {
     $args = array();
 
     foreach ($argv as $a) {
-        if ($a == 'gs' or $a == 'vs' or $a == 'my') {
+        if ($a == 'gs' or $a == 'vs' or $a == 'vh' or $a == 'my') {
             $checkTypeOfServer = $a;
         } else if (is_numeric($a)) {
             $sleep = $a;
@@ -74,6 +74,7 @@ include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/third_party/gameq/GameQ.php');
 include(EASYWIDIR . '/stuff/methods/class_mysql.php');
+include(EASYWIDIR . '/stuff/methods/class_httpd.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 set_time_limit($timelimit);
@@ -86,6 +87,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     if (isset($checkTypeOfServer)) {
         if ($checkTypeOfServer == 'gs') {
             print 'Checking Gameserver' . "\r\n";
+        } else if ($checkTypeOfServer == 'vh') {
+            print 'Checking Web Quotas' . "\r\n";
         } else if ($checkTypeOfServer == 'vs') {
             print 'Checking Voiceserver' . "\r\n";
         } else {
@@ -93,7 +96,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
     } else {
         $checkTypeOfServer='all';
-        print 'Checking Gameserver and Voiceserver' . "\r\n";
+        print 'Checking Gameserver, Voiceserver MySQL DB sizes and Web Quotas' . "\r\n";
     }
 
     $dayAndHour=date('Y-m-d H:').'00:00';
@@ -1136,6 +1139,20 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 echo 'Error connecting to DB Server ' . $row['ip'] . ':' . $row['port'] . ': ' . $remotesql->error . "\r\n";
 
             }
+        }
+    }
+
+    flush();
+
+    # Web Quotas
+    if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'vh') {
+
+        $query = $sql->prepare("SELECT `webMasterID`,`resellerID` FROM `webMaster` WHERE `active`='Y'");
+        $query->execute();
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $httpd = new HttpdManagement($row['webMasterID'], $row['resellerID']);
+            $httpd->ssh2Connect();
+            $httpd->checkQuotaUsage();
         }
     }
 

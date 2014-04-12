@@ -98,6 +98,7 @@ class HttpdManagement {
 
             if ($row['quotaActive'] == 'Y') {
                 $this->hostData['quotaCmd'] = $row['quotaCmd'];
+                $this->hostData['repquotaCmd'] = $row['repquotaCmd'];
             }
 
 
@@ -325,6 +326,45 @@ class HttpdManagement {
             $cmd = 'r() {' . $this->hostData['httpdCmd'] . ' > /dev/null 2>&1; }; r&';
 
             $this->ssh2Object->exec($cmd);
+
+        }
+    }
+
+    public function checkQuotaUsage () {
+
+        if ($this->ssh2Object != false and isset($this->hostData['repquotaCmd']) and strlen($this->hostData['repquotaCmd']) > 0) {
+
+            $cmd = 'for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . '-u / | grep \'web\' | awk \'{print $1":"$6}\'`; do USERS="$USERS;$USER"; done; echo $USERS';
+
+            $return = $this->ssh2Object->exec($cmd);
+
+            $splitIntoHosts = preg_split('/;/', $return, -1, PREG_SPLIT_NO_EMPTY);
+
+            $query = $this->sql->prepare("UPDATE `webVhost` SET `hddUsage`=? WHERE `webVhostID`=? LIMIT 1");
+
+            foreach ($splitIntoHosts as $ftpUser) {
+
+                unset($user, $usage, $webVhostID);
+
+                @list($user, $usage) = explode(':', $ftpUser);
+                @list($prefix, $webVhostID) = explode('-', $user);
+
+                if (isset($usage) and isset($webVhostID)) {
+
+                    $usage = (int) $usage;
+                    $webVhostID = (int) $webVhostID;
+
+                    $query->execute(array($usage, $webVhostID));
+
+                    if ($query->rowCount() > 0) {
+                        print "Found and updated webhost with FTP user {$user}, webVhostID {$webVhostID} and a usage of {$usage} MB\r\n";
+                    } else {
+                        print "Cannot find or no update for webhost with FTP user {$user}, webVhostID {$webVhostID} which has a usage of {$usage} MB\r\n";
+                    }
+                }
+            }
+        } else {
+            print "No SSH Connection or quota not allowed\r\n";
         }
     }
 }

@@ -32,6 +32,15 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label lead" for="displayServerInfo"><b><?php echo $gsprache->webspace;?></b></label>
+                <div class="controls">
+                    <dl id="displayVhostInfo">
+                        <dt><?php echo $sprache->hddUsage;?></dt>
+                        <dd><?php echo $hddUsage.'/'.$hdd;?> MB</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputFtpPassword"><?php echo $sprache->ftpPassword;?></label>
                 <div class="controls"><input id="inputFtpPassword" class="span11" type="text" name="ftpPassword" value="<?php echo $ftpPassword;?>" required></div>
             </div>
@@ -48,7 +57,7 @@
             <div class="control-group<?php if(isset($errors['hdd'])) echo ' error';?>">
                 <label class="control-label" for="inputHDD"><?php echo $sprache->hdd;?></label>
                 <div class="controls">
-                    <div class="input-append span12">
+                    <div class="input-append span11">
                         <input id="inputHDD" class="span11" type="number" name="hdd" value="<?php echo $hdd;?>">
                         <span class="add-on">MB</span>
                     </div>

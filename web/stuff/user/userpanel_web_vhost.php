@@ -177,11 +177,11 @@ set sv_wwwDownload "1"';
 
     $table = array();
 
-    $query = $sql->prepare("SELECT v.`webVhostID`,v.`dns`,v.`hdd`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`quotaActive`,m.`usageType` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
+    $query = $sql->prepare("SELECT v.`webVhostID`,v.`dns`,v.`hdd`,v.`hddUsage`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`quotaActive`,m.`usageType` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
     $query->execute(array($aeskey, $user_id, $reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         if (!isset($_SESSION['sID']) or in_array($row['webVhostID'], $substituteAccess['ws'])) {
-            $table[] = array('id' => $row['webVhostID'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'quotaActive' => $row['quotaActive'], 'ftpIP' => (isip($row['ftpIP'], 'ip4')) ? $row['ftpIP'] : $row['ip'], 'ftpPort' => $row['ftpPort'], 'ftpUser' => $row['ftpUser'], 'ftpPass' => $row['decryptedFTPPass'], 'usageType' => $row['usageType']);
+            $table[] = array('id' => $row['webVhostID'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'hddUsage' => $row['hddUsage'], 'quotaActive' => $row['quotaActive'], 'ftpIP' => (isip($row['ftpIP'], 'ip4')) ? $row['ftpIP'] : $row['ip'], 'ftpPort' => $row['ftpPort'], 'ftpUser' => $row['ftpUser'], 'ftpPass' => $row['decryptedFTPPass'], 'usageType' => $row['usageType']);
         }
     }
 

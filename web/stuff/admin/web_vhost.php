@@ -157,6 +157,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 // Vhost data
                 $active = $row['active'];
                 $hdd = $row['hdd'];
+                $hddUsage = (int) $row['hddUsage'];
                 $dns = $row['dns'];
                 $ftpPassword = $row['decryptedFTPPass'];
                 $ownVhost = $row['ownVhost'];
@@ -531,7 +532,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $active = 'N';
         }
 
-        $table[] = array('id' => $row['webVhostID'], 'active' => $row['active'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'jobPending' => $jobPending, 'userID' => $row['userID'], 'cname' => $row['cname']);
+        $table[] = array('id' => $row['webVhostID'], 'active' => $row['active'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'hddUsage' => $row['hddUsage'], 'jobPending' => $jobPending, 'userID' => $row['userID'], 'cname' => $row['cname']);
     }
 
     $pageamount = ceil($colcount / $amount);

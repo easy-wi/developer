@@ -14,6 +14,7 @@
     <ftpPasswordRepeat>Repeat FTP Password</ftpPasswordRepeat>
     <ftpPort>FTP Port</ftpPort>
     <hdd>Diskspace</hdd>
+    <hddUsage>Used Diskspace</hddUsage>
     <help_blocksize>Most filesystems are configured with a blocksize of 4096. This means one block contains 4096 Byte data.</help_blocksize>
     <help_fdl_attention>Warning! Recommended method is to create a subfolder for each game. Naming could be like cod4, cstrike, css, etc.</help_fdl_attention>
     <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) and Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) based servers need entries like this at the server.cfg</help_fdl_hl>
@@ -33,6 +34,7 @@
     <quotaCmd>Quota Command</quotaCmd>
     <quotaWarning>Warning! Whithout Quotas user can upload data until the disk is full!</quotaWarning>
     <recreate>Recreate</recreate>
+    <repquotaCmd>Repquota Command</repquotaCmd>
     <serverType>Servertype</serverType>
     <usage>Usage</usage>
     <usageType>Vhost Usage</usageType>

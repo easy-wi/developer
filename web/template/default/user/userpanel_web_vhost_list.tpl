@@ -21,6 +21,8 @@
     <div class="row-fluid">
         <dl class="dl-horizontal">
             <?php if($table_row['quotaActive']=='Y'){ ;?>
+            <dt><?php echo $sprache->usage;?></dt>
+            <dd><?php echo $table_row['hddUsage'];?>MB</dd>
             <dt><?php echo $sprache->hdd;?></dt>
             <dd><?php echo $table_row['hdd'];?>MB</dd>
             <?php }?>

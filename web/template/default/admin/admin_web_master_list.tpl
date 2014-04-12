@@ -22,6 +22,7 @@
                 <th data-hide="phone"><a href="admin.php?w=wm&amp;o=<?php if ($o=='di') { echo 'ai'; } else { echo 'di'; } ?>">ID</a></th>
                 <th data-hide="phone"><a href="admin.php?w=wm&amp;o=<?php if ($o=='ad') { echo 'dd'; } else { echo 'ad'; } ?>"><?php echo $dedicatedLanguage->description;?></a></th>
                 <th data-hide="phone,tablet"><?php echo $sprache->installedVhost;?></th>
+                <th data-hide="phone,tablet"><?php echo $sprache->hddUsage;?></th>
                 <th data-hide="phone,tablet"><?php echo $sprache->installedHDD;?></th>
                 <th><?php echo $sprache->recreate;?></th>
                 <th><?php echo $gsprache->del;?></th>
@@ -63,6 +64,7 @@
                 <td><?php echo $table_row['id'];?></td>
                 <td><?php echo $table_row['description'];?></td>
                 <td><?php echo $table_row['maxVhost'];?></td>
+                <td><?php echo $table_row['hddUsage'];?> MB</td>
                 <td><?php echo $table_row['maxHDD'];?> MB</td>
                 <td><a href="admin.php?w=wm&amp;d=ri&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-warning"><i class="fa fa-refresh"></i></span></a></td>
                 <td><a href="admin.php?w=wm&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>

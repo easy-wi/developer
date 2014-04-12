@@ -171,6 +171,10 @@
                 <div class="controls"><input id="inputQuotaCmd" class="span11" type="text" name="quotaCmd" value="<?php echo $quotaCmd;?>"></div>
             </div>
             <div class="Y switch2 control-group<?php if($quotaActive=='N') echo ' display_none';?>">
+                <label class="control-label" for="inputRepuotaCmd"><?php echo $sprache->repquotaCmd;?></label>
+                <div class="controls"><input id="inputRepuotaCmd" class="span11" type="text" name="repquotaCmd" value="<?php echo $repquotaCmd;?>"></div>
+            </div>
+            <div class="Y switch2 control-group<?php if($quotaActive=='N') echo ' display_none';?>">
                 <label class="control-label" for="inputBlocksize"><?php echo $sprache->blocksize;?></label>
                 <div class="controls"><input id="inputBlocksize" class="span11" type="number" name="blocksize" value="<?php echo $blocksize;?>"><span class="help-block alert alert-info"><?php echo $sprache->help_blocksize;?></span></div>
             </div>

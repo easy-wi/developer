@@ -14,6 +14,7 @@
     <ftpPasswordRepeat>FTP Passwort wiederholen</ftpPasswordRepeat>
     <ftpPort>FTP Port</ftpPort>
     <hdd>Speicherplatz</hdd>
+    <hddUsage>Belegter Speicherplatz</hddUsage>
     <help_blocksize>Bei den meisten Systemen beträgt die Block Größe 4096. D.h. ein Block enthält 4096 Byte an Daten.</help_blocksize>
     <help_fdl_attention>Achtung! Es wird empfohlen, dass man je Spiel einen eigenen Unterordner wie cod4, cstrike, css, etc. erstellt und den Ordner in der Config mit angibt.</help_fdl_attention>
     <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) und Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) basierende Server brauchen folgenden Eintrag in der server.cfg</help_fdl_hl>
@@ -33,6 +34,7 @@
     <quotaCmd>Quota Befehl</quotaCmd>
     <quotaWarning>Achtung! Ohne Quotas kann der User unbegrenzt Dateien hochladen!</quotaWarning>
     <recreate>Wiederherstellen</recreate>
+    <repquotaCmd>Repquota Befehl</repquotaCmd>
     <serverType>Servertyp</serverType>
     <usage>Belegung</usage>
     <usageType>Vhostgebrauch</usageType>
