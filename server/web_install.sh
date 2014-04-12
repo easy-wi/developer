@@ -285,6 +285,7 @@ if [ -f /etc/sudoers -a "`grep $MASTERUSER /etc/sudoers`" == "" ]; then
 
 	if [ "$QUOTAINSTALL" == "Yes" ]; then
 		echo "$MASTERUSER ALL = NOPASSWD: `which setquota`" >> /etc/sudoers
+		echo "$MASTERUSER ALL = NOPASSWD: `which repquota`" >> /etc/sudoers
 	fi
 
 	if [ "$WEBSERVER" == "Nginx" ]; then
