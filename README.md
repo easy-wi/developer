@@ -1,25 +1,28 @@
 Easy-WI.com
 =========
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif "Easy-Wi")](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SEBWZPZBJHPQ8 "Donate")
+------------------------
+
 Reaching [Milestone 4.00](https://github.com/easy-wi/developer/issues?milestone=1&page=1&state=closed) Easy-WI becomes free Software with the terms of GNU GPL v3.
 
 What is Easy-WI?
--------
+------------------------
 First of all Easy-Wi is a Web-interface that allows you to manage server daemons like gameservers. In addition it provides you with a CMS which includes a fully automated game- and voiceserver lending service. 
 The development goal is always to automate as far as possible. The daily work which requires an administrator should be reduced to a minimum.
 
 Requirements
--------
+------------------------
 * Web installation requires PHP 5.3.7 or later where the extensions openssl, json, hash, ftp, SimpleXML, curl, gd, PDO, pdo_mysql and fopen are installed
 * The gameserver module requires sudo, cron, proftpd and the bash shell at the game root
 * The Voicemodule works best with a linux based TS3 server
 
 Who is the target group for Easy-WI?
--------
+------------------------
 No matter if you are a commercial entity that is providing hosting solutions, are sponsoring (game)server daemons, organize a LAN party, need to manage clan server, or are a private individual, Easy-WI is meant for everybody.
 
 
 Which functions and modules are available?
--------
+------------------------
 What drives the development is the goal to automate all processes. Listing all available functions would result in an exploding thread. So here is the summary with the main features:
 * Mobile ready. The default template has been made with Twitter Bootstrap and is responsive. That way Easy-WI becomes a Web App which can be easily used with a mobile or tablet.
 * Multilingual. Currently supported are English, Danish and German. The text is maintained with XML files.
@@ -35,7 +38,7 @@ What drives the development is the goal to automate all processes. Listing all a
 
 
 How does the support work?
--------
+------------------------
 Typical Open Source we have:
 * Wiki [wiki.easy-wi.com](http://wiki.easy-wi.com)
 * Forum [easy-wi.com/forum/](https://easy-wi.com/forum/)
@@ -43,6 +46,6 @@ Typical Open Source we have:
 
 
 Where can I download Easy-WI?
--------
+------------------------
 * The stable can be found at our [download area](https://easy-wi.com/uk/downloads/)
 * If you like to experiment you might want to check out the [Github Repository](https://github.com/easy-wi/developer)
