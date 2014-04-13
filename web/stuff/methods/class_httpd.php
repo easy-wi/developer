@@ -332,11 +332,18 @@ class HttpdManagement {
 
     public function checkQuotaUsage () {
 
+        global $dbConnect;
+
         if ($this->ssh2Object != false and isset($this->hostData['repquotaCmd']) and strlen($this->hostData['repquotaCmd']) > 0) {
 
-            $cmd = 'for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . '-u / | grep \'web\' | awk \'{print $1":"$6}\'`; do USERS="$USERS;$USER"; done; echo $USERS';
+            $cmd = 'for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . '-u -v / | grep \'web\' | awk \'{print $1":"$6}\'`; do USERS="$USERS;$USER"; done; echo $USERS';
 
             $return = $this->ssh2Object->exec($cmd);
+
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                echo "Execute command: {$cmd}\r\n";
+                echo "Command returns: {$return}\r\n";
+            }
 
             $splitIntoHosts = preg_split('/;/', $return, -1, PREG_SPLIT_NO_EMPTY);
 
