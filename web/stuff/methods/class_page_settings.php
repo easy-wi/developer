@@ -199,7 +199,7 @@ class PageSettings {
 		$this->$var = $subdata;
 	}
 
-    function setCanonicalUrl($s = null, $ID = null) {
+    function setCanonicalUrl($s = null, $ID = null, $custom = false) {
 
         if ($s == null) {
             $this->canurl = $this->pageurl;
@@ -208,16 +208,18 @@ class PageSettings {
 
             global $sql, $gsprache, $page_sprache;
 
-            if ($this->seo== 'Y' and $ID != null and ($s == 'news' or $s == 'page')) {
+            if ($this->seo == 'Y' and $ID != null and ($s == 'news' or $s == 'page')) {
 
-                $query = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `id`=? LIMIT 1");
-                $query->execute(array($ID));
+                $query = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? LIMIT 1");
+                $query->execute(array($ID, $this->language));
                 $title = $query->fetchColumn();
 
-                $addToUrl = ($s == 'news') ? '/' . $this->language. '/' . $this->NameToLink($gsprache->news). '/' . $this->NameToLink($title) . '/' : '/' . $this->language. '/' . $this->NameToLink($title) . '/';
+                $addToUrl = ($s == 'news') ? '/' . $this->language . '/' . $this->NameToLink($gsprache->news). '/' . $this->NameToLink($title) . '/' : '/' . $this->language. '/' . $this->NameToLink($title) . '/';
 
             } else if ($this->seo== 'Y' and in_array($s, array('imprint', 'lendserver', 'news'))) {
                 $addToUrl = '/' . $this->language. '/' . $this->NameToLink($gsprache->$s) . '/';
+            } else if ($this->seo== 'Y' and $custom == true) {
+                $addToUrl = '/' . $this->language. '/' . $s . '/';
             } else if ($this->seo== 'Y') {
                 $addToUrl = '/' . $this->language. '/' . $this->NameToLink($page_sprache->$s) . '/';
             } else if ($ID != null) {

@@ -100,7 +100,16 @@ if (isset($page_id) and is_numeric($page_id)) {
     }
 
     $breadcrumbs = array_reverse($breadcrumbs);
-    $template_file = (isset($page_title)) ? 'page_page.tpl' : 'page_404.tpl';
+
+    if (isset($page_title)) {
+
+        $page_data->setCanonicalUrl('page', $page_id);
+
+        $template_file = 'page_page.tpl';
+
+    } else {
+        $template_file =  'page_404.tpl';
+    }
 
 } else if ($s == 'about') {
 

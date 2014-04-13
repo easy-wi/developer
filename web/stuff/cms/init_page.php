@@ -248,6 +248,7 @@ if (isset($page_active) and $page_active == 'Y') {
         } else if (isset($what_to_be_included_array[$page_category])) {
             $s = $page_category;
         } else if (isset($customFiles[$page_category])) {
+            $customModule = true;
             $s = $page_category;
         }
     }
