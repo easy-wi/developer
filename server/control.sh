@@ -587,6 +587,7 @@ function fdlList {
 	echo "if [ -f $HOMEFOLDER/conf/fdl-$UPDATE.list ]; then" >> $1
 	echo "	rm $HOMEFOLDER/conf/fdl-$UPDATE.list" >> $1
 	echo 'fi' >> $1
+	echo "touch $HOMEFOLDER/conf/fdl-$UPDATE.list" >> $1
 	echo "cd $MASTERSERVERDIR/$UPDATE" >> $1
 	echo 'if [[ `find -maxdepth 2 -name srcds_run` ]]; then' >> $1
 	echo '	cd `find -mindepth 1 -maxdepth 2 -type d -name "$FDLFOLDER" | head -n 1`' >> $1
