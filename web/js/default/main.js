@@ -153,7 +153,7 @@ function popup(url) {
     return false;
 }
 
-function SwitchShowHideRows (Element, change) {
+function SwitchShowHideRows (Element, change, showNotIfEmpty) {
 
     var TheRest = document.getElementsByTagName('div');
     var amount = TheRest.length;
@@ -192,7 +192,7 @@ function SwitchShowHideRows (Element, change) {
         }
     }
 
-    if (Element != 'init_ready' && foundAmount == 0) {
+    if (Element != 'init_ready' && foundAmount == 0 && showNotIfEmpty != 1) {
         for(x=0; x<amount; x++) {
             TheClass = TheRest[x].getAttribute('class');
             if (TheClass != null) {

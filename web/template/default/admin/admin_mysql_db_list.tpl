@@ -36,7 +36,7 @@
                 <th data-hide="phone"><a href="admin.php?w=my&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='du') { echo 'au'; } else { echo 'du'; } ?>"><?php echo $gsprache->user;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=my&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dp') { echo 'ap'; } else { echo 'dp'; } ?>">IP</a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=my&amp;d=md&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='aj') { echo 'dj'; } else { echo 'aj'; } ?>"><?php echo $gsprache->jobPending;?></a></th>
-                <th data-hide="phone,tablet"><?php echo $sprache->dbSize; ?></th>
+                <th><?php echo $gsprache->reinstall;?></th>
                 <th><?php echo $gsprache->del;?></th>
                 <th><?php echo $gsprache->mod;?></th>
             </tr>
@@ -51,9 +51,9 @@
                 <td><a href="switch.php?id=<?php echo $table_row['uid'];?>"><?php echo $table_row['cname'];?></a></td>
                 <td><a href="<?php echo $table_row['interface'];?>" target="_blank"><?php echo $table_row['ip'];?></a></td>
                 <td><?php echo $table_row['jobPending'];?></td>
-                <td><?php echo $table_row['dbSize'];?>MB</td>
-                <td><a href="admin.php?w=my&amp;d=dd&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
-                <td><a href="admin.php?w=my&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
+                <td><a href="admin.php?w=my&amp;d=rd&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-warning"><i class="fa fa-refresh"></i></span></a></td>
+                <td><a href="admin.php?w=my&amp;d=dd&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
+                <td><a href="admin.php?w=my&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>
             </tbody>

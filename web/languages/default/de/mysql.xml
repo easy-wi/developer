@@ -6,6 +6,7 @@
 	<ips>Erlaubte IPs</ips>
 	<dbname>Datenbankname</dbname>
     <description>Beschreibung</description>
+    <reinstall>Neu Installieren</reinstall>
 	<standards>Standardwerte für neue Datenbanken</standards>
 	<max_databases>Maximale Datenbanken</max_databases>
 	<max_queries_per_hour>Maximale Queries je Stunde</max_queries_per_hour>

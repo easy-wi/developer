@@ -4,6 +4,7 @@
 	<interface>phpMyAdmin</interface>
 	<ips>Tilladt IP'er</ips>
 	<dbname>Databasenavn</dbname>
+    <reinstall></reinstall>
 	<standards>Standardværdier for databasen brugeren</standards>
 	<max_databases>Maksimalt databaser</max_databases>
 	<max_queries_per_hour>Maksimalt forespørgsler i timen</max_queries_per_hour>

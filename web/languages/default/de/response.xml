@@ -8,6 +8,7 @@
     <error_ts_query>Fehler: Der TS3 Serverquery war nicht erfolgreich. Die Fehlermeldung ist: </error_ts_query>
     <error_ts_query_connect>Fehler: Konnte nicht zu dem TS3 Serverquery verbinden. Die Fehlermeldung ist: </error_ts_query_connect>
     <error_username>Fehler: Username ist unzulässig, oder existiert bereits.</error_username>
+    <reinstall_success>Neuinstallation erfolgreich gestartet</reinstall_success>
     <table_add>Die Daten wurden erfolgreich in die Datenbank eingetragen.</table_add>
     <table_del>Die Daten wurden erfolgreich aus der Datenbank entfernt.</table_del>
     <token>Error: CSFR Schutztoken abgelaufen, oder nicht vorhanden.</token>

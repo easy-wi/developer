@@ -29,11 +29,12 @@
         <table class="table table-bordered table-hover table-striped footable">
             <thead>
             <tr>
-                <th data-class="expand"><a href="admin.php?w=my&amp;d=ms&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dp') { echo 'ap'; } else { echo 'dp'; } ?>">IP:<a/></th>
-                <th data-hide="phone,tablet"><a href="admin.php?w=my&amp;d=ms&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='di') { echo 'ai'; } else { echo 'di'; } ?>">ID:<a/></th>
-                <th data-hide="phone"><a href="admin.php?w=my&amp;d=ms&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ds') { echo 'as'; } else { echo 'ds'; } ?>"><?php echo $gsprache->status;?>:<a/></th>
-                <th data-hide="phone,tablet"><a href="admin.php?w=my&amp;d=ms&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='df') { echo 'af'; } else { echo 'df'; } ?>"><?php echo $sprache->interface;?>:</a></th>
-                <th data-hide="phone,tablet"><?php echo $sprache->usage;?>:</th>
+                <th data-class="expand"><a href="admin.php?w=my&amp;d=ms&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dp') { echo 'ap'; } else { echo 'dp'; } ?>">IP<a/></th>
+                <th data-hide="phone,tablet"><a href="admin.php?w=my&amp;d=ms&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='di') { echo 'ai'; } else { echo 'di'; } ?>">ID<a/></th>
+                <th data-hide="phone"><a href="admin.php?w=my&amp;d=ms&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ds') { echo 'as'; } else { echo 'ds'; } ?>"><?php echo $gsprache->status;?><a/></th>
+                <th data-hide="phone,tablet"><a href="admin.php?w=my&amp;d=ms&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='df') { echo 'af'; } else { echo 'df'; } ?>"><?php echo $sprache->interface;?></a></th>
+                <th data-hide="phone,tablet"><?php echo $sprache->usage;?></th>
+                <th><?php echo $gsprache->reinstall;?></a></th>
                 <th><?php echo $gsprache->del;?></th>
                 <th><?php echo $gsprache->mod;?></th>
             </tr>
@@ -53,6 +54,7 @@
                                 <thead>
                                 <tr>
                                     <th><?php echo $sprache->dbname;?></th>
+                                    <th><?php echo $gsprache->reinstall;?></a></th>
                                     <th><?php echo $gsprache->del;?></a></th>
                                     <th><?php echo $gsprache->mod;?></a></th>
                                 </tr>
@@ -61,6 +63,7 @@
                                 <?php foreach($table_row['server'] as $row){ ?>
                                 <tr class="<?php if($row['status']==1) echo 'success'; else if($row['status']==2) echo 'warning'; else echo 'error';?>">
                                     <td><?php echo $row['address'];?></td>
+                                    <td><a href="admin.php?w=my&amp;d=rd&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-warning"><i class="fa fa-refresh"></i></span></a></td>
                                     <td><a href="admin.php?w=my&amp;d=dd&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                                     <td><a href="admin.php?w=my&amp;d=md&amp;id=<?php echo $row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
                                 </tr>
@@ -74,8 +77,9 @@
                 <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else echo 'icon-ban-circle';?>"></i></td>
                 <td><a href="<?php echo $table_row['interface'];?>" target="_blank"><?php echo $table_row['interface'];?></a></td>
                 <td><?php echo $table_row['dbcount']."/".$table_row['max_databases'];?></td>
-                <td><a href="admin.php?w=my&amp;d=ds&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
-                <td><a href="admin.php?w=my&amp;d=ms&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
+                <td><a href="admin.php?w=my&amp;d=rs&amp;id=<?php echo $table_row['id'];?>"<span class="btn btn-mini btn-warning"><i class="fa fa-refresh"></i></span></a></td>
+                <td><a href="admin.php?w=my&amp;d=ds&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
+                <td><a href="admin.php?w=my&amp;d=ms&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
             </tr>
             <?php } ?>
             </tbody>

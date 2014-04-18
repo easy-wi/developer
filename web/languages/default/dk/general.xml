@@ -49,6 +49,7 @@
 	<pages>Sider</pages>
 	<password></password>
     <registration>Registrering</registration>
+    <reinstall></reinstall>
     <repair>Reparer</repair>
 	<reseller>Forhandler</reseller>
 	<root>Rootserver</root>

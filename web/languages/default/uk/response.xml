@@ -8,6 +8,7 @@
     <error_ts_query>Error: Sending commands to the TS 3 server failed. Error message is: </error_ts_query>
     <error_ts_query_connect>Error: Could not connect to TS3 server query. Error message is: </error_ts_query_connect>
     <error_username>Error: Username is not allowed, or exists already.</error_username>
+    <reinstall_success>Reinstall successfully started</reinstall_success>
     <table_add>Successfully added the data to the database.</table_add>
     <table_del>Successfully removed the data from the database.</table_del>
     <token>Error: CSFR protection token timed out or does not match.</token>

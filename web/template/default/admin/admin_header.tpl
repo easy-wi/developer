@@ -221,10 +221,10 @@
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['mysql']) { ?>
-                                    <li <?php if($ui->smallletters('w',255,'get')=='my' and !in_array($d,array('ms','as','ds'))) echo 'class="active"';?>><a href="admin.php?w=my"><?php echo $gsprache->databases;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='my' and !in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my"><?php echo $gsprache->databases;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['mysql_settings']) { ?>
-                                    <li <?php if($ui->smallletters('w',255,'get')=='my' and in_array($d,array('ms','as','ds'))) echo 'class="active"';?>><a href="admin.php?w=my&amp;d=ms">Server</a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='my' and in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my&amp;d=ms">Server</a></li>
                                     <?php } ?>
                                     <?php foreach ($customModules['my'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                                 </ul>

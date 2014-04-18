@@ -8,6 +8,7 @@
     <error_ts_query_connect>Fejl: Kunne ikke forbinde til TS3 server forespørgsel. Fejlmeddelelse er: </error_ts_query_connect>
     <error_username>Fejl: Brugernavn er ikke tilladt, eller eksisterer allerede.</error_username>
     <table_add>Succesfuld tilføjet data til databasen.</table_add>
+    <reinstall_success></reinstall_success>
     <table_del>Succesfuld fjernet data fra databasen.</table_del>
     <token>Fejl: CSRF beskyttelse token timeout eller ikke passer.</token>
     <ts_query_success>TS3 ServerQuery succes. TS3 query svar er: </ts_query_success>

@@ -57,6 +57,7 @@
 	<pages>Pages</pages>
 	<password>Password</password>
     <registration>Registration</registration>
+    <reinstall>Reinstall</reinstall>
     <repair>Repair</repair>
 	<reseller>Reseller</reseller>
 	<root>Rootserver</root>
