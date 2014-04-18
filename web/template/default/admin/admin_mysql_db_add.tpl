@@ -60,6 +60,15 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputHostTable"><?php echo $sprache->manage_host_table;?></label>
+                <div class="controls">
+                    <select id="inputHostTable" name="manage_host_table">
+                        <option value="N"><?php echo $gsprache->no;?></option>
+                        <option value="Y"><?php echo $gsprache->yes;?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputIPs"><?php echo $sprache->ips;?></label>
                 <div class="controls">
                     <textarea id="inputIPs" name="ips" rows="5" ></textarea>

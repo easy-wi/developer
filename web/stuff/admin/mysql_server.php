@@ -427,6 +427,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $uid = $ui->id('userid',10, 'post');
             $active = $ui->active('active', 'post');
             $password = $ui->password('password',40, 'post');
+            $manage_host_table = ($ui->active('manage_host_table', 'post')) ? $ui->active('manage_host_table', 'post') : 'N';
             $ips = $ui->ips('ips', 'post');
             $max_queries_per_hour = ($ui->id('max_queries_per_hour', 255, 'post')) ? $ui->id('max_queries_per_hour', 255, 'post') : 0;
             $max_updates_per_hour = ($ui->id('max_updates_per_hour', 255, 'post')) ? $ui->id('max_updates_per_hour', 255, 'post') : 0;
@@ -434,8 +435,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $max_userconnections_per_hour = ($ui->id('max_userconnections_per_hour', 255, 'post')) ? $ui->id('max_userconnections_per_hour', 255, 'post') : 0;
 
             #https://github.com/easy-wi/developer/issues/42 column description added
-            $query = $sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`description`,`password`,`ips`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?)");
-            $query->execute(array($active, $sid, $uid, $ui->names('description', 255, 'post'), $password, $aeskey, $ips, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $reseller_id));
+            $query = $sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`description`,`password`,`ips`,`manage_host_table`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
+            $query->execute(array($active, $sid, $uid, $ui->names('description', 255, 'post'), $password, $aeskey, $ips, $manage_host_table, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $reseller_id));
 
             $id = $sql->lastInsertId();
 
@@ -491,6 +492,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 
             $ip = $row['ip'];
+            $manage_host_table = $row['manage_host_table'];
             $ips = $row['ips'];
             $cname = $row['cname'];
             $active = 'N';
@@ -550,36 +552,43 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $active = $ui->active('active', 'post');
             $password = $ui->password('password',40, 'post');
+            $manage_host_table = ($ui->active('manage_host_table', 'post')) ? $ui->active('manage_host_table', 'post') : 'N';
             $ips = $ui->ips('ips', 'post');
             $max_queries_per_hour = ($ui->id('max_queries_per_hour', 255, 'post')) ? $ui->id('max_queries_per_hour', 255, 'post') : 0;
             $max_updates_per_hour = ($ui->id('max_updates_per_hour', 255, 'post')) ? $ui->id('max_updates_per_hour', 255, 'post') : 0;
             $max_connections_per_hour = ($ui->id('max_connections_per_hour', 255, 'post')) ? $ui->id('max_connections_per_hour', 255, 'post') : 0;
             $max_userconnections_per_hour = ($ui->id('max_userconnections_per_hour', 255, 'post')) ? $ui->id('max_userconnections_per_hour', 255, 'post') : 0;
 
-            $query = $sql->prepare("SELECT e.`active`,e.`dbname`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,e.`max_queries_per_hour`,e.`max_updates_per_hour`,e.`max_connections_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT e.*,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $aeskey, $id, $reseller_id));
             foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
 
-                if ($active != $row['active'] or $row['decryptedpassword'] != $password  or $row['ips'] != $ips or $row['max_queries_per_hour'] != $max_queries_per_hour or $row['max_updates_per_hour'] != $max_updates_per_hour or $row['max_connections_per_hour'] != $max_connections_per_hour or $row['max_userconnections_per_hour'] != $max_userconnections_per_hour) {
+                if ($active != $row['active'] or $manage_host_table != $row['manage_host_table'] or $row['decryptedpassword'] != $password  or $row['ips'] != $ips or $row['max_queries_per_hour'] != $max_queries_per_hour or $row['max_updates_per_hour'] != $max_updates_per_hour or $row['max_connections_per_hour'] != $max_connections_per_hour or $row['max_userconnections_per_hour'] != $max_userconnections_per_hour) {
 
                     $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword2']);
 
                     if ($remotesql->error == 'ok') {
 
                         #https://github.com/easy-wi/developer/issues/42 column description added
-                        $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`ips`=?,`description`=?,`password`=AES_ENCRYPT(?,?),`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                        $query->execute(array($active, $ips, $ui->names('description', 255, 'post'), $password, $aeskey, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $id, $reseller_id));
+                        $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`ips`=?,`manage_host_table`=?,`description`=?,`password`=AES_ENCRYPT(?,?),`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                        $query->execute(array($active, $ips, $manage_host_table, $ui->names('description', 255, 'post'), $password, $aeskey, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $id, $reseller_id));
 
-                        if ($active == 'N' and $row['active'] == 'Y') {
-                            $password = passwordgenerate(20);
+                        if ($query->rowCount() > 0) {
+
+                            if ($active == 'N' and $row['active'] == 'Y') {
+                                $password = passwordgenerate(20);
+                            }
+
+                            $remotesql->ModDB($row['dbname'], $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
+
+                            $loguseraction = '%mod% MySQL DB ' . $row['dbname'] . ' (' . $row['ip'] . ')';
+                            $insertlog->execute();
+
+                            $template_file = $spracheResponse->table_add;
+
+                        } else {
+                            $template_file = $spracheResponse->table_error;
                         }
-
-                        $remotesql->ModDB($row['dbname'], $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
-
-                        $loguseraction = '%mod% MySQL DB ' . $row['dbname'] . ' (' . $row['ip'] . ')';
-                        $insertlog->execute();
-
-                        $template_file = $spracheResponse->table_add;
 
                     } else {
                         $template_file = $remotesql->error;

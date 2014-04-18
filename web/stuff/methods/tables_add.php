@@ -532,6 +532,7 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `dbname` varchar(255) NOT NULL,
   `column` varchar(255) DEFAULT '',
   `password` blob,
+  `manage_host_table` enum('Y','N') DEFAULT 'N',
   `ips` text COLLATE utf8_unicode_ci,
   `max_databases` bigint(19) unsigned DEFAULT '100',
   `max_queries_per_hour` bigint(19) unsigned DEFAULT 0,

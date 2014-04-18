@@ -8,6 +8,7 @@
     <description>Beschreibung</description>
     <reinstall>Neu Installieren</reinstall>
 	<standards>Standardwerte für neue Datenbanken</standards>
+    <manage_host_table>Hosttabelle editierbar</manage_host_table>
 	<max_databases>Maximale Datenbanken</max_databases>
 	<max_queries_per_hour>Maximale Queries je Stunde</max_queries_per_hour>
 	<max_updates_per_hour>Maximale Updates je Stunde</max_updates_per_hour>

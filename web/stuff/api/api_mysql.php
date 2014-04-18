@@ -55,6 +55,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $username = $data['username'];
         $identifyServerBy = $data['identify_server_by'];
         $localServerID = isid($data['server_local_id'], 10);
+        $manage_host_table = (isset($data['manage_host_table']) and active_check($data['manage_host_table'])) ? $data['manage_host_table'] : 'N';
         $externalServerID = $data['server_external_id'];
         $from = array('user_localid' => 'id', 'username' => 'cname', 'user_externalid' => 'externalID', 'email' => 'mail');
 
@@ -99,20 +100,13 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         if (!isset($success['false'])) {
 
             $password = passwordgenerate(10);
-            $dbname = $localUserCname . '_' . $password;
 
-            $query = $sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`dbname`,`password`,`ips`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`resellerid`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
-            $query->execute(array($active, $hostID, $localUserLookupID, $dbname, $password, $aeskey, '', $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $externalServerID, $resellerID));
+            $query = $sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`password`,`ips`,`manage_host_table`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`resellerid`) VALUES (?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?,?)");
+            $query->execute(array($active, $hostID, $localUserLookupID, $dbname, $password, $aeskey, '', $manage_host_table, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $externalServerID, $resellerID));
 
             $localID = $sql->lastInsertId();
 
-            $dbname = $localUserCname . '-' . $localID;
-            $nameLength = strlen($dbname);
-
-            if ($nameLength > 16) {
-                $strStart = $nameLength - 16;
-                $dbname = substr($dbname, $strStart, $nameLength);
-            }
+            $dbname = 'sql' . $localID;
 
             if ($query->rowCount() > 0) {
 
@@ -169,6 +163,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $hostID = $row['sid'];
             $name = $row['dbname'];
             $oldActive = $row['active'];
+            $manage_host_table = (isset($data['manage_host_table']) and active_check($data['manage_host_table'])) ? $data['manage_host_table'] : 'N';
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='my' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID));
@@ -178,14 +173,18 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             if (!in_array($active, $bad) and $active != $oldActive) {
 
-                $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $localID, $resellerID));
+                $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`manage_host_table`=?,`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($active, $manage_host_table, $localID, $resellerID));
 
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='my' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
 
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerID`) VALUES ('A','my',?,?,?,?,?,NULL,NOW(),'md',?)");
                 $query->execute(array($hostID, $resellerID, $localID, $userID, $name, $resellerID));
+
+            } else {
+                $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `manage_host_table`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($manage_host_table, $localID, $resellerID));
             }
         }
 

@@ -69,13 +69,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post')) {
 
         #https://github.com/easy-wi/developer/issues/42 column description added
-        $query = $sql->prepare("SELECT e.`dbname`,e.`description`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,s.`ip`,s.`port`,s.`interface`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active` AND e.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT e.`dbname`,e.`description`,e.`manage_host_table`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,s.`ip`,s.`port`,s.`interface`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active` AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $id, $reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
             $ip = $row['ip'];
+            $manage_host_table = $row['manage_host_table'];
             $ips = $row['ips'];
             $port = $row['port'];
-            $interface = $row['interface'];
+            $interface = trim($row['interface']);
             $dbname = $row['dbname'];
             $cname = $row['cname'];
             $description = trim($row['description']);
@@ -125,9 +126,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         if ($ui->password('password', 255, 'post')) {
 
-            $query = $sql->prepare("SELECT e.`dbname`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT e.`dbname`,e.`manage_host_table`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $user_id, $reseller_id));
             foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+
+                $ips = ($row['manage_host_table'] == 'Y') ? $ui->ips('ips', 'post') : $row['ips'];
 
                 $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword2']);
 
@@ -135,11 +138,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                     #https://github.com/easy-wi/developer/issues/42 column description added
                     $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `description`=?,`password`=AES_ENCRYPT(?,?),`ips`=? WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array(trim($ui->startparameter('description', 'post')), $ui->password('password', 255, 'post'), $aeskey, $ui->ips('ips', 'post'), $id, $user_id, $reseller_id));
+                    $query->execute(array(trim($ui->startparameter('description', 'post')), $ui->password('password', 255, 'post'), $aeskey, $ips, $id, $user_id, $reseller_id));
 
                     if ($query->rowCount() > 0) {
 
-                        $remotesql->ModDB($row['dbname'], $ui->password('password', 255, 'post'), $ui->ips('ips', 'post'), $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
+                        $remotesql->ModDB($row['dbname'], $ui->password('password', 255, 'post'), $ips, $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
 
                         $loguseraction = '%mod% MYSQL DB ' . $row['dbname'] . ' (' . $row['ip'] . ')';
                         $insertlog->execute();

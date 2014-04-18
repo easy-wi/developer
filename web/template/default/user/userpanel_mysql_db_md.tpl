@@ -21,8 +21,14 @@
                     <dd><?php echo $dbname;?></dd>
                     <dt><?php echo $sprache->dbname;?></dt>
                     <dd><?php echo $dbname;?></dd>
+                    <?php if(strlen($interface)>0){ ?>
                     <dt><?php echo $sprache->interface;?></dt>
                     <dd><a href="<?php echo $interface;?>" target="_blank"><?php echo $interface;?></a></dd>
+                    <?php } ?>
+                    <?php if($manage_host_table == 'N'){ ?>
+                    <dt><?php echo $sprache->ips;?></dt>
+                    <dd><?php echo $ips;?></dd>
+                    <?php } ?>
                 </dl>
             </div>
             <div class="control-group">
@@ -37,12 +43,14 @@
                     <input id="password" type="text" name="password" value="<?php echo $password;?>">
                 </div>
             </div>
+            <?php if($manage_host_table == 'Y'){ ?>
             <div class="control-group">
                 <label class="control-label" for="ips"><?php echo $sprache->ips;?></label>
                 <div class="controls">
                     <textarea id="ips" name="ips" rows="5"><?php echo $ips?></textarea>
                 </div>
             </div>
+            <?php } ?>
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
