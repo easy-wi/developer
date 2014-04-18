@@ -734,6 +734,8 @@ for UPDATE in $VARIABLE3; do
 			echo "FDLFOLDER='cstrike'">> $TEMPFOLDER/updateSteamCmd.sh
 		elif [ "$UPDATE" == "dods" ]; then
 			echo "FDLFOLDER='dod'">> $TEMPFOLDER/updateSteamCmd.sh
+		elif [ "$UPDATE" == "gmod" ]; then
+			echo "FDLFOLDER='garrysmod'">> $TEMPFOLDER/updateSteamCmd.sh
 		else
 			echo "FDLFOLDER='$UPDATE'">> $TEMPFOLDER/updateSteamCmd.sh
 		fi
@@ -755,6 +757,15 @@ for UPDATE in $VARIABLE3; do
 	SAVEAS=`echo "$UPDATE" | awk -F ';' '{print $2}'`
 	DOWNLOADURL=`echo "$UPDATE" | awk -F ';' '{print $3}'`
 	UPDATE=`echo "$UPDATE" | awk -F ';' '{print $1}'`
+	if [ "$UPDATE" == "css" ]; then
+		FDLFOLDER='cstrike'
+	elif [ "$UPDATE" == "dods" ]; then
+		FDLFOLDER='dod'
+	elif [ "$UPDATE" == "gmod" ]; then
+		FDLFOLDER='garrysmod'
+	else
+		FDLFOLDER='$UPDATE'
+	fi
 	if [[ ! `screen -ls | grep $UPDATE.update` ]]; then
 cat > $TEMPFOLDER/update_$UPDATE.sh << EOF
 #!/bin/bash
@@ -767,7 +778,7 @@ UPDATE="$UPDATE"
 HOMEFOLDER="$HOMEFOLDER"
 MASTERSERVERDIR="$MASTERSERVERDIR"
 cd "$MASTERSERVERDIR"
-FDLFOLDER="$UPDATE"
+FDLFOLDER="$FDLFOLDER"
 I=0
 EOF
 		# Create folder if needed
