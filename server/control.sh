@@ -919,7 +919,7 @@ if [ ! -d $SERVERDIR/$VARIABLE4/$GAMENAME ]; then
 	mkdir -p $SERVERDIR/$VARIABLE4/$GAMENAME
 fi" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 if [ "$MODINSTALL" == "1" ]; then
-	echo "if [ -d $HOMEFOLDER/masterserver/$MODNAME -a \"$MODNAME\" != "" ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo "if [ -d $HOMEFOLDER/masterserver/$MODNAME -a \"$MODNAME\" != \"\" ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "cd $HOMEFOLDER/masterserver/$MODNAME" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.con" -o -name "*.conf" -o -name "*.config" -o -name "*.config" -o -name "*.ini" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "*.props" -o -name "*.properties" -o -name "*.example" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
@@ -937,7 +937,7 @@ done
 '"${IONICE}"'cp -sr $HOMEFOLDER/masterserver/$MODNAME/* $SERVERDIR/$VARIABLE4/$GAMENAME/
 fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 fi
-echo "if [ -d $HOMEFOLDER/masterserver/$GAMENAME2 -a \"$GAMENAME2\" != "" ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+echo "if [ -d $HOMEFOLDER/masterserver/$GAMENAME2 -a \"$GAMENAME2\" != \"\" ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo "cd $HOMEFOLDER/masterserver/$GAMENAME2" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.con" -o -name "*.conf" -o -name "*.config" -o -name "*.config" -o -name "*.ini" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "*.props" -o -name "*.properties" -o -name "*.example" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
