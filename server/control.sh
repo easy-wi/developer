@@ -734,6 +734,8 @@ for UPDATE in $VARIABLE3; do
 			echo "FDLFOLDER='cstrike'">> $TEMPFOLDER/updateSteamCmd.sh
 		elif [ "$UPDATE" == "dods" ]; then
 			echo "FDLFOLDER='dod'">> $TEMPFOLDER/updateSteamCmd.sh
+		elif [ "$UPDATE" == "gmod" ]; then
+			echo "FDLFOLDER='garrysmod'">> $TEMPFOLDER/updateSteamCmd.sh							
 		else
 			echo "FDLFOLDER='$UPDATE'">> $TEMPFOLDER/updateSteamCmd.sh
 		fi
