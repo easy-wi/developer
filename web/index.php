@@ -82,7 +82,7 @@ if (isset($page_active) and $page_active == 'Y') {
     }
 
     include(IncludeTemplate($template_to_use, 'page_header.tpl', 'cms'));
-    include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'page_general.tpl', 'cms'));
+    include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'page_general.tpl', (isset($customModule)) ? 'custom_modules' : 'cms'));
     include(IncludeTemplate($template_to_use, 'page_footer.tpl', 'cms'));
 
 } else {

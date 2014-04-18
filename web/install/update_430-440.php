@@ -170,7 +170,9 @@ if (isset($include) and $include == true) {
 
                 if (substr($row, -4) == '.tpl') {
 
-                    @unlink(EASYWIDIR . '/template/default/' . $row);
+                    if (is_file(EASYWIDIR . '/template/default/' . $row)) {
+                        @unlink(EASYWIDIR . '/template/default/' . $row);
+                    }
 
                     foreach ($customDirs as $custom) {
                         if (is_dir(EASYWIDIR . '/template/' . $custom) and is_file(EASYWIDIR . '/template/' . $custom . '/' . $row)) {
@@ -193,6 +195,13 @@ if (isset($include) and $include == true) {
 
     $query = $sql->prepare("UPDATE `servertypes` SET `gamebinaryWin`='srcds.exe',`os`='B' WHERE `gamebinary`='srcds_run'");
     $query->execute();
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `gameq`='mta' WHERE `gameq`='Mta'");
+    $query->execute();
+
+    $query = $sql->prepare("DROP TABLE IF EXISTS `voice_server_stats_hours`");
+    $query->execute();
+
 
 } else {
     echo "Error: this file needs to be included by the updater!<br />";

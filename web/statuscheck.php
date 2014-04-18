@@ -1147,9 +1147,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     # Web Quotas
     if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'vh') {
 
-        $query = $sql->prepare("SELECT `webMasterID`,`resellerID` FROM `webMaster` WHERE `active`='Y'");
+        echo "Checking Quota usage\r\n";
+
+        $query = $sql->prepare("SELECT `webMasterID`,`ip`,`resellerID` FROM `webMaster` WHERE `active`='Y'");
         $query->execute();
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+            echo 'Checking webMaster ' . $row['ip'] . ' with webMasterID ' . $row['webMasterID'] . "\r\n";
+
             $httpd = new HttpdManagement($row['webMasterID'], $row['resellerID']);
             $httpd->ssh2Connect();
             $httpd->checkQuotaUsage();

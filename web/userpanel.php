@@ -55,6 +55,7 @@ if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui-
 } else if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui->smallletters('w', 255, 'get')]) and is_file(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')])) {
     include(EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]);
 } else if ($ui->smallletters('w', 255, 'get') and isset($customFiles[$ui->smallletters('w', 255, 'get')]) and is_file((EASYWIDIR . '/stuff/custom_modules/' . $customFiles[$ui->smallletters('w', 255, 'get')]))) {
+    $customModule = true;
     include(EASYWIDIR . '/stuff/custom_modules/' . $customFiles[$ui->smallletters('w', 255, 'get')]);
 } else {
     $template_file = 'userpanel_home.tpl';
@@ -73,7 +74,7 @@ if (!isset($template_file) or is_array($template_file)) {
 }
 
 include(IncludeTemplate($template_to_use, 'userpanel_header.tpl', 'user'));
-include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'general.tpl', 'user'));
+include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'general.tpl', (isset($customModule)) ? 'custom_modules' : 'user'));
 include(IncludeTemplate($template_to_use, 'userpanel_footer.tpl', 'user'));
 
 $sql = null;
