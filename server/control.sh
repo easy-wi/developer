@@ -1355,7 +1355,9 @@ ADDONS=$VARIABLE4
 VARIABLE4="$VARIABLE2/server/$VARIABLE3"
 VARIABLE2="tool"
 for VARIABLE3 in $ADDONS; do
-	add_addon
+	if [ "$VARIABLE3" != "" -a -d $HOMEFOLDER/masteraddons/$VARIABLE3 ]; then
+		add_addon
+	fi
 done
 }
 
@@ -1794,6 +1796,7 @@ function sync_addons {
 	chmod +x $HOMEFOLDER/temp/sync-addons.sh
 	screen -dmS sync-addons $HOMEFOLDER/temp/sync-addons.sh
 }
+
 function sync_server {
 	echo "#!/bin/bash" > $TEMPFOLDER/sync-server.sh
 	echo "rm $TEMPFOLDER/sync-server.sh" >> $TEMPFOLDER/sync-server.sh
@@ -1849,26 +1852,23 @@ function add_addon {
 	if [ "$GAMEDIR" == "" ]; then
 		GAMEDIR="/home/$VARIABLE4"
 	fi
-	if [ "$VARIABLE2" == "map" ]; then
+	COPYFILES=0
+	if [ "$VARIABLE2" == "map" -a "$VARIABLE3" != "" -a -d $MAPDIR/$VARIABLE3 ]; then
 		ADDONFOLDER=$MAPDIR/$VARIABLE3
-		if [ ! -d $ADDONFOLDER ]; then
-			exit 0
-		fi
 		cd $ADDONFOLDER
 		map_list
-	elif [ "$VARIABLE2" == "tool" ]; then
+		COPYFILES=1
+	elif [ "$VARIABLE2" == "tool" -a "$VARIABLE3" != "" -a -d $MAPDIR/$VARIABLE3 ]; then
 		ADDONFOLDER=$ADDONDIR/$VARIABLE3
-		if [ ! -d $ADDONFOLDER ]; then
-			exit 0
-		fi
 		cd $ADDONFOLDER
-	else
-		exit 0
+		COPYFILES=1
 	fi
-	USER=`echo $GAMEDIR | awk -F/ '{print $3}'`
-	copy_addon_files&
-	if [ -f $LOGDIR/addons.log ]; then
-		echo "`date`: Installed $VARIABLE3 at the server $GAMEDIR for user $USER" >> $LOGDIR/addons.log
+	if [ "$COPYFILES" == "1" ]; then
+		USER=`echo $GAMEDIR | awk -F/ '{print $3}'`
+		copy_addon_files&
+		if [ -f $LOGDIR/addons.log ]; then
+			echo "`date`: Installed $VARIABLE3 at the server $GAMEDIR for user $USER" >> $LOGDIR/addons.log
+		fi
 	fi
 }
 
