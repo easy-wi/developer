@@ -52,14 +52,15 @@ $i_removed = 0;
 $crashed = array();
 $i_crashed = 0;
 $tag_removed = array();
+$steamAppIDsArray = array();
 $i_tag_removed = 0;
 $crashedArray = array('all' => 0, 'gsTotal' => 0, 'gsCrashed' => 0,'gsPWD' => 0,'gsTag' => 0,'ticketsOpen' => 0,'tickets' => 0,'ts3' => 0);
 
-$query = $sql->prepare("SELECT `stopped`,`serverid`,CONCAT(`serverip`,':',`port`) AS `server`,`userid`,`war`,`brandname`,`queryName`,`queryPassword` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
+$query = $sql->prepare("SELECT g.`stopped`,CONCAT(g.`serverip`,':',g.`port`) AS `server`,g.`userid`,g.`war`,g.`brandname`,g.`queryName`,g.`queryPassword`,t.`steamgame`,t.`appID`,t.`shorten` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON s.`id`=g.`serverid` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=?");
 $query->execute(array($user_id,$reseller_id));
 $customer = getusername($user_id);
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    
+
     $war = $row['war'];
     $brandname = $row['brandname'];
     $password = $row['queryPassword'];
@@ -74,11 +75,16 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		$i_crashed++;
         $crashedArray['gsCrashed']++;
 	}
+
 	if ($name != '' and $row['stopped'] == 'N' and $name != 'OFFLINE' and $brandname == 'Y' and isset($reseller_brandname) and $reseller_brandname != ''  and strpos(strtolower($name), strtolower($reseller_brandname))  === false) {
 		$tag_removed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
 		$i_tag_removed++;
         $crashedArray['gsTag']++;
 	}
+
+    if ($row['steamgame'] != 'N' and isid($row['appID'], 10)) {
+        $steamAppIDsArray[] = workAroundForValveChaos($row['appID'], $row['shorten']);
+    }
 }
 
 $query = $sql->prepare("SELECT `id` FROM `tickets` WHERE `userid`=? AND `state` != 'C' AND `resellerid`=?");
@@ -112,17 +118,18 @@ $feedArray = array();
 $crashedArray['gsTotal'] = $crashedArray['gsTag'] + $crashedArray['gsCrashed'] + $crashedArray['gsPWD'];
 $crashedArray['all'] = $crashedArray['gsTotal'] + $crashedArray['ticketsOpen'] + $crashedArray['tickets'] + $crashedArray['ts3'];
 
-if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get') and !$ui->smallletters('d',2, 'get'))) {
+if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get') and !$ui->smallletters('d', 2, 'get'))) {
+
     $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
         if ($row['orderBy'] == 'I' and $row['merge'] == 'N'){
-            $orderFeedsBy='`feedID` ASC';
+            $orderFeedsBy = '`feedID` ASC';
         } else if ($row['orderBy'] == 'U' and $row['merge'] == 'N'){
-            $orderFeedsBy='`feedUrl` ASC';
+            $orderFeedsBy = '`feedUrl` ASC';
         } else {
-            $orderFeedsBy='n.`pubDate` DESC';
+            $orderFeedsBy = 'n.`pubDate` DESC';
         }
 
         $newsAmount = $row['newsAmount'];
@@ -132,9 +139,9 @@ if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get')
         $query2->execute(array($user_language));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
             if ($row['merge'] == 'N') {
-                $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo == 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url . '/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
+                $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo == 'Y') ? $page_url . '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url . '/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
             } else {
-                $feedArray['News'][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo == 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url . '/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
+                $feedArray['News'][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo == 'Y') ? $page_url . '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url . '/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
             }
         }
         
@@ -145,7 +152,7 @@ if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get')
             $object = $query2->fetchAll(PDO::FETCH_ASSOC);
 
             if ($row['steamFeeds'] == 'Y') {
-                $object[] = array('feedID' => 0,'feedUrl' => 'http://store.steampowered.com/news/','twitter' => 'N','loginName' => '');
+                $object[] = array('feedID' => 0, 'feedUrl' => 'http://store.steampowered.com/news/', 'twitter' => 'N', 'loginName' => '');
             }
 
             foreach ($object as $row2) {
@@ -177,12 +184,17 @@ if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get')
         } else {
 
             if ($row['steamFeeds'] == 'Y') {
-                $query2 = $sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND (u.`active`='Y' OR u.`active` IS NULL) ORDER BY $orderFeedsBy LIMIT $newsAmount");
+
+                $steamAppIDs = (count($steamAppIDsArray) > 0) ? ' OR (n.`feedID`=0  AND n.`content` IN (' . implode(',', $steamAppIDsArray) . '))' : '';
+
+                $query2 = $sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND (u.`active`='Y' $steamAppIDs) ORDER BY $orderFeedsBy LIMIT $newsAmount");
+
             } else {
                 $query2 = $sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND u.`active`='Y' ORDER BY $orderFeedsBy LIMIT $newsAmount");
             }
             $query2->execute(array($row['resellerID']));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
                 if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
                     $text = substr(preg_replace('/<(.*?)>/', '', preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/', '$1', $row2['content'], -1), -1), 0, $row['maxChars']);
                 } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){

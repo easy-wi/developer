@@ -393,6 +393,7 @@ if (!function_exists('gsrestart')) {
                 if ($protected == 'N' and count($installedaddons) > 0) {
                     $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$binaryFolder\" \"".implode(' ', $installedaddons)."\"";
                 }
+
                 $restartCmd = "sudo -u ${customer} ./control.sh grestart $customer \"$binaryFolder\" \"$startline\" $protectedString $gamebinary \"$cores\"";
             }
 
