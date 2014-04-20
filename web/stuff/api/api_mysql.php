@@ -44,6 +44,8 @@ foreach (array('active', 'action', 'identify_server_by', 'server_local_id', 'ser
     }
 }
 
+$manage_host_table = (isset($data['manage_host_table']) and active_check($data['manage_host_table'])) ? $data['manage_host_table'] : 'N';
+
 if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
     if (dataExist('identify_user_by', $data)) {
@@ -55,7 +57,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $username = $data['username'];
         $identifyServerBy = $data['identify_server_by'];
         $localServerID = isid($data['server_local_id'], 10);
-        $manage_host_table = (isset($data['manage_host_table']) and active_check($data['manage_host_table'])) ? $data['manage_host_table'] : 'N';
         $externalServerID = $data['server_external_id'];
         $from = array('user_localid' => 'id', 'username' => 'cname', 'user_externalid' => 'externalID', 'email' => 'mail');
 
@@ -163,7 +164,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $hostID = $row['sid'];
             $name = $row['dbname'];
             $oldActive = $row['active'];
-            $manage_host_table = (isset($data['manage_host_table']) and active_check($data['manage_host_table'])) ? $data['manage_host_table'] : 'N';
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='my' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID));
@@ -273,6 +273,9 @@ if ($apiType == 'xml') {
     $element->appendChild($server);
 
     $server = $responsexml->createElement('active', $active);
+    $element->appendChild($server);
+
+    $server = $responsexml->createElement('manage_host_table', $manage_host_table);
     $element->appendChild($server);
 
     $server = $responsexml->createElement('identify_server_by', $identifyServerBy);
