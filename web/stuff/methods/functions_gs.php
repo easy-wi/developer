@@ -56,13 +56,13 @@ if (!function_exists('gsrestart')) {
         $tempCmds = array();
         $stopped = 'Y';
 
-        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,g.`pallowed`,t.`cmd`,t.`modcmds`,t.`configedit`,t.`modfolder`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`shorten`,t.`appID`,t.`workShop` AS `tWorkShop` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,g.`pallowed` AS `gsPallowed`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,s.`cmd` AS `localCmd`,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,t.*,t.`cmd` AS `globalCmd`,t.`workShop` AS `tWorkShop` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':serverid' => $switchID, ':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $serverid = $row['serverid'];
             $anticheat = $row['anticheat'];
             $servertemplate = $row['servertemplate'];
-            $protected = $row['protected'];
             $upload = $row['upload'];
             $uploaddir = $row['decypteduploaddir'];
             $shorten = $row['shorten'];
@@ -82,13 +82,14 @@ if (!function_exists('gsrestart')) {
             $map = $row['map'];
             $mapGroup = $row['mapGroup'];
             $tic = $row['tic'];
+            $pallowed = $row['gsPallowed'];
+            $protected = ($row['gsPallowed'] == 'N') ? 'N' : $row['protected'];
 
             $modfolder = $row['modfolder'];
             $ftppass = $row['decryptedftppass'];
             $decryptedftppass = $row['decryptedppass'];
-            $cmd = $row['cmd'];
+            $cmd = ($row['owncmd'] == 'Y') ? $row['localCmd'] : $row['globalCmd'];
             $modcmd = $row['modcmd'];
-            $pallowed = $row['pallowed'];
             $user_id = $row['userid'];
 
             $rdata = serverdata('root', $row['rootID'], $aeskey);
@@ -208,10 +209,6 @@ if (!function_exists('gsrestart')) {
                 } else if (isset($name) and isset ($modsCmds[$name]) and $line!='') {
                     $modsCmds[$name][] = $line;
                 }
-            }
-
-            if ($row['owncmd'] == 'N') {
-                $cmd = $row['cmd'];
             }
 
             // https://github.com/easy-wi/developer/issues/205
