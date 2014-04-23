@@ -66,20 +66,20 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
                 $query2->execute(array($row['steamVersion'], $row['id']));
             }
 
-            $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `autoRestart`='Y'");
-            $query2->execute(array($row['id']));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $query2 = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query2->execute(array($row2['id'], $row['resellerid']));
-
-                $query2 = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND (`action`='re' OR `action`='st') AND `affectedID`=? and `resellerID`=?");
-                $query2->execute(array($row2['id'], $row['resellerid']));
-
-                $query2 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('R','gs',?,?,?,?,?,NULL,NOW(),'re',?)");
-                $query2->execute(array($row['id'], $row['resellerid'], $row2['id'], $row2['userid'], $row2['name'], $row['resellerid']));
-            }
-
             if ($row['installing'] == 'Y' or $row['installing'] == null or $row['steamVersion'] > $row['localVersion'] or $row['steamVersion'] == null or $row['steamVersion'] == '') {
+
+                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `autoRestart`='Y'");
+                $query2->execute(array($row['id']));
+                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    $query2 = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $query2->execute(array($row2['id'], $row['resellerid']));
+
+                    $query2 = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND (`action`='re' OR `action`='st') AND `affectedID`=? and `resellerID`=?");
+                    $query2->execute(array($row2['id'], $row['resellerid']));
+
+                    $query2 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('R','gs',?,?,?,?,?,NULL,NOW(),'re',?)");
+                    $query2->execute(array($row['id'], $row['resellerid'], $row2['id'], $row2['userid'], $row2['name'], $row['resellerid']));
+                }
 
                 $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
                 $query2->execute(array($row['resellerid'], $row['resellerid']));
