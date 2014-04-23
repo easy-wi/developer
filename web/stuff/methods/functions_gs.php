@@ -56,7 +56,7 @@ if (!function_exists('gsrestart')) {
         $tempCmds = array();
         $stopped = 'Y';
 
-        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,g.`pallowed` AS `gsPallowed`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,s.`cmd` AS `localCmd`,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,t.*,t.`cmd` AS `globalCmd`,t.`workShop` AS `tWorkShop` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,g.`pallowed` AS `gsPallowed`,g.`protected` AS `gsProtected`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,s.`cmd` AS `localCmd`,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,t.*,t.`cmd` AS `globalCmd`,t.`workShop` AS `tWorkShop`,t.`protected` AS `tProtected` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':serverid' => $switchID, ':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -83,7 +83,7 @@ if (!function_exists('gsrestart')) {
             $mapGroup = $row['mapGroup'];
             $tic = $row['tic'];
             $pallowed = $row['gsPallowed'];
-            $protected = ($row['gsPallowed'] == 'N') ? 'N' : $row['protected'];
+            $protected = ($row['gsPallowed'] == 'N' or $row['tProtected'] == 'N') ? 'N' : $row['gsProtected'];
 
             $modfolder = $row['modfolder'];
             $ftppass = $row['decryptedftppass'];
@@ -558,6 +558,7 @@ if (!function_exists('gsrestart')) {
 
         global $sql;
         global $dbConnect;
+
         $subfolder = '';
         $parameter = '';
 
