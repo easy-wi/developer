@@ -1858,7 +1858,7 @@ function add_addon {
 		cd $ADDONFOLDER
 		map_list
 		COPYFILES=1
-	elif [ "$VARIABLE2" == "tool" -a "$VARIABLE3" != "" -a -d $MAPDIR/$VARIABLE3 ]; then
+	elif [ "$VARIABLE2" == "tool" -a "$VARIABLE3" != "" -a -d $ADDONDIR/$VARIABLE3 ]; then
 		ADDONFOLDER=$ADDONDIR/$VARIABLE3
 		cd $ADDONFOLDER
 		COPYFILES=1
