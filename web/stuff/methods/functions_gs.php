@@ -56,7 +56,7 @@ if (!function_exists('gsrestart')) {
         $tempCmds = array();
         $stopped = 'Y';
 
-        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,g.`pallowed` AS `gsPallowed`,g.`protected` AS `gsProtected`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,s.`cmd` AS `localCmd`,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,t.*,t.`cmd` AS `globalCmd`,t.`workShop` AS `tWorkShop`,t.`protected` AS `tProtected` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,g.`pallowed` AS `gsPallowed`,g.`protected` AS `gsProtected`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,s.`cmd` AS `localCmd`,s.`workShop` AS `sWorkShop`,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`appID`,t.`cmd` AS `globalCmd`,t.`workShop` AS `tWorkShop`,t.`protected` AS `tProtected` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':serverid' => $switchID, ':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -96,6 +96,7 @@ if (!function_exists('gsrestart')) {
             $sship = $rdata['ip'];
             $ftpport = $rdata['ftpport'];
             $rootOS = $rdata['os'];
+            $workShop = ($row['sWorkShop'] == 'Y' AND $row['tWorkShop'] == 'Y') ? 'Y' : 'N';
 
             if ($rootOS == 'W') {
 
@@ -213,7 +214,7 @@ if (!function_exists('gsrestart')) {
 
             // https://github.com/easy-wi/developer/issues/205
             // In case Workshop is on we need to remove workgroup
-            if ($row['workShop'] == 'Y' AND $row['tWorkShop'] == 'Y') {
+            if ($workShop == 'Y') {
                 $cmd = str_replace(array('%mapgroup%', ' +mapgroup'), '', $cmd);
             }
 
@@ -276,7 +277,7 @@ if (!function_exists('gsrestart')) {
                 }
             }
 
-            if ($row['workShop'] == 'Y' AND $row['tWorkShop'] == 'Y' and isid($row['workshopCollection'], 10) and wpreg_check($row['dwebapiAuthkey'], 32) and strlen($row['dwebapiAuthkey']) > 0 and $row['workshopCollection'] > 0) {
+            if ($workShop == 'Y' and isid($row['workshopCollection'], 10) and wpreg_check($row['dwebapiAuthkey'], 32) and strlen($row['dwebapiAuthkey']) > 0 and $row['workshopCollection'] > 0) {
                 if ($shorten == 'gmod' or  $shorten == 'garrysmod') {
                     $cmd .= ' -nodefaultmap +host_workshop_collection ' . $row['workshopCollection'] . ' -authkey ' . $row['dwebapiAuthkey'];
                 } else {
