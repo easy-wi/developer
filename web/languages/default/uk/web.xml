@@ -14,6 +14,7 @@
     <ftpPasswordRepeat>Repeat FTP Password</ftpPasswordRepeat>
     <ftpPort>FTP Port</ftpPort>
     <hdd>Diskspace</hdd>
+    <hddOverbook>HDD Overbooking</hddOverbook>
     <hddUsage>Used Diskspace</hddUsage>
     <help_blocksize>Most filesystems are configured with a blocksize of 4096. This means one block contains 4096 Byte data.</help_blocksize>
     <help_fdl_attention>Warning! Recommended method is to create a subfolder for each game. Naming could be like cod4, cstrike, css, etc.</help_fdl_attention>
@@ -29,6 +30,7 @@
     <maxVhost>Maximum Vhosts</maxVhost>
     <optional>(optional)</optional>
     <other>Other</other>
+    <overbookPercent>Overbook</overbookPercent>
     <ownVhost>Own Vhost Template</ownVhost>
     <quotaActive>Activate Quotas</quotaActive>
     <quotaCmd>Quota Command</quotaCmd>

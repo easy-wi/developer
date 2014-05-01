@@ -14,6 +14,7 @@
     <ftpPasswordRepeat>FTP Passwort wiederholen</ftpPasswordRepeat>
     <ftpPort>FTP Port</ftpPort>
     <hdd>Speicherplatz</hdd>
+    <hddOverbook>HDD Überbuchen</hddOverbook>
     <hddUsage>Belegter Speicherplatz</hddUsage>
     <help_blocksize>Bei den meisten Systemen beträgt die Block Größe 4096. D.h. ein Block enthält 4096 Byte an Daten.</help_blocksize>
     <help_fdl_attention>Achtung! Es wird empfohlen, dass man je Spiel einen eigenen Unterordner wie cod4, cstrike, css, etc. erstellt und den Ordner in der Config mit angibt.</help_fdl_attention>
@@ -29,6 +30,7 @@
     <maxVhost>Maximale Vhosts</maxVhost>
     <optional>(optional)</optional>
     <other>Andere</other>
+    <overbookPercent>Überbuchen um</overbookPercent>
     <ownVhost>Eigenes Vhosttemplate</ownVhost>
     <quotaActive>Quotas Aktivieren</quotaActive>
     <quotaCmd>Quota Befehl</quotaCmd>

@@ -99,6 +99,24 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputHddOverbook"><?php echo $sprache->hddOverbook;?></label>
+                <div class="controls">
+                    <select id="inputHddOverbook" class="span11" name="hddOverbook" onchange="textdrop('overbookPercent');">
+                        <option value="N"><?php echo $gsprache->no;?></option>
+                        <option value="Y" <?php if ($hddOverbook=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                    </select>
+                </div>
+            </div>
+            <div id="overbookPercent" class="control-group <?php if ($hddOverbook=='N') echo 'display_none';?>">
+                <label class="control-label" for="inputOverbookPercent"><?php echo $sprache->overbookPercent;?></label>
+                <div class="controls">
+                    <div class="input-append span12">
+                        <input id="inputOverbookPercent" class="span11" type="number" name="overbookPercent" value="<?php echo $overbookPercent;?>">
+                        <span class="add-on">%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputDefaultDNS"><?php echo $sprache->defaultdns;?></label>
                 <div class="controls"><input id="inputDefaultDNS" class="span11" type="text" name="defaultdns" value="<?php echo $defaultdns;?>" required></div>
             </div>

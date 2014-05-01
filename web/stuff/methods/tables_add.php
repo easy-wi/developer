@@ -341,6 +341,8 @@ $query = "CREATE TABLE IF NOT EXISTS `webMaster` (
   `ftpPort` int(5) unsigned,
   `maxVhost` int(10) unsigned,
   `maxHDD` int(10) unsigned,
+  `hddOverbook` enum('Y','N') DEFAULT 'N',
+  `overbookPercent` int(10) unsigned DEFAULT 50,
   `defaultdns` varchar(255),
   `serverType` enum('A','H','L','N','O') DEFAULT 'N',
   `httpdCmd` varchar(255),
