@@ -1263,12 +1263,12 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                 if ($row['accounttype'] != 'u') {
 
-                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
-                    $query2->execute(array($insertID));
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `rserverdata` WHERE `userID`=? OR `resellerid`=?");
+                    $query2->execute(array($insertID, $insertID));
                     $statsArray['gameMasterInstalled'] = (int) $query2->fetchColumn();
 
-                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `rserverdata` WHERE `resellerid`=? AND `active`='Y'");
-                    $query2->execute(array($insertID));
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `rserverdata` WHERE (`userID`=? OR `resellerid`=?) AND `active`='Y'");
+                    $query2->execute(array($insertID, $insertID));
                     while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         $statsArray['gameMasterActive'] = (int) $row2['amount'];
                         $statsArray['gameMasterSlotsAvailable'] = (int) $row2['maxSlotsTotal'];
@@ -1285,11 +1285,20 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $statsArray['voiceMasterInstalled'] = (int) $query2->fetchColumn();
 
                     if ($row['accounttype'] == 'a') {
-                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `voice_masterserver` WHERE `managedForID` IS NULL AND `active`='Y'");
-                        $query2->execute();
-                    } else {
-                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `voice_masterserver` WHERE `managedForID`=? AND `active`='Y'");
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_masterserver` WHERE `notified`>0 AND `active`='Y' AND (`managedForID` IS NULL OR `resellerid`=?)");
                         $query2->execute(array($insertID));
+                    } else {
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_masterserver` WHERE `notified`>0 AND `active`='Y' AND (`managedForID`=? OR `resellerid`=?)");
+                        $query2->execute(array($insertID, $insertID));
+                    }
+                    $statsArray['voiceMasterCrashed'] = (int) $query2->fetchColumn();
+
+                    if ($row['accounttype'] == 'a') {
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `voice_masterserver` WHERE  (`managedForID` IS NULL OR `resellerid`=?) AND `active`='Y'");
+                        $query2->execute(array($insertID));
+                    } else {
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `voice_masterserver` WHERE (`managedForID`=? OR `resellerid`=?) AND `active`='Y'");
+                        $query2->execute(array($insertID, $insertID));
                     }
                     while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         $statsArray['voiceMasterActive'] = (int) $row2['amount'];
