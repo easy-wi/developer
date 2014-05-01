@@ -1263,11 +1263,11 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                 if ($row['accounttype'] != 'u') {
 
-                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `rserverdata` WHERE `userID`=?");
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
                     $query2->execute(array($insertID));
                     $statsArray['gameMasterInstalled'] = (int) $query2->fetchColumn();
 
-                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `rserverdata` WHERE `userID`=? AND `active`='Y'");
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `rserverdata` WHERE `resellerid`=? AND `active`='Y'");
                     $query2->execute(array($insertID));
                     while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         $statsArray['gameMasterActive'] = (int) $row2['amount'];
@@ -1276,11 +1276,11 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     }
 
                     if ($row['accounttype'] == 'a') {
-                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_masterserver` WHERE `managedForID` IS NULL");
-                        $query2->execute();
-                    } else {
-                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_masterserver` WHERE `managedForID`=?");
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_masterserver` WHERE `managedForID` IS NULL OR `resellerid`=?");
                         $query2->execute(array($insertID));
+                    } else {
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_masterserver` WHERE `managedForID`=? OR `resellerid`=?");
+                        $query2->execute(array($insertID, $insertID));
                     }
                     $statsArray['voiceMasterInstalled'] = (int) $query2->fetchColumn();
 
