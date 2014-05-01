@@ -57,7 +57,7 @@ $i_tag_removed = 0;
 $crashedArray = array('all' => 0, 'gsTotal' => 0, 'gsCrashed' => 0,'gsPWD' => 0,'gsTag' => 0,'ticketsOpen' => 0,'tickets' => 0,'ts3' => 0);
 
 $query = $sql->prepare("SELECT g.`stopped`,CONCAT(g.`serverip`,':',g.`port`) AS `server`,g.`userid`,g.`war`,g.`brandname`,g.`queryName`,g.`queryPassword`,t.`steamgame`,t.`appID`,t.`shorten` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON s.`id`=g.`serverid` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=?");
-$query->execute(array($user_id,$reseller_id));
+$query->execute(array($user_id, $reseller_id));
 $customer = getusername($user_id);
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 

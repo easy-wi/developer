@@ -1019,7 +1019,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $imgName = '16_error';
                 $imgAlt = 'Crashed';
             } else {
-                if ($war== 'Y' and $password == 'N') {
+                if ($war == 'Y' and $password == 'N') {
                     $imgName = '16_error';
                     $imgAlt = 'No Password';
                     $premoved = $sprache->premoved;
@@ -1034,7 +1034,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query3->execute(array($row['tid']));
             $ftpAllowed = ($query3->rowCount() == 0) ? true : false;
 
-            $table[] = array('id' => $gameserverid,'premoved' => $premoved,'nameremoved' => $nameremoved, 'server' => $address,'name' => $name,'img' => $imgName,'alt' => $imgAlt,'imgp' => $imgNameP,'altp' => $imgAltP,'numplayers' => $numplayers,'maxplayers' => $maxplayers,'map' => $map,'cname' => $cname,'cftppass' => $cftppass,'ip' => $ip,'ftpport' => $ftpport,'port' => $port,'shorten' => $currentTemplate,'gameShorten' => $shorten,'ftpdata' => $ftpdata,'updatetime' => $updatetime,'stopped' => $stopped,'pro' => $pro,'upload' => $upload,'minram' => $row['minram'], 'maxram' => $row['maxram'], 'taskset' => $row['taskset'], 'ramLimited' => $row['ramLimited'], 'coreCount' => $coreCount,'cores' => $cores, 'ftpAllowed' => $ftpAllowed);
+            $table[] = array('id' => $gameserverid,'premoved' => $premoved,'nameremoved' => $nameremoved, 'server' => $address,'name' => $name,'img' => $imgName,'alt' => $imgAlt,'imgp' => $imgNameP,'altp' => $imgAltP,'numplayers' => $numplayers, 'maxplayers' => $maxplayers,'map' => $map,'cname' => $cname,'cftppass' => $cftppass,'ip' => $ip,'ftpport' => $ftpport,'port' => $port,'shorten' => $currentTemplate,'gameShorten' => $shorten,'ftpdata' => $ftpdata,'updatetime' => $updatetime,'stopped' => $stopped,'pro' => $pro,'upload' => $upload,'minram' => $row['minram'], 'maxram' => $row['maxram'], 'taskset' => $row['taskset'], 'ramLimited' => $row['ramLimited'], 'coreCount' => $coreCount,'cores' => $cores, 'ftpAllowed' => $ftpAllowed);
         }
     }
     $template_file = 'userpanel_gserver_list.tpl';
