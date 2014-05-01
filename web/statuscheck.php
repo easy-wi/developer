@@ -1338,7 +1338,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $statsArray['gameserverSlotsUsed'] += (int) $row2['queryNumplayers'];
                     }
 
-                    if ($row2['queryName'] != 'OFFLINE' and $row2['stopped'] == 'N' and $row['war'] == 'Y' and $row2['queryPassword'] == 'N') {
+                    if ($row2['queryName'] != 'OFFLINE' and $row2['stopped'] != 'Y' and $row2['war'] == 'Y' and $row2['queryPassword'] == 'N') {
                         $statsArray['gameserverNoPassword']++;
                     } else if ($row2['queryName'] == 'OFFLINE' and $row2['stopped'] != 'Y') {
                         $statsArray['gameserverNotRunning']++;

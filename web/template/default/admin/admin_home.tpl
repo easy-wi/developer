@@ -9,7 +9,7 @@
 <div class="row-fluid">
     <?php if($easywiModules['gs'] and $pa['roots'] and $gserver_module) { ?>
     <div class="span3">
-        <h5><a href="admin.php?w=ro&amp;d=md"><?php echo $statsArray['gameMasterInstalled'].' '.$gsprache->gameroot;?></a></h5>
+        <h5><a href="admin.php?w=ro"><?php echo $statsArray['gameMasterInstalled'].' '.$gsprache->gameroot;?></a></h5>
         <strong><?php echo $gsprache->active;?></strong><span class="pull-right"><?php echo $statsArray['gameMasterActivePercent'];?>%</span>
         <div class="progress">
             <div class="bar bar-success" style="width: <?php echo $statsArray['gameMasterActivePercent'];?>%;"></div>
@@ -151,7 +151,7 @@
     <?php }?>
     <?php if($easywiModules['my'] and $pa['mysql_settings']) { ?>
     <div class="span3">
-        <h5><a href="admin.php?w=my"><?php echo $statsArray['mysqlMasterInstalled'].' MySQL '.$gsprache->master;?></a></h5>
+        <h5><a href="admin.php?w=ms"><?php echo $statsArray['mysqlMasterInstalled'].' MySQL '.$gsprache->master;?></a></h5>
         <strong><?php echo $gsprache->active;?></strong><span class="pull-right"><?php echo $statsArray['mysqlMasterActivePercent'];?>%</span>
         <div class="progress">
             <div class="bar bar-success" style="width: <?php echo $statsArray['mysqlMasterActivePercent'];?>%;"></div>
@@ -166,7 +166,7 @@
     <?php }?>
     <?php if($easywiModules['my'] and $pa['mysql']) { ?>
     <div class="span3">
-        <h5><a href="admin.php?w=my&amp;d=ms"><?php echo $statsArray['webspaceInstalled'].' '.$gsprache->databases;?></a></h5>
+        <h5><a href="admin.php?w=my&amp;d=my"><?php echo $statsArray['webspaceInstalled'].' '.$gsprache->databases;?></a></h5>
         <strong><?php echo $gsprache->active;?></strong><span class="pull-right"><?php echo $statsArray['mysqlActivePercent'];?>%</span>
         <div class="progress">
             <div class="bar bar-success" style="width: <?php echo $statsArray['mysqlActivePercent'];?>%;"></div>
