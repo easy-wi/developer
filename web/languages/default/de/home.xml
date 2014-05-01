@@ -1,12 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<gserver_crashed>abgestürzte Gameserver</gserver_crashed>
+	<gserver_crashed>Abgestürzte Gameserver</gserver_crashed>
 	<gserver_removed>Gameserver mit entferntem Password</gserver_removed>
 	<gserver_tag_removed>Gameserver mit entferntem Servertag</gserver_tag_removed>
-	<host_crashed>abgestürzte Hosts</host_crashed>
-	<master_crashed>abgestürzte Masterserver</master_crashed>
+	<host_crashed>Abgestürzte Hosts</host_crashed>
+	<master_crashed>Abgestürzte Masterserver</master_crashed>
+    <master_installed_db>Installierte Datenbanken</master_installed_db>
+    <master_installed_server>Installierte Server</master_installed_server>
+    <master_installed_slots>Installierte Slots</master_installed_slots>
+    <master_installed_space>Vergebener Speicherplatz</master_installed_space>
+    <master_installed_vhosts>Installierte Vhosts</master_installed_vhosts>
 	<tickets>Tickets</tickets>
-	<tickets_open>unbeantwortete Tickets</tickets_open>
-	<ts3master_crashed>abgestürzte TS3 Masterserver</ts3master_crashed>
-	<voice_crashed>abgestürzte Voiceserver</voice_crashed>
+	<tickets_open>Offene Tickets</tickets_open>
+    <tickets_new>Neue Tickets</tickets_new>
+	<ts3master_crashed>Abgestürzte TS3 Masterserver</ts3master_crashed>
+    <usage_slots>Belegte Slots</usage_slots>
+    <usage_space>Verbrauchter Speicherplatz</usage_space>
+    <usage_traffic>Verbrauchter Traffic</usage_traffic>
+	<voice_crashed>Abgestürzte Voiceserver</voice_crashed>
 </sprache>

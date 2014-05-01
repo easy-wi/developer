@@ -177,7 +177,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($active,$salutation,$birthday,$country,$fax,$bogus,$security,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$accounttype,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver));
 
                 $id = $sql->lastInsertId();
-
                 $query = ($accounttype == 'r' and $reseller_id == 0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
                 $query2 = $sql->prepare("INSERT INTO `userdata_groups` (`userID`,`groupID`,`resellerID`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `groupID`=VALUES(`groupID`)");
                 foreach ($usergroup as $gid) {
@@ -198,6 +197,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
 
                 customColumns('U',$id,'save');
+
+                $query = $sql->prepare("INSERT INTO `easywi_statistics_current` (`userID`) VALUES (?) ON DUPLICATE KEY UPDATE `userID`=VALUES(`userID`)");
+                $query->execute(array(($accounttype == 'a') ? 0 : $id));
 
                 $cnamenew = $ui->username('cname',255, 'post');
 

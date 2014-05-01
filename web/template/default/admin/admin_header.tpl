@@ -43,18 +43,16 @@
             </p>
 
             <div class="navbar-text pull-left">
-                <?php if($pa['usertickets'] and $crashedArray['ticketsReseller']>0 and $reseller_id!=0) { ?><a href="admin.php?w=tr"><span class="badge badge-info"><?php echo $crashedArray['ticketsReseller'].'/'.$crashedArray['ticketsResellerOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
-                <?php if($pa['tickets'] and $crashedArray['ticketsOpen']>0) { ?><a href="admin.php?w=ti"><span class="badge badge-info"><?php echo $crashedArray['tickets'].'/'.$crashedArray['ticketsOpen'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
+                <?php if(($pa['tickets'] or $pa['usertickets']) and $statsArray['ticketsInProcess']>0) { ?><a href="admin.php?w=ti"><span class="badge badge-info"><?php echo $statsArray['ticketsNew'].'/'.$statsArray['ticketsInProcess'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
                 <?php if($pa['gserver'] and $gserver_module) { ?>
-                <?php if($crashedArray['gsCrashed']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsCrashed'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
-                <?php if($crashedArray['gsPWD']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsPWD'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
-                <?php if($crashedArray['gsTag']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['gsTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
+                <?php if($statsArray['gameserverNotRunning']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $statsArray['gameserverNotRunning'].' '.$sprache_bad->gserver_crashed; ?></span></a><?php }?>
+                <?php if($statsArray['gameserverNoPassword']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $statsArray['gameserverNoPassword'].' '.$sprache_bad->gserver_removed; ?></span></a><?php }?>
+                <?php if($statsArray['gameserverNoTag']>0) { ?><a href="admin.php?w=gs&amp;d=md"><span class="badge badge-important"><?php echo $statsArray['gameserverNoTag'].' '.$sprache_bad->gserver_tag_removed; ?></span></a><?php }?>
                 <?php }?>
-                <?php if($pa['voiceserver'] and $crashedArray['ts3']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3'].' '.$sprache_bad->voice_crashed; ?></span></a><?php }?>
-                <?php if($pa['voicemasterserver'] and $crashedArray['ts3Master']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $crashedArray['ts3Master'].' '.$sprache_bad->ts3master_crashed; ?></span></a><?php }?>
-                <?php if($pa['roots'] and $crashedArray['masterserver']>0 and $gserver_module) { ?><a href="admin.php?w=ro"><span class="badge badge-important"><?php echo $crashedArray['masterserver'].' '.$sprache_bad->master_crashed; ?></span></a><?php }?>
-                <?php if($pa['vserverhost'] and $crashedArray['virtualHosts']>0 and $vserver_module and $reseller_id==0) { ?><a href="admin.php?w=vh"><span class="badge badge-important"><?php echo $crashedArray['virtualHosts'].' '.$sprache_bad->host_crashed; ?></span></a><?php }?>
-            </div>
+                <?php if($pa['voiceserver'] and $statsArray['voiceserverCrashed']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $statsArray['voiceserverCrashed'].' '.$sprache_bad->voice_crashed; ?></span></a><?php }?>
+                <?php if($pa['voicemasterserver'] and $statsArray['voiceMasterCrashed']>0 and $voserver_module) { ?><a href="admin.php?w=vo&amp;d=md"><span class="badge badge-important"><?php echo $statsArray['voiceMasterCrashed'].' '.$sprache_bad->ts3master_crashed; ?></span></a><?php }?>
+                <?php if($pa['roots'] and $statsArray['gameMasterCrashed']>0 and $gserver_module) { ?><a href="admin.php?w=ro"><span class="badge badge-important"><?php echo $statsArray['gameMasterCrashed'].' '.$sprache_bad->master_crashed; ?></span></a><?php }?>
+                </div>
 
             <span class="navbar-text">Easy-WI.com</span>
 

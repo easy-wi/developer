@@ -50,7 +50,7 @@ if (isset($argv)) {
     $args = array();
 
     foreach ($argv as $a) {
-        if ($a == 'gs' or $a == 'vs' or $a == 'vh' or $a == 'my') {
+        if ($a == 'gs' or $a == 'vs' or $a == 'vh' or $a == 'my' or $a == 'st') {
             $checkTypeOfServer = $a;
         } else if (is_numeric($a)) {
             $sleep = $a;
@@ -91,6 +91,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             print 'Checking Web Quotas' . "\r\n";
         } else if ($checkTypeOfServer == 'vs') {
             print 'Checking Voiceserver' . "\r\n";
+        } else if ($checkTypeOfServer == 'st') {
+            print 'Checking Usage Statistics' . "\r\n";
         } else {
             print 'Getting MySQL DB sizes' . "\r\n";
         }
@@ -242,7 +244,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
             foreach($gq->requestData() as $switchID => $v) {
 
-                unset($userid, $stopserver, $doNotRestart);
+                unset($userid, $lendserver, $stopserver, $doNotRestart);
 
                 $lid = 0;
                 $elapsed = 0;
@@ -273,7 +275,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $slots++;
                     }
 
-                    if ($lendserver == 'Y' and $lendActive == 'Y' and $resellersettings[$resellerid]['shutdownempty'] == 'Y') {
+                    if ($lendserver == 'Y' and $lendActive == 'Y') {
 
                         $shutdownemptytime = $resellersettings[$resellerid]['shutdownemptytime'];
 
@@ -302,7 +304,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $returnCmd = array();
 
                 // Check lendserver specific settings
-                if (isset($userid) and $lendserver == 'Y') {
+                if (isset($userid) and isset($lendserver) and $lendserver == 'Y') {
 
                     // Running but no lend information in temp table
                     if ($v['gq_online'] == 1) {
@@ -1161,8 +1163,322 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
     }
 
+    flush();
+
+    # Gather statistics
+    if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'st') {
+
+        $query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`resellerid`,u.`accounttype`,s.`brandname` FROM `userdata` AS u LEFT JOIN `settings` AS s ON u.`resellerid`=s.`resellerid` WHERE u.`active`='Y'");
+
+        $query3 = $sql->prepare("INSERT INTO `easywi_statistics` (`gameMasterInstalled`,`gameMasterActive`,`gameMasterSlotsAvailable`,`gameserverInstalled`,`gameserverActive`,`gameserverSlotsInstalled`,`gameserverSlotsActive`,`gameserverSlotsUsed`,`gameserverNoPassword`,`gameserverNoTag`,`gameserverNotRunning`,`ticketsCompleted`,`ticketsInProcess`,`ticketsNew`,`userAmount`,`userAmountActive`,`virtualMasterInstalled`,`virtualMasterActive`,`virtualMasterVserverAvailable`,`virtualInstalled`,`virtualActive`,`voiceMasterInstalled`,`voiceMasterActive`,`voiceMasterSlotsAvailable`,`voiceserverInstalled`,`voiceserverActive`,`voiceserverSlotsInstalled`,`voiceserverSlotsActive`,`voiceserverSlotsUsed`,`voiceserverTrafficAllowed`,`voiceserverTrafficUsed`,`webMasterInstalled`,`webMasterActive`,`webMasterSlotsAvailable`,`webspaceInstalled`,`webspaceActive`,`webspaceSpaceGiven`,`webspaceSpaceUsed`,`userID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $query4 = $sql->prepare("UPDATE `easywi_statistics_current` SET `gameMasterInstalled`=?,`gameMasterActive`=?,`gameMasterSlotsAvailable`=?,`gameserverInstalled`=?,`gameserverActive`=?,`gameserverSlotsInstalled`=?,`gameserverSlotsActive`=?,`gameserverSlotsUsed`=?,`gameserverNoPassword`=?,`gameserverNoTag`=?,`gameserverNotRunning`=?,`ticketsCompleted`=?,`ticketsInProcess`=?,`ticketsNew`=?,`userAmount`=?,`userAmountActive`=?,`virtualMasterInstalled`=?,`virtualMasterActive`=?,`virtualMasterVserverAvailable`=?,`virtualInstalled`=?,`virtualActive`=?,`voiceMasterInstalled`=?,`voiceMasterActive`=?,`voiceMasterSlotsAvailable`=?,`voiceserverInstalled`=?,`voiceserverActive`=?,`voiceserverSlotsInstalled`=?,`voiceserverSlotsActive`=?,`voiceserverSlotsUsed`=?,`voiceserverTrafficAllowed`=?,`voiceserverTrafficUsed`=?,`webMasterInstalled`=?,`webMasterActive`=?,`webMasterSlotsAvailable`=?,`webspaceInstalled`=?,`webspaceActive`=?,`webspaceSpaceGiven`=?,`webspaceSpaceUsed`=? WHERE `userID`=? LIMIT 1");
+
+        $query->execute();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            if (($row['accounttype'] == 'a' and !isset($adminStatsCollected)) or $row['accounttype'] != 'a') {
+
+                echo "Gathering statistics for user " . $row['cname'] . " with ID " . $row['id'] . " \r\n";
+
+                $statsArray = array(
+                    'gameMasterInstalled' => 0,
+                    'gameMasterActive' => 0,
+                    'gameMasterSlotsAvailable' => 0,
+                    'gameMasterServerAvailable' => 0,
+                    'gameMasterCrashed' => 0,
+                    'gameserverInstalled' => 0,
+                    'gameserverActive' => 0,
+                    'gameserverSlotsInstalled' => 0,
+                    'gameserverSlotsActive' => 0,
+                    'gameserverSlotsUsed' => 0,
+                    'gameserverNoPassword' => 0,
+                    'gameserverNoTag' => 0,
+                    'gameserverNotRunning' => 0,
+                    'mysqlMasterInstalled' => 0,
+                    'mysqlMasterActive' => 0,
+                    'mysqlMasterDBAvailable' => 0,
+                    'mysqlMasterCrashed' => 0,
+                    'mysqlDBInstalled' => 0,
+                    'mysqlDBActive' => 0,
+                    'mysqlDBSpaceUsed' => 0,
+                    'ticketsCompleted' => 0,
+                    'ticketsInProcess' => 0,
+                    'ticketsNew' => 0,
+                    'userAmount' => 0,
+                    'userAmountActive' => 0,
+                    'virtualMasterInstalled' => 0,
+                    'virtualMasterActive' => 0,
+                    'virtualMasterVserverAvailable' => 0,
+                    'virtualInstalled' => 0,
+                    'virtualActive' => 0,
+                    'voiceMasterInstalled' => 0,
+                    'voiceMasterActive' => 0,
+                    'voiceMasterServerAvailable' => 0,
+                    'voiceMasterSlotsAvailable' => 0,
+                    'voiceMasterCrashed' => 0,
+                    'voiceserverInstalled' => 0,
+                    'voiceserverActive' => 0,
+                    'voiceserverSlotsInstalled' => 0,
+                    'voiceserverSlotsActive' => 0,
+                    'voiceserverSlotsUsed' => 0,
+                    'voiceserverCrashed' => 0,
+                    'voiceserverTrafficAllowed' => 0,
+                    'voiceserverTrafficUsed' => 0,
+                    'webMasterInstalled' => 0,
+                    'webMasterActive' => 0,
+                    'webMasterSpaceAvailable' => 0,
+                    'webMasterVhostAvailable' => 0,
+                    'webspaceInstalled' => 0,
+                    'webspaceActive' => 0,
+                    'webspaceSpaceGiven' => 0,
+                    'webspaceSpaceGivenActive' => 0,
+                    'webspaceSpaceUsed' => 0,
+                );
+
+                if ($row['accounttype'] == 'a') {
+                    $insertID = 0;
+                    $adminStatsCollected = true;
+                } else {
+                    $insertID = $row['id'];
+                }
+
+                if ($row['accounttype'] == 'a') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userdata` WHERE `resellerid`=? OR `id`=`resellerid`");
+                } else if ($row['accounttype'] == 'r') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userdata` WHERE `resellerid`=?");
+                }
+                if ($row['accounttype'] != 'u') {
+                    $query2->execute(array($insertID));
+                    $statsArray['userAmount'] = (int) $query2->fetchColumn();
+                }
+
+                if ($row['accounttype'] == 'a') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userdata` WHERE (`resellerid`=? OR `id`=`resellerid`) AND `active`='Y'");
+                } else if ($row['accounttype'] == 'r') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userdata` WHERE `resellerid`=? AND `active`='Y'");
+                }
+                if ($row['accounttype'] != 'u') {
+                    $query2->execute(array($insertID));
+                    $statsArray['userAmountActive'] = (int) $query2->fetchColumn();
+                }
+
+                if ($row['accounttype'] != 'u') {
+
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `rserverdata` WHERE `userID`=?");
+                    $query2->execute(array($insertID));
+                    $statsArray['gameMasterInstalled'] = (int) $query2->fetchColumn();
+
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `rserverdata` WHERE `userID`=? AND `active`='Y'");
+                    $query2->execute(array($insertID));
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                        $statsArray['gameMasterActive'] = (int) $row2['amount'];
+                        $statsArray['gameMasterSlotsAvailable'] = (int) $row2['maxSlotsTotal'];
+                        $statsArray['gameMasterServerAvailable'] = (int) $row2['maxServerTotal'];
+                    }
+
+                    if ($row['accounttype'] == 'a') {
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_masterserver` WHERE `managedForID` IS NULL");
+                        $query2->execute();
+                    } else {
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_masterserver` WHERE `managedForID`=?");
+                        $query2->execute(array($insertID));
+                    }
+                    $statsArray['voiceMasterInstalled'] = (int) $query2->fetchColumn();
+
+                    if ($row['accounttype'] == 'a') {
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `voice_masterserver` WHERE `managedForID` IS NULL AND `active`='Y'");
+                        $query2->execute();
+                    } else {
+                        $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxslots`) AS `maxSlotsTotal`,SUM(`maxserver`) AS `maxServerTotal` FROM `voice_masterserver` WHERE `managedForID`=? AND `active`='Y'");
+                        $query2->execute(array($insertID));
+                    }
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                        $statsArray['voiceMasterActive'] = (int) $row2['amount'];
+                        $statsArray['voiceMasterSlotsAvailable'] = (int) $row2['maxSlotsTotal'];
+                        $statsArray['voiceMasterServerAvailable'] = (int) $row2['maxServerTotal'];
+                    }
+
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `webMaster` WHERE `resellerID`=?");
+                    $query2->execute(array($insertID));
+                    $statsArray['webMasterInstalled'] = (int) $query2->fetchColumn();
+
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`maxHDD`) AS `maxHDDTotal`,SUM(`maxVhost`) AS `maxVhostTotal` FROM `webMaster` WHERE `resellerID`=? AND `active`='Y'");
+                    $query2->execute(array($insertID));
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                        $statsArray['webMasterActive'] = (int) $row2['amount'];
+                        $statsArray['webMasterVhostAvailable'] = (int) $row2['maxVhostTotal'];
+                        $statsArray['webMasterSpaceAvailable'] = (int) $row2['maxHDDTotal'];
+                    }
+
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `mysql_external_servers` WHERE `resellerid`=?");
+                    $query2->execute(array($insertID));
+                    $statsArray['mysqlMasterInstalled'] = (int) $query2->fetchColumn();
+
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`max_databases`) AS `maxDBsTotal` FROM `mysql_external_servers` WHERE `resellerid`=? AND `active`='Y'");
+                    $query2->execute(array($insertID));
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                        $statsArray['mysqlMasterActive'] = (int) $row2['amount'];
+                        $statsArray['mysqlMasterDBAvailable'] = (int) $row2['maxDBsTotal'];
+                    }
+                }
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT `active`,`slots`,`stopped`,`war`,`brandname`,`queryName`,`queryPassword`,`queryNumplayers` FROM `gsswitch` AS g WHERE `userid`=?");
+                } else {
+                    $query2 = $sql->prepare("SELECT `active`,`slots`,`stopped`,`war`,`brandname`,`queryName`,`queryPassword`,`queryNumplayers` FROM `gsswitch` AS g WHERE `resellerid`=?");
+                }
+                $query2->execute(array($insertID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
+                    $statsArray['gameserverInstalled']++;
+                    $statsArray['gameserverSlotsInstalled'] += (int) $row2['slots'];
+
+                    if ($row2['active'] == 'Y') {
+                        $statsArray['gameserverActive']++;
+                        $statsArray['gameserverSlotsActive'] += (int) $row2['slots'];
+                        $statsArray['gameserverSlotsUsed'] += (int) $row2['queryNumplayers'];
+                    }
+
+                    if ($row2['queryName'] != 'OFFLINE' and $row2['stopped'] == 'N' and $row['war'] == 'Y' and $row2['queryPassword'] == 'N') {
+                        $statsArray['gameserverNoPassword']++;
+                    } else if ($row2['queryName'] == 'OFFLINE' and $row2['stopped'] != 'Y') {
+                        $statsArray['gameserverNotRunning']++;
+                    }
+
+                    if ($row2['queryName'] != '' and $row2['stopped'] == 'N' and $row2['queryName'] != 'OFFLINE' and $row2['brandname'] == 'Y' and $row['brandname'] != '' and strpos(strtolower($row2['queryName']), strtolower($row['brandname'])) === false) {
+                        $statsArray['gameserverNoTag']++;
+                    }
+                }
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `tickets` WHERE `userid`=? AND `state` = 'C'");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `tickets` WHERE `resellerid`=? AND `state` = 'C'");
+                }
+                $query2->execute(array($insertID));
+                $statsArray['ticketsCompleted'] = (int) $query2->fetchColumn();
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `tickets` WHERE `userid`=? AND `state` NOT IN ('C','D')");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `tickets` WHERE `resellerid`=? AND `state` NOT IN ('C','D')");
+                }
+                $query2->execute(array($insertID));
+                $statsArray['ticketsInProcess'] = (int) $query2->fetchColumn();
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `tickets` WHERE `userid`=? AND `state` = 'N'");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `tickets` WHERE `resellerid`=? AND `state` = 'N'");
+                }
+                $query2->execute(array($insertID));
+                $statsArray['ticketsNew'] = (int) $query2->fetchColumn();
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`slots`) AS `slotsInstalled` FROM `voice_server` WHERE `userid`=? GROUP BY `userid`");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`slots`) AS `slotsInstalled` FROM `voice_server` WHERE `resellerid`=? GROUP BY `resellerid`");
+                }
+                $query2->execute(array($insertID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    $statsArray['voiceserverInstalled'] = (int) $row2['amount'];
+                    $statsArray['voiceserverSlotsInstalled'] = (int) $row2['slotsInstalled'];
+                }
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`slots`) AS `slotsInstalled`,SUM(`queryNumplayers`) AS `slotsUsed`,SUM(`maxtraffic`) AS `trafficAllowed`,SUM(`filetraffic`) AS `trafficUsed` FROM `voice_server` WHERE `active`='Y' AND `userid`=? GROUP BY `userid`");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`slots`) AS `slotsInstalled`,SUM(`queryNumplayers`) AS `slotsUsed`,SUM(`maxtraffic`) AS `trafficAllowed`,SUM(`filetraffic`) AS `trafficUsed` FROM `voice_server` WHERE `active`='Y' AND `resellerid`=? GROUP BY `resellerid`");
+                }
+                $query2->execute(array($insertID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    $statsArray['voiceserverActive'] = (int) $row2['amount'];
+                    $statsArray['voiceserverSlotsActive'] = (int) $row2['slotsInstalled'];
+                    $statsArray['voiceserverSlotsUsed'] = (int) $row2['slotsUsed'];
+                    $statsArray['voiceserverTrafficAllowed'] = (int) $row2['trafficAllowed'];
+                    $statsArray['voiceserverTrafficUsed'] = round((int) $row2['trafficUsed'] / 1024);
+                }
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_server` WHERE `active`='Y' AND `uptime`='0' AND `userid`=? GROUP BY `userid`");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `voice_server` WHERE `active`='Y' AND `uptime`='0' AND `resellerid`=? GROUP BY `resellerid`");
+                }
+                $query2->execute(array($insertID));
+                $statsArray['voiceserverCrashed'] = (int) $query2->fetchColumn();
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`hdd`) AS `spaceInstalled` FROM `webVhost` WHERE `userID`=? GROUP BY `userID`");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`hdd`) AS `spaceInstalled` FROM `webVhost` WHERE `resellerID`=? GROUP BY `resellerID`");
+                }
+                $query2->execute(array($insertID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    $statsArray['webspaceInstalled'] = (int) $row2['amount'];
+                    $statsArray['webspaceSpaceGivenActive'] = (int) $row2['spaceInstalled'];
+                }
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`hdd`) AS `spaceInstalled`,SUM(`hddUsage`) AS `spaceUsed` FROM `webVhost` WHERE `active`='Y' AND `userID`=? GROUP BY `userID`");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`hdd`) AS `spaceInstalled`,SUM(`hddUsage`) AS `spaceUsed` FROM `webVhost` WHERE `active`='Y' AND `resellerID`=? GROUP BY `resellerID`");
+                }
+                $query2->execute(array($insertID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    $statsArray['webspaceActive'] = (int) $row2['amount'];
+                    $statsArray['webspaceSpaceGiven'] = (int) $row2['spaceInstalled'];
+                    $statsArray['webspaceSpaceUsed'] = (int) $row2['spaceUsed'];
+                }
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `mysql_external_dbs` WHERE `uid`=? GROUP BY `uid`");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `mysql_external_dbs` WHERE `resellerid`=? GROUP BY `resellerid`");
+                }
+                $query2->execute(array($insertID));
+                $statsArray['mysqlDBInstalled'] = (int) $query2->fetchColumn();
+
+                if ($row['accounttype'] == 'u') {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`dbSize`) AS `spaceUsed` FROM `mysql_external_dbs` WHERE `active`='Y' AND `uid`=? GROUP BY `uid`");
+                } else {
+                    $query2 = $sql->prepare("SELECT COUNT(1) AS `amount`,SUM(`dbSize`) AS `spaceUsed` FROM `mysql_external_dbs` WHERE `active`='Y' AND `resellerid`=? GROUP BY `resellerid`");
+                }
+                $query2->execute(array($insertID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    $statsArray['mysqlDBActive'] = (int) $row2['amount'];
+                    $statsArray['mysqlDBSpaceUsed'] = (int) $row2['spaceUsed'];
+                }
+
+                unset($updateString, $insertString, $duplicateString);
+
+                foreach ($statsArray as $k => $v) {
+
+                    if (isset($updateString)) {
+                        $updateString .= ',`' . $k . '`=' . $v;
+                        $insertColumns .= ',`' . $k . '`';
+                        $duplicateString .= ',`' . $k . '`=(`' . $k . '`*(`countUpdates`/(`countUpdates`+1))+(VALUES(`' . $k . '`)*(1/(`countUpdates`+1))))';
+                    } else {
+                        $updateString = '`' . $k . '`=' . $v;
+                        $insertColumns = '`' . $k . '`';
+                        $duplicateString = '`' . $k . '`=(`' . $k . '`*(`countUpdates`/(`countUpdates`+1))+(VALUES(`' . $k . '`)*(1/(`countUpdates`+1))))';
+                    }
+                }
+
+                if (isset($updateString)) {
+                    $query2 = $sql->prepare("UPDATE `easywi_statistics_current` SET " . $updateString . " WHERE `userID`= " . $insertID . " LIMIT 1");
+                    $query2->execute();
+
+                    $query2 = $sql->prepare("INSERT INTO `easywi_statistics` (" . $insertColumns . ",`userID`,`statDate`,`countUpdates`) VALUES (" . implode(',', $statsArray) . "," . $insertID . ",'" . date('Y-m-d H:00:00') . "',1) ON DUPLICATE KEY UPDATE " . $duplicateString . ",`countUpdates`=`countUpdates`+1");
+                    $query2->execute();
+                }
+
+            }
+        }
+    }
+
     $query = $sql->prepare("UPDATE `settings` SET `lastCronStatus`=UNIX_TIMESTAMP()");
     $query->execute();
+
+
 
 } else {
 	header('Location: login.php');

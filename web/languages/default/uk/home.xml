@@ -5,8 +5,17 @@
 	<gserver_tag_removed> gameserver with removed servertag</gserver_tag_removed>
 	<host_crashed>crashed hosts</host_crashed>
 	<master_crashed>crashed masterserver</master_crashed>
+    <master_installed_db>Installed Datenbanken</master_installed_db>
+    <master_installed_server>Installed Server</master_installed_server>
+    <master_installed_slots>Installed Slots</master_installed_slots>
+    <master_installed_space>Installed Space</master_installed_space>
+    <master_installed_vhosts>Installed Vhosts</master_installed_vhosts>
 	<tickets>Tickets</tickets>
-	<tickets_open> unanswered and open support tickets</tickets_open>
+	<tickets_open>Open Tickets</tickets_open>
+    <tickets_new>New Tickets</tickets_new>
 	<ts3master_crashed>crashed TS3 masterserver</ts3master_crashed>
+    <usage_slots>Used Slots</usage_slots>
+    <usage_space>Used Space</usage_space>
+    <usage_traffic>Used Traffic</usage_traffic>
 	<voice_crashed>crashed voiceserver</voice_crashed>
 </sprache>

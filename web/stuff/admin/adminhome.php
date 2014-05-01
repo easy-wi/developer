@@ -42,105 +42,103 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !isanyadmin($admi
 }
 
 $sprache_bad = getlanguagefile('home', $user_language, $reseller_id);
-$resellerid = ($reseller_id != 0 and $admin_id != $reseller_id) ? $admin_id : $reseller_id;
-$reseller_brandname = $rSA['brandname'];
-$counttickets_open = 0;
-$counttickets_unanswered = 0;
-$crashedArray = array('gsCrashed' => 0,'gsPWD' => 0,'gsTag' => 0,'ticketsOpen' => 0,'tickets' => 0,'ticketsResellerOpen' => 0,'ticketsReseller' => 0,'masterserver' => 0,'ts3Master' => 0,'ts3' => 0,'virtualHosts' => 0);
-$removed = array();
-$tag_removed = array();
-$crashed = array();
 
-$query = $sql->prepare("SELECT `stopped`,`serverid`,CONCAT(`serverip`,':',`port`) AS `server`,`userid`,`war`,`brandname`,`queryName`,`queryPassword` FROM `gsswitch` WHERE `active`='Y' AND `resellerid`=?");
-$query->execute(array($resellerid));
+$statsArray = array(
+    'gameMasterInstalled' => 0,
+    'gameMasterActive' => 0,
+    'gameMasterSlotsAvailable' => 0,
+    'gameMasterCrashed' => 0,
+    'gameserverInstalled' => 0,
+    'gameserverActive' => 0,
+    'gameserverSlotsInstalled' => 0,
+    'gameserverSlotsActive' => 0,
+    'gameserverSlotsUsed' => 0,
+    'gameserverNoPassword' => 0,
+    'gameserverNoTag' => 0,
+    'gameserverNotRunning' => 0,
+    'mysqlMasterInstalled' => 0,
+    'mysqlMasterActive' => 0,
+    'mysqlMasterDBAvailable' => 0,
+    'mysqlMasterCrashed' => 0,
+    'mysqlDBInstalled' => 0,
+    'mysqlDBActive' => 0,
+    'mysqlDBSpaceUsed' => 0,
+    'ticketsCompleted' => 0,
+    'ticketsInProcess' => 0,
+    'ticketsNew' => 0,
+    'userAmount' => 0,
+    'userAmountActive' => 0,
+    'virtualMasterInstalled' => 0,
+    'virtualMasterActive' => 0,
+    'virtualMasterVserverAvailable' => 0,
+    'virtualInstalled' => 0,
+    'virtualActive' => 0,
+    'voiceMasterInstalled' => 0,
+    'voiceMasterActive' => 0,
+    'voiceMasterSlotsAvailable' => 0,
+    'voiceMasterCrashed' => 0,
+    'voiceserverInstalled' => 0,
+    'voiceserverActive' => 0,
+    'voiceserverSlotsInstalled' => 0,
+    'voiceserverSlotsActive' => 0,
+    'voiceserverSlotsUsed' => 0,
+    'voiceserverTrafficAllowed' => 0,
+    'voiceserverTrafficUsed' => 0,
+    'voiceserverCrashed' => 0,
+    'webMasterInstalled' => 0,
+    'webMasterActive' => 0,
+    'webMasterSpaceAvailable' => 0,
+    'webMasterVhostAvailable' => 0,
+    'webspaceInstalled' => 0,
+    'webspaceActive' => 0,
+    'webspaceSpaceGiven' => 0,
+    'webspaceSpaceGivenActive' => 0,
+    'webspaceSpaceUsed' => 0
+);
+
+$query = $sql->prepare("SELECT * FROM `easywi_statistics_current` WHERE `userID`=? LIMIT 1");
+$query->execute(array($resellerLockupID));
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $war = $row['war'];
-    $brandname = $row['brandname'];
-    $password = $row['queryPassword'];
-    $name = $row['queryName'];
-
-	if ($name != "OFFLINE" and $row['stopped'] == 'N' and $war == "Y" and $password == "N") {
-		$removed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
-        $crashedArray['gsPWD']++;
-
-	} else if ($name == "OFFLINE" and $row['stopped'] == 'N') {
-		$crashed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
-        $crashedArray['gsCrashed']++;
-	}
-
-	if (isset($name) and $name != '' and $name != "OFFLINE" and $row['stopped'] == 'N' and isset($reseller_brandname) and $reseller_brandname != '' and $brandname == "Y" and strpos(strtolower($name), strtolower($reseller_brandname))  === false) {
-		$tag_removed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
-        $crashedArray['gsTag']++;
-	}
+    $statsArray = $row;
 }
 
-$query = $sql->prepare("SELECT `id`,`userid` FROM `tickets` WHERE `state` NOT IN ('C','D') AND `resellerid`=?");
-$query2 = $sql->prepare("SELECT `userID` FROM `tickets_text` WHERE `ticketID`=? ORDER BY `writeDate` DESC LIMIT 1");
-$query->execute(array($resellerid));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $counttickets_open++;
-    $crashedArray['ticketsOpen']++;
-    $query2->execute(array($row['id']));
+if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get') and !$ui->smallletters('d', 2, 'get'))) {
 
-    if ($row['userid'] == $query2->fetchColumn()) {
-        $counttickets_unanswered++;
-        $crashedArray['tickets']++;
-    }
-}
+    $statsArray['ticketsPercent'] = (($statsArray['ticketsCompleted'] + $statsArray['ticketsInProcess'] + $statsArray['ticketsNew']) > 0) ? round( ($statsArray['ticketsInProcess'] + $statsArray['ticketsNew']) / ( ($statsArray['ticketsCompleted'] + $statsArray['ticketsInProcess'] + $statsArray['ticketsNew']) / 100), 2) : 0;
+    $statsArray['ticketsNewPercent'] = (($statsArray['ticketsInProcess'] + $statsArray['ticketsNew']) > 0) ? round($statsArray['ticketsNew'] / ( ($statsArray['ticketsInProcess'] + $statsArray['ticketsNew']) / 100), 2) : 0;
 
-if ($reseller_id != 0) {
+    $statsArray['gameMasterActivePercent'] = ($statsArray['gameMasterInstalled'] > 0) ? round($statsArray['gameMasterActive'] / ($statsArray['gameMasterInstalled'] / 100), 2) : 0;
+    $statsArray['gameMasterCrashedPercent'] = ($statsArray['gameMasterActive'] > 0) ? round($statsArray['gameMasterCrashed'] / ($statsArray['gameMasterActive'] / 100), 2) : 0;
+    $statsArray['gameMasterServerPercent'] = ($statsArray['gameMasterServerAvailable'] > 0) ? round($statsArray['gameserverActive'] / ($statsArray['gameMasterServerAvailable'] / 100), 2) : 0;
+    $statsArray['gameMasterSlotsPercent'] = ($statsArray['gameMasterSlotsAvailable'] > 0) ? round($statsArray['gameserverSlotsInstalled'] / ($statsArray['gameMasterSlotsAvailable'] / 100), 2) : 0;
 
-    $counttickets_open = 0;
-    $counttickets_unanswered = 0;
+    $statsArray['gameserverActivePercent'] = ($statsArray['gameserverInstalled'] > 0) ? round($statsArray['gameserverActive'] / ($statsArray['gameserverInstalled'] / 100), 2) : 0;
+    $statsArray['gameserverSlotsUsedPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverSlotsUsed'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['gameserverCrashedPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverNotRunning'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['gameserverTagPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverNoTag'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['gameserverPasswordPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverNoPassword'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
 
-    $query = $sql->prepare("SELECT `id` FROM `tickets` WHERE `userid`=? AND `state` != 'C' AND `resellerid`=?");
-    $query2 = $sql->prepare("SELECT `userID` FROM `tickets_text` WHERE `ticketID`=? ORDER BY `writeDate` DESC LIMIT 1");
+    $statsArray['voiceMasterActivePercent'] = ($statsArray['voiceMasterInstalled'] > 0) ? round($statsArray['voiceMasterActive'] / ($statsArray['voiceMasterInstalled'] / 100), 2) : 0;
+    $statsArray['voiceMasterCrashedPercent'] = ($statsArray['voiceMasterActive'] > 0) ? round($statsArray['voiceMasterCrashed'] / ($statsArray['voiceMasterActive'] / 100), 2) : 0;
+    $statsArray['voiceMasterServerPercent'] = ($statsArray['voiceMasterServerAvailable'] > 0) ? round($statsArray['voiceserverActive'] / ($statsArray['voiceMasterServerAvailable'] / 100), 2) : 0;
+    $statsArray['voiceMasterSlotsPercent'] = ($statsArray['voiceMasterSlotsAvailable'] > 0) ? round($statsArray['voiceserverSlotsInstalled'] / ($statsArray['voiceMasterSlotsAvailable'] / 100), 2) : 0;
 
-    $query->execute(array($admin_id,$reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $crashedArray['ticketsReseller']++;
-        $query2->execute(array($row['id']));
+    $statsArray['voiceserverActivePercent'] = ($statsArray['voiceserverInstalled'] > 0) ? round($statsArray['voiceserverActive'] / ($statsArray['voiceserverInstalled'] / 100), 2) : 0;
+    $statsArray['voiceserverSlotsUsedPercent'] = ($statsArray['voiceserverSlotsActive'] > 0) ? round($statsArray['voiceserverSlotsUsed'] / ($statsArray['voiceserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['voiceserverCrashedPercent'] = ($statsArray['voiceserverSlotsActive'] > 0) ? round($statsArray['voiceserverCrashed'] / ($statsArray['voiceserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['voiceserverTrafficPercent'] = ($statsArray['voiceserverTrafficAllowed'] > 0) ? round($statsArray['voiceserverTrafficUsed'] / ($statsArray['voiceserverTrafficAllowed'] / 100), 2) : 0;
 
-        if ($admin_id == $query2->fetchColumn()) {
-            $crashedArray['ticketsResellerOpen']++;
-        }
-    }
-}
+    $statsArray['webMasterActivePercent'] = ($statsArray['webMasterInstalled'] > 0) ? round($statsArray['webMasterActive'] / ($statsArray['webMasterInstalled'] / 100), 2) : 0;
+    $statsArray['webMasterVhostPercent'] = ($statsArray['webMasterVhostAvailable'] > 0) ? round($statsArray['webspaceInstalled'] / ($statsArray['webMasterVhostAvailable'] / 100), 2) : 0;
+    $statsArray['webMasterSpaceUsedPercent'] = ($statsArray['webMasterSpaceAvailable'] > 0) ? round($statsArray['webspaceSpaceGiven'] / ($statsArray['webMasterSpaceAvailable'] / 100), 2) : 0;
 
-$crached_ts3_virtual = 0;
-$crashed_ts3 = array();
+    $statsArray['webspaceActivePercent'] = ($statsArray['webspaceInstalled'] > 0) ? round($statsArray['webspaceActive'] / ($statsArray['webspaceInstalled'] / 100), 2) : 0;
+    $statsArray['webspaceSpaceUsedPercent'] = ($statsArray['webspaceSpaceGiven'] > 0) ? round($statsArray['webspaceSpaceUsed'] / ($statsArray['webspaceSpaceGiven'] / 100), 2) : 0;
 
-$query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `active`='Y' AND `uptime`='0' AND `resellerid`=?");
-$query->execute(array($reseller_id));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $crashed_ts3[] = array('address' => $row['address']);
-    $crached_ts3_virtual++;
-}
-$crashedArray['ts3'] = $crached_ts3_virtual;
+    $statsArray['mysqlMasterActivePercent'] = ($statsArray['mysqlMasterInstalled'] > 0) ? round($statsArray['mysqlMasterActive'] / ($statsArray['mysqlMasterInstalled'] / 100), 2) : 0;
+    $statsArray['mysqlMasterDBPercent'] = ($statsArray['mysqlMasterDBAvailable'] > 0) ? round($statsArray['mysqlDBInstalled'] / ($statsArray['mysqlMasterDBAvailable'] / 100), 2) : 0;
 
-$query = $sql->prepare("SELECT `id` FROM `voice_masterserver` WHERE `active`='Y' AND `notified`>=? AND `resellerid`=?");
-$query->execute(array($downChecks,$resellerid));
-$crached_ts3_master = $query->rowCount();
-$crashedArray['ts3Master'] = $crached_ts3_master;
-
-$query = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `active`='Y' AND `notified`>=? AND `resellerid`=?");
-$query->execute(array($downChecks,$resellerid));
-$crached_master = $query->rowCount();
-$crashedArray['masterserver'] = $crached_master;
-
-if ($reseller_id == 0) {
-    $query = $sql->prepare("SELECT `id` FROM `virtualhosts` WHERE `active`='Y' AND `notified`>=?");
-    $query->execute(array($downChecks));
-} else {
-    $query = $sql->prepare("SELECT `id` FROM `virtualhosts` WHERE `active`='Y' AND `notified`>=? AND `resellerid`=?");
-    $query->execute(array($downChecks,$resellerid));
-}
-$crached_hosts = $query->rowCount();
-$crashedArray['virtualHosts'] = $crached_hosts;
-$feedArray = array();
-
-if ($ui->smallletters('w',2, 'get') == 'da' or (!$ui->smallletters('w',2, 'get') and !$ui->smallletters('d',2, 'get'))) {
-
+    $statsArray['mysqlActivePercent'] = ($statsArray['mysqlDBInstalled'] > 0) ? round($statsArray['mysqlDBActive'] / ($statsArray['mysqlDBInstalled'] / 100), 2) : 0;
 
     if ($reseller_id == 0 and $admin_id == $reseller_id) {
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=0 AND `active`='Y' LIMIT 1");

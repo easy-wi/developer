@@ -532,7 +532,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $orderby = 't.`userPriority` DESC, t.`writedate` ASC';
     }
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `tickets` t $where");
-    $query->execute(array($resellerid));
+    $query->execute(array($resellerLockupID));
     $colcount = $query->fetchColumn();
     if ($start>$colcount) {
         while ($start>0 and $start>$colcount) $start = $start - $amount;
@@ -564,7 +564,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $pages = implode(', ',$pages);
     $query = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject`,u.`cname`,CONCAT(u.`name`,' ',u.`vname`) AS `username`,s.`cname` AS `supporter`,CONCAT(s.`name`,' ',s.`vname`) AS `supportername` FROM `tickets` t LEFT JOIN `ticket_topics` o ON t.`topic`=o.`id` LEFT JOIN `translations` l ON o.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? LEFT JOIN `userdata` s ON t.`supporter`=s.`id` LEFT JOIN `userdata` u ON t.`userid`=u.`id` $where ORDER BY $orderby LIMIT $start,$amount");
-    $query->execute(array($user_language,$default_language,$resellerid));
+    $query->execute(array($user_language,$default_language,$resellerLockupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['priority']==1) $priority = $sprache->priority_low;
         else if ($row['priority']==2) $priority = $sprache->priority_medium;
