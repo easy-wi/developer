@@ -123,7 +123,7 @@ if (isset($include) and $include == true) {
 ) ENGINE=InnoDB");
     $add->execute();
 
-    $insert = $sql->prepare("INSERT INTO `easywi_statistics_current` (`userID`) VALUES (?)");
+    $insert = $sql->prepare("INSERT INTO `easywi_statistics_current` (`userID`) VALUES (?) ON DUPLICATE KEY UPDATE `userID`=`userID`");
     $insert->execute(array(0));
 
     $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `accounttype`!='a'");

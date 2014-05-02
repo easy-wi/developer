@@ -64,7 +64,7 @@
     <?php }?>
     <?php if($pa['voicemasterserver'] and $voserver_module) { ?>
     <div class="span3">
-        <h5><a href="admin.php?w=vm"><?php echo $statsArray['voiceserverInstalled'].' '.$gsprache->voiceserver.' '.$gsprache->master;?></a></h5>
+        <h5><a href="admin.php?w=vm"><?php echo $statsArray['voiceMasterInstalled'].' '.$gsprache->voiceserver.' '.$gsprache->master;?></a></h5>
         <strong><?php echo $gsprache->active;?></strong><span class="pull-right"><?php echo $statsArray['voiceMasterActivePercent'];?>%</span>
         <div class="progress">
             <div class="bar bar-success" style="width: <?php echo $statsArray['voiceMasterActivePercent'];?>%;"></div>
@@ -107,7 +107,7 @@
         </div>
         <strong><?php echo $sprache_bad->usage_traffic;?></strong><span class="pull-right"><?php echo $statsArray['voiceserverTrafficPercent'];?>%</span>
         <div class="progress progress-danger active">
-            <div class="bar bar-danger" style="width: <?php echo $statsArray['voiceserverTrafficPercent'];?>%;"></div>
+            <div class="bar bar-warning" style="width: <?php echo $statsArray['voiceserverTrafficPercent'];?>%;"></div>
             <div class="bar bar-success" style="width: <?php echo 100-$statsArray['voiceserverTrafficPercent'];?>%;"></div>
         </div>
     </div>

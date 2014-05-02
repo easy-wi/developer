@@ -381,7 +381,7 @@ $defined['webMaster'] = array(
     'ftpPort' => array("Type"=>"int(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'maxVhost' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'maxHDD' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'hddOverbook' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'hddOverbook' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'overbookPercent' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"50","Extra"=>""),
     'defaultdns' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'serverType' => array("Type"=>"enum('A','H','L','N','O')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),

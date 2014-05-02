@@ -688,6 +688,9 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
 
         try {
 
+            $query = $sql->prepare("INSERT INTO `easywi_statistics_current` (`userID`) VALUES (0) ON DUPLICATE KEY UPDATE `userID`=`userID`");
+            $query->execute();
+
             $query = $sql->prepare("INSERT INTO `page_settings` (`id`,`pageurl`,`resellerid`) VALUES (1,?,0) ON DUPLICATE KEY UPDATE `pageurl`=VALUES(`pageurl`)");
             $query->execute(array($_POST['installUrl']));
 
