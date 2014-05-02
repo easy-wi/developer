@@ -169,6 +169,7 @@ $sql->exec("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata
 $sql->exec("DELETE s.* FROM `userdata_social_identities` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE u.`id` IS NULL");
 $sql->exec("DELETE s.* FROM `userdata_social_identities_substitutes` s LEFT JOIN `userdata_substitutes` u ON s.`userID`=u.`sID` WHERE u.`sID` IS NULL");
 $sql->exec("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
+$sql->exec("DELETE FROM `gsswitch` WHERE NOT EXISTS (SELECT 1 FROM `serverlist` WHERE `switchID`=`gsswitch`.`id`)");
 $sql->exec("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
 $sql->exec("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
 $sql->exec("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");
