@@ -191,6 +191,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $externalServerID = $row['externalID'];
             $dns = $row['dns'];
             $userID = $row['userID'];
+            $oldHDD = $row['hdd'];
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='wv' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localServerID));
@@ -224,6 +225,17 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 $updateArray[] = $data['hdd'];
                 $eventualUpdate .= ',`hdd`=?';
                 $hdd = $data['hdd'];
+
+                $query = $sql->prepare("SELECT IF(`hddOverbook`='Y',(`maxHDD`/100) * (100+`overbookPercent`),`maxHDD`) AS `maxHDD` FROM `webMaster` WHERE `webMasterID`=? LIMIT 1");
+                $query->execute(array($webMasterID));
+                $maxHDD = (int) $query->fetchColumn();
+
+                $query = $sql->prepare("SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` WHERE `webMasterID`=?");
+                $query->execute(array($localServerID));
+
+                if (($maxHDD + $oldHDD - $query->fetchColumn() - $hdd) < 0) {
+                    $success['false'][] = 'Not enough space left';
+                }
             }
 
             if (isset($data['ownVhost']) and active_check($data['ownVhost'])) {
@@ -232,7 +244,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 $ownVhost = $data['ownVhost'];
             }
 
-            if (count($updateArray) > 0) {
+            if (count($updateArray) > 0 and count($success['false']) == 0) {
 
                 $eventualUpdate = trim($eventualUpdate,',');
                 $eventualUpdate .= ',';

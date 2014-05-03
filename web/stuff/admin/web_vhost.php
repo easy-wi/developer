@@ -187,6 +187,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $errors['dns'] = $sprache->dns;
         }
 
+        $oldHDD = 0;
+
         // Only at ADD user and masterserver can be defined. We need to check if they exist
         if ($ui->st('action', 'post') == 'ad') {
 
@@ -220,12 +222,31 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         } else {
 
-            $query = $sql->prepare("SELECT `webMasterID`,`active`,AES_DECRYPT(`ftpPassword`,?) AS `decryptedFTPPass` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `webMasterID`,`active`,`hdd`,AES_DECRYPT(`ftpPassword`,?) AS `decryptedFTPPass` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $webMasterID = $row['webMasterID'];
+                $oldHDD = $row['hdd'];
                 $oldActive = $row['active'];
                 $oldFtpPassword = $row['decryptedFTPPass'];
+            }
+
+            if ($query->rowCount() == 0) {
+                $errors['webMasterID'] = $gsprache->master;
+            }
+        }
+
+        if ($webMasterID) {
+
+            $query = $sql->prepare("SELECT IF(`hddOverbook`='Y',(`maxHDD`/100) * (100+`overbookPercent`),`maxHDD`) AS `maxHDD` FROM `webMaster` WHERE `webMasterID`=? AND `resellerID`=? LIMIT 1");
+            $query->execute(array($webMasterID, $resellerLockupID));
+            $maxHDD = (int) $query->fetchColumn();
+
+            $query = $sql->prepare("SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
+            $query->execute(array($id, $resellerLockupID));
+
+            if (($maxHDD + $oldHDD - $query->fetchColumn() - $hdd) < 0) {
+                $errors['hdd'] = $sprache->hdd;
             }
         }
 
@@ -330,7 +351,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 // Get masterserver. Sort by usage.
 
-                $query = $sql->prepare("SELECT m.`webMasterID`,m.`ip`,m.`description`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxHDD`/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC");
+                $query = $sql->prepare("SELECT m.`webMasterID`,m.`ip`,m.`description`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC");
                 $query->execute(array($resellerLockupID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $table2[$row['webMasterID']] = trim($row['ip'] . ' ' . $row['description']);
