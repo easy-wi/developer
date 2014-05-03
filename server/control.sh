@@ -39,7 +39,7 @@ if [ "$1" == "install" ]; then
 		if command -v $TOOL >/dev/null 2>&1; then echo "required tool found: $TOOL"; else echo "required tool not found or no access to it: $TOOL"; fi
 	done
 fi
-CVERSION="4.7"
+CVERSION="4.8"
 IONICE=''
 HOMEFOLDER=$PWD
 LOGDIR=$HOMEFOLDER/logs
@@ -932,7 +932,7 @@ fi" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 if [ "$MODINSTALL" == "1" ]; then
 	echo "if [ -d $HOMEFOLDER/masterserver/$MODNAME -a \"$MODNAME\" != \"\" ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "cd $HOMEFOLDER/masterserver/$MODNAME" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.con" -o -name "*.conf" -o -name "*.config" -o -name "*.config" -o -name "*.ini" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "*.props" -o -name "*.properties" -o -name "*.example" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.con" -o -name "*.conf" -o -name "*.config" -o -name "*.config" -o -name "*.ini" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "*.props" -o -name "*.properties" -o -name "*.json" -o -name "*.example" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
 	FOLDERNAME=`dirname "$FILTEREDFILES"`
 	if ([[ `find "$FOLDERNAME" -maxdepth 0 -type d` ]] && [[ ! -d "$SERVERDIR/$VARIABLE4/$GAMENAME/$FOLDERNAME" ]]); then
@@ -950,7 +950,7 @@ fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 fi
 echo "if [ -d $HOMEFOLDER/masterserver/$GAMENAME2 -a \"$GAMENAME2\" != \"\" ]; then" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo "cd $HOMEFOLDER/masterserver/$GAMENAME2" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.con" -o -name "*.conf" -o -name "*.config" -o -name "*.config" -o -name "*.ini" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "*.props" -o -name "*.properties" -o -name "*.example" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+echo 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.xml" -o -name "*.vdf" -o -name "*.cfg" -o -name "*.con" -o -name "*.conf" -o -name "*.config" -o -name "*.config" -o -name "*.ini" -o -name "*.gam" -o -name "*.txt" -o -name "*.log" -o -name "*.smx" -o -name "*.sp" -o -name "*.db" -o -name "*.lua" -o -name "*.props" -o -name "*.properties" -o -name "*.json" -o -name "*.example" | grep -v "$PATTERN"`)' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 echo 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do
 	FOLDERNAME=`dirname "$FILTEREDFILES"`
 	if ([[ `find "$FOLDERNAME" -maxdepth 0 -type d` ]] && [[ ! -d "$SERVERDIR/$VARIABLE4/$GAMENAME/$FOLDERNAME" ]]); then
@@ -1727,7 +1727,7 @@ EOF
 
 function copy_addon_files {
 	cd $ADDONFOLDER
-	find -type f | grep -i -E -w '(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua)$' | sed 's/\.\///g' | while read FILE; do
+	find -type f | grep -i -E -w '(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$' | sed 's/\.\///g' | while read FILE; do
 		FOLDER=`dirname $FILE`
 		FILENAME=`basename $FILE`
 		if [ ! -d $GAMEDIR/$FOLDER ]; then
