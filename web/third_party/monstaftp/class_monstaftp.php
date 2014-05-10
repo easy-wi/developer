@@ -1607,7 +1607,7 @@ class Monsta {
             $height = 95;
 
             // Display pop-up
-            $this->displayPopupOpen(0,$width,$height,0,$title);
+            $return .= $this->displayPopupOpen(0,$width,$height,0,$title);
 
             $return .= "<input type=\"text\" name=\"newFile\" id=\"newFile\" placeholder=\"".$lang_new_file_name."\" onkeypress=\"if (event.keyCode==13){ processForm('".$vars."'); return false;}\">";
 
