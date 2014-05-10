@@ -762,9 +762,11 @@ if (isset($include) and isset($template_to_use)) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $include);
     } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $include)) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/' . $include);
+    } else if (is_file(EASYWIDIR . '/template/default/cms/' . $include)) {
+        include(EASYWIDIR . '/template/default/cms/' . $include);
     } else if (is_file(EASYWIDIR . '/template/default/' . $include)) {
         include(EASYWIDIR . '/template/default/' . $include);
-    } else {
+    } else if (is_file(EASYWIDIR . '/template/' . $include)) {
         include(EASYWIDIR . '/template/' . $include);
     }
 }
