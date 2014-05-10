@@ -145,72 +145,75 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 	fi
 fi
 
-echo "Please enter the name of the masteruser. If it does not exists, the installer will create it."
-read MASTERUSER
+if [ "$INSTALL" != 'EW' ]; then
 
-if [ "$MASTERUSER" == "" ]; then
-	echo "Fatal Error: No masteruser specified"
-	exit 0
-fi
+	echo "Please enter the name of the masteruser. If it does not exists, the installer will create it."
+	read MASTERUSER
 
-
-if [ "`id $MASTERUSER 2> /dev/null`" == "" ]; then
-
-	if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
-		$USERADD -m -b /home -s /bin/bash -g $WEBGROUPID $MASTERUSER
-	else
-		if [ -d /home/$MASTERUSER ]; then
-			$GROUPADD $MASTERUSER
-			$USERADD -d /home/$MASTERUSER -s /bin/bash -g $MASTERUSER $MASTERUSER
-		else
-			$GROUPADD $MASTERUSER
-			$USERADD -m -b /home -s /bin/bash -g $MASTERUSER $MASTERUSER
-		fi
+	if [ "$MASTERUSER" == "" ]; then
+		echo "Fatal Error: No masteruser specified"
+		exit 0
 	fi
 
-elif [ "$INSTALL" == 'GS' ]; then
 
-	echo "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
-	usermod -g $MASTERUSER $MASTERUSER
-fi
+	if [ "`id $MASTERUSER 2> /dev/null`" == "" ]; then
 
-echo " "
-echo "Create key or set password for login?"
-echo "Safest way of login is a password protected key."
+		if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
+			$USERADD -m -b /home -s /bin/bash -g $WEBGROUPID $MASTERUSER
+		else
+			if [ -d /home/$MASTERUSER ]; then
+				$GROUPADD $MASTERUSER
+				$USERADD -d /home/$MASTERUSER -s /bin/bash -g $MASTERUSER $MASTERUSER
+			else
+				$GROUPADD $MASTERUSER
+				$USERADD -m -b /home -s /bin/bash -g $MASTERUSER $MASTERUSER
+			fi
+		fi
 
-OPTIONS=("Create key" "Set password" "Skip" "Quit")
-select OPTION in "${OPTIONS[@]}"; do
-	case "$REPLY" in
-		1 ) break;;
-		2 ) break;;
-		3 ) break;;
-		4 ) echo "Exit now!"; exit 0;;
-		*) echo "Invalid option.";continue;;
-	esac
-done
+	elif [ "$INSTALL" == 'GS' ]; then
 
-if [ "$OPTION" == "Create key" ]; then
-
-	if [ -d /home/$MASTERUSER/.ssh ]; then
-		rm -r /home/$MASTERUSER/.ssh
+		echo "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
+		usermod -g $MASTERUSER $MASTERUSER
 	fi
 
 	echo " "
-	echo "It is recommended but not required to set a password"
-	su -c 'ssh-keygen -t rsa' $MASTERUSER
+	echo "Create key or set password for login?"
+	echo "Safest way of login is a password protected key."
 
-	cd /home/$MASTERUSER/.ssh
+	OPTIONS=("Create key" "Set password" "Skip" "Quit")
+	select OPTION in "${OPTIONS[@]}"; do
+		case "$REPLY" in
+			1 ) break;;
+			2 ) break;;
+			3 ) break;;
+			4 ) echo "Exit now!"; exit 0;;
+			*) echo "Invalid option.";continue;;
+		esac
+	done
 
-	KEYNAME=`find -maxdepth 1 -name "*.pub" | head -n 1`
+	if [ "$OPTION" == "Create key" ]; then
 
-	if [ "$KEYNAME" != "" ]; then
-		su -c "cat $KEYNAME >> authorized_keys" $MASTERUSER
-	else
-		echo "Error: could not find a key. You might need to create one manually at a later point."
+		if [ -d /home/$MASTERUSER/.ssh ]; then
+			rm -r /home/$MASTERUSER/.ssh
+		fi
+
+		echo " "
+		echo "It is recommended but not required to set a password"
+		su -c 'ssh-keygen -t rsa' $MASTERUSER
+
+		cd /home/$MASTERUSER/.ssh
+
+		KEYNAME=`find -maxdepth 1 -name "*.pub" | head -n 1`
+
+		if [ "$KEYNAME" != "" ]; then
+			su -c "cat $KEYNAME >> authorized_keys" $MASTERUSER
+		else
+			echo "Error: could not find a key. You might need to create one manually at a later point."
+		fi
+
+	elif [ "$OPTION" == "Set password" ]; then
+		passwd $MASTERUSER
 	fi
-
-elif [ "$OPTION" == "Set password" ]; then
-	passwd $MASTERUSER
 fi
 
 # only in case we want to manage webspace we need the additional skel dir
@@ -323,9 +326,9 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 		fi
 
 		if [ "$OS" == "debian" -a "$DOTDEB" == "Yes" ]; then
-			echo "Package: *
-Pin: origin mirror.netcologne.de
-Pin-Priority: 1000" > /etc/apt/preferences.d/mariadb.pref
+			echo "Package: *" > /etc/apt/preferences.d/mariadb.pref
+			echo "Pin: origin mirror.netcologne.de" >> /etc/apt/preferences.d/mariadb.pref
+			echo "Pin-Priority: 1000" >> /etc/apt/preferences.d/mariadb.pref
 		fi
 
 		apt-get update
@@ -426,6 +429,20 @@ Pin-Priority: 1000" > /etc/apt/preferences.d/mariadb.pref
 
 		if [ "$HHVM" != "Yes" ]; then
 
+			apt-get install php5 php5-common php5-curl php5-gd php5-mcrypt php5-mysql php5-cli
+
+			if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
+
+				apt-get install php5-fpm
+
+				if [ "$WEBSERVER" == "Lighttpd" ]; then
+					lighttpd-enable-mod fastcgi
+					lighttpd-enable-mod fastcgi-php
+				fi
+
+			elif [ "$WEBSERVER" == "Apache" ]; then
+				apt-get install apache2-mpm-itk
+			fi
 		fi
 	fi
 
@@ -436,7 +453,7 @@ Pin-Priority: 1000" > /etc/apt/preferences.d/mariadb.pref
 	fi
 fi
 
-if [ "$INSTALL" != 'VS' ]; then
+if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
 	echo " "
 	echo "Install/Update ProFTPD?"
 
@@ -621,6 +638,7 @@ if [ "$INSTALL" == 'GS' -o  "$INSTALL" == 'WR' ]; then
 fi
 
 if [ "$INSTALL" == 'WR' ]; then
+
 	chown -R $MASTERUSER:$WEBGROUPID /home/$MASTERUSER/
 
 	echo "Following data need to be configured at the easy-wi.com panel:"
