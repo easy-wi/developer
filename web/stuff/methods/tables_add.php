@@ -1086,7 +1086,7 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `version` decimal(4,2) DEFAULT '4.30',
+  `version` decimal(4,2) DEFAULT '4.40',
   `releasenotesDE` INT(11) unsigned NULL,
   `releasenotesEN` INT(11) unsigned NULL,
   `language` varchar(2) NOT NULL,

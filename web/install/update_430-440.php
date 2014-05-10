@@ -39,7 +39,7 @@
 
 if (isset($include) and $include == true) {
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('4.40','<div align=\"right\">23.10.2013</div>
+('4.40','<div align=\"right\">04.05.2014</div>
 <b>Änderungen:</b><br/>
 <ul>
 <li></li>
@@ -49,7 +49,7 @@ if (isset($include) and $include == true) {
 <ul>
 <li></li>
 </ul>
-','<div align=\"right\">10.23.2013</div>
+','<div align=\"right\">05.04.2014</div>
 <b>Changes:</b><br/>
 <ul>
 <li></li>
