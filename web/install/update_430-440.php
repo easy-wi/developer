@@ -212,64 +212,12 @@ if (isset($include) and $include == true) {
     $response->add('Action: insert_easywi_version done: ');
     $query->closecursor();
 
-    $add = $sql->prepare("CREATE TABLE IF NOT EXISTS `easywi_statistics_current` (
-  `gameMasterInstalled` int(10) unsigned DEFAULT 0,
-  `gameMasterActive` int(10) unsigned DEFAULT 0,
-  `gameMasterServerAvailable` int(10) unsigned DEFAULT 0,
-  `gameMasterSlotsAvailable` int(10) unsigned DEFAULT 0,
-  `gameMasterCrashed` int(10) unsigned DEFAULT 0,
-  `gameserverInstalled` int(10) unsigned DEFAULT 0,
-  `gameserverActive` int(10) unsigned DEFAULT 0,
-  `gameserverSlotsInstalled` int(10) unsigned DEFAULT 0,
-  `gameserverSlotsActive` int(10) unsigned DEFAULT 0,
-  `gameserverSlotsUsed` int(10) unsigned DEFAULT 0,
-  `gameserverNoPassword` int(10) unsigned DEFAULT 0,
-  `gameserverNoTag` int(10) unsigned DEFAULT 0,
-  `gameserverNotRunning` int(10) unsigned DEFAULT 0,
-  `mysqlMasterInstalled` int(10) unsigned DEFAULT 0,
-  `mysqlMasterActive` int(10) unsigned DEFAULT 0,
-  `mysqlMasterDBAvailable` int(10) unsigned DEFAULT 0,
-  `mysqlMasterCrashed` int(10) unsigned DEFAULT 0,
-  `mysqlDBInstalled` int(10) unsigned DEFAULT 0,
-  `mysqlDBActive` int(10) unsigned DEFAULT 0,
-  `mysqlDBSpaceUsed` int(10) unsigned DEFAULT 0,
-  `ticketsCompleted` int(10) unsigned DEFAULT 0,
-  `ticketsInProcess` int(10) unsigned DEFAULT 0,
-  `ticketsNew` int(10) unsigned DEFAULT 0,
-  `userAmount` int(10) unsigned DEFAULT 0,
-  `userAmountActive` int(10) unsigned DEFAULT 0,
-  `virtualMasterInstalled` int(10) unsigned DEFAULT 0,
-  `virtualMasterActive` int(10) unsigned DEFAULT 0,
-  `virtualMasterVserverAvailable` int(10) unsigned DEFAULT 0,
-  `virtualInstalled` int(10) unsigned DEFAULT 0,
-  `virtualActive` int(10) unsigned DEFAULT 0,
-  `voiceMasterInstalled` int(10) unsigned DEFAULT 0,
-  `voiceMasterActive` int(10) unsigned DEFAULT 0,
-  `voiceMasterServerAvailable` int(10) unsigned DEFAULT 0,
-  `voiceMasterSlotsAvailable` int(10) unsigned DEFAULT 0,
-  `voiceMasterCrashed` int(10) unsigned DEFAULT 0,
-  `voiceserverInstalled` int(10) unsigned DEFAULT 0,
-  `voiceserverActive` int(10) unsigned DEFAULT 0,
-  `voiceserverSlotsInstalled` int(10) unsigned DEFAULT 0,
-  `voiceserverSlotsActive` int(10) unsigned DEFAULT 0,
-  `voiceserverSlotsUsed` int(10) unsigned DEFAULT 0,
-  `voiceserverTrafficAllowed` int(10) unsigned DEFAULT 0,
-  `voiceserverTrafficUsed` int(10) unsigned DEFAULT 0,
-  `voiceserverCrashed` int(10) unsigned DEFAULT 0,
-  `webMasterInstalled` int(10) unsigned DEFAULT 0,
-  `webMasterActive` int(10) unsigned DEFAULT 0,
-  `webMasterSpaceAvailable` int(10) unsigned DEFAULT 0,
-  `webMasterVhostAvailable` int(10) unsigned DEFAULT 0,
-  `webspaceInstalled` int(10) unsigned DEFAULT 0,
-  `webspaceActive` int(10) unsigned DEFAULT 0,
-  `webspaceSpaceGiven` int(10) unsigned DEFAULT 0,
-  `webspaceSpaceGivenActive` int(10) unsigned DEFAULT 0,
-  `webspaceSpaceUsed` int(10) unsigned DEFAULT 0,
-  `userID` int(10) unsigned NOT NULL DEFAULT 0,
-  `statDate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`userID`)
-) ENGINE=InnoDB");
-    $add->execute();
+    if (!isset($displayToUser)) {
+        $displayToUser = '';
+    }
+
+    $response->add('Adding tables if needed.');
+    include(EASYWIDIR . '/stuff/methods/tables_add.php');
 
     $insert = $sql->prepare("INSERT INTO `easywi_statistics_current` (`userID`) VALUES (?) ON DUPLICATE KEY UPDATE `userID`=`userID`");
     $insert->execute(array(0));
@@ -305,25 +253,27 @@ if (isset($include) and $include == true) {
 ) ENGINE=InnoDB");
     $query->execute();
 
-    $query = $sql->prepare("SELECT `active`,`subnetOptions`,`ips`,`netmask`,`resellerid` FROM `rootsDHCP`");
+    $query = $sql->prepare("SELECT * FROM `rootsDHCP`");
     $query2 = $sql->prepare("SELECT 1 FROM `rootsSubnets` WHERE `subnet`=? LIMIT 1");
     $query3 = $sql->prepare("INSERT INTO `rootsSubnets` (`active`,`subnet`,`subnetOptions`,`netmask`,`vlan`,`vlanName`) VALUES (?,?,?,?,'N','')");
     $query4 = $sql->prepare("INSERT INTO `rootsIP4` (`subnetID`,`ip`) VALUES (?,?) ON DUPLICATE KEY UPDATE `ip`=VALUES(`ip`)");
 
     $query->execute();
-    $query->execute();
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        foreach (explode("\r\n", $row['ips']) as $exip) {
 
-            $ex = explode('.', $exip);
+        if (isset($row['subnetOptions'])) {
+            foreach (explode("\r\n", $row['ips']) as $exip) {
 
-            if (isset($ex[2])) {
-                $query2->execute(array($ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.0'));
-                if ($query2->rowCount() == 0) {
-                    $query3->execute(array($row['active'], $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.0', str_replace("option subnet-mask %subnet-mask%;\r\n", '', $row['subnetOptions']), $row['netmask']));
-                    $lastID = $sql->lastInsertId();
-                    for ($lastTriple = 2; $lastTriple < 255; $lastTriple++) {
-                        $query4->execute(array($lastID, $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.' . $lastTriple));
+                $ex = explode('.', $exip);
+
+                if (isset($ex[2])) {
+                    $query2->execute(array($ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.0'));
+                    if ($query2->rowCount() == 0) {
+                        $query3->execute(array($row['active'], $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.0', str_replace("option subnet-mask %subnet-mask%;\r\n", '', $row['subnetOptions']), $row['netmask']));
+                        $lastID = $sql->lastInsertId();
+                        for ($lastTriple = 2; $lastTriple < 255; $lastTriple++) {
+                            $query4->execute(array($lastID, $ex[0] . '.' . $ex[1] . '.' . $ex[2] . '.' . $lastTriple));
+                        }
                     }
                 }
             }
@@ -418,19 +368,8 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("DROP TABLE IF EXISTS `voice_server_stats_hours`");
     $query->execute();
 
-
-    if (!isset($alreadyRepaired)) {
-
-        $alreadyRepaired = true;
-
-        $response->add('Adding tables if needed.');
-        include(EASYWIDIR . '/stuff/methods/tables_add.php');
-
-        $response->add('Repairing tables if needed.');
-        include(EASYWIDIR . '/stuff/methods/tables_repair.php');
-    }
-
-
+    $response->add('Repairing tables if needed.');
+    include(EASYWIDIR . '/stuff/methods/tables_repair.php');
 
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
