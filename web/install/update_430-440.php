@@ -419,6 +419,19 @@ if (isset($include) and $include == true) {
     $query->execute();
 
 
+    if (!isset($alreadyRepaired)) {
+
+        $alreadyRepaired = true;
+
+        $response->add('Adding tables if needed.');
+        include(EASYWIDIR . '/stuff/methods/tables_add.php');
+
+        $response->add('Repairing tables if needed.');
+        include(EASYWIDIR . '/stuff/methods/tables_repair.php');
+    }
+
+
+
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
 }
