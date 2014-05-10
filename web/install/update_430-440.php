@@ -39,25 +39,173 @@
 
 if (isset($include) and $include == true) {
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('4.40','<div align=\"right\">04.05.2014</div>
+('4.40','<div align=\"right\">10.05.2014</div>
 <b>Änderungen:</b><br/>
 <ul>
-<li></li>
+<li>Generell:
+<ul>
+<li>Wiki mit Handbuch Links ersetzt.</li>
+<li>Globale Belegungsstatistiken werden gelogt und dem Admin dargestellt.</li>
+<li>Easy-Wi Facebook Seite in den Headern verlinkt.</li>
+<li>Überflüssige Fallbacks auf user_language entfernt.</li>
+<li>Nur relevante Steam News werden im User Dashboard angezeigt.</li>
+<li>Liste verfügbarer Dateien für Custom Module wird angezeigt.</li>
+<li>Vertreter können ihre eigenen Daten verwalten.</li>
+<li>Neue PHP Ordnerstruktur.</li>
+<li>PNGs entfernt.</li>
+<li>Social Auth hinzugefügt.</li>
+</ul></li>
+<li>CMS:
+<ul>
+<li>User Prefix auf Nein erlaubt die freie Nickname Wahl beim Registrieren.</li>
+<li>Der HTML Title wird je nach Seite angepasst.</li>
+</ul></li>
+<li>Gameserver:
+<ul>
+<li>Mehrere Unterordner sind nun bei Images erlaubt.</li>
+<li>Restart Jobs, werden angelegt, wenn ein Steam Update für as Spiel erfolgt ist.</li>
+<li>Masterserver Ajax aus der settings.php entfernt.</li>
+<li>GameQ aktualisiert.</li>
+<li>Garrysmod Template hinzugefügt.</li>
+<li>Geringere Ram Verbrauch bei der Darstellung von Server Logs.</li>
+<li>Workaround in der statuscheck.php für Spiele mit unterschiedlichen Query Port.</li>
+<li>Nach dem Editieren Redirect zurück zum Restartplaner.</li>
+<li>Workaround für Servercolor/Branding.</li>
+<li>SQL Support für EAC.</li>
+<li>hldsupdatetool entfernt.</li>
+</ul></li>
+<li>MySQL:
+<ul>
+<li>Hosttabellen Verwaltung kann beim User deaktiviert werden.</li>
+<li>Reinstall Funktion hinzugefügt.</li>
+<li>Datenbankgröße wird erhiben und dem User dargestellt.</li>
+<li>Layout Struktur im Userpanel den anderen Übersichten angeglichen.</li>
+</ul></li>
+<li>Root:
+<ul>
+<li>Subnet Verwaltung verbessert.</li>
+<li>Rootserver IP system überarbeitet.</li>
+<li>Vlan Support hinzugefügt.</li>
+</ul></li>
+<li>Voiceserver:
+<ul>
+<li>Bannlisten Funktion im Userpanel.</li>
+<li>Slot- und Traffikverbrauch bei TS3 Servern wird im Userbereich angezeigt.</li>
+<li>Zusätzlich zu Slots, wird auch der Traffik gelogt.</li>
+</ul></li>
+<li>Webspace:
+<ul>
+<li>Webspace/FastDL Modul hinzugefügt.</li>
+</ul></li>
 </ul>
 <br/><br/>
 <b>Bugfixes:</b><br/>
 <ul>
-<li></li>
+<li>API: Beim Anlegen von Usersn wird kein Passwort gespeichert.</li>
+<li>API: Legacy Verhalten wieder herstellen.</li>
+<li>CMS: Canurl war bei statischen Seiten nicht gesetzt.</li>
+<li>CMS: EasyWi CMS Verlinkung teilweise fehlerhaft.</li>
+<li>Gameserver: Popup beim Anlegen einer neuen Datei im WebFTP.</li>
+<li>Gameserver: Eigener Gameserver Startbefehl.</li>
+<li>Gameserver: Minecraft Migration funktioniert nicht.</li>
+<li>Gameserver: Gameserver Settings Mapgroup Selektion.</li>
+<li>Gameserver: Updates starten nicht bei Minute 0.</li>
+<li>Gameserver: Der Restart Kalender funktioniert nur für Montag.</li>
+<li>Gameserver: downloadPath nicht mit dem Gmeserver Image exportieren.</li>
+<li>Gameserver: Protection Mode kopiert keine Datein vom ungeschützten Server.</li>
+<li>Gameserver: Online Servers ohne Namen werden als Offline angezeigt.</li>
+<li>Gameserver: Gameserver wird nicht von der job.php gestoppt.</li>
+<li>Generell: Workaround für Admins ohne eingestellte Zeitzone.</li>
+<li>Generell: Nach frischer Installation werden E-Mails ohne Text gesendet.</li>
+<li>Generell: Redirect enthält doppelte Slashes.</li>
+<li>Voice: TS3 Slots können nach einem Reset bearbeitet werden.</li>
+<li>Voice: Fehlender Include beim Voice Server löschen.</li>
 </ul>
-','<div align=\"right\">05.04.2014</div>
+','<div align=\"right\">05.10.2014</div>
 <b>Changes:</b><br/>
 <ul>
-<li></li>
+<li>General:
+<ul>
+<li>Replaced Wiki with manual links</li>
+<li>Log global usage statistics and display at admin dashboard.</li>
+<li>Easy-wi Facebook page added to headers.</li>
+<li>Additional fallbacks for user_language removed.</li>
+<li>Display only relevant Steam news at user dashboard.</li>
+<li>Display list of available custom modules.</li>
+<li>Substitutes can maintain their own data.</li>
+<li>New PHP folderstructure.</li>
+<li>PNG usage entfernt.</li>
+<li>Social Auth added.</li>
+</ul></li>
+<li>CMS:
+<ul>
+<li>user prefix is NO allows nickname pick at register.</li>
+<li>Display html title depending on the page.</li>
+</ul>
+<li>Gameserver:
+<ul>
+<li>Allow multiple subfolders for game images.</li>
+<li>Add restart jobs, when steamgame update.</li>
+<li>Moved masterserver ajax out of settings.php</li>
+<li>GameQ updated.</li>
+<li>Add garrysmod template.</li>
+<li>Reduce memory usage with serverlogs.</li>
+<li>Workaround at statuscheck.php for games with different query port.</li>
+<li>Redirect back to restartplaner after edit.</li>
+<li>Workaround for servercolor/branding</li>
+<li>SQL support for EAC.</li>
+<li>Removed hldsupdatetool.</li>
+</ul></li>
+<li>MySQL:
+<ul>
+<li>Hosttable management can be deactivated for users.</li>
+<li>Added reinstall feature.</li>
+<li>Collect and display DB size at MySQL Module.</li>
+<li>Align layout for MySQL to GS at userpanel.</li>
+</ul></li>
+<li>Rootserver:
+<ul>
+<li>Enhanced subnet management.</li>
+<li>Reworked rootserver IP system.</li>
+<li>Added Vlan Support.</li>
+</ul></li>
+<li>User:
+<ul>
+<li>Add reseller fix job</li>
+</ul></li>
+<li>Voiceserver:
+<ul>
+<li>Add banlist for users to TS3.</li>
+<li>Display slot and traffic usage for TS3 at userpanel.</li>
+<li>Log traffic in addition to slots for TS3 server.</li>
+</ul></li>
+<li>Webspace:
+<ul>
+<li>Webspace/FastDL Modul added.</li>
+</ul></li>
 </ul>
 <br/><br/>
 <b>Bugfixes:</b><br/>
 <ul>
-<li></li>
+<li>API: Creating users no password will be saved in the database.</li>
+<li>API: Restore legacy API behaviour.</li>
+<li>CMS: Canurl not set for static pages.</li>
+<li>Gameserver: Fix Popup for create NEW FILE WebFTP.</li>
+<li>Gameserver: Own gameserver start command.</li>
+<li>Gameserver: Minecraft migration does not work.</li>
+<li>Gameserver: Gameserver Settings Mapgroup selection.</li>
+<li>Gameserver: Updates not starting at minute 0.</li>
+<li>Gameserver: Restart calendar works for monday only.</li>
+<li>Gameserver: Do not export downloadPath with gameserver image.</li>
+<li>Gameserver: Protection mode not copying over files from non-protected server.</li>
+<li>Gameserver: Online servers with empty server names show up as offline in Webinterface.</li>
+<li>Gameserver: Gameserver not stopped by job.php on delete.</li>
+<li>General: Workaround for admins without timezone set.</li>
+<li>General: After fresh install mails send without text.</li>
+<li>General: Redirect to URIs with double slashes.</li>
+<li>General: EasyWi CMS links partially incorrect.</li>
+<li>Voice: Missing include while voice server delete.</li>
+<li>Voice: TS3 slots can be edited after reset.</li>
 </ul>
 ')");
     $query->execute();
