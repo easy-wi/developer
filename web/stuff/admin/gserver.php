@@ -60,9 +60,13 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id = $admin_id;
 }
 if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licenceDetails['lG']>0 and $licenceDetails['left']>0 and !is_numeric($licenceDetails['left'])) {
+
     $template_file = $gsprache->licence;
+
 } else if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
+
 } else if ($ui->st('d', 'get') == 'ad' and (!is_numeric($licenceDetails['lG']) or $licenceDetails['lG']>0) and ($licenceDetails['left']>0 or !is_numeric($licenceDetails['left']))) {
 
     if (!$ui->w('action',3, 'post')) {
