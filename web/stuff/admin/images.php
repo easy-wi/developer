@@ -112,8 +112,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $iptables = $ui->startparameter('iptables', 'post');
     $protectedSaveCFGs = $ui->startparameter('protectedSaveCFGs', 'post');
     $description = $ui->startparameter('description', 'post');
-    $binarydir = $ui->w('binarydir',20, 'post');
-    $modfolder = $ui->w('modfolder',20, 'post');
+    $binarydir = $ui->folder('binarydir', 'post');
+    $modfolder = $ui->folder('modfolder', 'post');
     $map = $ui->mapname('map', 'post');
     $mapGroup = $ui->mapname('mapGroup', 'post');
     $configs = $ui->startparameter('configs', 'post');
