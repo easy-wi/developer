@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <?php if($easywiModules['gs'] and $pa['roots'] and $gserver_module) { ?>
+    <?php if($easywiModules['gs'] and $pa['roots'] and $easywiModules['gs']) { ?>
     <div class="span3">
         <h5><a href="admin.php?w=ro"><?php echo $statsArray['gameMasterInstalled'].' '.$gsprache->gameroot;?></a></h5>
         <strong><?php echo $gsprache->active;?></strong><span class="pull-right"><?php echo $statsArray['gameMasterActivePercent'];?>%</span>
@@ -32,7 +32,7 @@
         </div>
     </div>
     <?php }?>
-    <?php if($easywiModules['gs'] and $pa['gserver'] and $gserver_module){ ?>
+    <?php if($easywiModules['gs'] and $pa['gserver'] and $easywiModules['gs']){ ?>
     <div class="span3">
         <h5><a href="admin.php?w=gs&d=md"><?php echo $statsArray['gameserverInstalled'].' '.$gsprache->gameserver;?></a></h5>
         <strong><?php echo $gsprache->active;?></strong><span class="pull-right"><?php echo $statsArray['gameserverActivePercent'];?>%</span>
@@ -62,7 +62,7 @@
         </div>
     </div>
     <?php }?>
-    <?php if($pa['voicemasterserver'] and $voserver_module) { ?>
+    <?php if($pa['voicemasterserver'] and $easywiModules['vo']) { ?>
     <div class="span3">
         <h5><a href="admin.php?w=vm"><?php echo $statsArray['voiceMasterInstalled'].' '.$gsprache->voiceserver.' '.$gsprache->master;?></a></h5>
         <strong><?php echo $gsprache->active;?></strong><span class="pull-right"><?php echo $statsArray['voiceMasterActivePercent'];?>%</span>
@@ -87,7 +87,7 @@
         </div>
     </div>
     <?php }?>
-    <?php if($pa['voiceserver'] and $voserver_module) { ?>
+    <?php if($pa['voiceserver'] and $easywiModules['vo']) { ?>
     <div class="span3">
         <h5><a href="admin.php?w=vo"><?php echo $statsArray['voiceserverInstalled'].' '.$gsprache->voiceserver;?></a></h5>
         <strong><?php echo $gsprache->active;?></strong><span class="pull-right"><?php echo $statsArray['voiceserverActivePercent'];?>%</span>

@@ -210,28 +210,28 @@
                     <input id="inputMaster" type="checkbox" name="masterServer" value="Y">
                 </div>
             </div>
-            <?php };if($pa['voiceserver'] and $voserver_module) { ?>
+            <?php };if($pa['voiceserver'] and $easywiModules['vo']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputVoiceserver"><?php echo $gsprache->voiceserver;?></label>
                 <div class="controls">
                     <input id="inputVoiceserver" type="checkbox" name="voiceserver" value="Y">
                 </div>
             </div>
-            <?php };if($pa['voicemasterserver'] and $voserver_module) { ?>
+            <?php };if($pa['voicemasterserver'] and $easywiModules['vo']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputVoiceserverMaster"><?php echo $gsprache->voiceserver." ".$gsprache->master;?></label>
                 <div class="controls">
                     <input id="inputVoiceserverMaster" type="checkbox" name="voicemasterserver" value="Y">
                 </div>
             </div>
-            <?php };if($pa['voiceserverSettings'] and $voserver_module) { ?>
+            <?php };if($pa['voiceserverSettings'] and $easywiModules['vo']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputVoiceserverStats"><?php echo $gsprache->voiceserver." ".$gsprache->stats;?></label>
                 <div class="controls">
                     <input id="inputVoiceserverStats" type="checkbox" name="voiceserverStats" value="Y">
                 </div>
             </div>
-            <?php };if($pa['voiceserverStats'] and $voserver_module) { ?>
+            <?php };if($pa['voiceserverStats'] and $easywiModules['vo']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputVoiceserverStatsSettings"><?php echo $gsprache->voiceserver." ".$gsprache->stats.' '.$gsprache->settings;?></label>
                 <div class="controls">
@@ -280,63 +280,63 @@
                     <input id="inputVirtualDel" type="checkbox" name="delvserver" value="Y">
                 </div>
             </div>
-            <?php };if($pa['usevserver'] and $vserver_module) { ?>
+            <?php };if($pa['usevserver'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputVirtualUse"><?php echo $gsprache->virtual." ".$rsprache->reinstall."/".$rsprache->rescue."/".$sprache->restart;?></label>
                 <div class="controls">
                     <input id="inputVirtualUse" type="checkbox" name="usevserver" value="Y">
                 </div>
             </div>
-            <?php };if($pa['vserverhost'] and $vserver_module) { ?>
+            <?php };if($pa['vserverhost'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputVirtualHost"><?php echo $gsprache->reseller." ".$gsprache->hostsystem;?></label>
                 <div class="controls">
                     <input id="inputVirtualHost" type="checkbox" name="vserverhost" value="Y">
                 </div>
             </div>
-            <?php };if($pa['resellertemplates'] and ($vserver_module or $dediserver_module)) { ?>
+            <?php };if($pa['resellertemplates'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputVirtualTemplate"><?php echo $gsprache->reseller." ".$gsprache->template;?></label>
                 <div class="controls">
                     <input id="inputVirtualTemplate" type="checkbox" name="resellertemplates" value="Y">
                 </div>
             </div>
-            <?php };if($pa['dhcpServer'] and ($vserver_module or $dediserver_module)) { ?>
+            <?php };if($pa['dhcpServer'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputDHCP">DHCP <?php echo $gsprache->settings;?></label>
                 <div class="controls">
                     <input id="inputDHCP" type="checkbox" name="dhcpServer" value="Y">
                 </div>
             </div>
-            <?php };if($pa['pxeServer'] and ($vserver_module or $dediserver_module)) { ?>
+            <?php };if($pa['pxeServer'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputPXE">PXE <?php echo $gsprache->settings;?></label>
                 <div class="controls">
                     <input id="inputPXE" type="checkbox" name="pxeServer" value="Y">
                 </div>
             </div>
-            <?php };if($pa['vserversettings'] and ($vserver_module or $dediserver_module)) { ?>
+            <?php };if($pa['vserversettings'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputVserverSettings"><?php echo $gsprache->reseller." ".$gsprache->settings;?></label>
                 <div class="controls">
                     <input id="inputVserverSettings" type="checkbox" name="vserversettings" value="Y">
                 </div>
             </div>
-            <?php }; if($pa['dedicatedServer'] and $dediserver_module) { ?>
+            <?php }; if($pa['dedicatedServer'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputDedicated"><?php echo $gsprache->dedicated;?></label>
                 <div class="controls">
                     <input id="inputDedicated" type="checkbox" name="dedicatedServer" value="Y">
                 </div>
             </div>
-            <?php };if($pa['traffic'] and ($vserver_module or $dediserver_module)) { ?>
+            <?php };if($pa['traffic'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputTraffic"><?php echo $gsprache->traffic;?></label>
                 <div class="controls">
                     <input id="inputTraffic" type="checkbox" name="traffic" value="Y">
                 </div>
             </div>
-            <?php };if($pa['trafficsettings'] and ($vserver_module or $dediserver_module)) { ?>
+            <?php };if($pa['trafficsettings'] and $easywiModules['ro']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputTrafficSettings"><?php echo $gsprache->traffic.' '.$gsprache->settings;?></label>
                 <div class="controls">
@@ -532,22 +532,22 @@
                 <label class="control-label" for="inputResellerMasterserver"><?php echo $gsprache->master;?></label>
                 <div class="controls"><input id="inputResellerMasterserver" type="checkbox" name="rmasterServer" value="Y" ></div>
             </div>
-            <?php }; if($pa['voiceserver'] and $voserver_module) { ?>
+            <?php }; if($pa['voiceserver'] and $easywiModules['vo']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputResellerVoiceserver"><?php echo $gsprache->voiceserver;?></label>
                 <div class="controls"><input id="inputResellerVoiceserver" type="checkbox" name="rvoiceserver" value="Y"></div>
             </div>
-            <?php }; if($pa['voicemasterserver'] and $voserver_module) { ?>
+            <?php }; if($pa['voicemasterserver'] and $easywiModules['vo']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputResellerVoiceMaster"><?php echo $gsprache->voiceserver." ".$gsprache->master;?></label>
                 <div class="controls"><input id="inputResellerVoiceMaster" type="checkbox" name="rvoicemasterserver" value="Y"></div>
             </div>
-            <?php };if($pa['voiceserverSettings'] and $voserver_module) { ?>
+            <?php };if($pa['voiceserverSettings'] and $easywiModules['vo']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputResellerVoiceStats"><?php echo $gsprache->voiceserver.' '.$gsprache->stats;?></label>
                 <div class="controls"><input id="inputResellerVoiceStats" type="checkbox" name="rvoiceserverStats" value="Y" ></div>
             </div>
-            <?php };if($pa['voiceserverStats'] and $voserver_module) { ?>
+            <?php };if($pa['voiceserverStats'] and $easywiModules['vo']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputResellerVoiceStatsSettings"><?php echo $gsprache->voiceserver.' '.$gsprache->stats.' '.$gsprache->settings;?></label>
                 <div class="controls"><input id="inputResellerVoiceStatsSettings" type="checkbox" name="rvoiceserverSettings" value="Y" ></div>
@@ -568,7 +568,7 @@
                 <div class="controls"><input id="inputResellerUserTickets" type="checkbox" name="rusertickets" value="Y"></div>
             </div>
             <?php } ?>
-            <?php if($vserver_module and $pa['addvserver'] and $reseller_id==0) { ?>
+            <?php if($easywiModules['ro'] and $pa['addvserver'] and $reseller_id==0) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputResellerVirtualAdd"><?php echo $gsprache->virtual." ".$gsprache->add;?></label>
                 <div class="controls"><input id="inputResellerVirtualAdd" type="checkbox" name="raddvserver" value="Y"></div>
@@ -588,12 +588,12 @@
                 <label class="control-label" for="inputResellerVirtualReset"><?php echo $gsprache->virtual." ".$sprache->reset."/".$sprache->restart;?></label>
                 <div class="controls"><input id="inputResellerVirtualReset" type="checkbox" name="rusevserver" value="Y"></div>
             </div>
-            <?php if($pa['traffic'] and ($vserver_module or $dediserver_module) and $reseller_id==0) { ?>
+            <?php if($pa['traffic'] and $easywiModules['ro'] and $reseller_id==0) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputResellerTraffic"><?php echo $gsprache->traffic;?></label>
                 <div class="controls"><input id="inputResellerTraffic" type="checkbox" name="rtraffic" value="Y"></div>
             </div>
-            <?php }; if($pa['dedicatedServer'] and $dediserver_module) { ?>
+            <?php }; if($pa['dedicatedServer'] and $easywiModules['ro']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
                 <label class="control-label" for="inputResellerDedicated"><?php echo $gsprache->dedicated;?></label>
                 <div class="controls"><input id="inputResellerDedicated" type="checkbox" name="rdedicatedServer" value="Y"></div>

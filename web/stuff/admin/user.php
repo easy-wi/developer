@@ -235,7 +235,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         $maxvoserver = $ui->id('maxvoiceserver',10, 'post');
 					}
 
-                    if ($vserver_module or $dediserver_module) {
+                    if $easywiModules['ro'] {
                         if (!$ui->id('maxgserver',10, 'post')) {
                             $maxvserver = 0;
                         } else {

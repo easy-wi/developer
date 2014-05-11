@@ -185,21 +185,21 @@
                     <input id="inputMaxUser" type="number" name="maxuser" value="<?php echo $maxuser;?>">
                 </div>
             </div>
-            <?php if($gserver_module) { ?>
+            <?php if($easywiModules['gs']) { ?>
             <div class="control-group">
                 <label class="control-label" for="inputMaxGserver"><?php echo $sprache->max." ".$gsprache->gameserver;?></label>
                 <div class="controls">
                     <input id="inputMaxGserver" type="number" name="maxgserver" value="<?php echo $maxgserver;?>">
                 </div>
             </div>
-            <?php }; if($voserver_module) { ?>
+            <?php }; if($easywiModules['vo']) { ?>
             <div class="control-group">
                 <label class="control-label" for="inputMaxVoserver"><?php echo $sprache->max." ".$gsprache->voiceserver;?></label>
                 <div class="controls">
                     <input id="inputMaxVoserver" type="number" name="maxvoiceserver" value="<?php echo $maxvoiceserver;?>">
                 </div>
             </div>
-            <?php }; if($vserver_module) { ?>
+            <?php }; if($easywiModules['ro']) { ?>
             <div class="control-group">
                 <label class="control-label" for="inputMaxDedis"><?php echo $sprache->max." ".$gsprache->dedicated;?></label>
                 <div class="controls">

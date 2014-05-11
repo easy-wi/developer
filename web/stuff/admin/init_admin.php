@@ -51,12 +51,6 @@ if (!isanyadmin($admin_id) and count($pa) == 0) {
     redirect('login.php');
 }
 
-$licenceDetails = serverAmount($reseller_id);
-$gserver_module = (is_numeric($licenceDetails['mG']) and $licenceDetails['mG'] == 0) ? false : true;
-$vserver_module = (is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs'] == 0) ? false : true;
-$voserver_module = (is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo'] == 0) ? false : true;
-$dediserver_module = (is_numeric($licenceDetails['mD']) and $licenceDetails['mD'] == 0) ? false : true;
-
 $ewVersions['files'] = '4.40';
 
 $vcsprache = getlanguagefile('versioncheck', $user_language, $reseller_id);
@@ -126,8 +120,25 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $customFiles[$row['get']] = $row['file'];
 
     } else if ($row['type'] == 'C' and $row['active'] == 'N') {
+
         $easywiModules[$row['get']] = false;
+
     }
+}
+
+$licenceDetails = serverAmount($reseller_id);
+
+if (is_numeric($licenceDetails['mG']) and $licenceDetails['mG'] == 0) {
+    $easywiModules['gs'] = false;
+    $easywiModules['ea'] = false;
+}
+
+if (is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo'] == 0) {
+    $easywiModules['vo'] = false;
+}
+
+if (is_numeric($licenceDetails['mVs']) and $licenceDetails['mVs'] == 0 and is_numeric($licenceDetails['mD']) and $licenceDetails['mD'] == 0) {
+    $easywiModules['ro'] = false;
 }
 
 if ($reseller_id == 0) {
