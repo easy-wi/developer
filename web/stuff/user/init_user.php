@@ -75,7 +75,7 @@ if (isset($_SESSION['sID'])) {
     }
 
     $gscount = count($substituteAccess['gs']);
-    $vhostcount = count($substituteAccess['ws']);
+    $vhostcount = count($substituteAccess['wv']);
     $voicecount = count($substituteAccess['vo']);
     $tsdnscount = count($substituteAccess['vd']);
     $dbcount = count($substituteAccess['db']);
