@@ -11,7 +11,7 @@
 	<ftpuploadpath>Demo FTP</ftpuploadpath>
     <ipblock>Someone with you IP but not you have already lended a server!</ipblock>
 	<lend>Lend</lend>
-	<lendaccess>Ledning via</lendaccess>
+	<lendaccess>Lending via</lendaccess>
 	<lendhostip>WebhostIP if XML</lendhostip>
 	<lendhostkey>Key if XML</lendhostkey>
 	<maxplayer>Maximum slots</maxplayer>
