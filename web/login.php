@@ -209,7 +209,7 @@ if ($ui->st('w', 'get') == 'lo') {
         }
 
         $serviceProviderConfig = array(
-            'base_url' => $pageUrl . '/login.php?endpoint=1',
+            'base_url' => removeDoubleSlashes($pageUrl . '/login.php?endpoint=1'),
             'debug_mode' => (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) ? true : false,
             'debug_file' => EASYWIDIR . '/third_party/hybridauth/log/hybridauth.log',
             'providers' => array()
@@ -436,7 +436,7 @@ if ($ui->st('w', 'get') == 'lo') {
             }
 
             if (count($serviceProviders) > 0) {
-                $htmlExtraInformation['css'][] = '<link href="css/default/social_buttons.css" rel="stylesheet">';
+                $htmlExtraInformation['css'][] = (is_file(EASYWIDIR . '/css/' . $template_to_use . '/social_buttons.css')) ? '<link href="css/' . $template_to_use . '/social_buttons.css" rel="stylesheet">' : '<link href="css/default/social_buttons.css" rel="stylesheet">';
             }
 
             $include = 'login.tpl';
@@ -474,7 +474,7 @@ if ($ui->st('w', 'get') == 'lo') {
         }
 
         if (count($serviceProviders) > 0) {
-            $htmlExtraInformation['css'][] = '<link href="css/default/social_buttons.css" rel="stylesheet">';
+            $htmlExtraInformation['css'][] = (is_file(EASYWIDIR . '/css/' . $template_to_use . '/social_buttons.css')) ? '<link href="css/' . $template_to_use . '/social_buttons.css" rel="stylesheet">' : '<link href="css/default/social_buttons.css" rel="stylesheet">';
         }
 
         $include = 'login.tpl';
