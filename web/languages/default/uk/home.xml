@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
+    <crashed>Crashed</crashed>
 	<gserver_crashed> potential crashed gameserver</gserver_crashed>
 	<gserver_removed> gameserver with removed password</gserver_removed>
 	<gserver_tag_removed> gameserver with removed servertag</gserver_tag_removed>
@@ -13,6 +14,7 @@
 	<tickets>Tickets</tickets>
 	<tickets_open>Open Tickets</tickets_open>
     <tickets_new>New Tickets</tickets_new>
+    <traffic>Traffic</traffic>
 	<ts3master_crashed>crashed TS3 masterserver</ts3master_crashed>
     <usage_slots>Used Slots</usage_slots>
     <usage_space>Used Space</usage_space>

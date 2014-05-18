@@ -22,9 +22,9 @@
     <script src="js/default/footable.js" type="text/javascript"></script>
     <script type="text/javascript">$(function() { $('table').footable();});</script>
     <script src="js/default/main.js" type="text/javascript"></script>
-    <?php echo implode('',$htmlExtraInformation['js']);?>
 
     <script type="text/javascript">window.onDomReady(onReady); function onReady() { SwitchShowHideRows('init_ready');}</script>
+    <?php echo implode('',$htmlExtraInformation['js']);?>
 
 </head>
 <body <?php echo implode(' ',$htmlExtraInformation['body']);?>>

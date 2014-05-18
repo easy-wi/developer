@@ -477,8 +477,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     }
                 }
 
-                $query = $sql->prepare("SELECT `id` FROM `voice_masterserver` WHERE `rootid`=? AND `ssh2ip`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($rootid, $ip, $reseller_id));
+                $query = $sql->prepare("SELECT `id` FROM `voice_masterserver` WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($ip, $reseller_id));
 
                 if (!isid($query->fetchColumn(), 10)) {
 
@@ -496,9 +496,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $loguseraction = '%add% %voserver% %master% ' . $ip;
                     $insertlog->execute();
 
-                    $template_file = 'admin_voicemasterserver_add2.tpl';
                 }
 
+                $template_file = 'admin_voicemasterserver_add2.tpl';
 
             } else if ($ui->w('action', 3, 'post') == 'md') {
 

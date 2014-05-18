@@ -1,0 +1,40 @@
+/* Background colors */
+.btn-facebook,.btn-github,.btn-google-plus,.btn-linkedin,.btn-windows,.btn-mailru,.btn-openid,.btn-steam,.btn-twitchtv,.btn-twitter,.btn-xing,.btn-yandex {
+    color: #f9f9f9 !important;
+}
+.btn-facebook {
+    background-color: #3b5998 !important;
+}
+.btn-github {
+    background-color: #6cc644 !important;
+}
+.btn-google-plus {
+    background-color: #dd4b39 !important;
+}
+.btn-linkedin {
+    background-color: #007bb6 !important;
+}
+.btn-windows {
+    background-color: #2672ec !important;
+}
+.btn-mailru {
+    background-color: #0857a6 !important;
+}
+.btn-openid {
+    background-color: #f78c40 !important;
+}
+.btn-steam {
+    background-color: #000000 !important;
+}
+.btn-twitchtv {
+    background-color: #6441a5 !important;
+}
+.btn-twitter {
+    background-color: #2ba9e1 !important;
+}
+.btn-xing {
+    background-color: #006567 !important;
+}
+.btn-yandex {
+    background-color: #ffcc00 !important;
+}
