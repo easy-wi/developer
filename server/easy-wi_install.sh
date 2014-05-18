@@ -429,7 +429,7 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 
 		if [ "$HHVM" != "Yes" ]; then
 
-			apt-get install php5 php5-common php5-curl php5-gd php5-mcrypt php5-mysql php5-cli
+			apt-get install php5-common php5-curl php5-gd php5-mcrypt php5-mysql php5-cli
 
 			if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
 
