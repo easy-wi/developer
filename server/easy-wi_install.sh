@@ -477,13 +477,210 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
 		fi
 
 		if [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" != 'GS' ]; then
+
 			mv /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.backup
 			sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.backup | sed 's/Umask.*/Umask 037 027/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' | sed 's/# RequireValidShell.*/RequireValidShell off/g' > /etc/proftpd/proftpd.conf
+
 		elif [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" == 'GS' ]; then
+
+			sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.backup | sed 's/Umask.*/Umask 077 077/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' > /etc/proftpd/proftpd.conf
+
+			echo " "
+			echo "Install/Update ProFTPD Rules?"
+
+			OPTIONS=("Yes" "No" "Quit")
+			select OPTION in "${OPTIONS[@]}"; do
+				case "$REPLY" in
+					1 ) break;;
+					2 ) break;;
+					3 ) echo "Exit now!"; exit 0;;
+					*) echo "Invalid option.";continue;;
+				esac
+			done
+
+			if [ "$OPTION" == "Yes" -a "`grep '<Directory \/home\/\*\/pserver\/\*>' /etc/proftpd/proftpd.conf`" == "" -a ! -f "/etc/proftpd/conf.d/easy-wi.conf" ]; then
+
+				if [ ! -d "/etc/proftpd/conf.d/" ]; then
+					mkdir -p "/etc/proftpd/conf.d/"
+					chmod 755 "/etc/proftpd/conf.d/"
+				fi
+				
+				echo '
+<Directory ~>
+        HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
+        PathDenyFilter (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
+        HideNoAccess on
+        <Limit RNTO RNFR STOR DELE CHMOD SITE_CHMOD MKD RMD>
+                DenyAll
+        </Limit>
+</Directory>' > /etc/proftpd/conf.d/easy-wi.conf
+				echo "<Directory /home/$MASTERUSER>" >> /etc/proftpd/conf.d/easy-wi.conf
+				echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
+	PathDenyFilter (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
+	HideNoAccess on
+	Umask 137 027
+	<Limit RNTO RNFR STOR DELE CHMOD SITE_CHMOD MKD RMD>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory /home/*/pserver/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/backup>
+        Umask 177 077
+        <Limit RNTO RNFR STOR DELE>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/mc*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/bukkit*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/tekkit*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/tekkit-classic*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/samp*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/mtasa*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/teeworlds*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/*/orangebox/*/*>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE MKD RMD>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/server/*/*/csgo/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/server/*/*/cstrike/*>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE MKD RMD>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/server/*/*/czero/*>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE MKD RMD>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/server/*/*/dod/*>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE MKD RMD>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/server/*/*/garrysmod/*>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE>
+        AllowAll
+    </Limit>
+</Directory>
+<Directory ~/*/*/>
+	HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
+	PathDenyFilter (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
+	HideNoAccess on
+</Directory>
+<Directory ~/*/*/*/*/addons>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/*/*/*/*/cfg>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/*/*/*/*/maps>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/*/*/*/addons>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/*/*/*/cfg>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/*/*/*/maps>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
+<Directory ~/*/*/cstrike/*>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/*/*/czero/*>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE>
+		AllowAll
+	</Limit>
+</Directory>
+<Directory ~/*/*/dod/*>
+	Umask 077 077
+	<Limit RNFR RNTO STOR DELE>
+		AllowAll
+	</Limit>
+</Directory>
+' >> /etc/proftpd/conf.d/easy-wi.conf
+				fi
+
+			fi
 		fi
 
-		/etc/init.d/proftpd restart
-
+		if [ -f /etc/init.d/proftpd ]; then
+			/etc/init.d/proftpd restart
+		fi
 	fi
 fi
 
@@ -530,6 +727,7 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
 		echo " "
 		echo "Please check above output and confirm it is correct. On confirmation the current /etc/fstab will be replaced in order to activate Quotas!"
 
+		OPTIONS=("Yes" "No" "Quit")
 		select QUOTAFSTAB in "${OPTIONS[@]}"; do
 			case "$REPLY" in
 				1 ) break;;
@@ -661,3 +859,77 @@ if [ "$INSTALL" == 'WR' ]; then
 	echo "The HTTPD restart command is:"
 	echo "sudo $HTTPDSCRIPT reload"
 fi
+
+if [ "$INSTALL" == 'GS' ]; then
+
+	echo "Creating folders and files"
+	CREATEDIRS=('conf' 'fdl_data/hl2' 'logs' 'masteraddons' 'mastermaps' 'masterserver' 'temp')
+	for CREATEDIR in ${CREATEDIRS[@]}; do
+		echo "Adding dir: /home/$MASTERUSER/$CREATEDIR"
+		mkdir -p /home/$MASTERUSER/$CREATEDIR
+	done
+
+	LOGFILES=('addons' 'hl2' 'server' 'fdl' 'update' 'fdl-hl2')
+	for LOGFILE in ${LOGFILES[@]}; do
+		touch "/home/$MASTERUSER/logs/$LOGFILE.log"
+	done
+	chmod 660 /home/$MASTERUSER/logs/*.log
+
+	chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER/
+	chmod -R 750 /home/$MASTERUSER/
+	chmod -R 770 /home/$MASTERUSER/logs/ /home/$MASTERUSER/temp/ /home/$MASTERUSER/fdl_data/
+
+	if [ "$OS" == "debian" -a "`uname -m`" == "x86_64" -a "`cat /etc/debian_version | grep '6.'`" == "" ]; then
+		dpkg --add-architecture i386
+	fi
+
+	if [ "$OS" == "debian" -o  "$OS" == "ubuntu" ]; then
+
+		apt-get update
+
+		apt-get install wget wput screen bzip2 sudo rsync
+
+		if [ "`uname -m`" == "x86_64" ]; then
+			apt-get install ia32-libs lib32readline5 lib32ncursesw5
+		else
+			apt-get install libreadline5 libncursesw5
+		fi
+	fi
+
+	echo "Downloading SteamCmd"
+
+	cd /home/$MASTERUSER/masterserver
+	mkdir -p /home/$MASTERUSER/masterserver/steamCMD/
+	cd /home/$MASTERUSER/masterserver/steamCMD/
+	wget -q --timeout=30 http://media.steampowered.com/client/steamcmd_linux.tar.gz
+
+	if [ -f steamcmd_linux.tar.gz ]; then
+		tar xfvz steamcmd_linux.tar.gz
+		rm steamcmd_linux.tar.gz
+		chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER/masterserver/steamCMD
+		su -c "./steamcmd.sh +login anonymous +quit" $MASTERUSER
+	fi
+
+	cd /home/$MASTERUSER/
+	wget -q --no-check-certificate https://raw.githubusercontent.com/easy-wi/developer/master/server/control.sh
+	chmod 750 control.sh
+
+	chown -R $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER
+
+	if [ -f /etc/crontab -a "`grep 'Minecraft can easily produce 1GB' /etc/crontab`" == "" ]; then
+
+		if ionice -c3 true 2>/dev/null; then
+			IONICE='ionice -n 7 '
+		fi
+
+		echo "#Minecraft can easily produce 1GB+ logs within one hour" >> /etc/crontab
+		echo "*/5 * * * * root nice -n +19 ionice -n 7 find /home/*/server/*/*/ -maxdepth 2 -type f -name \"screenlog.0\" -size +100M -delete" >> /etc/crontab
+		echo "# Even sudo /usr/sbin/deluser --remove-all-files is used some data remain from time to time" >> /etc/crontab
+		echo "*/5 * * * * root nice -n +19 $IONICE find /home/ -maxdepth 2 -type d -nouser -delete" >> /etc/crontab
+		echo "*/5 * * * * root nice -n +19 $IONICE find /home/*/fdl_data/ /home/*/temp/ /tmp/ /var/run/screen/ -nouser -delete" >> /etc/crontab
+
+		/etc/init.d/cron restart
+	fi
+fi
+
+exit 0
