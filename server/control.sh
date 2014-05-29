@@ -859,6 +859,7 @@ echo "Server deleted"
 }
 
 function add_customer {
+CONFIGID=`grep CONFIGID $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
 USER=`ls -la /var/run/screen | grep S-$VARIABLE2 | head -n 1 | awk '{print $3}'`
 if [ $USER -eq $USER 2> /dev/null ]; then USERID=$USER; fi
 PUSER=`ls -la /var/run/screen | grep S-$VARIABLE2-p | head -n 1 | awk '{print $3}'`
@@ -866,9 +867,8 @@ if [ $PUSER -eq $PUSER 2> /dev/null ]; then PUSERID=$PUSER;  fi
 if [ "$USERID" != "" ]; then
 	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
 else
-	CONFIGID=`grep CONFIGID $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
 	if [ "$CONFIGID" == "" ]; then CONFIGID=1000; fi
-	USERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id=$CONFIGID } $1 == id { id++ } $1 > id { print id; exit }'`
+	USERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGID}' } $1 == id { id++ } $1 > id { print id; exit }'`
 	if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
 		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
 	else
@@ -883,8 +883,7 @@ fi
 if [ "$PUSERID" != "" ]; then
 	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` -d /home/$VARIABLE2/pserver -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
 else
-	PUSERID=$[USERID+1]
-	PUSERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id=$PUSERID } $1 == id { id++ } $1 > id { print id; exit }'`
+	PUSERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGID}' } $1 == id { id++ } $1 > id { print id; exit }'`
 	if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" == "" -a "`grep \"x:$PUSERID:\" /etc/passwd`" == "" ]; then
 		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d /home/$VARIABLE2/pserver -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
 	else
