@@ -13,7 +13,7 @@
     <banList>Bann Liste</banList>
     <banReason>Banngrund</banReason>
     <banTime>Banndauer</banTime>
-    <banType>Bann Typ</banType>
+    <banType>Banntyp</banType>
     <blocked>Geblockt</blocked>
 	<date>Datum</date>
 	<defaultdns>Standard TSDNS</defaultdns>
@@ -44,13 +44,17 @@
 	<ftpport>FTP Port</ftpport>
 	<generate>Generieren</generate>
 	<groupname>Gruppenname</groupname>
-    <help_voiceserver_list>In der Voiceserver-Übersicht werden alle Ihre Voiceserver mit nützlichen Informationen aufgelistet. Auch sind die wichtigsten Funktionen direkt von hier erreichbar. Dies schließt das Bearbeiten wichtiger Konfigurationsparameter und die Möglichkeit zum Anlegen von Tokens mit ein.</help_voiceserver_list>
+    <help_voiceserver_list>
+    <![CDATA[
+	In dieser Übersicht werden alle Voiceserver mit Zusatzinformationen aufgelistet. Hier können Sie die wichtigsten Funktionen direkt aufrufen, dies beinhaltet unter anderem die Voiceserver-<em>Einstellungen</em> und die <em>Token</em>-Verwaltung.
+	]]>
+    </help_voiceserver_list>
     <help_voiceserver_backup>Wir erstellen von jedem Voiceserver einmal täglich ein Backup. So können Sie jederzeit, sollten Channel oder Benutzerrechte verändert worden sein, wieder auf einen vorherigen Stand zurückwechseln. Zudem haben Sie die Möglichkeit jederzeit eigene Backups manuell anzulegen, diese werden auch nicht überschrieben.</help_voiceserver_backup>
-    <help_voiceserver_key>Über ein Token können Sie sich selbst, oder anderen, wenn diese das Token benutzen, bestimmte Zugriffsrechte auf Ihrem Teamspeak zuweisen. Tokens lassen sich über unser Webinterface sowie auch über Teamspeak selbst anlegen und verwalten. Ein Token ist jeweils nur einmal gültig und wird nach dem Gebrauch aus der Liste entfernt.</help_voiceserver_key>
+    <help_voiceserver_key>Über ein Token können Sie sich selbst, oder anderen, wenn diese das Token benutzen, bestimmte Zugriffsrechte auf Ihrem TeamSpeak zuweisen. Tokens lassen sich über unser Webinterface sowie auch über TeamSpeak selbst anlegen und verwalten. Ein Token ist jeweils nur einmal gültig und wird nach dem Gebrauch aus der Liste entfernt.</help_voiceserver_key>
     <help_voiceserver_md>
     <![CDATA[
-	Mittels <strong>TSDNS</strong> können Sie sich mit Ihrem Teamspeak Server verbinden, ohne dass die IP und der Port eingegeben werden muss. Es genügt der unter <strong>Aktueller TSDNS</strong> eingetragene Domainname. Der Wert wird von uns auf einen Standard gesetzt, kann aber von Ihnen frei bearbeitet werden. Sie können Ihren Teamspeak Server darüber beispielsweise so einstellen, dass er via ts.clanname.de erreichbar ist. Voraussetzung für eine solche Änderung ist, dass ein gültiger A-Eintrag existiert, der auf die Teamspeak-Server-IP verweist. Im genannten Beispiel muss ein A-Eintrag für "ts.clanname.de" existieren.<br />
-	Mittels der Felder <strong>Hostbanner Grafik URL</strong> und <strong>Hostbutton Grafik URL</strong> kann auf dem Teamspeak Server ein Banner und ein Button hinterlegt werden. Diese werden beim Login für Clients angezeigt. Über die entsprechenden "Link"-Felder können URLs eingetragen werden, die man beim Klick auf den Banner beziehungsweise Button aufruft.
+	Über <strong>TSDNS</strong> können Sie sich mit Ihrem TeamSpeak-Server verbinden, ohne dass die IP und der Port eingegeben werden müssen, es genügt die unter <em>Aktueller TSDNS</em> eingetragene Domain. Der Wert wird von uns auf einen <em>Standard TSDNS</em> gesetzt, Sie können diesen Eintrag aber jederzeit ändern. Sie können Ihren TeamSpeak-Server beispielsweise so einstellen, dass er via "ts.clanname.de" erreichbar ist. Voraussetzung für eine solche Änderung ist ein gültiger A-Eintrag der Domain, der auf die TeamSpeak-Server-IP verweist.<br /><br />
+	Mittels der Felder <em>Hostbanner Grafik-URL</em> und <em>Hostbutton Grafik-URL</em> können auf dem TeamSpeak-Server ein individuelles Banner und Button hinterlegt werden. Beide würden den Nutzern beim Login angezeigt. Wenn Sie ein <em>Hostbanner Link-Ziel</em> und <em>Hostbutton Link-Ziel</em> angeben, dann öffnet der Browser diese URL beim Anklicken.
     ]]>
     </help_voiceserver_md>
 	<hostbanner_gfx_url>Hostbanner Grafik Url</hostbanner_gfx_url>
@@ -93,7 +97,7 @@
 	<ssh_user>SSH2 Benutzername</ssh_user>
     <tsdnsServerID>Externer TSDNS Server</tsdnsServerID>
 	<token>Token</token>
-	<ts3>Teamspeak 3</ts3>
+	<ts3>TeamSpeak 3</ts3>
 	<type>Servertyp</type>
 	<usage>Belegung</usage>
 	<usedns>TSDNS benutzen</usedns>

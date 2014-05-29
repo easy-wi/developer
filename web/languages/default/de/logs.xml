@@ -6,7 +6,7 @@
 	<all>Alle</all>
 	<banned_till>Gebannt bis</banned_till>
     <date>Datum</date>
-    <help_logs>Alle wichtigen Aktionen, die Sie über das Webinterface ausführen, werden hier aufgezeichnet. So behalten Sie immer den vollen Überblick. Falls Sie einen Mitarbeiter um Hilfe gebeten haben, sehen Sie seine Aktionen ebenfalls an dieser Stelle. Allerdings mit einem anderen Benutzernamen.</help_logs>
+    <help_logs>Alle wichtigen Aktionen, die Sie über das Webinterface ausführen, werden hier aufgezeichnet. So behalten Sie immer den vollen Überblick. Falls Sie einen Mitarbeiter um Hilfe gebeten haben, sehen Sie seine Aktionen ebenfalls an dieser Stelle, allerdings mit einem anderen Benutzernamen.</help_logs>
     <hostname>Hostname</hostname>
 	<ip>IP</ip>
 	<shown>Anzahl</shown>

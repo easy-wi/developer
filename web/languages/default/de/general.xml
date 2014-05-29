@@ -12,7 +12,7 @@
     <columns>Custom Columns</columns>
     <comments>Kommentare</comments>
 	<databases>DB</databases>
-	<datetime>Datum / Uhrzeit</datetime>
+	<datetime>Datum/Uhrzeit</datetime>
     <dedicated>Dedizierte</dedicated>
 	<del>Löschen</del>
     <delSafe>Sicheres Löschen</delSafe>

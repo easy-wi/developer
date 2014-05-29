@@ -6,9 +6,9 @@
 	<newversion>A new version is available: </newversion>
 	<ok>You are running the latest version.</ok>
 	<outdated>You are running an outdated version: </outdated>
-	<prepare1>When running updates there is always a possibility that something can go wrong. Be prepared to avoid dataloss or a permenantly damaged database.</prepare1>
-	<prepare2>To be prepared please safe all your data and make a backup of your database.</prepare2>
-	<prepare3>Please only proceed after making your backup.</prepare3>
+    <prepare1>When running updates there is always a possibility that something goes wrong. Be prepared to avoid data loss or a permanently damaged database.</prepare1>
+    <prepare2>To be prepared, please save all your data and create a backup of your database.</prepare2>
+    <prepare3>Please only proceed after creating your backup.</prepare3>
     <releaseNotes>Releasenotes</releaseNotes>
 	<start>Start the update</start>
 </sprache>

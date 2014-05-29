@@ -59,9 +59,9 @@
     </help_calendar>
     <help_config>
         <![CDATA[
-	Über unser Webinterface können Sie jederzeit die wichtigsten Konfigurationsdateien für Ihr Spiel bearbeiten. Konfigurationsdateien für Plugins werden hinzugefügt, sobald diese über das Webinterface installiert worden sind.<br />
+	Über unser Webinterface können Sie jederzeit die wichtigsten Konfigurationsdateien für Ihr Spiel bearbeiten. Konfigurationsdateien für Plugins werden hinzugefügt, sobald diese über das Webinterface installiert wurden.<br />
 	<br />
-    Sollte Ihnen eine Konfigurationsdatei im Webinterface fehlen, können Sie diese auch jederzeit direkt per FTP bearbeiten.
+    Sollte Ihnen eine Konfigurationsdatei im Webinterface nicht angezeigt werden, können Sie diese trotzdem jederzeit direkt per FTP bearbeiten.
     ]]>
     </help_config>
     <help_md>Sie können Ihren Gameserver jederzeit zwischen mehreren Spielen wechseln. Auch können Sie über die Templates mehrere Konfigurationsstände gleichzeitig verwalten und beibehalten.</help_md>
@@ -73,11 +73,11 @@
     </help_list>
     <help_reinstall>
         <![CDATA[
-	Mittels <strong>Resynchronisation</strong> werden nur fehlende Dateien auf Ihrem Gameserver hinzugefügt, nicht aber Ihre Konfiguration überschrieben. Das ist vor allem dann nützlich wenn Sie Ordner gelöscht haben und diese wiederherstellen möchten oder zu einem Spiel neue Dateien von uns oder dem Hersteller hinzugefügt wurden.<br />
+	<em>Resynchronisation</em> ergänzt lediglich fehlende Dateien auf Ihrem Gameserver, bestehende Dateien werden hierbei nicht überschrieben. Die Funktion ist vor allem dann nützlich, wenn Sie Dateien aus Versehen gelöscht haben oder fehlende Dateien aus einem Update vom Hersteller hinzufügen wollen.<br />
     <br />
-	Über die <strong>Reinstallation</strong> führen Sie eine komplette Neuinstallation Ihres Gameservers durch, hierbei werden alle durch Sie vorgenommenen Änderungen zurückgesetzt und Sie erhalten frischen Gameserver.<br />
+	Mit <em>Reinstall</em> führen Sie eine komplette Neuinstallation Ihres Gameservers durch. Hierbei werden alle Daten gelöscht und der Gameserver wird auf die Standardeinstellungen zurückgesetzt.<br />
     <br />
-	Beide Aktionen sind im Regelfall innerhalb weniger Minuten abgeschlossen.
+	Beide Aktionen starten Sie mit <em>Ausführen</em>. Der Vorgang sollte in der Regel innerhalb weniger Minuten abgeschlossen sein.
     ]]>
     </help_reinstall>
     <hour>Uhr</hour>
@@ -114,10 +114,10 @@
     <restarts>(Re)start</restarts>
     <restart_all>Alle Server neustarten</restart_all>
     <restarttime>Restart-Planer</restarttime>
-    <resync>Resyncronisation</resync>
+    <resync>Resynchronisation</resync>
     <root>Rootserver</root>
     <saturday>Samstag</saturday>
-    <server>Adresse</server>
+    <server>Gameserver Adresse</server>
     <serverinstalled>Installierte Gameserver</serverinstalled>
     <servername>Servername</servername>
     <serverrestart>Der Gameserver wird neu gestartet</serverrestart>

@@ -1,40 +1,40 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<active>Active</active>
-    <activeGS>Activate gameserver lending for</activeGS>
-    <activeVS>Activate voiceserver lending for</activeVS>
+    <active>Active</active>
+    <activeGS>Activate game server lending for</activeGS>
+    <activeVS>Activate voice server lending for</activeVS>
     <all>Everyone</all>
     <anonymous>Anonymous</anonymous>
-	<available>available</available>
+    <available>available</available>
     <free>Available in</free>
-	<ftpupload>Allow demoupload</ftpupload>
-	<ftpuploadpath>Demo FTP</ftpuploadpath>
-    <ipblock>Someone with you IP but not you have already lended a server!</ipblock>
-	<lend>Lend</lend>
-	<lendaccess>Lending via</lendaccess>
-	<lendhostip>WebhostIP if XML</lendhostip>
-	<lendhostkey>Key if XML</lendhostkey>
-	<maxplayer>Maximum slots</maxplayer>
-	<maxtime>Maximum lendtime (minutes)</maxtime>
-	<minplayer>Minimal slots</minplayer>
-	<mintime>Minimal lendtime (minutes)</mintime>
-	<minutes>Minutes</minutes>
-	<nextcheck>Next Statuscheck</nextcheck>
-	<nextfree>According to plan next gameserver is free in</nextfree>
-	<nextfreevo>According to plan next voiceserver is free in</nextfreevo>
-	<playersteps>Slotsteps</playersteps>
-    <ready>ready</ready>
+    <ftpupload>Allow demo upload</ftpupload>
+    <ftpuploadpath>Demo FTP</ftpuploadpath>
+    <ipblock>Someone with your IP address, but not you, has already lent a server!</ipblock>
+    <lend>Lend</lend>
+    <lendaccess>Lending via</lendaccess>
+    <lendhostip>WebhostIP if XML</lendhostip>
+    <lendhostkey>Key if XML</lendhostkey>
+    <maxplayer>Maximum slots</maxplayer>
+    <maxtime>Maximum lending period (minutes)</maxtime>
+    <minplayer>Minimal slots</minplayer>
+    <mintime>Minimal lending period (minutes)</mintime>
+    <minutes>Minutes</minutes>
+    <nextcheck>Next status check</nextcheck>
+    <nextfree>According to plan, next game server is free in</nextfree>
+    <nextfreevo>According to plan, next voice server is free in</nextfreevo>
+    <playersteps>Slot steps</playersteps>
+    <ready>Ready</ready>
     <registered>Registered</registered>
-    <settingsGsAnonymous>Gameserver settings anonymous user</settingsGsAnonymous>
-    <settingsGsGeneral>General gameserver settings</settingsGsGeneral>
-    <settingsGsRegistered>Gameserver settings registered user</settingsGsRegistered>
-    <settingsVsAnonymous>Voiceserver settings anonymous user</settingsVsAnonymous>
-    <settingsVsGeneral>General voiceserver settings</settingsVsGeneral>
-    <settingsVsRegistered>Voiceserver settings registered user</settingsVsRegistered>
-	<shutdownempty>Shut down empty server</shutdownempty>
-	<shutdownemptytime>Minimal runtime (minutes)</shutdownemptytime>
-	<timesteps>Minute steps</timesteps>
-	<timeleft>timeleft</timeleft>
-	<used>used</used>
-	<usedserver>Used server</usedserver>
+    <settingsGsAnonymous>Game server settings anonymous user</settingsGsAnonymous>
+    <settingsGsGeneral>General game server settings</settingsGsGeneral>
+    <settingsGsRegistered>Game server settings registered user</settingsGsRegistered>
+    <settingsVsAnonymous>Voice server settings anonymous user</settingsVsAnonymous>
+    <settingsVsGeneral>General voice server settings</settingsVsGeneral>
+    <settingsVsRegistered>Voice server settings registered user</settingsVsRegistered>
+    <shutdownempty>Shut down empty server</shutdownempty>
+    <shutdownemptytime>Minimal runtime (minutes)</shutdownemptytime>
+    <timesteps>Minute steps</timesteps>
+    <timeleft>Time left</timeleft>
+    <used>Used</used>
+    <usedserver>Used server</usedserver>
 </sprache>

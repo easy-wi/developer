@@ -7,21 +7,19 @@
 	<haupt>Default fastdownload server</haupt>
 	<haupt2>Use default fastdownload server?</haupt2>
     <help_fdl>
-        <![CDATA[
-	Fastdownload allows the users to download server data like sounds and maps much faster.<br />
+    <![CDATA[
+	Fastdownload allows the players to download server data such as sounds and maps much swifter.<br />
 	<br />
-	For one you can define a <strong>default fastdownload server</strong>, which will be used for all gameservers. Or you configure a <strong>own fastdownload server</strong> for each gameserver.<br />
+	Either you define a <strong>default</strong> <em>Fastdownload server</em> which will be used for all game servers or you configure an <strong>individual</strong> <em>Fastdownload server</em> for each game server.<br />
 	<br />
-	Clicking the <strong>SYNC</strong> button will tell our webiterface to automaticaly upload all required files to the fastdownload server.<br />
-	<br />
-	In addition you need to setup the according <strong>HTTP URL</strong> at the server´s  <strong>server.cfg</strong> or <strong>dedicated.cfg</strong>.
+	Clicking the <em>Start matching</em> button will initiate our web interface to automatically upload all required files to the Fastdownload server. Furthermore, you need to add the according HTTP URL in the server's server.cfg or dedicated.cfg file to activate Fastdownload.
     ]]>
     </help_fdl>
-	<neben>FTP Data used for the fastdownload server</neben>
+	<neben>FTP data used for the Fastdownload server</neben>
 	<noset>No FTP data available</noset>
 	<own>Use main FTP</own>
 	<own2>Own fastdownload server</own2>
 	<server>Einzelne Server</server>
 	<startfdl>Start matching</startfdl>
-	<udsuc>Successfully changed the FTP Data</udsuc>
+	<udsuc>Successfully changed the FTP data</udsuc>
 </sprache>

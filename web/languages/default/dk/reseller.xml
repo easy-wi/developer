@@ -14,7 +14,7 @@
 	<distro>Distribution</distro>
 	<hdd>Mountpoints</hdd>
 	<hddsize>HDD størrelse</hddsize>
-    <initialRescuPass>Initial / redning Adgangskode</initialRescuPass>
+    <initialRescuPass>Initial/redning Adgangskode</initialRescuPass>
 	<imagefile>Image Fil</imagefile>
 	<imageserver>Imageserver</imageserver>
 	<installing>Installation</installing>
@@ -55,6 +55,6 @@
 	<stopped>Stoppet</stopped>
 	<unused_ips>gratis IP'er</unused_ips>
 	<user>Brugernavn</user>
-    <userAdd>Tilføj en Bruger / forhandler først</userAdd>
+    <userAdd>Tilføj en Bruger/forhandler først</userAdd>
     <wwwFolder>Autorun Web Folder</wwwFolder>
 </sprache>

@@ -6,13 +6,13 @@
 	<all>All</all>
 	<banned_till>Banned until</banned_till>
     <date>Date</date>
-    <help_logs>All important actions which you perform with the interface will be logged. That way you will have the complete overview. In case you have asked for help you will see the supporter´s actions as well. He will be shown with its own name.</help_logs>
-    <hostname>Hostname</hostname>
+    <help_logs>All important interface actions are going to be logged. Thus, you will have the complete overview. Supporters' actions are logged as well with name.</help_logs>
+    <hostname>Host name</hostname>
 	<ip>IP</ip>
 	<shown>Amount</shown>
 	<subuser>Subuser</subuser>
 	<topic>Topic</topic>
 	<user>User</user>
-    <failcount>Failcount</failcount>
+    <failcount>Failed attempts</failcount>
     <reason>Reason</reason>
 </sprache>

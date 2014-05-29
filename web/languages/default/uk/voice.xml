@@ -1,114 +1,114 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<active>Aktive</active>
-	<add>Add new</add>
-	<addtype>Add type</addtype>
-	<autorestart>Restart at serverdown</autorestart>
-	<backup>Backup</backup>
+    <active>Active</active>
+    <add>Add new</add>
+    <addtype>Add type</addtype>
+    <autorestart>Restart at server down</autorestart>
+    <backup>Backup</backup>
     <backups>Backups</backups>
-    <backupname>Backupname</backupname>
-    <banAdd>Add ban</banAdd>
+    <backupname>Backup name</backupname>
+    <banAdd>Add a ban</banAdd>
     <ban>Ban</ban>
-    <banList>Banlist</banList>
-    <banReason>Banreason</banReason>
+    <banList>Ban list</banList>
+    <banReason>Ban reason</banReason>
     <banErrorData>Cannot use this data for a ban</banErrorData>
     <banTime>Ban time</banTime>
-    <banType>Bann type</banType>
+    <banType>Ban type</banType>
     <blocked>Blocked</blocked>
-	<date>Datum</date>
-	<defaultdns>Default TSDNS</defaultdns>
-	<defaulthostbanner_gfx_url>Default Hostbanner GFX URL</defaulthostbanner_gfx_url>
-	<defaulthostbanner_url>Default Hostbanner URL</defaulthostbanner_url>
-	<defaulthostbutton_gfx_url>Default Hostbutton GFX URL</defaulthostbutton_gfx_url>
-	<defaulthostbutton_tooltip>Default Hostbutton Tooltip</defaulthostbutton_tooltip>
-	<defaulthostbutton_url>Default Hostbutton URL</defaulthostbutton_url>
-	<defaultname>Defaultname</defaultname>
-	<defaultwelcome>Default welcomemessage</defaultwelcome>
-    <defaultFlexSlotsFree>Default free Flex Slots</defaultFlexSlotsFree>
-    <defaultFlexSlotsPercent>Default Flex Slots percent</defaultFlexSlotsPercent>
+    <date>Date</date>
+    <defaultdns>Default TSDNS</defaultdns>
+    <defaulthostbanner_gfx_url>Default host banner GFX URL</defaulthostbanner_gfx_url>
+    <defaulthostbanner_url>Default host banner URL</defaulthostbanner_url>
+    <defaulthostbutton_gfx_url>Default host button GFX URL</defaulthostbutton_gfx_url>
+    <defaulthostbutton_tooltip>Default host button tooltip</defaulthostbutton_tooltip>
+    <defaulthostbutton_url>Default host button URL</defaulthostbutton_url>
+    <defaultname>Default name</defaultname>
+    <defaultwelcome>Default welcome message</defaultwelcome>
+    <defaultFlexSlotsFree>Default free flex slots</defaultFlexSlotsFree>
+    <defaultFlexSlotsPercent>Default flex slots percent</defaultFlexSlotsPercent>
     <description>Description</description>
-	<dns>Strøm TSDNS</dns>
+    <dns>Current TSDNS</dns>
     <dnsError>Server TSDNS not allowed</dnsError>
     <duration>Duration</duration>
     <ends>Ends</ends>
-	<enter>enter</enter>
+    <enter>enter</enter>
     <externalDefaultDNS>Use external default TSDNS</externalDefaultDNS>
-	<filetransferport>Filetransferport</filetransferport>
+    <filetransferport>File transfer port</filetransferport>
     <flexSlots>Flex Slots</flexSlots>
-    <flexSlotsPercent>Flex Slots Percent</flexSlotsPercent>
-    <flexSlotsFree>Free Flex Slots</flexSlotsFree>
-	<forcebanner>Force hostbanner</forcebanner>
-	<forcebutton>Force hostbutton</forcebutton>
-	<forceservertag>Force servertag</forceservertag>
-	<forcewelcome>Force welcome message</forcewelcome>
-	<ftpport>FTP port</ftpport>
-	<generate>generate</generate>
-	<groupname>Groupname</groupname>
-    <help_voiceserver_list>At the voiceserver overview all your servers are listed with usefull information. The most important voiceserver functions can be directly accessed at the interface. This includes the configuration of important settings and the Token management.</help_voiceserver_list>
-    <help_voiceserver_backup>We are creating a backup for each voiceserver on a dayly basis. This allows you to switch back to previous settings in case channel or user permissions have been altered. In addition you can create your own backups.</help_voiceserver_backup>
-    <help_voiceserver_key>With the help of a token you can you can access or hand out server permissions to others. Tokens can be managed with the webinterface or directly at the Teamspeak server. A token can be used only once and will be removed after usage.</help_voiceserver_key>
+    <flexSlotsPercent>Flex slots percent</flexSlotsPercent>
+    <flexSlotsFree>Free flex slots</flexSlotsFree>
+    <forcebanner>Force host banner</forcebanner>
+    <forcebutton>Force host button</forcebutton>
+    <forceservertag>Force server tag</forceservertag>
+    <forcewelcome>Force welcome message</forcewelcome>
+    <ftpport>FTP port</ftpport>
+    <generate>generate</generate>
+    <groupname>Group name</groupname>
+    <help_voiceserver_list>In the voice server overview all your servers are listed with detailed information. The most important voice server functions can be accessed directly via the interface. This includes the configuration of important settings and the token management.</help_voiceserver_list>
+    <help_voiceserver_backup>We create one backup for each voice server every day. This allows you to switch back to previous settings and to restore previous channel or user permissions. In addition to this, you can create your own backups.</help_voiceserver_backup>
+    <help_voiceserver_key>With a token you can access your server yourself or even allow others to get server permissions. Tokens can be managed via the web interface or directly in the TeamSpeak client. A token can be used only once and will be removed after usage.</help_voiceserver_key>
     <help_voiceserver_md>
-    <![CDATA[
-	With the help of <strong>TSDNS</strong> you can connect to your teamspeak server without using an IP or port. All you need is the domain which is maintained at <strong>Current TSDNS</strong>. The default value we setup during server creation can be edited to whatever you like. For example you can enter and use ts.clanname.net. Prerequisite for this change is a valid A-Record whose target is the Teamspeak server IP.<br />
-	The values at <strong>Hostbanner GFX URL</strong> and <strong>Hostbutton GFX URL</strong> are used to maintain a banner and button at your Teamspeak server. Both will be shown to clients upon connect. If the according link values are maintained, the browser will open with this link.
+        <![CDATA[
+	With the help of <strong>TSDNS</strong> you can connect to your TeamSpeak server without using an IP address or port. All you need is the domain which is maintained at <em>Current TSDNS</em>. The <em>Default TSDNS</em> initially set during the server creation can be changed to any value afterwards. For example, you could enter and use "ts.clanname.net". Prerequisite for such a change is a valid A record with the TeamSpeak server's IP address as target.<br /><br />
+	The values <em>Host banner GFX URL</em> and <em>Host button GFX URL</em> are used to maintain a banner and button on your TeamSpeak server. Both will be shown to clients upon connection. If you define a <em>Host banner target URL</em> or <em>Host button target URL</em>, the browser will open this URL upon clicking the banner or button.
     ]]>
     </help_voiceserver_md>
-	<hostbanner_gfx_url>Hostbanner GFX Url</hostbanner_gfx_url>
-	<hostbanner_url>Hostbanner Url</hostbanner_url>
-	<hostbutton_gfx_url>Hostbutton GFX Url</hostbutton_gfx_url>
-	<hostbutton_tooltip>Hostbutton Tooltip</hostbutton_tooltip>
-	<hostbutton_url>Hostbutton Url</hostbutton_url>
-	<import>Import</import>
-	<initialpassword>Initial password</initialpassword>
-	<installedserver>Installed server</installedserver>
-	<installedslots>Installed slots</installedslots>
-	<ip>IP</ip>
-	<ips>Extra IPs</ips>
-	<isnot>is not</isnot>
-	<keyname>Public keyfile name</keyname>
-	<keyuse>Use public keyfile</keyuse>
-	<left>remaining</left>
-	<maxserver>Maximum Server</maxserver>
-	<maxslots>Maximum Slots</maxslots>
-	<maxtraffic>Maximum Traffic</maxtraffic>
-	<max_download_total_bandwidth>Maximum downloadbandwidth</max_download_total_bandwidth>
-	<max_upload_total_bandwidth>Maximum uploadbandwidth</max_upload_total_bandwidth>
-	<name>Servername</name>
-	<newuser>New user</newuser>
-	<os_bit>Bitversion</os_bit>
-	<password>Private Server</password>
-	<port>Port</port>
-	<querypassword>Querypassword</querypassword>
-	<queryport>Queryport</queryport>
-	<recover>Recover</recover>
+    <hostbanner_gfx_url>Host banner GFX URL</hostbanner_gfx_url>
+    <hostbanner_url>Host banner target URL</hostbanner_url>
+    <hostbutton_gfx_url>Host button GFX URL</hostbutton_gfx_url>
+    <hostbutton_tooltip>Host button tooltip</hostbutton_tooltip>
+    <hostbutton_url>Host button target URL</hostbutton_url>
+    <import>Import</import>
+    <initialpassword>Initial password</initialpassword>
+    <installedserver>Installed server</installedserver>
+    <installedslots>Installed slots</installedslots>
+    <ip>IP</ip>
+    <ips>Extra IPs</ips>
+    <isnot>is not</isnot>
+    <keyname>Public keyfile name</keyname>
+    <keyuse>Use public keyfile</keyuse>
+    <left>remaining</left>
+    <maxserver>Maximum servers</maxserver>
+    <maxslots>Maximum slots</maxslots>
+    <maxtraffic>Maximum traffic</maxtraffic>
+    <max_download_total_bandwidth>Maximum download bandwidth</max_download_total_bandwidth>
+    <max_upload_total_bandwidth>Maximum upload bandwidth</max_upload_total_bandwidth>
+    <name>Server name</name>
+    <newuser>New user</newuser>
+    <os_bit>Bit-version</os_bit>
+    <password>Private server</password>
+    <port>Port</port>
+    <querypassword>Query password</querypassword>
+    <queryport>Query port</queryport>
+    <recover>Recover</recover>
     <reset>Reset</reset>
-	<rootserver>Rootserver</rootserver>
-    <seconds>Seconds</seconds>
-	<server>Server</server>
-	<serverdir>Path to server</serverdir>
-	<slots>Serverslots</slots>
-	<ssh_ip>SSH2 IP</ssh_ip>
-	<ssh_pass>SSH2 password</ssh_pass>
-	<ssh_port>SSH2 port</ssh_port>
-	<ssh_user>SSH2 username</ssh_user>
-	<tsdnsServerID>External TSDNS server</tsdnsServerID>
+    <rootserver>Root server</rootserver>
+    <seconds>seconds</seconds>
+    <server>Server</server>
+    <serverdir>Path to server</serverdir>
+    <slots>Server slots</slots>
+    <ssh_ip>SSH2 IP</ssh_ip>
+    <ssh_pass>SSH2 password</ssh_pass>
+    <ssh_port>SSH2 port</ssh_port>
+    <ssh_user>SSH2 username</ssh_user>
+    <tsdnsServerID>External TSDNS server</tsdnsServerID>
     <token>Token</token>
-	<ts3>Teamspeak 3</ts3>
-	<type>Servertype</type>
-	<usage>Usage</usage>
-	<usedns>Use TSDNS</usedns>
-	<usedports>Used ports</usedports>
-	<user>Username</user>
-    <virtualserver_antiflood_points_needed_command_block>Anti-Flood: points needed to block commands being executed by the client</virtualserver_antiflood_points_needed_command_block>
-    <virtualserver_antiflood_points_needed_ip_block>Anti-Flood: points needed to block incoming connections from the client</virtualserver_antiflood_points_needed_ip_block>
-    <virtualserver_antiflood_points_tick_reduce>Anti-Flood: points removed from a client for being good</virtualserver_antiflood_points_tick_reduce>
-    <virtualserver_hostbanner_gfx_interval>GFX Interval</virtualserver_hostbanner_gfx_interval>
-    <virtualserver_hostmessage_mode>Hostmessage Mode</virtualserver_hostmessage_mode>
-    <virtualserver_hostmessage_mode_0>No Message</virtualserver_hostmessage_mode_0>
-    <virtualserver_hostmessage_mode_1>display message in chatlog</virtualserver_hostmessage_mode_1>
-    <virtualserver_hostmessage_mode_2>display message in modal dialog</virtualserver_hostmessage_mode_2>
-    <virtualserver_hostmessage_mode_3>display message in modal dialog and close connection</virtualserver_hostmessage_mode_3>
+    <ts3>TeamSpeak 3</ts3>
+    <type>Server type</type>
+    <usage>Usage</usage>
+    <usedns>Use TSDNS</usedns>
+    <usedports>Used ports</usedports>
+    <user>User name</user>
+    <virtualserver_antiflood_points_needed_command_block>Anti-Flood: Points needed to block commands being executed by the client.</virtualserver_antiflood_points_needed_command_block>
+    <virtualserver_antiflood_points_needed_ip_block>Anti-Flood: Points needed to block incoming connections from the client.</virtualserver_antiflood_points_needed_ip_block>
+    <virtualserver_antiflood_points_tick_reduce>Anti-Flood: Points removed from a client for being good.</virtualserver_antiflood_points_tick_reduce>
+    <virtualserver_hostbanner_gfx_interval>GFX interval</virtualserver_hostbanner_gfx_interval>
+    <virtualserver_hostmessage_mode>Host message mode</virtualserver_hostmessage_mode>
+    <virtualserver_hostmessage_mode_0>No message</virtualserver_hostmessage_mode_0>
+    <virtualserver_hostmessage_mode_1>Display message in chatlog</virtualserver_hostmessage_mode_1>
+    <virtualserver_hostmessage_mode_2>Display message in modal dialog</virtualserver_hostmessage_mode_2>
+    <virtualserver_hostmessage_mode_3>Display message in modal dialog and close connection</virtualserver_hostmessage_mode_3>
     <virtualserver_needed_identity_security_level>Minimum client identity security level required to connect</virtualserver_needed_identity_security_level>
-    <virtualserver_reserved_slots>Reserverd slots</virtualserver_reserved_slots>
-	<welcome>Welcome message</welcome>
+    <virtualserver_reserved_slots>Reserved slots</virtualserver_reserved_slots>
+    <welcome>Welcome message</welcome>
 </sprache>

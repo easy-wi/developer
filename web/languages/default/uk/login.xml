@@ -1,30 +1,30 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<bad_ca>The entered data did not match with the Captcha.</bad_ca>
-	<bad_up>Either the user does not exist or the password was wrong.</bad_up>
-	<back>Back</back>
-	<banned>Too many bad login attemps. Please reaquest a new password or Contact us.</banned>
-	<captcha>Captcha</captcha>
-	<email>E-Mail or username</email>
-	<exp>Your licence is expired.</exp>
-	<heading>User Login</heading>
+    <bad_ca>The entered data did not match with the captcha.</bad_ca>
+    <bad_up>Either the user does not exist or the password is wrong.</bad_up>
+    <back>Back</back>
+    <banned>Too many bad login attemps. Please request a new password or contact us.</banned>
+    <captcha>Captcha</captcha>
+    <email>E-mail or username</email>
+    <exp>Your licence has expired.</exp>
+    <heading>User login</heading>
     <ipBad>Incorrect IP: </ipBad>
-    <ipOK>Permitted IP(s) is/are </ipOK>
-	<linkexpired>Link is expired.</linkexpired>
+    <ipOK>Permitted IPs are</ipOK>
+    <linkexpired>Link has expired.</linkexpired>
     <multipleHeader>Multiple users found</multipleHeader>
     <multipleHelper>Multiple users could be found connected to the login for %sp%. Please pick one.</multipleHelper>
     <multipleHelperEndpoint>Usually you will have to register an app at the service provider. During creating you will be provided with a key and access token. Both need to be entered at Easy-Wi. At the app you need to configure an endpoint. The endpoint for Easy-Wi is %url%</multipleHelperEndpoint>
-	<nouser>A user with the entered name or email does not exist.</nouser>
-	<password>Password</password>
-	<passwordr>Passwort Recovery</passwordr>
-	<passwordrepeat>Password repeat</passwordrepeat>
-	<passwordreset>reset passwort</passwordreset>
-	<passwordreseted>Password has been updated.</passwordreseted>
-	<pwnomatch>Passwords do not match.</pwnomatch>
-	<send>In case an email account could be found a mail with activation token has been sent to you.</send>
-	<sus>Your account is suspendet. Please contact your hoster.</sus>
-	<sus_heading>Attention!</sus_heading>
-	<user>Username</user>
-    <urlBad>Incorrect URL in use</urlBad>
+    <nouser>There is no user with the name or e-mail address you have entered.</nouser>
+    <password>Password</password>
+    <passwordr>Password recovery</passwordr>
+    <passwordrepeat>Password repeat</passwordrepeat>
+    <passwordreset>Reset passwort</passwordreset>
+    <passwordreseted>Password has been updated.</passwordreseted>
+    <pwnomatch>Passwords do not match.</pwnomatch>
+    <send>An e-mail with activation token has been sent to you in case an e-mail account exists.</send>
+    <sus>Your account is suspended. Please contact your host.</sus>
+    <sus_heading>Attention!</sus_heading>
+    <user>User name</user>
+    <urlBad>Incorrect URL in use:</urlBad>
     <urlOK>Correct URL is </urlOK>
 </sprache>

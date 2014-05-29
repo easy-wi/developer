@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<active>Active</active>
+    <active>Active</active>
     <dbSize>Database size</dbSize>
-	<interface>phpMyAdmin</interface>
-	<ips>Allowed IPs</ips>
-	<dbname>Databasename</dbname>
+    <interface>phpMyAdmin</interface>
+    <ips>Allowed IPs</ips>
+    <dbname>Database name</dbname>
     <description>Description</description>
     <reinstall>Reinstall</reinstall>
-	<standards>Default values for the database user</standards>
+    <standards>Default values for the database user</standards>
     <manage_host_table>Hosttable editable</manage_host_table>
-	<max_databases>Maximum datenbases</max_databases>
-	<max_queries_per_hour>Maximum querys per hour</max_queries_per_hour>
-	<max_updates_per_hour>Maximum updates per hour</max_updates_per_hour>
-	<max_connections_per_hour>Maximum connections per hour</max_connections_per_hour>
-	<max_userconnections_per_hour>Maximum userconnections per hour</max_userconnections_per_hour>
-	<password>Password</password>
+    <max_databases>Maximum databases</max_databases>
+    <max_queries_per_hour>Maximum queries per hour</max_queries_per_hour>
+    <max_updates_per_hour>Maximum updates per hour</max_updates_per_hour>
+    <max_connections_per_hour>Maximum connections per hour</max_connections_per_hour>
+    <max_userconnections_per_hour>Maximum user connections per hour</max_userconnections_per_hour>
+    <password>Password</password>
     <table>Table</table>
-	<usage>Usage</usage>
-	<user>Username</user>
+    <usage>Usage</usage>
+    <user>User name</user>
 </sprache>

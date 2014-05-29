@@ -2,14 +2,14 @@
 <sprache>
     <active>Activate</active>
     <description>Description</description>
-    <error_core>Error: Easy-WI core modules cannot be deleted</error_core>
+    <error_core>Error: Easy-Wi core modules cannot be deleted</error_core>
     <file>File</file>
     <get>GET Value</get>
     <name>Name</name>
     <sub>Menu</sub>
     <type>Modul type</type>
-    <type_admin>Adminpanel</type_admin>
+    <type_admin>Admin panel</type_admin>
     <type_cms>CMS</type_cms>
-    <type_core>Easy-WI core</type_core>
-    <type_user>Userpanel</type_user>
+    <type_core>Easy-Wi core</type_core>
+    <type_user>User panel</type_user>
 </sprache>

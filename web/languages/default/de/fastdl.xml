@@ -8,13 +8,11 @@
     <haupt2>Standard Fastdownload Speicher benutzen?</haupt2>
     <help_fdl>
         <![CDATA[
-	Mittels Fastdownload können Spieler auf Ihrem Gameserver Zusatz-Dateien schneller herunterladen.<br />
+	Mittels Fastdownload können Spieler Zusatzdateien, wie zum Beispiel Maps oder Sounds, schneller herunterladen.<br />
 	<br />
-	Sie haben die Möglichkeit einen <strong>Standard Fastdownload Speicher</strong> zu definieren, welcher für alle Gameserver benutzt wird, oder einen eigenen <strong>Fastdownload Speicher</strong> für jeden Gameserver.<br />
+	Sie haben die Möglichkeit einen <strong>Standard</strong>-<em>Fastdownload-Server</em> zu definieren, welcher für alle Gameserver benutzt wird, oder alternativ <strong>individuelle</strong> <em>Fastdownload-Server</em> für jeden Gameserver.<br />
 	<br />
-	Beim Klick auf den <strong>Abgleich starten</strong> Button überträgt unser Webinterface Automatisch alle nötigen Daten auf Ihren Fastdownload Speicher.<br />
-	<br />
-	Damit diese Einstellung auf Ihrem Gameserver aktiv wird, muss die entsprechende <strong>HTTP-URL</strong> auch in der <strong>server.cfg</strong> oder <strong>dedicated.cfg</strong> am Gameserver eingetragen werden.
+	Beim Klick auf <em>Abgleich starten</em> überträgt unser Webinterface automatisch alle nötigen Daten auf den entsprechenden Fastdownload-Server. Damit der Fastdownload aktiv wird, muss die entsprechende HTTP-URL auch in der server.cfg oder dedicated.cfg des Gameservers eingetragen werden.
     ]]>
     </help_fdl>
 	<neben>FTP Zugang zum Fastdownload Webspace für</neben>
