@@ -863,6 +863,7 @@ echo "Server deleted"
 
 function add_customer {
 CONFIGUSERID=`grep CONFIGUSERID $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
+if [ "$CONFIGUSERID" == "" ]; then CONFIGUSERID=1000; fi
 USER=`ls -la /var/run/screen | grep S-$VARIABLE2 | head -n 1 | awk '{print $3}'`
 if [ $USER -eq $USER 2> /dev/null ]; then USERID=$USER; fi
 PUSER=`ls -la /var/run/screen | grep S-$VARIABLE2-p | head -n 1 | awk '{print $3}'`
@@ -870,7 +871,6 @@ if [ $PUSER -eq $PUSER 2> /dev/null ]; then PUSERID=$PUSER;  fi
 if [ "$USERID" != "" ]; then
 	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
 else
-	if [ "$CONFIGUSERID" == "" ]; then CONFIGUSERID=1000; fi
 	USERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGUSERID}' } $1 == id { id++ } $1 > id { print id; exit }'`
 	if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
 		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
