@@ -866,7 +866,9 @@ if [ $PUSER -eq $PUSER 2> /dev/null ]; then PUSERID=$PUSER;  fi
 if [ "$USERID" != "" ]; then
 	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
 else
-	USERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id=1000 } $1 == id { id++ } $1 > id { print id; exit }'`
+	CONFIGID=`grep CONFIGID $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
+	if [ "$CONFIGID" == "" ]; then CONFIGID=1000; fi
+	USERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id=$CONFIGID } $1 == id { id++ } $1 > id { print id; exit }'`
 	if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
 		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
 	else
@@ -882,6 +884,7 @@ if [ "$PUSERID" != "" ]; then
 	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` -d /home/$VARIABLE2/pserver -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
 else
 	PUSERID=$[USERID+1]
+	PUSERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id=$PUSERID } $1 == id { id++ } $1 > id { print id; exit }'`
 	if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" == "" -a "`grep \"x:$PUSERID:\" /etc/passwd`" == "" ]; then
 		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d /home/$VARIABLE2/pserver -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
 	else
@@ -1888,7 +1891,7 @@ function del_addon_files {
 			cp $HOMEFOLDER/temp/$USER.pluginlist.temp $GAMEDIR/$FILES
 			rm $HOMEFOLDER/temp/$USER.pluginlist.temp
 		else
-			rm -rf $GAMEDIR/$FILES > /dev/null 2>&1
+			rm -rf "$GAMEDIR/$FILES" > /dev/null 2>&1
 			if [ "$FILES" == "liblist.gam" ]; then
 				mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES > /dev/null 2>&1
 			fi
