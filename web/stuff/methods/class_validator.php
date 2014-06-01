@@ -544,6 +544,19 @@ class ValidateUserinput {
         return false;
     }
 
+    function externalID ($value, $type, $object = false) {
+
+        $check = $this->if_obj_or_str($value, $type, $object);
+
+        if ($check and is_string($check) and preg_match('/^[\w\:]{0,255}+$/', $check)) {
+            return $check;
+        } else if ($check) {
+            return $this->loop($check, 'externalID', $type);
+        }
+
+        return false;
+    }
+
     function phone ($value, $type, $object = false) {
 
         $check = $this->if_obj_or_str($value, $type, $object);

@@ -142,6 +142,7 @@
     <tuesday>Dienstag</tuesday>
     <tv>TV erlaubt</tv>
     <tvport>TV Port</tvport>
+    <tvuploadstart>SourceTV Upload gestartet</tvuploadstart>
     <type>Installationsart</type>
     <updated>Konfigurationsdatei erfolgreich bearbeitet</updated>
     <updatetime>Status vom</updatetime>

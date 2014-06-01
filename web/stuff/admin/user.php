@@ -137,6 +137,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			}
 
 			if (isset($cname) and isset($bogus)) {
+
 				$active = $ui->active('active', 'post');
 				$security="bogus";
 				$name = $ui->names('name',255, 'post');
@@ -150,15 +151,17 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				$streetn = $ui->streetNumber('streetn', 'post');
 				$password = $ui->password('security',255, 'post');
                 $salutation = $ui->id('salutation',1, 'post');
-                $birthday=date('Y-m-d',strtotime($ui->isDate('birthday', 'post')));
+                $birthday = date('Y-m-d',strtotime($ui->isDate('birthday', 'post')));
                 $country = $ui->st('country', 'post');
                 $fax = $ui->phone('fax',50, 'post');
-                $mail_backup=yesNo('mail_backup');
-                $mail_gsupdate=yesNo('mail_gsupdate');
-                $mail_securitybreach=yesNo('mail_securitybreach');
-                $mail_serverdown=yesNo('mail_serverdown');
-                $mail_ticket=yesNo('mail_ticket');
-                $mail_vserver=yesNo('mail_vserver');
+                $externalID = $ui->externalID('externalID', 'post');
+                $mail_backup = yesNo('mail_backup');
+                $mail_gsupdate = yesNo('mail_gsupdate');
+                $mail_securitybreach = yesNo('mail_securitybreach');
+                $mail_serverdown = yesNo('mail_serverdown');
+                $mail_ticket = yesNo('mail_ticket');
+                $mail_vserver = yesNo('mail_vserver');
+
 
                 if ($accounttype == 'r') {
                     $usergroup = $ui->id('groups_r',19, 'post');
@@ -173,8 +176,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $usergroup = $ui->id('groups_u',19, 'post');
                 }
 
-                $query = $sql->prepare("INSERT INTO `userdata` (`creationTime`,`updateTime`,`active`,`salutation`,`birthday`,`country`,`fax`,`cname`,`security`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`fdlpath`,`accounttype`,`mail_backup`,`mail_gsupdate`,`mail_securitybreach`,`mail_serverdown`,`mail_ticket`,`mail_vserver`) VALUES (NOW(),NOW(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                $query->execute(array($active,$salutation,$birthday,$country,$fax,$bogus,$security,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$accounttype,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver));
+                $query = $sql->prepare("INSERT INTO `userdata` (`creationTime`,`updateTime`,`active`,`salutation`,`birthday`,`country`,`fax`,`cname`,`security`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`fdlpath`,`accounttype`,`mail_backup`,`mail_gsupdate`,`mail_securitybreach`,`mail_serverdown`,`mail_ticket`,`mail_vserver`,`externalID`) VALUES (NOW(),NOW(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                $query->execute(array($active,$salutation,$birthday,$country,$fax,$bogus,$security,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$accounttype,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$externalID));
 
                 $id = $sql->lastInsertId();
                 $query = ($accounttype == 'r' and $reseller_id == 0) ? $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=0 LIMIT 1") : $sql->prepare("SELECT `id` FROM `usergroups` WHERE `id`=? AND `grouptype`=? AND `resellerid`=? LIMIT 1");
@@ -500,6 +503,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $mail_vserver = $row['mail_vserver'];
             $creationTime = $row['creationTime'];
             $updateTime = $row['updateTime'];
+            $externalID = $row['externalID'];
 
             if ($user_language == 'de') {
                 $creationTime = date('d-m-Y H:i:s', strtotime($row['creationTime']));
@@ -609,6 +613,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $birthday=date('Y-m-d',strtotime($ui->isDate('birthday', 'post')));
                 $country = $ui->st('country', 'post');
                 $fax = $ui->phone('fax',50, 'post');
+                $externalID = $ui->externalID('externalID', 'post');
                 $useractive = ($ui->active('useractive', 'post')) ? $ui->active('useractive', 'post') : 'N';
 
                 if ($ui->id('maxuser',10, 'post') and $accounttype == 'r') {
@@ -651,8 +656,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     updateJobs($id,$resellerLockupID);
                 }
 
-                $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`salutation`=?,`birthday`=?,`country`=?,`fax`=?,`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`fdlpath`=?,`mail_backup`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_vserver`=?$jobPending WHERE `id`=? and `resellerid`=? LIMIT 1");
-                $query->execute(array($salutation,$birthday,$country,$fax,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$id,$resellerlockupid));
+                $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`salutation`=?,`birthday`=?,`country`=?,`fax`=?,`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`fdlpath`=?,`mail_backup`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_vserver`=?,`externalID`=?" . $jobPending ." WHERE `id`=? and `resellerid`=? LIMIT 1");
+                $query->execute(array($salutation,$birthday,$country,$fax,$name,$vname,$mail,$phone,$handy,$city,$cityn,$street,$streetn,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$externalID,$id,$resellerlockupid));
+
                 customColumns('U', $id, 'save');
 
                 if ($id != $admin_id) {

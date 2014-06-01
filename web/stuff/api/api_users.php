@@ -76,19 +76,21 @@ if (array_value_exists('action', 'add', $data)) {
 
         $email = $data['email'];
         $identifyBy = $data['identify_by'];
-        $username = $data['username'];
+        $username = (isset($data['username'])) ? $data['username'] : '';
         $externalID = $data['external_id'];
         $active = active_check($data['active']);
         $password = $data['password'];
 
-        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount`,`mail`,`cname` FROM `userdata` WHERE `mail`=? OR `cname`=? LIMIT 1");
-        $query->execute(array($email,$username));
-        $amount = (int) $query->fetchColumn();
+        $query = $sql->prepare("SELECT `mail`,`cname` FROM `userdata` WHERE `mail`=? OR `cname`=? LIMIT 1");
+        $query->execute(array($email, $username));
+        $amount = $query->rowCount();
 
         if ($amount > 0) {
 
-            $username = $row['cname'];
-            $email = $row['mail'];
+            foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $username = $row['cname'];
+                $email = $row['mail'];
+            }
 
             $success['false'][] = 'user with this e-mail already exists: ' . $username;
         }
@@ -104,7 +106,7 @@ if (array_value_exists('action', 'add', $data)) {
             if ($amount2 > 0) {
                 $username = $row['cname'];
                 $email = $row['mail'];
-                $success['false'][] = 'user with external ID exists: '.$username;
+                $success['false'][] = 'user with external ID exists: ' . $username;
             }
         }
 
@@ -132,7 +134,11 @@ if (array_value_exists('action', 'add', $data)) {
                 $userGroupIDs[] = $row['id'];
             }
 
-        } else if (isset($data['groupID']) and (is_array($data['groupID'])) or is_object($data['groupID'])) {
+        } else if (isset($data['groupID'])) {
+
+            if (!is_array($data['groupID']) and !is_object($data['groupID'])) {
+                $data['groupID'] = array($data['groupID']);
+            }
 
             foreach ($data['groupID'] as $groupID) {
                 if (isid($groupID, 19)) {
@@ -223,7 +229,7 @@ if (array_value_exists('action', 'add', $data)) {
         if (!isset($success['false']) and count($userGroupIDs) > 0) {
 
             $query = $sql->prepare("INSERT INTO `userdata` (`creationTime`,`updateTime`,`accounttype`,`active`,`cname`,`vname`,`name`,`mail`,`salt`,`phone`,`handy`,`fax`,`city`,`cityn`,`street`,`streetn`,`salutation`,`birthday`,`country`,`fdlpath`,`mail_backup`,`mail_gsupdate`,`mail_securitybreach`,`mail_serverdown`,`mail_ticket`,`mail_vserver`,`externalID`,`sourceSystemID`,`resellerid`) VALUES (NOW(),NOW(),'u',?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            $query->execute(array($active,$tmpName,$vname,$name,$email,$salt,$phone,$handy,$fax,$city,$cityn,$street,$streetn,$salutation,$birthday,$country,$fdlpath,$mail_backup,$mail_gsupdate,$mail_securitybreach,$mail_serverdown,$mail_ticket,$mail_vserver,$externalID,json_encode(array('A' => $apiIP)),$resellerID));
+            $query->execute(array($active, $tmpName, $vname, $name, $email, $salt, $phone, $handy, $fax, $city, $cityn, $street, $streetn, $salutation, $birthday, $country, $fdlpath, $mail_backup, $mail_gsupdate, $mail_securitybreach, $mail_serverdown, $mail_ticket, $mail_vserver, $externalID,json_encode(array('A' => $apiIP)), $resellerID));
 
             $localID = $sql->lastInsertId();
 
@@ -275,10 +281,10 @@ if (array_value_exists('action', 'add', $data)) {
 
     $from = array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail');
     $identifyBy = $data['identify_by'];
-    $username = $data['username'];
-    $externalID = $data['external_id'];
-    $active = active_check($data['active']);
-    $localID = $data['localid'];
+    $username = (isset($data['username'])) ? $data['username'] : '';
+    $externalID = (isset($data['external_id'])) ? $data['external_id'] : '';
+    $active = (isset($data['active'])) ? active_check($data['active']) : 'Y';
+    $localID = (isset($data['localid'])) ? $data['localid'] : '';
 
     if (dataExist('identify_by', $data)) {
 
@@ -290,7 +296,7 @@ if (array_value_exists('action', 'add', $data)) {
             $oldactive = $row['active'];
         }
 
-        if (isset($localID)) {
+        if (isid($localID, 10)) {
 
             $what = array();
             $foundGroupIDs = array();
@@ -411,8 +417,12 @@ if (array_value_exists('action', 'add', $data)) {
                 $fdlpath = $what['fdlpath'];
             }
 
+            if (isset($data['external_id']) and isExternalID($data['external_id'])) {
+                $what['externalID'] = $data['external_id'];
+            }
+
             $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=? AND `resellerID`=?");
-            $query->execute(array($localID,$resellerID));
+            $query->execute(array($localID, $resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $foundGroupIDs[] = $row['groupID'];
             }
@@ -427,11 +437,15 @@ if (array_value_exists('action', 'add', $data)) {
                     $userGroupIDs[] = $row['id'];
                 }
 
-            } else if (isset($data['groupID']) and (is_array($data['groupID'])) or is_object($data['groupID'])) {
+            } else if (isset($data['groupID'])) {
+
+                if (!is_array($data['groupID']) and !is_object($data['groupID'])) {
+                    $data['groupID'] = array($data['groupID']);
+                }
 
                 foreach ($data['groupID'] as $groupID) {
                     if (isid($groupID, 19)) {
-                        $query->execute(array($groupID,$resellerID));
+                        $query->execute(array($groupID, $resellerID));
                         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                             $userGroupIDs[] = $row['id'];
                         }
@@ -479,17 +493,16 @@ if (array_value_exists('action', 'add', $data)) {
 
 } else if (array_value_exists('action', 'del', $data)) {
 
-    $from = array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail');
+    $from = array('localid' => 'id', 'username' => 'cname', 'external_id' => 'externalID', 'email' => 'mail');
 
     $email = $data['email'];
     $identifyBy = $data['identify_by'];
-    $username = $data['username'];
-    $password = $data['password'];
-    $externalID = $data['external_id'];
-    $active = active_check($data['active']);
-    $localID = $data['localid'];
+    $username = (isset($data['username'])) ? $data['username'] : '';
+    $externalID = (isset($data['external_id'])) ? $data['external_id'] : '';
+    $active = (isset($data['active'])) ? active_check($data['active']) : '';
+    $localID = (isset($data['localid'])) ? $data['localid'] : '';
 
-    if (dataExist('identify_by',$data)) {
+    if (dataExist('identify_by', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_by']], $resellerID));
@@ -514,23 +527,21 @@ if (array_value_exists('action', 'add', $data)) {
         $success['false'][] = 'No data for this method';
     }
 
-} else if (array_value_exists('action', 'ls', $data) and isset($data['identify_by']) and isset($data[$data['identify_by']]) and !in_array($data[$data['identify_by']],$bad)) {
+} else if (array_value_exists('action', 'ls', $data) and isset($data['identify_by']) and isset($data[$data['identify_by']]) and !in_array($data[$data['identify_by']], $bad)) {
 
     $userArray = array('userdetails' => array(),'gserver' => array(),'voice' => array());
     $from = array('localid' => 'id', 'username' => 'cname', 'external_id' => 'externalID', 'email' => 'mail', 'mysql' => array());
 
-    $email = $data['email'];
+    $email = (isset($data['email'])) ? $data['email'] : '';
     $identifyBy = $data['identify_by'];
-    $username = $data['username'];
-    $password = $data['password'];
-    $externalID = $data['external_id'];
-    $active = active_check($data['active']);
-    $localID = $data['localid'];
+    $username = (isset($data['username'])) ? $data['username'] : '';
+    $externalID = (isset($data['external_id'])) ? $data['external_id'] : '';
+    $localID = (isset($data['localid'])) ? $data['localid'] : '';
 
     if (dataExist('identify_by', $data)) {
 
-        $query = $sql->prepare("SELECT `id`,`active`,`cname`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`externalID`,`jobPending` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($data[$data['identify_by']],$resellerID));
+        $query = $sql->prepare("SELECT `id`,`active`,`cname`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`externalID`,`jobPending` FROM `userdata` WHERE `" . $from[$data['identify_by']] . "`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($data[$data['identify_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $userArray['userdetails'] = $row;
         }
@@ -542,12 +553,12 @@ if (array_value_exists('action', 'add', $data)) {
 
             $query = $sql->prepare("SELECT `id`,`active`,`queryUpdatetime`,`queryPassword`,`queryMap`,`queryMaxplayers`,`queryNumplayers`,`queryName`,`port5`,`serverid`,`pallowed`,`eacallowed`,`protected`,`brandname`,`tvenable`,`war`,`psince`,`serverip`,`port`,`port2`,`port3`,`port4`,`minram`,`maxram`,`slots`,`taskset`,`cores`,`lendserver`,`externalID`,`jobPending` FROM `gsswitch` WHERE `userid`=? AND `resellerid`=? ORDER BY `serverip`,`port`");
             $query2 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
-            $query->execute(array($userArray['userdetails']['id'],$resellerID));
+            $query->execute(array($userArray['userdetails']['id'], $resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
                 $shorten = array();
 
-                $query2->execute(array($row['id'],$resellerID));
+                $query2->execute(array($row['id'], $resellerID));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                     $shorten[] = $row2['shorten'];
                 }
@@ -560,7 +571,7 @@ if (array_value_exists('action', 'add', $data)) {
             $tempArray = array();
 
             $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `userid`=? AND `resellerid`=?");
-            $query->execute(array($userArray['userdetails']['id'],$resellerID));
+            $query->execute(array($userArray['userdetails']['id'], $resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $tempArray[] = $row;
             }
@@ -569,7 +580,7 @@ if (array_value_exists('action', 'add', $data)) {
             $tempArray = array();
 
             $query = $sql->prepare("SELECT `active`,`sid`,`gsid`,`dbname`,`ips`,`max_databases`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`jobPending` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=?");
-            $query->execute(array($userArray['userdetails']['id'],$resellerID));
+            $query->execute(array($userArray['userdetails']['id'], $resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $tempArray[] = $row;
             }

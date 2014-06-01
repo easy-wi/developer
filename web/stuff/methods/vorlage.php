@@ -137,3 +137,6 @@ function isDate ($value) {
 function gamestring($value){
     return (preg_match('/^[\w\.\-\_]+$/', $value)) ? $value : false;
 }
+function isExternalID($value) {
+    return (preg_match('/^[\w\:]{0,255}+$/', $value)) ? $value : false;
+}

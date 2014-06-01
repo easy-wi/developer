@@ -146,6 +146,10 @@ if (count($error)>0) {
 						);
 				}
 
+			} else if ($config['sourceType'] == 'whmcs') {
+
+
+
 			} else if ($config['sourceType'] == 'teklab') {
 
 				// Get amount of users that are new or received an update

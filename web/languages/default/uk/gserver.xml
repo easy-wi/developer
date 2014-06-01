@@ -146,6 +146,7 @@
     <tuesday>Tuesday</tuesday>
     <tv>TV allowed</tv>
     <tvport>SourceTV</tvport>
+    <tvuploadstart>SourceTV upload started</tvuploadstart>
     <type>Installation type</type>
     <updated>The config has been edited successfully.</updated>
     <updatetime>Status at</updatetime>

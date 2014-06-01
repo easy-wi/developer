@@ -13,6 +13,12 @@
         <input type="hidden" name="token" value="<?php echo token();?>">
         <input type="hidden" name="action" value="ad">
         <div class="control-group">
+            <label class="control-label" for="inputExternalID">externalID</label>
+            <div class="controls">
+                <input id="inputExternalID" type="text" name="externalID" value="">
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
             <div class="controls">
                 <select id="inputActive" name="active">
