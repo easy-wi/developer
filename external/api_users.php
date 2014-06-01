@@ -125,7 +125,7 @@ if (count($error)>0) {
 					}
 					// the keys needs to be adjusted to your table layout and query!
 					$json[]=array(
-						'externalID' => $row['userID'],
+						'externalID' => $config['sourceType'] . ':' . $row['userID'],
 						'salutation' => $salutation,
 						'email' => $row['email'],
 						'loginName' => $row['username'],
@@ -201,7 +201,7 @@ if (count($error)>0) {
 					}
 
 					$json[]=array(
-						'externalID' => $row['id'],
+						'externalID' => $config['sourceType'] . ':' . $row['id'],
 						'salutation' => $salutation,
 						'email' => $row['email'],
 						'loginName' => $row['member'],
