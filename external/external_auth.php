@@ -42,9 +42,11 @@ $dbPwd='pwd';
 $dbHost='localhost';
 $configUser='meinUsername';
 $configPass='meinPasswort';
+
 if (!isset($_POST['postXML'])) {
 	$bad='No XML has been send';
 }
+
 if (!isset($bad) and isset($_POST['authPWD']) and isset($_POST['userAuth']) and $_POST['authPWD']==$configPass and $_POST['userAuth']==$configUser) {
 	// postXML into object
 	$xml= @simplexml_load_string(base64_decode($_POST['postXML']));
@@ -53,7 +55,10 @@ if (!isset($bad) and isset($_POST['authPWD']) and isset($_POST['userAuth']) and 
 		$pwd=$xml->pwd;
 		$mail=$xml->mail;
 		$externalID=$xml->externalID;
+
+		// use whatever your system does to hash passwords. Only MD5 is common but bad practise
 		$hashedPWD=md5($pwd);
+
 		// DB Connection and search user
 		try {
 			$connection=new PDO("mysql:host=$dbHost;dbname=$dbName",$dbUser,$dbPwd);
@@ -65,6 +70,17 @@ if (!isset($bad) and isset($_POST['authPWD']) and isset($_POST['userAuth']) and 
 			foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 				$storedHash=$row['pwd'];
 			}
+
+			/* WHMCS is look like:
+				$query=$connection->prepare("SELECT `password` FROM `tblclients` WHERE `email`=? LIMIT 1");
+				$query->execute(array($mail));
+				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+					@list($storedHash, $salt) = explode(':', $row['password']);
+					if (isset($salt)) {
+						$hashedPWD = md5($pwd . $salt);
+					}
+				}
+			*/
 		}
 		catch(PDOException $error) {
 			$bad=$error->getMessage();
