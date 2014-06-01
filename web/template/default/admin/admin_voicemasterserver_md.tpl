@@ -21,6 +21,10 @@
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="md">
             <div class="control-group">
+                <label class="control-label" for="inputDescription"><?php echo $sprache->description;?></label>
+                <div class="controls"><input id="inputDescription" type="text" name="description" value="<?php echo $description;?>"></div>
+            </div>
+            <div class="control-group">
                 <label class="control-label<?php if(isset($errors['active'])) echo ' error';?>" for="inputActive"><?php echo $sprache->active;?></label>
                 <div class="controls">
                     <select id="inputActive" name="active">
