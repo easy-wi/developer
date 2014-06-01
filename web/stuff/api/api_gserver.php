@@ -638,7 +638,9 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
     $list = true;
 
-    $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(g.`id`) AS `freeserver`,COUNT(g.`id`) AS `installedserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxslots`-SUM(g.`slots`)) AS `leftslots`,SUM(g.`slots`) AS `installedslots` FROM `rserverdata` r LEFT JOIN `gsswitch` g ON g.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`leftslots`>0 OR `leftslots` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
+    $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`description`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(g.`id`) AS `freeserver`,COUNT(g.`id`) AS `installedserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxslots`-SUM(g.`slots`)) AS `leftslots`,SUM(g.`slots`) AS `installedslots` FROM `rserverdata` r LEFT JOIN `gsswitch` g ON g.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`leftslots`>0 OR `leftslots` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
+    $query2 = $sql->prepare("SELECT t.`shorten`,t.`description` FROM `rservermasterg` AS r INNER JOIN `servertypes` AS t ON r.`servertypeid` = t.`id` WHERE r.`serverid`=?");
+
     $query->execute(array($resellerID));
 
     if ($apiType == 'xml') {
@@ -656,6 +658,9 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $key->appendChild($listServerXML);
 
             $listServerXML = $responsexml->createElement('ip', $row['ip']);
+            $key->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('description', $row['description']);
             $key->appendChild($listServerXML);
 
             $listServerXML = $responsexml->createElement('altips', $row['altips']);
@@ -677,6 +682,16 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $key->appendChild($listServerXML);
 
             $listServerXML = $responsexml->createElement('installedslots', $row['installedslots']);
+            $key->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('gamesavailable');
+
+            $query2->execute(array($row['id']));
+            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                $listShortenXML = $responsexml->createElement($row2['shorten'], $row2['description']);
+                $listServerXML->appendChild($listShortenXML);
+            }
+
             $key->appendChild($listServerXML);
 
             $element->appendChild($key);

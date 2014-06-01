@@ -550,7 +550,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
     $list = true;
 
-    $query = $sql->prepare("SELECT m.`id`,m.`usedns`,m.`ssh2ip`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`maxserver`,m.`maxslots`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`active`='Y' AND m.`resellerid`=? GROUP BY m.`id`");
+    $query = $sql->prepare("SELECT m.`id`,m.`usedns`,m.`ssh2ip`,m.`description`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`maxserver`,m.`maxslots`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`active`='Y' AND m.`resellerid`=? GROUP BY m.`id`");
     $query->execute(array($resellerID));
 
     if ($apiType == 'xml') {
@@ -569,6 +569,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $key->appendChild($listServerXML);
 
             $listServerXML = $responsexml->createElement('ssh2ip', $row['ssh2ip']);
+            $key->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('description', $row['description']);
             $key->appendChild($listServerXML);
 
             $listServerXML = $responsexml->createElement('maxserver', $row['maxserver']);
