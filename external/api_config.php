@@ -49,5 +49,5 @@ $config['passwordToken']='myPasswordToken';
 $config['allowedIPs']=array('1.1.1.1','1.1.1.2');
 
 // Type of System allowed are:
-// webspell,teklab
+// webspell,teklab,whmcs
 $config['sourceType']='webspell';

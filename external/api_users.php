@@ -100,20 +100,22 @@ if (count($error)>0) {
 			// specify the needed columns to reduce database load.
 			// webspell
 			if ($config['sourceType'] == 'webspell') {
- 
+
+				$lastID = str_replace($config['sourceType'] . ':', '', $lastID);
+
 				// Get amount of users that are new or received an update
 				// The Query needs to be altered to your database. This is just an example!
 				$sql="SELECT COUNT(`userID`) AS `amount` FROM `{$config['tblPrefix']}_user`
 				WHERE (`userID`>? OR `updatetime`>?) AND `activated`=1 AND `banned` IS NULL";
 				$query=$pdo->prepare($sql);
-				$query->execute(array($lastID,$updateTime));			
+				$query->execute(array($lastID, $updateTime));			
 				$total=$query->fetchColumn();
 
 				$sql = "SELECT * FROM `{$config['tblPrefix']}_usertable`
 				WHERE (`userID`>? OR `updatetime`>?) AND `activated`=1 AND (`banned` IS NULL OR `banned`='')
 				LIMIT $start,$chunkSize";
 				$query=$pdo->prepare($sql);
-				$query->execute(array($lastID,$updateTime));
+				$query->execute(array($lastID, $updateTime));
 				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 					// Easy-Wi stores the salutation with numbers
 					if (isset($row['salutation']) and $row['salutation'] == 'mr') {
@@ -148,9 +150,57 @@ if (count($error)>0) {
 
 			} else if ($config['sourceType'] == 'whmcs') {
 
+				$sql = "SELECT COUNT(`id`) AS `amount` FROM `tblclients`
+				WHERE `status`='Active'";
 
+				$query = $pdo->prepare($sql);
+				$query->execute();			
+				$total = $query->fetchColumn();
+
+				$sql = "SELECT * FROM `tblclients`
+				WHERE `status`='Active'
+				LIMIT $start,$chunkSize";
+
+				$query = $pdo->prepare($sql);
+				$query->execute();
+				foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+					// WHMCS stores street + number so we need to split and rebuild strings
+					$exploded = preg_split('/\s/', $row["address1"], -1, PREG_SPLIT_NO_EMPTY);
+					$lastKey = count($exploded) - 1;
+
+					if ($lastKey > -1 and isset($exploded[$lastKey])) {
+						$streetn = $exploded[$lastKey]);
+						unset($exploded[$lastKey]);
+					} else {
+						$streetn = null;
+					}
+
+					// the keys needs to be adjusted to your table layout and query!
+					$json[]=array(
+						'externalID' => $config['sourceType'] . ':' . $row['id'],
+						'salutation' => null,
+						'email' => $row['email'],
+						'loginName' => $row['username'],
+						'firstName' => $row['firstname'],
+						'lastName' => $row['lastname'],
+						'birthday' => null,
+						'country' => strtolower($row['country']),
+						'phone' => $row['phonenumber'],
+						'fax' => null,
+						'handy' => null,
+						'city' => implode(" ", $exploded),
+						'cityn' => $streetn,
+						'street' => $row['street'],
+						'streetn' => $row['streetnr'],
+						'updatetime' => $row['updatetime'],
+						'usertype'=>'u',
+						);
+				}
 
 			} else if ($config['sourceType'] == 'teklab') {
+
+				$lastID = str_replace($config['sourceType'] . ':', '', $lastID);
 
 				// Get amount of users that are new or received an update
 				$sql="SELECT COUNT(`id`) AS `amount` FROM `{$config['tblPrefix']}_members`
