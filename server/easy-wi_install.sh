@@ -441,7 +441,8 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 				fi
 
 			elif [ "$WEBSERVER" == "Apache" ]; then
-				apt-get install apache2-mpm-itk
+				apt-get install apache2-mpm-itk libapache2-mod-php5 php5
+				a2enmod php5
 			fi
 		fi
 	fi
