@@ -474,6 +474,9 @@ if (array_value_exists('action', 'add', $data)) {
 
             if (!in_array($active, $bad) and $active != $oldactive) {
 
+                $query = $sql->prepare("UPDATE `userdata` SET `jobPending`='Y' WHERE `id`=? and `resellerid`=?");
+                $query->execute(array($localID, $resellerID));
+
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
 
@@ -512,6 +515,10 @@ if (array_value_exists('action', 'add', $data)) {
         }
 
         if (isset($localID) and isset($name)) {
+
+            $query = $sql->prepare("UPDATE `userdata` SET `jobPending`='Y' WHERE `id`=? and `resellerid`=?");
+            $query->execute(array($localID, $resellerID));
+
             $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
             $query->execute(array($localID, $resellerID));
 
