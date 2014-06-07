@@ -687,7 +687,6 @@ UPDATECMD="$UPDATECMD +quit >> $LOGDIR/steamCmd.log"
 if [ $A -gt 0 ]; then
 FOLDERS=''
 cat >> $TEMPFOLDER/updateSteamCmd.sh << EOF
-HOME="$MASTERSERVERDIR/steamCMD"
 cd $MASTERSERVERDIR/steamCMD
 $UPDATECMD
 EOF
