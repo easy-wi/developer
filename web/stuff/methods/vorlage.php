@@ -129,7 +129,7 @@ function phone($value) {
     return (preg_match('/^[0-9\+\(\)\/\-\s]+$/', $value)) ? $value : false;
 }
 function isid($value,$count){
-    return (strlen($value)<=$count and is_numeric($value)) ? $value : false;
+    return (!is_array($value) and strlen($value) <= $count and is_numeric($value)) ? $value : false;
 }
 function isDate ($value) {
     return (is_string($value) and @strtotime($value)) ? $value : false;
