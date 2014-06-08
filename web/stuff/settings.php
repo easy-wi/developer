@@ -276,7 +276,7 @@ if ($loguserip!='localhost') {
 
             $page_detect_language = $elements[0];
 
-            if (!preg_match('/^[a-z]{2}+$/', $elements[0]) and !$ui->w('site', 50, 'get')) {
+            if (!preg_match('/^[a-z]{2}+$/', $elements[0]) and !$ui->w('site', 50, 'get') and $elements[0] != 'index.php') {
                 $throw404 = true;
             }
         }
