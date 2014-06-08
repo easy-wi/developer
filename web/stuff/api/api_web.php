@@ -352,6 +352,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $success['false'][] = 'No data for this method';
     }
 
+} else if (!isset($success['false']) and array_value_exists('action', 'ls', $data)) {
+
 } else {
     $success['false'][] = 'Unknown method';
 }
@@ -373,6 +375,9 @@ if ($apiType == 'xml') {
 
     $server = $responsexml->createElement('action', $action);
     $element->appendChild($server);
+
+    $key = $responsexml->createElement('actionSend', (isset($data['action']) ? $data['action'] : ''));
+    $element->appendChild($key);
 
     $server = $responsexml->createElement('master_server_id', $webMasterID);
     $element->appendChild($server);

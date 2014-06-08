@@ -632,6 +632,9 @@ if ($apiType == 'xml' and !isset($list)) {
     $server = $responsexml->createElement('action', $action);
     $element->appendChild($server);
 
+    $key = $responsexml->createElement('actionSend', (isset($data['action']) ? $data['action'] : ''));
+    $element->appendChild($key);
+
     $server = $responsexml->createElement('username', $username);
     $element->appendChild($server);
 
