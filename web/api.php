@@ -73,8 +73,8 @@ if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post')) {
     die('403 Forbidden: No valid access data');
 }
 
-if (in_array($ui->smallletters('type', 10, 'post'), array('gserver', 'mysql', 'user', 'voice', 'web'))) {
-    $type = $ui->smallletters('type', 7, 'post');
+if (in_array($ui->smallletters('type', 10, 'post'), array('gserver', 'list', 'tsdns', 'mysql', 'user', 'voice', 'web'))) {
+    $type = $ui->smallletters('type', 10, 'post');
 }
 
 if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd', 255, 'post'), $salt) == $pwd and isset($type)) {
@@ -135,7 +135,11 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
     $voModule = (is_numeric($licenceDetails['mVo']) and $licenceDetails['mVo'] == 0) ? false : true;
     $dModule = (is_numeric($licenceDetails['mD']) and $licenceDetails['mD'] == 0) ? false : true;
 
-    if ($type == 'user') {
+    if ($type == 'list') {
+
+        include(EASYWIDIR . '/stuff/api/api_list.php');
+
+    } else if ($type == 'user') {
 
         include(EASYWIDIR . '/stuff/api/api_users.php');
 
@@ -148,6 +152,19 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
         if ($voModule == true) {
 
             include(EASYWIDIR . '/stuff/api/api_voice.php');
+
+        } else {
+
+            header('HTTP/1.1 403 Forbidden');
+            die('403 Forbidden: Voice module is inactive');
+
+        }
+
+    } else if ($type == 'tsdns') {
+
+        if ($voModule == true) {
+
+            include(EASYWIDIR . '/stuff/api/api_tsdns.php');
 
         } else {
 
@@ -174,6 +191,11 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
         }
 
     }
+
+} else if (isset($resellerIDs) and count($resellerIDs) == 1 and passwordhash($ui->password('pwd', 255, 'post'), $salt) == $pwd and $ui->smallletters('type', 10, 'post')) {
+
+    header('HTTP/1.1 403 Forbidden');
+    die('403 Forbidden: Type ' . $ui->smallletters('type', 10, 'post') . 'is not known');
 
 } else if (isset($resellerIDs) and count($resellerIDs) == 1 and passwordhash($ui->password('pwd', 255, 'post'), $salt) == $pwd and !isset($type)) {
 
