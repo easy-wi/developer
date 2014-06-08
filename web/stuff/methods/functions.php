@@ -1270,16 +1270,19 @@ if (!function_exists('passwordgenerate')) {
                     }
 
                 } else {
+
                     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
                         $var = '';
 
-                        if ($row['type'] == 'I') {
-                            $var = isid($api[$row['name']], $row['length']);
-                        } else if (names($api[$row['name']], $row['length'])) {
-                            $var = names($api[$row['name']], $row['length']);
+                        if (isset($api[$row['name']])) {
+                            if ($row['type'] == 'I') {
+                                $var = isid($api[$row['name']], $row['length']);
+                            } else if (names($api[$row['name']], $row['length'])) {
+                                $var = names($api[$row['name']], $row['length']);
+                            }
+                            $query2->execute(array($row['customID'], $id, $var));
                         }
-                        $query2->execute(array($row['customID'], $id, $var));
                     }
                 }
 
