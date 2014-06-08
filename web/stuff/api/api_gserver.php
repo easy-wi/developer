@@ -80,6 +80,7 @@ $minram = '';
 $maxram = '';
 $hostID = '';
 $cores = '';
+$coreCount = '';
 $customID = 0;
 $hostExternalID = '';
 $initialpassword = '';
@@ -178,75 +179,91 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                     $implodedQuery = '(m.`servertypeid`=' . implode(' OR m.`servertypeid`=', $typeIDList) . ')';
                 }
 
-                if (isset($data['master_server_id']) and isid($data['master_server_id'], 10)) {
-
-                    $query = $sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (r.`id`=? AND `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
-                    $query->execute(array($data['master_server_id'], $resellerID, $slots, $masterServerCount));
-
-                } else if (isset($data['master_server_external_id']) and wpreg_check($data['master_server_external_id'], 255)) {
-
-                    $query = $sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (r.`externalID`=? AND `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
-                    $query->execute(array($data['master_server_external_id'], $resellerID, $slots, $masterServerCount));
-
-                } else {
-
-                    $query = $sql->prepare("SELECT r.`id`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING (`hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
-                    $query->execute(array($resellerID, $slots, $masterServerCount));
-
+                if (isset($data['master_server_id'])) {
+                    $masterIDsArray = (isid($data['master_server_id'], 19)) ? array($data['master_server_id']) : (array) $data['master_server_id'];
                 }
+
+                if (isset($data['master_server_external_id'])) {
+                    $externalMasterIDsArray = (wpreg_check($data['master_server_external_id'], 255)) ? array($data['master_server_external_id']) : (array) $data['master_server_external_id'];
+                }
+
+                $inSQLArray = '';
+
+                if (isset($masterIDsArray) and count($masterIDsArray) > 0) {
+
+                    $inSQLArray = 'r.`id` IN (' . implode(',', $masterIDsArray) . ') AND';
+
+                } else if (isset($externalMasterIDsArray) and count($externalMasterIDsArray) > 0) {
+
+                    $inSQLArray = 'r.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
+                }
+
+                $query = $sql->prepare("SELECT r.`id`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
+                $query->execute(array($resellerID, $slots, $masterServerCount));
 
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                     $hostID = $row['id'];
                     $hostExternalID = $row['externalID'];
                     $ips[] = $row['ip'];
-                    
+
+                    if (isset($data['coreCount']) and $data['coreCount'] > 0) {
+
+                        $coreCount = ($row['hyperthreading'] == 'Y') ? 2 * $row['cores'] : $row['cores'];
+
+                        $c = 0;
+                        $cores = array();
+
+                        while ($c < $coreCount) {
+                            $cores[$c] = 0;
+                            $c++;
+                        }
+
+                        $query2 = $sql->prepare("SELECT `taskset`,`cores` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
+                        $query2->execute(array($hostID, $resellerID));
+                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
+                            $coreExploded = explode(',', $row2['cores']);
+                            $coreCounted = count($coreExploded);
+
+                            if ($row2['taskset'] == 'Y' and $coreCounted > 0) {
+                                foreach ($coreExploded as $usedCore) {
+                                    $cores[$usedCore] = $cores[$usedCore] + round(1 / $coreCounted, 2);
+                                }
+                            }
+                        }
+
+                        asort($cores);
+
+                        $i = 0;
+                        $calculatedCores = array();
+
+                        foreach ($cores as $core => $usage) {
+
+                            $calculatedCores[] = $core;
+
+                            $i++;
+
+                            if ($i == $coreCount or $i == $data['coreCount']) {
+                                break;
+                            }
+                        }
+
+                        $calculatedCores = implode(',', $calculatedCores);
+                    }
+
                     foreach (preg_split('/\r\n/', -1, PREG_SPLIT_NO_EMPTY) as $ip) {
                         $ips[] = $ip;
                     }
-                }
-
-                if (isset($ips)) {
 
                     $used = usedPorts($ips);
                     $ip = $used['ip'];
                     $ports = $used['ports'];
-
-                } else if (isset($data['master_server_id']) and isid($data['master_server_id'], 10)) {
-
-                    $missing = array();
-
-                    $query = $sql->prepare("SELECT r.`id` FROM `rserverdata` r LEFT JOIN `rservermasterg` m ON m.`serverid`=r.`id` WHERE r.`id`=? AND r.`active`='Y' AND r.`resellerid`=? AND m.`servertypeid`=? LIMIT 1");
-                    foreach ($typeIDList as $ID) {
-                        $query->execute(array($data['master_server_id'], $resellerID, $ID));
-
-                        if ($query->rowCount() == 0) {
-                            $missing[] = $shortenToID[$ID];
-                        }
-                    }
-
-                } else if (isset($data['master_server_external_id']) and wpreg_check($data['master_server_external_id'], 255)) {
-
-                    $missing = array();
-
-                    $query = $sql->prepare("SELECT r.`id` FROM `rserverdata` r LEFT JOIN `rservermasterg` m ON m.`serverid`=r.`id` WHERE r.`externalID`=? AND r.`active`='Y' AND r.`resellerid`=? AND m.`servertypeid`=? LIMIT 1");
-                    foreach ($typeIDList as $ID) {
-                        $query->execute(array($data['master_server_external_id'], $resellerID, $ID));
-                        if ($query->rowCount() == 0) {
-                            $missing[] = $shortenToID[$ID];
-                        }
-                    }
-                } else {
-                    $missing = $shorten;
-                }
-
-                if (isset($missing) and count($missing)>0) {
-                    $success['false'][] = 'No free host with shorten(s): '.implode(', ', $missing);
                 }
             }
 
             if (!isset($success['false']) and isip($ip, 'ip4')) {
 
-                if ($portMax==1) {
+                if ($portMax == 1) {
 
                     if (isset($data['port']) and checkPorts(array($data['port']), $ports) === true) {
                         $port = $data['port'];
@@ -341,7 +358,12 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 $autoRestart = (isset($data['autoRestart']) and active_check($data['autoRestart'])) ? $data['autoRestart'] : 'Y';
                 $minram = (isset($data['minram']) and isid($data['minram'], 10)) ? $data['minram'] : '';
                 $maxram = (isset($data['maxram']) and isid($data['maxram'], 10)) ? $data['maxram'] : '';
-                $cores = (isset($data['cores']) and cores($data['cores'])) ? $data['cores'] : '';
+
+                if (isset($data['coreCount']) and $data['coreCount'] > 0 and isset($calculatedCores)) {
+                    $cores = $calculatedCores;
+                } else {
+                    $cores = (isset($data['cores']) and cores($data['cores'])) ? $data['cores'] : '';
+                }
 
                 if (isset($data['installGames']) and wpreg_check($data['installGames'], 1)) {
                     $installGames = $data['installGames'];
@@ -404,6 +426,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 } else {
                     $success['false'][] = 'Could not write game server to database';
                 }
+            } else {
+                $success['false'][] = 'Cannot find free root server with given shorten';
             }
         }
 
@@ -439,13 +463,59 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
     if (dataExist('identify_server_by', $data)) {
 
-        $query = $sql->prepare("SELECT r.`externalID`,g.* FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT r.`externalID`,r.`hyperthreading`,r.`cores` AS `coresAvailable`,g.* FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $localID = $row['id'];
             $userID = $row['userid'];
             $hostID = $row['rootID'];
+
+            if (isset($data['coreCount']) and $data['coreCount'] > 0 and $data['coreCount'] != count(preg_split('/,/', $row['cores'], -1, PREG_SPLIT_NO_EMPTY))) {
+
+                $coreCount = ($row['hyperthreading'] == 'Y') ? 2 * $row['coresAvailable'] : $row['coresAvailable'];
+
+                $c = 0;
+                $cores = array();
+
+                while ($c < $coreCount) {
+                    $cores[$c] = 0;
+                    $c++;
+                }
+
+                $query2 = $sql->prepare("SELECT `taskset`,`cores` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
+                $query2->execute(array($hostID, $resellerID));
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
+                    $coreExploded = explode(',', $row2['cores']);
+                    $coreCounted = count($coreExploded);
+
+                    if ($row2['taskset'] == 'Y' and $coreCounted > 0) {
+                        foreach ($coreExploded as $usedCore) {
+                            $cores[$usedCore] = $cores[$usedCore] + round(1 / $coreCounted, 2);
+                        }
+                    }
+                }
+
+                asort($cores);
+
+                $i = 0;
+                $calculatedCores = array();
+
+                foreach ($cores as $core => $usage) {
+
+                    $calculatedCores[] = $core;
+
+                    $i++;
+
+                    if ($i == $coreCount or $i == $data['coreCount']) {
+                        break;
+                    }
+                }
+
+                $calculatedCores = implode(',', $calculatedCores);
+            }
+
             $hostExternalID = $row['externalID'];
             $oldSlots = $row['slots'];
             $name = $row['serverip'] . ':' . $row['port'];
@@ -524,10 +594,10 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 $maxram = $data['maxram'];
             }
 
-            if (isset($data['cores']) and cores($data['cores']) and $data['cores'] != $row['cores']) {
-                $updateArray[] = $data['cores'];
+            if (isset($calculatedCores) or (isset($data['cores']) and cores($data['cores']) and $data['cores'] != $row['cores'])) {
+                $updateArray[] = (isset($calculatedCores)) ? $calculatedCores : $data['cores'];
                 $eventualUpdate .= ',`cores`=?';
-                $cores = $data['cores'];
+                $cores = (isset($calculatedCores)) ? $calculatedCores : $data['cores'];
             }
 
             if (isset($data['active']) and active_check($data['active']) and $data['active'] != $row['active']) {
@@ -779,6 +849,9 @@ if ($apiType == 'xml' and !isset($list)) {
     $element = $responsexml->createElement('gserver');
 
     $key = $responsexml->createElement('action', $action);
+    $element->appendChild($key);
+
+    $key = $responsexml->createElement('actionSend', (isset($data['action']) ? $data['action'] : ''));
     $element->appendChild($key);
 
     $key = $responsexml->createElement('private', $private);
