@@ -110,7 +110,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $success['false'][] = 'user does not exist';
         }
 
-        if (!isset($success['false']) and !in_array($externalServerID,$bad)) {
+        if (!isset($success['false']) and !in_array($externalServerID, $bad)) {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `externalID`=? LIMIT 1");
             $query->execute(array($externalServerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -122,23 +122,27 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
         if (!isset($success['false'])) {
 
-            if (isset($data['master_server_id']) and isid($data['master_server_id'], 19)) {
-
-                $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`resellerid`=? LIMIT 1");
-                $query->execute(array($data['master_server_id'],$resellerID));
-
-            } else if (isset($data['master_server_external_id']) and wpreg_check($data['master_server_external_id'], 255)) {
-
-                $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`externalID`=? AND m.`resellerid`=? LIMIT 1");
-                $query->execute(array($data['master_server_external_id'],$resellerID));
-                $masterServerExternalID = $data['master_server_external_id'];
-
-            } else {
-
-                $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING `active`='Y' AND (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND ((`maxslots`-`installedslots`)>? OR `installedslots` IS NULL) AND `active`='Y' AND `resellerid`=?) ORDER BY `slotpercent`,`serverpercent` ASC LIMIT 1");
-                $query->execute(array($slots,$resellerID));
-
+            if (isset($data['master_server_id'])) {
+                $masterIDsArray = (isid($data['master_server_id'], 19)) ? array($data['master_server_id']) : (array) $data['master_server_id'];
             }
+
+            if (isset($data['master_server_external_id'])) {
+                $externalMasterIDsArray = (wpreg_check($data['master_server_external_id'], 255)) ? array($data['master_server_external_id']) : (array) $data['master_server_external_id'];
+            }
+
+            $inSQLArray = '';
+
+            if (isset($masterIDsArray) and count($masterIDsArray) > 0) {
+
+                $inSQLArray = 'm.`id` IN (' . implode(',', $masterIDsArray) . ') AND';
+
+            } else if (isset($externalMasterIDsArray) and count($externalMasterIDsArray) > 0) {
+
+                $inSQLArray = 'm.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
+            }
+
+            $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING `active`='Y' AND $inSQLArray (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND ((`maxslots`-`installedslots`)>? OR `installedslots` IS NULL) AND `active`='Y' AND `resellerid`=?) ORDER BY `slotpercent`,`serverpercent` ASC LIMIT 1");
+            $query->execute(array($slots, $resellerID));
 
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -653,6 +657,9 @@ if ($apiType == 'xml' and !isset($list)) {
 
     $server = $responsexml->createElement('action', $action);
     $element->appendChild($server);
+
+    $key = $responsexml->createElement('actionSend', (isset($data['action']) ? $data['action'] : ''));
+    $element->appendChild($key);
 
     $server = $responsexml->createElement('private', $private);
     $element->appendChild($server);
