@@ -86,6 +86,7 @@ $hostExternalID = '';
 $initialpassword = '';
 $installGames = 'A';
 $autoRestart = '';
+$ftpUser = '';
 
 if (!isset($success['false']) and array_value_exists('action', 'add', $data) and 1 > $licenceDetails['lG']) {
 
@@ -126,9 +127,12 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($data[$data['identify_user_by']], $resellerID));
-            $localUserLookupID = $query->fetchColumn();
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $localUserLookupID = $row['id'];
+                $ftpUser = $row['cname'] . '-' . $row['id'];
+            }
 
-            if (!isid($localUserLookupID, 11)) {
+            if (!isset($localUserLookupID) or !isid($localUserLookupID, 11)) {
                 $success['false'][] = 'user does not exist';
             }
 
@@ -220,7 +224,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
                         $query2 = $sql->prepare("SELECT `taskset`,`cores` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
                         $query2->execute(array($hostID, $resellerID));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
                             $coreExploded = explode(',', $row2['cores']);
                             $coreCounted = count($coreExploded);
@@ -349,7 +353,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
                 }
 
-                $initialpassword = passwordgenerate(10);
+                $initialpassword = (isset($data['initialpassword']) and wpreg_check($data['initialpassword'], 50) and strlen($data['initialpassword']) > 1) ? $data['initialpassword'] : passwordgenerate(10);
                 $taskset = (isset($data['taskset']) and active_check($data['taskset'])) ? $data['taskset'] : 'N';
                 $eacallowed = (isset($data['eacallowed']) and active_check($data['eacallowed'])) ? $data['eacallowed'] : 'N';
                 $brandname = (isset($data['brandname']) and active_check($data['brandname'])) ? $data['brandname'] : 'N';
@@ -459,16 +463,17 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
     $externalServerID = $data['server_external_id'];
     $shorten = $data['shorten'];
     $from = array('server_local_id' => 'id', 'server_external_id' => 'externalID');
-    $initialpassword = '';
+    $initialpassword = (isset($data['initialpassword']) and wpreg_check($data['initialpassword'], 50)) ? $data['initialpassword'] : '';
 
     if (dataExist('identify_server_by', $data)) {
 
-        $query = $sql->prepare("SELECT r.`externalID`,r.`hyperthreading`,r.`cores` AS `coresAvailable`,g.* FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT r.`externalID`,r.`hyperthreading`,r.`cores` AS `coresAvailable`,g.*,u.`cname` FROM `gsswitch` g INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `userdata` u ON u.`id`=g.`userid` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $localID = $row['id'];
             $userID = $row['userid'];
+            $ftpUser = $row['cname'] . '-' . $row['userid'];
             $hostID = $row['rootID'];
 
             if (isset($data['coreCount']) and $data['coreCount'] > 0 and $data['coreCount'] != count(preg_split('/,/', $row['cores'], -1, PREG_SPLIT_NO_EMPTY))) {
@@ -642,6 +647,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             $query = $sql->prepare("UPDATE `gsswitch` SET $eventualUpdate`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute($updateArray);
+
+            if (strlen($initialpassword) > 1) {
+                $query = $sql->prepare("UPDATE `gsswitch` SET `ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($initialpassword, $aeskey, $localID, $resellerID));
+            }
 
             customColumns('G', $localID,'save', $data);
 
@@ -936,6 +946,9 @@ if ($apiType == 'xml' and !isset($list)) {
     $element->appendChild($key);
 
     $key = $responsexml->createElement('autoRestart', $autoRestart);
+    $element->appendChild($key);
+
+    $key = $responsexml->createElement('ftpUser', $ftpUser);
     $element->appendChild($key);
 
     $key = $responsexml->createElement('errors', $errors);
