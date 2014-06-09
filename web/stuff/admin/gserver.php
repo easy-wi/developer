@@ -376,6 +376,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $minram = $ui->id('minram',10, 'post');
             $maxram = $ui->id('maxram',10, 'post');
             $ftppass = $ui->password('password',50, 'post');
+            $externalID = $ui->externalID('externalID', 'post');
             $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=? AND `serverip`=? AND `port`=? AND `userid`!=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($serverid,$serverip,$port,$customer,$reseller_id));
             if ($query->rowCount() == 0) {
@@ -402,8 +403,8 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                 $query->execute(array($serverid,$serverip,$port,$customer,$reseller_id));
                 $switchID = $query->fetchColumn();
                 if (!isid($switchID,19)) {
-                    $query = $sql->prepare("INSERT INTO `gsswitch` (`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`serverid`,`stopped`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,1,'Y')");
-                    $query->execute(array($taskset,$usedcores,$customer,$pallowed,$eacallowed,$lendserver,$serverip,$serverid,$tvenable,$port,$port2,$port3,$port4,$port5,$minram,$maxram,$slots,$war,$brandname,$autoRestart,$ftppass,$aeskey,$reseller_id));
+                    $query = $sql->prepare("INSERT INTO `gsswitch` (`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,1,'Y',?)");
+                    $query->execute(array($taskset,$usedcores,$customer,$pallowed,$eacallowed,$lendserver,$serverip,$serverid,$tvenable,$port,$port2,$port3,$port4,$port5,$minram,$maxram,$slots,$war,$brandname,$autoRestart,$ftppass,$aeskey,$reseller_id, $externalID));
                     $switchID = $sql->lastInsertId();
                     customColumns('G',$switchID,'save');
                 }
@@ -707,6 +708,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $brandname = $row['brandname'];
             $taskset = $row['taskset'];
             $autoRestart = $row['autoRestart'];
+            $externalID = $row['externalID'];
             $usedcores = array();
             foreach (preg_split('/\,/', $row['cores'],-1,PREG_SPLIT_NO_EMPTY) as $uc) {
                 $usedcores[] = $uc;
@@ -848,6 +850,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
             $pallowed = ($ui->active('pallowed', 'post')) ? $ui->active('pallowed', 'post') : 'N';
             $ftppass = $ui->password('password',50, 'post');
             $pallowed = $ui->active('pallowed', 'post');
+            $externalID = $ui->externalID('externalID', 'post');
 
             $query = $sql->prepare("SELECT `newlayout`,`userid`,AES_DECRYPT(`ftppassword`,?) AS `ftp`,AES_DECRYPT(`ppassword`,?) AS `ppass`,`active`,`rootID`,`serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`userid`,`slots` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey,$aeskey,$server_id,$reseller_id));
@@ -962,8 +965,8 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lG']) and $licen
                     if (is_array($tmp)) foreach($tmp as $t) $cmds[] = $t;
                     $alreadystopped = true;
                 }
-                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`brandname`=?,`lendserver`=?,`serverip`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active,$taskset,$usedcores,$pallowed,$eacallowed,$brandname,$lendserver,$serverip_new,$tvenable,$port_new,$port2,$port3,$port4,$port5,$minram,$maxram,$slots,$war,$autoRestart,$ftppassword_new,$aeskey,$server_id,$reseller_id));
+                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`brandname`=?,`lendserver`=?,`serverip`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($active,$taskset,$usedcores,$pallowed,$eacallowed,$brandname,$lendserver,$serverip_new,$tvenable,$port_new,$port2,$port3,$port4,$port5,$minram,$maxram,$slots,$war,$autoRestart,$ftppassword_new,$aeskey,$externalID,$server_id,$reseller_id));
                 customColumns('G',$server_id,'save');
                 if ($ftppassword_new != $ftppass_old or ($active_old== 'Y' and $active == 'N')){
                     $cmds[] = './control.sh mod '.$server_customer . ' ' . $ftppass . ' ' . $protectedpw;
