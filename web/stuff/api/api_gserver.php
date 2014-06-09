@@ -128,8 +128,13 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($data[$data['identify_user_by']], $resellerID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
                 $localUserLookupID = $row['id'];
                 $ftpUser = $row['cname'];
+
+                if ($username != $row['cname']) {
+                    $username = $row['cname'];
+                }
             }
 
             if (!isset($localUserLookupID) or !isid($localUserLookupID, 11)) {
@@ -476,6 +481,10 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $userID = $row['userid'];
             $ftpUser = $row['cname'] . '-' . $row['id'];
             $hostID = $row['rootID'];
+
+            if ($username != $row['cname']) {
+                $username = $row['cname'];
+            }
 
             if (isset($data['coreCount']) and $data['coreCount'] > 0 and $data['coreCount'] != count(preg_split('/,/', $row['cores'], -1, PREG_SPLIT_NO_EMPTY))) {
 
