@@ -30,6 +30,10 @@
             <input type="hidden" name="gamestring" value="<?php echo $gamestring;?>">
             <input type="hidden" name="action" value="ad2">
             <div class="control-group">
+                <label class="control-label" for="inputExternalID">externalID</label>
+                <div class="controls"><input id="inputExternalID" type="text" name="externalID" value=""></div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputPrimary"><?php echo $sprache->primary;?>:</label>
                 <div class="controls">
                     <select id="inputPrimary" name="primary">

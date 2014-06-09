@@ -24,6 +24,10 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputExternalID">externalID</label>
+                <div class="controls"><input id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID;?>"></div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputAutorestart">Auto Restart</label>
                 <div class="controls">
                     <select id="inputAutorestart" name="autoRestart">
