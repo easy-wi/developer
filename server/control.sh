@@ -39,7 +39,7 @@ if [ "$1" == "install" ]; then
 		if command -v $TOOL >/dev/null 2>&1; then echo "required tool found: $TOOL"; else echo "required tool not found or no access to it: $TOOL"; fi
 	done
 fi
-CVERSION="4.8"
+CVERSION="4.9"
 IONICE=''
 HOMEFOLDER=$PWD
 LOGDIR=$HOMEFOLDER/logs
@@ -479,7 +479,7 @@ wget -q --timeout=10 http://media.steampowered.com/client/steamcmd_linux.tar.gz
 if [ -f steamcmd_linux.tar.gz ]; then
 	tar xfvz steamcmd_linux.tar.gz
 	rm steamcmd_linux.tar.gz
-	chown -R $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER/masterserver/steamCMD
+	chown -R $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER/
 	su -c "./steamcmd.sh +login anonymous +quit" $INSTALLMASTER
 fi
 sleep 1
