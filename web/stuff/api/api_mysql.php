@@ -86,7 +86,26 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         if (!isset($success['false'])) {
 
-            $query = $sql->prepare("SELECT s.`id`,s.`ip`,s.`max_databases`, COUNT(d.`id`) AS `installed`,COUNT(d.`id`)/(s.`max_databases`/100) AS `usedpercent`,s.`max_queries_per_hour`,s.`max_updates_per_hour`,s.`max_connections_per_hour`,s.`max_userconnections_per_hour` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip` HAVING `usedpercent`<100 ORDER BY `usedpercent` ASC LIMIT 1");
+            if (isset($data['master_server_id'])) {
+                $masterIDsArray = (isid($data['master_server_id'], 19)) ? array($data['master_server_id']) : (array) $data['master_server_id'];
+            }
+
+            if (isset($data['master_server_external_id'])) {
+                $externalMasterIDsArray = (isExternalID($data['master_server_external_id'])) ? array($data['master_server_external_id']) : (array) $data['master_server_external_id'];
+            }
+
+            $inSQLArray = '';
+
+            if (isset($masterIDsArray) and count($masterIDsArray) > 0) {
+
+                $inSQLArray = 's.`id` IN (' . implode(',', $masterIDsArray) . ') AND';
+
+            } else if (isset($externalMasterIDsArray) and count($externalMasterIDsArray) > 0) {
+
+                $inSQLArray = 's.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
+            }
+
+            $query = $sql->prepare("SELECT s.`id`,s.`ip`,s.`max_databases`, COUNT(d.`id`) AS `installed`,COUNT(d.`id`)/(s.`max_databases`/100) AS `usedpercent`,s.`max_queries_per_hour`,s.`max_updates_per_hour`,s.`max_connections_per_hour`,s.`max_userconnections_per_hour` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip` HAVING $inSQLArray `usedpercent`<100 ORDER BY `usedpercent` ASC LIMIT 1");
             $query->execute(array($resellerID));
             foreach ($query->fetchall() as $row) {
                 $max_databases = $row['max_databases'];

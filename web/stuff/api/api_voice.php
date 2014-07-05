@@ -131,7 +131,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             }
 
             if (isset($data['master_server_external_id'])) {
-                $externalMasterIDsArray = (wpreg_check($data['master_server_external_id'], 255)) ? array($data['master_server_external_id']) : (array) $data['master_server_external_id'];
+                $externalMasterIDsArray = (isExternalID($data['master_server_external_id'])) ? array($data['master_server_external_id']) : (array) $data['master_server_external_id'];
             }
 
             $inSQLArray = '';
