@@ -248,6 +248,66 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
 } else if (!isset($success['false']) and array_value_exists('action', 'read', $data)) {
 
+} else if (array_value_exists('action', 'ls', $data)) {
+
+    unset($success['false']);
+
+    $query = $sql->prepare("SELECT s.`id`,s.`externalID`,s.`ip`,s.`interface` AS `description`,s.`max_databases`, COUNT(d.`id`) AS `installed` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip`");
+    $query->execute(array($resellerID));
+
+    if ($apiType == 'xml') {
+
+        $responsexml = new DOMDocument('1.0','utf-8');
+        $element = $responsexml->createElement('webspace');
+
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+            $listRootServerXML = $responsexml->createElement('mysqlServer');
+
+            $listServerXML = $responsexml->createElement('id', $row['id']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('externalID', $row['externalID']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('ssh2ip', $row['ip']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('description', $row['description']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('maxDBs', $row['max_databases']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('dbsInstalled', $row['installed']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $element->appendChild($listRootServerXML);
+        }
+
+        $responsexml->appendChild($element);
+
+        $responsexml->formatOutput = true;
+
+        die($responsexml->saveXML());
+
+    } else if ($apiType == 'json') {
+
+        header("Content-type: application/json; charset=UTF-8");
+
+        echo json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+
+        die;
+
+    } else {
+
+        header('HTTP/1.1 403 Forbidden');
+
+        die('403 Forbidden');
+
+    }
+
+
 } else {
 
     $active = '';
