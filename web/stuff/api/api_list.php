@@ -115,6 +115,46 @@ if (array_value_exists('action', 'ls', $data)) {
 
         }
 
+        // MySQL
+
+
+
+        $query = $sql->prepare("SELECT s.`id`,s.`externalID`,s.`ip`,s.`interface` AS `description`,s.`max_databases`, COUNT(d.`id`) AS `installed` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip`");
+        $query->execute(array($resellerID));
+
+        if ($apiType == 'xml' and isset($key) and isset($element)) {
+
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                $listRootServerXML = $responsexml->createElement('mysqlServer');
+
+                $listServerXML = $responsexml->createElement('id', $row['id']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('externalID', $row['externalID']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('ssh2ip', $row['ip']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('description', $row['description']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('maxDBs', $row['max_databases']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('dbsInstalled', $row['installed']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $key->appendChild($listRootServerXML);
+            }
+
+            $element->appendChild($key);
+
+            $responsexml->appendChild($element);
+        }
+
+
         // Voice server
 
         $query = $sql->prepare("SELECT m.`id`,m.`usedns`,m.`ssh2ip`,m.`description`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`maxserver`,m.`maxslots`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`active`='Y' AND m.`resellerid`=? GROUP BY m.`id`");
