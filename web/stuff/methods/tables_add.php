@@ -1748,6 +1748,7 @@ $add->execute();
 $query = "CREATE TABLE IF NOT EXISTS `voice_tsdns` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
+  `max_dns` int(10) unsigned,
   `defaultdns` varchar(255) DEFAULT NULL,
   `rootid` int(10) unsigned DEFAULT NULL,
   `publickey` enum('B','Y','N') DEFAULT 'Y',
