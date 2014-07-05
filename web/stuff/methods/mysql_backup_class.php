@@ -38,6 +38,7 @@
  */
 
 if (isset($createBackup) and $createBackup == true) {
+
     class createDBDump {
         private $connection;
         private $tableList = array();
