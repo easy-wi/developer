@@ -45,8 +45,8 @@ if (!isset($admin_id) or $main != 1 or !isset($reseller_id) or !$pa['root']) {
 
 if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $reseller_id == 0) {
 
-    include(EASYWIDIR . '/stuff/methods/mysql_backup_class.php');
     $createBackup = true;
+    include(EASYWIDIR . '/stuff/methods/mysql_backup_class.php');
 
     header('Content-type: application/sql; charset=utf-8');
     header('Content-Description: Downloaded File');
