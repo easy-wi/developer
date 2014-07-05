@@ -1589,7 +1589,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_dns` (
   `externalID` varchar(255) DEFAULT NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerID` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`dnsID`),KEY(`tsdnsID`),KEY(`userID`),KEY(`resellerID`)
+  PRIMARY KEY (`dnsID`),KEY(`tsdnsID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
@@ -1682,7 +1682,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_server` (
   `sourceSystemID` varchar(255) NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`id`),KEY(`userid`),KEY(`masterserver`),KEY(`localserverid`),KEY(`resellerid`)
+  PRIMARY KEY (`id`),KEY(`userid`),KEY(`masterserver`),KEY(`localserverid`),KEY(`externalID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
@@ -1762,8 +1762,9 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_tsdns` (
   `notified` int(11) unsigned DEFAULT 0,
   `autorestart` enum('Y','N') DEFAULT 'Y',
   `description` TEXT,
+  `externalID` varchar(255) DEFAULT NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`id`),KEY(`rootid`),KEY(`resellerid`)
+  PRIMARY KEY (`id`),KEY(`rootid`),KEY(`externalID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
