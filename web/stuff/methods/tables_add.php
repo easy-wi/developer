@@ -651,7 +651,6 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `active` enum('Y','N') DEFAULT 'Y',
   `sid` int(10) unsigned NOT NULL,
   `uid` int(10) unsigned NOT NULL,
-  `gsid` int(10) unsigned DEFAULT 0,
   `dbname` varchar(255) NOT NULL,
   `column` varchar(255) DEFAULT '',
   `password` blob,
@@ -666,13 +665,14 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `externalID` varchar(255) DEFAULT NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`id`),KEY(`sid`),KEY(`uid`),KEY(`gsid`),KEY(`resellerid`)
+  PRIMARY KEY (`id`),KEY(`sid`),KEY(`uid`),KEY(`externalID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `externalID` varchar(255) DEFAULT NULL,
   `active` enum('Y','N') DEFAULT 'Y',
   `ip` varchar(15) NOT NULL,
   `port` smallint(5) unsigned DEFAULT '3306',
@@ -685,7 +685,7 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
   `max_connections_per_hour` bigint(19) unsigned DEFAULT 0,
   `max_userconnections_per_hour` bigint(19) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,
-  PRIMARY KEY (`id`),KEY(`resellerid`)
+  PRIMARY KEY (`id`),KEY(`externalID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();
