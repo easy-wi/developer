@@ -120,11 +120,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $slots = isid($data['slots'], 11);
             $identifyUserBy = $data['identify_user_by'];
             $localUserID = isid($data['user_localid'], 21);
-            $externalUserID = $data['user_externalid'];
+            $externalUserID = isExternalID($data['user_externalid']);
             $username = $data['username'];
             $identifyServerBy = $data['identify_server_by'];
             $localServerID = isid($data['server_local_id'], 19);
-            $externalServerID = $data['server_external_id'];
+            $externalServerID = isExternalID($data['server_external_id']);
 
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($data[$data['identify_user_by']], $resellerID));
@@ -450,11 +450,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
         $slots = isid($data['slots'], 11);
         $identifyUserBy = $data['identify_user_by'];
         $localUserID = isid($data['user_localid'], 21);
-        $externalUserID = $data['user_externalid'];
+        $externalUserID = isExternalID($data['user_externalid']);
         $username = $data['username'];
         $identifyServerBy = $data['identify_server_by'];
         $localServerID = isid($data['server_local_id'], 21);
-        $externalServerID = $data['server_external_id'];
+        $externalServerID = isExternalID($data['server_external_id']);
 
         $success['false'][] = (!dataExist('identify_user_by', $data)) ? 'Can not identify user or bad email' : 'Slot amount needs to be specified';
     }
@@ -463,11 +463,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
     $identifyUserBy = $data['identify_user_by'];
     $localUserID = isid($data['user_localid'], 21);
-    $externalUserID = $data['user_externalid'];
+    $externalUserID = isExternalID($data['user_externalid']);
     $username = $data['username'];
     $identifyServerBy = $data['identify_server_by'];
     $localServerID = isid($data['server_local_id'], 21);
-    $externalServerID = $data['server_external_id'];
+    $externalServerID = isExternalID($data['server_external_id']);
     $shorten = $data['shorten'];
     $from = array('server_local_id' => 'id', 'server_external_id' => 'externalID');
     $initialpassword = (isset($data['initialpassword']) and wpreg_check($data['initialpassword'], 50)) ? $data['initialpassword'] : '';
@@ -690,7 +690,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
     $identifyServerBy = $data['identify_server_by'];
     $localServerID = isid($data['server_local_id'], 21);
-    $externalServerID = $data['server_external_id'];
+    $externalServerID = isExternalID($data['server_external_id']);
 
     $from = array('server_local_id' => 'id', 'server_external_id' => 'externalID');
 
@@ -808,8 +808,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 } else if (!isset($success['false']) and array_value_exists('action', 'gs', $data)) {
 
     $identifyServerBy = $data['identify_server_by'];
-    $localServerID = isid($data['server_local_id'], 21);
-    $externalServerID = $data['server_external_id'];
+    $localServerID = isid($data['server_local_id'], 10);
+    $externalServerID = isExternalID($data['server_external_id']);
 
     if (isset($data['restart']) and ($data['restart'] == 're' or $data['restart'] == 'st')) {
 

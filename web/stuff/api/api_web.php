@@ -79,12 +79,12 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $active = active_check($data['active']);
         $identifyUserBy = $data['identify_user_by'];
         $localUserID = isid($data['user_localid'], 10);
-        $externalUserID = $data['user_externalid'];
-        $username = wpreg_check($data['username'], 255);
+        $externalUserID = isExternalID($data['user_externalid']);
+        $username = $data['username'];
         $identifyServerBy = $data['identify_server_by'];
         $localServerID = isid($data['server_local_id'], 10);
         $hdd = isid($data['hdd'], 10);
-        $externalServerID = wpreg_check($data['server_external_id'], 255);
+        $externalServerID = isExternalID($data['server_external_id']);
         $ownVhost = (isset($data['ownVhost']) and active_check($data['ownVhost'])) ? $data['ownVhost'] : 'N';
         $dns = (isset($data['dns']) and isdomain($data['dns'])) ? $data['dns'] : '';
 
@@ -180,7 +180,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
     $identifyServerBy = $data['identify_server_by'];
     $localServerID = isid($data['server_local_id'], 10);
-    $externalServerID = $data['server_external_id'];
+    $externalServerID = isExternalID($data['server_external_id']);
 
     $from = array('server_local_id' => 'webVhostID', 'server_external_id' => 'externalID');
 
@@ -288,7 +288,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
     $identifyServerBy = $data['identify_server_by'];
     $localServerID = isid($data['server_local_id'], 10);
-    $externalServerID = $data['server_external_id'];
+    $externalServerID = isExternalID($data['server_external_id']);
 
     $from = array('server_local_id' => 'webVhostID', 'server_external_id' => 'externalID');
 
@@ -330,7 +330,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
     $identifyServerBy = $data['identify_server_by'];
     $localServerID = isid($data['server_local_id'], 10);
-    $externalServerID = $data['server_external_id'];
+    $externalServerID = isExternalID($data['server_external_id']);
 
     $from = array('server_local_id' => 'webVhostID', 'server_external_id' => 'externalID');
 

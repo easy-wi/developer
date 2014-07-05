@@ -53,11 +53,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $active = active_check($data['active']);
         $identifyUserBy = $data['identify_user_by'];
         $localUserID = isid($data['user_localid'], 10);
-        $externalUserID = $data['user_externalid'];
+        $externalUserID = isExternalID($data['user_externalid']);
         $username = $data['username'];
         $identifyServerBy = $data['identify_server_by'];
         $localServerID = isid($data['server_local_id'], 10);
-        $externalServerID = $data['server_external_id'];
+        $externalServerID = isExternalID($data['server_external_id']);
         $from = array('user_localid' => 'id', 'username' => 'cname', 'user_externalid' => 'externalID', 'email' => 'mail');
 
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=?");
@@ -157,11 +157,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $active = active_check($data['active']);
         $identifyUserBy = $data['identify_user_by'];
         $localUserID = isid($data['user_localid'], 10);
-        $externalUserID = $data['user_externalid'];
+        $externalUserID = isExternalID($data['user_externalid']);
         $username = $data['username'];
         $identifyServerBy = $data['identify_server_by'];
         $localServerID = isid($data['server_local_id'], 10);
-        $externalServerID = $data['server_external_id'];
+        $externalServerID = isExternalID($data['server_external_id']);
         $success['false'][] = 'Can not identify user or bad email';
     }
 } else if (!isset($success['false']) and array_value_exists('action', 'mod', $data)) {
@@ -169,11 +169,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
     $active = active_check($data['active']);
     $identifyUserBy = $data['identify_user_by'];
     $localUserID = isid($data['user_localid'], 10);
-    $externalUserID = $data['user_externalid'];
+    $externalUserID = isExternalID($data['user_externalid']);
     $username = $data['username'];
     $identifyServerBy = $data['identify_server_by'];
     $localServerID = isid($data['server_local_id'], 10);
-    $externalServerID = $data['server_external_id'];
+    $externalServerID = isExternalID($data['server_external_id']);
     $from = array('server_local_id' => 'id', 'server_external_id' => 'externalID');
 
     if (dataExist('identify_server_by', $data)) {
@@ -232,7 +232,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
     $username = '';
     $identifyServerBy = $data['identify_server_by'];
     $localServerID=isid($data['server_local_id'], 10);
-    $externalServerID = $data['server_external_id'];
+    $externalServerID = isExternalID($data['server_external_id']);
     $from = array('server_local_id' => 'id', 'server_external_id' => 'externalID');
 
     if (dataExist('identify_server_by', $data)) {
