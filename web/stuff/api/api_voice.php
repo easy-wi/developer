@@ -102,8 +102,12 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $localUserLookupID = $row['id'];
-            $username = $row['cname'];
+
+            if ($username != $row['cname']) {
+                $username = $row['cname'];
+            }
         }
 
         if (!isset($localUserLookupID)) {
@@ -297,7 +301,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
     if (dataExist('identify_server_by', $data)) {
 
-        $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT v.*,u.`cname` FROM `voice_server` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userid` WHERE v.`" . $from[$data['identify_server_by']] . "`=? AND v.`resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -309,6 +313,10 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $name = $row['ip'] . ':' . $row['port'];
             $usedPorts = usedPorts(array($row['ip']));
             $oldActive = $row['active'];
+
+            if ($username != $row['cname']) {
+                $username = $row['cname'];
+            }
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID,$resellerID));
@@ -621,7 +629,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
         $responsexml->formatOutput = true;
 
-        echo $responsexml->saveXML();
+        die($responsexml->saveXML());
 
     } else if ($apiType == 'json') {
 

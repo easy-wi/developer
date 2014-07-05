@@ -71,6 +71,7 @@ $eacallowed = '';
 $brandname = '';
 $tvenable = '';
 $pallowed = '';
+$name = '';
 $port = '';
 $port2 = '';
 $port3 = '';
@@ -920,6 +921,9 @@ if ($apiType == 'xml' and !isset($list)) {
     $element->appendChild($key);
 
     $key = $responsexml->createElement('pallowed', $pallowed);
+    $element->appendChild($key);
+
+    $key = $responsexml->createElement('serverName', $name);
     $element->appendChild($key);
 
     $key = $responsexml->createElement('port', $port);

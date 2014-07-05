@@ -65,6 +65,10 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localUserLookupID = $row['id'];
             $localUserCname = $row['cname'];
+
+            if ($username != $row['cname']) {
+                $username = $row['cname'];
+            }
         }
 
         if (!isset($localUserLookupID)) {
@@ -155,7 +159,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
     if (dataExist('identify_server_by', $data)) {
 
-        $query = $sql->prepare("SELECT `id`,`uid`,`active`,`sid`,`dbname` FROM `mysql_external_dbs` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerid`=?");
+        $query = $sql->prepare("SELECT m.`id`,m.`uid`,m.`active`,m.`sid`,m.`dbname`,u.`cname` FROM `mysql_external_dbs` AS m INNER JOIN ´userdata` AS u ON u.`id`=m.`uid` WHERE m.`" . $from[$data['identify_server_by']] . "`=? AND m.`resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -164,6 +168,10 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $hostID = $row['sid'];
             $name = $row['dbname'];
             $oldActive = $row['active'];
+
+            if ($username != $row['cname']) {
+                $username = $row['cname'];
+            }
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='my' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID));
@@ -238,7 +246,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $success['false'][] = 'No data for this method';
     }
 
-} else if (!isset($success['false']) and array_value_exists('action', 'ls', $data)) {
+} else if (!isset($success['false']) and array_value_exists('action', 'read', $data)) {
 
 } else {
 
