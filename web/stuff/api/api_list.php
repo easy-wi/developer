@@ -62,7 +62,7 @@ if (array_value_exists('action', 'ls', $data)) {
         $query2 = $sql->prepare("SELECT t.`shorten`,t.`description` FROM `rservermasterg` AS r INNER JOIN `servertypes` AS t ON r.`servertypeid` = t.`id` WHERE r.`serverid`=?");
         $query->execute(array($resellerID));
 
-        if ($apiType == 'xml') {
+        if ($apiType == 'xml' and isset($key) and isset($element)) {
 
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -120,7 +120,7 @@ if (array_value_exists('action', 'ls', $data)) {
         $query = $sql->prepare("SELECT m.`id`,m.`usedns`,m.`ssh2ip`,m.`description`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`maxserver`,m.`maxslots`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`active`='Y' AND m.`resellerid`=? GROUP BY m.`id`");
         $query->execute(array($resellerID));
 
-        if ($apiType == 'xml') {
+        if ($apiType == 'xml' and isset($key) and isset($element)) {
 
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -172,6 +172,55 @@ if (array_value_exists('action', 'ls', $data)) {
                 $listRootServerXML->appendChild($listServerXML);
 
                 $listServerXML = $responsexml->createElement('defaulthostbutton_gfx_url', $row['defaulthostbutton_gfx_url']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $key->appendChild($listRootServerXML);
+            }
+
+            $element->appendChild($key);
+
+            $responsexml->appendChild($element);
+        }
+
+        // Webspace
+
+        $query = $sql->prepare("SELECT m.`webMasterID`,m.`externalID`,m.`description`,m.`ip`,m.`defaultdns`,m.`maxVhost`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID` = m.`webMasterID`) AS `installedVhosts`,m.`maxHDD`,m.`hddOverbook`,(SELECT SUM( v.`hdd` ) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID` = m.`webMasterID`) AS `hddUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=?");
+        $query->execute(array($resellerID));
+
+        if ($apiType == 'xml' and isset($key) and isset($element)) {
+
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                $listRootServerXML = $responsexml->createElement('webspaceServer');
+
+                $listServerXML = $responsexml->createElement('id', $row['webMasterID']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('externalID', $row['externalID']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('ssh2ip', $row['ip']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('description', $row['description']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('defaultdns', $row['defaultdns']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('maxVhost', $row['maxVhost']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('installedVhosts', $row['installedVhosts']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('maxHDD', $row['maxHDD']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('hddOverbook', $row['hddOverbook']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('hddUsage', $row['hddUsage']);
                 $listRootServerXML->appendChild($listServerXML);
 
                 $key->appendChild($listRootServerXML);
