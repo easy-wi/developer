@@ -92,6 +92,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $serverdir = $ui->folder('serverdir', 'post');
     $keyname = $ui->startparameter('keyname', 'post');
     $bit = $ui->id('bit',2, 'post');
+    $maxDns = ($ui->id('maxDns', 10, 'post')) ? $ui->id('maxDns', 10, 'post') : 500;
 
     // Default variables. Mostly needed for the add operation
     $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
@@ -122,6 +123,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $serverdir = $row['serverdir'];
                 $keyname = $row['keyname'];
                 $bit = $row['bitversion'];
+                $maxDns = $row['max_dns'];
             }
 
             // Check if database entry exists and if not display 404 page
@@ -189,8 +191,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `voice_tsdns` (`externalID`,`active`,`bitversion`,`defaultdns`,`publickey`,`ssh2ip`,`ssh2port`,`ssh2user`,`ssh2password`,`serverdir`,`keyname`,`autorestart`,`description`,`resellerid`) VALUES (:externalID,:active,:bit,:defaultdns,:publickey,:ssh2ip,AES_ENCRYPT(:ssh2port,:aeskey),AES_ENCRYPT(:ssh2user,:aeskey),AES_ENCRYPT(:ssh2password,:aeskey),:serverdir,:keyname,:autorestart,:description,:reseller_id)");
-                $query->execute(array(':externalID' => $externalID,':aeskey' => $aeskey,':active' => $active,':bit' => $bit,':defaultdns' => $defaultdns,':publickey' => $publickey,':ssh2ip' => $ssh2ip,':ssh2port' => $ssh2port,':ssh2user' => $ssh2user,':ssh2password' => $ssh2password,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':description' => $description,':reseller_id' => $reseller_id));
+                $query = $sql->prepare("INSERT INTO `voice_tsdns` (`externalID`,`max_dns`,`active`,`bitversion`,`defaultdns`,`publickey`,`ssh2ip`,`ssh2port`,`ssh2user`,`ssh2password`,`serverdir`,`keyname`,`autorestart`,`description`,`resellerid`) VALUES (:externalID,:maxDns,:active,:bit,:defaultdns,:publickey,:ssh2ip,AES_ENCRYPT(:ssh2port,:aeskey),AES_ENCRYPT(:ssh2user,:aeskey),AES_ENCRYPT(:ssh2password,:aeskey),:serverdir,:keyname,:autorestart,:description,:reseller_id)");
+                $query->execute(array(':externalID' => $externalID,':maxDns' => $maxDns,':aeskey' => $aeskey,':active' => $active,':bit' => $bit,':defaultdns' => $defaultdns,':publickey' => $publickey,':ssh2ip' => $ssh2ip,':ssh2port' => $ssh2port,':ssh2user' => $ssh2user,':ssh2password' => $ssh2password,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':description' => $description,':reseller_id' => $reseller_id));
 
                 $rowCount = $query->rowCount();
 
@@ -200,8 +202,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             } else if ($ui->st('action', 'post') == 'md') {
 
-                $query = $sql->prepare("UPDATE `voice_tsdns` SET `externalID`=:externalID,`active`=:active,`bitversion`=:bit,`defaultdns`=:defaultdns,`publickey`=:publickey,`ssh2ip`=:ssh2ip,`ssh2port`=AES_ENCRYPT(:ssh2port,:aeskey),`ssh2user`=AES_ENCRYPT(:ssh2user,:aeskey),`ssh2password`=AES_ENCRYPT(:ssh2password,:aeskey),`serverdir`=:serverdir,`keyname`=:keyname,`autorestart`=:autorestart,`description`=:description WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':externalID' => $externalID,':aeskey' => $aeskey,':active' => $active,':bit' => $bit,':defaultdns' => $defaultdns,':publickey' => $publickey,':ssh2ip' => $ssh2ip,':ssh2port' => $ssh2port,':ssh2user' => $ssh2user,':ssh2password' => $ssh2password,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':description' => $description,':id' => $id,':reseller_id' => $reseller_id));
+                $query = $sql->prepare("UPDATE `voice_tsdns` SET `externalID`=:externalID,`max_dns`=:maxDns,`active`=:active,`bitversion`=:bit,`defaultdns`=:defaultdns,`publickey`=:publickey,`ssh2ip`=:ssh2ip,`ssh2port`=AES_ENCRYPT(:ssh2port,:aeskey),`ssh2user`=AES_ENCRYPT(:ssh2user,:aeskey),`ssh2password`=AES_ENCRYPT(:ssh2password,:aeskey),`serverdir`=:serverdir,`keyname`=:keyname,`autorestart`=:autorestart,`description`=:description WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+                $query->execute(array(':externalID' => $externalID,':maxDns' => $maxDns,':aeskey' => $aeskey,':active' => $active,':bit' => $bit,':defaultdns' => $defaultdns,':publickey' => $publickey,':ssh2ip' => $ssh2ip,':ssh2port' => $ssh2port,':ssh2user' => $ssh2user,':ssh2password' => $ssh2password,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':description' => $description,':id' => $id,':reseller_id' => $reseller_id));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %voserver% %tsdns% ' . $ssh2ip;
@@ -521,6 +523,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $query2 = $sql->prepare("SELECT `dnsID`,`active`,`dns` FROM `voice_dns` WHERE `tsdnsID`=? AND `resellerID`=?");
     $query->execute(array($reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+        $i = 0;
+        $ds = array();
+
         if ($row['active'] == 'Y') {
             if ($row['notified']>2) {
                 $imgName = '16_error';
@@ -533,10 +539,14 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $imgName = '16_bad';
             $imgAlt='inactive';
         }
-        $ds = array();
+
         $query2->execute(array($row['id'], $reseller_id));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) $ds[] = array('id' => $row2['dnsID'], 'address' => $row2['dns'], 'status' => ($row2['active'] == 'N') ? 2 : 1);
-        $table[] = array('id' => $row['id'], 'active' => $row['active'], 'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ssh2ip'], 'defaultdns' => $row['defaultdns'], 'description' => $row['description'], 'server' => $ds);
+
+        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            $ds[] = array('id' => $row2['dnsID'], 'address' => $row2['dns'], 'status' => ($row2['active'] == 'N') ? 2 : 1);
+        }
+
+        $table[] = array('id' => $row['id'], 'active' => $row['active'], 'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ssh2ip'], 'defaultdns' => $row['defaultdns'], 'description' => $row['description'], 'maxDns' => $row['max_dns'], 'dnsCount' => count($ds), 'server' => $ds);
     }
     $template_file = 'admin_voice_tsdns_list.tpl';
 }

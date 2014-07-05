@@ -34,6 +34,7 @@
                 <th data-hide="phone,tablet"><a href="admin.php?w=vd&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='aa') { echo 'da'; } else { echo 'aa'; } ?>"><?php echo $gsprache->status;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=vd&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ad') { echo 'dd'; } else { echo 'ad'; } ?>"><?php echo $sprache->defaultdns;?></a></th>
                 <th data-hide="phone,tablet"><a href="admin.php?w=vd&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='ad') { echo 'db'; } else { echo 'ab'; } ?>"><?php echo $sprache->description;?></a></th>
+                <th><?php echo $sprache->maxserver;?></th>
                 <th><?php echo $sprache->import;?></th>
                 <th><?php echo $gsprache->del;?></th>
                 <th><?php echo $gsprache->mod;?></th>
@@ -75,6 +76,7 @@
                 <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else echo 'icon-ban-circle';?>"></i></td>
                 <td><?php echo $table_row['defaultdns'];?></td>
                 <td><?php echo $table_row['description'];?></td>
+                <td><?php echo $table_row['dnsCount'].'/'.$table_row['maxDns'];?></td>
                 <td><a href="admin.php?w=vd&amp;d=ip&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="fa fa-refresh"></i></span></a></td>
                 <td><a href="admin.php?w=vd&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
                 <td><a href="admin.php?w=vd&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>

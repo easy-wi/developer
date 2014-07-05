@@ -72,7 +72,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
 
-        $query = $sql->prepare("SELECT `id`,`ssh2ip`,`description` FROM `voice_tsdns` WHERE `resellerid`=? AND `active`='Y' ORDER BY `id` DESC");
+        $query = $sql->prepare("SELECT m.`id`,m.`ssh2ip`,m.`description`, COUNT(d.`dnsID`)/(m.`max_dns`/100) AS `usedpercent` FROM `voice_tsdns` AS m LEFT JOIN `voice_dns` AS d ON d.`tsdnsID`=m.`id` WHERE m.`resellerid`=? AND m.`active`='Y' GROUP BY m.`id` HAVING `usedpercent`<100 ORDER BY `usedpercent` ASC");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $table2[$row['id']] = trim($row['ssh2ip'] . ' ' . $row['description']);

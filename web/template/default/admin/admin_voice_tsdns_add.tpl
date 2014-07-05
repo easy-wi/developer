@@ -89,6 +89,10 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputMaxDns"><?php echo $sprache->maxserver;?></label>
+                <div class="controls"><input id="inputMaxDns" type="number" name="maxDns" maxlength="10" value="<?php echo $maxDns;?>"></div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputDesc"><?php echo $sprache->description;?></label>
                 <div class="controls"><textarea id="inputDesc" name="description"><?php echo $description;?></textarea></div>
             </div>
