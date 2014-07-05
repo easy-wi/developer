@@ -117,8 +117,6 @@ if (array_value_exists('action', 'ls', $data)) {
 
         // MySQL
 
-
-
         $query = $sql->prepare("SELECT s.`id`,s.`externalID`,s.`ip`,s.`interface` AS `description`,s.`max_databases`, COUNT(d.`id`) AS `installed` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip`");
         $query->execute(array($resellerID));
 
@@ -144,6 +142,43 @@ if (array_value_exists('action', 'ls', $data)) {
                 $listRootServerXML->appendChild($listServerXML);
 
                 $listServerXML = $responsexml->createElement('dbsInstalled', $row['installed']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $key->appendChild($listRootServerXML);
+            }
+
+            $element->appendChild($key);
+
+            $responsexml->appendChild($element);
+        }
+
+        // TSDNS
+
+        $query = $sql->prepare("SELECT m.`id`,m.`externalID`,m.`ssh2ip`,m.`description`,m.`defaultdns`,m.`max_dns`,COUNT(d.`dnsID`) AS `installedDNS` FROM `voice_tsdns` AS m LEFT JOIN `voice_dns` AS d ON d.`tsdnsID`=m.`id` WHERE m.`resellerid`=? AND m.`active`='Y' GROUP BY m.`id`");
+        $query->execute(array($resellerID));
+
+        if ($apiType == 'xml' and isset($key) and isset($element)) {
+
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                $listRootServerXML = $responsexml->createElement('tsdnsServer');
+
+                $listServerXML = $responsexml->createElement('id', $row['id']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('externalID', $row['externalID']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('ssh2ip', $row['ssh2ip']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('description', $row['description']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('maxDNS', $row['max_dns']);
+                $listRootServerXML->appendChild($listServerXML);
+
+                $listServerXML = $responsexml->createElement('installedDNS', $row['installedDNS']);
                 $listRootServerXML->appendChild($listServerXML);
 
                 $key->appendChild($listRootServerXML);
