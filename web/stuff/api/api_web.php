@@ -93,6 +93,10 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localUserLookupID = $row['id'];
             $localUserCname = $row['cname'];
+
+            if ($username != $row['cname']) {
+                $username = $row['cname'];
+            }
         }
 
         if (!isset($localUserLookupID) or !isset($localUserCname)) {
@@ -179,11 +183,15 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $changedCount = 0;
 
-        $query = $sql->prepare("SELECT * FROM `webVhost` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerID`=?");
+        $query = $sql->prepare("SELECT w.*,c.`cname` FROM `webVhost` AS w INNER JOIN `userdata` AS u ON u.`id`=w.`userID` WHERE w.`" . $from[$data['identify_server_by']] . "`=? AND w.`resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $changedCount = 1;
+
+            if ($username != $row['cname']) {
+                $username = $row['cname'];
+            }
 
             $localServerID = $row['webVhostID'];
             $localUserLookupID = $row['userID'];
@@ -339,7 +347,10 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $localUserID = $row['userID'];
             $externalUserID = $row['userExternalID'];
             $email = $row['mail'];
-            $username = $row['cname'];
+
+            if ($username != $row['cname']) {
+                $username = $row['cname'];
+            }
 
             $hostExternalID = $row['masterExternalID'];
         }
@@ -352,7 +363,76 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $success['false'][] = 'No data for this method';
     }
 
-} else if (!isset($success['false']) and array_value_exists('action', 'ls', $data)) {
+} else if (array_value_exists('action', 'ls', $data)) {
+
+    unset($success);
+
+    $query = $sql->prepare("SELECT m.`webMasterID`,m.`externalID`,m.`description`,m.`ip`,m.`defaultdns`,m.`maxVhost`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID` = m.`webMasterID`) AS `installedVhosts`,m.`maxHDD`,m.`hddOverbook`,(SELECT SUM( v.`hdd` ) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID` = m.`webMasterID`) AS `hddUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=?");
+    $query->execute(array($resellerID));
+
+    if ($apiType == 'xml') {
+
+        $responsexml = new DOMDocument('1.0','utf-8');
+        $element = $responsexml->createElement('webspace');
+
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+            $listRootServerXML = $responsexml->createElement('webspaceServer');
+
+            $listServerXML = $responsexml->createElement('id', $row['webMasterID']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('externalID', $row['externalID']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('ssh2ip', $row['ip']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('description', $row['description']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('defaultdns', $row['defaultdns']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('maxVhost', $row['maxVhost']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('installedVhosts', $row['installedVhosts']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('maxHDD', $row['maxHDD']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('hddOverbook', $row['hddOverbook']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('hddUsage', $row['hddUsage']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $element->appendChild($listRootServerXML);
+        }
+
+        $responsexml->appendChild($element);
+
+        $responsexml->formatOutput = true;
+
+        die($responsexml->saveXML());
+
+    } else if ($apiType == 'json') {
+
+        header("Content-type: application/json; charset=UTF-8");
+
+        echo json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+
+        die;
+
+    } else {
+
+        header('HTTP/1.1 403 Forbidden');
+
+        die('403 Forbidden');
+
+    }
 
 } else {
     $success['false'][] = 'Unknown method';
