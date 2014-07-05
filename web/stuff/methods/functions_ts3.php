@@ -477,3 +477,103 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
     return true;
 
 }
+
+function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null) {
+
+    // check if entered parameters are correct
+    if ($type != 'server' and $type != 'client') {
+        return false;
+    }
+
+    if ($os != 'linux' and $os != 'win') {
+        return false;
+    }
+
+    if ($bit != 64 and $bit != 32) {
+        return false;
+    }
+
+    if ($url === null) {
+
+        // Currently there are two mirrors.
+        $urls = array('http://teamspeak.gameserver.gamed.de/ts3/releases/', 'http://dl.4players.de/ts/releases/');
+
+        // Use random value from urls array. Autocheck how many entries and fit the mt_rand parameters accordingly
+        $url = $urls[mt_rand(0, (count($urls) -1))];
+    }
+
+    $subfolders = array();
+
+    $doc = new DOMDocument();
+    $doc->loadHTMLFile($url);
+    $links = $doc->getElementsByTagName('a');
+
+
+    foreach ($links as $link) {
+
+        $href = $link->getAttribute('href');
+
+        // Filter for downloadfolders. Known old versions will be left out
+        if (!preg_match('/^0\.[0-9](\.[0-9\/]|\/)+$/', substr($href, 2, 6)) and preg_match('/^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}(\.[0-9]{1,2}|)\/+$/', $href)) {
+
+            // As versioning does not follow the same pattern we need to normalize in order to be able to sort.
+            $normalizedVersion = str_replace(array('.', '/'), '', $href);
+
+            while (strlen($normalizedVersion) < 6) {
+                $normalizedVersion = $normalizedVersion . 0;
+            }
+
+            $subfolders[$normalizedVersion] = $href;
+        }
+    }
+
+    // As the array key is normalized based on version we can sort by key in descending order.
+    krsort($subfolders, SORT_NUMERIC);
+
+    // Now loop though all version subfolders and search for server files.
+    foreach ($subfolders as $sub) {
+
+        // Use Dom to download html page into an object
+        $doc = new DOMDocument();
+        $doc->loadHTMLFile($url . $sub);
+
+        // Get all links from page
+        $links = $doc->getElementsByTagName('a');
+
+        // loop through the links
+        foreach ($links as $link) {
+
+            // Build regular expression on the fly
+            $clientServer = ($type == 'server') ? 'teamspeak3\-server\_' : 'TeamSpeak3\-Client\-';
+
+            if ($os == 'linux' and $type == 'server') {
+
+                $bitAndOS = ($bit == 64) ? 'linux\-amd64' : 'linux\-x86';
+                $extension = 'tar\.gz';
+
+            } else if ($os == 'linux' and $type == 'client') {
+
+                $bitAndOS = ($bit == 64) ? 'linux\_amd64' : 'linux\_x86';
+                $extension = 'run';
+
+            } else {
+                $bitAndOS = ($bit == 64) ? 'win64' : 'win32';
+                $extension = ($type == 'server') ? 'zip' : 'run';
+            }
+
+            // get the href value from html anchor
+            $href = $link->getAttribute('href');
+
+            // check if we have a valid version and file. As we sorted and normalized some steps ago the first hit is the latest version.
+            if (preg_match('/^' . $clientServer . $bitAndOS . '\-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}(\.[0-9]{1,2}|)\.' . $extension . '+$/', $href)) {
+
+                $downloadLink = $url . $sub . $href;
+                $currentVersion = str_replace('/', '', $sub);
+
+                return array('version' => $currentVersion, 'link' => $downloadLink);
+            }
+        }
+    }
+
+    return false;
+}
