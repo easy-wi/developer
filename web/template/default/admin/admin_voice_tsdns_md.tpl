@@ -29,6 +29,10 @@
                     </select>
                 </div>
             </div>
+            <div class="control-group">
+                <label class="control-label" for="inputExternalID"><?php echo $gsprache->externalID;?></label>
+                <div class="controls"><input id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID;?>" maxlength="255"></div>
+            </div>
             <div class="control-group<?php if(isset($errors['autorestart'])) echo ' error';?>">
                 <label class="control-label" for="inputAutoRestart"><?php echo $sprache->autorestart;?></label>
                 <div class="controls">

@@ -34,6 +34,10 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="inputExternalID"><?php echo $gsprache->externalID;?></label>
+                <div class="controls"><input id="inputExternalID" type="text" name="externalID" value="" maxlength="255"></div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="inputDns"><?php echo $sprache->dns;?></label>
                 <div class="controls"><input id="inputDns" type="text" name="dns" value="<?php echo $dns;?>"></div>
             </div>
@@ -44,10 +48,6 @@
             <div class="control-group">
                 <label class="control-label" for="inputPort"><?php echo $sprache->port;?></label>
                 <div class="controls"><input id="inputPort" type="text" name="port" value="9987" maxlength="5"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputExternalID">externalID</label>
-                <div class="controls"><input id="inputExternalID" type="text" name="externalID"></div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>
