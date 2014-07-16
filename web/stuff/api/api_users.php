@@ -282,7 +282,7 @@ if (array_value_exists('action', 'add', $data)) {
     $from = array('localid' => 'id','username' => 'cname','external_id' => 'externalID','email' => 'mail');
     $identifyBy = $data['identify_by'];
     $username = (isset($data['username'])) ? $data['username'] : '';
-    $externalID = (isset($data['external_id']) and isExternalID($data['external_id'])) ? $data['external_id'] : '';
+    $externalID = (isset($data['external_id']) and isExternalID($data['external_id']) != '') ? $data['external_id'] : '';
     $active = (isset($data['active'])) ? active_check($data['active']) : 'Y';
     $localID = (isset($data['localid'])) ? $data['localid'] : '';
 
@@ -417,7 +417,7 @@ if (array_value_exists('action', 'add', $data)) {
                 $fdlpath = $what['fdlpath'];
             }
 
-            if (isset($data['external_id']) and isExternalID($data['external_id'])) {
+            if (isset($data['external_id']) and isExternalID($data['external_id']) != '') {
                 $what['externalID'] = $data['external_id'];
             }
 
@@ -501,7 +501,7 @@ if (array_value_exists('action', 'add', $data)) {
     $email = $data['email'];
     $identifyBy = $data['identify_by'];
     $username = (isset($data['username'])) ? $data['username'] : '';
-    $externalID = (isset($data['external_id']) and isExternalID($data['external_id'])) ? $data['external_id'] : '';
+    $externalID = (isset($data['external_id']) and isExternalID($data['external_id']) != '') ? $data['external_id'] : '';
     $active = (isset($data['active'])) ? active_check($data['active']) : '';
     $localID = (isset($data['localid'])) ? $data['localid'] : '';
 
@@ -542,7 +542,7 @@ if (array_value_exists('action', 'add', $data)) {
     $email = (isset($data['email'])) ? $data['email'] : '';
     $identifyBy = $data['identify_by'];
     $username = (isset($data['username'])) ? $data['username'] : '';
-    $externalID = (isset($data['external_id']) and isExternalID($data['external_id'])) ? $data['external_id'] : '';
+    $externalID = (isset($data['external_id']) and isExternalID($data['external_id']) != '') ? $data['external_id'] : '';
     $localID = (isset($data['localid'])) ? $data['localid'] : '';
 
     if (dataExist('identify_by', $data)) {
