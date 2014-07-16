@@ -107,13 +107,13 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             $query = $sql->prepare("SELECT s.`id`,s.`ip`,s.`max_databases`, COUNT(d.`id`) AS `installed`,COUNT(d.`id`)/(s.`max_databases`/100) AS `usedpercent`,s.`max_queries_per_hour`,s.`max_updates_per_hour`,s.`max_connections_per_hour`,s.`max_userconnections_per_hour` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip` HAVING $inSQLArray `usedpercent`<100 ORDER BY `usedpercent` ASC LIMIT 1");
             $query->execute(array($resellerID));
-            foreach ($query->fetchall() as $row) {
+            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                $hostID = $row['id'];
                 $max_databases = $row['max_databases'];
                 $max_queries_per_hour = $row['max_queries_per_hour'];
                 $max_updates_per_hour = $row['max_updates_per_hour'];
                 $max_connections_per_hour = $row['max_connections_per_hour'];
                 $max_userconnections_per_hour = $row['max_userconnections_per_hour'];
-                $hostID = $row['id'];
             }
 
             if (!isset($hostID)) {
@@ -126,7 +126,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $password = passwordgenerate(10);
 
             $query = $sql->prepare("INSERT INTO `mysql_external_dbs` (`active`,`sid`,`uid`,`password`,`ips`,`manage_host_table`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`resellerid`) VALUES (?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?,?)");
-            $query->execute(array($active, $hostID, $localUserLookupID, $dbname, $password, $aeskey, '', $manage_host_table, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $externalServerID, $resellerID));
+            $query->execute(array($active, $hostID, $localUserLookupID, $password, $aeskey, '', $manage_host_table, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $externalServerID, $resellerID));
 
             $localID = $sql->lastInsertId();
 
@@ -279,7 +279,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $responsexml = new DOMDocument('1.0','utf-8');
         $element = $responsexml->createElement('webspace');
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $listRootServerXML = $responsexml->createElement('mysqlServer');
 

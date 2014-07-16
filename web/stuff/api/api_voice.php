@@ -249,7 +249,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
                     if ($tsdns == 'Y') {
 
-                        $dns = (isdomain($data['dns'])) ? $data['dns']: strtolower($localID . '.' . $defaultdns);
+                        $dns = (isset($data['dns']) and isdomain($data['dns'])) ? $data['dns']: strtolower($localID . '.' . $defaultdns);
 
                         $query = $sql->prepare("UPDATE `voice_server` SET `dns`=? WHERE `id`=? LIMIT 1");
                         $query->execute(array($dns,$localID));
@@ -516,8 +516,6 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
     $localServerID = isid($data['server_local_id'], 10);
     $externalServerID = isExternalID($data['server_external_id']);
 
-
-
     $list = true;
     $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($data[$data['identify_server_by']], $resellerID));
@@ -570,7 +568,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         $responsexml = new DOMDocument('1.0','utf-8');
         $element = $responsexml->createElement('voice');
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $key = $responsexml->createElement('server');
 

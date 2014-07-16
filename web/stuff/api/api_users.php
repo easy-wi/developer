@@ -472,12 +472,12 @@ if (array_value_exists('action', 'add', $data)) {
             $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW() " . $extraUpdate. " WHERE `id`=? AND `resellerid`=?");
             $query->execute(array($localID, $resellerID));
 
+            $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
+            $query->execute(array($localID, $resellerID));
+
             if (!in_array($active, $bad) and $active != $oldactive) {
 
                 $query = $sql->prepare("UPDATE `userdata` SET `jobPending`='Y' WHERE `id`=? and `resellerid`=?");
-                $query->execute(array($localID, $resellerID));
-
-                $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='us' AND (`status` IS NULL OR `status`='1') AND `userID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
 
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','us',?,?,?,?,NULL,NOW(),'md',?,?)");
@@ -561,7 +561,7 @@ if (array_value_exists('action', 'add', $data)) {
             $query = $sql->prepare("SELECT `id`,`active`,`queryUpdatetime`,`queryPassword`,`queryMap`,`queryMaxplayers`,`queryNumplayers`,`queryName`,`port5`,`serverid`,`pallowed`,`eacallowed`,`protected`,`brandname`,`tvenable`,`war`,`psince`,`serverip`,`port`,`port2`,`port3`,`port4`,`minram`,`maxram`,`slots`,`taskset`,`cores`,`lendserver`,`externalID`,`jobPending` FROM `gsswitch` WHERE `userid`=? AND `resellerid`=? ORDER BY `serverip`,`port`");
             $query2 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
             $query->execute(array($userArray['userdetails']['id'], $resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $shorten = array();
 
@@ -579,16 +579,16 @@ if (array_value_exists('action', 'add', $data)) {
 
             $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `userid`=? AND `resellerid`=?");
             $query->execute(array($userArray['userdetails']['id'], $resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $tempArray[] = $row;
             }
 
             $userArray['voice'] = $tempArray;
             $tempArray = array();
 
-            $query = $sql->prepare("SELECT `active`,`sid`,`gsid`,`dbname`,`ips`,`max_databases`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`jobPending` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=?");
+            $query = $sql->prepare("SELECT `active`,`sid`,`dbname`,`ips`,`max_databases`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`jobPending` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=?");
             $query->execute(array($userArray['userdetails']['id'], $resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $tempArray[] = $row;
             }
 
@@ -610,6 +610,85 @@ if (array_value_exists('action', 'add', $data)) {
     } else {
         $success['false'][] = 'No data for this method';
     }
+
+} else if (array_value_exists('action', 'ls', $data) and !isset($data['identify_by'])) {
+
+    $limit = (isset($data['start']) and is_numeric($data['start']) and isset($data['amount']) and is_numeric($data['amount'])) ? 'LIMIT ' . $data['start'] . ',' . $data['amount'] : '';
+
+    if (isset($data['notLike']) and wpreg_check($data['notLike'], 255)) {
+
+        $query = $sql->prepare("SELECT `id`,`active`,`cname`,`mail`,`externalID` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' AND (`externalID` IS NULL OR `externalID` NOT LIKE ?) $limit");
+        $query->execute(array($resellerID, $data['notLike'] . '%'));
+
+    } else if (isset($data['like']) and wpreg_check($data['like'], 255)) {
+
+        $query = $sql->prepare("SELECT `id`,`active`,`cname`,`mail`,`externalID` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' AND `externalID` LIKE ? $limit");
+        $query->execute(array($resellerID, $data['like'] . '%'));
+
+    } else  {
+        $query = $sql->prepare("SELECT `id`,`active`,`cname`,`mail`,`externalID` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' $limit");
+        $query->execute(array($resellerID));
+    }
+
+
+    if ($apiType == 'xml') {
+
+        header("Content-type: text/xml; charset=UTF-8");
+
+        $responsexml = new DOMDocument('1.0','utf-8');
+        $element = $responsexml->createElement('users');
+
+        $query2 = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u'");
+        $query2->execute(array($resellerID));
+
+        $key = $responsexml->createElement('totalAmount', (int) $query2->fetchColumn());
+        $element->appendChild($key);
+
+        $key = $responsexml->createElement('start', (isset($data['start'])) ? (int) $data['start'] : '');
+        $element->appendChild($key);
+
+        $key = $responsexml->createElement('amount', (isset($data['amount'])) ? (int) $data['amount'] : '');
+        $element->appendChild($key);
+
+        $key = $responsexml->createElement('like', (isset($data['like']) and wpreg_check($data['like'], 255)) ? $data['like'] : '');
+        $element->appendChild($key);
+
+        $key = $responsexml->createElement('notLike', (isset($data['notLike']) and wpreg_check($data['notLike'], 255)) ? $data['notLike'] : '');
+        $element->appendChild($key);
+
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            $listRootServerXML = $responsexml->createElement('user');
+
+            $listServerXML = $responsexml->createElement('id', $row['id']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('active', $row['active']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('cname', $row['cname']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('mail', $row['mail']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('externalID', $row['externalID']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $element->appendChild($listRootServerXML);
+        }
+
+        $responsexml->appendChild($element);
+
+        $responsexml->formatOutput = true;
+
+        die($responsexml->saveXML());
+
+    } else if ($apiType == 'json') {
+        header("Content-type: application/json; charset=UTF-8");
+        echo json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+    }
+
 } else {
     $success['false'][] = 'No action defined';
 }

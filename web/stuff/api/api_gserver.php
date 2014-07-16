@@ -741,7 +741,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
         $responsexml = new DOMDocument('1.0','utf-8');
         $element = $responsexml->createElement('gserver');
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $key = $responsexml->createElement('server');
 
