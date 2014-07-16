@@ -81,7 +81,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_voice_dns_add.tpl';
 
     } else if ($ui->st('d', 'get') == 'ad' and $ui->smallletters('action',2, 'post') == 'ad') {
+
         $error = array();
+
         if (!$ui->id('userID',19, 'post')) {
             $error[] = 'UserID';
         } else {
@@ -96,6 +98,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $error[] = 'UserID';
             }
         }
+
         if (!$ui->id('tsdnsID',19, 'post')) {
             $error[] = 'tsdnsID';
         } else {
@@ -104,13 +107,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query->execute(array($reseller_id));
             $lastID = 1;
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $lastID = $row['dnsID']+1;
+                $lastID = $row['dnsID'] + 1;
             }
             $query = $sql->prepare("SELECT `ssh2ip`,`description`,`defaultdns` FROM `voice_tsdns` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($tsdnsID,$reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $tsdns = trim($row['ssh2ip'] . ' ' . $row['description']);
-                $dns=strtolower(trim($lastID . '-' . $cname . '.' . $row['defaultdns']));
+                $dns = strtolower(trim($lastID . '-' . $cname . '.' . $row['defaultdns']));
             }
             if (!isset($tsdns)) {
                 $error[] = 'tsdnsID';
@@ -391,7 +394,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['jobPending'] == 'Y') {
             $jobPending = $gsprache->yes;
-            $query2->execute(array($row['id'], $row['resellerid']));
+            $query2->execute(array($row['dnsID'], $row['resellerID']));
             $json=@json_decode($query2->fetchColumn());
             $tobeActive=(is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
         } else {
