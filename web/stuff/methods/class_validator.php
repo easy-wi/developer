@@ -554,7 +554,7 @@ class ValidateUserinput {
             return $this->loop($check, 'externalID', $type);
         }
 
-        return false;
+        return '';
     }
 
     function phone ($value, $type, $object = false) {
