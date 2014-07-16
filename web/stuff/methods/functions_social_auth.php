@@ -1,7 +1,7 @@
 <?php
 
 /**
- * File: function_social_auth.php.
+ * File: functions_social_auth.php.
  * Author: Ulrich Block
  * Date: 16.07.14
  * Time: 19:43
