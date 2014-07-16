@@ -362,7 +362,7 @@ $query = "CREATE TABLE IF NOT EXISTS `webMaster` (
   `userDelCmd` varchar(255),
   `description` text,
   `notified` int(10) unsigned,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`webMasterID`),KEY(`externalID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
@@ -382,7 +382,7 @@ $query = "CREATE TABLE IF NOT EXISTS `webVhost` (
   `ftpPassword` blob,
   `ownVhost` enum('Y','N') DEFAULT 'N',
   `vhostTemplate` text,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`webVhostID`),KEY(`webMasterID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
@@ -513,7 +513,7 @@ $query = "CREATE TABLE IF NOT EXISTS `gsswitch` (
   `queryMap` varchar(40) NOT NULL,
   `queryPassword` enum('Y','N') NOT NULL,
   `queryUpdatetime` datetime DEFAULT NULL,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `sourceSystemID` varchar(255) NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,
@@ -662,7 +662,7 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_dbs` (
   `max_connections_per_hour` bigint(19) unsigned DEFAULT 0,
   `max_userconnections_per_hour` bigint(19) unsigned DEFAULT 0,
   `dbSize` int(10) unsigned DEFAULT 0,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`sid`),KEY(`uid`),KEY(`externalID`),KEY(`resellerid`)
@@ -672,7 +672,7 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `active` enum('Y','N') DEFAULT 'Y',
   `ip` varchar(15) NOT NULL,
   `port` smallint(5) unsigned DEFAULT '3306',
@@ -888,7 +888,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rserverdata` (
   `alreadyStartedAt` smallint(2) unsigned DEFAULT 0,
   `notified` int(11) unsigned DEFAULT 0,
   `userID` int(10) unsigned DEFAULT 0,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `sourceSystemID` varchar(255) NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`hostid`),KEY(`externalID`),KEY(`userID`),KEY(`resellerid`)
@@ -931,7 +931,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rootsDedicated` (
   `apiURL` TEXT,
   `https` enum('Y','N') DEFAULT 'N',
   `mac` varchar(17) DEFAULT NULL,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `jobPending` enum('Y','N') DEFAULT 'N',
   `notified` int(11) unsigned DEFAULT 0,
   `resellerID` int(10) unsigned NOT NULL DEFAULT 0,
@@ -1299,7 +1299,7 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata` (
   `mail_ticket` enum('Y','N') DEFAULT 'Y',
   `mail_vserver` enum('Y','N') DEFAULT 'Y',
   `jobPending` enum('Y','N') DEFAULT 'N',
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `sourceSystemID` varchar(255) NULL,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`active`),KEY(`resellerid`)
@@ -1353,7 +1353,7 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata_substitutes` (
   `language` varchar(2) DEFAULT NULL,
   `lastlogin` datetime NOT NULL,
   `logintime` datetime DEFAULT NULL,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `sourceSystemID` varchar(255) NULL,
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`sID`),KEY(`userID`),KEY(`resellerID`),KEY(`loginName`)
@@ -1542,7 +1542,7 @@ $query = "CREATE TABLE IF NOT EXISTS `virtualcontainer` (
   `maxram` smallint(6) DEFAULT NULL,
   `status` smallint(1) unsigned DEFAULT NULL,
   `notified` int(11) unsigned DEFAULT 0,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `initialInstallPending` enum('Y','N') DEFAULT 'Y',
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned NOT NULL DEFAULT 0,
@@ -1586,7 +1586,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_dns` (
   `port` smallint(5) unsigned DEFAULT NULL,
   `tsdnsID` int(10) unsigned NOT NULL,
   `userID` int(10) unsigned NOT NULL,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`dnsID`),KEY(`tsdnsID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)
@@ -1631,7 +1631,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `keyname` varchar(50) DEFAULT NULL,
   `notified` int(11) unsigned DEFAULT 0,
   `autorestart` enum('Y','N') DEFAULT 'Y',
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `sourceSystemID` varchar(255) NULL,
   `managedServer` enum('Y','N') DEFAULT 'N',
   `managedForID` int(10) unsigned DEFAULT NULL,
@@ -1678,7 +1678,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_server` (
   `queryPassword` enum('Y','N') NOT NULL,
   `queryUpdatetime` datetime DEFAULT NULL,
   `notified` int(11) unsigned DEFAULT 0,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `sourceSystemID` varchar(255) NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
   `resellerid` int(10) unsigned DEFAULT 0,
@@ -1762,7 +1762,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_tsdns` (
   `notified` int(11) unsigned DEFAULT 0,
   `autorestart` enum('Y','N') DEFAULT 'Y',
   `description` TEXT,
-  `externalID` varchar(255) DEFAULT NULL,
+  `externalID` varchar(255) DEFAULT '',
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`rootid`),KEY(`externalID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";
