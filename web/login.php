@@ -106,11 +106,18 @@ if ($ui->st('w', 'get') == 'lo') {
     }
 
 } else if ($ui->st('w', 'get') == 'ba') {
+
+    $serviceProviders = getServiceProviders();
+
     $sus = $sprache->banned;
     $include = 'login.tpl';
 
 } else if ($ui->st('w', 'get') == 'up') {
+
+    $serviceProviders = getServiceProviders();
+
     $sus=($ui->escaped('error', 'get')) ? 'External Auth failed: ' . htmlentities(base64_decode(urldecode($ui->escaped('error', 'get')))) : $sprache->bad_up;
+
     $include = 'login.tpl';
 
 } else if ($ui->st('w', 'get') == 'pr') {
@@ -418,26 +425,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             $sus = $e;
 
-            $serviceProviders = array();
-            $query = $sql->prepare("SELECT `filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
-            $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-                $cssIcon = strtolower($row['filename']);
-
-                if ($cssIcon == 'google') {
-                    $cssIcon = 'google-plus';
-                } else if ($cssIcon == 'live') {
-                    $cssIcon = 'windows';
-                }
-
-                $serviceProviders[$row['filename']] = strtolower($cssIcon);
-
-            }
-
-            if (count($serviceProviders) > 0) {
-                $htmlExtraInformation['css'][] = (is_file(EASYWIDIR . '/css/' . $template_to_use . '/social_buttons.css')) ? '<link href="css/' . $template_to_use . '/social_buttons.css" rel="stylesheet">' : '<link href="css/default/social_buttons.css" rel="stylesheet">';
-            }
+            $serviceProviders = getServiceProviders();
 
             $include = 'login.tpl';
         }
@@ -455,27 +443,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
     if (!isset($include) and !isset($passwordCorrect) and !$ui->username('username', 255, 'post') and !$ui->ismail('username', 255, 'post') and !$ui->password('password', 255, 'post') and !isset($_SESSION['sessionid'])) {
 
-        $serviceProviders = array();
-
-        $query = $sql->prepare("SELECT `filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
-        $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-            $cssIcon = strtolower($row['filename']);
-
-            if ($cssIcon == 'google') {
-                $cssIcon = 'google-plus';
-            } else if ($cssIcon == 'live') {
-                $cssIcon = 'windows';
-            }
-
-            $serviceProviders[$row['filename']] = strtolower($cssIcon);
-
-        }
-
-        if (count($serviceProviders) > 0) {
-            $htmlExtraInformation['css'][] = (is_file(EASYWIDIR . '/css/' . $template_to_use . '/social_buttons.css')) ? '<link href="css/' . $template_to_use . '/social_buttons.css" rel="stylesheet">' : '<link href="css/default/social_buttons.css" rel="stylesheet">';
-        }
+        $serviceProviders = getServiceProviders();
 
         $include = 'login.tpl';
 
@@ -610,10 +578,10 @@ if ($ui->st('w', 'get') == 'lo') {
                     }
 
 
-                } else if ($xmlReply and isset($xmlReply->error)) {
+                } else if ($xmlReply and strlen($xmlReply->error) > 0) {
                     $externalAuthError = $xmlReply->error;
 
-                } else if ($reply != null and $reply != false) {
+                } else {
                     $externalAuthError = $reply;
                 }
             }
