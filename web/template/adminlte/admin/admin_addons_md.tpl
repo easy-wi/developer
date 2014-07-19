@@ -1,0 +1,117 @@
+<section class="content-header">
+    <h1><?php echo $sprache->heading_addons.' '.$gsprache->mod;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><?php echo $sprache->heading_addons;?></a></li>
+        <li><?php echo $gsprache->mod;?></li>
+        <li class="active"><?php echo $menudescription;?></li>
+    </ol>
+</section>
+
+<!-- Main Content -->
+<section class="content">
+
+    <div class="box box-info">
+        <div class="box-body">
+            <?php if (count($errors)>0){ ?>
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <h4><?php echo $gsprache->errors;?></h4>
+                <?php echo implode(', ',$errors);?>
+            </div>
+            <?php }?>
+
+            <form role="from" action="admin.php?w=ad&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ad" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+                <input type="hidden" name="token" value="<?php echo token();?>">
+                <input type="hidden" name="action" value="md">
+                <div class="form-group">
+                    <label for="inputGame2"><?php echo $sprache->game2;?></label>
+                        <select class="form-control" id="inputGame2" multiple="multiple" name="shorten[]">
+                            <?php foreach ($gamesAssigned as $sid => $shorten){ ?><option value="<?php echo $sid;?>" <?php if(in_array($sid,$shortens)) echo 'selected="selected"';?>><?php echo $shorten;?></option><?php }?>
+                        </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputEditRequires"><?php echo $sprache->requires;?></label>
+                        <select class="form-control" id="inputEditRequires" name="depending">
+                            <option value="0"><?php echo $gsprache->no;?></option>
+                            <?php foreach ($dependings as $depending) echo $depending; ?>
+                        </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputProtect"><?php echo $sprache->protect;?></label>
+                        <select class="form-control" id="inputProtect" name="paddon">
+                            <option value="N"><?php echo $gsprache->no;?></option>
+                            <option value="Y" <?php if($paddon=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                        </select>
+                </div>
+                
+                <div class="form-group<?php if(isset($errors['type'])) echo ' error';?>">
+                    <label for="inputType"><?php echo $sprache->type;?></label>
+                        <select class="form-control" id="inputType" name="type">
+                            <option value="tool"><?php echo $sprache->tool;?></option>
+                            <option value="map" <?php if($type=='map') echo 'selected="selected"';?>><?php echo $sprache->map;?></option>
+                        </select>
+                </div>
+                
+                <div class="form-group<?php if(isset($errors['addon'])) echo ' error';?>">
+                    <label for="inputAddon"><?php echo $sprache->addon;?></label>
+                    <input class="form-control" id="inputAddon" type="text" name="addon" value="<?php echo $addon;?>">
+                </div>
+                
+                <div class="form-group<?php if(isset($errors['menudescription'])) echo ' error';?>">
+                    <label for="inputAddon2"><?php echo $sprache->addon2;?></label>
+                    <input class="form-control" id="inputAddon2" type="text" name="menudescription" value="<?php echo $menudescription;?>">
+                </div>
+                
+                <div class="form-group<?php if(isset($errors['active'])) echo ' error';?>">
+                    <label for="inputActive"><?php echo $sprache->active;?></label>
+                        <select class="form-control" id="inputActive" name="active">
+                            <option value="Y"><?php echo $gsprache->yes;?></option>
+                            <option value="N" <?php if($active=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                        </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputFolders"><?php echo $sprache->folders;?></label>
+                    <input class="form-control" id="inputFolders" type="text" name="folder" value="<?php echo $folder;?>">
+                </div>
+            
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label for="inputDescription"><?php echo $sprache->description;?></label>
+                        <label>
+                            <?php foreach ($foundLanguages as $array) echo '<input type="checkbox"/>'.$array['checkbox'].'<img src="images/flags/'.$array['lang'].'.png" alt="Flag: '.$array['lang'].'.png"/>';?>
+                        </label>
+                    </div>
+                </div>
+            
+                <?php foreach ($foundLanguages as $array) { ?>
+                <div id="<?php echo $array['lang'];?>" class="form-group <?php echo $array['display'];?>">
+                    <label for="inputLangs-<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></label>
+                    <textarea class="form-control" id="inputLangs-<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]"></textarea>
+                </div>
+                <?php } ?>
+                
+                <div class="form-group">
+                    <label for="inputConfigs"><?php echo $sprache->configs;?></label>
+                    <textarea class="form-control" id="inputConfigs" rows="5" name="configs"><?php echo $configs;?></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputStartCmd"><?php echo $sprache->start;?></label>
+                    <textarea class="form-control" id="inputStartCmd" rows="5" name="cmd"><?php echo $cmd;?></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputRmCmd"><?php echo $sprache->rmcmd;?></label>
+                    <textarea class="form-control" id="inputRmCmd" rows="5" name="rmcmd"><?php echo $rmcmd;?></textarea>
+                </div>
+                	
+                    <label for="inputEdit"></label>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><?php echo $gsprache->save;?> <i class="fa fa-edit"></i></button>
+            </form>
+        </div>
+    </div>
+</section>

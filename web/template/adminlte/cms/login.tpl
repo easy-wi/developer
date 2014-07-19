@@ -66,7 +66,7 @@
                     <input name="captcha" type="text" class="form-control" placeholder="Captcha" pattern="^[\w]{4}$" required>
                 </div>
                 <?php } ?>
-                <button type="submit" class="btn bg-olive btn-block">Login</button>
+                <button type="submit" class="btn bg-blue btn-block">Login</button>
             </div>
             <div class="footer">
 
