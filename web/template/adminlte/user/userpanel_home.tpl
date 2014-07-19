@@ -13,7 +13,6 @@
         <div class="col-md-12">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                 <?php echo $gsprache->help_home;?>
             </div>
         </div>
@@ -24,7 +23,7 @@
 
         <?php if($easywiModules['ti'] and $pa['usertickets']) { ?>
         <section class="col-md-4">
-            <div class="box box-danger" id="loading-example">
+            <div class="box box-info" id="loading-example">
                 <div class="box-header">
                     <i class="fa fa-support"></i>
                     <h3 class="box-title"><?php echo $gsprache->support;?></h3>
@@ -47,7 +46,7 @@
 
         <?php if($easywiModules['ws'] and $vhostcount>0 and $pa['webvhost']) { ?>
         <section class="col-md-3">
-            <div class="box box-danger" id="loading-example">
+            <div class="box box-info" id="loading-example">
                 <div class="box-header">
                     <i class="fa fa-cubes"></i>
 
@@ -67,7 +66,7 @@
 
         <?php if($easywiModules['my'] and $dbcount>0 and ($pa['mysql'] or $pa['mysql'])) { ?>
         <section class="col-md-3">
-            <div class="box box-danger" id="loading-example">
+            <div class="box box-info" id="loading-example">
                 <div class="box-header">
                     <i class="fa fa-database"></i>
 
@@ -88,7 +87,7 @@
         <?php if($easywiModules['gs'] and $gscount>0 and $pa['restart']) { ?>
         <section class="col-md-4">
             <!-- Box (with bar chart) -->
-            <div class="box box-danger" id="loading-example">
+            <div class="box box-info" id="loading-example">
                 <div class="box-header">
                     <i class="fa fa-gamepad"></i>
                     <h3 class="box-title"><?php echo $gsprache->gameserver;?></h3>
@@ -115,7 +114,7 @@
 
         <?php if($easywiModules['vo'] and ($voicecount>0) and $pa['voiceserver']) { ?>
         <section class="col-md-4">
-            <div class="box box-danger" id="loading-example">
+            <div class="box box-info" id="loading-example">
                 <div class="box-header">
                     <i class="fa fa-microphone"></i>
                     <h3 class="box-title"><?php echo $gsprache->voiceserver;?></h3>
