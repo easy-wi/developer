@@ -559,7 +559,7 @@ if (array_value_exists('action', 'add', $data)) {
             $tempArray = array();
 
             $query = $sql->prepare("SELECT `id`,`active`,`queryUpdatetime`,`queryPassword`,`queryMap`,`queryMaxplayers`,`queryNumplayers`,`queryName`,`port5`,`serverid`,`pallowed`,`eacallowed`,`protected`,`brandname`,`tvenable`,`war`,`psince`,`serverip`,`port`,`port2`,`port3`,`port4`,`minram`,`maxram`,`slots`,`taskset`,`cores`,`lendserver`,`externalID`,`jobPending` FROM `gsswitch` WHERE `userid`=? AND `resellerid`=? ORDER BY `serverip`,`port`");
-            $query2 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
+            $query2 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
             $query->execute(array($userArray['userdetails']['id'], $resellerID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -575,6 +575,7 @@ if (array_value_exists('action', 'add', $data)) {
             }
 
             $userArray['gserver'] = $tempArray;
+
             $tempArray = array();
 
             $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `userid`=? AND `resellerid`=?");
@@ -584,6 +585,7 @@ if (array_value_exists('action', 'add', $data)) {
             }
 
             $userArray['voice'] = $tempArray;
+
             $tempArray = array();
 
             $query = $sql->prepare("SELECT `active`,`sid`,`dbname`,`ips`,`max_databases`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`jobPending` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=?");
@@ -593,6 +595,26 @@ if (array_value_exists('action', 'add', $data)) {
             }
 
             $userArray['mysql'] = $tempArray;
+
+            $tempArray = array();
+
+            $query = $sql->prepare("SELECT `dnsID`,`active`,`dns`,`ip`,`port`,`externalID` FROM `voice_dns` WHERE `userID`=? AND `resellerID`=?");
+            $query->execute(array($userArray['userdetails']['id'], $resellerID));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $tempArray[] = $row;
+            }
+
+            $userArray['tsdns'] = $tempArray;
+
+            $tempArray = array();
+
+            $query = $sql->prepare("SELECT `webVhostID`,`active`,`hdd`,`hddUsage`,`dns`,`externalID` FROM `webVhost` WHERE `userID`=? AND `resellerID`=?");
+            $query->execute(array($userArray['userdetails']['id'], $resellerID));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $tempArray[] = $row;
+            }
+
+            $userArray['webspace'] = $tempArray;
 
             if ($apiType == 'xml') {
 
