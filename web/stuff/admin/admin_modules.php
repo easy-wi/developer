@@ -91,7 +91,7 @@ if ($ui->st('action', 'post') and !token(true)) {
         $template_file = ($query->rowCount() == 0) ? $spracheResponse->error_table : $spracheResponse->table_add;
 
     } else if ($ui->st('d', 'get') == 'md' and !$ui->st('action', 'post') and $id < 1001) {
-        
+
         $name = (isset($table[$id]['name'])) ? $table[$id]['name'] : '';
         $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
@@ -104,7 +104,7 @@ if ($ui->st('action', 'post') and !token(true)) {
         $template_file = (isset($table[$id])) ? 'admin_modules_md.tpl' : 'admin_404.tpl';
 
     // Custom Modules
-    } else if ($id > 1000 or $id === null) {
+    } else if ($id > 1000 or $ui->st('d', 'get') == 'ad') {
 
         $dbSuccess = false;
         $file = $ui->config('file', 'post');
@@ -260,15 +260,23 @@ if ($ui->st('action', 'post') and !token(true)) {
                     if (!isset($name)) {
                         $name = $file;
                     }
+
                     $template_file = 'admin_modules_md.tpl';
+
                 } else {
                     $template_file = 'admin_404.tpl';
                 }
+
             } else {
                 $template_file = 'admin_modules_ad.tpl';
             }
         }
     }
+
+    if (!isset($template_file)) {
+        $template_file = 'admin_404.tpl';
+    }
+
 } else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',10, 'get')) {
 
     $id = $ui->id('id',10, 'get');
