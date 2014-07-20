@@ -87,20 +87,20 @@ if (!function_exists('passwordgenerate')) {
 
     function passwordCheck ($password, $storedHash, $username = '', $salt = '') {
 
+        // Easy-WI uses the PHP hash API introduced with version 5.5. Fallbacks in place for older versions.
+
         global $aeskey;
 
-        // Easy-WI uses the PHP hash API introduced with version 5.5.
+        // First check if crypt works properly. With old PHP versions like Debian 6 with 5.3.3 we will run into an error
+        if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
 
-        // Return true in case the password is ok
-        if (password_verify($password, $storedHash)) {
-            return true;
+            // Return true in case the password is ok
+            if (password_verify($password, $storedHash)) {
+                return true;
+            }
 
             // Password is correctly but stored in an old or insecure format. We need to hash it with a secure implementation.
             // Insecure implementations like md5 or sha1 are imported from other systems with the cloud.php job.
-
-            // First check if crypt works properly. With old PHP versions like Debian 6 with 5.3.3 we will run into an error
-        } else if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
-
             if (preg_match('/^[a-z0-9]{32}+$/', $storedHash) and md5($password) == $storedHash) {
                 return password_hash($password, PASSWORD_DEFAULT);
             } else if (preg_match('/^[a-z0-9]{40}+$/', $storedHash) and sha1($password) == $storedHash) {
@@ -111,10 +111,11 @@ if (!function_exists('passwordgenerate')) {
                 return password_hash($password, PASSWORD_DEFAULT);
             }
 
-            // Fallback from fallback since some Admins are either forced to stick to old PHP or are lazy.
+        // Fallback to sha512 since some Admins are either lazy or forced to stick to old PHP.
         } else {
 
             $newSalt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
+
             if (createHash($username, $password, $salt, $aeskey) == $storedHash) {
                 return true;
             } else if (preg_match('/^[a-z0-9]{32}+$/', $storedHash) and md5($password) == $storedHash) {
