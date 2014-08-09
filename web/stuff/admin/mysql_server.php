@@ -744,7 +744,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
     #https://github.com/easy-wi/developer/issues/42 column description added
-    $query = $sql->prepare("SELECT e.`id`,e.`uid`,e.`active`,e.`dbname`,e.`description`,e.`jobPending`,e.`dbSize`,s.`ip`,s.`interface`,u.`cname`,u.`name`,u.`vname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`resellerid`=? ORDER BY $orderby LIMIT $start, $amount");
+    $query = $sql->prepare("SELECT e.`id`,e.`uid`,e.`active`,e.`dbname`,e.`description`,e.`jobPending`,e.`dbSize`,e.`resellerid`,s.`ip`,s.`interface`,u.`cname`,u.`name`,u.`vname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`resellerid`=? ORDER BY $orderby LIMIT $start, $amount");
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='my' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
