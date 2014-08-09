@@ -1365,13 +1365,23 @@ if (!function_exists('passwordgenerate')) {
         $server = null;
         $port = null;
         $path = null;
+        $user = '';
+        $pwd = '';
+
         $fptConnect = str_replace(array('ftp://', 'ftps://'), '', $fptConnect);
 
-        @list($userPWD, $serverData) = explode('@', $fptConnect);
+        $splittedConnectionString = preg_split('/\@/', $fptConnect, -1, PREG_SPLIT_NO_EMPTY);
 
-        @list($user, $pwd) = explode(':', $userPWD);
+        $splittedConnectionStringArrayCount = count($splittedConnectionString) -1;
 
-        if ($serverData) {
+
+        if ($splittedConnectionStringArrayCount > 0) {
+
+            $serverData = $splittedConnectionString[$splittedConnectionStringArrayCount];
+
+            unset($splittedConnectionString[$splittedConnectionStringArrayCount]);
+
+            @list($user, $pwd) = explode(':', implode('@', $splittedConnectionString));
 
             $ex = preg_split('/\//', $serverData, -1, PREG_SPLIT_NO_EMPTY);
             $portServer = $ex[0];

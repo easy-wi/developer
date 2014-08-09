@@ -116,7 +116,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
         $ftp_adresse = ($ui->ip('ftp_adresse', 'post')) ? $ui->ip('ftp_adresse', 'post') : $ui->domain('ftp_adresse', 'post');
 
-        $ftp_password = $ui->password('ftp_password', 20, 'post');
+        $ftp_password = $ui->password('ftp_password', 255, 'post');
         $ftp_port = $ui->port('ftp_port', 'post');
         $ftp_user = $ui->username('ftp_user', 50, 'post');
         $ftp_path = $ui->path('ftp_path', 'post');

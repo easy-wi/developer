@@ -147,7 +147,7 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                     $ftp_adresse = $ui->domain('ftp_adresse', 'post');
                 }
 
-                $ftp_password = $ui->password('ftp_password', 20, 'post');
+                $ftp_password = $ui->password('ftp_password', 255, 'post');
                 $ftp_port = $ui->port('ftp_port', 'post');
                 $ftp_user = $ui->username('ftp_user', 50, 'post');
                 $ftp_path = $ui->path('ftp_path', 'post');
@@ -230,7 +230,7 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         $ftp_adresse = $ui->domain('ftp_adresse', 'post');
     }
 
-    $ftp_password = $ui->password('ftp_password', 20, 'post');
+    $ftp_password = $ui->password('ftp_password', 255, 'post');
     $ftp_port = $ui->port('ftp_port', 'post');
     $ftp_user = $ui->username('ftp_user', 50, 'post');
     $ftp_path = $ui->path('ftp_path', 'post');
@@ -317,7 +317,13 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
     $query = $sql->prepare("SELECT `cname`,`fdlpath` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($user_id, $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $fdlpath=explode('@', $row['fdlpath']);
+
+        $splittedConnectionString = preg_split('/\@/', $row['fdlpath'], -1, PREG_SPLIT_NO_EMPTY);
+        $splittedConnectionStringArrayCount = count($splittedConnectionString) -1;
+        if ($splittedConnectionStringArrayCount > 0) {
+            $fdlpath[1] = $splittedConnectionString[$splittedConnectionStringArrayCount];
+        }
+
         $username = $row['cname'];
     }
 
