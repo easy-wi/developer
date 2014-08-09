@@ -178,7 +178,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
     if (dataExist('identify_server_by', $data)) {
 
-        $query = $sql->prepare("SELECT m.`id`,m.`uid`,m.`active`,m.`sid`,m.`dbname`,u.`cname` FROM `mysql_external_dbs` AS m INNER JOIN ´userdata` AS u ON u.`id`=m.`uid` WHERE m.`" . $from[$data['identify_server_by']] . "`=? AND m.`resellerid`=?");
+        $query = $sql->prepare("SELECT m.`id`,m.`uid`,m.`active`,m.`sid`,m.`dbname`,u.`cname` FROM `mysql_external_dbs` AS m INNER JOIN `userdata` AS u ON u.`id`=m.`uid` WHERE m.`" . $from[$data['identify_server_by']] . "`=? AND m.`resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
