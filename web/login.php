@@ -452,7 +452,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
         $password = $ui->password('password', 255, 'post');
 
-        if (isset($ewCfg) and $ewCfg['captcha'] == 1) {
+        if (isset($ewCfg['captcha']) and $ewCfg['captcha'] == 1) {
 
             if (md5($ui->w('captcha', 4, 'post')) != $_SESSION['captcha']) {
                 $halfhour = date('Y-m-d H:i:s', strtotime('+30 minutes'));
