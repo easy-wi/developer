@@ -410,7 +410,7 @@ class ValidateUserinput {
 
         $check = $this->if_obj_or_str($value, $type, $object);
 
-        if ($check and is_string($check) and preg_match('/^[\w\[\]\(\)\<\>\!\"\.$%&\/=\?*+#]{1,' . $length . '}$/', trim($check))) {
+        if ($check and is_string($check) and preg_match('/^[\w\[\]\-\(\)\<\>\!\"\.$%&\/=\?*+#]{1,' . $length . '}$/', trim($check))) {
             return trim($check);
         } else if ($check) {
             return $this->loop($check, 'password', $type, $length);
