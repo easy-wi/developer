@@ -257,6 +257,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 $ownVhost = $data['ownVhost'];
             }
 
+            if (isExternalID($data['server_external_id']) and $data['identify_server_by'] == 'server_local_id') {
+                $updateArray[] = $data['server_external_id'];
+                $eventualUpdate .= ',`externalID`=?';
+            }
+
             if (count($updateArray) > 0 and count($success['false']) == 0) {
 
                 $eventualUpdate = trim($eventualUpdate,',');

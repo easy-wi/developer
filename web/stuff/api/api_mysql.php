@@ -185,7 +185,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $localID = $row['id'];
             $userID = $row['uid'];
             $hostID = $row['sid'];
-            $name = $row['dbname'];
+            $dbname = $row['dbname'];
             $oldActive = $row['active'];
 
             if ($username != $row['cname']) {
@@ -200,18 +200,18 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             if (!in_array($active, $bad) and $active != $oldActive) {
 
-                $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`manage_host_table`=?,`jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $manage_host_table, $localID, $resellerID));
+                $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `active`=?,`manage_host_table`=?,`jobPending`='Y',`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($active, $manage_host_table, $externalServerID, $localID, $resellerID));
 
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='my' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
 
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerID`) VALUES ('A','my',?,?,?,?,?,NULL,NOW(),'md',?)");
-                $query->execute(array($hostID, $resellerID, $localID, $userID, $name, $resellerID));
+                $query->execute(array($hostID, $resellerID, $localID, $userID, $dbname, $resellerID));
 
             } else {
-                $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `manage_host_table`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($manage_host_table, $localID, $resellerID));
+                $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `manage_host_table`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($manage_host_table, $externalServerID, $localID, $resellerID));
             }
         }
 
@@ -242,11 +242,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $localID = $row['id'];
             $userID = $row['uid'];
-            $name = $row['dbname'];
+            $dbname = $row['dbname'];
             $hostID = $row['sid'];
         }
 
-        if (isset($localID) and isset($name)) {
+        if (isset($localID) and isset($dbname)) {
 
             $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($localID, $resellerID));
@@ -255,7 +255,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $query->execute(array($localID, $resellerID));
 
             $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','my',?,?,?,?,?,NULL,NOW(),'dl',?)");
-            $query->execute(array($hostID, $resellerID, $localID, $userID, $name, $resellerID));
+            $query->execute(array($hostID, $resellerID, $localID, $userID, $dbname, $resellerID));
 
         } else {
             $success['false'][] = 'No database can be found to delete';
@@ -328,7 +328,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
 
 } else {
-
+    $dbname = '';
     $active = '';
     $identifyUserBy = '';
     $localUserID = '';
@@ -365,6 +365,9 @@ if ($apiType == 'xml') {
     $element->appendChild($server);
 
     $server = $responsexml->createElement('active', $active);
+    $element->appendChild($server);
+
+    $server = $responsexml->createElement('dbname', $dbname);
     $element->appendChild($server);
 
     $server = $responsexml->createElement('manage_host_table', $manage_host_table);
