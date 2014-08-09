@@ -72,6 +72,7 @@ $brandname = '';
 $tvenable = '';
 $pallowed = '';
 $name = '';
+$ip = '';
 $port = '';
 $port2 = '';
 $port3 = '';
@@ -425,6 +426,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                         $lastServerID = $query->fetchColumn();
                     }
 
+                    $name = $ip . ':' . $port;
+
                     $query = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query->execute(array($lastServerID, $localServerID, $resellerID));
 
@@ -432,7 +435,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                     $query->execute(array($localServerID, $resellerID));
 
                     $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'ad',?,?)");
-                    $query->execute(array($hostID, $resellerID, $localServerID, $localUserLookupID, $ip . ':' . $port, $json, $resellerID));
+                    $query->execute(array($hostID, $resellerID, $localServerID, $localUserLookupID, $name, $json, $resellerID));
 
                 } else {
                     $success['false'][] = 'Could not write game server to database';
@@ -535,6 +538,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $hostExternalID = $row['externalID'];
             $oldSlots = $row['slots'];
             $name = $row['serverip'] . ':' . $row['port'];
+            $ip = $row['serverip'];
             $oldActive = $row['active'];
             $active = $row['active'];
             $oldPort = $row['port'];
@@ -646,6 +650,11 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 $updateArray[] = $data['port5'];
                 $eventualUpdate .= ',`port5`=?';
                 $port5 = $data['port5'];
+            }
+
+            if (isExternalID($data['server_external_id']) and $data['identify_server_by'] == 'server_local_id') {
+                $updateArray[] = $data['server_external_id'];
+                $eventualUpdate .= ',`externalID`=?';
             }
 
             if (count($updateArray)>0) {
@@ -924,6 +933,9 @@ if ($apiType == 'xml' and !isset($list)) {
     $element->appendChild($key);
 
     $key = $responsexml->createElement('serverName', $name);
+    $element->appendChild($key);
+
+    $key = $responsexml->createElement('ip', $ip);
     $element->appendChild($key);
 
     $key = $responsexml->createElement('port', $port);

@@ -51,6 +51,7 @@ $name = '';
 $private = '';
 $shorten = '';
 $slots = '';
+$ip = '';
 $port = '';
 $identifyUserBy = '';
 $localUserID = '';
@@ -310,7 +311,9 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $hostID = $row['masterserver'];
             $masterServerID = $row['masterserver'];
             $oldSlots = $row['slots'];
+            $ip = $row['ip'];
             $name = $row['ip'] . ':' . $row['port'];
+            $dns = $row['dns'];
             $usedPorts = usedPorts(array($row['ip']));
             $oldActive = $row['active'];
 
@@ -437,6 +440,11 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $updateArray[] = $data['autoRestart'];
                 $eventualUpdate .= ',`autoRestart`=?';
                 $flexSlots = $data['autoRestart'];
+            }
+
+            if (isExternalID($data['server_external_id']) and $data['identify_server_by'] == 'server_local_id') {
+                $updateArray[] = $data['server_external_id'];
+                $eventualUpdate .= ',`externalID`=?';
             }
 
             if (count($updateArray) > 0) {
@@ -668,6 +676,9 @@ if ($apiType == 'xml' and !isset($list)) {
     $element->appendChild($key);
 
     $server = $responsexml->createElement('private', $private);
+    $element->appendChild($server);
+
+    $server = $responsexml->createElement('ip', $ip);
     $element->appendChild($server);
 
     $server = $responsexml->createElement('port', $port);
