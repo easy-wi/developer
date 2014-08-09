@@ -484,6 +484,10 @@ if (array_value_exists('action', 'add', $data)) {
                 $query->execute(array($resellerID, $localID, $localID, $name, json_encode(array('newActive' => $active)), $resellerID));
 
                 updateJobs($localID, $resellerID);
+
+                if ($active == "N") {
+
+                }
             }
 
         } else {
@@ -544,6 +548,7 @@ if (array_value_exists('action', 'add', $data)) {
     $username = (isset($data['username'])) ? $data['username'] : '';
     $externalID = (isset($data['external_id']) and isExternalID($data['external_id']) != '') ? $data['external_id'] : '';
     $localID = (isset($data['localid'])) ? $data['localid'] : '';
+    $showUserDataOnly = (isset($data['show_user_data_only']) and $data['show_user_data_only'] == 1) ? true : false;
 
     if (dataExist('identify_by', $data)) {
 
@@ -553,7 +558,7 @@ if (array_value_exists('action', 'add', $data)) {
             $userArray['userdetails'] = $row;
         }
 
-        if ($query->rowCount() > 0) {
+        if ($query->rowCount() > 0 and $showUserDataOnly == false) {
 
             $list = true;
             $tempArray = array();
@@ -578,7 +583,7 @@ if (array_value_exists('action', 'add', $data)) {
 
             $tempArray = array();
 
-            $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `userid`=? AND `resellerid`=?");
+            $query = $sql->prepare("SELECT `id`,`active`,`autoRestart`,`backup`,`lendserver`,`ip`,`port`,`slots`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`flexSlots`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`dns`,`usedslots`,`uptime`,`maxtraffic`,`maxtraffic`,`filetraffic`,`queryName`,`queryNumplayers`,`queryMaxplayers`,`queryPassword`,`queryUpdatetime`,`externalID`  FROM `voice_server` WHERE `userid`=? AND `resellerid`=?");
             $query->execute(array($userArray['userdetails']['id'], $resellerID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $tempArray[] = $row;
@@ -588,7 +593,7 @@ if (array_value_exists('action', 'add', $data)) {
 
             $tempArray = array();
 
-            $query = $sql->prepare("SELECT `active`,`sid`,`dbname`,`ips`,`max_databases`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`jobPending` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=?");
+            $query = $sql->prepare("SELECT `active`,`id`,`dbname`,`ips`,`max_databases`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`externalID`,`jobPending` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=?");
             $query->execute(array($userArray['userdetails']['id'], $resellerID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $tempArray[] = $row;
@@ -637,18 +642,20 @@ if (array_value_exists('action', 'add', $data)) {
 
     $limit = (isset($data['start']) and is_numeric($data['start']) and isset($data['amount']) and is_numeric($data['amount'])) ? 'LIMIT ' . $data['start'] . ',' . $data['amount'] : '';
 
+    $columns = array('`id`', '`active`', '`salutation`', '`cname`', '`name`', '`vname`', '`mail`', '`city`', '`cityn`', '`street`', '`streetn`', '`language`', '`phone`', '`externalID`');
+
     if (isset($data['notLike']) and wpreg_check($data['notLike'], 255)) {
 
-        $query = $sql->prepare("SELECT `id`,`active`,`cname`,`mail`,`externalID` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' AND (`externalID` IS NULL OR `externalID` NOT LIKE ?) $limit");
+        $query = $sql->prepare("SELECT " . implode(',', $columns) . " FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' AND (`externalID` IS NULL OR `externalID` NOT LIKE ?) " . $limit);
         $query->execute(array($resellerID, $data['notLike'] . '%'));
 
     } else if (isset($data['like']) and wpreg_check($data['like'], 255)) {
 
-        $query = $sql->prepare("SELECT `id`,`active`,`cname`,`mail`,`externalID` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' AND `externalID` LIKE ? $limit");
+        $query = $sql->prepare("SELECT " . implode(',', $columns) . " FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' AND `externalID` LIKE ? " . $limit);
         $query->execute(array($resellerID, $data['like'] . '%'));
 
     } else  {
-        $query = $sql->prepare("SELECT `id`,`active`,`cname`,`mail`,`externalID` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' $limit");
+        $query = $sql->prepare("SELECT " . implode(',', $columns) . " FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ". $limit);
         $query->execute(array($resellerID));
     }
 
@@ -688,10 +695,37 @@ if (array_value_exists('action', 'add', $data)) {
             $listServerXML = $responsexml->createElement('active', $row['active']);
             $listRootServerXML->appendChild($listServerXML);
 
+            $listServerXML = $responsexml->createElement('salutation', $row['salutation']);
+            $listRootServerXML->appendChild($listServerXML);
+
             $listServerXML = $responsexml->createElement('cname', $row['cname']);
             $listRootServerXML->appendChild($listServerXML);
 
+            $listServerXML = $responsexml->createElement('vname', $row['vname']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('name', $row['name']);
+            $listRootServerXML->appendChild($listServerXML);
+
             $listServerXML = $responsexml->createElement('mail', $row['mail']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('city', $row['city']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('cityn', $row['cityn']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('street', $row['street']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('streetn', $row['streetn']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('language', $row['language']);
+            $listRootServerXML->appendChild($listServerXML);
+
+            $listServerXML = $responsexml->createElement('phone', $row['phone']);
             $listRootServerXML->appendChild($listServerXML);
 
             $listServerXML = $responsexml->createElement('externalID', $row['externalID']);
