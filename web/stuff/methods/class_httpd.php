@@ -323,10 +323,9 @@ class HttpdManagement {
 
         if ($this->ssh2Object != false) {
 
-            $cmd = 'r() {' . $this->hostData['httpdCmd'] . ' > /dev/null 2>&1; }; r&';
+            $cmd = 'r() { ' . $this->hostData['httpdCmd'] . ' > /dev/null 2>&1; }; r&';
 
             $this->ssh2Object->exec($cmd);
-
         }
     }
 
