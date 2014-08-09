@@ -1113,7 +1113,7 @@ $defined['userdata'] = array(
     'fdlpath' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'ftpbackup' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'lastlogin' => array("Type"=>"datetime","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'lastlogin' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'logintime' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'accounttype' => array("Type"=>"varchar(1)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'mail_backup' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),

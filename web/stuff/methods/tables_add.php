@@ -1289,7 +1289,7 @@ $query = "CREATE TABLE IF NOT EXISTS `userdata` (
   `fdlpath` varchar(255) DEFAULT NULL,
   `ftpbackup` blob,
   `language` varchar(2) DEFAULT NULL,
-  `lastlogin` datetime NOT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   `logintime` datetime DEFAULT NULL,
   `accounttype` varchar(1) DEFAULT NULL,
   `mail_backup` enum('Y','N') DEFAULT 'Y',

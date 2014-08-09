@@ -192,6 +192,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
             } else {
                 if (strpos(strtolower($rawResponse), 'file not found') === false) {
                     printText('No Json Response. Will retry.');
+                    printText('Raw response was:' . $rawResponse);
                 } else {
                     $left = 0;
                     printText('404: File not found');
