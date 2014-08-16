@@ -31,7 +31,8 @@
                 <div class="controls">
                     <select class="span10" id="inputSSL" name="email_settings_ssl">
                         <option value="N"><?php echo $gsprache->no;?></option>
-                        <option value="T" <?php if($email_settings_ssl=='T') echo 'selected="selected"';?>>STARTTLS</option>
+                        <option value="S" <?php if($email_settings_ssl=='S') echo 'selected="selected"';?>>SSL</option>
+                        <option value="T" <?php if($email_settings_ssl=='T') echo 'selected="selected"';?>>TLS</option>
                     </select>
                 </div>
             </div>

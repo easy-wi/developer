@@ -691,6 +691,7 @@ if (!function_exists('passwordgenerate')) {
             $email_settings_type = $row['email_settings_type'];
 
             if ($email_settings_type == 'S'){
+                $email_settings_ssl = $row['email_settings_ssl'];
                 $email_settings_host = $row['email_settings_host'];
                 $email_settings_port = $row['email_settings_port'];
                 $email_settings_user = $row['email_settings_user'];
@@ -801,6 +802,12 @@ if (!function_exists('passwordgenerate')) {
                     $mail->Host = $email_settings_host;
 
                     $mail->Port = $email_settings_port;
+
+                    if ($email_settings_ssl == 'T') {
+                        $mail->SMTPSecure = 'tls';
+                    } else if ($email_settings_ssl == 'S') {
+                        $mail->SMTPSecure = 'ssl';
+                    }
 
                     $mail->SMTPAuth = true;
 
