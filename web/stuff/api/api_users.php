@@ -65,6 +65,7 @@ $mail_securitybreach = '';
 $mail_serverdown = '';
 $mail_ticket = '';
 $mail_vserver = '';
+$passwordSet = '';
 
 if (array_value_exists('action', 'add', $data)) {
 
