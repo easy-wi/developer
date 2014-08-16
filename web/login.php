@@ -533,7 +533,7 @@ if ($ui->st('w', 'get') == 'lo') {
             $query->execute(array($aeskey, $authLookupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $activeAuth = $row['active'];
-                $portAuth = ($row['ssl'] == 'Y') ? 433 : 80;
+                $portAuth = ($row['ssl'] == 'Y') ? 443 : 80;
                 $userAuth = urlencode($row['user']);
                 $pwdAuth = urlencode($row['decryptedPWD']);
                 $domainAuth = $row['domain'];
