@@ -102,6 +102,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $statsArray = $row;
 }
 
+$statsArray['ticketsTotal'] = $statsArray['ticketsInProcess'] + $statsArray['ticketsNew'];
+$statsArray['warningTotal'] = $statsArray['gameserverNoPassword'] + $statsArray['gameserverNoTag'] + $statsArray['gameserverNotRunning'] + $statsArray['voiceserverCrashed'];
+
 if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get') and !$ui->smallletters('d', 2, 'get'))) {
 
     $statsArray['ticketsPercent'] = (($statsArray['ticketsCompleted'] + $statsArray['ticketsInProcess'] + $statsArray['ticketsNew']) > 0) ? round( ($statsArray['ticketsInProcess'] + $statsArray['ticketsNew']) / ( ($statsArray['ticketsCompleted'] + $statsArray['ticketsInProcess'] + $statsArray['ticketsNew']) / 100), 2) : 0;
