@@ -17,41 +17,27 @@
             </div>
         </div>
     </div>
-    
-    <div class="box-footer clearfix">
-        <ul class="pagination pagination-sm no-margin pull-right">
-            <li><a href="userpanel.php?w=lo&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $zur; ?>"><i class="fa fa-step-backward"></i></a></li>
-            <li><a href="userpanel.php?w=lo&amp;a=20&amp;p=<?php echo $start; ?>">20</a></li>
-            <li><a href="userpanel.php?w=lo&amp;a=50&amp;p=<?php echo $start; ?>">50</a></li>
-            <li><a href="userpanel.php?w=lo&amp;a=100&amp;p=<?php echo $start; ?>">100</a></li>
-            <li><a href="userpanel.php?w=lo&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $vor; ?>"><i class="fa fa-step-forward"></i></a></li>
-        </ul>
-    </div>
-    <br/>
 
     <div class="box box-info">
-        <div class="box-body table-responsive no-padding">
-            <table class="table table-bordered table-hover">
-            <thead>
+        <div class="box-body table-responsive">
+            <table id="dataTable" class="table table-bordered table-hover">
+                <thead>
                 <tr>
                     <th><?php echo $sprache->date;?></th>
                     <th><?php echo $sprache->account;?></th>
                     <th><?php echo $sprache->action;?></th>
                     <th><?php echo $sprache->ip;?></th>
                 </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($table as $table_row) { ?>
+                </thead>
+                <tfoot>
                 <tr>
-                    <td><?php echo $table_row['logday'].' '.$table_row['loghour']; ?></td>
-                    <td><?php echo $table_row['username']; ?></td>
-                    <td><?php echo $table_row['useraction']; ?></td>
-                    <td><?php echo $table_row['ip']; ?></td>
+                    <th><?php echo $sprache->date;?></th>
+                    <th><?php echo $sprache->account;?></th>
+                    <th><?php echo $sprache->action;?></th>
+                    <th><?php echo $sprache->ip;?></th>
                 </tr>
-            <?php } ?>
-            </tbody>
+                </tfoot>
             </table>
         </div><!-- /.box-body -->
     </div><!-- /.box -->
-	
 </section><!-- /.content -->

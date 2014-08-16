@@ -58,7 +58,81 @@ if (!isset($admin_id) and !isset($user_id)) {
     $pa = User_Permissions($user_id);
 }
 
-if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {
+if ($ui->smallletters('w', 9, 'get') == 'datatable') {
+
+    header('Cache-Control: no-cache, must-revalidate');
+    header('Expires: Mon, 1 Jan 1900 00:00:00 GMT');
+    header('Content-type: application/json');
+
+    $array = array('iTotalRecords' => 0, 'iTotalDisplayRecords' => 0, 'aaData' => array());
+
+    $iDisplayStart = ($ui->isinteger('iDisplayStart', 'get')) ? $ui->isinteger('iDisplayStart', 'get') : 0;
+    $iDisplayLength = ($ui->isinteger('iDisplayLength', 'get') and $ui->isinteger('iDisplayLength', 'get') < 51) ? $ui->isinteger('iDisplayLength', 'get') : 10;
+    $iSortCol = ($ui->isinteger('iSortCol_0', 'get')) ? $ui->isinteger('iSortCol_0', 'get') : 0;
+    $sSortDir = ($ui->smallletters('sSortDir_0', 4, 'get') == 'desc') ? 'DESC' : 'ASC';
+    $sSearch = (strlen($ui->escaped('sSearch', 'get')) > 0) ? $ui->escaped('sSearch', 'get') : false;
+
+    if ($ui->smallletters('d', 7, 'get') == 'userlog' and isset($user_id) and $pa['log']) {
+
+        $sprache = getlanguagefile('logs', $user_language, $reseller_id);
+        $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
+
+        $placeholders = array('%%', '%add%', '%dl%', '%del%', '%md%', '%mod%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
+        $replace = array('', $gsprache->add.': ',$gsprache->del.': ',$gsprache->del.': ',$gsprache->mod.': ',$gsprache->mod.': ',$gsprache->start.': ',$gsprache->start.': ',$gsprache->stop.': ',$gsprache->update.': ','','',$gssprache->password.': ',$gssprache->config.': ',$gsprache->import.': ',$gssprache->reinstall.': ',$gsprache->backup,$gsprache->use.': ');
+        $placeholders2 = array('%voserver%', '%gserver%', '%user%', '%fastdl%', '%master%', '%user%', '%root%', '%addon%', '%settings%', '%vserver%', '%ticket_subject%', '%reseller%', '%virtual%', '%eac%', '%resync%', '%virtualimage%', '%template%', '%voserver%', '%emailsettings%', '%dns%', '%tsdns%', '%pmode%');
+        $replace2 = array($gsprache->voiceserver,$gsprache->gameserver,$gsprache->user,$gsprache->fastdownload,$gsprache->master,$gsprache->user,$gsprache->root,$gsprache->addon2,$gsprache->settings,$gsprache->virtual,$gsprache->support,$gsprache->reseller,$gsprache->hostsystem,'Easy Anti Cheat',$gssprache->resync,$gsprache->virtual . ' ' . $gsprache->template,$gsprache->template,$gsprache->voiceserver,'E-Mail '.$gsprache->settings,'TSDNS','TSDNS',$gssprache->protect);
+
+        if ($sSearch) {
+            $sSearch = str_replace($replace, $placeholders, str_replace($replace2, $placeholders2, $sSearch));
+        }
+
+        $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=?");
+        $query->execute(array($user_id, $reseller_id));
+        $array['iTotalRecords'] = $query->fetchColumn();
+
+        if ($sSearch) {
+            $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype`='user' AND l.`userid`=:userid AND l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search)");
+            $query->execute(array(':search' => '%' . $sSearch . '%', ':userid' => $user_id, ':resellerid' => $reseller_id));
+            $array['iTotalDisplayRecords'] = $query->fetchColumn();
+        } else {
+            $array['iTotalDisplayRecords'] = $array['iTotalRecords'];
+        }
+
+        $orderFields = array(0 => '`logdate`', 1 => array('`username`', '`cname`'), 2 => '`useraction`', 3 => '`ip`');
+
+        if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
+            $orderBy = implode(' ' . $sSortDir . ', ', $orderFields[$iSortCol]) . ' ' . $sSortDir;
+        } else if (isset($orderFields[$iSortCol]) and !is_array($orderFields[$iSortCol])) {
+            $orderBy = $orderFields[$iSortCol] . ' ' . $sSortDir;
+        } else {
+            $orderBy = '`logdate` DESC';
+        }
+
+        if ($sSearch) {
+            $query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate`,`cname` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype`='user' AND l.`userid`=:userid AND l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search) ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+            $query->execute(array(':search' => '%' . $sSearch . '%', ':userid' => $user_id, ':resellerid' => $reseller_id));
+        } else {
+            $query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate`,`cname` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype`='user' AND l.`userid`=? AND l.`resellerid`=? ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+            $query->execute(array($user_id, $reseller_id));
+        }
+
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+            if ($row['subuser'] == 0) {
+                $username = $row['username'];
+                $ip = $row['ip'];
+            } else {
+                $username = $row['cname'];
+                $ip = (isanyadmin($row['subuser']) and !isset($admin_id)) ? '' : $row['ip'];
+            }
+
+            $array['aaData'][] = array(($user_language == 'de') ? date('d.m.Y H:m:s', strtotime($row['logdate'])) : $row['logdate'], $username, str_replace($placeholders2, $replace2, str_replace($placeholders, $replace, $row['useraction'])), $ip);
+        }
+    }
+
+    die(json_encode($array));
+
+} else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {
 
     if ($ui->id('userID', 10, 'get')) {
 
