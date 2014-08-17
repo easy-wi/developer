@@ -145,7 +145,9 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         $ipsAvailable = array();
     }
 
-    $template_file = 'ajax_admin_roots_ips.tpl';
+    require_once IncludeTemplate($template_to_use,'ajax_admin_roots_ips.tpl', 'ajax');
+
+    die;
 
 } else if (isset($admin_id) and $pa['fastdl'] and $ui->smallletters('d', 8, 'get') == 'webmaster' and $ui->id('id', 10, 'get')) {
 
@@ -172,7 +174,9 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         $dns = $row['defaultdns'];
     }
 
-    $template_file = 'ajax_admin_web_master.tpl';
+    require_once IncludeTemplate($template_to_use,'ajax_admin_web_master.tpl', 'ajax');
+
+    die;
 
 } else if (isset($user_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 14, 'get') == 'uservoicestats' and $ui->st('w', 'get')) {
 
@@ -188,6 +192,8 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     }
 
     require_once IncludeTemplate($template_to_use,'ajax_userpanel_voice_stats.tpl', 'ajax');
+
+    die;
 
 } else if (isset($admin_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 15, 'get') == 'adminvoicestats' and $ui->st('w', 'get')) {
 
@@ -219,14 +225,8 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     }
 
     require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl', 'ajax');
+
+    die;
 }
 
-if (isset($template_file)) {
-
-    require_once IncludeTemplate($template_to_use, $template_file, 'ajax');
-
-} else {
-
-    die('No Access');
-
-}
+die('No Access');

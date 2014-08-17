@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
+    <accuracy></accuracy>
 	<all>Alle</all>
 	<barin_colour>Indgående trafik</barin_colour>
 	<barout_colour>Udgående trafik</barout_colour>
@@ -31,6 +32,7 @@
     <red>Rød</red>
 	<server>Server</server>
 	<statip>IP/Adresse</statip>
+    <statsFor></statsFor>
 	<subnet>Undernet</subnet>
 	<subnets>Subnets</subnets>
 	<table_name>Tabelnavn</table_name>

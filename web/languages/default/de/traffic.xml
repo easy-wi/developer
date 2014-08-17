@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
+    <accuracy>Genauigkeit</accuracy>
 	<all>Alles</all>
 	<barin_colour>Eingehender Traffic</barin_colour>
 	<barout_colour>Ausgehender Traffic</barout_colour>
@@ -33,6 +34,7 @@
     <red>Rot</red>
 	<server>Server</server>
 	<statip>Adresse/IP</statip>
+    <statsFor>Statistiken für</statsFor>
 	<subnet>Subnet</subnet>
 	<subnets>Subnetze</subnets>
 	<table_name>Tabellen Name</table_name>

@@ -1707,7 +1707,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_server_stats` (
   `installed` decimal(6,2) unsigned NOT NULL,
   `used` decimal(6,2) unsigned NOT NULL,
   `traffic` bigint(19) unsigned NOT NULL,
-  `date` datetime DEFAULT NULL,
+  `date` date NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `uid` int(10) unsigned DEFAULT NULL,
   `count` bigint(19) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT NULL,

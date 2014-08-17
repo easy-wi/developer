@@ -43,6 +43,7 @@ if (!isset($user_id) or $main != 1 or (isset($user_id) and !$pa['voiceserverStat
 }
 
 $sprache = getlanguagefile('traffic', $user_language, $reseller_id);
+$voSprache = getlanguagefile('voice', $user_language, $reseller_id);
 
 if ($ui->w('action', 4, 'post') and !token(true)) {
 
@@ -51,21 +52,48 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 } else {
 
     $data = array();
+    $slotUsage = array();
+    $trafficUsage = array();
 
     $display = $sprache->total;
 
-    if (!$ui->st('kind', 'post') or $ui->st('kind', 'post') == 'al') {
+    $dateRange = ($ui->escaped('dateRange', 'post')) ? $ui->escaped('dateRange', 'post') : date('m/d/Y', strtotime("-6 days")) . ' - ' . date('m/d/Y');
+    $accuracy = (in_array($ui->st('accuracy', 'post'), array('da', 'mo'))) ? $ui->st('accuracy', 'post') : 'da';
 
-        $kind = 'al';
-        $whichdata = '';
+    @list($startDate, $endDate) = explode('-', str_replace(' ', '', $dateRange));
+    @list($startMonth, $startDay, $startYear) = explode('/', $startDate);
+    @list($endMonth, $endDay, $endYear) = explode('/', $endDate);
 
-    } else if ($ui->id('what', 30, 'post') and $ui->st('kind', 'post') == 'se') {
+    if ($endYear > 2000 and $startYear > 2000) {
+
+        $extractOrNormal = ($accuracy == 'mo') ? "CONCAT(EXTRACT(YEAR FROM `date`),'-',EXTRACT(MONTH FROM `date`))" : '`date`';
+
+        $startDateFormatted = date('Y-m-d', strtotime($startYear . '-' . $startMonth . '-' . $startDay));
+        $endDateFormatted = date('Y-m-d', strtotime($endYear . '-' . $endMonth . '-' . $endDay));
+
+        if ($ui->id('serverID', 10, 'post')) {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`installed`)/COUNT(`sid`) AS `averageinstalled`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `sid`=? AND `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($ui->id('serverID', 10, 'post'), $user_id, $reseller_id, $startDateFormatted, $endDateFormatted));
+        } else {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`installed`)/COUNT(`sid`) AS `averageinstalled`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($user_id, $reseller_id, $startDateFormatted, $endDateFormatted));
+        }
+
+        while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $slotUsage[] = "{y: '{$row['groupedDate']}', item1: {$row['averageused']}, item2: {$row['averageinstalled']}}";
+            $trafficUsage[] = "{y: '{$row['groupedDate']}', item1: {$row['fileTrafficMB']}}";
+        }
+    }
+
+
+    $kind = 'al';
+
+    if ($ui->id('serverID', 10, 'post') and $ui->st('kind', 'post') == 'se') {
 
         $kind = 'se';
-        $whichdata = '&amp;shorten=' . $ui->id('what', 30, 'post');
 
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`userid`=? AND v.`resellerid`=? AND v.`resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('what', 30, 'post'), $user_id, $reseller_id));
+        $query->execute(array($ui->id('serverID', 30, 'post'), $user_id, $reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
             $display = $sprache->server . '  ' . $row['ip'] . ':' . $row['port'];
         }
@@ -73,133 +101,71 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`userid`=? AND v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
         $query->execute(array($user_id, $reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-            $server = $row['ip'] . ':' . $row['port'];
-            if ($ui->id('what', 30, 'post') == $row['id']) {
-                $data[] = '<option value='. $row['id'] .' selected="selected">' . $server . '</option>';
-            } else {
-                $data[] = '<option value=' . $row['id'] . '>' . $server . '</option>';
-            }
+            $data[] = ($ui->id('serverID', 10, 'post') == $row['id']) ? '<option value='. $row['id'] .' selected="selected">' . $row['ip'] . ':' . $row['port'] . '</option>' : '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
         }
     }
 
-    if (!isset($ui->post['dmy'])) {
+    $htmlExtraInformation['css'][] = '<link href="css/adminlte/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/daterangepicker/moment.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>';
 
-        $dmy = 'da';
-        $year = date('Y',strtotime('-6 days'));
-        $month = date('m',strtotime('-6 days'));
-        $day = date('d',strtotime('-6 days'));
-        $yearstop = date('Y');
-        $monthstop = date('m');
-        $daystop = date('d');
-        $amount = 7;
+    $htmlExtraInformation['js'][] = "<script type=\"text/javascript\">
 
-    } else if ($ui->post['dmy'] == 'da') {
-
-        $dmy = 'da';
-
-        $year = ($ui->isinteger('yearstart', 'post') and $ui->isinteger('yearstart', 'post') <= date('Y')) ? $ui->isinteger('yearstart', 'post') : date('Y', strtotime('-6 days'));
-        $yearstop = ($ui->isinteger('yearstop', 'post') and $ui->isinteger('yearstop', 'post') <= date('Y')) ? $ui->isinteger('yearstop', 'post') : date('Y');
-
-        $month = ($ui->isinteger('monthstart', 'post') and $ui->isinteger('monthstart', 'post') <= 12) ? $ui->isinteger('monthstart', 'post') : date('m', strtotime('-6 days'));
-        $monthstop = ($ui->isinteger('monthstop', 'post') and $ui->isinteger('monthstop', 'post') <= 12) ? $ui->isinteger('monthstop', 'post') : date('m');
-
-        $day = ($ui->isinteger('daystart', 'post') and $ui->isinteger('daystart', 'post') <= 31) ? $ui->isinteger('daystart', 'post') : date('d', strtotime('-6 days'));
-        $daystop = ($ui->isinteger('daystop', 'post') and $ui->isinteger('daystop', 'post') <= 31) ? $ui->isinteger('daystop', 'post') : date('d');
-
-        $now = date('Y-m-d');
-        $date1 = strtotime("$year-$month-$day");
-        $date2 = strtotime("$yearstop-$monthstop-$daystop");
-        $amount = intval(($date2 - $date1) / 86400) + 1;
-
-        if ($amount < 0 and "$yearstop-$monthstop-$daystop" > $now){
-            $yearstop = date('Y');
-            $monthstop = date('m');
-            $daystop = date('d');
-            $day = date('d',strtotime('-6 days'));
-            $month = date('m',strtotime('-6 days'));
-            $year = date('Y',strtotime('-6 days'));
-            $amount = 7;
+$(function() {
+    //Date range as a button
+    $('#dateRange').daterangepicker(
+        {
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                'Last 7 Days': [moment().subtract('days', 6), moment()],
+                'Last 30 Days': [moment().subtract('days', 29), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+            },
+            startDate: moment().subtract('days', 6),
+            endDate: moment(),
+            opens: 'right'
+        },
+        function(start, end) {
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         }
+    );
+});
+</script>";
 
-    } else if ($ui->post['dmy'] == 'mo') {
+    $htmlExtraInformation['css'][] = '<link href="css/adminlte/morris/morris.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/morris/raphael-min.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/morris/morris.min.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = "<script type=\"text/javascript\">
+$(function() {
+    'use strict';
 
-        $dmy = 'mo';
-        $day = 1;
+    // AREA CHART
+    var area = new Morris.Area({
+        element: 'slot-usage',
+        resize: true,
+        data: [" . implode(',', $slotUsage) . "],
+        xkey: 'y',
+        ykeys: ['item1', 'item2'],
+        labels: ['{$voSprache->usage}', '{$voSprache->slots}'],
+        lineColors: ['#a0d0e0', '#3c8dbc'],
+        hideHover: 'auto'
+    });
 
-        $year = ($ui->isinteger('yearstart', 'post') and $ui->isinteger('yearstart', 'post') <= date('Y')) ? $ui->isinteger('yearstart', 'post') : date('Y', strtotime('-6 days'));
-        $yearstop = ($ui->isinteger('yearstop', 'post') and $ui->isinteger('yearstop', 'post') <= date('Y')) ? $ui->isinteger('yearstop', 'post') : date('Y');
+    // LINE CHART
+    var line = new Morris.Line({
+        element: 'traffic-usage',
+        resize: true,
+        data: [" . implode(',', $trafficUsage) . "],
+        xkey: 'y',
+        ykeys: ['item1'],
+        labels: ['MegaByte'],
+        lineColors: ['#3c8dbc'],
+        hideHover: 'auto'
+    });
+});
+</script>";
 
-        $month = ($ui->isinteger('monthstart', 'post') and $ui->isinteger('monthstart', 'post') <= 12) ? $ui->isinteger('monthstart', 'post') : date('m', strtotime('-6 days'));
-        $monthstop = ($ui->isinteger('monthstop', 'post') and $ui->isinteger('monthstop', 'post') <= 12) ? $ui->isinteger('monthstop', 'post') : date('m');
-
-        $daystop = date('t', strtotime("$yearstop-$monthstop"));
-        $now = date('Y-m');
-        $date1 = strtotime("$year-$month-$day");
-        $add = $date1;
-        $date2 = strtotime("$yearstop-$monthstop-$daystop");
-        $i = 0;
-
-        while ($add <= $date2) {
-            $add = strtotime("+1 months", $add);
-            $i++;
-        }
-
-        $amount = $i;
-
-        if ($amount < 0 or "$yearstop-$monthstop" > $now){
-            $yearstop = date('Y');
-            $monthstop = date('m');
-            $daystop = date('t', strtotime("$yearstop-$monthstop"));
-            $day = 1;
-            $month = date('m', strtotime('-6 months'));
-            $year = date('Y', strtotime('-6 months'));
-            $amount = 7;
-        }
-
-    } else if ($ui->post['dmy'] == 'ye') {
-
-        $dmy = 'ye';
-        $day = 1;
-
-        $year = ($ui->isinteger('yearstart', 'post') and $ui->isinteger('yearstart', 'post') <= date('Y')) ? $ui->isinteger('yearstart', 'post') : date('Y', strtotime('-6 days'));
-        $yearstop = ($ui->isinteger('yearstop', 'post') and $ui->isinteger('yearstop', 'post') <= date('Y')) ? $ui->isinteger('yearstop', 'post') : date('Y');
-
-        $month = 1;
-        $monthstop = 12;
-        $daystop = 31;
-
-        $now = date('Y');
-        $date1 = strtotime($year . '-' . $month . '-' . $day);
-        $date2 = strtotime($yearstop . '-' . $monthstop . '-' . $daystop);
-        $add = $date1;
-        $i = 0;
-
-        while ($add <= $date2) {
-            $add = strtotime('+1 year', $add);
-            $i++;
-        }
-
-        $amount = $i;
-
-        if ($amount < 0 or "$yearstop" > $now){
-            $yearstop = date('Y');
-            $monthstop = 12;
-            $daystop = 31;
-            $day = 1;
-            $month = 1;
-            $year = date('Y', strtotime('-1 year'));
-            $amount = 2;
-        }
-    }
-
-    if ($user_language == 'de') {
-        $startdate = $day . '.' . $month . '.' . $year;
-        $stopdate = $daystop . '.' . $monthstop . '.' . $yearstop;
-    } else {
-        $startdate = $year . '-' . $month . '-' . $day;
-        $stopdate = $yearstop . '-' . $monthstop . '-' . $daystop;
-    }
-
-    $getlink = "images.php?img=vo&amp;from=admin&amp;d={$dmy}&amp;p={$year}&amp;id={$day}&amp;po={$month}&amp;m={$amount}{$whichdata}";
     $template_file = 'userpanel_voice_stats.tpl';
 }

@@ -5,10 +5,14 @@
     <!-- add new calendar event modal -->
 
 
+    <!-- Easy-Wi -->
+    <script src="js/adminlte/easy-wi.js" type="text/javascript"></script>
+
     <!-- jQuery 2.0.2 -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-    <!-- jQuery UI 1.10.3 -->
-    <script src="ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js" type="text/javascript"></script>
+
+    <!-- jQuery UI 1.10.3
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script> -->
 
     <?php echo implode('',$htmlExtraInformation['js']);?>
 
