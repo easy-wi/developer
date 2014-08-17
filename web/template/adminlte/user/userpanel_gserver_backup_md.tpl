@@ -21,35 +21,40 @@
 			</div>
 			<?php }?>
 
-        <form role="form" action="userpanel.php?w=bu&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-            <input type="hidden" name="action" value="md2" >			
-			<div class="form-group<?php if(isset($errors['ftp_adresse'])) echo ' error';?>">
-				<label for="input_ftp_adresse"><?php echo $sprache->ftp_adresse;?></label>
-				<input id="input_ftp_adresse" type="text" class="form-control" name="ftp_adresse" value="<?php echo $ftp_adresse;?>" required/>
-			</div>
-			
-			<div class="form-group<?php if(isset($errors['ftp_port'])) echo ' error';?>">
-				<label for="input_ftp_port"><?php echo $sprache->ftp_port;?></label>
-				<input id="input_ftp_port" type="text" class="form-control" name="ftp_port" value="<?php echo $ftp_port;?>" required/>
-			</div>
-			
-			<div class="form-group<?php if(isset($errors['ftp_user'])) echo ' error';?>">
-				<label for="input_ftp_user"><?php echo $sprache->ftp_user;?></label>
-				<input id="input_ftp_user" type="text" class="form-control" name="ftp_user" value="<?php echo $ftp_user;?>" required/>
-			</div>
-			
-			<div class="form-group<?php if(isset($errors['ftp_password'])) echo ' error';?>">
-				<label for="input_ftp_password"><?php echo $sprache->ftp_password;?></label>
-				<input id="input_ftp_password" type="text" class="form-control" name="ftp_password" value="<?php echo $ftp_password;?>" required/>
-			</div>
-			
-			<div class="form-group<?php if(isset($errors['ftp_path'])) echo ' error';?>">
-				<label for="input_ftp_path"><?php echo $sprache->ftp_path;?></label>
-				<input id="input_ftp_path" type="text" class="form-control" name="ftp_path" value="<?php echo $ftp_path;?>" required/>
-			</div>
+            <form role="form" action="userpanel.php?w=bu&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                <input type="hidden" name="action" value="md2" >
+
+                <div class="form-group<?php if(isset($errors['ftp_adresse'])) echo ' error';?>">
+                    <label for="input_ftp_adresse"><?php echo $sprache->ftp_adresse;?></label>
+                    <input id="input_ftp_adresse" type="text" class="form-control" name="ftp_adresse" value="<?php echo $ftp_adresse;?>" required/>
+                </div>
+
+                <div class="form-group<?php if(isset($errors['ftp_port'])) echo ' error';?>">
+                    <label for="input_ftp_port"><?php echo $sprache->ftp_port;?></label>
+                    <input id="input_ftp_port" type="text" class="form-control" name="ftp_port" value="<?php echo $ftp_port;?>" required/>
+                </div>
+
+                <div class="form-group<?php if(isset($errors['ftp_user'])) echo ' error';?>">
+                    <label for="input_ftp_user"><?php echo $sprache->ftp_user;?></label>
+                    <input id="input_ftp_user" type="text" class="form-control" name="ftp_user" value="<?php echo $ftp_user;?>" required/>
+                </div>
+
+                <div class="form-group<?php if(isset($errors['ftp_password'])) echo ' error';?>">
+                    <label for="input_ftp_password"><?php echo $sprache->ftp_password;?></label>
+                    <input id="input_ftp_password" type="text" class="form-control" name="ftp_password" value="<?php echo $ftp_password;?>" required/>
+                </div>
+
+                <div class="form-group<?php if(isset($errors['ftp_path'])) echo ' error';?>">
+                    <label for="input_ftp_path"><?php echo $sprache->ftp_path;?></label>
+                    <input id="input_ftp_path" type="text" class="form-control" name="ftp_path" value="<?php echo $ftp_path;?>" required/>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="inputEdit"></label>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->save;?></button>
+                </div>
+            </form>
 		</div>
 	</div>
-			<label class="control-label" for="inputEdit"></label>
-			<button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->save;?></button>
-		</form>
 </section>

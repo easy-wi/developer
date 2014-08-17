@@ -14,6 +14,7 @@
         <div class="box-body">
 			<form role="form" action="userpanel.php?w=my&amp;id=<?php echo $id;?>&amp;r=my" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 				<input type="hidden" name="token" value="<?php echo token();?>">
+                <input class="input-group-addon" type="hidden" name="action" value="md">
 
 				<div class="form-group">
 					<label for="inputDescription"><?php echo $sprache->description;?></label>
@@ -26,17 +27,17 @@
 				</div>
 				
 				<?php if($manage_host_table == 'Y'){ ?>
-				<div class="input-group">
-					<label class="input-group-addon" for="ips"><?php echo $sprache->ips;?></label>
+				<div class="form-group">
+					<label for="ips"><?php echo $sprache->ips;?></label>
 					<textarea class="form-control" id="ips" name="ips" rows="5"><?php echo $ips?></textarea>
 				</div>
 				<?php } ?>
 
-				<br/>
+                <div class="form-group">
+                    <label for="inputEdit"></label>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
+                </div>
+            </form>
 		</div>
 	</div>
-					<label for="inputEdit"></label>
-					<button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
-					<input class="input-group-addon" type="hidden" name="action" value="md">
-			</form>
 </section>

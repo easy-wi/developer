@@ -64,7 +64,7 @@
                     <h3 class="box-title"><?php echo $voSprache->slots;?></h3>
                 </div>
                 <div class="box-body chart-responsive">
-                    <div class="chart" id="slot-usage" style="height: 228px;"></div>
+                    <div class="chart" id="slot-usage" style="height: 300px;"></div>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div>

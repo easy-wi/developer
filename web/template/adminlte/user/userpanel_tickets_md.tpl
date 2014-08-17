@@ -13,42 +13,47 @@
     <div class="col-md-6">
         <div class="box box-info">
             <div class="box-body">
-            <form role="form" action="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-                <input type="hidden" name="token" value="<?php echo token();?>">                 
-                
-            	<div class="form-group">
-                    <label><?php echo $sprache->status;?></label>
-                    <input type="text" class="form-control" placeholder="<?php echo $status;?>" disabled/>
-                </div>
-                
-            <?php if($open=="Y") { ?>
-           
-                <div class="form-group">
-                    <label for="priority"><?php echo $sprache->priority;?></label>
-                    <select class="form-control" id="priority" name="userPriority">
-                        <option value="1"><?php echo $sprache->priority_low;?></option>
-                        <option value="2" <?php if($userPriority==2) echo 'selected="selected"'; ?>><?php echo $sprache->priority_medium;?></option>
-                        <option value="3" <?php if($userPriority==3) echo 'selected="selected"'; ?>><?php echo $sprache->priority_high;?></option>
-                        <option value="4" <?php if($userPriority==4) echo 'selected="selected"'; ?>><?php echo $sprache->priority_very_high;?></option>
-                        <option value="5" <?php if($userPriority==5) echo 'selected="selected"'; ?>><?php echo $sprache->priority_critical;?></option>
-                    </select>
-            <?php } ?>
-                </div>
-                <div class="input-group">
-                    <label class="input-group-addon" for="problem"><?php echo $sprache->answer;?></label>
-                    <textarea class="form-control" id="problem" name="ticket" rows="10"></textarea>
-                </div>
-			</div><!-- /.box-body -->
+                <form role="form" action="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="wr">
+
+                    <div class="form-group">
+                        <label for="inputStatus"><?php echo $sprache->status;?></label>
+                        <input id="inputStatus" type="text" class="form-control" placeholder="<?php echo $status;?>" disabled/>
+                    </div>
+
+                    <?php if($open=="Y") { ?>
+
+                    <div class="form-group">
+                        <label for="priority"><?php echo $sprache->priority;?></label>
+                        <select class="form-control" id="priority" name="userPriority">
+                            <option value="1"><?php echo $sprache->priority_low;?></option>
+                            <option value="2" <?php if($userPriority==2) echo 'selected="selected"'; ?>><?php echo $sprache->priority_medium;?></option>
+                            <option value="3" <?php if($userPriority==3) echo 'selected="selected"'; ?>><?php echo $sprache->priority_high;?></option>
+                            <option value="4" <?php if($userPriority==4) echo 'selected="selected"'; ?>><?php echo $sprache->priority_very_high;?></option>
+                            <option value="5" <?php if($userPriority==5) echo 'selected="selected"'; ?>><?php echo $sprache->priority_critical;?></option>
+                        </select>
+                        <?php } ?>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="problem"><?php echo $sprache->answer;?></label>
+                        <textarea class="form-control" id="problem" name="ticket" rows="10"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" for="inputEdit"></label>
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
+            </div><!-- /.box-body -->
         </div><!-- /.box -->
-					<label class="control-label" for="inputEdit"></label>
-						<button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                        <input type="hidden" name="action" value="wr">
-        </form>
     </div><!-- ./col -->
 
-<!-- timeline time label -->
+    <!-- timeline time label -->
     <div class="col-md-6">
-    <?php foreach ($table as $table_row) { ?>
+        <?php foreach ($table as $table_row) { ?>
         <ul class="timeline">
 
             <li class="time-label">
@@ -69,10 +74,10 @@
                     <div class='timeline-footer'>
                     </div>
                 </div>
-            </li> 
+            </li>
         </ul>
-	<?php } ?>
-	</div><!-- ./col -->
-<!-- END timeline item -->
+        <?php } ?>
+    </div><!-- ./col -->
+    <!-- END timeline item -->
 </section>
 

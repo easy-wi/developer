@@ -14,44 +14,48 @@
         <div class="box-body">
 
 			<form role="form" action="userpanel.php?w=ti&amp;d=ad&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+
 				<input type="hidden" name="token" value="<?php echo token();?>">
-				<div class="input-group">
-                    <label class="input-group-addon" for="priority"><i class="fa fa-unsorted"></i></label>
-					<select class="form-control" id="priority" name="userPriority">
+                <input type="hidden" name="action" value="ad">
+
+                <div class="form-group">
+                    <label for="priority"><?php echo $sprache->priority;?></label>
+                    <select class="form-control" id="priority" name="userPriority">
                         <option value="1"><?php echo $sprache->priority_low;?></option>
                         <option value="2"><?php echo $sprache->priority_medium;?></option>
                         <option value="3"><?php echo $sprache->priority_high;?></option>
                         <option value="4"><?php echo $sprache->priority_very_high;?></option>
                         <option value="5"><?php echo $sprache->priority_critical;?></option>
-					</select>
-				</div>
-                <br/>
-				<div class="input-group">
-                    <label class="input-group-addon" for="topic_name" title="Kategorie"><i class="fa fa-folder-open"></i></label>
-					<select class="form-control" id="topic_name" name="maintopic" onchange="getdetails('serverallocation.php?d=rt&amp;po=', this.value)">
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="topic_maintopic"><?php echo $sprache->topic_name;?></label>
+                    <select class="form-control" id="topic_maintopic" name="maintopic" onchange="getdetails('ajax.php?d=userTicketCategories&amp;topicName=', this.value, 'topic_name_sub')">
                         <?php foreach ($table as $table_row){ ?>
                         <option value="<?php echo $table_row['id'];?>" ><?php echo $table_row['topic'];?></option>
                         <?php } ?>
-					</select>
-				</div>
-                <br/>
-				<div class="input-group">
-                    <label class="input-group-addon" for="topic_name"><i class="fa fa-folder-open"></i></label>
-					<select class="form-control" id="topic_name" name="topic">
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="topic_name"><?php echo $sprache->topic_name_sub;?></label>
+                    <select class="form-control" id="topic_name_sub" name="topic">
                         <?php foreach ($table2 as $table_row2){ ?>
                         <option value="<?php echo $table_row2['id'];?>" ><?php echo $table_row2['topic'];?></option>>
                         <?php } ?>
-					</select>
-				</div>
-                <br/>
-                <div class="input-group">
-                    <label class="input-group-addon" for="problem"><?php echo $sprache->problem;?></label>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="problem"><?php echo $sprache->problem;?></label>
                     <textarea class="form-control" id="problem" name="ticket" rows="10"></textarea>
                 </div>
-        		<br/>
-					<label for="inputEdit"></label>
-						<button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                        <input type="hidden" name="action" value="ad">
+
+                <div class="form-group">
+                    <label for="inputEdit"></label>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                </div>
 			</form>
         </div>
 	</div>
