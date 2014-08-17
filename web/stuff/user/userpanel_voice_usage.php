@@ -92,7 +92,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $kind = 'se';
 
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`userid`=? AND v.`resellerid`=? AND v.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`userid`=? AND v.`resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('serverID', 30, 'post'), $user_id, $reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
             $display = $sprache->server . '  ' . $row['ip'] . ':' . $row['port'];
