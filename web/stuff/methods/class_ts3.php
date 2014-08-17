@@ -595,7 +595,14 @@ class TS3 {
             'connection_filetransfer_bytes_sent_total' => '',
             'connection_filetransfer_bytes_received_total' => '',
             'connection_bytes_sent_total' => '',
-            'connection_bytes_received_total' => ''
+            'connection_bytes_received_total' => '',
+            'virtualserver_reserved_slots' => '',
+            'virtualserver_needed_identity_security_level' => '',
+            'virtualserver_hostmessage_mode' => '',
+            'virtualserver_hostbanner_gfx_interval' => '',
+            'virtualserver_antiflood_points_tick_reduce' => '',
+            'virtualserver_antiflood_points_needed_command_block' => '',
+            'virtualserver_antiflood_points_needed_ip_block' => ''
         );
 
         $useserver = $this->UseServer($virtualserver_id);
@@ -604,36 +611,38 @@ class TS3 {
 
             $serverdetails_query = $this->SendCommand('serverinfo');
 
-            $serverdetails = array(
-                'virtualserver_name' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_name']),
-                'virtualserver_welcomemessage' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_welcomemessage']),
-                'virtualserver_hostbanner_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbanner_url']),
-                'virtualserver_hostbanner_gfx_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbanner_gfx_url']),
-                'virtualserver_hostbutton_tooltip' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_tooltip']),
-                'virtualserver_hostbutton_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_url']),
-                'virtualserver_hostbutton_gfx_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_gfx_url']),
-                'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
-                'virtualserver_flag_password' => $serverdetails_query[0]['virtualserver_flag_password'],
-                'virtualserver_max_download_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_download_total_bandwidth'],
-                'virtualserver_max_upload_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_upload_total_bandwidth'],
-                'virtualserver_clientsonline' => $serverdetails_query[0]['virtualserver_clientsonline'],
-                'virtualserver_queryclientsonline' => $serverdetails_query[0]['virtualserver_queryclientsonline'],
-                'virtualserver_uptime' => $serverdetails_query[0]['virtualserver_uptime'],
-                'virtualserver_status' => $serverdetails_query[0]['virtualserver_status'],
-                'connection_filetransfer_bytes_sent_total' => $serverdetails_query[0]['connection_filetransfer_bytes_sent_total'],
-                'connection_filetransfer_bytes_received_total' => $serverdetails_query[0]['connection_filetransfer_bytes_received_total'],
-                'connection_bytes_sent_total' => $serverdetails_query[0]['connection_bytes_sent_total'],
-                'connection_bytes_received_total' => $serverdetails_query[0]['connection_bytes_received_total'],
+            if (isset($serverdetails_query[0]['virtualserver_clientsonline'])) {
+                $serverdetails = array(
+                    'virtualserver_name' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_name']),
+                    'virtualserver_welcomemessage' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_welcomemessage']),
+                    'virtualserver_hostbanner_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbanner_url']),
+                    'virtualserver_hostbanner_gfx_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbanner_gfx_url']),
+                    'virtualserver_hostbutton_tooltip' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_tooltip']),
+                    'virtualserver_hostbutton_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_url']),
+                    'virtualserver_hostbutton_gfx_url' => $this->ReplaceFromTS3($serverdetails_query[0]['virtualserver_hostbutton_gfx_url']),
+                    'virtualserver_maxclients' => $serverdetails_query[0]['virtualserver_maxclients'],
+                    'virtualserver_flag_password' => $serverdetails_query[0]['virtualserver_flag_password'],
+                    'virtualserver_max_download_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_download_total_bandwidth'],
+                    'virtualserver_max_upload_total_bandwidth' => $serverdetails_query[0]['virtualserver_max_upload_total_bandwidth'],
+                    'virtualserver_clientsonline' => $serverdetails_query[0]['virtualserver_clientsonline'],
+                    'virtualserver_queryclientsonline' => $serverdetails_query[0]['virtualserver_queryclientsonline'],
+                    'virtualserver_uptime' => $serverdetails_query[0]['virtualserver_uptime'],
+                    'virtualserver_status' => $serverdetails_query[0]['virtualserver_status'],
+                    'connection_filetransfer_bytes_sent_total' => $serverdetails_query[0]['connection_filetransfer_bytes_sent_total'],
+                    'connection_filetransfer_bytes_received_total' => $serverdetails_query[0]['connection_filetransfer_bytes_received_total'],
+                    'connection_bytes_sent_total' => $serverdetails_query[0]['connection_bytes_sent_total'],
+                    'connection_bytes_received_total' => $serverdetails_query[0]['connection_bytes_received_total'],
 
-                # Ticket https://github.com/easy-wi/developer/issues/13 "Bearbeiten von TS3 Servern im Usermodul erweitern"
-                'virtualserver_reserved_slots' => $serverdetails_query[0]['virtualserver_reserved_slots'],
-                'virtualserver_needed_identity_security_level' => $serverdetails_query[0]['virtualserver_needed_identity_security_level'],
-                'virtualserver_hostmessage_mode' => $serverdetails_query[0]['virtualserver_hostmessage_mode'],
-                'virtualserver_hostbanner_gfx_interval' => $serverdetails_query[0]['virtualserver_hostbanner_gfx_interval'],
-                'virtualserver_antiflood_points_tick_reduce' => $serverdetails_query[0]['virtualserver_antiflood_points_tick_reduce'],
-                'virtualserver_antiflood_points_needed_command_block' => $serverdetails_query[0]['virtualserver_antiflood_points_needed_command_block'],
-                'virtualserver_antiflood_points_needed_ip_block' => $serverdetails_query[0]['virtualserver_antiflood_points_needed_ip_block']
-            );
+                    # Ticket https://github.com/easy-wi/developer/issues/13 "Bearbeiten von TS3 Servern im Usermodul erweitern"
+                    'virtualserver_reserved_slots' => $serverdetails_query[0]['virtualserver_reserved_slots'],
+                    'virtualserver_needed_identity_security_level' => $serverdetails_query[0]['virtualserver_needed_identity_security_level'],
+                    'virtualserver_hostmessage_mode' => $serverdetails_query[0]['virtualserver_hostmessage_mode'],
+                    'virtualserver_hostbanner_gfx_interval' => $serverdetails_query[0]['virtualserver_hostbanner_gfx_interval'],
+                    'virtualserver_antiflood_points_tick_reduce' => $serverdetails_query[0]['virtualserver_antiflood_points_tick_reduce'],
+                    'virtualserver_antiflood_points_needed_command_block' => $serverdetails_query[0]['virtualserver_antiflood_points_needed_command_block'],
+                    'virtualserver_antiflood_points_needed_ip_block' => $serverdetails_query[0]['virtualserver_antiflood_points_needed_ip_block']
+                );
+            }
 
             if ($this->debug == true){
                 print "Serverdetails:";
@@ -752,7 +761,7 @@ class TS3 {
             $servergroups = $this->SendCommand('servergrouplist');
 
             foreach ($servergroups as $servergroup) {
-                if ($servergroup['type'] == 1) {
+                if (isset($servergroup['type']) and $servergroup['type'] == 1) {
                     $admingroupid[$servergroup['sgid']] = $this->ReplaceFromTS3($servergroup['name']);
                 }
             }
@@ -860,7 +869,9 @@ class TS3 {
             $servergroups = $this->SendCommand('servergrouplist');
 
             foreach ($servergroups as $servergroup) {
-                $return[] = array('id' => $servergroup['sgid'], 'name' => $this->ReplaceFromTS3($servergroup['name']),'type' => $servergroup['type']);
+                if (isset($servergroup['sgid'])) {
+                    $return[] = array('id' => $servergroup['sgid'], 'name' => $this->ReplaceFromTS3($servergroup['name']),'type' => $servergroup['type']);
+                }
             }
 
             return $return;
