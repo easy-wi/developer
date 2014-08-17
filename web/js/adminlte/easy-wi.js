@@ -53,3 +53,54 @@ function getdetails(file, str, id) {
     xmlhttp2.open("GET", file, true);
     xmlhttp2.send();
 }
+
+function SwitchShowHideRows (Element, change, showNotIfEmpty) {
+
+    var TheRest = document.getElementsByTagName('div');
+    var amount = TheRest.length;
+    var ElementLenght = Element.length;
+    var foundAmount = 0;
+
+    if(typeof(change)==='undefined') {
+        change = 'switch';
+    }
+
+    for(var x=0; x<amount; x++) {
+        var TheClass = TheRest[x].getAttribute('class');
+        if (TheClass != null) {
+            if (Element == 'init_ready') {
+                if (TheClass.indexOf("display_none") != '-1') {
+                    TheRest[x].style.display = 'none';
+                } else {
+                    TheRest[x].style.display = '';
+                }
+            } else {
+                if (TheClass.indexOf(change)!= -1) {
+
+                    foundElement=TheClass.substring(0, ElementLenght);
+
+                    if (foundElement == Element) {
+                        foundAmount++;
+                    }
+
+                    if (foundElement == Element && TheRest[x].style.display == 'none') {
+                        TheRest[x].style.display = '';
+                    } else if (foundElement != Element && TheRest[x].style.display != 'none') {
+                        TheRest[x].style.display = 'none';
+                    }
+                }
+            }
+        }
+    }
+
+    if (Element != 'init_ready' && foundAmount == 0 && showNotIfEmpty != 1) {
+        for(x=0; x<amount; x++) {
+            TheClass = TheRest[x].getAttribute('class');
+            if (TheClass != null) {
+                if (TheClass.indexOf(change)!= -1) {
+                    TheRest[x].style.display = '';
+                }
+            }
+        }
+    }
+}

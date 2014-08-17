@@ -172,7 +172,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $default_language = $rSA['language'];
 
         $query = $sql->prepare("SELECT * FROM `tickets` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
-        $query2 = $sql->prepare("SELECT t.*,u.`cname`,u.`name`,u.`vname` FROM `tickets_text` t LEFT JOIN `userdata` u ON t.`userID`=u.`id` WHERE t.`ticketID`=? AND t.`resellerID`=? ORDER BY t.`writeDate`");
+        $query2 = $sql->prepare("SELECT t.*,u.`cname`,u.`name`,u.`vname` FROM `tickets_text` t LEFT JOIN `userdata` u ON t.`userID`=u.`id` WHERE t.`ticketID`=? AND t.`resellerID`=? ORDER BY t.`writeDate` DESC");
         $query3 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
         $query4 = $sql->prepare("SELECT `topic` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 
@@ -181,7 +181,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $userPriority = $row['userPriority'];
 
-            $query2->execute(array($id,$reseller_id));
+            $query2->execute(array($id, $reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 $table[] = array('writedate' => ($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'], 'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
             }

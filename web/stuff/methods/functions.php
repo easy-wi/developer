@@ -765,7 +765,7 @@ if (!function_exists('passwordgenerate')) {
                         if ($key != 'server' and $key != 'title' and $key != 'username' and $key != 'shorten' and $key != 'date' and $key != 'emailregards' and $key != 'emailfooter') {
 
                             if ($template == 'emailnewticket' and $key == 'topic') {
-                                $value = $sprache->topic . ' #' . $shorten;
+                                $value = $sprache['topic'] . ' #' . $shorten;
                                 $topic = $value;
                             }
 

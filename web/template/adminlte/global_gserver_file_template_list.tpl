@@ -8,7 +8,7 @@
 
 <!-- Main Content -->
 <section class="content">
-	<?php echo $gsprache->template;?> <a href="<?php echo $targetFile;?>?w=gt&amp;d=ad"<span class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></span></a>
+	<?php echo $gsprache->template;?> <a href="<?php echo $targetFile;?>?w=gt&amp;d=ad"<span class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> <?php echo $gsprache->add;?></span></a>
 
     <div class="box-footer clearfix">
         <ul class="pagination pagination-sm no-margin pull-right">

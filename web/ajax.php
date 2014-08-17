@@ -130,6 +130,9 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         }
     }
 
+    // When searching a table combination that should provide a server and user´s loginname, firstname, lastname. First do a search at usertable and get IDs.
+    // This IDs should be used for doing a `ID` IN (implode(',', $foundIDs)) as it will be faster.
+
     die(json_encode($array));
 
 } else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {
@@ -178,23 +181,6 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
     die;
 
-} else if (isset($user_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 14, 'get') == 'uservoicestats' and $ui->st('w', 'get')) {
-
-    $data = array();
-
-    if ($ui->st('w', 'get') == 'se') {
-
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`userid`=? AND v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' ORDER BY v.`ip`,v.`port`");
-        $query->execute(array($user_id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $data[] = '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
-        }
-    }
-
-    require_once IncludeTemplate($template_to_use,'ajax_userpanel_voice_stats.tpl', 'ajax');
-
-    die;
-
 } else if (isset($admin_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 15, 'get') == 'adminvoicestats' and $ui->st('w', 'get')) {
 
     $data = array();
@@ -227,6 +213,52 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     require_once IncludeTemplate($template_to_use,'ajax_admin_voice_stats.tpl', 'ajax');
 
     die;
+
+} else if (isset($user_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 14, 'get') == 'uservoicestats' and $ui->st('w', 'get')) {
+
+    $data = array();
+
+    if ($ui->st('w', 'get') == 'se') {
+        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`userid`=? AND v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' ORDER BY v.`ip`,v.`port`");
+        $query->execute(array($user_id, $resellerLockupID));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $data[] = '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
+        }
+    }
+
+    require_once IncludeTemplate($template_to_use,'ajax_userpanel_voice_stats.tpl', 'ajax');
+
+    die;
+
+} else if (isset($user_id) and $pa['usertickets'] and $ui->w('d', 20, 'get') == 'userTicketCategories' and $ui->id('topicName', 10, 'get')) {
+
+    $table = array();
+
+    $query = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=? AND `maintopic`!=`id` AND `resellerid`=? ORDER BY `id`");
+    $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
+
+    $query->execute(array($ui->id('topicName', 10, 'get'), $reseller_id));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+        $query2->execute(array($user_language, $row['id'], $reseller_id));
+        $topic = $query2->fetchColumn();
+
+        if (empty($topic)) {
+
+            $query2->execute(array($default_language, $row['id'], $reseller_id));
+            $topic = $query2->fetchColumn();
+
+            if (empty($topic)) {
+                $topic = $row['topic'];
+            }
+        }
+
+        $table[$row['id']] = $topic;
+    }
+
+    require_once IncludeTemplate($template_to_use,'ajax_userpanel_ticket_category.tpl', 'ajax');
+
+    die;
 }
 
-die('No Access');
+die('No Access:'.$ui->smallletters('d', 200, 'get'));
