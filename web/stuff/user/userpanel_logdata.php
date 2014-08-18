@@ -42,38 +42,6 @@ if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['log'])) {
 
 $sprache = getlanguagefile('logs',$user_language,$reseller_id);
 
-$htmlExtraInformation['css'][] = '<link href="css/adminlte/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
-$htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
-$htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
-$htmlExtraInformation['js'][] = '<script type="text/javascript">
-$(function() {
-    $(\'#dataTable\').dataTable({
-        "bPaginate" : true,
-        "bLengthChange" : true,
-        "bFilter" : true,
-        "bSort" : true,
-        "bInfo" : true,
-        "bAutoWidth" : false,
-        "bServerSide" : true,
-        "iDisplayLength" : 10,
-        "aaSorting": [[0,\'desc\']],
-        "sAjaxSource": "ajax.php?w=datatable&d=userlog",
-        "oLanguage": {
-            "oPaginate": {
-                "sFirst": "' . $gsprache->dataTablesFirst . '",
-                "sLast": "' . $gsprache->dataTablesLast . '",
-                "sNext": "' . $gsprache->dataTablesNext . '",
-                "sPrevious": "' . $gsprache->dataTablesPrevious . '"
-            },
-            "sEmptyTable": "' . $gsprache->dataTablesEmptyTable . '",
-            "sInfo": "' . $gsprache->dataTablesInfo . '",
-            "sInfoEmpty": "' . $gsprache->dataTablesEmpty . '",
-            "sInfoFiltered": "' . $gsprache->dataTablesFiltered . '",
-            "sLengthMenu": "' . $gsprache->dataTablesMenu . '",
-            "sSearch": "' . $gsprache->dataTablesSearch . '",
-            "sZeroRecords": "' . $gsprache->dataTablesNoRecords . '"
-        }
-    });
-});
-</script>';
+configureDateTables('', '0, "desc"', 'ajax.php?w=datatable&d=userlog');
+
 $template_file = 'userpanel_logs.tpl';

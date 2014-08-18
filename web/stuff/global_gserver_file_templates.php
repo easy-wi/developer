@@ -297,42 +297,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $table[] = array('id' => $row['templateID'], 'name' => $row['name'], 'servertype' => $row['servertype']);
     }
 
-    $htmlExtraInformation['css'][] = '<link href="css/adminlte/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
-    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
-    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
-    $htmlExtraInformation['js'][] = '<script type="text/javascript">
-$(function() {
-    $(\'#dataTable\').dataTable({
-        "bPaginate": true,
-        "bLengthChange": true,
-        "bFilter": true,
-        "bSort": true,
-        "aoColumnDefs": [{
-            "bSortable": false,
-            "aTargets": [-1, -2]
-        }],
-        "bInfo": true,
-        "bAutoWidth": false,
-        "iDisplayLength" : 10,
-        "aaSorting": [[0,\'asc\']],
-        "oLanguage": {
-            "oPaginate": {
-                "sFirst": "' . $gsprache->dataTablesFirst . '",
-                "sLast": "' . $gsprache->dataTablesLast . '",
-                "sNext": "' . $gsprache->dataTablesNext . '",
-                "sPrevious": "' . $gsprache->dataTablesPrevious . '"
-            },
-            "sEmptyTable": "' . $gsprache->dataTablesEmptyTable . '",
-            "sInfo": "' . $gsprache->dataTablesInfo . '",
-            "sInfoEmpty": "' . $gsprache->dataTablesEmpty . '",
-            "sInfoFiltered": "' . $gsprache->dataTablesFiltered . '",
-            "sLengthMenu": "' . $gsprache->dataTablesMenu . '",
-            "sSearch": "' . $gsprache->dataTablesSearch . '",
-            "sZeroRecords": "' . $gsprache->dataTablesNoRecords . '"
-        }
-    });
-});
-</script>';
+    configureDateTables('-1, -2');
 
     $template_file = 'global_gserver_file_template_list.tpl';
 }

@@ -22,26 +22,30 @@
         </div>
     </div>
 
-    <div class="box box-info">
-        <div class="box-body">
-            <form role="form" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <form role="form" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                <input type="hidden" name="action" value="ad">
+                        <input type="hidden" name="action" value="ad">
 
-                <div class="form-group">
-                    <label for="groupname"><?php echo $sprache->groupname;?></label>
-                    <select class="form-control" id="groupname" name="group">
-                        <?php foreach ($servergroups as $id => $name) { ?>
-                        <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
-                        <?php } ?>
-                    </select>
+                        <div class="form-group">
+                            <label for="groupname"><?php echo $sprache->groupname;?></label>
+                            <select class="form-control" id="groupname" name="group">
+                                <?php foreach ($servergroups as $id => $name) { ?>
+                                <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputEdit"></label>
+                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-plus"></i> <?php echo $gsprache->add;?></button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="form-group">
-                    <label for="inputEdit"></label>
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-plus"></i> <?php echo $gsprache->add;?></button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </section>

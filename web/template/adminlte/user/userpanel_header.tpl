@@ -56,6 +56,10 @@
 
     <div class="navbar-right">
 
+        <div class="nav navbar-btn pull-right">
+            <a href="login.php?w=lo"><span class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> Logout</span></a>
+        </div>
+
         <ul class="nav navbar-nav">
 
             <?php if($statsArray['ticketsTotal']>0){ ?>
@@ -99,7 +103,6 @@
                     <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                     <li class="divider"></li>
                     <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>
-                    <li><a href="login.php?w=lo"><i class="fa fa-sign-out"></i> Logout</a></li>
                     <li><a href="userpanel.php?w=se&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                     <li><a href="userpanel.php?w=se"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                     <li class="divider"></li>

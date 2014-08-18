@@ -71,6 +71,7 @@
 	<isnot>ist nicht</isnot>
 	<keyname>Name der Public Keyfile</keyname>
 	<keyuse>Public Keyfile benutzen</keyuse>
+    <lastNickname>Letzter Nickname</lastNickname>
 	<left>verbleibend</left>
 	<maxserver>Maximum Server</maxserver>
 	<maxslots>Maximum Slots</maxslots>

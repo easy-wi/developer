@@ -10,41 +10,64 @@
 
 <!-- Main Content -->
 <section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
 
-	</p><a href="userpanel.php?w=vo&amp;d=bl&amp;e=ad&amp;id=<?php echo $id;?>"><span class="btn btn-primary"><i class="fa fa-plus"></i> <?php echo $sprache->banAdd;?></span></a></p>
-	
-    <div class="box box-info">
-        <div class="box-body table-responsive no-padding">
-			<table class="table table-hover table-bordered">
-				<thead>
-				<tr>
-					<th><?php echo $sprache->user;?></th>
-					<th><?php echo $sprache->ip;?></th>
-					<th><?php echo $sprache->duration.' '.$sprache->seconds;?></th>
-					<th><?php echo $sprache->ends;?></th>
-					<th><?php echo $sprache->blocked;?></th>
-					<th><?php echo $gsprache->del;?></th>
-				</tr>
-				</thead>
-				<tbody>
-				<?php foreach ($banList as $k => $row) { ?>
-				<tr>
-					<td><?php echo $row['lastnickname'];?></td>
-					<td><?php echo $row['ip'];?></td>
-					<td><?php echo $row['duration'];?></td>
-					<td><?php echo $row['ends'];?></td>
-					<td><?php echo $row['blocked'];?></td>
-					<td>
-						<form method="post" action="userpanel.php?w=vo&amp;d=bl&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
-							<button class="btn btn-danger btn-sm" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i></button>
-							<input type="hidden" name="action" value="dl">
-							<input type="hidden" name="bannID" value="<?php echo $k;?>">
-						</form>
-					</td>
-				</tr>
-				<?php } ?>
-				</tbody>
-			</table>
-		</div>
-	</div>
+                    <div>
+                        <a href="userpanel.php?w=vo&amp;d=bl&amp;e=ad&amp;id=<?php echo $id;?>"><span class="btn btn-primary"><i class="fa fa-plus"></i> <?php echo $sprache->banAdd;?></span></a>
+                    </div>
+
+                    <hr>
+
+                    <div class="box-body table-responsive">
+                        <table id="dataTable" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th><?php echo $sprache->user;?></th>
+                                <th><?php echo $sprache->lastNickname;?></th>
+                                <th><?php echo $sprache->ip;?></th>
+                                <th><?php echo $sprache->duration.' '.$sprache->seconds;?></th>
+                                <th><?php echo $sprache->ends;?></th>
+                                <th><?php echo $sprache->blocked;?></th>
+                                <th><?php echo $gsprache->del;?></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($banList as $k => $row) { ?>
+                            <tr>
+                                <td><?php echo $row['name'];?></td>
+                                <td><?php echo $row['lastnickname'];?></td>
+                                <td><?php echo $row['ip'];?></td>
+                                <td><?php echo $row['duration'];?></td>
+                                <td><?php echo $row['ends'];?></td>
+                                <td><?php echo $row['blocked'];?></td>
+                                <td>
+                                    <form method="post" action="userpanel.php?w=vo&amp;d=bl&amp;id=<?php echo $id;?>&amp;r=vo" name="form" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
+                                        <button class="btn btn-danger btn-sm" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i></button>
+                                        <input type="hidden" name="action" value="dl">
+                                        <input type="hidden" name="bannID" value="<?php echo $k;?>">
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php } ?>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th><?php echo $sprache->user;?></th>
+                                <th><?php echo $sprache->lastNickname;?></th>
+                                <th><?php echo $sprache->ip;?></th>
+                                <th><?php echo $sprache->duration.' '.$sprache->seconds;?></th>
+                                <th><?php echo $sprache->ends;?></th>
+                                <th><?php echo $sprache->blocked;?></th>
+                                <th><?php echo $gsprache->del;?></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>

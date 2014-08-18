@@ -315,6 +315,9 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 } else if (!$ui->smallletters('action', 2, 'post') and !$ui->port('po', 'get')) {
 
                     $pklist = $connection->KeyList($localserverid);
+
+                    configureDateTables('-1', '0, "asc"');
+
                     $template_file = (is_array($pklist)) ? 'userpanel_voiceserver_key_list.tpl' : $spracheResponse->ts_query_success . $pklist;
 
                 } else if ($ui->smallletters('action', 2, 'post') == 'ad') {
@@ -337,6 +340,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                     $insertlog->execute();
                 }
             }
+
             $connection->CloseConnection();
 
         } else {
@@ -815,7 +819,8 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
             if ($ui->st('action', 'post') == 'dl') {
 
-                $template_file = $connection->banDel($volocalserverid, $ui->id('bannID', 19, 'post'));
+                $return = $connection->banDel($volocalserverid, $ui->id('bannID', 19, 'post'));
+                $template_file = ($return) ? $spracheResponse->ts_query_success . $return : $spracheResponse->error_table;
 
             } else if ($ui->st('action', 'post') == 'ad') {
 
@@ -844,10 +849,11 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                         $banCmd .= ' banreason=' . $connection->ReplaceToTS3($ui->escaped('banReason', 'post'));
                     }
 
-                    $connection->banAdd($volocalserverid, $banCmd);
+                    $return = $connection->banAdd($volocalserverid, $banCmd);
+                    $template_file = ($return) ? $spracheResponse->ts_query_success . $return : $spracheResponse->error_table;
 
                     if ($ui->w('banType', 1 , 'post') == 'U') {
-                        $return = $connection->clientKick($volocalserverid, $ui->id('clientUID', 19, 'post'));
+                        $connection->clientKick($volocalserverid, $ui->id('clientUID', 19, 'post'));
                     }
 
                 } else {
@@ -868,6 +874,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
                 $template_file = 'userpanel_voiceserver_ban_list.tpl';
 
+                configureDateTables('-1', '0, "asc"');
             }
         }
     } else {

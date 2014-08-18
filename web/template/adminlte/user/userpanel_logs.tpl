@@ -18,26 +18,31 @@
         </div>
     </div>
 
-    <div class="box box-info">
-        <div class="box-body table-responsive">
-            <table id="dataTable" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th><?php echo $sprache->date;?></th>
-                    <th><?php echo $sprache->account;?></th>
-                    <th><?php echo $sprache->action;?></th>
-                    <th><?php echo $sprache->ip;?></th>
-                </tr>
-                </thead>
-                <tfoot>
-                <tr>
-                    <th><?php echo $sprache->date;?></th>
-                    <th><?php echo $sprache->account;?></th>
-                    <th><?php echo $sprache->action;?></th>
-                    <th><?php echo $sprache->ip;?></th>
-                </tr>
-                </tfoot>
-            </table>
-        </div><!-- /.box-body -->
-    </div><!-- /.box -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body table-responsive">
+                    <table id="dataTable" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th><?php echo $sprache->date;?></th>
+                            <th><?php echo $sprache->account;?></th>
+                            <th><?php echo $sprache->action;?></th>
+                            <th><?php echo $sprache->ip;?></th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th><?php echo $sprache->date;?></th>
+                            <th><?php echo $sprache->account;?></th>
+                            <th><?php echo $sprache->action;?></th>
+                            <th><?php echo $sprache->ip;?></th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+    </div>
 </section><!-- /.content -->

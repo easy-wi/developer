@@ -49,6 +49,7 @@ if ($ui->st('d', 'get') == 'pw') {
         $template_file = 'userpanel_pass.tpl';
 
     } else if ($ui->smallletters('action', 2, 'post') == 'md'){
+
         $errors = array();
 
         if (!$ui->password('password', 255, 'post')) {

@@ -1415,4 +1415,52 @@ if (!function_exists('passwordgenerate')) {
 
         return array('server' => $server, 'port' => $port, 'user' => $user, 'pwd' => $pwd, 'path' => $path);
     }
+
+    function configureDateTables ($doNotHow = '', $defaultSorting = '0, "asc"', $ajaxSource = '') {
+
+        global $htmlExtraInformation, $gsprache;
+
+        if ($ajaxSource != '') {
+            $ajaxSource = '"bServerSide" : true,"sAjaxSource": "' . $ajaxSource. '",';
+        }
+
+        $htmlExtraInformation['css'][] = '<link href="css/adminlte/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
+        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
+        $htmlExtraInformation['js'][] = "<script type='text/javascript'>
+$(function() {
+    $('#dataTable').dataTable({
+        'bPaginate': true,
+        'bLengthChange': true,
+        'bFilter': true,
+        'bSort': true,
+        'aoColumnDefs': [{
+            'bSortable': false,
+            'aTargets': [{$doNotHow}]
+        }],
+        'bInfo': true,
+        'bAutoWidth': false,
+        'iDisplayLength' : 10,
+        'aaSorting': [[{$defaultSorting}]],
+        'oLanguage': {
+            'oPaginate': {
+                'sFirst': '{$gsprache->dataTablesFirst}',
+                'sLast': '{$gsprache->dataTablesLast}',
+                'sNext': '{$gsprache->dataTablesNext}',
+                'sPrevious': '{$gsprache->dataTablesPrevious}'
+            },
+            'sEmptyTable': '{$gsprache->dataTablesEmptyTable}',
+            'sInfo': '{$gsprache->dataTablesInfo}',
+            'sInfoEmpty': '{$gsprache->dataTablesEmpty}',
+            'sInfoFiltered': '{$gsprache->dataTablesFiltered}',
+            'sLengthMenu': '{$gsprache->dataTablesMenu}',
+            'sSearch': '{$gsprache->dataTablesSearch}',
+            'sZeroRecords': '{$gsprache->dataTablesNoRecords}'
+        },
+        $ajaxSource
+    });
+});
+</script>";
+
+    }
 }

@@ -58,6 +58,10 @@
 
         <ul class="nav navbar-nav">
 
+            <div class="nav navbar-btn pull-right">
+                <a href="login.php?w=lo"><span class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> Logout</span></a>
+            </div>
+
             <?php if($statsArray['ticketsTotal']>0){ ?>
             <!-- Messages: style can be found in dropdown.less-->
             <li class="dropdown messages-menu">
@@ -104,7 +108,6 @@
                     <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                     <li class="divider"></li>
                     <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>
-                    <li><a href="login.php?w=lo"><i class="fa fa-sign-out"></i> Logout</a></li>
                     <li><a href="admin.php?w=su&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                     <li><a href="admin.php?w=su"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                     <li class="divider"></li>

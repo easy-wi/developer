@@ -21,27 +21,31 @@
         </div>
     </div>
 
-    <div class="box box-info">
-        <div class="box-body">
-            <div class="form-group">
-                <label><?php echo $sprache->backups;?></label>
-                <input class="form-control" type="text" class="form-control" placeholder="<?php echo $backupcount.'/'.$voice_maxbackup;?>" disabled/>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label><?php echo $sprache->backups;?></label>
+                        <input class="form-control" type="text" class="form-control" placeholder="<?php echo $backupcount.'/'.$voice_maxbackup;?>" disabled/>
+                    </div>
+
+                    <form role="form" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                        <input type="hidden" name="action" value="nb">
+
+                        <div class="form-group">
+                            <label for="name"><?php echo $sprache->backupname;?></label>
+                            <input class="form-control" id="name" type="text" name="name" placeholder="New Backup" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputEdit"></label>
+                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-play"></i> <?php echo $gsprache->exec;?></button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <form role="form" action="userpanel.php?w=vo&amp;d=bu&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-
-                <input type="hidden" name="action" value="nb">
-
-                <div class="form-group">
-                    <label for="name"><?php echo $sprache->backupname;?></label>
-                    <input class="form-control" id="name" type="text" name="name" placeholder="New Backup" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="inputEdit"></label>
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-play"></i> <?php echo $gsprache->exec;?></button>
-                </div>
-            </form>
         </div>
     </div>
 </section>

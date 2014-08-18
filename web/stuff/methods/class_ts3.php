@@ -1010,7 +1010,10 @@ class TS3 {
         $useserver = $this->UseServer($virtualserver_id);
 
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
-            return $this->SendCommand($cmd);
+
+            $rawReturn = $this->SendCommand($cmd);
+
+            return (isset($rawReturn[0]['banid'])) ? 'banid: ' . $rawReturn[0]['banid'] : false;
         }
 
         return false;
@@ -1022,7 +1025,8 @@ class TS3 {
         $useserver = $this->UseServer($virtualserver_id);
 
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
-            return $this->SendCommand('bandel banid=' . $bandID);
+            $rawReturn =  $this->SendCommand('bandel banid=' . $bandID);
+            return (isset($rawReturn[0]['msg'])) ? $rawReturn[0]['msg'] : false;
         }
 
         return false;

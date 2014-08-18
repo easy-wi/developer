@@ -10,20 +10,26 @@
 </section>
 <!-- Main Content -->
 <section class="content">
-	
-	<div class="box box-info">	
-		<div class="box-body">
-			<div class="form-group">
-				<label><?php echo $sprache->dns?></label>
-				<input class="form-control" value="<?php echo $dns;?>" disabled>
-			</div>
-				
-			<form role="form" action="userpanel.php?w=wv&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-				<input type="hidden" name="token" value="<?php echo token();?>">
-				<input type="hidden" name="action" value="ri">
-		</div>
-	</div>
-					<label for="inputEdit"></label>
-					<button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-refresh"></i> <?php echo $dedicatedLanguage->reinstall;?></button>
-			</form>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <form role="form" action="userpanel.php?w=wv&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+
+                        <input type="hidden" name="token" value="<?php echo token();?>">
+                        <input type="hidden" name="action" value="ri">
+
+                    <div class="form-group">
+                        <label for="dns"><?php echo $sprache->dns?></label>
+                        <input id="dns" class="form-control" value="<?php echo $dns;?>" disabled>
+                    </div>
+                        <div class="form-group">
+                            <label for="inputEdit"></label>
+                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-refresh"></i> <?php echo $dedicatedLanguage->reinstall;?></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>

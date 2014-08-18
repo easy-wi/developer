@@ -47,9 +47,12 @@ if (!isset($main) or $main != 1 or !isset($user_id) or !isset($reseller_id) or i
     die;
 }
 
-$sprache = getlanguagefile('user',$user_language,$reseller_id);
+$sprache = getlanguagefile('user', $user_language, $reseller_id);
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
+
 } else if ($ui->id('id', 10, 'get') or $ui->st('d', 'get') == 'ad') {
 
     $template_file = 'userpanel_404.tpl';
@@ -109,7 +112,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
     if (!$ui->st('action', 'post') and $ui->st('d', 'get') == 'ad') {
+
         $randompass = passwordgenerate(10);
+
         $template_file = 'userpanel_substitutes_add.tpl';
 
     } else if (!$ui->st('action', 'post') and $ui->id('id', 10, 'get') and ($ui->st('d', 'get') == 'md' or  $ui->st('d', 'get') == 'dl')) {
@@ -265,8 +270,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `sID`,`loginName`,`active` FROM `userdata_substitutes` WHERE `userID`=? AND `resellerID`=?");
     $query->execute(array($user_id,$reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[] = array('id' => $row['sID'], 'loginName' => $row['loginName'], 'active' => $row['active']);
+        $table[] = array('id' => $row['sID'], 'loginName' => $row['loginName'], 'active' => ($row['active'] == 'Y') ? $gsprache->yes : $gsprache->no);
     }
+
+    configureDateTables('-1, -2', '0, "asc"');
 
     $template_file = 'userpanel_substitutes_list.tpl';
 }

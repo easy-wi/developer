@@ -20,22 +20,30 @@
             </div>
         </div>
     </div>
-	
-	<div class="box box-info">	
-		<div class="box-body">
-			<div class="form-group">
-				<label><?php echo $sprache->help_fdl_hl;?></label>
-				<textarea class="form-control" rows="4"><?php echo $hlCfg;?></textarea>
-			</div>
-		</div>
-	</div>
-	
-	<div class="box box-info">	
-		<div class="box-body">
-			<div class="form-group">
-				<label><?php echo $sprache->help_fdl_cod;?></label>
-				<textarea class="form-control" rows="4"><?php echo $codCfg;?></textarea>
-			</div>
-		</div>
-	</div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label><?php echo $sprache->help_fdl_hl;?></label>
+                        <textarea class="form-control" rows="4"><?php echo $hlCfg;?></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="cfg"><?php echo $sprache->help_fdl_cod;?></label>
+                        <textarea id="cfg" class="form-control" rows="4"><?php echo $codCfg;?></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
