@@ -12,6 +12,17 @@
     <columns>Custom Columns</columns>
     <comments>Kommentare</comments>
 	<databases>DB</databases>
+    <dataTablesEmpty>Keine Einträge zum anzeigen</dataTablesEmpty>
+    <dataTablesEmptyTable>Keine Daten in der Tabelle verfügbar</dataTablesEmptyTable>
+    <dataTablesFiltered> (aus _MAX_ Einträgen insgesamt)</dataTablesFiltered>
+    <dataTablesFirst>Erste</dataTablesFirst>
+    <dataTablesInfo>Zeige _START_ bis _END_ von _TOTAL_ Einträgen</dataTablesInfo>
+    <dataTablesLast>Letzte</dataTablesLast>
+    <dataTablesMenu>_MENU_ Einträge je Seite</dataTablesMenu>
+    <dataTablesNext>Nächste</dataTablesNext>
+    <dataTablesNoRecords>Keine Einträge zum anzeigen</dataTablesNoRecords>
+    <dataTablesPrevious>Vorherige</dataTablesPrevious>
+    <dataTablesSearch>Suche: </dataTablesSearch>
 	<datetime>Datum/Uhrzeit</datetime>
     <dedicated>Dedizierte</dedicated>
 	<del>Löschen</del>

@@ -12,6 +12,17 @@
     <columns>Custom columns</columns>
     <comments>Comments</comments>
 	<databases>Databases</databases>
+    <dataTablesFirst>First</dataTablesFirst>
+    <dataTablesEmpty>No entries to show</dataTablesEmpty>
+    <dataTablesEmptyTable>No data available in table</dataTablesEmptyTable>
+    <dataTablesFiltered> (filtered from _MAX_ total entries)</dataTablesFiltered>
+    <dataTablesInfo>Showing _START_ to _END_ of _TOTAL_ entries</dataTablesInfo>
+    <dataTablesLast>Last</dataTablesLast>
+    <dataTablesMenu>_MENU_ records per page</dataTablesMenu>
+    <dataTablesNext>Next</dataTablesNext>
+    <dataTablesNoRecords>No records to display</dataTablesNoRecords>
+    <dataTablesPrevious>Previous</dataTablesPrevious>
+    <dataTablesSearch>Search: </dataTablesSearch>
 	<datetime>Date/time</datetime>
     <dedicated>Dedicated</dedicated>
 	<del>Delete</del>

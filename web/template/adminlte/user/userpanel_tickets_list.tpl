@@ -31,7 +31,7 @@
     <div class="box box-info">
         <div class="box-body table-responsive no-padding">
             <table class="table table-hover table-bordered">
-            <thead>
+                <thead>
                 <tr>
                     <th><a href="<?php echo $ticketLinks['all'];?>&amp;o=<?php if ($o=='at') { echo 'dt'; } else { echo 'at'; } ?>"><?php echo $sprache->subject;?></a></th>
                     <th><a href="<?php echo $ticketLinks['all'];?>&amp;o=<?php if ($o=='ai') { echo 'di'; } else { echo 'ai'; } ?>">ID</a></th>
@@ -41,9 +41,9 @@
                     <th><a href="<?php echo $ticketLinks['all'];?>&amp;o=<?php if ($o=='ad') { echo 'dd'; } else { echo 'ad'; } ?>"><?php echo $sprache->date;?></a></th>
                     <th><?php echo $gsprache->mod;?></th>
                 </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($table as $table_row) { ?>
+                </thead>
+                <tbody>
+                <?php foreach ($table as $table_row) { ?>
                 <tr class="<?php echo $table_row['statusClass']; ?>">
                     <td><?php echo $table_row['subject']; ?></td>
                     <td><?php echo $table_row['id']; ?></td>
@@ -53,8 +53,8 @@
                     <td><?php echo $table_row['writedate']; ?></td>
                     <td><a href="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $table_row['id'];?>" alt="modify"><span class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></span></a></td>
                 </tr>
-            <?php } ?>
-            </tbody>
+                <?php } ?>
+                </tbody>
             </table>
         </div><!-- /.box-body -->
     </div><!-- /.box -->

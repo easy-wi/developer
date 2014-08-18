@@ -55,6 +55,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $slotUsage = array();
     $trafficUsage = array();
 
+    $menuStart = 6;
+
     $display = $sprache->total;
 
     $dateRange = ($ui->escaped('dateRange', 'post')) ? $ui->escaped('dateRange', 'post') : date('m/d/Y', strtotime("-6 days")) . ' - ' . date('m/d/Y');
@@ -65,6 +67,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     @list($endMonth, $endDay, $endYear) = explode('/', $endDate);
 
     if ($endYear > 2000 and $startYear > 2000) {
+
+        $menuStart = round((strtotime("{$endYear}-{$endMonth}-{$endDay}") - strtotime("{$startYear}-{$startMonth}-{$startDay}")) / 86400);
 
         $extractOrNormal = ($accuracy == 'mo') ? "CONCAT(EXTRACT(YEAR FROM `date`),'-',EXTRACT(MONTH FROM `date`))" : '`date`';
 
@@ -123,7 +127,7 @@ $(function() {
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                 'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
             },
-            startDate: moment().subtract('days', 6),
+            startDate: moment().subtract('days', {$menuStart}),
             endDate: moment(),
             opens: 'right'
         },

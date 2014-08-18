@@ -11,16 +11,23 @@
 <!-- Main Content -->
 <section class="content">
 
+    <?php if (count($errors)>0){ ?>
+    <div class="box box-danger">
+        <div class="box-header">
+            <i class="fa fa-warning"></i>
+            <h3 class="box-title"><?php echo $gsprache->errors;?></h3>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <b><?php echo $gsprache->errors;?>:</b> <?php echo implode(', ',$errors);?>
+            </div>
+        </div>
+    </div>
+    <?php }?>
+
     <div class="box box-info">
         <div class="box-body">
-            <?php if (count($errors)>0){ ?>
-            <div class="alert alert-error">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <h4><?php echo $gsprache->errors;?></h4>
-                <?php echo implode(', ',$errors);?>
-            </div>
-            <?php }?>
-
             <form role="form" action="<?php echo $targetFile;?>?w=gt&amp;d=md&amp;id=<?php echo $id;?>&amp;r=gt" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
                 <input type="hidden" name="token" value="<?php echo token();?>">
@@ -28,7 +35,7 @@
 
                 <div class="form-group<?php if(isset($errors['name'])) echo ' error';?>">
                     <label for="inputName"><?php echo $sprache->description;?></label>
-                    <input class="form-control" id="inputName" type="text" name="name" value="<?php echo $name;?>">
+                    <input class="form-control" id="inputName" type="text" name="name" value="<?php echo $name;?>" required>
                 </div>
 
                 <div id="mods" class="form-group<?php if(isset($errors['servertype'])) echo ' error';?>">
@@ -42,7 +49,7 @@
 
                 <div class="form-group<?php if(isset($errors['content'])) echo ' error';?>">
                     <label for="inputContent"><?php echo $gsprache->template;?></label>
-                    <textarea class="form-control" id="inputContent" rows="20" name="content"><?php echo $content;?></textarea>
+                    <textarea class="form-control" id="inputContent" rows="20" name="content" required><?php echo $content;?></textarea>
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="inputEdit"></label>

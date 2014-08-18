@@ -283,62 +283,56 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else {
 
-    $o = $ui->st('o', 'get');
-
-    if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`id` DESC';
-    } else if ($ui->st('o', 'get') == 'ai') {
-        $orderby = '`id` ASC';
-    } else if ($ui->st('o', 'get') == 'dt') {
-        $orderby = '`servertype` DESC';
-    } else if ($ui->st('o', 'get') == 'at') {
-        $orderby = '`servertype` ASC';
-    } else if ($ui->st('o', 'get') == 'dn') {
-        $orderby = '`name` DESC';
-    } else {
-        $orderby = '`name` ASC';
-        $o = 'as';
-    }
-
-    if (isset($adminInclude)) {
-        $query = $sql->prepare("SELECT COUNT(`templateID`) AS `amount` FROM `gserver_file_templates` WHERE `userID` IS NULL AND `resellerID`=?");
-        $query->execute(array($resellerLockupID));
-    } else {
-        $query = $sql->prepare("SELECT COUNT(`templateID`) AS `amount` FROM `gserver_file_templates` WHERE `userID`=? AND `resellerID`=?");
-        $query->execute(array($user_id, $resellerLockupID));
-    }
-    $colcount = $query->fetchColumn();
-
-    $start = (isset($start) and $start < $colcount) ? $start : 0;
-    $amount = (isset($amount)) ? $amount : 20;
-    $next = $start + $amount;
-    $vor = ($colcount > $next) ? $start + $amount : $start;
-    $back = $start - $amount;
-    $zur = ($back >= 0) ? $start - $amount : $start;
-    $pageamount = ceil($colcount / $amount);
-
-    if (isset($adminInclude)) {
-        $query = $sql->prepare("SELECT `templateID`,`name`,`servertype` FROM `gserver_file_templates` WHERE `userID` IS NULL AND `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
-        $query->execute(array($resellerLockupID));
-    } else {
-        $query = $sql->prepare("SELECT `templateID`,`name`,`servertype` FROM `gserver_file_templates` WHERE `userID`=? AND `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
-        $query->execute(array($user_id, $resellerLockupID));
-    }
     $table = array();
+
+    if (isset($adminInclude)) {
+        $query = $sql->prepare("SELECT `templateID`,`name`,`servertype` FROM `gserver_file_templates` WHERE `userID` IS NULL AND `resellerID`=?");
+        $query->execute(array($resellerLockupID));
+    } else {
+        $query = $sql->prepare("SELECT `templateID`,`name`,`servertype` FROM `gserver_file_templates` WHERE `userID`=? AND `resellerID`=?");
+        $query->execute(array($user_id, $resellerLockupID));
+    }
+
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $table[] = array('id' => $row['templateID'], 'name' => $row['name'], 'servertype' => $row['servertype']);
     }
 
-    $link = '<a href="' . $targetFile . '?w=gt&amp;o=' . $o . '&amp;a=';
-    $link .= (!isset($amount)) ? 20 : $amount;
-    $link .= ($start == 0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
-    $pages[] = $link;
-    $i = 2;
-    while ($i <= $pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        $pages[] = ($start == $selectpage) ? '<a href="' . $targetFile . '?w=gt&amp;a=' . $amount . '&p=' . $selectpage . '&amp;o=' . $o . '" class="bold">' . $i . '</a>' : '<a href="' . $targetFile . '?w=gt&amp;a=' . $amount . '&p=' . $selectpage . '&amp;o=' . $o . '">' . $i . '</a>';
-        $i++;
-    }
-    $pages = implode(', ', $pages);
+    $htmlExtraInformation['css'][] = '<link href="css/adminlte/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = '<script type="text/javascript">
+$(function() {
+    $(\'#dataTable\').dataTable({
+        "bPaginate": true,
+        "bLengthChange": true,
+        "bFilter": true,
+        "bSort": true,
+        "aoColumnDefs": [{
+            "bSortable": false,
+            "aTargets": [-1, -2]
+        }],
+        "bInfo": true,
+        "bAutoWidth": false,
+        "iDisplayLength" : 10,
+        "aaSorting": [[0,\'asc\']],
+        "oLanguage": {
+            "oPaginate": {
+                "sFirst": "' . $gsprache->dataTablesFirst . '",
+                "sLast": "' . $gsprache->dataTablesLast . '",
+                "sNext": "' . $gsprache->dataTablesNext . '",
+                "sPrevious": "' . $gsprache->dataTablesPrevious . '"
+            },
+            "sEmptyTable": "' . $gsprache->dataTablesEmptyTable . '",
+            "sInfo": "' . $gsprache->dataTablesInfo . '",
+            "sInfoEmpty": "' . $gsprache->dataTablesEmpty . '",
+            "sInfoFiltered": "' . $gsprache->dataTablesFiltered . '",
+            "sLengthMenu": "' . $gsprache->dataTablesMenu . '",
+            "sSearch": "' . $gsprache->dataTablesSearch . '",
+            "sZeroRecords": "' . $gsprache->dataTablesNoRecords . '"
+        }
+    });
+});
+</script>';
+
     $template_file = 'global_gserver_file_template_list.tpl';
 }

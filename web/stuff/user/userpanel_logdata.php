@@ -57,7 +57,22 @@ $(function() {
         "bServerSide" : true,
         "iDisplayLength" : 10,
         "aaSorting": [[0,\'desc\']],
-        "sAjaxSource": "ajax.php?w=datatable&d=userlog"
+        "sAjaxSource": "ajax.php?w=datatable&d=userlog",
+        "oLanguage": {
+            "oPaginate": {
+                "sFirst": "' . $gsprache->dataTablesFirst . '",
+                "sLast": "' . $gsprache->dataTablesLast . '",
+                "sNext": "' . $gsprache->dataTablesNext . '",
+                "sPrevious": "' . $gsprache->dataTablesPrevious . '"
+            },
+            "sEmptyTable": "' . $gsprache->dataTablesEmptyTable . '",
+            "sInfo": "' . $gsprache->dataTablesInfo . '",
+            "sInfoEmpty": "' . $gsprache->dataTablesEmpty . '",
+            "sInfoFiltered": "' . $gsprache->dataTablesFiltered . '",
+            "sLengthMenu": "' . $gsprache->dataTablesMenu . '",
+            "sSearch": "' . $gsprache->dataTablesSearch . '",
+            "sZeroRecords": "' . $gsprache->dataTablesNoRecords . '"
+        }
     });
 });
 </script>';
