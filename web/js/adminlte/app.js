@@ -132,11 +132,11 @@ $(function() {
      * We are gonna initialize all checkbox and radio inputs to 
      * iCheck plugin in.
      * You can find the documentation at http://fronteed.com/iCheck/
+     $("input[type='checkbox']:not(.simple), input[type='radio']:not(.simple)").iCheck({
+     checkboxClass: 'icheckbox_minimal',
+     radioClass: 'iradio_minimal'
+     });
      */
-    $("input[type='checkbox']:not(.simple), input[type='radio']:not(.simple)").iCheck({
-        checkboxClass: 'icheckbox_minimal',
-        radioClass: 'iradio_minimal'
-    });
 
 });
 function fix_sidebar() {
