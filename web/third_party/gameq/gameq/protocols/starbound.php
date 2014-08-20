@@ -17,14 +17,17 @@
  */
 
 /**
- * Starbound: Source Protocol Class
+ * Starbound Protocol Class
  *
- * @author Ulrich Block <ulrich.block@easy-wi.com>
- * @Page https://easy-wi.com
+ * Unable to test if player information is returned.  Also appears the challenge procedure
+ * is ignored.
+ *
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-
- class GameQ_Protocols_Starbound extends GameQ_Protocols_Source
+class GameQ_Protocols_Starbound extends GameQ_Protocols_Source
 {
-    protected $name = "starbound";
-    protected $name_long = "Starbound";
+	protected $name = "starbound";
+	protected $name_long = "Starbound";
+
+	protected $port = 21025;
 }
