@@ -3,9 +3,9 @@
     <h1><?php echo $gsprache->webspace.' '.$sprache->ftpPassword;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-		<li><a href="userpanel.php?w=wv"><?php echo $gsprache->webspace;?></a></li>
-		<li><?php echo $sprache->ftpPassword;?></li>
-		<li class="active"><?php echo $dns;?></li>
+        <li><a href="userpanel.php?w=wv"><?php echo $gsprache->webspace;?></a></li>
+        <li><?php echo $sprache->ftpPassword;?></li>
+        <li class="active"><?php echo $dns;?></li>
     </ol>
 </section>
 
@@ -30,12 +30,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=wv&amp;d=pw&amp;id=<?php echo $id;?>&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="userpanel.php?w=wv&amp;d=pw&amp;id=<?php echo $id;?>&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="pw">
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="pw">
 
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="inputPassword1"><?php echo $sprache->ftpPassword;?></label>
                             <input class="form-control" id="inputPassword1" type="password" name="password1" value="" maxlength="40">
@@ -45,13 +45,12 @@
                             <label for="inputPassword2"><?php echo $sprache->ftpPasswordRepeat;?></label>
                             <input class="form-control" id="inputPassword2" type="password" name="password2" value="" maxlength="40">
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save"></i> <?php echo $gsprache->save;?></button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save"></i> <?php echo $gsprache->save;?></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

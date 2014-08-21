@@ -26,8 +26,8 @@
             <div class="box box-info">
                 <div class="box-body">
                     <div class="form-group">
-                        <label><?php echo $sprache->help_fdl_hl;?></label>
-                        <textarea class="form-control" rows="4"><?php echo $hlCfg;?></textarea>
+                        <label for="textarea"><?php echo $sprache->help_fdl_hl;?></label>
+                        <textarea id="textarea" class="form-control" rows="4"><?php echo $hlCfg;?></textarea>
                     </div>
                 </div>
             </div>

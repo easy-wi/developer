@@ -12,12 +12,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=su&amp;d=ad&amp;id=<?php echo $id;?>&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+                <form role="form" action="userpanel.php?w=su&amp;d=ad&amp;id=<?php echo $id;?>&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="ad">
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="ad">
 
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="inputActive"><?php echo $sprache->active;?></label>
                             <select class="form-control" id="inputActive" name="active">
@@ -116,13 +116,12 @@
                             <label for="inputDB-<?php echo $k;?>"><?php echo $v;?></label>
                         </div>
                         <?php }}?>
+                    </div><!-- /.box-body -->
 
-                        <div class="form-group">
-                            <label class="control-label" for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                        </div>
-                    </form>
-                </div><!-- /.box-body -->
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div><!-- /.box -->
         </div>
     </div>

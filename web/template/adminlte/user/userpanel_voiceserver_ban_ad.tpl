@@ -29,11 +29,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=vo&amp;d=bl&amp;e=ad&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="userpanel.php?w=vo&amp;d=bl&amp;e=ad&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                        <input type="hidden" name="action" value="ad">
+                    <input type="hidden" name="action" value="ad">
 
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="inputBanType"><?php echo $sprache->banType;?></label>
                             <select class="form-control" id="inputBanType" name="banType" onchange="SwitchShowHideRows(this.value)">
@@ -71,13 +71,12 @@
                             <label for="inputBanReason"><?php echo $sprache->banReason;?></label>
                             <input class="form-control" id="inputBanReason" type="text" name="banReason" value="Web ban">
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="control-label" for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-plus"></i> <?php echo $sprache->ban;?></button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-plus"></i> <?php echo $sprache->ban;?></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

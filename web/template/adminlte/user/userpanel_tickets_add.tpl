@@ -1,9 +1,9 @@
 <section class="content-header">
     <h1><?php echo $gsprache->support;?></h1>
     <ol class="breadcrumb">
-		<li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-		<li><a href="userpanel.php?w=ti"><?php echo $gsprache->support;?></a></li>
-		<li class="active"><?php echo $gsprache->support2;?></li>
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="userpanel.php?w=ti"><?php echo $gsprache->support;?></a></li>
+        <li class="active"><?php echo $gsprache->support2;?></li>
     </ol>
 </section>
 
@@ -12,13 +12,13 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
 
-                    <form role="form" action="userpanel.php?w=ti&amp;d=ad&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+                <form role="form" action="userpanel.php?w=ti&amp;d=ad&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="ad">
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="ad">
 
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="priority"><?php echo $sprache->priority;?></label>
                             <select class="form-control" id="priority" name="userPriority">
@@ -52,13 +52,12 @@
                             <label for="problem"><?php echo $sprache->problem;?></label>
                             <textarea class="form-control" id="problem" name="ticket" rows="10"></textarea>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

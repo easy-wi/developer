@@ -128,7 +128,7 @@
         </div>
     </div>
                 <label for="inputEdit"></label>
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->save;?></button>
+                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
                     <input class="form-control" type="hidden" name="date" value="<?php echo $date2;?>">
                     <input class="form-control" type="hidden" name="edit2" value="edit">
         	</form>

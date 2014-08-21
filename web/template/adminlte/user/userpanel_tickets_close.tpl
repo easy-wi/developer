@@ -12,13 +12,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
+                <form role="form" action="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                    <form role="form" action="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="cl">
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="cl">
-
+                    <div class="box-body">
                         <div class="form-group">
                             <label class="control-label" for="rating"><?php echo $sprache->rating;?></label>
                             <select class="form-control" id="rating" name="rating">
@@ -35,14 +34,12 @@
                             <label class="control-label" for="comment"><?php echo $sprache->comment;?></label>
                             <textarea class="form-control" id="comment" name="comment" rows="10"></textarea>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="control-label" for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-lock"></i> <?php echo $sprache->close_heading;?></button>
-                        </div>
-
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-lock"></i> <?php echo $sprache->close_heading;?></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

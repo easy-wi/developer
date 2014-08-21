@@ -38,6 +38,7 @@
     <fastdownload>Fastdownload</fastdownload>
     <feeds>Feeds</feeds>
     <file>File</file>
+    <free>Free</free>
     <game>Game</game>
     <gameserver>Game server</gameserver>
     <gameroot>Game root server</gameroot>
@@ -95,6 +96,7 @@
 	<traffic>Traffic</traffic>
 	<update>Update</update>
     <use>Use</use>
+    <used>Used</used>
 	<user>User</user>
     <userImport>User Import</userImport>
 	<virtual>Virtuelle Server</virtual>

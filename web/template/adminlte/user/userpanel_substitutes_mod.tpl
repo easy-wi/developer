@@ -3,8 +3,8 @@
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="userpanel.php?w=su"><?php echo $gsprache->substitutes;?></a></li>
-		<li><a href="userpanel.php?w=su"><?php echo $gsprache->mod;?></a></li>
-		<li class="active"><?php echo $loginName;?></li>
+        <li><a href="userpanel.php?w=su"><?php echo $gsprache->mod;?></a></li>
+        <li class="active"><?php echo $loginName;?></li>
     </ol>
 </section>
 
@@ -13,16 +13,16 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
+                <form action="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $id;?>&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
-                <div class="box-header">
-                    <h3 class="box-title"><?php echo $loginName;?></h3>
-                </div>
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="md">
 
-                <div class="box-body">
-                    <form action="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $id;?>&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+                    <div class="box-header">
+                        <h3 class="box-title"><?php echo $loginName;?></h3>
+                    </div>
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="md">
+                    <div class="box-body">
 
                         <div class="form-group">
                             <label for="inputActive"><?php echo $sprache->active;?></label>
@@ -121,13 +121,12 @@
                             <label class="control-label" for="inputDB-<?php echo $k;?>"><?php echo $v;?></label>
                         </div>
                         <?php }}?>
+                    </div><!-- /.box-body -->
 
-                        <div class="form-group">
-                            <label class="control-label" for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                        </div>
-                    </form>
-                </div><!-- /.box-body -->
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div><!-- /.box -->
         </div>
     </div>

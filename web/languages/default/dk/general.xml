@@ -24,6 +24,7 @@
 	<exec></exec>
     <externalID></externalID>
 	<fastdownload>Fastdownload</fastdownload>
+    <free></free>
 	<game></game>
 	<gameserver>Spilserver</gameserver>
     <gameroot>Spil Rodenserver</gameroot>
@@ -72,6 +73,7 @@
 	<traffic>Trafik</traffic>
 	<update>Opdater</update>
     <use>Brug</use>
+    <used></used>
 	<user>Bruger</user>
     <userImport>Bruger Importer</userImport>
 	<virtual>Virtuelle Server</virtual>

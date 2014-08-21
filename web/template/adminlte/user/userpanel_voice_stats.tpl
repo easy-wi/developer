@@ -14,10 +14,12 @@
     <div class="row">
         <div class="col-md-4">
             <div class="box box-primary">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=vu" method="post">
-                        <input type="hidden" name="token" value="<?php echo token();?>">
+                <form role="form" action="userpanel.php?w=vu" method="post">
 
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="md">
+
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="dateRange"><?php echo $sprache->dmy;?></label>
                             <div class="input-prepend input-group">
@@ -25,6 +27,7 @@
                                 <input type="text" name="dateRange" id="dateRange" class="form-control" value="<?php echo $dateRange;?>">
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="inputFormat"><?php echo $sprache->accuracy;?></label>
                             <select class="form-control" id="inputFormat" name="accuracy">
@@ -32,6 +35,7 @@
                                 <option value="mo" <?php if ($accuracy=='mo') echo 'selected="selected"'?>><?php echo $sprache->months;?></option>
                             </select>
                         </div>
+
                         <div class="form-group">
                             <label for="inputKind"><?php echo $gsprache->stats;?></label>
                             <select class="form-control" id="inputKind" name="kind" onchange="getdetails('ajax.php?d=uservoicestats&amp;w=',this.value, 'serverSelect')">
@@ -39,6 +43,7 @@
                                 <option value="se" <?php if ($kind=='se') echo 'selected="selected"'?>><?php echo $sprache->server;?></option>
                             </select>
                         </div>
+
                         <div class="form-group" id="serverSelect">
                             <?php if($ui->st('kind','post') == 'se'){ ?>
                             <label for="inputSelect"></label>
@@ -47,41 +52,62 @@
                             </select>
                             <?php } ?>
                         </div>
-                        <div class="form-group">
-                            <label for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->mod;?></button>
-                            <input type="hidden" name="action" value="md">
-                        </div>
-                    </form>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->mod;?></button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="col-md-8">
-            <!-- AREA CHART -->
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><?php echo $voSprache->slots;?></h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div class="chart" id="slots-chart" style="height: 300px; position: relative;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><?php echo $gsprache->traffic;?></h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div class="chart" id="traffic-chart" style="height: 300px; position: relative;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title"><?php echo $voSprache->slots;?></h3>
                 </div>
                 <div class="box-body chart-responsive">
                     <div class="chart" id="slot-usage" style="height: 300px;"></div>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <!-- LINE CHART -->
             <div class="box box-info">
                 <div class="box-header">
                     <h3 class="box-title"><?php echo $gsprache->traffic;?></h3>
                 </div>
                 <div class="box-body chart-responsive">
                     <div class="chart" id="traffic-usage" style="height: 300px;"></div>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
+                </div>
+            </div>
 
-        </div><!-- /.col (RIGHT) -->
-    </div><!-- /.row -->
+        </div>
+    </div>
 </section>

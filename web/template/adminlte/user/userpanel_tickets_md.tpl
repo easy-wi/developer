@@ -12,12 +12,12 @@
     <div class="row">
         <div class="col-md-6">
             <div class="box box-info">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $id;?>&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="wr">
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="wr">
 
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="inputStatus"><?php echo $sprache->status;?></label>
                             <input id="inputStatus" type="text" class="form-control" placeholder="<?php echo $status;?>" disabled/>
@@ -41,13 +41,12 @@
                             <label for="problem"><?php echo $sprache->answer;?></label>
                             <textarea class="form-control" id="problem" name="ticket" rows="10"></textarea>
                         </div>
+                    </div><!-- /.box-body -->
 
-                        <div class="form-group">
-                            <label class="control-label" for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                        </div>
-                    </form>
-                </div><!-- /.box-body -->
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div><!-- /.box -->
         </div><!-- ./col -->
 
@@ -77,8 +76,7 @@
                 </li>
             </ul>
             <?php } ?>
-        </div><!-- ./col -->
+        </div>
         <!-- END timeline item -->
     </div>
 </section>
-

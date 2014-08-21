@@ -13,25 +13,23 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=su&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+                <form role="form" action="userpanel.php?w=su&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=su" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="dl">
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="dl">
 
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="inputCname"><i class="fa fa-user"></i> <?php echo $sprache->user;?></label>
                             <input id="inputCname" type="text" class="form-control" name="loginName" value="<?php echo $loginName;?>" disabled="disabled">
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="control-label" for="inputEdit"></label>
-                            <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </section><!-- /.content -->
-

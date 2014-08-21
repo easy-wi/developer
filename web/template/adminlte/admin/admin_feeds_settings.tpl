@@ -74,7 +74,7 @@
                         <input class="form-control" id="inputUpdateMinutes" type="number" name="updateMinutes" maxlength="10" value="<?php echo $updateMinutes;?>">
                 </div>
                     <label for="inputEdit"></label>
-                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->save;?></button>
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
             </form>
         </div>
     </div>

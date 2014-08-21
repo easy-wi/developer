@@ -38,12 +38,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
 
-                    <form role="form" action="userpanel.php?w=fd&amp;d=eu&amp;r=fd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="userpanel.php?w=fd&amp;d=eu&amp;r=fd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                        <input type="hidden" name="action" value="md">
+                    <input type="hidden" name="action" value="md">
 
+                    <div class="box-body">
                         <div class="form-group<?php if(isset($errors['ftp_adresse'])) echo ' error';?>">
                             <label for="input_ftp_adresse"><?php echo $gameSprache->ftp_adresse;?></label>
                             <input class="form-control"  id="input_ftp_adresse" type="text" name="ftp_adresse" value="<?php echo $ftp_adresse;?>" required>
@@ -68,13 +68,12 @@
                             <label for="input_ftp_path"><?php echo $gameSprache->ftp_path;?></label>
                             <input class="form-control"  id="input_ftp_port" type="text" name="ftp_path" value="<?php echo $ftp_path;?>">
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

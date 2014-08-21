@@ -19,9 +19,9 @@
         </div>
     </div>
 
-    <div class="box box-info">
-        <div class="row">
-            <div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
                         <tbody>

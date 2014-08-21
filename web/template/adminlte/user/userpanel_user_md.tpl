@@ -7,17 +7,18 @@
         <li class="active"><?php echo $gsprache->settings;?></li>
     </ol>
 </section>
+
 <!-- Main Content -->
 <section class="content">
     <div class="row">
         <div class="col-md-6">
             <div class="box box-info">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="userpanel.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input class="form-control" type="hidden" name="action" value="md">
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input class="form-control" type="hidden" name="action" value="md">
 
+                    <div class="box-body">
                         <h4><strong><?php echo $gsprache->user;?></strong></h4>
 
                         <div class="form-group">
@@ -81,13 +82,12 @@
                             <input id="mail_ticket" type="checkbox" name="mail_ticket" value="Y" <?php if ($mail_ticket=="Y") echo 'checked="checked"'; ?>>
                             <label for="mail_ticket"><?php echo $sprache->mail_ticket;?></label>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div>
         </div>
 

@@ -1,4 +1,3 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1><?php echo $gsprache->user;?></h1>
     <ol class="breadcrumb">
@@ -6,31 +5,34 @@
         <li><?php echo $gsprache->user;?></li>
         <li class="active"><?php echo $gsprache->settings;?></li>
     </ol>
-    </ol>
 </section>
+
 <!-- Main Content -->
 <section class="content">
     <div class="row">
         <div class="col-md-6">
             <div class="box box-info">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="md">
+                <form role="form" action="userpanel.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="md">
+
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="fname"><?php echo $sprache->fname;?></label>
                             <input class="form-control" id="fname" type="text" name="name" value="<?php echo $name;?>">
                         </div>
+
                         <div class="form-group">
                             <label for="vname"><?php echo $sprache->vname;?></label>
                             <input class="form-control" id="vname" type="text" name="vname" value="<?php echo $vname;?>">
                         </div>
-                        <div class="form-group">
-                            <label for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->save;?></button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div>
         </div>
 

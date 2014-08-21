@@ -23,18 +23,21 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
-                    <?php if (count($errors)>0){ ?>
-                    <div class="alert alert-error">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <h4><?php echo $gsprache->errors;?></h4>
-                        <?php echo implode(', ',$errors);?>
-                    </div>
-                    <?php }?>
 
-                    <form role="form" action="userpanel.php?w=fd&amp;d=es&amp;id=<?php echo $id;?>&amp;r=fd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="userpanel.php?w=fd&amp;d=es&amp;id=<?php echo $id;?>&amp;r=fd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                        <input type="hidden" name="action" value="md">
+                    <input type="hidden" name="action" value="md">
+
+
+                    <div class="box-body">
+
+                        <?php if (count($errors)>0){ ?>
+                        <div class="alert alert-error">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <h4><?php echo $gsprache->errors;?></h4>
+                            <?php echo implode(', ',$errors);?>
+                        </div>
+                        <?php }?>
 
                         <div class="form-group">
                             <label for="inputFLD"><?php echo $sprache->haupt2;?></label>
@@ -69,13 +72,12 @@
                             <label for="input_ftp_path"><?php echo $gameSprache->ftp_path;?></label>
                             <input class="form-control"  id="input_ftp_port" type="text" name="ftp_path" value="<?php echo $ftp_path;?>">
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="control-label" for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

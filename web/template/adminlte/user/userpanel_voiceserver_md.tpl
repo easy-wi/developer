@@ -24,11 +24,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body">
-                    <form role="form" action="userpanel.php?w=vo&amp;d=md&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="userpanel.php?w=vo&amp;d=md&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                        <input type="hidden" name="token" value="<?php echo token();?>">
-                        <input type="hidden" name="action" value="md">
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="md">
+
+                    <div class="box-body">
 
                         <?php if ($usedns=='Y'){ ?>
                         <div class="form-group">
@@ -121,13 +122,13 @@
                             <label for="virtualserver_antiflood_points_needed_ip_block"><?php echo $sprache->virtualserver_antiflood_points_needed_ip_block;?></label>
                             <input class="form-control" id="virtualserver_antiflood_points_needed_ip_block" type="text" name="virtualserver_antiflood_points_needed_ip_block" value="<?php echo $virtualserver_antiflood_points_needed_ip_block;?>">
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="inputEdit"></label>
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->save;?></button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>
