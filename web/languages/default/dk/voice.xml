@@ -67,6 +67,7 @@
 	<max_upload_total_bandwidth>Maksimal uploadbåndbredde</max_upload_total_bandwidth>
 	<name>Servernavn</name>
 	<newuser>Ny Bruger</newuser>
+    <noVoiceServer></noVoiceServer>
 	<os_bit>Bitversion</os_bit>
 	<password>Privat Server</password>
 	<port>Port</port>

@@ -157,20 +157,38 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = 'userpanel_404.tpl';
         }
     } else {
+
+        $shorten = '';
+        $selected2 = '';
+        $selected3 = '';
+
         $query = $sql->prepare("SELECT `serverid` FROM `gsswitch` WHERE `id`=? AND `resellerid`=?");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id, $reseller_id));
         $currentID = $query->fetchColumn();
+
         $query = $sql->prepare("SELECT s.*,t.`description`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
-        $query->execute(array($id,$reseller_id));
+        $query->execute(array($id, $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $servertemplate=($currentID==$row['id']) ? $row['servertemplate'] : '';
-            $table[] = array('id' => $row['id'], 'description' => $row['description'], 'shorten' => $row['shorten'], 'servertemplate' => $servertemplate);
+
+            if ($currentID == $row['id']) {
+
+                $shorten = $row['shorten'];
+
+                if ($row['servertemplate'] == 2) {
+                    $selected2 = 'selected="selected"';
+                } else if ($row['servertemplate'] == 3) {
+                    $selected3 = 'selected="selected"';
+                }
+            }
+
+            $table[] = array(
+                'id' => $row['id'],
+                'description' => $row['description'],
+                'shorten' => $row['shorten']
+            );
         }
-        if (count($table)>0) {
-            $template_file = 'userpanel_gserver_reinstall.tpl';
-        } else {
-            $template_file = 'userpanel_404.tpl';
-        }
+
+        $template_file = (count($table) > 0) ? 'userpanel_gserver_reinstall.tpl' : 'userpanel_404.tpl';
     }
 
 } else if (($ui->st('d', 'get') == 'rs' or $ui->st('d', 'get') == 'st' or $ui->st('d', 'get') == 'du') and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {

@@ -76,6 +76,7 @@
     <max_upload_total_bandwidth>Maximum upload bandwidth</max_upload_total_bandwidth>
     <name>Server name</name>
     <newuser>New user</newuser>
+    <noVoiceServer>No TS3 server can be found which are unknown for Easy-Wi</noVoiceServer>
     <os_bit>Bit-version</os_bit>
     <password>Private server</password>
     <port>Port</port>

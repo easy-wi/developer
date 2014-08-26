@@ -61,15 +61,17 @@ function SwitchShowHideRows (Element, change, showNotIfEmpty) {
     var ElementLenght = Element.length;
     var foundAmount = 0;
 
-    if(typeof(change)==='undefined') {
+    if(typeof(change) === 'undefined') {
         change = 'switch';
     }
 
     for(var x=0; x<amount; x++) {
+
         var TheClass = TheRest[x].getAttribute('class');
+
         if (TheClass != null) {
-            if (Element == 'init_ready') {
-                if (TheClass.indexOf("display_none") != '-1') {
+            if (Element == 'init_ready' || Element == '') {
+                if (TheClass.indexOf("display_none") != -1) {
                     TheRest[x].style.display = 'none';
                 } else {
                     TheRest[x].style.display = '';
@@ -77,7 +79,7 @@ function SwitchShowHideRows (Element, change, showNotIfEmpty) {
             } else {
                 if (TheClass.indexOf(change)!= -1) {
 
-                    foundElement=TheClass.substring(0, ElementLenght);
+                    foundElement = TheClass.substring(0, ElementLenght);
 
                     if (foundElement == Element) {
                         foundAmount++;
