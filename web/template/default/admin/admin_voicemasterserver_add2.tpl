@@ -10,8 +10,11 @@
 <div class="row-fluid">
     <div class="span6">
         <form name="form" class="form-horizontal" action="admin.php?w=vm&amp;d=<?php echo $ui->st('d','get');?>&amp;id=<?php echo $masterid;?>&amp;r=vm" method="post">
+
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="ad2">
+
+            <?php if(count($servers)>0){ ?>
             <?php foreach ($servers as $virtualserver_id => $values) { ?>
             <h5><?php echo $values['virtualserver_ip'].':'.$values['virtualserver_port'].' '.$values['virtualserver_dns'].' ('.$values['virtualserver_name'].')';?></h5>
             <input type="hidden" name="virtualserver_id[]" value="<?php echo $virtualserver_id;?>">
@@ -110,6 +113,8 @@
                 <label class="control-label" for="inputFlexSlotsPercent"><?php echo $sprache->flexSlotsPercent;?></label>
                 <div class="controls"><input id="inputFlexSlotsPercent" type="text" name="<?php echo $virtualserver_id;?>-flexSlotsPercent" value="<?php echo $defaultFlexSlotsFree;?>"></div>
             </div>
+            <?php }} else { ?>
+            <?php echo $sprache->noVoiceServer;?>
             <?php } ?>
             <div class="control-group">
                 <label class="control-label" for="inputEdit"></label>

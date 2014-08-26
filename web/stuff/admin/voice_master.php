@@ -364,6 +364,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         }
         
         if ($ui->w('action', 3, 'post') != 'ad2' and ((count($errors) == 0 or ($ui->st('d', 'get') == 'ri' and $id)))) {
+
             if ($ui->w('action', 3, 'post') == 'ad' or ($ui->st('d', 'get') == 'ri' and !$ui->w('action', 3, 'post') and $id)) {
 
                 if ($ui->st('d', 'get') == 'ri') {
@@ -570,7 +571,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             # Suhoshin has a POST Limit. So we need to limit as well.
             $prefix = $rSA['prefix2'];
-            $voiceleft = $licenceDetails['lVo'];
             $i = 0;
             $toomuch = 0;
             $added = '<br />Added:';
@@ -640,7 +640,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                 foreach ($ui->id('virtualserver_id', 19, 'post') as $virtualserver_id) {
 
-                    if ($ui->active("$virtualserver_id-import", 'post') == 'Y' and $voiceleft > 0) {
+                    if ($ui->active("$virtualserver_id-import", 'post') == 'Y') {
 
                         $customerID = $ui->id("$virtualserver_id-customer", 10, 'post');
 
@@ -799,15 +799,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                             $query->execute(array($customerID, $masterid, $ssh2ip, $port, $slots, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $serverdns, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $virtualserver_id, $reseller_id));
                         }
                         $i++;
-                        $voiceleft--;
-                    }
-
-                    if ($voiceleft==0) {
-                        $toomuch++;
                     }
                 }
 
-                $not = ($toomuch>0) ? '<br />'.$toomuch.' Server not importet because Easy-Wi Serverlimit has been reached' : '';
+                $not = '';
                 $connection->CloseConnection();
 
                 if ($usedns == 'Y') {
