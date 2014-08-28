@@ -50,10 +50,17 @@
                     <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=md"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                   </ul>
                 </div>
-                
-                <a class="btn btn-sm btn-primary" data-toggle="modal" data-target="#compose-modal"><i class="fa fa-terminal"></i> <?php echo $gsprache->logs;?></a>
-                
-                <a href="serverlog.php?id=<?php echo $table_row['id'];?>" onclick="return popup(this.href);"><button class="btn btn-sm btn-primary"><i class="fa fa-list"></i> <?php echo $gsprache->logs;?></button></a>
+
+                <a class="btn btn-sm btn-primary" data-toggle="modal" data-target="#compose-modal-<?php echo $table_row['id'];?>"><i class="fa fa-terminal"></i> <?php echo $gsprache->logs;?></a>
+
+                <!-- COMPOSE MESSAGE MODAL -->
+                <div class="modal fade" id="compose-modal-<?php echo $table_row['id'];?>" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" id="modal-content-<?php echo $table_row['id'];?>">
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
                 <a href="userpanel.php?w=gs&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-primary"><i class="fa fa-cog"></i> <?php echo $gsprache->settings;?></button></a>
                 <a href="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-warning"><i class="fa fa-refresh"></i> <?php echo $sprache->reinstall;?></button></a>
                 <?php if($table_row['upload']==true){ ?><a href="userpanel.php?w=gs&amp;d=du&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');"><button class="btn btn-sm btn-info"><i class="icon-white icon-film"></i> SourceTV</button></a><?php } ?>
@@ -92,21 +99,3 @@
         </div>
     <?php }?>		
 </section>
-
-	<!-- COMPOSE MESSAGE MODAL -->
-	<div class="modal fade" id="compose-modal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				</div>
-				<div class="box box-info">
-					<div class="box-body">
-						
-						serverlog.php?id=<?php echo $table_row['id'];?>
-					</div>
-				</div>
-				
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->

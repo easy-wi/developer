@@ -1052,7 +1052,41 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query3->execute(array($row['tid']));
             $ftpAllowed = ($query3->rowCount() == 0) ? true : false;
 
-            $table[] = array('id' => $gameserverid,'premoved' => $premoved,'nameremoved' => $nameremoved, 'server' => $address,'name' => $name,'img' => $imgName,'alt' => $imgAlt,'imgp' => $imgNameP,'altp' => $imgAltP,'numplayers' => $numplayers, 'maxplayers' => $maxplayers,'map' => $map,'cname' => $cname,'cftppass' => $cftppass,'ip' => $ip,'ftpport' => $ftpport,'port' => $port,'shorten' => $currentTemplate,'gameShorten' => $shorten,'ftpdata' => $ftpdata,'updatetime' => $updatetime,'stopped' => $stopped,'pro' => $pro,'upload' => $upload,'minram' => $row['minram'], 'maxram' => $row['maxram'], 'taskset' => $row['taskset'], 'ramLimited' => $row['ramLimited'], 'coreCount' => $coreCount,'cores' => $cores, 'ftpAllowed' => $ftpAllowed);
+            $htmlExtraInformation['js'][] = "<script type='text/javascript'>$('#compose-modal-{$gameserverid}').on('show.bs.modal',function(){ $('#modal-content-{$gameserverid}').load('serverlog.php?id={$gameserverid}');});</script>";
+
+            $table[] = array(
+                'id' => $gameserverid,
+                'premoved' => $premoved,
+                'nameremoved' => $nameremoved,
+                'server' => $address,
+                'name' => $name,
+                'img' => $imgName,
+                'alt' => $imgAlt,
+                'imgp' => $imgNameP,
+                'altp' => $imgAltP,
+                'numplayers' => $numplayers,
+                'maxplayers' => $maxplayers,
+                'map' => $map,
+                'cname' => $cname,
+                'cftppass' => $cftppass,
+                'ip' => $ip,
+                'ftpport' => $ftpport,
+                'port' => $port,
+                'shorten' => $currentTemplate,
+                'gameShorten' => $shorten,
+                'ftpdata' => $ftpdata,
+                'updatetime' => $updatetime,
+                'stopped' => $stopped,
+                'pro' => $pro,
+                'upload' => $upload,
+                'minram' => $row['minram'],
+                'maxram' => $row['maxram'],
+                'taskset' => $row['taskset'],
+                'ramLimited' => $row['ramLimited'],
+                'coreCount' => $coreCount,
+                'cores' => $cores,
+                'ftpAllowed' => $ftpAllowed
+            );
         }
     }
     $template_file = 'userpanel_gserver_list.tpl';

@@ -122,17 +122,19 @@ if ($ui->id('id', 10, 'get')) {
 
         if (isset($ip)) {
 
-            echo (isset($error)) ? $error : '<html><head><title>' . $ewCfg['title'] . ' ' . $serverip .':' . $port . '</title><meta http-equiv="refresh" content="3"></head><body>' . nl2br($ftpConnect->getTempFileContent()) . '</body></html>';
+            $log = (isset($error)) ? $error : nl2br($ftpConnect->getTempFileContent());
 
             $ftpConnect->tempHandle = null;
             $ftpConnect = null;
 
         } else {
-            echo 'Error: wrong rootID';
+            $log = 'Error: wrong rootID';
         }
 
     } else {
-        echo 'Error: No rootID';
+        $log = 'Error: No rootID';
     }
 }
+
+include(IncludeTemplate($template_to_use, 'gameserverlog.tpl'));
 $sql = null;

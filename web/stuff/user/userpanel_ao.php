@@ -208,6 +208,7 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10, 'get') and in_array($ui->sma
         $query2->execute(array($row['servertype_id'], $reseller_id));
 		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
+            $imgAlt = '';
             $descriptionrow = '';
             $lang = '';
             $delete = '';
@@ -225,6 +226,7 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10, 'get') and in_array($ui->sma
                 $query3->execute(array($adid, $default_language, $reseller_id));
                 $descriptionrow = $query->fetchColumn();
 			}
+
             $addescription = nl2br($descriptionrow);
 
             $query3 =  ($protected == 'Y') ? $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `paddon`='Y' AND `resellerid`=? LIMIT 1") : $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
@@ -232,46 +234,43 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10, 'get') and in_array($ui->sma
             $installedid = $query3->fetchColumn();
 
             if (isid($installedid, 19)){
-                $imgName = '16_delete';
-                $imgAlt = 'Remove';
-                $bootstrap = 'icon-remove-sign';
+
                 $action = 'dl';
                 $delete = '&amp;rid=' . $installedid;
 
             } else {
-                $query3 = $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `servertemplate`=? AND `addonid`=? AND `resellerid`=?");
+
+                $query3 = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `servertemplate`=? AND `addonid`=? AND `resellerid`=? LIMIT 1");
                 $query3->execute(array($user_id, $serverid, $servertemplate, $depending, $reseller_id));
-                $colcount = $query3->rowcount();
+                $colcount = $query3->fetchColumn();
 
                 if ($row2['type'] == 'map' or $depending == 0 or ($depending > 0 and $colcount > 0)) {
                     $action = 'ad';
-                    $imgName = '16_add';
-                    $bootstrap = 'icon-plus-sign';
-                    $imgAlt = 'Install';
                 } else {
+
                     $action = 'none';
+
                     $query3 = $sql->prepare("SELECT `menudescription` FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query3->execute(array($depending, $reseller_id));
-                    $imgName = '16_notice';
-                    $bootstrap = 'icon-warning-sign';
                     $imgAlt = $sprache->requires. ': ' .$query3->fetchColumn();
                 }
 
             }
 
-            $link='userpanel.php?w=ao&amp;id=' . $switchID . '&amp;adid=' . $adid . '&amp;action=' . $action . $delete . '&amp;r=gs';
+            $link = ($action != 'none') ? 'userpanel.php?w=ao&amp;id=' . $switchID . '&amp;adid=' . $adid . '&amp;action=' . $action . $delete . '&amp;r=gs' : '#';
 
             if ($row2['type'] == 'tool') {
-                $table2[] = array('adid' => $adid, 'menudescription' => $menudescription, 'addescription' => $addescription, 'installedid' => $installedid, 'img' => $imgName, 'bootstrap' => $bootstrap, 'alt' => $imgAlt, 'link' => $link);
+                $table2[] = array('adid' => $adid, 'menudescription' => $menudescription, 'addescription' => $addescription, 'installedid' => $installedid, 'alt' => $imgAlt, 'link' => $link, 'action' => $action);
             } else if ($row2['type'] == 'map') {
-                $table3[] = array('adid' => $adid, 'menudescription' => $menudescription, 'addescription' => $addescription, 'installedid' => $installedid, 'img' => $imgName, 'bootstrap' => $bootstrap, 'alt' => $imgAlt, 'link' => $link);
+                $table3[] = array('adid' => $adid, 'menudescription' => $menudescription, 'addescription' => $addescription, 'installedid' => $installedid, 'alt' => $imgAlt, 'link' => $link, 'action' => $action);
             }
 
 		}
 
 		$table = array('id' => $switchID, 'serverip' => $serverip, 'port' => $serverport, 'tools' => $table2, 'maps' => $table3, 'name' => $description);
         unset($table2, $table3);
-	}			
+	}
+
 	$template_file = 'userpanel_gserver_addon.tpl';
 } else {
     $template_file = 'userpanel_404.tpl';

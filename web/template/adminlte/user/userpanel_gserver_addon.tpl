@@ -25,19 +25,36 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
+                <div class="box-header">
+                    <h3 class="box-title"><?php echo $sprache->tools;?></h3>
+                </div>
+
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th><?php echo $sprache->tools;?></th>
-                            <th> </th>
-                        </tr>
-                        </thead>
                         <tbody>
                         <?php foreach ($table['tools'] as $table_row) { ?>
                         <tr>
-                            <td><?php echo $table_row['menudescription'];?> <a href="#" id="<?php echo $table_row['adid'].'-'.$table['id'];?>" data-toggle="tooltip" data-placement="right" title="<?php echo $table_row['addescription'];?>"><i class="fa fa-question"></i></a><?php echo ($table_row['alt']=='Install' or $table_row['alt']=='Remove') ? '': ' '.$table_row['alt'];?></td>
-                            <td><a href="<?php echo $table_row['link'];?>" onclick="return confirm('<?php echo $gsprache->sure;?>');"><span class="btn btn-<?php if($table_row['bootstrap']=='icon-warning-sign') echo 'warning'; elseif($table_row['bootstrap']=='icon-plus-sign') echo 'success'; else echo 'danger'; ?> btn-mini"><i class="<?php echo $table_row['bootstrap'];?>"></i> <?php if($table_row['bootstrap']=='icon-warning-sign') echo ""; elseif($table_row['bootstrap']=='icon-plus-sign') echo $gsprache->add; else echo $gsprache->del; ?></span></a></td>
+                            <td style="width: 20%">
+                                <?php echo $table_row['menudescription'];?>
+                                <?php if($table_row['addescription']!=''){ ?>
+                                <a href="#" id="<?php echo $table_row['adid'].'-'.$table['id'];?>" data-toggle="tooltip" data-placement="right" title="<?php echo $table_row['addescription'];?>"><i class="fa fa-question-circle"></i></a>
+                                <?php }?>
+                            </td>
+                            <td>
+                                <?php if($table_row['action']=='none'){ ?>
+                                <a href="#" id="<?php echo 'requires-'.$table_row['adid'].'-'.$table['id'];?>" data-toggle="tooltip" data-placement="right" title="<?php echo $table_row['alt'];?>">
+                                    <span class="btn btn-sm btn-warning">
+                                        <i class="fa fa-exclamation-triangle"></i>
+                                    </span>
+                                </a>
+                                <?php } else { ?>
+                                <a href="<?php echo $table_row['link'];?>" onclick="return confirm('<?php echo $gsprache->sure;?>');">
+                                    <span class="btn btn-sm btn-<?php if($table_row['action']=='ad') echo 'success'; else echo 'danger'; ?>">
+                                        <i class="fa <?php if($table_row['action']=='ad') echo 'fa fa-plus-circle'; else echo 'fa-trash-o';?>"></i> <?php echo ($table_row['action']=='ad') ? $gsprache->add : $gsprache->del; ?>
+                                    </span>
+                                </a>
+                                <?php } ?>
+                            </td>
                         </tr>
                         <?php }?>
                         </tbody>
@@ -50,20 +67,28 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-body table-responsive no-padding">
+                <div class="box-header">
+                    <h3 class="box-title"><?php echo $sprache->maps;?></h3>
+                </div>
 
+                <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th><?php echo $sprache->maps;?></th>
-                            <th> </th>
-                        </tr>
-                        </thead>
                         <tbody>
                         <?php foreach ($table['maps'] as $table_row) { ?>
                         <tr>
-                            <td><?php echo $table_row['menudescription'];?> <a href="#" id="<?php echo $table_row['adid'].'-'.$table['id'];?>" data-toggle="tooltip" data-placement="right" title="<?php echo $table_row['addescription'];?>"><i class="icon-question-sign"></i></a><?php echo ($table_row['alt']=='Install' or $table_row['alt']=='Remove') ? '': ' '.$table_row['alt'];?></td>
-                            <td><a href="<?php echo $table_row['link'];?>" onclick="return confirm('<?php echo $gsprache->sure;?>');"><span class="btn btn-<?php if($table_row['bootstrap']=='fa fa-warning') echo 'warning'; elseif($table_row['bootstrap']=='icon-plus-sign') echo 'success'; else echo 'danger'; ?> btn-sm"><i class="<?php echo $table_row['bootstrap'];?>"></i> <?php if($table_row['bootstrap']=='fa fa-warning') echo ""; elseif($table_row['bootstrap']=='icon-plus-sign') echo $gsprache->add; else echo $gsprache->del; ?></span></a></td>
+                            <td style="width: 20%">
+                                <?php echo $table_row['menudescription'];?>
+                                <?php if($table_row['addescription']!=''){ ?>
+                                <a href="#" id="<?php echo $table_row['adid'].'-'.$table['id'];?>" data-toggle="tooltip" data-placement="right" title="<?php echo $table_row['addescription'];?>"><i class="fa fa-question-circle"></i></a>
+                                <?php }?>
+                            </td>
+                            <td>
+                                <a href="<?php echo $table_row['link'];?>" onclick="return confirm('<?php echo $gsprache->sure;?>');">
+                                    <span class="btn btn-sm btn-<?php if($table_row['action']=='ad') echo 'success'; else echo 'danger'; ?>">
+                                        <i class="fa <?php if($table_row['action']=='ad') echo 'fa fa-plus-circle'; else echo 'fa-trash-o';?>"></i> <?php echo ($table_row['action']=='ad') ? $gsprache->add : $gsprache->del; ?>
+                                    </span>
+                                </a>
+                            </td>
                         </tr>
                         <?php }?>
                         </tbody>
@@ -74,3 +99,9 @@
     </div>
 </section>
 
+<script type="text/javascript">
+$(document).popover({
+    selector : '.popover-source-dynamic[data-trigger="hover"]',
+    trigger : 'hover'
+});
+</script>
