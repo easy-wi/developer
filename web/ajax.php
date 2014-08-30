@@ -67,7 +67,7 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     $array = array('iTotalRecords' => 0, 'iTotalDisplayRecords' => 0, 'aaData' => array());
 
     $iDisplayStart = ($ui->isinteger('iDisplayStart', 'get')) ? $ui->isinteger('iDisplayStart', 'get') : 0;
-    $iDisplayLength = ($ui->isinteger('iDisplayLength', 'get') and $ui->isinteger('iDisplayLength', 'get') < 51) ? $ui->isinteger('iDisplayLength', 'get') : 10;
+    $iDisplayLength = ($ui->isinteger('iDisplayLength', 'get')) ? $ui->isinteger('iDisplayLength', 'get') : 10;
     $iSortCol = ($ui->isinteger('iSortCol_0', 'get')) ? $ui->isinteger('iSortCol_0', 'get') : 0;
     $sSortDir = ($ui->smallletters('sSortDir_0', 4, 'get') == 'desc') ? 'DESC' : 'ASC';
     $sSearch = (strlen($ui->escaped('sSearch', 'get')) > 0) ? $ui->escaped('sSearch', 'get') : false;
@@ -77,10 +77,10 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         $sprache = getlanguagefile('logs', $user_language, $reseller_id);
         $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
 
-        $placeholders = array('%%', '%add%', '%dl%', '%del%', '%md%', '%mod%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
-        $replace = array('', $gsprache->add.': ',$gsprache->del.': ',$gsprache->del.': ',$gsprache->mod.': ',$gsprache->mod.': ',$gsprache->start.': ',$gsprache->start.': ',$gsprache->stop.': ',$gsprache->update.': ','','',$gssprache->password.': ',$gssprache->config.': ',$gsprache->import.': ',$gssprache->reinstall.': ',$gsprache->backup,$gsprache->use.': ');
-        $placeholders2 = array('%voserver%', '%gserver%', '%user%', '%fastdl%', '%master%', '%user%', '%root%', '%addon%', '%settings%', '%vserver%', '%ticket_subject%', '%reseller%', '%virtual%', '%eac%', '%resync%', '%virtualimage%', '%template%', '%voserver%', '%emailsettings%', '%dns%', '%tsdns%', '%pmode%');
-        $replace2 = array($gsprache->voiceserver,$gsprache->gameserver,$gsprache->user,$gsprache->fastdownload,$gsprache->master,$gsprache->user,$gsprache->root,$gsprache->addon2,$gsprache->settings,$gsprache->virtual,$gsprache->support,$gsprache->reseller,$gsprache->hostsystem,'Easy Anti Cheat',$gssprache->resync,$gsprache->virtual . ' ' . $gsprache->template,$gsprache->template,$gsprache->voiceserver,'E-Mail '.$gsprache->settings,'TSDNS','TSDNS',$gssprache->protect);
+        $placeholders = array('%%', '%ad%', '%add%', '%dl%', '%del%', '%md%', '%mod%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
+        $replace = array('', $gsprache->add, $gsprache->add, $gsprache->del, $gsprache->del, $gsprache->mod, $gsprache->mod, $gsprache->start, $gsprache->start, $gsprache->stop, $gsprache->update,'','', $gssprache->password, $gssprache->config, $gsprache->import, $gssprache->reinstall, $gsprache->backup, $gsprache->use);
+        $placeholders2 = array('%voserver%', '%gserver%', '%user%', '%fastdl%', '%master%', '%user%', '%root%', '%addon%', '%settings%', '%vserver%', '%ticket_subject%', '%reseller%', '%virtual%', '%eac%', '%resync%', '%virtualimage%', '%template%', '%voserver%', '%emailsettings%', '%dns%', '%tsdns%', '%pmode%', '%file%');
+        $replace2 = array($gsprache->voiceserver, $gsprache->gameserver, $gsprache->user, $gsprache->fastdownload, $gsprache->master, $gsprache->user, $gsprache->root, $gsprache->addon2, $gsprache->settings, $gsprache->virtual, $gsprache->support, $gsprache->reseller, $gsprache->hostsystem,'Easy Anti Cheat', $gssprache->resync, $gsprache->virtual . ' ' . $gsprache->template, $gsprache->template, $gsprache->voiceserver,'E-Mail '.$gsprache->settings, 'TSDNS', 'TSDNS', $gssprache->protect, $gsprache->file);
 
         if ($sSearch) {
             $sSearch = str_replace($replace, $placeholders, str_replace($replace2, $placeholders2, $sSearch));
@@ -123,10 +123,10 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
                 $ip = $row['ip'];
             } else {
                 $username = $row['cname'];
-                $ip = (isanyadmin($row['subuser']) and !isset($admin_id)) ? '' : $row['ip'];
+                $ip = (isanyadmin($row['subuser'])) ? 'admin' : $row['ip'];
             }
 
-            $array['aaData'][] = array(($user_language == 'de') ? date('d.m.Y H:m:s', strtotime($row['logdate'])) : $row['logdate'], $username, str_replace($placeholders2, $replace2, str_replace($placeholders, $replace, $row['useraction'])), $ip);
+            $array['aaData'][] = array($row['logdate'], $username, str_replace($placeholders2, $replace2, str_replace($placeholders, $replace, $row['useraction'])), $ip);
         }
     }
 

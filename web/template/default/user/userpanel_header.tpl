@@ -68,7 +68,7 @@
             <?php if($statsArray['ticketsTotal']>0){ ?>
             <!-- Messages: style can be found in dropdown.less-->
             <li class="dropdown messages-menu">
-                <a href="userpanel.php?w=ti" class="dropdown-toggle" data-toggle="dropdown">
+                <a href="userpanel.php?w=ti">
                     <i class="fa fa-life-ring"></i>
                     <span class="label label-success"><?php echo $statsArray['ticketsTotal'];?></span>
                 </a>

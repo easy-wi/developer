@@ -46,80 +46,6 @@ if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id = $admin_id;
 }
 
-// remove from here on once AdminLTE becomes default
-$reseller_brandname = $rSA['brandname'];
-$removed = array();
-$i_removed = 0;
-$crashed = array();
-$i_crashed = 0;
-$tag_removed = array();
-$steamAppIDsArray = array();
-$i_tag_removed = 0;
-$crashedArray = array('all' => 0, 'gsTotal' => 0, 'gsCrashed' => 0,'gsPWD' => 0,'gsTag' => 0,'ticketsOpen' => 0,'tickets' => 0,'ts3' => 0);
-
-$query = $sql->prepare("SELECT g.`stopped`,CONCAT(g.`serverip`,':',g.`port`) AS `server`,g.`userid`,g.`war`,g.`brandname`,g.`queryName`,g.`queryPassword`,t.`steamgame`,t.`appID`,t.`shorten` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON s.`id`=g.`serverid` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=?");
-$query->execute(array($user_id, $reseller_id));
-$customer = getusername($user_id);
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-    $war = $row['war'];
-    $brandname = $row['brandname'];
-    $password = $row['queryPassword'];
-    $name = $row['queryName'];
-    
-	if ($name != 'OFFLINE' and $row['stopped'] == 'N' and $war == 'Y' and $password == 'N') {
-		$pwd_removed[] = array('userid' => $row['userid'], 'address' => $row['server']);
-		$i_removed++;
-        $crashedArray['gsPWD']++;
-	} else if ($name == 'OFFLINE' and $row['stopped'] == 'N') {
-		$crashed[] = array('userid' => $row['userid'], 'address' => $row['server']);
-		$i_crashed++;
-        $crashedArray['gsCrashed']++;
-	}
-
-	if ($name != '' and $row['stopped'] == 'N' and $name != 'OFFLINE' and $brandname == 'Y' and isset($reseller_brandname) and $reseller_brandname != ''  and strpos(strtolower($name), strtolower($reseller_brandname))  === false) {
-		$tag_removed[] = array('userid' => $row['userid'], 'username' => getusername($row['userid']),'address' => $row['server']);
-		$i_tag_removed++;
-        $crashedArray['gsTag']++;
-	}
-
-    if ($row['steamgame'] != 'N' and isid($row['appID'], 10)) {
-        $steamAppIDsArray[] = workAroundForValveChaos($row['appID'], $row['shorten']);
-    }
-}
-
-$query = $sql->prepare("SELECT `id` FROM `tickets` WHERE `userid`=? AND `state` != 'C' AND `resellerid`=?");
-$query2 = $sql->prepare("SELECT `userID` FROM `tickets_text` WHERE `ticketID`=? ORDER BY `writeDate` DESC LIMIT 1");
-$query->execute(array($user_id,$reseller_id));
-$counttickets_open = 0;
-$counttickets_unanswered = 0;
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $counttickets_open++;
-    $crashedArray['ticketsOpen']++;
-    $query2->execute(array($row['id']));
-    
-    if ($user_id == $query2->fetchColumn()) {
-        $counttickets_unanswered++;
-        $crashedArray['tickets']++;
-    }
-}
-
-$query = $sql->prepare("SELECT CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `active`='Y' AND `uptime`='0' AND `userid`=? AND `resellerid`=?");
-$query->execute(array($user_id,$reseller_id));
-$crached_ts3_virtual = 0;
-$crashed_ts3 = array();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $crashed_ts3[] = array('address' => $row['address']);
-    $crached_ts3_virtual++;
-}
-
-$crashedArray['ts3'] = $crached_ts3_virtual;
-
-$crashedArray['gsTotal'] = $crashedArray['gsTag'] + $crashedArray['gsCrashed'] + $crashedArray['gsPWD'];
-$crashedArray['all'] = $crashedArray['gsTotal'] + $crashedArray['ticketsOpen'] + $crashedArray['tickets'] + $crashedArray['ts3'];
-
-// Remove code until this point once AdminLTE becomes default
-
 $statsArray = array(
     'gameserverActive' => 0,
     'gameserverSlotsActive' => 0,
@@ -151,7 +77,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 }
 
 $statsArray['warningTotal'] = $statsArray['gameserverNoPassword'] + $statsArray['gameserverNoTag'] + $statsArray['gameserverNotRunning'] + $statsArray['voiceserverCrashed'];
-$statsArray['ticketsTotal'] = $statsArray['ticketsInProcess'] + $statsArray['ticketsNew'];
+$statsArray['ticketsTotal'] = $statsArray['ticketsInProcess'];
 
 $lastdate = null;
 $feedArray = array();

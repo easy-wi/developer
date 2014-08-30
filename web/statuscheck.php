@@ -1469,13 +1469,15 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
 
                 if (isset($updateString)) {
+                    $query2 = $sql->prepare("INSERT INTO  `easywi_statistics_current` (`userID`) VALUES (?) ON DUPLICATE KEY UPDATE `userID`=`userID`");
+                    $query2->execute(array($insertID));
+
                     $query2 = $sql->prepare("UPDATE `easywi_statistics_current` SET " . $updateString . " WHERE `userID`= " . $insertID . " LIMIT 1");
                     $query2->execute();
 
                     $query2 = $sql->prepare("INSERT INTO `easywi_statistics` (" . $insertColumns . ",`userID`,`statDate`,`countUpdates`) VALUES (" . implode(',', $statsArray) . "," . $insertID . ",'" . date('Y-m-d H:00:00') . "',1) ON DUPLICATE KEY UPDATE " . $duplicateString . ",`countUpdates`=`countUpdates`+1");
                     $query2->execute();
                 }
-
             }
         }
     }
