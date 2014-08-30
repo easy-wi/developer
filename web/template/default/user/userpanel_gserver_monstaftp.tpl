@@ -10,9 +10,11 @@
 </section>
 <!-- Main Content -->
 <section class="content">
-	<div class="box box-info">
-		<div class="box-body">
-			<?php echo $monstaDisplay;?>		
-		</div>
-	</div>
+    <div class="row">
+        <div class="box-info">
+            <div class="box-body" style="padding: 10px">
+                <?php echo $monstaDisplay;?>
+            </div>
+        </div>
+    </div>
 </section>

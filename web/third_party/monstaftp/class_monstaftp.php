@@ -1249,14 +1249,14 @@ class Monsta {
             <span>' . $lang_info_upload_limit . ':</span> ' . round(($this->upload_limit /(1024 * 1024) ) * 0.9) . ' MB' . '
         </div>
         <div class="floatLeft10">
-            <input type="button" value="' . $lang_btn_refresh . '" onClick="refreshListing()" class="btn btn-primary">
+            <input type="button" value="' . $lang_btn_refresh . '" onClick="refreshListing()" class="btn btn-primary btn-sm">
         </div>
         <div class="floatLeft10">
-            <input type="button" value="' . $lang_btn_new_folder . '" onClick="processForm(\'&amp;ftpAction=newFolder\')" class="btn btn-primary">
+            <input type="button" value="' . $lang_btn_new_folder . '" onClick="processForm(\'&amp;ftpAction=newFolder\')" class="btn btn-primary btn-sm">
         </div>
 
         <div class="floatLeft10">
-            <input type="button" value="' .  $lang_btn_new_file . '" onClick="processForm(\'&amp;ftpAction=newFile\')" class="btn btn-primary">
+            <input type="button" value="' .  $lang_btn_new_file . '" onClick="processForm(\'&amp;ftpAction=newFile\')" class="btn btn-primary btn-sm">
         </div>
 
         <div id="uploadButtonsDiv"></div>';

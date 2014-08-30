@@ -1425,37 +1425,37 @@ function displayUploadButtons() {
 	// IE Upload File (for < IE9)
 	if (globalBrowser == "ie9-") {
 		html += '<input type="file" name="uploadFile" id="uploadFile" multiple onChange="processFileUploads(event,0,0,\'\')"> ';
-		html += '<input type="button" value="'+lang_btn_upload_file+'" onClick="uploadFileCheck(event)" class="btn btn-primary">';
+		html += '<input type="button" value="'+lang_btn_upload_file+'" onClick="uploadFileCheck(event)" class="btn btn-primary btn-sm">';
 	}
-	
+
 	// Non-IE9 Upload File
 	if (globalBrowser != "ie9-") {
-		html += '<input type="button" value="'+lang_btn_upload_files+'" onClick="fileChoose(event)" class="btn btn-primary">';
+		html += '<input type="button" value="'+lang_btn_upload_files+'" onClick="fileChoose(event)" class="btn btn-primary btn-sm">';
 	}
-	
+
 	html += '</div>';
-	
+
 	// Repeat Button
 	html += '<div id="repeatUploadDiv" style="visibility: hidden; display: none">';
 		html += '<div class="floatLeft10">';
-			html += '<input type="button" value="'+lang_btn_upload_repeat+'" onclick="processFileUploads(event,0,0,\'\')" class="btn btn-primary">';
+			html += '<input type="button" value="'+lang_btn_upload_repeat+'" onclick="processFileUploads(event,0,0,\'\')" class="btn btn-primary btn-sm">';
 		html += '</div>';
 	html += '</div>';
-	
+
 	// Chrome Upload Folder
 	if (globalBrowser == "chrome") {
 		html += '<div class="floatLeft">';
-			html += '<input type="button" value="'+lang_btn_upload_folder+'" onClick="dirChoose(event)" class="btn btn-primary">';
+			html += '<input type="button" value="'+lang_btn_upload_folder+'" onClick="dirChoose(event)" class="btn btn-primary btn-sm">';
 			html += '<div class="uploadHiddenDiv">';
 				html += '<input type="file" name="uploadDir" id="uploadDir" onChange="processFileUploads(event,0,1,\'\')" webkitdirectory directory>';
 			html += '</div>';
 		html += '</div>';
 	}
-	
+
 	// Non-IE9 Upload File Setter (hidden)
 	if (globalBrowser != "ie9-") {
 		html += '<div class="uploadHiddenDiv">';
-			html += '<input type="file" name="uploadFile" id="uploadFile" onChange="processFileUploads(event,0,0,\'\')" class="btn btn-primary"';
+			html += '<input type="file" name="uploadFile" id="uploadFile" onChange="processFileUploads(event,0,0,\'\')" class="btn btn-primary btn-sm"';
 			
 			// Check for Win/Safari combo, as multiple not supported
 			if (globalOs == "win" && globalBrowser == "safari") {

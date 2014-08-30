@@ -42,9 +42,9 @@
     cursor: default;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
     height: 100%;
-    left: 0px;
+    left: 0;
     position: absolute;
-    top: 0px;
+    top: 0;
     width: 100%;
     z-index: 1;
 }
@@ -69,7 +69,7 @@
     cursor: default;
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4,Direction=135,Color=#6D6D6D);
     font-size: 11pt;
-    padding: 6px 0px 6px 0px;
+    padding: 6px 0 6px 0;
     position: absolute;
 }
 
@@ -85,7 +85,7 @@
 .contextMenuDivider {
     border-top-style: solid;
     border-top-width: 1px;
-    margin: 5px 0px 5px 0px;
+    margin: 5px 0 5px 0;
 }
 
 .contextMenuDivMouseOver {
@@ -104,7 +104,7 @@
 #editContent {
     border-style: solid;
     border-width: 1px;
-    padding: 10px 0px 10px 10px;
+    padding: 10px 0 10px 10px;
     resize: none;
     width: 99%;
 }
@@ -116,12 +116,12 @@
 
 #footerDiv {
     height: 40px;
-    padding: 20px 20px 20px 10px;
+    padding: 5px 0 5px 10px;
 }
 
 #ftpActionForm {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 #ftpHistorySelect {
@@ -223,7 +223,7 @@
     border-right-style: solid;
     line-height: 25px;
     overflow: auto;
-    padding: 0px 15px 0px 15px;
+    padding: 0 15px 0 15px;
 }
 
 #popupBodyError {
@@ -233,7 +233,7 @@
     border-right-style: solid;
     line-height: 25px;
     overflow: auto;
-    padding: 0px 15px 0px 15px;
+    padding: 0 15px 0 15px;
 }
 
 #popupFooterAction {
@@ -287,7 +287,7 @@
     border-style: solid;
     border-width: 1px;
     cursor: pointer;
-    padding: 0px 3px 0px 3px;
+    padding: 0 3px 0 3px;
 }
 
 #repeatUploadDiv {
@@ -295,9 +295,9 @@
 }
 
 .uploadHiddenDiv {
-    height: 0px;
+    height: 0;
     overflow: hidden;
-    width: 0px;
+    width: 0;
 }
 
 #uploadProgressDiv {
