@@ -1,5 +1,7 @@
-<div class="row-fluid">
-    <div class="span12 hero-unit">
-        <?php if (isset($template_file))echo $template_file; ?>
+<section class="content">
+    <div class="box box-info">
+        <div class="box-body">
+            <?php if (isset($template_file))echo $template_file; ?>
+        </div>
     </div>
-</div>
+</section>

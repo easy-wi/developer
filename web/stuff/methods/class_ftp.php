@@ -39,7 +39,6 @@
 
 class EasyWiFTP {
 
-
     // define vars
     public $ftpConnection = false, $ftpSecondConnection = false, $loggedIn = false, $secondLoggedIn = false, $tempHandle = null;
 
@@ -59,7 +58,10 @@ class EasyWiFTP {
         }
 
         return false;
+    }
 
+    public function removeSlashes ($string) {
+        return str_replace(array('//', '///', '////'), '/', $string);
     }
 
     public function createSecondFTPConnect ($ip, $port, $user, $pwd, $ssl = 'N') {
@@ -82,13 +84,15 @@ class EasyWiFTP {
 
     public function downloadToTemp ($pathAndFile, $startAt = 0, $files = false) {
 
+        $pathAndFile = $this->removeSlashes($pathAndFile);
+
         if (is_array($files)) {
 
             $this->tempHandle = array();
 
             foreach ($files as $file) {
 
-                $arrayCombined = str_replace(array('//', '///', '////'), '/', $pathAndFile . '/' . $file);
+                $arrayCombined = $this->removeSlashes($pathAndFile . '/' . $file);
 
                 $fileSize = @ftp_size($this->ftpConnection, $arrayCombined);
 
@@ -246,7 +250,7 @@ class EasyWiFTP {
 
     private function fileNameFromPath ($fileWithPath) {
 
-        $splitConfig = preg_split('/\//', str_replace(array('//', '///', '////'), '/', $fileWithPath), -1, PREG_SPLIT_NO_EMPTY);
+        $splitConfig = preg_split('/\//', $this->removeSlashes($fileWithPath), -1, PREG_SPLIT_NO_EMPTY);
 
         return $splitConfig[count($splitConfig) - 1];
     }

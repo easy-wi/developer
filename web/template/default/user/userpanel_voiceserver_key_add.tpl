@@ -1,38 +1,50 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="userpanel.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="userpanel.php?w=vo"><?php echo $gsprache->voiceserver;?></a> <span class="divider">/</span></li>
-            <li><a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>">Token</a> <span class="divider">/</span></li>
-            <li><?php echo $gsprache->add;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $address;?></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid hidden-phone">
-    <div class="span12 alert alert-info"><?php echo $sprache->help_voiceserver_key;?></div>
-</div>
-<hr>
-<div class="row-fluid">
-    <div class="span8">
-        <form class="form-horizontal" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-            <div class="control-group">
-                <label class="control-label" for="groupname"><?php echo $sprache->groupname;?></label>
-                <div class="controls">
-                    <select id="groupname" name="group">
-                        <?php foreach ($servergroups as $id => $name) { ?>
-                        <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
-                        <?php } ?>
-                    </select>
-                </div>
+<section class="content-header">
+    <h1><?php echo $gsprache->voiceserver;?> Token <?php echo $gsprache->add;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="<?php echo $targetFile;?>"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="userpanel.php?w=vo"><?php echo $gsprache->voiceserver;?></a></li>
+        <li><a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>">Token</a></li>
+        <li><?php echo $gsprache->add;?></li>
+        <li class="active"><?php echo $address;?></li>
+    </ol>
+</section>
+
+<!-- Main Content -->
+<section class="content">
+
+    <!-- Content Help -->
+    <div class="row hidden-xs">
+        <div class="col-md-12">
+            <div class="alert alert-info alert-dismissable">
+                <i class="fa fa-info"></i>
+                <?php echo $sprache->help_voiceserver_key;?>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-plus-sign icon-white"></i> <?php echo $gsprache->add;?></button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <form role="form" action="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
                     <input type="hidden" name="action" value="ad">
-                </div>
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="groupname"><?php echo $sprache->groupname;?></label>
+                            <select class="form-control" id="groupname" name="group">
+                                <?php foreach ($servergroups as $id => $name) { ?>
+                                <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-plus"></i> <?php echo $gsprache->add;?></button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>

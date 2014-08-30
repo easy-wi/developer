@@ -70,18 +70,6 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 } else if ($die == true) {
     redirect('login.php');
 
-} else if ($ui->username('mapgroup', 50, 'get')) {
-    $sprache = getlanguagefile('gserver', $user_language, $reseller_id);
-
-    $query = $sql->prepare("SELECT `mapGroup` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-    $query->execute(array($ui->username('mapgroup', 50, 'get'), $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['mapGroup'] != null) {
-            $mapGroup = $row['mapGroup'];
-            require_once IncludeTemplate($template_to_use,'ajax_userpanel_mapgroup.tpl', 'ajax');
-        }
-    }
-
 } else if ($ui->id('id',19, 'get') and $ui->st('d', 'get')=="vs" and ($pa['addvserver'] or $pa['root'])) {
 	$sprache = getlanguagefile('reseller', $user_language, $reseller_id);
 	if ($reseller_id != 0 and $admin_id != $reseller_id) {

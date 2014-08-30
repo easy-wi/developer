@@ -259,6 +259,20 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     require_once IncludeTemplate($template_to_use,'ajax_userpanel_ticket_category.tpl', 'ajax');
 
     die;
+
+} else if (isset($user_id) and ($pa['gserver'] or $pa['restart']) and $ui->username('mapgroup', 50, 'get')) {
+
+    $sprache = getlanguagefile('gserver', $user_language, $reseller_id);
+
+    $query = $sql->prepare("SELECT `mapGroup` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+    $query->execute(array($ui->username('mapgroup', 50, 'get'), $reseller_id));
+    $mapGroup = $query->fetchColumn();
+
+    if ($mapGroup != null) {
+        require_once IncludeTemplate($template_to_use,'ajax_userpanel_mapgroup.tpl', 'ajax');
+    }
+
+    die;
 }
 
 die('No Access:'.$ui->smallletters('d', 200, 'get'));

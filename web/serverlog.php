@@ -105,19 +105,17 @@ if ($ui->id('id', 10, 'get')) {
             $ftpport = $row['ftpport'];
             $ip = $row['ip'];
 
-
             $ftpConnect = new EasyWiFTP($ip, $ftpport, $username, $ftppass);
 
             if ($ftpConnect->ftpConnection) {
 
                 if (!$ftpConnect->downloadToTemp('/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', 32768)) {
-                    $error = 'Cannot download screenlog from /' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0';
+                    $error = 'Cannot download screenlog from /' . $ftpConnect->removeSlashes($pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0');
                 }
 
             } else {
                 $error = 'Cannot connect to FTP Server ' . $ip . ':' . $ftpport;
             }
-
         }
 
         if (isset($ip)) {

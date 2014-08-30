@@ -1,15 +1,18 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="userpanel.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="userpanel.php?w=gs"><?php echo $gsprache->gameserver;?></a> <span class="divider">/</span></li>
-            <li>Web FTP <span class="divider">/</span></li>
-            <li class="active"><?php echo $address;?></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span11">
-        <?php echo $monstaDisplay;?>
-    </div>
-</div>
+<!-- Content Header -->
+<section class="content-header">
+    <h1><?php echo $gsprache->gameserver;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="userpanel.php?w=gs"><?php echo $gsprache->gameserver;?></a></li>
+		<li>Web FTP</li>
+		<li class="active"><?php echo $address;?></li>
+    </ol>
+</section>
+<!-- Main Content -->
+<section class="content">
+	<div class="box box-info">
+		<div class="box-body">
+			<?php echo $monstaDisplay;?>		
+		</div>
+	</div>
+</section>

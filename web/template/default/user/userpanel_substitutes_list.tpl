@@ -1,41 +1,66 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="userpanel.php">Home</a> <span class="divider">/</span></li>
-            <li><?php echo $gsprache->substitutes;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $gsprache->overview;?></li>
-        </ul>
+<section class="content-header">
+    <h1><?php echo $gsprache->substitutes;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+        <li class="active"><?php echo $gsprache->substitutes;?></li>
+    </ol>
+</section>
+
+<!-- Main Content -->
+<section class="content">
+
+    <div class="row hidden-xs">
+        <div class="col-md-12">
+            <div class="alert alert-info alert-dismissable">
+                <i class="fa fa-info"></i>
+                <?php echo $sprache->help_substitutes_list;?>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid hidden-phone">
-    <div class="span12 alert alert-info"><?php echo $sprache->help_substitutes_list;?></div>
-</div>
-<hr>
-<div class="row-fluid">
-    <div class="span6">
-        <a href="userpanel.php?w=su&amp;d=ad"<span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i> <?php echo $gsprache->substitutes;?></span></a>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+
+                    <div>
+                        <?php echo $gsprache->substitutes;?> <a href="userpanel.php?w=su&amp;d=ad"<span class="btn btn-primary"><i class="fa fa-plus"></i> <?php echo $gsprache->add;?></span></a>
+                    </div>
+
+                    <hr>
+
+                    <div class="table-responsive">
+                        <table id="dataTable" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th><?php echo $sprache->user;?></th>
+                                <th><?php echo $sprache->active;?></th>
+                                <th><?php echo $gsprache->edit;?></th>
+                                <th><?php echo $gsprache->del;?></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($table as $table_row) { ?>
+                            <tr>
+                                <td><?php echo $table_row['loginName'];?></td>
+                                <td><?php echo $table_row['active'];?></td>
+                                <td><a href="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></span></a></td>
+                                <td><a href="userpanel.php?w=su&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></span></a></td>
+                            </tr>
+                            <?php } ?>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th><?php echo $sprache->user;?></th>
+                                <th><?php echo $sprache->active;?></th>
+                                <th><?php echo $gsprache->edit;?></th>
+                                <th><?php echo $gsprache->del;?></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<br>
-<div class="row-fluid">
-    <div class="span8">
-        <table class="table table-bordered table-hover table-striped">
-            <thead>
-            <tr>
-                <th><?php echo $sprache->user;?></th>
-                <th> </th>
-                <th> </th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($table as $table_row) { ?>
-            <tr class="<?php if($table_row['active']=='Y') echo 'success'; else echo 'warning';?>">
-                <td><?php echo $table_row['loginName'];?></td>
-                <td class="span1"><a href="userpanel.php?w=su&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></span></a></td>
-                <td class="span1"><a href="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i> <?php echo $gsprache->mod;?></span></a></td>
-            </tr>
-            <?php } ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+</section>

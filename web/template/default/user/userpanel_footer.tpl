@@ -1,13 +1,23 @@
-            </div><!--/span-->
-        </div><!--/row-->
-        <hr>
-        <footer>
-            <p>&copy; Easy-WI 2011 - <?php echo date('Y'); ?></p>
-        </footer>
-    </div><!--/.fluid-container-->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <?php if (isset($table['tools'])) { foreach ($table['tools'] as $table_row) { echo '<script>$("#'.$table_row['adid'].'-'.$table['id'].'").tooltip();</script>';}}?>
-    <?php if (isset($table['maps'])) { foreach ($table['maps'] as $table_row) { echo '<script>$("#'.$table_row['adid'].'-'.$table['id'].'").tooltip();</script>';}}?>
-    <?php if (isset($initalize)) { foreach ($initalize as $i) { echo '<script>$("#'.$i.'").tooltip();</script>';}}?>
+
+        </aside><!-- /.right-side -->
+    </div><!-- ./wrapper -->
+
+    <!-- add new calendar event modal -->
+
+
+    <!-- Easy-Wi -->
+    <script src="js/adminlte/easy-wi.js" type="text/javascript"></script>
+
+    <!-- jQuery UI 1.10.3
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script> -->
+
+    <?php echo implode('',$htmlExtraInformation['js']);?>
+
+    <!-- Bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
+
+    <!-- AdminLTE App -->
+    <script src="js/adminlte/app.js" type="text/javascript"></script>
+
 </body>
 </html>

@@ -89,8 +89,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $slotUsage[] = "{y: '{$row['groupedDate']}', item1: {$row['averageused']}}";
-            $trafficUsage[] = "{y: '{$row['groupedDate']}', item1: {$row['fileTrafficMB']}}";
+            $slotUsage[] = "{y: '{$row['groupedDate']}', item1: " . ceil($row['averageused']) . "}";
+            $trafficUsage[] = "{y: '{$row['groupedDate']}', item1: " . ceil($row['fileTrafficMB']) . "}";
         }
 
         if ($ui->id('serverID', 10, 'post')) {
@@ -104,8 +104,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $freeSlots = (int) ($row['s'] - $row['u']);
             $usedSlots = (int) $row['u'];
-            $freeTraffic = (int) ($row['m'] - $row['f']);
-            $fileTraffic = (int) $row['f'];
+            $freeTraffic = ceil($row['m'] - ($row['f'] / 1024));
+            $fileTraffic = ceil($row['f'] / 1024);
         }
     }
 

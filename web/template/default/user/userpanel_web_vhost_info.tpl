@@ -1,27 +1,49 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="userpanel.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="userpanel.php?w=wv"><?php echo $gsprache->webspace;?></a> <span class="divider">/</span></li>
-            <li><?php echo $sprache->fdlInfo;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $dns;?></li>
-        </ul>
+<!-- Content Header -->
+<section class="content-header">
+    <h1><?php echo $gsprache->webspace.' '.$gsprache->fdlInfo;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+		<li><a href="userpanel.php?w=wv"><?php echo $gsprache->webspace;?></a></li>
+		<li><?php echo $sprache->fdlInfo;?></li>
+		<li class="active"><?php echo $dns;?></li>
+    </ol>
+</section>
+<!-- Main Content -->
+<section class="content">
+
+	<!-- Content Help -->
+    <div class="row hidden-xs">
+        <div class="col-md-12">
+            <div class="alert alert-info alert-dismissable">
+                <i class="fa fa-info"></i>
+                <?php echo $sprache->help_fdl_attention;?>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span12 alert alert-info">
-        <b><?php echo $sprache->help_fdl_attention;?></b>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="textarea"><?php echo $sprache->help_fdl_hl;?></label>
+                        <textarea id="textarea" class="form-control" rows="4"><?php echo $hlCfg;?></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span12 alert alert-info">
-        <?php echo $sprache->help_fdl_hl;?>
-        <textarea rows="3" class="span12"><?php echo $hlCfg;?></textarea>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="cfg"><?php echo $sprache->help_fdl_cod;?></label>
+                        <textarea id="cfg" class="form-control" rows="4"><?php echo $codCfg;?></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span12 alert alert-info">
-        <?php echo $sprache->help_fdl_cod;?>
-        <textarea rows="4" class="span12"><?php echo $codCfg;?></textarea>
-    </div>
-</div>
+</section>

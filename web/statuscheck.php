@@ -211,7 +211,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $serverBatchArray[] = array('id' => $row['id'], 'type' => $row['gameq'], 'host' => $checkAtIPPort);
                 $i++;
 
-                if ($i == 50) {
+                if ($i == 5) {
                     $allServersArray[] = $serverBatchArray;
                     $serverBatchArray = array();
                     $i = 1;
