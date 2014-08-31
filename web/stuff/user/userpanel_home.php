@@ -147,7 +147,23 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
 
         } else {
 
-            $steamAppIDs = ($row['steamFeeds'] == 'Y' and count($steamAppIDsArray) > 0) ? ' OR (n.`feedID`=0  AND n.`content` IN (' . implode(',', $steamAppIDsArray) . '))' : '';
+            $steamAppIDs = '';
+
+            if ($row['steamFeeds'] == 'Y') {
+
+                $steamAppIDsArray = array();
+
+                $query2 = $sql->prepare("SELECT t.`steamgame`,t.`appID`,t.`shorten` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON s.`id`=g.`serverid` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=?");
+                $query2->execute(array($user_id, $reseller_id));
+                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    if ($row2['steamgame'] != 'N') {
+                        $steamAppIDsArray[] = workAroundForValveChaos($row2['appID'], $row2['shorten']);
+                    }
+                }
+
+                $steamAppIDs = (count($steamAppIDsArray) > 0) ? ' OR (n.`feedID`=0  AND n.`content` IN (' . implode(',', $steamAppIDsArray) . '))' : '';
+            }
+
 
             $query2 = $sql->prepare("(SELECT 'cms' AS `newsType`,p.`id` AS `newsID`,p.`date` AS `newsDate`,t.`id` AS `textID`,t.`title` AS `newsTitle`,t.`text` AS `newsText`,'' AS `twitterText`,'' AS `feedUrl`,'N' AS `twitter`,'' AS `loginName`,'' AS `link` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=:lang AND p.`resellerid`=0) UNION (SELECT 'feed' AS `newsType`,u.`feedID` AS `newsID`,n.`pubDate` AS `newsDate`,0 AS `textID`,n.`title` AS `newsTitle`,n.`content` AS `newsText`,n.`description` AS `twitterText`,u.`feedUrl`,u.`twitter`,u.`loginName`,n.`link` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=:resellerID AND n.`active`='Y' AND (u.`active`='Y'  $steamAppIDs)) ORDER BY `newsDate` DESC LIMIT 0,$newsAmount");
             $query2->execute(array(':lang' => $user_language,':resellerID' => $row['resellerID']));
