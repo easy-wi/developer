@@ -127,11 +127,14 @@ $active = (active_check($active)) ? $active : 'Y';
 $query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
 $query->execute(array($aeskey, $reseller_id));
 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+
     $activeGS = ($row['activeGS'] == 'B' or ($row['activeGS'] != 'N' and (isset($admin_id) or ($row['activeGS'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeGS'] == 'R' and isset($user_id)) or ($row['activeGS'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
     $activeVS = ($row['activeVS'] == 'B' or ($row['activeVS'] != 'N' and (isset($admin_id) or ($row['activeVS'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeVS'] == 'R' and isset($user_id)) or ($row['activeVS'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
     $ftpupload = ($row['ftpupload'] == 'Y' or ($row['ftpupload'] != 'N' and (isset($admin_id) or ($row['ftpupload'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['ftpupload'] == 'R' and isset($user_id)) or ($row['ftpupload'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
     $ftpuploadpath = $row['decyptedftpuploadpath'];
+
     if (($ui->username('shorten', 50, 'get') == 'api') or (in_array($row['activeGS'], array('B', 'R')) and (isset($user_id) or isset($admin_id)))) {
+
         $mintime = (int) $row['mintimeRegistered'];
         $time = (int) $row['mintimeRegistered'];
         $maxtime = (int) $row['maxtimeRegistered'];
@@ -140,7 +143,9 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $maxplayer = (int) $row['maxplayerRegistered'];
         $player = (int) $row['maxplayerRegistered'];
         $playersteps = (int) $row['playerstepsRegistered'];
+
     } else {
+
         $mintime = (int) $row['mintime'];
         $time = (int) $row['mintime'];
         $maxtime = (int) $row['maxtime'];
@@ -150,7 +155,9 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $player = (int) $row['maxplayer'];
         $playersteps = (int) $row['playersteps'];
     }
+
     if (($ui->username('shorten', 50, 'get') == 'api') or (in_array($row['activeVS'], array('B', 'R')) and (isset($user_id) or isset($admin_id)))) {
+
         $vomintime = (int) $row['vomintimeRegistered'];
         $votime = (int) $row['vomintimeRegistered'];
         $vomaxtime = (int) $row['vomaxtimeRegistered'];
@@ -159,7 +166,9 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $vomaxplayer = (int) $row['vomaxplayerRegistered'];
         $voplayer = (int) $row['vomaxplayerRegistered'];
         $voplayersteps = (int) $row['voplayerstepsRegistered'];
+
     } else {
+
         $vomintime = (int) $row['vomintime'];
         $votime = (int) $row['vomintime'];
         $vomaxtime = (int) $row['vomaxtime'];
@@ -168,7 +177,9 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
         $vomaxplayer = (int) $row['vomaxplayer'];
         $voplayer = (int) $row['vomaxplayer'];
         $voplayersteps = (int) $row['voplayersteps'];
+
     }
+
     $lendaccess = $row['lendaccess'];
     $lastcheck = $row['lastcheck'];
     $timebetweenchecks = (strtotime($lastcheck) - strtotime($row['oldcheck'])) / 60;
@@ -178,27 +189,32 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
     if ($nextcheck < 0) {
         $nextcheck = $nextcheck * (-1);
     }
-    if ($time>0 and $maxtime>0) {
+
+    if ($time > 0 and $maxtime > 0) {
         while ($time <= $maxtime) {
             $timeselect[] = $time;
             $time = $time + $timesteps;
         }
     }
     $gsstart = $minplayer;
-    if ($player>0 and $gsstart>0) {
+
+    if ($player > 0 and $gsstart > 0) {
         while ($gsstart <= $player) {
             $slotselect[] = $gsstart;
             $gsstart = $gsstart + $playersteps;
         }
     }
-    if ($votime>0 and $vomaxtime>0) {
+
+    if ($votime > 0 and $vomaxtime > 0) {
         while ($votime <= $vomaxtime) {
             $votimeselect[] = $votime;
             $votime = $votime + $votimesteps;
         }
     }
+
     $vstart = $vominplayer;
-    if ($voplayer>0 and $vstart>0) {
+
+    if ($voplayer > 0 and $vstart > 0) {
         while ($vstart <= $voplayer) {
             $voslotselect[] = $vstart;
             $vstart = $vstart + $voplayersteps;
@@ -222,9 +238,9 @@ if (!isset($page_include) and $ui->id('xml', 1, 'post') == 1) {
         $xml = @simplexml_load_string(base64_decode($ui->escaped('ipblocked', 'post')));
     }
 
-    if (isset($xml) and $xml == false) {
+    if (isset($xml) and !$xml) {
         header('HTTP/1.1 403 Forbidden');
-        die('403 Forbidden: XML not valid');
+        die('403 Forbidden: XML not valid. Decoded XML is:' . base64_decode($ui->escaped('ipblocked', 'post')));
 
     } else if (isset($xml)) {
 
@@ -252,8 +268,8 @@ if ($activeGS == 'Y' and ($w == 'gs' or $d == 'gs' or $ui->st('w', 'post') == 'g
     $servertype = 'v';
 }
 
-$volallowed = ($vocount>0) ? true : false;
-$gslallowed = ($gscount>0) ? true : false;
+$volallowed = ($vocount > 0) ? true : false;
+$gslallowed = ($gscount > 0) ? true : false;
 
 if (!isset($servertype) and !isset($page_include) and (!$ui->username('shorten', 50, 'get') or ($ui->username('shorten', 50, 'get') == 'api') and !$ui->st('w', 'post'))) {
     $servertype = ($vocount > $gscount) ? 'v' : 'g';
@@ -505,13 +521,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         $xml = new DOMDocument('1.0','utf-8');
         $element = $xml->createElement('serverlist');
 
-        $key = $xml->createElement('tes','value');
-        $element->appendChild($key);
-
         $voiceServersXML = $xml->createElement('voiceserver');
         foreach ($lendVoiceServers as $row) {
 
-            $voiceServerXML = $xml->createElement('server');
+            $voiceServerXML = $xml->createElement('voiceserver');
 
             $key = $xml->createElement('ip', $row['ip']);
             $voiceServerXML->appendChild($key);
@@ -534,16 +547,15 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
             $key = $xml->createElement('connect', $row['connect']);
             $voiceServerXML->appendChild($key);
 
-            $voiceServersXML->appendChild($voiceServerXML);
-        }
 
-        $element->appendChild($voiceServersXML);
+            $element->appendChild($voiceServerXML);
+        }
 
         $gameServersXML = $xml->createElement('gameserver');
 
         foreach ($lendGameServers as $row) {
 
-            $gameServerXML = $xml->createElement('server');
+            $gameServerXML = $xml->createElement('gameserver');
 
             $key = $xml->createElement('ip', $row['ip']);
             $gameServerXML->appendChild($key);
@@ -570,16 +582,14 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
             $gameServerXML->appendChild($key);
 
             $gamesXML = $xml->createElement('games');
-            foreach ($row['games'] as $game) {
-                $key = $xml->createElement('game', $game);
+            foreach ($row['games'] as $shorten => $game) {
+                $key = $xml->createElement($shorten, $game);
                 $gamesXML->appendChild($key);
             }
             $gameServerXML->appendChild($gamesXML);
 
-            $gameServersXML->appendChild($gameServerXML);
+            $element->appendChild($gameServerXML);
         }
-
-        $element->appendChild($gameServersXML);
 
         $xml->appendChild($element);
 
