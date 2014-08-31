@@ -76,8 +76,8 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $max_userconnections_per_hour = $row4['max_userconnections_per_hour'];
 
                 $extraData = @json_decode($row4['extraData']);
-                if (is_object($extraData->newActive) and isset($extraData->newActive) and $extraData->newActive == 'N') {
-                    $password=passwordgenerate(20);
+                if (is_object($extraData) and $extraData->newActive == 'N') {
+                    $password = passwordgenerate(20);
                 }
 
                 if ($row2['action'] == 'dl') {
