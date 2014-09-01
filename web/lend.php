@@ -196,6 +196,7 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
             $time = $time + $timesteps;
         }
     }
+
     $gsstart = $minplayer;
 
     if ($player > 0 and $gsstart > 0) {
@@ -239,8 +240,18 @@ if (!isset($page_include) and $ui->id('xml', 1, 'post') == 1) {
     }
 
     if (isset($xml) and !$xml) {
+
         header('HTTP/1.1 403 Forbidden');
-        die('403 Forbidden: XML not valid. Decoded XML is:' . base64_decode($ui->escaped('ipblocked', 'post')));
+
+        echo '403 Forbidden: XML not valid. Decoded XML is:';
+
+        if ($ui->escaped('game', 'post'))	{
+            echo base64_decode($ui->escaped('game', 'post'));
+        } else if ($ui->escaped('ipblocked', 'post')) {
+            echo base64_decode($ui->escaped('ipblocked', 'post'));
+        }
+
+        die;
 
     } else if (isset($xml)) {
 
@@ -726,28 +737,29 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         $nextfree = 0;
     }
 
-    if ($serveravailable == true and ($lendaccess == 1 or $lendaccess == 2) and $ui->w('game', 20, 'post')) {
+    if ($serveravailable and ($lendaccess == 1 or $lendaccess == 2) and (($ui->id('xml', 1, 'post') and $ui->escaped('game', 'post')) or $ui->w('password', 50, 'post'))) {
+
         $fail = 0;
         $error = "Error:";
 
         if ($ui->id('xml', 1, 'post') == 1) {
-            $game = $xml->game;
-            $rcon = $xml->rcon;
-            $password = $xml->password;
+            $game = (string) $xml->game;
+            $rcon = (string) $xml->rcon;
+            $password = (string) $xml->password;
             $slots = (int) $xml->slots;
             $lendtime = (int) $xml->lendtime;
-            $postedftpuploadpath =isurl($xml->ftpuploadpath);
+            $postedftpuploadpath = isurl($xml->ftpuploadpath);
 
         } else {
             $game = $ui->w('game', 20, 'post');
-            $rcon = $ui->w('rcon', 20, 'post');
-            $password = $ui->w('password', 20, 'post');
+            $rcon = $ui->w('rcon', 50, 'post');
+            $password = $ui->w('password', 50, 'post');
             $slots = $ui->id('slots', 3, 'post');
             $lendtime = $ui->id('time', 4, 'post');
             $postedftpuploadpath = $ui->url('ftpuploadpath', 'post');
         }
 
-        if (!wpreg_check($game,20)) {
+        if (!wpreg_check($game, 20)) {
             $fail = 1;
             $error .= "Game</br>";
         }
@@ -762,12 +774,12 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
             $error .= "Time</br>";
         }
 
-        if (!wpreg_check($rcon,20)) {
+        if (!wpreg_check($rcon, 50)) {
             $error .= "Rcon</br>";
             $fail = 1;
         }
 
-        if (!wpreg_check($password,20)) {
+        if (!wpreg_check($password, 50)) {
             $error .= "Password</br>";
             $fail = 1;
         }
@@ -799,7 +811,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
             }
 
-            $free = $gscounts[$game] - $gsused[$game];
+            $free = (isset($gscounts[$game]) && isset($gsused[$game])) ? ($gscounts[$game] - $gsused[$game]) : 0;
 
             if ($free > 0) {
 
@@ -948,9 +960,11 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         }
 
     } else if (isset($page_include) and $serveravailable == false and isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2)) {
+
         $template_file = 'Module deaktivated';
 
     } else if (!isset($page_include) and $serveravailable == false and isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2) and (($ui->id('xml', 1, 'post') and $ui->w('game', 20, 'post')) or $ui->w('password', 20, 'post'))) {
+
         echo 'too slow';
 
     } else if (isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2 or $lendaccess == 3)) {
@@ -1058,11 +1072,13 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 } else if (!isset($template_file) and $vostillrunning == false and isset($active) and $active == 'Y' and $servertype == 'v' and !$ui->escaped('ipblocked', 'post')) {
 
     $serveravailable = false;
+
     $freevoice = $vocount;
 
     $password = passwordgenerate(10);
 
     if ($vocount > 0) {
+
         $masterservers = array();
         $mastervoiceids = array();
         $query = $sql->prepare("SELECT `id`,`maxserver`,`maxslots` FROM `voice_masterserver` WHERE `active`='Y' AND `resellerid`=?");
@@ -1071,18 +1087,21 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         $query->execute(array($reseller_id));
 
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-            $masterid = $row['id'];
-            $query2->execute(array($masterid, $reseller_id));
+
             $vomacount = 0;
             $slots = 0;
             $usedvoice = 0;
 
+            $query2->execute(array($row['id'], $reseller_id));
+
             foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+
                 $lendable = true;
 
                 $query3->execute(array($row2['id'], $reseller_id));
 
                 foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+
                     $lendtime = $row3['lendtime'];
                     $timeleft = round($lendtime - (strtotime('now') - strtotime($row3['started'])) / 60);
 
@@ -1096,7 +1115,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 }
 
                 if ($lendable == true) {
-                    $mastervoiceids[$masterid][] = $row2['id'];
+                    $mastervoiceids[$row['id']][] = $row2['id'];
                 }
 
                 $slots = $slots + $row2['slots'];
@@ -1104,12 +1123,12 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
             }
 
-            if ($freevoice < $vocount) {
+            if ($freevoice > 0) {
                 $nextfree = 0;
             }
 
             if ($vomacount > 0) {
-                $masterservers[$masterid] = (100 / $vomacount) * $usedvoice;
+                $masterservers[$row['id']] = (100 / $vomacount) * $usedvoice;
             }
         }
 
@@ -1123,7 +1142,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
             $tousevoiceid = $mastervoiceids[$bestmaster][$arrayid];
         }
 
-        if ($serveravailable == true and isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2) and (($ui->id('xml', 1, 'post') and $ui->w('game', 20, 'post') or $ui->w('password', 20, 'post')))) {
+        if ($serveravailable == true and isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2) and (($ui->id('xml', 1, 'post') and $ui->escaped('game', 'post')) or ($ui->w('password', 50, 'post')))) {
 
             $fail = 0;
 
@@ -1135,7 +1154,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 $lendtime= (int) $xml->lendtime;
 
             } else {
-                $password = $ui->w('password', 20, 'post');
+                $password = $ui->w('password', 50, 'post');
                 $slots = $ui->id('slots', 3, 'post');
                 $lendtime = $ui->id('time', 4, 'post');
             }
@@ -1147,15 +1166,15 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
             if (!isid($lendtime, 4) or $lendtime > $vomaxtime or $lendtime < $vomintime) {
                 $fail = 1;
-                $error .= 'Time</br>';
+                $error .= 'Time'."$lendtime > $vomaxtime or $lendtime < $vomintime".'</br>';
             }
 
-            if (!wpreg_check($password, 20)) {
+            if (!wpreg_check($password, 50)) {
                 $error .= 'Password</br>';
                 $fail = 1;
             }
 
-            if ($fail==0 and $freevoice>0) {
+            if ($fail == 0 and $freevoice > 0) {
                 $timeleft = $lendtime;
                 $query = $sql->prepare("SELECT `bitversion`,`type`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`usedns` FROM `voice_masterserver` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                 $query->execute(array(':aeskey' => $aeskey,':id' => $bestmaster,':reseller_id' => $reseller_id));
@@ -1345,6 +1364,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 }
 
             } else if (isset($page_include)) {
+
                 $template_file = 'Too slow';
 
             } else {
@@ -1352,6 +1372,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
             }
 
         } else if (isset($page_include) and $serveravailable == false and isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2)) {
+
             $template_file = 'Module deaktivated';
 
         } else if (!isset($page_include) and $serveravailable == false and isset($lendaccess) and ($lendaccess == 1 or $lendaccess == 2) and (($ui->id('xml', 1, 'post') and $ui->w('game', 20, 'post')) or $ui->w('password', 20, 'post'))) {
@@ -1389,6 +1410,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 }
 
             } else if (!isset($page_include) and ($lendaccess == 1 or $lendaccess == 3) and $ui->id('xml', 1, 'post') == 1) {
+
                 if (!isset($rcon)) {
                     $rcon = '';
                 }
