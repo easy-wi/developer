@@ -139,12 +139,12 @@
             </div>
             <?php };if($pa['webmaster']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputAWebMaster"><?php echo $sprache->webspace.' '.$sprache->master;?></label>
+                <label class="control-label" for="inputAWebMaster"><?php echo $gsprache->webspace.' '.$gsprache->master;?></label>
                 <div class="controls"><input id="inputAWebMaster" type="checkbox" name="webmaster" value="Y" <?php if ($webmaster=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <?php };if($pa['webvhost']) { ?>
             <div class="a <?php if ($grouptype!='a') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputAWebVhost"><?php echo $sprache->webspace;?></label>
+                <label class="control-label" for="inputAWebVhost"><?php echo $gsprache->webspace;?></label>
                 <div class="controls"><input id="inputAWebVhost" type="checkbox" name="webvhost" value="Y" <?php if ($webvhost=='Y') echo 'checked="checked"'; ?>></div>
             </div>
             <?php };if($pa['tickets']) { ?>
@@ -413,7 +413,7 @@
                 <div class="controls"><input id="inputUmodFastDL" type="checkbox" name="modfastdl" value="Y"></div>
             </div>
             <div class="u switch control-group">
-                <label class="control-label" for="inputUWebVhost"><?php echo $sprache->webspace;?></label>
+                <label class="control-label" for="inputUWebVhost"><?php echo $gsprache->webspace;?></label>
                 <div class="controls"><input id="inputUWebVhost" type="checkbox" name="uwebvhost" value="Y"></div>
             </div>
             <div class="u switch control-group">
@@ -489,12 +489,12 @@
             </div>
             <?php };if($pa['webmaster']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputRWebMaster"><?php echo $sprache->webspace.' '.$sprache->master;?></label>
+                <label class="control-label" for="inputRWebMaster"><?php echo $gsprache->webspace.' '.$gsprache->master;?></label>
                 <div class="controls"><input id="inputRWebMaster" type="checkbox" name="rwebmaster" value="Y"></div>
             </div>
             <?php };if($pa['webvhost']) { ?>
             <div class="r <?php if ($grouptype!='r') echo 'display_none';?> switch control-group">
-                <label class="control-label" for="inputRWebVhost"><?php echo $sprache->webspace;?></label>
+                <label class="control-label" for="inputRWebVhost"><?php echo $gsprache->webspace;?></label>
                 <div class="controls"><input id="inputRWebVhost" type="checkbox" name="rwebvhost" value="Y"></div>
             </div>
             <?php };if($pa['roots']) { ?>
