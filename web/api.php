@@ -57,16 +57,17 @@ if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post')) {
     $query = $sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i INNER JOIN `api_settings` s ON s.`resellerID`=i.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR', 'server')));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
         if ($row['active'] == 'Y' and passwordhash($ui->password('pwd', 255, 'post'), $row['salt']) == $row['pwd'] and $ui->names('user', 255, 'post') == $row['user']) {
-            $apiIP = $row['ip'];
             $resellerIDs[] = $row['resellerID'];
         }
     }
 
+} else if ($ui->ip4('REMOTE_ADDR', 'server')) {
+    header('HTTP/1.1 403 Forbidden');
+    die('403 Forbidden: No valid access data. No API user given. Request IP is: ' . $ui->ip4('REMOTE_ADDR', 'server'));
 } else {
     header('HTTP/1.1 403 Forbidden');
-    die('403 Forbidden: No valid access data');
+    die('403 Forbidden: No valid access data. No API user given. No IP4 can be found at REMOTE_ADDR.');
 }
 
 if (in_array($ui->smallletters('type', 10, 'post'), array('gserver', 'list', 'tsdns', 'mysql', 'user', 'voice', 'web'))) {
@@ -201,6 +202,6 @@ if (isset($resellerIDs) and count($resellerIDs) == 1 and isset($type)) {
 } else {
 
     header('HTTP/1.1 403 Forbidden');
-    die('403 Forbidden: No valid api data');
+    die('403 Forbidden: No valid api data Request IP is: ' . $ui->ip4('REMOTE_ADDR', 'server'));
 
 }
