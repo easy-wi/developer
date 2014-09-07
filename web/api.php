@@ -54,18 +54,14 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post')) {
 
-    $query = $sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
+    $query = $sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i INNER JOIN `api_settings` s ON s.`resellerID`=i.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR', 'server')));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-        $apiIP = $row['ip'];
-        $pwd = $row['pwd'];
-        $salt = $row['salt'];
-
-        if ($row['active'] == 'Y' and passwordhash($ui->password('pwd', 255, 'post'), $salt) == $pwd and $ui->names('user', 255, 'post') == $row['user']) {
+        if ($row['active'] == 'Y' and passwordhash($ui->password('pwd', 255, 'post'), $row['salt']) == $row['pwd'] and $ui->names('user', 255, 'post') == $row['user']) {
+            $apiIP = $row['ip'];
             $resellerIDs[] = $row['resellerID'];
         }
-
     }
 
 } else {
@@ -77,7 +73,7 @@ if (in_array($ui->smallletters('type', 10, 'post'), array('gserver', 'list', 'ts
     $type = $ui->smallletters('type', 10, 'post');
 }
 
-if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->password('pwd', 255, 'post'), $salt) == $pwd and isset($type)) {
+if (isset($resellerIDs) and count($resellerIDs) == 1 and isset($type)) {
 
     $data = array();
     $resellerID = $resellerIDs[0];
@@ -192,12 +188,12 @@ if (isset($resellerIDs) and count($resellerIDs)==1 and passwordhash($ui->passwor
 
     }
 
-} else if (isset($resellerIDs) and count($resellerIDs) == 1 and passwordhash($ui->password('pwd', 255, 'post'), $salt) == $pwd and $ui->smallletters('type', 10, 'post')) {
+} else if (isset($resellerIDs) and count($resellerIDs) == 1 and $ui->smallletters('type', 10, 'post')) {
 
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: Type ' . $ui->smallletters('type', 10, 'post') . 'is not known');
 
-} else if (isset($resellerIDs) and count($resellerIDs) == 1 and passwordhash($ui->password('pwd', 255, 'post'), $salt) == $pwd and !isset($type)) {
+} else if (isset($resellerIDs) and count($resellerIDs) == 1 and !isset($type)) {
 
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: Type is not defined');
