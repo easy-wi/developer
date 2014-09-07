@@ -109,10 +109,10 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         }
 
         if ($sSearch) {
-            $query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate`,`cname` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype`='user' AND l.`userid`=:userid AND l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search) ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+            $query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate`,`cname` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype` IN ('user','cron') AND l.`userid`=:userid AND l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search) ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
             $query->execute(array(':search' => '%' . $sSearch . '%', ':userid' => $user_id, ':resellerid' => $reseller_id));
         } else {
-            $query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate`,`cname` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype`='user' AND l.`userid`=? AND l.`resellerid`=? ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+            $query = $sql->prepare("SELECT `subuser`,`username`,`useraction`,`ip`,`logdate`,`cname` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype` IN ('user','cron') AND l.`userid`=? AND l.`resellerid`=? ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
             $query->execute(array($user_id, $reseller_id));
         }
 

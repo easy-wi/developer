@@ -65,6 +65,7 @@ if (isset($argv)) {
 }
 
 define('EASYWIDIR', dirname(__FILE__));
+
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
@@ -78,6 +79,13 @@ include(EASYWIDIR . '/stuff/methods/class_httpd.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 set_time_limit($timelimit);
+
+$logreseller = 0;
+$logsubuser = 0;
+$loguserip = '127.0.0.1';
+$userHostname = 'localhost';
+$logusername = 'Cronjob';
+$logusertype = 'cron';
 
 $query = $sql->prepare("UPDATE `settings` SET `lastCronStatus`=UNIX_TIMESTAMP()");
 $query->execute();
@@ -148,7 +156,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $rtmp = array();
 
         $query = $sql->prepare("SELECT `id`,`serverid`,`started`,`lendtime`,`resellerid` FROM `lendedserver` WHERE `servertype`='g'");
-        $query2 = $sql->prepare("SELECT g.`rootID`,g.`id` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? LIMIT 1");
+        $query2 = $sql->prepare("SELECT g.`rootID`,g.`id`,g.`userid`,g.`serverip`,g.`port` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? LIMIT 1");
         $query3 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute();
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -163,6 +171,11 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                 $query2->execute(array($row['serverid']));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
+                    $loguserid = $row2['userid'];
+                    $reseller_id = $row['resellerid'];
+                    $loguseraction = "%stop% %gserver% {$row2['serverip']}:{$row2['port']} (Lend stop)";
+                    $insertlog->execute();
 
                     $tmp = gsrestart($row2['id'], 'so', $aeskey, $resellerid);
 
@@ -206,7 +219,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             // without the gameq value we cannot query. So this results need to be sorted out.
             if (!in_array($row['gameq'], array('', null, false))) {
 
-                $checkAtIPPort = (in_array($row['gameq'], array('bf2', 'cube2', 'ut', 'ut2004', 'ut3', 'mta'))) ?  $row['serverip'] . ':' . $row['port2'] : $row['serverip'] . ':' . $row['port'];
+                $checkAtIPPort = (in_array($row['gameq'], array('cube2', 'ut', 'ut2004', 'ut3', 'mta'))) ?  $row['serverip'] . ':' . $row['port2'] : $row['serverip'] . ':' . $row['port'];
 
                 $serverBatchArray[] = array('id' => $row['id'], 'type' => $row['gameq'], 'host' => $checkAtIPPort);
                 $i++;
@@ -240,7 +253,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
             foreach($gq->requestData() as $switchID => $v) {
 
-                unset($userid, $lendserver, $stopserver, $doNotRestart);
+                unset($userid, $resellerid, $lendserver, $stopserver, $doNotRestart);
 
                 $lid = 0;
                 $elapsed = 0;
@@ -298,6 +311,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
 
                 $returnCmd = array();
+                $lendStop = array();
 
                 // Check lendserver specific settings
                 if (isset($userid) and isset($lendserver) and $lendserver == 'Y') {
@@ -308,12 +322,20 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $query->execute(array($lid));
 
                         if ($query->rowCount() == 0) {
+
                             print "Will stop lendserver $address because not lendet\r\n";
+
+                            $lendStop[] = 'not lended';
+
                             $stopserver = true;
                         }
 
                         if (!isset($stopserver) and $lendserver == 'Y' and $lendActive == 'Y' and $resellersettings[$resellerid]['shutdownempty'] == 'Y' and $elapsed > $shutdownemptytime and $numplayers == 0 and $maxplayers != 0 and $slots != 0) {
+
                             print "Will stop server $address after $elapsed minutes, because it is empty and threshold is $shutdownemptytime minutes \r\n";
+
+                            $lendStop[] = 'stop empty lended';
+
                             $stopserver = true;
                         }
                     }
@@ -379,7 +401,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                     if ($secnotified == 'N' and count($rulebreak) > 0) {
 
-                        if ($resellerid==0) {
+                        if ($resellerid == 0) {
                             $query = $sql->prepare("SELECT `id`,`mail_securitybreach` FROM `userdata` WHERE `id`=? OR (`resellerid`=0 AND `accounttype`='a')");
                             $query->execute(array($userid));
 
@@ -408,6 +430,13 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                         $numplayers = 0;
                         $map = '';
+
+                        $loguserid = $userid;
+                        $reseller_id = $resellerid;
+                        $loguseraction = "%stop% %gserver% {$address}";
+                        $loguseraction .= (count($rulebreak) > 0) ? " " . implode(', ', $rulebreak) : "";
+                        $loguseraction .= (count($lendStop) > 0 && count($rulebreak) == 0) ? " " . implode(', ', $lendStop) : "";
+                        $insertlog->execute();
 
                         $tmp = gsrestart($switchID, 'so', $aeskey, $resellerid);
                         if (is_array($tmp)) {
@@ -442,7 +471,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         }
 
                         if ($autoRestart == 'Y' and $notified >= $resellersettings[$resellerid]['down_checks']) {
+
                             print "Restarting: $address\r\n";
+
+                            $loguserid = $userid;
+                            $reseller_id = $resellerid;
+                            $loguseraction = "%start% %gserver% {$address} (Found offline since {$notified} checks)";
+                            $insertlog->execute();
+
                             $tmp = gsrestart($switchID, 're', $aeskey, $resellerid);
                             if (is_array($tmp)) {
                                 foreach($tmp as $t) {
