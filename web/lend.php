@@ -106,7 +106,7 @@ if ($ui->escaped('email', 'post') != '') {
 $sprache = getlanguagefile('lendserver', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $vosprache = getlanguagefile('voice', $user_language, $reseller_id);
-$licenceDetails=serverAmount($reseller_id);
+$licenceDetails = serverAmount($reseller_id);
 
 if (is_numeric($licenceDetails['left']) and (0>$licenceDetails['left'] or 0>$licenceDetails['lG'] or 0>$licenceDetails['lVo'] or $licenceDetails['t'] == 'l')) {
     header('HTTP/1.1 403 Forbidden');
@@ -124,7 +124,7 @@ $query->execute();
 $active = $query->fetchColumn();
 $active = (active_check($active)) ? $active : 'Y';
 
-$query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
+$query = $sql->prepare("SELECT *,NOW() AS `mysqlCurrentTime`,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
 $query->execute(array($aeskey, $reseller_id));
 foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 
@@ -183,8 +183,8 @@ foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
     $lendaccess = $row['lendaccess'];
     $lastcheck = $row['lastcheck'];
     $timebetweenchecks = (strtotime($lastcheck) - strtotime($row['oldcheck'])) / 60;
-    $timebetweenlastandnow = (strtotime('now')-strtotime($lastcheck))/60;
-    $nextcheck = ceil($timebetweenchecks-$timebetweenlastandnow);
+    $timebetweenlastandnow = (strtotime($row['mysqlCurrentTime'])-strtotime($lastcheck))/60;
+    $nextcheck = ceil($timebetweenchecks - $timebetweenlastandnow);
 
     if ($nextcheck < 0) {
         $nextcheck = $nextcheck * (-1);
@@ -712,6 +712,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     $status = array();
     $serveravailable = false;
     $gameselect = array();
+
     foreach ($gscounts as $key => $value) {
         $query = $sql->prepare("SELECT `description` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($key, $reseller_id));
@@ -884,13 +885,13 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 ssh2_execute('gs', $rootID, $cmds);
 
                 if (!isset($page_include) and $ui->id('xml', 1, 'post') == 1) {
-                    
+
                     $xml = new DOMDocument('1.0','utf-8');
                     $element = $xml->createElement('startserver');
 
                     $key = $xml->createElement('status', 'started');
                     $element->appendChild($key);
-                    
+
                     $key = $xml->createElement('ip', $serverip);
                     $element->appendChild($key);
 
