@@ -206,7 +206,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             // without the gameq value we cannot query. So this results need to be sorted out.
             if (!in_array($row['gameq'], array('', null, false))) {
 
-                $checkAtIPPort = (in_array($row['gameq'], array('cube2', 'ut', 'ut2004', 'ut3', 'mta'))) ?  $row['serverip'] . ':' . $row['port2'] : $row['serverip'] . ':' . $row['port'];
+                $checkAtIPPort = (in_array($row['gameq'], array('bf2', 'cube2', 'ut', 'ut2004', 'ut3', 'mta'))) ?  $row['serverip'] . ':' . $row['port2'] : $row['serverip'] . ':' . $row['port'];
 
                 $serverBatchArray[] = array('id' => $row['id'], 'type' => $row['gameq'], 'host' => $checkAtIPPort);
                 $i++;
@@ -229,7 +229,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         foreach ($allServersArray as $servers) {
 
             $gq = new GameQ();
-            $gq->setOption('timeout', 3);
+            $gq->setOption('timeout', 60);
 
             if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
                 $gq->setOption('debug', true);
