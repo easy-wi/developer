@@ -109,8 +109,6 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         print 'Checking Gameserver, Voiceserver MySQL DB sizes and Web Quotas' . "\r\n";
     }
 
-    $dayAndHour=date('Y-m-d H:').'00:00';
-    $dayAndZeroHour=date('Y-m-d').' 00:00:00';
     $ssprache = getlanguagefile('settings','uk',0);
     $vosprache = getlanguagefile('voice','uk',0);
     $sprache = getlanguagefile('gserver','uk',0);
@@ -1070,8 +1068,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                         $connection->StopServer($virtualserver_id);
                                     }
                                 }
-                                $query = $sql->prepare("INSERT INTO `voice_server_stats` (`sid`,`mid`,`installed`,`used`,`traffic`,`date`,`uid`,`resellerid`) VALUES (?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `traffic`=`traffic`+VALUES(`traffic`),`used`=(`used`*(`count`/(`count`+1))+(VALUES(`used`)*(1/(`count`+1)))),`installed`=(`installed`*(`count`/(`count`+1))+(VALUES(`installed`)*(1/(`count`+1)))),`count`=`count`+1");
-                                $query->execute(array($ts3id, $ts3masterid, $server['virtualserver_maxclients'], $usedslots, $addedtraffic, $dayAndZeroHour, $userid, $resellerid));
+                                $query = $sql->prepare("INSERT INTO `voice_server_stats` (`sid`,`mid`,`installed`,`used`,`traffic`,`date`,`uid`,`resellerid`) VALUES (?,?,?,?,?,CURRENT_DATE(),?,?) ON DUPLICATE KEY UPDATE `traffic`=`traffic`+VALUES(`traffic`),`used`=(`used`*(`count`/(`count`+1))+(VALUES(`used`)*(1/(`count`+1)))),`installed`=(`installed`*(`count`/(`count`+1))+(VALUES(`installed`)*(1/(`count`+1)))),`count`=`count`+1");
+                                $query->execute(array($ts3id, $ts3masterid, $server['virtualserver_maxclients'], $usedslots, $addedtraffic, $userid, $resellerid));
                             } else if (isset($ts3id)) {
                                 $uptime = 1;
                                 $usedslots = 0;

@@ -1492,7 +1492,7 @@ $defined['voice_server_backup'] = array(
 
 $defined['voice_server_stats'] = array(
     'sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
-    'date' => array("Type"=>"date","Null"=>"NO","Key"=>"PRI","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
+    'date' => array("Type"=>"date","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'mid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
     'installed' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'used' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
