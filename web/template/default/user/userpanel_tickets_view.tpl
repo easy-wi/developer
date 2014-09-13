@@ -16,34 +16,37 @@
                     <dl class="dl-horizontal">
                         <dt><?php echo $sprache->status;?></dt>
                         <dd><?php echo $status;?></dd>
-                        <br/>
+                        <br>
                         <dt><?php echo $sprache->priority;?></dt>
                         <dd><?php echo $priority;?></dd>
-                        <br/>
+                        <br>
                         <?php if($open=="Y") { ?>
                         <dt><?php echo $gsprache->mod;?></dt>
                         <dd><a href="userpanel.php?w=ti&d=md&amp;id=<?php echo $id;?>&amp;action=md"><span class="btn btn-primary btn-sm"><i class="fa fa-exchange"></i></a></dd>
-                        <br/>
+                        <br>
                         <dt><?php echo $sprache->close_heading;?></dt>
                         <dd><a href="userpanel.php?w=ti&d=md&amp;id=<?php echo $id;?>&amp;action=cl"><span class="btn btn-primary btn-sm"><i class="fa fa-lock"></i></span></a></dd>
-                        <br/>
+                        <br>
                         <?php } else if ($open=="D") { ?>
                         <dt><?php echo $sprache->reopen;?></dt>
                         <dd><a href="userpanel.php?w=ti&d=md&amp;id=<?php echo $id;?>&amp;action=op&amp;r=ti"><span class="btn btn-primary btn-sm"><i class="fa fa-unlock"></i></a></dd>
                         <?php } ?>
                     </dl>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div><!-- ./col -->
+                </div>
+            </div>
+        </div>
 
         <div class="col-md-6">
             <ul class="timeline">
                 <?php foreach ($table as $table_row) { ?>
-                <li class="time-label"><span class="bg-blue"><?php echo $table_row['writedate'];?></span></li>
+                <?php if($lastdate!=$table_row['writedate']){ ?>
+                <li class="time-label"><span class="bg-green"><?php echo $table_row['writedate'];?></span></li>
+                <?php }; $lastdate=$table_row['writedate'];?>
 
                 <li>
                     <i class="fa fa-envelope bg-blue"></i>
                     <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i> <?php echo $table_row['writeTime'];?></span>
                         <h3 class="timeline-header"><?php echo $sprache->writer.': '.$table_row['writer'];?> ...</h3>
                         <div class="timeline-body">
                             <?php echo $table_row['ticket'];?>
@@ -52,6 +55,6 @@
                 </li>
                 <?php } ?>
             </ul>
-        </div><!-- ./col -->
+        </div>
     </div>
 </section>

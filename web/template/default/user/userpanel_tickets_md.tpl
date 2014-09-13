@@ -41,36 +41,35 @@
                             <label for="problem"><?php echo $sprache->answer;?></label>
                             <textarea class="form-control" id="problem" name="ticket" rows="10"></textarea>
                         </div>
-                    </div><!-- /.box-body -->
+                    </div>
 
                     <div class="box-footer">
                         <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
                     </div>
                 </form>
-            </div><!-- /.box -->
-        </div><!-- ./col -->
+            </div>
+        </div>
 
-        <!-- timeline time label -->
+
         <div class="col-md-6">
             <ul class="timeline">
                 <?php foreach ($table as $table_row) { ?>
-                <li class="time-label"><span class="bg-blue"><?php echo $table_row['writedate'];?></span></li>
+                <?php if($lastdate!=$table_row['writedate']){ ?>
+                <li class="time-label"><span class="bg-green"><?php echo $table_row['writedate'];?></span></li>
+                <?php }; $lastdate=$table_row['writedate'];?>
 
                 <li>
-                    <!-- timeline icon -->
                     <i class="fa fa-envelope bg-blue"></i>
                     <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i> <?php echo $table_row['writeTime'];?></span>
                         <h3 class="timeline-header"><?php echo $sprache->writer.': '.$table_row['writer'];?> ...</h3>
                         <div class="timeline-body">
                             <?php echo $table_row['ticket'];?>
                         </div>
-                        <div class='timeline-footer'>
-                        </div>
                     </div>
                 </li>
+                <?php } ?>
             </ul>
-            <?php } ?>
         </div>
-        <!-- END timeline item -->
     </div>
 </section>

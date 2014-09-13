@@ -116,7 +116,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $template_file = 'userpanel_tickets_add.tpl';
 
-    } else if ($ui->smallletters('action', 2, 'post') == 'ad' and $ui->id('topic', 30, 'post')){
+    } else if ($ui->smallletters('action', 2, 'post') == 'ad' and $ui->id('topic', 30, 'post')) {
 
         $topic = $ui->id('topic', 30, 'post');
         $userPriority = $ui->id('userPriority', 30, 'post');
@@ -183,7 +183,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query2->execute(array($id, $reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $table[] = array('writedate' => ($user_language == 'de') ? date('d.m.Y H:i:s',strtotime($row2['writeDate'])) : $row2['writeDate'], 'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))),'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
+                $table[] = array('writedate' => ($user_language == 'de') ? date('d.m.Y', strtotime($row2['writeDate'])) : date('Y-m-d', strtotime($row2['writeDate'])), 'writeTime' => date('H:i:s', strtotime($row2['writeDate'])),'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))), 'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
             }
 
             if ($row['userPriority'] == 1) {
@@ -247,6 +247,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         if (isset($priority)) {
+            $lastdate = '';
             $template_file = ($ui->smallletters('action', 2, 'get') == 'md') ? 'userpanel_tickets_md.tpl' : 'userpanel_tickets_view.tpl';
         } else {
             $template_file = 'userpanel_404.tpl';
