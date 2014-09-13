@@ -260,6 +260,45 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
     die;
 
+} else if (isset($user_id) and $pa['voiceserverStats'] and $ui->w('d', 14, 'get') == 'voiceUserStats') {
+
+    $usageArray = array();
+
+    $dateRange = ($ui->escaped('dateRange', 'get')) ? $ui->escaped('dateRange', 'get') : date('m/d/Y', strtotime("-6 days")) . ' - ' . date('m/d/Y');
+    $accuracy = (in_array($ui->st('accuracy', 'get'), array('da', 'mo'))) ? $ui->st('accuracy', 'get') : 'da';
+
+    @list($startDate, $endDate) = explode('-', str_replace(' ', '', $dateRange));
+    @list($startMonth, $startDay, $startYear) = explode('/', $startDate);
+    @list($endMonth, $endDay, $endYear) = explode('/', $endDate);
+
+    if ($endYear > 2000 and $startYear > 2000) {
+
+        $menuStart = round((strtotime("{$endYear}-{$endMonth}-{$endDay}") - strtotime("{$startYear}-{$startMonth}-{$startDay}")) / 86400);
+
+        $extractOrNormal = ($accuracy == 'mo') ? "CONCAT(EXTRACT(YEAR FROM `date`),'-',EXTRACT(MONTH FROM `date`))" : '`date`';
+
+        $startDateFormatted = date('Y-m-d', strtotime($startYear . '-' . $startMonth . '-' . $startDay));
+        $endDateFormatted = date('Y-m-d', strtotime($endYear . '-' . $endMonth . '-' . $endDay));
+
+        if ($ui->id('serverID', 10, 'get')) {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `sid`=? AND `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($ui->id('serverID', 10, 'get'), $user_id, $reseller_id, $startDateFormatted, $endDateFormatted));
+        } else {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($user_id, $reseller_id, $startDateFormatted, $endDateFormatted));
+        }
+
+        while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $usageArray[] = array('y' => $row['groupedDate'], 'slots' => ceil($row['averageused']), 'traffic' => ceil($row['fileTrafficMB']));
+        }
+    }
+
+    header('Cache-Control: no-cache, must-revalidate');
+    header('Expires: Mon, 1 Jan 1900 00:00:00 GMT');
+    header('Content-type: application/json');
+
+    die(json_encode($usageArray));
+
 } else if (isset($user_id) and ($pa['gserver'] or $pa['restart']) and $ui->username('mapgroup', 50, 'get')) {
 
     $sprache = getlanguagefile('gserver', $user_language, $reseller_id);

@@ -52,16 +52,10 @@
 
         <!-- timeline time label -->
         <div class="col-md-6">
-            <?php foreach ($table as $table_row) { ?>
             <ul class="timeline">
+                <?php foreach ($table as $table_row) { ?>
+                <li class="time-label"><span class="bg-blue"><?php echo $table_row['writedate'];?></span></li>
 
-                <li class="time-label">
-                <span class="bg-blue">
-                    <?php echo $table_row['writedate'];?>
-                </span>
-                </li>
-                <!-- /.timeline-label -->
-                <!-- timeline item -->
                 <li>
                     <!-- timeline icon -->
                     <i class="fa fa-envelope bg-blue"></i>

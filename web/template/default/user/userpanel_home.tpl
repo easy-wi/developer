@@ -152,12 +152,12 @@
                     <?php foreach ($array as $feed) { ?>
 
                     <?php if($lastdate!=$feed['date']){ ?>
-                    <!-- timeline time label -->
+
                     <li class="time-label"><span class="bg-green"><?php echo $feed['date'];?></span></li>
-                    <!-- /.timeline-label -->
+
                     <?php }; $lastdate=$feed['date'];?>
 
-                    <!-- timeline item -->
+
                     <li>
                         <i class="fa fa-info bg-blue"></i>
                         <div class="timeline-item">
@@ -173,7 +173,7 @@
                     </li>
                     <?php } ?>
 
-                    <!-- END timeline item -->
+
                     <li>
                         <i class="fa fa-clock-o"></i>
                     </li>

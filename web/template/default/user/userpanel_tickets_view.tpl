@@ -37,18 +37,11 @@
         </div><!-- ./col -->
 
         <div class="col-md-6">
-            <?php foreach ($table as $table_row) { ?>
             <ul class="timeline">
-                <!-- timeline time label -->
-                <li class="time-label">
-                <span class="bg-blue">
-                    <?php echo $table_row['writedate'];?>
-                </span>
-                </li>
-                <!-- /.timeline-label -->
-                <!-- timeline item -->
+                <?php foreach ($table as $table_row) { ?>
+                <li class="time-label"><span class="bg-blue"><?php echo $table_row['writedate'];?></span></li>
+
                 <li>
-                    <!-- timeline icon -->
                     <i class="fa fa-envelope bg-blue"></i>
                     <div class="timeline-item">
                         <h3 class="timeline-header"><?php echo $sprache->writer.': '.$table_row['writer'];?> ...</h3>
@@ -57,9 +50,8 @@
                         </div>
                     </div>
                 </li>
-                <!-- END timeline item -->
+                <?php } ?>
             </ul>
-            <?php } ?>
         </div><!-- ./col -->
     </div>
 </section>

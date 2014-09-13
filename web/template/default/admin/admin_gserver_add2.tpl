@@ -24,11 +24,13 @@
 <div class="row-fluid">
     <div class="span6">
         <form class="form-horizontal" action="admin.php?w=gs&amp;d=ad&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="customer" value="<?php echo $customer;?>">
             <input type="hidden" name="id" value="<?php echo $id;?>">
             <input type="hidden" name="gamestring" value="<?php echo $gamestring;?>">
             <input type="hidden" name="action" value="ad2">
+
             <div class="control-group">
                 <label class="control-label" for="inputExternalID">externalID</label>
                 <div class="controls"><input id="inputExternalID" type="text" name="externalID" value=""></div>
@@ -193,12 +195,14 @@
                 <label class="control-label" for="inputMaxRam">Max Ram</label>
                 <div class="controls"><input id="inputMaxRam" type="text" name="maxram" value="1024"></div>
             </div>
+
             <?php foreach(customColumns('G') as $row){ ?>
             <div class="control-group">
                 <label class="control-label" for="inputCustom-<?php echo $row['customID'];?>"><?php echo $row['menu'];?></label>
                 <div class="controls"><?php echo $row['input'];?></div>
             </div>
             <?php }?>
+
             <hr>
             <?php foreach ($table as $table_row){ ?>
             <h3><a href="javascript:void(0)" onclick="SwitchShowHideRows('<?php echo $table_row['id'];?>'); return false;"><?php echo $table_row['description'];?> <span class="btn btn-large btn-link"><i class="icon-plus"></i></span></a></h3>

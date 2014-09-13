@@ -88,26 +88,12 @@
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title"><?php echo $voSprache->slots;?></h3>
+                    <h3 class="box-title"><?php echo $voSprache->slots;?> + <?php echo $gsprache->traffic;?></h3>
                 </div>
                 <div class="box-body chart-responsive">
-                    <div class="chart" id="slot-usage" style="height: 300px;"></div>
+                    <div class="chart" id="usage-chart" style="height: 300px;"></div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-info">
-                <div class="box-header">
-                    <h3 class="box-title"><?php echo $gsprache->traffic;?></h3>
-                </div>
-                <div class="box-body chart-responsive">
-                    <div class="chart" id="traffic-usage" style="height: 300px;"></div>
-                </div>
-            </div>
-
         </div>
     </div>
 </section>

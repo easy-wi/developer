@@ -52,10 +52,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 } else {
 
     $data = array();
-    $slotUsage = array();
-    $trafficUsage = array();
-
-    $menuStart = 6;
+    $freeSlots = 0;
+    $usedSlots = 0;
+    $freeTraffic = 0;
+    $fileTraffic = 0;
+    $kind = 'al';
 
     $display = $sprache->total;
 
@@ -65,52 +66,22 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     @list($startDate, $endDate) = explode('-', str_replace(' ', '', $dateRange));
     @list($startMonth, $startDay, $startYear) = explode('/', $startDate);
     @list($endMonth, $endDay, $endYear) = explode('/', $endDate);
+    $menuStart = round((strtotime("{$endYear}-{$endMonth}-{$endDay}") - strtotime("{$startYear}-{$startMonth}-{$startDay}")) / 86400);
 
-    $freeSlots = 0;
-    $usedSlots = 0;
-    $freeTraffic = 0;
-    $fileTraffic = 0;
-
-    if ($endYear > 2000 and $startYear > 2000) {
-
-        $menuStart = round((strtotime("{$endYear}-{$endMonth}-{$endDay}") - strtotime("{$startYear}-{$startMonth}-{$startDay}")) / 86400);
-
-        $extractOrNormal = ($accuracy == 'mo') ? "CONCAT(EXTRACT(YEAR FROM `date`),'-',EXTRACT(MONTH FROM `date`))" : '`date`';
-
-        $startDateFormatted = date('Y-m-d', strtotime($startYear . '-' . $startMonth . '-' . $startDay));
-        $endDateFormatted = date('Y-m-d', strtotime($endYear . '-' . $endMonth . '-' . $endDay));
-
-        if ($ui->id('serverID', 10, 'post')) {
-            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `sid`=? AND `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
-            $query->execute(array($ui->id('serverID', 10, 'post'), $user_id, $reseller_id, $startDateFormatted, $endDateFormatted));
-        } else {
-            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
-            $query->execute(array($user_id, $reseller_id, $startDateFormatted, $endDateFormatted));
-        }
-
-        while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $slotUsage[] = "{y: '{$row['groupedDate']}', item1: " . ceil($row['averageused']) . "}";
-            $trafficUsage[] = "{y: '{$row['groupedDate']}', item1: " . ceil($row['fileTrafficMB']) . "}";
-        }
-
-        if ($ui->id('serverID', 10, 'post')) {
-            $query = $sql->prepare("SELECT `slots` AS `s`,`usedslots` AS `u`,`maxtraffic` AS `m`,`filetraffic` AS `f` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($ui->id('serverID', 10, 'post'), $user_id, $reseller_id));
-        } else {
-            $query = $sql->prepare("SELECT SUM(`slots`) AS `s`, SUM(`usedslots`) AS `u`, SUM(`maxtraffic`) AS `m`, SUM(`filetraffic`) AS `f` FROM `voice_server` WHERE `userid`=? AND `resellerid`=?");
-            $query->execute(array($user_id, $reseller_id));
-        }
-
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $freeSlots = (int) ($row['s'] - $row['u']);
-            $usedSlots = (int) $row['u'];
-            $freeTraffic = ceil($row['m'] - ($row['f'] / 1024));
-            $fileTraffic = ceil($row['f'] / 1024);
-        }
+    if ($ui->id('serverID', 10, 'post')) {
+        $query = $sql->prepare("SELECT `slots` AS `s`,`usedslots` AS `u`,`maxtraffic` AS `m`,`filetraffic` AS `f` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($ui->id('serverID', 10, 'post'), $user_id, $reseller_id));
+    } else {
+        $query = $sql->prepare("SELECT SUM(`slots`) AS `s`, SUM(`usedslots`) AS `u`, SUM(`maxtraffic`) AS `m`, SUM(`filetraffic`) AS `f` FROM `voice_server` WHERE `userid`=? AND `resellerid`=?");
+        $query->execute(array($user_id, $reseller_id));
     }
 
-
-    $kind = 'al';
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $freeSlots = (int) ($row['s'] - $row['u']);
+        $usedSlots = (int) $row['u'];
+        $freeTraffic = ceil($row['m'] - ($row['f'] / 1024));
+        $fileTraffic = ceil($row['f'] / 1024);
+    }
 
     if ($ui->id('serverID', 10, 'post') and $ui->st('kind', 'post') == 'se') {
 
@@ -134,7 +105,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>';
 
     $htmlExtraInformation['js'][] = "<script type=\"text/javascript\">
-
 $(function() {
     //Date range as a button
     $('#dateRange').daterangepicker(
@@ -163,31 +133,21 @@ $(function() {
     $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/morris/morris.min.js" type="text/javascript"></script>';
     $htmlExtraInformation['js'][] = "<script type=\"text/javascript\">
 $(function() {
+
     'use strict';
 
-    var area = new Morris.Area({
-        element: 'slot-usage',
-        resize: true,
-        data: [" . implode(',', $slotUsage) . "],
-        xkey: 'y',
-        ykeys: ['item1'],
-        labels: ['{$voSprache->usage}'],
-        lineColors: ['#3c8dbc'],
-        hideHover: 'auto'
-    });
-
     var line = new Morris.Area({
-        element: 'traffic-usage',
+        element: 'usage-chart',
         resize: true,
-        data: [" . implode(',', $trafficUsage) . "],
+        data: [],
         xkey: 'y',
-        ykeys: ['item1'],
-        labels: ['MegaByte'],
-        lineColors: ['#3c8dbc'],
+        ykeys: ['slots', 'traffic'],
+        labels: ['{$voSprache->slots}', '{$gsprache->traffic}'],
+        lineColors: ['#3c8dbc', '#00a65a'],
         hideHover: 'auto'
     });
 
-    var donut = new Morris.Donut({
+    var trafficDonut = new Morris.Donut({
         element: 'traffic-chart',
         resize: true,
         colors: ['#00a65a', '#f56954'],
@@ -198,7 +158,7 @@ $(function() {
         hideHover: 'auto'
     });
 
-    var donut = new Morris.Donut({
+    var slotsDonut = new Morris.Donut({
         element: 'slots-chart',
         resize: true,
         colors: ['#00a65a', '#f56954'],
@@ -208,10 +168,24 @@ $(function() {
         ],
         hideHover: 'auto'
     });
+
+    function changeMorrisArea() {
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: 'ajax.php',
+            data: { d: 'voiceUserStats', dateRange: $('#dateRange').val(), accuracy: $('#inputFormat').val(), serverID: $('#inputSelect').val()}
+        }).done(function(response) {
+            if (typeof line !== 'undefined') {
+                line.setData(response);
+            }
+        });
+    }
+
+    changeMorrisArea();
 });
+
 </script>";
 
-/*<?php echo ;?>/<?php echo $maxTraffic;?>, "#00a65a"
-                    <?php echo ;?>/<?php echo ;?>*/
     $template_file = 'userpanel_voice_stats.tpl';
 }
