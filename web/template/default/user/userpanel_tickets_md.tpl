@@ -69,6 +69,10 @@
                     </div>
                 </li>
                 <?php } ?>
+
+                <li>
+                    <i class="fa fa-clock-o"></i>
+                </li>
             </ul>
         </div>
     </div>
