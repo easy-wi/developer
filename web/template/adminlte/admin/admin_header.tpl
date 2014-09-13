@@ -17,9 +17,6 @@
     <!-- font Awesome -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
 
-    <!-- Ionicons -->
-    <link href="//cdn.jsdelivr.net/ionicons/1.4.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
-
     <!-- Theme style -->
     <link href="css/adminlte/AdminLTE.css" rel="stylesheet" type="text/css" />
 

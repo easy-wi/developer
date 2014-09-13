@@ -15,7 +15,7 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- font Awesome -->
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Theme style -->
     <link href="css/adminlte/AdminLTE.css" rel="stylesheet" type="text/css" />
@@ -140,10 +140,10 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li <?php if($w=='da' or $w=='ho') echo 'class="active"';?>><a href="userpanel.php?w=da"><i class="fa fa-angle-double-right"></i> Dashboard</a></li>
-                        <?php if(!isset($_SESSION['sID'])){ ?><li <?php if($w=='su') echo 'class="active"';?>><a href="userpanel.php?w=su"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->substitutes;?></a></li><?php }?>
-                        <li <?php if($w=='lo') echo 'class="active"';?>><a href="userpanel.php?w=lo"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->logs;?></a></li>
-                        <?php if($easywiModules['ip']){ ?><li <?php if($w=='ip') echo 'class="active"';?>><a href="userpanel.php?w=ip"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->imprint;?></a></li><?php }?>
+                        <li <?php if($w=='da' or $w=='ho') echo 'class="active"';?>><a href="userpanel.php?w=da"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                        <?php if(!isset($_SESSION['sID'])){ ?><li <?php if($w=='su') echo 'class="active"';?>><a href="userpanel.php?w=su"><i class="fa fa-users"></i> <?php echo $gsprache->substitutes;?></a></li><?php }?>
+                        <li <?php if($w=='lo') echo 'class="active"';?>><a href="userpanel.php?w=lo"><i class="fa fa-list-alt"></i> <?php echo $gsprache->logs;?></a></li>
+                        <?php if($easywiModules['ip']){ ?><li <?php if($w=='ip') echo 'class="active"';?>><a href="userpanel.php?w=ip"><i class="fa fa-gavel"></i> <?php echo $gsprache->imprint;?></a></li><?php }?>
                         <?php foreach ($customModules['us'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'"><i class="fa fa-angle-double-right"></i> '.$v.'</a></li>'; }; ?>
                     </ul>
                 </li>
@@ -156,8 +156,8 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li <?php if($w=='ti' and $d!='ad') echo 'class="active"';?>><a href="userpanel.php?w=ti"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->overview;?></a></li>
-                        <li <?php if($w=='ti' and $d=='ad') echo 'class="active"';?>><a href="userpanel.php?w=ti&amp;d=ad"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->support2;?></a></li>
+                        <li <?php if($w=='ti' and $d!='ad') echo 'class="active"';?>><a href="userpanel.php?w=ti"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
+                        <li <?php if($w=='ti' and $d=='ad') echo 'class="active"';?>><a href="userpanel.php?w=ti&amp;d=ad"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->support2;?></a></li>
                         <?php foreach ($customModules['ti'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><i class="fa fa-angle-double-right"></i> <a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
                 </li>
@@ -171,14 +171,14 @@
                     </a>
                     <ul class="treeview-menu">
                         <?php if($pa['restart']) { ?>
-                        <li <?php if(in_array($w,array('gs','ao','ca','bu','pr'))) echo 'class="active"';?>><a href="userpanel.php?w=gs"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->overview;?></a></li>
+                        <li <?php if(in_array($w,array('gs','ao','ca','bu','pr'))) echo 'class="active"';?>><a href="userpanel.php?w=gs"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
                         <?php } ?>
                         <?php if($pa['fastdl']) { ?>
-                        <li <?php if($w=='fd') echo 'class="active"';?>><a href="userpanel.php?w=fd"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->fastdownload;?></a></li>
+                        <li <?php if($w=='fd') echo 'class="active"';?>><a href="userpanel.php?w=fd"><i class="fa fa-cloud-upload"></i> <?php echo $gsprache->fastdownload;?></a></li>
                         <?php } ?>
                         <?php if($pa['restart']) { ?>
-                        <li <?php if($w=='ms') echo 'class="active"';?>><a href="userpanel.php?w=ms"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->migration;?></a></li>
-                        <li <?php if($w=='gt') echo 'class="active"';?>><a href="userpanel.php?w=gt"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
+                        <li <?php if($w=='ms') echo 'class="active"';?>><a href="userpanel.php?w=ms"><i class="fa fa-truck"></i> <?php echo $gsprache->migration;?></a></li>
+                        <li <?php if($w=='gt') echo 'class="active"';?>><a href="userpanel.php?w=gt"><i class="fa fa-file-text"></i> <?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
                         <?php } ?>
                         <?php foreach ($customModules['gs'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><i class="fa fa-angle-double-right"></i> <a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
@@ -192,9 +192,9 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <?php if($voicecount>0) { ?><li <?php if($w=='vo') echo 'class="active"';?>><a href="userpanel.php?w=vo"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->overview;?></a></li><?php } ?>
-                        <?php if($voicecount>0) { ?><li <?php if($w=='vu') echo 'class="active"';?>><a href="userpanel.php?w=vu"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->stats;?></a></li><?php } ?>
-                        <?php if($tsdnscount>0) { ?><li <?php if($w=='vd') echo 'class="active"';?>><a href="userpanel.php?w=vd"><i class="fa fa-angle-double-right"></i> TS3 DNS</a></li><?php } ?>
+                        <?php if($voicecount>0) { ?><li <?php if($w=='vo') echo 'class="active"';?>><a href="userpanel.php?w=vo"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li><?php } ?>
+                        <?php if($voicecount>0) { ?><li <?php if($w=='vu') echo 'class="active"';?>><a href="userpanel.php?w=vu"><i class="fa fa-area-chart"></i> <?php echo $gsprache->stats;?></a></li><?php } ?>
+                        <?php if($tsdnscount>0) { ?><li <?php if($w=='vd') echo 'class="active"';?>><a href="userpanel.php?w=vd"><i class="fa fa-link"></i> TS3 DNS</a></li><?php } ?>
                         <?php foreach ($customModules['vo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><i class="fa fa-angle-double-right"></i> <a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
                 </li>
@@ -207,7 +207,7 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li <?php if($ui->smallletters('w',255,'get')=='wv') echo 'class="active"';?>><a href="userpanel.php?w=wv"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->overview;?></a></li>
+                        <li <?php if($ui->smallletters('w',255,'get')=='wv') echo 'class="active"';?>><a href="userpanel.php?w=wv"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
                         <?php foreach ($customModules['ws'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><i class="fa fa-angle-double-right"></i> <a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
                 </li>
@@ -220,7 +220,7 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li <?php if($w=='my') echo 'class="active"';?>><a href="userpanel.php?w=my"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->overview;?></a></li>
+                        <li <?php if($w=='my') echo 'class="active"';?>><a href="userpanel.php?w=my"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
                         <?php foreach ($customModules['my'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><i class="fa fa-angle-double-right"></i> <a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
                 </li>
