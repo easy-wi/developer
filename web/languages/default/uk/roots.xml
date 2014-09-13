@@ -32,6 +32,7 @@
     <os>Operating system</os>
     <os_bit>Bit-version</os_bit>
     <password>Password</password>
+    <resellerAssign>Assign to reseller</resellerAssign>
     <root_masterdel>Successfully started the removal process.</root_masterdel>
     <root_masterinstall>The master server has been added to the database and is currently in the installation process.</root_masterinstall>
     <root_updatemaster>Successfully started updating</root_updatemaster>

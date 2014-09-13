@@ -6,7 +6,6 @@
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
 
 	<?php if($userWantsHelpText=='Y'){ ?>
@@ -43,8 +42,8 @@
                         </tr>
                         </tfoot>
                     </table>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
+                </div>
+            </div>
         </div>
     </div>
-</section><!-- /.content -->
+</section>

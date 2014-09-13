@@ -1,0 +1,1 @@
+<a href="admin.php?w=<?php echo $what;?>&amp;d=<?php echo $do;?>&amp;id=<?php echo $id;?>"><span class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> <?php echo $description;?></span></a>

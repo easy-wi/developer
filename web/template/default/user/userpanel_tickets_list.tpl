@@ -44,7 +44,7 @@
                                 <td><?php echo $table_row['supporter']; ?></td>
                                 <td><?php echo $table_row['status']; ?></td>
                                 <td><?php echo $table_row['writedate']; ?></td>
-                                <td><a href="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $table_row['id'];?>" alt="modify"><span class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></span></a></td>
+                                <td><a href="userpanel.php?w=ti&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></span></a></td>
                             </tr>
                             <?php } ?>
                             </tbody>

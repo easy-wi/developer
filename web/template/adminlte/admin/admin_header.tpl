@@ -481,10 +481,10 @@
     <!-- Right side column. Contains the navbar and content of the page -->
     <aside class="right-side">
 
-		<?php if(isset($header)){ ?><div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $text; ?></div><?php } ?>
-		<?php if(isset($toooldversion)){ ?><div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $toooldversion; ?></div><?php } ?>
-		<?php if($rSA['lastCronWarnStatus']=='Y' and (time()-$rSA['lastCronStatus'])>600 and $reseller_id==0){ ?><div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> Cronjob: statuscheck.php</div><?php }?>
-		<?php if($rSA['lastCronWarnReboot']=='Y' and (time()-$rSA['lastCronReboot'])>5400 and $reseller_id==0){ ?><div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> Cronjob: reboot.php</div><?php }?>
-		<?php if($rSA['lastCronWarnUpdates']=='Y' and (time()-$rSA['lastCronUpdates'])>300 and $reseller_id==0){ ?><div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> Cronjob: startupdates.php</div><?php }?>
-		<?php if($rSA['lastCronWarnJobs']=='Y' and (time()-$rSA['lastCronJobs'])>300 and $reseller_id==0){ ?><div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> Cronjob: jobs.php</div><?php }?>
-		<?php if($rSA['lastCronWarnCloud']=='Y' and (time()-$rSA['lastCronCloud'])>1200 and $reseller_id==0){ ?><div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="icon-warning-sign"></i> Cronjob: cloud.php</div><?php }?>
+		<?php if(isset($header)){ ?><div class="row"><div class="col-md-11"><div class="callout callout-warning"><p><?php echo $text;?></p></div></div></div><?php } ?>
+		<?php if(isset($toooldversion)){ ?><div class="row"><div class="col-md-11"><div class="callout callout-warning"><p><?php echo $toooldversion;?></p></div></div></div><?php } ?>
+		<?php if($rSA['lastCronWarnStatus']=='Y' and (time()-$rSA['lastCronStatus'])>600 and $reseller_id==0){ ?><div class="row"><div class="col-md-11"><div class="callout callout-danger"><p>Cronjob: statuscheck.php</div></div></div><?php }?>
+		<?php if($rSA['lastCronWarnReboot']=='Y' and (time()-$rSA['lastCronReboot'])>5400 and $reseller_id==0){ ?><div class="row"><div class="col-md-11"><div class="callout callout-danger"><p>Cronjob: reboot.php</div></div></div><?php }?>
+		<?php if($rSA['lastCronWarnUpdates']=='Y' and (time()-$rSA['lastCronUpdates'])>300 and $reseller_id==0){ ?><div class="row"><div class="col-md-11"><div class="callout callout-danger"><p>Cronjob: startupdates.php</div></div></div><?php }?>
+		<?php if($rSA['lastCronWarnJobs']=='Y' and (time()-$rSA['lastCronJobs'])>300 and $reseller_id==0){ ?><div class="row"><div class="col-md-11"><div class="callout callout-danger"><p>Cronjob: jobs.php</div></div></div><?php }?>
+		<?php if($rSA['lastCronWarnCloud']=='Y' and (time()-$rSA['lastCronCloud'])>1200 and $reseller_id==0){ ?><div class="row"><div class="col-md-11"><div class="callout callout-danger"><p>Cronjob: cloud.php</div></div></div><?php }?>

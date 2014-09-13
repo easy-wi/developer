@@ -32,6 +32,7 @@
 	<os>Operativsystem</os>
 	<os_bit>Bit Version</os_bit>
     <password>Adgangskode</password>
+    <resellerAssign></resellerAssign>
 	<root_masterdel>Succesfuld startede fjernelse proces.</root_masterdel>
 	<root_masterinstall>Master serveren er blevet tilføjet til databasen, og er ved at blive installeret nu</root_masterinstall>
 	<root_updatemaster>Succes begyndt at opdatere</root_updatemaster>

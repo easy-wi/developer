@@ -7,9 +7,7 @@
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
-
     <div class="box box-info">
         <div class="box-body">
             <form role="form" action="admin.php?w=ad&amp;d=ad" enctype="multipart/form-data" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">

@@ -32,6 +32,7 @@
 	<os>Betriebssystem</os>
 	<os_bit>Bitversion</os_bit>
     <password>Passwort</password>
+    <resellerAssign>Reseller Zuwweisen</resellerAssign>
 	<root_masterdel>Löschvorgang erfolgreich auf dem Rootserver gestartet </root_masterdel>
 	<root_masterinstall>Master Server wurde erfolgreich in die Datenbank eingetragen und wird nun auf dem Server installiert</root_masterinstall>
 	<root_updatemaster>Update(s) erfolgreich gestartet</root_updatemaster>

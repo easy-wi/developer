@@ -851,6 +851,12 @@ if (!function_exists('passwordgenerate')) {
         return false;
     }
 
+    function returnButton ($templateToUse, $template, $what, $do, $id, $description = '') {
+        ob_start();
+        include(IncludeTemplate($templateToUse, $template, 'ajax'));
+        return ob_get_clean();
+    }
+
     function User_Permissions($id) {
 
         global $sql;

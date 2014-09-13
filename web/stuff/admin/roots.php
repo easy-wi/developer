@@ -89,9 +89,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $desc = $ui->description('desc', 'post');
     $ram = $ui->id('ram', 5, 'post');
     $updates = $ui->id('updates', 1, 'post');
-    $ownerID = $ui->id('ownerID', 10, 'post');
 
-    $publickey = ($ui->w('publickey',1 , 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
+    $ownerID = ($ui->active('assignToReseller', 'post') == 'Y' and $ui->id('ownerID', 10, 'post')) ? $ui->id('ownerID', 10, 'post') : 0;
+    $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
+    $assignToReseller = ($ui->active('assignToReseller', 'post')) ? $ui->active('assignToReseller', 'post') : 'N';
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
     $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 0;
     $ftpport = ($ui->port('ftpport', 'post')) ? $ui->port('ftpport', 'post') : 21;
@@ -163,6 +164,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $user = $row['duser'];
                 $pass = $row['dpass'];
                 $ownerID = $row['resellerid'];
+                $assignToReseller = ($ownerID > 0) ? 'Y' : 'N';
                 $query2->execute(array($row['resellerid']));
                 $ownerName = trim($query2->fetchColumn());
             }
@@ -280,12 +282,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $id = $ui->id('id', 10, 'get');
 
     if (!$ui->st('action', 'post')) {
+
         $query = $sql->prepare("SELECT `ip`,`description` FROM `rserverdata` WHERE `id`=? AND (`userID` IS NULL OR `userID` IN ('',0)) LIMIT 1");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $desc = $row['description'];
             $ip = $row['ip'];
         }
+
         $template_file = ($query->rowCount() > 0) ? 'admin_roots_dl.tpl' : 'admin_404.tpl';
 
     } else if ($ui->st('action', 'post') == 'dl') {
@@ -327,6 +331,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
 } else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get')) {
+
     $id = $ui->id('id', 10, 'get');
 
     if (!$ui->st('action', 'post')) {
@@ -340,6 +345,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
             $query->execute(array($id, $resellerLockupID));
         }
+
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip = $row['serverip'];
             $table[$row['id']] = array('ip' => $row['serverip'], 'port' => $row['port']);
@@ -397,120 +403,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
 } else {
-    $table = array();
-    $o = $ui->st('o', 'get');
-    if ($ui->st('o', 'get') == 'ar') {
-        $orderby = 'u.`cname` ASC';
-    } else if ($ui->st('o', 'get') == 'dr') {
-        $orderby = 'u.`cname` DESC';
-    } else if ($ui->st('o', 'get') == 'an') {
-        $orderby = 'u.`name` ASC,u.`vname` ASC';
-    } else if ($ui->st('o', 'get') == 'dn') {
-        $orderby = 'u.`name` DESC,u.`vname` DESC';
-    } else if ($ui->st('o', 'get') == 'ap') {
-        $orderby = 'r.`ip` ASC';
-    } else if ($ui->st('o', 'get') == 'dp') {
-        $orderby = 'r.`ip` DESC';
-    } else if ($ui->st('o', 'get') == 'as') {
-        $orderby = 'r.`active` ASC';
-    } else if ($ui->st('o', 'get') == 'ds') {
-        $orderby = 'r.`active` DESC';
-    } else if ($ui->st('o', 'get') == 'am') {
-        $orderby = 'r.`maxserver` ASC';
-    } else if ($ui->st('o', 'get') == 'dm') {
-        $orderby = 'r.`maxserver` DESC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = 'r.`id` DESC';
-    } else {
-        $orderby = 'r.`id` ASC';
-        $o = 'ai';
-    }
-    if ($reseller_id == 0) {
-        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata`");
-        $query->execute();
-    } else {
-        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` AS r WHERE `resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`)");
-        $query->execute(array(':reseller_id' => $resellerLockupID));
-    }
 
-    $colcount = $query->fetchColumn();
+    configureDateTables('-1, -2, -3', '1, "asc"', 'ajax.php?w=datatable&d=appserver');
 
-    if ($ui->id('p', 19, 'get') > $colcount) {
-        $start = $colcount - $amount;
-        if ($start < 0) {
-            $start = 0;
-        }
-    } else {
-        $start = (int) $ui->id('p', 19, 'get');
-    }
-    if ($reseller_id == 0) {
-        $query = $sql->prepare("SELECT r.*,u.`cname`,u.`name`,u.`vname` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`userID`=u.`id` ORDER BY $orderby LIMIT $start,$amount");
-        $query2 = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`, ':',g.`port`) AS `address`,g.`active`,g.`stopped`,g.`queryName`,g.`queryNumplayers`,g.`slots`,g.`maxram`,t.`shorten` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=?");
-        $query->execute();
-    } else {
-        $query = $sql->prepare("SELECT r.*,u.`cname`,u.`name`,u.`vname` FROM `rserverdata` r LEFT JOIN `userdata` u ON r.`userID`=u.`id` WHERE r.`resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`) ORDER BY $orderby LIMIT $start,$amount");
-        $query2 = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`, ':',g.`port`) AS `address`,g.`active`,g.`stopped`,g.`queryName`,g.`queryNumplayers`,g.`slots`,g.`maxram`,t.`shorten` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`resellerid`=?");
-        $query->execute(array(':reseller_id' => $resellerLockupID));
-    }
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $used = 0;
-        $available = 0;
-        $assignedRam = 0;
-        $i = 0;
-        $gs = array();
-        $id = $row['id'];
-        $maxslots = $row['maxslots'];
-        $maxserver = $row['maxserver'];
-        if ($row['userID'] == 0 or $row['userID'] == null) {
-            $deleteAllowed = true;
-            $names = '';
-        } else {
-            $deleteAllowed = false;
-            $names = trim($row['name'] . ' ' . $row['vname']);
-        }
-        if ($reseller_id == 0) {
-            $query2->execute(array($id));
-        } else {
-            $query2->execute(array($id, $resellerLockupID));
-        }
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            if ($row2['active'] == 'N' or $row2['stopped'] == 'Y') {
-                $gsStatus = 2;
-            } else if ($row2['active'] == 'Y' and $row2['stopped'] == 'N' and $row2['queryName'] != 'OFFLINE') {
-                $gsStatus = 1;
-            } else {
-                $gsStatus = 3;
-            }
-            $gs[] = array('id' => $row2['id'], 'address' => $row2['address'], 'shorten' => $row2['shorten'], 'name' => $row2['queryName'], 'status' => $gsStatus);
-            $used+=$row2['queryNumplayers'];
-            $available+=$row2['slots'];
-            $assignedRam+=$row2['maxram'];
-            $i++;
-        }
-        if ($row['active'] == 'Y' and isset($downChecks) and $downChecks > $row['notified']) {
-            $imgName = '16_ok';
-            $imgAlt = 'Online';
-        } else if ($row['active'] == 'Y' and isset($downChecks) and $downChecks <= $row['notified']) {
-            $imgName = '16_error';
-            $imgAlt = 'Crashed';
-        } else {
-            $imgName = '16_bad';
-            $imgAlt = 'Inactive';
-        }
-        $table[] = array('id' => $id, 'names' => $names, 'deleteAllowed' => $deleteAllowed, 'img' => $imgName, 'alt' => $imgAlt, 'ip' => $row['ip'], 'active' => $row['active'], 'os' => $row['os'], 'bit' => $row['bitversion'], 'description' => $row['description'], 'assignedRam' => $assignedRam, 'ram' => $row['ram'], 'used' => $used, 'max' => $available, 'maxslots' => $maxslots, 'maxserver' => $maxserver, 'installedserver' => $i, 'server' => $gs);
-    }
-    $next = $start + $amount;
-    $vor = ($colcount > $next) ? $next : $start;
-    $back = $start - $amount;
-    $zur = ($back >= 0) ? $start - $amount : $start;
-    $pageamount = ceil($colcount / $amount);
-    $pages[] = '<a href="admin.php?w=ro&amp;d=md&amp;a=' . (!isset($amount)) ? 20 : $amount . ($start == 0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
-    $i = 2;
-    while ($i <= $pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        $pages[] = ($start == $selectpage) ? '<a href="admin.php?w=ro&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>' : '<a href="admin.php?w=ro&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
-        $i++;
-    }
-    $pages = implode(', ', $pages);
     $template_file = 'admin_roots_list.tpl';
 }
