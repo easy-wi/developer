@@ -299,7 +299,7 @@ $defined['easywi_statistics'] = array(
     'webspaceSpaceGivenActive' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'webspaceSpaceUsed' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
-    'statDate' => array("Type"=>"timestamp","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'statDate' => array("Type"=>"timestamp","Null"=>"NO","Key"=>"PRI","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
     'countUpdates' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>"")
 );
 
@@ -1122,6 +1122,7 @@ $defined['userdata'] = array(
     'mail_serverdown' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'mail_ticket' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'mail_vserver' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'show_help_text' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'externalID' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'jobPending' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'sourceSystemID' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
@@ -1623,8 +1624,15 @@ foreach ($defined as $table => $t_p) {
         foreach ($key_differ as $key) {
 
             $NULL = ($t_p[$key]['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
-            $DEFAULT = ($t_p[$key]['Default'] == '') ? '' : "DEFAULT '" . $t_p[$key]['Default'] . "'";
             $AUTO_INCREMENT = ($t_p[$key]['Extra'] == '') ? '' : ' AUTO_INCREMENT';
+
+            if ($t_p[$key]['Default'] == 'CURRENT_TIMESTAMP') {
+                $DEFAULT = "DEFAULT CURRENT_TIMESTAMP";
+            } else if ($t_p[$key]['Default'] != '') {
+                $DEFAULT = "DEFAULT '" . $t_p[$key]['Default'] . "'";
+            } else {
+                $DEFAULT = '';
+            }
 
             $change[] = 'CHANGE `' . $key . '` `' . $key . '` ' . $t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT . $AUTO_INCREMENT;
         }
