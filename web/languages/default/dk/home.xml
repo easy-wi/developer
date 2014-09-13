@@ -6,9 +6,18 @@
 	<gserver_tag_removed> spilserver med fjernet servertag</gserver_tag_removed>
 	<host_crashed>nedstyrtede værter</host_crashed>
 	<master_crashed>styrtede masterserver</master_crashed>
+    <master_installed_db></master_installed_db>
+    <master_installed_server></master_installed_server>
+    <master_installed_slots></master_installed_slots>
+    <master_installed_space></master_installed_space>
+    <master_installed_vhosts></master_installed_vhosts>
+    <rulebreak></rulebreak>
 	<tickets>Billetter</tickets>
 	<tickets_open> ubesvarede og åben støtte billetter</tickets_open>
-    <traffic></traffic>
+    <tickets_new></tickets_new>
 	<ts3master_crashed>styrtede TS3 masterserver</ts3master_crashed>
+    <usage_slots></usage_slots>
+    <usage_space></usage_space>
+    <usage_traffic></usage_traffic>
 	<voice_crashed>styrtede voiceserver</voice_crashed>
 </sprache>

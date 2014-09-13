@@ -11,6 +11,7 @@
     <master_installed_slots>Installed slots</master_installed_slots>
     <master_installed_space>Installed space</master_installed_space>
     <master_installed_vhosts>Installed vhosts</master_installed_vhosts>
+    <rulebreak>Broken contract conditions</rulebreak>
     <tickets>tickets</tickets>
     <tickets_open>open support tickets</tickets_open>
     <tickets_new>new tickets</tickets_new>

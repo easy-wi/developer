@@ -11,6 +11,7 @@
     <master_installed_slots>Installierte Slots</master_installed_slots>
     <master_installed_space>Vergebener Speicherplatz</master_installed_space>
     <master_installed_vhosts>Installierte Vhosts</master_installed_vhosts>
+    <rulebreak>Vertragsverletzungen</rulebreak>
 	<tickets>Tickets</tickets>
 	<tickets_open>Offene Tickets</tickets_open>
     <tickets_new>Neue Tickets</tickets_new>

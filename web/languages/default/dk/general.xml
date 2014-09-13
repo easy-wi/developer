@@ -42,6 +42,8 @@
 	<master>Master</master>
     <migration>Flytningsservice</migration>
 	<mod>Rediger</mod>
+    <modules>Module</modules>
+    <moreInfo></moreInfo>
     <network>Network</network>
 	<news>Nyheder</news>
 	<no>Nej</no>
