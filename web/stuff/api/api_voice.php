@@ -311,11 +311,31 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $hostID = $row['masterserver'];
             $masterServerID = $row['masterserver'];
             $oldSlots = $row['slots'];
-            $ip = $row['ip'];
+
             $name = $row['ip'] . ':' . $row['port'];
-            $dns = $row['dns'];
             $usedPorts = usedPorts(array($row['ip']));
             $oldActive = $row['active'];
+
+            $ip = $row['ip'];
+            $private = $row['private'];
+            $port = $row['port'];
+            $active = $row['active'];
+            $slots = $row['slots'];
+            $max_download_total_bandwidth = $row['max_download_total_bandwidth'];
+            $max_upload_total_bandwidth = $row['max_upload_total_bandwidth'];
+            $maxtraffic = $row['maxtraffic'];
+            $forcebanner = $row['forcebanner'];
+            $forcebutton = $row['forcebutton'];
+            $forceservertag = $row['forceservertag'];
+            $forcewelcome = $row['forcewelcome'];
+            $lendserver = $row['lendserver'];
+            $backup = $row['backup'];
+            $flexSlots = $row['flexSlots'];
+            $flexSlotsFree = $row['flexSlotsFree'];
+            $flexSlotsPercent = $row['flexSlotsPercent'];
+            $tsdns = $row['tsdns'];
+            $dns = $row['dns'];
+            $autoRestart = $row['autoRestart'];
 
             if ($username != $row['cname']) {
                 $username = $row['cname'];

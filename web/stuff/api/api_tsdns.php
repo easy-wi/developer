@@ -199,6 +199,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $port = $row['port'];
             $dns = $row['dns'];
             $userID = $row['userID'];
+            $active = $row['active'];
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='ds' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localServerID));

@@ -202,9 +202,14 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $localUserLookupID = $row['userID'];
             $webMasterID = $row['webMasterID'];
             $externalServerID = $row['externalID'];
-            $dns = $row['dns'];
             $userID = $row['userID'];
             $oldHDD = $row['hdd'];
+
+            $dns = $row['dns'];
+            $active = $row['active'];
+            $private = $row['password'];
+            $hdd = $row['hdd'];
+            $ownVhost = $row['ownVhost'];
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='wv' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localServerID));
@@ -235,6 +240,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             }
 
             if (isset($data['hdd']) and isid($data['hdd'], 10)) {
+
                 $updateArray[] = $data['hdd'];
                 $eventualUpdate .= ',`hdd`=?';
                 $hdd = $data['hdd'];

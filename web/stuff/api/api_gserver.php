@@ -538,12 +538,22 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $hostExternalID = $row['externalID'];
             $oldSlots = $row['slots'];
             $name = $row['serverip'] . ':' . $row['port'];
-            $ip = $row['serverip'];
             $oldActive = $row['active'];
-            $active = $row['active'];
             $oldPort = $row['port'];
-            $port = $row['port'];
             $usedPorts = usedPorts(array($row['serverip']));
+
+            $active = $row['active'];
+            $ip = $row['serverip'];
+            $port = $row['port'];
+            $port2 = $row['port2'];
+            $port3 = $row['port3'];
+            $port4 = $row['port4'];
+            $port5 = $row['port5'];
+            $active = $row['active'];
+            $cores = $row['cores'];
+            $minram = $row['minram'];
+            $maxram = $row['maxram'];
+            $autoRestart = $row['autoRestart'];
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID, $resellerID));
