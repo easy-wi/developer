@@ -96,7 +96,7 @@
                     <p>
                         <?php echo $statsArray['gameserverSlotsUsed'].'/'.$statsArray['gameserverSlotsActive'];?> <?php echo $sprache_bad->usage_slots;?><br>
                         <?php echo $statsArray['gameserverNotRunning'].'/'.$statsArray['gameserverActive'];?> <?php echo $sprache_bad->crashed;?><br>
-                        <?php echo ($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']).'/'.$statsArray['gameserverActive'];?> <?php echo $sprache_bad->rulebreak;?>
+                        <?php if(($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword'])> 0){ echo ($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']).'/'.$statsArray['gameserverActive'];?> <?php echo $sprache_bad->rulebreak;}?><br>
                     </p>
                 </div>
                 <div class="icon">
@@ -150,7 +150,6 @@
 
                     <?php }; $lastdate=$feed['date'];?>
 
-
                     <li>
                         <i class="fa fa-info bg-blue"></i>
                         <div class="timeline-item">
@@ -165,7 +164,6 @@
                         </div>
                     </li>
                     <?php } ?>
-
 
                     <li>
                         <i class="fa fa-clock-o"></i>

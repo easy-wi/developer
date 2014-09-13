@@ -12,15 +12,27 @@
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php if(isset($ewCfg['title'])) echo $ewCfg['title']; ?>">
 
     <!-- bootstrap 3.0.2 -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- font Awesome -->
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Theme style -->
     <link href="css/adminlte/AdminLTE.css" rel="stylesheet" type="text/css" />
 
     <?php echo implode('',$htmlExtraInformation['css']);?>
+
+    <!-- jQuery 2.0.2 -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js" type="text/javascript"></script>
+
+    <!-- Bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
+
+    <!-- AdminLTE App -->
+    <script src="js/adminlte/app.js" type="text/javascript"></script>
+
+    <!-- Easy-Wi -->
+    <script src="js/adminlte/easy-wi.js" type="text/javascript"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,6 +40,8 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+
+    <?php echo implode('',$htmlExtraInformation['js']);?>
 
 </head>
 
@@ -62,7 +76,7 @@
             <?php if($statsArray['ticketsTotal']>0){ ?>
             <!-- Messages: style can be found in dropdown.less-->
             <li class="dropdown messages-menu">
-                <a href="userpanel.php?w=ti" class="dropdown-toggle" data-toggle="dropdown">
+                <a href="admin.php?w=ti" class="dropdown-toggle">
                     <i class="fa fa-life-ring"></i>
                     <span class="label label-success"><?php echo $statsArray['ticketsTotal'];?></span>
                 </a>
@@ -136,25 +150,25 @@
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu">
 
-                <li class="treeview <?php if(in_array($w,array('da','ho','ib','lo','ml','ip'))) echo 'active';?>">
+                <li class="treeview <?php if(in_array($w,array('da','ho','ib','lo','ml','ip')) or isset($customModules['ip'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-home fa-fw"></i>
                         <span>Home</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li <?php if($w=='da' or $w=='ho') echo 'class="active"';?>><a href="admin.php?w=da"><i class="fa fa-eye"></i> Dashboard</a></li>
+                        <li <?php if($w=='da' or $w=='ho') echo 'class="active"';?>><a href="admin.php?w=da"><i class="fa fa-dashboard"></i> Dashboard</a></li>
                         <?php if($pa['ipBans']) { ?><li <?php if($ui->smallletters('w',255,'get')=='ib') echo 'class="active"';?>><a href="admin.php?w=ib"><i class="fa fa-ban"></i> IP Bans</a></li><?php } ?>
 						<?php if($pa['log']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='lo') echo 'class="active"';?>><a href="admin.php?w=lo"><i class="fa fa-file-text"></i> <?php echo $gsprache->logs;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='lo') echo 'class="active"';?>><a href="admin.php?w=lo"><i class="fa fa-list-alt"></i> <?php echo $gsprache->logs;?></a></li>
                         <li <?php if($ui->smallletters('w',255,'get')=='ml') echo 'class="active"';?>><a href="admin.php?w=ml"><i class="fa fa-envelope"></i> Mail <?php echo $gsprache->logs;?></a></li>
                         <?php } ?>
-						<?php if($easywiModules['ip']) { ?><li <?php if($ui->smallletters('w',255,'get')=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->imprint;?></a></li><?php }?>
+						<?php if($easywiModules['ip']) { ?><li <?php if($ui->smallletters('w',255,'get')=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><i class="fa fa-legal"></i> <?php echo $gsprache->imprint;?></a></li><?php }?>
                     </ul>
                 </li>
 
                 <?php if($pa['settings']) { ?>
-                <li class="treeview <?php if($w=='se') echo 'active';?>">
+                <li class="treeview  <?php if(in_array($w,array('se','sm','si','vc','cc','mo','bu'))) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-wrench"></i>
                         <span><?php echo $gsprache->settings;?></span>
@@ -163,54 +177,54 @@
                     <ul class="treeview-menu">
 						<li <?php if($ui->smallletters('w',255,'get')=='se') echo 'class="active"';?>><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
 						<li <?php if($ui->smallletters('w',255,'get')=='sm') echo 'class="active"';?>><a href="admin.php?w=sm"><i class="fa fa-envelope"></i> E-Mail <?php echo $gsprache->settings;?></a></li>
-						<?php if($easywiModules['ip']) { ?><li <?php if($ui->smallletters('w',255,'get')=='si') echo 'class="active"';?>><a href="admin.php?w=si"><i class="fa fa-angle-double-right"></i> <?php echo $gsprache->imprint.' '.$gsprache->settings;?></a></li><?php }?>
+						<?php if($easywiModules['ip']) { ?><li <?php if($ui->smallletters('w',255,'get')=='si') echo 'class="active"';?>><a href="admin.php?w=si"><i class="fa fa-legal"></i> <?php echo $gsprache->imprint.' '.$gsprache->settings;?></a></li><?php }?>
 						<?php if($pa['root'] and $reseller_id==0) { ?>
 						<li <?php if($ui->smallletters('w',255,'get')=='vc') echo 'class="active"';?>><a href="admin.php?w=vc"><i class="fa fa-check"></i> <?php echo $gsprache->versioncheck;?></a></li>
-						<li <?php if($ui->smallletters('w',255,'get')=='cc') echo 'class="active"';?>><a href="admin.php?w=cc"><i class="fa fa-columns"></i> <?php echo $gsprache->columns;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='cc') echo 'class="active"';?>><a href="admin.php?w=cc"><i class="fa fa-list"></i> <?php echo $gsprache->columns;?></a></li>
 						<li <?php if($ui->smallletters('w',255,'get')=='mo') echo 'class="active"';?>><a href="admin.php?w=mo"><i class="fa fa-th-large"></i> <?php echo $gsprache->modules;?></a></li>
 						<?php } ?>
 						<?php if($pa['root']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='bu') echo 'class="active"';?>><a href="admin.php?w=bu"><i class="fa fa-bars"></i> <?php echo $gsprache->databases;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='bu') echo 'class="active"';?>><a href="admin.php?w=bu"><i class="fa fa-database"></i> <?php echo $gsprache->databases;?></a></li>
 						<?php } ?>
                     </ul>
                 </li>
                 <?php } ?>
-	
+
                 <?php if($pa['jobs'] or $pa['apiSettings']) { ?>
-                <li class="treeview">
+                <li class="treeview <?php if(in_array($w,array('jb','ap','aa','ui'))) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-cloud fa-fw"></i>
                         <span><?php echo $gsprache->jobs.'/'.$gsprache->api;?></span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-					<?php if($pa['jobs']) { ?><li <?php if($ui->smallletters('w',255,'get')=='jb') echo 'class="active"';?>><a href="admin.php?w=jb"><i class="fa fa-code-fork"></i> <?php echo $gsprache->jobs.' '.$gsprache->overview;?></a></li><?php } ?>
+					<?php if($pa['jobs']) { ?><li <?php if($ui->smallletters('w',255,'get')=='jb') echo 'class="active"';?>><a href="admin.php?w=jb"><i class="fa fa-tasks"></i> <?php echo $gsprache->jobs.' '.$gsprache->overview;?></a></li><?php } ?>
 					<?php if($pa['apiSettings']) { ?>
 					<li <?php if($ui->smallletters('w',255,'get')=='ap') echo 'class="active"';?>><a href="admin.php?w=ap"><i class="fa fa-wrench"></i> <?php echo $gsprache->api.' '.$gsprache->settings;?></a></li>
-					<li <?php if($ui->smallletters('w',255,'get')=='aa') echo 'class="active"';?>><a href="admin.php?w=aa"><i class="fa fa-group"></i> <?php echo $gsprache->apiAuth;?></a></li>
-					<li <?php if($ui->smallletters('w',255,'get')=='ui') echo 'class="active"';?>><a href="admin.php?w=ui"><i class="fa fa-mail-forward"></i> <?php echo $gsprache->userImport;?></a></li>
+					<li <?php if($ui->smallletters('w',255,'get')=='aa') echo 'class="active"';?>><a href="admin.php?w=aa"><i class="fa fa-cloud-download"></i> <?php echo $gsprache->apiAuth;?></a></li>
+					<li <?php if($ui->smallletters('w',255,'get')=='ui') echo 'class="active"';?>><a href="admin.php?w=ui"><i class="fa fa-download"></i> <?php echo $gsprache->userImport;?></a></li>
 					<?php }?>
                     </ul>
                 </li>
                 <?php } ?>
 
                 <?php if($pa['feeds']) { ?>
-                <li class="treeview">
+                <li class="treeview <?php if(in_array($w,array('fn','fe'))) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-rss fa-fw"></i>
                         <span><?php echo $gsprache->feeds;?></span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-						<li <?php if($ui->smallletters('w',255,'get')=='fn') echo 'class="active"';?>><a href="admin.php?w=fn"><i class="fa fa-info"></i> <?php echo $gsprache->feeds.' '.$gsprache->news;?></a></li>
-						<li <?php if($ui->smallletters('w',255,'get')=='fe' and !in_array($d,array('ad','se'))) echo 'class="active"';?>><a href="admin.php?w=fe"><i class="fa fa-rss fa-fw"></i> <?php echo $gsprache->feeds;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='fn') echo 'class="active"';?>><a href="admin.php?w=fn"><i class="fa fa-rss"></i> <?php echo $gsprache->news;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='fe' and !in_array($d,array('ad','se'))) echo 'class="active"';?>><a href="admin.php?w=fe"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
 						<li <?php if($ui->smallletters('w',255,'get')=='fe' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=fe&amp;d=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
                     </ul>
                 </li>
                 <?php } ?>
 
                 <?php if($easywiModules['pn'] and $reseller_id==0 and ($pa['cms_settings'] or $pa['cms_pages'] or $pa['cms_news'])) { ?>
-                <li class="treeview">
+                <li class="treeview <?php if(in_array($w,array('pn','pc','pp','pd','ps')) or isset($customModules['pa'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-globe fa-fw"></i>
                         <span>CMS</span>
@@ -218,7 +232,7 @@
                     </a>
                     <ul class="treeview-menu">
 						<?php if($pa['cms_news']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='pn') echo 'class="active"';?>><a href="admin.php?w=pn"><i class="fa fa-globe"></i> <?php echo $gsprache->news;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='pn') echo 'class="active"';?>><a href="admin.php?w=pn"><i class="fa fa-newspaper-o"></i> <?php echo $gsprache->news;?></a></li>
 						<li <?php if($ui->smallletters('w',255,'get')=='pc') echo 'class="active"';?>><a href="admin.php?w=pc"><i class="fa fa-comments"></i> <?php echo $gsprache->comments;?></a></li>
 						<?php } ?>
 						<?php if($pa['cms_pages']) { ?>
@@ -234,14 +248,14 @@
                 <?php } ?>
 
                 <?php if($easywiModules['ws'] and ($pa['webvhost'] or $pa['webmaster'])) { ?>
-                <li class="treeview">
+                <li class="treeview <?php if(in_array($w,array('wv','wm')) or isset($customModules['ws'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
-                        <i class="fa fa-clipboard fa-fw"></i>
+                        <i class="fa fa-cubes fa-fw"></i>
                         <span><?php echo $gsprache->webspace;?></span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-						<li <?php if($ui->smallletters('w',255,'get')=='wv') echo 'class="active"';?>><a href="admin.php?w=wv"><i class="fa fa-globe"></i> Vhosts</a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='wv') echo 'class="active"';?>><a href="admin.php?w=wv"><i class="fa fa-columns"></i> Vhosts <?php echo $gsprache->overview;?></a></li>
 						<li <?php if($ui->smallletters('w',255,'get')=='wm') echo 'class="active"';?>><a href="admin.php?w=wm"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->master;?></a></li>
 						<?php foreach ($customModules['ws'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
 					</ul>
@@ -249,15 +263,15 @@
                 <?php } ?>
 
                 <?php if($easywiModules['my'] and ($pa['mysql_settings'] or $pa['mysql'])) { ?>
-                <li class="treeview <?php if($w=='my') echo 'active';?>">
+                <li class="treeview <?php if($w=='my' or isset($customModules['my'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
-                        <i class="fa fa-hdd-o fa-fw"></i>
+                        <i class="fa fa-database fa-fw"></i>
                         <span>MySQL</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
 						<?php if($pa['mysql']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='my' and !in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my"><i class="fa fa-bars"></i> <?php echo $gsprache->databases;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='my' and !in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my"><i class="fa fa-columns"></i> <?php echo $gsprache->databases.' '.$gsprache->overview;?></a></li>
 						<?php } ?>
 						<?php if($pa['mysql_settings']) { ?>
 						<li <?php if($ui->smallletters('w',255,'get')=='my' and in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my&amp;d=ms"><i class="fa fa-hdd-o"></i> Server</a></li>
@@ -266,16 +280,16 @@
 					</ul>
                 </li>
                 <?php } ?>
-				
+
                 <?php if($easywiModules['ti'] and $pa['usertickets'] and $reseller_id!=0) { ?>
-                <li class="treeview <?php if($w=='ti') echo 'active';?>">
+                <li class="treeview <?php if($w=='ti' or isset($customModules['ti'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
-                        <i class="fa fa-h-square fa-fw"></i>
+                        <i class="fa fa-life-ring fa-fw"></i>
                         <span><?php echo $gsprache->support;?></span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-						<li <?php if($ui->smallletters('w',255,'get')=='tr' and $ui->smallletters('d',255,'get')!='ad') echo 'class="active"';?>><a href="admin.php?w=tr"><i class="fa fa-users"></i> <?php echo $gsprache->overview;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='tr' and $ui->smallletters('d',255,'get')!='ad') echo 'class="active"';?>><a href="admin.php?w=tr"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
 						<li <?php if($ui->smallletters('w',255,'get')=='ti' and $ui->smallletters('d',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=tr&amp;d=ad"><i class="fa fa-pencil-square-o"></i> <?php echo $gsprache->support2;?></a></li>
 						<?php foreach ($customModules['ti'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
 					</ul>
@@ -283,7 +297,7 @@
                 <?php } ?>
 
                 <?php if($pa['user'] or $pa['user_users'] or $pa['userGroups'] ) { ?>
-                <li class="treeview <?php if($w=='us') echo 'active';?>">
+                <li class="treeview <?php if(in_array($w,array('us','ug','up')) or isset($customModules['us'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-users fa-fw"></i>
                         <span><?php echo $gsprache->user;?></span>
@@ -291,21 +305,21 @@
                     </a>
                     <ul class="treeview-menu">
 						<?php if($pa['user'] or $pa['user_users']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='us') echo 'class="active"';?>><a href="admin.php?w=us&amp;d=md"><i class="fa fa-user"></i> <?php echo $gsprache->overview;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='us') echo 'class="active"';?>><a href="admin.php?w=us&amp;d=md"><i class="fa fa-columns"></i> <?php echo $gsprache->user.' '.$gsprache->overview;?></a></li>
 						<?php } ?>
 						<?php if($pa['userGroups']) { ?>
 						<li <?php if($ui->smallletters('w',255,'get')=='ug') echo 'class="active"';?>><a href="admin.php?w=ug"><i class="fa fa-group"></i> <?php echo $gsprache->groups;?></a></li>
 						<?php } ?>
 						<?php if($pa['root'] and $reseller_id==0) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='up') echo 'class="active"';?>><a href="admin.php?w=up"><i class="fa fa-external-link"></i> Social Auth Provider</a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='up') echo 'class="active"';?>><a href="admin.php?w=up"><i class="fa fa-cloud"></i> Social Auth Provider</a></li>
 						<?php } ?>
 						<?php foreach ($customModules['us'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
 					</ul>
                 </li>
                 <?php } ?>
 
-                <?php if($easywiModules['gs'] and ($pa['gserver'] or $pa['addons'] or $pa['gimages'] or $pa['eac'] or $pa['roots'] or $pa['masterServer']) and $easywiModules['gs']) { ?>
-                <li class="treeview">
+                <?php if($easywiModules['gs'] and ($pa['gserver'] or $pa['addons'] or $pa['gimages'] or $pa['eac'] or $pa['masterServer']) and $easywiModules['gs']) { ?>
+                <li class="treeview <?php if(in_array($w,array('gs','im','ad','gt','ea')) or isset($customModules['gs'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-gamepad fa-fw"></i>
                         <span><?php echo $gsprache->gameserver;?></span>
@@ -322,25 +336,37 @@
 						<li <?php if($ui->smallletters('w',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=ad"><i class="fa fa-gears"></i><?php echo $gsprache->addon;?></a></li>
 						<?php } ?>
 						<?php if($pa['gserver']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='gt') echo 'class="active"';?>><a href="admin.php?w=gt"><i class="fa fa-file-o"></i><?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='gt') echo 'class="active"';?>><a href="admin.php?w=gt"><i class="fa fa-floppy-o"></i><?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
 						<?php } ?>
 						<?php if($easywiModules['ea'] and $pa['eac']) { ?>
 						<li <?php if($ui->smallletters('w',255,'get')=='ea') echo 'class="active"';?>><a href="admin.php?w=ea"><i class="fa fa-eye"></i>Easy Anti Cheat</a></li>
-						<?php } ?>
-						<?php if($pa['roots']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='ro') echo 'class="active"';?>><a href="admin.php?w=ro"><i class="fa fa-hdd-o"></i><?php echo $gsprache->gameroot.' '.$gsprache->overview;?></a></li>
-						<?php } ?>
-						<?php if($pa['masterServer']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><i class="fa fa-sitemap"></i> <?php echo $gsprache->master.' '.$gsprache->overview;?></a></li>
-						<li <?php if($ui->smallletters('w',255,'get')=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><i class="fa fa-download"></i> <?php echo $gsprache->master.' '.$gsprache->update;?></a></li>
 						<?php } ?>
 						<?php foreach ($customModules['gs'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
                 </li>
                 <?php } ?>
 
+                <?php if($pa['roots'] or $pa['masterServer']) { ?>
+                <li class="treeview <?php if(in_array($w,array('ro','ma'))) echo 'active';?>">
+                    <a href="#">
+                        <i class="fa fa-hdd-o fa-fw"></i>
+                        <span><?php echo $gsprache->appRoot;?></span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <?php if($pa['roots']) { ?>
+                        <li <?php if($ui->smallletters('w',255,'get')=='ro') echo 'class="active"';?>><a href="admin.php?w=ro"><i class="fa fa-columns"></i><?php echo $gsprache->overview;?></a></li>
+                        <?php } ?>
+                        <?php if($pa['masterServer']) { ?>
+                        <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->appMaster;?></a></li>
+                        <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><i class="fa fa-spinner"></i> <?php echo $gsprache->appMaster.' '.$gsprache->update;?></a></li>
+                        <?php } ?>
+                    </ul>
+                </li>
+                <?php } ?>
+
                 <?php if($easywiModules['vo'] and ($pa['voicemasterserver'] or $pa['voiceserver'] or $pa['voiceserverStats'] or $pa['voiceserverSettings'])) { ?>
-                <li class="treeview">
+                <li class="treeview <?php if(in_array($w,array('vo','vm','vr','vd','vu')) or isset($customModules['vo'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-microphone fa-fw"></i>
                         <span><?php echo $gsprache->voiceserver;?></span>
@@ -360,10 +386,7 @@
 						<li <?php if($ui->smallletters('w',255,'get')=='vd') echo 'class="active"';?>><a href="admin.php?w=vd"><i class="fa fa-hdd-o"></i> TSDNS <?php echo $gsprache->master;?></a></li>
 						<?php } ?>
 						<?php if($pa['voiceserverStats']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='vu' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=vu&amp;d=md"><i class="fa fa-dashboard"></i> <?php echo $gsprache->stats;?></a></li>
-						<?php } ?>
-						<?php if($pa['voiceserverSettings']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='vu' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=vu&amp;d=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='vu') echo 'class="active"';?>><a href="admin.php?w=vu&amp;d=md"><i class="fa fa-area-chart"></i> <?php echo $gsprache->stats;?></a></li>
 						<?php } ?>
 						<?php foreach ($customModules['vo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
@@ -371,9 +394,9 @@
                 <?php } ?>
 
                 <?php if($easywiModules['le'] and (($easywiModules['gs'] or $easywiModules['vo']) and ($pa['lendserver'] or $pa['lendserverSettings']))) { ?>
-                <li class="treeview">
+                <li class="treeview <?php if(in_array($w,array('le'))) echo 'active';?>">
                     <a href="#">
-                        <i class="fa fa-smile-o fa-fw"></i>
+                        <i class="fa fa-flask fa-fw"></i>
                         <span><?php echo $gsprache->lendserver;?></span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
@@ -387,11 +410,11 @@
                     </ul>
                 </li>
                 <?php } ?>
-				
+
                 <?php if($easywiModules['ti'] and $pa['tickets']) { ?>
-                <li class="treeview <?php if($w=='ti') echo 'active';?>">
+                <li class="treeview <?php if($w=='ti' or isset($customModules['ti'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
-                        <i class="fa fa-h-square fa-fw"></i>
+                        <i class="fa fa-life-ring fa-fw"></i>
                         <span><?php echo $gsprache->support;?></span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
@@ -403,16 +426,16 @@
                 </li>
                 <?php } ?>
 
-                <?php if($easywiModules['ro'] and rsellerpermisions($admin_id,$sql) and $easywiModules['ro']) { ?>
-                <li class="treeview <?php if($w=='ti') echo 'active';?>">
+                <?php if($easywiModules['ro'] and ($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver'] or $pa['dedicatedServer'] or ($pa['vserverhost'] and $reseller_id==0)) or ($pa['resellertemplates'] and $reseller_id==0)) { ?>
+                <li class="treeview <?php if(in_array($w,array('vs','rh','vh','ot')) or isset($customModules['ro'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-laptop fa-fw"></i>
                         <span>Rootserver</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-						<?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?><li <?php if($ui->smallletters('w',255,'get')=='vs') echo 'class="active"';?>><a href="admin.php?w=vs&amp;d=md"><i class="fa fa-laptop"></i> <?php echo $gsprache->virtual;?></a></li><?php } ?>
-						<?php if($pa['dedicatedServer']) { ?><li <?php if($ui->smallletters('w',255,'get')=='rh') echo 'class="active"';?>><a href="admin.php?w=rh"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->dedicated;?></a></li><?php } ?>
+						<?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?><li <?php if($ui->smallletters('w',255,'get')=='vs') echo 'class="active"';?>><a href="admin.php?w=vs&amp;d=md"><i class="fa fa-cloud"></i> <?php echo $gsprache->virtual;?></a></li><?php } ?>
+						<?php if($pa['dedicatedServer']) { ?><li <?php if($ui->smallletters('w',255,'get')=='rh') echo 'class="active"';?>><a href="admin.php?w=rh"><i class="fa fa-laptop"></i> <?php echo $gsprache->dedicated;?></a></li><?php } ?>
 						<?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='vh') echo 'class="active"';?>><a href="admin.php?w=vh"><i class="fa fa-hdd-o"></i> ESX(I) Host</a></li><?php } ?>
 						<?php if($pa['resellertemplates'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='ot') echo 'class="active"';?>><a href="admin.php?w=ot"><i class="fa fa-file-text-o"></i> <?php echo $gsprache->template;?></a></li><?php } ?>
 						<?php foreach ($customModules['ro'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
@@ -420,25 +443,25 @@
                 </li>
                 <?php } ?>
 
-                <?php if($easywiModules['ro'] and $easywiModules['ro']) { ?>
-                <li class="treeview">
+                <?php if($easywiModules['ro'] and ($pa['traffic'] or ($reseller_id=='0' and ($pa['trafficsettings'] or $pa['dhcpServer'] or $pa['pxeServer'] or $pa['root'])))) { ?>
+                <li class="treeview <?php if(in_array($w,array('tf','rd','rp','sn'))) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-sitemap fa-fw"></i>
                         <span><?php echo $gsprache->network;?></span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-						<?php if($pa['traffic']) { ?><li <?php if($ui->smallletters('w',255,'get')=='tf' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=tf"><i class="fa fa-dashboard"></i> <?php echo $gsprache->traffic;?></a></li><?php } ?>
+						<?php if($pa['traffic']) { ?><li <?php if($ui->smallletters('w',255,'get')=='tf' and $d!='se') echo 'class="active"';?>><a href="admin.php?w=tf"><i class="fa fa-area-chart"></i> <?php echo $gsprache->traffic;?></a></li><?php } ?>
 						<?php if($reseller_id=='0' and $pa['trafficsettings']) { ?><li <?php if($ui->smallletters('w',255,'get')=='tf' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=tf&amp;d=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->traffic.' '.$gsprache->settings;?></a></li><?php } ?>
-						<?php if($pa['dhcpServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rd') echo 'class="active"';?>><a href="admin.php?w=rd"><i class="fa fa-sitemap"></i> DHCP</a></li><?php } ?>
-						<?php if($pa['pxeServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rp') echo 'class="active"';?>><a href="admin.php?w=rp"><i class="fa fa-paste"></i> PXE</a></li><?php } ?>
+						<?php if($pa['dhcpServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rd') echo 'class="active"';?>><a href="admin.php?w=rd"><i class="fa fa-tty"></i> DHCP</a></li><?php } ?>
+						<?php if($pa['pxeServer'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='rp') echo 'class="active"';?>><a href="admin.php?w=rp"><i class="fa fa-folder-open-o"></i> PXE</a></li><?php } ?>
 						<?php if($pa['root'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='sn') echo 'class="active"';?>><a href="admin.php?w=sn"><i class="fa fa-sitemap"></i> <?php echo $gsprache->subnets;?></a></li><?php } ?>
                     </ul>
                 </li>
                 <?php } ?>
 
                 <?php if(count($customModules['mo'])>0) { ?>
-                <li class="treeview">
+                <li class="treeview <?php if(isset($customModules['mo'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-tasks fa-fw"></i>
                         <span><?php echo $gsprache->modules;?></span>

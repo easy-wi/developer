@@ -1718,35 +1718,6 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_server_stats` (
 $add = $sql->prepare($query);
 $add->execute();
 
-$query = "CREATE TABLE IF NOT EXISTS `voice_stats_settings` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `text_colour_1` smallint(3) unsigned DEFAULT 0,
-  `text_colour_2` smallint(3) unsigned DEFAULT 0,
-  `text_colour_3` smallint(3) unsigned DEFAULT 0,
-  `barin_colour_1` smallint(3) unsigned DEFAULT 0,
-  `barin_colour_2` smallint(3) unsigned DEFAULT '206',
-  `barin_colour_3` smallint(3) unsigned DEFAULT '209',
-  `barout_colour_1` smallint(3) unsigned DEFAULT 0,
-  `barout_colour_2` smallint(3) unsigned DEFAULT '191',
-  `barout_colour_3` smallint(3) unsigned DEFAULT '255',
-  `bartraffic_colour_1` smallint(3) unsigned DEFAULT 0,
-  `bartraffic_colour_2` smallint(3) unsigned DEFAULT 0,
-  `bartraffic_colour_3` smallint(3) unsigned DEFAULT 0,
-  `bg_colour_1` smallint(3) unsigned DEFAULT '240',
-  `bg_colour_2` smallint(3) unsigned DEFAULT '240',
-  `bg_colour_3` smallint(3) unsigned DEFAULT '255',
-  `border_colour_1` smallint(3) unsigned DEFAULT '200',
-  `border_colour_2` smallint(3) unsigned DEFAULT '200',
-  `border_colour_3` smallint(3) unsigned DEFAULT '200',
-  `line_colour_1` smallint(3) unsigned DEFAULT '220',
-  `line_colour_2` smallint(3) unsigned DEFAULT '220',
-  `line_colour_3` smallint(3) unsigned DEFAULT '220',
-  `resellerid` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),KEY(`resellerid`)
-) ENGINE=InnoDB";
-$add = $sql->prepare($query);
-$add->execute();
-
 $query = "CREATE TABLE IF NOT EXISTS `voice_tsdns` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',

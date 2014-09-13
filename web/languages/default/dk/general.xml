@@ -7,6 +7,8 @@
     <all>Alle</all>
     <api>API</api>
     <apiAuth>ekstern godkendelse</apiAuth>
+    <appMaster></appMaster>
+    <appRoot></appRoot>
 	<backup>Sikkerhedskopi</backup>
 	<change></change>
     <columns>Tilpassede kolonner</columns>

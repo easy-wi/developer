@@ -12,7 +12,7 @@
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php if(isset($ewCfg['title'])) echo $ewCfg['title']; ?>">
 
     <!-- bootstrap 3.0.2 -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- font Awesome -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
@@ -25,12 +25,23 @@
     <!-- jQuery 2.0.2 -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js" type="text/javascript"></script>
 
+    <!-- Bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
+
+    <!-- AdminLTE App -->
+    <script src="js/adminlte/app.js" type="text/javascript"></script>
+
+    <!-- Easy-Wi -->
+    <script src="js/adminlte/easy-wi.js" type="text/javascript"></script>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+
+    <?php echo implode('',$htmlExtraInformation['js']);?>
 
 </head>
 
@@ -178,7 +189,7 @@
                         <?php } ?>
                         <?php if($pa['restart']) { ?>
                         <li <?php if($w=='ms') echo 'class="active"';?>><a href="userpanel.php?w=ms"><i class="fa fa-truck"></i> <?php echo $gsprache->migration;?></a></li>
-                        <li <?php if($w=='gt') echo 'class="active"';?>><a href="userpanel.php?w=gt"><i class="fa fa-file-text"></i> <?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
+                        <li <?php if($w=='gt') echo 'class="active"';?>><a href="userpanel.php?w=gt"><i class="fa fa-floppy-o"></i> <?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
                         <?php } ?>
                         <?php foreach ($customModules['gs'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><i class="fa fa-angle-double-right"></i> <a href="userpanel.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>

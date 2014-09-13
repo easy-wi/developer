@@ -1504,32 +1504,6 @@ $defined['voice_server_stats'] = array(
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );
 
-$defined['voice_stats_settings'] = array(
-    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'text_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'text_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'text_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'barin_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'barin_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"206","Extra"=>""),
-    'barin_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"209","Extra"=>""),
-    'barout_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'barout_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"191","Extra"=>""),
-    'barout_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"255","Extra"=>""),
-    'bartraffic_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'bartraffic_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'bartraffic_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'bg_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"240","Extra"=>""),
-    'bg_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"240","Extra"=>""),
-    'bg_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"255","Extra"=>""),
-    'border_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"200","Extra"=>""),
-    'border_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"200","Extra"=>""),
-    'border_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"200","Extra"=>""),
-    'line_colour_1' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"220","Extra"=>""),
-    'line_colour_2' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"220","Extra"=>""),
-    'line_colour_3' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"220","Extra"=>""),
-    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
-);
-
 $defined['voice_tsdns'] = array(
     'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),

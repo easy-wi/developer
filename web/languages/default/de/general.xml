@@ -7,6 +7,8 @@
     <all>Alle</all>
     <api>API</api>
     <apiAuth>Externe Authentifizierung</apiAuth>
+    <appMaster>App Master</appMaster>
+    <appRoot>App Server</appRoot>
 	<backup>Backup</backup>
 	<change>ändern</change>
     <columns>Custom Columns</columns>
@@ -53,7 +55,7 @@
     <jobs>Jobs</jobs>
     <jobPending>Job ausstehend</jobPending>
 	<last>Dein letzter Login war am: </last>
-	<lendserver>Leihserver</lendserver>
+	<lendserver>Test/Leih Server</lendserver>
 	<licence>Das Lizenzmaximum wurde erreicht.</licence>
     <licence_version>Sie sind nicht berechtigt diese Version zu nutzen!</licence_version>
 	<logs>Logs</logs>

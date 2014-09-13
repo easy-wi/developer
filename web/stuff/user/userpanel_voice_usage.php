@@ -184,7 +184,6 @@ $(function() {
 
     changeMorrisArea();
 });
-
 </script>";
 
     $template_file = 'userpanel_voice_stats.tpl';
