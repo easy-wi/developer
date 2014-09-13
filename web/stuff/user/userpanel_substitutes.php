@@ -209,7 +209,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             } else {
                 $query = $sql->prepare("UPDATE `userdata_substitutes` SET `active`=?,`name`=?,`vname`=? WHERE `sID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
-                $query->execute(array($ui->active('active', 'post'),$ui->names('name',255, 'post'),$ui->names('vname',255, 'post'),$id,$user_id,$reseller_id));
+                $query->execute(array($ui->active('active', 'post'),$ui->names('name',255, 'post'),$ui->names('vname',255, 'post'), $id, $user_id, $reseller_id));
             }
 
             if ($query->rowCount() > 0) {

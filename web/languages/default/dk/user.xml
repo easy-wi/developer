@@ -72,6 +72,7 @@
 	<server>Server</server>
 	<serverdata>Installerede servere</serverdata>
 	<settings>Panelindstillinger</settings>
+    <show_help_text></show_help_text>
 	<shown>Resultater pr side</shown>
     <socialConnect>Connect with</socialConnect>
     <socialRemove>Remove connection with</socialRemove>

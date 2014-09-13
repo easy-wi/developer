@@ -145,19 +145,20 @@ if ($ui->st('d', 'get') == 'pw') {
             );
         }
 
-        $query = $sql->prepare("SELECT `name`,`vname` FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `name`,`vname`,`show_help_text` FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($_SESSION['sID'], $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $name = $row['name'];
             $vname = $row['vname'];
+            $show_help_text = $row['show_help_text'];
         }
 
         $template_file = 'userpanel_user_substitute_md.tpl';
 
     } else if ($ui->smallletters('action', 2, 'post') == 'md' and token(true)) {
 
-        $query = $sql->prepare("UPDATE `userdata_substitutes` SET `name`=?,`vname`=? WHERE `sID`=? AND `resellerID`=? LIMIT 1");
-        $query->execute(array($ui->names('name',255, 'post'),$ui->names('vname',255, 'post'), $_SESSION['sID'], $reseller_id));
+        $query = $sql->prepare("UPDATE `userdata_substitutes` SET `name`=?,`vname`=?,`show_help_text`=? WHERE `sID`=? AND `resellerID`=? LIMIT 1");
+        $query->execute(array($ui->names('name',255, 'post'),$ui->names('vname',255, 'post'), $ui->active('show_help_text', 'post'), $_SESSION['sID'], $reseller_id));
 
         if ($query->rowCount() > 0) {
             $template_file = $spracheResponse->table_add;

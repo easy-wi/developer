@@ -164,6 +164,7 @@ if ($ui->st('d', 'get') == 'pw') {
         $cityn = $row['cityn'];
         $street = $row['street'];
         $streetn = $row['streetn'];
+        $show_help_text = $row['show_help_text'];
         $mail_backup = $row['mail_backup'];
         $mail_serverdown = $row['mail_serverdown'];
         $mail_ticket = $row['mail_ticket'];
@@ -211,6 +212,7 @@ if ($ui->st('d', 'get') == 'pw') {
             $mail_backup = ($ui->active('mail_backup', 'post')) ? $ui->active('mail_backup', 'post') : 'N';
             $mail_serverdown = ($ui->active('mail_serverdown', 'post')) ? $ui->active('mail_serverdown', 'post') : 'N';
             $mail_ticket = ($ui->active('mail_ticket', 'post')) ? $ui->active('mail_ticket', 'post') : 'N';
+            $show_help_text = ($ui->active('show_help_text', 'post')) ? $ui->active('show_help_text', 'post') : 'Y';
             $name = $ui->names('name', 30, 'post');
             $vname = $ui->names('vname', 30, 'post');
             $mail = $ui->ismail('mail', 'post');
@@ -223,8 +225,8 @@ if ($ui->st('d', 'get') == 'pw') {
 
             if (($ui->st('w', 'get') == 'se')) {
 
-                $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($name, $vname, $mail, $phone, $handy, $city, $cityn, $street, $streetn, $mail_backup, $mail_serverdown, $mail_ticket, $lookUpID, $reseller_id));
+                $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=?,`show_help_text`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($name, $vname, $mail, $phone, $handy, $city, $cityn, $street, $streetn, $mail_backup, $mail_serverdown, $mail_ticket, $show_help_text, $lookUpID, $reseller_id));
 
             } else {
 
@@ -232,8 +234,8 @@ if ($ui->st('d', 'get') == 'pw') {
                 $mail_securitybreach = ($ui->active('mail_securitybreach', 'post')) ? $ui->active('mail_securitybreach', 'post') : 'N';
                 $mail_vserver = ($ui->active('mail_vserver', 'post')) ? $ui->active('mail_vserver', 'post') : 'N';
 
-                $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_vserver`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($name, $vname, $mail, $phone, $handy, $city, $cityn, $street, $streetn, $mail_backup, $mail_serverdown, $mail_ticket, $mail_gsupdate, $mail_securitybreach, $mail_vserver, $lookUpID, $reseller_id));
+                $query = $sql->prepare("UPDATE `userdata` SET `updateTime`=NOW(),`name`=?,`vname`=?,`mail`=?,`phone`=?,`handy`=?,`city`=?,`cityn`=?,`street`=?,`streetn`=?,`mail_backup`=?,`mail_serverdown`=?,`mail_ticket`=?,`mail_gsupdate`=?,`mail_securitybreach`=?,`mail_vserver`=?,`show_help_text`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($name, $vname, $mail, $phone, $handy, $city, $cityn, $street, $streetn, $mail_backup, $mail_serverdown, $mail_ticket, $mail_gsupdate, $mail_securitybreach, $mail_vserver, $show_help_text, $lookUpID, $reseller_id));
 
             }
 

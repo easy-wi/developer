@@ -33,8 +33,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="inputCname"><?php echo $gsprache->user;?>*</label>
-                            <input id="inputCname" type="text" class="form-control" name="name" value="<?php echo $loginName;?>">
+                            <label for="inputCname"><?php echo $gsprache->user;?></label>
+                            <input id="inputCname" type="text" class="form-control" name="name" value="<?php echo $loginName;?>" disabled="disabled">
                         </div>
 
                         <div class="form-group">

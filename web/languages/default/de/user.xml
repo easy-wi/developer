@@ -17,7 +17,7 @@
     <country>Land</country>
     <creationTime>Erstellt am</creationTime>
 	<einz>Bankeinzug</einz>
-	<email>E-Mail Adresse</email>
+	<email>E-Mail</email>
 	<error_cname>Es wurde kein, oder ein unzulässiger Kundenname eingegeben.</error_cname>
 	<error_id>Es wurde kein Kunde ausgewählt</error_id>
 	<error_in>Es wurden nicht alle zwingenden Felder ausgefüllt, oder ungültige Zeichen verwendet.</error_in>
@@ -72,6 +72,7 @@
 	<server>Server</server>
 	<serverdata>Installierte Server</serverdata>
 	<settings>Panel Einstellungen</settings>
+    <show_help_text>Hilfe Boxen anzeigen</show_help_text>
 	<shown>Ergebnisse je Seite</shown>
     <socialConnect>Verknüpfung herstellen mit</socialConnect>
     <socialRemove>Verknüpfung entfernen mit</socialRemove>

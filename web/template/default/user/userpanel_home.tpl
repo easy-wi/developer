@@ -9,6 +9,7 @@
 <!-- Main content -->
 <section class="content">
 
+	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
         <div class="col-md-12">
             <div class="alert alert-info alert-dismissable">
@@ -17,6 +18,7 @@
             </div>
         </div>
     </div>
+	<?php } ?>
 
     <!-- Main row -->
     <div class="row">

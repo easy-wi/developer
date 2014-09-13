@@ -66,6 +66,14 @@
                             <input class="form-control" id="streetn" type="text" name="streetn" value="<?php echo $streetn;?>">
                         </div>
 
+                        <div class="form-group">
+                            <label for="show_help_text"><?php echo $sprache->show_help_text;?></label>
+                            <select class="form-control" id="show_help_text" name="show_help_text">
+                                <option value="Y"><?php echo $gsprache->yes;?></option>
+                                <option value="N"<?php if($show_help_text=='N') echo 'selected';?>><?php echo $gsprache->no;?></option>
+                            </select>
+                        </div>
+
                         <h4><strong><?php echo $sprache->email;?></strong></h4>
 
                         <div class="form-group">

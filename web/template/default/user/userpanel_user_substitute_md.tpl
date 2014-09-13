@@ -29,6 +29,14 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="show_help_text"><?php echo $sprache->show_help_text;?></label>
+                        <select class="form-control" id="show_help_text" name="show_help_text">
+                            <option value="Y"><?php echo $gsprache->yes;?></option>
+                            <option value="N"<?php if($show_help_text=='N') echo 'selected';?>><?php echo $gsprache->no;?></option>
+                        </select>
+                    </div>
+
                     <div class="box-footer">
                         <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
                     </div>

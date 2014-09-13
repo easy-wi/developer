@@ -17,7 +17,7 @@
     <creationTime>Created at</creationTime>
     <country>Country</country>
     <einz>Automatic debit transfer system</einz>
-    <email>E-mail address</email>
+    <email>E-mail</email>
     <error_cname>Error: Bad username1</error_cname>
     <error_id>No user selected:</error_id>
     <error_in>Not all required fields have been filled out; or illegal characters have been used.</error_in>
@@ -72,6 +72,7 @@
     <server>Server</server>
     <serverdata>Installed servers</serverdata>
     <settings>Panel settings</settings>
+    <show_help_text>Show help boxes</show_help_text>
     <shown>Results per page:</shown>
     <socialConnect>Connect with</socialConnect>
     <socialRemove>Remove connection with</socialRemove>

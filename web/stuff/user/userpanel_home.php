@@ -84,9 +84,6 @@ $feedArray = array();
 
 if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get') and !$ui->smallletters('d', 2, 'get'))) {
 
-    $htmlExtraInformation['js'][] = '<script src="//cdn.jsdelivr.net/jquery.knob/1.2.2/jquery.knob.min.js"></script>';
-    $htmlExtraInformation['js'][] = '<script type="text/javascript">$(function() { $(".knob").knob({ draw: function() {} }); });</script>';
-
     // start collecting news feed data. When combined, timestamps will be used as array index
     $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($reseller_id));

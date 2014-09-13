@@ -64,12 +64,13 @@ if (isset($_SESSION['sID'])) {
         $substituteAccess[$row['oType']][] = $row['oID'];
     }
 
-    $query = $sql->prepare("SELECT `name`,`vname`,`lastlogin` FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `name`,`vname`,`lastlogin`,`show_help_text` FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
     $query->execute(array($_SESSION['sID']));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $great_name = $row['name'];
         $great_vname = $row['vname'];
         $lastlogin = $row['lastlogin'];
+        $userWantsHelpText = $row['show_help_text'];
 
         $great_user = ($row['name'] != '' and $row['vname'] != '') ? trim ($row['vname'] . ' ' . $row['name']) : $row['cname'];
     }
@@ -84,12 +85,13 @@ if (isset($_SESSION['sID'])) {
 
 } else {
 
-    $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin`,`show_help_text` FROM `userdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($user_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $great_name = $row['name'];
         $great_vname = $row['vname'];
         $lastlogin = $row['lastlogin'];
+        $userWantsHelpText = $row['show_help_text'];
 
         $great_user = ($row['name'] != '' or $row['vname'] != '') ? trim ($row['vname'] . ' ' . $row['name']) : $row['cname'];
     }
