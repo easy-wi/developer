@@ -101,68 +101,8 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 // App master server updates. Triggered asyncronous with ajax to avoid 5xx errors
 } else if ($ui->smallletters('d', 21, 'get') =='masterappserverupdate' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
 
-    include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
-    include(EASYWIDIR . '/stuff/methods/class_masterserver.php');
-    include(EASYWIDIR . '/stuff/keyphrasefile.php');
-
-    $sprache = getlanguagefile('roots', $user_language, $resellerLockupID);
-
-    $rootServer = new masterServer($ui->id('serverID', 10, 'get'), $aeskey);
-
-    /*
-    $i = 1;
-    $gamelist = array();
-    $games = explode('_', $ui->username('gamestring', 50, 'get'));
-    $count = count($games);
-    $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-
-    while ($i < $count) {
-
-        if ($games[$i] != '' and !in_array($games[$i], $gamelist)) {
-            $gamelist[] = $games[$i];
-            $query->execute(array($games[$i], $resellerLockupID));
-            $typeID = $query->fetchColumn();
-            $rootServer->collectData($typeID, true);
-        }
-
-        $i++;
-    }*/
-
-    $gamelist = array();
-
-    $query = $sql->prepare("SELECT `shorten` FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    foreach($ui->id('masterIDs', 10, 'get') as $masterID) {
-
-        $query->execute(array($masterID, $resellerLockupID));
-
-        $gameShorten = $query->fetchColumn();
-
-        if (strlen($gameShorten) > 0) {
-
-            $gamelist[] = $gameShorten;
-
-            $rootServer->collectData($masterID, true);
-        }
-    }
-
-    $sshcmd = $rootServer->returnCmds('install', 'all');
-
-    if ($rootServer->sshcmd === null) {
-        echo 'Nothing to update/sync!';
-    } else {
-
-        if (ssh2_execute('gs', $ui->id('serverID', 10, 'get'), $rootServer->sshcmd) === false) {
-            echo $sprache->error_root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
-        } else {
-            $rootServer->setUpdating();
-            echo $sprache->root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
-        }
-
-        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-            echo '<br>' . implode('<br>', $rootServer->sshcmd);
-        }
-    }
-    die();
+    require_once(EASYWIDIR . '/stuff/ajax/app_master_update.php');
+    die;
 
 } else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {
 
@@ -245,66 +185,22 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
 } else if (isset($user_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 14, 'get') == 'uservoicestats' and $ui->st('w', 'get')) {
 
-    $data = array();
-
-    if ($ui->st('w', 'get') == 'se') {
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`userid`=? AND v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' ORDER BY v.`ip`,v.`port`");
-        $query->execute(array($user_id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $data[] = '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
-        }
-    }
-
-    require_once IncludeTemplate($template_to_use, 'ajax_userpanel_voice_stats.tpl', 'ajax');
-
+    require_once(EASYWIDIR . '/stuff/ajax/userpanel_voice_stats.php');
     die;
 
 } else if (isset($user_id) and $pa['usertickets'] and $ui->w('d', 20, 'get') == 'userTicketCategories' and $ui->id('topicName', 10, 'get')) {
 
-    $table = array();
-
-    $query = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=? AND `maintopic`!=`id` AND `resellerid`=? ORDER BY `id`");
-    $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
-
-    $query->execute(array($ui->id('topicName', 10, 'get'), $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-        $query2->execute(array($user_language, $row['id'], $reseller_id));
-        $topic = $query2->fetchColumn();
-
-        if (empty($topic)) {
-
-            $query2->execute(array($default_language, $row['id'], $reseller_id));
-            $topic = $query2->fetchColumn();
-
-            if (empty($topic)) {
-                $topic = $row['topic'];
-            }
-        }
-
-        $table[$row['id']] = $topic;
-    }
-
-    require_once IncludeTemplate($template_to_use, 'ajax_userpanel_ticket_category.tpl', 'ajax');
-
+    require_once(EASYWIDIR . '/stuff/ajax/userpanel_ticket_category.php');
     die;
 
 } else if (isset($user_id) and $pa['voiceserverStats'] and $ui->w('d', 14, 'get') == 'voiceUserStats') {
 
     require_once(EASYWIDIR . '/stuff/ajax/stats_voicestats.php');
+    die;
 
 } else if (isset($user_id) and ($pa['gserver'] or $pa['restart']) and $ui->username('mapgroup', 50, 'get')) {
 
-    $sprache = getlanguagefile('gserver', $user_language, $reseller_id);
-
-    $query = $sql->prepare("SELECT `mapGroup` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-    $query->execute(array($ui->username('mapgroup', 50, 'get'), $reseller_id));
-    $mapGroup = $query->fetchColumn();
-
-    if ($mapGroup != null) {
-        require_once IncludeTemplate($template_to_use, 'ajax_userpanel_mapgroup.tpl', 'ajax');
-    }
-
+    require_once(EASYWIDIR . '/stuff/ajax/userpanel_mapgroup.php');
     die;
 }
 
