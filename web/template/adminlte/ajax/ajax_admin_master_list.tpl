@@ -1,0 +1,1 @@
+<?php foreach($what as $k=>$v){ echo ($v==false) ? '<i class="fa fa-spinner fa-spin"></i>'.$k.' ' : '<i class="fa fa-check"></i>'.$k.' '; };?>

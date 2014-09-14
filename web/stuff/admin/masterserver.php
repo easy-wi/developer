@@ -115,25 +115,20 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $table = array();
 
-        $query = $sql->prepare("SELECT `ip`,`os` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `ip`,`os`,`description` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $ip = $row['ip'];
             $os = $row['os'];
+            $description = $row['description'];
         }
 
         if (isset($ip) and isset($os)) {
 
-            $query = $sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description` FROM `servertypes` WHERE `resellerid`=? AND (`os`='B' OR `os`=?) ORDER BY `description`");
-            $query2 = $sql->prepare("SELECT r.`id` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? AND s.`shorten`=?");
-
-            $query->execute(array($resellerLockupID, $os));
+            $query = $sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description` FROM `servertypes` AS t WHERE `resellerid`=? AND (`os`='B' OR `os`=?) AND NOT EXISTS (SELECT 1 FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND s.`shorten`=t.`shorten`) ORDER BY `description`");
+            $query->execute(array($resellerLockupID, $os, $id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-                $query2->execute(array($id, $resellerLockupID, $row['shorten']));
-                if ($query2->rowCount() < 1) {
-                    $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'description' => $row['description']);
-                }
+                $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'description' => $row['description']);
             }
 
             $template_file = 'admin_master_add.tpl';
@@ -145,11 +140,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')) {
 
-    if ($ui->smallletters('action',2, 'post') == 'dl') {
+    if ($ui->smallletters('action', 2, 'post') == 'dl') {
 
-        $serverid = $ui->id('id',19, 'get');
+        $serverid = $ui->id('id', 19, 'get');
 
-        $rdata = serverdata('root',$serverid,$aeskey);
+        $rdata = serverdata('root', $serverid, $aeskey);
         $sship = $rdata['ip'];
 
         if ($ui->id('id', 10, 'post')) {
@@ -190,9 +185,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $id = $ui->id('id',19, 'get');
 
-        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id,$resellerLockupID));
-        $ip = $query->fetchColumn();
+        $query = $sql->prepare("SELECT `ip`,`description` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($id, $resellerLockupID));
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $ip = $row['ip'];
+            $description = $row['description'];
+        }
 
         $query = $sql->prepare("SELECT r.`id`,s.`shorten`,s.`description` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? ORDER BY `description`");
         $query->execute(array($id,$resellerLockupID));
@@ -200,161 +198,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'description' => $row['description']);
         }
 
-        $template_file = (count($table) > 0) ? 'admin_master_dl.tpl' : 'Error: No such ID!';
+        $template_file = (isset($ip) and strlen($ip) > 0) ? 'admin_master_dl.tpl' : 'Error: No such ID!';
  
     }
 
 } else if ($ui->st('d', 'get') == 'md') {
 
-    $table = array();
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=appmasterserver');
 
-    $o = $ui->st('o', 'get');
-
-    if ($ui->st('o', 'get') == 'ar') {
-        $orderby = '`resellerid` ASC';
-    } else if ($ui->st('o', 'get') == 'dr') {
-        $orderby = '`resellerid` DESC';
-    } else if ($ui->st('o', 'get') == 'ap') {
-        $orderby = '`ip` ASC';
-    } else if ($ui->st('o', 'get') == 'dp') {
-        $orderby = '`ip` DESC';
-    } else if ($ui->st('o', 'get') == 'as') {
-        $orderby = '`active` ASC';
-    } else if ($ui->st('o', 'get') == 'ds') {
-        $orderby = '`active` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = '`description` ASC';
-    } else if ($ui->st('o', 'get') == 'dd') {
-        $orderby = '`description` DESC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`id` DESC';
-    } else {
-        $orderby = '`id` ASC';
-        $o = 'ai';
-    }
-
-    $query = $sql->prepare("SELECT `id`,`ip`,`os`,`bitversion`,`description`,`active` FROM `rserverdata` WHERE `active`='Y' AND `resellerid`=? ORDER BY " . $orderby . " LIMIT " . $start . "," . $amount);
-    $query2 = $sql->prepare("SELECT s.`shorten`,r.`installing`,r.`updating`,r.`installstarted` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? GROUP BY s.`shorten`");
-    $query3 = $sql->prepare("SELECT r.`id`,s.`steamgame`,s.`updates`,d.`updates` AS `rupdates` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND r.`resellerid`=? AND d.`ip`=? LIMIT 1");
-    $query4 = $sql->prepare("UPDATE `rservermasterg` SET `installing`='N',`updating`='N' WHERE `id`=?");
-
-    $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-        $statusList = array();
-        $sshcheck = array();
-
-        $id = $row['id'];
-        $description = $row['description'];
-
-        if ($row['active'] == 'Y') {
-            $imgName = '16_ok';
-            $imgAlt = 'Active';
-        } else {
-            $imgName = '16_bad';
-            $imgAlt = 'Inactive';
-        }
-
-        $query2->execute(array($id,$resellerLockupID));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-
-            $shorten = $row2['shorten'];
-
-            if ($row['active'] == 'N' or ($row2['installing'] == 'N' and $row2['updating'] == 'N')) {
-                $statusList[$row2['shorten']] = '16_ok';
-            } else {
-                $toolong = date($row2['installstarted'], strtotime("+15 minutes"));
-
-                if (strtotime($logdate) > strtotime($toolong) or $row2['updating'] == 'Y') {
-                    $sshcheck[] = $row2['shorten'];
-                } else {
-                    $statusList[$row2['shorten']] = '16_installing';
-                }
-            }
-        }
-
-        if (count($sshcheck) > 0) {
-
-            $serverdata = serverdata('root', $id, $aeskey);
-            $ip = $serverdata['ip'];
-
-            $check = ssh2_execute('gs', $id, './control.sh updatestatus "' . implode(' ', $sshcheck) . '"');
-
-            if ($check === false) {
-
-                $description = 'The login data does not work';
-
-            } else if (preg_match('/^[\w\:\-\=]+$/', $check)) {
-
-                $games = array();
-
-                foreach (preg_split('/\:/',$check,-1,PREG_SPLIT_NO_EMPTY) as $status) {
-                    $ex = explode('=', $status);
-                    if (isset($ex[1])) {
-                        $games[$ex[0]] = $ex[1];
-                    }
-                }
-
-                foreach ($games as $k => $v) {
-
-                    if (!in_array($k, array('steamcmd', 'sync'))) {
-
-                        $query3->execute(array($k, $resellerLockupID, $ip));
-                        foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-
-                            if (($v == 0 and $row2['rupdates'] != 4 and $row2['updates'] != 4 and $row2['steamgame'] != 'S') or ($row2['steamgame'] == 'S' and (!isset($games['steamcmd']) or $games['steamcmd'] == 0)) or (($row2['rupdates'] == 4 or $row2['updates'] == 4) and (!isset($games['sync']) or $games['sync'] == 0))) {
-
-                                $statusList[$k] = '16_ok';
-
-                                $query4->execute(array($row2['id']));
-
-                                unset($sshcheck[array_search($k, $sshcheck)]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            foreach ($sshcheck as $shorten) {
-                $statusList[$shorten] = '16_installing';
-            }
-        }
-
-        $table[] = array('id' => $row['id'], 'img' => $imgName, 'alt' => $imgAlt, 'ip' => $row['ip'], 'os' => $row['os'], 'bit' => $row['bitversion'], 'description' => $description, 'statusList' => $statusList, 'active' => $row['active']);
-
-    }
-
-    $next = $start + $amount;
-    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
-    $query->execute(array($resellerLockupID));
-    $colcount = $query->fetchColumn();
-
-    $vor = ($colcount > $next) ? $start + $amount : $start;
-    $back = $start - $amount;
-    $zur = ($back >= 0) ? $start - $amount : $start;
-    $pageamount = ceil($colcount / $amount);
-
-    $link = '<a href="admin.php?w=ma&amp;d=md&amp;a=';
-    $link .= (!isset($amount)) ? 20 : $amount;
-
-    $link .= ($start == 0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
-
-    $pages[] = $link;
-    $i = 2;
-
-    while ($i <= $pageamount) {
-
-        $selectpage = ($i - 1) * $amount;
-
-        if ($start == $selectpage) {
-            $pages[] = '<a href="admin.php?w=ma&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>';
-        } else {
-            $pages[] = '<a href="admin.php?w=ma&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
-        }
-        $i++;
-    }
-
-    $pages = implode(', ',$pages);
     $template_file = 'admin_master_list.tpl';
 
 } else if ($ui->st('d', 'get') == 'ud' and $ui->smallletters('action', 2, 'post') == 'ud') {
@@ -368,7 +219,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
         }
     }
-
 
     if ((isset($ips))) {
 
