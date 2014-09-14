@@ -58,16 +58,8 @@ if (!isset($pa) or count($pa)==0 or ((!isset($admin_id) and !isset($user_id)) or
     $die = true;
 }
 
-if ($ui->smallletters('w',5, 'get') == 'check') {
-    $return='bad';
-    if ($ui->w('method',40, 'get')) {
-        $method = $ui->w('method',40, 'get');
-        if ($ui->id('length',255, 'get') and $ui->$method('check', $ui->id('length',255, 'get'), 'get')) $return='ok';
-        else if ($ui->$method('check', 'get')) $return='ok';
-    }
-    echo $return;
+if ($die == true) {
 
-} else if ($die == true) {
     redirect('login.php');
 
 } else if ($ui->id('id',19, 'get') and $ui->st('d', 'get')=="vs" and ($pa['addvserver'] or $pa['root'])) {
@@ -319,56 +311,6 @@ if ($ui->smallletters('w',5, 'get') == 'check') {
 	<?php echo $eac;?>
 </select>
 <?php
-
-} else if ($ui->username('gamestring', 50, 'get') and $ui->id('id',19, 'get') and ($pa['roots'] or $pa['root'])) {
-
-    include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
-    include(EASYWIDIR . '/stuff/methods/class_masterserver.php');
-    include(EASYWIDIR . '/stuff/keyphrasefile.php');
-
-	$sprache = getlanguagefile('roots', $user_language, $reseller_id);
-
-	if ($reseller_id != 0 and $admin_id != $reseller_id) {
-		$reseller_id = $admin_id;
-	}
-
-    $rootServer = new masterServer($ui->id('id', 10, 'get'), $aeskey);
-
-    $i = 1;
-    $gamelist = array();
-    $games = explode('_', $ui->username('gamestring', 50, 'get'));
-    $count = count($games);
-    $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-
-	while ($i < $count) {
-
-        if ($games[$i] != '' and !in_array($games[$i], $gamelist)) {
-            $gamelist[] = $games[$i];
-            $query->execute(array($games[$i], $reseller_id));
-            $typeID = $query->fetchColumn();
-            $rootServer->collectData($typeID, true);
-        }
-
-		$i++;
-	}
-
-    $sshcmd = $rootServer->returnCmds('install', 'all');
-
-    if ($rootServer->sshcmd === null) {
-        echo 'Nothing to update/sync!';
-    } else {
-
-        if (ssh2_execute('gs', $ui->id('id', 10, 'get'), $rootServer->sshcmd) === false) {
-            echo $sprache->error_root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
-        } else {
-            $rootServer->setUpdating();
-            echo $sprache->root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
-        }
-
-        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-            echo '<br>' . implode('<br>', $rootServer->sshcmd);
-        }
-    }
 
 } else if (($pa['voiceserver'] or $pa['voiceserver']) and $ui->st('d', 'get')=="vo" and $ui->id('id',19, 'get')) {
 

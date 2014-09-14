@@ -98,6 +98,72 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
     die(json_encode($array));
 
+// App master server updates. Triggered asyncronous with ajax to avoid 5xx errors
+} else if ($ui->smallletters('d', 21, 'get') =='masterappserverupdate' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
+
+    include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+    include(EASYWIDIR . '/stuff/methods/class_masterserver.php');
+    include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
+    $sprache = getlanguagefile('roots', $user_language, $resellerLockupID);
+
+    $rootServer = new masterServer($ui->id('serverID', 10, 'get'), $aeskey);
+
+    /*
+    $i = 1;
+    $gamelist = array();
+    $games = explode('_', $ui->username('gamestring', 50, 'get'));
+    $count = count($games);
+    $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
+
+    while ($i < $count) {
+
+        if ($games[$i] != '' and !in_array($games[$i], $gamelist)) {
+            $gamelist[] = $games[$i];
+            $query->execute(array($games[$i], $resellerLockupID));
+            $typeID = $query->fetchColumn();
+            $rootServer->collectData($typeID, true);
+        }
+
+        $i++;
+    }*/
+
+    $gamelist = array();
+
+    $query = $sql->prepare("SELECT `shorten` FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    foreach($ui->id('masterIDs', 10, 'get') as $masterID) {
+
+        $query->execute(array($masterID, $resellerLockupID));
+
+        $gameShorten = $query->fetchColumn();
+
+        if (strlen($gameShorten) > 0) {
+
+            $gamelist[] = $gameShorten;
+
+            $rootServer->collectData($masterID, true);
+        }
+    }
+
+    $sshcmd = $rootServer->returnCmds('install', 'all');
+
+    if ($rootServer->sshcmd === null) {
+        echo 'Nothing to update/sync!';
+    } else {
+
+        if (ssh2_execute('gs', $ui->id('serverID', 10, 'get'), $rootServer->sshcmd) === false) {
+            echo $sprache->error_root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
+        } else {
+            $rootServer->setUpdating();
+            echo $sprache->root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
+        }
+
+        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+            echo '<br>' . implode('<br>', $rootServer->sshcmd);
+        }
+    }
+    die();
+
 } else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {
 
     if ($ui->id('userID', 10, 'get')) {

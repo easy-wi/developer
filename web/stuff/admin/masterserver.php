@@ -208,10 +208,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $template_file = 'admin_master_list.tpl';
 
-} else if ($ui->st('d', 'get') == 'ud' and $ui->smallletters('action', 2, 'post') == 'ud') {
+} else if ($ui->st('d', 'get') == 'ud' and $ui->st('action', 'post') == 'ud') {
 
-    if (is_object($ui->id('id', 10, 'post')) or is_array($ui->id('id', 10, 'post'))) {
-        foreach($ui->id('id',19, 'post') as $id) {
+    $ips = array();
+    $ajaxStrings = array();
+
+    if (is_object($ui->id('serverID', 10, 'post')) or is_array($ui->id('serverID', 10, 'post'))) {
+        foreach($ui->id('serverID', 10, 'post') as $id) {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -220,70 +223,59 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-    if ((isset($ips))) {
+    if (count($ips) > 0) {
 
-        $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r LEFT JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`description`=? AND r.`serverid`=? AND r.`installing`='N' AND r.`resellerid`=?");
-        $ajax = '<script type="text/javascript">window.onload = function() {';
-        foreach($ui->id('id',19, 'post') as $id) {
+        $query = $sql->prepare("SELECT s.`id` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`id`=? AND r.`serverid`=? AND r.`installing`='N' AND r.`resellerid`=?");
 
-            $i = 0;
-            $gamestring_buf = '';
+        foreach($ui->id('serverID', 10, 'post') as $id) {
 
-            foreach($ui->description('description', 'post') as $description) {
+            $ajaxStringIDs = array();
 
-                $query->execute(array($description, $id, ($reseller_id == 0) ? 0 : $admin_id));
+            foreach($ui->id('masterID', 10, 'post') as $masterID) {
+                $query->execute(array($masterID, $id, $resellerLockupID));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $gamestring_buf .= '_' . $row['shorten'];
-                    $i++;
+                    $ajaxStringIDs[] = $row['id'];
                 }
             }
 
-            if ($i > 0) {
-                $posted_gamestring = $i . $gamestring_buf;
-                $ajax .= "onloaddata('serverallocation.php?gamestring=$posted_gamestring&id=','$id','$id');";
+            if ($query->rowCount() > 0) {
+                $ajaxStrings[$id] = $ajaxStringIDs;
             }
         }
-
-        $ajax .= '}</script>';
-
-        $htmlExtraInformation['js'][] = $ajax;
 
         $template_file = 'admin_master_ud2.tpl';
 
     } else {
-        $template_file ='Error: No server selected or the server(s) are already updating';
+        $template_file = 'admin_404.tpl';
     }
-
 } else {
 
-    $table = array();
-    $table3 = array();
+    $appServer = array();
+    $masterList = array();
 
-    $i = 0;
-
-    $query = $sql->prepare("SELECT s.`description`,s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` " . $where . " GROUP BY s.`description` ORDER BY s.`description` ASC");
-    $query->execute(array(':reseller_id' => $resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[$i]['game'] = array('shorten' => $row['shorten'], 'description' => $row['description']);
-        $i++;
-    }
-
-    $i2 = 0;
-
-    $query = $sql->prepare("SELECT d.`id`,d.`ip` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` " . $where . " GROUP BY d.`id` ASC");
-    $query->execute(array(':reseller_id' => $resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[$i2]['server'] = array('id' => $row['id'], 'ip' => $row['ip']);
-        $i2++;
-    }
-
-    $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`resellerid`=? GROUP BY s.`shorten` ORDER BY s.`shorten` ASC");
+    $query = $sql->prepare("SELECT `id`,`ip`,`description` FROM `rserverdata` WHERE `active`='Y' AND `resellerid`=?");
     $query->execute(array($resellerLockupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $shorten = $row['shorten'];
-        $table3[] = '<a href="admin.php?w=ma&amp;d=ud&amp;m=' . $shorten . '">' . $shorten . '</a>';
+        $appServer[$row['id']] = array('ip' => $row['ip'], 'description' => $row['description']);
+    }
+
+    $query = $sql->prepare("SELECT `id`,`shorten`,`description` FROM `servertypes` s WHERE `resellerid`=? ORDER BY `description` ASC");
+    $query2 = $sql->prepare("SELECT r.`id` FROM `rservermasterg` AS m INNER JOIN `rserverdata` AS r ON r.`id`=m.`serverid` WHERE m.`servertypeid`=?");
+
+    $query->execute(array($resellerLockupID));
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+        $serverIDs = array();
+
+        $query2->execute(array($row['id']));
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+            $serverIDs[] = $row2['id'];
+        }
+
+        if (count($serverIDs) > 0) {
+            $masterList[$row['id']] = array('description' => $row['description'], 'shorten' => $row['shorten'], 'serverIDs' => implode(',', $serverIDs));
+        }
     }
 
     $template_file = 'admin_master_ud.tpl';
-
 }
