@@ -825,6 +825,7 @@ $defined['rserverdata'] = array(
     'hyperthreading' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'cores' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"4","Extra"=>""),
     'hostid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
+    'connect_ip_only' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'ip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'altips' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'port' => array("Type"=>"blob","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),

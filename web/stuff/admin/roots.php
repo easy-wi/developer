@@ -93,6 +93,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $ownerID = ($ui->active('assignToReseller', 'post') == 'Y' and $ui->id('ownerID', 10, 'post')) ? $ui->id('ownerID', 10, 'post') : 0;
     $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
     $assignToReseller = ($ui->active('assignToReseller', 'post')) ? $ui->active('assignToReseller', 'post') : 'N';
+    $connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'N';
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
     $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 0;
     $ftpport = ($ui->port('ftpport', 'post')) ? $ui->port('ftpport', 'post') : 21;
@@ -164,6 +165,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $user = $row['duser'];
                 $pass = $row['dpass'];
                 $ownerID = $row['resellerid'];
+                $connectIpOnly = $row['connect_ip_only'];
                 $assignToReseller = ($ownerID > 0) ? 'Y' : 'N';
                 $query2->execute(array($row['resellerid']));
                 $ownerName = trim($query2->fetchColumn());
@@ -175,6 +177,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
+
         if (!$ui->active('active', 'post')) {
             $errors['active'] = $sprache->active;
         }
@@ -218,7 +221,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $errors['keyname'] = $sprache->keyname;
         }
 
-        $ssh2Check = (count($errors) == 0) ? ssh_check($ip, $port, $user, $publickey, $keyname, $pass) : true;
+        $ssh2Check = (count($errors) == 0 and $ui->active('active', 'post') == 'Y') ? ssh_check($ip, $port, $user, $publickey, $keyname, $pass) : true;
 
         if ($ssh2Check !== true) {
 
@@ -241,25 +244,23 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
         }
 
-
-
         if (count($errors) == 0) {
 
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
                 $insertOwner = (isid($ownerID, 10)) ? $ownerID : 0;
-                $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`ram`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:ram,:externalID,:reseller)");
-                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':reseller' => $ownerID));
+                $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`ram`,`connect_ip_only`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:ram,:connect_ip_only,:externalID,:reseller)");
+                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':externalID' => $externalID, ':reseller' => $ownerID));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %root% ' . $ip;
 
             } else if ($ui->st('action', 'post') == 'md') {
 
                 if ($reseller_id == 0) {
-                    $query = $sql->prepare("UPDATE `rserverdata` SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`externalID`=:externalID,`resellerid`=:reseller_id WHERE `id`=:id LIMIT 1");
-                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':reseller_id' => $ownerID, ':id' => $id));
+                    $query = $sql->prepare("UPDATE `rserverdata` SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`connect_ip_only`=:connect_ip_only,`externalID`=:externalID,`resellerid`=:reseller_id WHERE `id`=:id LIMIT 1");
+                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':externalID' => $externalID, ':reseller_id' => $ownerID, ':id' => $id));
                 } else {
-                    $query = $sql->prepare("UPDATE `rserverdata` AS r SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`externalID`=:externalID,`resellerid`=:ownerID WHERE `id`=:id AND (`resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`)) LIMIT 1");
-                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':externalID' => $externalID, ':ownerID' => $ownerID, ':id' => $id, ':reseller_id' => $resellerLockupID));
+                    $query = $sql->prepare("UPDATE `rserverdata` AS r SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`connect_ip_only`=:connect_ip_only,`externalID`=:externalID,`resellerid`=:ownerID WHERE `id`=:id AND (`resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`)) LIMIT 1");
+                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':externalID' => $externalID, ':ownerID' => $ownerID, ':id' => $id, ':reseller_id' => $resellerLockupID));
                 }
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %root% ' . $ip;
@@ -334,77 +335,90 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $id = $ui->id('id', 10, 'get');
 
-    if (!$ui->st('action', 'post')) {
+    if ($reseller_id == 0) {
+        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? LIMIT 1");
+        $query->execute(array($id));
+    } else {
+        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND (`resellerid`=? OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=? AND `id`=r.`resellerid`)) LIMIT 1");
+        $query->execute(array($id, $resellerLockupID, $resellerLockupID));
+    }
 
-        $table = array();
+    $ip = $query->fetchColumn();
 
-        if ($reseller_id == 0) {
-            $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `rootID`=?");
-            $query->execute(array($id));
-        } else {
-            $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
-            $query->execute(array($id, $resellerLockupID));
-        }
+    if (strlen($ip) > 0) {
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $ip = $row['serverip'];
-            $table[$row['id']] = array('ip' => $row['serverip'], 'port' => $row['port']);
-        }
+        if (!$ui->st('action', 'post')) {
 
-        $template_file = ($query->rowCount() > 0) ? 'admin_roots_ri.tpl' : 'admin_404.tpl';
-
-    } else if ($ui->st('action', 'post') == 'ri' and $ui->id('serverID', 10, 'post')) {
-
-        $cmds = array();
-        $started = array();
-        $serverIDs = (array) $ui->id('serverID', 10, 'post');
-
-        if ($reseller_id == 0) {
-            $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=?");
-        } else {
-            $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=? AND g.`resellerid`=?");
-        }
-
-        foreach ($serverIDs as $serverID) {
+            $table = array();
 
             if ($reseller_id == 0) {
-                $query->execute(array($aeskey, $aeskey, $serverID, $id));
+                $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `rootID`=?");
+                $query->execute(array($id));
             } else {
-                $query->execute(array($aeskey, $aeskey, $serverID, $id, $resellerLockupID));
+                $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
+                $query->execute(array($id, $resellerLockupID));
             }
 
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $started[] = $row['serverip'] . ':' . $row['port'];
-                $customer = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['id'] : $row['cname'];
-                $cmds[] = './control.sh add ' . $customer . ' ' . $row['dftp'] . ' ' . $row['duser'] . ' ' . passwordgenerate(10);
-                $cmds[] = 'sudo -u ' . $customer . ' ./control.sh reinstserver ' . $customer . ' 1_' . $row['shorten'] .' ' . $row['serverip'] . '_' . $row['port'];
-            }
-        }
-
-        if (count($cmds) > 0) {
-
-            include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
-
-            $return = ssh2_execute('gs', $id, $cmds);
-
-            $template_file = $gsSprache->reinstall . ': ' . implode('<br>', $started);
-
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $template_file .= '<br>' . $return;
-                $template_file .= '<br>' . implode('<br>', $cmds);
+                $table[$row['id']] = array('ip' => $row['serverip'], 'port' => $row['port']);
             }
 
+            $template_file = 'admin_roots_ri.tpl';
+
+        } else if ($ui->st('action', 'post') == 'ri' and $ui->id('serverID', 10, 'post')) {
+
+            $cmds = array();
+            $started = array();
+            $serverIDs = (array) $ui->id('serverID', 10, 'post');
+
+            if ($reseller_id == 0) {
+                $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=?");
+            } else {
+                $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=? AND g.`resellerid`=?");
+            }
+
+            foreach ($serverIDs as $serverID) {
+
+                if ($reseller_id == 0) {
+                    $query->execute(array($aeskey, $aeskey, $serverID, $id));
+                } else {
+                    $query->execute(array($aeskey, $aeskey, $serverID, $id, $resellerLockupID));
+                }
+
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $started[] = $row['serverip'] . ':' . $row['port'];
+                    $customer = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['id'] : $row['cname'];
+                    $cmds[] = './control.sh add ' . $customer . ' ' . $row['dftp'] . ' ' . $row['duser'] . ' ' . passwordgenerate(10);
+                    $cmds[] = 'sudo -u ' . $customer . ' ./control.sh reinstserver ' . $customer . ' 1_' . $row['shorten'] .' ' . $row['serverip'] . '_' . $row['port'];
+                }
+            }
+
+            if (count($cmds) > 0) {
+
+                include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+
+                $return = ssh2_execute('gs', $id, $cmds);
+
+                $template_file = $gsSprache->reinstall . ': ' . implode('<br>', $started);
+
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    $template_file .= '<br>' . $return;
+                    $template_file .= '<br>' . implode('<br>', $cmds);
+                }
+
+            } else {
+                $template_file = 'admin_404.tpl';
+            }
         } else {
             $template_file = 'admin_404.tpl';
         }
-        
     } else {
         $template_file = 'admin_404.tpl';
     }
 
 } else {
 
-    configureDateTables('-1, -2, -3', '1, "asc"', 'ajax.php?w=datatable&d=appserver');
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=appserver');
 
     $template_file = 'admin_roots_list.tpl';
 }

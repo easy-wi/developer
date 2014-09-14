@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <active>Aktiver</active>
+    <action></action>
 	<add>Tilføj</add>
 	<addon>tilføjelsesprogrammer</addon>
     <addon2>Addon</addon2>

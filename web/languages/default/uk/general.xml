@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <active>Active</active>
+    <action>Action</action>
 	<add>Add</add>
 	<addon>Addons</addon>
     <addon2>Addon</addon2>

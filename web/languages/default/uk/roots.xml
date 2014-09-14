@@ -7,6 +7,7 @@
     <all_roots>Select all root servers</all_roots>
     <cfgdir>Config folder</cfgdir>
     <confirm1>Start update(s)?</confirm1>
+    <connect_ip_only>SSH2 IP admin only (additional ips for apps)</connect_ip_only>
     <desc>Description</desc>
     <error_root_db>Error: Could not delete the root server from the database!</error_root_db>
     <error_root_dbmasterdel>Error: Could not delete the master server from the database!</error_root_dbmasterdel>

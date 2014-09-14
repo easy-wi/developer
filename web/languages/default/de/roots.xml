@@ -7,6 +7,7 @@
 	<all_roots>Alle Rootserver selektieren</all_roots>
 	<cfgdir>Config Verzeichnis</cfgdir>
 	<confirm1>Update(s) starten?</confirm1>
+    <connect_ip_only>SSH2 IP nur für Admin (Zusätzliche IPs für Apps)</connect_ip_only>
 	<desc>Beschreibung</desc>
 	<error_root_dbmasterdel>Master Server konnte nicht aus der Datenbank gelöscht werden</error_root_dbmasterdel>
 	<error_root_install>Fehler: Folgende Installation konnte auf dem Rootserver nicht gestartet werden</error_root_install>
@@ -32,7 +33,7 @@
 	<os>Betriebssystem</os>
 	<os_bit>Bitversion</os_bit>
     <password>Passwort</password>
-    <resellerAssign>Reseller Zuwweisen</resellerAssign>
+    <resellerAssign>Reseller Zuweisen</resellerAssign>
 	<root_masterdel>Löschvorgang erfolgreich auf dem Rootserver gestartet </root_masterdel>
 	<root_masterinstall>Master Server wurde erfolgreich in die Datenbank eingetragen und wird nun auf dem Server installiert</root_masterinstall>
 	<root_updatemaster>Update(s) erfolgreich gestartet</root_updatemaster>

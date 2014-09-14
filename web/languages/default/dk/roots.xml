@@ -7,6 +7,7 @@
 	<all_roots>Vælg alle Rootservers</all_roots>
 	<cfgdir>Config mapper</cfgdir>
 	<confirm1>Start opdatering?</confirm1>
+    <connect_ip_only></connect_ip_only>
 	<desc>Beskrivelse</desc>
 	<error_root_db>Fejl: Kunne ikke slette rootserver fra databasen!</error_root_db>
 	<error_root_dbmasterdel>Fejl: Kunne ikke slette masterserver fra databasen!</error_root_dbmasterdel>

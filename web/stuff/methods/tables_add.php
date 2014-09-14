@@ -867,6 +867,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rserverdata` (
   `hyperthreading` enum('Y','N') DEFAULT 'N',
   `cores` smallint(3) unsigned DEFAULT '4',
   `hostid` int(10) unsigned DEFAULT 0,
+  `connect_ip_only` enum('Y','N') NOT NULL DEFAULT 'N',
   `ip` varchar(15) NOT NULL,
   `altips` text CHARACTER SET utf8,
   `port` blob NOT NULL,

@@ -33,9 +33,7 @@
                             <th><?php echo $sprache->maxserver;?></th>
                             <th>Ram</th>
                             <th><?php echo $sprache->desc;?></th>
-                            <th><?php echo $gsSprache->reinstall;?></th>
-                            <th><?php echo $gsprache->del;?></th>
-                            <th><?php echo $gsprache->mod;?></th>
+                            <th><?php echo $gsprache->action;?></th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -47,9 +45,7 @@
                             <th><?php echo $sprache->maxserver;?></th>
                             <th>Ram</th>
                             <th><?php echo $sprache->desc;?></th>
-                            <th><?php echo $gsSprache->reinstall;?></th>
-                            <th><?php echo $gsprache->del;?></th>
-                            <th><?php echo $gsprache->mod;?></th>
+                            <th><?php echo $gsprache->action;?></th>
                         </tr>
                         </tfoot>
                     </table>
