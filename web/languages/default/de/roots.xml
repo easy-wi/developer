@@ -5,6 +5,7 @@
 	<all>Alle</all>
 	<all_games>Alle Spiele selektieren</all_games>
 	<all_roots>Alle Rootserver selektieren</all_roots>
+    <blocksize>Block Größe</blocksize>
 	<cfgdir>Config Verzeichnis</cfgdir>
 	<confirm1>Update(s) starten?</confirm1>
     <connect_ip_only>SSH2 IP nur für Admin (Zusätzliche IPs für Apps)</connect_ip_only>
@@ -21,8 +22,12 @@
 	<header_add>Masterserver hinzufügen</header_add>
 	<header_del>Masterserver löschen</header_del>
 	<header_update>Masterserver aktualisieren</header_update>
+    <help_blocksize>Bei den meisten Systemen beträgt die Block Größe 4096. D.h. ein Block enthält 4096 Byte an Daten.</help_blocksize>
+    <help_inode_block_ratio>Bei den meisten Systemen ist das Verhältnis 4. D.h. auf 4 Blöcke kommt ein Inode</help_inode_block_ratio>
+    <inodeBlockRatio>Block/Inode Verhätnis</inodeBlockRatio>
 	<installed>Installierte Masterserver</installed>
-	<installeds>Installierte Slots: </installeds>
+	<installeds>Installierte Slots</installeds>
+    <installPaths>Installations Pfade</installPaths>
 	<ips>IPs</ips>
 	<keyname>Name der Public Keyfile</keyname>
 	<keyuse>Public Keyfile benutzen</keyuse>
@@ -33,6 +38,10 @@
 	<os>Betriebssystem</os>
 	<os_bit>Bitversion</os_bit>
     <password>Passwort</password>
+    <quotaActive>Quotas Aktivieren</quotaActive>
+    <quotaCmd>Quota Befehl</quotaCmd>
+    <quotaWarning>Achtung! Ohne Quotas kann der User unbegrenzt Dateien hochladen!</quotaWarning>
+    <repquotaCmd>Repquota Befehl</repquotaCmd>
     <resellerAssign>Reseller Zuweisen</resellerAssign>
 	<root_masterdel>Löschvorgang erfolgreich auf dem Rootserver gestartet </root_masterdel>
 	<root_masterinstall>Master Server wurde erfolgreich in die Datenbank eingetragen und wird nun auf dem Server installiert</root_masterinstall>

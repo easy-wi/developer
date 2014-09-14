@@ -23,6 +23,7 @@
 	<header_update>Opdatering masterserver</header_update>
 	<installed>Installeret masterserver</installed>
 	<installeds>Installeret Antal: </installeds>
+    <installPaths></installPaths>
 	<ips>IP</ips>
 	<keyname>Offentlig keyfile Navn</keyname>
 	<keyuse>Brug offentlig keyfile</keyuse>

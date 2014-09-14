@@ -82,17 +82,17 @@
 
                         <div class="form-group">
                             <label class="control-label" for="inputFTPPort"><?php echo $sprache->ftp_port;?></label>
-                            <div class="controls"><input class="form-control" id="inputFTPPort" type="text" name="ftpport" value="<?php echo $ftpport?>" maxlength="5"></div>
+                            <div class="controls"><input class="form-control" id="inputFTPPort" type="number" name="ftpport" value="<?php echo $ftpport?>" min="1" max="65535"></div>
                         </div>
 
                         <div class="control-group<?php if(isset($errors['port'])) echo ' error';?>">
                             <label class="control-label" for="inputSSH2Port"><?php echo $sprache->ssh_port;?></label>
-                            <div class="controls"><input class="form-control" id="inputSSH2Port" type="text" name="port" value="<?php echo $port?>" maxlength="5"></div>
+                            <div class="controls"><input class="form-control" id="inputSSH2Port" type="number" name="port" value="<?php echo $port?>" min="1" max="65535"></div>
                         </div>
 
                         <div class="control-group<?php if(isset($errors['user'])) echo ' error';?>">
                             <label class="control-label" for="inputSSH2User"><?php echo $sprache->ssh_user;?></label>
-                            <div class="controls"><input class="form-control" id="inputSSH2User" type="text" name="user" value="<?php echo $user?>" maxlength="20"></div>
+                            <div class="controls"><input class="form-control" id="inputSSH2User" type="text" name="user" value="<?php echo $user?>"></div>
                         </div>
 
                         <div class="control-group<?php if(isset($errors['publickey'])) echo ' error';?>">
@@ -148,13 +148,13 @@
 
                         <div class="form-group">
                             <label class="control-label" for="inputCores">Cores</label>
-                            <div class="controls"><input class="form-control" id="inputCores" type="text" name="cores" value="<?php echo $cores;?>" maxlength="5"></div>
+                            <div class="controls"><input class="form-control" id="inputCores" type="number" name="cores" value="<?php echo $cores;?>" maxlength="5"></div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label" for="inputRam">Ram (MB)</label>
                             <div class="controls">
-                                <input class="form-control" id="inputRam" type="text" name="ram" value="<?php echo $ram;?>" maxlength="5">
+                                <input class="form-control" id="inputRam" type="number" name="ram" value="<?php echo $ram;?>" maxlength="5">
                             </div>
                         </div>
 
@@ -165,12 +165,46 @@
 
                         <div class="form-group">
                             <label class="control-label" for="inputSlots"><?php echo $sprache->maxslots;?></label>
-                            <div class="controls"><input class="form-control" id="inputSlots" type="text" name="maxslots" value="<?php echo $maxslots;?>" maxlength="5"></div>
+                            <div class="controls"><input class="form-control" id="inputSlots" type="number" name="maxslots" value="<?php echo $maxslots;?>" maxlength="5"></div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label" for="inputServer"><?php echo $sprache->maxserver2;?></label>
-                            <div class="controls"><input class="form-control" id="inputServer" type="text" name="maxserver" value="<?php echo $maxserver;?>" maxlength="4"></div>
+                            <div class="controls"><input class="form-control" id="inputServer" type="number" name="maxserver" value="<?php echo $maxserver;?>" maxlength="4"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputInstallPaths"><?php echo $sprache->installPaths;?></label>
+                            <div class="controls"><textarea class="form-control" id="inputInstallPaths" name="installPaths" rows="5"><?php echo $installPaths;?></textarea></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputQuotaActive"><?php echo $sprache->quotaActive;?></label>
+                            <div class="controls">
+                                <select id="inputQuotaActive" class="form-control" name="quotaActive" onchange="SwitchShowHideRows(this.value,'quotaSwitch');">
+                                    <option value="N"><?php echo $gsprache->no;?></option>
+                                    <option value="Y" <?php if ($quotaActive=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="Y quotaSwitch form-group<?php if($quotaActive=='N') echo ' display_none';?>">
+                            <label class="control-label" for="inputQuotaCmd"><?php echo $sprache->quotaCmd;?></label>
+                            <div class="controls"><input id="inputQuotaCmd" class="form-control" type="text" name="quotaCmd" value="<?php echo $quotaCmd;?>"></div>
+                        </div>
+                        <div class="Y quotaSwitch form-group<?php if($quotaActive=='N') echo ' display_none';?>">
+                            <label class="control-label" for="inputRepuotaCmd"><?php echo $sprache->repquotaCmd;?></label>
+                            <div class="controls"><input id="inputRepuotaCmd" class="form-control" type="text" name="repquotaCmd" value="<?php echo $repquotaCmd;?>"></div>
+                        </div>
+                        <div class="Y quotaSwitch form-group<?php if($quotaActive=='N') echo ' display_none';?>">
+                            <label class="control-label" for="inputBlocksize"><?php echo $sprache->blocksize;?></label>
+                            <div class="controls"><input id="inputBlocksize" class="form-control" type="number" name="blocksize" value="<?php echo $blocksize;?>"><span class="help-block alert alert-info"><?php echo $sprache->help_blocksize;?></span></div>
+                        </div>
+                        <div class="Y quotaSwitch form-group<?php if($quotaActive=='N') echo ' display_none';?>">
+                            <label class="control-label" for="inputInodeBlockRatio"><?php echo $sprache->inodeBlockRatio;?></label>
+                            <div class="controls"><input id="inputInodeBlockRatio" class="form-control" type="number" name="inodeBlockRatio" value="<?php echo $inodeBlockRatio;?>"><span class="help-block alert alert-info"><?php echo $sprache->help_inode_block_ratio;?></span></div>
+                        </div>
+                        <div class="N quotaSwitch form-group<?php if($quotaActive=='Y') echo ' display_none';?>">
+                            <div class="controls"><div class="alert alert-warning"><?php echo $sprache->quotaWarning;?></div></div>
                         </div>
 
                         <div class="form-group">

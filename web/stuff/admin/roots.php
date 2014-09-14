@@ -100,6 +100,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
     $maxserver = ($ui->id('maxserver',4, 'post')) ? $ui->id('maxserver',4, 'post') : 10;
     $maxslots = ($ui->id('maxslots', 5, 'post')) ? $ui->id('maxslots', 5, 'post') : 512;
+    $installPaths = ($ui->escaped('installPaths', 'post')) ? $ui->escaped('installPaths', 'post') : "[home]\r\npath = /home/\r\nsize = 500GB\r\ndefault = 1";
+    $quotaActive = ($ui->active('quotaActive', 'post')) ? $ui->active('quotaActive', 'post') : 'N';
+    $quotaCmd = ($ui->startparameter('quotaCmd', 'post')) ? $ui->startparameter('quotaCmd', 'post') : 'sudo /usr/sbin/setquota %cmd%';
+    $repquotaCmd = ($ui->startparameter('repquotaCmd', 'post')) ? $ui->startparameter('repquotaCmd', 'post') : 'sudo /usr/sbin/repquota %cmd%';
+    $blocksize = ($ui->id('blocksize', 10, 'post')) ? $ui->id('blocksize', 10, 'post') : 4096;
+    $inodeBlockRatio = ($ui->id('inodeBlockRatio', 10, 'post')) ? $ui->id('inodeBlockRatio', 10, 'post') : 4;
 
     if (!$ui->smallletters('action', 2, 'post')) {
 
@@ -166,6 +172,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $pass = $row['dpass'];
                 $ownerID = $row['resellerid'];
                 $connectIpOnly = $row['connect_ip_only'];
+                $installPaths = $row['install_paths'];
+                $quotaActive = $row['quota_active'];
+                $quotaCmd = $row['quota_cmd'];
+                $repquotaCmd = $row['repquota_cmd'];
+                $blocksize = $row['blocksize'];
+                $inodeBlockRatio = $row['inode_block_ratio'];
                 $assignToReseller = ($ownerID > 0) ? 'Y' : 'N';
                 $query2->execute(array($row['resellerid']));
                 $ownerName = trim($query2->fetchColumn());
@@ -248,19 +260,19 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             if ($ui->st('action', 'post') == 'ad' and $reseller_id == 0) {
                 $insertOwner = (isid($ownerID, 10)) ? $ownerID : 0;
-                $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`ram`,`connect_ip_only`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:ram,:connect_ip_only,:externalID,:reseller)");
-                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':externalID' => $externalID, ':reseller' => $ownerID));
+                $query = $sql->prepare("INSERT INTO `rserverdata` (`active`,`steamAccount`,`steamPassword`,`hyperthreading`,`cores`,`ip`,`altips`,`port`,`user`,`pass`,`os`,`bitversion`,`description`,`ftpport`,`publickey`,`keyname`,`maxslots`,`maxserver`,`updates`,`updateMinute`,`ram`,`connect_ip_only`,`install_paths`,`quota_active`,`quota_cmd`,`repquota_cmd`,`blocksize`,`inode_block_ratio`,`externalID`,`resellerid`) VALUES (:active,AES_ENCRYPT(:steamAccount,:aeskey),AES_ENCRYPT(:steamPassword,:aeskey),:hyperthreading,:cores,:ip,:altips,AES_ENCRYPT(:port,:aeskey),AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:os,:bit,:desc,:ftpport,:publickey,:keyname,:maxslots,:maxserver,:updates,:updateMinute,:ram,:connect_ip_only,:install_paths,:quota_active,:quota_cmd,:repquota_cmd,:blocksize,:inode_block_ratio,:externalID,:reseller)");
+                $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':ftpport' => $ftpport, ':publickey' => $publickey, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':install_paths' => $installPaths, ':quota_active' => $quotaActive, ':quota_cmd' => $quotaCmd, ':repquota_cmd' => $repquotaCmd, ':blocksize' => $blocksize, ':inode_block_ratio' => $inodeBlockRatio, ':externalID' => $externalID, ':reseller' => $ownerID));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %root% ' . $ip;
 
             } else if ($ui->st('action', 'post') == 'md') {
 
                 if ($reseller_id == 0) {
-                    $query = $sql->prepare("UPDATE `rserverdata` SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`connect_ip_only`=:connect_ip_only,`externalID`=:externalID,`resellerid`=:reseller_id WHERE `id`=:id LIMIT 1");
-                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':externalID' => $externalID, ':reseller_id' => $ownerID, ':id' => $id));
+                    $query = $sql->prepare("UPDATE `rserverdata` SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`connect_ip_only`=:connect_ip_only,`install_paths`=:install_paths,`quota_active`=:quota_active,`quota_cmd`=:quota_cmd,`repquota_cmd`=:repquota_cmd,`blocksize`=:blocksize,`inode_block_ratio`=:inode_block_ratio,`externalID`=:externalID,`resellerid`=:reseller_id WHERE `id`=:id LIMIT 1");
+                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':install_paths' => $installPaths, ':quota_active' => $quotaActive, ':quota_cmd' => $quotaCmd, ':repquota_cmd' => $repquotaCmd, ':blocksize' => $blocksize, ':inode_block_ratio' => $inodeBlockRatio, ':externalID' => $externalID, ':reseller_id' => $ownerID, ':id' => $id));
                 } else {
-                    $query = $sql->prepare("UPDATE `rserverdata` AS r SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`connect_ip_only`=:connect_ip_only,`externalID`=:externalID,`resellerid`=:ownerID WHERE `id`=:id AND (`resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`)) LIMIT 1");
-                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':externalID' => $externalID, ':ownerID' => $ownerID, ':id' => $id, ':reseller_id' => $resellerLockupID));
+                    $query = $sql->prepare("UPDATE `rserverdata` AS r SET `active`=:active,`steamAccount`=AES_ENCRYPT(:steamAccount,:aeskey),`steamPassword`=AES_ENCRYPT(:steamPassword,:aeskey),`hyperthreading`=:hyperthreading,`cores`=:cores,`ip`=:ip,`altips`=:altips,`port`=AES_ENCRYPT(:port,:aeskey),`user`=AES_ENCRYPT(:user, :aeskey),`pass`=AES_ENCRYPT(:pass, :aeskey),`os`=:os,`bitversion`=:bit,`description`=:desc,`ftpport`=:ftpport,`publickey`=:publickey,`keyname`=:keyname,`maxslots`=:maxslots,`maxserver`=:maxserver,`updates`=:updates,`updateMinute`=:updateMinute,`ram`=:ram,`connect_ip_only`=:connect_ip_only,`install_paths`=:install_paths,`quota_active`=:quota_active,`quota_cmd`=:quota_cmd,`repquota_cmd`=:repquota_cmd,`blocksize`=:blocksize,`inode_block_ratio`=:inode_block_ratio,`externalID`=:externalID,`resellerid`=:ownerID WHERE `id`=:id AND (`resellerid`=:reseller_id OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=:reseller_id AND `id`=r.`resellerid`)) LIMIT 1");
+                    $query->execute(array(':active' => $active, ':steamAccount' => $steamAccount, ':steamPassword' => $steamPassword, ':hyperthreading' => $hyperthreading, ':cores' => $cores, ':ip' => $ip, ':altips' => $altips, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':os' => $os, ':bit' => $bit, ':desc' => $desc, ':publickey' => $publickey, ':ftpport' => $ftpport, ':keyname' => $keyname, ':maxslots' => $maxslots, ':maxserver' => $maxserver, ':updates' => $updates, ':updateMinute' => $updateMinute, ':ram' => $ram, ':connect_ip_only' => $connectIpOnly, ':install_paths' => $installPaths, ':quota_active' => $quotaActive, ':quota_cmd' => $quotaCmd, ':repquota_cmd' => $repquotaCmd, ':blocksize' => $blocksize, ':inode_block_ratio' => $inodeBlockRatio, ':externalID' => $externalID, ':ownerID' => $ownerID, ':id' => $id, ':reseller_id' => $resellerLockupID));
                 }
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %root% ' . $ip;
@@ -298,28 +310,37 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
         $ip = $query->fetchColumn();
+
         $query = $sql->prepare("DELETE FROM `rserverdata` WHERE `id`=? AND (`userID` IS NULL OR `userID` IN ('',0)) LIMIT 1");
         $query->execute(array($id));
 
         if ($query->rowCount() > 0) {
+
             $query = $sql->prepare("DELETE m.* FROM `rservermasterg` m LEFT JOIN `rserverdata` r ON m.`serverid`=r.`id` WHERE r.`id` IS NULL");
             $query->execute();
+
             $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `rootID`=?");
             $query2 = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=?");
+            $query3 = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=?");
+
             $query->execute(array($id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
                 $query2->execute(array($row['id']));
                 foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=?");
-                    $query->execute(array($row2['id']));
+                    $query3->execute(array($row2['id']));
                 }
+
                 $query = $sql->prepare("DELETE FROM `serverlist` WHERE `switchID`=?");
                 $query->execute(array($row['id']));
+
                 $query = $sql->prepare("DELETE FROM `gserver_restarts` WHERE `switchID`=?");
                 $query->execute(array($row['id']));
             }
+
             $query = $sql->prepare("DELETE FROM `gsswitch` WHERE `rootID`=?");
             $query->execute(array($id));
+
             $template_file = $spracheResponse->table_del;
             $loguseraction = '%del% %root% ' . $ip;
             $insertlog->execute();

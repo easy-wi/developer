@@ -5,6 +5,7 @@
     <all>All</all>
     <all_games>Select all games</all_games>
     <all_roots>Select all root servers</all_roots>
+    <blocksize>Blocksize</blocksize>
     <cfgdir>Config folder</cfgdir>
     <confirm1>Start update(s)?</confirm1>
     <connect_ip_only>SSH2 IP admin only (additional ips for apps)</connect_ip_only>
@@ -21,8 +22,12 @@
     <header_add>Add master server(s)</header_add>
     <header_del>Delete master server(s)</header_del>
     <header_update>Update master server(s)</header_update>
+    <help_blocksize>Most filesystems are configured with a blocksize of 4096. This means one block contains 4096 Byte data.</help_blocksize>
+    <help_inode_block_ratio>Most systems have a ratio of 4. This means 4 blocks have one inode.</help_inode_block_ratio>
+    <inodeBlockRatio>Block/Inode Ratio</inodeBlockRatio>
     <installed>Installed master server(s)</installed>
-    <installeds>Installed slots:</installeds>
+    <installeds>Installed slots</installeds>
+    <installPaths>Install paths</installPaths>
     <ips>IPs</ips>
     <keyname>Public key file name</keyname>
     <keyuse>Use public key file</keyuse>
@@ -33,6 +38,10 @@
     <os>Operating system</os>
     <os_bit>Bit-version</os_bit>
     <password>Password</password>
+    <quotaActive>Activate Quotas</quotaActive>
+    <quotaCmd>Quota Command</quotaCmd>
+    <quotaWarning>Warning! Whithout Quotas user can upload data until the disk is full!</quotaWarning>
+    <repquotaCmd>Repquota Command</repquotaCmd>
     <resellerAssign>Assign to reseller</resellerAssign>
     <root_masterdel>Successfully started the removal process.</root_masterdel>
     <root_masterinstall>The master server has been added to the database and is currently in the installation process.</root_masterinstall>
