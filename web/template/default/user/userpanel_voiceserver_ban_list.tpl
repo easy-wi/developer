@@ -11,12 +11,12 @@
 <!-- Main Content -->
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-info">
                 <div class="box-body">
 
                     <div>
-                        <a href="userpanel.php?w=vo&amp;d=bl&amp;e=ad&amp;id=<?php echo $id;?>"><span class="btn btn-primary"><i class="fa fa-plus"></i> <?php echo $sprache->banAdd;?></span></a>
+                        <a href="userpanel.php?w=vo&amp;d=bl&amp;e=ad&amp;id=<?php echo $id;?>"><span class="btn btn-success"><i class="fa fa-plus-circle"></i> <?php echo $sprache->banAdd;?></span></a>
                     </div>
 
                     <hr>

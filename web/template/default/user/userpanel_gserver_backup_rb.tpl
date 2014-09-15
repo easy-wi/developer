@@ -12,8 +12,8 @@
 <!-- Main Content -->
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
-            <div class="box box-info">
+        <div class="col-md-11">
+            <div class="box box-warning">
                 <form role="form" action="userpanel.php?w=bu&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
                     <input type="hidden" name="action" value="rb2">
@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="box-footer">
-                        <button class="btn btn-primary" id="inputRecover" type="submit"><i class="fa fa-refresh"></i> <?php echo $sprache->recover;?></button>
+                        <button class="btn btn-warning" id="inputRecover" type="submit"><i class="fa fa-refresh"></i> <?php echo $sprache->recover;?></button>
                     </div>
                 </form>
             </div>

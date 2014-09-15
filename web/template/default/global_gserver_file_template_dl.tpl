@@ -10,23 +10,27 @@
 
 <!-- Main Content -->
 <section class="content">
-    <div class="box box-info">
-        <div class="box-body">
-            <form role="form" action="<?php echo $targetFile;?>?w=gt&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=gt" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+    <div class="row">
+        <div class="col-md-11">
+            <div class="box box-danger">
+                <div class="box-body">
+                    <form role="form" action="<?php echo $targetFile;?>?w=gt&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=gt" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
-                <input type="hidden" name="token" value="<?php echo token();?>">
-                <input type="hidden" name="action" value="dl">
+                        <input type="hidden" name="token" value="<?php echo token();?>">
+                        <input type="hidden" name="action" value="dl">
 
-                <div class="form-group">
-                    <label for="inputName"><?php echo $sprache->description;?></label>
-                    <input class="form-control" id="inputName" type="text" name="name" value="<?php echo $name;?>" disabled="disabled">
+                        <div class="form-group">
+                            <label for="inputName"><?php echo $sprache->description;?></label>
+                            <input class="form-control" id="inputName" type="text" name="name" value="<?php echo $name;?>" disabled="disabled">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputEdit"></label>
+                            <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash-o"> <?php echo $gsprache->del;?></i></button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label" for="inputEdit"></label>
-                    <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash-o"> <?php echo $gsprache->del;?></i></button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </section>

@@ -14,7 +14,7 @@
 <section class="content">
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $sprache->help_addons;?>
@@ -24,7 +24,7 @@
 	<?php } ?>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-info">
                 <div class="box-header">
                     <h3 class="box-title"><?php echo $sprache->tools;?></h3>
@@ -66,7 +66,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-info">
                 <div class="box-header">
                     <h3 class="box-title"><?php echo $sprache->maps;?></h3>

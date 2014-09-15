@@ -20,6 +20,11 @@
 
                     <div class="box-body">
 
+                        <div class="form-group">
+                            <label class="control-label" for="inputExternalID">externalID</label>
+                            <div class="controls"><input class="form-control" id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID?>" maxlength="255"></div>
+                        </div>
+
                         <?php if ($reseller_id==0 or $reseller_id==$admin_id){ ?>
 
                         <div class="control-group">
@@ -53,11 +58,6 @@
                                     <option value="Y" <?php if ($active=='Y') echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?></option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label" for="inputExternalID">externalID</label>
-                            <div class="controls"><input class="form-control" id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID?>" maxlength="255"></div>
                         </div>
 
                         <div class="control-group">

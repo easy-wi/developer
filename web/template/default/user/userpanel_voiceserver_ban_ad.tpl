@@ -27,8 +27,8 @@
     <?php }?>
 
     <div class="row">
-        <div class="col-md-12">
-            <div class="box box-info">
+        <div class="col-md-11">
+            <div class="box box-success">
                 <form role="form" action="userpanel.php?w=vo&amp;d=bl&amp;e=ad&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
                     <input type="hidden" name="action" value="ad">
@@ -74,7 +74,7 @@
                     </div>
 
                     <div class="box-footer">
-                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-plus"></i> <?php echo $sprache->ban;?></button>
+                        <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-plus-circle"></i> <?php echo $sprache->ban;?></button>
                     </div>
                 </form>
             </div>

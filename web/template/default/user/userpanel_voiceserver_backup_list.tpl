@@ -14,7 +14,7 @@
 	<!-- Content Help -->
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $sprache->help_voiceserver_backup;?>
@@ -24,12 +24,12 @@
 	<?php } ?>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-info">
                 <div class="box-body">
 
                     <div>
-                        <a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $id;?>"><span class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> <?php echo $sprache->backup ." (".($voice_maxbackup-$backupcount)." ".$sprache->left.")";?></span></a>
+                        <a href="userpanel.php?w=vo&amp;d=bu&amp;po=1&amp;id=<?php echo $id;?>"><span class="btn btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $sprache->backup ." (".($voice_maxbackup-$backupcount)." ".$sprache->left.")";?></span></a>
                     </div>
 
                     <hr>

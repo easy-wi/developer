@@ -14,7 +14,7 @@
     <!-- Content Help -->
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $sprache->help_calendar;?>
@@ -24,7 +24,7 @@
 	<?php } ?>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-info">
                 <div class="box-body">
                     <form class="form-inline" role="form" id="newRestart" action="userpanel.php?w=ca&amp;id=<?php echo $id;?>" method="post">
@@ -69,7 +69,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-info">
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover table-bordered">

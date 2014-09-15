@@ -11,7 +11,7 @@
 
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $gsprache->help_home;?>
@@ -136,7 +136,7 @@
     <?php if(count($feedArray)>0) { ; echo '<hr>';?>
     <!-- row -->
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <!-- The time line -->
             <ul class="timeline">
 

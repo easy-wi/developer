@@ -10,8 +10,8 @@
 <!-- Main Content -->
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
-            <div class="box box-info">
+        <div class="col-md-11">
+            <div class="box box-success">
 
                 <form role="form" action="userpanel.php?w=ti&amp;d=ad&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
@@ -55,7 +55,7 @@
                     </div>
 
                     <div class="box-footer">
-                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                        <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-plus-circle">&nbsp;<?php echo $gsprache->add;?></i></button>
                     </div>
                 </form>
             </div>

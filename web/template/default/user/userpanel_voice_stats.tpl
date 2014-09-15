@@ -85,7 +85,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title"><?php echo $voSprache->slots;?> + <?php echo $gsprache->traffic;?></h3>

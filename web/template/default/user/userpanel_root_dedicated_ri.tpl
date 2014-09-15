@@ -12,7 +12,7 @@
 <section class="content">
 
 <div class="col-md-6">	
-    <div class="box box-info">	
+    <div class="box box-warning">
         <div class="box-body">
 			<?php if(isset($error)){ ?>
 				<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><i class="fa fa-warning"></i> <?php echo $error?></div>
@@ -34,7 +34,7 @@
 </div>
 
 <div class="col-md-6">	
-    <div class="box box-info">	
+    <div class="box box-warning">
         <div class="box-body">
 			<form role="form" action="userpanel.php?w=de&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=de" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 				<input type="hidden" name="token" value="<?php echo token();?>">

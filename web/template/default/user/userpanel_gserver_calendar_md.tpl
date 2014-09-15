@@ -13,7 +13,7 @@
 <!-- Main Content -->
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-info">
 
                 <form role="form" action="userpanel.php?w=ca&amp;id=<?php echo $id;?>&amp;r=ca" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">

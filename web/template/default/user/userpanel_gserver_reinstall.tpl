@@ -13,7 +13,7 @@
     <!-- Content Help -->
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $sprache->help_reinstall;?>
@@ -23,8 +23,8 @@
 	<?php } ?>
 
     <div class="row">
-        <div class="col-md-12">
-            <div class="box box-info">
+        <div class="col-md-11">
+            <div class="box box-warning">
                 <form role="form" action="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
                     <input type="hidden" name="token" value="<?php echo token();?>">
@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="box-footer">
-                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-play-circle"></i> <?php echo $gsprache->exec;?></button>
+                        <button class="btn btn-warning" id="inputEdit" type="submit"><i class="fa fa-refresh"></i> <?php echo $gsprache->exec;?></button>
                     </div>
                 </form>
             </div>

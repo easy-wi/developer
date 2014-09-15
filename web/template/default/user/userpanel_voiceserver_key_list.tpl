@@ -13,7 +13,7 @@
 	<!-- Content Help -->
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $sprache->help_voiceserver_key;?>
@@ -23,12 +23,12 @@
 	<?php } ?>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="box box-info">
                 <div class="box-body">
 
                     <div>
-                        <a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-primary"><i class="fa fa-plus"></i> <?php echo $sprache->token;?></span></a>
+                        <a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>&amp;po=1"><span class="btn btn-success"><i class="fa fa-plus-circle"></i> <?php echo $sprache->token;?></span></a>
                     </div>
 
                     <hr>
