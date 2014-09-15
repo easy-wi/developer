@@ -15,7 +15,7 @@
             <input type="hidden" name="action" value="ud">
 
             <div class="col-md-6">
-                <div class="box box-info">
+                <div class="box box-warning">
 
                     <div class="box-header">
                         <h3 class="box-title"><?php echo $gsprache->appRoot;?></h3>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="col-md-6">
-                <div class="box box-info">
+                <div class="box box-warning">
 
                     <div class="box-header">
                         <h3 class="box-title"><?php echo $gsprache->master;?></h3>

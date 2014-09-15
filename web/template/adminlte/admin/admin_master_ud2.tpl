@@ -11,7 +11,7 @@
     <div class="row">
 
         <div class="col-md-11">
-            <div class="box box-info">
+            <div class="box box-warning">
 
                 <div class="box-header">
                     <h3 class="box-title"><?php echo $gsprache->appRoot;?></h3>

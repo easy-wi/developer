@@ -11,7 +11,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-success">
 
                 <form role="form" action="admin.php?w=ma&amp;d=ad&amp;id=<?php echo $id;?>&amp;r=ma" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post" >
 
@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="box-footer">
-                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-plus-circle">&nbsp;<?php echo $gsprache->add;?></i></button>
+                        <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-plus-circle">&nbsp;<?php echo $gsprache->add;?></i></button>
                     </div>
                 </form>
             </div>

@@ -1,1 +1,1 @@
-<a href="admin.php?w=<?php echo $what;?>&amp;d=<?php echo $do;?>&amp;id=<?php echo $id;?>"><span class="btn btn-primary btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $description;?></span></a>
+<a href="admin.php?w=<?php echo $what;?>&amp;d=<?php echo $do;?>&amp;id=<?php echo $id;?>"><span class="btn btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $description;?></span></a>
