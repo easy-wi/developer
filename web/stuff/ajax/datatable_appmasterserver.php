@@ -41,6 +41,10 @@ if (!defined('AJAXINCLUDED')) {
     die('Do not access directly!');
 }
 
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+
 $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
 $query->execute(array($resellerLockupID));
 $array['iTotalRecords'] = $query->fetchColumn();

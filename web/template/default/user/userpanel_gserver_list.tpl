@@ -94,5 +94,6 @@
             </div>
         </div>
     </div>
+    <script type='text/javascript'>$('#compose-modal-<?php echo $table_row['id'];?>').on('show.bs.modal',function(){ $('#modal-content-<?php echo $table_row['id'];?>').load('serverlog.php?id=<?php echo $table_row['id'];?>');});</script>
     <?php }?>
 </section>

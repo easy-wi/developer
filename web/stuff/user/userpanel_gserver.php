@@ -1052,8 +1052,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query3->execute(array($row['tid']));
             $ftpAllowed = ($query3->rowCount() == 0) ? true : false;
 
-            $htmlExtraInformation['js'][] = "<script type='text/javascript'>$('#compose-modal-{$gameserverid}').on('show.bs.modal',function(){ $('#modal-content-{$gameserverid}').load('serverlog.php?id={$gameserverid}');});</script>";
-
             $table[] = array(
                 'id' => $gameserverid,
                 'premoved' => $premoved,
