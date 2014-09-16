@@ -132,8 +132,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query2 = $sql->prepare("SELECT CONCAT(`cname`,' ',`vname`,' ',`name`)  FROM `userdata` WHERE `accounttype`='r' AND `id`=? LIMIT 1");
 
             if ($reseller_id == 0) {
+
                 $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id LIMIT 1");
                 $query->execute(array(':aeskey' => $aeskey, ':id' => $id));
+
             } else {
 
                 if ($admin_id == $reseller_id) {

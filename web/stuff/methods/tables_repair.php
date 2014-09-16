@@ -843,7 +843,7 @@ $defined['rserverdata'] = array(
     'maxslots' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'maxserver' => array("Type"=>"smallint(4) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'install_paths' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'quota_active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'quota_active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'quota_cmd' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'repquota_cmd' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'blocksize' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"4096","Extra"=>""),

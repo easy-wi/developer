@@ -885,7 +885,7 @@ $query = "CREATE TABLE IF NOT EXISTS `rserverdata` (
   `maxslots` smallint(5) unsigned DEFAULT NULL,
   `maxserver` smallint(4) unsigned DEFAULT NULL,
   `install_paths` text DEFAULT NULL,
-  `quota_active` enum('Y','N') DEFAULT 'Y',
+  `quota_active` enum('Y','N') DEFAULT 'N',
   `quota_cmd` varchar(255),
   `repquota_cmd` varchar(255),
   `blocksize` int(10) unsigned DEFAULT 4096,
