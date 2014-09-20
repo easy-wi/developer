@@ -9,6 +9,7 @@
     <default>Standard</default>
     <edit2>Edited by</edit2>
     <edit>Edited</edit>
+    <error_topic>Error: No Subtopic selected!</error_topic>
     <heading>Support category</heading>
     <name>Name</name>
     <new>Add category</new>

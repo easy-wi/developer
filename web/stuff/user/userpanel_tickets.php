@@ -116,36 +116,41 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $template_file = 'userpanel_tickets_add.tpl';
 
-    } else if ($ui->smallletters('action', 2, 'post') == 'ad' and $ui->id('topic', 30, 'post')) {
+    } else if ($ui->smallletters('action', 2, 'post') == 'ad') {
 
-        $topic = $ui->id('topic', 30, 'post');
-        $userPriority = $ui->id('userPriority', 30, 'post');
-        $ticketText = htmlentities($ui->post['ticket']);
+        if ($ui->id('topic', 30, 'post')) {
+            $topic = $ui->id('topic', 30, 'post');
+            $userPriority = $ui->id('userPriority', 30, 'post');
+            $ticketText = htmlentities($ui->post['ticket']);
 
-        $query = $sql->prepare("SELECT `priority` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($topic,$reseller_id));
-        $priority = $query->fetchColumn();
+            $query = $sql->prepare("SELECT `priority` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array($topic,$reseller_id));
+            $priority = $query->fetchColumn();
 
-        $query = $sql->prepare("INSERT INTO `tickets` (`topic`,`userid`,`priority`,`userPriority`,`writedate`,`resellerid`) VALUES (?,?,?,?,?,?)");
-        $query->execute(array($topic,$user_id,$priority,$userPriority,$logdate,$reseller_id));
-        $lastID = $sql->lastInsertId();
+            $query = $sql->prepare("INSERT INTO `tickets` (`topic`,`userid`,`priority`,`userPriority`,`writedate`,`resellerid`) VALUES (?,?,?,?,?,?)");
+            $query->execute(array($topic,$user_id,$priority,$userPriority,$logdate,$reseller_id));
+            $lastID = $sql->lastInsertId();
 
-        $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`writeDate`,`userID`,`message`,`resellerID`) VALUES (?,?,?,?,?)");
-        $query->execute(array($lastID,$logdate,$user_id,$ticketText,$reseller_id));
+            $query = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`writeDate`,`userID`,`message`,`resellerID`) VALUES (?,?,?,?,?)");
+            $query->execute(array($lastID,$logdate,$user_id,$ticketText,$reseller_id));
 
-        if ($reseller_id == 0) {
-            $query = $sql->prepare("SELECT `id`,`mail_ticket` FROM `userdata` WHERE `resellerid`='0' AND `accounttype`='a'");
-            $query->execute();
+            if ($reseller_id == 0) {
+                $query = $sql->prepare("SELECT `id`,`mail_ticket` FROM `userdata` WHERE `resellerid`='0' AND `accounttype`='a'");
+                $query->execute();
+            } else {
+                $query = $sql->prepare("SELECT `id`,`mail_ticket` FROM `userdata` WHERE `id`=? AND `id`=`resellerid`");
+                $query->execute(array($reseller_id));
+            }
+
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                if ($row['mail_ticket'] == 'Y') sendmail('emailnewticket', $row['id'],$ticketText, array($lastID,$user_id));
+            }
+
+            $template_file = $spracheResponse->table_add;
+
         } else {
-            $query = $sql->prepare("SELECT `id`,`mail_ticket` FROM `userdata` WHERE `id`=? AND `id`=`resellerid`");
-            $query->execute(array($reseller_id));
+            $template_file = $sprache->error_topic;
         }
-
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($row['mail_ticket'] == 'Y') sendmail('emailnewticket', $row['id'],$ticketText, array($lastID,$user_id));
-        }
-
-        $template_file = $spracheResponse->table_add;
 
     } else {
         $template_file = 'userpanel_404.tpl';

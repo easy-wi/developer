@@ -32,7 +32,8 @@
 
                         <div class="form-group">
                             <label for="topic_maintopic"><?php echo $sprache->topic_name;?></label>
-                            <select class="form-control" id="topic_maintopic" name="maintopic" onchange="getdetails('ajax.php?d=userTicketCategories&amp;topicName=', this.value, 'topic_name_sub')">
+                            <select class="form-control" id="topic_maintopic" name="maintopic" onchange="getdetails('ajax.php?d=userTicketCategories&amp;topicName=', this.value, 'topic_name_sub')" required="required">
+                                <option></option>
                                 <?php foreach ($table as $table_row){ ?>
                                 <option value="<?php echo $table_row['id'];?>" ><?php echo $table_row['topic'];?></option>
                                 <?php } ?>
@@ -41,7 +42,8 @@
 
                         <div class="form-group">
                             <label for="topic_name_sub"><?php echo $sprache->topic_name_sub;?></label>
-                            <select class="form-control" id="topic_name_sub" name="topic">
+                            <select class="form-control" id="topic_name_sub" name="topic" required="required">
+                                <option></option>
                                 <?php foreach ($table2 as $table_row2){ ?>
                                 <option value="<?php echo $table_row2['id'];?>" ><?php echo $table_row2['topic'];?></option>>
                                 <?php } ?>

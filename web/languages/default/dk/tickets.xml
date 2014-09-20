@@ -9,6 +9,7 @@
 	<default>Standard</default>
 	<edit2>Redigeret af</edit2>
 	<edit>Redigeret</edit>
+    <error_topic></error_topic>
 	<heading>Support Kategori</heading>
 	<name>Navn</name>
 	<new>Tilføj kategori</new>

@@ -9,6 +9,7 @@
 	<default>Standart</default>
 	<edit2>Bearbeitet von</edit2>
 	<edit>In Bearbeitung</edit>
+    <error_topic>Fehler: Keine Unterkategorie ausgewählt!</error_topic>
 	<heading>Supportkategorien</heading>
 	<name>Name</name>
 	<new>Neue Kategorie anlegen</new>
