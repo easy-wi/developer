@@ -61,6 +61,7 @@
 	<root>Rootserver</root>
 	<save>Optag</save>
     <search>Søg</search>
+    <server>Server</server>
 	<settings>Indstillinger</settings>
 	<shown>Resultater per side</shown>
     <start>Start</start>

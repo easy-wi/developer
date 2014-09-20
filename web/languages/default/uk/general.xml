@@ -83,6 +83,7 @@
 	<root>Root server</root>
 	<save>Save</save>
     <search>Search</search>
+    <server>Server</server>
 	<settings>Settings</settings>
 	<shown>Results per page</shown>
     <start>Start</start>

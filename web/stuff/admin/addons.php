@@ -119,6 +119,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $gamesAssigned = array();
     $dependings = array();
     $foundLanguages = array();
+    $definedLanguages = array();
     $default_language = $rSA['language'];
     $paddon = ($ui->active('paddon', 'post')) ? (string) $ui->active('paddon', 'post') : 'N';
     $depending = ($ui->id('depending',19, 'post')) ? (int) $ui->id('depending', 19, 'post') : 0;
@@ -368,13 +369,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             if (isset($lang)) {
                 $style = '';
                 $displayNone = '';
-                $checkbox = '<input type="checkbox" name="language[]" value="' . $row . '" onclick="textdrop(' . "'" . $row . "'" . ');" checked>';
+                $definedLanguages[] = $row;
             } else {
                 $displayNone = 'display_none';
                 $style = 'style="display: none;"';
-                $checkbox = '<input type="checkbox" name="language[]" value="' . $row . '" onclick="textdrop(' . "'" . $row . "'" . ');">';
             }
-            $foundLanguages[] = array('style' => $style,'lang' => $row,'checkbox' => $checkbox,'description' => $description,'display' => $displayNone);
+
+            $foundLanguages[] = array('style' => $style, 'lang' => $row, 'description' => $description, 'display' => $displayNone);
         }
     }
 
@@ -510,6 +511,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         $table[] = array('id' => $row['id'], 'active' => $row['active'], 'img' => $imgName,'alt' => $imgAlt, 'gametype' => $gamesList, 'description' => $row['menudescription'], 'type' => ($row['type'] == 'map') ? $sprache->map : $sprache->tool);
     }
+
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=gameserveraddons');
 
     $template_file = 'admin_addons_list.tpl';
 }

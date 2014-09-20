@@ -106,3 +106,24 @@ function SwitchShowHideRows (Element, change, showNotIfEmpty) {
         }
     }
 }
+
+function checkall(checked,check) {
+    var checkBoxes = document.getElementsByTagName('input');
+    for(var i=0; i<checkBoxes.length; i++) {
+        var theType = checkBoxes[i].getAttribute('type');
+        var theName = checkBoxes[i].getAttribute('name');
+        if (checked==true && theType.toLowerCase()=='checkbox' && theName==check) {
+            checkBoxes[i].checked = true ;
+        } else if (checked==false && theType.toLowerCase()=='checkbox' && theName==check) {
+            checkBoxes[i].checked = false ;
+        }
+    }
+}
+
+function textdrop(id) {
+    if (document.getElementById(id).style.display == "") {
+        document.getElementById(id).style.display = "none";
+    } else {
+        document.getElementById(id).style.display = "";
+    }
+}

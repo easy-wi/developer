@@ -8,6 +8,18 @@
 </section>
 
 <section class="content">
+    <?php if (count($errors)>0){ ?>
+    <div class="row">
+        <div class="col-md-11">
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <h4><?php echo $gsprache->errors;?></h4>
+                <?php echo implode(', ',$errors);?>
+            </div>
+        </div>
+    </div>
+    <?php }?>
+
     <div class="row">
         <div class="col-md-11">
             <form role="form" action="admin.php?w=im&amp;d=ad" enctype="multipart/form-data" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
@@ -18,7 +30,7 @@
 
                 <div class="box box-success">
                     <div class="box-header">
-                        <h3 class="box-title"><?php echo $gsprache->template;?> <?php echo $gsprache->import;?></h3>
+                        <h3 class="box-title"><?php echo $gsprache->template;?> XML <?php echo $gsprache->import;?></h3>
                     </div>
 
                     <div class="box-body">
@@ -38,6 +50,7 @@
             </form>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-11">
             <div class="box box-success">

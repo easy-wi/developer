@@ -79,6 +79,7 @@
 	<root>Rootserver</root>
 	<save>Speichern</save>
     <search>Suche</search>
+    <server>Server</server>
 	<settings>Einstellungen</settings>
 	<shown>Ergebnisse pro Seite</shown>
     <start>Starten</start>

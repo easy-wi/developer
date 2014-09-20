@@ -93,6 +93,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_gameimages.php');
 
+        // GS addons
+    } else if ($ui->smallletters('d', 16, 'get') =='gameserveraddons' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_gameaddons.php');
+
     // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front
     } else {
 
