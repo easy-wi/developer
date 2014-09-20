@@ -215,6 +215,19 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="control-label" for="inputUseQueryPort"><?php echo $sprache->useQueryPort;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputUseQueryPort" name="useQueryPort">
+                                    <option>1</option>
+                                    <option <?php if($useQueryPort==2) echo 'selected="selected"'; ?>>2</option>
+                                    <option <?php if($useQueryPort==3) echo 'selected="selected"'; ?>>3</option>
+                                    <option <?php if($useQueryPort==4) echo 'selected="selected"'; ?>>4</option>
+                                    <option <?php if($useQueryPort==5) echo 'selected="selected"'; ?>>5</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="inputPortStep"><?php echo $sprache->portStep;?></label>
                             <div class="controls"><input class="form-control" id="inputPortStep" type="text" name="portStep" value="<?php echo $portStep;?>"></div>
                         </div>

@@ -13,7 +13,7 @@
         <div class="col-md-11">
             <div class="box box-info">
 
-                <form role="form" action="admin.php?w=gs&amp;d=md&amp;id=<?php echo $id;?>&amp;r=im" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post" >
+                <form role="form" action="admin.php?w=im&amp;d=md&amp;id=<?php echo $id;?>&amp;r=im" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post" >
 
                     <input type="hidden" name="token" value="<?php echo token();?>">
                     <input type="hidden" name="action" value="md">
@@ -181,6 +181,19 @@
                                     <option <?php if($portMax==3) echo 'selected="selected"'; ?>>3</option>
                                     <option <?php if($portMax==4) echo 'selected="selected"'; ?>>4</option>
                                     <option <?php if($portMax==5) echo 'selected="selected"'; ?>>5</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputUseQueryPort"><?php echo $sprache->useQueryPort;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputUseQueryPort" name="useQueryPort">
+                                    <option>1</option>
+                                    <option <?php if($useQueryPort==2) echo 'selected="selected"'; ?>>2</option>
+                                    <option <?php if($useQueryPort==3) echo 'selected="selected"'; ?>>3</option>
+                                    <option <?php if($useQueryPort==4) echo 'selected="selected"'; ?>>4</option>
+                                    <option <?php if($useQueryPort==5) echo 'selected="selected"'; ?>>5</option>
                                 </select>
                             </div>
                         </div>

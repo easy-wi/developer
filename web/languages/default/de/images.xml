@@ -69,4 +69,5 @@
 	<tvport>SourceTV Port</tvport>
 	<type2>Addon für</type2>
 	<type>Map, oder Servertool</type>
+    <useQueryPort>Query Port</useQueryPort>
 </sprache>
