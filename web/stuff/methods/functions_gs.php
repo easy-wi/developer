@@ -234,12 +234,15 @@ if (!function_exists('gsrestart')) {
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
                 $query3->execute(array($row2['addonid'], $reseller_id));
                 foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+
                     if ($row3['type'] == 'tool') {
                         $installedaddons[] = $row3['addon'];
                     }
+
                     if ($row3['cmd'] != null) {
-                        $cmd .= ' ' . $row3['cmd'];
+                        $cmd .= (substr($row3['cmd'], 0, 12) == '[no_padding]') ? trim(substr($row3['cmd'], 12)) : ' ' . $row3['cmd'];
                     }
+
                     if ($row3['rmcmd'] != null) {
                         foreach (preg_split("/\r\n/", $row3['rmcmd'], -1, PREG_SPLIT_NO_EMPTY) as $rm) {
                             $rmarray[] = $rm;
