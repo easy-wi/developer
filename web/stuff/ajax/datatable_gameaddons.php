@@ -78,16 +78,13 @@ if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
 }
 
 if ($sSearch) {
-
     $query = $sql->prepare("SELECT a.`id`,a.`menudescription`,a.`type`,(SELECT GROUP_CONCAT(DISTINCT s.`shorten` ORDER BY s.`shorten` ASC SEPARATOR ', ') AS `list` FROM `addons_allowed` AS al INNER JOIN `servertypes` AS s ON al.`servertype_id`=s.`id` WHERE al.`addon_id`=a.`id`) AS `list` FROM `addons` AS a WHERE a.`resellerid`=:reseller_id AND (`id` LIKE :search OR `type` LIKE :search OR `menudescription` LIKE :search $addonInQuery) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
     $query->execute(array(':search' => '%' . $sSearch . '%', ':reseller_id' => $resellerLockupID));
-
 } else {
     $query = $sql->prepare("SELECT a.`id`,a.`menudescription`,a.`type`,(SELECT GROUP_CONCAT(DISTINCT s.`shorten` ORDER BY s.`shorten` ASC SEPARATOR ', ') AS `list` FROM `addons_allowed` AS al INNER JOIN `servertypes` AS s ON al.`servertype_id`=s.`id` WHERE al.`addon_id`=a.`id`) AS `list` FROM `addons` AS a WHERE a.`resellerid`=? ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
     $query->execute(array($resellerLockupID));
 }
 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
     $array['aaData'][] = array($row['menudescription'], $row['id'], ($row['type'] == 'map') ? (string) $sprache->map : (string) $sprache->tool, $row['list'], returnButton($template_to_use, 'ajax_admin_buttons_ex.tpl', 'ad', 'ex', $row['id'], $gsprache->export) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'ad', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'ad', 'md', $row['id'], $gsprache->mod));
 }

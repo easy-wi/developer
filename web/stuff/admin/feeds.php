@@ -239,77 +239,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = 'admin_feeds_md.tpl';
     }
 } else {
-    $table = array();
-    $o = $ui->st('o', 'get');
-    if ($ui->st('o', 'get') == 'au') {
-        $orderby = '`feedUrl` ASC';
-    } else if ($ui->st('o', 'get') == 'du') {
-        $orderby = '`feedUrl` DESC';
-    } else if ($ui->st('o', 'get') == 'as') {
-        $orderby = '`active` ASC';
-    } else if ($ui->st('o', 'get') == 'ds') {
-        $orderby = '`active` DESC';
-    } else if ($ui->st('o', 'get') == 'at') {
-        $orderby = '`twitter` ASC';
-    } else if ($ui->st('o', 'get') == 'dt') {
-        $orderby = '`twitter` DESC';
-    } else if ($ui->st('o', 'get') == 'ai') {
-        $orderby = '`feedID` ASC';
-    } else {
-        $orderby = '`feedID` DESC';
-        $o = 'di';
-    }
-    $query = $sql->prepare("SELECT `feedID`,`active`,`twitter`,`feedUrl` FROM `feeds_url` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
-    $query->execute(array($lookUpID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if ($row['active'] == 'Y') {
-            $imgName = '16_ok';
-            $imgAlt = 'Active';
-        } else {
-            $imgName = '16_bad';
-            $imgAlt = 'Inactive';
-        }
-        $twitter=($row['twitter'] == 'Y') ? $gsprache->yes : $gsprache->no;
-        $table[] = array('id' => $row['feedID'], 'img' => $imgName,'alt' => $imgAlt,'twitter' => $twitter,'feedUrl' => $row['feedUrl'], 'active' => $row['active']);
-    }
-    $next = $start+$amount;
-    $countp = $sql->prepare("SELECT COUNT(`feedID`) AS `amount` FROM `feeds_url` WHERE `resellerID`=?");
-    $countp->execute(array($lookUpID));
-    $colcount = $countp->fetchColumn();
-    if ($colcount>$next) {
-        $vor = $start+$amount;
-    } else {
-        $vor = $start;
-    }
-    $back = $start - $amount;
-    if ($back>="0"){
-        $zur = $start - $amount;
-    } else {
-        $zur = $start;
-    }
-    $pageamount = ceil($colcount / $amount);
-    $link='<a href="admin.php?w=fe&amp;d=md&amp;a=';
-    if (!isset($amount)) {
-        $link .="20";
-    } else {
-        $link .= $amount;
-    }
-    if ($start==0) {
-        $link .= '&p=0" class="bold">1</a>';
-    } else {
-        $link .= '&p=0">1</a>';
-    }
-    $pages[] = $link;
-    $i = 2;
-    while ($i<=$pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=fe&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>';
-        } else {
-            $pages[] = '<a href="admin.php?w=fe&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
-        }
-        $i++;
-    }
-    $pages=implode(', ',$pages);
+
+    configureDateTables('-1', '1, "desc"', 'ajax.php?w=datatable&d=feeds');
+
     $template_file = 'admin_feeds_list.tpl';
 }

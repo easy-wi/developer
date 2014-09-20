@@ -7,38 +7,73 @@
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
-    <div class="box box-info">
-        <div class="box-body">
-        <form role="form" action="admin.php?w=fe&amp;d=ad&amp;r=fe" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="ad">
-            <div class="form-group">
-                <label for="inputActive"><?php echo $sprache->active;?></label>
-                    <select class="form-control" id="inputActive" name="active">
-                        <option value="N"><?php echo $gsprache->no;?></option>
-                        <option value="Y"><?php echo $gsprache->yes;?></option>
-                    </select>
+    <div class="row">
+        <div class="col-md-11">
+            <div class="box box-success">
+
+                <form role="form" action="admin.php?w=fe&amp;d=ad&amp;r=fe" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="ad">
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="inputActive"><?php echo $sprache->active;?></label>
+                            <select class="form-control" id="inputActive" name="active">
+                                <option value="N"><?php echo $gsprache->no;?></option>
+                                <option value="Y"><?php echo $gsprache->yes;?></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputTwitter">Twitter</label>
+                            <select class="form-control" id="inputTwitter" name="twitter" onchange="SwitchShowHideRows(this.value, 'switch', 1);">
+                                <option value="N"><?php echo $gsprache->no;?></option>
+                                <option value="Y"><?php echo $gsprache->yes;?></option>
+                            </select>
+                        </div>
+
+                        <div class="Y display_none switch form-group">
+                            <label for="inputTwitterLoginname">Twitter Loginname</label>
+                            <input class="form-control" id="inputTwitterLoginname" type="text" name="loginName" value="">
+                        </div>
+
+                        <div class="N switch form-group">
+                            <label for="inputFeedUrl">URL</label>
+                            <input class="form-control" id="inputFeedUrl" type="text" name="feedUrl" value="">
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-plus-circle">&nbsp;<?php echo $gsprache->add;?></i></button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label class="control-label" for="inputTwitter">Twitter</label>
-                    <select class="form-control" id="inputTwitter" name="twitter" onchange="SwitchShowHideRows(this.value);">
-                        <option value="N"><?php echo $gsprache->no;?></option>
-                        <option value="Y"><?php echo $gsprache->yes;?></option>
-                    </select>
-            </div>
-            <div class="Y display_none switch form-group">
-                <label for="inputTwitterLoginname">Twitter Loginname</label>
-                    <input class="form-control" id="inputTwitterLoginname" type="text" name="loginName" value="">
-            </div>
-            <div class="N switch form-group">
-                <label for="inputFeedUrl">URL</label>
-                    <input class="form-control" id="inputFeedUrl" type="text" name="feedUrl" value="">
-            </div>
-                <label for="inputEdit"></label>
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-        </form>
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    window.onDomReady = initReady;
+
+    function initReady(fn) {
+        if(document.addEventListener) {
+            document.addEventListener("DOMContentLoaded", fn, false);
+        } else {
+            document.onreadystatechange = function() {
+                readyState(fn);
+            }
+        }
+    }
+
+    function readyState(func) {
+        if(document.readyState == "interactive" || document.readyState == "complete") {
+            func();
+        }
+    }
+
+    window.onDomReady(onReady); function onReady() {
+        SwitchShowHideRows('init_ready');
+    }
+</script>

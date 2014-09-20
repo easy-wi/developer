@@ -93,15 +93,25 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appmasterserver.php');
 
-        // GS images
+    // GS images
     } else if ($ui->smallletters('d', 10, 'get') =='gameimages' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gimages']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_gameimages.php');
 
-        // GS addons
+    // GS addons
     } else if ($ui->smallletters('d', 16, 'get') =='gameserveraddons' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_gameaddons.php');
+
+    // List of imported news feeds
+    } else if ($ui->smallletters('d', 16, 'get') =='feedsnewsentries' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_feedsnewsentries.php');
+
+    // List of feeds
+    } else if ($ui->smallletters('d', 5, 'get') =='feeds' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_feeds.php');
 
     // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front
     } else {

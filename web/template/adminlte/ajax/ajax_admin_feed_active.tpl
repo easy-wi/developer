@@ -1,0 +1,1 @@
+<input type="checkbox" name="ids[<?php echo $id;?>][active]" value="Y" <?php if($what=='Y') echo 'checked="checked"'; ?>>
