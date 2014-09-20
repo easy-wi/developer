@@ -88,6 +88,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appmasterserver.php');
 
+        // GS images
+    } else if ($ui->smallletters('d', 10, 'get') =='gameimages' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gimages']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_gameimages.php');
+
     // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front
     } else {
 

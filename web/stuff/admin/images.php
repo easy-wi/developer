@@ -157,7 +157,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
 
             // Figure out the class name
-            $class_name = 'GameQ_Protocols_'.ucfirst(pathinfo($entry, PATHINFO_FILENAME));
+            $class_name = 'GameQ_Protocols_' . ucfirst(pathinfo($entry, PATHINFO_FILENAME));
 
             // Lets get some info on the class
             $reflection = new ReflectionClass($class_name);
@@ -523,51 +523,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
 } else {
-    $o = $ui->st('o', 'get');
-    if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`id` DESC';
-    } else if ($ui->st('o', 'get') == 'ai') {
-        $orderby = '`id` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`id` DESC';
-    } else if ($ui->st('o', 'get') == 'ai') {
-        $orderby = '`id` ASC';
-    } else if ($ui->st('o', 'get') == 'dd') {
-        $orderby = '`description` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = '`description` ASC';
-    } else if ($ui->st('o', 'get') == 'ds') {
-        $orderby = '`shorten` DESC';
-    } else {
-        $orderby = '`shorten` ASC';
-        $o = 'as';
-    }
-    $query = $sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description`,`type` FROM `servertypes` $where ORDER BY $orderby LIMIT $start,$amount");
-    $query->execute(array(':reseller_id' => $resellerLockupID));
-    $table = array();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'steamgame' => $row['steamgame'], 'type' => $row['type'], 'description' => $row['description']);
-    }
-    $next = $start + $amount;
 
-    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` $where");
-    $query->execute(array(':reseller_id' => $resellerLockupID));
-    $colcount = $query->fetchColumn();
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=gameimages');
 
-    $vor = ($colcount>$next) ? $start + $amount : $start;
-    $back = $start - $amount;
-    $zur = ($back >= 0) ? $start - $amount : $start;
-    $pageamount = ceil($colcount / $amount);
-    $link = '<a href="admin.php?w=im&amp;d=md&amp;o=' . $o . '&amp;a=';
-    $link .= (!isset($amount)) ? 20 : $amount;
-    $link .= ($start == 0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
-    $pages[] = $link;
-    $i = 2;
-    while ($i <= $pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        $pages[] = ($start == $selectpage) ? '<a href="admin.php?w=im&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '&amp;o=' . $o . '" class="bold">' . $i . '</a>' : '<a href="admin.php?w=im&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '&amp;o=' . $o . '">' . $i . '</a>';
-        $i++;
-    }
-    $pages = implode(', ', $pages);
     $template_file = 'admin_images_list.tpl';
 }

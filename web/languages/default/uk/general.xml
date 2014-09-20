@@ -99,6 +99,7 @@
 	<templates>Images/Templates</templates>
 	<traffic>Traffic</traffic>
 	<update>Update</update>
+    <upload>Upload</upload>
     <use>Use</use>
     <used>Used</used>
 	<user>User</user>

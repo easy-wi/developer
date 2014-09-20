@@ -71,7 +71,7 @@ if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
 } else if (isset($orderFields[$iSortCol]) and !is_array($orderFields[$iSortCol])) {
     $orderBy = $orderFields[$iSortCol] . ' ' . $sSortDir;
 } else {
-    $orderBy = '`id` ASC';
+    $orderBy = 'r.`id` ASC';
 }
 
 if ($sSearch) {
