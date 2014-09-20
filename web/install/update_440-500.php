@@ -135,6 +135,9 @@ if (isset($include) and $include == true) {
     $response->add('Repairing tables if needed.');
     include(EASYWIDIR . '/stuff/methods/tables_repair.php');
 
+    $query = $sql->prepare("UPDATE `servertypes` SET `useQueryPort`=2 WHERE `gameq` IN ('armedassault2', 'armedassault2oa', 'armedassault3', 'bf2', 'cube2', 'mta', 'ut', 'ut2004', 'ut3')");
+    $query->execute();
+
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
 }

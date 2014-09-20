@@ -930,6 +930,7 @@ $defined['servertypes'] = array(
     'portThree' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"27017","Extra"=>""),
     'portFour' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"27018","Extra"=>""),
     'portFive' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"27019","Extra"=>""),
+    'useQueryPort' => array("Type"=>"smallint(1) unsigned","Null"=>"NO","Key"=>"","Default"=>"1","Extra"=>""),
     'protected' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'ramLimited' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'ftpAccess' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),

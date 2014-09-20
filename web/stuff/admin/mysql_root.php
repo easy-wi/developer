@@ -103,12 +103,12 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
         $array = (array) $ui->pregw('games', 255, 'post');
 
         $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-        $query2 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`resellerid`) VALUES (:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:resellerid)");
-        $query3 = $sql->prepare("UPDATE `servertypes` SET `steamgame`=:steamgame,`appID`=:appID,`updates`=:updates,`shorten`=:shorten,`description`=:description,`gamebinary`=:gamebinary,`gamebinaryWin`=:gamebinaryWin,`binarydir`=:binarydir,`modfolder`=:modfolder,`fps`=:fps,`slots`=:slots,`map`=:map,`cmd`=:cmd,`modcmds`=:modcmds,`tic`=:tic,`gameq`=:gameq,`gamemod`=:gamemod,`gamemod2`=:gamemod2,`configs`=:configs,`configedit`=:configedit,`portStep`=:portStep,`portMax`=:portMax,`portOne`=:portOne,`portTwo`=:portTwo,`portThree`=:portThree,`portFour`=:portFour,`portFive`=:portFive,`mapGroup`=:mapGroup,`protected`=:protected,`protectedSaveCFGs`=:protectedSaveCFGs,`ramLimited`=:ramLimited,`os`=:os WHERE `shorten`=:shorten AND `resellerid`=:resellerid LIMIT 1");
+        $query2 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`resellerid`) VALUES (:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:resellerid)");
+        $query3 = $sql->prepare("UPDATE `servertypes` SET `steamgame`=:steamgame,`appID`=:appID,`updates`=:updates,`shorten`=:shorten,`description`=:description,`gamebinary`=:gamebinary,`gamebinaryWin`=:gamebinaryWin,`binarydir`=:binarydir,`modfolder`=:modfolder,`fps`=:fps,`slots`=:slots,`map`=:map,`cmd`=:cmd,`modcmds`=:modcmds,`tic`=:tic,`gameq`=:gameq,`gamemod`=:gamemod,`gamemod2`=:gamemod2,`configs`=:configs,`configedit`=:configedit,`portStep`=:portStep,`portMax`=:portMax,`portOne`=:portOne,`portTwo`=:portTwo,`portThree`=:portThree,`portFour`=:portFour,`portFive`=:portFive,`useQueryPort`=:useQueryPort,`mapGroup`=:mapGroup,`protected`=:protected,`protectedSaveCFGs`=:protectedSaveCFGs,`ramLimited`=:ramLimited,`os`=:os WHERE `shorten`=:shorten AND `resellerid`=:resellerid LIMIT 1");
 
         foreach ($gameImages as $image) {
 
-            if (in_array($image[':shorten'], $array) and count($image) == 32) {
+            if (in_array($image[':shorten'], $array) and count($image) == 33) {
 
                 $image[':resellerid'] = $resellerLockupID;
 
@@ -122,7 +122,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
                     if ($query2->rowCount() > 0) {
                         $template_file .= $gsprache->add . ': ' . $image[':description'] .'<br>';
                     } else {
-                        $template_file .= 'Error ' . $gsprache->add . ': ' . $image[':description'] .'<br>';
+                        $template_file .= $spracheResponse->error_table . ' ' . $gsprache->add . ': ' . $image[':description'] .'<br>';
                     }
 
                 } else if ($ui->id('actionType', 1 ,'post') == 2) {
@@ -132,7 +132,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
                     if ($query3->rowCount() > 0) {
                         $template_file .= $gsprache->mod . ': ' . $image[':description'] .'<br>';
                     } else {
-                        $template_file .= 'Error ' . $gsprache->mod . ': ' . $image[':description'] .'<br>';
+                        $template_file .= $spracheResponse->error_table . ' ' . $gsprache->mod . ': ' . $image[':description'] .'<br>';
                     }
 
                 } else {
