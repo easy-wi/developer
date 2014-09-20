@@ -49,9 +49,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 
 } else if ($ui->w('action', 4, 'post') == 'dl' and !$ui->id('id', 19, 'get')) {
+
     $i = 0;
-    if ($ui->id('id',30, 'post')) {
-        foreach ($ui->id('id',30, 'post') as $id) {
+
+    if ($ui->id('id', 19, 'post')) {
+
+        foreach ($ui->id('id', 19, 'post') as $id) {
+
             if ($reseller_id == 0) {
                 $delete = $sql->prepare("DELETE FROM `jobs` WHERE `jobID`=? LIMIT 1");
                 $delete->execute(array($id));
@@ -59,168 +63,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $delete = $sql->prepare("DELETE FROM `jobs` WHERE `jobID`=? AND `resellerID`=? LIMIT 1");
                 $delete->execute(array($id, $reseller_id));
             }
+
             $i++;
         }
     }
-    $template_file = $i . ' ' . $gsprache->jobs.' deleted';
-} else if ($ui->id('id', 19, 'get')) {
-    if ($reseller_id == 0) {
-        $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? LIMIT 1");
-        $query->execute(array($ui->id('id', 19, 'get')));
-    } else if ($reseller_id != 0 and $admin_id != $reseller_id) {
-        $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('id', 19, 'get'), $admin_id));
-    } else {
-        $query = $sql->prepare("SELECT `text` FROM `mail_log` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('id', 19, 'get'), $reseller_id));
-    }
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $text= @gzuncompress($row['text']);
-    }
-    $template_file = $text;
+
+    $template_file = $i . ' ' . $gsprache->jobs . ' deleted';
 
 } else {
 
-    $table = array();
-
-    $o = $ui->st('o', 'get');
-
-    $type = array('de' => $gsprache->dedicated, 'ds' => 'TS3 DNS', 'gs' => $gsprache->gameserver, 'wv' => $gsprache->webspace, 'my' => 'MySQL', 'us' => $gsprache->user, 'vo' => $gsprache->voiceserver, 'vs' => $gsprache->virtual);
-
-    if ($ui->st('o', 'get') == 'dn') {
-        $orderby = '`name` DESC';
-    } else if ($ui->st('o', 'get') == 'an') {
-        $orderby = '`name` ASC';
-    } else if ($ui->st('o', 'get') == 'ds') {
-        $orderby = '`status` DESC';
-    } else if ($ui->st('o', 'get') == 'as') {
-        $orderby = '`status` ASC';
-    } else if ($ui->st('o', 'get') == 'dt') {
-        $orderby = '`type` DESC';
-    } else if ($ui->st('o', 'get') == 'at') {
-        $orderby = '`type` ASC';
-    } else if ($ui->st('o', 'get') == 'da') {
-        $orderby = '`api` DESC';
-    } else if ($ui->st('o', 'get') == 'aa') {
-        $orderby = '`api` ASC';
-    } else if ($ui->st('o', 'get') == 'dc') {
-        $orderby = '`action` DESC';
-    } else if ($ui->st('o', 'get') == 'ac') {
-        $orderby = '`action` ASC';
-    } else if ($ui->st('o', 'get') == 'dd') {
-        $orderby = '`date` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = '`date` ASC';
-    } else if ($ui->st('o', 'get') == 'dn') {
-        $orderby = '`name` DESC';
-    } else if ($ui->st('o', 'get') == 'an') {
-        $orderby = '`name` ASC';
-    } else if ($ui->st('o', 'get') == 'du') {
-        $orderby = '`userID` DESC';
-    } else if ($ui->st('o', 'get') == 'au') {
-        $orderby = '`userID` ASC';
-    } else if ($ui->st('o', 'get') == 'ai') {
-        $orderby = '`jobID` ASC';
-    } else {
-        $o = 'di';
-        $orderby = '`jobID` DESC';
-    }
-
-    $where = ($reseller_id == 0) ? '' : 'WHERE `resellerID`=?';
-
-    if ($reseller_id == 0) {
-        $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
-        $query->execute();
-    } else {
-        $query = $sql->prepare("SELECT * FROM `jobs` $where ORDER BY $orderby LIMIT $start,$amount");
-        $query->execute(array($reseller_id));
-    }
-
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-        $date = ($user_language == 'de') ? date('Y-d-m H:m:s', strtotime($row['date'])) : $row['date'];
-        $api = ($row['api'] == 'A') ? $gsprache->yes : $gsprache->no;
-
-        if ($row['status'] == null or $row['status']==4) {
-            $imgName = '16_ok';
-            $imgAlt='Running';
-        } else if ($row['status']==1) {
-            $imgName = '16_bad';
-            $imgAlt='Error';
-        } else if ($row['status']==2) {
-            $imgName='16_notice';
-            $imgAlt='Canceled';
-        } else if ($row['status']==3) {
-            $imgName='16_check';
-            $imgAlt='Done';
-        }
-
-        if ($row['action'] == 'ad') {
-            $action = $gsprache->add;
-        } else if ($row['action'] == 'dl') {
-            $action = $gsprache->del;
-        } else if ($row['action'] == 'md') {
-            $action = $gsprache->mod;
-        } else if ($row['action'] == 'st') {
-            $action = 'Stop';
-        } else if ($row['action'] == 're') {
-            $action = '(Re)Start';
-        } else if ($row['action'] == 'rp') {
-            $action = 'Remove PXE from DHCP';
-        } else if ($row['action'] == 'ri') {
-            $action = '(Re)Install';
-        } else if ($row['action'] == 'rc') {
-            $action = 'Recovery Mode';
-        } else {
-            $action = '';
-        }
-
-        $table[] = array('jobID' => $row['jobID'], 'date' => $date,'name' => $row['name'], 'api' => $api,'status' => $row['status'], 'img' => $imgName,'alt' => $imgAlt,'userID' => $row['userID'], 'type' => $type[$row['type']], 'action' => $action);
-    }
-
-    $next = $start + $amount;
-
-    if ($reseller_id == 0) {
-        $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs`");
-        $query->execute();
-    } else {
-        $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `resellerID`=?");
-        $query->execute(array($reseller_id));
-    }
-
-    $colcount = $query->fetchColumn();
-
-    $vor = ($colcount > $next) ? $start + $amount : $start;
-    $back = $start - $amount;
-    $zur = ($back >= 0) ? $start - $amount : $start;
-    $pageamount = ceil($colcount / $amount);
-
-    $link='<a href="admin.php?w=jb&amp;o=' . $o . '&amp;a=';
-    if (!isset($amount)) {
-        $link .="20";
-    } else {
-        $link .= $amount;
-    }
-
-    if ($start==0) {
-        $link .= '&amp;p=0" class="bold">1</a>';
-    } else {
-        $link .= '&amp;p=0">1</a>';
-    }
-
-    $pages[] = $link;
-    $i = 2;
-    while ($i<=$pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=jb&amp;o=' . $o . '&amp;a=' . $amount . '&amp;p=' . $selectpage . '" class="bold">' . $i . '</a>';
-        } else {
-            $pages[] = '<a href="admin.php?w=jb&amp;o=' . $o . '&amp;a=' . $amount . '&amp;p=' . $selectpage . '">' . $i . '</a>';
-        }
-        $i++;
-    }
-
-    $pages = implode(', ', $pages);
+    configureDateTables('-1', '0, "desc"', 'ajax.php?w=datatable&d=joblog');
 
     $template_file = 'admin_jobs_list.tpl';
 }

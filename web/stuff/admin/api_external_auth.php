@@ -41,14 +41,15 @@ if ($main != 1 or !isset($admin_id) or (isset($admin_id) and !$pa['apiSettings']
     header('Location: admin.php');
     die('No acces');
 }
+
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
 $sprache = getlanguagefile('api',$user_language,$reseller_id);
+
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
-$loguserid = $admin_id;
-$logusername = getusername($admin_id);
-$logusertype = 'admin';
+
 if ($reseller_id == 0) {
     $logreseller = 0;
     $logsubuser = 0;
@@ -66,9 +67,13 @@ if ($reseller_id == 0) {
         $lookupID = $admin_id;
     }
 }
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
+
     $template_file = $spracheResponse->token;
+
 } else if ($ui->smallletters('action',2, 'post') == 'md'){
+
     $query = $sql->prepare("SELECT COUNT(`active`) AS `amount` FROM `api_external_auth` LIMIT 1");
     $query->execute();
     $amount = $query->fetchColumn();
@@ -84,13 +89,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $loguseraction="%mod% API external auth";
     $insertlog->execute();
     $template_file = $spracheResponse->table_add;
+
 } else {
+
     $active = '';
     $user = '';
     $pwd = '';
     $ssl = '';
     $domain = '';
-    $file='auth.php';
+    $file = 'auth.php';
+
     $query = $sql->prepare("SELECT `active`,`ssl`,`user`,`domain`,AES_DECRYPT(`pwd`,?) AS `decryptedPWD`,`file` FROM `api_external_auth` WHERE `resellerID`=? LIMIT 1");
     $query->execute(array($aeskey,$lookupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -101,5 +109,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $domain = $row['domain'];
         $file = $row['file'];
     }
+
     $template_file = 'admin_api_external_auth_settings.tpl';
 }

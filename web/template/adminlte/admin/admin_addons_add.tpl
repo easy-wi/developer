@@ -2,7 +2,7 @@
     <h1><?php echo $sprache->heading_addons;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="admin.php?w=ad"><?php echo $gsprache->addons;?></a></li>
+        <li><a href="admin.php?w=ad"><?php echo $gsprache->addon;?></a></li>
         <li class="active"><?php echo $gsprache->add;?></li>
     </ol>
 </section>

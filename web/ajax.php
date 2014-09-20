@@ -78,6 +78,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_userlog.php');
 
+    // Job log
+    } else if ($ui->smallletters('d', 6, 'get') =='joblog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_joblog.php');
+
     // App server
     } else if ($ui->smallletters('d', 9, 'get') =='appserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['roots']) {
 

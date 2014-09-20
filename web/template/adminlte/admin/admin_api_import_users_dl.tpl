@@ -8,20 +8,28 @@
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
+    <div class="row">
+        <div class="col-md-11">
+            <div class="box box-danger">
 
-    <div class="box box-info">
-        <div class="box-body">
+                <form role="form" action="admin.php?w=ui&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=ui" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
-            <form role="form" action="admin.php?w=ui&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=ui" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-                <input type="hidden" name="token" value="<?php echo token();?>">
-                <input type="hidden" name="action" value="dl">
-                <div class="form-group">
-                    <label class="control-label" for="inputEdit"><?php echo $sprache->domain.' '.$ssl.$domain;?></label>
-                </div>
-                    <button class="btn btn-danger pull-left" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
-            </form>
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="dl">
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="inputDomain"><?php echo $sprache->domain;?></label>
+                            <input class="form-control" id="inputDomain" type="text" name="domain" value="<?php echo $ssl.$domain;?>" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </section>

@@ -50,7 +50,6 @@ $query->execute(array($resellerLockupID));
 $array['iTotalRecords'] = $query->fetchColumn();
 
 if ($sSearch) {
-
     $query = $sql->prepare("SELECT COUNT(r.`id`) AS `amount` FROM `rserverdata` AS r WHERE r.`active`='Y' AND r.`resellerid`=:resellerID AND (r.`id` LIKE :search OR r.`ip` LIKE :search OR r.`description` LIKE :search OR EXISTS(SELECT 1 FROM `rservermasterg` AS m INNER JOIN `servertypes` s ON s.`id`=m.`servertypeid` WHERE m.`serverid`=r.`id` AND s.`shorten` LIKE :search))");
     $query->execute(array(':resellerID' => $resellerLockupID, ':search' => '%' . $sSearch . '%'));
     $array['iTotalDisplayRecords'] = $query->fetchColumn();
@@ -74,7 +73,7 @@ $query3 = $sql->prepare("SELECT r.`id`,s.`steamgame`,s.`updates`,d.`updates` AS 
 $query4 = $sql->prepare("UPDATE `rservermasterg` SET `installing`='N',`updating`='N' WHERE `id`=? LIMIT 1");
 
 if ($sSearch) {
-    $query = $sql->prepare("SELECT `id`,`ip`,`description` FROM `rserverdata` AS r WHERE `active`='Y' AND `resellerid`=:resellerID AND (`id` LIKE :search OR `ip` LIKE :search OR `description` LIKE :search OR EXISTS(SELECT 1 FROM `rservermasterg` AS m INNER JOIN `servertypes` s ON s.`id`=m.`servertypeid` WHERE m.`serverid`=r.`id` AND s.`shorten` LIKE :search)) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
+    $query = $sql->prepare("SELECT `id`,`ip`,`description` FROM `rserverdata` AS r WHERE `active`='Y' AND `resellerid`=:resellerID AND (`id` LIKE :search OR `ip` LIKE :search OR `description` LIKE :search OR EXISTS (SELECT 1 FROM `rservermasterg` AS m INNER JOIN `servertypes` s ON s.`id`=m.`servertypeid` WHERE m.`serverid`=r.`id` AND s.`shorten` LIKE :search)) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
     $query->execute(array(':resellerID' => $resellerLockupID, ':search' => '%' . $sSearch . '%'));
 } else {
     $query = $sql->prepare("SELECT `id`,`ip`,`description` FROM `rserverdata` WHERE `active`='Y' AND `resellerid`=? ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");

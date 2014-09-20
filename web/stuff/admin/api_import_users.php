@@ -201,52 +201,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 } else {
-    $table = array();
-    $query = $sql->prepare("SELECT COUNT(`importID`) AS `amount` FROM `api_import` WHERE `resellerID`=?");
+
+    $query = $sql->prepare("SELECT * FROM `api_import` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
-    $colcount = $query->fetchColumn();
-    if ($start>$colcount) {
-        $start = $colcount-$amount;
-        if ($start<0) {
-            $start = 0;
-        }
-    }
-    $next = $start+$amount;
-    if ($colcount>$next) {
-        $vor = $start+$amount;
-    } else {
-        $vor = $start;
-    }
-    $back = $start - $amount;
-    if ($back>=0){
-        $zur = $start - $amount;
-    } else {
-        $zur = $start;
-    }
-    $o = $ui->st('o', 'get');
-    if ($ui->st('o', 'get') == 'da') {
-        $orderby = '`active` DESC';
-    } else if ($ui->st('o', 'get') == 'aa') {
-        $orderby = '`active` ASC';
-    } else if ($ui->st('o', 'get') == 'dd') {
-        $orderby = '`domain` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = '`domain` ASC';
-    } else if ($ui->st('o', 'get') == 'dl') {
-        $orderby = '`lastID` DESC';
-    } else if ($ui->st('o', 'get') == 'al') {
-        $orderby = '`lastID` ASC';
-    } else if ($ui->st('o', 'get') == 'dc') {
-        $orderby = '`lastCheck` DESC';
-    } else if ($ui->st('o', 'get') == 'ac') {
-        $orderby = '`lastCheck` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`importID` DESC';
-    } else {
-        $orderby = '`importID` ASC';
-    }
-    $query = $sql->prepare("SELECT * FROM `api_import` WHERE `resellerID`=? ORDER BY $orderby LIMIT $start,$amount");
-    $query->execute(array($reseller_id));
+
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if ($row['active'] == 'Y') {
             $imgName = '16_ok';
@@ -255,36 +213,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $imgName = '16_bad';
             $imgAlt = 'Inactive';
         }
-        if ($row['ssl'] == 'Y') {
-            $ssl='https://';
-        } else {
-            $ssl='http://';
-        }
+
+        $ssl = ($row['ssl'] == 'Y') ? 'https://' : 'http://';
+
         $table[] = array('id' => $row['importID'], 'img' => $imgName,'alt' => $imgAlt,'domain' => $ssl.$row['domain']. '/' . $row['file'], 'lastID' => $row['lastID'], 'lastCheck' => $row['lastCheck'], 'active' => $row['active']);
     }
-    $pageamount = ceil($colcount / $amount);
-    $link='<a href="admin.php?w=ui&amp;o='.$o.'&amp;a=';
-    if (!isset($amount)) {
-        $link .="20";
-    } else {
-        $link .= $amount;
-    }
-    if ($start==0) {
-        $link .= '&p=0" class="bold">1</a>';
-    } else {
-        $link .= '&p=0">1</a>';
-    }
-    $pages[] = $link;
-    $i = 2;
-    while ($i<=$pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        if ($start==$selectpage) {
-            $pages[] = '<a href="admin.php?w=ui&amp;o='.$o.'&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>';
-        } else {
-            $pages[] = '<a href="admin.php?w=ui&amp;o='.$o.'&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
-        }
-        $i++;
-    }
-    $pages=implode(', ',$pages);
+
+    configureDateTables('-1', '2, "desc"');
+
     $template_file = 'admin_api_import_users_list.tpl';
 }
