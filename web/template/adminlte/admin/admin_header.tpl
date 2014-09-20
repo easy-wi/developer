@@ -327,10 +327,10 @@
                     </a>
                     <ul class="treeview-menu">
 						<?php if($pa['gserver']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='gs') echo 'class="active"';?>><a href="admin.php?w=gs&amp;d=md"><i class="fa fa-columns"></i><?php echo $gsprache->overview;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='gs') echo 'class="active"';?>><a href="admin.php?w=gs"><i class="fa fa-columns"></i><?php echo $gsprache->overview;?></a></li>
 						<?php } ?>
 						<?php if($pa['gimages']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='im') echo 'class="active"';?>><a href="admin.php?w=im&amp;d=md"><i class="fa fa-file-text-o"></i><?php echo $gsprache->gameserver.' '.$gsprache->template;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='im') echo 'class="active"';?>><a href="admin.php?w=im"><i class="fa fa-file-text-o"></i><?php echo $gsprache->gameserver.' '.$gsprache->template;?></a></li>
 						<?php } ?>
 						<?php if($pa['addons']) { ?>
 						<li <?php if($ui->smallletters('w',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=ad"><i class="fa fa-gears"></i><?php echo $gsprache->addon;?></a></li>

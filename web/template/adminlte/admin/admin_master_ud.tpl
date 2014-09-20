@@ -23,9 +23,11 @@
 
                     <div class="box-body">
                         <?php foreach($appServer as $id => $server){ ?>
-                        <div class="form-group">
-                            <input id="inputServerID-<?php echo $id;?>" type="checkbox" name="serverID[]" value="<?php echo $id;?>">
-                            <label for="inputServerID-<?php echo $id;?>"><?php echo $server['ip'].' '.$server['description'];?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputServerID-<?php echo $id;?>" type="checkbox" name="serverID[]" value="<?php echo $id;?>">
+                                <?php echo $server['ip'].' '.$server['description'];?>
+                            </label>
                         </div>
                         <?php } ?>
                     </div>
@@ -41,9 +43,11 @@
 
                     <div class="box-body">
                         <?php foreach($masterList as $id => $master){ ?>
-                        <div class="form-group" id="masterID-<?php echo $id;?>" data-server="<?php echo $master['serverIDs'];?>">
-                            <input id="inputMasterID-<?php echo $id;?>" type="checkbox" name="masterID[]" value="<?php echo $id;?>">
-                            <label for="inputMasterID-<?php echo $id;?>"><img src="images/games/icons/<?php echo $master['shorten'];?>.png" alt="<?php echo $master['description'];?>" width="16" /> <?php echo $master['description'];?></label>
+                        <div class="checkbox" id="masterID-<?php echo $id;?>" data-server="<?php echo $master['serverIDs'];?>">
+                            <label>
+                                <input id="inputMasterID-<?php echo $id;?>" type="checkbox" name="masterID[]" value="<?php echo $id;?>">
+                                <img src="images/games/icons/<?php echo $master['shorten'];?>.png" alt="<?php echo $master['description'];?>" width="16" /> <?php echo $master['description'];?>
+                            </label>
                         </div>
                         <?php } ?>
                     </div>

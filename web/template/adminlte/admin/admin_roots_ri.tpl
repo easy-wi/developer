@@ -19,11 +19,12 @@
                     <input type="hidden" name="action" value="ri">
 
                     <div class="box-body">
-
                         <?php foreach($table as $k=>$v){ ?>
-                        <div class="form-group">
-                            <input id="inputServer-<?php echo $k;?>" type="checkbox" name="serverID[]" value="<?php echo $k;?>" checked="checked">
-                            <label class="control-label" for="inputServer-<?php echo $k;?>"><?php echo $v['ip'].':'.$v['port'];?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputServer-<?php echo $k;?>" type="checkbox" name="serverID[]" value="<?php echo $k;?>" checked="checked">
+                                <?php echo $v['ip'].':'.$v['port'];?>
+                            </label>
                         </div>
                         <?php }?>
                     </div>

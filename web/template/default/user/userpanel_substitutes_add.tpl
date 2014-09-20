@@ -51,9 +51,12 @@
                         <hr>
                         <h4><?php echo $gsprache->gameserver;?></h4>
                         <?php foreach($gs as $k=>$v){ ?>
-                        <div class="form-group">
-                            <input id="inputGS-<?php echo $k;?>" type="checkbox" name="gs[]" value="<?php echo $k;?>">
-                            <label for="inputGS-<?php echo $k;?>"><?php echo $v;?></label>
+
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputGS-<?php echo $k;?>" type="checkbox" name="gs[]" value="<?php echo $k;?>">
+                                <?php echo $v;?>
+                            </label>
                         </div>
                         <?php }}?>
 
@@ -61,9 +64,11 @@
                         <hr>
                         <h4><?php echo $gsprache->webspace;?></h4>
                         <?php foreach($wv as $k=>$v){ ?>
-                        <div class="form-group">
-                            <input id="inputWeb-<?php echo $k;?>" type="checkbox" name="wv[]" value="<?php echo $k;?>">
-                            <label for="inputWeb-<?php echo $k;?>"><?php echo $v;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputWeb-<?php echo $k;?>" type="checkbox" name="wv[]" value="<?php echo $k;?>">
+                                <?php echo $v;?>
+                            </label>
                         </div>
                         <?php }}?>
 
@@ -71,9 +76,11 @@
                         <hr>
                         <h4><?php echo $gsprache->voiceserver;?></h4>
                         <?php foreach($vo as $k=>$v){ ?>
-                        <div class="form-group">
-                            <input id="inputVO-<?php echo $k;?>" type="checkbox" name="vo[]" value="<?php echo $k;?>">
-                            <label for="inputVO-<?php echo $k;?>"><?php echo $v;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputVO-<?php echo $k;?>" type="checkbox" name="vo[]" value="<?php echo $k;?>">
+                                <?php echo $v;?>
+                            </label>
                         </div>
                         <?php }}?>
 
@@ -81,9 +88,11 @@
                         <hr>
                         <h4>TS3 DNS</h4>
                         <?php foreach($vd as $k=>$v){ ?>
-                        <div class="form-group">
-                            <input id="inputVD-<?php echo $k;?>" type="checkbox" name="vd[]" value="<?php echo $k;?>">
-                            <label for="inputVD-<?php echo $k;?>"><?php echo $v;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputVD-<?php echo $k;?>" type="checkbox" name="vd[]" value="<?php echo $k;?>">
+                                <?php echo $v;?>
+                            </label>
                         </div>
                         <?php }}?>
 
@@ -91,9 +100,11 @@
                         <hr>
                         <h4><?php echo $gsprache->virtual;?></h4>
                         <?php foreach($vs as $k=>$v){ ?>
-                        <div class="form-group">
-                            <input id="inputVS-<?php echo $k;?>" type="checkbox" name="vs[]" value="<?php echo $k;?>">
-                            <label for="inputVS-<?php echo $k;?>"><?php echo $v;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputVS-<?php echo $k;?>" type="checkbox" name="vs[]" value="<?php echo $k;?>">
+                                <?php echo $v;?>
+                            </label>
                         </div>
                         <?php }}?>
 
@@ -101,9 +112,11 @@
                         <hr>
                         <h4><?php echo $gsprache->dedicated;?></h4>
                         <?php foreach($ro as $k=>$v){ ?>
-                        <div class="form-group">
-                            <input id="inputRO-<?php echo $k;?>" type="checkbox" name="ro[]" value="<?php echo $k;?>">
-                            <label for="inputRO-<?php echo $k;?>"><?php echo $v;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputRO-<?php echo $k;?>" type="checkbox" name="ro[]" value="<?php echo $k;?>">
+                                <?php echo $v;?>
+                            </label>
                         </div>
                         <?php }}?>
 
@@ -111,15 +124,17 @@
                         <hr>
                         <h4>MySQL</h4>
                         <?php foreach($db as $k=>$v){ ?>
-                        <div class="form-group">
-                            <input id="inputDB-<?php echo $k;?>" type="checkbox" name="db[]" value="<?php echo $k;?>">
-                            <label for="inputDB-<?php echo $k;?>"><?php echo $v;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputDB-<?php echo $k;?>" type="checkbox" name="db[]" value="<?php echo $k;?>">
+                                <?php echo $v;?>
+                            </label>
                         </div>
                         <?php }}?>
                     </div><!-- /.box-body -->
 
                     <div class="box-footer">
-                        <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                        <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-plus-circle">&nbsp;<?php echo $gsprache->add;?></i></button>
                     </div>
                 </form>
             </div><!-- /.box -->

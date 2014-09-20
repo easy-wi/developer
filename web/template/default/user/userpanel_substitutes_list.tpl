@@ -26,7 +26,7 @@
                 <div class="box-body">
 
                     <div>
-                        <?php echo $gsprache->substitutes;?> <a href="userpanel.php?w=su&amp;d=ad"<span class="btn btn-success"><i class="fa fa-plus"></i> <?php echo $gsprache->add;?></span></a>
+                        <?php echo $gsprache->substitutes;?> <a href="userpanel.php?w=su&amp;d=ad"<span class="btn btn-success"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
                     </div>
 
                     <hr>
@@ -37,8 +37,7 @@
                             <tr>
                                 <th><?php echo $sprache->user;?></th>
                                 <th><?php echo $sprache->active;?></th>
-                                <th><?php echo $gsprache->edit;?></th>
-                                <th><?php echo $gsprache->del;?></th>
+                                <th><?php echo $gsprache->action;?></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -46,8 +45,10 @@
                             <tr>
                                 <td><?php echo $table_row['loginName'];?></td>
                                 <td><?php echo $table_row['active'];?></td>
-                                <td><a href="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></span></a></td>
-                                <td><a href="userpanel.php?w=su&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></span></a></td>
+                                <td>
+                                    <a href="userpanel.php?w=su&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> <?php echo $gsprache->edit;?></span></a>
+                                    <a href="userpanel.php?w=su&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-danger btn-sm"><i class="fa fa-trash-o"> <?php echo $gsprache->del;?></i></span></a>
+                                </td>
                             </tr>
                             <?php } ?>
                             </tbody>
@@ -55,8 +56,7 @@
                             <tr>
                                 <th><?php echo $sprache->user;?></th>
                                 <th><?php echo $sprache->active;?></th>
-                                <th><?php echo $gsprache->edit;?></th>
-                                <th><?php echo $gsprache->del;?></th>
+                                <th><?php echo $gsprache->action;?></th>
                             </tr>
                             </tfoot>
                         </table>

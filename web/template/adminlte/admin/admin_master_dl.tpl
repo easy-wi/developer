@@ -24,9 +24,11 @@
 
                     <div class="box-body">
                         <?php foreach ($table as $table_row){ ?>
-                        <div class="form-group">
-                            <input id="input<?php echo $table_row['shorten'];?>" type="checkbox" name="id[]" value="<?php echo $table_row['id'];?>">
-                            <label for="input<?php echo $table_row['shorten'];?>"><?php echo '<img src="images/games/icons/'.$table_row['shorten'].'.png" alt="'.$table_row['shorten'].'" width="16" /> '.$table_row['description'];?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="input<?php echo $table_row['shorten'];?>" type="checkbox" name="id[]" value="<?php echo $table_row['id'];?>">
+                                <?php echo '<img src="images/games/icons/'.$table_row['shorten'].'.png" alt="'.$table_row['shorten'].'" width="16" /> '.$table_row['description'];?>
+                            </label>
                         </div>
                         <?php } ?>
                     </div>

@@ -23,8 +23,7 @@
                                 <th><?php echo $sprache->abkuerz;?></th>
                                 <th>ID</th>
                                 <th><?php echo $sprache->game;?></th>
-                                <th><?php echo $gsprache->del;?></th>
-                                <th><?php echo $gsprache->mod;?></th>
+                                <th><?php echo $gsprache->action;?></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -33,8 +32,10 @@
                                 <td><?php echo $table_row['name'];?></td>
                                 <td><?php echo $table_row['id'];?></td>
                                 <td><?php echo $table_row['servertype'];?></td>
-                                <td><a href="<?php echo $targetFile;?>?w=gt&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
-                                <td><a href="<?php echo $targetFile;?>?w=gt&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></span></a></td>
+                                <td>
+                                    <a href="<?php echo $targetFile;?>?w=gt&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></span></a>
+                                    <a href="<?php echo $targetFile;?>?w=gt&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-sm btn-primary"><i class="fa fa-edit"></i> <?php echo $gsprache->mod;?></span></a>
+                                </td>
                             </tr>
                             <?php } ?>
                             </tbody>
@@ -43,8 +44,7 @@
                                 <th><?php echo $sprache->abkuerz;?></th>
                                 <th>ID</th>
                                 <th><?php echo $sprache->game;?></th>
-                                <th><?php echo $gsprache->del;?></th>
-                                <th><?php echo $gsprache->mod;?></th>
+                                <th><?php echo $gsprache->action;?></th>
                             </tr>
                             </tfoot>
                         </table>

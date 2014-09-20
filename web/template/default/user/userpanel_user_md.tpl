@@ -76,19 +76,25 @@
 
                         <h4><strong><?php echo $sprache->email;?></strong></h4>
 
-                        <div class="form-group">
-                            <input id="mail_backup" type="checkbox" name="mail_backup" value="Y" <?php if ($mail_backup=="Y") echo 'checked="checked"'; ?>>
-                            <label for="mail_backup"><?php echo $sprache->mail_backup;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="mail_backup" type="checkbox" name="mail_backup" value="Y" <?php if ($mail_backup=="Y") echo 'checked="checked"'; ?>>
+                                <?php echo $sprache->mail_backup;?>
+                            </label>
                         </div>
 
-                        <div class="form-group">
-                            <input id="mail_serverdown" type="checkbox" name="mail_serverdown" value="Y" <?php if ($mail_serverdown=="Y") echo 'checked="checked"'; ?>>
-                            <label for="mail_serverdown"><?php echo $sprache->mail_serverdown;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="mail_serverdown" type="checkbox" name="mail_serverdown" value="Y" <?php if ($mail_serverdown=="Y") echo 'checked="checked"'; ?>>
+                                <?php echo $sprache->mail_serverdown;?>
+                            </label>
                         </div>
 
-                        <div class="form-group">
-                            <input id="mail_ticket" type="checkbox" name="mail_ticket" value="Y" <?php if ($mail_ticket=="Y") echo 'checked="checked"'; ?>>
-                            <label for="mail_ticket"><?php echo $sprache->mail_ticket;?></label>
+                        <div class="checkbox">
+                            <label>
+                                <input id="mail_ticket" type="checkbox" name="mail_ticket" value="Y" <?php if ($mail_ticket=="Y") echo 'checked="checked"'; ?>>
+                                <?php echo $sprache->mail_ticket;?>
+                            </label>
                         </div>
                     </div>
 
