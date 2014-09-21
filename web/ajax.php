@@ -74,7 +74,10 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     $sSortDir = ($ui->smallletters('sSortDir_0', 4, 'get') == 'desc') ? 'DESC' : 'ASC';
     $sSearch = (strlen($ui->escaped('sSearch', 'get')) > 0) ? $ui->escaped('sSearch', 'get') : false;
 
-    if ($ui->smallletters('d', 7, 'get') == 'userlog' and isset($user_id) and $pa['log']) {
+    // Userlog
+    if (($ui->smallletters('d', 7, 'get') == 'userlog' and isset($user_id)) or ($ui->smallletters('d', 12, 'get') =='adminuserlog' and isset($admin_id)) and $pa['log']) {
+
+        $adminLookup = ($ui->smallletters('d', 12, 'get') =='adminuserlog' and isset($admin_id)) ? true : false;
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_userlog.php');
 
