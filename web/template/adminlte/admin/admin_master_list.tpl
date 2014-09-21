@@ -15,18 +15,18 @@
                     <table id="dataTable" class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th><?php echo $sprache->haupt_ip;?></a></th>
-                            <th>ID</a></th>
-                            <th><?php echo $sprache->desc;?></a></th>
+                            <th><?php echo $sprache->haupt_ip;?></th>
+                            <th>ID</th>
+                            <th><?php echo $sprache->desc;?></th>
                             <th><?php echo $gsprache->master;?></th>
                             <th><?php echo $gsprache->action;?></th>
                         </tr>
                         </thead>
                         <tfoot>
                         <tr>
-                            <th><?php echo $sprache->haupt_ip;?></a></th>
-                            <th>ID</a></th>
-                            <th><?php echo $sprache->desc;?></a></th>
+                            <th><?php echo $sprache->haupt_ip;?></th>
+                            <th>ID</th>
+                            <th><?php echo $sprache->desc;?></th>
                             <th><?php echo $gsprache->master;?></th>
                             <th><?php echo $gsprache->action;?></th>
                         </tr>

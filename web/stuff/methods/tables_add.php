@@ -641,7 +641,7 @@ $query = "CREATE TABLE IF NOT EXISTS `modules` (
   `active` enum('Y','N') DEFAULT 'Y',
   `type` enum('A','C','P','U') DEFAULT 'A',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1001;";
+) ENGINE=InnoDB;";
 $add = $sql->prepare($query);
 $add->execute();
 

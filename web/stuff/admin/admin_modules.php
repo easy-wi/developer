@@ -48,12 +48,12 @@ $logusername = getusername($admin_id);
 $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
-$sprache = getlanguagefile('modules',$user_language,$reseller_id);
+$sprache = getlanguagefile('modules', $user_language, $reseller_id);
 
 unset($name);
 
 # array with easy-wi core modules to prevent legacy issues and users from removing
-$table = array(
+$coreModules = array(
     1 => array('id' => 1, 'active' => 'Y', 'name' => $gsprache->gameserver, 'sub' => 'gs', 'type' => $sprache->type_core),
     2 => array('id' => 2, 'active' => 'Y', 'name' => 'Easy Anti Cheat', 'sub' => 'ea', 'type' => $sprache->type_core),
     3 => array('id' => 3, 'active' => 'Y', 'name' => 'MySQL', 'sub' => 'my', 'type' => $sprache->type_core),
@@ -65,7 +65,25 @@ $table = array(
     9 => array('id' => 9, 'active' => 'Y', 'name' => 'CMS', 'sub' => 'pn', 'type' => $sprache->type_core),
     10 => array('id' => 10, 'active' => 'Y', 'name' => $gsprache->webspace, 'sub' => 'ws', 'type' => $sprache->type_core)
 );
-    
+
+$query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `modules` WHERE `type`='C' AND `get`=? LIMIT 1");
+$query2 = $sql->prepare("INSERT INTO `modules` (`file`,`get`,`sub`,`type`,`active`) VALUES ('',?,?,'C',?) ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
+$query3 = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('mo',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
+
+foreach ($coreModules as $module) {
+
+    $query->execute(array($module['sub']));
+
+    if ((int) $query->fetchColumn() == 0) {
+
+        $query2->execute(array($module['sub'], $module['sub'], 'Y'));
+
+        $instertedID = $sql->lastInsertId();
+
+        $query3->execute(array($instertedID, $user_language, $module['name'], 0));
+    }
+}
+
 if ($ui->st('action', 'post') and !token(true)) {
 
     unset($header, $text);
@@ -82,29 +100,7 @@ if ($ui->st('action', 'post') and !token(true)) {
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
     $langAvailable = getlanguages($template_to_use);
 
-    // Easy-WI core modules should only be (de)activated
-    if ($ui->st('d', 'get') == 'md' and $ui->st('action', 'post') == 'md' and $id < 1001) {
-
-        $query = $sql->prepare("INSERT INTO `modules` (`id`,`file`,`get`,`sub`,`type`,`active`) VALUES (?,'',?,'','C',?) ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
-        $query->execute(array($id, (isset($table[$id]['sub'])) ? $table[$id]['sub'] : '', $active));
-
-        $template_file = ($query->rowCount() == 0) ? $spracheResponse->error_table : $spracheResponse->table_add;
-
-    } else if ($ui->st('d', 'get') == 'md' and !$ui->st('action', 'post') and $id < 1001) {
-
-        $name = (isset($table[$id]['name'])) ? $table[$id]['name'] : '';
-        $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=? LIMIT 1");
-        $query->execute(array($id));
-        $active = $query->fetchColumn();
-
-        if ($query->rowCount() == 0) {
-            $active = 'Y';
-        }
-
-        $template_file = (isset($table[$id])) ? 'admin_modules_md.tpl' : 'admin_404.tpl';
-
-    // Custom Modules
-    } else if ($id > 1000 or $ui->st('d', 'get') == 'ad') {
+    if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         $dbSuccess = false;
         $file = $ui->config('file', 'post');
@@ -125,6 +121,8 @@ if ($ui->st('action', 'post') and !token(true)) {
         }
 
         if ($ui->st('action', 'post')) {
+
+            $coreModuleFound = false;
 
             if (!$sub or !in_array($sub, array('gs', 'pa', 'mo', 'my', 'ro', 'ti', 'us', 'vo','ws')) ) {
                 $errors['sub'] = $sprache->sub;
@@ -156,11 +154,27 @@ if ($ui->st('action', 'post') and !token(true)) {
                 $errors['file'] = $sprache->file;
             }
 
+            $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `modules` WHERE `type`='C' AND `id`=? LIMIT 1");
+            $query->execute(array($id));
+
+            if ($query->fetchColumn() == 1) {
+
+                $errors = array();
+
+                $coreModuleFound = true;
+            }
+
             if (count($errors) == 0) {
 
                 if ($ui->st('action', 'post') == 'md') {
-                    $query = $sql->prepare("UPDATE `modules` SET `get`=?,`file`=?,`sub`=?,`active`=?,`type`=? WHERE `id`=? LIMIT 1");
-                    $query->execute(array($get, $file, $sub, $active, $type, $id));
+
+                    if ($coreModuleFound) {
+                        $query = $sql->prepare("UPDATE `modules` SET `active`=? WHERE `id`=? LIMIT 1");
+                        $query->execute(array($active, $id));
+                    } else {
+                        $query = $sql->prepare("UPDATE `modules` SET `get`=?,`file`=?,`sub`=?,`active`=?,`type`=? WHERE `id`=? LIMIT 1");
+                        $query->execute(array($get, $file, $sub, $active, $type, $id));
+                    }
 
                     if ($query->rowCount() > 0) {
                         $dbSuccess = true;
@@ -177,43 +191,45 @@ if ($ui->st('action', 'post') and !token(true)) {
                     $id = $sql->lastInsertId();
                 }
 
-                if ($ui->smallletters('lang', 2, 'post')) {
-                    $array = (array) $ui->smallletters('lang', 2, 'post');
+                if (!$coreModuleFound) {
+                    if ($ui->smallletters('lang', 2, 'post')) {
+                        $array = (array) $ui->smallletters('lang', 2, 'post');
 
-                    $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('mo',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
-                    foreach($array as $lang) {
+                        $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('mo',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
+                        foreach($array as $lang) {
 
-                        if (small_letters_check($lang, 2)) {
-                            $query->execute(array($id, $lang, $ui->description('translation', 'post', $lang), 0));
+                            if (small_letters_check($lang, 2)) {
+                                $query->execute(array($id, $lang, $ui->description('translation', 'post', $lang), 0));
 
-                            if ($dbSuccess === false and $query->rowCount() > 0) {
-                                $dbSuccess = true;
+                                if ($dbSuccess === false and $query->rowCount() > 0) {
+                                    $dbSuccess = true;
+                                }
                             }
                         }
-                    }
 
-                    $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `resellerID`=?");
-                    $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
-                    $query->execute(array($id, 0));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `resellerID`=?");
+                        $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
+                        $query->execute(array($id, 0));
+                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-                        if (!in_array($row['lang'],$array)) {
+                            if (!in_array($row['lang'],$array)) {
 
-                            $query2->execute(array($id, $row['lang'], 0));
+                                $query2->execute(array($id, $row['lang'], 0));
 
-                            if ($dbSuccess === false and $query2->rowCount() > 0) {
-                                $dbSuccess = true;
+                                if ($dbSuccess === false and $query2->rowCount() > 0) {
+                                    $dbSuccess = true;
+                                }
                             }
                         }
-                    }
 
-                } else {
+                    } else {
 
-                    $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='mo' AND `transID`=? AND `resellerID`=?");
-                    $query->execute(array($id, 0));
+                        $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='mo' AND `transID`=? AND `resellerID`=?");
+                        $query->execute(array($id, 0));
 
-                    if ($dbSuccess === false and $query->rowCount() > 0) {
-                        $dbSuccess = true;
+                        if ($dbSuccess === false and $query->rowCount() > 0) {
+                            $dbSuccess = true;
+                        }
                     }
                 }
 
@@ -237,13 +253,16 @@ if ($ui->st('action', 'post') and !token(true)) {
                 $query = $sql->prepare("SELECT * FROM `modules` WHERE `id`=? LIMIT 1");
                 $query->execute(array($id));
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $active = $row['active'];
                     $file = $row['file'];
                     $sub = $row['sub'];
                     $get = $row['get'];
                     $type = $row['type'];
                     $found = true;
                 }
+
                 $languageTexts = array();
+
                 foreach ($langAvailable as $lg) {
                     $languageTexts[$lg] = '';
                 }
@@ -277,11 +296,15 @@ if ($ui->st('action', 'post') and !token(true)) {
         $template_file = 'admin_404.tpl';
     }
 
-} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',10, 'get')) {
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
 
     $id = $ui->id('id',10, 'get');
 
-    if ($id < 1001) {
+    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `modules` WHERE `type`='C' AND `id`=? LIMIT 1");
+    $query->execute(array($id));
+
+    if ($query->fetchColumn() == 1) {
+
         $template_file = $sprache->error_core;
 
     } else  {
@@ -315,41 +338,7 @@ if ($ui->st('action', 'post') and !token(true)) {
     }
 } else {
 
-    $query = $sql->prepare("SELECT * FROM `modules`");
-    $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
-    $query->execute();
-
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if (isset($table[$row['id']])) {
-            $table[$row['id']]['active'] = $row['active'];
-        } else {
-
-            $query2->execute(array($row['id'], $user_language));
-            $name = $query2->fetchColumn();
-
-            if (strlen($name) == 0) {
-                $query2->execute(array($row['id'], $rSA['language']));
-                $name = $query2->fetchColumn();
-            }
-
-            if (strlen($name) == 0) {
-                $name = $row['file'];
-            }
-
-            $type = '';
-
-            if ($row['type'] == 'A') {
-                $type = $sprache->type_admin;
-            } else if ($row['type'] == 'P') {
-                $type = $sprache->type_cms;
-            } else if ($row['type'] == 'U') {
-                $type = $sprache->type_user;
-            }
-
-            $table[$row['id']] = array('id' => $row['id'], 'active' => $row['active'], 'name' => $name, 'type' => $type);
-        }
-    }
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=custommodule');
 
     $template_file = 'admin_modules_list.tpl';
-
 }

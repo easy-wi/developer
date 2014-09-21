@@ -8,30 +8,28 @@
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
-<div class="col-md-6">
-    <div class="box box-info">
-        <div class="box-body">
-            <dl class="dl-horizontal">
-                <dt><?php echo $sprache->file;?></dt>
-                <dd><?php echo $moduleFile;?></dd>
-            </dl>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+
+                <form role="form" action="admin.php?w=mo&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=mo" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="dl">
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="inputFile"><?php echo $sprache->file;?></label>
+                            <div class="controls"><input type="text" class="form-control" id="inputFile" name="file" value="<?php echo $moduleFile;?>" disabled="disabled"></div>
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="col-md-6">
-    <div class="box box-info">
-        <div class="box-body">
-        <form class="form-horizontal" action="admin.php?w=mo&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=mo" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="dl">
-
-        </div>
-    </div>
-                <label class="control-label" for="inputEdit"></label>
-                    <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
-        </form>
-</div>
 </section>

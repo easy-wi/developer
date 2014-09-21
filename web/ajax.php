@@ -81,52 +81,57 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_userlog.php');
 
-    // Mail log
+        // Mail log
     } else if ($ui->smallletters('d', 7, 'get') =='maillog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_maillog.php');
 
-    // Job log
+        // Job log
     } else if ($ui->smallletters('d', 6, 'get') =='joblog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_joblog.php');
 
-    // ipbans
+        // IP bans
     } else if ($ui->smallletters('d', 6, 'get') =='ipbans' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['ipBans']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_ipbans.php');
 
-    // App server
-    } else if ($ui->smallletters('d', 9, 'get') =='appserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['roots']) {
+        // custom module
+    } else if ($ui->smallletters('d', 12, 'get') =='custommodule' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['root']) {
 
-        require_once(EASYWIDIR . '/stuff/ajax/datatable_appserver.php');
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_custommodule.php');
 
-    // App (GS + Tools) masterserver
-    } else if ($ui->smallletters('d', 15, 'get') =='appmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
-
-        require_once(EASYWIDIR . '/stuff/ajax/datatable_appmasterserver.php');
-
-    // GS images
-    } else if ($ui->smallletters('d', 10, 'get') =='gameimages' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gimages']) {
-
-        require_once(EASYWIDIR . '/stuff/ajax/datatable_gameimages.php');
-
-    // GS addons
-    } else if ($ui->smallletters('d', 16, 'get') =='gameserveraddons' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
-
-        require_once(EASYWIDIR . '/stuff/ajax/datatable_gameaddons.php');
-
-    // List of imported news feeds
+        // List of imported news feeds
     } else if ($ui->smallletters('d', 16, 'get') =='feedsnewsentries' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_feedsnewsentries.php');
 
-    // List of feeds
+        // List of feeds
     } else if ($ui->smallletters('d', 5, 'get') =='feeds' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_feeds.php');
 
-    // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front
+        // App (GS + Tools) masterserver
+    } else if ($ui->smallletters('d', 15, 'get') =='appmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_appmasterserver.php');
+
+        // GS images
+    } else if ($ui->smallletters('d', 10, 'get') =='gameimages' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gimages']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_gameimages.php');
+
+        // GS addons
+    } else if ($ui->smallletters('d', 16, 'get') =='gameserveraddons' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_gameaddons.php');
+
+        // App server
+    } else if ($ui->smallletters('d', 9, 'get') =='appserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['roots']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_appserver.php');
+
+        // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front
     } else {
 
         // When searching a table combination that should provide a server and user´s loginname, firstname, lastname. First do a search at usertable and get IDs.

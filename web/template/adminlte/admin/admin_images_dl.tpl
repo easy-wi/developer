@@ -11,7 +11,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-danger">
 
                 <form role="form" action="admin.php?w=im&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=im" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
