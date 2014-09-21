@@ -10,7 +10,7 @@
 <!-- Main Content -->
 <section class="content">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-success">
 
                 <form role="form" action="userpanel.php?w=ti&amp;d=ad&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">

@@ -10,7 +10,7 @@
 
     <?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $sprache->help_list;?>
@@ -21,7 +21,7 @@
 
     <?php foreach ($table as $table_row){ ?>
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="panel box <?php if($table_row['img']=='16_bad') echo 'box-primary'; else if($table_row['img']=='16_error') echo 'box-danger'; else echo 'box-success';?>">
 
                 <h4><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="14" /> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h4>

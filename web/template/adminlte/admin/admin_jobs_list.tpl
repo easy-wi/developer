@@ -8,7 +8,7 @@
 
 <section class="content">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-info">
                 <form method="post" action="admin.php?w=jb&amp;r=jb" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
 

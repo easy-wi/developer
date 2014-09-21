@@ -12,7 +12,7 @@
 <!-- Main Content -->
 <section class="content">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-warning">
                 <form role="form" action="userpanel.php?w=my&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=my" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 

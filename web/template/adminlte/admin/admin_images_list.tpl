@@ -11,7 +11,7 @@
 
     <?php if($reseller_id==0){ ?>
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <?php echo $gsprache->template;?> <a href="admin.php?w=im&amp;d=ad"><span class="btn btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
         </div>
     </div>

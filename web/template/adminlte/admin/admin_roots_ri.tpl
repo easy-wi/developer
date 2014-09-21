@@ -10,7 +10,7 @@
 
 <section class="content">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-warning">
 
                 <form role="form" action="admin.php?w=ro&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=ro" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post" >

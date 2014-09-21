@@ -11,7 +11,7 @@
 
     <?php if (count($errors)>0){ ?>
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="alert alert-danger">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <h4><?php echo $gsprache->errors;?></h4>
@@ -22,7 +22,7 @@
     <?php }?>
 
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <form role="form" action="admin.php?w=ad&amp;d=ad" enctype="multipart/form-data" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 
                 <input type="hidden" name="token" value="<?php echo $token;?>">
@@ -53,7 +53,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-success">
                 <form role="form" action="admin.php?w=ad&amp;d=ad&amp;r=ad" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
 

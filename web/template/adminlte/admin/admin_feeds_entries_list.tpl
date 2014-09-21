@@ -8,7 +8,7 @@
 
 <section class="content">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <?php echo $gsprache->feeds.' '.$gsprache->news;?> <a href="admin.php?w=fn&amp;d=ud&amp;r=fn"><span class="btn btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
         </div>
     </div>

@@ -12,7 +12,7 @@
 
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $sprache->help_fdl;?>
@@ -22,7 +22,7 @@
 	<?php } ?>
 
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">

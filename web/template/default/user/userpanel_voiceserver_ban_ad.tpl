@@ -27,7 +27,7 @@
     <?php }?>
 
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-success">
                 <form role="form" action="userpanel.php?w=vo&amp;d=bl&amp;e=ad&amp;id=<?php echo $id;?>&amp;r=vo" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 

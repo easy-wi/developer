@@ -11,7 +11,7 @@
 
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $sprache->help_substitutes_list;?>
@@ -21,7 +21,7 @@
 	<?php } ?>
 
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <?php echo $gsprache->substitutes;?> <a href="userpanel.php?w=su&amp;d=ad"<span class="btn btn-success"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
         </div>
     </div>
@@ -29,7 +29,7 @@
     <hr>
 
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-body">
                     <div class="table-responsive">

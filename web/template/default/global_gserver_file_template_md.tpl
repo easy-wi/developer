@@ -13,7 +13,7 @@
 
     <?php if (count($errors)>0){ ?>
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-danger">
                 <div class="box-header">
                     <i class="fa fa-warning"></i>
@@ -31,7 +31,7 @@
     <?php }?>
 
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-body">
                     <form role="form" action="<?php echo $targetFile;?>?w=gt&amp;d=md&amp;id=<?php echo $id;?>&amp;r=gt" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">

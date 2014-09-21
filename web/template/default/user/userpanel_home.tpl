@@ -10,7 +10,7 @@
 
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="alert alert-info alert-dismissable">
                 <i class="fa fa-info"></i>
                 <?php echo $gsprache->help_home;?>
@@ -137,7 +137,7 @@
 
     <?php foreach ($feedArray as $url => $array) { ?>
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-12">
 
             <h3><?php echo $url;?></h3>
 
