@@ -69,32 +69,31 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query2 = $sql->prepare("UPDATE imprints SET `imprint`=? WHERE `language`=? AND `resellerid`=? LIMIT 1");
     $query3 = $sql->prepare("INSERT INTO `imprints` (`language`,`imprint`,`resellerid`) VALUES (?,?,?)");
 
-    if ($ui->escaped('languages', 'post')) {
+    if ($ui->st('languages', 'post')) {
 
-        $languages = (array) $ui->escaped('languages', 'post');
+        $languages = (array) $ui->st('languages', 'post');
 
         foreach ($languages as $language) {
 
-            if (small_letters_check($language, 2)) {
+            $description = $ui->escaped('description', 'post', $language);
 
-                $description = $ui->escaped('description', 'post', $language);
-                $query->execute(array($language, $reseller_id));
-                $num = $query->rowCount();
+            $query->execute(array($language, $reseller_id));
 
-                if ($num == 1) {
-                    $query2->execute(array($description, $language, $reseller_id));
-                    if ($query2->rowCount() > 0) {
-                        $changed = true;
-                    }
-                } else {
-                    $query3->execute(array($language, $description, $reseller_id));
-                    if ($query3->rowCount() > 0) {
-                        $changed = true;
-                    }
+            if ($query->rowCount() == 1) {
+
+                $query2->execute(array($description, $language, $reseller_id));
+
+                if ($query2->rowCount() > 0) {
+                    $changed = true;
                 }
 
-            }
+            } else {
+                $query3->execute(array($language, $description, $reseller_id));
 
+                if ($query3->rowCount() > 0) {
+                    $changed = true;
+                }
+            }
         }
 
         $query = $sql->prepare("SELECT `language` FROM `imprints` WHERE `resellerid`=?");
@@ -129,7 +128,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else {
 
-    $foundlanguages = array();
+    $foundLanguages = array();
 
     $query = $sql->prepare("SELECT `template` FROM `settings`  WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
@@ -142,7 +141,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT `imprint` FROM `imprints` WHERE `language`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($langrow, $reseller_id));
 
-            $foundlanguages[] = array('lang' => $langrow, 'imprint' => $query->fetchColumn(), 'style' => $query->rowCount());
+            $foundLanguages[] = array('lang' => $langrow, 'imprint' => $query->fetchColumn(), 'style' => $query->rowCount());
         }
 
         $template_file = 'admin_settings_imprint.tpl';
