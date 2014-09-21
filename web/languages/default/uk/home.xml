@@ -6,10 +6,10 @@
     <gserver_tag_removed>game server with removed server tag</gserver_tag_removed>
     <host_crashed>crashed hosts</host_crashed>
     <master_crashed>crashed master server</master_crashed>
-    <master_installed_db>Installed databases</master_installed_db>
+    <master_installed_db>Installed DBs</master_installed_db>
     <master_installed_server>Installed servers</master_installed_server>
     <master_installed_slots>Installed slots</master_installed_slots>
-    <master_installed_space>Installed space</master_installed_space>
+    <master_installed_space>Space</master_installed_space>
     <master_installed_vhosts>Installed vhosts</master_installed_vhosts>
     <rulebreak>Broken contract conditions</rulebreak>
     <tickets>tickets</tickets>

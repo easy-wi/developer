@@ -6,10 +6,10 @@
 	<gserver_tag_removed>Gameserver mit entferntem Servertag</gserver_tag_removed>
 	<host_crashed>Abgestürzte Hosts</host_crashed>
 	<master_crashed>Abgestürzte Masterserver</master_crashed>
-    <master_installed_db>Installierte Datenbanken</master_installed_db>
-    <master_installed_server>Installierte Server</master_installed_server>
-    <master_installed_slots>Installierte Slots</master_installed_slots>
-    <master_installed_space>Vergebener Speicherplatz</master_installed_space>
+    <master_installed_db>Installierte DBs</master_installed_db>
+    <master_installed_server>Server</master_installed_server>
+    <master_installed_slots>Slots</master_installed_slots>
+    <master_installed_space>Speicherplatz</master_installed_space>
     <master_installed_vhosts>Installierte Vhosts</master_installed_vhosts>
     <rulebreak>Vertragsverletzungen</rulebreak>
 	<tickets>Tickets</tickets>

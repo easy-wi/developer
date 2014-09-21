@@ -18,7 +18,7 @@
                         <?php echo $gsprache->appRoot;?>
                     </h3>
                     <p>
-                        <?php echo $statsArray['gameMasterCrashed'].'/'.$statsArray['gameMasterActive'];?> <?php echo $sprache_bad->master_crashed;?><br>
+                        <?php echo $statsArray['gameMasterCrashed'].'/'.$statsArray['gameMasterActive'];?> <?php echo $sprache_bad->crashed;?><br>
                         <?php echo $statsArray['gameserverActive'].'/'.$statsArray['gameMasterServerAvailable'];?> <?php echo $sprache_bad->master_installed_server;?><br>
                         <?php echo $statsArray['gameserverSlotsInstalled'].'/'.$statsArray['gameMasterSlotsAvailable'];?> <?php echo $sprache_bad->master_installed_slots;?>
                     </p>
@@ -64,7 +64,7 @@
                         <?php echo $gsprache->master;?>
                     </h3>
                     <p>
-                        <?php echo $statsArray['voiceMasterCrashed'].'/'.$statsArray['voiceMasterActive'];?> <?php echo $sprache_bad->ts3master_crashed;?><br>
+                        <?php echo $statsArray['voiceMasterCrashed'].'/'.$statsArray['voiceMasterActive'];?> <?php echo $sprache_bad->crashed;?><br>
                         <?php echo $statsArray['voiceserverActive'].'/'.$statsArray['voiceMasterServerAvailable'];?> <?php echo $sprache_bad->master_installed_server;?><br>
                         <?php echo $statsArray['voiceserverSlotsInstalled'].'/'.$statsArray['voiceMasterSlotsAvailable'];?> <?php echo $sprache_bad->master_installed_slots;?>
                     </p>
