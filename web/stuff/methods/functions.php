@@ -1431,7 +1431,7 @@ if (!function_exists('passwordgenerate')) {
         return array('server' => $server, 'port' => $port, 'user' => $user, 'pwd' => $pwd, 'path' => $path);
     }
 
-    function configureDateTables ($doNotHow = '', $defaultSorting = '0, "asc"', $ajaxSource = '') {
+    function configureDateTables ($doNotShow = '', $defaultSorting = '0, "asc"', $ajaxSource = '') {
 
         global $htmlExtraInformation, $gsprache;
 
@@ -1451,7 +1451,7 @@ $(function() {
         'bSort': true,
         'aoColumnDefs': [{
             'bSortable': false,
-            'aTargets': [{$doNotHow}]
+            'aTargets': [{$doNotShow}]
         }],
         'bInfo': true,
         'bAutoWidth': false,

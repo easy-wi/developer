@@ -474,7 +474,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     $lendVoiceServers = array();
 
     $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
-    $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
+    $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
     $query3 = $sql->prepare("SELECT `slots`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
     $query->execute(array($reseller_id));
     foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {

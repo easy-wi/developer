@@ -193,76 +193,103 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else {
 
-        $gscount = 0;
-        $gscounts = array();
-        $gsused = array();
-        $table = array();
+        $htmlExtraInformation['css'][] = '<link href="css/adminlte/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
+        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
 
-        $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `active`='Y' AND `lendserver`='Y' AND `resellerid`=?");
-        $query2 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
+        $lendGameServers = array();
+        $lendVoiceServers = array();
+        $shutDownEmpty = 'Y';
+        $shutDownEmptyTime = 5;
+
+        $query = $sql->prepare("SELECT `shutdownempty`,`shutdownemptytime` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
+        $query->execute(array($reseller_id));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $shutDownEmpty = $row['shutdownempty'];
+            $shutDownEmptyTime = $row['shutdownemptytime'];
+        }
+
+        $deleteQuery = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? LIMIT 1");
+
+        $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
+        $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
+        $query3 = $sql->prepare("SELECT `id`,`slots`,`started`,`lendtime`,`password`,`rcon` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 
-            $query2->execute(array($row['id'], $reseller_id));
+            $installedShorten = array();
+            $time = 0;
+            $runningGame = '';
+            $slots = $row['slots'];
+            $lendID = null;
+            $password = null;
+            $rcon = null;
+
+            $query2->execute(array($row['id']));
             foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                if (isset($gscounts[$row2['shorten']])) {
-                    $gscounts[$row2['shorten']]++;
-                } else {
-                    $gscounts[$row2['shorten']] = 1;
-                    $gsused[$row2['shorten']] = 0;
+                $installedShorten[$row2['shorten']] = $row2['description'];
+
+                if ($row2['id'] == $row['serverid']) {
+                    $runningGame = $row2['shorten'];
                 }
             }
 
-            $gscount++;
+            $query3->execute(array($row['serverid']));
+            foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
 
+                $lendID = $row3['id'];
+                $password = $row3['password'];
+                $rcon = $row3['rcon'];
+
+                $slots = $row3['slots'];
+                $timeleft = round($row3['lendtime'] - (strtotime('now') - strtotime($row3['started'])) / 60);
+                $time = ($timeleft <= 0) ? 0 : $timeleft . '/'. $row3['lendtime'];
+
+                if ($time == 0 or ($shutDownEmpty == 'Y' and ($row3['lendtime'] - $timeleft) > $shutDownEmptyTime and $row['queryNumplayers'] < 1)) {
+
+                    $cmds = gsrestart($row['id'], 'so', $aeskey, $reseller_id);
+                    ssh2_execute('gs', $row['id'], $cmds);
+
+                    $deleteQuery->execute(array($row3['id']));
+
+                    $lendID = null;
+                    $time = 0;
+                }
+
+                if (!isset($nextfree) or $nextfree > $timeleft) {
+                    $nextfree = $timeleft;
+                }
+            }
+
+            $lendGameServers[] = array('id' => $lendID, 'password' => $password, 'rcon' => $rcon, 'ip' => $row['serverip'], 'port' => (int) $row['port'], 'queryName' => htmlentities($row['queryName'], ENT_QUOTES, 'UTF-8'), 'queryMap' => htmlentities($row['queryMap'], ENT_QUOTES, 'UTF-8'), 'runningGame' => $runningGame, 'games' => $installedShorten, 'slots' => (int) $slots,'usedslots' => (int) $row['queryNumplayers'], 'timeleft' => $time);
         }
 
-        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `active`='Y' AND `lendserver`='Y' AND `active`='Y' AND `resellerid`=?");
-        $query->execute(array($reseller_id));
-        $vocount = $query->fetchColumn();
-        $voTotalCount = $vocount;
+        if (!isset($nextfree)) {
+            $nextfree = 0;
+        }
 
-        $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `lendedserver` WHERE `servertype`='v' AND `resellerid`=?");
-        $query->execute(array($reseller_id));
-        $voused = $query->fetchColumn();
-
-        $query = $sql->prepare("SELECT * FROM `lendedserver` WHERE `resellerid`=? ORDER BY `servertype` DESC");
-        $query2 = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
-        $query3 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
-        $query4 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query5 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query6 = $sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`id`=s.`switchID` LEFT JOIN `servertypes` t ON s.`id`=? AND s.`servertype`=t.`id` WHERE s.`resellerid`=? AND t.`shorten` IS NOT NULL LIMIT 1");
-        $query7 = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
-        $query8 = $sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
-
+        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`password`,l.`slots`,l.`started`,l.`lendtime`,l.`id` AS `lend_id` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
+        $query2 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
 
-            $id = $row['id'];
-            $servertype = $row['servertype'];
-            $serverid = $row['serverid'];
-            $lendtime = $row['lendtime'];
-            $timeleft = round($lendtime - (strtotime('now') - strtotime($row['started'])) / 60);
+            $time = 0;
+            $lendID = null;
+            $slots = $row['availableSlots'];
 
-            if ($servertype == 'g' and (!isset($nextfree) or $timeleft < $nextfree)) {
-                $nextfree = $timeleft;
-            } else if ($servertype == 'v' and (!isset($vonextfree) or $timeleft < $vonextfree)) {
-                $vonextfree = $timeleft;
-            }
+            if ($row['slots'] != null) {
 
-            if ($timeleft <= 0) {
+                $lendID = $row['lend_id'];
 
-                if ($servertype == 'g') {
-                    $query2->execute(array($serverid, $reseller_id));
-                    foreach($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                        $cmds = gsrestart($row2['switchID'], 'so', $aeskey, $reseller_id);
-                        ssh2_execute('gs', $row2['rootID'], $cmds);
-                    }
+                $timeleft = round($row['lendtime'] - (strtotime('now') - strtotime($row['started'])) / 60);
+                $slots = $row['slots'];
 
-                } else if ($servertype == 'v') {
+                $time = ($timeleft <= 0) ? 0 : $timeleft . '/'. $row['lendtime'];
 
-                    $query3->execute(array($aeskey, $serverid, $reseller_id));
-                    foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                if ($time == 0 or ($shutDownEmpty == 'Y' and ($row['lendtime'] - $timeleft) > $shutDownEmptyTime and $row['usedslots'] < 1)) {
+
+                    $query2->execute(array($aeskey, $row['id'], $reseller_id));
+                    foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
 
                         $queryport = $row2['queryport'];
                         $querypassword = $row2['decryptedquerypassword'];
@@ -284,55 +311,23 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         }
 
                         $connection->CloseConnection();
+
+                        $deleteQuery->execute(array($row['lend_id']));
+
+                        $time = 0;
+                        $lendID = null;
+                    }
+
+                    if (!isset($vonextfree) or $vonextfree > $timeleft) {
+                        $vonextfree = $timeleft;
                     }
                 }
-                $query5->execute(array($id, $reseller_id));
-
-            } else {
-
-                $server = '';
-                $shorten = '';
-                $rcon = $row['rcon'];
-                $password = $row['password'];
-                $slots = $row['slots'];
-                $lenderip = $row['lenderip'];
-
-                if ($servertype == 'g') {
-
-                    $query6->execute(array($serverid, $reseller_id));
-                    foreach ($query6->fetchall(PDO::FETCH_ASSOC) as $row2) {
-
-                        $server = $row2['serverip'] . ':' . $row2['port'];
-                        $shorten = $row2['shorten'];
-
-                        $query7->execute(array($row2['id'], $reseller_id));
-                        foreach ($query7->fetchall(PDO::FETCH_ASSOC) as $row3) {
-                            $shortenExists = $row3['shorten'];
-                            $gsused[$shortenExists]++;
-                        }
-                    }
-
-                    $gscount--;
-
-                } else if ($servertype == 'v') {
-
-                    $query8->execute(array($serverid, $reseller_id));
-                    foreach ($query8->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                        $server = $row2['ip'] . ':' . $row2['port'];
-                        $shorten = $row2['type'];
-                    }
-
-                    $vocount--;
-
-                }
-                $table[] = array('id' => $id,'servertype' => $servertype, 'server' => $server,'shorten' => $shorten,'password' => $password,'rcon' => $rcon,'slots' => $slots,'lenderip' => $lenderip,'lendtime' => $lendtime,'timeleft' => $timeleft);
             }
+
+            $lendVoiceServers[] = array('id' => $lendID, 'password' => $row['password'], 'ip' => $row['ip'], 'port' => (int) $row['port'], 'queryName' => htmlentities($row['queryName'], ENT_QUOTES, 'UTF-8'), 'connect' => $row['dns'], 'slots' => (int) $slots, 'usedslots' => (int) $row['usedslots'], 'timeleft' => $time);
         }
 
-        if (!isset($nextfree) or (isset($nextfree) and $gscount>0)) {
-            $nextfree = 0;
-        }
-        if (!isset($vonextfree) or (isset($vonextfree) and $vocount>0)) {
+        if (!isset($vonextfree)) {
             $vonextfree = 0;
         }
 
@@ -341,11 +336,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $nextcheck = $query->fetchColumn();
 
         $nextcheck = ($nextcheck > 0) ? ceil($nextcheck) : ceil($nextcheck) * -1;
-        $used[] = 'Teamspeak 3: '.$voused. '/' . $voTotalCount;
-
-        foreach ($gscounts as $key=>$value) {
-            $used[] = $key. ': ' .$gsused[$key]. '/' . $value;
-        }
 
         $template_file = 'admin_lendserver_list.tpl';
     }
