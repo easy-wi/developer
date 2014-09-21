@@ -66,7 +66,7 @@ $coreModules = array(
     10 => array('id' => 10, 'active' => 'Y', 'name' => $gsprache->webspace, 'sub' => 'ws', 'type' => $sprache->type_core)
 );
 
-$query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `modules` WHERE `type`='C' AND `get`=? LIMIT 1");
+$query = $sql->prepare("SELECT `id` FROM `modules` WHERE `type`='C' AND `get`=? LIMIT 1");
 $query2 = $sql->prepare("INSERT INTO `modules` (`file`,`get`,`sub`,`type`,`active`) VALUES ('',?,?,'C',?) ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
 $query3 = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('mo',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
 
@@ -74,13 +74,18 @@ foreach ($coreModules as $module) {
 
     $query->execute(array($module['sub']));
 
-    if ((int) $query->fetchColumn() == 0) {
+    $coreModuleID = (int) $query->fetchColumn();
+
+    if ($coreModuleID == 0) {
 
         $query2->execute(array($module['sub'], $module['sub'], 'Y'));
 
         $instertedID = $sql->lastInsertId();
 
         $query3->execute(array($instertedID, $user_language, $module['name'], 0));
+
+    } else {
+        $query3->execute(array($coreModuleID, $user_language, $module['name'], 0));
     }
 }
 
