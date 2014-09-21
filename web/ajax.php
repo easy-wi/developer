@@ -91,6 +91,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_joblog.php');
 
+    // ipbans
+    } else if ($ui->smallletters('d', 6, 'get') =='ipbans' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['ipBans']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_ipbans.php');
+
     // App server
     } else if ($ui->smallletters('d', 9, 'get') =='appserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['roots']) {
 

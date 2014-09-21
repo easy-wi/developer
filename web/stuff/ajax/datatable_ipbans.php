@@ -1,7 +1,7 @@
 <?php
 
 /**
- * File: datatable_maillog.php.
+ * File: datatable_ipbans.php.
  * Author: Ulrich Block
  * Date: 21.09.14
  * Contact: <ulrich.block@easy-wi.com>
@@ -44,14 +44,17 @@ if (!defined('AJAXINCLUDED')) {
 $sprache = getlanguagefile('logs', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
 
-$query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `mail_log` AS l WHERE `resellerid`=?");
+$query = $sql->prepare("SELECT `faillogins` FROM `settings` WHERE `resellerid`='0' LIMIT 1");
+$query->execute();
+$failLogins = (int) $query->fetchColumn();
+
+$query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `badips`");
 $query->execute(array($resellerLockupID));
 $array['iTotalRecords'] = $query->fetchColumn();
 
 if ($sSearch) {
-
-    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `mail_log` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`uid` WHERE l.`resellerid`=:resellerid AND (l.`date` LIKE :search OR l.`topic` LIKE :search OR s.`cname` LIKE :search OR s.`mail` LIKE :search)");
-    $query->execute(array(':search' => '%' . $sSearch . '%', ':resellerid' => $resellerLockupID));
+    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `badips` WHERE `badip` LIKE :search OR `id` LIKE :search OR `bantime` LIKE :search OR `failcount` LIKE :search OR `reason` LIKE :search");
+    $query->execute(array(':search' => '%' . $sSearch . '%'));
 
     $array['iTotalDisplayRecords'] = $query->fetchColumn();
 
@@ -59,7 +62,7 @@ if ($sSearch) {
     $array['iTotalDisplayRecords'] = $array['iTotalRecords'];
 }
 
-$orderFields = array(0 => 'l.`date`', 1 => 's.`cname`', 2 => 'l.`topic`');
+$orderFields = array(0 => '`badip`', 1 => '`id`', 2 => '`bantime`', 3 => '`failcount`', 4 => '`reason`');
 
 if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
     $orderBy = implode(' ' . $sSortDir . ', ', $orderFields[$iSortCol]) . ' ' . $sSortDir;
@@ -70,13 +73,13 @@ if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
 }
 
 if ($sSearch) {
-    $query = $sql->prepare("SELECT l.`date`,l.`topic`,s.`cname`,s.`mail` FROM `mail_log` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`uid` WHERE l.`resellerid`=:resellerid AND (l.`date` LIKE :search OR l.`topic` LIKE :search OR s.`cname` LIKE :search OR s.`mail` LIKE :search) ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
-    $query->execute(array(':search' => '%' . $sSearch . '%', ':resellerid' => $resellerLockupID));
+    $query = $sql->prepare("SELECT * FROM `badips` WHERE `badip` LIKE :search OR `id` LIKE :search OR `bantime` LIKE :search OR `failcount` LIKE :search OR `reason` LIKE :search ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+    $query->execute(array(':search' => '%' . $sSearch . '%'));
 } else {
-    $query = $sql->prepare("SELECT l.`date`,l.`topic`,s.`cname`,s.`mail` FROM `mail_log` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`uid` WHERE l.`resellerid`=? ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
-    $query->execute(array($resellerLockupID));
+    $query = $sql->prepare("SELECT * FROM `badips` ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+    $query->execute();
 }
 
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $array['aaData'][] = array($row['date'], $row['cname'] . '(' . $row['mail'] . ')', $row['topic']);
+    $array['aaData'][] = array($row['badip'], $row['id'], $row['bantime'], $row['failcount'] . '/' . $failLogins, $row['reason'], returnButton($template_to_use, 'ajax_admin_job_checkbox.tpl', '', '', $row['id'], ''));
 }
