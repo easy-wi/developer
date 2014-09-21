@@ -104,7 +104,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
             #https://github.com/easy-wi/developer/issues/80 Include CMS news in dashboards
             $query2 = $sql->prepare("SELECT p.`id`,p.`date`,t.`id` AS `textID`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0 ORDER BY `date` DESC LIMIT 0,$newsAmount");
             $query2->execute(array($user_language));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo == 'Y') ? $page_url . '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url . '/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url, 'date' => date('Y-m-d', $strtotime), 'time' => date('H:i', $strtotime));
             }
 
@@ -120,7 +120,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
 
                 $query3 = $sql->prepare("SELECT `title`,`link`,`description`,`content`,`pubDate` FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=? AND `active`='Y' ORDER BY `pubDate` DESC LIMIT $newsAmount");
                 $query3->execute(array($row2['feedID'], $row['resellerID']));
-                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
                     if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
                         $text = substr($row3['content'], 0, $row['maxChars']);
@@ -152,7 +152,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
 
                 $query2 = $sql->prepare("SELECT t.`appID`,t.`shorten` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON s.`id`=g.`serverid` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=? AND t.`steamgame`='S'");
                 $query2->execute(array($user_id, $reseller_id));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $steamAppIDsArray[] = workAroundForValveChaos($row2['appID'], $row2['shorten']);
                 }
 
@@ -161,8 +161,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
 
             $query2 = $sql->prepare("(SELECT 'cms' AS `newsType`,p.`id` AS `newsID`,p.`date` AS `newsDate`,t.`id` AS `textID`,t.`title` AS `newsTitle`,t.`text` AS `newsText`,'' AS `twitterText`,'' AS `feedUrl`,'N' AS `twitter`,'' AS `loginName`,'' AS `link` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=:lang AND p.`resellerid`=0) UNION (SELECT 'feed' AS `newsType`,u.`feedID` AS `newsID`,n.`pubDate` AS `newsDate`,0 AS `textID`,n.`title` AS `newsTitle`,n.`content` AS `newsText`,n.`description` AS `twitterText`,u.`feedUrl`,u.`twitter`,u.`loginName`,n.`link` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=:resellerID AND n.`active`='Y' AND (u.`active`='Y'  $steamAppIDs)) ORDER BY `newsDate` DESC LIMIT 0,$newsAmount");
             $query2->execute(array(':lang' => $user_language,':resellerID' => $row['resellerID']));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 if ($row2['newsType'] == 'cms') {
 
@@ -194,7 +193,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
 
                 $strtotime = strtotime($row2['newsDate']);
 
-                $feedArray['News'][] = array('title' => $title, 'link' => $link, 'text' => $text,'url' => $url, 'date' => date('Y-m-d', $strtotime), 'time' => date('H:i', $strtotime));
+                $feedArray['News'][] = array('title' => $title, 'link' => $link, 'text' => preg_replace('/<img[^>]+\>/i', '', $text),'url' => $url, 'date' => date('Y-m-d', $strtotime), 'time' => date('H:i', $strtotime));
             }
         }
     }

@@ -165,18 +165,14 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
 
         $newsAmount = $row['newsAmount'];
 
-        #https://github.com/easy-wi/developer/issues/80 Include CMS news in dashboards
-        $query2 = $sql->prepare("SELECT p.`id`,t.`id` AS `textID`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0 ORDER BY `date` DESC LIMIT 0,$newsAmount");
-        $query2->execute(array($user_language));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-            if ($row['merge'] == 'N') {
-                $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo == 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
-            } else {
-                $feedArray['News'][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo == 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url);
-            }
-        }
-
         if ($row['merge'] == 'N') {
+
+            $query2 = $sql->prepare("SELECT p.`id`,p.`date`,t.`id` AS `textID`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=? AND p.`resellerid`=0 ORDER BY `date` DESC LIMIT 0,$newsAmount");
+            $query2->execute(array($user_language));
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                $strtotime = strtotime($row2['date']);
+                $feedArray[$page_url][] = array('title' => $row2['title'], 'link' => (isset($seo) and $seo == 'Y') ? $page_url. '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['title']) . '/' : $page_url.'/index.php?site=news&amp;id=' . $row2['id'], 'text' => nl2br($row2['text']), 'url' => $page_url, 'date' => date('Y-m-d', $strtotime), 'time' => date('H:i', $strtotime));
+            }
 
             $query2 = $sql->prepare("SELECT `feedID`,`feedUrl`,`feedID`,`twitter`,`loginName` FROM `feeds_url` WHERE `resellerID`=? AND `active`='Y' ORDER BY $orderFeedsBy");
             $query2->execute(array($row['resellerID']));
@@ -187,9 +183,9 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
             }
 
             foreach ($object as $row2) {
-                $query3 = $sql->prepare("SELECT `title`,`link`,`description`,`content` FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=? AND `active`='Y' ORDER BY `pubDate` DESC LIMIT $newsAmount");
+                $query3 = $sql->prepare("SELECT `title`,`link`,`description`,`content`,`pubDate` FROM `feeds_news` WHERE `feedID`=? AND `resellerID`=? AND `active`='Y' ORDER BY `pubDate` DESC LIMIT $newsAmount");
                 $query3->execute(array($row2['feedID'], $row['resellerID']));
-                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
                     if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
                         $text = substr($row3['content'], 0, $row['maxChars']);
@@ -202,39 +198,64 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
                     }
 
                     $url = ($row2['twitter'] == 'N') ? $row2['feedUrl'] : 'https://twitter.com/' . $row2['loginName'];
-                    $feedArray[$url][] = array('title' => $row3['title'], 'link' => $row3['link'], 'text' => $text, 'url' => $url);
+                    $strtotime = strtotime($row3['pubDate']);
+                    $feedArray[$url][] = array('title' => $row3['title'], 'link' => $row3['link'], 'text' => $text, 'url' => $url, 'date' => date('Y-m-d', $strtotime), 'time' => date('H:i', $strtotime));
                 }
             }
             unset($object);
 
         } else {
 
+            $steamAppIDs = '';
+
             if ($row['steamFeeds'] == 'Y') {
-                $query2 = $sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND (u.`active`='Y' OR u.`active` IS NULL) ORDER BY $orderFeedsBy LIMIT $newsAmount");
-            } else {
-                $query2 = $sql->prepare("SELECT u.`feedUrl`,u.`feedID`,u.`twitter`,u.`loginName`,n.`title`,n.`link`,n.`description`,n.`content` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=? AND n.`active`='Y' AND u.`active`='Y' ORDER BY $orderFeedsBy LIMIT $newsAmount");
+
+                $steamAppIDsArray = array();
+
+                $query2 = $sql->prepare("SELECT t.`appID`,t.`shorten` FROM `servertypes` AS t WHERE t.`resellerid`=? AND t.`steamgame`='S' AND EXISTS (SELECT 1 FROM `rservermasterg` WHERE `servertypeid`=t.`id`)");
+                $query2->execute(array($reseller_id));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    $steamAppIDsArray[] = workAroundForValveChaos($row2['appID'], $row2['shorten']);
+                }
+
+                $steamAppIDs = (count($steamAppIDsArray) > 0) ? ' OR (n.`feedID`=0  AND n.`content` IN (' . implode(',', $steamAppIDsArray) . '))' : '';
             }
-            $query2->execute(array($row['resellerID']));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
-                if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                    $text = substr(preg_replace('/<(.*?)>/', '', preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/','$1', $row2['content'], -1), -1), 0, $row['maxChars']);
-                } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){
-                    $text = $row2['content'];
-                } else if ($row['displayContent'] == 'N' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
-                    $text = substr(preg_replace('/<(.*?)>/', '', preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/', '$1', $row2['description'], -1), -1), 0, $row['maxChars']);
+            $query2 = $sql->prepare("(SELECT 'cms' AS `newsType`,p.`id` AS `newsID`,p.`date` AS `newsDate`,t.`id` AS `textID`,t.`title` AS `newsTitle`,t.`text` AS `newsText`,'' AS `twitterText`,'' AS `feedUrl`,'N' AS `twitter`,'' AS `loginName`,'' AS `link` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='news' AND t.`language`=:lang AND p.`resellerid`=0) UNION (SELECT 'feed' AS `newsType`,u.`feedID` AS `newsID`,n.`pubDate` AS `newsDate`,0 AS `textID`,n.`title` AS `newsTitle`,n.`content` AS `newsText`,n.`description` AS `twitterText`,u.`feedUrl`,u.`twitter`,u.`loginName`,n.`link` FROM `feeds_news` n LEFT JOIN `feeds_url` u ON n.`feedID`=u.`feedID` WHERE n.`resellerID`=:resellerID AND n.`active`='Y' AND (u.`active`='Y'  $steamAppIDs)) ORDER BY `newsDate` DESC LIMIT 0,$newsAmount");
+            $query2->execute(array(':lang' => $user_language,':resellerID' => $row['resellerID']));
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
+                if ($row2['newsType'] == 'cms') {
+
+                    $url = $page_url;
+                    $link = (isset($seo) and $seo == 'Y') ? $page_url . '/' . $user_language . '/' . szrp($gsprache->news) . '/' . szrp($row2['newsTitle']) . '/' : $page_url . '/index.php?site=news&amp;id=' . $row2['newsID'];
+                    $text = nl2br($row2['newsText']);
+
                 } else {
-                    $text = $row2['description'];
+
+                    $url = ($row2['twitter'] == 'N') ? $row2['feedUrl'] : 'https://twitter.com/' . $row2['loginName'];
+                    $link = $row2['link'];
+
+                    if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
+                        $text = substr(preg_replace('/<(.*?)>/', '', preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/', '$1', $row2['newsText'], -1), -1), 0, $row['maxChars']);
+                    } else if ($row['displayContent'] == 'Y' and $row['limitDisplay'] == 'N' and $row2['twitter'] == 'N'){
+                        $text = $row2['newsText'];
+                    } else if ($row['displayContent'] == 'N' and $row['limitDisplay'] == 'Y' and $row2['twitter'] == 'N'){
+                        $text = substr(preg_replace('/<(.*?)>/', '', preg_replace('/<*?[^<>]*?>(.*?)<\/*?>/', '$1', $row2['twitterText'], -1), -1), 0, $row['maxChars']);
+                    } else {
+                        $text = $row2['twitterText'];
+                    }
                 }
 
-                $url = ($row2['twitter'] == 'N') ? $row2['feedUrl'] : 'https://twitter.com/' . $row2['loginName'];
-                $title = $row2['title'];
+                $title = $row2['newsTitle'];
 
-                if (strlen($row2['title']) <= 1) {
-                    $title = $row2['link'];
+                if (strlen($row2['newsTitle']) <= 1) {
+                    $title = $link;
                 }
 
-                $feedArray['News'][] =  array('title' => $title,'link' => $row2['link'], 'text' => $text,'url' => $url);
+                $strtotime = strtotime($row2['newsDate']);
+
+                $feedArray['News'][] = array('title' => $title, 'link' => $link, 'text' => preg_replace('/<img[^>]+\>/i', '', $text), 'url' => $url, 'date' => date('Y-m-d', $strtotime), 'time' => date('H:i', $strtotime));
             }
         }
     }

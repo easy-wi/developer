@@ -6,7 +6,6 @@
     </ol>
 </section>
 
-<!-- Main content -->
 <section class="content">
 
 	<?php if($userWantsHelpText=='Y'){ ?>
@@ -20,7 +19,6 @@
     </div>
 	<?php } ?>
 
-    <!-- Main row -->
     <div class="row">
 
         <?php if($easywiModules['ti'] and $pa['usertickets']) { ?>
@@ -65,7 +63,7 @@
         </div>
         <?php } ?>
 
-        <?php if($easywiModules['my'] and $dbcount>0 and ($pa['mysql'] or $pa['mysql'])) { ?>
+        <?php if($easywiModules['my'] and $dbcount>0 and $pa['mysql']) { ?>
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-blue">
                 <div class="inner">
@@ -133,44 +131,45 @@
         <?php } ?>
     </div>
 
-    <?php if(count($feedArray)>0) { ; echo '<hr>';?>
-    <!-- row -->
+    <?php if(count($feedArray)>0) { ?>
+
+    <hr>
+
+    <?php foreach ($feedArray as $url => $array) { ?>
     <div class="row">
         <div class="col-md-11">
-            <!-- The time line -->
+
+            <h3><?php echo $url;?></h3>
+
             <ul class="timeline">
+                <?php foreach ($array as $feed) { ;$lastdate=0; ?>
+                <?php if($lastdate!=$feed['date']){ ?>
 
+                <li class="time-label"><span class="bg-green"><?php echo $feed['date'];?></span></li>
 
-                <?php foreach ($feedArray as $url => $array) { ?>
-                    <?php foreach ($array as $feed) { ?>
+                <?php }; $lastdate=$feed['date'];?>
 
-                    <?php if($lastdate!=$feed['date']){ ?>
-
-                    <li class="time-label"><span class="bg-green"><?php echo $feed['date'];?></span></li>
-
-                    <?php }; $lastdate=$feed['date'];?>
-
-                    <li>
-                        <i class="fa fa-info bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fa fa-clock-o"></i> <?php echo $feed['time'];?></span>
-                            <h3 class="timeline-header"><?php echo $feed['title'];?></h3>
-                            <div class="timeline-body">
-                                <?php echo $feed['text'];?>
-                            </div>
-                            <div class='timeline-footer'>
-                                <a class="btn btn-primary btn-xs" href="<?php echo $feed['link'];?>" target="_blank">Read more</a>
-                            </div>
+                <li>
+                    <i class="fa fa-info bg-blue"></i>
+                    <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i> <?php echo $feed['time'];?></span>
+                        <h3 class="timeline-header"><?php echo $feed['title'];?></h3>
+                        <div class="timeline-body">
+                            <?php echo $feed['text'];?>
                         </div>
-                    </li>
-                    <?php } ?>
-
-                    <li>
-                        <i class="fa fa-clock-o"></i>
-                    </li>
+                        <div class='timeline-footer'>
+                            <a class="btn btn-primary btn-xs" href="<?php echo $feed['link'];?>" target="_blank">Read more</a>
+                        </div>
+                    </div>
+                </li>
                 <?php } ?>
-           </ul>
+
+                <li>
+                    <i class="fa fa-clock-o"></i>
+                </li>
+            </ul>
         </div>
     </div>
+    <?php } ?>
     <?php }?>
-</section><!-- /.content -->
+</section>
