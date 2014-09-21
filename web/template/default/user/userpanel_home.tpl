@@ -142,12 +142,14 @@
             <h3><?php echo $url;?></h3>
 
             <ul class="timeline">
-                <?php foreach ($array as $feed) { ;$lastdate=0; ?>
+                <?php $lastdate=0;?>
+                <?php foreach ($array as $feed) { ;?>
                 <?php if($lastdate!=$feed['date']){ ?>
 
                 <li class="time-label"><span class="bg-green"><?php echo $feed['date'];?></span></li>
 
-                <?php }; $lastdate=$feed['date'];?>
+                <?php };?>
+                <?php $lastdate=$feed['date'];?>
 
                 <li>
                     <i class="fa fa-info bg-blue"></i>
