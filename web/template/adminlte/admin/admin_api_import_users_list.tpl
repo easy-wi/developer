@@ -39,8 +39,8 @@
                                 <td><?php echo $table_row['id'];?></td>
                                 <td><?php echo $table_row['lastCheck'];?></td>
                                 <td>
-                                    <a href="admin.php?w=ui&amp;d=dl&amp;id=<?php echo $table_row['id'];?>"><span class="btn-sm btn-danger"><i class="fa fa-trash-o"></i><?php echo $gsprache->del;?></span></a>
-                                    <a href="admin.php?w=ui&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><span class="btn-sm btn-primary"><i class="fa fa-edit"></i><?php echo $gsprache->mod;?></span></a>
+                                    <a href="admin.php?w=ui&amp;d=dl&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i><?php echo $gsprache->del;?></span></a>
+                                    <a href="admin.php?w=ui&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-sm btn-primary"><i class="fa fa-edit"></i><?php echo $gsprache->mod;?></span></a>
                                 </td>
                             </tr>
                             <?php } ?>
