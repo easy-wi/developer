@@ -9,7 +9,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
 
                 <form role="form" action="admin.php?w=sm&amp;r=sm" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 

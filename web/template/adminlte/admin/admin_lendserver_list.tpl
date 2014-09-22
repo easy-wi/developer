@@ -11,7 +11,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-4">
@@ -34,7 +34,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
 
                 <div class="box-header">
                     <h3 class="box-title"><?php echo $gsprache->gameserver;?></h3>
@@ -117,7 +117,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
 
                 <div class="box-header">
                     <h3 class="box-title"><?php echo $gsprache->voiceserver;?></h3>

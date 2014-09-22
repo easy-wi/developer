@@ -16,7 +16,7 @@
 
                 <input type="hidden" name="action" value="ra">
 
-                <div class="box box-info">
+                <div class="box box-primary">
                     <div class="box-body">
 
                         <div class="box-header">

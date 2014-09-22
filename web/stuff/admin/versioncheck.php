@@ -250,10 +250,12 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
             $template_file = $response->printresponse();
         }
 
-    } else {
-        if (isset($ewVersions)) $template_file = 'admin_versioncheck_ud.tpl';
+    } else if (isset($ewVersions)) {
+        $template_file = 'admin_versioncheck_ud.tpl';
     }
+
 } else {
+
     $table = array();
 
     if ($user_language == 'de') {

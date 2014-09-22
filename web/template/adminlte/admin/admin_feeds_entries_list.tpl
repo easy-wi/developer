@@ -16,7 +16,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <form action="admin.php?w=fn&amp;d=md&amp;r=fn" method="post" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
 
                     <input type="hidden" name="action" value="md">

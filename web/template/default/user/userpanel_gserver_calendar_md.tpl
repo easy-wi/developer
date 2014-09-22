@@ -14,7 +14,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
 
                 <form role="form" action="userpanel.php?w=ca&amp;id=<?php echo $id;?>&amp;r=ca" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 

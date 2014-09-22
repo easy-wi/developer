@@ -12,7 +12,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-6">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <form role="form" action="userpanel.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
                     <input type="hidden" name="token" value="<?php echo token();?>">
@@ -106,7 +106,7 @@
         </div>
 
         <div class="col-md-6">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <div class="box-body">
                     <?php if(count($serviceProviders) > 0 ) echo '<h4><strong>Social Auth</strong></h4>';?>
                     <?php foreach($serviceProviders as $sp){ ?>

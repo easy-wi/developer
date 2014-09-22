@@ -29,7 +29,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <form role="form" action="userpanel.php?w=wv&amp;d=pw&amp;id=<?php echo $id;?>&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
                     <input type="hidden" name="token" value="<?php echo token();?>">

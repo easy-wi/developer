@@ -10,7 +10,7 @@
 <!-- Main Content -->
 <section class="content">
 
-    <div class="box box-info">
+    <div class="box box-primary">
         <div class="box-body table-responsive no-padding">
 			<table class="table table-hover">
 				<thead>

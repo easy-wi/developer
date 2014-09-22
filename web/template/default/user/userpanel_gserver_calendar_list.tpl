@@ -25,7 +25,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <div class="box-body">
                     <form class="form-inline" role="form" id="newRestart" action="userpanel.php?w=ca&amp;id=<?php echo $id;?>" method="post">
 
@@ -70,7 +70,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover table-bordered">
                         <thead>

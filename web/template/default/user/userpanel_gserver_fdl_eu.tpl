@@ -39,7 +39,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
 
                 <form role="form" action="userpanel.php?w=fd&amp;d=eu&amp;r=fd" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 

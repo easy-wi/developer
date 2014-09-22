@@ -15,7 +15,7 @@
             <input class="form-control" class="form-control" type="hidden" name="action" value="ms">
 
             <div class="col-md-6">
-                <div class="box box-info">
+                <div class="box box-primary">
 
                     <div class="box-header">
                         <h4 class="box-title"><?php echo $sprache->import_source;?></h4>
@@ -61,7 +61,7 @@
             </div>
 
             <div class="col-md-6">
-                <div class="box box-info">
+                <div class="box box-primary">
 
                     <div class="box-header">
                         <h4 class="box-title"><?php echo $sprache->import_destination;?></h4>

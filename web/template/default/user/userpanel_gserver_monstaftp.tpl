@@ -11,7 +11,7 @@
 <!-- Main Content -->
 <section class="content">
     <div class="row">
-        <div class="box-info">
+        <div class="box-primary">
             <div class="box-body" style="padding: 10px">
                 <?php echo $monstaDisplay;?>
             </div>

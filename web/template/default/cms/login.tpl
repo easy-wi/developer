@@ -46,7 +46,7 @@
     <?php } else { ?>
         <div class="header"><?php echo $sprache->heading;?></div>
         <?php if(isset($header)){ ?>
-            <div class="box box-info">
+            <div class="box box-primary">
                 <div class="alert alert-danger">
                     <p><?php echo $text;?></p>
                 </div>

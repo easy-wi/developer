@@ -27,7 +27,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <form role="form" action="userpanel.php?w=gs&amp;d=cf&amp;id=<?php echo $id;?>&amp;type=easy&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
                     <input class="form-control" type="hidden" name="config" value="<?php echo $postconfig;?>">

@@ -9,7 +9,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <form method="post" action="admin.php?w=jb&amp;r=jb" onsubmit="return confirm('<?php echo $gsprache->sure;?>');">
 
                     <input type="hidden" name="token" value="<?php echo token();?>">

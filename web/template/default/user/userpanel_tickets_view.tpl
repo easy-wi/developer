@@ -11,7 +11,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-6">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <div class="box-body">
                     <dl class="dl-horizontal">
                         <dt><?php echo $sprache->status;?></dt>
