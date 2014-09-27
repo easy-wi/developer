@@ -797,14 +797,7 @@ EOF
 
 		# Neither HLDS nor steamCmd
 		FDLFOLDER="$UPDATE"
-		if [ "$VARIABLE1" == "noSteamCmd" ]; then
-			echo 'PBUSTER=`find $UPDATE -maxdepth 1 -type f -name pbsetup.run | head -n 1`' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo 'cd `dirname $PBUSTER`' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo './pbsetup.run -u --i-accept-the-pb-eula >> $LOGDIR/update-$UPDATE.log' >> $TEMPFOLDER/update_$UPDATE.sh
-			echo 'TEXT="needs to be updated."' >> $TEMPFOLDER/update_$UPDATE.sh
-
-		# Minecraft
-		elif [ "$VARIABLE1" == "mcUpdate" ]; then
+		if [ "$VARIABLE1" == "mcUpdate" ]; then
 			echo 'cd $UPDATE' >> $TEMPFOLDER/update_$UPDATE.sh
 			echo "wget $DOWNLOADURL --output-document $SAVEAS" >> $TEMPFOLDER/update_$UPDATE.sh
 			echo "chmod 750 $SAVEAS" >> $TEMPFOLDER/update_$UPDATE.sh
@@ -1360,6 +1353,19 @@ VARIABLE4="$VARIABLE2/server/$VARIABLE3"
 VARIABLE2="tool"
 for VARIABLE3 in $ADDONS; do
 	if [ "$VARIABLE3" != "" -a -d $HOMEFOLDER/masteraddons/$VARIABLE3 ]; then
+		add_addon
+	fi
+done
+}
+
+function match_maps {
+SERVERDIR="/home/$VARIABLE2/server/$VARIABLE3"
+MATCHADDONS=1
+MAPS=$VARIABLE4
+VARIABLE4="$VARIABLE2/server/$VARIABLE3"
+VARIABLE2="map"
+for VARIABLE3 in $MAPS; do
+	if [ "$VARIABLE3" != "" -a -d $HOMEFOLDER/mastermaps/$VARIABLE3 ]; then
 		add_addon
 	fi
 done
@@ -2180,6 +2186,9 @@ case "$1" in
 	;;
 	addonmatch)
 		match_addons&
+	;;
+	mapmatch)
+		match_maps&
 	;;
 	demoupload)
 		demo_upload
