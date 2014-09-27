@@ -1607,17 +1607,17 @@ foreach ($defined as $table => $t_p) {
         foreach ($key_differ as $key) {
 
             $NULL = ($t_p[$key]['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
-            $AUTO_INCREMENT = ($t_p[$key]['Extra'] == '') ? '' : ' AUTO_INCREMENT';
+            $extra = ($t_p[$key]['Extra'] == '') ? ' ' . strtoupper($t_p[$key]['Extra']) : '';
 
             if ($t_p[$key]['Default'] == 'CURRENT_TIMESTAMP') {
-                $DEFAULT = "DEFAULT CURRENT_TIMESTAMP";
+                $DEFAULT = 'DEFAULT CURRENT_TIMESTAMP';
             } else if ($t_p[$key]['Default'] != '') {
                 $DEFAULT = "DEFAULT '" . $t_p[$key]['Default'] . "'";
             } else {
                 $DEFAULT = '';
             }
 
-            $change[] = 'CHANGE `' . $key . '` `' . $key . '` ' . $t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT . $AUTO_INCREMENT;
+            $change[] = 'CHANGE `' . $key . '` `' . $key . '` ' . $t_p[$key]['Type'] . ' ' . $NULL . ' ' . $DEFAULT . $extra;
         }
 
         if (count($change) > 0) {
