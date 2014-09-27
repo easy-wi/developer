@@ -24,12 +24,13 @@
         <div class="col-md-12">
             <div class="panel box <?php if($table_row['img']=='16_bad') echo 'box-warning'; else if($table_row['img']=='16_error') echo 'box-danger'; else echo 'box-success';?>">
 
-                <h4><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="14" /> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h4>
-
-                <?php if(!empty($table_row['premoved'])){ ?><div class="alert alert-warning alert-dismissable"><i class="fa fa-warning"></i> <?php echo $table_row['premoved'];?></div><?php } ?>
-                <?php if(!empty($table_row['nameremoved'])){ ?><div class="alert alert-warning alert-dismissable"><i class="fa fa-warning"></i> <?php echo $table_row['nameremoved'];?></div><?php } ?>
+                <div class="box-header">
+                    <h3 class="box-title"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="18"> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h3>
+                </div>
 
                 <div class="box-body">
+                    <?php if(!empty($table_row['premoved'])){ ?><div class="alert alert-danger alert-dismissable"><i class="fa fa-warning"></i> <?php echo $table_row['premoved'];?></div><?php } ?>
+                    <?php if(!empty($table_row['nameremoved'])){ ?><div class="alert alert-danger alert-dismissable"><i class="fa fa-warning"></i> <?php echo $table_row['nameremoved'];?></div><?php } ?>
                     <div class="form-group">
                         <a href="userpanel.php?w=gs&amp;d=rs&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->confirm_restart;?>');"><button class="btn btn-sm btn-success inline"><i class="icon-white icon-play"></i> <?php echo $sprache->restarts;?></button></a>
                         <?php if($table_row['stopped']=='N'){ ?><a href="userpanel.php?w=gs&amp;d=st&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->confirm_stop;?>');"><button class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> <?php echo $sprache->stop;?></button></a><?php } ?>

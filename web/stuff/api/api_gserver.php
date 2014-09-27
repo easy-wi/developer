@@ -168,7 +168,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 if (!isset($typeIDs[$singleShorten])) {
                     $success['false'][] = 'image with the shorten ' . $singleShorten . ' does not exists';
                 }
-
             }
 
             if (!isset($success['false']) and !in_array($externalServerID, $bad)) {
@@ -268,7 +267,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                         $calculatedCores = implode(',', $calculatedCores);
                     }
 
-                    foreach (preg_split('/\r\n/', -1, PREG_SPLIT_NO_EMPTY) as $ip) {
+                    foreach (preg_split('/\r\n/', $row['altips'], -1, PREG_SPLIT_NO_EMPTY) as $ip) {
                         $ips[] = $ip;
                     }
 
@@ -363,7 +362,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                         $port4 += $portStep;
                         $port5 += $portStep;
                     }
-
                 }
 
                 $initialpassword = (isset($data['initialpassword']) and wpreg_check($data['initialpassword'], 50) and strlen($data['initialpassword']) > 1) ? $data['initialpassword'] : passwordgenerate(10);

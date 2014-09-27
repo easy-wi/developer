@@ -335,67 +335,7 @@ if ($die == true) {
 		}
         require_once IncludeTemplate($template_to_use,'ajax_admin_voiceserver_usage.tpl', 'ajax');
 	}
-} else if ($pa['gserver'] and $ui->st('d', 'get')!="vs" and $ui->st('d', 'get')!="vo" and ($ui->id('id',19, 'get') or $ui->ip('ip', 'get'))) {
-	$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
-	if ($reseller_id != 0 and $admin_id != $reseller_id) {
-		$reseller_id = $admin_id;
-	}
-	if ($ui->id('id',19, 'get') and $ui->st('d', 'get')!="vs") {
-        $used = 0;
-        $max = 0;
-        $installedserver = 0;
-        $maxserver = 0;
-        $maxslots = 0;
-        $query = $sql->prepare("SELECT `maxslots`,`maxserver` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('id',19, 'get'), $reseller_id));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			$maxslots = $row['maxslots'];
-			$maxserver = $row['maxserver'];
-		}
-        $query = $sql->prepare("SELECT `slots`,`queryNumplayers` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=? AND `active`='Y'");
-        $query->execute(array($ui->id('id',19, 'get'), $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $used+=$row['queryNumplayers'];
-            $max+=$row['slots'];
-            $installedserver++;
-        }
-        require_once IncludeTemplate($template_to_use,'ajax_admin_gserver_usage.tpl', 'ajax');
-	} else if ($ui->ip('ip', 'get') and $ui->st('d', 'get')!="vs") {
-		$query = $sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? AND `resellerid`=? ORDER BY `port`");
-        $query->execute(array($ui->ip('ip', 'get'), $reseller_id));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if (port($row['port'])){
-                $ports[] = $row['port'];
-            }
-            if (port($row['port2'])){
-                $ports[] = $row['port2'];
-            }
-            if (port($row['port3'])){
-                $ports[] = $row['port3'];
-            }
-            if (port($row['port4'])){
-                $ports[] = $row['port4'];
-            }
-            if (port($row['port5'])){
-                $ports[] = $row['port5'];
-            }
-		}
-        $query = $sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
-        $query->execute(array($ui->ip('ip', 'get')));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-			if (port($row['port'])){
-				$ports[] = $row['port'];
-			}
-		}
-		if (isset($ports)) {
-            $ports=array_unique($ports);
-			asort($ports);
-			$ports=implode(", ", $ports); 
-		} else {
-			$ports = '';
-		}
-        require_once IncludeTemplate($template_to_use,'ajax_admin_gserver_ports.tpl', 'ajax');
-	}
+
 } else if (($pa['usertickets'] or $pa['usertickets']) and $ui->port('po', 'get') and ($ui->st('d', 'get') == 'ut' or $ui->st('d', 'get') == 'rt')) {
 	if ($reseller_id != 0 and $admin_id==$reseller_id and $ui->st('d', 'get') == 'rt') {
 		$resellerid = 0;

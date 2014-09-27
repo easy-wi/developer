@@ -32,7 +32,7 @@
 
                         <div class="form-group">
                             <label for="topic_maintopic"><?php echo $sprache->topic_name;?></label>
-                            <select class="form-control" id="topic_maintopic" name="maintopic" onchange="getdetails('ajax.php?d=userTicketCategories&amp;topicName=', this.value, 'topic_name_sub')" required="required">
+                            <select class="form-control" id="topic_maintopic" name="maintopic" required="required">
                                 <option></option>
                                 <?php foreach ($table as $table_row){ ?>
                                 <option value="<?php echo $table_row['id'];?>" ><?php echo $table_row['topic'];?></option>
@@ -64,3 +64,9 @@
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    $('#topic_maintopic').on('change', function() {
+        $('#topic_name_sub').load('ajax.php?d=userTicketCategories&topicName=' + $("#topic_maintopic").val());
+    });
+</script>

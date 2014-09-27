@@ -1068,12 +1068,14 @@ if (!function_exists('passwordgenerate')) {
                 }
             }
 
-            $ports=array_unique($ports);
+            $ports = array_unique($ports);
             asort($ports);
 
             $portsArray[count($ports)] = array('ip' => $serverIP, 'ports' => $ports);
         }
-        $bestIP=current($portsArray);
+
+        $bestIP = current($portsArray);
+
         return array('ip' => $bestIP['ip'], 'ports' => $bestIP['ports']);
     }
 

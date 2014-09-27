@@ -38,7 +38,7 @@
 
                         <div class="form-group">
                             <label for="inputKind"><?php echo $gsprache->stats;?></label>
-                            <select class="form-control" id="inputKind" name="kind" onchange="getdetails('ajax.php?d=uservoicestats&amp;w=',this.value, 'serverSelect')">
+                            <select class="form-control" id="inputKind" name="kind">
                                 <option value="al"><?php echo $sprache->all;?></option>
                                 <option value="se" <?php if ($kind=='se') echo 'selected="selected"'?>><?php echo $sprache->server;?></option>
                             </select>
@@ -97,3 +97,9 @@
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    $('#inputKind').on('change', function() {
+        $('#serverSelect').load('ajax.php?d=uservoicestats&w=' + $("#inputKind").val());
+    });
+</script>
