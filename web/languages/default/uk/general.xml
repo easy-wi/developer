@@ -89,6 +89,12 @@
     <start>Start</start>
 	<stats>Statistics</stats>
     <status>Status</status>
+    <status_crashed>Crashed</status_crashed>
+    <status_inactive>Inactive</status_inactive>
+    <status_ok>OK</status_ok>
+    <status_password>Password</status_password>
+    <status_server_tag>Brandname</status_server_tag>
+    <status_stop>Stopped</status_stop>
     <stop>Stop</stop>
     <subnets>Subnets</subnets>
     <substitutes>Substitutes</substitutes>
