@@ -34,14 +34,14 @@
 
                         <div class="form-group">
                             <label for="inputGame2"><?php echo $sprache->game2;?></label>
-                            <select class="form-control" id="inputGame2" multiple="multiple" name="shorten[]">
+                            <select class="form-control chosen-select" id="inputGame2" multiple="multiple" name="shorten[]">
                                 <?php foreach ($gamesAssigned as $sid => $shorten){ ?><option value="<?php echo $sid;?>" <?php if(in_array($sid,$shortens)) echo 'selected="selected"';?>><?php echo $shorten;?></option><?php }?>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="inputEditRequires"><?php echo $sprache->requires;?></label>
-                            <select class="form-control" id="inputEditRequires" name="depending">
+                            <select class="form-control chosen-select" id="inputEditRequires" name="depending">
                                 <option value="0"></option>
                                 <?php foreach ($dependings as $depending) echo $depending; ?>
                             </select>
@@ -150,4 +150,20 @@
     window.onDomReady(onReady); function onReady() {
         SwitchShowHideRows('init_ready');
     }
+</script>
+
+<script type="text/javascript">
+    $("#inputGame2").chosen({
+        disable_search_threshold: 3,
+        allow_single_deselect: true,
+        no_results_text: "Oops, nothing found!",
+        width: "100%"
+    });
+    $("#inputEditRequires").chosen({
+        disable_search_threshold: 3,
+        inherit_select_classes: true,
+        allow_single_deselect: true,
+        no_results_text: "Oops, nothing found!",
+        width: "100%"
+    });
 </script>

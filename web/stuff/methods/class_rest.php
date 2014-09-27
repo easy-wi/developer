@@ -49,7 +49,7 @@ class easyWiRest {
         $this->port=($this->ssl== 'Y') ? 443 : 80;
         $this->url = $url;
         $this->timeout = $timeout;
-        // check if curl is choosen and available and initiate cURL-Session
+        // check if curl is chosen and available and initiate cURL-Session
         if ($connect == 'curl' and function_exists('curl_init')) {
             if ($this->startCurl($url,$ssl,$this->port) === true) {
                 $this->connect='curl';

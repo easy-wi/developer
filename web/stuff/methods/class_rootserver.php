@@ -68,7 +68,7 @@ class rootServer {
         $this->sql = $sql;
         $this->aeskey = $aeskey;
 
-        // check if curl is choosen and available and initiate cURL-Session else fallback to fsockopen
+        // check if curl is chosen and available and initiate cURL-Session else fallback to fsockopen
         $this->httpConnect = (function_exists('curl_init')) ? 'curl' : 'fsockopen';
 
         return true;

@@ -86,19 +86,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
     $xml->appendChild($element);
+
     if (isset($shorten)) {
+
         header("Cache-Control: public");
         header("Content-Description: File Transfer");
         header("Content-Disposition: attachment; filename = ${shorten}.xml");
         header("Content-Type: text/xml; charset=UTF-8");
         header("Content-Transfer-Encoding: binary");
+
         $xml->formatOutput = true;
         echo $xml->saveXML();
+
         die;
 
     } else {
         $template_file = 'admin_404.tpl';
     }
+
 } else if ($ui->st('d', 'get') == 'ad' or ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get'))) {
 
     $errors = array();
@@ -141,8 +146,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     
     if (!$ui->smallletters('action', 2, 'post') or $ui->id('import', 1, 'post') == 1) {
 
+        // Add jQuery plugin chosen to the header
+        $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
+
         // Protocol list code taken from https://github.com/Austinb/GameQ/blob/v2/examples/list.php
-        $protocols_path = GAMEQ_BASE."gameq/protocols/";
+        $protocols_path = GAMEQ_BASE . 'gameq/protocols/';
 
         // Grab the dir with all the classes available
         $dir = dir($protocols_path);
@@ -191,8 +200,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         // GameQ protocol listing done. Easy-WI Code again.
         if ($ui->st('d', 'get') == 'ad') {
-            $token = token();
+
             $table = array();
+
+            $token = token();
 
             // Collect the shorten we need for game modification
             $query = $sql->prepare("SELECT DISTINCT(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
@@ -201,7 +212,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $table[] = array('shorten' => $row['shorten']);
             }
             
-            if ($ui->id('import', 1, 'post') == 1 and $_FILES['file']['error']==0 and $_FILES['file']['type'] == 'text/xml') {
+            if ($ui->id('import', 1, 'post') == 1 and $_FILES['file']['error'] == 0 and $_FILES['file']['type'] == 'text/xml') {
 
                 try {
                     $xml = new DOMDocument();
@@ -324,6 +335,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = 'admin_images_add.tpl';
 
         } else if ($ui->st('d', 'get') == 'md' and $id) {
+
             $query = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=?");
             $query->execute(array($id, $resellerLockupID));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

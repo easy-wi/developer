@@ -105,7 +105,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $table[$row['shorten']] = $row['description'];
     }
 
-    if (!$ui->smallletters('action', 2, 'post')) {
+    if (!$ui->st('action', 'post')) {
+
+        // Add jQuery plugin chosen to the header
+        $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
 
         if ($ui->st('d', 'get') == 'ad') {
 

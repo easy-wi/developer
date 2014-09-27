@@ -47,7 +47,7 @@
 
                         <div id="mods" class="form-group<?php if(isset($errors['servertype'])) echo ' error';?>">
                             <label for="inputServertype"><?php echo $sprache->game;?></label>
-                            <select class="form-control" id="inputServertype" name="servertype">
+                            <select class="form-control chosen-select" id="inputServertype" name="servertype">
                                 <?php foreach ($table as $k=>$v) { ?>
                                 <option value="<?php echo $k;?>" <?php if($k==$servertype) echo 'selected="selected"'; ?>><?php echo $v;?></option>
                                 <?php } ?>
@@ -69,3 +69,12 @@
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    $("#inputServertype").chosen({
+        disable_search_threshold: 3,
+        inherit_select_classes: true,
+        no_results_text: "Oops, nothing found!",
+        width: "100%"
+    });
+</script>

@@ -88,7 +88,7 @@ $insert_easywi_version = $sql->prepare("UPDATE `easywi_version` SET `version`='3
 <b>Bugfixes:</b><br/>
 <ul>
 <li>Solved the issue that a user with multiple gameservers changed only the ftp accessdata for one gameserver instead of all.</li>
-<li>Not needed error reporting at gameserver edit which tells that a database could not been added even if this action has not been choosen removed.</li>
+<li>Not needed error reporting at gameserver edit which tells that a database could not been added even if this action has not been chosen removed.</li>
 <li>Removed PHP notice at the restartplaner for gameservers without VAC.</li>
 <li>Backups for servers that belong to deactivated users are no longer created.</li>
 <li>Fixed false positive at the gameserver backup module which caused to display always an error even if the useraction was succesful.</li>

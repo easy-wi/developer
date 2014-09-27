@@ -140,7 +140,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inputGameQ">GameQ</label>
                             <div class="controls">
-                                <select class="form-control" id="inputGameQ" name="gameq">
+                                <select class="form-control chosen-select" id="inputGameQ" name="gameq">
                                     <option value="">Other</option>
                                     <?php foreach ($protocols as $k=>$v){ ?>
                                     <option value="<?php echo $k;?>" <?php if($k==$gameq) echo 'selected="selected"';?>><?php echo $v;?></option>
@@ -302,4 +302,14 @@
     window.onDomReady(onReady); function onReady() {
         SwitchShowHideRows('init_ready');
     }
+</script>
+
+<script type="text/javascript">
+    $("#inputGameQ").chosen({
+        disable_search_threshold: 3,
+        inherit_select_classes: true,
+        allow_single_deselect: true,
+        no_results_text: "Oops, nothing found!",
+        width: "100%"
+    });
 </script>

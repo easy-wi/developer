@@ -612,7 +612,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 }
             }
 
-            # will only be an ID in case a master DNS has been choosen
+            # will only be an ID in case a master DNS has been chosen
             if (isid($tsdnsServerID,19)) {
                 $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                 $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $reseller_id));

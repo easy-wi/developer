@@ -279,7 +279,7 @@ class Crypt_Base
      * $buffer bytes > $cfb_init_len than
      * using the $ecb resource furthermore.
      *
-     * This value depends of the choosen cipher
+     * This value depends of the chosen cipher
      * and the time it would be needed for it's
      * initialization [by mcrypt_generic_init()]
      * which, typically, depends on the complexity
@@ -438,7 +438,7 @@ class Crypt_Base
      *
      * - CRYPT_MODE_OFB
      *
-     * (or the alias constants of the choosen cipher, for example for AES: CRYPT_AES_MODE_ECB or CRYPT_AES_MODE_CBC ...)
+     * (or the alias constants of the chosen cipher, for example for AES: CRYPT_AES_MODE_ECB or CRYPT_AES_MODE_CBC ...)
      *
      * If not explictly set, CRYPT_MODE_CBC will be used.
      *

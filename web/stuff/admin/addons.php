@@ -128,9 +128,11 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $errors = array();
 
     // Add or mod is opened
-    if (!$ui->smallletters('action', 2, 'post') or $ui->id('import', 1, 'post')) {
+    if (!$ui->st('action', 'post') or $ui->id('import', 1, 'post')) {
 
-
+        // Add jQuery plugin chosen to the header
+        $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
 
         // Gather data for adding if needed and define add template
         if ($ui->st('d', 'get') == 'ad' or $ui->id('import',1, 'post') == 1) {
