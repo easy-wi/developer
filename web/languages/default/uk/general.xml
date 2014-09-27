@@ -12,6 +12,8 @@
     <appRoot>App server</appRoot>
 	<backup>Backup</backup>
 	<change>Change</change>
+    <chosenNoResult>No result found for</chosenNoResult>
+    <chosenSelect>Please make a selection</chosenSelect>
     <columns>Custom columns</columns>
     <comments>Comments</comments>
 	<databases>Databases</databases>

@@ -12,6 +12,8 @@
     <appRoot></appRoot>
 	<backup>Sikkerhedskopi</backup>
 	<change></change>
+    <chosenNoResult></chosenNoResult>
+    <chosenSelect></chosenSelect>
     <columns>Tilpassede kolonner</columns>
     <comments>Kommentarer</comments>
 	<databases>Databaser</databases>
