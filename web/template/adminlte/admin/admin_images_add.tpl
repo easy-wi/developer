@@ -339,7 +339,9 @@
         disable_search_threshold: 3,
         inherit_select_classes: true,
         allow_single_deselect: true,
-        no_results_text: "Oops, nothing found!",
+        no_results_text: '<?php echo $gsprache->chosenNoResult;?>',
+        placeholder_text_single: '<?php echo $gsprache->chosenSelect;?>',
+        placeholder_text_multiple: '<?php echo $gsprache->chosenSelect;?>',
         width: "100%"
     });
 </script>
