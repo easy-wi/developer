@@ -226,6 +226,7 @@ if (!function_exists('gsrestart')) {
             }
 
             $installedaddons = array();
+            $installedMaps = array();
             $rmarray = array();
 
             $query2 = ($protected == 'Y') ? $sql->prepare("SELECT `addonid` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `paddon`='Y' AND `resellerid`=?") : $sql->prepare("SELECT `addonid` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `paddon`='N' AND `resellerid`=?");
@@ -237,6 +238,8 @@ if (!function_exists('gsrestart')) {
 
                     if ($row3['type'] == 'tool') {
                         $installedaddons[] = $row3['addon'];
+                    } else {
+                        $installedMaps[] = $row3['addon'];
                     }
 
                     if ($row3['cmd'] != null) {
@@ -393,6 +396,10 @@ if (!function_exists('gsrestart')) {
 
                 if ($protected == 'N' and count($installedaddons) > 0) {
                     $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$binaryFolder\" \"".implode(' ', $installedaddons)."\"";
+                }
+
+                if (count($installedMaps) > 0) {
+                    $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$binaryFolder\" \"".implode(' ', $installedMaps)."\"";
                 }
 
                 $restartCmd = "sudo -u ${customer} ./control.sh grestart $customer \"$binaryFolder\" \"$startline\" $protectedString $gamebinary \"$cores\"";
