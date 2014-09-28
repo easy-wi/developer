@@ -1242,7 +1242,7 @@ echo 'cd $VARIABLE5/$VARIABLE2/server' >> $HOMEFOLDER/temp/move-$VARIABLE2-$VARI
 echo 'if [ -d "$VARIABLE4" ]; then rm -rf "$VARIABLE4"; fi' >> $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
 echo 'mv $VARIABLE3 $VARIABLE4' >> $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
 chmod +x $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
-screen -A -m -d -S del-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
+screen -dmS del-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
 }
 
 function map_list {
