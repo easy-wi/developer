@@ -853,6 +853,51 @@ done
 echo "Server deleted"
 }
 
+function add_user {
+#adduser {$technicalUser}-{$id} {$ftpPassword} \"/home/\" " . passwordgenerate(10)
+# var2 				var3			var4		var5
+CONFIGUSERID=`grep CONFIGUSERID $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
+if [ "$CONFIGUSERID" == "" ]; then CONFIGUSERID=1000; fi
+USER=`ls -la /var/run/screen | grep S-$VARIABLE2 | head -n 1 | awk '{print $3}'`
+if [ $USER -eq $USER 2> /dev/null ]; then USERID=$USER; fi
+USERGROUPD=`ls -l $HOMEFOLDER/conf/config.cfg | awk '{print $4}'`
+if [ "$VARIABLE4" == "" ]; then VARIABLE4="/home"; fi
+if [ "$USERID" != "" ]; then
+	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
+else
+	USERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGUSERID}' } $1 == id { id++ } $1 > id { print id; exit }'`
+	if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
+		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
+	else
+		while [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" != "" -o "`grep \"x:$USERID:\" /etc/passwd`" != "" ]; do
+			USERID=$[USERID+1]
+			if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
+				sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
+			fi
+		done
+	fi
+fi
+if [ "$VARIABLE5" != "" ]; then
+	PUSER=`ls -la /var/run/screen | grep S-$VARIABLE2-p | head -n 1 | awk '{print $3}'`
+	if [ $PUSER -eq $PUSER 2> /dev/null ]; then PUSERID=$PUSER;  fi
+	if [ "$PUSERID" != "" ]; then
+		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
+	else
+		PUSERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGUSERID}' } $1 == id { id++ } $1 > id { print id; exit }'`
+		if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" == "" -a "`grep \"x:$PUSERID:\" /etc/passwd`" == "" ]; then
+			sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
+		else
+			while [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" != "" -o "`grep \"x:$PUSERID:\" /etc/passwd`" != "" ]; do
+				PUSERID=$[PUSERID+1]
+				if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" == "" -a "`grep \"x:$PUSERID:\" /etc/passwd`" == "" ]; then
+					sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
+				fi
+			done
+		fi
+	fi
+fi
+}
+
 function add_customer {
 CONFIGUSERID=`grep CONFIGUSERID $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
 if [ "$CONFIGUSERID" == "" ]; then CONFIGUSERID=1000; fi
@@ -904,6 +949,17 @@ ${IONICE}nice -n +19 sudo /usr/sbin/userdel -fr ${VARIABLE2}" > $HOMEFOLDER/temp
 chmod +x $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
 screen -d -m -S del-user-${VARIABLE2} $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
 echo "`date`: User $VARIABLE2 deleted" >> $LOGDIR/update.log
+}
+
+function user_single_delete {
+if [ "`id ${VARIABLE2} 2>/dev/null`" != "" ]; then
+echo "#!/bin/bash
+rm $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
+${IONICE}nice -n +19 sudo /usr/sbin/userdel -fr ${VARIABLE2}" > $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
+chmod +x $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
+screen -d -m -S del-user-${VARIABLE2} $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
+echo "`date`: User $VARIABLE2 deleted" >> $LOGDIR/update.log
+fi
 }
 
 function del_customer_screen {
@@ -2197,12 +2253,19 @@ case "$1" in
 		add_customer
 		wget_remove &
 	;;
+	useradd)
+		add_user
+		wget_remove &
+	;;
 	delscreen)
 		del_customer_screen
 	;;
 	delCustomer)
 		customerDelete
 		wget_remove &
+	;;
+	delSingleUser)
+		user_single_delete
 	;;
 	mod)
 		mod_customer
