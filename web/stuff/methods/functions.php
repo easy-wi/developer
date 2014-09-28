@@ -1494,4 +1494,19 @@ $(function() {
 </script>";
 
     }
+
+    function getUserList ($resellerID) {
+
+        $table = array();
+
+        global $sql;
+
+        $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
+        $query->execute(array($resellerID));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
+        }
+
+        return $table;
+    }
 }
