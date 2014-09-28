@@ -71,11 +71,6 @@
             }
         });
 
-        /*
-        $.each(selectedServers, function( index, value ){
-            alert(value);
-        });*/
-
         var serverString = '';
         var splitted = [];
 

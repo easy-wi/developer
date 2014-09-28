@@ -112,6 +112,7 @@
     <protect>Protection mode</protect>
     <ramMax>Maximum RAM</ramMax>
     <ramMin>Minimum RAM</ramMin>
+    <raminstalled>Assigned ram</raminstalled>
     <rcon>Remote password (RCON)</rcon>
     <recover>Recover</recover>
     <reinstall>Reinstall</reinstall>
@@ -153,7 +154,7 @@
     <usage>Server allocation</usage>
     <usedports>Used ports</usedports>
     <user>User name</user>
-    <useredit>Editable by user</useredit>
+    <useredit>editable by user</useredit>
     <user_add>Successfully added the user on the root server.</user_add>
     <war>Private server</war>
     <webFtp>Web FTP</webFtp>

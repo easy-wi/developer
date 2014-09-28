@@ -106,6 +106,7 @@
     <port_gs>Gameserverport</port_gs>
     <premoved>Serverpasswort entfernt</premoved>
     <protect>Protection Modus</protect>
+    <raminstalled>Zugewiesener Ram</raminstalled>
     <ramMax>Maximaler Ram</ramMax>
     <ramMin>Minimaler Ram</ramMin>
     <rcon>RCON Passwort</rcon>
@@ -149,7 +150,7 @@
     <usage>Serverbelegung</usage>
     <usedports>Benutzte Ports</usedports>
     <user>Benutzername</user>
-    <useredit>Veränderbar vom User</useredit>
+    <useredit>veränderbar vom User</useredit>
     <user_add>User auf dem Server erfolgreich angelegt.</user_add>
     <war>Clanserver</war>
     <webFtp>Web FTP</webFtp>

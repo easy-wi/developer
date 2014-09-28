@@ -50,6 +50,7 @@ include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/config.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/settings.php');
 
 if (!isset($admin_id) and !isset($user_id)) {
@@ -75,76 +76,116 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     $sSearch = (strlen($ui->escaped('sSearch', 'get')) > 0) ? $ui->escaped('sSearch', 'get') : false;
 
     // Userlog
-    if (($ui->smallletters('d', 7, 'get') == 'userlog' and isset($user_id)) or ($ui->smallletters('d', 12, 'get') =='adminuserlog' and isset($admin_id)) and $pa['log']) {
+    if (($ui->smallletters('d', 7, 'get') == 'userlog' and isset($user_id)) or ($ui->smallletters('d', 12, 'get') == 'adminuserlog' and isset($admin_id)) and $pa['log']) {
 
-        $adminLookup = ($ui->smallletters('d', 12, 'get') =='adminuserlog' and isset($admin_id)) ? true : false;
+        $adminLookup = ($ui->smallletters('d', 12, 'get') == 'adminuserlog' and isset($admin_id)) ? true : false;
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_userlog.php');
 
         // Mail log
-    } else if ($ui->smallletters('d', 7, 'get') =='maillog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
+    } else if ($ui->smallletters('d', 7, 'get') == 'maillog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_maillog.php');
 
         // Job log
-    } else if ($ui->smallletters('d', 6, 'get') =='joblog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
+    } else if ($ui->smallletters('d', 6, 'get') == 'joblog' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['jobs']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_joblog.php');
 
         // IP bans
-    } else if ($ui->smallletters('d', 6, 'get') =='ipbans' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['ipBans']) {
+    } else if ($ui->smallletters('d', 6, 'get') == 'ipbans' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['ipBans']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_ipbans.php');
 
         // custom module
-    } else if ($ui->smallletters('d', 12, 'get') =='custommodule' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['root']) {
+    } else if ($ui->smallletters('d', 12, 'get') == 'custommodule' and isset($admin_id) and isset($reseller_id) and $reseller_id == 0 and $pa['root']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_custommodule.php');
 
         // List of imported news feeds
-    } else if ($ui->smallletters('d', 16, 'get') =='feedsnewsentries' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
+    } else if ($ui->smallletters('d', 16, 'get') == 'feedsnewsentries' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_feedsnewsentries.php');
 
         // List of feeds
-    } else if ($ui->smallletters('d', 5, 'get') =='feeds' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
+    } else if ($ui->smallletters('d', 5, 'get') == 'feeds' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_feeds.php');
 
         // App (GS + Tools) masterserver
-    } else if ($ui->smallletters('d', 15, 'get') =='appmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
+    } else if ($ui->smallletters('d', 15, 'get') == 'appmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appmasterserver.php');
 
         // GS images
-    } else if ($ui->smallletters('d', 10, 'get') =='gameimages' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gimages']) {
+    } else if ($ui->smallletters('d', 10, 'get') == 'gameimages' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gimages']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_gameimages.php');
 
         // GS addons
-    } else if ($ui->smallletters('d', 16, 'get') =='gameserveraddons' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
+    } else if ($ui->smallletters('d', 16, 'get') == 'gameserveraddons' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['addons']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_gameaddons.php');
 
         // App server
-    } else if ($ui->smallletters('d', 9, 'get') =='appserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['roots']) {
+    } else if ($ui->smallletters('d', 9, 'get') == 'appserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['roots']) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appserver.php');
 
-        // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front
+        // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front without having to repeat ourselves
     } else {
 
         // When searching a table combination that should provide a server and user´s loginname, firstname, lastname. First do a search at usertable and get IDs.
         // This IDs should be used for doing a `ID` IN (implode(',', $foundIDs)) as it will be faster.
+        if ($sSearch) {
+
+            $userIDs = array();
+
+            $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `full_name` FROM `userdata` WHERE `resellerid`=:reseller_id HAVING (`cname` LIKE :search OR `full_name` LIKE :search)");
+            $query->execute(array(':search' => '%' . $sSearch . '%',':reseller_id' => $resellerLockupID));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $userIDs[] = $row['id'];
+            }
+        }
+
+        if ($ui->smallletters('d', 10, 'get') == 'gameserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gserver']) {
+
+            require_once(EASYWIDIR . '/stuff/ajax/datatable_gameserver.php');
+/*
+        } else if ($ui->smallletters('d', 10, 'get') == 'voiceserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gserver']) {
+
+            require_once(EASYWIDIR . '/stuff/ajax/datatable_voiceserver.php');
+*/
+        }
     }
 
 
     die(json_encode($array));
 
 // App master server updates. Triggered asyncronous with ajax to avoid 5xx errors
-} else if ($ui->smallletters('d', 21, 'get') =='masterappserverupdate' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
+} else if ($ui->smallletters('d', 21, 'get') == 'masterappserverupdate' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['masterServer']) {
 
     require_once(EASYWIDIR . '/stuff/ajax/app_master_update.php');
+    die;
+
+} else if (isset($admin_id) and $pa['gserver'] and $ui->smallletters('d', 14, 'get') == 'appmasterusage' and $ui->id('id', 10, 'get')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/app_master_usage.php');
+    die;
+
+} else if ($ui->smallletters('d', 18, 'get') == 'appmasterportusage' and isset($admin_id) and $pa['gserver'] and $ui->ip4('ip', 'get')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/app_master_port_usage.php');
+    die;
+
+} else if ($ui->smallletters('d', 17, 'get') == 'appmasterportbest' and isset($admin_id) and $pa['gserver']) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/app_master_port_best.php');
+    die;
+
+} else if ($ui->smallletters('d', 19, 'get') == 'appmasterappdetails' and isset($admin_id) and $pa['gserver']) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/app_master_app_details.php');
     die;
 
 } else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {
