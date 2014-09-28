@@ -143,12 +143,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $os = ($ui->w('os', 1, 'post')) ? $ui->w('os', 1, 'post') : 'L';
     $iptables = $ui->startparameter('iptables', 'post');
     $protectedSaveCFGs = $ui->startparameter('protectedSaveCFGs', 'post');
+
+    // Add jQuery plugin chosen to the header
+    $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
     
     if (!$ui->smallletters('action', 2, 'post') or $ui->id('import', 1, 'post') == 1) {
-
-        // Add jQuery plugin chosen to the header
-        $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
-        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
 
         // Protocol list code taken from https://github.com/Austinb/GameQ/blob/v2/examples/list.php
         $protocols_path = GAMEQ_BASE . 'gameq/protocols/';

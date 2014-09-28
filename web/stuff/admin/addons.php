@@ -124,15 +124,15 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $paddon = ($ui->active('paddon', 'post')) ? (string) $ui->active('paddon', 'post') : 'N';
     $depending = ($ui->id('depending',19, 'post')) ? (int) $ui->id('depending', 19, 'post') : 0;
 
+    // Add jQuery plugin chosen to the header
+    $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
+
     // Error handling. Check if required attributes are set and can be validated
     $errors = array();
 
     // Add or mod is opened
     if (!$ui->st('action', 'post') or $ui->id('import', 1, 'post')) {
-
-        // Add jQuery plugin chosen to the header
-        $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
-        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
 
         // Gather data for adding if needed and define add template
         if ($ui->st('d', 'get') == 'ad' or $ui->id('import',1, 'post') == 1) {
