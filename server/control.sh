@@ -970,7 +970,7 @@ function del_customer_screen {
 }
 
 function mod_customer {
-sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE4'","Sa")'` $VARIABLE2-p
+if [ "$VARIABLE4" != "" ]; then sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE4'","Sa")'` $VARIABLE2-p; fi
 sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` $VARIABLE2
 echo "user edited"
 echo "`date`: Userpassword for $VARIABLE2 edited" >> $LOGDIR/update.log
