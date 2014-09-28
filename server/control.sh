@@ -863,16 +863,16 @@ if [ $USER -eq $USER 2> /dev/null ]; then USERID=$USER; fi
 USERGROUPD=`ls -l $HOMEFOLDER/conf/config.cfg | awk '{print $4}'`
 if [ "$VARIABLE4" == "" ]; then VARIABLE4="/home"; fi
 if [ "$USERID" != "" ]; then
-	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
+	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2
 else
 	USERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGUSERID}' } $1 == id { id++ } $1 > id { print id; exit }'`
 	if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
-		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
+		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2
 	else
 		while [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" != "" -o "`grep \"x:$USERID:\" /etc/passwd`" != "" ]; do
 			USERID=$[USERID+1]
 			if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
-				sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $VARIABLE4 -s /bin/bash -u $USERID $VARIABLE2
+				sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2
 			fi
 		done
 	fi
@@ -881,16 +881,16 @@ if [ "$VARIABLE5" != "" ]; then
 	PUSER=`ls -la /var/run/screen | grep S-$VARIABLE2-p | head -n 1 | awk '{print $3}'`
 	if [ $PUSER -eq $PUSER 2> /dev/null ]; then PUSERID=$PUSER;  fi
 	if [ "$PUSERID" != "" ]; then
-		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
+		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
 	else
 		PUSERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGUSERID}' } $1 == id { id++ } $1 > id { print id; exit }'`
 		if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" == "" -a "`grep \"x:$PUSERID:\" /etc/passwd`" == "" ]; then
-			sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
+			sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
 		else
 			while [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" != "" -o "`grep \"x:$PUSERID:\" /etc/passwd`" != "" ]; do
 				PUSERID=$[PUSERID+1]
 				if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" == "" -a "`grep \"x:$PUSERID:\" /etc/passwd`" == "" ]; then
-					sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $VARIABLE4 -s /bin/bash -u $PUSERID $VARIABLE2-p
+					sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
 				fi
 			done
 		fi
