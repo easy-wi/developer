@@ -860,7 +860,7 @@ CONFIGUSERID=`grep CONFIGUSERID $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -
 if [ "$CONFIGUSERID" == "" ]; then CONFIGUSERID=1000; fi
 USER=`ls -la /var/run/screen | grep S-$VARIABLE2 | head -n 1 | awk '{print $3}'`
 if [ $USER -eq $USER 2> /dev/null ]; then USERID=$USER; fi
-USERGROUPD=`ls -l $HOMEFOLDER/conf/config.cfg | awk '{print $4}'`
+USERGROUPD=`ls -l $VARIABLE0 | awk '{print $4}'`
 if [ "$VARIABLE4" == "" ]; then VARIABLE4="/home"; fi
 if [ "$USERID" != "" ]; then
 	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2 2>/dev/null
