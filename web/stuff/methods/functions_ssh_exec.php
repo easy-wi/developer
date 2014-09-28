@@ -155,7 +155,6 @@ if (!function_exists('ssh2_execute')) {
         }
 
         return false;
-
     }
 
     function ssh_check ($ssh2IP, $ssh2Port, $ssh2User, $sshPublickey, $sshKey, $ssh2Pass) {

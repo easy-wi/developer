@@ -34,26 +34,6 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-function getdetails(file, str, id) {
-
-    if (str == "") {
-        document.getElementById(id).innerHTML = "";
-        return;
-    } else {
-        file += str;
-    }
-
-    xmlhttp2 = new XMLHttpRequest();
-    xmlhttp2.onreadystatechange = function() {
-        if (xmlhttp2.readyState == 4 && xmlhttp2.status == 200) {
-            document.getElementById(id).innerHTML=xmlhttp2.responseText;
-        }
-    };
-
-    xmlhttp2.open("GET", file, true);
-    xmlhttp2.send();
-}
-
 function SwitchShowHideRows (Element, change, showNotIfEmpty) {
 
     var TheRest = document.getElementsByTagName('div');

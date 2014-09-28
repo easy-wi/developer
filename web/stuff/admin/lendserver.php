@@ -213,9 +213,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
         $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
-        $query3 = $sql->prepare("SELECT `id`,`slots`,`started`,`lendtime`,`password`,`rcon` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
+        $query3 = $sql->prepare("SELECT `id`,`slots`,`started`,`lendtime`,`password`,`rcon`,CURRENT_TIMESTAMP AS `now` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
+
         $query->execute(array($reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $installedShorten = array();
             $time = 0;
@@ -242,7 +243,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $rcon = $row3['rcon'];
 
                 $slots = $row3['slots'];
-                $timeleft = round($row3['lendtime'] - (strtotime('now') - strtotime($row3['started'])) / 60);
+                $timeleft = round($row3['lendtime'] - (strtotime($row3['now']) - strtotime($row3['started'])) / 60);
                 $time = ($timeleft <= 0) ? 0 : $timeleft . '/'. $row3['lendtime'];
 
                 if ($time == 0 or ($shutDownEmpty == 'Y' and ($row3['lendtime'] - $timeleft) > $shutDownEmptyTime and $row['queryNumplayers'] < 1)) {
@@ -268,7 +269,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $nextfree = 0;
         }
 
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`password`,l.`slots`,l.`started`,l.`lendtime`,l.`id` AS `lend_id` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
+        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`password`,l.`slots`,l.`started`,l.`lendtime`,CURRENT_TIMESTAMP AS `now`,l.`id` AS `lend_id` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
         $query2 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
@@ -281,7 +282,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $lendID = $row['lend_id'];
 
-                $timeleft = round($row['lendtime'] - (strtotime('now') - strtotime($row['started'])) / 60);
+                $timeleft = round($row['lendtime'] - (strtotime($row['now']) - strtotime($row['started'])) / 60);
                 $slots = $row['slots'];
 
                 $time = ($timeleft <= 0) ? 0 : $timeleft . '/'. $row['lendtime'];
