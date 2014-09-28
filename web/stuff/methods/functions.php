@@ -1274,6 +1274,8 @@ if (!function_exists('passwordgenerate')) {
 
             } else if ($action == 'save') {
 
+                $return = 0;
+
                 $query2 = $sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
 
                 if ($api == false) {
@@ -1286,12 +1288,13 @@ if (!function_exists('passwordgenerate')) {
 
                         if ($row['type'] == 'I' and $ui->id($row['name'], $row['length'], 'post')) {
                             $var = $ui->id($row['name'], $row['length'], 'post');
-
                         } else if ($ui->names($row['name'], $row['length'], 'post')) {
                             $var = $ui->names($row['name'], $row['length'], 'post');
                         }
 
                         $query2->execute(array($row['customID'], $id, $var));
+
+                        $return += $query2->rowCount();
                     }
 
                 } else {
@@ -1301,20 +1304,31 @@ if (!function_exists('passwordgenerate')) {
                         $var = '';
 
                         if (isset($api[$row['name']])) {
+
                             if ($row['type'] == 'I') {
                                 $var = isid($api[$row['name']], $row['length']);
                             } else if (names($api[$row['name']], $row['length'])) {
                                 $var = names($api[$row['name']], $row['length']);
                             }
+
                             $query2->execute(array($row['customID'], $id, $var));
+
+                            $return += $query2->rowCount();
                         }
                     }
                 }
 
             } else if ($action == 'del') {
+
+                $return = 0;
+
                 $query2 = $sql->prepare("DELETE FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
+
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
                     $query2->execute(array($row['customID'], $id));
+
+                    $return += $query2->rowCount();
                 }
             }
 
