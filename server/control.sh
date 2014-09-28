@@ -1223,13 +1223,23 @@ PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.in
 }
 
 function port_move {
-	cd /home/$VARIABLE2/server
-	mv $VARIABLE3 $VARIABLE4
+cd /home/$VARIABLE2/server
+mv $VARIABLE3 $VARIABLE4
 }
 
 function move_server {
-	cd $VARIABLE5/$VARIABLE2/server
-	screen -dmS del-$VARIABLE2-$VARIABLE4 mv $VARIABLE3 $VARIABLE4
+echo "#!/bin/bash
+
+VARIABLE2=$VARIABLE2
+VARIABLE3=$VARIABLE3
+VARIABLE4=$VARIABLE4
+VARIABLE4=$VARIABLE4
+rm $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh" > $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
+echo 'cd $VARIABLE5/$VARIABLE2/server' >> $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
+echo 'if [ -d "$VARIABLE4" ]; then rm -rf "$VARIABLE4"; fi' >> $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
+echo '"mv $VARIABLE3 $VARIABLE4"' >> $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
+chmod +x $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
+screen -d -m -S del-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
 }
 
 function map_list {
