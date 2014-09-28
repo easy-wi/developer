@@ -854,8 +854,7 @@ echo "Server deleted"
 }
 
 function add_user {
-#adduser {$technicalUser}-{$id} {$ftpPassword} \"/home/\" " . passwordgenerate(10)
-# var2 				var3			var4		var5
+# adduser username ftpPassword homeDir (optional protected ftpPassword)
 CONFIGUSERID=`grep CONFIGUSERID $HOMEFOLDER/conf/config.cfg 2> /dev/null | awk -F "=" '{print $2}' | tr -d '"'`
 if [ "$CONFIGUSERID" == "" ]; then CONFIGUSERID=1000; fi
 USER=`ls -la /var/run/screen | grep S-$VARIABLE2 | head -n 1 | awk '{print $3}'`
@@ -1226,6 +1225,11 @@ PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.in
 function port_move {
 	cd /home/$VARIABLE2/server
 	mv $VARIABLE3 $VARIABLE4
+}
+
+function move_server {
+	cd $VARIABLE5/$VARIABLE2/server
+	screen -dmS del-$VARIABLE2-$VARIABLE4 mv $VARIABLE3 $VARIABLE4
 }
 
 function map_list {
@@ -2311,6 +2315,9 @@ case "$1" in
 	;;
 	move)
 		port_move
+	;;
+	ip_port_change)
+		move_server
 	;;
 	mc_ws)
 		mc_worldsafe
