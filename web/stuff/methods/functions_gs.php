@@ -703,4 +703,19 @@ if (!function_exists('gsrestart')) {
         return $value;
 
     }
+
+    function getAppMasterList ($resellerID) {
+
+        $table = array();
+
+        global $sql;
+
+        $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`description`,(r.`maxserver` - COUNT(DISTINCT s.`id`)) AS `freeserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid` FROM `rserverdata` r LEFT JOIN `gsswitch` s ON s.`rootID` = r.`id` WHERE r.`active`='Y' AND r.`resellerid`=? GROUP BY r.`id` HAVING (`freeserver`>0 OR `freeserver` IS NULL) ORDER BY `freeserver` DESC");
+        $query->execute(array($resellerID));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $table[$row['id']] = ($row['description'] != null and $row['description'] != '') ? $row['ip'] . ' ' . $row['description'] : $row['ip'];
+        }
+
+        return $table;
+    }
 }
