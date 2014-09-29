@@ -168,14 +168,18 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     require_once(EASYWIDIR . '/stuff/ajax/app_master_update.php');
     die;
 
-} else if (isset($admin_id) and $pa['gserver'] and $ui->smallletters('d', 14, 'get') == 'appmasterusage' and $ui->id('id', 10, 'get')) {
+} else if (isset($admin_id) and $pa['gserver'] and $ui->smallletters('d', 14, 'get') == 'appmasterusage') {
 
-    require_once(EASYWIDIR . '/stuff/ajax/app_master_usage.php');
+    if ($ui->id('id', 10, 'get')) {
+        require_once(EASYWIDIR . '/stuff/ajax/app_master_usage.php');
+    }
     die;
 
-} else if ($ui->smallletters('d', 18, 'get') == 'appmasterportusage' and isset($admin_id) and $pa['gserver'] and $ui->ip4('ip', 'get')) {
+} else if ($ui->smallletters('d', 18, 'get') == 'appmasterportusage' and isset($admin_id) and $pa['gserver']) {
 
-    require_once(EASYWIDIR . '/stuff/ajax/app_master_port_usage.php');
+    if ($ui->ip4('ip', 'get')) {
+        require_once(EASYWIDIR . '/stuff/ajax/app_master_port_usage.php');
+    }
     die;
 
 } else if ($ui->smallletters('d', 17, 'get') == 'appmasterportbest' and isset($admin_id) and $pa['gserver']) {
