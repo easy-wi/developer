@@ -977,9 +977,10 @@ echo "`date`: Userpassword for $VARIABLE2 edited" >> $LOGDIR/update.log
 }
 
 function mod_user {
-if [ "$VARIABLE5" != "" ]; then USERHOME=" -m -d ${VARIABLE5}/$VARIABLE2"; else USERHOME=''; fi
+if [ "$VARIABLE4" != "" -a "$VARIABLE4" != "1" ]; then USERHOME=" -m -d ${VARIABLE4}/$VARIABLE2"; else USERHOME=''; fi
 sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` $USERHOME $VARIABLE2
-if [ "$VARIABLE4" != "" ]; then USERHOME="$USERHOME/pserver" sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE4'","Sa")'` $USERHOME $VARIABLE2-p; fi
+if [ "`id ${VARIABLE2}-p 2>/dev/null`" != "" -a "$USERHOME" != "" ]; then USERHOME="$USERHOME/pserver"; sudo /usr/sbin/usermod $USERHOME $VARIABLE2-p; fi
+if [ "$VARIABLE5" != "" ]; then sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` $VARIABLE2-p; fi
 echo "user edited"
 echo "`date`: Userpassword for $VARIABLE2 edited" >> $LOGDIR/update.log
 }
