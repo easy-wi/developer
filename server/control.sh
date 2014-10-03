@@ -1045,16 +1045,19 @@ fi
 }
 
 function del_customer_server {
+USERHOME='/home'
+if [ "$VARIABLE6" != "" ]; then USERHOME=$VARIABLE6; fi
 if [ "$VARIABLE5" == "protected" ]; then
 	USERVAR=`echo $VARIABLE2 | awk -F "-" '{print $2}'`
 	VARIABLE2=`echo $VARIABLE2 | awk -F "-" '{print $1}'`
 	if [ "$USERVAR" != "" -a "$USERVAR" != "p" ]; then
 		VARIABLE2="$VARIABLE2-$USERVAR"
 	fi
-	SERVERDIR=/home/$VARIABLE2/pserver
+	SERVERDIR=$USERHOME/$VARIABLE2/pserver
 else
-	SERVERDIR=/home/$VARIABLE2/server
+	SERVERDIR=$USERHOME/$VARIABLE2/server
 fi
+
 echo "#!/bin/bash
 
 HOMEFOLDER=$HOMEFOLDER
@@ -1104,15 +1107,17 @@ echo "server deleted"
 }
 
 function add_customer_server {
+USERHOME='/home'
+if [ "$VARIABLE6" != "" ]; then USERHOME=$VARIABLE6; fi
 if [ "$VARIABLE5" == "protected" ]; then
 	USERVAR=`echo $VARIABLE2 | awk -F "-" '{print $2}'`
 	VARIABLE2=`echo $VARIABLE2 | awk -F "-" '{print $1}'`
 	if [ "$USERVAR" != "" -a "$USERVAR" != "p" ]; then
 		VARIABLE2="$VARIABLE2-$USERVAR"
 	fi
-	SERVERDIR=/home/$VARIABLE2/pserver
+	SERVERDIR=$USERHOME/$VARIABLE2/pserver
 else
-	SERVERDIR=/home/$VARIABLE2/server
+	SERVERDIR=$USERHOME/$VARIABLE2/server
 fi
 if [[ ! `screen -ls | grep "add-$VARIABLE2-$VARIABLE4"` ]]; then
 if [ "$VARIABLE1" != "migrateserver" ]; then
