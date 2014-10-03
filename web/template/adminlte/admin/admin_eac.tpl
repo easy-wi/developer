@@ -1,9 +1,9 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->gameserver;?> Easy Anti Cheat</h1>
+    <h1>Easy Anti Cheat</h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->gameserver;?></li>
-		<li class="active">Easy Anti Cheat</li>
+        <li><a href="admin.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+		<li class="active"><i class="fa fa-eye"></i> Easy Anti Cheat</li>
     </ol>
 </section>
 

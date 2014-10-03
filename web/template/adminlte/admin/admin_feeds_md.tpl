@@ -2,7 +2,7 @@
     <h1><?php echo $gsprache->feeds.' '.$gsprache->mod;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->feeds;?></a></li>
+        <li><a href="admin.php?w=fn"><i class="fa fa-rss"></i> <?php echo $gsprache->feeds;?></a></li>
         <li><?php echo $gsprache->mod;?></li>
         <li class="active"><?php if ($twitter=='Y') echo 'Twitter'; else echo $feedUrl;?></li>
     </ol>

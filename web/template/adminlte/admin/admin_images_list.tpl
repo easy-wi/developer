@@ -1,8 +1,9 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->appRoot;?></h1>
+    <h1><?php echo $gsprache->gameserver.' '.$gsprache->template;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->template;?></li>
+        <li><a href="admin.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><a href="admin.php?w=im"><i class="fa fa-file-text-o"></i> <?php echo $gsprache->gameserver.' '.$gsprache->template;?></a></li>
         <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>

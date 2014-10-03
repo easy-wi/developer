@@ -1,8 +1,9 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->template.' '.$gsprache->del;?></h1>
+    <h1><?php echo $gsprache->file.' '.$gsprache->template;?></h1>
     <ol class="breadcrumb">
-        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="<?php echo $targetFile;?>?w=im"><?php echo $gsprache->template;?></a></li>
+        <li><a href="<?php echo $targetFile;?>"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="<?php echo $targetFile;?>?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><a href="<?php echo $targetFile;?>?w=gt"><i class="fa fa-floppy-o"></i> <?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
         <li><?php echo $gsprache->del;?></li>
         <li class="active"><?php echo $name;?></li>
     </ol>

@@ -1,8 +1,10 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->template;?></h1>
+    <h1><?php echo $gsprache->file.' '.$gsprache->template;?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $targetFile;?>"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><?php echo $gsprache->gameserver.' '.$gsprache->file.' '.$gsprache->template;?></li>
+        <li><a href="<?php echo $targetFile;?>?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><a href="<?php echo $targetFile;?>?w=gt"><i class="fa fa-floppy-o"></i> <?php echo $gsprache->file.' '.$gsprache->template;?></a></li>
+        <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>
 

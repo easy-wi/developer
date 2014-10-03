@@ -2,7 +2,7 @@
     <h1><?php echo $gsprache->appRoot;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="admin.php?w=ro"><?php echo $gsprache->appRoot;?></a></li>
+        <li><a href="admin.php?w=ro"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->appRoot;?></a></li>
         <li><?php echo $gsprache->del;?></li>
         <li class="active"><?php echo $ip;?></li>
     </ol>

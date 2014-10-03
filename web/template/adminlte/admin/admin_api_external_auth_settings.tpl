@@ -2,8 +2,8 @@
     <h1><?php echo $gsprache->apiAuth.' '.$gsprache->add;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->apiAuth;?></a></li>
-        <li class="active"><?php echo $gsprache->add;?></li>
+        <li><a href="admin.php?w=jb"><i class="fa fa-cloud"></i> <?php echo $gsprache->jobs.'/'.$gsprache->api;?></a></li>
+        <li class="active"><i class="fa fa-cloud-download"></i> <?php echo $gsprache->apiAuth;?></a></li>
     </ol>
 </section>
 

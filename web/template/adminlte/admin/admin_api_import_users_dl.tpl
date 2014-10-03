@@ -1,8 +1,9 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->userImport.' '.$gsprache->add;?></h1>
+    <h1><?php echo $gsprache->userImport;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->userImport;?></a></li>
+        <li><a href="admin.php?w=jb"><i class="fa fa-cloud"></i> <?php echo $gsprache->jobs.'/'.$gsprache->api;?></a></li>
+        <li><a href="admin.php?w=ui"><i class="fa fa-download"></i> <?php echo $gsprache->userImport;?></a></li>
         <li><?php echo $gsprache->del;?></li>
         <li class="active"><?php echo $domain;?></li>
     </ol>

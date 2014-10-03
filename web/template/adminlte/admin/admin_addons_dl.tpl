@@ -1,8 +1,9 @@
 <section class="content-header">
     <h1><?php echo $sprache->heading_addons;?></h1>
     <ol class="breadcrumb">
-        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="admin.php?w=ad"><?php echo $gsprache->addon;?></a></li>
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><a href="admin.php?w=ad"><i class="fa fa-gears"></i> <?php echo $gsprache->addon;?></a></li>
         <li><?php echo $gsprache->del;?></li>
         <li class="active"><?php echo $menudescription;?></li>
     </ol>

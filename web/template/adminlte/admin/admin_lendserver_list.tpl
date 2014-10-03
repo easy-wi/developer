@@ -3,7 +3,7 @@
     <h1><?php echo $gsprache->lendserver.' '.$gsprache->overview;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->lendserver;?></li>
+        <li><a href="admin.php?w=le"><i class="fa fa-flask"></i> <?php echo $gsprache->lendserver;?></a></li>
         <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>

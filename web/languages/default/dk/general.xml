@@ -45,6 +45,7 @@
     <licence_version>Du har ikke tilladelse til at køre denne version!</licence_version>
 	<logs>Logs</logs>
 	<master>Master</master>
+    <master_apps>Master apps</master_apps>
     <migration>Flytningsservice</migration>
 	<mod>Rediger</mod>
     <modules>Module</modules>

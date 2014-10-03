@@ -2,7 +2,8 @@
     <h1><?php echo $gsprache->jobs.' '.$gsprache->overview;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><?php echo $gsprache->jobs.' '.$gsprache->overview;?></li>
+        <li><a href="admin.php?w=jb"><i class="fa fa-cloud"></i> <?php echo $gsprache->jobs.'/'.$gsprache->api;?></a></li>
+        <li class="active"><i class="fa fa-tasks"></i> <?php echo $gsprache->jobs.' '.$gsprache->overview;?></li>
     </ol>
 </section>
 

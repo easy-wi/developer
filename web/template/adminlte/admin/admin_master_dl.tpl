@@ -1,8 +1,9 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->appRoot;?></h1>
+    <h1><?php echo $gsprache->master_apps;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->master;?></li>
+        <li><a href="admin.php?w=ro"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->appRoot;?></a></li>
+        <li><a href="admin.php?w=ma&amp&d=md"><i class="fa fa-puzzle-piece"></i> <?php echo $gsprache->master_apps;?></a></li>
         <li><?php echo $gsprache->del;?></li>
         <li class="active"><?php echo $ip;?></li>
     </ol>

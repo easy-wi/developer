@@ -1,9 +1,9 @@
 <section class="content-header">
-    <h1><?php echo $sprache->header_update;?></h1>
+    <h1><?php echo $gsprache->master_apps.' '.$gsprache->update;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->master;?></li>
-        <li class="active"><?php echo $sprache->header_update;?></li>
+        <li><a href="admin.php?w=ro"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->appRoot;?></a></li>
+        <li class="active"><i class="fa fa-spinner"></i> <?php echo $gsprache->master_apps.' '.$gsprache->update;?></li>
     </ol>
 </section>
 
@@ -38,7 +38,7 @@
                 <div class="box box-warning">
 
                     <div class="box-header">
-                        <h3 class="box-title"><?php echo $gsprache->master;?></h3>
+                        <h3 class="box-title"><?php echo $gsprache->master_apps;?></h3>
                     </div>
 
                     <div class="box-body">

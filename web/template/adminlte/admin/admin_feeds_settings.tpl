@@ -2,8 +2,8 @@
     <h1><?php echo $gsprache->feeds.' '.$gsprache->settings;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->feeds;?></a></li>
-        <li><?php echo $gsprache->settings;?></li>
+        <li><a href="admin.php?w=fn"><i class="fa fa-rss"></i> <?php echo $gsprache->feeds;?></a></li>
+        <li class="active"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></li>
     </ol>
 </section>
 

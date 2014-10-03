@@ -2,7 +2,8 @@
     <h1>API <?php echo $gsprache->settings;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active">API <?php echo $gsprache->settings;?></a></li>
+        <li><a href="admin.php?w=jb"><i class="fa fa-cloud"></i> <?php echo $gsprache->jobs.'/'.$gsprache->api;?></a></li>
+        <li class="active"><i class="fa fa-wrench"></i> API <?php echo $gsprache->settings;?></a></li>
     </ol>
 </section>
 

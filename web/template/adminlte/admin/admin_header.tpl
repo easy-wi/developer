@@ -358,8 +358,8 @@
                         <li <?php if($ui->smallletters('w',255,'get')=='ro') echo 'class="active"';?>><a href="admin.php?w=ro"><i class="fa fa-columns"></i><?php echo $gsprache->overview;?></a></li>
                         <?php } ?>
                         <?php if($pa['masterServer']) { ?>
-                        <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->appMaster;?></a></li>
-                        <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><i class="fa fa-spinner"></i> <?php echo $gsprache->appMaster.' '.$gsprache->update;?></a></li>
+                        <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d!='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=md"><i class="fa fa-puzzle-piece"></i> <?php echo $gsprache->master_apps;?></a></li>
+                        <li <?php if($ui->smallletters('w',255,'get')=='ma' and $d=='ud') echo 'class="active"';?>><a href="admin.php?w=ma&amp;d=ud"><i class="fa fa-spinner"></i> <?php echo $gsprache->master_apps.' '.$gsprache->update;?></a></li>
                         <?php } ?>
                     </ul>
                 </li>

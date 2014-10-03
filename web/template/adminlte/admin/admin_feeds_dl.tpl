@@ -2,7 +2,7 @@
     <h1><?php echo $gsprache->feeds.' '.$gsprache->del;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->feeds;?></a></li>
+        <li><a href="admin.php?w=fn"><i class="fa fa-rss"></i> <?php echo $gsprache->feeds;?></a></li>
         <li><?php echo $gsprache->del;?></li>
         <li class="active"><?php echo $feedUrl;?></li>
     </ol>

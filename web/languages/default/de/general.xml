@@ -63,6 +63,7 @@
     <licence_version>Sie sind nicht berechtigt diese Version zu nutzen!</licence_version>
 	<logs>Logs</logs>
 	<master>Master</master>
+    <master_apps>Master Apps</master_apps>
     <migration>Umzugsservice</migration>
 	<mod>Ändern</mod>
     <modules>Module</modules>

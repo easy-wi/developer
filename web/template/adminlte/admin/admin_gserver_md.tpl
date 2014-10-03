@@ -2,7 +2,7 @@
     <h1><?php echo $gsprache->gameserver;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="admin.php?w=gs"><?php echo $gsprache->gameserver;?></a></li>
+        <li><a href="admin.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
         <li><?php echo $gsprache->mod;?></li>
         <li class="active"><?php echo $ip.':'.$port;?></li>
     </ol>
