@@ -1057,7 +1057,7 @@ if [ "$VARIABLE5" == "protected" ]; then
 else
 	SERVERDIR=$USERHOME/$VARIABLE2/server
 fi
-
+SERVERDIR=`echo $SERVERDIR | sed 's/\/\//\//g'`
 echo "#!/bin/bash
 
 HOMEFOLDER=$HOMEFOLDER
@@ -1119,6 +1119,7 @@ if [ "$VARIABLE5" == "protected" ]; then
 else
 	SERVERDIR=$USERHOME/$VARIABLE2/server
 fi
+SERVERDIR=`echo $SERVERDIR | sed 's/\/\//\//g'`
 if [[ ! `screen -ls | grep "add-$VARIABLE2-$VARIABLE4"` ]]; then
 if [ "$VARIABLE1" != "migrateserver" ]; then
 echo "#!/bin/bash
@@ -1408,7 +1409,7 @@ function match_addons {
 USERHOME='/home'
 if [ "$VARIABLE5" != "" ]; then USERHOME=$VARIABLE5; fi
 VARIABLE5=''
-SERVERDIR="$USERHOME/$VARIABLE2/server/$VARIABLE3"
+SERVERDIR=`echo "$USERHOME/$VARIABLE2/server/$VARIABLE3" | sed 's/\/\//\//g'`
 if [ -d $SERVERDIR/*/addons/sourcemod ]; then
 	for ADDONLIST in $VARIABLE4; do
 		if [ -d $HOMEFOLDER/masteraddons/$ADDONLIST/addons/sourcemod ]; then
@@ -1453,7 +1454,7 @@ function match_maps {
 USERHOME='/home'
 if [ "$VARIABLE5" != "" ]; then USERHOME=$VARIABLE5; fi
 VARIABLE5=''
-SERVERDIR="$USERHOME/$VARIABLE2/server/$VARIABLE3"
+SERVERDIR=`echo "$USERHOME/$VARIABLE2/server/$VARIABLE3" | sed 's/\/\//\//g'`
 MATCHADDONS=1
 MAPS=$VARIABLE4
 VARIABLE4="$VARIABLE2/server/$VARIABLE3"
@@ -1482,6 +1483,7 @@ if [ -z $SERVERDIR ]; then
 		SERVERDIR=$USERHOME/$VARIABLE2/server/$VARIABLE3
 	fi
 fi
+SERVERDIR=`echo $SERVERDIR | sed 's/\/\//\//g'`
 SCREENNAME="`echo $SERVERDIR | awk  -F '/' '{print $5}'`"
 FOLDERCHECK=`readlink -f $VARIABLE0`
 if [[ ! `ps x | grep "start-${VARIABLE2}-${SCREENNAME}.sh" | grep -v grep` ]]; then
@@ -1512,6 +1514,7 @@ else
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-p-${SCREENNAME}.sh
 	CLEANUPDIR="$USERHOME/$VARIABLE2/pserver/"
 fi
+CLEANUPDIR=`echo $CLEANUPDIR | sed 's/\/\//\//g'`
 cd $SERVERDIR
 DONOTTOUCH='*/bin/*.so bin/*.so */cfg/valve.rc srcds_* hlds_* *.sh *.run'
 for ISFILE in $DONOTTOUCH; do
@@ -1533,7 +1536,6 @@ for ISFILE in $DONOTTOUCH; do
 		MASTERPATH=`echo "$HOMEFOLDER/masterserver/$MASTERGAME/$MASTERGAMEFOLDER/$BADFILE" | sed 's/\/\//\//g'`
 		BADFILEPATH=`echo "$SERVERDIR/$BADFILE" | sed 's/\/\//\//g'`
 		if [ "`ls -la $BADFILE | awk '{print $11}'`" != "$MASTERPATH" ]; then
-			chmod 666 $BADFILE
 			rm $BADFILE
 			if [ -f $BADFILE ]; then
 				exit 0
@@ -1667,6 +1669,7 @@ if [ "$VARIABLE5" == "protected" ]; then
 else
 	SERVERDIR=$USERHOME/$VARIABLE2/server/$VARIABLE3
 fi
+SERVERDIR=`echo $SERVERDIR | sed 's/\/\//\//g'`
 SCREENNAME="`echo $SERVERDIR | awk  -F '/' '{print $5}'`"
 if [ "$VARIABLE5" != "protected" ]; then
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-${SCREENNAME}.sh
@@ -1970,6 +1973,7 @@ function add_addon {
 	if [ "$GAMEDIR" == "" ]; then
 		GAMEDIR="$USERHOME/$VARIABLE4"
 	fi
+	GAMEDIR=`echo $GAMEDIR | sed 's/\/\//\//g'`
 	COPYFILES=0
 	if [ "$VARIABLE2" == "map" -a "$VARIABLE3" != "" -a -d $MAPDIR/$VARIABLE3 ]; then
 		ADDONFOLDER=$MAPDIR/$VARIABLE3
