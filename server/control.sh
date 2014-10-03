@@ -1405,7 +1405,10 @@ function restore_backup {
 }
 
 function match_addons {
-SERVERDIR="/home/$VARIABLE2/server/$VARIABLE3"
+USERHOME='/home'
+if [ "$VARIABLE5" != "" ]; then USERHOME=$VARIABLE5; fi
+VARIABLE5=''
+SERVERDIR="$USERHOME/$VARIABLE2/server/$VARIABLE3"
 if [ -d $SERVERDIR/*/addons/sourcemod ]; then
 	for ADDONLIST in $VARIABLE4; do
 		if [ -d $HOMEFOLDER/masteraddons/$ADDONLIST/addons/sourcemod ]; then
@@ -1447,7 +1450,10 @@ done
 }
 
 function match_maps {
-SERVERDIR="/home/$VARIABLE2/server/$VARIABLE3"
+USERHOME='/home'
+if [ "$VARIABLE5" != "" ]; then USERHOME=$VARIABLE5; fi
+VARIABLE5=''
+SERVERDIR="$USERHOME/$VARIABLE2/server/$VARIABLE3"
 MATCHADDONS=1
 MAPS=$VARIABLE4
 VARIABLE4="$VARIABLE2/server/$VARIABLE3"
@@ -1460,6 +1466,8 @@ done
 }
 
 function server_start {
+USERHOME='/home'
+if [ "$VARIABLE8" != "" ]; then USERHOME=$VARIABLE8; fi
 if [ -z $SERVERDIR ]; then
 	if [ "$VARIABLE5" == "protected" ]; then
 		if [[ "`echo $VARIABLE2 | awk -F "-" '{print $2}'`" == "p" ]]; then
@@ -1469,9 +1477,9 @@ if [ -z $SERVERDIR ]; then
 		else
 			VARIABLE2=`echo $VARIABLE2 | awk -F "-" '{print $1"-"$2}'`
 		fi
-		SERVERDIR=/home/$VARIABLE2/pserver/$VARIABLE3
+		SERVERDIR=$USERHOME/$VARIABLE2/pserver/$VARIABLE3
 	else
-		SERVERDIR=/home/$VARIABLE2/server/$VARIABLE3
+		SERVERDIR=$USERHOME/$VARIABLE2/server/$VARIABLE3
 	fi
 fi
 SCREENNAME="`echo $SERVERDIR | awk  -F '/' '{print $5}'`"
@@ -1484,9 +1492,9 @@ screen -wipe > /dev/null 2>&1
 SYNCGSPATH=`echo $SERVERDIR | awk -F '/' '{print $5}'`
 SYNCGSFOLDER=`echo $SERVERDIR | awk -F '/' '{print $6}' | awk -F '-' '{print $1}'`
 if [ "$VARIABLE5" != "protected" ]; then
-GAMES=`ls /home/$VARIABLE2/server/$SYNCGSPATH | grep $SYNCGSFOLDER | egrep -v '\-2|\-3'`
+GAMES=`ls $USERHOME/$VARIABLE2/server/$SYNCGSPATH | grep $SYNCGSFOLDER | egrep -v '\-2|\-3'`
 else
-GAMES=`ls /home/$VARIABLE2/pserver/$SYNCGSPATH | grep $SYNCGSFOLDER | egrep -v '\-2|\-3'`
+GAMES=`ls $USERHOME/$VARIABLE2/pserver/$SYNCGSPATH | grep $SYNCGSFOLDER | egrep -v '\-2|\-3'`
 fi
 I=0
 GAMESTRING=''
@@ -1498,11 +1506,11 @@ GAMESTRING="${I}${GAMESTRING}"
 if [ "$VARIABLE5" != "protected" ]; then
 	CLEANFILE=$HOMEFOLDER/temp/cleanup-${VARIABLE2}-${SCREENNAME}.sh
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-${SCREENNAME}.sh
-	CLEANUPDIR="/home/$VARIABLE2/server/"
+	CLEANUPDIR="$USERHOME/$VARIABLE2/server/"
 else
 	CLEANFILE=$HOMEFOLDER/temp/cleanup-${VARIABLE2}-p-${SCREENNAME}.sh
 	STARTFILE=$HOMEFOLDER/temp/start-${VARIABLE2}-p-${SCREENNAME}.sh
-	CLEANUPDIR="/home/$VARIABLE2/pserver/"
+	CLEANUPDIR="$USERHOME/$VARIABLE2/pserver/"
 fi
 cd $SERVERDIR
 DONOTTOUCH='*/bin/*.so bin/*.so */cfg/valve.rc srcds_* hlds_* *.sh *.run'
@@ -1540,7 +1548,7 @@ else
 	if [ -d $SERVERDIR ]; then
 		map_list
 		cd $SERVERDIR
-		if [ "$VARIABLE7" != "" ]; then
+		if [ "$VARIABLE7" != "" -a "$VARIABLE7" != "none" ]; then
 			TASKSET="taskset -c $VARIABLE7 "
 		else
 			TASKSET=''
@@ -1602,8 +1610,8 @@ else
 		echo "${IONICE}find $CLEANUPDIR -type f -name '*.dem' $DEMOTIME -delete" >> $STARTFILE
 		echo "${IONICE}find $CLEANUPDIR -type f -name '*.ztmp' $ZTMPTIME -delete" >> $STARTFILE
 		if [ "$VARIABLE5" != "protected" ]; then
-			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -maxdepth 1  \( -type f -or -type l \) ! \( -name \".bashrc\" -or -name \".bash_history\" -or -name \".profile\" -or -name \".bash_logout\" \) -delete" >> $STARTFILE
-			echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete" >> $STARTFILE
+			echo "${IONICE}nice -n +19 find $USERHOME/$VARIABLE2/ -maxdepth 1  \( -type f -or -type l \) ! \( -name \".bashrc\" -or -name \".bash_history\" -or -name \".profile\" -or -name \".bash_logout\" \) -delete" >> $STARTFILE
+			echo "${IONICE}nice -n +19 find $USERHOME/$VARIABLE2/ -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete" >> $STARTFILE
 			echo "${IONICE}nice -n +19 find $DATADIR -type f -user `whoami` ! -name \"*.bz2\" -delete" >> $STARTFILE
 		fi
 		# Steampipe Fix Start
@@ -1641,6 +1649,12 @@ fi
 } 
 
 function server_stop {
+USERHOME='/home'
+if [ "$VARIABLE8" != "" -a "$VARIABLE1" == "grestart" ]; then
+	USERHOME=$VARIABLE8
+elif [ "$VARIABLE6" != "" -a "$VARIABLE1" != "grestart" ]; then
+	USERHOME=$VARIABLE6
+fi
 if [ "$VARIABLE5" == "protected" ]; then
 	if [[ "`echo $VARIABLE2 | awk -F "-" '{print $2}'`" == "p" ]]; then
 		VARIABLE2=`echo $VARIABLE2 | awk -F "-" '{print $1}'`
@@ -1649,9 +1663,9 @@ if [ "$VARIABLE5" == "protected" ]; then
 	else
 		VARIABLE2=`echo $VARIABLE2 | awk -F "-" '{print $1"-"$2}'`
 	fi
-	SERVERDIR=/home/$VARIABLE2/pserver/$VARIABLE3
+	SERVERDIR=$USERHOME/$VARIABLE2/pserver/$VARIABLE3
 else
-	SERVERDIR=/home/$VARIABLE2/server/$VARIABLE3
+	SERVERDIR=$USERHOME/$VARIABLE2/server/$VARIABLE3
 fi
 SCREENNAME="`echo $SERVERDIR | awk  -F '/' '{print $5}'`"
 if [ "$VARIABLE5" != "protected" ]; then
@@ -1676,12 +1690,12 @@ else
 	echo "${IONICE}nice -n +19  find /tmp -user `whoami` -delete" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	echo "crontab -r 2> /dev/null" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	if [ "$VARIABLE5" == "protected" ]; then
-		echo "${IONICE}nice -n +19 find /home/$VARIABLE2/pserver/ -type d -print0 | xargs -0 chmod 700" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
-		echo "${IONICE}nice -n +19 find /home/$VARIABLE2/pserver/ -type f -print0 | xargs -0 chmod 600" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
+		echo "${IONICE}nice -n +19 find $USERHOME/$VARIABLE2/pserver/ -type d -print0 | xargs -0 chmod 700" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
+		echo "${IONICE}nice -n +19 find $USERHOME/$VARIABLE2/pserver/ -type f -print0 | xargs -0 chmod 600" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	else
-		echo "${IONICE}nice -n +19 find /home/$VARIABLE2/server/ -type d -print0 | xargs -0 chmod 700" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
-		echo "${IONICE}nice -n +19 find /home/$VARIABLE2/server/ -type f -print0 | xargs -0 chmod 600" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
-		echo "${IONICE}nice -n +19 find /home/$VARIABLE2/ -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
+		echo "${IONICE}nice -n +19 find $USERHOME/$VARIABLE2/server/ -type d -print0 | xargs -0 chmod 700" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
+		echo "${IONICE}nice -n +19 find $USERHOME/$VARIABLE2/server/ -type f -print0 | xargs -0 chmod 600" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
+		echo "${IONICE}nice -n +19 find $USERHOME/$VARIABLE2/ -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 		echo "${IONICE}nice -n +19 find $DATADIR -type f -user `whoami` ! -name \"*.bz2\" -delete" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	fi
 	chmod +x $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
@@ -1936,19 +1950,25 @@ function sync_server {
 }
 
 function add_addon {
-	if [ "$VARIABLE5" != "" ]; then
+	USERHOME='/home'
+	if [ "$VARIABLE1" == "addaddon" -a "$VARIABLE6" != "" ]; then
+		USERHOME=$VARIABLE6
+	elif [ "$VARIABLE1" != "addaddon" -a "$VARIABLE5" != "" ]; then
+		USERHOME=$VARIABLE5
+	fi
+	if [ "$VARIABLE5" != "" -a  "$VARIABLE5" != "none" ]; then
 		if [ "`find /home/$VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name ${VARIABLE5} | wc -l`" == "1" ]; then
-			GAMEDIR=`find /home/$VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE5" | head -n 1`
+			GAMEDIR=`find $USERHOME/$VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE5" | head -n 1`
 		else
-			GAMEDIR=`find /home/$VARIABLE4 -mindepth 1 -maxdepth 1 -type d -name "$VARIABLE5" | head -n 1`
+			GAMEDIR=`find $USERHOME/$VARIABLE4 -mindepth 1 -maxdepth 1 -type d -name "$VARIABLE5" | head -n 1`
 		fi
-	elif [ -f /home/$VARIABLE4/hlds_run -a -d /home/$VARIABLE4/czero ]; then
-		GAMEDIR="/home/$VARIABLE4/czero"
-	elif [ -f /home/$VARIABLE4/srcds_run -o -f /home/$VARIABLE4/hlds_run ]; then
-		GAMEDIR="`find /home/$VARIABLE4 -mindepth 1 -maxdepth 1 -type d -name csgo -o -name cstrike -o -name dod -o -name hl2mp -o -name tf | head -n1`"
+	elif [ -f $USERHOME/$VARIABLE4/hlds_run -a -d /home/$VARIABLE4/czero ]; then
+		GAMEDIR="$USERHOME/$VARIABLE4/czero"
+	elif [ -f $USERHOME/$VARIABLE4/srcds_run -o -f $USERHOME/$VARIABLE4/hlds_run ]; then
+		GAMEDIR="`find $USERHOME/$VARIABLE4 -mindepth 1 -maxdepth 1 -type d -name csgo -o -name cstrike -o -name dod -o -name hl2mp -o -name tf | head -n1`"
 	fi
 	if [ "$GAMEDIR" == "" ]; then
-		GAMEDIR="/home/$VARIABLE4"
+		GAMEDIR="$USERHOME/$VARIABLE4"
 	fi
 	COPYFILES=0
 	if [ "$VARIABLE2" == "map" -a "$VARIABLE3" != "" -a -d $MAPDIR/$VARIABLE3 ]; then
