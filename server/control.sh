@@ -976,6 +976,14 @@ echo "user edited"
 echo "`date`: Userpassword for $VARIABLE2 edited" >> $LOGDIR/update.log
 }
 
+function mod_user {
+if [ "$VARIABLE5" != "" ]; then USERHOME=" -m -d ${VARIABLE5}/$VARIABLE2"; else USERHOME=''; fi
+sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` $USERHOME $VARIABLE2
+if [ "$VARIABLE4" != "" ]; then USERHOME="$USERHOME/pserver" sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE4'","Sa")'` $USERHOME $VARIABLE2-p; fi
+echo "user edited"
+echo "`date`: Userpassword for $VARIABLE2 edited" >> $LOGDIR/update.log
+}
+
 function imagesymlinks {
 echo "GAMENAME=$GAMENAME
 if [ ! -d $SERVERDIR/$VARIABLE4/$GAMENAME ]; then
@@ -1228,6 +1236,7 @@ mv $VARIABLE3 $VARIABLE4
 }
 
 function move_server {
+if [ "$VARIABLE5" == "" ]; then VARIABLE5='/home'
 echo "#!/bin/bash
 
 VARIABLE2=$VARIABLE2
@@ -2272,6 +2281,10 @@ case "$1" in
 	;;
 	useradd)
 		add_user
+		wget_remove &
+	;;
+	usermod)
+		mod_user
 		wget_remove &
 	;;
 	delscreen)
