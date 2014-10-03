@@ -1236,7 +1236,7 @@ mv $VARIABLE3 $VARIABLE4
 }
 
 function move_server {
-if [ "$VARIABLE5" == "" ]; then VARIABLE5='/home'
+if [ "$VARIABLE5" == "" ]; then VARIABLE5='/home'; fi
 echo "#!/bin/bash
 
 VARIABLE2=$VARIABLE2
