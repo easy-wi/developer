@@ -48,6 +48,17 @@
 <?php } ?>
 
 <div class="form-group">
+    <label for="inputHomeDir"><?php echo $sprache->homeDir;?></label>
+    <div class="controls">
+        <select class="form-control chosen-select" id="inputHomeDir" name="homeDir">
+            <?php foreach ($table2 as $arr){ ?>
+            <option <?php if($arr==$homeDir) echo 'selected="selected"';?>><?php echo $arr;?></option>
+            <?php } ?>
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
     <label for="inputIP"><?php echo $sprache->ip;?></label>
     <div class="controls">
         <select class="form-control" id="inputIP" name="ip" onchange="usedPorts(this.value);">

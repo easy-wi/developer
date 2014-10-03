@@ -51,6 +51,7 @@
 	<gs_add>Tilføj server trin 1: Bruger, Rootserver, spil</gs_add>
 	<heading_delete>Slet spilserver</heading_delete>
 	<heading_template>Spilserver Oversigt</heading_template>
+    <homeDir></homeDir>
 	<hour>Time</hour>
     <import_corrected>Er fundet sti korrekte?</import_corrected>
     <import_destination>Bestemmelsessted server, spil og skabelon for import</import_destination>

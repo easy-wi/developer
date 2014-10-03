@@ -53,9 +53,10 @@ $c = 0;
 $cores = array();
 $ips = array();
 $table = array();
+$table2 = array();
 $usedPorts = array();
 
-$query = $sql->prepare("SELECT r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`ram`,r.`cores`,r.`hyperthreading`,COUNT(g.`id`) AS `installedServer`,SUM(g.`slots`) AS `installedSlots`,SUM(g.`maxram`) AS `installedRam` FROM `rserverdata` AS r LEFT JOIN `gsswitch` AS g ON g.`rootID`=r.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
+$query = $sql->prepare("SELECT r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`ram`,r.`cores`,r.`hyperthreading`,r.`install_paths`,COUNT(g.`id`) AS `installedServer`,SUM(g.`slots`) AS `installedSlots`,SUM(g.`maxram`) AS `installedRam` FROM `rserverdata` AS r LEFT JOIN `gsswitch` AS g ON g.`rootID`=r.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
 $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -80,6 +81,23 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     for ($c = 0; $c < $coreCount; $c++) {
         $cores[$c] = 0;
+    }
+
+    $iniVars = parse_ini_string($row['install_paths'], true);
+
+    if ($iniVars) {
+        foreach ($iniVars as $key => $values) {
+
+            $table2[] = $key;
+
+            if (isset($values['default']) and $values['default'] == 1) {
+                $homeDir = $key;
+            }
+        }
+    }
+
+    if (count($table2) == 0) {
+        $table2[] = 'home';
     }
 }
 
@@ -116,12 +134,13 @@ $port3 = '';
 $port4 = '';
 $port5 = '';
 $taskset = '';
+$homeDir = (isset($homeDir)) ? $homeDir : '';
 $usedCores = array();
 $installedGames = array();
 
 if ($ui->id('gameServerID', 10, 'get')) {
 
-    $query = $sql->prepare("SELECT `serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`taskset`,`cores` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`taskset`,`cores`,`homeLabel` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($ui->id('gameServerID', 10, 'get'), $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $currentIP = $row['serverip'];
@@ -131,6 +150,7 @@ if ($ui->id('gameServerID', 10, 'get')) {
         $port4 = ($row['port4'] == 0) ? '' : $row['port4'];
         $port5 = ($row['port5'] == 0) ? '' : $row['port5'];
         $taskset = $row['taskset'];
+        $homeDir = $row['homeLabel'];
 
         foreach (preg_split('/\,/', $row['cores'], -1, PREG_SPLIT_NO_EMPTY) as $core) {
             $usedCores[] = $core;

@@ -477,6 +477,7 @@ $query = "CREATE TABLE IF NOT EXISTS `gsswitch` (
   `autoRestart` enum('Y','N') DEFAULT 'Y',
   `userid` int(10) unsigned NOT NULL,
   `rootID` int(10) unsigned NOT NULL,
+  `homeLabel` varchar(255) DEFAULT 'home',
   `serverid` int(10) unsigned NOT NULL,
   `lendserver` enum('Y','N') NOT NULL DEFAULT 'N',
   `backup` enum('Y','N') DEFAULT NULL,

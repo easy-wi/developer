@@ -220,7 +220,7 @@ if (!function_exists('passwordgenerate')) {
         $serverdata = array();
 
         if ($type == 'root') {
-            $query = $sql->prepare("SELECT `os`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
+            $query = $sql->prepare("SELECT `os`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword`,`publickey`,`keyname`,`ftpport`,`notified`,`cores`,`hyperthreading`,`resellerid`,`install_paths` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
 
         } else if ($type == 'virtualhost') {
             $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`publickey`,`keyname`,`notified`,`resellerid` FROM `virtualhosts` WHERE `id`=:serverID LIMIT 1");
@@ -239,6 +239,7 @@ if (!function_exists('passwordgenerate')) {
             $hyperthreading = '';
             $steamAccount = '';
             $steamPassword = '';
+            $installPaths = '';
 
             if ($type == 'root') {
                 $ftpport = $row['ftpport'];
@@ -246,6 +247,7 @@ if (!function_exists('passwordgenerate')) {
                 $hyperthreading = $row['hyperthreading'];
                 $steamAccount = $row['decryptedsteamAccount'];
                 $steamPassword = $row['decryptedsteamPassword'];
+                $installPaths = $row['install_paths'];
 
             } else if ($type == 'eac') {
 
@@ -257,7 +259,7 @@ if (!function_exists('passwordgenerate')) {
 
             $os = (isset($row['os'])) ? $row['os'] : '';
 
-            $serverdata = array('os' => $os, 'ip' => $row['ip'], 'port' => $row['decryptedport'], 'user' => $row['decrypteduser'], 'pass' => $row['decryptedpass'], 'publickey' => $row['publickey'], 'keyname' => $row['keyname'], 'notified' => $row['notified'], 'resellerid' => $row['resellerid'], 'hyperthreading' => $hyperthreading,'cores' => $cores,'ftpport' => $ftpport,'steamAccount' => $steamAccount,'steamPassword' => $steamPassword);
+            $serverdata = array('os' => $os, 'ip' => $row['ip'], 'port' => $row['decryptedport'], 'user' => $row['decrypteduser'], 'pass' => $row['decryptedpass'], 'publickey' => $row['publickey'], 'keyname' => $row['keyname'], 'notified' => $row['notified'], 'resellerid' => $row['resellerid'], 'hyperthreading' => $hyperthreading,'cores' => $cores,'ftpport' => $ftpport,'steamAccount' => $steamAccount,'steamPassword' => $steamPassword, 'install_paths' => $installPaths);
         }
 
         return $serverdata;

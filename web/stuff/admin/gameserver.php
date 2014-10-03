@@ -148,6 +148,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $oldActiveGame = 0;
         $oldFtpPassword = '';
         $oldActive = '';
+        $oldHomeLabel = '';
 
         $userID = $ui->id('userID', 10, 'post');
         $rootID = $ui->id('rootID', 10, 'post');
@@ -165,12 +166,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $slots = ($ui->id('slots', 5, 'post')) ? $ui->id('slots', 5, 'post') : 12;
         $minRam = ($ui->id('minRam', 5, 'post')) ? $ui->id('minRam', 5, 'post') : 512;
         $maxRam = ($ui->id('maxRam', 5, 'post')) ? $ui->id('maxRam', 5, 'post') : 1024;
+        $homeLabel = ($ui->username('homeDir', 255, 'post')) ? $ui->username('homeDir', 255, 'post') : 'home';
 
         // Array conversion allows easier handling
         $gameIDs = (array) $ui->id('gameIDs', 10, 'post');
 
         // Get old data, so we can see, if shell commands need to be run
-        $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`pallowed`,g.`rootID`,g.`serverid`,g.`active`,AES_DECRYPT(`ftppassword`,?) AS `ftpPassword`,u.`cname` FROM `gsswitch` AS g INNER JOIN `userdata` AS u ON u.`id`=g.`userid` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT g.`serverip`,g.`homeLabel`,g.`port`,g.`pallowed`,g.`rootID`,g.`serverid`,g.`active`,AES_DECRYPT(`ftppassword`,?) AS `ftpPassword`,u.`cname` FROM `gsswitch` AS g INNER JOIN `userdata` AS u ON u.`id`=g.`userid` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $id, $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $technicalUser = $row['cname'];
@@ -181,6 +183,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $oldActiveGame = $row['serverid'];
             $oldActive = $row['active'];
             $oldFtpPassword = $row['ftpPassword'];
+            $oldHomeLabel = $row['homeLabel'];
         }
 
         if (!$active) {
@@ -197,7 +200,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         // Check if IP and Port are already in use by another server daemon
         if ($ip != $oldIp or $port != $oldPort) {
+
             $usedPorts = usedPorts(array($ip));
+
             if (in_array($port, $usedPorts['ports'])) {
                 $errors['ip'] = $sprache->ip;
                 $errors['port'] = $sprache->port . ' 1';
@@ -209,7 +214,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $errors['rootID'] = $sprache->root;
         } else {
 
-            $query = $sql->prepare("SELECT `hyperthreading`,`cores` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `hyperthreading`,`cores`,`install_paths` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($rootID, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -220,6 +225,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     if (in_array($c, $postCores)) {
                         $usedCores[] = $c;
                     }
+                }
+
+                // Verify that given homedir is allowed
+                $iniVars = parse_ini_string($row['install_paths'], true);
+
+                if ((!$iniVars and $homeLabel != 'home') or ($iniVars and !isset($iniVars[$homeLabel]))) {
+                    $errors['homeDir'] = $sprache->homeDir;
                 }
             }
 
@@ -331,8 +343,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,1,'Y',?)");
-                $query->execute(array($active, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $resellerLockupID, $ui->w('externalID',255, 'post')));
+                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,1,'Y',?)");
+                $query->execute(array($active, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $resellerLockupID, $ui->w('externalID',255, 'post')));
 
                 $id = $sql->lastInsertId();
 
@@ -350,8 +362,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $currentActiveGame = $oldActiveGame;
                 }
 
-                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $currentActiveGame, $ui->w('externalID',255, 'post'), $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($active, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $currentActiveGame, $ui->w('externalID',255, 'post'), $id, $resellerLockupID));
 
                 $rowCount += $query->rowCount();
 
@@ -422,22 +434,23 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                 $gamesRemoveAmount = count($gamesToBeRemoved);
                 $gamesAmount = count($gamesToBeInstalled);
+                $homeDir = (isset($iniVars[$homeLabel]['path'])) ? $iniVars[$homeLabel]['path'] : '/home';
 
                 // We will run the add user command in nearly any case
                 // Reasons are that we ensure FTP password correctness and existence of linux user
                 // Also we will add the protected user with variable 5
-                if ($oldFtpPassword != $ftpPassword or $oldActive != $active or $ip != $oldIp or $port != $oldPort or $oldProtected != $protectionAllowed or $gamesRemoveAmount > 0 or $gamesAmount > 0) {
+                if ($homeLabel != $oldHomeLabel or $oldFtpPassword != $ftpPassword or $oldActive != $active or $ip != $oldIp or $port != $oldPort or $oldProtected != $protectionAllowed or $gamesRemoveAmount > 0 or $gamesAmount > 0) {
                     $addProtectedUser = ($protectionAllowed == 'Y') ? passwordgenerate(10) : '';
-                    $cmds[] = "./control.sh useradd {$technicalUser}-{$id} {$ftpPassword} \"/home/\" {$addProtectedUser}";
+                    $cmds[] = "./control.sh useradd {$technicalUser}-{$id} {$ftpPassword} {$homeDir} {$addProtectedUser}";
                 }
 
-                if ($ui->st('action', 'post') == 'md' and ($oldFtpPassword != $ftpPassword or $oldActive != $active)) {
+                if ($ui->st('action', 'post') == 'md' and ($oldFtpPassword != $ftpPassword or $oldActive != $active or $homeLabel != $oldHomeLabel)) {
 
-                    if ($oldActive == 'Y') {
+                    if ($oldActive == 'Y' and $active == 'N') {
                         $ftpPassword = passwordgenerate(10);
                     }
 
-                    $cmds[] = "./control.sh usermod {$technicalUser}-{$id} {$ftpPassword}";
+                    $cmds[] = "./control.sh usermod {$technicalUser}-{$id} {$ftpPassword} {$homeDir}";
                 }
 
 
@@ -466,13 +479,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                     $gamesRemoveString = $gamesRemoveAmount . '_' . implode('_', $gamesToBeRemoved);
 
-                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh delserver {$technicalUser}-{$id} {$gamesRemoveString} {$oldIp}_{$oldPort}";
+                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh delserver {$technicalUser}-{$id} {$gamesRemoveString} {$oldIp}_{$oldPort} unprotected {$homeDir}";
                 }
 
                 // Admin has changed the ip or the main port. Now we need to move the server. Can only happen during server edit.
                 // Should be done after possible deletes and before we add additional data
                 if ($ui->st('action', 'post') == 'md' and  ($ip != $oldIp or $port != $oldPort)) {
-                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh ip_port_change {$technicalUser}-{$id} {$oldIp}_{$oldPort} {$ip}_{$port} \"/home\"";
+                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh ip_port_change {$technicalUser}-{$id} {$oldIp}_{$oldPort} {$ip}_{$port} {$homeDir}";
                 }
 
 
@@ -484,7 +497,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                     $limitInstall = ($ui->id('installGames', 1, 'post') == 2) ? 1 : '';
 
-                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh addserver {$technicalUser}-{$id} {$gamesAddString} {$ip}_{$port} {$limitInstall}";
+                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh addserver {$technicalUser}-{$id} {$gamesAddString} {$ip}_{$port} {$limitInstall} {$homeDir}";
                 }
 
                 $insertlog->execute();
@@ -638,9 +651,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $gamestring = array();
         $template = array();
 
-        $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,g.`homeLabel`,u.`cname`,r.`install_paths` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON r.`id`=g.`rootID` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
             $customer = $row['cname'];
             $ftppass = ($row['pallowed'] == 'Y' and $row['protected'] == 'Y') ? $row['pftppass'] : $row['cftppass'];
             $rootID = $row['rootID'];
@@ -653,6 +667,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             if ($row['newlayout'] == 'Y') {
                 $customer = $customer . '-' . $row['id'];
             }
+
+            $iniVars = parse_ini_string($row['install_paths'], true);
+
+            $homeDir = ($iniVars and isset($iniVars[$row['homeLabel']]['path'])) ? $iniVars[$row['homeLabel']]['path'] : '/home';
         }
 
         # https://github.com/easy-wi/developer/issues/69
@@ -678,23 +696,18 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $gamestring = count($gamestring) . '_' . implode('_',$gamestring);
 
-            $rdata = serverdata('root', $rootID, $aeskey);
-
-            $sship = $rdata['ip'];
-            $sshport = $rdata['port'];
-            $sshuser = $rdata['user'];
-            $sshpass = $rdata['pass'];
-
             if ($ui->active('type', 'post') == 'Y') {
 
-                $cmds[] = "./control.sh useradd ${customer} ${ftppass} \"/home/\" {$addProtectedUser}";
-                $cmds[] = "sudo -u ${customer} ./control.sh reinstserver ${customer} ${gamestring} ${gsfolder} \"${template}\"";
+                $cmds[] = "./control.sh useradd {$customer} {$ftppass} {$homeDir} {$addProtectedUser}";
+                $cmds[] = "sudo -u {$customer} ./control.sh reinstserver {$customer} {$gamestring} ${gsfolder} \"${template}\" {$homeDir}";
+
                 $loguseraction = "%reinstall% %gserver% ${serverip}:${port}";
 
             } else {
 
-                $cmds[] = "sudo -u ${customer} ./control.sh addserver ${customer} ${gamestring} ${gsfolder} \"${template}\"";
-                $loguseraction = "%resync% %gserver% ${serverip}:${port}";
+                $cmds[] = "sudo -u {$customer} ./control.sh addserver {$customer} {$gamestring} {$gsfolder} \"{$template}\" {$homeDir}";
+
+                $loguseraction = "%resync% %gserver% {$serverip}:{$port}";
 
             }
 

@@ -84,7 +84,7 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10, 'get') and in_array($ui->sma
         $serverip = $row['serverip'];
         $serverid = $row['serverid'];
         $port = $row['port'];
-        $modfolder = $row['modfolder'];
+        $modfolder = (strlen($row['modfolder'])> 0) ? $row['modfolder'] : 'none';
         $ppassword = $row['decryptedppassword'];
         $ftppass = $row['dftpppassword'];
         $servertemplate = $row['servertemplate'];
@@ -126,8 +126,8 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid',10, 'get') and in_array($ui->sma
                 $actionstatus = 'fail';
             }
 
-        } else if ($ui->st('action', 'get') == 'dl' and $ui->id('rid',19, 'get')) {
-            $installedid = $ui->id('rid',19, 'get');
+        } else if ($ui->st('action', 'get') == 'dl' and $ui->id('rid', 10, 'get')) {
+            $installedid = $ui->id('rid', 10, 'get');
             $delids = $addonid;
             $cmds = array();
             $cmds[] = "sudo -u $customer ./control.sh deladdon $type $addon \"$serverfolder\" \"$modfolder\" \"$folder\"";

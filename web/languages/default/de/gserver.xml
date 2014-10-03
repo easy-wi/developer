@@ -80,6 +80,7 @@
 	Beide Aktionen starten Sie mit <em>Ausführen</em>. Der Vorgang sollte in der Regel innerhalb weniger Minuten abgeschlossen sein.
     ]]>
     </help_reinstall>
+    <homeDir>Home Dir</homeDir>
     <hour>Uhr</hour>
     <import_corrected>Ist der gefundende Gameserver korrekt?</import_corrected>
     <import_destination>Zielserver, Spiel und Template des Imports</import_destination>

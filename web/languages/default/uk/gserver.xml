@@ -84,6 +84,7 @@
 	Both actions are started with the <em>Execute</em> button and usually completed within a few minutes.
     ]]>
     </help_reinstall>
+    <homeDir>Home dir</homeDir>
     <hour>Hour</hour>
     <import_corrected>Is the found path correct?</import_corrected>
     <import_destination>Destination server, game and template of import</import_destination>

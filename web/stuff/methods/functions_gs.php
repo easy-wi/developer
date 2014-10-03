@@ -56,7 +56,7 @@ if (!function_exists('gsrestart')) {
         $tempCmds = array();
         $stopped = 'Y';
 
-        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,g.`pallowed` AS `gsPallowed`,g.`protected` AS `gsProtected`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,s.`cmd` AS `localCmd`,s.`workShop` AS `sWorkShop`,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,t.`configedit`,t.`modcmds`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`appID`,t.`cmd` AS `globalCmd`,t.`workShop` AS `tWorkShop`,t.`protected` AS `tProtected` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
+        $query = $sql->prepare("SELECT g.*,g.`id` AS `switchID`,g.`pallowed` AS `gsPallowed`,g.`protected` AS `gsProtected`,AES_DECRYPT(g.`ppassword`,:aeskey) AS `decryptedppass`,AES_DECRYPT(g.`ftppassword`,:aeskey) AS `decryptedftppass`,s.*,s.`cmd` AS `localCmd`,s.`workShop` AS `sWorkShop`,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `dwebapiAuthkey`,t.`configedit`,t.`modcmds`,t.`modfolder`,t.`gamebinary`,t.`binarydir`,t.`shorten`,t.`appID`,t.`cmd` AS `globalCmd`,t.`workShop` AS `tWorkShop`,t.`protected` AS `tProtected`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON u.`id`=g.`userid` WHERE g.`id`=:serverid AND g.`resellerid`=:reseller_id  AND t.`resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':serverid' => $switchID, ':reseller_id' => $reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -91,13 +91,24 @@ if (!function_exists('gsrestart')) {
             $cmd = ($row['owncmd'] == 'Y') ? $row['localCmd'] : $row['globalCmd'];
             $modcmd = $row['modcmd'];
             $user_id = $row['userid'];
+            $customer = $row['cname'];
+            $workShop = ($row['sWorkShop'] == 'Y' AND $row['tWorkShop'] == 'Y') ? 'Y' : 'N';
+
+            if ($row['newlayout'] == 'Y') {
+                $customer .= '-' . $row['switchID'];
+            }
 
             $rdata = serverdata('root', $row['rootID'], $aeskey);
             $sship = $rdata['ip'];
             $ftpport = $rdata['ftpport'];
             $rootOS = $rdata['os'];
-            $workShop = ($row['sWorkShop'] == 'Y' AND $row['tWorkShop'] == 'Y') ? 'Y' : 'N';
 
+
+            $iniVars = parse_ini_string($rdata['install_paths'], true);
+
+            $homeDir = ($iniVars and isset($iniVars[$row['homeLabel']]['path'])) ? $iniVars[$row['homeLabel']]['path'] : '/home';
+
+            //install_paths
             if ($rootOS == 'W') {
 
                 if (substr($cmd, 0, 2) == './') {
@@ -110,16 +121,7 @@ if (!function_exists('gsrestart')) {
                 $gamebinary = $row['gamebinary'];
             }
 
-            $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `id`=? LIMIT 1");
-            $query->execute(array($user_id));
-            $customer = $query->fetchColumn();
-
-            if ($row['newlayout'] == 'Y') {
-                $customer .= '-' . $row['switchID'];
-            }
-
-
-            $cores = ($row['taskset'] == 'Y') ? $row['cores'] : '';
+            $cores = ($row['taskset'] == 'Y') ? $row['cores'] : 'none';
             $maxcores = count(preg_split("/\,/", $cores, -1, PREG_SPLIT_NO_EMPTY));
 
             if ($maxcores == 0) {
@@ -130,10 +132,10 @@ if (!function_exists('gsrestart')) {
 
             if ($protected == 'Y') {
                 $pserver = '';
-                $absolutepath = '/home/' . $customer . '/pserver/' . $gsip . '_' . $port . '/' . $folder;
+                $absolutepath = $homeDir . '/' . $customer . '/pserver/' . $gsip . '_' . $port . '/' . $folder;
             } else {
                 $pserver = 'server/';
-                $absolutepath = '/home/' . $customer . '/server/' . $gsip . '_' . $port . '/' . $folder;
+                $absolutepath = $homeDir . '/' . $customer . '/server/' . $gsip . '_' . $port . '/' . $folder;
             }
 
             $bindir = $absolutepath. '/' . $binarydir;
@@ -371,7 +373,9 @@ if (!function_exists('gsrestart')) {
                 }
 
             } else if ($action!='du' and $eacallowed == 'Y' and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and ($anticheat == 1 or $anticheat == 2)) {
+
                 $rcon = '';
+
                 eacchange('remove', $serverid, $rcon, $reseller_id);
             }
 
@@ -382,12 +386,15 @@ if (!function_exists('gsrestart')) {
                 $stopped = 'Y';
 
                 if ($action == 'so') {
-                    $tempCmds[]="sudo -u ${customer} ./control.sh gstop $customer \"$binaryFolder\" $gamebinary $protectedString";
+
+                    $tempCmds[] = "sudo -u ${customer} ./control.sh gstop {$customer} \"{$binaryFolder}\" {$gamebinary} {$protectedString} {$homeDir}";
+
                     if ((isset($ftpupload) and $gamebinary == 'srcds_run')) {
-                        $tempCmds[]="sudo -u ${customer} ./control.sh demoupload \"$bindir\" \"$ftpupload\" \"$modfolder\"";
+                        $tempCmds[] = "sudo -u ${customer} ./control.sh demoupload \"{$bindir}\" \"{$ftpupload}\" \"{$modfolder}\"";
                     }
+
                 } else {
-                    $tempCmds[]="sudo -u ${customer} ./control.sh stopall";
+                    $tempCmds[] = "sudo -u ${customer} ./control.sh stopall";
                 }
 
             } else if ($action == 're') {
@@ -395,26 +402,26 @@ if (!function_exists('gsrestart')) {
                 $stopped = 'N';
 
                 if ($protected == 'N' and count($installedaddons) > 0) {
-                    $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$binaryFolder\" \"".implode(' ', $installedaddons)."\"";
+                    $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch {$customer} \"{$binaryFolder}\" \"" . implode(' ', $installedaddons) . "\" {$homeDir}";
                 }
 
                 if (count($installedMaps) > 0) {
-                    $tempCmds[] = "sudo -u ${customer} ./control.sh addonmatch $customer \"$binaryFolder\" \"".implode(' ', $installedMaps)."\"";
+                    $tempCmds[] = "sudo -u ${customer} ./control.sh mapmatch {$customer} \"{$binaryFolder}\" \"" . implode(' ', $installedMaps) . "\" {$homeDir}";
                 }
 
-                $restartCmd = "sudo -u ${customer} ./control.sh grestart $customer \"$binaryFolder\" \"$startline\" $protectedString $gamebinary \"$cores\"";
+                $restartCmd = "sudo -u ${customer} ./control.sh grestart {$customer} \"{$binaryFolder}\" \"{$startline}\" {$protectedString} {$gamebinary} \"{$cores}\" {$homeDir}";
             }
 
             if (!isset($ftpupload) and $gamebinary == 'srcds_run' and isurl($uploaddir)) {
 
                 if ($upload==2) {
-                    $uploadcmd = "./control.sh demoupload \"$bindir\" \"$uploaddir\" \"$modfolder\" manual remove";
+                    $uploadcmd = "./control.sh demoupload \"{$bindir}\" \"{$uploaddir}\" \"{$modfolder}\" manual remove";
                 } else if ($upload==3) {
-                    $uploadcmd = "./control.sh demoupload \"$bindir\" \"$uploaddir\" \"$modfolder\" manual keep";
+                    $uploadcmd = "./control.sh demoupload \"{$bindir}\" \"{$uploaddir}\" \"{$modfolder}\" manual keep";
                 } else if ($upload==4) {
-                    $uploadcmd = "./control.sh demoupload \"$bindir\" \"$uploaddir\" \"$modfolder\" auto remove";
+                    $uploadcmd = "./control.sh demoupload \"{$bindir}\" \"{$uploaddir}\" \"{$modfolder}\" auto remove";
                 } else if ($upload==5) {
-                    $uploadcmd = "./control.sh demoupload \"$bindir\" \"$uploaddir\" \"$modfolder\" auto keep";
+                    $uploadcmd = "./control.sh demoupload \"{$bindir}\" \"{$uploaddir}\" \"{$modfolder}\" auto keep";
                 }
                 if (($action == 'du' or ($action != 'so' and $action!='sp')) and isset($uploadcmd)) {
                     $tempCmds[]="sudo -u ${customer} $uploadcmd";
@@ -425,10 +432,12 @@ if (!function_exists('gsrestart')) {
             }
 
             foreach ($cvarprotect as $config => $values) {
+
                 if (!isset($values['cvars']) or count($values['cvars']) == 0) {
                     unset($cvarprotect[$config]);
                 }
             }
+
             if (count($cvarprotect) > 0 and $action != 'du') {
 
                 if (!isset($ftpObect)) {
@@ -549,7 +558,7 @@ if (!function_exists('gsrestart')) {
                 $cmds[]="sudo -u ${customerProtected} ./control.sh stopall";
             }
 
-            $cmds[] = 'sudo -u ' . $customer . ' ./control.sh addserver ' . $customer . ' 1_' . $shorten . ' ' . $gsip . '_' . $port;
+            $cmds[] = 'sudo -u ' . $customer . ' ./control.sh addserver ' . $customer . ' 1_' . $shorten . ' ' . $gsip . '_' . $port . ' ' . $servertemplate . ' ' . $homeDir;
 
             if (isset($restartCmd)) {
                 $cmds[] = $restartCmd;
