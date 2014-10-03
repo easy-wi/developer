@@ -2,7 +2,7 @@
     <h1>IP Bans</h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active">IP Bans</li>
+        <li class="active"><i class="fa fa-ban"></i> IP Bans</li>
     </ol>
 </section>
 

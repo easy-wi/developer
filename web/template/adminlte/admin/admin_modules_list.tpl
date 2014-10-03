@@ -2,7 +2,9 @@
     <h1><?php echo $gsprache->modules;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><?php echo $gsprache->modules;?></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li><a href="admin.php?w=mo"><i class="fa fa-th-large"></i> <?php echo $gsprache->modules;?></a></li>
+        <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>
 

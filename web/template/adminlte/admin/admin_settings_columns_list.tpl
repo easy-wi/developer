@@ -2,7 +2,9 @@
     <h1><?php echo $gsprache->columns;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><?php echo $gsprache->columns;?></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li><a href="admin.php?w=cc"><i class="fa fa-list"></i> <?php echo $gsprache->columns;?></a></li>
+        <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>
 

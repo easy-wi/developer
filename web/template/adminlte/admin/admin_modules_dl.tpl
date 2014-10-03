@@ -1,8 +1,9 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->modules.' '.$gsprache->del;?></h1>
+    <h1><?php echo $gsprache->modules;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->modules;?></a></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li><a href="admin.php?w=mo"><i class="fa fa-th-large"></i> <?php echo $gsprache->modules;?></a></li>
         <li><?php echo $gsprache->del;?></li>
         <li class="active"><?php echo $moduleFile;?></li>
     </ol>

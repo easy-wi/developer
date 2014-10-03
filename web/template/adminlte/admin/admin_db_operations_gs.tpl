@@ -1,13 +1,13 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1>Easy-WI <?php echo $gsprache->databases.' '.$gsprache->gameserver.' '.$gsprache->template;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li>Easy-WI <?php echo $gsprache->databases;?></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li><i class="fa fa-database"></i> Easy-WI <?php echo $gsprache->databases;?></li>
         <li class="active"><?php echo $gsprache->gameserver.' '.$gsprache->template;?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">
@@ -46,7 +46,7 @@
                                     <label class="btn btn-success active">
                                         <input type="radio" name="actionType" value="1" checked> <?php echo $gsprache->add;?>
                                     </label>
-                                    <label class="btn btn-warning">
+                                    <label class="btn btn-primary">
                                         <input type="radio" name="actionType" value="2"> <?php echo $gsprache->mod;?>
                                     </label>
                                 </div>

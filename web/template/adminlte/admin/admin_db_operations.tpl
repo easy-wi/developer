@@ -1,12 +1,12 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1>Easy-WI <?php echo $gsprache->databases;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active">Easy-WI <?php echo $gsprache->databases;?></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li class="active"><i class="fa fa-database"></i> Easy-WI <?php echo $gsprache->databases;?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">

@@ -2,7 +2,8 @@
     <h1><?php echo $gsprache->versioncheck;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><?php echo $gsprache->versioncheck;?></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li class="active"><i class="fa fa-check"></i> <?php echo $gsprache->versioncheck;?></li>
     </ol>
 </section>
 

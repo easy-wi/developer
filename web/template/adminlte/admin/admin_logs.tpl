@@ -2,7 +2,7 @@
     <h1><?php echo $gsprache->logs;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><?php echo $gsprache->logs;?></li>
+        <li class="active"><i class="fa fa-list-alt"></i> <?php echo $gsprache->logs;?></li>
     </ol>
 </section>
 

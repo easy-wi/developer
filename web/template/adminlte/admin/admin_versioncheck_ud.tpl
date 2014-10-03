@@ -2,7 +2,8 @@
     <h1>Easy-Wi Update</h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="admin.php?w=vc"><?php echo $gsprache->versioncheck;?></a></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li><a href="admin.php?w=vc"><i class="fa fa-check"></i> <?php echo $gsprache->versioncheck;?></a></li>
         <li class="active">Easy-Wi Update ( <?php echo $ewVersions['version'];?> )</li>
     </ol>
 </section>
