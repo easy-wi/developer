@@ -1,12 +1,12 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1>MySQL <?php echo $gsprache->databases;?></h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-		<li class="active">MySQL <?php echo $gsprache->databases;?></li>
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+		<li><a href="userpanel.php?w=my"><i class="fa fa-database"></i> MySQL <?php echo $gsprache->databases;?></a></li>
+        <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
 	<?php foreach ($table as $table_row) { ?>
     <div class="row">

@@ -2,8 +2,8 @@
     <h1><?php echo $gsprache->migration;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=gs"><?php echo $gsprache->gameserver;?></a></li>
-        <li class="active"><?php echo $gsprache->migration;?></li>
+        <li><a href="userpanel.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li class="active"><i class="fa fa-truck"></i> <?php echo $gsprache->migration;?></li>
     </ol>
 </section>
 

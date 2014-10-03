@@ -2,15 +2,13 @@
     <h1><?php echo $gsprache->addon;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=gs"><?php echo $gsprache->gameserver;?></a> <span class="divider">/</span></li>
-        <li><?php echo $gsprache->addon;?></li>
+        <li><a href="userpanel.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><i class="fa fa-puzzle-piece"></i> <?php echo $gsprache->addon;?></li>
         <li><?php echo $table['serverip'].':'.$table['port'];?></li>
         <li><?php echo $currentTemplate;?></li>
-        <li><?php echo $description;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">

@@ -2,12 +2,12 @@
     <h1><?php echo $gsprache->support;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=ti"><?php echo $gsprache->support;?></a></li>
+        <li><a href="userpanel.php?w=ti"><i class="fa fa-life-ring"></i> <?php echo $gsprache->support;?></a></li>
         <li class="active"><?php echo $sprache->close_heading;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">

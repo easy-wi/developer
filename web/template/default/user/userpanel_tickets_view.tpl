@@ -1,13 +1,12 @@
 <section class="content-header">
     <h1><?php echo $gsprache->support;?></h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-        <li><?php echo $gsprache->support;?></li>
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="userpanel.php?w=ti"><i class="fa fa-life-ring"></i> <?php echo $gsprache->support;?></a></li>
         <li class="active"><?php echo $topic;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
     <div class="row">
         <div class="col-md-6">
@@ -22,7 +21,7 @@
                         <br>
                         <?php if($open=="Y") { ?>
                         <dt><?php echo $gsprache->mod;?></dt>
-                        <dd><a href="userpanel.php?w=ti&d=md&amp;id=<?php echo $id;?>&amp;action=md"><span class="btn btn-primary btn-sm"><i class="fa fa-exchange"></i></a></dd>
+                        <dd><a href="userpanel.php?w=ti&d=md&amp;id=<?php echo $id;?>&amp;action=md"><span class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a></dd>
                         <br>
                         <dt><?php echo $sprache->close_heading;?></dt>
                         <dd><a href="userpanel.php?w=ti&d=md&amp;id=<?php echo $id;?>&amp;action=cl"><span class="btn btn-primary btn-sm"><i class="fa fa-lock"></i></span></a></dd>

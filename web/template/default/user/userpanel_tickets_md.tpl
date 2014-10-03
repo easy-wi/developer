@@ -1,13 +1,12 @@
 <section class="content-header">
     <h1><?php echo $gsprache->support;?></h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><?php echo $gsprache->support;?></li>
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="userpanel.php?w=ti"><i class="fa fa-life-ring"></i> <?php echo $gsprache->support;?></a></li>
         <li class="active"><?php echo $topic;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
     <div class="row">
         <div class="col-md-6">

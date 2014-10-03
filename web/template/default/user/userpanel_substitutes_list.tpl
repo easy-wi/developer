@@ -2,11 +2,12 @@
     <h1><?php echo $gsprache->substitutes;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><?php echo $gsprache->substitutes;?></li>
+        <li><a href="userpanel.php?w=su"><i class="fa fa-users"></i> <?php echo $gsprache->substitutes;?></a></li>
+        <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
 
 	<?php if($userWantsHelpText=='Y'){ ?>

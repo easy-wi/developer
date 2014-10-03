@@ -1,4 +1,3 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1>Easy-WI <?php echo $gsprache->databases.' '.$gsprache->gameserver.' '.$gsprache->addons;?></h1>
     <ol class="breadcrumb">
@@ -8,7 +7,7 @@
         <li class="active"><?php echo $gsprache->gameserver.' '.$gsprache->addons;?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
 
     <div class="row">

@@ -1,4 +1,3 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1><?php echo $gsprache->lendserver.' '.$gsprache->overview;?></h1>
     <ol class="breadcrumb">

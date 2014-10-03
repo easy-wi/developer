@@ -7,7 +7,7 @@
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
 
     <div class="box box-primary">

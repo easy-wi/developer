@@ -1,14 +1,14 @@
 <section class="content-header">
     <h1><?php echo $gsprache->voiceserver.' '.$gsprache->stats;?></h1>
     <ol class="breadcrumb">
-        <li><a href="<?php echo $targetFile;?>"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=vo"><?php echo $gsprache->voiceserver;?></a></li>
-        <li><?php echo $gsprache->stats;?></li>
+        <li><a href="userpanel.php"><i class="fa fa-home"> Home</a></i></li>
+        <li><a href="userpanel.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><i class="fa fa-area-chart"></i> <?php echo $gsprache->stats;?></li>
         <li class="active"><?php echo $display;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
 
     <div class="row">

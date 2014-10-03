@@ -1,14 +1,14 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->template;?></h1>
+    <h1><?php echo $sprache->banList;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"> Home</a></i></li>
-            <li><a href="userpanel.php?w=vo"><?php echo $gsprache->voiceserver;?></a></li>
-            <li><?php echo $sprache->banList;?></li>
-            <li class="active"><?php echo $server;?></li>
+        <li><a href="userpanel.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><i class="fa fa-ban"></i> <?php echo $sprache->banList;?></li>
+        <li class="active"><?php echo $server;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">

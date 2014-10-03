@@ -2,16 +2,14 @@
     <h1><?php echo $sprache->restarttime;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=gs"><?php echo $gsprache->gameserver;?></a> </li>
-        <li><?php echo $sprache->restarttime;?> </li>
+        <li><a href="userpanel.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><i class="fa fa-calendar"></i> <?php echo $sprache->restarttime;?> </li>
         <li class="active"><?php echo $serverip.":".$port;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
 
-    <!-- Content Help -->
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
         <div class="col-md-12">

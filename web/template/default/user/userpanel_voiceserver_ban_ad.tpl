@@ -1,14 +1,13 @@
 <section class="content-header">
-    <h1><?php echo $gsprache->voiceserver.' '.$sprache->banAdd;?></h1>
+    <h1><?php echo $sprache->banAdd;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=vo"><?php echo $gsprache->voiceserver;?></a></li>
-        <li><?php echo $sprache->banAdd;?></li>
+        <li><a href="userpanel.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><i class="fa fa-ban"></i> <?php echo $sprache->banAdd;?></li>
         <li class="active"><?php echo $server;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
 <section class="content">
 
     <?php if (isset($error)){ ?>
@@ -16,7 +15,7 @@
         <div class="box-header">
             <i class="fa fa-warning"></i>
             <h3 class="box-title"><?php echo $gsprache->errors;?></h3>
-        </div><!-- /.box-header -->
+        </div>
         <div class="box-body">
             <div class="alert alert-danger alert-dismissable">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

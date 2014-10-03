@@ -2,13 +2,13 @@
     <h1><?php echo $gsprache->substitutes;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=su"><?php echo $gsprache->substitutes;?></a></li>
-        <li><a href="userpanel.php?w=su&amp;d=dl"><?php echo $gsprache->del;?></a></li>
+        <li><a href="userpanel.php?w=su"><i class="fa fa-users"></i> <?php echo $gsprache->substitutes;?></a></li>
+        <li><?php echo $gsprache->del;?></li>
         <li class="active"><?php echo $loginName;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">

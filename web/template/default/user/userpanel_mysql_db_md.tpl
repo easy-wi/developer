@@ -1,13 +1,14 @@
 <section class="content-header">
-    <h1>MySQL <?php echo $gsprache->databases.' '.$gsprache->mod;?></h1>
+    <h1>MySQL <?php echo $gsprache->databases;?></h1>
     <ol class="breadcrumb">
-		<li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-		<li><a href="userpanel.php?w=my">MySQL <?php echo $gsprache->databases;?></a></li>
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="userpanel.php?w=my"><i class="fa fa-database"></i> MySQL <?php echo $gsprache->databases;?></a></li>
+        <li><i class="fa fa-cog"></i> <?php echo $gsprache->settings;?></li>
 		<li class="active"><?php echo $dbname.' ('.$ip.' )';?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">

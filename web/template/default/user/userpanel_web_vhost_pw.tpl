@@ -1,15 +1,14 @@
-<!-- Content Header -->
 <section class="content-header">
-    <h1><?php echo $gsprache->webspace.' '.$sprache->ftpPassword;?></h1>
+    <h1><?php echo $gsprache->webspace;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=wv"><?php echo $gsprache->webspace;?></a></li>
-        <li><?php echo $sprache->ftpPassword;?></li>
+        <li><a href="userpanel.php?w=wv"><i class="fa fa-cubes"></i> <?php echo $gsprache->webspace;?></a></li>
+        <li><i class="fa fa-lock"></i> <?php echo $sprache->ftpPassword;?></li>
         <li class="active"><?php echo $dns;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
 
     <?php if (count($errors)>0){ ?>
@@ -17,7 +16,7 @@
         <div class="box-header">
             <i class="fa fa-warning"></i>
             <h3 class="box-title"><?php echo $gsprache->errors;?></h3>
-        </div><!-- /.box-header -->
+        </div>
         <div class="box-body">
             <div class="alert alert-danger alert-dismissable">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

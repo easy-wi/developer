@@ -1,17 +1,15 @@
-<!-- Content Header -->
 <section class="content-header">
-    <h1><?php echo $gsprache->webspace.' '.$gsprache->fdlInfo;?></h1>
+    <h1><?php echo $gsprache->webspace;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-		<li><a href="userpanel.php?w=wv"><?php echo $gsprache->webspace;?></a></li>
-		<li><?php echo $sprache->fdlInfo;?></li>
+        <li><a href="userpanel.php?w=wv"><i class="fa fa-cubes"></i> <?php echo $gsprache->webspace;?></a></li>
+		<li><i class="fa fa-info-circle"></i> <?php echo $sprache->fdlInfo;?></li>
 		<li class="active"><?php echo $dns;?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
 
-	<!-- Content Help -->
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
         <div class="col-md-12">

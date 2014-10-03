@@ -1,14 +1,14 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1>TS3 DNS <?php echo $gsprache->mod;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=vo"><?php echo $gsprache->voiceserver;?></a></li>
-        <li><a href="userpanel.php?w=vd">TS3 DNS <?php echo $gsprache->mod;?></a></li>
+        <li><a href="userpanel.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><a href="userpanel.php?w=vd"><i class="fa fa-link"></i> TS3 DNS</a></li>
+        <li><?php echo $gsprache->mod;?></li>
         <li class="active"><?php echo $defaultdns; ?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
     <div class="row">
         <div class="col-md-12">

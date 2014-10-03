@@ -2,13 +2,13 @@
     <h1><?php echo $gsprache->fastdownload;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=gs"><?php echo $gsprache->gameserver;?></a></li>
-        <li><?php echo $gsprache->fastdownload;?></li>
+        <li><a href="userpanel.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><a href="userpanel.php?w=fd"><i class="fa fa-cloud-upload"></i> <?php echo $gsprache->fastdownload;?></a></li>
         <li class="active"><?php echo $serverip.':'.$port;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
 
 	<?php if($userWantsHelpText=='Y'){ ?>

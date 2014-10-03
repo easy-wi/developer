@@ -1,17 +1,15 @@
-<!-- Content Header -->
 <section class="content-header">
-    <h1><?php echo $gsprache->voiceserver.' '.$gsprache->mod;?></h1>
+    <h1><?php echo $gsprache->voiceserver;?></h1>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=vo"><?php echo $gsprache->voiceserver;?></a></li>
-        <li><?php echo $gsprache->mod;?></li>
+        <li><a href="userpanel.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><i class="fa fa-cog"></i> <?php echo $gsprache->settings;?></li>
         <li class="active"><?php echo $ip.':'.$port;?> <?php if ($usedns=='Y') echo $dns;?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
 
-    <!-- Content Help -->
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
         <div class="col-md-12">

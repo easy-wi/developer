@@ -1,12 +1,13 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1>TS3 DNS</h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active">TS3 DNS</li>
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="userpanel.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><i class="fa fa-link"></i> TS3 DNS</li>
+        <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
     <?php foreach ($table as $row) { ?>
     <div class="row">

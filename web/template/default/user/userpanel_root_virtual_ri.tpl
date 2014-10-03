@@ -1,4 +1,3 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1><?php echo $gsprache->virtual.' '.$sprache->rescue.' / '.$sprache->reinstall;?></h1>
     <ol class="breadcrumb">
@@ -8,7 +7,7 @@
 		<li class="active"><?php echo $ip;?></li>
     </ol>
 </section>
-<!-- Main Content -->
+
 <section class="content">
 
 <div class="col-md-6">	

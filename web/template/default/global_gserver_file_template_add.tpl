@@ -8,7 +8,7 @@
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
 
     <?php if (count($errors)>0){ ?>
@@ -19,7 +19,7 @@
                 <div class="box-header">
                     <i class="fa fa-warning"></i>
                     <h3 class="box-title"><?php echo $gsprache->errors;?></h3>
-                </div><!-- /.box-header -->
+                </div>
                 <div class="box-body">
                     <div class="alert alert-danger alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

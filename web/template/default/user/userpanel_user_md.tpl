@@ -1,4 +1,3 @@
-<!-- Content Header -->
 <section class="content-header">
     <h1><?php echo $gsprache->user;?></h1>
     <ol class="breadcrumb">
@@ -8,7 +7,7 @@
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
     <div class="row">
         <div class="col-md-6">

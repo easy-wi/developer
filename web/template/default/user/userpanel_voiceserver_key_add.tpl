@@ -1,18 +1,17 @@
 <section class="content-header">
     <h1><?php echo $gsprache->voiceserver;?> Token <?php echo $gsprache->add;?></h1>
     <ol class="breadcrumb">
-        <li><a href="<?php echo $targetFile;?>"><i class="fa fa-home"></i> Home</a></li>
-        <li><a href="userpanel.php?w=vo"><?php echo $gsprache->voiceserver;?></a></li>
-        <li><a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>">Token</a></li>
+        <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="userpanel.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><a href="userpanel.php?w=vo&amp;d=pk&amp;id=<?php echo $id;?>"><i class="fa fa-key"></i> Token</a></li>
         <li><?php echo $gsprache->add;?></li>
         <li class="active"><?php echo $address;?></li>
     </ol>
 </section>
 
-<!-- Main Content -->
+
 <section class="content">
 
-    <!-- Content Help -->
 	<?php if($userWantsHelpText=='Y'){ ?>
     <div class="row hidden-xs">
         <div class="col-md-12">
