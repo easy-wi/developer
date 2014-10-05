@@ -67,23 +67,32 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
     $serverid = (int) $ui->id('id', 10, 'get');
 
-    $query = $sql->prepare("SELECT g.`rootID`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,g.`newlayout`,g.`protected`,s.`servertemplate`,t.`modfolder`,t.`shorten`,u.`fdlpath`,u.`cname` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT g.`rootID`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,g.`newlayout`,g.`protected`,g.`homeLabel`,r.`install_paths`,s.`servertemplate`,t.`modfolder`,t.`shorten`,u.`fdlpath`,u.`cname` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` INNER JOIN `rserverdata` AS r ON r.`id`=g.`rootID` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($serverid, $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
         $ftpupload = ($row['masterfdl'] == 'Y') ? $row['fdlpath'] : $row['mfdldata'];
         $shorten = ($row['servertemplate'] == 1) ? $row['shorten'] : $row['shorten'] . '-' . $row['servertemplate'];
         $customer = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $serverid : $row['cname'];
+        $protectedString = ($row['protected'] == 'Y') ? 'protected' : 'unprotected';
+
+        $iniVars = parse_ini_string($row['install_paths'], true);
+        $homeDir = ($iniVars and isset($iniVars[$row['homeLabel']]['path'])) ? $iniVars[$row['homeLabel']]['path'] : '/home';
 
         if ($row['protected'] == 'Y') {
             $customer .= '-p';
         }
 
-        if ($ftpupload != '') {
+        if (strlen($ftpupload) > 0) {
 
             $serverfolder = $row['serverip'] . '_' . $row['port'] . '/' . $shorten;
+            $modFolder = (strlen($row['modfolder']) > $row['modfolder']) ? $row['modfolder'] : 'none';
 
-            if (ssh2_execute('gs', $row['rootID'], 'sudo -u ' . $customer . ' ./control.sh fastdl "' . $customer . '"  "' . $serverfolder . '" "'. $ftpupload . '" "' . $row['modfolder'] . '"') === false) {
+            $cmd = "sudo -u {$customer} ./control.sh fastdl {$customer} \"{$serverfolder}\" \"{$ftpupload}\" \"{$modFolder}\" \"{$protectedString}\" \"{$homeDir}\"";
+
+            $sshReturn = ssh2_execute('gs', $row['rootID'], $cmd);
+
+            if ($sshReturn === false) {
                 $template_file = $spracheResponse->error_server;
                 $actionstatus = 'fail';
             } else {
@@ -91,6 +100,9 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $template_file = $sprache->fdlstarted;
             }
 
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                $template_file .= '<pre>' . $cmd . "\r\n" . $sshReturn . '</pre>';
+            }
 
         } else {
             $template_file = $sprache->fdlfailed;

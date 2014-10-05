@@ -101,7 +101,6 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         }
 
         $table[$row['id']] = array('id' => $row['id'], 'address' => $row['serverip'] . ':' . $row['port'], 'games' => $temp,'rootID' => $row['rootID'], 'gsfolder' => $row['serverip'] . '_' . $row['port'], 'customer' => $customer,'cftppass' => $row['cftppass']);
-
     }
 }
 
