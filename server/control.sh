@@ -2063,10 +2063,12 @@ function fdl_update {
 		SHORTEN=`echo $SHORTEN | awk -F "-" '{print $1}'`
 	fi
 	if [ -f $HOMEFOLDER/conf/fdl-$SHORTEN.list ]; then
-		if [ "$VARIABLE5" == "protected" ]; then
-			SERVERDIR=/home/$VARIABLE2/pserver/$VARIABLE3
+		USERHOME='/home'
+		if [ "$VARIABLE7" != "" ]; then USERHOME=$VARIABLE7; fi
+		if [ "$VARIABLE6" == "protected" ]; then
+			SERVERDIR=$USERHOME/$VARIABLE2/pserver/$VARIABLE3
 		else
-			SERVERDIR=/home/$VARIABLE2/server/$VARIABLE3
+			SERVERDIR=$USERHOME/$VARIABLE2/server/$VARIABLE3
 		fi
 		SERVERDIR=`echo $SERVERDIR | sed 's/\/\//\//g'`
 		SPORT=`echo $VARIABLE3 | awk -F "/" '{print $1}'`
