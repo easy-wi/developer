@@ -863,16 +863,16 @@ if [ $USER -eq $USER 2> /dev/null ]; then USERID=$USER; fi
 USERGROUPD=`ls -l $VARIABLE0 | awk '{print $4}'`
 if [ "$VARIABLE4" == "" ]; then VARIABLE4="/home"; fi
 if [ "$USERID" != "" ]; then
-	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2 2>/dev/null
+	sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "`echo ${VARIABLE4}/${VARIABLE2} | sed 's/\/\//\//g'`" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2 2>/dev/null
 else
 	USERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGUSERID}' } $1 == id { id++ } $1 > id { print id; exit }'`
 	if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
-		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2 2>/dev/null
+		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "`echo ${VARIABLE4}/${VARIABLE2} | sed 's/\/\//\//g'`" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2 2>/dev/null
 	else
 		while [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" != "" -o "`grep \"x:$USERID:\" /etc/passwd`" != "" ]; do
 			USERID=$[USERID+1]
 			if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then
-				sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2 2>/dev/null
+				sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "`echo ${VARIABLE4}/${VARIABLE2} | sed 's/\/\//\//g'`" -g $USERGROUPD -s /bin/bash -u $USERID $VARIABLE2 2>/dev/null
 			fi
 		done
 	fi
@@ -881,16 +881,16 @@ if [ "$VARIABLE5" != "" ]; then
 	PUSER=`ls -la /var/run/screen | grep S-$VARIABLE2-p | head -n 1 | awk '{print $3}'`
 	if [ $PUSER -eq $PUSER 2> /dev/null ]; then PUSERID=$PUSER;  fi
 	if [ "$PUSERID" != "" ]; then
-		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
+		sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` -d "`echo ${VARIABLE4}/${VARIABLE2}/pserver | sed 's/\/\//\//g'`" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
 	else
 		PUSERID=`getent passwd | cut -f3 -d: | sort -un | awk 'BEGIN { id='${CONFIGUSERID}' } $1 == id { id++ } $1 > id { print id; exit }'`
 		if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" == "" -a "`grep \"x:$PUSERID:\" /etc/passwd`" == "" ]; then
-			sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
+			sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "`echo ${VARIABLE4}/${VARIABLE2}/pserver | sed 's/\/\//\//g'`" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
 		else
 			while [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" != "" -o "`grep \"x:$PUSERID:\" /etc/passwd`" != "" ]; do
 				PUSERID=$[PUSERID+1]
 				if [ "`ls -la /var/run/screen | awk '{print $3}' | grep $PUSERID`" == "" -a "`grep \"x:$PUSERID:\" /etc/passwd`" == "" ]; then
-					sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "$VARIABLE4/$VARIABLE2/pserver" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
+					sudo /usr/sbin/useradd -m -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` -d "`echo ${VARIABLE4}/${VARIABLE2}/pserver | sed 's/\/\//\//g'`" -g $USERGROUPD -s /bin/bash -u $PUSERID $VARIABLE2-p
 				fi
 			done
 		fi
@@ -978,9 +978,9 @@ echo "`date`: Userpassword for $VARIABLE2 edited" >> $LOGDIR/update.log
 }
 
 function mod_user {
-if [ "$VARIABLE4" != "" -a "$VARIABLE4" != "1" ]; then USERHOME=" -m -d ${VARIABLE4}/$VARIABLE2"; else USERHOME=''; fi
+if [ "$VARIABLE4" != "" -a "$VARIABLE4" != "1" ]; then USERHOME=" -m -d `echo ${VARIABLE4}/${VARIABLE2} | sed 's/\/\//\//g'`"; else USERHOME=''; fi
 sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE3'","Sa")'` $USERHOME $VARIABLE2
-if [ "`id ${VARIABLE2}-p 2>/dev/null`" != "" -a "$USERHOME" != "" ]; then USERHOME="$USERHOME/pserver"; sudo /usr/sbin/usermod $USERHOME $VARIABLE2-p; fi
+if [ "`id ${VARIABLE2}-p 2>/dev/null`" != "" -a "$USERHOME" != "" ]; then USERHOME="`echo ${USERHOME}/pserver | sed 's/\/\//\//g'`"; sudo /usr/sbin/usermod $USERHOME $VARIABLE2-p; fi
 if [ "$VARIABLE5" != "" ]; then sudo /usr/sbin/usermod -p `perl -e 'print crypt("'$VARIABLE5'","Sa")'` $VARIABLE2-p; fi
 echo "user edited"
 echo "`date`: Userpassword for $VARIABLE2 edited" >> $LOGDIR/update.log
@@ -1324,34 +1324,37 @@ function run_backup {
 		echo "VARIABLE2=$VARIABLE2
 SHORTEN=$SHORTEN
 find $BACKUPDIR/ -maxdepth 1 -type f -name \"$VARIABLE2-$SHORTEN*.tar.bz2\" -delete" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo 'if [ -d /home/$USERNAME/server/$VARIABLE2/$SHORTEN ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo "cd /home/$USERNAME/server/$VARIABLE2/$SHORTEN" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+		echo 'if [ -d $USERHOME/$USERNAME/server/$VARIABLE2/$SHORTEN ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+		echo "cd $USERHOME/$USERNAME/server/$VARIABLE2/$SHORTEN" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'fi' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo 'if [ -d /home/$USERNAME/server/$VARIABLE2/$SHORTEN-2 ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo "cd /home/$USERNAME/server/$VARIABLE2/$SHORTEN-2" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+		echo 'if [ -d $USERHOME/$USERNAME/server/$VARIABLE2/$SHORTEN-2 ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+		echo "cd $USERHOME/$USERNAME/server/$VARIABLE2/$SHORTEN-2" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN-2.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'fi' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo 'if [ -d /home/$USERNAME/server/$VARIABLE2/$SHORTEN-3 ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		echo "cd /home/$USERNAME/server/$VARIABLE2/$SHORTEN-3" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+		echo 'if [ -d $USERHOME/$USERNAME/server/$VARIABLE2/$SHORTEN-3 ]; then' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+		echo "cd $USERHOME/$USERNAME/server/$VARIABLE2/$SHORTEN-3" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo "${IONICE}"'nice -n +19 tar cfj $BACKUPDIR/$VARIABLE2-$SHORTEN-3.tar.bz2 .' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		echo 'fi' >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-		if [ "$VARIABLE5" != "" ]; then
-			echo "wput -q --limit-rate=$FTPUPLOADLIMIT --basename=/home/$USERNAME/backup/ \"$BACKUPDIR/$VARIABLE2-$SHORTEN.tar.bz2\" \"$VARIABLE5\"" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-			echo "wput -q --limit-rate=$FTPUPLOADLIMIT --basename=/home/$USERNAME/backup/ \"$BACKUPDIR/$VARIABLE2-$SHORTEN-2.tar.bz2\" \"$VARIABLE5\"" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
-			echo "wput -q --limit-rate=$FTPUPLOADLIMIT --basename=/home/$USERNAME/backup/ \"$BACKUPDIR/$VARIABLE2-$SHORTEN-3.tar.bz2\" \"$VARIABLE5\"" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+		if [ "$VARIABLE5" != "" -a "$VARIABLE5" != "none" ]; then
+			echo "wput -q --limit-rate=$FTPUPLOADLIMIT --basename=$USERHOME/$USERNAME/backup/ \"$BACKUPDIR/$VARIABLE2-$SHORTEN.tar.bz2\" \"$VARIABLE5\"" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+			echo "wput -q --limit-rate=$FTPUPLOADLIMIT --basename=$USERHOME/$USERNAME/backup/ \"$BACKUPDIR/$VARIABLE2-$SHORTEN-2.tar.bz2\" \"$VARIABLE5\"" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+			echo "wput -q --limit-rate=$FTPUPLOADLIMIT --basename=$USERHOME/$USERNAME/backup/ \"$BACKUPDIR/$VARIABLE2-$SHORTEN-3.tar.bz2\" \"$VARIABLE5\"" >> $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 		fi
 	fi
 }
 
 function backup_servers {
+	USERHOME='/home'
+	if [ "$VARIABLE6" != "" ]; then USERHOME=$VARIABLE6; fi
 	USERNAME=`id -un`
-	BACKUPDIR="/home/$USERNAME/backup"
+	BACKUPDIR="$USERHOME/$USERNAME/backup"
 	echo "#!/bin/bash
 
 rm $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 BACKUPDIR=$BACKUPDIR
-USERNAME=$USERNAME" > $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+USERNAME=$USERNAME
+USERHOME=$USERHOME" > $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 	if [ ! -d $BACKUPDIR ]; then
 		mkdir -p $BACKUPDIR
 	fi
@@ -1375,6 +1378,8 @@ USERNAME=$USERNAME" > $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 }
 
 function restore_backup {
+	USERHOME='/home'
+	if [ "$VARIABLE6" != "" ]; then USERHOME=$VARIABLE6; fi
 	USERNAME=`id -un`
 	IP=`echo $VARIABLE2 | awk -F '_' '{print $1}'`
 	PORT=`echo $VARIABLE2 | awk -F '_' '{print $2}'`
@@ -1388,20 +1393,21 @@ function restore_backup {
 	if ([[ ! `screen -ls | grep "$SCREENNAME"` ]] && [[ ! `screen -ls | grep "backup-$VARIABLE2-$SHORTEN"` ]]); then
 		echo "#!/bin/bash" > $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		echo "rm $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-		if [ "$VARIABLE5" != "" ]; then
-			echo "if [ ! -f /home/$USERNAME/backup/ ]; then mkdir -p /home/$USERNAME/backup/; fi" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "cd /home/$USERNAME/backup/" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "mv /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 /home/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+		echo "USERHOME=$USERHOME" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+		if [ "$VARIABLE5" != "" -a "$VARIABLE5" != "none" ]; then
+			echo "if [ ! -f $USERHOME/$USERNAME/backup/ ]; then mkdir -p $USERHOME/$USERNAME/backup/; fi" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "cd $USERHOME/$USERNAME/backup/" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "mv $USERHOME/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 $USERHOME/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "wget -q --timeout=10 --no-check-certificate $VARIABLE5/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "if [ -f /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 ]; then" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "	rm /home/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "if [ -f $USERHOME/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 ]; then" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "	rm $USERHOME/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "else" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "	mv /home/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2 /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "	mv $USERHOME/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2 $USERHOME/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "fi" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		fi
-		echo "if [ -f /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 ]; then" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-		echo "rm -rf /home/$USERNAME/server/$VARIABLE2/$VARIABLE3/*" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-		echo "${IONICE}nice -n +19 tar -C /home/$USERNAME/server/$VARIABLE2/$VARIABLE3 -xjf /home/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+		echo "if [ -f $USERHOME/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 ]; then" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+		echo "rm -rf $USERHOME/$USERNAME/server/$VARIABLE2/$VARIABLE3/*" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+		echo "${IONICE}nice -n +19 tar -C $USERHOME/$USERNAME/server/$VARIABLE2/$VARIABLE3 -xjf $USERHOME/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		echo "wget -q --no-check-certificate -O - $VARIABLE4/get_password.php?w=rb\\&shorten=$USERNAME\\&$QUERY" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		echo "fi" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		chmod +x $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
