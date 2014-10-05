@@ -1999,61 +1999,51 @@ function del_addon_files {
 		if [ "`basename $FILES`" == "liblist.gam" ]; then
 			mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES
 		elif [ "`basename $FILES`" == "plugins.ini" ]; then
-			if [ -f $HOMEFOLDER/temp/$USER.pluginlist.temp ]; then
-				rm $HOMEFOLDER/temp/$USER.pluginlist.temp
-			fi
+			if [ -f $HOMEFOLDER/temp/$USER.pluginlist.temp ]; then rm $HOMEFOLDER/temp/$USER.pluginlist.temp; fi
 			cat $GAMEDIR/$FILES | while read LINE; do
-				if [[ `grep "$LINE" $FILES` == "" ]]; then 
-					echo "$LINE" >> $HOMEFOLDER/temp/$USER.pluginlist.temp
-				fi
+				if [[ `grep "$LINE" $FILES` == "" ]]; then  echo "$LINE" >> $HOMEFOLDER/temp/$USER.pluginlist.temp; fi
 			done
 			cp $HOMEFOLDER/temp/$USER.pluginlist.temp $GAMEDIR/$FILES
 			rm $HOMEFOLDER/temp/$USER.pluginlist.temp
 		else
 			rm -rf "$GAMEDIR/$FILES" > /dev/null 2>&1
-			if [ "$FILES" == "liblist.gam" ]; then
-				mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES > /dev/null 2>&1
-			fi
+			if [ "$FILES" == "liblist.gam" ]; then mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES > /dev/null 2>&1; fi
 		fi
 	done
 	cd $GAMEDIR
 	find -mindepth 1 -type d -empty -delete
-	if [ "$VARIABLE6" != "" ]; then
+	if [ "$VARIABLE6" != "" -a "$VARIABLE6" != "none" ]; then
 		for FOLDER in $VARIABLE6; do
 			find -mindepth 1 -name "$FOLDER" | while read FOLDERS; do
-				if [ -d $FOLDERS ]; then
-					rm -rf $FOLDERS
-				fi
+				if [ -d $FOLDERS ]; then rm -rf $FOLDERS; fi
 			done
 		done
 	fi
 }
 
 function del_addon {
-	USER=`echo $GAMEDIR | awk -F/ '{print $3}'`
+	if [ "${VARIABLE4:0:1}" != "/" ]; then VARIABLE4="/home/$VARIABLE4"; fi
+	VARIABLE4=`echo $VARIABLE4 | sed 's/\/\//\//g'`
 	if [ "$VARIABLE2" == "map" ]; then
 		ADDONFOLDER=$MAPDIR/$VARIABLE3
-		if [ ! -d $ADDONFOLDER ]; then
-			exit 0
-		fi
+		if [ ! -d $ADDONFOLDER ]; then exit 0; fi
 	elif [ "$VARIABLE2" == "tool" ]; then
 		ADDONFOLDER=$ADDONDIR/$VARIABLE3
-		if [ ! -d $ADDONFOLDER ]; then
-			exit 0
-		fi
+		if [ ! -d $ADDONFOLDER ]; then exit 0; fi
 	else
 		exit 0
 	fi
 	cd $ADDONFOLDER
-	if [ "$VARIABLE5" != "" ]; then
-		if [ "`find /home/$VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name ${VARIABLE5} | wc -l`" == "1" ]; then
-			GAMEDIR=`find /home/$VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE5" | head -n 1`
+	if [ "$VARIABLE5" != "" -a "$VARIABLE5" != "none" ]; then
+		if [ "`find $VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name ${VARIABLE5} | wc -l`" == "1" ]; then
+			GAMEDIR=`find $VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE5" | head -n 1`
 		else
-			GAMEDIR=`find /home/$VARIABLE4 -mindepth 1 -maxdepth 1 -type d -name "$VARIABLE5" | head -n 1`
+			GAMEDIR=`find $VARIABLE4 -mindepth 1 -maxdepth 1 -type d -name "$VARIABLE5" | head -n 1`
 		fi
 	else
-		GAMEDIR="/home/$VARIABLE4"
+		GAMEDIR="$VARIABLE4"
 	fi
+	USER=`echo $GAMEDIR | awk -F/ '{print $3}'`
 	del_addon_files&
 	if [ -f $LOGDIR/addons.log ]; then
 		echo "`date`: Removed $VARIABLE3 from the server $GAMEDIR for user $USER" >> $LOGDIR/addons.log
