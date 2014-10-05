@@ -58,6 +58,7 @@ VARIABLE6="$6"
 VARIABLE7="$7"
 VARIABLE8="$8"
 VARIABLE9="$9"
+VARIABLE10="${10}"
 VARIABLEALL="$@"
 SCRIPTNAME=`basename $0`
 MASTERUSER=`echo $HOMEFOLDER | awk -F "/" '{print $3}'`
@@ -1200,6 +1201,8 @@ function reinst_customer_server {
 }
 
 function migration {
+	FTPUSER=$VARIABLE6
+	VARIABLE6=$VARIABLE10
 	CUTDIRS=${VARIABLE8/ftps:\/\//}
 	CUTDIRS=${CUTDIRS/ftp:\/\//}
 	CUTDIRS=${CUTDIRS//\/\//\/}
@@ -1231,7 +1234,7 @@ PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.in
 	echo 'MODFOLDER=`find -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE9" | head -n 1`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'if [ "$MODFOLDER" != "" ]; then cd $MODFOLDER; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'find $SERVERDIR/$VARIABLE4/$GSTEMPLATE/ -type f -print0 | xargs -0 rm -f' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo "wget -q -r -l inf -nc -nH --limit-rate=4096K --retr-symlinks --ftp-user=$VARIABLE6 --ftp-password=$VARIABLE7 --cut-dirs=$CUTDIRS --no-check-certificate $VARIABLE8" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo "wget -q -r -l inf -nc -nH --limit-rate=4096K --retr-symlinks --ftp-user=$FTPUSER --ftp-password=$VARIABLE7 --cut-dirs=$CUTDIRS --no-check-certificate $VARIABLE8" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	add_customer_server
 	chmod +x $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	screen -d -m -S add-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
