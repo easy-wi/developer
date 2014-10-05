@@ -103,9 +103,7 @@ if (!function_exists('gsrestart')) {
             $ftpport = $rdata['ftpport'];
             $rootOS = $rdata['os'];
 
-
             $iniVars = parse_ini_string($rdata['install_paths'], true);
-
             $homeDir = ($iniVars and isset($iniVars[$row['homeLabel']]['path'])) ? $iniVars[$row['homeLabel']]['path'] : '/home';
 
             //install_paths
@@ -585,6 +583,7 @@ if (!function_exists('gsrestart')) {
         $query = $sql->prepare("SELECT `active`,`cfgdir`,`type`,`mysql_server`,`mysql_port`,`mysql_db`,`mysql_table`,`mysql_user`,`mysql_password` FROM `eac` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
             $cfgdir = $row['cfgdir'];
             $active = $row['active'];
             $type = $row['type'];
@@ -595,40 +594,40 @@ if (!function_exists('gsrestart')) {
             $mysql_user = $row['mysql_user'];
             $mysql_password = $row['mysql_password'];
 
-            $query = $sql->prepare("SELECT g.`serverip`,g.`port`,s.`anticheat`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
-            $query->execute(array($serverid, $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $query2 = $sql->prepare("SELECT g.`serverip`,g.`port`,s.`anticheat`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
+            $query2->execute(array($serverid, $reseller_id));
+            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
-                $gsip = $row['serverip'];
-                $gsport = $row['port'];
+                $gsip = $row2['serverip'];
+                $gsport = $row2['port'];
                 $sqlParameter = 0;
 
-                if ($row['anticheat'] == 3) {
+                if ($row2['anticheat'] == 3) {
                     $parameter = '';
-                } else if ($row['anticheat'] == 4) {
+                } else if ($row2['anticheat'] == 4) {
                     $parameter = '-2';
                     $sqlParameter = 2;
-                } else if ($row['anticheat'] == 5) {
+                } else if ($row2['anticheat'] == 5) {
                     $parameter = '-1';
                     $sqlParameter = 1;
-                } else if ($row['anticheat'] == 6) {
+                } else if ($row2['anticheat'] == 6) {
                     $parameter = '-3';
                     $sqlParameter = 3;
                 }
 
                 $gameID = 0;
 
-                if ($row['shorten'] == 'cstrike' or $row['shorten'] == 'czero') {
+                if ($row2['shorten'] == 'cstrike' or $row2['shorten'] == 'czero') {
 
                     $subfolder = 'hl1';
                     $gameID = 1;
 
-                } else if ($row['shorten'] == 'css' or $row['shorten'] == 'tf') {
+                } else if ($row2['shorten'] == 'css' or $row2['shorten'] == 'tf') {
 
                     $subfolder = 'hl2';
                     $gameID = 2;
 
-                } else if ($row['shorten'] == 'csgo') {
+                } else if ($row2['shorten'] == 'csgo') {
 
                     $subfolder = 'csgo';
                     $gameID = 4;
@@ -645,24 +644,24 @@ if (!function_exists('gsrestart')) {
                         $eacSql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                     }
 
-                    $query = $eacSql->prepare("SELECT 1 FROM `" . $mysql_table . "` WHERE `IP`=? LIMIT 1");
-                    $query->execute(array($gsip . ':' . $gsport));
-                    $entryExists = $query->rowCount();
+                    $query3 = $eacSql->prepare("SELECT 1 FROM `" . $mysql_table . "` WHERE `IP`=? LIMIT 1");
+                    $query3->execute(array($gsip . ':' . $gsport));
+                    $entryExists = $query3->rowCount();
 
                     if ($entryExists > 0 and $what == 'change') {
 
-                        $query = $eacSql->prepare("UPDATE `" . $mysql_table . "` SET `GAME`=?,`RCONPWD`=?,`FLAGS`=?,`EAC_ENABLED`=1 WHERE `IP`=? LIMIT 1");
-                        $query->execute(array($gameID, $rcon, $sqlParameter, $gsip . ':' . $gsport));
+                        $query3 = $eacSql->prepare("UPDATE `" . $mysql_table . "` SET `GAME`=?,`RCONPWD`=?,`FLAGS`=?,`EAC_ENABLED`=1 WHERE `IP`=? LIMIT 1");
+                        $query3->execute(array($gameID, $rcon, $sqlParameter, $gsip . ':' . $gsport));
 
                     } else if ($entryExists == 0 and $what == 'change') {
 
-                        $query = $eacSql->prepare("INSERT INTO `" . $mysql_table . "` (`GAME`,`IP`,`RCONPWD`,`FLAGS`,`EAC_ENABLED`) VALUES (?,?,?,?,1)");
-                        $query->execute(array($gameID, $gsip . ':' . $gsport, $rcon, $sqlParameter));
+                        $query3 = $eacSql->prepare("INSERT INTO `" . $mysql_table . "` (`GAME`,`IP`,`RCONPWD`,`FLAGS`,`EAC_ENABLED`) VALUES (?,?,?,?,1)");
+                        $query3->execute(array($gameID, $gsip . ':' . $gsport, $rcon, $sqlParameter));
 
                     } else if ($entryExists > 0 and $what == 'remove') {
 
-                        $query = $eacSql->prepare("DELETE FROM `" . $mysql_table . "` WHERE `IP`=?");
-                        $query->execute(array($gsip . ':' . $gsport));
+                        $query3 = $eacSql->prepare("DELETE FROM `" . $mysql_table . "` WHERE `IP`=?");
+                        $query3->execute(array($gsip . ':' . $gsport));
 
                     }
 
