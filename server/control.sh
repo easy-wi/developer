@@ -1970,12 +1970,12 @@ function add_addon {
 		USERHOME=$VARIABLE5
 	fi
 	if [ "$VARIABLE5" != "" -a  "$VARIABLE5" != "none" ]; then
-		if [ "`find /home/$VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name ${VARIABLE5} | wc -l`" == "1" ]; then
+		if [ "`find $USERHOME/$VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name ${VARIABLE5} | wc -l`" == "1" ]; then
 			GAMEDIR=`find $USERHOME/$VARIABLE4 -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE5" | head -n 1`
 		else
 			GAMEDIR=`find $USERHOME/$VARIABLE4 -mindepth 1 -maxdepth 1 -type d -name "$VARIABLE5" | head -n 1`
 		fi
-	elif [ -f $USERHOME/$VARIABLE4/hlds_run -a -d /home/$VARIABLE4/czero ]; then
+	elif [ -f $USERHOME/$VARIABLE4/hlds_run -a -d $USERHOME/$VARIABLE4/czero ]; then
 		GAMEDIR="$USERHOME/$VARIABLE4/czero"
 	elif [ -f $USERHOME/$VARIABLE4/srcds_run -o -f $USERHOME/$VARIABLE4/hlds_run ]; then
 		GAMEDIR="`find $USERHOME/$VARIABLE4 -mindepth 1 -maxdepth 1 -type d -name csgo -o -name cstrike -o -name dod -o -name hl2mp -o -name tf | head -n1`"
