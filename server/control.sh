@@ -1234,7 +1234,7 @@ PATTERN='valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.in
 	echo 'cd $SERVERDIR/$VARIABLE4/$GSTEMPLATE/' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'VARIABLE9=`echo $VARIABLE9 | tr -d '"'"'/'"'"'`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'MODFOLDER=`find -mindepth 1 -maxdepth 3 -type d -name "$VARIABLE9" | head -n 1`' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-	echo 'if [ "$MODFOLDER" != "" ]; then cd $MODFOLDER; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+	echo 'if [ "$MODFOLDER" != "" -a "$VARIABLE9" != "none" ]; then cd $MODFOLDER; fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo 'find $SERVERDIR/$VARIABLE4/$GSTEMPLATE/ -type f -print0 | xargs -0 rm -f' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	echo "wget -q -r -l inf -nc -nH --limit-rate=4096K --retr-symlinks --ftp-user=$FTPUSER --ftp-password=$VARIABLE7 --cut-dirs=$CUTDIRS --no-check-certificate $VARIABLE8" >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 	add_customer_server
