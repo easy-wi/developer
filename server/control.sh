@@ -1209,7 +1209,9 @@ function migration {
 	CUTDIRS=(${CUTDIRS//\// })
 	CUTDIRS=${#CUTDIRS[@]}
 	CUTDIRS=$[CUTDIRS-1]
-	SERVERDIR=/home/$VARIABLE2/server
+	USERHOME='/home'
+	if [ "$VARIABLE5" != "" ]; then USERHOME=$VARIABLE5; fi
+	SERVERDIR=`echo $USERHOME/$VARIABLE2/server | sed 's/\/\//\//g'`
 echo "#!/bin/bash
 
 HOMEFOLDER=$HOMEFOLDER
@@ -2067,6 +2069,7 @@ function fdl_update {
 		else
 			SERVERDIR=/home/$VARIABLE2/server/$VARIABLE3
 		fi
+		SERVERDIR=`echo $SERVERDIR | sed 's/\/\//\//g'`
 		SPORT=`echo $VARIABLE3 | awk -F "/" '{print $1}'`
 		if [ ! -d $HOMEFOLDER/conf ]; then
 			mkdir -p $HOMEFOLDER/conf
