@@ -100,7 +100,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
     $maxserver = ($ui->id('maxserver',4, 'post')) ? $ui->id('maxserver',4, 'post') : 10;
     $maxslots = ($ui->id('maxslots', 5, 'post')) ? $ui->id('maxslots', 5, 'post') : 512;
-    $installPaths = ($ui->escaped('installPaths', 'post')) ? $ui->escaped('installPaths', 'post') : "[home]\r\npath = /home/\r\nsize = 500GB\r\ndefault = 1";
+    $installPaths = ($ui->escaped('installPaths', 'post')) ? $ui->escaped('installPaths', 'post') : "[home]\r\npath = /home\r\nsize = 500GB\r\ndefault = 1";
     $quotaActive = ($ui->active('quotaActive', 'post')) ? $ui->active('quotaActive', 'post') : 'N';
     $quotaCmd = ($ui->startparameter('quotaCmd', 'post')) ? $ui->startparameter('quotaCmd', 'post') : 'sudo /usr/sbin/setquota %cmd%';
     $repquotaCmd = ($ui->startparameter('repquotaCmd', 'post')) ? $ui->startparameter('repquotaCmd', 'post') : 'sudo /usr/sbin/repquota %cmd%';

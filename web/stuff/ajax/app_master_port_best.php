@@ -59,48 +59,34 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $portStep = $row['portStep'];
     $portMax = $row['portMax'];
     $port = $row['portOne'];
-    $port2 = $row['portTwo'];
-    $port3 = $row['portThree'];
-    $port4 = $row['portFour'];
-    $port5 = $row['portFive'];
+    $port2 = ($row['portTwo'] > 0) ? $row['portTwo'] : '';
+    $port3 = ($row['portThree'] > 0) ? $row['portThree'] : '';
+    $port4 = ($row['portFour'] > 0) ? $row['portFour'] : '';
+    $port5 = ($row['portFive'] > 0) ? $row['portFive'] : '';
 }
 
 if ($portMax > 0) {
     while (in_array($port, $ports)) {
         $port += $portStep;
     }
-} else {
-    $port2 = '';
-    $port3 = '';
-    $port4 = '';
-    $port5 = '';
 }
 
 if ($portMax > 1) {
     while (in_array($port2, $ports)) {
         $port2 += $portStep;
     }
-} else {
-    $port3 = '';
-    $port4 = '';
-    $port5 = '';
 }
 
 if ($portMax > 2) {
     while (in_array($port3, $ports)) {
         $port3 += $portStep;
     }
-} else {
-    $port4 = '';
-    $port5 = '';
 }
 
 if ($portMax > 3) {
     while (in_array($port4, $ports)) {
         $port4 += $portStep;
     }
-} else {
-    $port5 = '';
 }
 
 if ($portMax > 4) {

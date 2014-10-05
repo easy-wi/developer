@@ -72,6 +72,7 @@ $brandname = '';
 $tvenable = '';
 $pallowed = '';
 $name = '';
+$homeDirLabel = '';
 $ip = '';
 $port = '';
 $port2 = '';
@@ -208,12 +209,27 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                     $inSQLArray = 'r.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
                 }
 
-                $query = $sql->prepare("SELECT r.`id`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
+                $query = $sql->prepare("SELECT r.`id`,r.`install_paths`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
                 $query->execute(array($resellerID, $slots, $masterServerCount));
 
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
                     $ips = array();
+
+                    $defaultHomeDir = 'home';
+
+                    $iniVars = parse_ini_string($row['install_paths'], true);
+
+                    if ($iniVars) {
+                        foreach ($iniVars as $key => $values) {
+                            if (isset($values['default']) and $values['default'] == 1) {
+                                $defaultHomeDir = $key;
+                            }
+                        }
+                    }
+
+                    $homeLabelGiven = (isset($data['home_label']) and strlen($data['home_label']) > 0) ? $data['home_label'] : $defaultHomeDir;
+                    $homeDirLabel = ($iniVars and isset($iniVars[$homeLabelGiven]['path'])) ? $homeLabelGiven : $defaultHomeDir;
 
                     $hostID = $row['id'];
                     $hostExternalID = $row['externalID'];
@@ -279,7 +295,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             if (!isset($success['false']) and isip($ip, 'ip4')) {
 
-                if ($portMax == 1) {
+                if ($portMax > 0) {
 
                     if (isset($data['port']) and checkPorts(array($data['port']), $ports) === true) {
                         $port = $data['port'];
@@ -288,78 +304,48 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                     while (in_array($port, $ports)) {
                         $port += $portStep;
                     }
+                }
 
-                    $port2 = '';
-                    $port3 = '';
-                    $port4 = '';
-                    $port5 = '';
+                if ($portMax > 1) {
 
-                } else if ($portMax == 2) {
-
-                    if (isset($data['port'], $data['port2']) and checkPorts(array($data['port'], $data['port2']), $ports) === true) {
+                    if (isset($data['port2']) and checkPorts(array($data['port2']), $ports) === true) {
                         $port = $data['port'];
-                        $port2 = $data['port2'];
                     }
 
-                    while (in_array($port, $ports) or in_array($port2, $ports)) {
-                        $port += $portStep;
+                    while (in_array($port2, $ports)) {
                         $port2 += $portStep;
                     }
+                }
 
-                    $port3 = '';
-                    $port4 = '';
-                    $port5 = '';
+                if ($portMax > 2) {
 
-                } else if ($portMax == 3) {
-
-                    if (isset($data['port'], $data['port2'], $data['port3']) and checkPorts(array($data['port'], $data['port2'], $data['port3']), $ports) === true) {
+                    if (isset($data['port3']) and checkPorts(array($data['port3']), $ports) === true) {
                         $port = $data['port'];
-                        $port2 = $data['port2'];
-                        $port3 = $data['port3'];
                     }
 
-                    while (in_array($port, $ports) or in_array($port2, $ports) or in_array($port3, $ports)) {
-                        $port += $portStep;
-                        $port2 += $portStep;
+                    while (in_array($port3, $ports)) {
                         $port3 += $portStep;
                     }
+                }
 
-                    $port4 = '';
-                    $port5 = '';
+                if ($portMax > 3) {
 
-                } else if ($portMax==4) {
-
-                    if (isset($data['port'], $data['port2'], $data['port3'], $data['port4']) and checkPorts(array($data['port'], $data['port2'], $data['port3'], $data['port4']), $ports) === true) {
+                    if (isset($data['port4']) and checkPorts(array($data['port4']), $ports) === true) {
                         $port = $data['port'];
-                        $port2 = $data['port2'];
-                        $port3 = $data['port3'];
-                        $port4 = $data['port4'];
                     }
 
-                    while (in_array($port, $ports) or in_array($port2, $ports) or in_array($port3, $ports) or in_array($port4, $ports)) {
-                        $port += $portStep;
-                        $port2 += $portStep;
-                        $port3 += $portStep;
+                    while (in_array($port4, $ports)) {
                         $port4 += $portStep;
                     }
+                }
 
-                    $port5 = '';
+                if ($portMax > 4) {
 
-                } else {
-
-                    if (isset($data['port'], $data['port2'], $data['port3'], $data['port4'], $data['port5']) and checkPorts(array($data['port'], $data['port2'], $data['port3'], $data['port4'], $data['port5']), $ports) === true) {
+                    if (isset($data['port5']) and checkPorts(array($data['port5']), $ports) === true) {
                         $port = $data['port'];
-                        $port2 = $data['port2'];
-                        $port3 = $data['port3'];
-                        $port4 = $data['port4'];
-                        $port5 = $data['port5'];
                     }
 
-                    while (in_array($port, $ports) or in_array($port2, $ports) or in_array($port3, $ports) or in_array($port4, $ports) or in_array($port5, $ports)) {
-                        $port += $portStep;
-                        $port2 += $portStep;
-                        $port3 += $portStep;
-                        $port4 += $portStep;
+                    while (in_array($port5, $ports)) {
                         $port5 += $portStep;
                     }
                 }
@@ -386,8 +372,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
                 $json = json_encode(array('installGames' => $installGames));
 
-                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`serverip`,`rootID`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`externalID`,`serverid`,`stopped`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,?,1,'Y')");
-                $query->execute(array($active, $taskset, $cores, $localUserLookupID, $pallowed, $eacallowed, $ip, $hostID, $tvenable, $port, $port2, $port3, $port4, $port5, $minram, $maxram, $slots, $private, $brandname, $autoRestart, $initialpassword, $aeskey, $resellerID, $externalServerID));
+                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`homeLabel`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`serverip`,`rootID`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`externalID`,`serverid`,`stopped`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,?,1,'Y')");
+                $query->execute(array($active, $homeDirLabel, $taskset, $cores, $localUserLookupID, $pallowed, $eacallowed, $ip, $hostID, $tvenable, $port, $port2, $port3, $port4, $port5, $minram, $maxram, $slots, $private, $brandname, $autoRestart, $initialpassword, $aeskey, $resellerID, $externalServerID));
 
                 $localServerID = $sql->lastInsertId();
                 $customID = $localServerID;
@@ -481,7 +467,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
     if (dataExist('identify_server_by', $data)) {
 
-        $query = $sql->prepare("SELECT r.`externalID`,r.`hyperthreading`,r.`cores` AS `coresAvailable`,g.*,u.`cname` FROM `gsswitch` g INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `userdata` u ON u.`id`=g.`userid` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT r.`install_paths`,r.`externalID`,r.`hyperthreading`,r.`cores` AS `coresAvailable`,g.*,u.`cname` FROM `gsswitch` g INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `userdata` u ON u.`id`=g.`userid` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -544,6 +530,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $name = $row['serverip'] . ':' . $row['port'];
             $oldActive = $row['active'];
             $oldPort = $row['port'];
+            $oldHomeDirLabel = $row['homeLabel'];
+            $oldProtected = $row['pallowed'];
             $usedPorts = usedPorts(array($row['serverip']));
 
             $active = $row['active'];
@@ -558,6 +546,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $minram = $row['minram'];
             $maxram = $row['maxram'];
             $autoRestart = $row['autoRestart'];
+            $homeDirLabel = $row['homeLabel'];
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
             $query->execute(array($localID, $resellerID));
@@ -568,10 +557,18 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $updateArray = array();
             $eventualUpdate = '';
 
+            $iniVars = parse_ini_string($row['install_paths'], true);
+
             if (isset($data['private']) and active_check($data['private']) and $data['private'] != $row['war']) {
                 $updateArray[] = $data['private'];
                 $eventualUpdate .= ',`war`=?';
                 $private = $data['private'];
+            }
+
+            if (isset($data['home_label']) and $data['home_label'] != $row['homeLabel'] and isset($iniVars[$data['home_label']]['path'])) {
+                $updateArray[] = $data['home_label'];
+                $eventualUpdate .= ',`homeLabel`=?';
+                $homeDirLabel = $data['home_label'];
             }
 
             if (isset($data['slots']) and isid($data['slots'], 11) and $data['slots'] != $row['slots']) {
@@ -691,13 +688,13 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             $customID = $localID;
 
-            if ((($active == 'Y' or $active == 'N') and $active != $oldActive) or $slots != $oldSlots or $port != $oldPort) {
+            if ((($active == 'Y' or $active == 'N') and $active != $oldActive) or $slots != $oldSlots or $port != $oldPort or $homeDirLabel != $oldHomeDirLabel or $pallowed != $oldProtected) {
 
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `action`!='ad' AND `affectedID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
 
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerID`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'md',?,?)");
-                $query->execute(array($hostID, $resellerID, $localID, $userID, $name, json_encode(array('newActive' => $active, 'newPort' => $port, 'installGames' => 'N')), $resellerID));
+                $query->execute(array($hostID, $resellerID, $localID, $userID, $name, json_encode(array('newActive' => $active, 'newPort' => $port, 'oldProtected' => $oldProtected, 'homeDirChanged' => ($homeDirLabel != $oldHomeDirLabel) ? 1 : 0, 'installGames' => 'N')), $resellerID));
             }
         }
 
@@ -926,6 +923,9 @@ if ($apiType == 'xml' and !isset($list)) {
     $element->appendChild($key);
 
     $key = $responsexml->createElement('username', $username);
+    $element->appendChild($key);
+
+    $key = $responsexml->createElement('home_label', $homeDirLabel);
     $element->appendChild($key);
 
     $key = $responsexml->createElement('taskset', $taskset);

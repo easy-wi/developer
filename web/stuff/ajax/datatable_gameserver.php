@@ -106,7 +106,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     if (isset($row['jobPending']) and $row['jobPending'] == 'Y') {
 
-        $query2->execute(array($row['id'], $row['resellerid']));
+        $query2->execute(array($row['id'], $resellerLockupID));
         foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
 
             if ($row2['action'] == 'ad') {
