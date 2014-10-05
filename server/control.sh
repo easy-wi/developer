@@ -1974,6 +1974,7 @@ function add_addon {
 		GAMEDIR="$USERHOME/$VARIABLE4"
 	fi
 	GAMEDIR=`echo $GAMEDIR | sed 's/\/\//\//g'`
+	GAMEDIR=`echo $GAMEDIR | sed 's/\/\//\//g'`
 	COPYFILES=0
 	if [ "$VARIABLE2" == "map" -a "$VARIABLE3" != "" -a -d $MAPDIR/$VARIABLE3 ]; then
 		ADDONFOLDER=$MAPDIR/$VARIABLE3
