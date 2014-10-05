@@ -8,6 +8,8 @@
 </section>
 
 <section class="content">
+
+
     <div class="row">
         <form role="form" action="userpanel.php?w=ms" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
@@ -22,10 +24,14 @@
                     </div>
 
                     <div class="box-body">
-                        <?php if(count($error)>0) { ?>
-                        <div class="row-fluid alert alert-error span11">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong>Error!</strong> <?php echo implode('<br />',$error);?>
+
+                        <?php if (count($error)>0){ ?>
+                        <div class="col-md-12">
+                            <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <h4><?php echo $gsprache->errors;?>:</h4>
+                                <?php echo implode(', ',$error);?>
+                            </div>
                         </div>
                         <?php }?>
 
@@ -33,22 +39,27 @@
                             <label for="ftpAddress"><?php echo $sprache->ftp_adresse;?></label>
                             <input class="form-control" id="ftpAddress" type="text" name="ftpAddress" value="<?php echo $ftpAddress;?>" required>
                         </div>
+
                         <div class="form-group">
                             <label for="ftpPort"><?php echo $sprache->ftp_port;?></label>
                             <input class="form-control" id="ftpPort" type="text" name="ftpPort" value="<?php echo $ftpPort;?>" required>
                         </div>
+
                         <div class="form-group">
                             <label for="ftpUser"><?php echo $sprache->ftp_user;?></label>
                             <input class="form-control" id="ftpUser" type="text" name="ftpUser" value="<?php echo $ftpUser;?>" required>
                         </div>
+
                         <div class="form-group">
                             <label for="ftpPassword"><?php echo $sprache->ftp_password;?></label>
                             <input class="form-control" id="ftpPassword" type="text" name="ftpPassword" value="<?php echo $ftpPassword;?>" required>
                         </div>
+
                         <div class="form-group">
                             <label for="ftpPath"><?php echo $sprache->ftp_path;?></label>
                             <input class="form-control" id="ftpPath" type="text" name="ftpPath" value="<?php echo $ftpPath;?>">
                         </div>
+
                         <div class="form-group">
                             <label for="ssl">SSL</label>
                             <select class="form-control" id="ssl" name="ssl">

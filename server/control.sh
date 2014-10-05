@@ -1210,13 +1210,12 @@ function migration {
 	CUTDIRS=${#CUTDIRS[@]}
 	CUTDIRS=$[CUTDIRS-1]
 	USERHOME='/home'
-	if [ "$VARIABLE5" != "" ]; then USERHOME=$VARIABLE5; fi
+	if [ "$VARIABLE10" != "" ]; then USERHOME=$VARIABLE10; fi
 	SERVERDIR=`echo $USERHOME/$VARIABLE2/server | sed 's/\/\//\//g'`
 echo "#!/bin/bash
 
 HOMEFOLDER=$HOMEFOLDER
 rm $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
-sleep 30
 VARIABLE2=$VARIABLE2
 VARIABLE4=$VARIABLE4
 VARIABLE9=$VARIABLE9

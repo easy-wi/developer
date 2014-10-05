@@ -71,15 +71,17 @@ $ssl=($ui->active('ssl', 'post')) ? $ui->active('ssl', 'post') : 'N';
 $error = array();
 $table = array();
 
-$query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`userid`=? AND g.`resellerid`=?");
+$query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,g.`homeLabel`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`userid`=? AND g.`resellerid`=? AND g.`active`='Y'");
 $query2 = $sql->prepare("SELECT s.`id`,t.`description`,t.`shorten`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,t.`appID` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? GROUP BY t.`shorten` ORDER BY t.`shorten`");
 $query->execute(array($aeskey, $user_id, $reseller_id));
 
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['gs'])) {
+
         $temp = array();
         $search = '';
         $customer = $row['cname'];
+        $homeLabel = $row['homeLabel'];
 
         if ($row['newlayout'] == 'Y') {
             $customer = $row['cname'] . '-' . $row['id'];
@@ -167,7 +169,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $template = $temp;
                 $shorten = $game['shorten'];
                 $searchFor = str_replace('/', '', $game['searchFor']);
-                $modFolder = $game['modfolder'];
+                $modFolder = (strlen($game['modfolder']) > 0) ? $game['modfolder'] : 'none';
             }
         }
 
@@ -194,7 +196,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $foundPath = $ftp->checkFolders($ui->anyPath('ftpPath', 'post'), $searchFor, 5);
 
-                $ftpPath = (is_array($foundPath)) ? '' : $foundPath;
+                $ftpPath = (is_array($foundPath)) ? '' : str_replace('//', '/', $foundPath);
 
                 if (strlen($searchFor) > 0 or strlen($ftpPath) == 0) {
                     $error[] = $sprache->ftp_path . '. ' . $sprache->import_corrected;
@@ -216,7 +218,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-    if (count($error) == 0 and isset($rootID)) {
+    if (count($error) == 0 and isset($rootID) and isset($homeLabel)) {
 
         $rdata = serverdata('root', $rootID, $aeskey);
         $sship = $rdata['ip'];
@@ -224,16 +226,25 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $sshuser = $rdata['user'];
         $sshpass = $rdata['pass'];
 
+        $iniVars = parse_ini_string($rdata['install_paths'], true);
+        $homeDir = ($iniVars and isset($iniVars[$homeLabel]['path'])) ? $iniVars[$homeLabel]['path'] : '/home';
+
         $ftpConnect = ($ssl == 'N') ? 'ftp://' : 'ftps://';
 
         $ftpConnect .= str_replace('//', '/', $ftpAddress . ':' . $ftpPort. '/' . $ftpPath);
 
-        ssh2_execute('gs', $rootID, "sudo -u ${customer} ./control.sh migrateserver ${customer} 1_${shorten} ${gsfolder} ${template} ${ftpUser} ${ftpPassword} ${ftpConnect} ${modFolder}");
+        $cmd = "sudo -u {$customer} ./control.sh migrateserver {$customer} 1_{$shorten} {$gsfolder} {$template} {$ftpUser} {$ftpPassword} {$ftpConnect} {$modFolder} {$homeDir}";
+
+        $shellReturn = ssh2_execute('gs', $rootID, $cmd);
 
         $loguseraction = '%import% %gserver% ' . $address;
-        $template_file = $sprache->import_start;
         $insertlog->execute();
 
+        $template_file = $sprache->import_start;
+
+        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+            $template_file .= '<pre>' . $cmd . "\r\n" . $shellReturn . '</pre>';
+        }
     }
 }
 
