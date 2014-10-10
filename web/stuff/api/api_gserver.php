@@ -209,7 +209,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                     $inSQLArray = 'r.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
                 }
 
-                $query = $sql->prepare("SELECT r.`id`,r.`install_paths`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM gsswitch g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM gsswitch g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg`m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
+                $query = $sql->prepare("SELECT r.`id`,r.`install_paths`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg` AS m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` AS r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
                 $query->execute(array($resellerID, $slots, $masterServerCount));
 
                 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -465,6 +465,14 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
     $from = array('server_local_id' => 'id', 'server_external_id' => 'externalID');
     $initialpassword = (isset($data['initialpassword']) and wpreg_check($data['initialpassword'], 50)) ? $data['initialpassword'] : '';
 
+    if (is_array($data['shorten']) or is_object($data['shorten'])) {
+        $shorten = $data['shorten'];
+    } else if (isset($data['shorten'])) {
+        $shorten = array($data['shorten']);
+    } else {
+        $shorten = array();
+    }
+
     if (dataExist('identify_server_by', $data)) {
 
         $query = $sql->prepare("SELECT r.`install_paths`,r.`externalID`,r.`hyperthreading`,r.`cores` AS `coresAvailable`,g.*,u.`cname` FROM `gsswitch` g INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `userdata` u ON u.`id`=g.`userid` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
@@ -529,6 +537,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $oldSlots = $row['slots'];
             $name = $row['serverip'] . ':' . $row['port'];
             $oldActive = $row['active'];
+            $oldIP = $row['serverip'];
             $oldPort = $row['port'];
             $oldHomeDirLabel = $row['homeLabel'];
             $oldProtected = $row['pallowed'];
@@ -545,6 +554,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $cores = $row['cores'];
             $minram = $row['minram'];
             $maxram = $row['maxram'];
+            $pallowed = $row['pallowed'];
             $autoRestart = $row['autoRestart'];
             $homeDirLabel = $row['homeLabel'];
 
@@ -686,15 +696,83 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             customColumns('G', $localID,'save', $data);
 
+
+            // Updating the gameswitch list. If the currently active game is removed we to update the server type at gsswitch.
+            // In any remove case we need to add a job entry to remove the game from the app root
+            $installedGameList = array();
+
+            // First get the current list
+            $query = $sql->prepare("SELECT l.`id`,t.`shorten` FROM `serverlist` AS l LEFT JOIN `servertypes` AS t ON t.`id`=l.`servertype` WHERE l.`switchID`=? AND l.`resellerid`=?");
+            $query->execute(array($localID, $resellerID));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $installedGameList[$row['id']] = $row['shorten'];
+            }
+
+            // This section will add missing games, if the according masterserver is installed
+            $query = $sql->prepare("SELECT t.*,l.`id` AS `list_id` FROM `servertypes` AS t INNER JOIN `rservermasterg` AS m ON m.`servertypeid`=t.`id` LEFT JOIN `serverlist` AS l ON l.`servertype`=t.`id` AND l.`switchID`=? WHERE t.`shorten`=? AND t.`resellerid`=? LIMIT 1");
+            $query2 = $sql->prepare("INSERT INTO `serverlist` (`servertype`,`switchID`,`map`,`mapGroup`,`cmd`,`modcmd`,`tic`,`fps`,`gamemod`,`gamemod2`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+
+            foreach ($shorten as $singleShorten) {
+
+                $query->execute(array($localID, $singleShorten, $resellerID));
+                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+                    if ($row['list_id'] === null) {
+
+                        $modcmd = '';
+
+                        foreach (explode("\r\n", $row['modcmds']) as $line) {
+
+                            if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/', $line)) {
+
+                                $cmdName = trim($line, '[]');
+                                $ex = preg_split("/\=/", $cmdName, -1,PREG_SPLIT_NO_EMPTY);
+
+                                if (isset($ex[1]) and trim($ex[1]) == 'default') {
+                                    $modcmd = trim($ex[0]);
+                                    break;
+                                }
+                            }
+                        }
+
+                        $query2->execute(array($row['id'], $localID, $row['map'], $row['mapGroup'], $row['cmd'], $modcmd, $row['tic'], $row['fps'], $row['gamemod'], $row['gamemod2'], $resellerID));
+
+                        if (!isset($lastServerID) or (isset($data['primary']) and gamestring($data['primary']) and $shorten == $data['primary'])) {
+                            $lastServerID = $sql->lastInsertId();
+                        }
+
+                    } else {
+                        unset($installedGameList[$row['list_id']]);
+                    }
+                }
+            }
+
+            // Remove games that no longer exists
+
+            $gamesToBeRemoved = array();
+
+            $query = $sql->prepare("DELETE FROM `serverlist` WHERE `id`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
+
+            foreach ($installedGameList as $removeID => $shorten) {
+
+                $query->execute(array($removeID, $localID, $resellerID));
+
+                $gamesToBeRemoved[] = $shorten;
+            }
+
+            $gamesRemoveAmount = count($gamesToBeRemoved);
+
+            $gamesRemoveString = ($gamesRemoveAmount > 0) ? $gamesRemoveAmount . '_' . implode('_', $gamesToBeRemoved) : '';
+
             $customID = $localID;
 
-            if ((($active == 'Y' or $active == 'N') and $active != $oldActive) or $slots != $oldSlots or $port != $oldPort or $homeDirLabel != $oldHomeDirLabel or $pallowed != $oldProtected) {
+            if ($active != $oldActive or $port != $oldPort or $homeDirLabel != $oldHomeDirLabel or $pallowed != $oldProtected or $gamesRemoveAmount > 0) {
 
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `action`!='ad' AND `affectedID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
 
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerID`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'md',?,?)");
-                $query->execute(array($hostID, $resellerID, $localID, $userID, $name, json_encode(array('newActive' => $active, 'newPort' => $port, 'oldProtected' => $oldProtected, 'homeDirChanged' => ($homeDirLabel != $oldHomeDirLabel) ? 1 : 0, 'installGames' => 'N')), $resellerID));
+                $query->execute(array($hostID, $resellerID, $localID, $userID, $name, json_encode(array('newActive' => $active, 'newPort' => $port, 'oldProtected' => $oldProtected, 'homeDirChanged' => ($homeDirLabel != $oldHomeDirLabel) ? 1 : 0, 'installGames' => 'N', 'gamesRemoveString' => $gamesRemoveString)), $resellerID));
             }
         }
 

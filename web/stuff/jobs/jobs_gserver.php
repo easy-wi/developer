@@ -64,8 +64,11 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
 
             $active = $row3['active'];
-            $port = $row3['port'];
+            $newActive = $row3['active'];
             $gsIP = $row3['serverip'];
+            $port = $row3['port'];
+            $newPort = $row3['serverip'];
+            $newIP = $row3['port'];
             $gsfolder = $row3['serverip'] . '_' . $row3['port'];
             $ftppass = $row3['ftp'];
             $ftppass2 =  ($row3['pallowed'] == 'Y') ? $row3['ppasswordftp'] : '';
@@ -140,43 +143,51 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             // We will run the add user command in nearly any case
             // Reasons are that we ensure FTP password correctness and existence of linux user
-            // Also we will add the protected user with variable 5
+            // Also we will add the protected user with variable 5 if needed
             $cmds[] = "./control.sh useradd {$customer} {$ftppass} {$homeDir} {$ftppass2}";
 
-            // Send delete request for protected user in case it has been removed from server
-            if (isset($protectedAllowed) and $protectedAllowed == 'N' and is_object($extraData) and $extraData->oldProtected == 'Y') {
-                $cmds[] = "./control.sh delSingleUser {$customer}-p";
-            }
+            if (is_object($extraData)) {
 
-            $newActive = (is_object($extraData) and isset($extraData->newActive)) ? $extraData->newActive : $active;
+                // Send delete request for protected user in case it has been removed from server
+                if (isset($protectedAllowed) and $protectedAllowed == 'N' and isset($extraData->oldProtected) and $extraData->oldProtected == 'Y') {
+                    $cmds[] = "./control.sh delSingleUser {$customer}-p";
+                }
 
-            if ($active != $newActive and $newActive == 'N') {
+                $newActive = (isset($extraData->newActive) and strlen($extraData->newActive) > 0) ? $extraData->newActive : $active;
 
-                $ftppass = passwordgenerate(10);
-                $ftppass2 = (isset($protectedAllowed) and $protectedAllowed == 'Y') ? passwordgenerate(10) : '';
+                if ($active != $newActive and $newActive == 'N') {
 
-                $tmp = gsrestart($row2['affectedID'], 'so', $aeskey, $row['resellerID']);
-                if (is_array($tmp)) {
-                    foreach($tmp as $cmd) {
-                        if (strpos($cmd, 'addserver') === false)  {
-                            $cmds[] = $cmd;
+                    $ftppass = passwordgenerate(10);
+                    $ftppass2 = (isset($protectedAllowed) and $protectedAllowed == 'Y') ? passwordgenerate(10) : '';
+
+                    $tmp = gsrestart($row2['affectedID'], 'so', $aeskey, $row['resellerID']);
+                    if (is_array($tmp)) {
+                        foreach($tmp as $cmd) {
+                            if (strpos($cmd, 'addserver') === false)  {
+                                $cmds[] = $cmd;
+                            }
                         }
                     }
                 }
+
+                if (isset($extraData->gamesRemoveString) and strlen($extraData->gamesRemoveString) > 0) {
+                    $cmds[] = "sudo -u {$customer} ./control.sh delserver {$customer} {$extraData->gamesRemoveString} {$gsIP}_{$port} unprotected {$homeDir}";
+                }
+
+                if ($active != $newActive or (isset($extraData->homeDirChanged) and $extraData->homeDirChanged == 1)) {
+                    $cmds[] = "./control.sh usermod {$customer} {$ftppass} {$homeDir} {$ftppass2}";
+                }
+
+                $newPort = (isset($extraData->newPort) and strlen($extraData->newPort) > 0) ? $extraData->newPort : $port;
+                $newIP = (isset($extraData->newIP) and strlen($extraData->newIP) > 0) ? $extraData->newIP : $gsIP;
+
+                if ($port != $newPort or $gsIP != $newIP) {
+                    $cmds[] = "sudo -u {$customer} ./control.sh ip_port_change {$customer} {$gsfolder} {$newIP}_{$newPort} {$homeDir}";
+                }
             }
 
-            if ($active != $newActive or (is_object($extraData) and $extraData->homeDirChanged == 1)) {
-                $cmds[] = "./control.sh usermod {$customer} {$ftppass} {$homeDir} {$ftppass2}";
-            }
-
-            $newPort = (is_object($extraData) and isset($extraData->newPort)) ? $extraData->newPort : $port;
-
-            if ($port != $newPort) {
-                $cmds[] = "sudo -u {$customer} ./control.sh ip_port_change {$customer} {$gsfolder} {$gsIP}_{$port} {$homeDir}";
-            }
-
-            $query4 = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`port`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
-            $query4->execute(array($newActive, $newPort, $row2['affectedID']));
+            $query4 = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`serverip`=?,`port`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
+            $query4->execute(array($newActive, $newIP, $newPort, $row2['affectedID']));
 
             $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
             $query4->execute(array($row2['jobID']));

@@ -1030,19 +1030,8 @@ fi' >> $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 }
 
 function remove_folders {
-echo "if [ ! -d $SERVERDIR/$VARIABLE4/$GAMENAME ]; then
-	IPPORT=`echo "$SERVERDIR/$VARIABLE4/$GAMENAME" | awk -F '/' '{print $2}'`
-	PORT=`echo "$SERVERDIR/$VARIABLE4/$GAMENAME" | awk -F '/' '{print $2}' | awk -F '_' '{print $2}'`" >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
-echo '	if [ -d $SERVERDIR/$PORT/$GAMENAME ]; then
-		VARIABLE4=$PORT
-	fi
-fi' >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
-echo "if [ -d $SERVERDIR/$VARIABLE4/$GAMENAME ]; then
-	rm -rf $SERVERDIR/$VARIABLE4/$GAMENAME
-fi" >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
-if [ -f $LOGDIR/update.log ]; then
-	echo "`date`: Server $VARIABLE4/$VARIABLE3 owned by user $VARIABLE2 deleted" >> $LOGDIR/update.log
-fi
+echo "if [ -d $SERVERDIR/$VARIABLE4/$GAMENAME ]; then ${IONICE}rm -rf $SERVERDIR/$VARIABLE4/$GAMENAME; fi" >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
+if [ -f $LOGDIR/update.log ]; then echo "`date`: Server $VARIABLE4/$VARIABLE3 owned by user $VARIABLE2 deleted" >> $LOGDIR/update.log; fi
 }
 
 function del_customer_server {
@@ -1075,22 +1064,20 @@ while [ $i -le $COUNT ]; do
 	if [ "$GAMENAME" != "" ]; then
 		if [ "$VARIABLE5" == "" ]; then
 			TEMPLATE=4
-		elif [ "$VARIABLE5" != "protected" ]; then
+		elif [ "$VARIABLE5" != "protected" -a "$VARIABLE5" != "unprotected" ]; then
 			TEMP=(`echo $VARIABLE5 | sed -e 's/-/ /g'`)
 			TEMPLATE=${TEMP[$[i-2]]}
 		else
 			TEMPLATE=1
 		fi
-		if [ "$TEMPLATE" == 1 -o "$TEMPLATE" == 4 ]; then
-			remove_folders
-		fi
+		if [ "$TEMPLATE" == 1 -o "$TEMPLATE" == 4 ]; then remove_folders; fi
 		if [ "$VARIABLE5" != "protected" ]; then
-			if [ "$TEMPLATE" == 2 -o "$TEMPLATE" == 4 ]; then
+			if [ "$TEMPLATE" == 2 -o "$TEMPLATE" == 4 -o "$VARIABLE5" == "unprotected" ]; then
 				GAMENAME="${GAMENAME2}-2"
 				echo "GAMENAME=$GAMENAME" >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
 				remove_folders
 			fi
-			if [ "$TEMPLATE" == 3 -o "$TEMPLATE" == 4 ]; then
+			if [ "$TEMPLATE" == 3 -o "$TEMPLATE" == 4 -o "$VARIABLE5" == "unprotected" ]; then
 				GAMENAME="${GAMENAME2}-3"
 				echo "GAMENAME=$GAMENAME" >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
 				remove_folders
@@ -1099,8 +1086,8 @@ while [ $i -le $COUNT ]; do
 	fi
 	i=$[i+1]
 done
-echo 'if ([ "`ls $SERVERDIR/$VARIABLE4 | wc -l`" == "0" ] && [ -d "$SERVERDIR/$VARIABLE4" ]); then' >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
-echo "	rm -rf $SERVERDIR/$VARIABLE4
+echo 'if [ -d "$SERVERDIR/$VARIABLE4" -a "`ls $SERVERDIR/$VARIABLE4 | wc -l`" == "0" ]; then' >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
+echo "	${IONICE}rm -rf $SERVERDIR/$VARIABLE4
 fi" >> $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
 chmod +x $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
 screen -dmS del-$VARIABLE2-$VARIABLE4 $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
