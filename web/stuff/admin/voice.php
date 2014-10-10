@@ -302,7 +302,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $username=strtolower(getusername($customer));
                 $connection->CloseConnection();
                 $pinsert = $sql->prepare("INSERT INTO `voice_server` (`active`,`backup`,`lendserver`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`dns`,`maxtraffic`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?)");
-                $pinsert->execute(array($active,$backup,$lendserver,$customer,$masterserver,$ip,$port,$slots,$initialpassword,$password,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$max_download_total_bandwidth,$max_upload_total_bandwidth,$virtualserver_id,$dns,$maxtraffic,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$autoRestart,$ui->w('externalID',255, 'post'),$reseller_id));
+                $pinsert->execute(array($active,$backup,$lendserver,$customer,$masterserver,$ip,$port,$slots,$initialpassword,$password,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$max_download_total_bandwidth,$max_upload_total_bandwidth,$virtualserver_id,$dns,$maxtraffic,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$autoRestart,$ui->externalID('externalID', 'post'),$reseller_id));
                 $ts3LocalID = $sql->lastInsertId();
                 customColumns('T',$ts3LocalID,'save');
                 $template_file = $spracheResponse->table_add;
@@ -697,7 +697,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $connection->CloseConnection();
             }
             $query = $sql->prepare("UPDATE `voice_server` SET `active`=?,`backup`=?,`lendserver`=?,`ip`=?,`port`=?,`slots`=?,`password`=?,`forcebanner`=?,`forcebutton`=?,`forceservertag`=?,`forcewelcome`=?,`max_download_total_bandwidth`=?,`max_upload_total_bandwidth`=?,`dns`=?,`flexSlots`=?,`flexSlotsFree`=?,`flexSlotsPercent`=?,`maxtraffic`=?,`autoRestart`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($active,$backup,$lendserver,$ip,$port,$slots,$password,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$max_download_total_bandwidth,$max_upload_total_bandwidth,$dns,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$maxtraffic,$autoRestart,$ui->w('externalID',255, 'post'),$id,$reseller_id));
+            $query->execute(array($active,$backup,$lendserver,$ip,$port,$slots,$password,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$max_download_total_bandwidth,$max_upload_total_bandwidth,$dns,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$maxtraffic,$autoRestart,$ui->externalID('externalID', 'post'),$id,$reseller_id));
             customColumns('T',$id,'save');
             $template_file = $spracheResponse->table_add;
             $loguseraction="%mod% %voserver% $ip:$port";

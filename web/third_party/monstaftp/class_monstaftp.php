@@ -1478,7 +1478,7 @@ class Monsta {
         if ($this->loggedIn === true) {
 
             // Set the folder to open
-            if ($_SESSION["monstaftp"][$this->serverID]["dir_current"] != "")
+            if (isset($_SESSION["monstaftp"][$this->serverID]["dir_current"]) and $_SESSION["monstaftp"][$this->serverID]["dir_current"] != "")
                 $dir = $_SESSION["monstaftp"][$this->serverID]["dir_current"];
             if (isset($ui->post['openFolder']) and $ui->post['openFolder'] != "")
                 $dir = $this->quotesUnescape($ui->post['openFolder']);

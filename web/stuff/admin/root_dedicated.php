@@ -79,7 +79,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $ip = $ui->ip('ip', 'post');
     $ips = $ui->ips('ips', 'post');
     $mac = $ui->mac('mac', 'post');
-    $externalID = $ui->w('externalID', 255, 'post');
+    $externalID = $ui->externalID('externalID', 'post');
     $restart = $ui->w('restart', 1, 'post');
     $apiURL = $ui->domainPath('apiURL', 'post');
     $apiRequestType = $ui->w('apiRequestType', 1, 'post');
