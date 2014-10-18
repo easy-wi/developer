@@ -707,7 +707,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
-        ':updates' => 1,
+        ':updates' => 4,
         ':shorten' => 'bukkit',
         ':description' => 'MC Bukkit',
         ':gamebinary' => 'craftbukkit.jar',
