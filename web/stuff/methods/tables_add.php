@@ -517,6 +517,8 @@ $query = "CREATE TABLE IF NOT EXISTS `gsswitch` (
   `externalID` varchar(255) DEFAULT '',
   `sourceSystemID` varchar(255) NULL,
   `jobPending` enum('Y','N') DEFAULT 'N',
+  `hdd` int(10) unsigned DEFAULT 0,
+  `hddUsage` int(10) unsigned DEFAULT 0,
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`userid`),KEY(`rootID`),KEY(`serverid`),KEY(`resellerid`)
 ) ENGINE=InnoDB";

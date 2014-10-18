@@ -188,9 +188,6 @@ class HttpdManagement {
 
                 if (isset($this->hostData['quotaCmd']) and strlen($this->hostData['quotaCmd']) > 0) {
 
-                    // Quotatool is broken in Ubuntu and Debian
-                    #$cmd = 'q() { ' . str_replace('%cmd%', ' -u ' . $this->vhostData['ftpUser'] . ' -b -l ' . $this->vhostData['hdd'] . 'M /', $this->hostData['quotaCmd']) . ' > /dev/null 2>&1; }; q&';
-
                     // setquota works with KibiByte and Inodes
                     $sizeInKibiByte = $this->vhostData['hdd'] * 1024;
                     $sizeInByte = $this->vhostData['hdd'] * 1048576;
@@ -201,7 +198,6 @@ class HttpdManagement {
 
                     $this->ssh2Object->exec($cmd);
                 }
-
             }
 
             if ($this->sftpObject != false) {

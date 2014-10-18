@@ -469,8 +469,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
         $shorten = $data['shorten'];
     } else if (isset($data['shorten'])) {
         $shorten = array($data['shorten']);
-    } else {
-        $shorten = array();
     }
 
     if (dataExist('identify_server_by', $data)) {
@@ -696,72 +694,72 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             customColumns('G', $localID,'save', $data);
 
-
             // Updating the gameswitch list. If the currently active game is removed we to update the server type at gsswitch.
             // In any remove case we need to add a job entry to remove the game from the app root
-            $installedGameList = array();
+            $gamesToBeRemoved = array();
 
-            // First get the current list
-            $query = $sql->prepare("SELECT l.`id`,t.`shorten` FROM `serverlist` AS l LEFT JOIN `servertypes` AS t ON t.`id`=l.`servertype` WHERE l.`switchID`=? AND l.`resellerid`=?");
-            $query->execute(array($localID, $resellerID));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $installedGameList[$row['id']] = $row['shorten'];
-            }
+            if (isset($shorten)) {
 
-            // This section will add missing games, if the according masterserver is installed
-            $query = $sql->prepare("SELECT t.*,l.`id` AS `list_id` FROM `servertypes` AS t INNER JOIN `rservermasterg` AS m ON m.`servertypeid`=t.`id` LEFT JOIN `serverlist` AS l ON l.`servertype`=t.`id` AND l.`switchID`=? WHERE t.`shorten`=? AND t.`resellerid`=? LIMIT 1");
-            $query2 = $sql->prepare("INSERT INTO `serverlist` (`servertype`,`switchID`,`map`,`mapGroup`,`cmd`,`modcmd`,`tic`,`fps`,`gamemod`,`gamemod2`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+                $installedGameList = array();
 
-            foreach ($shorten as $singleShorten) {
+                // First get the current list
+                $query = $sql->prepare("SELECT l.`id`,t.`shorten` FROM `serverlist` AS l LEFT JOIN `servertypes` AS t ON t.`id`=l.`servertype` WHERE l.`switchID`=? AND l.`resellerid`=?");
+                $query->execute(array($localID, $resellerID));
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                    $installedGameList[$row['id']] = $row['shorten'];
+                }
 
-                $query->execute(array($localID, $singleShorten, $resellerID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                // This section will add missing games, if the according masterserver is installed
+                $query = $sql->prepare("SELECT t.*,l.`id` AS `list_id` FROM `servertypes` AS t INNER JOIN `rservermasterg` AS m ON m.`servertypeid`=t.`id` LEFT JOIN `serverlist` AS l ON l.`servertype`=t.`id` AND l.`switchID`=? WHERE t.`shorten`=? AND t.`resellerid`=? LIMIT 1");
+                $query2 = $sql->prepare("INSERT INTO `serverlist` (`servertype`,`switchID`,`map`,`mapGroup`,`cmd`,`modcmd`,`tic`,`fps`,`gamemod`,`gamemod2`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 
-                    if ($row['list_id'] === null) {
+                foreach ($shorten as $singleShorten) {
 
-                        $modcmd = '';
+                    $query->execute(array($localID, $singleShorten, $resellerID));
+                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-                        foreach (explode("\r\n", $row['modcmds']) as $line) {
+                        if ($row['list_id'] === null) {
 
-                            if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/', $line)) {
+                            $modcmd = '';
 
-                                $cmdName = trim($line, '[]');
-                                $ex = preg_split("/\=/", $cmdName, -1,PREG_SPLIT_NO_EMPTY);
+                            foreach (explode("\r\n", $row['modcmds']) as $line) {
 
-                                if (isset($ex[1]) and trim($ex[1]) == 'default') {
-                                    $modcmd = trim($ex[0]);
-                                    break;
+                                if (preg_match('/^(\[[\w\/\.\-\_\= ]{1,}\])$/', $line)) {
+
+                                    $cmdName = trim($line, '[]');
+                                    $ex = preg_split("/\=/", $cmdName, -1,PREG_SPLIT_NO_EMPTY);
+
+                                    if (isset($ex[1]) and trim($ex[1]) == 'default') {
+                                        $modcmd = trim($ex[0]);
+                                        break;
+                                    }
                                 }
                             }
+
+                            $query2->execute(array($row['id'], $localID, $row['map'], $row['mapGroup'], $row['cmd'], $modcmd, $row['tic'], $row['fps'], $row['gamemod'], $row['gamemod2'], $resellerID));
+
+                            if (!isset($lastServerID) or (isset($data['primary']) and gamestring($data['primary']) and $shorten == $data['primary'])) {
+                                $lastServerID = $sql->lastInsertId();
+                            }
+
+                        } else {
+                            unset($installedGameList[$row['list_id']]);
                         }
-
-                        $query2->execute(array($row['id'], $localID, $row['map'], $row['mapGroup'], $row['cmd'], $modcmd, $row['tic'], $row['fps'], $row['gamemod'], $row['gamemod2'], $resellerID));
-
-                        if (!isset($lastServerID) or (isset($data['primary']) and gamestring($data['primary']) and $shorten == $data['primary'])) {
-                            $lastServerID = $sql->lastInsertId();
-                        }
-
-                    } else {
-                        unset($installedGameList[$row['list_id']]);
                     }
+                }
+
+                // Remove games that no longer exists
+                $query = $sql->prepare("DELETE FROM `serverlist` WHERE `id`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
+
+                foreach ($installedGameList as $removeID => $shorten) {
+
+                    $query->execute(array($removeID, $localID, $resellerID));
+
+                    $gamesToBeRemoved[] = $shorten;
                 }
             }
 
-            // Remove games that no longer exists
-
-            $gamesToBeRemoved = array();
-
-            $query = $sql->prepare("DELETE FROM `serverlist` WHERE `id`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
-
-            foreach ($installedGameList as $removeID => $shorten) {
-
-                $query->execute(array($removeID, $localID, $resellerID));
-
-                $gamesToBeRemoved[] = $shorten;
-            }
-
             $gamesRemoveAmount = count($gamesToBeRemoved);
-
             $gamesRemoveString = ($gamesRemoveAmount > 0) ? $gamesRemoveAmount . '_' . implode('_', $gamesToBeRemoved) : '';
 
             $customID = $localID;

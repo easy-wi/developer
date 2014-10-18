@@ -13,6 +13,15 @@
     <input class="form-control" id="inputRamUsed" type="text" name="ramUsed" value="<?php echo $installedRam.'/'.$maxRam;?>" disabled="disabled">
 </div>
 
+<?php if($quotaActive=='Y'){ ?>
+<div class="form-group">
+    <label><?php echo $sprache->hddinstalled;?></label>
+    <?php foreach ($usedSpace as $key=>$arr){ ?>
+    <input class="form-control" type="text" name="hddUsed-<?php echo $key;?>" value="<?php echo $arr['installed'].'/'.$arr['available'].' ('.$key.')';?>" disabled="disabled">
+    <?php } ?>
+</div>
+<?php } ?>
+
 <div class="form-group">
     <label for="inputGames"><?php echo $sprache->games;?></label>
     <div class="controls">
@@ -57,6 +66,13 @@
         </select>
     </div>
 </div>
+
+<?php if($quotaActive=='Y'){ ?>
+<div class="form-group">
+    <label for="inputHdd"><?php echo $sprache->hdd;?></label>
+    <div class="controls"><input class="form-control" id="inputHdd" type="text" name="hdd" value="<?php echo $hdd;?>"></div>
+</div>
+<?php } ?>
 
 <div class="form-group">
     <label for="inputIP"><?php echo $sprache->ip;?></label>

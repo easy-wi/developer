@@ -49,6 +49,8 @@
 	<gameswitch>Vælg Spiltype</gameswitch>
 	<gs_add2>Tilføj server trin 2: Server detaljer</gs_add2>
 	<gs_add>Tilføj server trin 1: Bruger, Rootserver, spil</gs_add>
+    <hdd></hdd>
+    <hddinstalled></hddinstalled>
 	<heading_delete>Slet spilserver</heading_delete>
 	<heading_template>Spilserver Oversigt</heading_template>
     <homeDir></homeDir>
