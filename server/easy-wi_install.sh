@@ -106,7 +106,7 @@ fi
 echo " "
 echo "Will start installing $OPTION by updating the system packages to the latest version"
 if [ "$OS" == "debian" -o  "$OS" == "ubuntu" ]; then
-       apt-get update && apt-get upgrade && apt-get dist-upgrade
+	apt-get update && apt-get upgrade && apt-get dist-upgrade
 fi
 
 # If we need to install and configure a webspace than we need to identify the groupID
@@ -739,23 +739,27 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
 		done
 
 		if [ "$QUOTAFSTAB" == "Yes" ]; then
-			mv /root/fstab /etc/fstab.backup
+			mv /etc/fstab /etc/fstab.backup
 			mv /root/tempfstab /etc/fstab
-
-			cat /root/tempmountpoints | while read LINE; do
-				mount -o remount $LINE
-			done
-
-			if [[ `quotaon -p -a 2> /dev/null` ]]; then
-				 quotaoff -a
-			fi
-
-			quotacheck -avugmc
-
-			if [[ ! `quotaon -p -a 2> /dev/null` ]]; then
-				quotaon -a
-			fi
 		fi
+
+		cat /root/tempmountpoints | while read LINE; do
+
+			quotaoff -ugv $LINE
+
+			if [ -f $LINE/aquota.user ]; then
+				rm $LINE/aquota.user
+			fi
+
+			touch $LINE/aquota.user
+			chmod 600 $LINE/aquota.*
+
+			echo "Remounting $LINE"
+			mount -o remount $LINE
+
+			quotacheck -vumc $LINE
+			quotaon -uv  $LINE
+		done
 
 		if [ -f /root/tempfstab ]; then
 			rm /root/tempfstab
@@ -854,14 +858,31 @@ if [ "$INSTALL" == 'WR' ]; then
 	echo "The userdel command is:"
 	echo "sudo $USERDEL %cmd%"
 
-	echo "The setquota command is:"
-	echo "sudo `which setquota` %cmd%"
-
 	echo "The HTTPD restart command is:"
 	echo "sudo $HTTPDSCRIPT reload"
 fi
 
+if ([ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ] && [ -a "$QUOTAINSTALL" == "Yes" ]); then
+	echo "The setquota command is:"
+	echo "sudo `which setquota` %cmd%"
+fi
+
 if [ "$INSTALL" == 'GS' ]; then
+
+	echo " "
+	echo "Java JRE will be required for running Minecraft and its mods. Shall it be installed?"
+	OPTIONS=("Yes" "No" "Quit")
+	select OPTION in "${OPTIONS[@]}"; do
+		case "$REPLY" in
+			1 ) break;;
+			2 ) break;;
+			3 ) echo "Exit now!"; exit 0;;
+			*) echo "Invalid option.";continue;;
+		esac
+	done
+	if [ "$OPTION" == "Yes" ]; then
+		apt-get install default-jre
+	fi
 
 	echo "Creating folders and files"
 	CREATEDIRS=('conf' 'fdl_data/hl2' 'logs' 'masteraddons' 'mastermaps' 'masterserver' 'temp')
