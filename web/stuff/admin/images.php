@@ -377,6 +377,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
 
             if ($query->rowCount() > 0) {
+
                 $query = $sql->prepare("SELECT DISTINCT(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
                 $query->execute(array($resellerLockupID));
                 $table = array();
@@ -385,6 +386,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
 
                 $template_file = 'admin_images_md.tpl';
+
             } else {
                 $template_file = 'admin_404.tpl';
             }

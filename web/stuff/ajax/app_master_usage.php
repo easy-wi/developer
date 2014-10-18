@@ -102,7 +102,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             if (isset($values['size'])) {
                 $query2->execute(array($ui->id('id', 10, 'get'), $key));
-                $usedSpace[$key] = array('installed' => (int) $query2->fetchColumn(), 'available' => $values['size']);
+                $usedSpace[$key] = array('installed' => ((int) $query2->fetchColumn()/1000), 'available' => $values['size']);
             }
         }
     }

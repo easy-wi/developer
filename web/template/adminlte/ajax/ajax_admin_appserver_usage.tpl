@@ -70,7 +70,7 @@
 <?php if($quotaActive=='Y'){ ?>
 <div class="form-group">
     <label for="inputHdd"><?php echo $sprache->hdd;?></label>
-    <div class="controls"><input class="form-control" id="inputHdd" type="text" name="hdd" value="<?php echo $hdd;?>"></div>
+    <div class="controls"><input class="form-control" id="inputHdd" type="number" name="hdd" value="<?php echo $hdd;?>"></div>
 </div>
 <?php } ?>
 

@@ -42,7 +42,7 @@ $sprache = getlanguagefile('gserver', 'en', 0);
 
 $query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='gs' GROUP BY `hostID`");
 $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='gs' AND `hostID`=?");
-$query3 = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `ftp`,AES_DECRYPT(g.`ppassword`,?) AS `ppasswordftp`,u.`cname`,r.`install_paths` FROM `gsswitch` AS g INNER JOIN `userdata` AS u ON g.`userid`=u.`id` INNER JOIN `rserverdata` AS r ON r.`id`=g.`rootID` WHERE g.`id`=? LIMIT 1");
+$query3 = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `ftp`,AES_DECRYPT(g.`ppassword`,?) AS `ppasswordftp`,u.`cname`,r.`install_paths`,r.`quota_active`,r.`quota_cmd`,r.`blocksize`,r.`inode_block_ratio` FROM `gsswitch` AS g INNER JOIN `userdata` AS u ON g.`userid`=u.`id` INNER JOIN `rserverdata` AS r ON r.`id`=g.`rootID` WHERE g.`id`=? LIMIT 1");
 $query->execute();
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
@@ -78,6 +78,19 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $iniVars = parse_ini_string($row3['install_paths'], true);
             $homeDir = (isset($iniVars[$row3['homeLabel']]['path'])) ? $iniVars[$row3['homeLabel']]['path'] : '/home';
+
+            $quotaCmd = false;
+
+            if ($row3['quota_active'] == 'Y' and strlen($row3['quota_cmd']) > 0 and $row3['hdd'] > 0) {
+
+                // setquota works with KibiByte and Inodes; Stored is Megabyte
+                $sizeInKibiByte = $row3['hdd'] * 1024;
+                $sizeInByte = $row3['hdd'] * 1048576;
+                $blockAmount = round(($sizeInByte /$row3['blocksize']));
+                $inodeAmount = round($blockAmount / $row3['inode_block_ratio']);
+
+                $quotaCmd = 'q() { ' . str_replace('%cmd%', " -u {$customer} {$sizeInKibiByte} {$sizeInKibiByte} {$inodeAmount} {$inodeAmount} {$homeDir}", $row3['quota_cmd']) . ' > /dev/null 2>&1; }; q&';
+            }
 
             if ($installGames == 'P') {
 
@@ -127,7 +140,12 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $cmds[] = "./control.sh useradd {$customer} {$ftppass} {$homeDir} {$addProtectedUser}";
 
                 if ($installGames != 'N') {
+
                     $cmds[] = "sudo -u {$customer} ./control.sh addserver {$customer} {$gamestring} {$gsfolder} \"1\" {$homeDir}";
+
+                    if ($quotaCmd) {
+                        $cmds[] = $quotaCmd;
+                    }
                 }
 
                 $query4 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='gs' LIMIT 1");
@@ -184,6 +202,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 if ($port != $newPort or $gsIP != $newIP) {
                     $cmds[] = "sudo -u {$customer} ./control.sh ip_port_change {$customer} {$gsfolder} {$newIP}_{$newPort} {$homeDir}";
                 }
+            }
+
+            if ($quotaCmd) {
+                $cmds[] = $quotaCmd;
             }
 
             $query4 = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`serverip`=?,`port`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");

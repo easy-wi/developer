@@ -49,7 +49,7 @@
     <gameswitch>Choose game type</gameswitch>
     <gs_add2>Add server step 2: server details</gs_add2>
     <gs_add>Add server step 1: user, root server, games</gs_add>
-    <hdd>Disk space</hdd>
+    <hdd>Disk space (MB)</hdd>
     <hddinstalled>Assigned harddisk(s)</hddinstalled>
     <heading_delete>Delete game server</heading_delete>
     <heading_template>Game server overview</heading_template>

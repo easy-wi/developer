@@ -49,7 +49,7 @@
     <gameswitch>Spiel wählen</gameswitch>
     <gs_add2>Server Hinzufügen Schritt 2: Serverdetails</gs_add2>
     <gs_add>Server Hinzufügen Schritt 1: User, Rootserver, Spiele</gs_add>
-    <hdd>Speicherplatz</hdd>
+    <hdd>Speicherplatz (MB)</hdd>
     <hddinstalled>Zugewiesene Festplatte(n)</hddinstalled>
     <heading_delete>Gameserver löschen</heading_delete>
     <heading_template>Gameserver Übersicht</heading_template>

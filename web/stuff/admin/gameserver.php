@@ -215,7 +215,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $errors['rootID'] = $sprache->root;
         } else {
 
-            $query = $sql->prepare("SELECT `hyperthreading`,`cores`,`install_paths`,`quota_active`,`quota_cmd`,`repquota_cmd`,`blocksize`,`inode_block_ratio` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `hyperthreading`,`cores`,`install_paths`,`quota_active`,`quota_cmd`,`blocksize`,`inode_block_ratio` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($rootID, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -224,7 +224,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                 $quotaActive = $row['quota_active'];
                 $quotaCmd = $row['quota_cmd'];
-                $quataCmd = $row['quota_cmd'];
                 $blockSize = $row['blocksize'];
                 $inodeBlockRatio = $row['inode_block_ratio'];
 
@@ -370,7 +369,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 }
 
                 $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`hdd`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $ui->active('taskset', 'post'), $hdd, $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $currentActiveGame, $ui->externalID('externalID', 'post'), $id, $resellerLockupID));
+                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $currentActiveGame, $ui->externalID('externalID', 'post'), $id, $resellerLockupID));
 
                 $rowCount += $query->rowCount();
 
@@ -453,13 +452,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                 if ($quotaActive == 'Y' and strlen($quotaCmd) > 0 and $hdd > 0) {
 
-                    // setquota works with KibiByte and Inodes; Stored is Gibibyte
-                    $sizeInKibiByte = $hdd * 1048576;
-                    $sizeInByte = $hdd * 1073741824;
+                    // setquota works with KibiByte and Inodes; Stored is Megabyte
+                    $sizeInKibiByte = $hdd * 1024;
+                    $sizeInByte = $hdd * 1048576;
                     $blockAmount = round(($sizeInByte /$blockSize));
                     $inodeAmount = round($blockAmount / $inodeBlockRatio);
 
-                    $cmds[] = 'q() { ' . str_replace('%cmd%', " -u {$technicalUser}-{$id} {$sizeInKibiByte} {$sizeInKibiByte} {$inodeAmount} {$inodeAmount} {$homeDir}", $quataCmd) . ' > /dev/null 2>&1; }; q&';
+                    $cmds[] = 'q() { ' . str_replace('%cmd%', " -u {$technicalUser}-{$id} {$sizeInKibiByte} {$sizeInKibiByte} {$inodeAmount} {$inodeAmount} {$homeDir}", $quotaCmd) . ' > /dev/null 2>&1; }; q&';
                 }
 
                 if ($ui->st('action', 'post') == 'md' and ($oldFtpPassword != $ftpPassword or $oldActive != $active or $homeLabel != $oldHomeLabel)) {
