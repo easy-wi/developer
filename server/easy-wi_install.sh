@@ -751,14 +751,11 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
 				rm $LINE/aquota.user
 			fi
 
-			touch $LINE/aquota.user
-			chmod 600 $LINE/aquota.*
-
 			echo "Remounting $LINE"
 			mount -o remount $LINE
 
 			quotacheck -vumc $LINE
-			quotaon -uv  $LINE
+			quotaon -uv $LINE
 		done
 
 		if [ -f /root/tempfstab ]; then
