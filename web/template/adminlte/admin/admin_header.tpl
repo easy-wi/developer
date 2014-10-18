@@ -94,12 +94,12 @@
                     <li>
                         <!-- inner menu: contains the actual data -->
                         <ul class="menu">
-							<?php if(($pa['tickets'] or $pa['usertickets']) and $statsArray['ticketsInProcess']>0) { ?><a href="admin.php?w=ti"><span class="badge badge-info"><?php echo $statsArray['ticketsNew'].'/'.$statsArray['ticketsInProcess'].' '.$sprache_bad->tickets; ?></span></a><?php }?>
 							<?php if($pa['gserver'] and $easywiModules['gs']) { ?>
-                            <?php if($statsArray['gameserverNotRunning']>0){ ?><li><a href="admin.php?w=gs&amp;d=md"><i class="fa fa-warning danger"></i> <?php echo $statsArray['gameserverNotRunning'].' '.$sprache_bad->gserver_crashed;?></a></li><?php }?>
-                            <?php if($statsArray['gameserverNoPassword']>0){ ?><li><a href="admin.php?w=gs&amp;d=md"><i class="fa fa-warning warning"></i> <?php echo $statsArray['gameserverNoPassword'].' '.$sprache_bad->gserver_removed;?></a></li><?php }?>
-                            <?php if($statsArray['gameserverNoTag']>0){ ?><li><a href="admin.php?w=gs&amp;d=md"><i class="fa fa-warning warning"></i> <?php echo $statsArray['gameserverNoTag'].' '.$sprache_bad->gserver_tag_removed;?></a></li><?php }?>
+                            <?php if($statsArray['gameserverNotRunning']>0){ ?><li><a href="admin.php?w=gs"><i class="fa fa-warning danger"></i> <?php echo $statsArray['gameserverNotRunning'].' '.$sprache_bad->gserver_crashed;?></a></li><?php }?>
+                            <?php if($statsArray['gameserverNoPassword']>0){ ?><li><a href="admin.php?w=gs"><i class="fa fa-warning warning"></i> <?php echo $statsArray['gameserverNoPassword'].' '.$sprache_bad->gserver_removed;?></a></li><?php }?>
+                            <?php if($statsArray['gameserverNoTag']>0){ ?><li><a href="admin.php?w=gs"><i class="fa fa-warning warning"></i> <?php echo $statsArray['gameserverNoTag'].' '.$sprache_bad->gserver_tag_removed;?></a></li><?php }?>
                             <?php }?>
+
 							<?php if($pa['voiceserver'] and $statsArray['voiceserverCrashed']>0 and $easywiModules['vo']) { ?><li><a href="admin.php?w=vo&amp;d=md"><i class="fa fa-warning danger"></i> <?php echo $statsArray['voiceserverCrashed'].' '.$sprache_bad->voice_crashed;?></a></li><?php }?>
 							<?php if($pa['voicemasterserver'] and $statsArray['voiceMasterCrashed']>0 and $easywiModules['vo']) { ?><li><a href="admin.php?w=vo&amp;d=md"><i class="fa fa-warning danger"></i><?php echo $statsArray['voiceMasterCrashed'].' '.$sprache_bad->ts3master_crashed;?></a></li><?php }?>
 							<?php if($pa['roots'] and $statsArray['gameMasterCrashed']>0 and $easywiModules['gs']) { ?><li><a href="admin.php?w=ro"><i class="fa fa-warning danger"></i><?php echo $statsArray['gameMasterCrashed'].' '.$sprache_bad->ts3master_crashed;?></a></li><?php }?>
