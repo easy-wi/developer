@@ -457,8 +457,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $sizeInByte = $hdd * 1048576;
                     $blockAmount = round(($sizeInByte /$blockSize));
                     $inodeAmount = round($blockAmount / $inodeBlockRatio);
+                    $mountPoint = (isset($iniVars[$homeLabel]['mountpoint'])) ? $iniVars[$homeLabel]['mountpoint'] : $homeDir;
 
-                    $cmds[] = 'q() { ' . str_replace('%cmd%', " -u {$technicalUser}-{$id} {$sizeInKibiByte} {$sizeInKibiByte} {$inodeAmount} {$inodeAmount} {$homeDir}", $quotaCmd) . ' > /dev/null 2>&1; }; q&';
+                    $cmds[] = 'q() { ' . str_replace('%cmd%', " -u {$technicalUser}-{$id} {$sizeInKibiByte} {$sizeInKibiByte} {$inodeAmount} {$inodeAmount} {$mountPoint}", $quotaCmd) . ' > /dev/null 2>&1; }; q&';
                 }
 
                 if ($ui->st('action', 'post') == 'md' and ($oldFtpPassword != $ftpPassword or $oldActive != $active or $homeLabel != $oldHomeLabel)) {

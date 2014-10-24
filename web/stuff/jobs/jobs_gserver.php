@@ -88,8 +88,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $sizeInByte = $row3['hdd'] * 1048576;
                 $blockAmount = round(($sizeInByte /$row3['blocksize']));
                 $inodeAmount = round($blockAmount / $row3['inode_block_ratio']);
+                $mountPoint = (isset($iniVars[$row3['homeLabel']]['mountpoint'])) ? $iniVars[$row3['homeLabel']]['mountpoint'] : $homeDir;
 
-                $quotaCmd = 'q() { ' . str_replace('%cmd%', " -u {$customer} {$sizeInKibiByte} {$sizeInKibiByte} {$inodeAmount} {$inodeAmount} {$homeDir}", $row3['quota_cmd']) . ' > /dev/null 2>&1; }; q&';
+                $quotaCmd = 'q() { ' . str_replace('%cmd%', " -u {$customer} {$sizeInKibiByte} {$sizeInKibiByte} {$inodeAmount} {$inodeAmount} {$mountPoint}", $row3['quota_cmd']) . ' > /dev/null 2>&1; }; q&';
             }
 
             if ($installGames == 'P') {
