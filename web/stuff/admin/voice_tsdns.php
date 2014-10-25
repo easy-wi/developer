@@ -87,8 +87,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $defaultdns=strtolower($ui->domain('defaultdns', 'post'));
     $ssh2ip = $ui->ip('ip', 'post');
     $ssh2port = $ui->port('port', 'post');
-    $ssh2user = $ui->username('user',50, 'post');
-    $ssh2password = $ui->startparameter('pass', 'post');
+    $ssh2user = $ui->username('user', 255, 'post');
+    $ssh2password = $ui->password('pass', 255, 'post');
     $serverdir = $ui->folder('serverdir', 'post');
     $keyname = $ui->startparameter('keyname', 'post');
     $bit = $ui->id('bit',2, 'post');
@@ -137,25 +137,25 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         // Form is submitted
     } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
 
-        if (!$ui->active('active', 'post')) {
+        if (!$active) {
             $errors['active'] = $sprache->active;
         }
-        if (!$ui->active('autorestart', 'post')) {
+        if (!$autorestart) {
             $errors['autorestart'] = $sprache->autorestart;
         }
-        if (!$ui->w('publickey', 1, 'post')) {
+        if (!$publickey) {
             $errors['publickey'] = $sprache->keyuse;
         }
-        if (!$ui->ip('ip', 'post')) {
+        if (!$ssh2ip) {
             $errors['ip'] = $sprache->ssh_ip;
         }
-        if (!$ui->port('port', 'post')) {
+        if (!$ssh2port) {
             $errors['port'] = $sprache->ssh_port;
         }
-        if (!$ui->username('user', 50, 'post')) {
+        if (!$ssh2user) {
             $errors['user'] = $sprache->ssh_user;
         }
-        if (!$ui->id('bit',2, 'post')) {
+        if (!$bit) {
             $errors['active'] = $sprache->active;
         }
 
@@ -163,7 +163,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $errors['keyname'] = $sprache->keyname;
         }
 
-        $ssh2Check = (count($errors) == 0) ? ssh_check($ssh2ip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password) : true;
+        $ssh2Check = (count($errors) == 0 and $active == 'Y') ? ssh_check($ssh2ip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password) : true;
 
         if ($ssh2Check !== true) {
 
@@ -175,16 +175,19 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $errors['user'] = $sprache->ssh_user;
                 $errors['publickey'] = $sprache->keyuse;
 
-                if ($ui->active('publickey', 'post') == 'N') {
+                if ($publickey == 'N') {
                     $errors['pass'] = $sprache->ssh_pass;
+
                 } else if (!$ui->active('publickey', 'post') == 'B') {
                     $errors['pass'] = $sprache->ssh_pass;
                     $errors['keyname'] = $sprache->keyname;
+
                 } else {
                     $errors['keyname'] = $sprache->keyname;
                 }
             }
         }
+
         // Submitted values are OK
         if (count($errors) == 0) {
 

@@ -622,17 +622,22 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         $forceservertag=($ui->active('forceservertag', 'post')) ? $ui->active('forceservertag', 'post') : 'Y';
         $forcewelcome=($ui->active('forcewelcome', 'post')) ? $ui->active('forcewelcome', 'post') : 'Y';
         $dns=strtolower($ui->domain('dns', 'post'));
+
         if (isset($oldport) and ($dns != $olddns or $port != $oldport or $ip != $oldip)) {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `id`!=? AND `dns`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$dns,$reseller_id));
             $query2 = $sql->prepare("SELECT COUNT(`tsdnsID`) AS `amount` FROM `voice_dns` WHERE `dnsID`!=? AND `dns`=? AND `resellerID`=? LIMIT 1");
             $query2->execute(array($tsdnsServerID,$dns,$reseller_id));
-            if ($query->fetchColumn()>0 or $query2->fetchColumn()>0) {
+
+            if ($query->fetchColumn() > 0 or $query2->fetchColumn() > 0) {
                 $errors[] = 'DNS already in use';
-            } else if (count($errors)==0) {
+
+            } else if (count($errors) == 0) {
+
                 if ($usedns == 'Y') {
-                    if (isid($tsdnsServerID,19)) {
-                        $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `dnsID`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
+
+                    if (isid($tsdnsServerID, 19)) {
+                        $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
                         $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $reseller_id,':managedForID' => $admin_id));
                         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                             $publickey = $row['publickey'];
@@ -645,10 +650,12 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                             $bitversion = $row['bitversion'];
                         }
                     }
+
                     $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,$mnotified,$serverdir,$bitversion, array($ip,$oldip), array($port,$oldport), array($dns,$olddns),$reseller_id);
                 }
             }
         }
+
         $welcome = $ui->description('welcome', 'post');
         $tooltip = $ui->description('hostbutton_tooltip', 'post');
         $banner_url = $ui->url('hostbanner_url', 'post');
@@ -658,6 +665,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         $flexSlots = $ui->active('flexSlots', 'post');
         $flexSlotsPercent = $ui->id('flexSlotsPercent',3, 'post');
         $flexSlotsFree = $ui->id('flexSlotsFree',11, 'post');
+
         if (count($errors)==0) {
             $name = $ui->startparameter('name', 'post');
             $connection=new TS3($queryip,$queryport,'serveradmin',$querypassword);
