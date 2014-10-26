@@ -709,9 +709,6 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `easywi_version` (`id`,`version`,`de`,`en`) VALUES (1,'4.40','','') ON DUPLICATE KEY UPDATE `id`=`id`");
             $query->execute();
 
-            $query = $sql->prepare("INSERT INTO `voice_stats_settings` (`id`,`resellerid`) VALUES (1,0) ON DUPLICATE KEY UPDATE `id`=`id`");
-            $query->execute();
-
             $query = $sql->prepare("INSERT INTO `page_pages` (`id`,`authorid`,`type`) VALUES (1,0,'about') ON DUPLICATE KEY UPDATE `id`=`id`");
             $query->execute();
 
