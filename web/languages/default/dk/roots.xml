@@ -6,6 +6,15 @@
 	<all_games>Vælg alle Spil</all_games>
 	<all_roots>Vælg alle Rootservers</all_roots>
 	<cfgdir>Config mapper</cfgdir>
+    <configBadFiles></configBadFiles>
+    <configBadTime></configBadTime>
+    <configBinaries></configBinaries>
+    <configDemoTime></configDemoTime>
+    <configFiles></configFiles>
+    <configIonice></configIonice>
+    <configLogTime></configLogTime>
+    <configUserID></configUserID>
+    <configZtmpTime></configZtmpTime>
 	<confirm1>Start opdatering?</confirm1>
     <connect_ip_only></connect_ip_only>
 	<desc>Beskrivelse</desc>

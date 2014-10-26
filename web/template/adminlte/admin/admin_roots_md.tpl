@@ -191,6 +191,56 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="control-label" for="inputConfigLogTime"><?php echo $sprache->configLogTime;?></label>
+                            <div class="controls"><input class="form-control" id="inputConfigLogTime" type="number" name="configLogTime" value="<?php echo $configLogTime;?>" maxlength="3"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputConfigDemoTime"><?php echo $sprache->configDemoTime;?></label>
+                            <div class="controls"><input class="form-control" id="inputConfigDemoTime" type="number" name="configDemoTime" value="<?php echo $configDemoTime;?>" maxlength="3"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputConfigZtmpTime"><?php echo $sprache->configZtmpTime;?></label>
+                            <div class="controls"><input class="form-control" id="inputConfigZtmpTime" type="number" name="configZtmpTime" value="<?php echo $configZtmpTime;?>" maxlength="3"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputConfigBadTime"><?php echo $sprache->configBadTime;?></label>
+                            <div class="controls"><input class="form-control" id="inputConfigBadTime" type="number" name="configBadTime" value="<?php echo $configBadTime;?>" maxlength="3"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputConfigUserID"><?php echo $sprache->configUserID;?></label>
+                            <div class="controls"><input class="form-control" id="inputConfigUserID" type="number" name="configUserID" value="<?php echo $configUserID;?>" maxlength="10"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputConfigBinaries"><?php echo $sprache->configBinaries;?></label>
+                            <div class="controls"><input class="form-control" id="inputConfigBinaries" type="text" name="configBinaries" value="<?php echo $configBinaries;?>"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputConfigFiles"><?php echo $sprache->configFiles;?></label>
+                            <div class="controls"><input class="form-control" id="inputConfigFiles" type="text" name="configFiles" value="<?php echo $configFiles;?>"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputConfigBadFiles"><?php echo $sprache->configBadFiles;?></label>
+                            <div class="controls"><input class="form-control" id="inputConfigBadFiles" type="text" name="configBadFiles" value="<?php echo $configBadFiles;?>"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputConfigIonice"><?php echo $sprache->configIonice;?></label>
+                            <div class="controls">
+                                <select id="inputConfigIonice" class="form-control" name="configIonice">
+                                    <option value="N"><?php echo $gsprache->no;?></option>
+                                    <option value="Y" <?php if ($configIonice=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="inputQuotaActive"><?php echo $sprache->quotaActive;?></label>
                             <div class="controls">
                                 <select id="inputQuotaActive" class="form-control" name="quotaActive" onchange="SwitchShowHideRows(this.value,'quotaSwitch');">

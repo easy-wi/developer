@@ -7,6 +7,15 @@
 	<all_roots>Alle Rootserver selektieren</all_roots>
     <blocksize>Block Größe</blocksize>
 	<cfgdir>Config Verzeichnis</cfgdir>
+    <configBadFiles>Unzulässige Dateien</configBadFiles>
+    <configBadTime>Unzulässige Dateien entfernen nach N Tagen</configBadTime>
+    <configBinaries>Server Binaries</configBinaries>
+    <configDemoTime>Demos entfernen nach N Tagen</configDemoTime>
+    <configFiles>Configs verlinken</configFiles>
+    <configIonice>Ionice benutzen</configIonice>
+    <configLogTime>Logs entfernen nach N Tagen</configLogTime>
+    <configUserID>UserIDs beginnend ab</configUserID>
+    <configZtmpTime>ZTMP Dateien entfernen nach N Tagen</configZtmpTime>
 	<confirm1>Update(s) starten?</confirm1>
     <connect_ip_only>SSH2 IP nur für Admin (Zusätzliche IPs für Apps)</connect_ip_only>
 	<desc>Beschreibung</desc>
