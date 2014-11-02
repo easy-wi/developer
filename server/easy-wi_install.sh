@@ -819,6 +819,10 @@ if [ "$INSTALL" == 'GS' -o  "$INSTALL" == 'WR' ]; then
 			echo "$MASTERUSER ALL = NOPASSWD: `which repquota`" >> /etc/sudoers
 		fi
 
+		if [ "$INSTALL" == 'GS' ]; then
+			echo "$MASTERUSER ALL = (ALL, !root:easywi) NOPASSWD: /home/$MASTERUSER/temp/*.sh" >> /etc/sudoers
+		fi
+
 		if [ "$WEBSERVER" == "Nginx" ]; then
 			HTTPDBIN=`which nginx`
 			HTTPDSCRIPT='/etc/init.d/nginx'
@@ -928,10 +932,6 @@ if [ "$INSTALL" == 'GS' ]; then
 		chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER/masterserver/steamCMD
 		su -c "./steamcmd.sh +login anonymous +quit" $MASTERUSER
 	fi
-
-	cd /home/$MASTERUSER/
-	wget -q --no-check-certificate https://raw.githubusercontent.com/easy-wi/developer/master/server/control.sh
-	chmod 750 control.sh
 
 	chown -R $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER
 
