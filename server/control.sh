@@ -468,7 +468,7 @@ $INSTALLMASTER ALL = NOPASSWD: /usr/sbin/userdel
 $INSTALLMASTER ALL = NOPASSWD: /usr/sbin/deluser
 $INSTALLMASTER ALL = NOPASSWD: /usr/sbin/usermod
 $INSTALLMASTER ALL = (ALL, !root:$INSTALLMASTER) NOPASSWD: /home/$INSTALLMASTER/control.sh
-$INSTALLMASTER ALL = (ALL, !root:$INSTALLMASTER) NOPASSWD: /home/$INSTALLMASTER/temp/*.sh"" >>  /etc/sudoers
+$INSTALLMASTER ALL = (ALL, !root:$INSTALLMASTER) NOPASSWD: /home/$INSTALLMASTER/temp/*.sh" >>  /etc/sudoers
 fi
 
 mv $HOMEFOLDER/control.sh /home/$INSTALLMASTER/control.sh
