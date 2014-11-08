@@ -11,10 +11,10 @@
     <meta name="description" content="">
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php if(isset($ewCfg['title'])) echo $ewCfg['title']; ?>">
 
-    <!-- bootstrap 3.0.2 -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- font Awesome -->
+    <!-- Font Awesome -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Theme style -->
@@ -22,11 +22,11 @@
 
     <?php echo implode('',$htmlExtraInformation['css']);?>
 
-    <!-- jQuery 2.0.2 -->
+    <!-- jQuery -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js" type="text/javascript"></script>
 
-    <!-- Bootstrap -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- Bootstrap JS -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js" type="text/javascript"></script>
 
     <!-- AdminLTE App -->
     <script src="js/adminlte/app.js" type="text/javascript"></script>
@@ -67,15 +67,14 @@
 
     <div class="navbar-right">
 
-        <div class="nav navbar-btn pull-right">
+        <div class="nav navbar-btn pull-right" style="padding-right: 10px;">
             <a href="login.php?w=lo"><span class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> Logout</span></a>
         </div>
 
         <ul class="nav navbar-nav">
 
             <?php if($statsArray['ticketsTotal']>0){ ?>
-            <!-- Messages: style can be found in dropdown.less-->
-            <li class="dropdown messages-menu">
+            <li class="dropdown messages-menu hidden-xs">
                 <a href="userpanel.php?w=ti">
                     <i class="fa fa-life-ring"></i>
                     <span class="label label-success"><?php echo $statsArray['ticketsTotal'];?></span>
@@ -84,8 +83,7 @@
             <?php } ?>
 
             <?php if($statsArray['warningTotal']>0){ ?>
-            <!-- Notifications: style can be found in dropdown.less -->
-            <li class="dropdown notifications-menu">
+            <li class="dropdown notifications-menu hidden-xs">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-warning"></i>
                     <span class="label label-danger"><?php echo $statsArray['warningTotal'];?></span>
