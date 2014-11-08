@@ -94,11 +94,10 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $ips = $ui->ips('ips', 'post');
     $addtype = 2;
     $addedby = 2;
-    $rootid = 0;
     $keyname = $ui->startparameter('keyname', 'post');
     $pass = $ui->startparameter('pass', 'post');
     $serverdir = $ui->folder('serverdir', 'post');
-    $rootid = $ui->id('rootid', 2, 'post');
+    $rootid = ($ui->id('rootid', 2, 'post')) ? $ui->id('rootid', 2, 'post') : null;
     $usedns = $ui->active('usedns', 'post');
     $querypassword = $ui->password('querypassword', 50, 'post');
     $type = 'ts3';
