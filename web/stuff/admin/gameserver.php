@@ -43,6 +43,8 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['gserver']))
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 
@@ -326,6 +328,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         // Submitted values are OK
         if (count($errors) == 0) {
 
+            $appServer = new AppServer($rootID);
+
+            // Only gather here, when we edit, so we can avoid overhead
+            if ($ui->st('action', 'post') == 'md') {
+                $appServer->getAppServerDetails($id);
+            }
+
             // We need to check the installed games in order to know what needs to be removed
             $query = $sql->prepare("SELECT l.`id`,l.`servertype`,t.`shorten` FROM `serverlist` AS l INNER JOIN `gsswitch` AS g ON g.`id`=l.`switchID` INNER JOIN `servertypes` AS t ON t.`id`=l.`servertype` WHERE g.`id`=? AND g.`resellerid`=?");
             $query->execute(array($id, $resellerLockupID));
@@ -346,6 +355,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 }
             }
 
+            $gamesRemoveAmount = count($gamesToBeRemoved);
+            $gamesAmount = count($gamesToBeInstalled);
+
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
@@ -358,22 +370,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                 $loguseraction = '%add% %gserver% ' . $ip . ':' . $port;
 
-            } else if ($ui->st('action', 'post') == 'md' and $id) {
-
-                // We need to correct the active game in case the current one is not existing anymore
-                if ($oldActiveGame == null or !in_array($oldActiveGame, $installedGames) or isset($gamesToBeRemoved[$oldActiveGame])) {
-                    reset($installedGames);
-                    $currentActiveGame = (isset($insertedServerIDs[0])) ? $insertedServerIDs[0] : current($installedGames);
-                } else {
-                    $currentActiveGame = $oldActiveGame;
-                }
-
-                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`hdd`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $currentActiveGame, $ui->externalID('externalID', 'post'), $id, $resellerLockupID));
-
-                $rowCount += $query->rowCount();
-
-                $loguseraction = '%mod% %gserver% ' . $ip . ':' . $port;
             }
 
             // Insert new games
@@ -386,7 +382,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $insertedServerIDs[] = $sql->lastInsertId();
 
                 $rowCount += $query->rowCount();
-            };
+            }
 
             // Updating the serverlist if not set to be added, we need to run the update
             $query = $sql->prepare("UPDATE `serverlist` SET `fps`=?,`map`=?,`mapGroup`=?,`cmd`=?,`owncmd`=?,`tic`=?,`userfps`=?,`usertick`=?,`usermap`=?,`user_uploaddir`=?,`upload`=?,`uploaddir`=AES_ENCRYPT(?,?) WHERE `switchID`=? AND `servertype`=? AND `resellerid`=? LIMIT 1");
@@ -398,6 +394,52 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                     $rowCount += $query->rowCount();
                 }
+            }
+
+            if ($ui->st('action', 'post') == 'md' and $id) {
+
+                // We need to correct the active game in case the current one is not existing anymore
+                if ($oldActiveGame == null or !in_array($oldActiveGame, $installedGames) or isset($gamesToBeRemoved[$oldActiveGame])) {
+                    reset($installedGames);
+                    $currentActiveGame = (isset($insertedServerIDs[0])) ? $insertedServerIDs[0] : current($installedGames);
+                } else {
+                    $currentActiveGame = $oldActiveGame;
+                }
+
+                // the currently running game has been removed. We can stop it dirty
+                if ($currentActiveGame != $oldActiveGame) {
+
+                    $appServer->stopAppHard();
+
+                // Attributes changed that require a soft stop
+                } else if (($oldActive == 'Y' and $active == 'N') or $ip != $oldIp or $port != $oldPort or $homeLabel != $oldHomeLabel) {
+
+                    $appServer->stopApp();
+
+                }
+
+                // Remove if games got deselected. Cannot happen during gameserver adding
+                if ($gamesRemoveAmount > 0) {
+
+                    $appServer->removeApp($gamesToBeRemoved);
+
+                    // Delete deselected games
+                    $query = $sql->prepare("DELETE FROM `serverlist` WHERE `servertype`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
+
+                    foreach ($gamesToBeRemoved as $gameID => $shorten) {
+
+                        $query->execute(array($gameID, $id, $resellerLockupID));
+
+                        $rowCount += $query->rowCount();
+                    }
+                }
+
+                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`hdd`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $currentActiveGame, $ui->externalID('externalID', 'post'), $id, $resellerLockupID));
+
+                $rowCount += $query->rowCount();
+
+                $loguseraction = '%mod% %gserver% ' . $ip . ':' . $port;
             }
 
             // If a servertype has been added, update gsswitch, so joins add up
@@ -418,19 +460,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $rowCount = 0;
             }
 
-            // Delete deselected games
-            $query = $sql->prepare("DELETE FROM `serverlist` WHERE `servertype`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
-
-            foreach ($gamesToBeRemoved as $gameID => $shorten) {
-
-                $query->execute(array($gameID, $id, $resellerLockupID));
-
-                $rowCount += $query->rowCount();
-            }
-
             // If not checked like this we might get true for general server insert in add cases, when it failed
             if (($ui->st('action', 'post') == 'ad' and $rowCount > 0) or $ui->st('action', 'post') == 'md')  {
-
                 // customColumns will return amount of changed columns
                 $rowCount += customColumns('G', $id, 'save');
             }
@@ -438,71 +469,30 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Check if a row was affected during insert or update
             if ($rowCount > 0) {
 
-                $gamesRemoveAmount = count($gamesToBeRemoved);
-                $gamesAmount = count($gamesToBeInstalled);
-                $homeDir = (isset($iniVars[$homeLabel]['path'])) ? $iniVars[$homeLabel]['path'] : '/home';
-
-                // We will run the add user command in nearly any case
-                // Reasons are that we ensure FTP password correctness and existence of linux user
-                // Also we will add the protected user with variable 5
-                if ($homeLabel != $oldHomeLabel or $oldFtpPassword != $ftpPassword or $oldActive != $active or $ip != $oldIp or $port != $oldPort or $oldProtected != $protectionAllowed or $gamesRemoveAmount > 0 or $gamesAmount > 0) {
-                    $addProtectedUser = ($protectionAllowed == 'Y') ? passwordgenerate(10) : '';
-                    $cmds[] = "./control.sh useradd {$technicalUser}-{$id} {$ftpPassword} {$homeDir} {$addProtectedUser}";
-                }
-
-                if ($quotaActive == 'Y' and strlen($quotaCmd) > 0 and $hdd > 0) {
-
-                    // setquota works with KibiByte and Inodes; Stored is Megabyte
-                    $sizeInKibiByte = $hdd * 1024;
-                    $sizeInByte = $hdd * 1048576;
-                    $blockAmount = round(($sizeInByte /$blockSize));
-                    $inodeAmount = round($blockAmount / $inodeBlockRatio);
-                    $mountPoint = (isset($iniVars[$homeLabel]['mountpoint'])) ? $iniVars[$homeLabel]['mountpoint'] : $homeDir;
-
-                    $cmds[] = 'q() { ' . str_replace('%cmd%', " -u {$technicalUser}-{$id} {$sizeInKibiByte} {$sizeInKibiByte} {$inodeAmount} {$inodeAmount} {$mountPoint}", $quotaCmd) . ' > /dev/null 2>&1; }; q&';
-                }
-
-                if ($ui->st('action', 'post') == 'md' and ($oldFtpPassword != $ftpPassword or $oldActive != $active or $homeLabel != $oldHomeLabel)) {
-
-                    if ($oldActive == 'Y' and $active == 'N') {
-                        $ftpPassword = passwordgenerate(10);
-                    }
-
-                    $cmds[] = "./control.sh usermod {$technicalUser}-{$id} {$ftpPassword} {$homeDir}";
-                }
+                // If we are adding a server this is the initial data gathering
+                // Else might have updated values which are relevant for generating commands. So we need to update the object´s values
+                $appServer->getAppServerDetails($id);
 
                 // Send delete request for protected user in case it has been removed from server
                 if ($ui->st('action', 'post') == 'md' and $protectionAllowed == 'N' and $oldProtected == 'Y') {
-                    $cmds[] = "./control.sh delSingleUser {$technicalUser}-{$id}-p";
+                    $appServer->userCud('del');
                 }
 
-                if ($ui->st('action', 'post') == 'md' and (($oldActive == 'Y' and $active == 'N') or $ip != $oldIp or $port != $oldPort)) {
+                // We will run the add user command in any case
+                // Reasons are that we ensure FTP password correctness and existence of linux user
+                $appServer->userCud('add');
 
-                    $stopCmds = gsrestart($id, 'so', $aeskey, $resellerLockupID);
-
-                    if (is_array($stopCmds)) {
-                        foreach ($stopCmds as $cmd) {
-                            if (strpos($cmd, 'addserver') === false)  {
-                                $cmds[] = $cmd;
-                            }
-                        }
-                    }
-                }
+                $appServer->setQuota();
 
                 // Remove if games got deselected. Cannot happen during gameserver adding
                 if ($gamesRemoveAmount > 0) {
-
                     $loguseraction .= ', %del%: ' . implode(', ', $gamesToBeRemoved);
-
-                    $gamesRemoveString = $gamesRemoveAmount . '_' . implode('_', $gamesToBeRemoved);
-
-                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh delserver {$technicalUser}-{$id} {$gamesRemoveString} {$oldIp}_{$oldPort} unprotected {$homeDir}";
                 }
 
                 // Admin has changed the ip or the main port. Now we need to move the server. Can only happen during server edit.
                 // Should be done after possible deletes and before we add additional data
                 if ($ui->st('action', 'post') == 'md' and  ($ip != $oldIp or $port != $oldPort)) {
-                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh ip_port_change {$technicalUser}-{$id} {$oldIp}_{$oldPort} {$ip}_{$port} {$homeDir}";
+                    $appServer->moveServerLocal($oldIp, $oldPort);
                 }
 
 
@@ -510,19 +500,19 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                     $loguseraction .= ', %add%: ' . implode(', ', $gamesToBeInstalled);
 
-                    $gamesAddString = $gamesAmount . '_' . implode('_', $gamesToBeInstalled);
-
-                    $limitInstall = ($ui->id('installGames', 1, 'post') == 2) ? 1 : '';
-
-                    $cmds[] = "sudo -u {$technicalUser}-{$id} ./control.sh addserver {$technicalUser}-{$id} {$gamesAddString} {$ip}_{$port} {$limitInstall} {$homeDir}";
+                    if ($ui->st('action', 'post') == 'ad') {
+                        $appServer->addApp($gamesToBeInstalled);
+                    }
                 }
 
                 $insertlog->execute();
 
                 $template_file = $spracheResponse->table_add;
 
-                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1 and isset($cmds) and count($cmds) > 0) {
-                    $template_file .= '<br><pre>' . implode("\r\n", $cmds) . "\r\n" . ssh2_execute('gs', $rootID, $cmds) . '</pre>';
+                $appServer->execute();
+
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
                 }
 
                 // No update or insert failed
@@ -554,17 +544,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $rootID = $row['rootID'];
 
         $user = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name'] . ' (' . $row['mail'] . ')');
-        $gameServerUser = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['id'] : $row['cname'];
-
-        // If set to "D" the user requested to remove from only from DB
-        if ($ui->w('safeDelete', 1, 'post') and $ui->w('safeDelete', 1, 'post') != 'D') {
-
-            $cmds = gsrestart($id, 'so', $aeskey, $resellerLockupID);
-
-            $cmds[] = "sudo -u {$gameServerUser} ./control.sh delscreen {$gameServerUser}" ;
-            $cmds[] = "sudo -u {$gameServerUser}-p ./control.sh delscreen {$gameServerUser}-p";
-            $cmds[] = "./control.sh delCustomer {$gameServerUser}";
-        }
     }
 
     // Nothing submitted yet, display the delete form
@@ -581,12 +560,16 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $return = true;
 
-            if (isset($cmds) and count($cmds) > 1) {
+            // If set to "D" the user requested to remove from only from DB
+            if ($ui->w('safeDelete', 1, 'post') and $ui->w('safeDelete', 1, 'post') != 'D') {
 
-                // Unset the add command generated by the restart function
-                unset($cmds[0]);
+                $appServer = new AppServer($rootID);
 
-                $return = ssh2_execute('gs', $rootID, $cmds);
+                $appServer->getAppServerDetails($id);
+                $appServer->stopAppHard();
+                $appServer->userCud('del', 'both');
+
+                $return = $appServer->execute();
             }
 
             if (($return !== false and $ui->w('safeDelete', 1, 'post') == 'S') or in_array($ui->w('safeDelete', 1, 'post'), array('A', 'D'))) {
@@ -617,8 +600,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $template_file = $spracheResponse->table_del;
 
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1 and isset($cmds)) {
-                $template_file .= '<br><pre>' . implode("\r\n", $cmds) . "\r\n" . $return . '</pre>';
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
             }
 
             // Nothing was deleted, display an error
@@ -664,76 +647,65 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     } else if ($ui->st('action', 'post') == 'ri') {
 
-        $i = 0;
-        $gamestring = array();
         $template = array();
 
-        $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,g.`homeLabel`,u.`cname`,r.`install_paths` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON r.`id`=g.`rootID` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
-        $query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $reseller_id));
+        $query = $sql->prepare("SELECT `rootID`,`serverip`,`port` FROM `gsswitch` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-            $customer = $row['cname'];
-            $ftppass = ($row['pallowed'] == 'Y' and $row['protected'] == 'Y') ? $row['pftppass'] : $row['cftppass'];
             $rootID = $row['rootID'];
             $serverip = $row['serverip'];
             $port = $row['port'];
-            $gsfolder = $serverip . '_' . $port;
-
-            $addProtectedUser = ($row['pallowed'] == 'Y') ? passwordgenerate(10) : '';
-
-            if ($row['newlayout'] == 'Y') {
-                $customer = $customer . '-' . $row['id'];
-            }
-
-            $iniVars = parse_ini_string($row['install_paths'], true);
-
-            $homeDir = ($iniVars and isset($iniVars[$row['homeLabel']]['path'])) ? $iniVars[$row['homeLabel']]['path'] : '/home';
         }
 
         # https://github.com/easy-wi/developer/issues/69
         $game = $ui->id('game',10, 'post');
-        $template = (in_array($ui->id('template', 10, 'post'), array(1, 2, 3, 4))) ? $ui->id('template', 10, 'post') : 4;
 
         if ($ui->active('type', 'post') == 'Y') {
             $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
             $query->execute(array($game, $reseller_id));
         }
 
-        $query = $sql->prepare("SELECT s.`gamemod`,s.`gamemod2`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
         $query->execute(array($game, $reseller_id));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $shorten = $row['shorten'];
-            $gamemod2 = $row['gamemod2'];
-            $gamestring[]=($row['gamemod'] == 'Y') ? $shorten . $gamemod2 : $shorten;
-        }
+        $shorten = $query->fetchColumn();
 
-        if (isset($gsfolder) and count($gamestring) > 0 and $ui->active('type', 'post')) {
 
-            $cmds = array();
+        if (isset($serverip) and isset($port) and isset($rootID) and strlen($shorten) > 0 and $ui->active('type', 'post')) {
 
-            $gamestring = count($gamestring) . '_' . implode('_',$gamestring);
+            $appServer = new AppServer($rootID);
+
+            $appServer->getAppServerDetails($id);
+            $appServer->userCud('add');
+
+            $template = (in_array($ui->id('template', 10, 'post'), array(1, 2, 3, 4))) ? $ui->id('template', 10, 'post') : 1;
+
+            if ($template == 4) {
+                $templates = array($shorten, $shorten . '-2', $shorten . '-3');
+            } else if ($template == 1) {
+                $templates = array($shorten);
+            } else {
+                $templates = array($shorten . '-' . $template);
+            }
 
             if ($ui->active('type', 'post') == 'Y') {
 
-                $cmds[] = "./control.sh useradd {$customer} {$ftppass} {$homeDir} {$addProtectedUser}";
-                $cmds[] = "sudo -u {$customer} ./control.sh reinstserver {$customer} {$gamestring} ${gsfolder} \"${template}\" {$homeDir}";
+                $appServer->stopAppHard();
+                $appServer->removeApp($templates);
 
                 $loguseraction = "%reinstall% %gserver% ${serverip}:${port}";
 
             } else {
-
-                $cmds[] = "sudo -u {$customer} ./control.sh addserver {$customer} {$gamestring} {$gsfolder} \"{$template}\" {$homeDir}";
-
                 $loguseraction = "%resync% %gserver% {$serverip}:{$port}";
-
             }
 
-            $return = ssh2_execute('gs', $rootID, $cmds);
+            $appServer->addApp($templates);
+
+            $return = $appServer->execute();
 
             $template_file = $sprache->server_installed;
 
             if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $template_file .= '<br><pre>' . implode("\r\n", $cmds) . "\r\n" . $return . '</pre>';
+                $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
             }
 
             $insertlog->execute();
@@ -754,32 +726,36 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $gsip = $row['serverip'];
         $port = $row['port'];
-        $port = $row['port'];
         $rootID = $row['rootID'];
     }
 
     if ($query->rowCount() > 0) {
 
+        $appServer = new AppServer($rootID);
+
+        $appServer->getAppServerDetails($id);
+
         if ($ui->st('d', 'get') == 'rs') {
 
+            $appServer->startApp();
+
             $template_file = $sprache->serverrestart;
-            $cmds = gsrestart($id, 're', $aeskey, $resellerLockupID);
+
             $loguseraction = '%start% %gserver% ' . $gsip . ':' . $port;
 
         } else if ($ui->st('d', 'get') == 'st') {
 
+            $appServer->stopApp();
+
             $template_file = $sprache->serverstop;
-            $cmds = gsrestart($id, 'so', $aeskey, $resellerLockupID);
+
             $loguseraction = '%stop% %gserver% ' . $gsip . ':' . $port;
         }
 
-        if (isset($cmds) and is_array($cmds) and count($cmds) > 0) {
+        $return = $appServer->execute();
 
-            $return = ssh2_execute('gs', $rootID, $cmds);
-
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $template_file .= '<br><pre>' . implode("\r\n", $cmds) . "\r\n" . $return . '</pre>';
-            }
+        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+            $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
         }
 
         $insertlog->execute();

@@ -100,7 +100,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
     $maxserver = ($ui->id('maxserver',4, 'post')) ? $ui->id('maxserver',4, 'post') : 10;
     $maxslots = ($ui->id('maxslots', 5, 'post')) ? $ui->id('maxslots', 5, 'post') : 512;
-    $installPaths = ($ui->escaped('installPaths', 'post')) ? $ui->escaped('installPaths', 'post') : "[home]\r\npath = /home\r\nsize = 500GB\r\ndefault = 1";
+    $installPaths = ($ui->escaped('installPaths', 'post')) ? $ui->escaped('installPaths', 'post') : "[home]\r\npath = /home\r\nmountpoint = /\r\nsize = 500GB\r\ndefault = 1";
     $quotaActive = ($ui->active('quotaActive', 'post')) ? $ui->active('quotaActive', 'post') : 'N';
     $quotaCmd = ($ui->startparameter('quotaCmd', 'post')) ? $ui->startparameter('quotaCmd', 'post') : 'sudo /usr/sbin/setquota %cmd%';
     $repquotaCmd = ($ui->startparameter('repquotaCmd', 'post')) ? $ui->startparameter('repquotaCmd', 'post') : 'sudo /usr/sbin/repquota %cmd%';
@@ -403,7 +403,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($id, $resellerLockupID));
             }
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $table[$row['id']] = array('ip' => $row['serverip'], 'port' => $row['port']);
             }
 
@@ -411,43 +411,50 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         } else if ($ui->st('action', 'post') == 'ri' and $ui->id('serverID', 10, 'post')) {
 
-            $cmds = array();
-            $started = array();
-            $serverIDs = (array) $ui->id('serverID', 10, 'post');
+            include(EASYWIDIR . '/stuff/methods/class_app.php');
 
-            if ($reseller_id == 0) {
-                $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=?");
-            } else {
-                $query = $sql->prepare("SELECT g.`id`,g.`userid`,g.`serverip`,g.`port`,g.`serverid`,g.`newlayout`,AES_DECRYPT(g.`ftppassword`,?) AS `dftp`,t.`shorten`,u.`cname`,AES_DECRYPT(d.`user`,?) AS `duser` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `rserverdata` AS d ON g.`rootID`=d.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`rootID`=? AND g.`resellerid`=?");
-            }
+            $appServer = new AppServer($id);
 
-            foreach ($serverIDs as $serverID) {
+            $query = $sql->prepare("SELECT t.`shorten` FROM `serverlist` AS s INNER JOIN `servertypes` AS t  ON t.`id`=s.`servertype` WHERE s.`switchID`=?");
+            $query2 = $sql->prepare("SELECT g.`serverip`,g.`port`,t.`shorten` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON s.`id`=g.`serverid` INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE g.`id`=? LIMIT 1");
 
-                if ($reseller_id == 0) {
-                    $query->execute(array($aeskey, $aeskey, $serverID, $id));
-                } else {
-                    $query->execute(array($aeskey, $aeskey, $serverID, $id, $resellerLockupID));
+            foreach ((array) $ui->id('serverID', 10, 'post') as $serverID) {
+
+                $removeTemplates = array();
+
+                $appServer->getAppServerDetails($serverID);
+                $appServer->userCud('add');
+                $appServer->stopAppHard();
+
+                $query->execute(array($serverID));
+
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                    $removeTemplates[] = $row['shorten'];
+                    $removeTemplates[] = $row['shorten'] . '-2';
+                    $removeTemplates[] = $row['shorten'] . '-3';
                 }
 
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                if (count($removeTemplates) > 0) {
+                    $appServer->removeApp($removeTemplates);
+                }
+
+                $query2->execute(array($serverID));
+                while ($row = $query2->fetch(PDO::FETCH_ASSOC)) {
+
                     $started[] = $row['serverip'] . ':' . $row['port'];
-                    $customer = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['id'] : $row['cname'];
-                    $cmds[] = './control.sh add ' . $customer . ' ' . $row['dftp'] . ' ' . $row['duser'] . ' ' . passwordgenerate(10);
-                    $cmds[] = 'sudo -u ' . $customer . ' ./control.sh reinstserver ' . $customer . ' 1_' . $row['shorten'] .' ' . $row['serverip'] . '_' . $row['port'];
+
+                    $appServer->addApp(array($row['shorten']));
                 }
             }
 
-            if (count($cmds) > 0) {
-
-                include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
-
-                $return = ssh2_execute('gs', $id, $cmds);
+            if (count($started) > 0) {
 
                 $template_file = $gsSprache->reinstall . ': ' . implode('<br>', $started);
 
+                $return = $appServer->execute();
+
                 if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                    $template_file .= '<br>' . $return;
-                    $template_file .= '<br>' . implode('<br>', $cmds);
+                    $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
                 }
 
             } else {
