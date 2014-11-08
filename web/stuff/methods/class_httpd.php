@@ -56,7 +56,7 @@ class HttpdManagement {
     public $ssh2Object = false, $sftpObject = false;
 
     public function __destruct() {
-        unset($this->sql, $this->aeskey, $this->hostID, $this->sshConnection, $this->sftpConnection);
+        unset($this->sql, $this->aeskey, $this->hostID, $this->ssh2Object, $this->sftpObject);
     }
 
     public function __construct($hostID, $resellerID) {
@@ -266,7 +266,7 @@ class HttpdManagement {
             return false;
         }
 
-        $this->ssh2Object = new Net_SFTP($this->hostData['ip'], $this->hostData['port']);
+        $this->ssh2Object = new Net_SSH2($this->hostData['ip'], $this->hostData['port']);
 
         if ($this->ssh2Object->login($this->hostData['user'], $this->ssh2Pass)) {
             return true;
