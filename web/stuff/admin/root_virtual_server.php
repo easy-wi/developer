@@ -162,7 +162,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                 }
                 natsort($freespace);
                 $freespace=array_reverse($freespace);
-                $serverused[$id] = array('ram' => $ramused,'cpu' => $cpucore, 'server' => $i2,'hdd' => $mountunused,'freespace' => $freespace);
+                $serverused[$id] = array('ram' => $ramused,'cpu' => $cpucore, 'server' => $i2, 'hdd' => $mountunused, 'hddavailable' => $mountsize, 'freespace' => $freespace);
                 if ($resellerid==$reseller_id) {
                     $serverusage[$id] = array('ram' => $percentusedram,'cpu' => $percentusedcpu, 'server' => $percentserver,'hdd' => $percentusedhdd,'freespace' => $freespace);
                     $table[] = array('id' => $id,'ip' => $row['ip']);
