@@ -683,7 +683,6 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
 			/etc/init.d/proftpd restart
 		fi
 	fi
-fi
 
 if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
 
