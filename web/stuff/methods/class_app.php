@@ -124,9 +124,21 @@ class AppServer {
             // If app details can not be found return false
             if (!$this->getAppDetails($row['serverid'], $id)) {
 
-                $this->appServerDetails = false;
+                $query2 = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? LIMIT 1");
+                $query2->execute(array($id));
+                $row['serverid'] = $query2->fetchColumn();
 
-                return false;
+                if ($row['serverid'] > 0) {
+                    $query2 = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? LIMIT 1");
+                    $query2->execute(array($row['serverid'], $id));
+                }
+
+                if (!$this->getAppDetails($row['serverid'], $id)) {
+
+                    $this->appServerDetails = false;
+
+                    return false;
+                }
             }
 
             $this->appServerDetails['id'] = (int) $row['id'];
@@ -338,7 +350,7 @@ class AppServer {
 
     private function linuxAddModUserGenerate ($userName, $password, $protected = false) {
 
-        $userNameHome = ($protected == false) ? $userName : $userName . '/pserver';
+        $userNameHome = ($protected == false) ? $this->appServerDetails['userName'] : $this->appServerDetails['userName'] . '/pserver';
 
         // Check if the user can be found. If not, add it, if yes, edit
         $this->shellScripts['user'] .=  'if [ "`id ' . $userName . ' 2>/dev/null`" == "" ]; then' . "\n";
@@ -402,7 +414,7 @@ class AppServer {
 
     public function userCud ($action, $type = false) {
 
-        if (isset($this->appMasterServerDetails['os'])) {
+        if ($this->appServerDetails and isset($this->appMasterServerDetails['os'])) {
 
             if ($action == 'del') {
                 if ($this->appMasterServerDetails['os'] == 'L') {
@@ -426,7 +438,7 @@ class AppServer {
 
     // Quotas are a Linux technique to define the diskspace a user is allowed to use.
     public function setQuota () {
-        if ($this->appMasterServerDetails['os'] == 'L' and $this->appMasterServerDetails['quotaActive'] == 'Y' and strlen($this->appMasterServerDetails['quotaCmd']) > 0 and $this->appServerDetails['hdd'] > 0) {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L' and $this->appMasterServerDetails['quotaActive'] == 'Y' and strlen($this->appMasterServerDetails['quotaCmd']) > 0 and $this->appServerDetails['hdd'] > 0) {
 
             // setquota works with KibiByte and Inodes; Stored is Megabyte
             $sizeInKibiByte = $this->appServerDetails['hdd'] * 1024;
@@ -461,7 +473,7 @@ class AppServer {
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/move-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-' . $oldIP . '-' . $oldPort . '.sh');
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/server') . "\n";
         $script .= 'if [ -d "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']. '" ]; then rm -rf "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '"; fi' . "\n";
         $script .= 'mv ' . $oldIP . '_' . $oldPort . ' ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . "\n";
@@ -473,9 +485,9 @@ class AppServer {
 
     public function moveServerLocal ($oldIP, $oldPort) {
 
-        if ($this->appMasterServerDetails['os'] == 'L') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
             $this->linuxMoveServerLocal($oldIP, $oldPort);
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
 
         }
     }
@@ -490,7 +502,7 @@ class AppServer {
         $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lua', 'props', 'properties', 'json', 'example');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
         $script .= 'PATTERN="valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.inf\|/sound/\|steam_appid.txt\|/hl2/\|/overviews/\|/resource/\|/sprites/"' . "\n";
 
         foreach ($templates as $template) {
@@ -521,7 +533,12 @@ class AppServer {
     }
 
     public function addApp ($templates = array()) {
-        if (count($templates) > 0) {
+
+        if (count($templates) == 0) {
+            $templates = array($this->appServerDetails['app']['templateChoosen']);
+        }
+
+        if ($this->appServerDetails) {
             if ($this->appMasterServerDetails['os'] == 'L') {
                 $this->linuxAddApp($templates);
             } else if ($this->appMasterServerDetails['os'] == 'W') {
@@ -535,7 +552,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/') . "\n";
 
         foreach ($templates as $template) {
@@ -548,12 +565,15 @@ class AppServer {
 
     public function removeApp ($templates) {
 
-        $this->easyAntiCheatSettings('stop');
+        if ($this->appServerDetails) {
 
-        if (count($templates) > 0) {
-            if ($this->appMasterServerDetails['os'] == 'L') {
-                $this->linuxRemoveApp($templates);
-            } else if ($this->appMasterServerDetails['os'] == 'W') {
+            $this->easyAntiCheatSettings('stop');
+
+            if (count($templates) > 0) {
+                if ($this->appMasterServerDetails['os'] == 'L') {
+                    $this->linuxRemoveApp($templates);
+                } else if ($this->appMasterServerDetails['os'] == 'W') {
+                }
             }
         }
     }
@@ -566,7 +586,7 @@ class AppServer {
         if ($standalone === true) {
 
             $script = $this->shellScriptHeader;
-            $script .= '#rm ' . $scriptName . "\n";
+            $script .= 'rm ' . $scriptName . "\n";
 
         } else {
             $script = '';
@@ -593,7 +613,7 @@ class AppServer {
     }
 
     public function mcWorldSave () {
-        if ($this->appServerDetails['template']['gameq'] == 'minecraft') {
+        if ($this->appServerDetails and $this->appServerDetails['template']['gameq'] == 'minecraft') {
             if ($this->appMasterServerDetails['os'] == 'L') {
             } else if ($this->appMasterServerDetails['os'] == 'W') {
             }
@@ -609,7 +629,7 @@ class AppServer {
             $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/stop-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
             $script = $this->shellScriptHeader;
-            $script .= '#rm ' . $scriptName . "\n";
+            $script .= 'rm ' . $scriptName . "\n";
 
         } else {
             $script = '';
@@ -641,6 +661,11 @@ class AppServer {
         $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
         $script .= 'done' . "\n";
 
+        //TODO: inlcude demo upload
+        /*if ($this->appServerDetails['template']['gameBinary'] == 'srcds_run' and $this->appServerDetails['tvAllowed'] == 'Y') {
+            $script .= $this->demoUpload();
+        }*/
+
         if ($standalone === true) {
             $this->addLinuxScript($scriptName, $script);
             $this->addLogline('app_server.log', 'App ' . $screenName . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' stopped');
@@ -653,15 +678,18 @@ class AppServer {
 
         global $sql;
 
-        $this->easyAntiCheatSettings('stop');
+        if ($this->appServerDetails) {
 
-        if ($this->appMasterServerDetails['os'] == 'L') {
-            $this->linuxStopApp();
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+            $this->easyAntiCheatSettings('stop');
+
+            if ($this->appMasterServerDetails['os'] == 'L') {
+                $this->linuxStopApp();
+            } else if ($this->appMasterServerDetails['os'] == 'W') {
+            }
+
+            $query = $sql->prepare("UPDATE `gsswitch` SET `stopped`='Y' WHERE `id`=? LIMIT 1");
+            $query->execute(array($this->appServerDetails['id']));
         }
-
-        $query = $sql->prepare("UPDATE `gsswitch` SET `stopped`='Y' WHERE `id`=? LIMIT 1");
-        $query->execute(array($this->appServerDetails['id']));
     }
 
     private function linuxHardStop ($userName) {
@@ -669,7 +697,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/hardstop-' . $userName . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
 
         $script .= 'crontab -r' . "\n";
         $script .= 'screen -wipe > /dev/null 2>&1' . "\n";
@@ -680,7 +708,7 @@ class AppServer {
     }
 
     public function stopAppHard () {
-        if ($this->appMasterServerDetails['os'] == 'L') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
 
             $this->linuxHardStop($this->appServerDetails['userName']);
 
@@ -688,7 +716,7 @@ class AppServer {
                 $this->linuxHardStop($this->appServerDetails['userNameExecute']);
             }
 
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
@@ -1092,7 +1120,7 @@ class AppServer {
         $serverTemplateDir = $this->removeSlashes($serverDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
 
         $script .= $this->linuxStopApp(false, $scriptName);
 
@@ -1149,6 +1177,9 @@ class AppServer {
         $script .= 'if [ -f screenlog.0 ]; then rm screenlog.0; fi' . "\n";
         $script .= $this->generateStartCommand() . "\n";
 
+        //TODO: inlcude demo upload. In this case check if deamon mode should be active and start loop that tails the screenlog
+        // Should be improved like: check if file has been removed and added newly (how to check for the creationdate of a file)
+
         $this->addLinuxScript($scriptName, $script);
         $this->addLogline('app_server.log', 'App ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' started');
     }
@@ -1157,35 +1188,38 @@ class AppServer {
 
         global $sql;
 
-        $this->getAddonDetails();
+        if ($this->appServerDetails) {
 
-        $this->correctProtectedFiles();
+            $this->getAddonDetails();
 
-        $this->easyAntiCheatSettings();
+            $this->correctProtectedFiles();
 
-        if ($this->appMasterServerDetails['os'] == 'L') {
+            $this->easyAntiCheatSettings();
 
-            if ($this->appServerDetails['protectionModeStarted'] == 'Y') {
-                $this->linuxHardStop($this->appServerDetails['userName']);
-            } else if ($this->appServerDetails['protectionModeAllowed'] == 'Y' and $this->appServerDetails['protectionModeStarted'] == 'N') {
-                $this->linuxHardStop($this->appServerDetails['userName'] . '-p');
+            if ($this->appMasterServerDetails['os'] == 'L') {
+
+                if ($this->appServerDetails['protectionModeStarted'] == 'Y') {
+                    $this->linuxHardStop($this->appServerDetails['userName']);
+                } else if ($this->appServerDetails['protectionModeAllowed'] == 'Y' and $this->appServerDetails['protectionModeStarted'] == 'N') {
+                    $this->linuxHardStop($this->appServerDetails['userName'] . '-p');
+                }
+
+                $this->linuxAddApp(array($this->appServerDetails['app']['templateChoosen']));
+                $this->linuxAddAddons();
+
+                $this->linuxStartApp();
+
+            } else if ($this->appMasterServerDetails['os'] == 'W') {
             }
 
-            $this->linuxAddApp(array($this->appServerDetails['app']['templateChoosen']));
-            $this->linuxAddAddons();
-
-            $this->linuxStartApp();
-
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+            $query = $sql->prepare("UPDATE `gsswitch` SET `stopped`='N' WHERE `id`=? LIMIT 1");
+            $query->execute(array($this->appServerDetails['id']));
         }
-
-        $query = $sql->prepare("UPDATE `gsswitch` SET `stopped`='N' WHERE `id`=? LIMIT 1");
-        $query->execute(array($this->appServerDetails['id']));
     }
 
     public function demoUpload () {
-        if ($this->appMasterServerDetails['os'] == 'L') {
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
@@ -1246,7 +1280,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/addons-add-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
 
         if ($id === false) {
 
@@ -1284,46 +1318,46 @@ class AppServer {
 
         }
 
-        if (isset($logLine)) {
+        if (isset($logLine) and strlen($logLine) > 0) {
             $this->addLinuxScript($scriptName, $script);
             $this->addLogline('app_server.log', $logLine . ' to app ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userNameExecute']);
         }
     }
 
     public function addAddon ($id) {
-        if ($this->appMasterServerDetails['os'] == 'L') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
             $this->linuxAddAddons($id);
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
     public function removeAddon () {
-        if ($this->appMasterServerDetails['os'] == 'L') {
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
     public function migrateToEasyWi () {
-        if ($this->appMasterServerDetails['os'] == 'L') {
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
     public function fastDLSync () {
-        if ($this->appMasterServerDetails['os'] == 'L') {
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
     public function backupCreate () {
-        if ($this->appMasterServerDetails['os'] == 'L') {
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
     public function backupDeploy () {
-        if ($this->appMasterServerDetails['os'] == 'L') {
-        } else if ($this->appMasterServerDetails['os'] == 'W') {
+        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 

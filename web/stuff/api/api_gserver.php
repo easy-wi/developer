@@ -553,7 +553,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $port3 = $row['port3'];
             $port4 = $row['port4'];
             $port5 = $row['port5'];
-            $active = $row['active'];
             $cores = $row['cores'];
             $minram = $row['minram'];
             $maxram = $row['maxram'];
@@ -652,6 +651,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             }
 
             if (isset($data['active']) and active_check($data['active']) and $data['active'] != $row['active']) {
+                $updateArray[] = $data['active'];
+                $eventualUpdate .= ',`active`=?';
                 $active = $data['active'];
             }
 
@@ -771,18 +772,15 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 }
             }
 
-            $gamesRemoveAmount = count($gamesToBeRemoved);
-            $gamesRemoveString = ($gamesRemoveAmount > 0) ? $gamesRemoveAmount . '_' . implode('_', $gamesToBeRemoved) : '';
-
             $customID = $localID;
 
-            if ($active != $oldActive or $port != $oldPort or $homeDirLabel != $oldHomeDirLabel or $hdd != $oldHdd or $pallowed != $oldProtected or $gamesRemoveAmount > 0) {
+            if ($active != $oldActive or $port != $oldPort or $homeDirLabel != $oldHomeDirLabel or $hdd != $oldHdd or $pallowed != $oldProtected or count($gamesToBeRemoved) > 0) {
 
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `action`!='ad' AND `affectedID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
 
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerID`) VALUES ('A','gs',?,?,?,?,?,NULL,NOW(),'md',?,?)");
-                $query->execute(array($hostID, $resellerID, $localID, $userID, $name, json_encode(array('newActive' => $active, 'newPort' => $port, 'oldProtected' => $oldProtected, 'homeDirChanged' => ($homeDirLabel != $oldHomeDirLabel) ? 1 : 0, 'installGames' => 'N', 'gamesRemoveString' => $gamesRemoveString)), $resellerID));
+                $query->execute(array($hostID, $resellerID, $localID, $userID, $name, json_encode(array('newPort' => $port, 'oldProtected' => $oldProtected, 'installGames' => 'N', 'gamesRemoveArray' => $gamesToBeRemoved)), $resellerID));
             }
         }
 

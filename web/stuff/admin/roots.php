@@ -443,7 +443,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                     $started[] = $row['serverip'] . ':' . $row['port'];
 
-                    $appServer->addApp(array($row['shorten']));
+                    $appServer->addApp();
                 }
             }
 

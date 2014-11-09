@@ -65,7 +65,7 @@ if ($reseller_id == 0) {
 $id = $ui->id('id', 10, 'get');
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
-if ($ui->w('action',4, 'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
 
     unset($header, $text);
 
