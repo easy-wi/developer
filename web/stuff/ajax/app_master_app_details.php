@@ -92,7 +92,8 @@ foreach ($ids as $id) {
             'tic' => (isset($tic)) ? $tic : $row['tic'],
             'userTick' => (isset($userTick))? $userTick : 'N',
             'upload' => (isset($upload)) ? $upload : $uploadType,
-            'uploadDir' => (isset($uploadDir)) ? $uploadDir : ''
+            'uploadDir' => (isset($uploadDir)) ? $uploadDir : '',
+            'userUploadDir' => (isset($userUploadDir)) ? $userUploadDir : 'N'
         );
     }
 }
