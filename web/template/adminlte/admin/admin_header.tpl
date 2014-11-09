@@ -20,6 +20,9 @@
     <!-- Theme style -->
     <link href="css/adminlte/AdminLTE.css" rel="stylesheet" type="text/css" />
 
+    <!-- Easy-Wi custom styles -->
+    <link href="css/default/easy-wi.css" rel="stylesheet" type="text/css" />
+
     <?php echo implode('',$htmlExtraInformation['css']);?>
 
     <!-- jQuery -->

@@ -61,3 +61,9 @@ table form {
 .collapse :not(in) {
     margin-bottom: 0;
 }
+
+@media (min-width: 768px) {
+    .table-responsive {
+        overflow-x: hidden;
+    }
+}
