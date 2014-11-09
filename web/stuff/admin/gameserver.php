@@ -658,15 +658,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         # https://github.com/easy-wi/developer/issues/69
-        $game = $ui->id('game',10, 'post');
+        $game = $ui->id('game', 10, 'post');
 
         if ($ui->active('type', 'post') == 'Y') {
             $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
-            $query->execute(array($game, $reseller_id));
+            $query->execute(array($game, $resellerLockupID));
         }
 
         $query = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
-        $query->execute(array($game, $reseller_id));
+        $query->execute(array($game, $resellerLockupID));
         $shorten = $query->fetchColumn();
 
 
@@ -692,7 +692,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $appServer->stopAppHard();
                 $appServer->removeApp($templates);
 
-                $loguseraction = "%reinstall% %gserver% ${serverip}:${port}";
+                $loguseraction = "%reinstall% %gserver% {$serverip}:{$port}";
 
             } else {
                 $loguseraction = "%resync% %gserver% {$serverip}:{$port}";
@@ -700,7 +700,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $appServer->addApp($templates);
 
-            $return = $appServer->execute();
+            $appServer->execute();
 
             $template_file = $sprache->server_installed;
 

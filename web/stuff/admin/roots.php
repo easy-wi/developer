@@ -451,7 +451,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $template_file = $gsSprache->reinstall . ': ' . implode('<br>', $started);
 
-                $return = $appServer->execute();
+                $appServer->execute();
 
                 if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
                     $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';

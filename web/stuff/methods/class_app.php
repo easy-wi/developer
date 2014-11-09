@@ -177,24 +177,25 @@ class AppServer {
             // This password will be used, when a FTP connection needs to be setup
             $this->appServerDetails['ftpPasswordExecute'] = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? (string) $row['decryptedppass'] : (string) $row['decryptedftppass'];
 
+            // As the data loading is sequential, required parameters for the ternary operator will not be available within getAppDetails() function
+            $this->appServerDetails['app']['templateChoosen'] = ($this->appServerDetails['app']['servertemplate'] == 1 or $this->appServerDetails['protectionModeStarted'] == 'Y') ? $this->appServerDetails['template']['shorten'] : $this->appServerDetails['template']['shorten'] . '-' . $this->appServerDetails['app']['servertemplate'];
+
             $this->appServerDetails['homeDir'] = ($this->appMasterServerDetails['iniVars'] and isset($this->appMasterServerDetails['iniVars'][$row['homeLabel']]['path'])) ? (string) $this->appMasterServerDetails['iniVars'][$row['homeLabel']]['path'] : '/home';
 
             $serverTemplateDir = $this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'];
             $serverTemplateDir .= ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/pserver/' : '/server/';
             $this->appServerDetails['absolutePath'] = $this->removeSlashes($serverTemplateDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'] . '/');
 
-            // For protected users the pserver/ directory is the home folder
+    // For protected users the pserver/ directory is the home folder
             // We deliberately let admins that failed to setup a chrooted FTP environment run into errors
             $absoluteFTPPath = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/' : '/server/';
             $absoluteFTPPath .= $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'];
-
             if (in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe'))) {
                 $absoluteFTPPath .= '/' . $this->appServerDetails['template']['binarydir'];
             }
-
             $absoluteFTPPath .= '/' . $this->appServerDetails['template']['modfolder'] . '/';
             $this->appServerDetails['absoluteFTPPath'] = $this->removeSlashes($absoluteFTPPath);
-        }
+}
 
         return ($query->rowCount() > 0) ? true : false;
     }
@@ -227,7 +228,6 @@ class AppServer {
             $this->appServerDetails['app']['fps'] = (int) $row['fps'];
             $this->appServerDetails['app']['tic'] = (int) $row['tic'];
             $this->appServerDetails['app']['servertemplate'] = (int) $row['servertemplate'];
-            $this->appServerDetails['app']['templateChoosen'] = ($this->appServerDetails['app']['servertemplate'] == 1 or $this->appServerDetails['protectionModeStarted']) ? $this->appServerDetails['template']['shorten'] : $this->appServerDetails['template']['shorten'] . '-' . $this->appServerDetails['app']['servertemplate'];
             $this->appServerDetails['app']['map'] = (string) $row['map'];
             $this->appServerDetails['app']['workShop'] = (string) $row['workShop'];
             $this->appServerDetails['app']['mapGroup'] = (string) $row['mapGroup'];
