@@ -40,10 +40,11 @@ if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['restart']) or
 	die;
 }
 
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
-include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 $sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $loguserid = $user_id;
@@ -59,108 +60,82 @@ if (isset($admin_id)) {
 	$logsubuser = 0;
 }
 
-if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
-    $reseller_id = $admin_id;
-}
+$id = $ui->id('id', 10, 'get');
 
-$files = array();
+$query = $sql->prepare("SELECT `rootID` FROM `gsswitch` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
+$query->execute(array($id, $user_id, $resellerLockupID));
+$rootID = $query->fetchColumn();
 
-$query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppassword`,t.`protected` AS `tpallowed`,t.`shorten`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,u.`cname`,s.`servertemplate` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND s.`resellerid`=? LIMIT 1");
-$query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $user_id, $reseller_id));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-    $currentID = $row['serverid'];
-	$serverip = $row['serverip'];
-	$port = $row['port'];
-    $protected = $row['protected'];
-    $rootid = $row['rootID'];
-    $ftppass = $row['dftppassword'];
-    $ftppassProtected = $row['dpftppassword'];
-    $shorten = $row['shorten'];
-    $gsfolder = $serverip . '_' . $port;
-    $gamestring = '1_' . $row['shorten'];
-    $pallowed=($row['pallowed'] == 'Y' and $row['tpallowed'] == 'Y') ? 'Y' : 'N';
-    $customer=($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $ui->id('id', 10, 'get') : $row['cname'];
-    $customerp = $customer . '-p';
-    $serverTemplate = ($row['servertemplate'] != 1) ? $row['shorten'] . '-' . $row['servertemplate'] : $row['shorten'];
+$appServer = new AppServer($rootID);
+$appServer->getAppServerDetails($id);
 
-    foreach (explode("\r\n", $row['protectedSaveCFGs']) as $cfg) {
+if ($query->rowCount() == 0 or !$appServer->appServerDetails or $appServer->appServerDetails['protectionModeAllowed'] == 'N' or (isset($_SESSION['sID']) and !in_array($id, $substituteAccess['gs']))) {
+
+    redirect('userpanel.php');
+
+} else if ($rootID > 0) {
+
+    $files = array();
+
+    foreach (explode("\r\n", $appServer->appServerDetails['template']['protectedSaveCFGs']) as $cfg) {
         if ($cfg != '') {
             $files[] = $cfg;
         }
     }
 
-    if ($row['gamebinary'] == 'srcds_run') {
-        $gamePath = $row['binarydir'] . '/' . $row['modfolder'];
-    } else if ($row['gamebinary'] == 'hlds_run') {
-        $gamePath = $row['modfolder'];
+    if ($appServer->appServerDetails['protectionModeStarted'] == 'Y') {
+        $protected = 'N';
+        $template_file = $sprache->protect . ' ' . $sprache->off2;
+        $loguseraction = '%stop% %pmode% ' . $appServer->appServerDetails['serverIP'] . ':' . $appServer->appServerDetails['port'];
     } else {
-        $gamePath = '';
+        $protected = 'Y';
+        $template_file = $sprache->protect . ' ' . $sprache->on;
+        $loguseraction = '%restart% %pmode% ' . $appServer->appServerDetails['serverIP'] . ':' . $appServer->appServerDetails['port'];
     }
 
-    $gamePath = str_replace(array('//', '///', '////'), '/', $gamePath);
-}
 
-if ($query->rowCount() == 0 or (isset($pallowed) and $pallowed== 'N') or (isset($_SESSION['sID']) and !in_array($ui->id('id', 10, 'get'), $substituteAccess['gs']))) {
+    $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`='1' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query->execute(array($id, $resellerLockupID));
 
-	redirect('userpanel.php');
+    $ftp = new EasyWiFTP($appServer->appMasterServerDetails['ssh2IP'], $appServer->appMasterServerDetails['ftpPort'], $appServer->appServerDetails['userNameExecute'], $appServer->appServerDetails['ftpPasswordExecute']);
 
-} else if (isset($rootid)) {
+    if ($ftp->loggedIn) {
+        $ftp->downloadToTemp($appServer->appServerDetails['absoluteFTPPath'], 0, $files);
+    }
 
-    $rdata = serverdata('root', $rootid, $aeskey);
-    $sship = $rdata['ip'];
-    $sshport = $rdata['port'];
-    $sshuser = $rdata['user'];
-    $sshpass = $rdata['pass'];
-    $ftpport = $rdata['ftpport'];
+    $query = $sql->prepare("UPDATE `gsswitch` SET `protected`=? WHERE `id`=? LIMIT 1");
+    $query->execute(array($protected, $id));
 
-    if (isset($protected, $serverip, $port) and $protected == 'Y' and isset($currentID)) {
+    $appServer->getAppServerDetails($id);
 
-        $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`='1' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($currentID, $reseller_id));
+    if ($ftp->loggedIn) {
 
-        $query = $sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('id', 10, 'get'), $reseller_id));
+        $ftp->createSecondFTPConnect($appServer->appMasterServerDetails['ssh2IP'], $appServer->appMasterServerDetails['ftpPort'], $appServer->appServerDetails['userNameExecute'], $appServer->appServerDetails['ftpPasswordExecute']);
 
-        $ftp = new EasyWiFTP($sship, $ftpport, $customerp, $ftppassProtected);
-        $ftp->createSecondFTPConnect($sship, $ftpport, $customer, $ftppass);
-        if ($ftp->loggedIn and $ftp->secondLoggedIn) {
-            $ftp->downloadToTemp($gsfolder . '/' . $shorten . '/' . $gamePath . '/', 0, $files);
-            $ftp->uploadFileFromTemp('server/'. $gsfolder . '/' . $serverTemplate . '/' . $gamePath .'/');
+        if ($ftp->secondLoggedIn) {
+            $ftp->uploadFileFromTemp($appServer->appServerDetails['absoluteFTPPath']);
         }
+    }
 
-        $ftp = null;
+    if ($appServer->appServerDetails['protectionModeStarted'] == 'Y') {
 
-        $cmds = gsrestart($ui->id('id', 10, 'get'),'re', $aeskey, $reseller_id);
-        ssh2_execute('gs', $rootid, $cmds);
+        $query = $sql->prepare("UPDATE `gsswitch` SET `ppassword`=AES_ENCRYPT(?,?),`psince`=NOW() WHERE `id`=? LIMIT 1");
+        $query->execute(array(passwordgenerate(10), $aeskey, $id));
 
-        $loguseraction = '%stop% %pmode% ' . $serverip . ':' .$port;
-        $insertlog->execute();
-        $template_file = $sprache->protect . ' ' . $sprache->off2;
+        $appServer->getAppServerDetails($id);
+        $appServer->userCud('add');
+        $appServer->removeApp(array($appServer->appServerDetails['app']['templateChoosen']));
+        $appServer->addApp();
+    }
 
-    } else if (isset($protected, $serverip, $port, $rootid, $customer, $ftppass) and $protected == 'N') {
+    $ftp = null;
 
-        $cmds = gsrestart($ui->id('id', 10, 'get'), 'sp', $aeskey, $reseller_id);
-        $randompass = passwordgenerate(10);
-        $cmds[] = './control.sh mod '.$customer . ' ' . $ftppass . ' ' . $randompass;
-        $cmds[] = "sudo -u ${customer}-p ./control.sh reinstserver ${customer}-p ${gamestring} ${gsfolder} protected";
+    $appServer->startApp();
+    $appServer->execute();
 
-        $query = $sql->prepare("UPDATE `gsswitch` SET `ppassword`=AES_ENCRYPT(?,?),`protected`='Y',`psince`=NOW() WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($randompass, $aeskey, $ui->id('id', 10, 'get'), $reseller_id));
+    $insertlog->execute();
 
-        ssh2_execute('gs', $rootid, $cmds);
-
-        $ftp = new EasyWiFTP($sship, $ftpport, $customer, $ftppass);
-        $ftp->createSecondFTPConnect($sship, $ftpport, $customerp, $randompass);
-
-        if ($ftp->loggedIn and $ftp->secondLoggedIn) {
-            $ftp->downloadToTemp('server/' . $gsfolder . '/' . $serverTemplate . '/' . $gamePath . '/', 0, $files);
-            $ftp->uploadFileFromTemp($gsfolder . '/' . $shorten . '/' . $gamePath . '/');
-        }
-
-        $ftp = null;
-
-        $loguseraction = '%restart% %pmode% ' . $serverip . ':' .$port;
-        $insertlog->execute();
-        $template_file = $sprache->protect . ' ' . $sprache->on;
+    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+        $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
     }
 }

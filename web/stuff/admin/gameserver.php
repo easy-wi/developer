@@ -361,8 +361,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`hdd`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,1,'Y',?)");
-                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $resellerLockupID, $ui->externalID('externalID', 'post')));
+                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`hdd`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`ppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,1,'Y',?)");
+                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, passwordgenerate(10), $aeskey, $resellerLockupID, $ui->externalID('externalID', 'post')));
 
                 $id = $sql->lastInsertId();
 

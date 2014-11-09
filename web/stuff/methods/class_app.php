@@ -57,7 +57,9 @@ if (!class_exists('EasyWiFTP')) {
 
 class AppServer {
 
-    private $appServerDetails = array(), $appMasterServerDetails = array(), $winCmds = array(), $shellScriptHeader, $shellScripts = array('user' => '', 'server' => array()), $commandReturns = array();
+    private $winCmds = array(), $shellScriptHeader, $shellScripts = array('user' => '', 'server' => array()), $commandReturns = array();
+
+    public $appMasterServerDetails = array(), $appServerDetails = array();
 
     // The constructor gathers the root data
     function __construct($id) {
@@ -184,7 +186,13 @@ class AppServer {
             // For protected users the pserver/ directory is the home folder
             // We deliberately let admins that failed to setup a chrooted FTP environment run into errors
             $absoluteFTPPath = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/' : '/server/';
-            $absoluteFTPPath .= $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'] . '/' . $this->appServerDetails['template']['modfolder'] . '/';
+            $absoluteFTPPath .= $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'];
+
+            if (in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe'))) {
+                $absoluteFTPPath .= '/' . $this->appServerDetails['template']['binarydir'];
+            }
+
+            $absoluteFTPPath .= '/' . $this->appServerDetails['template']['modfolder'] . '/';
             $this->appServerDetails['absoluteFTPPath'] = $this->removeSlashes($absoluteFTPPath);
         }
 
@@ -206,7 +214,7 @@ class AppServer {
             $this->appServerDetails['template']['gameq'] = (string) $row['gameq'];
             $this->appServerDetails['template']['shorten'] = (string) $row['shorten'];
             $this->appServerDetails['template']['protectedApp'] = (string) $row['protected'];
-            $this->appServerDetails['template']['protectedSaveCFGs'] = (string) $row['protectedSaveCFGs'];
+            $this->appServerDetails['template']['protectedSaveCFGs'] = $row['protectedSaveCFGs'];
             $this->appServerDetails['template']['gameBinary'] = ($this->appMasterServerDetails['os'] == 'L') ? (string) $row['gamebinary'] : (string) $row['gamebinaryWin'];
             $this->appServerDetails['template']['binarydir'] = (string) $row['binarydir'];
             $this->appServerDetails['template']['modfolder'] = (string) $row['modfolder'];
@@ -341,7 +349,12 @@ class AppServer {
     }
 
     private function removeSlashes ($string) {
-        return str_replace(array('//', '///', '////'), '/', $string);
+
+        while (strpos($string, '//') !== false) {
+            $string = str_replace('//', '/', $string);
+        }
+
+        return $string;
     }
 
     /*
@@ -462,9 +475,12 @@ class AppServer {
     // Generic function that add a user´s script to the to be generated and executed list
     // The execution of scripts as a user will be sequential and blocking
     // That way we can ensure that a server is installed before it gets started
-    private function addLinuxScript ($scriptName, $script) {
+    private function addLinuxScript ($scriptName, $script, $userName = false) {
+
+        $userName = ($userName == false) ? $this->appServerDetails['userNameExecute'] : $userName;
+
         $this->shellScripts['user'] .= 'chmod 770 ' . $scriptName . "\n";
-        $this->shellScripts['user'] .= 'sudo -u ' . $this->appServerDetails['userNameExecute'] . ' ' . $scriptName . "\n";
+        $this->shellScripts['user'] .= 'sudo -u ' . $userName . ' ' . $scriptName . "\n";
         $this->shellScripts['server']["{$scriptName}"] = $script;
     }
 
@@ -473,7 +489,7 @@ class AppServer {
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/move-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-' . $oldIP . '-' . $oldPort . '.sh');
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= '#rm ' . $scriptName . "\n";
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/server') . "\n";
         $script .= 'if [ -d "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']. '" ]; then rm -rf "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '"; fi' . "\n";
         $script .= 'mv ' . $oldIP . '_' . $oldPort . ' ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . "\n";
@@ -497,12 +513,12 @@ class AppServer {
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/add-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-apps.sh');
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
-        $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
+        $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
 
         $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lua', 'props', 'properties', 'json', 'example');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= '#rm ' . $scriptName . "\n";
         $script .= 'PATTERN="valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.inf\|/sound/\|steam_appid.txt\|/hl2/\|/overviews/\|/resource/\|/sprites/"' . "\n";
 
         foreach ($templates as $template) {
@@ -525,8 +541,15 @@ class AppServer {
             $this->addLogline('app_server.log', 'Server template ' . $absoluteTargetTemplatePath . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' added/synced');
         }
 
-        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type d -print0 | xargs -0 chmod 700' . "\n";
-        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f -print0 | xargs -0 chmod 600' . "\n";
+        $dirChmod = 700;
+        $fileChmod = 600;
+
+        if ($this->appServerDetails['protectionModeStarted'] == 'Y') {
+            $dirChmod = 750;
+            $fileChmod = 640;
+        }
+        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
+        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f -print0 | xargs -0 chmod ' . $fileChmod . "\n";
         $script .= '${IONICE}nice -n +19 find -L ' . $absolutePath . '/ -type l -delete' . "\n";
 
         $this->addLinuxScript($scriptName, $script);
@@ -552,7 +575,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= '#rm ' . $scriptName . "\n";
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/') . "\n";
 
         foreach ($templates as $template) {
@@ -586,7 +609,7 @@ class AppServer {
         if ($standalone === true) {
 
             $script = $this->shellScriptHeader;
-            $script .= 'rm ' . $scriptName . "\n";
+            $script .= '#rm ' . $scriptName . "\n";
 
         } else {
             $script = '';
@@ -629,7 +652,7 @@ class AppServer {
             $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/stop-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
             $script = $this->shellScriptHeader;
-            $script .= 'rm ' . $scriptName . "\n";
+            $script .= '#rm ' . $scriptName . "\n";
 
         } else {
             $script = '';
@@ -697,13 +720,13 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/hardstop-' . $userName . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= '#rm ' . $scriptName . "\n";
 
         $script .= 'crontab -r' . "\n";
         $script .= 'screen -wipe > /dev/null 2>&1' . "\n";
         $script .= 'pkill -u `whoami`' . "\n";
 
-        $this->addLinuxScript($scriptName, $script);
+        $this->addLinuxScript($scriptName, $script, $userName);
         $this->addLogline('app_server.log', 'Hard stop for user ' . $userName);
     }
 
@@ -1120,7 +1143,7 @@ class AppServer {
         $serverTemplateDir = $this->removeSlashes($serverDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= '#rm ' . $scriptName . "\n";
 
         $script .= $this->linuxStopApp(false, $scriptName);
 
@@ -1280,7 +1303,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/addons-add-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= '#rm ' . $scriptName . "\n";
 
         if ($id === false) {
 
