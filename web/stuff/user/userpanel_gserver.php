@@ -1066,5 +1066,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             );
         }
     }
+
     $template_file = 'userpanel_gserver_list.tpl';
 }

@@ -3,10 +3,23 @@
     <img src="images/games/icons/<?php echo $row['shorten'];?>.png" alt="<?php echo $row['description'];?>" width="16"> <a href="javascript:void(0)" onclick="toggleGameDetail('<?php echo $row['id'];?>');"><?php echo $row['description'];?> <i id="openCloseIcon-<?php echo $row['id'];?>" class="fa fa-arrow-circle-o-up"></i></a>
 </h4>
 
-<?php if ($row['upload']>0) { ?>
+<?php if ($row['uploadAllowed']>0) { ?>
+<div class="form-group gameDetail-<?php echo $row['id'];?>">
+    <label for="input-<?php echo $row['id'];?>-STV">SourceTV Demoupload</label>
+    <div class="controls">
+        <select class="form-control" id="input-<?php echo $row['id'];?>-STV" name="upload[<?php echo $row['id'];?>]">
+            <option value="1">OFF</option>
+            <option value="2" <?php if($row['upload']==2) echo 'selected="selected"';?>>Cron+Manual File remove</option>
+            <option value="3" <?php if($row['upload']==3) echo 'selected="selected"';?>>Cron+Manual</option>
+            <option value="4" <?php if($row['upload']==4) echo 'selected="selected"';?>>Autoupload File remove</option>
+            <option value="5" <?php if($row['upload']==5) echo 'selected="selected"';?>>Autoupload</option>
+        </select>
+    </div>
+</div>
+
 <div class="form-group gameDetail-<?php echo $row['id'];?>">
     <label for="input-<?php echo $row['id'];?>-UploadFTP">Upload FTP</label>
-    <div class="controls"><input class="form-control" id="input-<?php echo $row['id'];?>-UploadFTP" type="text" name="uploadDir[<?php echo $row['id'];?>]" value=""></div>
+    <div class="controls"><input class="form-control" id="input-<?php echo $row['id'];?>-UploadFTP" type="text" name="uploadDir[<?php echo $row['id'];?>]" value="<?php echo $row['uploadDir'];?>"></div>
 </div>
 
 <div class="checkbox gameDetail-<?php echo $row['id'];?>">

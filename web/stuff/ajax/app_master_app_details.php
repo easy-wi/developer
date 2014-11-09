@@ -69,8 +69,8 @@ foreach ($ids as $id) {
                 $userFps = $row2['userfps'];
                 $userTick = $row2['usertick'];
                 $userMap = $row2['usermap'];
-                $userUploadDir = $row2['user_uploaddir'];
                 $upload = $row2['upload'];
+                $userUploadDir = $row2['user_uploaddir'];
                 $uploadDir = $row2['upload_dir'];
             }
         }
@@ -91,6 +91,7 @@ foreach ($ids as $id) {
             'ownCmd' => (isset($ownCmd))? $ownCmd : 'N',
             'tic' => (isset($tic)) ? $tic : $row['tic'],
             'userTick' => (isset($userTick))? $userTick : 'N',
+            'uploadAllowed' => $uploadType,
             'upload' => (isset($upload)) ? $upload : $uploadType,
             'uploadDir' => (isset($uploadDir)) ? $uploadDir : '',
             'userUploadDir' => (isset($userUploadDir)) ? $userUploadDir : 'N'

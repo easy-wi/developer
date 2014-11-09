@@ -179,6 +179,7 @@ class AppServer {
 
             // As the data loading is sequential, required parameters for the ternary operator will not be available within getAppDetails() function
             $this->appServerDetails['app']['templateChoosen'] = ($this->appServerDetails['app']['servertemplate'] == 1 or $this->appServerDetails['protectionModeStarted'] == 'Y') ? $this->appServerDetails['template']['shorten'] : $this->appServerDetails['template']['shorten'] . '-' . $this->appServerDetails['app']['servertemplate'];
+            $this->appServerDetails['app']['uploadDir'] = ($this->appServerDetails['tvAllowed'] == 'Y') ? $this->appServerDetails['app']['uploadDir'] : false;
 
             $this->appServerDetails['homeDir'] = ($this->appMasterServerDetails['iniVars'] and isset($this->appMasterServerDetails['iniVars'][$row['homeLabel']]['path'])) ? (string) $this->appMasterServerDetails['iniVars'][$row['homeLabel']]['path'] : '/home';
 
@@ -186,7 +187,7 @@ class AppServer {
             $serverTemplateDir .= ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/pserver/' : '/server/';
             $this->appServerDetails['absolutePath'] = $this->removeSlashes($serverTemplateDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'] . '/');
 
-    // For protected users the pserver/ directory is the home folder
+            // For protected users the pserver/ directory is the home folder
             // We deliberately let admins that failed to setup a chrooted FTP environment run into errors
             $absoluteFTPPath = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/' : '/server/';
             $absoluteFTPPath .= $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'];
@@ -235,7 +236,7 @@ class AppServer {
             $this->appServerDetails['app']['webApiAuthKey'] = (string) $row['d_webapiauthkey'];
 
             $this->appServerDetails['app']['upload'] = (int) $row['upload'];
-            $this->appServerDetails['app']['uploadDir'] = (string) $row['d_uploaddir'];
+            $this->appServerDetails['app']['uploadDir'] = (strlen($row['d_uploaddir']) > 0) ? (string) $row['d_uploaddir'] : false;
 
             $this->appServerDetails['app']['modcmd'] = (string) $row['modcmd'];
             $this->appServerDetails['app']['gamemod'] = (string) $row['gamemod'];
@@ -475,12 +476,15 @@ class AppServer {
     // Generic function that add a user´s script to the to be generated and executed list
     // The execution of scripts as a user will be sequential and blocking
     // That way we can ensure that a server is installed before it gets started
-    private function addLinuxScript ($scriptName, $script, $userName = false) {
+    private function addLinuxScript ($scriptName, $script, $userName = false, $doNotexecute = false) {
 
         $userName = ($userName == false) ? $this->appServerDetails['userNameExecute'] : $userName;
 
-        $this->shellScripts['user'] .= 'chmod 770 ' . $scriptName . "\n";
-        $this->shellScripts['user'] .= 'sudo -u ' . $userName . ' ' . $scriptName . "\n";
+        if ($doNotexecute == false) {
+            $this->shellScripts['user'] .= 'chmod 770 ' . $scriptName . "\n";
+            $this->shellScripts['user'] .= 'sudo -u ' . $userName . ' ' . $scriptName . "\n";
+        }
+
         $this->shellScripts['server']["{$scriptName}"] = $script;
     }
 
@@ -684,10 +688,9 @@ class AppServer {
         $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
         $script .= 'done' . "\n";
 
-        //TODO: inlcude demo upload
-        /*if ($this->appServerDetails['template']['gameBinary'] == 'srcds_run' and $this->appServerDetails['tvAllowed'] == 'Y') {
-            $script .= $this->demoUpload();
-        }*/
+        if ($this->appServerDetails['template']['gameBinary'] == 'srcds_run' and $this->appServerDetails['tvAllowed'] == 'Y' and in_array($this->appServerDetails['app']['upload'], array(2, 3)) and $this->appServerDetails['app']['uploadDir']) {
+            $script .= $this->linuxDemoUpload(false);
+        }
 
         if ($standalone === true) {
             $this->addLinuxScript($scriptName, $script);
@@ -1200,8 +1203,9 @@ class AppServer {
         $script .= 'if [ -f screenlog.0 ]; then rm screenlog.0; fi' . "\n";
         $script .= $this->generateStartCommand() . "\n";
 
-        //TODO: inlcude demo upload. In this case check if deamon mode should be active and start loop that tails the screenlog
-        // Should be improved like: check if file has been removed and added newly (how to check for the creationdate of a file)
+        if ($this->appServerDetails['template']['gameBinary'] == 'srcds_run' and $this->appServerDetails['tvAllowed'] == 'Y' and in_array($this->appServerDetails['app']['upload'], array(4, 5)) and $this->appServerDetails['app']['uploadDir']) {
+            $script .= $this->linuxDemoUpload(false);
+        }
 
         $this->addLinuxScript($scriptName, $script);
         $this->addLogline('app_server.log', 'App ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' started');
@@ -1240,8 +1244,115 @@ class AppServer {
         }
     }
 
+    private function linuxDemoUpload ($standalone = true) {
+
+        $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/demo-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
+
+        if ($standalone == true) {
+            $script = $this->shellScriptHeader;
+            $script .= '#rm ' . $scriptName . "\n";
+        } else {
+            $script = '';
+        }
+
+        if (in_array($this->appServerDetails['app']['upload'], array(3, 5))) {
+            $script .= 'KEEP="-k"' . "\n";
+        }
+
+        // This if cases have to be run on the root as the PHP script does not know what is installed there
+        $script .= 'LSOF=`which lsof`' . "\n";
+        $script .= 'if [ "$LSOF" == "" ]; then KEEP="-k"; fi' . "\n";
+        $script .= 'cd ' . $this->appServerDetails['absolutePath'] . "\n";
+
+        $uploadScript = 'if [[ `which zip` ]]; then' . "\n";
+        $uploadScript .= 'if [ "$KEEP" == "" ]; then KEEP="-m"; fi' . "\n";
+        $uploadScript .= '${IONICE}nice -n +19 zip -q $KEEP $DEMOPATH/$DEMO.zip $DEMOPATH/$DEMO' . "\n";
+        $uploadScript .= 'ZIP="zip"' . "\n";
+        $uploadScript .= 'elif [[ `which bzip2` ]]; then' . "\n";
+        $uploadScript .= '${IONICE}nice -n +19 bzip2 -s -q -9 $KEEP $DEMOPATH/$DEMO' . "\n";
+        $uploadScript .= 'ZIP="bz2"' . "\n";
+        $uploadScript .= 'fi' . "\n";
+        $uploadScript .= 'DEMOANDPATH="$DEMOPATH/$DEMO.$ZIP"' . "\n";
+        $uploadScript .= 'wput -q --limit-rate=1024K --remove-source-files --tries 3 --basename="${DEMOPATH/\/\///}" "${DEMOANDPATH/\/\///}" "' . $this->appServerDetails['app']['uploadDir'] . '"' . "\n";
+
+        // 2 and 3 are one time run (manuel mode)
+        if (in_array($this->appServerDetails['app']['upload'], array(2, 3))) {
+            $script .= 'cd `find -mindepth 1 -maxdepth 3 -type d -name "' . $this->appServerDetails['template']['modfolder'] . '" | head -n1`' . "\n";
+            $script .= 'find . -maxdepth 2 -type f -name "*.dem" | while read LINE; do' . "\n";
+            $script .= 'DEMOPATH="`dirname $LINE`/"' . "\n";
+            $script .= 'DEMO="`basename $LINE`"' . "\n";
+            $script .= 'if [ "$LSOF" != "" ]; then ' . "\n";
+            $script .= 'if [[ ! `lsof $LINE` ]]; then' . "\n";
+            $script .= $uploadScript;
+            $script .= 'fi' . "\n";
+            $script .= 'else' . "\n";
+            $script .= $uploadScript;
+            $script .= 'fi' . "\n";
+            $script .= 'done' . "\n";
+
+        // 4 and 5 is continuous run with a tail of the screenlog
+        } else if (in_array($this->appServerDetails['app']['upload'], array(4, 5))) {
+
+            $script .= 'DEMOPATH=`find -mindepth 1 -maxdepth 3 -type d -name "' . $this->appServerDetails['template']['modfolder'] . '" | head -n1`' . "\n";
+            $script .= 'SCREENLOG="`find /home/user12882-317/server/37.187.20.198_27025/css/ -name "screenlog.0" | head -n1`"' . "\n";
+            $script .= 'if [ "$SCREENLOG" != "" ]; then' . "\n";
+            $script .= 'cd `dirname $SCREENLOG`' . "\n";
+            $script .= 'tail -f screenlog.0 | while read LINE; do' . "\n";
+
+            $script .= 'if [[ `echo $LINE | grep "Completed SourceTV demo"` ]]; then' . "\n";
+            $script .= 'DEMO=`echo -n "$LINE" | awk \'{print $4}\' | tr -d \'"\' | tr -d \',\'`' . "\n";
+
+            $script .= 'if [ "$LSOF" != "" ]; then ' . "\n";
+            $script .= 'if [[ ! `lsof $DEMOPATH/$DEMO` ]]; then' . "\n";
+            $script .= $uploadScript;
+            $script .= 'fi' . "\n";
+            $script .= 'else' . "\n";
+            $script .= $uploadScript;
+            $script .= 'fi' . "\n";
+            $script .= 'fi' . "\n";
+            $script .= 'done' . "\n";
+            $script .= 'fi' . "\n";
+        }
+
+        if (in_array($this->appServerDetails['app']['upload'], array(2, 3, 4, 5))) {
+
+            // The demo listener needs to be started in a separate screen
+            if (in_array($this->appServerDetails['app']['upload'], array(4, 5))) {
+
+                $this->addLinuxScript($scriptName, $script, $this->appServerDetails['userNameExecute'], true);
+
+                $screenScriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/demo-start-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
+
+                $script = $this->shellScriptHeader;
+                $script .= '#rm ' . $screenScriptName . "\n";
+
+                // Kill any screen that is running with the same name
+                $script .= 'ps fx | grep \'SCREEN\' | grep \'demo_' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '\' | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
+                $script .= 'kill $PID > /dev/null 2>&1' . "\n";
+                $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
+                $script .= 'done' . "\n";
+
+                $script .= 'screen -d -m -S demo_' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ' . $scriptName . "\n";
+
+                // Rename for the function return
+                $scriptName = $screenScriptName;
+            }
+
+            $this->addLogline('app_server.log', 'Demo upload started for ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userNameExecute']);
+
+            if ($standalone == true) {
+                $this->addLinuxScript($scriptName, $script);
+            }
+
+            return $script;
+        }
+
+        return '';
+    }
+
     public function demoUpload () {
-        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+        if ($this->appServerDetails and $this->appServerDetails['app']['uploadDir'] and $this->appMasterServerDetails['os'] == 'L') {
+            $this->linuxDemoUpload();
         } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
