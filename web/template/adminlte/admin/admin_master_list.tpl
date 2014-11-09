@@ -13,7 +13,7 @@
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-body table-responsive">
-                    <table id="dataTable" class="table table-bordered table-hover">
+                    <table id="dataTable" class="table table-bordered table-hover ">
                         <thead>
                         <tr>
                             <th><?php echo $sprache->haupt_ip;?></th>
