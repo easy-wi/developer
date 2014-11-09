@@ -455,6 +455,7 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 fi
 
 if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
+
 	echo " "
 	echo "Install/Update ProFTPD?"
 
@@ -674,8 +675,6 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
 	</Limit>
 </Directory>
 ' >> /etc/proftpd/conf.d/easy-wi.conf
-				fi
-
 			fi
 		fi
 
