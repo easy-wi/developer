@@ -59,7 +59,7 @@ class AppServer {
 
     private $winCmds = array(), $shellScriptHeader, $shellScripts = array('user' => '', 'server' => array()), $commandReturns = array();
 
-    public $appMasterServerDetails = array(), $appServerDetails = array();
+    public $appMasterServerDetails = array(), $appServerDetails = false;
 
     // The constructor gathers the root data
     function __construct($id) {
@@ -143,6 +143,8 @@ class AppServer {
                 }
             }
 
+            $this->appServerDetails['app']['id'] = $row['serverid'];
+
             $this->appServerDetails['id'] = (int) $row['id'];
             $this->appServerDetails['type'] = (string) $row['type'];
             $this->appServerDetails['lendServer'] = (string) $row['lendserver'];
@@ -224,7 +226,6 @@ class AppServer {
             $this->appServerDetails['template']['configedit'] = $row['configedit'];
 
             // second block will be specific app settings
-            $this->appServerDetails['app']['id'] = (int) $row['id'];
             $this->appServerDetails['app']['anticheat'] = (int) $row['anticheat'];
             $this->appServerDetails['app']['fps'] = (int) $row['fps'];
             $this->appServerDetails['app']['tic'] = (int) $row['tic'];
@@ -279,17 +280,18 @@ class AppServer {
         return array('placeholder' => $placeholder, 'replacePlaceholderWith' => $replacePlaceholderWith);
     }
 
-    // function that gatheers the details for all installed addons
-    private function getAddonDetails () {
+    // function that gathers the details for all installed addons
+    public function getAddonDetails () {
 
         global $sql;
 
         $this->appServerDetails['extensions']['addons'] = array();
+        $this->appServerDetails['extensions']['addonSettings'] = array();
         $this->appServerDetails['extensions']['maps'] = array();
         $this->appServerDetails['extensions']['cmds'] = array();
         $this->appServerDetails['extensions']['rmcmd'] = array();
 
-        $query = $sql->prepare("SELECT a.`id`,a.`cmd`,a.`rmcmd`,a.`addon`,a.`type` FROM `addons_installed` AS i INNER JOIN `addons` AS a ON a.`id`=i.`addonid` WHERE i.`serverid`=? AND i.`paddon`=? AND i.`servertemplate`=?");
+        $query = $sql->prepare("SELECT a.`id`,a.`cmd`,a.`rmcmd`,a.`addon`,a.`type`,a.`paddon`,a.`depending`,a.`folder` FROM `addons_installed` AS i INNER JOIN `addons` AS a ON a.`id`=i.`addonid` WHERE i.`serverid`=? AND i.`paddon`=? AND i.`servertemplate`=?");
         $query->execute(array($this->appServerDetails['app']['id'], $this->appServerDetails['protectionModeStarted'], $this->appServerDetails['app']['servertemplate']));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -299,14 +301,19 @@ class AppServer {
                 $this->appServerDetails['extensions']['maps'][$row['id']] = $row['addon'];
             }
 
-            if (strlen($row['cmd']) > 0) {
-                $this->appServerDetails['extensions']['cmds'][] = (substr($row['cmd'], 0, 12) == '[no_padding]') ? trim(substr($row['cmd'], 12)) : ' ' . $row['cmd'];
-            }
+            $this->appServerDetails['extensions']['addonSettings'][$row['id']] = array('protectedAllowed' => $row['paddon'], 'folder' => $row['folder']);
 
-            if (strlen($row['rmcmd']) > 0) {
-                foreach (preg_split("/\r\n/", $row['rmcmd'], -1, PREG_SPLIT_NO_EMPTY) as $removeCommand) {
-                    if (strlen($removeCommand) > 0) {
-                        $this->appServerDetails['extensions']['removeCmds'][] = $removeCommand;
+            // Maps are allowed with protection mode in any case. Addons can be limited. We need to filter addons which should not be running when protection mode is active
+            if ($row['type'] == 'map' or $this->appServerDetails['protectionModeStarted'] == 'N' or ($this->appServerDetails['protectionModeStarted'] == 'Y' and $row['paddon'] == 'Y')) {
+                if (strlen($row['cmd']) > 0) {
+                    $this->appServerDetails['extensions']['cmds'][] = (substr($row['cmd'], 0, 12) == '[no_padding]') ? trim(substr($row['cmd'], 12)) : ' ' . $row['cmd'];
+                }
+
+                if (strlen($row['rmcmd']) > 0) {
+                    foreach (preg_split("/\r\n/", $row['rmcmd'], -1, PREG_SPLIT_NO_EMPTY) as $removeCommand) {
+                        if (strlen($removeCommand) > 0) {
+                            $this->appServerDetails['extensions']['removeCmds'][] = $removeCommand;
+                        }
                     }
                 }
             }
@@ -1357,7 +1364,7 @@ class AppServer {
         }
     }
 
-    private function linuxAddAddonShellCommands ($type, $name) {
+    private function linuxAddonShellGeneric ($type, $name, $action, $folders = '') {
 
         $masterAddonFolder = '/home/' . $this->appMasterServerDetails['ssh2User'] . '/';
         $masterAddonFolder .= ($type == 'addon') ? 'masteraddons/' : 'mastermaps/';
@@ -1366,16 +1373,31 @@ class AppServer {
         if (strlen($this->appServerDetails['template']['modfolder']) == 0) {
             $script = 'GAMEDIR="' . $this->appServerDetails['absolutePath'] . '"' . "\n";
         } else {
-            $script = 'if [ "`find ' . $this->appServerDetails['absolutePath'] . ' -mindepth 1 -maxdepth 3 -type d -name ' . $this->appServerDetails['template']['modfolder'] . ' | wc -l`" == "1" ]; then';
+            $script = 'if [ "`find ' . $this->appServerDetails['absolutePath'] . ' -mindepth 1 -maxdepth 3 -type d -name ' . $this->appServerDetails['template']['modfolder'] . ' | wc -l`" == "1" ]; then' . "\n";
             $script .= 'GAMEDIR=`find ' . $this->appServerDetails['absolutePath'] . ' -mindepth 1 -maxdepth 3 -type d -name "' . $this->appServerDetails['template']['modfolder'] . '" | head -n 1`' . "\n";
             $script .= 'else' . "\n";
             $script .= 'GAMEDIR=`find ' . $this->appServerDetails['absolutePath'] . ' -mindepth 1 -maxdepth 1 -type d -name "' . $this->appServerDetails['template']['modfolder'] . '" | head -n 1`' . "\n";
             $script .= 'fi' . "\n";
         }
 
+        $script .= 'if [ -d "' . $masterAddonFolder . '" -a "$GAMEDIR" != "" ]; then' . "\n";
+
         $script .= 'cd ' . $masterAddonFolder . "\n";
 
-        $script .= 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
+        if ($action == 'add') {
+            $script .= $this->linuxAddAddonShellCommands($type, $masterAddonFolder);
+        } else {
+            $script .= $this->linuxRemoveAddonShellCommands($folders);
+         }
+
+        $script .= 'fi' . "\n";
+
+        return $script;
+    }
+
+    private function linuxAddAddonShellCommands ($type, $masterAddonFolder) {
+
+        $script = 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
         $script .= 'FOLDER=`dirname $FILE`' . "\n";
         $script .= 'FILENAME=`basename $FILE`' . "\n";
         $script .= 'if [ ! -d $GAMEDIR/$FOLDER ]; then' . "\n";
@@ -1406,6 +1428,7 @@ class AppServer {
             $script .= 'cp -sr ' . $masterAddonFolder . '* $GAMEDIR/ > /dev/null 2>&1' . "\n";
         }
 
+
         return $script;
     }
 
@@ -1422,16 +1445,22 @@ class AppServer {
 
             if (isset($this->appServerDetails['extensions']['addons']) and count($this->appServerDetails['extensions']['addons']) > 0) {
 
-                foreach ($this->appServerDetails['extensions']['addons'] as $addon) {
-                    $script .= $this->linuxAddAddonShellCommands('addon', $addon);
+                foreach ($this->appServerDetails['extensions']['addons'] as $id => $addon) {
+
+                    // A possible scenario is that the addon has been installed while unprotected and the mode switched later on
+                    // In such a case we need to ensure that the addon is not installed on restart
+                    if ($this->appServerDetails['protectionModeStarted'] == 'N' or ($this->appServerDetails['protectionModeStarted'] == 'Y' and $this->appServerDetails['extensions']['addonSettings'][$id]['protectedAllowed'] == 'Y')) {
+                        $script .= $this->linuxAddonShellGeneric('addon', $addon, 'add');
+                    }
                 }
 
                 $logLine .= 'added addon(s) ' . implode(',', $this->appServerDetails['extensions']['addons']);
             }
 
             if (isset($this->appServerDetails['extensions']['maps']) and count($this->appServerDetails['extensions']['maps']) > 0) {
+
                 foreach ($this->appServerDetails['extensions']['maps'] as $addon) {
-                    $script .= $this->linuxAddAddonShellCommands('map', $addon);
+                    $script .= $this->linuxAddonShellGeneric('map', $addon, 'add');
                 }
 
                 $logLine .= ' added map(s) ' . implode(',', $this->appServerDetails['extensions']['maps']);
@@ -1440,13 +1469,13 @@ class AppServer {
 
         } else if (isset($this->appServerDetails['extensions']['addons'][$id])) {
 
-            $script .= $this->linuxAddAddonShellCommands('addon', $this->appServerDetails['extensions']['addons'][$id]);
+            $script .= $this->linuxAddonShellGeneric('addon', $this->appServerDetails['extensions']['addons'][$id], 'add');
 
             $logLine = 'Added addon ' . $this->appServerDetails['extensions']['addons'][$id];
 
         } else if (isset($this->appServerDetails['extensions']['maps'][$id])) {
 
-            $script .= $this->linuxAddAddonShellCommands('map', $this->appServerDetails['extensions']['maps'][$id]);
+            $script .= $this->linuxAddonShellGeneric('map', $this->appServerDetails['extensions']['maps'][$id], 'add');
 
             $logLine = 'Added map ' . $this->appServerDetails['extensions']['maps'][$id];
 
@@ -1458,16 +1487,129 @@ class AppServer {
         }
     }
 
-    public function addAddon ($id) {
+    public function addAddon ($id = false) {
         if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
             $this->linuxAddAddons($id);
         } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
-    public function removeAddon () {
-        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
-        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
+    private function getDependentAddonsQuery($id) {
+
+        global $sql;
+
+        $array = array();
+
+        $query = $sql->prepare("SELECT a.`id`,a.`addon` FROM `addons` AS a INNER JOIN `addons_installed` AS i ON i.`addonid`=a.`id` AND i.`serverid`=? AND i.`servertemplate`=? WHERE a.`depending`=?");
+        $query->execute(array($this->appServerDetails['app']['id'], $this->appServerDetails['app']['servertemplate'], $id));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $array[] = $row['id'];
+        }
+
+        return $array;
+    }
+
+    private function getDependentAddons ($id) {
+
+        $addonIDs = $this->getDependentAddonsQuery($id);
+
+        if (count($addonIDs) > 0) {
+
+            foreach ($addonIDs as $addonID) {
+                foreach($this->getDependentAddons($addonID) as $dependentAddonID) {
+                    $addonIDs[] = $dependentAddonID;
+                }
+            }
+        }
+
+        return $addonIDs;
+    }
+
+    private function linuxRemoveAddonShellCommands ($folders) {
+
+        $script = 'find -mindepth 1 -type f | sed \'s/\.\///g\' | while read FILES; do' . "\n";
+        $script .= 'if [ "`basename $FILES`" == "liblist.gam" ]; then' . "\n";
+        $script .= 'mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES' . "\n";
+        $script .= 'elif [ "`basename $FILES`" == "plugins.ini" ]; then' . "\n";
+
+        $script .= 'if [ -f /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp ]; then rm /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp; fi' . "\n";
+
+        $script .= 'cat $GAMEDIR/$FILES | while read LINE; do' . "\n";
+        $script .= 'if [[ `grep "$LINE" $FILES` == "" ]]; then  echo "$LINE" >> /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp; fi' . "\n";
+        $script .= 'done' . "\n";
+        $script .= 'cp /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp $GAMEDIR/$FILES' . "\n";
+        $script .= 'rm /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp' . "\n";
+        $script .= 'else' . "\n";
+        $script .= 'rm -rf "$GAMEDIR/$FILES" > /dev/null 2>&1' . "\n";
+        $script .= 'if [ "$FILES" == "liblist.gam" ]; then mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES > /dev/null 2>&1; fi' . "\n";
+        $script .= 'fi' . "\n";
+        $script .= 'done' . "\n";
+        $script .= 'cd $GAMEDIR' . "\n";
+        $script .= 'find -mindepth 1 -type d -empty -delete' . "\n";
+
+        // Check for to be removed folders
+        if (count($folders) > 0) {
+            $script .= 'find -mindepth 1 -name "' . implode('" -o -name "', $folders) . '" -print0 | xargs -0 rm -rf' . "\n";
+        }
+
+        return $script;
+    }
+
+    private function linuxRemoveAddons ($ids) {
+
+        $names = array();
+
+        $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/addons-del-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
+
+        $script = $this->shellScriptHeader;
+        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'USER=`id -un`' . "\n";
+
+        foreach ($ids as $id) {
+
+            $folders = (isset($this->appServerDetails['extensions']['addonSettings'][$id]['folder'])) ? preg_split('/(\s+|,)/', $this->appServerDetails['extensions']['addonSettings'][$id]['folder'], -1, PREG_SPLIT_NO_EMPTY) : array();
+
+            if (isset($this->appServerDetails['extensions']['addons'][$id])) {
+
+                $names[] = $this->appServerDetails['extensions']['addons'][$id];
+
+                $script .= $this->linuxAddonShellGeneric('addon', $this->appServerDetails['extensions']['addons'][$id], 'del', $folders);
+
+            } else if (isset($this->appServerDetails['extensions']['maps'][$id])) {
+
+                $names[] = $this->appServerDetails['extensions']['maps'][$id];
+
+                $script .= $this->linuxAddonShellGeneric('map', $this->appServerDetails['extensions']['maps'][$id], 'del', $folders);
+            }
+        }
+
+        if (count($names) > 0) {
+            $this->addLinuxScript($scriptName, $script);
+            $this->addLogline('app_server.log', 'Removed addon(s)/map(s) ' . implode(',', $names) . ' from app ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userNameExecute']);
+        }
+    }
+
+    public function removeAddon ($id) {
+
+        global $sql;
+
+        if ($this->appServerDetails) {
+
+            $toBeRemovedAddonIDs = array($id);
+
+            foreach ($this->getDependentAddons($id) as $addonID) {
+                $toBeRemovedAddonIDs[] = $addonID;
+            }
+
+            if ($this->appMasterServerDetails['os'] == 'L') {
+                $this->linuxRemoveAddons($toBeRemovedAddonIDs);
+            } else if ($this->appMasterServerDetails['os'] == 'W') {
+            }
+
+            $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `addonid`=? AND `serverid`=? AND `servertemplate`=? LIMIT 1");
+            foreach ($toBeRemovedAddonIDs as $addonID) {
+                $query->execute(array($addonID, $this->appServerDetails['app']['id'], $this->appServerDetails['app']['servertemplate']));
+            }
         }
     }
 

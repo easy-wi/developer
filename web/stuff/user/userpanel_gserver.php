@@ -927,7 +927,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT AES_DECRYPT(`ftppassword`,?) AS `cftppass`,g.*,s.`servertemplate`,s.`upload`,t.`id` AS `tid`,t.`ramLimited`,t.`shorten`,t.`protected` AS `tp`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`userid`=? AND g.`resellerid`=? ORDER BY g.`serverip`,g.`port`");
     $query2 = $sql->prepare("SELECT `ftpport` FROM `rserverdata` WHERE `id`=? LIMIT 1");
     $query3 = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `id`=? AND `ftpAccess`='N' LIMIT 1");
-    $query->execute(array($aeskey,$user_id,$resellerLockupID));
+    $query->execute(array($aeskey, $user_id,$resellerLockupID));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) {
             $rootid = $row['rootID'];

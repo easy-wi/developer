@@ -108,7 +108,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $shortens = (array) $ui->id('shorten', 10, 'post');
     $type = (string) $ui->smallletters('type', 99, 'post');
     $addon = (string) $ui->gamestring('addon', 'post');
-    $folder = (string) $ui->folder('folders', 'post');
+    $folder = (string) $ui->folder('folder', 'post');
     $active = (string) $ui->active('active', 'post');
     $menudescription = (string) $ui->description('menudescription', 'post');
     $configs = (string) $ui->startparameter('configs', 'post');
