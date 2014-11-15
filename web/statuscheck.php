@@ -205,47 +205,66 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $other = array();
         $i = 1;
         $totalCount = 0;
+        $rootID = 0;
         $serverBatchArray = array();
         $allServersArray = array();
         $shellCmds = array();
 
-        // Get the list of servers which are active and are not stopped. The array to be created will support batch mode.
-        $query = $sql->prepare("SELECT g.`id`,g.`rootID`,g.`serverid`,g.`serverip`,g.`port`,g.`port2`,g.`port3`,g.`port4`,g.`port5`,t.`gameq`,t.`shorten`,t.`useQueryPort` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`stopped`='N' AND g.`active`='Y'");
+        $query2 = $sql->prepare("SELECT g.`id`,g.`serverid`,g.`serverip`,g.`port`,g.`port2`,g.`port3`,g.`port4`,g.`port5`,t.`gameq`,t.`shorten`,t.`useQueryPort` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`stopped`='N' AND g.`active`='Y'");
+        $query = $sql->prepare("SELECT DISTINCT(`rootID`) AS `root_id` FROM `gsswitch` WHERE `active`='Y'");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-            // without the gameq value we cannot query. So this results need to be sorted out.
-            if (!in_array($row['gameq'], array('', null, false))) {
-
-                $checkAtIPPort = $row['serverip'] . ':';
-
-                if ($row['useQueryPort'] == 5) {
-                    $checkAtIPPort .= $row['port5'];
-                } else if ($row['useQueryPort'] == 4) {
-                    $checkAtIPPort .= $row['port4'];
-                } else if ($row['useQueryPort'] == 3) {
-                    $checkAtIPPort .= $row['port3'];
-                } else if ($row['useQueryPort'] == 2) {
-                    $checkAtIPPort .= $row['port2'];
-                } else {
-                    $checkAtIPPort .= $row['port'];
-                }
-
-                $serverBatchArray[] = array('id' => $row['id'], 'type' => $row['gameq'], 'host' => $checkAtIPPort);
-                $i++;
-
-                if ($i == 5) {
-                    $allServersArray[] = $serverBatchArray;
-                    $serverBatchArray = array();
-                    $i = 1;
-                }
-
-                $totalCount++;
-
-            } else {
-                print "No GameQ found for {$row['shorten']}\r\n";
+            // Avoid that servers belonging to different roots are checked together
+            // If combined more false positives are possible
+            if ($rootID != 0) {
+                $allServersArray[] = $serverBatchArray;
+                $serverBatchArray = array();
+                $i = 1;
             }
+
+            // Get the list of servers which are active and are not stopped. The array to be created will support batch mode.
+            $query2->execute(array($row['root_id']));
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
+                // without the gameq value we cannot query. So this results need to be sorted out.
+                if (!in_array($row2['gameq'], array('', null, false))) {
+
+                    $checkAtIPPort = $row2['serverip'] . ':';
+
+                    if ($row2['useQueryPort'] == 5) {
+                        $checkAtIPPort .= $row2['port5'];
+                    } else if ($row2['useQueryPort'] == 4) {
+                        $checkAtIPPort .= $row2['port4'];
+                    } else if ($row2['useQueryPort'] == 3) {
+                        $checkAtIPPort .= $row2['port3'];
+                    } else if ($row2['useQueryPort'] == 2) {
+                        $checkAtIPPort .= $row2['port2'];
+                    } else {
+                        $checkAtIPPort .= $row2['port'];
+                    }
+
+                    $serverBatchArray[] = array('id' => $row2['id'], 'type' => $row2['gameq'], 'host' => $checkAtIPPort);
+                    $i++;
+
+                    if ($i == 5) {
+                        $allServersArray[] = $serverBatchArray;
+                        $serverBatchArray = array();
+                        $i = 1;
+                    }
+
+                    $totalCount++;
+
+                } else {
+                    print "No GameQ found for {$row2['shorten']}\r\n";
+                }
+            }
+
+            // Set and used in order to prevent that GS from different roots are checked together
+            $rootID = $row['root_id'];
         }
+
+
 
         $allServersArray[] = $serverBatchArray;
 
