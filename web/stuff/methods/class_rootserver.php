@@ -4,7 +4,6 @@
  * File: class_rootserver.php.
  * Author: Ulrich Block
  * Date: 03.10.12
- * Time: 17:09
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
@@ -118,7 +117,7 @@ class rootServer {
                 $resellerID = $row['resellerID'];
             }
 
-            // Get VMware Data
+            // Get VMware data
         } else if ($this->type == 'vmware') {
 
             $query = $this->sql->prepare("SELECT c.*,u.`id` AS `userID`,u.`cname`,h.`cores` AS `hcore`,h.`esxi`,h.`id` AS `hostID`,h.`ip` AS `hip`,AES_DECRYPT(h.`port`,:aeskey) AS `dport`,AES_DECRYPT(h.`user`,:aeskey) AS `duser`,AES_DECRYPT(h.`pass`,:aeskey) AS `dpass`,h.`publickey`,h.`keyname` FROM `virtualcontainer` c INNER JOIN `userdata` u ON c.`userid`=u.`id` INNER JOIN `virtualhosts` h ON c.`hostid`=h.`id` WHERE c.`id`=:vmID LIMIT 1");
@@ -137,7 +136,7 @@ class rootServer {
                 $this->ID[$type][$ID]['cores'] = $row['cores'];
                 $this->ID[$type][$ID]['mountpoint'] = $row['mountpoint'];
                 $this->ID[$type][$ID]['hostname'] = $row['cname'] . '-' . $this->tempID;
-                $this->ID[$type][$ID]['ram'] = 1024*$row['ram'];
+                $this->ID[$type][$ID]['ram'] = 1024 * $row['ram'];
                 $this->ID[$type][$ID]['minram'] = 1024*$row['minram'];
                 $this->ID[$type][$ID]['maxram'] = 1024*$row['maxram'];
                 $this->ID[$type][$ID]['minmhz'] = $row['cores']*$row['minmhz'];

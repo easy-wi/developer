@@ -4,7 +4,6 @@
  * File: root_virtual_hosts.php.
  * Author: Ulrich Block
  * Date: 29.04.12
- * Time: 11:57
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
