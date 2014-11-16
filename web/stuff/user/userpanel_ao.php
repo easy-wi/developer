@@ -148,7 +148,7 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid', 10, 'get') and in_array($ui->st
         $template_file = $sprache->failed;
     }
 
-} else if ($ui->id('id',19, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['gs']))) {
+} else if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['gs']))) {
 
     $table = array();
     $i = 0;

@@ -520,16 +520,24 @@ class AppServer {
     }
 
     // Function that generated the script for adding an app
-    private function linuxAddApp ($templates) {
+    private function linuxAddApp ($templates, $standalone = true) {
 
-        $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/add-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-apps.sh');
+        if ($standalone) {
+            $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/add-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-apps.sh');
+        }
+
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
         $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
 
         $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lua', 'props', 'properties', 'json', 'example');
 
-        $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        if ($standalone and isset($scriptName)) {
+            $script = $this->shellScriptHeader;
+            $script .= '#rm ' . $scriptName . "\n";
+        } else {
+            $script = '';
+        }
+
         $script .= 'PATTERN="valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.inf\|/sound/\|steam_appid.txt\|/hl2/\|/overviews/\|/resource/\|/sprites/"' . "\n";
 
         foreach ($templates as $template) {
@@ -563,7 +571,11 @@ class AppServer {
         $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f -print0 | xargs -0 chmod ' . $fileChmod . "\n";
         $script .= '${IONICE}nice -n +19 find -L ' . $absolutePath . '/ -type l -delete' . "\n";
 
-        $this->addLinuxScript($scriptName, $script);
+        if ($standalone and isset($scriptName)) {
+            $this->addLinuxScript($scriptName, $script);
+        }
+
+        return $script;
     }
 
     public function addApp ($templates = array()) {
@@ -1613,8 +1625,44 @@ class AppServer {
         }
     }
 
-    public function migrateToEasyWi () {
+    private function linuxMigrateServer ($sourceFTP, $targetTemplate, $modFolder) {
+
+        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $targetTemplate . '/');
+
+        $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/migrate-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
+
+        $script = $this->shellScriptHeader;
+        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'if [ -d "' . $serverDir . '" ]; then ${IONICE}rm -rf "' . $serverDir . '"; fi' . "\n";
+
+        $script .= $this->linuxAddApp(array($targetTemplate), false);
+
+        $script .= 'if [ ! -d "' . $serverDir . '" ]; then mkdir -p "' . $serverDir . '"; fi' . "\n";
+        $script .= 'cd ' . $serverDir . "\n";
+
+        if (strlen($modFolder) > 0) {
+            $script .= 'MODFOLDER=`find -mindepth 1 -maxdepth 3 -type d -name "' . $modFolder . '" | head -n 1`' . "\n";
+            $script .= 'if [ "$MODFOLDER" != "" ]; then cd $MODFOLDER; fi' . "\n";
+        }
+
+        $cutDirs = count(preg_split('/\//', $sourceFTP['path'], -1, PREG_SPLIT_NO_EMPTY));
+
+        if ($cutDirs < 0) {
+            $cutDirs = 0;
+        }
+
+        $script .= 'find -type f -print0 | xargs -0 rm -f' . "\n";
+        $script .= 'wget -q -r -l inf -nc -nH --limit-rate=4096K --retr-symlinks --no-check-certificate --ftp-user=' . $sourceFTP['user'] . ' --ftp-password=' . $sourceFTP['password'] . ' --cut-dirs=' . $cutDirs . ' ' . $sourceFTP['connectString'] . "\n";
+
+        $script .= $this->linuxAddApp(array($targetTemplate), false);
+
+        $this->addLinuxScript($scriptName, $script);
+        $this->addLogline('app_server.log', 'Migrated server to ' . $targetTemplate . ' belonging to app ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userName']);
+    }
+
+    public function migrateToEasyWi ($sourceFTP, $targetTemplate, $modFolder) {
         if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+            $this->linuxMigrateServer($sourceFTP, $targetTemplate, $modFolder);
         } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }

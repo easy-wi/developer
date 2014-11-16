@@ -43,7 +43,6 @@ if ((!isset($main) or $main != 1) or (!isset($user_id) or (isset($user_id) and !
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/class_ftp.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
-include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_app.php');
 
 if (isset($resellerLockupID)) {
