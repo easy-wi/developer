@@ -57,7 +57,7 @@ if (!class_exists('EasyWiFTP')) {
 
 class AppServer {
 
-    private $winCmds = array(), $shellScriptHeader, $shellScripts = array('user' => '', 'server' => array()), $commandReturns = array();
+    private $uniqueHex, $winCmds = array(), $shellScriptHeader, $shellScripts = array('user' => '', 'server' => array()), $commandReturns = array();
 
     public $appMasterServerDetails = array(), $appServerDetails = false;
 
@@ -65,6 +65,8 @@ class AppServer {
     function __construct($id) {
 
         global $sql, $aeskey;
+
+        $this->uniqueHex = dechex(mt_rand());
 
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `decryptedsteamAccount`,AES_DECRYPT(`steamPassword`,:aeskey) AS `decryptedsteamPassword` FROM `rserverdata` WHERE `id`=:serverID LIMIT 1");
         $query->execute(array(':serverID' => $id, ':aeskey' => $aeskey));
@@ -106,7 +108,7 @@ class AppServer {
             if ($this->appMasterServerDetails['os'] == 'L') {
                 $this->shellScriptHeader = "#!/bin/bash\n";
                 $this->shellScriptHeader .= "if ionice -c3 true 2>/dev/null; then IONICE='ionice -n 7 '; fi\n";
-                $this->shellScripts['user'] = $this->shellScriptHeader . "#rm /home/{$this->appMasterServerDetails['ssh2User']}/temp/userCud.sh\n";
+                $this->shellScripts['user'] = $this->shellScriptHeader . '#rm /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh' . "\n";
             }
         }
 
@@ -1667,20 +1669,95 @@ class AppServer {
         }
     }
 
+    private function linuxFastDLSync () {
+
+    }
+
     public function fastDLSync () {
         if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+
         } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
-    public function backupCreate () {
+    private function linuxBackupCreate ($ftpUploadString) {
+
+        global $resellerLockupID;
+
+        $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/backup/');
+        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
+
+        $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-create-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
+
+        $script = $this->shellScriptHeader;
+        $script .= '#rm ' . $scriptName . "\n";
+
+        $script .= 'if [ ! -d "' . $backupDir . '" ]; then mkdir -p "' . $backupDir . '"; fi' . "\n";
+        $script .= 'find "' . $backupDir . '" -maxdepth 1 -type f -name "*.tar.bz2" -delete' . "\n";
+        $script .= 'find "' . $serverDir . '" -mindepth 1 -maxdepth 1 -type d | while read FOLDER; do' . "\n";
+        $script .= 'GAMETEMPLATE=`basename $FOLDER`' . "\n";
+        $script .= 'cd "' . $serverDir . '/$GAMETEMPLATE"' . "\n";
+        $script .= '${IONICE}nice -n +19 tar cfj "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-$GAMETEMPLATE.tar.bz2" .') . "\n";
+
+        if (strlen($ftpUploadString) > 0) {
+            $script .= 'wput -q --limit-rate=4098 --basename="' . $backupDir . '" "' . $backupDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-$GAMETEMPLATE.tar.bz2" "' . $ftpUploadString . '"' . "\n";
+        }
+
+        $script .= 'done' . "\n";
+        $script .= 'wget -q --timeout=60 --no-check-certificate -O - ' . webhostdomain($resellerLockupID) . '/get_password.php?w=bu\\&shorten=`id -un`\\id=' . $this->appServerDetails['port'] . '\\&ip=' . $this->appServerDetails['serverIP']  . "\n";
+
+        $this->addLinuxScript($scriptName, $script);
+        $this->addLogline('app_server.log', 'Created backup for apps on server ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userName']);
+    }
+
+    public function backupCreate ($ftpUploadString) {
         if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+            $this->linuxBackupCreate($ftpUploadString);
         } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
 
-    public function backupDeploy () {
+    private function linuxBackupDeploy ($template, $ftpDownloadString) {
+
+        global $resellerLockupID;
+
+        $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/backup/');
+        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
+
+        $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-deploy-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
+
+        $script = $this->shellScriptHeader;
+        $script .= '#rm ' . $scriptName . "\n";
+
+        if (strlen($ftpDownloadString) > 0) {
+            $script .= 'if [ ! -d "' . $backupDir . '" ]; then mkdir -p "' . $backupDir . '"; fi' . "\n";
+            $script .= 'cd ' . $backupDir . "\n";
+            $script .= 'mv "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . '" "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . "\n";
+            $script .= 'wget -q --timeout=10 --no-check-certificate ' . $ftpDownloadString . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2' . "\n";
+            $script .= 'if [ -f "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . '" ]; then' . "\n";
+            $script .= 'rm "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . "\n";
+            $script .= 'else' . "\n";
+            $script .= 'mv "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . '" "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . "\n";
+            $script .= 'fi' . "\n";
+        }
+
+        $script .= 'if [ -f "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2') . '" ]; then' . "\n";
+        $script .= 'rm -rf ' . $this->removeSlashes($serverDir . '/' . $template . '/*') . "\n";
+
+        $script .= 'fi' . "\n";
+
+        $script .= 'if [ ! -d "' . $this->removeSlashes($serverDir . '/' . $template) . '" ]; then mkdir -p "' . $this->removeSlashes($serverDir . '/' . $template) . '"; fi' . "\n";
+
+        $script .= '${IONICE}nice -n +19 tar -C "' . $this->removeSlashes($serverDir . '/' . $template) . '" -xjf "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . "\n";
+        $script .= 'wget -q --no-check-certificate -O - ' . webhostdomain($resellerLockupID) . '/get_password.php?w=rb\\&shorten=`id -un`\\id=' . $this->appServerDetails['port'] . '\\&ip=' . $this->appServerDetails['serverIP'] . "\n";
+
+        $this->addLinuxScript($scriptName, $script);
+        $this->addLogline('app_server.log', 'Deployed backup for app template ' . $template . ' on server ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userName']);
+    }
+
+    public function backupDeploy ($template, $ftpDownloadString) {
         if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+            $this->linuxBackupDeploy($template, $ftpDownloadString);
         } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
         }
     }
@@ -1735,8 +1812,8 @@ class AppServer {
 
             if ($loginReturn) {
 
-                $this->commandReturns[] = $sftpObject->put('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud.sh', $this->shellScripts['user']);
-                $this->commandReturns[] = $sftpObject->chmod(0700, '/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud.sh');
+                $this->commandReturns[] = $sftpObject->put('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh', $this->shellScripts['user']);
+                $this->commandReturns[] = $sftpObject->chmod(0700, '/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh');
 
                 foreach($this->shellScripts['server'] as $fileName => $scriptContent) {
                     $this->commandReturns[] = 'script added: ' . $fileName;
@@ -1747,7 +1824,7 @@ class AppServer {
                 $sshObject = new Net_SSH2($this->appMasterServerDetails['ssh2IP'], $this->appMasterServerDetails['ssh2Port']);
 
                 if ($sshObject->login($this->appMasterServerDetails['ssh2User'], $ssh2Pass)) {
-                    $this->commandReturns[] = $sshObject->exec('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud.sh & ');
+                    $this->commandReturns[] = $sshObject->exec('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh & ');
                 }
 
                 return true;

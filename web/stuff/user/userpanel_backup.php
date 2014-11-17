@@ -36,18 +36,17 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 
 if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['ftpbackup']) or !$ui->id('id', 10, 'get')) {
     header('Location: userpanel.php');
     die;
 }
-$sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 
-if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id = $admin_id;
-}
+$sprache = getlanguagefile('gserver', $user_language, $resellerLockupID);
 
 $customer = getusername($user_id);
 
@@ -56,27 +55,13 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
     $id = (int) $ui->id('id', 10, 'get');
     $errors = array();
 
-    $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`rootID`,g.`newlayout`,g.`homeLabel`,r.`install_paths`,s.`map`,t.`shorten`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppassword`,u.`cname`,AES_DECRYPT(u.`ftpbackup`,?) AS `ftp` FROM `gsswitch` g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` INNER JOIN `rserverdata` AS r ON r.`id`=g.`rootID` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
-    $query->execute(array($aeskey,$aeskey,$id,$user_id,$reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`rootID`,AES_DECRYPT(u.`ftpbackup`,?) AS `ftp` FROM `gsswitch` g INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+    $query->execute(array($aeskey, $id, $user_id, $resellerLockupID));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $serverip = $row['serverip'];
         $port = $row['port'];
-        $gsfolder = $serverip . '_' . $port;
-        $map = $row['map'];
-        $gsswitch = $row['shorten'];
         $rootID = $row['rootID'];
-        $ftppass = $row['dftppassword'];
-        $customer = $row['cname'];
-
-        if ($row['newlayout'] == 'Y') {
-            $customer .= '-' . $id;
-        }
-
-        $ftpbackup = (strlen($row['ftp']) > 0) ? $row['ftp'] : 'none';
-
-        $iniVars = parse_ini_string($row['install_paths'], true);
-        $homeDir = ($iniVars and isset($iniVars[$row['homeLabel']]['path'])) ? $iniVars[$row['homeLabel']]['path'] : '/home';
-
+        $ftpUploadString = $row['ftp'];
         $fdlData = ftpStringToData($row['ftp']);
         $ftp_adresse = $fdlData['server'];
         $ftp_password = $fdlData['pwd'];
@@ -91,31 +76,16 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
 	if ($ui->w('action', 3, 'get') == 'mb' and isset($rootID)) {
 
-        $shortens = array();
+        $appServer = new AppServer($rootID);
 
-        $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
-        $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $shortens[] = $row['shorten'];
-        }
+        $appServer->getAppServerDetails($id);
+        $appServer->backupCreate($ftpUploadString);
+        $appServer->execute();
 
-        if (count($shortens) > 0) {
+        $template_file = $sprache->backup_create;
 
-            $shortens = implode(' ', $shortens);
-            $webhostDomain = webhostdomain($reseller_id);
-
-            $sshCmd = "sudo -u {$customer} ./control.sh backup \"{$gsfolder}\" \"{$shortens}\" \"{$webhostDomain}\" \"{$ftpbackup}\" \"{$homeDir}\"";
-
-            $sshReply = ssh2_execute('gs', $rootID, $sshCmd);
-
-            $template_file = ($sshReply === false) ? 'Unkown Error' : $sprache->backup_create;
-
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $template_file .= '<pre>' . $sshCmd . "\r\n" . $sshReply . '</pre>';
-            }
-
-        } else {
-            $template_file = 'userpanel_404.tpl';
+        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+            $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
         }
 
     } else if ($ui->w('action',3, 'get') == 'md' and isset($rootID)) {
@@ -185,7 +155,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
         $shortens = array();
 
-        $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
+        $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
         $query->execute(array($id));
         foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $shortens[] = $row['shorten'];
@@ -209,16 +179,16 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
         if (in_array($ui->gamestring('template', 'post'), $shortens)) {
 
-            $webhostDomain = webhostdomain($reseller_id);
+            $appServer = new AppServer($rootID);
 
-            $sshCmd = "sudo -u {$customer} ./control.sh restore \"{$gsfolder}\" \"{$ui->gamestring('template', 'post')}\" \"{$webhostDomain}\" \"{$ftpbackup}\" \"{$homeDir}\"";
+            $appServer->getAppServerDetails($id);
+            $appServer->backupDeploy($ui->gamestring('template', 'post'), $ftpUploadString);
+            $appServer->execute();
 
-            $sshReply = ssh2_execute('gs', $rootID, $sshCmd);
-
-            $template_file = ($sshReply === false) ? 'Unkown Error: ' : $sprache->backup_recover;
+            $template_file = $sprache->backup_recover;
 
             if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $template_file .= '<pre>' . $sshCmd . "\r\n" . $sshReply . '</pre>';
+                $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
             }
 
         } else {
