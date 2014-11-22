@@ -469,8 +469,8 @@ $INSTALLMASTER ALL = NOPASSWD: /usr/sbin/deluser
 $INSTALLMASTER ALL = NOPASSWD: /usr/sbin/usermod
 $INSTALLMASTER ALL = (ALL, !root:$INSTALLMASTER) NOPASSWD: /home/$INSTALLMASTER/control.sh
 $INSTALLMASTER ALL = (ALL, !root:$INSTALLMASTER) NOPASSWD: /home/$INSTALLMASTER/temp/*.sh" >>  /etc/sudoers
-if [ "`which setquota 2> /dev/null`" != "" ]: then echo "$INSTALLMASTER ALL = NOPASSWD: `which setquota`" >> /etc/sudoers; fi
-if [ "`which repquota 2> /dev/null`" != "" ]: then echo "$INSTALLMASTER ALL = NOPASSWD: `which repquota`" >> /etc/sudoers; fi
+if [ "`which setquota 2> /dev/null`" != "" ]; then echo "$INSTALLMASTER ALL = NOPASSWD: `which setquota`" >> /etc/sudoers; fi
+if [ "`which repquota 2> /dev/null`" != "" ]; then echo "$INSTALLMASTER ALL = NOPASSWD: `which repquota`" >> /etc/sudoers; fi
 fi
 
 mv $HOMEFOLDER/control.sh /home/$INSTALLMASTER/control.sh
