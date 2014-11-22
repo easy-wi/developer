@@ -195,10 +195,11 @@ class AppServer {
             // We deliberately let admins that failed to setup a chrooted FTP environment run into errors
             $absoluteFTPPath = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/' : '/server/';
             $absoluteFTPPath .= $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'];
-            if (in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe'))) {
+            if ($this->getGameType() == 'hl2') {
                 $absoluteFTPPath .= '/' . $this->appServerDetails['template']['binarydir'];
             }
             $absoluteFTPPath .= '/' . $this->appServerDetails['template']['modfolder'] . '/';
+
             $this->appServerDetails['absoluteFTPPath'] = $this->removeSlashes($absoluteFTPPath);
 }
 
@@ -339,11 +340,13 @@ class AppServer {
                 $this->appServerDetails['app']['uploadDir'] = $row['decyptedftpuploadpath'];
             }
 
-            if (in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe'))) {
+            $gameType = $this->getGameType();
+
+            if ($gameType == 'hl2') {
                 $cmd .= ' +rcon_password ' .$row['rcon'] . ' +sv_password ' . $row['password']. ' +tv_enable 1 +tv_autorecord 1';
-            } else if (in_array($this->appServerDetails['template']['gameBinary'], array('hlds_run', 'hlds.exe'))) {
+            } else if ($gameType == 'hl1') {
                 $cmd .= ' +rcon_password ' . $row['rcon'] . ' +sv_password ' . $row['password'];
-            } else if ($this->appServerDetails['template']['gameBinary'] == 'cod4_lnxded') {
+            } else if ($gameType == 'cod') {
                 $cmd .= ' +set rcon_password ' . $row['rcon'] . ' +set g_password ' . $row['password'];
             }
         }
@@ -365,6 +368,43 @@ class AppServer {
         }
 
         return $string;
+    }
+
+    // Often we need to proceed depending on game engine type
+    private function getGameType () {
+
+        // First do a check against the binary
+        if (in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe'))) {
+            return 'hl2';
+        }
+
+        if (in_array($this->appServerDetails['template']['gameBinary'], array('hlds_run', 'hlds.exe'))) {
+            return 'hl1';
+        }
+
+        if (in_array($this->appServerDetails['template']['gameBinary'], array('cod4_lnxded', 'codwaw_lnxded', 'iw3mp.exe', 'CoDWaWmp.exe'))) {
+            return 'cod';
+        }
+
+        // The admin might have configured a shell script instead of the native binary or script
+        // We also need to check against the gameQ setting to be on the safe side
+        if (in_array($this->appServerDetails['template']['gameq'], array('minecraft', 'minequery'))) {
+            return 'mc';
+        }
+
+        if (in_array($this->appServerDetails['template']['gameq'], array('aoc', 'csgo', 'css', 'dods', 'hl2dm', 'l4d', 'l4d2', 'ns2', 'tf2', 'zps'))) {
+            return 'hl2';
+        }
+
+        if (in_array($this->appServerDetails['template']['gameq'], array('cs16', 'cscz', 'dod', 'insurgency', 'ns', 'tfc'))) {
+            return 'hl1';
+        }
+
+        if (substr($this->appServerDetails['template']['gameq'], 0, 3) == 'cod') {
+            return 'cod';
+        }
+
+        return false;
     }
 
     /*
@@ -691,7 +731,9 @@ class AppServer {
             $script .= $this->linuxMcWorldSave(false);
         }
 
-        if ($this->appServerDetails['template']['gameBinary'] == 'srcds_run' and $this->appServerDetails['tvAllowed'] == 'Y') {
+        $gameType = $this->getGameType();
+
+        if ($gameType == 'hl2' and $this->appServerDetails['tvAllowed'] == 'Y') {
             $script .= 'screen -p 0 -S ' . $screenName . ' -X stuff $\'\n\'' . "\n";
             $script .= 'screen -p 0 -S ' . $screenName . ' -X stuff "tv_stoprecord"' . "\n";
             $script .= 'screen -p 0 -S ' . $screenName . ' -X stuff $\'\n\'' . "\n";
@@ -709,7 +751,7 @@ class AppServer {
         $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
         $script .= 'done' . "\n";
 
-        if ($this->appServerDetails['template']['gameBinary'] == 'srcds_run' and $this->appServerDetails['tvAllowed'] == 'Y' and in_array($this->appServerDetails['app']['upload'], array(2, 3)) and $this->appServerDetails['app']['uploadDir']) {
+        if ($gameType == 'hl2' and $this->appServerDetails['tvAllowed'] == 'Y' and in_array($this->appServerDetails['app']['upload'], array(2, 3)) and $this->appServerDetails['app']['uploadDir']) {
             $script .= $this->linuxDemoUpload(false);
         }
 
@@ -1001,12 +1043,14 @@ class AppServer {
 
         if ($this->appServerDetails['eacAllowed'] == 'Y') {
 
-            // On app start we only run commands for supported games
-            if ($action == 'start' and in_array($this->appServerDetails['app']['anticheat'], array(3, 4, 5, 6)) and in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe', 'hlds_run', 'hlds.exe'))) {
+            $gameType = $this->getGameType();
 
-                if (in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe'))) {
+            // On app start we only run commands for supported games
+            if ($action == 'start' and in_array($this->appServerDetails['app']['anticheat'], array(3, 4, 5, 6)) and ($gameType == 'hl1' or $gameType == 'hl2')) {
+
+                if ($gameType == 'hl2') {
                     $config = 'cfg/server.cfg';
-                } else if (in_array($this->appServerDetails['template']['gameBinary'], array('hlds_run', 'hlds.exe'))) {
+                } else if ($gameType == 'hl1') {
                     $config = 'server.cfg';
                 } else {
                     $config = 'main/server.cfg';
@@ -1061,17 +1105,19 @@ class AppServer {
 
     private function generateStartCommand () {
 
+        $gameType = $this->getGameType();
+
         // https://github.com/easy-wi/developer/issues/205
         // In case Workshop is on we need to remove mapgroup
         $startCommand = ($this->appServerDetails['app']['workShop'] == 'Y') ? str_replace(array('%mapgroup%', ' +mapgroup'), '', $this->appServerDetails['app']['cmd']) : $this->appServerDetails['app']['cmd'];
 
         // In case of hl2 based servers and no TV allowed, turn off the source tv capabilities
-        if (in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe')) and $this->appServerDetails['tvAllowed'] == 'N') {
+        if ($gameType == 'hl2' and $this->appServerDetails['tvAllowed'] == 'N') {
             $startCommand .= ' -nohltv -tvdisable';
         }
 
         // If the user decided to use EAC instead of VAC, or turned VAC off on porpuse
-        if (in_array($this->appServerDetails['template']['gameBinary'], array('srcds_run', 'srcds.exe', 'hlds_run', 'hlds.exe')) and ($this->appServerDetails['app']['anticheat'] == 2 or ($this->appServerDetails['app']['anticheat'] > 2 and $this->appServerDetails['eacAllowed'] == 'Y'))) {
+        if (($gameType == 'hl1' or $gameType == 'hl2') and ($this->appServerDetails['app']['anticheat'] == 2 or ($this->appServerDetails['app']['anticheat'] > 2 and $this->appServerDetails['eacAllowed'] == 'Y'))) {
             $startCommand .= ' -insecure';
         }
 
@@ -1224,7 +1270,7 @@ class AppServer {
         $script .= 'if [ -f screenlog.0 ]; then rm screenlog.0; fi' . "\n";
         $script .= $this->generateStartCommand() . "\n";
 
-        if ($this->appServerDetails['template']['gameBinary'] == 'srcds_run' and $this->appServerDetails['tvAllowed'] == 'Y' and in_array($this->appServerDetails['app']['upload'], array(4, 5)) and $this->appServerDetails['app']['uploadDir']) {
+        if ($this->getGameType() == 'hl2' and $this->appServerDetails['tvAllowed'] == 'Y' and in_array($this->appServerDetails['app']['upload'], array(4, 5)) and $this->appServerDetails['app']['uploadDir']) {
             $script .= $this->linuxDemoUpload(false);
         }
 
@@ -1411,15 +1457,14 @@ class AppServer {
 
     private function linuxAddAddonShellCommands ($type, $masterAddonFolder) {
 
-        $script = 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
-        $script .= 'FOLDER=`dirname $FILE`' . "\n";
-        $script .= 'FILENAME=`basename $FILE`' . "\n";
-        $script .= 'if [ ! -d $GAMEDIR/$FOLDER ]; then' . "\n";
-        $script .= 'mkdir -p $GAMEDIR/$FOLDER/' . "\n";
-        $script .= 'fi' . "\n";
-        $script .= 'find $GAMEDIR/$FILE -type l -delete > /dev/null 2>&1' . "\n";
+        $script = '';
 
         if ($type == 'addon') {
+            $script = 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
+            $script .= 'FOLDER=`dirname $FILE`' . "\n";
+            $script .= 'FILENAME=`basename $FILE`' . "\n";
+            $script .= 'if [ ! -d $GAMEDIR/$FOLDER ]; then mkdir -p $GAMEDIR/$FOLDER/; fi' . "\n";
+            $script .= 'find $GAMEDIR/$FILE -type l -delete > /dev/null 2>&1' . "\n";
             $script .= 'if [ "$FILENAME" == "liblist.gam" ]; then' . "\n";
             $script .= 'mv $GAMEDIR/$FILE $GAMEDIR/$FILE.old' . "\n";
             $script .= 'cp ' . $masterAddonFolder . '$FILE $GAMEDIR/$FILE' . "\n";
@@ -1439,9 +1484,9 @@ class AppServer {
             $script .= 'cp ' . $masterAddonFolder . '$FILE $GAMEDIR/$FILE' . "\n";
             $script .= 'fi' . "\n";
             $script .= 'done' . "\n";
-            $script .= 'cp -sr ' . $masterAddonFolder . '* $GAMEDIR/ > /dev/null 2>&1' . "\n";
         }
 
+        $script .= 'cp -sr ' . $masterAddonFolder . '* $GAMEDIR/ > /dev/null 2>&1' . "\n";
 
         return $script;
     }
@@ -1669,14 +1714,132 @@ class AppServer {
         }
     }
 
-    private function linuxFastDLSync () {
+    //TODO: Fast DL Sync
+    private function linuxFastDLSync ($fdlConnectString) {
 
+        $gameType = $this->getGameType();
+
+        if (in_array($gameType, array('hl1', 'hl2', 'cod'))) {
+
+            $fdlFileList = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/conf/fdl-' . $this->appServerDetails['template']['shorten'] . '.list');
+
+            $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/fdl-sync-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
+
+            $script = $this->shellScriptHeader;
+            $script .= '#rm ' . $scriptName . "\n";
+            $script .= 'USERNAME=`id -un`' . "\n";
+
+            $script .= 'if [ -f "' . $fdlFileList . '" ]; then' . "\n";
+            $script .= 'cd ' . $this->appServerDetails['absolutePath'] . "\n";
+
+            $excludePattern = '\.log\|\.txt\|\.cfg\|\.vdf\|\.db\|\.dat\|\.ztmp\|\.blib\|log\/\|logs\/\|downloads\/\|DownloadLists\/\|metamod\/\|amxmodx\/\|hl\/\|hl2\/\|cfg\/\|addons\/\|bin\/\|classes/';
+
+            if ($gameType == 'hl2') {
+
+                $fdlMasterFolder = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data/hl2/' . $this->appServerDetails['template']['shorten'] . '/');
+
+                $script .= 'if [ ! -d "' . $fdlMasterFolder . '" ]; then mkdir -p "' . $fdlMasterFolder . '"; fi' . "\n";
+                $script .= 'find "' . $fdlMasterFolder . '" -maxdepth 1 -type d -user `whoami` -exec chmod 770 {} \;' . "\n";
+
+                $logFile = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/logs/fdl-hl2.log');
+
+                if (strlen($this->appServerDetails['template']['binarydir']) > 0) {
+                    $script .= 'cd ' . $this->appServerDetails['template']['binarydir'] . "\n";
+                }
+
+                if ($this->appServerDetails['template']['gameq'] == 'l4d2') {
+                    $script .= 'cd left4dead2/left4dead2/' . "\n";
+                } else if (strlen($this->appServerDetails['template']['modfolder']) > 0) {
+                    $script .= 'cd ' . $this->appServerDetails['template']['modfolder'] . '/' . "\n";
+                }
+
+                $script .= 'ABSOLUTEGAMEPATH=`readlink -f .`' . "\n";
+
+                $script .= 'find particles/ maps/ materials/ resource/ models/ sound/ -type l -or -type f 2> /dev/null | grep -v "' . $excludePattern . '" | while read FOUNDFILE; do' . "\n";
+
+            } else if ($gameType == 'hl1') {
+
+                $logFile = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/logs/fdl-hl1.log');
+
+                $script .= 'cd ' . $this->appServerDetails['template']['modfolder'] . '/' . "\n";
+
+                $script .= 'find . -type l -or -type f 2> /dev/null | grep -v "' . $excludePattern . '" | while read FOUNDFILE; do' . "\n";
+
+            } else {
+
+                $logFile = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/logs/fdl-cod.log');
+
+                $script .= 'find usermaps/ mods/ -type l -or -type f \( -iname "*.ff" -or -iname "*.iwd" \) 2> /dev/null | grep -v "' . $excludePattern . '" | while read FOUNDFILE; do' . "\n";
+            }
+
+            $script .= 'FILTEREDFILE=${FOUNDFILE//\.\//}' . "\n";
+            $script .= 'if [[ ! `grep "$FILTEREDFILE" "' . $fdlFileList . '"` ]]; then' . "\n";
+            $script .= 'FILENAME=`basename $FILTEREDFILE`' . "\n";
+
+            if ($gameType == 'hl2' and isset($fdlMasterFolder)) {
+
+                $script .= 'cd ' . $fdlMasterFolder . "\n";
+                $script .= 'ABSOLUTEFILTEREDFILE="$ABSOLUTEGAMEPATH/$FILTEREDFILE"' . "\n";
+                $script .= 'FDLDATADIR=' . $fdlMasterFolder . '`dirname "$FILTEREDFILE"`' . "\n";
+                $script .= 'if [ ! -d $FDLDATADIR ]; then mkdir -p $FDLDATADIR; chmod 770 $FDLDATADIR; fi' . "\n";
+                $script .= 'FDLDATAFILENAME="$FDLDATADIR/$FILENAME"' . "\n";
+                $script .= 'CHECKSUMNEW=`${IONICE}nice -n +19 md5sum "$ABSOLUTEFILTEREDFILE" | awk \'{print $1}\'`' . "\n";
+                $script .= 'if [ -f "$FDLDATAFILENAME.stat" -a -f "$FDLDATAFILENAME.bz2" ]; then' . "\n";
+                $script .= 'CHECKSUMOLD=`head -n 1 "$FDLDATAFILENAME.stat" 2> /dev/null`' . "\n";
+                $script .= 'else' . "\n";
+                $script .= 'CHECKSUMOLD=""' . "\n";
+                $script .= 'fi' . "\n";
+                $script .= 'if [ "$CHECKSUMOLD" != "$CHECKSUMNEW" ]; then' . "\n";
+                $script .= '${IONICE}nice -n +19 bzip2 -k -s -q -9 -f -c "$ABSOLUTEFILTEREDFILE" > "$FDLDATAFILENAME.bz2"' . "\n";
+                $script .= 'echo $CHECKSUMNEW > "$FDLDATAFILENAME.stat"' . "\n";
+                $script .= 'chmod 660 "$FDLDATAFILENAME.stat" "$FDLDATAFILENAME.bz2"' . "\n";
+                $script .= 'fi' . "\n";
+                $script .= 'if [ "$CHECKSUMOLD" != "$CHECKSUMNEW" -a "$CHECKSUMOLD" != "" ]; then' . "\n";
+                $script .= 'wput -q --reupload --limit-rate=1024K "$FILTEREDFILE.bz2" ' . $fdlConnectString . "\n";
+                $script .= 'echo "`date`: $USERNAME: ' . $this->appServerDetails['app']['templateChoosen'] . ' file $FILENAME compressed and uploaded" >> ' . $logFile . "\n";
+                $script .= 'else' . "\n";
+                $script .= 'wput -q --dont-continue --limit-rate=1024K "$FILTEREDFILE.bz2" ' . $fdlConnectString . "\n";
+                $script .= 'echo "`date`: $USERNAME: ' . $this->appServerDetails['app']['templateChoosen'] . ' file $FILENAME uploaded" >> ' . $logFile . "\n";
+                $script .= 'fi' . "\n";
+
+            } else {
+                $script .= 'if [ "`wput -q -nv --limit-rate=1024K "$FILTEREDFILE" ' . $fdlConnectString . ' | grep \"Skipping file\"`" != "" ]; then' . "\n";
+                $script .= 'wput -qN --limit-rate=1024K "$FILTEREDFILE" ' . $fdlConnectString . "\n";
+                $script .= 'echo "`date`: $USERNAME: ' . $this->appServerDetails['app']['templateChoosen'] . ' file $FILENAME checked" >> ' . $logFile . "\n";
+                $script .= 'else' . "\n";
+                $script .= 'echo "`date`: $USERNAME: ' . $this->appServerDetails['app']['templateChoosen'] . ' file $FILENAME uploaded" >> ' . $logFile . "\n";
+                $script .= 'fi' . "\n";
+            }
+
+            $script .= 'fi' . "\n";
+            $script .= 'done' . "\n";
+
+            if ($gameType == 'hl2' and isset($fdlMasterFolder)) {
+                $script .= 'find "' . $fdlMasterFolder . '" -type d -user $USERNAME -exec chmod 770 {} \;' . "\n";
+                $script .= 'find "' . $fdlMasterFolder . '" -type f -user $USERNAME -exec chmod 660 {} \;' . "\n";
+            }
+
+            $script .= 'fi' . "\n";
+
+            $this->addLinuxScript($scriptName, $script);
+            $this->addLogline('fdl.log', 'FDL sync started for app on server ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userName']);
+        }
     }
 
-    public function fastDLSync () {
-        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+    public function fastDLSync ($fdlConnectString) {
 
-        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
+        if (strlen($fdlConnectString) > 0) {
+
+            if (substr($fdlConnectString, -1, 1) != '/') {
+                $fdlConnectString .= '/';
+            }
+
+            $fdlConnectString .= $this->appServerDetails['template']['shorten'] . '/';
+
+            if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
+                $this->linuxFastDLSync($fdlConnectString);
+            } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
+            }
         }
     }
 
@@ -1684,7 +1847,7 @@ class AppServer {
 
         global $resellerLockupID;
 
-        $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/backup/');
+        $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/backup/');
         $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-create-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
@@ -1721,7 +1884,7 @@ class AppServer {
 
         global $resellerLockupID;
 
-        $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/backup/');
+        $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/backup/');
         $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-deploy-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
