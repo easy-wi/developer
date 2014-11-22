@@ -339,7 +339,7 @@ class ValidateUserinput {
 
         $check = $this->if_obj_or_str($value, $type, $object);
 
-        if ($check and is_string($check) and preg_match("/^[\w\-\_\/]{1,}[\/]{0,1}$/", $check)) {
+        if ($check and is_string($check) and preg_match("/^[\w\-\_\/\.]{1,}[\/]{0,1}$/", $check)) {
             return $check;
         } else if ($check) {
             return $this->loop($check, 'path', $type);
