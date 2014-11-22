@@ -189,6 +189,8 @@ if (isset($reseller_id)) {
 
     if (isset($admin_id)) {
         $resellerLockupID = ($reseller_id != 0 and $reseller_id != $admin_id) ? $admin_id : $reseller_id;
+    } else {
+        $resellerLockupID = $reseller_id;
     }
 
     if (isset($user_id) and !isset($admin_id)) {
