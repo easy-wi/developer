@@ -53,6 +53,7 @@ include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 include(EASYWIDIR . '/stuff/methods/class_masterserver.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/queries_updates.php');
@@ -77,7 +78,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query = $sql->prepare("SELECT t.`shorten` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`gameq`='minecraft' GROUP BY t.`shorten` ORDER BY t.`shorten`");
     $query2 = $sql->prepare("UPDATE `servertypes` SET `steamVersion`=?,`downloadPath`=? WHERE `shorten`=?");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         echo 'Retrieving Version for ' . $row['shorten'] . "\r\n";
         $reply = ($row['shorten'] == 'bukkit') ? getCraftBukkitVersion () : getMinecraftVersion();
 
@@ -96,7 +97,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query2 = $sql->prepare("UPDATE `servertypes` SET `steamVersion`=? WHERE `appID`=?");
     $query->execute();
     $steamVersion = array();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         
         if (!in_array($row['appID'], array(null,'', false))) {
             
@@ -120,9 +121,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $webhostdomain = webhostdomain(0);
     $query = $sql->prepare("SELECT `timezone`,`voice_autobackup`,`voice_autobackup_intervall`,`voice_maxbackup`,`down_checks`,`resellerid` FROM `settings`");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $resellerstimezone = $row['timezone'];
         $resellerid = $row['resellerid'];
+        $resellerLockupID = $row['resellerid'];
         $voice_autobackup = $row['voice_autobackup'];
         $voice_autobackup_intervall = $row['voice_autobackup_intervall'];
         $voice_maxbackup = $row['voice_maxbackup'];
@@ -372,7 +374,6 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     }
                 }
 
-
                 if (count($cmds) > 0) {
 
                     if (ssh2_execute('vm', $ts3masterid, $cmds)) {
@@ -396,179 +397,77 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
 
         $currenttime = strtolower(date('D', strtotime("$resellerstimezone hour"))) . '_' . date('G',strtotime("$resellerstimezone hour"));
-        $query = $sql->prepare("SELECT `id` FROM `rserverdata` WHERE `active`='Y'");
-        $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`ftppassword`,?) AS `decryptedftppass`,AES_DECRYPT(`ppassword`,?) AS `decryptedppassword` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=? AND `active`='Y' AND `lendserver`='N' AND `stopped`='N' ORDER BY `userid`,`serverid`");
 
+        $query2 = $sql->prepare("SELECT g.`id`,CONCAT(g.`serverip`,':',g.`port`) AS `server`,g.`protected`,AES_DECRYPT(`ftpbackup`,?) AS `backup` FROM `gsswitch` AS g INNER JOIN `userdata` AS u ON u.`id`=g.`userid` WHERE g.`rootID`=? AND g.`active`='Y' AND g.`lendserver`='N' AND g.`stopped`='N' AND u.`active`='Y'");
+        $query3 = $sql->prepare("SELECT r.*,s.`id` AS `server_id` FROM `gserver_restarts` AS r INNER JOIN `servertypes` AS t ON t.`shorten`=r.`gsswitch` AND t.`resellerid`=r.`resellerid` INNER JOIN `serverlist` AS s ON s.`servertype`=t.`id` AND s.`switchID`=r.`switchID` WHERE r.`switchID`=? AND r.`restarttime`=? LIMIT 1");
+        $query4 = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query5 = $sql->prepare("UPDATE `serverlist` SET `anticheat`=?,`map`=?,`mapGroup`=?,`servertemplate`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query6 = $sql->prepare("UPDATE `gsswitch` SET `ppassword`=AES_ENCRYPT(?,?) WHERE `id`=? LIMIT 1");
+
+        $query = $sql->prepare("SELECT `id`,`resellerid` FROM `rserverdata` WHERE `active`='Y'");
         $query->execute();
-        foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row1) {
+        while($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-            $cmds = array();
-            $rootID = $row1['id'];
+            $resellerLockupID = $row['resellerid'];
 
-            $query2->execute(array($aeskey, $aeskey, $rootID, $resellerid));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            $appServer = new AppServer($row['id']);
 
-                unset($restart);
+            $query2->execute(array($aeskey, $row['id']));
+            while($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
-                $serverip = $row2['serverip'];
-                $gsport = $row2['port'];
-                $gsswitchID = $row2['id'];
-                $useridID = $row2['userid'];
-                $newlayout = $row2['newlayout'];
-                $gsfolder = $serverip . '_' . $gsport;
-                $ftppass = $row2['decryptedftppass'];
-                $decryptedftppass = $row2['decryptedppassword'];
-                $protected_old = $row2['protected'];
+                $query3->execute(array($row2['id'], $currenttime));
+                while($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
-                if ($row2['serverid'] == null) {
-                    $query3 = $sql->prepare("SELECT `id` FROM `serverlist` WHERE `switchID`=? LIMIT 1");
-                    $query3->execute(array($gsswitchID));
-                    $runID_old = $query3->fetchColumn();
-                    $query3 = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? LIMIT 1");
-                    $query3->execute(array($runID_old, $gsswitchID));
-                } else {
-                    $runID_old = $row2['serverid'];
-                }
+                    $query4->execute(array($row3['server_id'], $row3['switchID'], $resellerLockupID));
+                    $query5->execute(array($row3['anticheat'], $row3['map'], $row3['mapGroup'], $row3['template'], $row3['server_id'], $resellerLockupID));
 
-                $server = $row2['serverip'] . ':' . $row2['port'];
+                    $appServer->getAppServerDetails($row3['switchID']);
 
-                $query3 = $sql->prepare("SELECT * FROM `gserver_restarts` WHERE `switchID`=? AND `restarttime`=? LIMIT 1");
-                $query3->execute(array($gsswitchID, $currenttime));
-                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                    $template = $row3['template'];
-                    $anticheat = $row3['anticheat'];
-                    $shorten = $row3['gsswitch'];
-                    $map = $row3['map'];
-                    $mapGroup = $row3['mapGroup'];
-                    $protected = $row3['protected'];
-                    $restart = $row3['restart'];
-                    $backup = $row3['backup'];
-                    $worldsafe = $row3['worldsafe'];
-                    $upload = $row3['upload'];
-                }
+                    if ($row3['restart'] == 'N' and $row3['worldsafe'] == 'Y') {
 
-                $query3 = $sql->prepare("SELECT `active`,`cname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query3->execute(array($row2['userid'], $resellerid));
-                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                    $user_active = $row3['active'];
-                    $SSH2customer = $row3['cname'];
-                }
+                        $appServer->mcWorldSave();
 
-                if ($newlayout == 'Y') {
-                    $SSH2customer .= '-' . $gsswitchID;
-                }
-
-                if (isset($restart) and $user_active == 'Y') {
-
-                    $query3 = $sql->prepare("SELECT s.`id`,s.`upload`,s.`map`,s.`servertemplate`,s.`mapGroup`,t.`gameq`,t.`gamebinary` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE t.`shorten`=? AND s.`switchID`=? LIMIT 1");
-                    $query3->execute(array($shorten, $gsswitchID));
-                    foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                        $runID = $row3['id'];
-
-                        $query3 = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                        $query3->execute(array($runID, $gsswitchID, $resellerid));
-                        $query3 = $sql->prepare("UPDATE `serverlist` SET `anticheat`=?,`map`=?,`mapGroup`=?,`servertemplate`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                        $query3->execute(array($anticheat, $map, $mapGroup, $template, $runID, $resellerid));
-                        $shortens = '';
-
-                        if ($restart == 'Y') {
-                            unset($newProtected);
-
-                            if ($protected== 'Y' and $protected_old== 'N') {
-
-                                $tmp = gsrestart($gsswitchID,'so', $aeskey, $resellerid);
-
-                                if (is_array($tmp)) {
-                                    foreach($tmp as $t) {
-                                        $cmds[] = $t;
-                                    }
-                                }
-
-                                echo "Stopping unprotected server: $server\r\n";
-
-                                $gamestring = '1_' . $shorten;
-
-                                $randompass = passwordgenerate(20);
-
-                                $query3 = $sql->prepare("UPDATE `gsswitch` SET `ppassword`=AES_ENCRYPT(?,?) WHERE `id`=? LIMIT 1");
-                                $query3->execute(array($randompass, $aeskey, $gsswitchID));
-
-                                $cmds[] = './control.sh mod '.$SSH2customer . ' ' . $ftppass . ' ' . $randompass;
-                                $SSH2customer .= '-p';
-                                $cmds[]="sudo -u ${SSH2customer} ./control.sh reinstserver ${SSH2customer} ${gamestring} ${gsfolder} protected";
-
-                                echo 'Reinstall protected server: '.$server."\r\n";
-
-                                $newProtected = true;
-                            }
-
-                            $query3 = $sql->prepare("UPDATE `gsswitch` SET `serverid`=?,`stopped`='N',`protected`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                            $query3->execute(array($runID, $protected, $gsswitchID, $resellerid));
-
-                            if (!isset($newProtected)) {
-
-                                echo 'Restarting server: '.$server."\r\n";
-                                $tmp = gsrestart($gsswitchID,'re', $aeskey, $resellerid);
-
-                                if (is_array($tmp)) {
-                                    foreach($tmp as $t) {
-                                        $cmds[] = $t;
-                                    }
-                                }
-                            }
-
-                        } else if ($restart == 'N' and $row3['gameq'] == 'minecraft' and $worldsafe == 'Y') {
-
-                            $cmds[]="sudo -u ${SSH2customer} ./control.sh mc_ws $gsfolder";
-
-                            echo "Minecraft worlsafe: $server\r\n";
-
-                        } else if ($restart == 'N' and $row3['gamebinary'] == 'srcds_run' and ($uploadtype == 2 or $uploadtype == '3') and $upload== 'Y') {
-
-                            $tmp = gsrestart($gsswitchID,'du', $aeskey, $resellerid);
-
-                            if (is_array($tmp)) {
-                                foreach($tmp as $t) {
-                                    $cmds[] = $t;
-                                }
-                            }
-
-                        }
-
-                        if ($backup == 'Y') {
-
-                            $shortens = array();
-
-                            $query3 = $sql->prepare("SELECT AES_DECRYPT(`ftpbackup`,?) AS `backup` FROM `userdata` WHERE `id`=? LIMIT 1");
-                            $query3->execute(array($aeskey, $useridID));
-                            $ftpbackup = $query3->fetchColumn();
-
-                            $query3 = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
-                            $query3->execute(array($gsswitchID));
-                            foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
-                                $shortens[] = $row3['shorten'];
-                            }
-
-                            $cmds[]="sudo -u ${SSH2customer} ./control.sh backup ${gsfolder} \"".implode(' ', $shortens)."\" \"${webhostdomain}\" \"${ftpbackup}\"";
-
-                            echo "Backup for $server\r\n";
-                        }
+                        echo 'MC worldsave: ' . $row2['server'] . "\r\n";
                     }
-                } else {
-                    echo "$currenttime Not the restart time for $server\r\n";
+
+                    if ($row3['restart'] == 'N' and $row3['upload'] == 'Y') {
+
+                        $appServer->demoUpload();
+
+                        echo 'Demo upload for: ' . $row2['server'] . "\r\n";
+                    }
+
+                    if ($row3['restart'] == 'Y') {
+
+                        if ($row3['protected'] == 'Y' and $row2['protected'] == 'N') {
+
+                            $appServer->stopAppHard();
+
+                            $query6->execute(array(passwordgenerate(20), $aeskey, $row3['switchID']));
+
+                            $appServer->getAppServerDetails($row3['switchID']);
+                            $appServer->removeApp($row3['template']);
+                            $appServer->addApp($row3['template']);
+                        }
+
+                        $appServer->startApp();
+
+                        echo 'Restarting server: ' . $row2['server'] . "\r\n";
+                    }
+
+                    if ($row3['backup'] == 'Y') {
+
+                        $appServer->backupCreate($row2['backup']);
+
+                        echo 'Backup server: ' . $row2['server'] . "\r\n";
+                    }
                 }
             }
 
-            if (count($cmds)>0) {
-                if (ssh2_execute('gs', $rootID, $cmds)) {
-                    echo "Commands executed for server $server\r\n";
-                } else {
-                    echo "Executing commands for server $server failed \r\n";
-                }
+            $appServer->execute();
 
-                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                    print_r($cmds);
-                }
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                print implode("\r\n", $appServer->debug()) . "\r\n";
             }
         }
     }

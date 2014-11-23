@@ -72,6 +72,7 @@ include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/third_party/gameq/GameQ.php');
 include(EASYWIDIR . '/stuff/methods/class_mysql.php');
@@ -149,6 +150,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     # Game Server
     if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'gs') {
 
+        $startStopList = array();
+
         // Lend server stopping.
         // We want only one socket per root server. Collect the to be stopped lendservers in an array and sort by root ID
         $rtmp = array();
@@ -157,7 +160,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $query2 = $sql->prepare("SELECT g.`rootID`,g.`id`,g.`userid`,g.`serverip`,g.`port` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? LIMIT 1");
         $query3 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute();
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $id = $row['id'];
             $lendtime = $row['lendtime'];
             $serverid = $row['serverid'];
@@ -168,23 +171,15 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $query3->execute(array($id, $resellerid));
 
                 $query2->execute(array($row['serverid']));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                     $loguserid = $row2['userid'];
                     $reseller_id = $row['resellerid'];
                     $loguseraction = "%stop% %gserver% {$row2['serverip']}:{$row2['port']} (Lend stop)";
                     $insertlog->execute();
 
-                    $tmp = gsrestart($row2['id'], 'so', $aeskey, $resellerid);
-
-                    if (is_array($tmp)) {
-                        foreach($tmp as $t) {
-                            $rtmp[$row2['rootID']][] = $t;
-                        }
-                    }
-
+                    $startStopList[$row['resellerid']][$row2['rootID']]['stop'][] = $id;
                 }
-
 
                 print "Time is up, stopping lendserver: $id\r\n";
 
@@ -193,14 +188,6 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             }
         }
 
-        // Send stop commands to rootserver
-        foreach ($rtmp as $k => $v) {
-            if (count($v) > 0) {
-                ssh2_execute('gs', $k, $v);
-            }
-        }
-
-
         // Define basic variables for GS status checks
         $other = array();
         $i = 1;
@@ -208,7 +195,6 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $rootID = 0;
         $serverBatchArray = array();
         $allServersArray = array();
-        $shellCmds = array();
 
         $query2 = $sql->prepare("SELECT g.`id`,g.`serverid`,g.`serverip`,g.`port`,g.`port2`,g.`port3`,g.`port4`,g.`port5`,t.`gameq`,t.`shorten`,t.`useQueryPort` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`stopped`='N' AND g.`active`='Y'");
         $query = $sql->prepare("SELECT DISTINCT(`rootID`) AS `root_id` FROM `gsswitch` WHERE `active`='Y'");
@@ -264,10 +250,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $rootID = $row['root_id'];
         }
 
-
-
         $allServersArray[] = $serverBatchArray;
-
 
         print "Checking $totalCount server(s) with GameQ query\r\n";
 
@@ -292,10 +275,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $shutdownemptytime = 0;
                 $notified = 0;
 
-                $query = $sql->prepare("SELECT s.`id` AS `serverID`,t.`description`,t.`gamebinary`,g.* FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
-                $query2 = $sql->prepare("SELECT `id`,`started` FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
+                $query = $sql->prepare("SELECT s.`id` AS `serverID`,t.`description`,t.`gamebinary`,l.`id` AS `lend_id`,l.`started` AS `lend_started`,g.* FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `lendedserver` AS l ON l.`serverid`=s.`id` WHERE g.`id`=? LIMIT 1");
                 $query->execute(array($switchID));
-                foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $serverip = $row['serverip'];
                     $autoRestart = $row['autoRestart'];
@@ -317,14 +299,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     }
 
                     if ($lendserver == 'Y' and $lendActive == 'Y') {
-
+                        $lid = $row['lend_id'];
                         $shutdownemptytime = $resellersettings[$resellerid]['shutdownemptytime'];
-
-                        $query2->execute(array($row['serverID']));
-                        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                            $lid = $row2['id'];
-                            $elapsed = round((strtotime('now') - strtotime($row2['started'])) / 60);
-                        }
+                        $elapsed = round((strtotime('now') - strtotime($row['lend_started'])) / 60);
                     }
                 }
 
@@ -342,7 +319,6 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $password = 'Y';
                 }
 
-                $returnCmd = array();
                 $lendStop = array();
 
                 // Check lendserver specific settings
@@ -470,12 +446,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $loguseraction .= (count($lendStop) > 0 && count($rulebreak) == 0) ? " " . implode(', ', $lendStop) : "";
                         $insertlog->execute();
 
-                        $tmp = gsrestart($switchID, 'so', $aeskey, $resellerid);
-                        if (is_array($tmp)) {
-                            foreach($tmp as $t) {
-                                $returnCmd[] = $t;
-                            }
-                        }
+                        $startStopList[$resellerid][$rootID]['stop'][] = $switchID;
 
                         $query = $sql->prepare("DELETE FROM `lendedserver` WHERE `serverid`=? AND `resellerid`=? AND `servertype`='g' LIMIT 1");
                         $query->execute(array($switchID, $resellerid));
@@ -511,12 +482,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $loguseraction = "%start% %gserver% {$address} (Found offline since {$notified} checks)";
                             $insertlog->execute();
 
-                            $tmp = gsrestart($switchID, 're', $aeskey, $resellerid);
-                            if (is_array($tmp)) {
-                                foreach($tmp as $t) {
-                                    $returnCmd[] = $t;
-                                }
-                            }
+                            $startStopList[$resellerid][$rootID]['start'][] = $switchID;
 
                         } else {
                             print "Not Restarting: $address\r\n";
@@ -538,21 +504,37 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                 $query = $sql->prepare("UPDATE `gsswitch` SET `queryName`=?,`queryNumplayers`=?,`queryMaxplayers`=?,`queryMap`=?,`queryPassword`=?,`queryUpdatetime`=?,`notified`=? WHERE `id`=? LIMIT 1");
                 $query->execute(array($name, $numplayers, $maxplayers, $map, $password, $logdate, $notified, $switchID));
-
-                foreach($returnCmd as $t) {
-                    $shellCmds[$rootID][] = $t;
-                }
             }
         }
 
         unset($gq);
 
-        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-            print_r($shellCmds);
-        }
+        foreach ($startStopList as $resellerLockupID => $rootServer) {
 
-        foreach($shellCmds as $k => $v) {
-            ssh2_execute('gs', $k, $v);
+            foreach ($rootServer as $rootID => $actionList) {
+
+                $appServer = new AppServer($rootID);
+
+                foreach ($actionList as $action => $switchIDs) {
+
+                     foreach ($switchIDs as $switchID) {
+
+                         $appServer->getAppServerDetails($switchID);
+
+                        if ($action == 'start') {
+                            $appServer->startApp();
+                        } else {
+                            $appServer->stopApp();
+                        }
+                    }
+                }
+
+                $appServer->execute();
+
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    print implode("\r\n", $appServer->debug()) . "\r\n";
+                }
+            }
         }
     }
 

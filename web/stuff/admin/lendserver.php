@@ -44,6 +44,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 
 $sprache = getlanguagefile('lendserver', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
@@ -140,7 +141,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($pa['lendserver']) {
 
-    if ($ui->id('id',19, 'post')) {
+    if ($ui->id('id', 19, 'post')) {
 
         $query = $sql->prepare("SELECT `serverid`,`servertype` FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',19, 'post'), $reseller_id));
@@ -153,9 +154,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
-            foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $cmds = gsrestart($row['switchID'], 'so', $aeskey, $reseller_id);
-                ssh2_execute('gs', $row['rootID'], $cmds);
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $appServer = new AppServer($row['rootID']);
+                $appServer->getAppServerDetails($row['switchID']);
+                $appServer->stopApp();
+                $appServer->execute();
             }
 
         } else if (isset($servertype) and $servertype == 'v') {
@@ -211,7 +214,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $deleteQuery = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? LIMIT 1");
 
-        $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
+        $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid`,`rootID` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
         $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
         $query3 = $sql->prepare("SELECT `id`,`slots`,`started`,`lendtime`,`password`,`rcon`,CURRENT_TIMESTAMP AS `now` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
 
@@ -248,8 +251,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 if ($time == 0 or ($shutDownEmpty == 'Y' and ($row3['lendtime'] - $timeleft) > $shutDownEmptyTime and $row['queryNumplayers'] < 1)) {
 
-                    $cmds = gsrestart($row['id'], 'so', $aeskey, $reseller_id);
-                    ssh2_execute('gs', $row['id'], $cmds);
+                    $appServer = new AppServer($row['rootID']);
+                    $appServer->getAppServerDetails($row['id']);
+                    $appServer->stopApp();
+                    $appServer->execute();
 
                     $deleteQuery->execute(array($row3['id']));
 

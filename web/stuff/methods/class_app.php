@@ -542,7 +542,7 @@ class AppServer {
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/move-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-' . $oldIP . '-' . $oldPort . '.sh');
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/server') . "\n";
         $script .= 'if [ -d "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']. '" ]; then rm -rf "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '"; fi' . "\n";
         $script .= 'mv ' . $oldIP . '_' . $oldPort . ' ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . "\n";
@@ -575,7 +575,7 @@ class AppServer {
 
         if ($standalone and isset($scriptName)) {
             $script = $this->shellScriptHeader;
-            $script .= '#rm ' . $scriptName . "\n";
+            $script .= 'rm ' . $scriptName . "\n";
         } else {
             $script = '';
         }
@@ -640,7 +640,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/') . "\n";
 
         foreach ($templates as $template) {
@@ -674,7 +674,7 @@ class AppServer {
         if ($standalone === true) {
 
             $script = $this->shellScriptHeader;
-            $script .= '#rm ' . $scriptName . "\n";
+            $script .= 'rm ' . $scriptName . "\n";
 
         } else {
             $script = '';
@@ -701,7 +701,7 @@ class AppServer {
     }
 
     public function mcWorldSave () {
-        if ($this->appServerDetails and $this->appServerDetails['template']['gameq'] == 'minecraft') {
+        if ($this->appServerDetails and $this->getGameType() == 'mc') {
             if ($this->appMasterServerDetails['os'] == 'L') {
             } else if ($this->appMasterServerDetails['os'] == 'W') {
             }
@@ -717,7 +717,7 @@ class AppServer {
             $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/stop-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
             $script = $this->shellScriptHeader;
-            $script .= '#rm ' . $scriptName . "\n";
+            $script .= 'rm ' . $scriptName . "\n";
 
         } else {
             $script = '';
@@ -786,7 +786,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/hardstop-' . $userName . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
 
         $script .= 'crontab -r' . "\n";
         $script .= 'screen -wipe > /dev/null 2>&1' . "\n";
@@ -1213,7 +1213,7 @@ class AppServer {
         $serverTemplateDir = $this->removeSlashes($serverDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
 
         $script .= $this->linuxStopApp(false, $scriptName);
 
@@ -1317,7 +1317,7 @@ class AppServer {
 
         if ($standalone == true) {
             $script = $this->shellScriptHeader;
-            $script .= '#rm ' . $scriptName . "\n";
+            $script .= 'rm ' . $scriptName . "\n";
         } else {
             $script = '';
         }
@@ -1361,7 +1361,7 @@ class AppServer {
         } else if (in_array($this->appServerDetails['app']['upload'], array(4, 5))) {
 
             $script .= 'DEMOPATH=`find -mindepth 1 -maxdepth 3 -type d -name "' . $this->appServerDetails['template']['modfolder'] . '" | head -n1`' . "\n";
-            $script .= 'SCREENLOG="`find /home/user12882-317/server/37.187.20.198_27025/css/ -name "screenlog.0" | head -n1`"' . "\n";
+            $script .= 'SCREENLOG="`find ' . $this->appServerDetails['absolutePath'] . ' -name "screenlog.0" | head -n1`"' . "\n";
             $script .= 'if [ "$SCREENLOG" != "" ]; then' . "\n";
             $script .= 'cd `dirname $SCREENLOG`' . "\n";
             $script .= 'tail -f screenlog.0 | while read LINE; do' . "\n";
@@ -1391,7 +1391,7 @@ class AppServer {
                 $screenScriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/demo-start-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
                 $script = $this->shellScriptHeader;
-                $script .= '#rm ' . $screenScriptName . "\n";
+                $script .= 'rm ' . $screenScriptName . "\n";
 
                 // Kill any screen that is running with the same name
                 $script .= 'ps fx | grep \'SCREEN\' | grep \'demo_' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '\' | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
@@ -1496,7 +1496,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/addons-add-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
 
         if ($id === false) {
 
@@ -1621,7 +1621,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/addons-del-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
         $script .= 'USER=`id -un`' . "\n";
 
         foreach ($ids as $id) {
@@ -1679,7 +1679,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/migrate-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
         $script .= 'if [ -d "' . $serverDir . '" ]; then ${IONICE}rm -rf "' . $serverDir . '"; fi' . "\n";
 
         $script .= $this->linuxAddApp(array($targetTemplate), false);
@@ -1714,7 +1714,6 @@ class AppServer {
         }
     }
 
-    //TODO: Fast DL Sync
     private function linuxFastDLSync ($fdlConnectString) {
 
         $gameType = $this->getGameType();
@@ -1726,7 +1725,7 @@ class AppServer {
             $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/fdl-sync-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
             $script = $this->shellScriptHeader;
-            $script .= '#rm ' . $scriptName . "\n";
+            $script .= 'rm ' . $scriptName . "\n";
             $script .= 'USERNAME=`id -un`' . "\n";
 
             $script .= 'if [ -f "' . $fdlFileList . '" ]; then' . "\n";
@@ -1853,7 +1852,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-create-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
 
         $script .= 'if [ ! -d "' . $backupDir . '" ]; then mkdir -p "' . $backupDir . '"; fi' . "\n";
         $script .= 'find "' . $backupDir . '" -maxdepth 1 -type f -name "*.tar.bz2" -delete' . "\n";
@@ -1890,7 +1889,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-deploy-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= '#rm ' . $scriptName . "\n";
+        $script .= 'rm ' . $scriptName . "\n";
 
         if (strlen($ftpDownloadString) > 0) {
             $script .= 'if [ ! -d "' . $backupDir . '" ]; then mkdir -p "' . $backupDir . '"; fi' . "\n";

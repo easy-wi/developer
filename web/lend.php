@@ -64,6 +64,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 
 $validacces = false;
 
@@ -311,8 +312,10 @@ if (isset($servertype)) {
 
                 $query1->execute(array($serverid, $reseller_id));
                 foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
-                    $cmds = gsrestart($row1['switchID'], 'so', $aeskey, $reseller_id);
-                    ssh2_execute('gs', $row1['rootID'], $cmds);
+                    $appServer = new AppServer($row1['rootID']);
+                    $appServer->getAppServerDetails($row1['switchID']);
+                    $appServer->stopApp();
+                    $appServer->execute();
                 }
 
             } else if ($servertype == 'v') {
@@ -881,8 +884,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 $query = $insert = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($serverid, $updateID, $reseller_id));
 
-                $cmds = gsrestart($updateID, 're', $aeskey, $reseller_id);
-                ssh2_execute('gs', $rootID, $cmds);
+                $appServer = new AppServer($rootID);
+                $appServer->getAppServerDetails($updateID);
+                $appServer->startApp();
+                $appServer->execute();
 
                 if (!isset($page_include) and $ui->id('xml', 1, 'post') == 1) {
 
