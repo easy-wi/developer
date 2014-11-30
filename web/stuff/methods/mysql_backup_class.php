@@ -108,7 +108,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
             $query = $this->connection->prepare("SELECT * FROM `".$table."`");
             $query->execute();
             $i = 1;
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $inserts = array();
                 foreach($row as $key => $val){
                     if (in_array($this->tableList[$table][$key], array('tinyint','smallint','int','bigint'))) {

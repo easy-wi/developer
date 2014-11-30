@@ -71,7 +71,7 @@ class HttpdManagement {
 
         $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `webMaster` WHERE `webMasterID`=:id AND `resellerID`=:resellerID LIMIT 1");
         $query->execute(array(':aeskey' => $this->aeskey, ':id' => $hostID, ':resellerID' => $this->resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             if ($row['active'] == 'N') {
                 return false;
@@ -143,7 +143,7 @@ class HttpdManagement {
 
             $query = $this->sql->prepare("SELECT v.`active`,v.`ownVhost`,v.`vhostTemplate`,v.`dns`,v.`hdd`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,u.`mail` FROM `webVhost` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
             $query->execute(array($this->aeskey, $vhostID, $this->resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $this->vhostData['hdd'] = $row['hdd'];
                 $this->vhostData['dns'] = $row['dns'];

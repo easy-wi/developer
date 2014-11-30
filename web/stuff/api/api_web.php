@@ -90,7 +90,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localUserLookupID = $row['id'];
             $localUserCname = $row['cname'];
 
@@ -137,7 +137,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $query = $sql->prepare("SELECT m.`webMasterID`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING $inSQLArray (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC LIMIT 1");
             $query->execute(array($resellerID));
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $webMasterID = $row['webMasterID'];
                 $hostExternalID = $row['externalID'];
                 $defaultdns = $row['defaultdns'];
@@ -190,7 +190,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT w.*,c.`cname` FROM `webVhost` AS w INNER JOIN `userdata` AS u ON u.`id`=w.`userID` WHERE w.`" . $from[$data['identify_server_by']] . "`=? AND w.`resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $changedCount = 1;
 
@@ -309,7 +309,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `webVhostID`,`userID`,`webMasterID`,`dns` FROM `webVhost` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localServerID = $row['webVhostID'];
             $localUserLookupID = $row['userID'];
@@ -349,7 +349,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT v.*,u.`cname`,u.`mail`,u.`externalID` AS `userExternalID`,m.`externalID` AS `masterExternalID` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`" . $from[$data['identify_server_by']] . "`=? AND v.`resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localServerID = $row['webVhostID'];
             $localUserLookupID = $row['userID'];

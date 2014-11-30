@@ -124,7 +124,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='cc' AND `transID`=? AND `lang`=? LIMIT 1");
 
                 $query->execute(array($id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     if (!in_array($row2['lang'], $array)) {
                         $query2->execute(array($id, $row2['lang']));
                     }
@@ -166,7 +166,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT * FROM `custom_columns_settings` WHERE `customID`=? LIMIT 1");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $item = $row['item'];
             $type = $row['type'];
@@ -182,7 +182,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query->execute(array($id, $ln));
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $lang = $row['lang'];
                 $text = $row['text'];
             }

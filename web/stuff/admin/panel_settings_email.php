@@ -92,7 +92,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query2 = $sql->prepare("DELETE FROM `translations` WHERE `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
 
             $query->execute(array($what, $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if (!in_array($row['lang'],(array) $postarray["languages-$what"])) {
                     $query2->execute(array($row['lang'], $what, $reseller_id));
                     $changeCount += $query2->rowCount();
@@ -178,7 +178,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $emailbackup = @gzuncompress($row['emailbackup']);
         $emailbackuprestore = @gzuncompress($row['emailbackuprestore']);
         $emaildown = @gzuncompress($row['emaildown']);

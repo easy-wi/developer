@@ -72,7 +72,7 @@ $statsArray = array(
 
 $query = $sql->prepare("SELECT `gameserverActive`,`gameserverSlotsActive`,`gameserverSlotsUsed`,`gameserverNoPassword`,`gameserverNoTag`,`gameserverNotRunning`,`mysqlDBActive`,`mysqlDBSpaceUsed`,`ticketsCompleted`,`ticketsInProcess`,`ticketsNew`,`virtualInstalled`,`virtualActive`,`voiceserverInstalled`,`voiceserverActive`,`voiceserverSlotsInstalled`,`voiceserverSlotsActive`,`voiceserverSlotsUsed`,`voiceserverTrafficAllowed`,`voiceserverTrafficUsed`,`voiceserverCrashed`,`webspaceActive`,`webspaceSpaceGivenActive`,`webspaceSpaceUsed` FROM `easywi_statistics_current` WHERE `userID`=? LIMIT 1");
 $query->execute(array($user_id));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $statsArray = $row;
 }
 
@@ -87,7 +87,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
     // start collecting news feed data. When combined, timestamps will be used as array index
     $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['orderBy'] == 'I' and $row['merge'] == 'N'){
             $orderFeedsBy = '`feedID` ASC';

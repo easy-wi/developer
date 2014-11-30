@@ -115,7 +115,7 @@ if (array_value_exists('action', 'ls', $data)) {
                     $listServerXML = $responsexml->createElement('gamesavailable');
 
                     $query2->execute(array($row['id']));
-                    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         $listShortenXML = $responsexml->createElement($row2['shorten'], $row2['description']);
                         $listServerXML->appendChild($listShortenXML);
                     }

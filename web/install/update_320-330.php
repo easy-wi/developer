@@ -121,7 +121,7 @@ if (isset($include) and $include == true) {
         $query = $sql->prepare("SELECT `id`,".implode(',',$opts)." FROM `gsswitch`");
         $query->execute();
         $insert = $sql->prepare("INSERT INTO `custom_columns` (`customID`,`itemID`,`var`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `var`=VALUES(`var`)");
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             foreach ($copy as $k => $v){
                 $val = $row[$v] == null ? '' : $row[$v];
                 $insert->execute(array($k, $row['id'],$val));

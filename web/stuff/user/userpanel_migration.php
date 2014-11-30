@@ -76,7 +76,7 @@ $query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,g.`i
 $query2 = $sql->prepare("SELECT s.`id`,t.`description`,t.`shorten`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,t.`appID` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? GROUP BY t.`shorten` ORDER BY t.`shorten`");
 $query->execute(array($aeskey, $user_id, $reseller_id));
 
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['gs'])) {
 
         $temp = array();
@@ -88,7 +88,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         }
 
         $query2->execute(array($row['id']));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
             if ($row2['gamebinary'] == 'hlds_run' or ($row2['gamebinary'] == 'srcds_run' and ($row2['appID'] == 740 or $row2['appID'] == 730))) {
                 $search = '/' . $row2['modfolder'];

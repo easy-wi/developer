@@ -109,7 +109,7 @@ if ($sSearch) {
     }
 }
 
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     if ($row['subuser'] == 0 or $adminLookup) {
         $username = $row['username'];

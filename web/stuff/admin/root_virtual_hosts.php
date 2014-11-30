@@ -65,7 +65,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `accounttype`='r' AND `resellerid`=`id` ORDER BY `id` DESC");
         $query->execute(array());
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $table[] = '<option value="'.$row['id'].'">'.$row['cname'].'</option>';
         }
         $template_file = "admin_root_virtualhosts_add.tpl";
@@ -165,7 +165,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT `ip`,`description` FROM `virtualhosts` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $description = $row['description'];
             $ip = $row['ip'];
         }
@@ -176,7 +176,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query4 = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
         $query5 = $sql->prepare("DELETE FROM `serverlist` WHERE `id`=? AND `resellerid`=?");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $query2->execute(array($row['id'], $row['userid']));
             $query4->execute(array($row['id'], $row['userid']));
@@ -200,7 +200,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT `active`,`esxi`,`ip`,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass`,`os`,`description`,`publickey`,`keyname`,`cpu`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota`,`resellerid` FROM `virtualhosts` WHERE `id`=:id LIMIT 1");
         $query->execute(array(':id' => $id,':aeskey' => $aeskey));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $esxi = $row['esxi'];
             $ip = $row['ip'];

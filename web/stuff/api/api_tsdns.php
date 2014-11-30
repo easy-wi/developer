@@ -88,7 +88,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localUserLookupID = $row['id'];
             $localUserCname = $row['cname'];
 
@@ -134,7 +134,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             $query = $sql->prepare("SELECT m.`id`,m.`externalID`,m.`defaultdns`, COUNT(d.`dnsID`)/(m.`max_dns`/100) AS `usedpercent` FROM `voice_tsdns` AS m LEFT JOIN `voice_dns` AS d ON d.`tsdnsID`=m.`id` WHERE m.`resellerid`=? AND m.`active`='Y' GROUP BY m.`id` HAVING $inSQLArray `usedpercent`<100 ORDER BY `usedpercent` ASC LIMIT 1");
             $query->execute(array($resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $tsdnsMasterID = $row['id'];
                 $hostExternalID = $row['externalID'];
                 $defaultdns = $row['defaultdns'];
@@ -183,7 +183,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT d.*,u.`cname` FROM `voice_dns` AS d INNER JOIN `userdata` AS u ON u.`id`=d.`userID` WHERE d.`" . $from[$data['identify_server_by']] . "`=? AND d.`resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $changedCount = 1;
 
@@ -282,7 +282,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `dnsID`,`userID`,`tsdnsID`,`dns` FROM `webVhost` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localServerID = $row['dnsID'];
             $localUserLookupID = $row['userID'];
@@ -322,7 +322,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT d.*,u.`cname`,u.`mail`,u.`externalID` AS `userExternalID`,m.`externalID` AS `masterExternalID` FROM `voice_dns` AS d INNER JOIN `voice_tsdns` AS m ON m.`id`=d.`tsdnsID` INNER JOIN `userdata` AS u ON u.`id`=d.`userID` WHERE d.`" . $from[$data['identify_server_by']] . "`=? AND d.`resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localServerID = $row['dnsID'];
             $tsdnsMasterID = $row['tsdnsID'];

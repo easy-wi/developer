@@ -157,7 +157,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
         $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $shortens[] = $row['shorten'];
             $shortens[] = $row['shorten'] . '-2';
             $shortens[] = $row['shorten'] . '-3';
@@ -171,7 +171,7 @@ if ($ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('
 
         $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $shortens[] = $row['shorten'];
             $shortens[] = $row['shorten'] . '-2';
             $shortens[] = $row['shorten'] . '-3';

@@ -331,7 +331,7 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
             $query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`=0 AND `accounttype`='a')");
             $query->execute(array($reseller_id));
         }
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['mail_serverdown'] == 'Y') {
                 sendmail('emaildown', $row['id'], 'TS3 Master ' . $sship . ' ( ' . $bad . ' )', '');
             }
@@ -402,7 +402,7 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
 
         $query = $sql->prepare("SELECT `id`,`defaultdns`,`externalDefaultDNS`,`tsdnsServerID` FROM `voice_masterserver` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['externalDefaultDNS'] == 'N') {
 
                 unset($temp);
@@ -429,7 +429,7 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
 
         $query = $sql->prepare("SELECT `id`,`defaultdns` FROM `voice_tsdns` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             unset($temp);
 

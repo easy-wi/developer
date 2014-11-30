@@ -56,7 +56,7 @@ if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post')) {
 
     $query = $sql->prepare("SELECT `ip`,`active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i INNER JOIN `api_settings` s ON s.`resellerID`=i.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR', 'server')));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if ($row['active'] == 'Y' and passwordhash($ui->password('pwd', 255, 'post'), $row['salt']) == $row['pwd'] and $ui->names('user', 255, 'post') == $row['user']) {
             $resellerIDs[] = $row['resellerID'];
         }

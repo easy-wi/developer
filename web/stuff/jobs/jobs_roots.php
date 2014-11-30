@@ -52,7 +52,7 @@ $query6 = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer` WHERE `id`=? 
 $query7 = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=0 WHERE `ip`=? LIMIT 1");
 
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $extraData = @json_decode($row['extraData']);
     $extraData = (array) $extraData;

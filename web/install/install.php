@@ -434,7 +434,7 @@ if ($currentStep == 6 and count($systemCheckError) == 0) {
 
     $query = $sql->prepare("SELECT `cname`,`mail` FROM `userdata` WHERE `id`=1");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $cname = $row['cname'];
         $email = $row['mail'];
     }
@@ -555,7 +555,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
 
     $query = $sql->prepare("SELECT `language`,`email`,`prefix1`,`prefix2`,`faillogins`,`brandname` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $language = $row['language'];
         $email = $row['email'];
         $prefix1 = $row['prefix1'];

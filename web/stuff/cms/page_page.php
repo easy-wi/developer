@@ -57,7 +57,7 @@ if (isset($page_id) and is_numeric($page_id)) {
 
 	$query = $sql->prepare("SELECT t.`title`,t.`text`,t.`id`,p.`subpage` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='page' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
 	$query->execute(array($page_id ,$user_language));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $page_keywords = array();
         $tag_tags = array();
@@ -73,7 +73,7 @@ if (isset($page_id) and is_numeric($page_id)) {
 
 		$query2 = $sql->prepare("SELECT t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`='0' ORDER BY t.`name` DESC");
 		$query2->execute(array($row['id']));
-		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+		while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 			$page_data->AddData('keywords', $row2['name']);
             $tag_tags[] = ($seo == 'Y') ? '<a href=' . $page_url. '/' . $user_language. '/' . $page_sprache->tag . '/' . strtolower(szrp($row2['name'])) . '/>' . $row2['name'] . '</a>' : '<a href=' . $page_url . '/index.php?site=tag&amp;tag=' . strtolower(szrp($row2['name'])) . '/>' . $row2['name'] . '</a>';
 		}
@@ -88,7 +88,7 @@ if (isset($page_id) and is_numeric($page_id)) {
         $query->execute(array($breadcrumbID, $user_language));
         unset($breadcrumbID);
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $link = (isset($seo) and $seo == 'Y') ? $page_data->pageurl . '/' . $user_language . '/' . szrp($row['title']) . '/' : $page_data->pageurl . '?s=page&amp;l=' . $user_language . '&amp;id=' . $row['id'];
 
@@ -174,7 +174,7 @@ if (isset($page_id) and is_numeric($page_id)) {
 
             $query = $sql->prepare("SELECT t.`id`,p.`id` AS `pageID`,p.`type`,t.`shortlink`,t.`title`,t.`text`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`=1 AND p.`resellerid`=0 AND (LOWER(t.`shortlink`) LIKE :search OR LOWER(t.`title`) LIKE :search OR LOWER(t.`text`) LIKE :search)");
             $query->execute(array(':search' => '%' . $value . '%'));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 if (!isset($titleLanguages[$row['language']])) {
                     $titleLanguages[$row['language']] = array('page' => getlanguagefile('page', $row['language'], 0), 'general' => getlanguagefile('general', $row['language'], 0));
@@ -336,7 +336,7 @@ if (isset($s) and $s == 'page') {
 
     $query = $sql->prepare("SELECT `title`,`language` FROM `page_pages_text` WHERE `pageid`=?");
     $query->execute(array($page_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $langLinks[$row['language']] = ($page_data->seo == 'Y') ? szrp($row['title'])  : '?s=page&amp;id=' . $page_id;
     }
 

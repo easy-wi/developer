@@ -1550,7 +1550,7 @@ foreach ($defined as $table => $t_p) {
 
     $query = $sql->prepare("SHOW TABLE STATUS LIKE '${table}'");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['Engine'] == 'MyISAM') {
 
@@ -1588,7 +1588,7 @@ foreach ($defined as $table => $t_p) {
 
         $query = $sql->prepare("SHOW COLUMNS FROM `${table}`");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $array = '';
             $Field = $row['Field'];

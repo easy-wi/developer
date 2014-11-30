@@ -131,7 +131,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($data[$data['identify_user_by']], $resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $localUserLookupID = $row['id'];
                 $ftpUser = $row['cname'];
@@ -150,7 +150,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             foreach ($shorten as $singleShorten) {
 
                 $query->execute(array($singleShorten, $resellerID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     if (!isset($portMax) or $row['portMax'] > $portMax or (isset($data['primary']) and gamestring($data['primary']) and $row['portMax'] <= $portMax and $singleShorten == $data['primary'])) {
                         $portStep = $row['portStep'];
@@ -213,7 +213,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 $query = $sql->prepare("SELECT r.`id`,r.`quota_active`,r.`install_paths`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg` AS m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` AS r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
                 $query->execute(array($resellerID, $slots, $masterServerCount));
 
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $ips = array();
 
@@ -254,7 +254,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
                         $query2 = $sql->prepare("SELECT `taskset`,`cores` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
                         $query2->execute(array($hostID, $resellerID));
-                        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                             $coreExploded = explode(',', $row2['cores']);
                             $coreCounted = count($coreExploded);
@@ -478,7 +478,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
         $query = $sql->prepare("SELECT r.`install_paths`,r.`quota_active`,r.`externalID`,r.`hyperthreading`,r.`cores` AS `coresAvailable`,g.*,u.`cname` FROM `gsswitch` g INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `userdata` u ON u.`id`=g.`userid` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localID = $row['id'];
             $userID = $row['userid'];
@@ -504,7 +504,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
                 $query2 = $sql->prepare("SELECT `taskset`,`cores` FROM `gsswitch` WHERE `rootID`=? AND `resellerid`=?");
                 $query2->execute(array($hostID, $resellerID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $coreExploded = explode(',', $row2['cores']);
                     $coreCounted = count($coreExploded);
@@ -729,7 +729,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 foreach ($shorten as $singleShorten) {
 
                     $query->execute(array($localID, $singleShorten, $resellerID));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         if ($row['list_id'] === null) {
 
@@ -804,7 +804,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
         $query = $sql->prepare("SELECT r.`externalID`,g.`id`,g.`serverip`,g.`port`,g.`userid`,g.`rootID` FROM `gsswitch` g LEFT JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`".$from[$data['identify_server_by']]."`=? AND g.`resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localID = $row['id'];
             $userID = $row['userid'];
             $name = $row['serverip'] . ':' . $row['port'];
@@ -884,7 +884,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $listServerXML = $responsexml->createElement('gamesavailable');
 
             $query2->execute(array($row['id']));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 $listShortenXML = $responsexml->createElement($row2['shorten'], $row2['description']);
                 $listServerXML->appendChild($listShortenXML);
             }
@@ -926,7 +926,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             $query = $sql->prepare("SELECT `id`,`userid`,`rootID`,`serverip`,`port` FROM `gsswitch` WHERE `".$from[$data['identify_server_by']]."`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($data[$data['identify_server_by']], $resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $hostID = $row['rootID'];
                 $userID = $row['userid'];
                 $localID = $row['id'];

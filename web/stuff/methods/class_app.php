@@ -108,7 +108,7 @@ class AppServer {
             if ($this->appMasterServerDetails['os'] == 'L') {
                 $this->shellScriptHeader = "#!/bin/bash\n";
                 $this->shellScriptHeader .= "if ionice -c3 true 2>/dev/null; then IONICE='ionice -n 7 '; fi\n";
-                $this->shellScripts['user'] = $this->shellScriptHeader . '#rm /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh' . "\n";
+                $this->shellScripts['user'] = $this->shellScriptHeader . 'rm /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh' . "\n";
             }
         }
 

@@ -60,7 +60,7 @@ $ewVersions['cVersion'] = $query->fetchColumn();
 
 $query = $sql->prepare("SELECT `version`,`releasenotesDE`,`releasenotesEN` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $ewVersions['version'] = $row['version'];
     $ewVersions['releasenotesDE'] = $row['releasenotesDE'];
     $ewVersions['releasenotesEN'] = $row['releasenotesEN'];
@@ -72,7 +72,7 @@ if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and ($ewVersions['cVersion
 
 $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
 $query->execute(array($admin_id));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $great_name = $row['name'];
     $great_vname = $row['vname'];
 
@@ -101,7 +101,7 @@ $customFiles = array();
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('A','C')");
 $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR . '/stuff/custom_modules/' . $row['file'])) {
 

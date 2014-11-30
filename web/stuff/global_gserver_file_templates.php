@@ -105,7 +105,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `shorten`,`description` FROM `servertypes` WHERE `resellerid`=? GROUP BY `shorten`,`description` ORDER BY `shorten`");
     $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $table[$row['shorten']] = $row['description'];
     }
 
@@ -120,7 +120,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if (isset($adminInclude)) {
                 $query = $sql->prepare("SELECT `servertype`,`name`,`content` FROM `gserver_file_templates` WHERE `templateID`=? AND `resellerID`=? AND `userID` IS NULL LIMIT 1");
                 $query->execute(array($id, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $servertype = $row['servertype'];
                     $name = $row['name'];
                     $content = $row['content'];
@@ -128,7 +128,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $query = $sql->prepare("SELECT `servertype`,`name`,`content` FROM `gserver_file_templates` WHERE `templateID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id, $user_id, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $servertype = $row['servertype'];
                     $name = $row['name'];
                     $content = $row['content'];
@@ -297,7 +297,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($user_id, $resellerLockupID));
     }
 
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $table[] = array('id' => $row['templateID'], 'name' => $row['name'], 'servertype' => $row['servertype']);
     }
 

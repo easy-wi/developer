@@ -134,7 +134,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         
         $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `active`='Y' AND `resellerid`=:reseller_id");
         $query2->execute(array(':aeskey' => $aeskey, ':reseller_id' => $resellerid));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $ts3masterid = $row2['id'];
             
             $query3 = $sql->prepare("SELECT `id` FROM `voice_server` WHERE `masterserver`=? LIMIT 1");
@@ -242,7 +242,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $query3->execute(array($resellerid));
                         }
 
-                        foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                        while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                             if ($row3['mail_serverdown'] == 'Y') {
                                 sendmail('emaildownrestart', $row3['id'], $queryip.' ('.$restartreturn.')','');
                             }
@@ -286,7 +286,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                 $query3 = $sql->prepare("SELECT * FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
                 $query3->execute(array($ts3masterid, $resellerid));
-                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
                     $ts3id = $row3['id'];
                     $serverCreated = $row3['serverCreated'];
@@ -324,7 +324,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                         $query4 = $sql->prepare("SELECT `id`,`date`,`name` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC");
                         $query4->execute(array($ts3id, $ts3userid, $resellerid));
-                        foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+                        while ($row4 = $query4->fetch(PDO::FETCH_ASSOC)) {
 
                             $backupcount++;
                             $date = $row4['date'];
@@ -344,7 +344,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                                 $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC LIMIT $toomuch");
                                 $query4->execute(array($ts3id, $ts3userid, $resellerid));
-                                foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+                                while ($row4 = $query4->fetch(PDO::FETCH_ASSOC)) {
                                     $query5 = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
                                     $query5->execute(array($row4['id'], $ts3userid, $resellerid));
                                     $backupfolder='backups/virtualserver_'.$localserverid . '/';
@@ -361,7 +361,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                             $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                             $query4->execute(array($ts3id, $ts3userid, $resellerid));
-                            foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+                            while ($row4 = $query4->fetch(PDO::FETCH_ASSOC)) {
                                 $filefolder = 'files/virtualserver_' . $localserverid . '/';
                                 $backupfolder = 'backups/virtualserver_' . $localserverid . '/';
 

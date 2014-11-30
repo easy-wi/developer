@@ -110,7 +110,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT * FROM `userdata_social_providers` WHERE `serviceProviderID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($id, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $active = (string) $row['active'];
                 $name = (string) $row['filename'];
                 $keyID = (string) $row['identifier'];
@@ -237,7 +237,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `serviceProviderID`,`active`,`filename`  FROM `userdata_social_providers` WHERE `resellerID`=?");
     $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $table[] = array('id' => $row['serviceProviderID'], 'active' => $row['active'], 'name' => $row['filename']);
     }
 

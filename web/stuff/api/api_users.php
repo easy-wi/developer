@@ -119,7 +119,7 @@ if (array_value_exists('action', 'add', $data)) {
 
             $query = $sql->prepare("SELECT `prefix2` FROM `settings` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $prefix = $row['prefix2'];
                 $tmpName = $row['prefix2'].$salt;
             }
@@ -131,7 +131,7 @@ if (array_value_exists('action', 'add', $data)) {
         if (isset($data['groupID']) and isid($data['groupID'], 19)) {
 
             $query->execute(array($data['groupID'], $resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $userGroupIDs[] = $row['id'];
             }
 
@@ -144,7 +144,7 @@ if (array_value_exists('action', 'add', $data)) {
             foreach ($data['groupID'] as $groupID) {
                 if (isid($groupID, 19)) {
                     $query->execute(array($groupID, $resellerID));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $userGroupIDs[] = $row['id'];
                     }
                 }
@@ -155,14 +155,14 @@ if (array_value_exists('action', 'add', $data)) {
 
             $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `grouptype`='u' AND `active`='Y' AND `defaultgroup`='Y' AND `resellerid`=? LIMIT 1");
             $query->execute(array($resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $userGroupIDs[] = $row['id'];
             }
 
             if (count($userGroupIDs) == 0) {
                 $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `grouptype`='u' AND `active`='Y' AND `resellerid`=? LIMIT 1");
                 $query->execute(array($resellerID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $userGroupIDs[] = $row['id'];
                 }
             }
@@ -300,7 +300,7 @@ if (array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`cname`,`active` FROM `userdata` WHERE `".$from[$data['identify_by']]."`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localID = $row['id'];
             $name = $row['cname'];
             $oldactive = $row['active'];
@@ -433,7 +433,7 @@ if (array_value_exists('action', 'add', $data)) {
 
             $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=? AND `resellerID`=?");
             $query->execute(array($localID, $resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $foundGroupIDs[] = $row['groupID'];
             }
 
@@ -443,7 +443,7 @@ if (array_value_exists('action', 'add', $data)) {
 
                 $query->execute(array($data['groupID'], $resellerID));
 
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $userGroupIDs[] = $row['id'];
                 }
 
@@ -456,7 +456,7 @@ if (array_value_exists('action', 'add', $data)) {
                 foreach ($data['groupID'] as $groupID) {
                     if (isid($groupID, 19)) {
                         $query->execute(array($groupID, $resellerID));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $userGroupIDs[] = $row['id'];
                         }
                     }
@@ -523,7 +523,7 @@ if (array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localID = $row['id'];
             $name = $row['cname'];
         }
@@ -564,7 +564,7 @@ if (array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`active`,`cname`,`name`,`vname`,`mail`,`phone`,`handy`,`city`,`cityn`,`street`,`streetn`,`externalID`,`jobPending` FROM `userdata` WHERE `" . $from[$data['identify_by']] . "`=? AND `resellerid`=? AND `accounttype`='u' LIMIT 1");
         $query->execute(array($data[$data['identify_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $userArray['userdetails'] = $row;
             $userArray['userdetails']['show_user_data_only'] = $showUserDataOnly;
         }
@@ -585,7 +585,7 @@ if (array_value_exists('action', 'add', $data)) {
                     $shorten = array();
 
                     $query2->execute(array($row['id'], $resellerID));
-                    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         $shorten[] = $row2['shorten'];
                     }
 

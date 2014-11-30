@@ -64,7 +64,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $dns = $row['dns'];
             $ip = $row['ip'];
             $port = $row['port'];
@@ -78,7 +78,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($ui->smallletters('action',2, 'post') == 'md') {
         $query = $sql->prepare("SELECT d.`tsdnsID`,d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $tsdnsID = $row['tsdnsID'];
             $olddns = $row['dns'];
             $oldip = $row['ip'];
@@ -112,7 +112,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 				include(EASYWIDIR . '/stuff/keyphrasefile.php');
                 $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                 $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsID,':reseller_id' => $reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $publickey = $row['publickey'];
                     $queryip = $row['ssh2ip'];
                     $ssh2port = $row['decryptedssh2port'];
@@ -153,7 +153,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $table = array();
     $query = $sql->prepare("SELECT `dnsID`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `active`='Y' AND `userID`=? AND `resellerID`=? ORDER BY $orderby");
     $query->execute(array($user_id,$reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) $table[] = array('id' => $row['dnsID'], 'dns' => $row['dns'], 'address' => $row['ip'] . ':' . $row['port']);
     }
     $template_file = 'userpanel_voiceserver_dns_list.tpl';

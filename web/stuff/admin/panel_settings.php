@@ -148,7 +148,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 	$query = $sql->prepare("SELECT * FROM `settings`  WHERE `resellerid`=? LIMIT 1");
 	$query->execute(array($reseller_id));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$language_choosen = $row['language'];
 		$template_choosen = $row['template'];
         $selectlanguages = getlanguages($template_choosen);

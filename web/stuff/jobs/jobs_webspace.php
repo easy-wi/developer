@@ -46,14 +46,14 @@ $query6 = $sql->prepare("UPDATE `webVhost` SET `jobPending`='N' WHERE `webVhostI
 $query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE (`status` IS NULL OR `status`='1') IS NULL AND `type`='wv' AND `hostID`=?");
 
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $vhostObject = new HttpdManagement($row['hostID'], $row['resellerID']);
 
     if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
 
         $query2->execute(array($row['hostID']));
-        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
             $extraData = @json_decode($row2['extraData']);
 

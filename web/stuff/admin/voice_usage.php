@@ -67,7 +67,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 		$query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
         $query->execute(array($reseller_id));
-		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			if ($ui->id('what', 30, 'post') == $row['id']) {
 				$data[] = '<option value=' . $row['id'] . ' selected="selected">' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
 			} else {
@@ -77,7 +77,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('what', 30, 'post'),$reseller_id));
-		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			$display = $extra . '  ' . $row['cname'];
 		}
 
@@ -88,13 +88,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' LIMIT 1");
         $query->execute(array($ui->id('what', 30, 'post'),$reseller_id));
-		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			$display = $sprache->server . '  ' . $row['ip'] . ':' . $row['port'];
 		}
 
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' ORDER BY v.`ip`,v.`port`");
         $query->execute(array($reseller_id));
-		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $server = $row['ip'] . ':' . $row['port'];
 			if ($ui->id('what', 30, 'post') == $row['id']) {
 				$data[] = '<option value='. $row['id'] .' selected="selected">' . $server . '</option>';
@@ -110,13 +110,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `ssh2ip` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
         $query->execute(array($ui->id('what', 30, 'post'), $reseller_id));
-		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			$display = $sprache->server . '  ' . $row['ssh2ip'];
 		}
 
         $query = $sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? AND `active`='Y' ORDER BY `ssh2ip`");
         $query->execute(array($reseller_id));
-		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			if ($ui->id('what', 30, 'post') == $row['id']) {
 				$data[] = '<option value=' . $row['id'] . ' selected="selected">' . $row['ssh2ip'] . '</option>';
 			} else {

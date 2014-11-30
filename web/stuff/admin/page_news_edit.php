@@ -122,12 +122,12 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $keywords[$lg] = array();
 
                 $query->execute(array($lg, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $categories[$lg][] = $row['name'];
                 }
 
                 $query2->execute(array($lg, $resellerLockupID));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $keywords[$lg][] = $row2['name'];
                 }
             }
@@ -148,16 +148,16 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $query2 = $sql->prepare("SELECT `id`,`language`,`title`,`text` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language`");
             $query3 = $sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`language_id`=? AND u.`resellerid`=? ORDER BY t.`name` DESC");
             $query->execute(array($id, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $released = $row['released'];
                 $comments = $row['comments'];
 
                 $query2->execute(array($id, $resellerLockupID));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                     $query3->execute(array($id, $row2['id'], $resellerLockupID));
-                    foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                    while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                         if ($row3['type'] == 'tag') {
                             $keywords_used[$row2['language']][] = $row3['name'];
                         } else {
@@ -193,13 +193,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $categories[$lg] = array();
                     $keywords[$lg] = array();
                     $query->execute(array($lg, $resellerLockupID));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         if (!isset($categories_used[$lg]) or !in_array($row['name'], $categories_used[$lg])) {
                             $categories[$lg][] = $row['name'];
                         }
                     }
                     $query2->execute(array($lg, $resellerLockupID));
-                    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         if (!isset($keywords_used[$lg]) or !in_array($row2['name'], $keywords_used[$lg])) {
                             $keywords[$lg][] = $row2['name'];
                         }
@@ -236,7 +236,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `cname`,`name`,`vname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($admin_id, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $author = (($row['name'] == '' or $row['name'] == null) and ($row['vname'] == '' or $row['vname'] == null)) ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
             }
 
@@ -270,7 +270,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $query7 = $sql->prepare("DELETE FROM `page_terms_used` WHERE `language_id`=? AND `resellerid`=? LIMIT 1");
 
                 $query->execute(array($id, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $keywords = array();
                     $categories = array();
@@ -295,7 +295,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                         $rowCount += $query2->rowCount();
 
                         $query3->execute(array($id, $row['id'], $resellerLockupID));
-                        foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                        while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                             $keyword_exist[] = $row3['name'];
 
                             if (!in_array($row3['name'], $keywords)) {
@@ -308,7 +308,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                         }
 
                         $query4->execute(array($id, $row['id'], $resellerLockupID));
-                        foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+                        while ($row4 = $query4->fetch(PDO::FETCH_ASSOC)) {
                             $category_exist[] = $row4['name'];
 
                             if (!in_array($row4['name'], $categories)) {
@@ -400,7 +400,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                 $query = $sql->prepare("SELECT t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`resellerid`=?");
                 $query->execute(array($id, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $countreduce[] = $row['name'];
                 }
 
@@ -452,13 +452,13 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT p.`id`,p.`released`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`id`=? AND p.`resellerid`=? LIMIT 1");
         $query->execute(array($user_language, $id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $page_active = ($row['released'] == 1) ? $gsprache->yes : $gsprache->no;
 
             $query2 = $sql->prepare("SELECT `language` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language`");
             $query2->execute(array($id, $resellerLockupID));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 $p_languages[] = $row2['language'];
             }
 
@@ -467,7 +467,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             if (($row['title'] == null or $row['title'] == '') and isset($p_languages)) {
                 $query3 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
                 $query3->execute(array($row['id'], $p_languages[0], $resellerLockupID));
-                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                     $page_title = $row3['title'];
                 }
             } else if ($row['title'] == null or $row['title'] == '') {
@@ -487,7 +487,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`resellerid`=?");
         $query2 = $sql->prepare("UPDATE `page_terms` SET `count`=`count`-1 WHERE `name`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $query2->execute(array($row['name'], $resellerLockupID));
             $removedCount += $query2->rowCount();
         }
@@ -557,7 +557,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `seo`,`pageurl` FROM `page_settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $seo = $row['seo'];
         $pageUrl = $row['pageurl'];
     }
@@ -591,7 +591,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $query3 = $sql->prepare("SELECT `language` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language`");
     $query4 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
     $query->execute(array($user_language, $resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
 
         $author = $row['authorname'];
@@ -604,14 +604,14 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $released = ($row['released'] == 1) ? $gsprache->yes : $gsprache->no;
 
         $query2->execute(array($row['authorid'], $resellerLockupID));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $author = (($row2['name'] == '' or $row2['name'] == null) and ($row2['vname'] == '' or $row2['vname'] == null)) ? $row2['cname'] : $row2['vname'] . ' ' . $row2['name'];
         }
 
         unset($p_languages);
 
         $query3->execute(array($row['id'], $resellerLockupID));
-        foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+        while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
             $p_languages[] = $row3['language'];
         }
 

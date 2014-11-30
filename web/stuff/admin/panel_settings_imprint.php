@@ -99,7 +99,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `language` FROM `imprints` WHERE `resellerid`=?");
         $query2 = $sql->prepare("DELETE FROM `imprints` WHERE `language`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             if (isset($row['language']) and !in_array($row['language'], $languages)) {
                 $query2->execute(array($row['language'], $reseller_id));

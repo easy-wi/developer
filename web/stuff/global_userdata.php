@@ -153,7 +153,7 @@ if ($ui->st('d', 'get') == 'pw') {
 
     $query = $sql->prepare("SELECT * FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($lookUpID, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $cname = $row['cname'];
         $name = $row['name'];
         $vname = $row['vname'];
@@ -194,7 +194,7 @@ if ($ui->st('d', 'get') == 'pw') {
 
 
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $query2->execute(array($row['serviceProviderID'], $lookUpID));
 

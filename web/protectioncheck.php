@@ -94,7 +94,7 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
         $query->execute(array($ip, $port));
         $logs = array();
         $xmllogs = array();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $protected = $row['protected'];
             $customer = $row['cname'];
             $psince = $row['psince'];
@@ -105,7 +105,7 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
             $type = $row['description'];
             $query = $sql->prepare("SELECT `useraction`,`logdate` FROM `userlog` WHERE `logdate`>? AND `username`=? AND `useraction` LIKE ?");
             $query->execute(array($psince, $customer,'%'.$serveraddress.'%'));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $logentry = explode(" ", $row['useraction']);
                 if (($logentry[1] == '%gserver%' or $logentry[1] == '%addon%') and ($logentry[0] != '%resync%' and $logentry[0] != '%mod%')) {
                     if ($default_language == 'de') {

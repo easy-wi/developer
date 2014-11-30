@@ -198,7 +198,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `webMaster` WHERE `webMasterID`=:id AND `resellerID`=:reseller_id LIMIT 1");
             $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':reseller_id' => $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $externalID = $row['externalID'];
                 $active = $row['active'];
                 $ip = $row['ip'];
@@ -294,7 +294,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `active`,`vhostTemplate` FROM `webMaster` WHERE `webMasterID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($id, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $oldActive = $row['active'];
                 $oldVhostTemplate = $row['vhostTemplate'];
             }
@@ -326,7 +326,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $query2 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','wv',?,?,?,?,?,NULL,NOW(),'md','',?)");
 
                     $query->execute(array($id, $resellerLockupID));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $query2->execute(array($admin_id, $row['webVhostID'], $row['webMasterID'], $row['userID'], $row['dns'], $resellerLockupID));
                     }
 
@@ -371,7 +371,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `ip`,`description` FROM `webMaster` WHERE `webMasterID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($id, $resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $ip = $row['ip'];
         $description = $row['description'];
     }
@@ -420,7 +420,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `webVhostID`,`dns` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
         $query->execute(array($id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $table[$row['webVhostID']] = $row['dns'];
         }
 
@@ -437,7 +437,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         foreach ($ids as $v) {
 
             $query->execute(array($v, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $query2->execute(array($admin_id, $v, $id, $row['userID'], $row['dns'], $resellerLockupID));
 
@@ -482,7 +482,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $query2 = $sql->prepare("SELECT `webVhostID`,`active`,`dns`,`hdd`,`hddUsage` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
 
     $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $table2 = array();
         $hddSum = 0;
@@ -490,7 +490,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $vhostCount = 0;
 
         $query2->execute(array($row['webMasterID'], $resellerLockupID));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $hddSum += $row2['hdd'];
             $hddUsage += $row2['hddUsage'];
             $vhostCount++;

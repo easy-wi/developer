@@ -88,7 +88,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $description = $row['description'];
 
     $query2->execute(array($row['id'], $resellerLockupID));
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
         $shorten = $row2['shorten'];
 
@@ -133,7 +133,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if (!in_array($k, array('steamcmd', 'sync'))) {
 
                     $query3->execute(array($k, $resellerLockupID, $ip));
-                    foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
                         if (($v == 0 and $row2['rupdates'] != 4 and $row2['updates'] != 4 and $row2['steamgame'] != 'S') or ($row2['steamgame'] == 'S' and (!isset($games['steamcmd']) or $games['steamcmd'] == 0)) or (($row2['rupdates'] == 4 or $row2['updates'] == 4) and (!isset($games['sync']) or $games['sync'] == 0))) {
 

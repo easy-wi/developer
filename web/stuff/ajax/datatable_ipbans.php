@@ -80,6 +80,6 @@ if ($sSearch) {
     $query->execute();
 }
 
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $array['aaData'][] = array($row['badip'], $row['id'], $row['bantime'], $row['failcount'] . '/' . $failLogins, $row['reason'], returnButton($template_to_use, 'ajax_admin_job_checkbox.tpl', '', '', $row['id'], ''));
 }

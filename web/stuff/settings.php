@@ -176,7 +176,7 @@ if (isset($reseller_id)) {
 
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         foreach ($row as $k => $v) {
             $rSA[$k] = $v;
         }
@@ -220,7 +220,7 @@ if (isset($reseller_id)) {
 
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         foreach ($row as $k => $v) {
             $rSA[$k] = $v;
         }
@@ -241,7 +241,7 @@ if ($loguserip!='localhost') {
 
         $query = $sql->prepare("SELECT * FROM `page_settings` WHERE `resellerid`=0 LIMIT 1");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $seo = $row['seo'];
             $rssfeed = $row['rssfeed'];

@@ -73,7 +73,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $id = $ui->id('id',19, 'get');
     $query = $sql->prepare("SELECT t.`pageid`,t.`title`,c.* FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`commentID`=? AND c.`resellerID`=? LIMIT 1");
     $query->execute(array($id,$reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $commentDate='m.d.Y H:i';
         if ($user_language == 'de') $commentDate='d.m.Y H:i';
         $date=date($commentDate,strtotime($row['date']));
@@ -183,7 +183,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $query = $sql->prepare("SELECT t.`pageid`,t.`language`,t.`title`,c.`commentID`,c.`date`,c.`authorname`,c.`markedSpam`,c.`spamReason`,c.`moderateAccepted`,c.`comment` FROM `page_comments` c LEFT JOIN `page_pages_text` t ON c.`pageTextID`=t.`id` WHERE c.`resellerID`=? $AND ORDER BY $orderby");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($titleLanguages[$row['language']])) {
             $titleLanguages[$row['language']] = array('page' => getlanguagefile('page', $row['language'],0),'general' => getlanguagefile('general', $row['language'],0));
         }

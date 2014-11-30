@@ -74,7 +74,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $activeGS = $row['activeGS'];
             $activeVS = $row['activeVS'];
             $mintime = (int) $row['mintime'];
@@ -118,7 +118,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT * FROM `lendstats` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $servertype = $row['servertype'];
         $lendtime = $row['lendtime'];
@@ -145,7 +145,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `serverid`,`servertype` FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',19, 'post'), $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $id = $row['serverid'];
             $servertype = $row['servertype'];
         }
@@ -165,7 +165,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $queryport = $row['queryport'];
                 $querypassword = $row['decryptedquerypassword'];
@@ -230,7 +230,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $rcon = null;
 
             $query2->execute(array($row['id']));
-            foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 $installedShorten[$row2['shorten']] = $row2['description'];
 
                 if ($row2['id'] == $row['serverid']) {
@@ -239,7 +239,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
 
             $query3->execute(array($row['serverid']));
-            foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+            while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
                 $lendID = $row3['id'];
                 $password = $row3['password'];
@@ -277,7 +277,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`password`,l.`slots`,l.`started`,l.`lendtime`,CURRENT_TIMESTAMP AS `now`,l.`id` AS `lend_id` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
         $query2 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $time = 0;
             $lendID = null;
@@ -295,7 +295,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if ($time == 0 or ($shutDownEmpty == 'Y' and ($row['lendtime'] - $timeleft) > $shutDownEmptyTime and $row['usedslots'] < 1)) {
 
                     $query2->execute(array($aeskey, $row['id'], $reseller_id));
-                    foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                         $queryport = $row2['queryport'];
                         $querypassword = $row2['decryptedquerypassword'];

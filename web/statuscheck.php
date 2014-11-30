@@ -125,14 +125,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query = $sql->prepare("SELECT `brandname`,`noservertag`,`nopassword`,`tohighslots`,`down_checks`,`resellerid` FROM `settings`");
     $query2 = $sql->prepare("SELECT `shutdownempty`,`shutdownemptytime`,`lastcheck`,`oldcheck` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
     $query->execute();
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         unset($shutdownempty);
 
         $resellerid = $row['resellerid'];
 
         $query2->execute(array($resellerid));
-        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $shutdownempty = $row2['shutdownempty'];
             $shutdownemptytime = $row2['shutdownemptytime'];
             $firstcheck = '00-00-' . round(2 * (strtotime($row2['lastcheck']) - strtotime($row2['oldcheck'])) / 60);
@@ -418,7 +418,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $query->execute(array($userid, $resellerid));
                         }
 
-                        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             if ($row['mail_securitybreach'] == 'Y') {
                                 sendmail('emailsecuritybreach', $row['id'], $address, implode('<br>', $rulebreak));
                             }
@@ -491,7 +491,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         if ($notified == $resellersettings[$resellerid]['down_checks']) {
                             $query = $sql->prepare("SELECT `mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
                             $query->execute(array($userid));
-                            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                                 if ($row['mail_serverdown'] == 'Y') {
                                     sendmail('emaildownrestart', $userid, $address,'');
                                 }
@@ -545,7 +545,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         print 'Checking TSDNS' . "\r\n";
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y'");
         $query->execute(array(':aeskey' => $aeskey));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $resellerid = $row['resellerid'];
 
@@ -575,7 +575,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $query3->execute(array($resellerid));
                     }
 
-                    foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                    while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                         if ($row3['mail_serverdown'] == 'Y') {
                             sendmail('emaildownrestart', $row3['id'], $row['ssh2ip'].' (External TSDNS)','');
                         }
@@ -725,7 +725,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $query2->execute(array($resellerid));
                         }
 
-                        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                             if ($row2['mail_serverdown'] == 'Y') {
                                 sendmail('emaildownrestart', $row2['id'], $queryip . ' (' . $restartreturn . ')', '');
                             }
@@ -1043,7 +1043,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                         $query2->execute(array($userid, $resellerid));
                                     }
 
-                                    foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                                         if ($row2['mail_securitybreach'] == 'Y' or $row2['id'] == $userid) {
                                             sendmail('emailsecuritybreach', $row2['id'], $address, $rulebreak);
                                         }
@@ -1101,7 +1101,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                     if ($notified == $resellersettings[$resellerid]['down_checks']) {
                                         $query2 = $sql->prepare("SELECT `mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
                                         $query2->execute(array($userid));
-                                        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                                        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                                             if ($row2['mail_serverdown'] == 'Y') sendmail('emaildownrestart', $userid, $address,'');
                                         }
                                         $newnotified = $notified;
@@ -1153,7 +1153,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $query3 = $sql->prepare("UPDATE `mysql_external_dbs` SET `dbSize`=? WHERE `id`=? LIMIT 1");
 
         $query->execute(array($aeskey));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword']);
 
@@ -1199,7 +1199,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
         $query = $sql->prepare("SELECT `webMasterID`,`ip`,`resellerID` FROM `webMaster` WHERE `active`='Y'");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             echo 'Checking webMaster ' . $row['ip'] . ' with webMasterID ' . $row['webMasterID'] . "\r\n";
 

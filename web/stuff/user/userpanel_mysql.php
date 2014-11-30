@@ -71,7 +71,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         #https://github.com/easy-wi/developer/issues/42 column description added
         $query = $sql->prepare("SELECT e.`dbname`,e.`description`,e.`manage_host_table`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,s.`ip`,s.`port`,s.`interface`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active` AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $manage_host_table = $row['manage_host_table'];
             $ips = $row['ips'];
@@ -97,7 +97,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT e.`dbname`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $aeskey, $id, $user_id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword2']);
 
@@ -128,7 +128,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT e.`dbname`,e.`manage_host_table`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $user_id, $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $ips = ($row['manage_host_table'] == 'Y') ? $ui->ips('ips', 'post') : $row['ips'];
 
@@ -176,7 +176,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT e.`id`,e.`dbname`,e.`description`,e.`dbSize`,s.`ip`,s.`port`,s.`interface` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=?");
     $query->execute(array($user_id, $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['db'])) {
             $table[] = array('id' => $row['id'], 'dbname' => $row['dbname'], 'dbSize' => $row['dbSize'], 'ip' => $row['ip'], 'port' => $row['port'], 'description' => trim($row['description']), 'interface' => $row['interface']);
         }

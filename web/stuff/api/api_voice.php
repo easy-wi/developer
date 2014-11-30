@@ -102,7 +102,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localUserLookupID = $row['id'];
 
@@ -118,7 +118,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         if (!isset($success['false']) and !in_array($externalServerID, $bad)) {
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_server` WHERE `externalID`=? LIMIT 1");
             $query->execute(array($externalServerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if ($row['amount'] > 0) {
                     $success['false'][] = 'server with external ID already exists';
                 }
@@ -146,10 +146,13 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $inSQLArray = 'm.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
             }
 
+            $query2 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
+            $query3 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+
             $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING `active`='Y' AND $inSQLArray (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND ((`maxslots`-`installedslots`)>? OR `installedslots` IS NULL) AND `active`='Y' AND `resellerid`=?) ORDER BY `slotpercent`,`serverpercent` ASC LIMIT 1");
             $query->execute(array($slots, $resellerID));
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $masterServerID = $row['hostID'];
 
@@ -169,27 +172,28 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                     $defaultdns = $row['defaultdns'];
 
                     if ($row['externalDefaultDNS'] == 'Y' and isid($row['tsdnsServerID'], 19)) {
-                        $query2 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                         $query2->execute(array($tsdnsServerID,$resellerID));
                         $defaultdns = $query2->fetchColumn();
                     }
 
-                    if ($row['addedby'] == 2) {
+                    if ($row['addedby'] == 1) {
 
-                        $ips[] = $row['ssh2ip'];
-                        foreach (preg_split('/\r\n/', $row['ips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) {
-                            $ips[] = $ip;
-                        }
+                        $query3->execute(array($row['rootid'], $resellerID));
+                        while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
-                    } else if ($row['addedby'] == 1) {
+                            $ips[] = $row3['ip'];
 
-                        $query2 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                        $query2->execute(array($row['rootid'],$resellerID));
-                        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                            $ips[] = $row2['ip'];
-                            foreach (preg_split('/\r\n/', $row2['altips'],-1,PREG_SPLIT_NO_EMPTY) as $ip) {
+                            foreach (preg_split('/\r\n/', $row3['altips'], -1, PREG_SPLIT_NO_EMPTY) as $ip) {
                                 $ips[] = $ip;
                             }
+                        }
+
+                    } else {
+
+                        $ips[] = $row['ssh2ip'];
+
+                        foreach (preg_split('/\r\n/', $row['ips'], -1, PREG_SPLIT_NO_EMPTY) as $ip) {
+                            $ips[] = $ip;
                         }
                     }
 
@@ -209,7 +213,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $ports = $usedPorts['ports'];
             $ports[] = 10011;
 
-            $port = (isset($data['port']) and port($data['port']) and !in_array($data['port'],$ports)) ? $data['port']: 9987;
+            $port = (isset($data['port']) and port($data['port']) and !in_array($data['port'], $ports)) ? $data['port'] : 9987;
 
             if (is_array($ports)) {
 
@@ -304,7 +308,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
         $query = $sql->prepare("SELECT v.*,u.`cname` FROM `voice_server` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userid` WHERE v.`" . $from[$data['identify_server_by']] . "`=? AND v.`resellerid`=? LIMIT 1");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localID = $row['id'];
             $userID = $row['userid'];
@@ -510,7 +514,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
         $query = $sql->prepare("SELECT `id`,`ip`,`port`,`userid`,`masterserver` AS `hostID` FROM `voice_server` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localID = $row['id'];
             $userID = $row['userid'];
             $name = $row['ip'] . ':' . $row['port'];
@@ -555,7 +559,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
         $responsexml = new DOMDocument('1.0','utf-8');
         $element = $responsexml->createElement('voice');
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             foreach ($row as $k => $v) {
                 $server = $responsexml->createElement($k, $v);

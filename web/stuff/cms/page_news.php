@@ -48,7 +48,7 @@ if ($ui->id('id', 10, 'get')) {
 
     $query = $sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE `type`='news' AND t.`language`=? AND p.`released`=1 AND p.`resellerid`=0");
     $query->execute(array($user_language));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $pagesAvailable[szrp($row['title'])] = $row['id'];
     }
 
@@ -62,7 +62,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
     $query = $sql->prepare("SELECT p.`date`,p.`comments`,p.`authorname`,t.`id` AS `textID`,t.`title`,t.`text`,t.`id`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='news' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`=0 LIMIT 1");
     $query2 = $sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`language_id`=? AND u.`resellerid`='0' ORDER BY t.`name` DESC");
     $query->execute(array($page_id,$user_language));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $page_keywords = array();
         $allTags = array();
@@ -77,7 +77,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
         $textID = $row['textID'];
         $query2->execute(array($textID));
 
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
             $page_data->AddData('keywords', $row2['name']);
 
@@ -109,7 +109,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
 
     $query = $sql->prepare("SELECT `title`,`language` FROM `page_pages_text` WHERE `pageid`=?");
     $query->execute(array($page_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $tempLanguage = getlanguagefile('general', $row['language'], 0);
         $langLinks[$row['language']] = ($page_data->seo== 'Y') ? szrp($tempLanguage->news) . '/' . szrp($row['title'])  : '?s=news&amp;id='.$page_id;
     }
@@ -149,7 +149,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
 
                     $query = $sql->prepare("SELECT `cname`,`mail` FROM `userdata` WHERE `id`=? LIMIT 1");
                     $query->execute(array((isset($admin_id)) ? $admin_id : $user_id));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $author = $row['cname'];
                         $email = $row['mail'];
                     }
@@ -224,7 +224,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
 
             $query = $sql->prepare("SELECT `commentID`,`replyTo`,`date`,`authorname`,`homepage`,`comment` FROM `page_comments` WHERE `pageTextID`=? AND ((`markedSpam`!='Y' AND `moderateAccepted`='Y') $OR) AND `resellerid`=0 ORDER BY `replyTo` DESC,`commentID` DESC");
             $query->execute(array($textID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $commentDate = (isset($pageLanguage) and $pageLanguage == 'de') ? date('d.m.Y H:i', strtotime($row['date'])) : date('m.d.Y H:i', strtotime($row['date']));
                 $commentArray[] = array('commentID' => $row['commentID'], 'replyTo' => $row['replyTo'], 'homepage' => $row['homepage'], 'date' => $commentDate,'author' => htmlentities($row['authorname']),'comment' => htmlentities($row['comment']));
             }
@@ -308,7 +308,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
     $query3 = $sql->prepare("SELECT COUNT(`commentID`) as `amount` FROM `page_comments` WHERE `pageTextID`=? AND `resellerID`=0");
 
     $query->execute(array($user_language));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $page_title = $row['title'];
         $page_text = nl2br($row['text']);
@@ -322,7 +322,7 @@ if ((isset($page_name) and $page_name != szrp($page_sprache->older) and isset($p
         $href = '<a href="' . $link . '">' . $row['title'] . '</a>';
 
         $query2->execute(array($row['textID']));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
             $page_data->AddData('keywords', $row2['name']);
 

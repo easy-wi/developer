@@ -62,7 +62,7 @@ if (isset($page_active) and $page_active == 'Y') {
     $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('P','C')");
     $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['active'] == 'Y' and $row['type'] == 'P' and is_file(EASYWIDIR . '/stuff/custom_modules/' . $row['file'])) {
             $query2->execute(array($row['id'], $user_language));
@@ -94,7 +94,7 @@ if (isset($page_active) and $page_active == 'Y') {
 
     $query = $sql->prepare("SELECT `activeGS`,`activeVS` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $page_data->SetData('lendactiveGS', $row['activeGS']);
         $page_data->SetData('lendactiveVS', $row['activeVS']);
     }
@@ -146,7 +146,7 @@ if (isset($page_active) and $page_active == 'Y') {
         $page_data->SetMenu($page_sprache->search, $page_sprache->search, 'search');
         $page_data->SetMenu($page_sprache->register, $page_sprache->register, 'register');
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['naviDisplay'] == 'Y') {
                 $page_data->SetMenu($row['title'], $row['title'], $row['subpage'], $row['id']);
             } else {
@@ -189,7 +189,7 @@ if (isset($page_active) and $page_active == 'Y') {
         $page_data->SetMenu($page_sprache->search, array('site' => 'search'), 'search');
         $page_data->SetMenu($page_sprache->register, array('site' => 'register'), 'register');
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['naviDisplay'] == 'Y') {
                 $page_data->SetMenu($row['title'], $row['id'], $row['subpage'], $row['id']);
             } else {
@@ -204,7 +204,7 @@ if (isset($page_active) and $page_active == 'Y') {
 
     $query = $sql->prepare("SELECT p.`id`,p.`subpage`,t.`title`,t.`text` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`released`='1' AND p.`type`='news' AND p.`resellerid`=0 ORDER BY `id` DESC LIMIT " . $maxnews_sidebar);
     $query->execute(array($user_language));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $page_data->SetNewsPost($row['id'], $row['title'], $row['text'], $newssidebar_textlength);
     }
 
@@ -266,7 +266,7 @@ if (isset($page_active) and $page_active == 'Y') {
 
         $query = $sql->prepare("SELECT `filename` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $cssIcon = strtolower($row['filename']);
 
@@ -290,7 +290,7 @@ if (isset($page_active) and $page_active == 'Y') {
         $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($page_lookupid));
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $great_name = $row['name'];
             $great_vname = $row['vname'];
 

@@ -233,7 +233,7 @@ if (!function_exists('passwordgenerate')) {
         }
 
         $query->execute(array(':serverID' => $serverID, ':aeskey' => $aeskey));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $cores = '';
             $hyperthreading = '';
@@ -308,7 +308,7 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `maxgserver`,`maxvserver`,`maxvoserver`,`maxdedis` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($resellerid));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $mG = $row['maxgserver'];
                 $mVs = $row['maxvserver'];
                 $mVo = $row['maxvoserver'];
@@ -428,7 +428,7 @@ if (!function_exists('passwordgenerate')) {
         $sprache = new stdClass;
         $query = $sql->prepare("SELECT `language`,`template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $default_language = $row['language'];
             $template = $row['template'];
@@ -496,13 +496,13 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=0");
             $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $userips[] = $row['ip'];
             }
 
             $query = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer`");
             $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $key = array_search($row['ip'], $userips);
                 if (false !== $key) {
@@ -519,7 +519,7 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated`");
             $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $key = array_search($row['ip'], $userips);
                 if (false !== $key) {
@@ -543,13 +543,13 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=?");
             $query->execute(array($resellerid));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $userips[] = $row['ip'];
             }
 
             $query = $sql->prepare("SELECT `ip`,`ips` FROM `virtualcontainer` WHERE `resellerid`=?");
             $query->execute(array($resellerid));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $key = array_search($row['ip'], $userips);
                 if (false !== $key) {
@@ -566,7 +566,7 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `ip`,`ips` FROM `rootsDedicated` WHERE `resellerid`=?");
             $query->execute(array($resellerid));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $key = array_search($row['ip'], $userips);
                 if (false !== $key) {
@@ -584,10 +584,10 @@ if (!function_exists('passwordgenerate')) {
             $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE accounttype='r' AND `resellerid`=:id AND `id`!=:id");
             $query2 = $sql->prepare("SELECT `ip` FROM `rootsIP4` WHERE `resellerID`=? AND `ownerID`!=`resellerID`");
             $query->execute(array(':id' => $resellerid));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $query2->execute(array($row['id']));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $key = array_search($row2['ip'], $userips);
                     if (false !== $key) {
                         unset($userips[$key]);
@@ -610,14 +610,14 @@ if (!function_exists('passwordgenerate')) {
 
         $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($resellerid));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $paneldomain = $row['paneldomain'];
         }
 
         if (!filter_var($paneldomain, FILTER_VALIDATE_URL)) {
             $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
             $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $paneldomain = $row['paneldomain'];
             }
         }
@@ -646,7 +646,7 @@ if (!function_exists('passwordgenerate')) {
 
         $query = $sql->prepare("SELECT `mail`,`vname`,`name`,`cname`,`language`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($userid));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $usermail = $row['mail'];
             $username = $row['vname'] . '  ' . $row['name'];
@@ -664,7 +664,7 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `vname`,`name`,`cname` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($writerid));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $username = ($row['vname'] . ' ' . $row['name'] == ' ') ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
             }
         }
@@ -683,7 +683,7 @@ if (!function_exists('passwordgenerate')) {
 
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $resellersid));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $emailregards = nl2br($row['emailregards']);
             $emailfooter = nl2br($row['emailfooter']);
@@ -705,7 +705,7 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `email`,`timezone` FROM `settings` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($resellerid));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $resellerstimezone = $row['timezone'];
                 $resellermail = $row['email'];
             }
@@ -927,11 +927,11 @@ if (!function_exists('passwordgenerate')) {
 
         $query = $sql->prepare("SELECT `type`,`affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`,`affectedID`");
         $query->execute(array($action));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $query2 = $sql->prepare("SELECT `jobID` FROM `jobs` WHERE `type`=? AND `affectedID`=? AND `action`=? $typeQuery ORDER BY `jobID` DESC LIMIT 1");
             $query2->execute(array($row['type'], $row['affectedID'], $action));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 if ($type==null) {
                     $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `type`=? AND `affectedID`=? AND `jobID`!=?");
@@ -1036,6 +1036,10 @@ if (!function_exists('passwordgenerate')) {
 
         global $sql;
 
+        if (!is_array($ips)) {
+            $ips = array($ips);
+        }
+
         $portsArray = array();
 
         foreach ($ips as $serverIP) {
@@ -1044,7 +1048,7 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `port`,`port2`,`port3`,`port4`,`port5` FROM `gsswitch` WHERE `serverip`=? ORDER BY `port`");
             $query->execute(array($serverIP));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if (port($row['port'])){
                     $ports[] = $row['port'];
                 }
@@ -1064,7 +1068,7 @@ if (!function_exists('passwordgenerate')) {
 
             $query = $sql->prepare("SELECT `port` FROM `voice_server` WHERE `ip`=?");
             $query->execute(array($serverIP));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if (port($row['port'])){
                     $ports[] = $row['port'];
                 }
@@ -1250,19 +1254,19 @@ if (!function_exists('passwordgenerate')) {
             if ($action == false) {
                 $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='cc' AND `transID`=? AND `lang`=? LIMIT 1");
                 $query3 = $sql->prepare("SELECT `var` FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $text = '';
 
                     $query2->execute(array($row['customID'], $user_language));
-                    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         $text = $row2['text'];
                     }
 
                     if (empty($text)) {
 
                         $query2->execute(array($row['customID'], $default_language));
-                        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                             $text = $row2['text'];
                         }
                     }
@@ -1284,7 +1288,7 @@ if (!function_exists('passwordgenerate')) {
 
                     global $ui;
 
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         $var = '';
 
@@ -1301,7 +1305,7 @@ if (!function_exists('passwordgenerate')) {
 
                 } else {
 
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         $var = '';
 
@@ -1326,7 +1330,7 @@ if (!function_exists('passwordgenerate')) {
 
                 $query2 = $sql->prepare("DELETE FROM `custom_columns` WHERE `customID`=? AND `itemID`=? LIMIT 1");
 
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $query2->execute(array($row['customID'], $id));
 

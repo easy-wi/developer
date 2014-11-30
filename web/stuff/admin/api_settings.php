@@ -77,7 +77,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $postIPs=(array)$ui->ip4('ip', 'post');
     $query = $sql->prepare("SELECT `ip` FROM `api_ips` WHERE `resellerID`=?");
     $query->execute(array($lookupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!in_array($row['ip'],$postIPs)) {
             $delete = $sql->prepare("DELETE FROM `api_ips` WHERE `ip`=? AND `resellerID`=?");
             $delete->execute(array($row['ip'],$lookupID));
@@ -101,12 +101,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $pwd = '';
     $query = $sql->prepare("SELECT `ip` FROM `api_ips` WHERE `resellerID`=?");
     $query->execute(array($lookupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $ips[] = $row['ip'];
     }
     $query = $sql->prepare("SELECT `active`,`user` FROM `api_settings` WHERE `resellerID`=? LIMIT 1");
     $query->execute(array($lookupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $active = $row['active'];
         $user = $row['user'];
         $pwd='encrypted';

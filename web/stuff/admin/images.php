@@ -75,7 +75,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=?");
     $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $shorten = $row['shorten'];
         foreach ($row as $k => $v) {
             if (!in_array($k, array('id', 'resellerid', 'steamVersion', 'downloadPath'))) {
@@ -208,7 +208,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             // Collect the shorten we need for game modification
             $query = $sql->prepare("SELECT DISTINCT(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
             $query->execute(array($resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $table[] = array('shorten' => $row['shorten']);
             }
             
@@ -338,7 +338,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=?");
             $query->execute(array($id, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $steamgame = $row['steamgame'];
                 $updates = $row['updates'];
                 $shorten = $row['shorten'];
@@ -381,7 +381,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("SELECT DISTINCT(`shorten`) FROM `servertypes` WHERE `resellerid`=?");
                 $query->execute(array($resellerLockupID));
                 $table = array();
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $table[] = array('shorten' => $row['shorten']);
                 }
 

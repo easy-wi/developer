@@ -42,10 +42,10 @@ $query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status`
 $query2 = $sql->prepare("SELECT `active`,`usedns`,`defaultdns`,`bitversion`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`maxserver`,`maxslots`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified` FROM `voice_masterserver` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
 
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $query2->execute(array(':aeskey' => $aeskey,':id' => $row['hostID'], ':reseller_id' => $row['resellerID']));
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
         $active = $row2['active'];
         $addedby = $row2['addedby'];
@@ -76,7 +76,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         } else if ($addedby==1) {
             $query3 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($row2['rootid'], $row['resellerID']));
-            foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+            while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                 $queryip = $row3['ip'];
             }
         }
@@ -93,10 +93,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     } else {
         $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' AND `hostID`=?");
         $query2->execute(array($row['hostID']));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $query3 = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($row2['affectedID'], $row2['resellerID']));
-            foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+            while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                 $active = $row3['active'];
                 $localserverid = $row3['localserverid'];
                 $backup = $row3['backup'];
@@ -164,7 +164,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $command = $gsprache->mod.' voiceserverID: '.$row2['affectedID'].' name:'.$row2['name'];
                 $query3 = $sql->prepare("SELECT `active`,`slots`,`ip`,`port`,`dns` FROM `voice_server` WHERE `id`=? LIMIT 1");
                 $query3->execute(array($row2['affectedID']));
-                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                     $oldip = $row3['ip'];
                     $oldport = $row3['port'];
                     $olddns = $row3['dns'];

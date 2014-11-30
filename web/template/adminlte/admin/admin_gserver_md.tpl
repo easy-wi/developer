@@ -110,7 +110,7 @@
 
                         <div class="form-group">
                             <label for="inputSlots"><?php echo $sprache->slots;?></label>
-                            <div class="controls"><input class="form-control" id="inputSlots" type="text" name="slots" value="<?php echo $slots;?>"></div>
+                            <div class="controls"><input class="form-control" id="inputSlots" type="number" name="slots" value="<?php echo $slots;?>" min="1"></div>
                         </div>
 
                         <div class="form-group">
@@ -155,12 +155,12 @@
 
                         <div class="form-group">
                             <label for="inputMinRam">Min Ram</label>
-                            <div class="controls"><input class="form-control" id="inputMinRam" type="text" name="minRam" value="<?php echo $minRam;?>"></div>
+                            <div class="controls"><input class="form-control" id="inputMinRam" type="number" name="minRam" value="<?php echo $minRam;?>"></div>
                         </div>
 
                         <div class="form-group">
                             <label for="inputMaxRam">Max Ram</label>
-                            <div class="controls"><input class="form-control" id="inputMaxRam" type="text" name="maxRam" value="<?php echo $maxRam;?>"></div>
+                            <div class="controls"><input class="form-control" id="inputMaxRam" type="number" name="maxRam" value="<?php echo $maxRam;?>"></div>
                         </div>
 
                         <?php foreach(customColumns('G') as $row){ ?>

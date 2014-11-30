@@ -96,7 +96,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 			$query = $sql->prepare("SELECT `prefix1`,`prefix2` FROM `settings` WHERE `resellerid`=? LIMIT 1");
 			$query->execute(array($resellerLockupID));
-			foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+			while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 				$prefix1 = $row['prefix1'];
 				$prefix2 = $row['prefix2'];
 			}
@@ -265,7 +265,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                         $query = $sql->prepare("SELECT * FROM `$tablename` WHERE `resellerid`=? " . $where . " " .$limit);
                         $query->execute(array($reseller_id));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $keys = array();
                             $questionmarks = array();
                             $intos = array();
@@ -301,11 +301,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query5 = $sql->prepare("SELECT t2.`id` FROM `addons_allowed` AS a INNER JOIN `servertypes` AS t1 ON a.`servertype_id`=t1.`id` INNER JOIN `servertypes` AS t2 ON t1.`shorten`=t2.`shorten` AND t2.`resellerid`=? WHERE a.`addon_id`=? AND a.`reseller_id`=?");
                     $query6 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `addon_id`=`addon_id`");
                     $query->execute(array($resellerLockupID));
-					foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+					while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $query2->execute(array($row['active'], $row['addon'], $row['type'], $row['folder'], $row['menudescription'], $row['configs'], $row['cmd'], $row['paddon'],$id));
                         $newID = $sql->lastInsertId();
                         $query3->execute(array($row['id'], $resellerLockupID));
-						foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+						while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 						    $query4->execute(array($row3['lang'], $row3['text'], $newID, $id));
                         }
                         $query5->execute(array($id, $row['id'], $resellerLockupID));
@@ -381,7 +381,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $defaultGroups = array();
         $query = $sql->prepare("SELECT `id`,`grouptype`,`name`,`defaultgroup` FROM `usergroups` WHERE `active`='Y' AND `resellerid`=?");
         $query->execute(array($resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['defaultgroup'] == 'Y') {
                 $defaultGroups[$row['grouptype']][$row['id']] = $row['name'];
             }
@@ -403,7 +403,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         $query->execute(array($id,$resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if (($row['accounttype'] == 'a' and $pa['user']) or  ($row['accounttype'] != 'a') and ($pa['user'] or $pa['user_users'])) {
                 $cname = $row['cname'];
                 $name = $row['name'];
@@ -424,7 +424,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("SELECT `cname`,`resellerid`,`accounttype` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         }
         $query->execute(array($id,$resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if (($row['accounttype'] == 'a' and $pa['user']) or  ($row['accounttype'] != 'a') and ($pa['user'] or $pa['user_users'])) {
                 $deleted = true;
                 $cname = $row['cname'];
@@ -456,14 +456,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = ($reseller_id == 0) ? $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND (`resellerid`=? OR `id`=resellerid) LIMIT 1") : $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $active = 'N';
 
             if ($row['jobPending'] == 'Y') {
                 $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='us' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
                 $query2->execute(array($row['id'], $row['resellerid']));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     if ($row2['action'] == 'ad') {
                         $jobPending = $gsprache->add;
                     } else if ($row2['action'] == 'dl') {
@@ -519,13 +519,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`=? AND `resellerid`=?");
             $query->execute(array($accounttype, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $groups[$row['id']] = $row['name'];
             }
 
             $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=?");
             $query->execute(array($id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $groupsAssigned[] = $row['groupID'];
             }
 
@@ -533,7 +533,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $query = $sql->prepare("SELECT * FROM `resellerdata` WHERE `resellerid`=?");
                 $query->execute(array($id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $useractive = $row['useractive'];
                     $maxuser = $row['maxuser'];
                     $maxgserver = $row['maxgserver'];
@@ -583,7 +583,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($id,$resellerLockupID));
             }
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $accounttype = $row['accounttype'];
                 $oldactive = $row['active'];
                 $cname = $row['cname'];
@@ -682,7 +682,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $query = $sql->prepare("SELECT `groupID` FROM `userdata_groups` WHERE `userID`=? AND `resellerID`=?");
                     $query2 = $sql->prepare("DELETE FROM `userdata_groups` WHERE `groupID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($id,$resellerlockupid));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         if (!in_array($row['groupID'],$tempArray)) $query2->execute(array($row['groupID'],$id,$resellerlockupid));
                     }
                 }
@@ -706,7 +706,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = ($reseller_id == 0) ? $sql->prepare("SELECT `cname`,`accounttype` FROM `userdata` WHERE `id`=? AND (`resellerid`=? OR `id`=`resellerid`) LIMIT 1") : $sql->prepare("SELECT `cname`,`accounttype` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id,$resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (($row['accounttype'] == 'a' and $pa['user']) or ($row['accounttype'] != 'a') and ($pa['user'] or $pa['user_users'])) {
             $cname = $row['cname'];
         }
@@ -822,7 +822,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='us' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $adminaccount = false;
 
         if ($row['accounttype'] == 'a') {
@@ -836,7 +836,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         if ($row['jobPending'] == 'Y') {
             $query2->execute(array($row['id'], $row['resellerid']));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 if ($row2['action'] == 'ad') {
                     $jobPending = $gsprache->add;
                 } else if ($row2['action'] == 'dl') {

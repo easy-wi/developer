@@ -169,14 +169,14 @@ if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($e
 	// First get users and their password than get his servers and update tables
 	$query = $sql->prepare("SELECT `id`,AES_DECRYPT(`ftppass`,?) AS `pwd` FROM `userdata` WHERE `accounttype`='u'");
 	$query->execute(array($aeskey));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$userID = $row['id'];
 		$ftpPWD = $row['pwd'];
 		
 		// get the servers
 		$query2 = $sql->prepare("SELECT `id`,`server`,`shorten` FROM `gsswitch` WHERE `userid`=?");
 		$query2->execute(array($userID));
-		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+		while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 			$address = $row2['server'];
 			$gsID = $row2['id'];
 			list($gsIP,$gsPort)=explode(':',$address);
@@ -190,7 +190,7 @@ if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($e
 			// get serverlist and update gsswitch
 			$query3 = $sql->prepare("SELECT s.*,AES_DECRYPT(`ppassword`,?) AS `ppwd`,s.`serverid` AS `rootID` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND t.`shorten`=? LIMIT 1");
 			$query3->execute(array($aeskey,$gsID, $row2['shorten']));
-			foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+			while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 				$query3 = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`rootID`=?,`running`=?,`pallowed`=?,`eacallowed`=?,`protected`=?,`brandname`=?,`tvenable`=?,`war`=?,`ftppassword`=AES_ENCRYPT(?,?),`ppassword`=AES_ENCRYPT(?,?),`psince`=?,`serverip`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`minram`=?,`maxram`=?,`slots`=?,`masterfdl`=?,`mfdldata`=?,`taskset`=?,`cores`=? WHERE `id`=? LIMIT 1");
 				$query3->execute(array($row3['active'], $row3['rootID'], $row3['running'], $row3['pallowed'], $row3['eacallowed'], $row3['protected'], $row3['brandname'], $row3['tvenable'], $row3['war'],$ftpPWD,$aeskey, $row3['ppwd'],$aeskey, $row3['psince'], $row3['serverip'], $row3['port'], $row3['tvport'], $row3['port3'], $row3['port4'], $row3['minram'], $row3['maxram'], $row3['slots'], $row3['masterfdl'], $row3['mfdldata'], $row3['taskset'], $row3['cores'],$gsID));
 				$response->add('Action: Update gameserver: '.$address.'<br />');
@@ -205,7 +205,7 @@ if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($e
 	$query3 = $sql->prepare("DELETE FROM `gsswitch` WHERE `id`=? LIMIT 1");
 	$query = $sql->prepare("SELECT `id` FROM `gsswitch`");
 	$query->execute(array($userID));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$query2->execute(array($row['id']));
 		if ($query2->fetchColumn()==0) {
 			$query3->execute(array($row['id']));

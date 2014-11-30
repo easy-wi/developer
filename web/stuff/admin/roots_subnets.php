@@ -90,13 +90,13 @@ option domain-name-servers 1.1.1.1;';
 
     $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=`id` AND `accounttype`='r' AND `active`='Y' ORDER BY `id` DESC");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $resellerList[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
     }
 
     $query = $sql->prepare("SELECT `id`,`description` FROM `rootsDHCP` WHERE `active`='Y'");
     $query->execute(array($id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $dhcpServers[$row['id']] = $row['description'];
     }
 
@@ -113,7 +113,7 @@ option domain-name-servers 1.1.1.1;';
 
             $query = $sql->prepare("SELECT * FROM `rootsSubnets` WHERE `subnetID`=? LIMIT 1");
             $query->execute(array($id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $dhcpServer = (int) $row['dhcpServer'];
                 $subnet = (string) $row['subnet'];
                 $subnetStart = $row['subnetStart'];
@@ -251,7 +251,7 @@ option domain-name-servers 1.1.1.1;';
 
     $query = $sql->prepare("SELECT `subnet`,`netmask` FROM `rootsSubnets` WHERE `subnetID`=? LIMIT 1");
     $query->execute(array($id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $subnet = (string) $row['subnet'];
         $netmask = (string) $row['netmask'];
     }
@@ -353,7 +353,7 @@ option domain-name-servers 1.1.1.1;';
 
     $query = $sql->prepare("SELECT * FROM `rootsSubnets` ORDER BY $orderby LIMIT " . $start . "," . $amount);
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $table[] = array('id' => $row['subnetID'], 'active' => $row['active'], 'subnet' => $row['subnet'] . '.' . $row['subnetStart'] . ' - ' . $row['subnet'] . '.' . $row['subnetStop'], 'vlanName' => $row['vlanName']);
     }
 

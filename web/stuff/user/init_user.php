@@ -60,13 +60,13 @@ if (isset($_SESSION['sID'])) {
 
     $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=?");
     $query->execute(array($_SESSION['sID']));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $substituteAccess[$row['oType']][] = $row['oID'];
     }
 
     $query = $sql->prepare("SELECT `name`,`vname`,`lastlogin`,`show_help_text` FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
     $query->execute(array($_SESSION['sID']));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $great_name = $row['name'];
         $great_vname = $row['vname'];
         $lastlogin = $row['lastlogin'];
@@ -87,7 +87,7 @@ if (isset($_SESSION['sID'])) {
 
     $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin`,`show_help_text` FROM `userdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($user_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $great_name = $row['name'];
         $great_vname = $row['vname'];
         $lastlogin = $row['lastlogin'];
@@ -155,7 +155,7 @@ $customFiles = array();
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('U','C')");
 $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     if ($row['active'] == 'Y' and $row['type'] == 'U' and is_file(EASYWIDIR . '/stuff/' . $row['file'])) {
         $query2->execute(array($row['id'], $user_language));

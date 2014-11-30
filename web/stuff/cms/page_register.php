@@ -51,7 +51,7 @@ if (!isset($page_include) or (isset($user_id)) or isset($admin_id) or isset($res
 
 $query = $sql->prepare("SELECT `registration`,`registrationQuestion`,`registrationBadEmail`,`registrationBadIP` FROM `page_settings` WHERE `resellerid`=0 LIMIT 1");
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $registration = $row['registration'];
     $registrationQuestion = $row['registrationQuestion'];
     $registrationBadEmail = $row['registrationBadEmail'];
@@ -155,7 +155,7 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
 
         $query = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='to'");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $tous[$row['lang']] = $row['text'];
         }
 

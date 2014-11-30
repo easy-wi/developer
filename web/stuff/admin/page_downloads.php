@@ -63,7 +63,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             unset($lang);
             if ($ui->id('id', 10, 'get')) {
                 $query->execute(array($id, $row,$reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $lang = $row2['lang'];
                     $description = $row2['text'];
                 }
@@ -85,7 +85,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if (!$ui->st('action', 'post') and $ui->id('id', 10, 'get') and ($ui->st('d', 'get') == 'md' or  $ui->st('d', 'get') == 'dl')) {
         $query = $sql->prepare("SELECT * FROM `page_downloads` WHERE `fileID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $show = $row['show'];
             $order = $row['order'];
             $count = $row['count'];
@@ -157,7 +157,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
                 $query->execute(array($id,$reseller_id));
                 $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='pd' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     if (!in_array($row['lang'],$array)) {
                         $query2->execute(array($addonid, $row['lang'],$reseller_id));
                         if ($query2->rowCount() > 0) $changed = true;
@@ -219,7 +219,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $table = array();
     $query = $sql->prepare("SELECT `fileID`,`description`,`order`,`count` FROM `page_downloads` WHERE `resellerID`=? ORDER BY ${orderby}");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $table[] = array('id' => $row['fileID'], 'description' => $row['description'], 'order' => $row['order'], 'count' => $row['count']);
     }
     $template_file = 'admin_page_downloads_list.tpl';

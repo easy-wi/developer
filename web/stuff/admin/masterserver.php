@@ -85,7 +85,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if ($query->rowcount() == 0) {
 
                     $query2->execute(array($masterID, $resellerLockupID));
-                    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                         $description = $row2['description'];
                         $shorten = $row2['shorten'];
@@ -117,7 +117,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `ip`,`os`,`description` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $os = $row['os'];
             $description = $row['description'];
@@ -127,7 +127,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description` FROM `servertypes` AS t WHERE `resellerid`=? AND (`os`='B' OR `os`=?) AND NOT EXISTS (SELECT 1 FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND s.`shorten`=t.`shorten`) ORDER BY `description`");
             $query->execute(array($resellerLockupID, $os, $id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'description' => $row['description']);
             }
 
@@ -157,7 +157,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
                 $query->execute(array($id, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $shorten = $row['shorten'];
                     $deletestring .= '_' . $shorten;
                 }
@@ -187,14 +187,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `ip`,`description` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $description = $row['description'];
         }
 
         $query = $sql->prepare("SELECT r.`id`,s.`shorten`,s.`description` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? ORDER BY `description`");
         $query->execute(array($id,$resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'description' => $row['description']);
         }
 
@@ -217,7 +217,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         foreach($ui->id('serverID', 10, 'post') as $id) {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $ips[$id] = $row['ip'];
             }
         }
@@ -233,7 +233,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             foreach($ui->id('masterID', 10, 'post') as $masterID) {
                 $query->execute(array($masterID, $id, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $ajaxStringIDs[] = $row['id'];
                 }
             }
@@ -255,7 +255,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `id`,`ip`,`description` FROM `rserverdata` WHERE `active`='Y' AND `resellerid`=?");
     $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $appServer[$row['id']] = array('ip' => $row['ip'], 'description' => $row['description']);
     }
 
@@ -263,7 +263,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query2 = $sql->prepare("SELECT r.`id` FROM `rservermasterg` AS m INNER JOIN `rserverdata` AS r ON r.`id`=m.`serverid` WHERE m.`servertypeid`=?");
 
     $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $serverIDs = array();
 

@@ -98,7 +98,7 @@ $statsArray = array(
 
 $query = $sql->prepare("SELECT * FROM `easywi_statistics_current` WHERE `userID`=? LIMIT 1");
 $query->execute(array($resellerLockupID));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $statsArray = $row;
 }
 
@@ -153,7 +153,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
         $query->execute(array($reseller_id));
     }
 
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['orderBy'] == 'I' and $row['merge'] == 'N'){
             $orderFeedsBy='`feedID` ASC';

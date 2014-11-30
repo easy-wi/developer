@@ -100,7 +100,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	$query = $sql->prepare("SELECT * FROM `mysql_external_servers` WHERE `resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query2 = $sql->prepare("SELECT `id`,`active`,`dbname` FROM `mysql_external_dbs` WHERE `sid`=? AND `resellerid`=?");
 	$query->execute(array($reseller_id));
-	foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $i = 0;
         $ds = array();
@@ -114,7 +114,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         $query2->execute(array($row['id'], $reseller_id));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $ds[] = array('id' => $row2['id'], 'address' => $row2['dbname'], 'status' => ($row2['active'] == 'N') ? 2 : 1);
             $i++;
         }
@@ -172,7 +172,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `ip`,`interface` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $interface = $row['interface'];
             $ip = $row['ip'];
         }
@@ -187,7 +187,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->st('action', 'post') or $ui->st('d', 'get') == 'rs') {
         $query = $sql->prepare("SELECT `active`,`ip`,`externalID`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $ip = $row['ip'];
             $externalID = $row['externalID'];
@@ -242,7 +242,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             foreach($dbIDs as $dbID) {
 
                 $query->execute(array($aeskey, $dbID, $id, $reseller_id));
-                foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $remotesql->DelDB($row['dbname']);
                     $remotesql->DelUser($row['dbname']);
@@ -378,13 +378,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
 
         $query = $sql->prepare("SELECT s.`id`,s.`ip`,s.`max_databases`, COUNT(d.`id`) AS `installed`,(s.`max_databases`/100)*COUNT(d.`id`) AS `usedpercent`,s.`max_queries_per_hour`,s.`max_updates_per_hour`,s.`max_connections_per_hour`,s.`max_userconnections_per_hour` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip` HAVING `usedpercent`<100 ORDER BY `usedpercent` ASC");
         $query->execute(array($reseller_id));
-		foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
 			if (!isset($installed)) {
 				$installed = $row['installed'];
@@ -455,7 +455,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $sid, $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword']);
 
@@ -493,7 +493,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT e.*,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $externalID = $row['externalID'];
             $ip = $row['ip'];
@@ -513,7 +513,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='us' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
                 $query2->execute(array($row['id'], $row['resellerid']));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                     if ($row2['action'] == 'ad') {
                         $jobPending = $gsprache->add;
@@ -567,7 +567,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT e.*,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $aeskey, $id, $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 if ($active != $row['active'] or $manage_host_table != $row['manage_host_table'] or $row['decryptedpassword'] != $password  or $row['ips'] != $ips or $row['max_queries_per_hour'] != $max_queries_per_hour or $row['max_updates_per_hour'] != $max_updates_per_hour or $row['max_connections_per_hour'] != $max_connections_per_hour or $row['max_userconnections_per_hour'] != $max_userconnections_per_hour) {
 
@@ -621,7 +621,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT e.`dbname`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $aeskey, $id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword2']);
 
@@ -658,7 +658,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT e.`dbname`,s.`ip`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $dbname = $row['dbname'];
             $cname = $row['cname'];
@@ -670,7 +670,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT e.`dbname`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword2']);
 
@@ -747,10 +747,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT e.`id`,e.`uid`,e.`active`,e.`dbname`,e.`description`,e.`jobPending`,e.`dbSize`,e.`resellerid`,s.`ip`,s.`interface`,u.`cname`,u.`name`,u.`vname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`resellerid`=? ORDER BY $orderby LIMIT $start, $amount");
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='my' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC)  as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if ($row['jobPending'] == 'Y') {
             $query2->execute(array($row['id'], $row['resellerid']));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 if ($row2['action'] == 'ad') $jobPending = $gsprache->add;
                 else if ($row2['action'] == 'dl') $jobPending = $gsprache->del;
                 else $jobPending = $gsprache->mod;

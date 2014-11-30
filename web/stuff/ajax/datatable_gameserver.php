@@ -107,7 +107,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     if (isset($row['jobPending']) and $row['jobPending'] == 'Y') {
 
         $query2->execute(array($row['id'], $resellerLockupID));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
             if ($row2['action'] == 'ad') {
                 $jobPending = $gsprache->add;

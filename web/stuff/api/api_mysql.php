@@ -62,7 +62,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localUserLookupID = $row['id'];
             $localUserCname = $row['cname'];
 
@@ -107,7 +107,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             $query = $sql->prepare("SELECT s.`id`,s.`ip`,s.`max_databases`, COUNT(d.`id`) AS `installed`,COUNT(d.`id`)/(s.`max_databases`/100) AS `usedpercent`,s.`max_queries_per_hour`,s.`max_updates_per_hour`,s.`max_connections_per_hour`,s.`max_userconnections_per_hour` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip` HAVING $inSQLArray `usedpercent`<100 ORDER BY `usedpercent` ASC LIMIT 1");
             $query->execute(array($resellerID));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $hostID = $row['id'];
                 $max_databases = $row['max_databases'];
                 $max_queries_per_hour = $row['max_queries_per_hour'];
@@ -180,7 +180,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT m.`id`,m.`uid`,m.`active`,m.`sid`,m.`dbname`,u.`cname` FROM `mysql_external_dbs` AS m INNER JOIN `userdata` AS u ON u.`id`=m.`uid` WHERE m.`" . $from[$data['identify_server_by']] . "`=? AND m.`resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localID = $row['id'];
             $userID = $row['uid'];
@@ -239,7 +239,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`uid`,`sid`,`dbname` FROM `mysql_external_dbs` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localID = $row['id'];
             $userID = $row['uid'];
             $dbname = $row['dbname'];

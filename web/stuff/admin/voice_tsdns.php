@@ -109,7 +109,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $active = $row['active'];
                 $externalID = $row['externalID'];
                 $description = $row['description'];
@@ -238,7 +238,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                         $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
                         $query->execute(array($reseller_id));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
                         }
 
@@ -277,7 +277,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     if (!$ui->smallletters('action', 2, 'post')) {
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $publickey = $row['publickey'];
             $ssh2ip = $row['ssh2ip'];
             $ssh2port = $row['decryptedssh2port'];
@@ -305,7 +305,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                 $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
                 $query->execute(array($reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
                 }
 
@@ -353,7 +353,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     if ($ui->username("${lookUp}-username",50, 'post') and $ui->ismail("${lookUp}-email", 'post')) {
                         $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? LIMIT 1");
                         $query->execute(array($ui->username("${lookUp}-username",50, 'post'), $ui->ismail("${lookUp}-email", 'post'), $reseller_id));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $usernew = false;
                             $customer = $row['id'];
                             $cnamenew = $ui->username("${lookUp}-username",50, 'post');
@@ -372,7 +372,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                             $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                             $query->execute(array($ui->username("${lookUp}-username",50, 'post'), $ui->ismail("${lookUp}-email", 'post'), $reseller_id));
-                            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                                 $customer = $row['id'];
                                 $cnamenew = $ui->username("${lookUp}-username",50, 'post');
                                 sendmail('emailuseradd', $customer, $cnamenew, $initialpassword);
@@ -386,7 +386,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                         $query->execute(array($cnamenew,passwordgenerate(10),'ts3@import.mail', $reseller_id));
                         $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`='ts3@import.mail' ORDER BY `id` DESC LIMIT 1");
                         $query->execute(array($cnamenew));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $customer = $row['id'];
                             $cnamenew = $prefix . $customer;
                         }
@@ -429,7 +429,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `ssh2ip`,`description` FROM `voice_tsdns` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ssh2ip'];
             $description = $row['description'];
         }
@@ -525,7 +525,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT * FROM `voice_tsdns` WHERE `resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query2 = $sql->prepare("SELECT `dnsID`,`active`,`dns` FROM `voice_dns` WHERE `tsdnsID`=? AND `resellerID`=?");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $i = 0;
         $ds = array();
@@ -545,7 +545,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         $query2->execute(array($row['id'], $reseller_id));
 
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $ds[] = array('id' => $row2['dnsID'], 'address' => $row2['dns'], 'status' => ($row2['active'] == 'N') ? 2 : 1);
         }
 

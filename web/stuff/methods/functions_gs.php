@@ -54,7 +54,7 @@ if (!function_exists('eacchange')) {
 
         $query = $sql->prepare("SELECT `active`,`cfgdir`,`type`,`mysql_server`,`mysql_port`,`mysql_db`,`mysql_table`,`mysql_user`,`mysql_password` FROM `eac` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $cfgdir = $row['cfgdir'];
             $active = $row['active'];
@@ -68,7 +68,7 @@ if (!function_exists('eacchange')) {
 
             $query2 = $sql->prepare("SELECT g.`serverip`,g.`port`,s.`anticheat`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
             $query2->execute(array($serverid, $reseller_id));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 $gsip = $row2['serverip'];
                 $gsport = $row2['port'];

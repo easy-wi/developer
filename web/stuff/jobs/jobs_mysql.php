@@ -47,12 +47,12 @@ $query6 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1"
 $query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE (`status` IS NULL OR `status`='1') AND `type`='my' AND `hostID`=?");
 
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     unset($remotesql);
 
     $query2->execute(array($aeskey, $row['hostID'], $row['resellerID']));
-    foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
         $remotesql = new ExternalSQL ($row2['ip'], $row2['port'], $row2['user'], $row2['decryptedpassword']);
     }
 
@@ -60,10 +60,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     if (isset($remotesql) and $remotesql->error == 'ok') {
 
         $query3->execute(array($row['hostID']));
-        foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
             $query4->execute(array($aeskey, $row2['affectedID'], $row2['resellerID']));
-            foreach ($query4->fetchall(PDO::FETCH_ASSOC) as $row4) {
+            while ($row4 = $query4->fetch(PDO::FETCH_ASSOC)) {
 
                 $ip = $row4['ip'];
                 $ips = $row4['ips'];

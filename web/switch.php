@@ -66,7 +66,7 @@ if ($ui->id('id', 19, 'get')) {
 
     $query = $sql->prepare("SELECT `resellerid`,`accounttype` FROM `userdata` WHERE `id`=? LIMIT 1");
     $query->execute(array($ui->id('id', 19, 'get')));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $sql = null;
 

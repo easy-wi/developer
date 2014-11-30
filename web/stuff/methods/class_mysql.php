@@ -168,7 +168,7 @@ class ExternalSQL {
 
             $query = $this->remotesql->prepare("SELECT `host` FROM `mysql`.`host` WHERE `db`=?");
             $query->execute(array($dbname));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $allowedips[] = $row['host'];
             }
 

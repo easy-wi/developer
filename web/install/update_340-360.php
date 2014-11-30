@@ -201,7 +201,7 @@ All template files have been altered and hidden fields for CSFR token added!
     $query->execute();
     $query2 = $sql->prepare("INSERT INTO `tickets_text` (`ticketID`,`userID`,`writeDate`,`message`,`resellerID`) VALUES (?,?,?,?,?)");
     $query3 = $sql->prepare("UPDATE `tickets` SET `state`=? WHERE `id`=? LIMIT 1");
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $state=($row['open'] == 'N') ? 'C' : 'P';
         $query2->execute(array($row['id'], $row['writerid'], $row['writedate'], $row['ticket'], $row['resellerid']));
         $query3->execute(array($state, $row['id']));

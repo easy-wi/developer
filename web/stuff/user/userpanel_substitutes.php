@@ -70,43 +70,43 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `id`,`dbname` FROM `mysql_external_dbs` WHERE `uid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $db[$row['id']] = $row['dbname'];
         }
 
         $query = $sql->prepare("SELECT `id`,CONCAT(`serverip`,':',`port`) AS `address` FROM `gsswitch` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $gs[$row['id']] = $row['address'];
         }
 
         $query = $sql->prepare("SELECT `webVhostID`,`dns` FROM `webVhost` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $wv[$row['webVhostID']] = $row['dns'];
         }
 
         $query = $sql->prepare("SELECT `id`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $vo[$row['id']] = $row['address'];
         }
 
         $query = $sql->prepare("SELECT `dnsID`,`dns` FROM `voice_dns` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $vd[$row['dnsID']] = $row['dns'];
         }
 
         $query = $sql->prepare("SELECT `id`,`ip` FROM `virtualcontainer` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $vs[$row['id']] = $row['ip'];
         }
 
         $query = $sql->prepare("SELECT `dedicatedID`,`ip` FROM `rootsDedicated` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ro[$row['dedicatedID']] = $row['ip'];
         }
     }
@@ -121,7 +121,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `loginName`,`active`,`name`,`vname` FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $loginName = $row['loginName'];
             $active = $row['active'];
             $name = $row['name'];
@@ -135,7 +135,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `oID`,`oType` FROM `userdata_substitutes_servers` WHERE `sID`=? AND `resellerID`=?");
             $query->execute(array($id,$reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $as[$row['oType']][$row['oID']] = true;
             }
         }
@@ -223,7 +223,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query2 = $sql->prepare("DELETE FROM `userdata_substitutes_servers` WHERE `oType`=? AND `oID`=? AND `sID`=? AND `resellerID`=?");
 
             $query->execute(array($id,$reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if (!$ui->id($row['oType'],10, 'post') or !in_array($row['oID'],(array)$ui->id($row['oType'],10, 'post'))) {
                     $query2->execute(array($row['oType'], $row['oID'],$id,$reseller_id));
                     if ($query2->rowCount() > 0) {
@@ -269,7 +269,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `sID`,`loginName`,`active` FROM `userdata_substitutes` WHERE `userID`=? AND `resellerID`=?");
     $query->execute(array($user_id,$reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $table[] = array('id' => $row['sID'], 'loginName' => $row['loginName'], 'active' => ($row['active'] == 'Y') ? $gsprache->yes : $gsprache->no);
     }
 

@@ -77,6 +77,6 @@ if ($sSearch) {
     $query->execute(array($resellerLockupID));
 }
 
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $array['aaData'][] = array($row['date'], $row['cname'] . '(' . $row['mail'] . ')', $row['topic']);
 }

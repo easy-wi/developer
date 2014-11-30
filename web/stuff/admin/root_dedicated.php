@@ -109,7 +109,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $table = array();
         $query = ($reseller_id == 0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` and  `accounttype`='r') OR (`resellerid`=? and `accounttype`='u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $type = ($row['accounttype'] == 'u') ? $gsprache->user : $gsprache->reseller;
             $table[$row['id']] = $type . ' ' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
@@ -126,7 +126,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT * FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $active = $row['active'];
                 $ip = $row['ip'];
@@ -224,7 +224,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $query = $sql->prepare("SELECT `active`,`ip`,`mac`,`useDHCP`,`usePXE` FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id, $reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     if ($row['active'] != $active or $row['ip'] != $ip or $row['mac'] != $mac or $row['useDHCP'] != $useDHCP or $row['usePXE'] != $usePXE) {
                         $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('D','de',NULL,?,?,?,?,NULL,NOW(),'md',?,?)");
                         $query->execute(array($admin_id, $id, $userID, $ip, json_encode(array('oldactive' => $row['active'], 'oldip' => $row['ip'], 'oldmac' => $row['mac'])), $reseller_id));
@@ -271,7 +271,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `ip`,`description`,`restart`,`useDHCP`,`usePXE` FROM `rootsDedicated` WHERE `dedicatedID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $ip = $row['ip'];
         $restart = $row['restart'];
         $description = $row['description'];
@@ -352,7 +352,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT r.*,d.*,AES_DECRYPT(d.`initialPass`,?) AS `decryptedpass` FROM `rootsDedicated` d LEFT JOIN `resellerimages` r ON d.`imageID`=r.`id` WHERE d.`dedicatedID`=? LIMIT 1");
         $query->execute(array($aeskey, $id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $showImages = false;
             $description = $row['description'];
@@ -403,7 +403,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $templates = array();
             $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` WHERE `description` NOT IN ('Rescue 32bit','Rescue 64bit') ORDER BY `distro`,`bitversion`,`description`");
             $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $templates[] = array('id' => $row['id'], 'description' => $row['description']);
             }
 
@@ -416,7 +416,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if (in_array($ui->st('action', 'post'), array('ri','rc','rs','st'))) {
         $query = $sql->prepare("SELECT d.`ip`,i.`bitversion` FROM `rootsDedicated` d LEFT JOIN `resellerimages` i ON d.`resellerImageID`=i.`id` WHERE d.`dedicatedID`=? LIMIT 1");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $bitversion = $row['bitversion'];
         }
@@ -497,13 +497,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='de' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
 
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $jobPending = $gsprache->no;
 
         if ($row['jobPending'] == 'Y') {
             $query2->execute(array($row['dedicatedID']));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 if ($row2['action'] == 'ad') {
                     $jobPending = $gsprache->add;
                 } else if ($row2['action'] == 'dl') {

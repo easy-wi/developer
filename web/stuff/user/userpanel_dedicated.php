@@ -67,7 +67,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $pxe=($query->fetchColumn()>0) ? 'Y' : 'N';
         $query = $sql->prepare("SELECT r.*,d.*,AES_DECRYPT(d.`initialPass`,?) AS `decryptedpass` FROM `rootsDedicated` d LEFT JOIN `resellerimages` r ON d.`imageID`=r.`id` WHERE d.`userID`=? AND d.`dedicatedID`=? LIMIT 1");
         $query->execute(array($aeskey,$user_id,$id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $showImages = false;
             if ($row['status'] == 1) {
@@ -110,14 +110,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $templates = array();
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` WHERE `description` NOT IN ('Rescue 32bit','Rescue 64bit') ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $templates[] = array('id' => $row['id'], 'description' => $row['description']);
         }
         $template_file = (isset($ip)) ? 'userpanel_root_dedicated_ri.tpl' : 'admin_404.tpl';
     } else if (in_array($ui->st('action', 'post'), array('ri','rc','rs','st'))) {
         $query = $sql->prepare("SELECT d.`ip`,i.`bitversion` FROM `rootsDedicated` d LEFT JOIN `resellerimages` i ON d.`resellerImageID`=i.`id` WHERE d.`userID`=? AND d.`dedicatedID`=? LIMIT 1");
         $query->execute(array($user_id,$id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $bitversion = $row['bitversion'];
         }
@@ -147,12 +147,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT * FROM `rootsDedicated` WHERE `active`='Y' AND `userID`=? AND `resellerID`=?");
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='de' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
     $query->execute(array($user_id,$reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($_SESSION['sID']) or in_array($row['dedicatedID'],$substituteAccess['ro'])) {
             $jobPending = $gsprache->no;
             if ($row['jobPending'] == 'Y') {
                 $query2->execute(array($row['dedicatedID']));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     if ($row2['action'] == 'ad') $jobPending = $gsprache->add;
                     else if ($row2['action'] == 'dl') $jobPending = $gsprache->del;
                     else if ($row2['action'] == 'ri') $jobPending = $sprache->reinstall;

@@ -186,7 +186,7 @@ $add->execute();
 $query = $sql->prepare("SELECT * FROM `addons_desc`");
 $query->execute();
 $insert = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 	$insert->execute(array($row['language'], $row['addonid'], $row['description'], $row['resellerid']));
 }
 $query = $sql->prepare("DROP TABLE `addons_desc`");
@@ -194,7 +194,7 @@ $query->execute();
 $query = $sql->prepare("SELECT * FROM `ticket_language`");
 $query->execute();
 $insert = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 	$insert->execute(array($row['language'], $row['topicid'], $row['subject'], $row['resellerid']));
 }
 $query = $sql->prepare("DROP TABLE `ticket_language`");
@@ -202,7 +202,7 @@ $query->execute();
 $query = $sql->prepare("SELECT * FROM `email_languages`");
 $query->execute();
 $insert = $sql->prepare("INSERT INTO `translations` (`type`,`lang`,`transID`,`text`,`resellerID`) VALUES ('em',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=`text`");
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 	$insert->execute(array($row['language'], $row['content'],@gzuncompress($row['xml']), $row['resellerid']));
 }
 $query = $sql->prepare("DROP TABLE `email_languages`");

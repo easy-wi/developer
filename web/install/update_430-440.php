@@ -259,7 +259,7 @@ if (isset($include) and $include == true) {
     $query4 = $sql->prepare("INSERT INTO `rootsIP4` (`subnetID`,`ip`) VALUES (?,?) ON DUPLICATE KEY UPDATE `ip`=VALUES(`ip`)");
 
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if (isset($row['subnetOptions'])) {
             foreach (explode("\r\n", $row['ips']) as $exip) {
@@ -283,7 +283,7 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("SELECT `ips`,`resellerid`,`resellersid` FROM `resellerdata`");
     $query2 = $sql->prepare("UPDATE `rootsIP4` SET `ownerID`=?,`resellerID`=? WHERE `ip`=? LIMIT 1");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         foreach (ipstoarray($row['ips']) as $usedip) {
             $query2->execute(array($row['resellerid'], $row['resellersid'], $usedip));
         }
@@ -300,7 +300,7 @@ if (isset($include) and $include == true) {
 
         $query = $sql->prepare("SELECT `file` FROM `modules`");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if (is_file($dirSource . $row['file'])) {
                 rename($dirSource . $row['file'], $dirTarget . $row['file']);
             }

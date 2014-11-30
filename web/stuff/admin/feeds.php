@@ -142,7 +142,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $maxKeep = '';
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? LIMIT 1");
         $query->execute(array($lookUpID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $displayContent = $row['displayContent'];
             $limitDisplay = $row['limitDisplay'];
@@ -230,7 +230,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $query = $sql->prepare("SELECT `active`,`twitter`,`feedUrl`,`loginName` FROM `feeds_url` WHERE `feedID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$lookUpID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $twitter = $row['twitter'];
             $feedUrl = $row['feedUrl'];

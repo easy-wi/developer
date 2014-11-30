@@ -89,7 +89,7 @@ class rootServer {
         if (isid($imageID, 10)) {
             $query = $this->sql->prepare("SELECT `distro`,`bitversion` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
             $query->execute(array($imageID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $distro = $row['distro'];
                 $guestos = ($row['bitversion'] == '32') ? $row['distro'] : $row['distro'] . '-' . $row['bitversion'];
             }
@@ -99,7 +99,7 @@ class rootServer {
         if ($this->type == 'dedicated') {
             $query = $this->sql->prepare("SELECT d.*,u.`cname` FROM `rootsDedicated` d LEFT JOIN `userdata` u ON d.`userID`=u.`id` WHERE d.`dedicatedID`=? LIMIT 1");
             $query->execute(array($this->tempID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $this->ID[$type][$ID]['useDHCP'] = $row['useDHCP'];
                 $this->ID[$type][$ID]['hostname'] = 'dedi-' . $ID;
                 $this->ID[$type][$ID]['usePXE'] = $row['usePXE'];
@@ -122,7 +122,7 @@ class rootServer {
 
             $query = $this->sql->prepare("SELECT c.*,u.`id` AS `userID`,u.`cname`,h.`cores` AS `hcore`,h.`esxi`,h.`id` AS `hostID`,h.`ip` AS `hip`,AES_DECRYPT(h.`port`,:aeskey) AS `dport`,AES_DECRYPT(h.`user`,:aeskey) AS `duser`,AES_DECRYPT(h.`pass`,:aeskey) AS `dpass`,h.`publickey`,h.`keyname` FROM `virtualcontainer` c INNER JOIN `userdata` u ON c.`userid`=u.`id` INNER JOIN `virtualhosts` h ON c.`hostid`=h.`id` WHERE c.`id`=:vmID LIMIT 1");
             $query->execute(array(':aeskey' => $this->aeskey,':vmID' => $this->tempID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 if (!isset($this->vmwareHosts[$row['hostID']])) {
                     $this->vmwareHosts[$row['hostID']]['vmIDs']['ip'] = $row['hip'];
@@ -179,7 +179,7 @@ class rootServer {
 
                 $query = $this->sql->prepare("SELECT s.*,d.*,AES_DECRYPT(d.`port`,:aeskey) AS `dport`,AES_DECRYPT(d.`user`,:aeskey) AS `duser`,AES_DECRYPT(d.`pass`,:aeskey) AS `dpass` FROM `rootsIP4` i INNER JOIN `rootsSubnets` s ON i.`subnetID`=s.`subnetID` INNER JOIN `rootsDHCP` d ON s.`dhcpServer`=d.`id` WHERE i.`ip`=:ip AND d.`active`='Y' LIMIT 1");
                 $query->execute(array(':aeskey' => $this->aeskey, ':ip' => $this->ID[$type][$ID]['ip']));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $foundDHCP = true;
 
@@ -214,7 +214,7 @@ class rootServer {
 
                     $query = $this->sql->prepare("SELECT s.*,d.*,AES_DECRYPT(d.`port`,:aeskey) AS `dport`,AES_DECRYPT(d.`user`,:aeskey) AS `duser`,AES_DECRYPT(d.`pass`,:aeskey) AS `dpass` FROM `rootsIP4` i INNER JOIN `rootsSubnets` s ON i.`subnetID`=s.`subnetID` INNER JOIN `rootsDHCP` d ON s.`dhcpServer`=d.`id` WHERE i.`ip`=:ip AND d.`active`='Y' LIMIT 1");
                     $query->execute(array(':aeskey' => $this->aeskey, ':ip' => $this->extraData['oldip']));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         $foundDHCP = true;
 
@@ -254,7 +254,7 @@ class rootServer {
                 if (isid($this->ID[$type][$ID]['pxeID'], 10)) {
                     $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' AND `id`=:pxeID LIMIT 1");
                     $query->execute(array(':aeskey' => $this->aeskey, ':pxeID' => $this->ID[$type][$ID]['pxeID']));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         $foundPXE = true;
 
@@ -278,7 +278,7 @@ class rootServer {
                 if ((!isset($foundPXE) or !isip($this->ID[$type][$ID]['pxeIP'], 'ip4')) and $action != 'dl') {
                     $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `rootsPXE` WHERE `active`='Y' ORDER BY RAND() LIMIT 1");
                     $query->execute(array(':aeskey' => $this->aeskey));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         $foundPXE = true;
 

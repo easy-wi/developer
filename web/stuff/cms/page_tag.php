@@ -59,7 +59,7 @@ if (isset($search_tag) and $search_tag != '' and $search_tag != null) {
 	$table = array();
 	$query = $sql->prepare("SELECT `id`,`name` FROM `page_terms` WHERE `language`=? AND `search_name`=? AND `type`=? AND `resellerid`='0' LIMIT 1");
 	$query->execute(array($user_language,$search_tag,$lookUp));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$tag_name = $row['name'];
 		$limit = $maxnews;
         $query = $sql->prepare("SELECT COUNT(p.`id`) AS `amount` FROM `page_terms_used` u LEFT JOIN `page_pages_text` t ON u.`language_id`=t.`id` AND t.`language`=? LEFT JOIN `page_pages` p ON u.`page_id`=p.`id` AND (p.`type`='page' OR p.`type`='news') WHERE t.`title` IS NOT NULL AND t.`text` IS NOT NULL AND t.`title`!='' AND t.`text`!='' AND u.`term_id`=? AND u.`resellerid`='0'");
@@ -94,7 +94,7 @@ if (isset($search_tag) and $search_tag != '' and $search_tag != null) {
 		}
         $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`type`,t.`title`,t.`text` FROM `page_terms_used` u LEFT JOIN `page_pages_text` t ON u.`language_id`=t.`id` AND t.`language`=? LEFT JOIN `page_pages` p ON u.`page_id`=p.`id` AND (p.`type`='page' OR p.`type`='news') WHERE t.`title` IS NOT NULL AND t.`text` IS NOT NULL AND t.`title`!='' AND t.`text`!='' AND u.`term_id`=? AND u.`resellerid`='0' ORDER BY p.`id` DESC LIMIT $limit");
         $query->execute(array($user_language, $row['id']));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			if ($seo == 'Y') {
                 $type = '';
                 if ($row['type'] == 'news') $type=szrp($gsprache->news) . '/';

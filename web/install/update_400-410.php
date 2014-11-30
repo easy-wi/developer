@@ -219,7 +219,7 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("SELECT s.`id` AS `servertype_id`,s.`resellerid`,a.`id` AS `addon_id` FROM `servertypes` AS s LEFT JOIN `addons` AS a ON s.`shorten`=a.`shorten` OR s.`qstat`=a.`shorten` WHERE a.`id` IS NOT NULL");
     $query2 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `addon_id`=`addon_id`");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $query2->execute(array($row['addon_id'], $row['servertype_id'], $row['resellerid']));
     }
 
