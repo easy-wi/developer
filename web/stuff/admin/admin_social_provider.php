@@ -241,5 +241,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $table[] = array('id' => $row['serviceProviderID'], 'active' => $row['active'], 'name' => $row['filename']);
     }
 
+    configureDateTables('-1');
+
     $template_file = 'admin_social_provider_list.tpl';
 }

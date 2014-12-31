@@ -411,8 +411,9 @@ class AppServer {
      * Following code contains the user management related funtions
      */
 
-    private function linuxAddModUserGenerate ($userName, $password, $protected = false) {
+    private function linuxAddModUserGenerate ($userName, $password, $protected = false, $deactivate = false) {
 
+        $password = ($deactivate == false) ? $password : passwordgenerate(10);
         $userNameHome = ($protected == false) ? $this->appServerDetails['userName'] : $this->appServerDetails['userName'] . '/pserver';
 
         // Check if the user can be found. If not, add it, if yes, edit
@@ -440,12 +441,12 @@ class AppServer {
 
     }
 
-    private function linuxAddModUser () {
+    private function linuxAddModUser ($deactivate) {
 
-        $this->linuxAddModUserGenerate ($this->appServerDetails['userName'], $this->appServerDetails['ftpPassword']);
+        $this->linuxAddModUserGenerate ($this->appServerDetails['userName'], $this->appServerDetails['ftpPassword'], false, $deactivate);
 
         if ($this->appServerDetails['protectionModeAllowed']) {
-            $this->linuxAddModUserGenerate ($this->appServerDetails['userName'] . '-p', $this->appServerDetails['ftpPasswordProtected'], true);
+            $this->linuxAddModUserGenerate ($this->appServerDetails['userName'] . '-p', $this->appServerDetails['ftpPasswordProtected'], true, $deactivate);
         }
     }
 
@@ -475,7 +476,7 @@ class AppServer {
 
     }
 
-    public function userCud ($action, $type = false) {
+    public function userCud ($action, $type = false, $deactivate = false) {
 
         if ($this->appServerDetails and isset($this->appMasterServerDetails['os'])) {
 
@@ -487,9 +488,9 @@ class AppServer {
                 }
             } else {
                 if ($this->appMasterServerDetails['os'] == 'L') {
-                    $this->linuxAddModUser($type);
+                    $this->linuxAddModUser($deactivate);
                 } else {
-                    $this->windowsAddModUser($type);
+                    $this->windowsAddModUser($deactivate);
                 }
             }
 

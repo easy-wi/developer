@@ -118,7 +118,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 } else {
 
-                    $removeGames = (array) $extraData->gamesRemoveArray;
+                    $removeGames = (property_exists($extraData, 'gamesRemoveArray')) ? (array) $extraData->gamesRemoveArray : array();
 
                     if (count($removeGames) > 0) {
 
@@ -136,6 +136,10 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     // Send delete request for protected user in case it has been removed from server
                     if ($protectedAllowed == 'N' and isset($extraData->oldProtected) and $extraData->oldProtected == 'Y') {
                         $appServer->userCud('del');
+                    }
+
+                    if ($extraData->newActive == 'N') {
+                        $appServer->userCud('add', false, true);
                     }
 
                     $newPort = (isset($extraData->newPort) and strlen($extraData->newPort) > 0) ? $extraData->newPort : $port;

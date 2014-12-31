@@ -84,8 +84,8 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $insert->execute(array($row['invoicedByID'], $row2['webVhostID'], $row2['webMasterID'], $row['affectedID'], $row2['dns'], $row['action'], $row['extraData'], $row2['resellerID']));
     }
 
-    $update = $sql->prepare("UPDATE `jobs` SET `status`='4' WHERE `jobID`=? LIMIT 1");
-    $update->execute(array($row['jobID']));
+    $query2 = $sql->prepare("UPDATE `jobs` SET `status`='4' WHERE `jobID`=? LIMIT 1");
+    $query2->execute(array($row['jobID']));
 
     updateJobs($row['affectedID'], $row['resellerID'],$jobPending='Y');
 

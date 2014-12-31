@@ -494,10 +494,6 @@ if (array_value_exists('action', 'add', $data)) {
                 $query->execute(array($resellerID, $localID, $localID, $name, json_encode(array('newActive' => $active)), $resellerID));
 
                 updateJobs($localID, $resellerID);
-
-                if ($active == "N") {
-
-                }
             }
 
         } else {
