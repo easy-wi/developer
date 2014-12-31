@@ -91,39 +91,31 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
         } else {
 
-            $rootServer->collectData();
-            $sshcmd = $rootServer->returnCmds();
+            if (4 == $currentHour) {
+                $rootServer->collectData(true, true, false);
+            } else {
+                $rootServer->collectData();
+            }
 
-            if ($rootServer->sshcmd !== null) {
+            $sshReturn = $rootServer->sshConnectAndExecute();
 
-                $sshcmd = (4 == $currentHour) ? $rootServer->returnCmds('update', 'all') : $rootServer->returnCmds();
+            if ($sshReturn === false and $rootServer->updateAmount > 0) {
 
-                if ($rootServer->sshcmd !== null) {
-
-                    if (ssh2_execute('gs', $row['id'], $rootServer->sshcmd) !== false) {
-
-                        $rootServer->setUpdating();
-
-                        echo "Updater started for " . $rootServer->sship . "\r\n";
-
-                    } else {
-                        echo "Updating failed for: " . $rootServer->sship . "\r\n";
-                    }
-
-                    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                        print_r($rootServer->sshcmd);
-                    }
-
-                } else {
-
-                    echo "No updates to be executed for " . $rootServer->sship . "\r\n";
-
-                }
+                echo "Updating failed for: " . $rootServer->sship . "\r\n";
 
             } else {
 
-                echo "No updates to be executed for " . $rootServer->sship . "\r\n";
+                if ($rootServer->updateAmount > 0) {
 
+                    echo "Updater started for " . $rootServer->sship . "\r\n";
+
+                    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                        print_r($rootServer->getCommands());
+                    }
+
+                } else {
+                    echo "No updates to be executed for " . $rootServer->sship . "\r\n";
+                }
             }
 
             $query2->execute(array($currentHour, $row['id']));

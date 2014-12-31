@@ -101,7 +101,7 @@ $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affected
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $tobeActive = false;
-    $jobPending = '';
+    $jobPending = $gsprache->no;
     $statusMessage = $gsprache->status_ok;
 
     if (isset($row['jobPending']) and $row['jobPending'] == 'Y') {
@@ -120,9 +120,6 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $json = @json_decode($row2['extraData']);
             $tobeActive = (is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
         }
-
-    } else {
-        $jobPending = $gsprache->no;
     }
 
     if ($row['active'] == 'N') {

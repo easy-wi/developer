@@ -1061,6 +1061,8 @@ $add->execute();
 $query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `steamgame` enum('N','S') NOT NULL DEFAULT 'S',
+  `steam_account` blob,
+  `steam_password` blob,
   `appID` int(10) unsigned,
   `steamVersion` varchar(20) NULL,
   `updates` smallint(1) unsigned DEFAULT '1',

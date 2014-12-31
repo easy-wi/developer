@@ -71,6 +71,9 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     include(EASYWIDIR . '/stuff/settings.php');
     include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
+    include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+    include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+    include(EASYWIDIR . '/stuff/methods/class_app.php');
 
     printText('File include and parameters fetched. Start connecting to external systems.');
 
@@ -360,9 +363,10 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                         // Check if a rootserver entry already exists at easy-wi with the used IP
                         $arrayIP = getParam('ip');
+
                         if (isset($gameRootIPs[$arrayIP]['id'])) {
 
-                            unset($servertypeID,$servertypeModFolder,$switchID);
+                            unset($servertypeID, $servertypeModFolder, $switchID);
 
                             // Check if the rootserver has a masterserver with this shorten
                             $query2->execute(array(getParam('shorten'), $row['resellerID'], $gameRootIPs[$arrayIP]['id']));
@@ -431,11 +435,12 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                                         $query7->execute(array($sql->lastInsertId(), $switchID));
 
-                                        $gameRootIP = $gameRootIPs[$arrayIP]['user'];
-                                        $gameRootCmds[$gameRootIPs[$arrayIP]['id']][] = "./control.sh add ${customer}-${switchID} ${passwordGenerate} ${gameRootIP} ${passwordGenerate}";
+                                        $ftpConnectString = 'ftp://' . str_replace('//', '/', getParam('ip') . ':' . $gameRootIPs[$arrayIP]['ftpPort'] . '/' . getParam('path') . '/' . $servertypeModFolder);
 
-                                        $ftpConnect = 'ftp://' . str_replace('//', '/', getParam('ip') . ':' . $gameRootIPs[$arrayIP]['ftpPort'] . '/' . getParam('path') . '/' . $servertypeModFolder);
-                                        $gameRootCmds[$gameRootIPs[$arrayIP]['id']][] = "sudo -u ${customer}-${switchID} ./control.sh migrateserver ${customer}-${switchID} 1_" . getParam('shorten') . " " .getParam('ip') . "_" . getParam('port'). " 1 " . getParam('ftpUser') ." " . getParam('ftpPass'). " ${ftpConnect} ${servertypeModFolder}";
+                                        $appServer = new AppServer($gameRootIPs[$arrayIP]['id']);
+                                        $appServer->getAppServerDetails($switchID);
+                                        $appServer->migrateToEasyWi(array('user' => getParam('ftpUser'), 'password' => getParam('ftpPass'), 'path' => '/' . getParam('path') . '/' . $servertypeModFolder, 'connectString' => $ftpConnectString), getParam('shorten'), $servertypeModFolder);
+                                        $appServer->execute();
 
                                         printText('Import Gameserver. Address: ' . getParam('ip') . ':' . getParam('port') . '. And shorten:' . getParam('shorten'));
 

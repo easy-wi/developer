@@ -78,20 +78,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query2 = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3 = $sql->prepare("INSERT INTO rservermasterg (`serverid`,`servertypeid`,`installing`,`installstarted`,`resellerid`) VALUES (?,?,'Y',NOW(),?)");
 
-            foreach($ui->id('id', 10, 'post') as $masterID) {
+            foreach ($ui->id('id', 10, 'post') as $masterID) {
 
-                $query->execute(array($id, $masterID ,$resellerLockupID));
+                $query->execute(array($id, $masterID, $resellerLockupID));
 
-                if ($query->rowcount() == 0) {
+                if ($query->rowCount() == 0) {
 
                     $query2->execute(array($masterID, $resellerLockupID));
                     while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-
-                        $description = $row2['description'];
-                        $shorten = $row2['shorten'];
-
-                        $template_file .= '<b>' . $description . '</b> ' . $sprache->root_masterinstall;
-                        $loguseraction = '%add% %master% ' . $shorten;
+                        $template_file .= '<b>' . $row2['description'] . '</b> ' . $sprache->root_masterinstall . '<br>';
+                        $loguseraction = '%add% %master% ' . $row2['shorten'];
                         $insertlog->execute();
                     }
 
@@ -101,10 +97,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $rootServer->collectData($masterID, true);
             }
 
-            $sshcmd = $rootServer->returnCmds('install','all');
+            $rootServer->sshConnectAndExecute();
 
-            if ($rootServer->sshcmd !== null) {
-                ssh2_execute('gs', $id, $rootServer->sshcmd);
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                echo '<br>' . nl2br($rootServer->getCommands());
             }
 
         } else {
@@ -138,42 +134,41 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')) {
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
 
     if ($ui->smallletters('action', 2, 'post') == 'dl') {
 
-        $serverid = $ui->id('id', 19, 'get');
-
-        $rdata = serverdata('root', $serverid, $aeskey);
-        $sship = $rdata['ip'];
+        $rootServer = new masterServer($ui->id('id', 10, 'get'), $aeskey);
 
         if ($ui->id('id', 10, 'post')) {
 
             $template_file = '';
-            $deletestring = '';
-            $i = 0;
 
-            foreach($ui->id('id',30, 'post') as $id) {
+            $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
+            $query2 = $sql->prepare("DELETE FROM `rservermasterg` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 
-                $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
+            foreach ($ui->id('id', 10, 'post') as $id) {
+
                 $query->execute(array($id, $resellerLockupID));
-                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    $shorten = $row['shorten'];
-                    $deletestring .= '_' . $shorten;
-                }
+                $shorten = $query->fetchColumn();
 
-                $query = $sql->prepare("DELETE FROM `rservermasterg` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($id, $resellerLockupID));
+                $rootServer->masterRemove($shorten);
 
-                $template_file .= $spracheResponse->table_del . ": $shorten<br />";
-                $loguseraction = "%del% %master% $sship $shorten";
+                $query2->execute(array($id, $resellerLockupID));
+
+                $template_file .= $spracheResponse->table_del . ': ' . $shorten . '<br />';
+
+                $loguseraction = '%del% %master% ' . $rootServer->sship . ' ' . $shorten;
                 $insertlog->execute();
-                $i++;
             }
 
-            $deletestring = $i . $deletestring;
+            $rootServer->sshConnectAndExecute(false);
 
-            $template_file .= (ssh2_execute('gs', $serverid, "./control.sh delete $deletestring")) ? $sprache->root_masterdel : $sprache->error_root_masterdel2;
+            $template_file .= $sprache->root_masterdel;
+
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                echo '<br>' . nl2br($rootServer->getCommands());
+            }
 
         } else {
             $template_file = $sprache->error_root_noselect;
