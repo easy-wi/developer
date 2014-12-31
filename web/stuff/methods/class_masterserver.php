@@ -372,9 +372,9 @@ class masterServer {
 
                     $this->shellScript .= 'taskset -c 0 ${IONICE}nice -n +19 ./steamcmd.sh +login ';
 
-                    if (strlen($this->steamAccount) > 0 and strlen($this->steamPassword) > 0) {
+                    if (strlen($this->steamAccount) > 0) {
                         $this->shellScript .= $this->steamAccount . ' ' . $this->steamPassword;
-                    } else if (strlen($row['steamAcc']) > 0 and strlen($row['steamPwd']) > 0) {
+                    } else if (strlen($row['steamAcc']) > 0) {
                         $this->shellScript .= $row['steamAcc'] . ' ' . $row['steamPwd'];
                     } else {
                         $this->shellScript .= 'anonymous';

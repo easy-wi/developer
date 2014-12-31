@@ -63,6 +63,7 @@
 	<ssh_port>SSH2 Port</ssh_port>
 	<ssh_user>SSH2 Benutzername</ssh_user>
 	<steam>Steam Spiel</steam>
+    <steamWarning>Achtung! Wenn hier Daten eingegeben werden, überschreiben diese die Einstellungen der Templates!</steamWarning>
     <updateMinute>Stündliches Update bei Minute</updateMinute>
 	<useds>Benutze Slots: </useds>
 	<zusatz_ip>Zusatz IP</zusatz_ip>

@@ -56,6 +56,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="control-label" for="inputSteamCmd">SteamCmd Account</label>
+                            <div class="controls"><input class="form-control" id="inputSteamCmd" type="text" name="steamAccount" value="<?php echo $steamAccount;?>"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inputSteamCmdPWD">SteamCmd <?php echo $sprache->password;?></label>
+                            <div class="controls"><input class="form-control" id="inputSteamCmdPWD" type="text" name="steamPassword" value="<?php echo $steamPassword;?>"></div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="inputSteamAppID">Steam appID</label>
                             <div class="controls"><input class="form-control" id="inputSteamAppID" type="text" name="appID" value="<?php echo $appID;?>"></div>
                         </div>

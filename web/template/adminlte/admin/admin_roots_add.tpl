@@ -285,6 +285,12 @@
                             <div class="controls"><input class="form-control" id="inputUpdateMinute" type="number" name="updateMinute" value="<?php echo $updateMinute;?>" min="0" max="59"></div>
                         </div>
 
+                        <h3>Steam Account</h3>
+
+                        <div class="form-group">
+                            <div class="controls"><div class="alert alert-warning"><?php echo $sprache->steamWarning;?></div></div>
+                        </div>
+
                         <div class="form-group">
                             <label class="control-label" for="inputSteamCmd">SteamCmd Account</label>
                             <div class="controls"><input class="form-control" id="inputSteamCmd" type="text" name="steamAccount" value="<?php echo $steamAccount;?>"></div>
