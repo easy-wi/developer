@@ -393,7 +393,7 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
 </Directory>
 <Directory ~/server/*/*/garrysmod/*>
     Umask 077 077
-    <Limit RNFR RNTO STOR DELE>
+    <Limit RNFR RNTO STOR DELE MKD RMD>
         AllowAll
     </Limit>
 </Directory>
