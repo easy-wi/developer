@@ -255,6 +255,14 @@ class AppServer {
 
     private function getReplacements () {
 
+        if ($this->appServerDetails['lendServer'] == 'Y') {
+            $lendDetails = $this->getLendDetails();
+        }
+
+        if (!isset($lendDetails) or !is_array($lendDetails)) {
+            $lendDetails = array('rcon' => '', 'password' => '', 'slots' => $this->appServerDetails['slots']);
+        }
+
         $placeholder = array('%binary%', '%tickrate%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%');
 
         $replacePlaceholderWith = array(
@@ -268,7 +276,7 @@ class AppServer {
             $this->appServerDetails['port3'],
             $this->appServerDetails['port4'],
             $this->appServerDetails['port5'],
-            $this->appServerDetails['slots'],
+            ($this->appServerDetails['lendServer'] == 'Y') ? $lendDetails['slots'] : $this->appServerDetails['slots'],
             $this->appServerDetails['app']['map'],
             $this->appServerDetails['app']['mapGroup'],
             $this->appServerDetails['app']['fps'],
@@ -348,6 +356,8 @@ class AppServer {
                 $cmd .= ' +rcon_password ' . $row['rcon'] . ' +sv_password ' . $row['password'];
             } else if ($gameType == 'cod') {
                 $cmd .= ' +set rcon_password ' . $row['rcon'] . ' +set g_password ' . $row['password'];
+            } else {
+                $cmd = array('rcon' => $row['rcon'], 'password' => $row['password'], 'slots' => $row['slots']);
             }
         }
 
@@ -404,7 +414,7 @@ class AppServer {
             return 'cod';
         }
 
-        return false;
+        return $this->appServerDetails['template']['gameq'];
     }
 
     /*
@@ -813,6 +823,7 @@ class AppServer {
     private function protectedSettingsToArray () {
 
         $cvarProtectArray = array();
+        $lendServerReplaceMents = array();
 
         $replaceSettings = $this->getReplacements();
 
@@ -878,9 +889,42 @@ class AppServer {
             }
         }
 
+        if ($this->appServerDetails['lendServer'] == 'Y') {
+
+            if ($this->appServerDetails['lendServer'] == 'Y') {
+                $lendDetails = $this->getLendDetails();
+            }
+
+            if (!isset($lendDetails) or !is_array($lendDetails)) {
+                $lendDetails = array('rcon' => '', 'password' => '', 'slots' => $this->appServerDetails['slots']);
+            }
+
+            $gameType = $this->getGameType();
+
+            if ($gameType == 'mc') {
+                $lendServerReplaceMents = array('enable-rcon' => 'true', 'rcon.password' => $lendDetails['rcon']);
+            } else if ($gameType == 'hl2' or $gameType == 'hl1') {
+                $lendServerReplaceMents = array('sv_password' => $lendDetails['password'], 'rcon' => $lendDetails['rcon']);
+            } else if ($gameType == 'cod') {
+                $lendServerReplaceMents = array('g_password' => $lendDetails['password'], 'rcon_password' => $lendDetails['rcon']);
+            } else if ($gameType == 'teeworlds') {
+                $lendServerReplaceMents = array('sv_password' => $lendDetails['password'], 'sv_rcon_password' => $lendDetails['rcon']);
+            } else if ($gameType == 'samp') {
+                $lendServerReplaceMents = array('password' => $lendDetails['password'], 'rcon' => 1, 'rcon_password' => $lendDetails['rcon']);
+            }
+        }
+
         // Remove configs that do not contain any overwrite settings
         // Removing will prevent unnecessary FTP connections
         foreach ($cvarProtectArray as $config => $values) {
+
+            if ($this->appServerDetails['lendServer'] == 'Y') {
+
+                foreach ($lendServerReplaceMents as $cvar => $value) {
+                    $cvarProtectArray[$config]['cvars'][$cvar] = $value;
+                }
+            }
+
             if (!isset($values['cvars']) or count($values['cvars']) == 0) {
                 unset($cvarProtectArray[$config]);
             }
@@ -953,7 +997,7 @@ class AppServer {
 
                         foreach ($values['cvars'] as $cvar => $value) {
 
-                            if ($values['type'] == 'cfg' and preg_match("/^(.*)" . strtolower($cvar) . "\s+(.*)$/", $loweredSingleLine)) {
+                            if ($values['type'] == 'cfg' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '\s+(.*)$/', $loweredSingleLine)) {
 
                                 $edited = true;
 
@@ -963,7 +1007,7 @@ class AppServer {
 
                                 $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
 
-                            } else if ($values['type'] == 'ini' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)$/", $loweredSingleLine)) {
+                            } else if ($values['type'] == 'ini' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '[\s+]{0,}\=[\s+]{0,}(.*)$/', $loweredSingleLine)) {
 
                                 $edited = true;
 
@@ -981,7 +1025,7 @@ class AppServer {
 
                                 $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
 
-                            } else if ($values['type'] == 'json' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}:[\s+]{0,}(.*)[\,]{0,1}$/", $loweredSingleLine)) {
+                            } else if ($values['type'] == 'json' and preg_match("/^(.*)[\"]" . strtolower($cvar) . "[\s+]{0,}:[\s+]{0,}(.*)[\,]{0,1}$/", $loweredSingleLine)) {
 
                                 $edited = true;
 
@@ -1162,7 +1206,12 @@ class AppServer {
         }
 
         if ($this->appServerDetails['lendServer'] == 'Y') {
-            $startCommand .= $this->getLendDetails();
+
+            $lendDetails = $this->getLendDetails();
+
+            if (!is_array($lendDetails)) {
+                $startCommand .= $this->getLendDetails();
+            }
         }
 
         // Add addon commands
@@ -1196,10 +1245,12 @@ class AppServer {
                 $startCommand = substr($startCommand, 2);
             }
 
-        }
+            $shellCommand = '';
 
-        $shellCommand = ($this->appServerDetails['useTaskSet'] == 'Y' and strlen($this->appServerDetails['cores']) > 0) ? 'taskset -c ' . $this->appServerDetails['cores'] : '';
-        $shellCommand .= ' screen -A -m -d -L -S ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ' . $startCommand;
+        } else {
+            $shellCommand = ($this->appServerDetails['useTaskSet'] == 'Y' and strlen($this->appServerDetails['cores']) > 0) ? 'taskset -c ' . $this->appServerDetails['cores'] : '';
+            $shellCommand .= ' screen -A -m -d -L -S ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ' . $startCommand;
+        }
 
         return $shellCommand;
     }
