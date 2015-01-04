@@ -363,7 +363,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $description = '';
 
             $query->execute(array($id, $row,$reseller_id));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            while ($row2 = $query->fetch(PDO::FETCH_ASSOC)) {
                 $lang = $row2['lang'];
                 $description = $row2['text'];
             }

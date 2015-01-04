@@ -100,7 +100,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $rootServer->sshConnectAndExecute();
 
             if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                echo '<br>' . nl2br($rootServer->getCommands());
+                $template_file .= '<br>' . nl2br($rootServer->getCommands());
             }
 
         } else {
@@ -167,7 +167,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file .= $sprache->root_masterdel;
 
             if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                echo '<br>' . nl2br($rootServer->getCommands());
+                $template_file .= '<br>' . nl2br($rootServer->getCommands());
             }
 
         } else {
