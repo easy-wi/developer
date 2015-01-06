@@ -449,41 +449,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $table = array();
 
-    $o = $ui->st('o', 'get');
-
-    if ($ui->st('o', 'get') == 'da') {
-        $orderby = '`active` DESC';
-    } else if ($ui->st('o', 'get') == 'aa') {
-        $orderby = '`active` ASC';
-    } else if ($ui->st('o', 'get') == 'dt') {
-        $orderby = '`grouptype` DESC';
-    } else if ($ui->st('o', 'get') == 'at') {
-        $orderby = '`grouptype` ASC';
-    } else if ($ui->st('o', 'get') == 'dd') {
-        $orderby = '`defaultgroup` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = '`defaultgroup` ASC';
-    } else if ($ui->st('o', 'get') == 'dn') {
-        $orderby = '`name` DESC';
-    } else if ($ui->st('o', 'get') == 'at') {
-        $orderby = '`name` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`id` DESC';
-    } else {
-        $orderby = '`id` ASC';
-    }
-
-    $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `resellerid`=? ORDER BY $orderby");
+    $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `resellerid`=?");
     $query->execute(array($lookIpID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-        if ($row['active'] == 'Y') {
-            $imgName = '16_ok';
-            $imgAlt='ok';
-        } else {
-            $imgName = '16_bad';
-            $imgAlt='inactive';
-        }
 
         if ($row['grouptype'] == 'r') {
             $grouptype = $sprache->accounttype_reseller;
@@ -493,8 +461,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $grouptype = $sprache->accounttype_user;
         }
 
-        $table[] = array('id' => $row['id'], 'img' => $imgName, 'alt' => $imgAlt, 'grouptype' => $grouptype, 'defaultgroup' => ($row['defaultgroup'] == 'Y') ? $gsprache->yes : $gsprache->no, 'name' => $row['name'], 'active' => $row['active']);
+        $table[] = array('id' => $row['id'], 'grouptype' => $grouptype, 'defaultgroup' => ($row['defaultgroup'] == 'Y') ? $gsprache->yes : $gsprache->no, 'name' => $row['name'], 'active' => $row['active']);
     }
+
+    configureDateTables('-1');
 
     $template_file = 'admin_user_groups_list.tpl';
 }

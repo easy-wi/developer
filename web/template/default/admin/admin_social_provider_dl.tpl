@@ -19,8 +19,10 @@
 <div class="row-fluid">
     <div class="span6">
         <form class="form-horizontal" action="admin.php?w=up&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=up" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+
             <input type="hidden" name="token" value="<?php echo token();?>">
             <input type="hidden" name="action" value="dl">
+
             <div class="control-group pull-left">
                 <label class="control-label" for="inputEdit"></label>
                 <div class="controls">
