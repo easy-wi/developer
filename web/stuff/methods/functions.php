@@ -899,7 +899,7 @@ if (!function_exists('passwordgenerate')) {
         return (array_key_exists($key, $array) and $array[$key] == $value)  ? true : false;
     }
 
-    function updateJobs($localID, $resellerID, $jobPending='Y') {
+    function updateJobs($localID, $resellerID, $jobPending = 'Y') {
 
         global $sql;
 
@@ -942,6 +942,35 @@ if (!function_exists('passwordgenerate')) {
                     $update->execute(array($row['affectedID'], $row2['jobID']));
                 }
             }
+        }
+    }
+
+    function CopyAdminTable ($tablename, $id, $reseller_id, $limit, $where='') {
+
+        global $sql;
+
+        $query = $sql->prepare("SELECT * FROM `$tablename` WHERE `resellerid`=? " . $where . " " .$limit);
+        $query->execute(array($reseller_id));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            $keys = array();
+            $questionmarks = array();
+            $intos = array();
+
+            foreach ($row as $key=>$value) {
+                if ($key != 'id' and $key != 'resellerid'){
+                    $keys[]="`".$key."`";
+                    $questionmarks[] = '?';
+                    $intos[] = $value;
+                }
+            }
+
+            $keys[] = "`resellerid`";
+            $intos[] = $id;
+            $questionmarks[] = '?';
+            $into = 'INSERT INTO `' . $tablename . '` (' . implode(',', $keys) . ') VALUES (' . implode(',', $questionmarks) . ')';
+            $query2 = $sql->prepare("$into");
+            $query2->execute($intos);
         }
     }
 

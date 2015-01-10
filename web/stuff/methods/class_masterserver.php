@@ -55,6 +55,7 @@ class masterServer {
 
     private $updateIDs = array();
     private $removeLogs = array();
+    private $winCmds = array();
     private $imageserver, $resellerID, $webhost, $rootOK, $rootID, $rootNotifiedCount, $steamAccount, $steamPassword, $updates, $os, $aeskey, $shellScript, $uniqueHex, $masterserverDir;
     public $sship, $sshport, $sshuser, $sshpass, $publickey, $keyname;
     public $updateAmount = 0;
@@ -117,66 +118,117 @@ class masterServer {
         $this->webhost = $query->fetchColumn();
     }
 
+    private function checkIfImageServerIsInSameSubnet ($type, $imageString) {
+
+        // Get the imageserver if possible and use Easy-WI server as fallback
+        $mainIp = explode('.', $this->sship);
+        $mainSubnet = $mainIp[0] . '.' . $mainIp[1] . '.' . $mainIp[2];
+
+        if ($type == 'rsync') {
+            $splitPaths = @preg_split('/\//', $imageString, -1, PREG_SPLIT_NO_EMPTY);
+            $splitCredentialsAndServer = (isset($split1[1])) ? preg_split('/\:/', $splitPaths[1], -1, PREG_SPLIT_NO_EMPTY) : preg_split('/\:/', $splitPaths[0], -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            $splitPaths = @preg_split('/\//', $imageString, -1, PREG_SPLIT_NO_EMPTY);
+            $splitCredentialsAndServer = (isset($split1[1])) ? preg_split('/\@/', $splitPaths[1], -1, PREG_SPLIT_NO_EMPTY) : preg_split('/\@/', $splitPaths[0], -1, PREG_SPLIT_NO_EMPTY);
+        }
+
+        foreach ($splitCredentialsAndServer as $splitIp) {
+
+            if ($splitIp != $this->sship && isip($splitIp, 'all')) {
+
+                $ipParts = explode('.', $splitIp);
+                $subnet = $ipParts[0] . '.' . $ipParts[1] . '.' . $ipParts[2];
+
+                if ($mainSubnet == $subnet) {
+                    return $imageString;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function getPreferdImageServer ($preferedServer, $allServer) {
+
+        if (count($preferedServer) > 0) {
+            $allServer = $preferedServer;
+        }
+
+        if (count($allServer) > 0) {
+            $imageserverCount = count($allServer) - 1;
+            $arrayEntry = rand(0, $imageserverCount);
+            return $imageserverCount[$arrayEntry];
+        }
+
+        return false;
+    }
+
     private function getImageServer () {
 
         global $sql;
-
-        // Get the imageserver if possible and use Easy-WI server as fallback
-        $mainip = explode('.', $this->sship);
-        $mainsubnet = $mainip[0] . '.' . $mainip[1] . '.' . $mainip[2];
 
         $query = $sql->prepare("SELECT `imageserver` FROM `settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($this->resellerID));
 
         $splitImageservers = preg_split('/\r\n/', $query->fetchColumn(), -1, PREG_SPLIT_NO_EMPTY);
-        $imageservers = array();
+        $rsyncServers = array();
+        $ftpServers = array();
 
         foreach ($splitImageservers as $server) {
-
-            $split2 = array();
-
             if (isurl($server)) {
-                $imageservers[] = $server;
-                $split1 = preg_split('/\//', $server, -1, PREG_SPLIT_NO_EMPTY);
-                $split2 = (isset($split1[1])) ? preg_split('/\@/', $split1[1], -1, PREG_SPLIT_NO_EMPTY) : preg_split('/\@/', $split1[0], -1, PREG_SPLIT_NO_EMPTY);
-
+                $ftpServers[] = $server;
             } else if (isRsync($server)) {
-                $imageservers[] = $server;
-                $split1 = preg_split('/\//', $server, -1, PREG_SPLIT_NO_EMPTY);
-                $split2 = (isset($split1[1])) ? preg_split('/\:/', $split1[1], -1, PREG_SPLIT_NO_EMPTY) : preg_split('/\:/', $split1[0], -1, PREG_SPLIT_NO_EMPTY);
+                $rsyncServers[] = $server;
             }
+        }
 
-            foreach ($split2 as $splitip) {
+        $preferedServer = array();
 
-                if ($splitip == $this->sship) {
-                    $noSync = true;
+        if ($this->os == 'L' and count($rsyncServers) > 0) {
 
-                } else if (isip($splitip,'all')) {
-                    $ipparts = explode('.', $splitip);
-                    $subnet = $ipparts[0] . '.' . $ipparts[1] . '.' . $ipparts[2];
+            foreach ($rsyncServers as $server) {
 
-                    if ($mainsubnet == $subnet) {
-                        $imageserver = $server;
-                    }
+                $imageServer = $this->checkIfImageServerIsInSameSubnet('rsync', $server);
+
+                if ($imageServer) {
+                    $preferedServer[] = $imageServer;
                 }
             }
+
+            $imageServer = $this->getPreferdImageServer($preferedServer, $rsyncServers);
         }
 
-        if (!isset($imageserver) and count($imageservers) > 0) {
-            $imageserver_count = count($imageservers) - 1;
-            $arrayentry = rand(0, $imageserver_count);
-            $imageserver = $imageservers[$arrayentry];
+        if (!isset($imageServer) and count($ftpServers) > 0) {
+            foreach ($ftpServers as $server) {
+
+                $imageServer = $this->checkIfImageServerIsInSameSubnet('ftp', $server);
+
+                if ($imageServer) {
+                    $preferedServer[] = $imageServer;
+                }
+            }
+
+            $imageServer = $this->getPreferdImageServer($preferedServer, $ftpServers);
         }
 
-        if (!isset($imageserver)) {
-            $imageserver = 'easywi';
+        if (!isset($imageServer) or !$imageServer) {
+            $imageServer = 'easywi';
         }
 
-        if (isset($noSync) or $this->updates == 2) {
-            $imageserver = 'none';
+        if ($this->updates == 2) {
+            $imageServer = 'none';
         }
 
-        $this->imageserver = $imageserver;
+        $this->imageserver = $imageServer;
+    }
+
+    private function imageStringtoWinDeamon () {
+
+        if (isurl($this->imageserver)) {
+            return ftpStringToData($this->imageserver);
+        }
+
+        return false;
     }
 
     public function getCommands () {
@@ -185,7 +237,7 @@ class masterServer {
             return $this->shellScript;
         }
 
-        return false;
+        return implode('<br>', $this->winCmds);
     }
 
     private function startShellScript () {
@@ -245,6 +297,13 @@ class masterServer {
             $this->shellScript .= '$SYNCCMD/masterserver/' . $shorten . ' > ' . $updateLog . "\n";
             $this->shellScript .= '${IONICE}nice -n +19 find ' . $this->masterserverDir . $shorten . '/ -type f -name "*.listing" -delete' . "\n";
             $this->shellScript .= 'fi' . "\n";
+        } else {
+
+            $imageServer = $this->imageStringtoWinDeamon();
+
+            if (is_array($imageServer)) {
+                $this->winCmds[] = 'master ' . $shorten . ' ftp:' . $imageServer['server'] . ':' . $imageServer['port'] . ':' . $imageServer['user'] . ':'  . $imageServer['pwd'] . ':/Masterserver ' . $this->webhost . '/get_password.php?w=ms&shorten=' . $shorten;
+            }
         }
     }
 
@@ -408,6 +467,38 @@ class masterServer {
         }
     }
 
+    private function windowsCollectData ($row) {
+
+        if ($row['supdates'] != 3 and $row['updates'] != 3) {
+
+            if (strlen($this->steamAccount) > 0) {
+
+                $connectData = $this->steamAccount;
+
+                if (strlen($this->steamPassword) > 0) {
+                    $connectData .= ':' . $this->steamPassword;
+                }
+
+            } else if (strlen($row['steamAcc']) > 0) {
+
+                $connectData = $row['steamAcc'];
+
+                if (strlen($this->steamPassword) > 0) {
+                    $connectData .= ':' . $row['steamPwd'];
+                }
+
+            } else {
+                $connectData = 'anonymous';
+            }
+
+            $callBackUrl = (strlen($this->webhost) > 0) ? $this->webhost . '/get_password.php?w=ms&shorten=' . $row['shorten'] : '';
+
+            $this->winCmds[] = 'master ' . $row['shorten'] . ' steam:' . $connectData . ':' . workAroundForValveChaos($row['appID'], $row['shorten'], false) . ' ' . $callBackUrl;
+        }
+
+        $this->updateAmount++;
+    }
+
     private function addonSync ($serverTypeIDs) {
 
         if (count($serverTypeIDs) > 0) {
@@ -432,6 +523,22 @@ class masterServer {
                     $this->shellScript .= 'fi' . "\n";
                     $this->shellScript .= 'find ' . $absoluteAddonPath . ' -type d -exec chmod 750 {} \;' . "\n";
                     $this->shellScript .= 'find ' . $absoluteAddonPath . ' -type f -exec chmod 640 {} \;' . "\n";
+
+                } else {
+
+                    $imageServer = $this->imageStringtoWinDeamon();
+
+                    if ($row['type'] == 'tool') {
+                        $addonMasterFolder = 'MasterAddons';
+                        $addonCmd = 'masteraddon';
+                    } else {
+                        $addonMasterFolder = 'MasterMaps';
+                        $addonCmd = 'mastermaps';
+                    }
+
+                    if (is_array($imageServer)) {
+                        $this->winCmds[] = $addonCmd . ' install ' . $imageServer['server'] . ' ' . $imageServer['port'] . ' ' . $imageServer['user'] . ' '  . $imageServer['pwd'] . ' /' . $addonMasterFolder . ' ' . $row['addon'];
+                    }
                 }
             }
         }
@@ -474,6 +581,8 @@ class masterServer {
 
                 if ($this->os == 'L') {
                     $this->linuxCollectData($row, $force, $returnSuccessInAnyCase);
+                } else {
+                    $this->windowsCollectData($row, $force, $returnSuccessInAnyCase);
                 }
 
                 // Set masterserver to updating
@@ -557,56 +666,95 @@ class masterServer {
         return $ssh2Pass;
     }
 
+    private function linuxSshConnectAndExecute ($updating, $getReturn, $ssh2Pass) {
+
+        $sftpObject = new Net_SFTP($this->sship, $this->sshport);
+
+        $loginReturn = $sftpObject->login($this->sshuser, $ssh2Pass);
+
+        if ($loginReturn) {
+
+            $sftpObject->put('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh', $this->shellScript);
+            $sftpObject->chmod(0700, '/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh');
+
+            // File has been created, now login with SSH2 and execute the script
+            $sshObject = new Net_SSH2($this->sship, $this->sshport);
+
+            if ($sshObject->login($this->sshuser, $ssh2Pass)) {
+
+                if ($updating === true) {
+
+                    $this->setUpdating();
+
+                    $removeLogs = $this->removeUpdateLogs();
+
+                    if ($removeLogs !== false) {
+                        $sftpObject->put('/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh', $removeLogs);
+                        $sftpObject->chmod(0700, '/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh');
+                    }
+                }
+
+                if ($getReturn === false) {
+
+                    $sshObject->exec('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh & ');
+
+                    return true;
+                }
+
+                return $sshObject->exec('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh');
+            }
+        }
+
+        return false;
+    }
+
+    private function windowsSshConnectAndExecute ($updating, $getReturn, $ssh2Pass) {
+
+        $sshObject = new Net_SSH2($this->sship, $this->sshport);
+
+        if ($sshObject->login($this->sshuser, $ssh2Pass)) {
+
+            if ($updating === true) {
+                $this->setUpdating();
+            }
+
+            if ($getReturn === false) {
+
+                foreach ($this->winCmds as $command) {
+                    $sshObject->exec($command . "\r\n");
+                }
+
+                return true;
+            }
+
+            $return = '';
+
+            foreach ($this->winCmds as $command) {
+
+                $temp = $sshObject->exec($command . "\r\n");
+
+                if ($temp) {
+                    $return .= $temp;
+                }
+            }
+
+            return $return;
+        }
+
+        return false;
+    }
+
     public function sshConnectAndExecute ($updating = true, $getReturn = false) {
 
         $ssh2Pass = $this->getKeyAndOrPassword();
 
-        if ($this->os == 'L') {
+        $return = ($this->os == 'L') ? $this->linuxSshConnectAndExecute($updating, $getReturn, $ssh2Pass) : $this->windowsSshConnectAndExecute($updating, $getReturn, $ssh2Pass);
 
-            $sftpObject = new Net_SFTP($this->sship, $this->sshport);
-
-            $loginReturn = $sftpObject->login($this->sshuser, $ssh2Pass);
-
-            if ($loginReturn) {
-
-                $sftpObject->put('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh', $this->shellScript);
-                $sftpObject->chmod(0700, '/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh');
-
-                // File has been created, now login with SSH2 and execute the script
-                $sshObject = new Net_SSH2($this->sship, $this->sshport);
-
-                if ($sshObject->login($this->sshuser, $ssh2Pass)) {
-
-                    if ($updating === true) {
-
-                        $this->setUpdating();
-
-                        $removeLogs = $this->removeUpdateLogs();
-
-                        if ($removeLogs !== false) {
-                            $sftpObject->put('/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh', $removeLogs);
-                            $sftpObject->chmod(0700, '/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh');
-                        }
-                    }
-
-                    if ($getReturn === false) {
-
-                        $sshObject->exec('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh & ');
-
-                        return true;
-                    }
-
-                    return $sshObject->exec('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh');
-                }
-            }
-
-        } else {
-
+        if (!$return) {
+            $this->handleFailedConnectAttemps();
         }
 
-        $this->handleFailedConnectAttemps();
-
-        return false;
+        return $return;
     }
 
     private function linuxCheckForUpdate ($shorten) {
@@ -651,12 +799,16 @@ class masterServer {
         $this->shellScript .= 'if [ -d "' . $this->masterserverDir . $shorten . '" ]; then rm -rf "' . $this->masterserverDir . $shorten . '"; fi' . "\n";
     }
 
+    private function WindowsMasterRemove ($shorten) {
+        $this->winCmds[] = 'delmaster ' . $shorten;
+    }
+
     public function masterRemove ($shorten) {
 
         if ($this->os == 'L') {
             $this->linuxMasterRemove($shorten);
         } else {
-
+            $this->WindowsMasterRemove($shorten);
         }
     }
 

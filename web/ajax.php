@@ -132,6 +132,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appserver.php');
 
+        // App server
+    } else if ($ui->smallletters('d', 4, 'get') == 'user' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and ($pa['user'] or $pa['user_users'] or $pa['userPassword'])) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_user.php');
+
         // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front without having to repeat ourselves
     } else {
 

@@ -53,7 +53,7 @@ class HttpdManagement {
 
     // Data
     private $sql, $aeskey, $resellerID, $hostID, $ssh2Pass, $hostData = array(), $vhostData = false, $dataPrepared = false;
-    public $ssh2Object = false, $sftpObject = false;
+    public $ssh2Object = false, $sftpObject = false, $masterNotfound = false;
 
     public function __destruct() {
         unset($this->sql, $this->aeskey, $this->hostID, $this->ssh2Object, $this->sftpObject);
@@ -129,8 +129,9 @@ class HttpdManagement {
             return true;
         }
 
-        return false;
+        $this->masterNotfound = true;
 
+        return false;
     }
 
     private function removeNotNeededSlashes ($value) {

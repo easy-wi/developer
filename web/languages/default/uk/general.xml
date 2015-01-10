@@ -57,6 +57,7 @@
     <help_sidebar>The status information are gathered every %n% minutes.</help_sidebar>
 	<hostsystem>Hostsystem</hostsystem>
 	<hotline>Hotline</hotline>
+    <inactive>Inactive</inactive>
     <import>Import</import>
 	<imprint>Imprint</imprint>
     <jobs>Jobs</jobs>

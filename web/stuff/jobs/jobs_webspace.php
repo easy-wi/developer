@@ -43,14 +43,19 @@ $query3 = $sql->prepare("DELETE FROM `webVhost` WHERE `webVhostID`=? LIMIT 1");
 $query4 = $sql->prepare("SELECT `active` FROM `webVhost` WHERE `webVhostID`=? LIMIT 1");
 $query5 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
 $query6 = $sql->prepare("UPDATE `webVhost` SET `jobPending`='N' WHERE `webVhostID`=? LIMIT 1");
-$query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE (`status` IS NULL OR `status`='1') IS NULL AND `type`='wv' AND `hostID`=?");
+$query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE (`status` IS NULL OR `status`='1') AND `type`='wv' AND `hostID`=?");
+$query8 = $sql->prepare("UPDATE `jobs` SET `action`='dl' WHERE `hostID`=? AND `type`='wv'");
 
 $query->execute();
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $vhostObject = new HttpdManagement($row['hostID'], $row['resellerID']);
 
-    if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+    if (($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) or $vhostObject->masterNotfound) {
+
+        if ($vhostObject->masterNotfound) {
+            $query8->execute(array($row['hostID']));
+        }
 
         $query2->execute(array($row['hostID']));
         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
@@ -59,7 +64,9 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             if ($row2['action'] == 'dl') {
 
-                $vhostObject->vhostDelete($row2['affectedID']);
+                if (!$vhostObject->masterNotfound) {
+                    $vhostObject->vhostDelete($row2['affectedID']);
+                }
 
                 $query3->execute(array($row2['affectedID']));
 
@@ -91,6 +98,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $vhostObject->restartHttpdServer();
 
     } else {
+        $theOutput->printGraph('cannot connect to web host with ID: ' . $row['hostID']);
         $query7->execute(array($row['hostID']));
     }
 }

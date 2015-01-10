@@ -2,6 +2,7 @@
     <h1>Social Auth Provider</h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><i class="fa fa-user"></i> <?php echo $gsprache->user;?></li>
         <li><i class="fa fa-cloud"></i> Social Auth Provider</li>
         <li class="active"><?php echo $gsprache->del;?></li>
     </ol>

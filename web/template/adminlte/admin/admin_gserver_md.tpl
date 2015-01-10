@@ -166,7 +166,7 @@
                         <?php foreach(customColumns('G') as $row){ ?>
                         <div class="form-group">
                             <label for="inputCustom-<?php echo $row['customID'];?>"><?php echo $row['menu'];?></label>
-                            <div class="controls"><input class="form-control" id="inputCustom-<?php echo $row['customID'];?>" type="<?php echo $row['type']=='V' ? 'text' : 'number';?>" name="<?php echo $row['name'];?>" value="" maxlength="<?php echo $row['length'];?>"></div>
+                            <div class="controls"><input class="form-control" id="inputCustom-<?php echo $row['customID'];?>" type="<?php echo $row['type']=='V' ? 'text' : 'number';?>" name="<?php echo $row['name'];?>" value="<?php echo $row['value'];?>" maxlength="<?php echo $row['length'];?>"></div>
                         </div>
                         <?php }?>
 

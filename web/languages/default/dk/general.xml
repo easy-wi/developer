@@ -36,6 +36,7 @@
 	<groups>Grupper</groups>
 	<hostsystem>Værtssystem</hostsystem>
 	<hotline>Hotline</hotline>
+    <inactive></inactive>
 	<imprint>Impressum</imprint>
     <jobs>Job</jobs>
     <jobPending>Job afventer</jobPending>

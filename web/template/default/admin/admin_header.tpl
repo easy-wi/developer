@@ -256,7 +256,7 @@
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <?php if($pa['user'] or $pa['user_users']) { ?>
-                                    <li <?php if($ui->smallletters('w',255,'get')=='us') echo 'class="active"';?>><a href="admin.php?w=us&amp;d=md"><?php echo $gsprache->overview;?></a></li>
+                                    <li <?php if($ui->smallletters('w',255,'get')=='us') echo 'class="active"';?>><a href="admin.php?w=us"><?php echo $gsprache->overview;?></a></li>
                                     <?php } ?>
                                     <?php if($pa['userGroups']) { ?>
                                     <li <?php if($ui->smallletters('w',255,'get')=='ug') echo 'class="active"';?>><a href="admin.php?w=ug"><?php echo $gsprache->groups;?></a></li>

@@ -2,8 +2,8 @@
     <h1><?php echo $gsprache->groups;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
-        <li><i class="fa fa-user"></i> <?php echo $gsprache->user;?></li>
-        <li><i class="fa fa-group"></i> <?php echo $gsprache->groups;?></li>
+        <li><a href="admin.php?w=us"><i class="fa fa-user"></i> <?php echo $gsprache->user;?></a></li>
+        <li><a href="admin.php?w=ug"><i class="fa fa-group"></i> <?php echo $gsprache->groups;?></a></li>
         <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
 </section>
@@ -38,7 +38,7 @@
                         <tr>
                             <td><?php echo $table_row['name'];?></td>
                             <td><?php echo $table_row['id'];?></td>
-                            <td><i class="fa <?php if($table_row['active']=='Y') echo 'fa-check-circle-o'; else echo 'fa-ban';?>"></i></td>
+                            <td><?php echo ($table_row['active']=='Y') ? $gsprache->yes : $gsprache->no;?></td>
                             <td><?php echo $table_row['grouptype'];?></td>
                             <td><?php echo $table_row['defaultgroup'];?></td>
                             <td>

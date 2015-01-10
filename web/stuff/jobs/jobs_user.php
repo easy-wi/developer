@@ -87,7 +87,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $query2 = $sql->prepare("UPDATE `jobs` SET `status`='4' WHERE `jobID`=? LIMIT 1");
     $query2->execute(array($row['jobID']));
 
-    updateJobs($row['affectedID'], $row['resellerID'],$jobPending='Y');
+    updateJobs($row['affectedID'], $row['resellerID'], 'Y');
 
     $theOutput->printGraph($command);
 }

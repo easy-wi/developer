@@ -45,6 +45,7 @@ $query4 = $sql->prepare("SELECT e.`active`,e.`dbname`,AES_DECRYPT(e.`password`,?
 $query5 = $sql->prepare("DELETE FROM `mysql_external_dbs` WHERE `id`=? LIMIT 1");
 $query6 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
 $query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE (`status` IS NULL OR `status`='1') AND `type`='my' AND `hostID`=?");
+$query8 = $sql->prepare("UPDATE `jobs` SET `action`='dl' WHERE `hostID`=? AND `type`='my'");
 
 $query->execute();
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -56,8 +57,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $remotesql = new ExternalSQL ($row2['ip'], $row2['port'], $row2['user'], $row2['decryptedpassword']);
     }
 
-
-    if (isset($remotesql) and $remotesql->error == 'ok') {
+    if (isset($remotesql) or $remotesql->error == 'ok') {
 
         $query3->execute(array($row['hostID']));
         while ($row2 = $query3->fetch(PDO::FETCH_ASSOC)) {
@@ -111,7 +111,22 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $query6->execute(array($row2['jobID']));
         }
 
-    } else {
+    } else if (isset($remotesql)) {
+
         $query7->execute(array($row['hostID']));
+
+    } else {
+
+        $query8->execute(array($row['hostID']));
+
+        $query3->execute(array($row['hostID']));
+        while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
+            if ($row2['action'] == 'dl') {
+
+                $query5->execute(array($row2['affectedID']));
+
+                customColumns('M', $row2['affectedID'], 'del');
+            }
+        }
     }
 }

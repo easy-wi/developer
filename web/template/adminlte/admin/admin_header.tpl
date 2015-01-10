@@ -306,7 +306,7 @@
                     </a>
                     <ul class="treeview-menu">
 						<?php if($pa['user'] or $pa['user_users']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='us') echo 'class="active"';?>><a href="admin.php?w=us&amp;d=md"><i class="fa fa-columns"></i> <?php echo $gsprache->user.' '.$gsprache->overview;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='us') echo 'class="active"';?>><a href="admin.php?w=us"><i class="fa fa-columns"></i> <?php echo $gsprache->user.' '.$gsprache->overview;?></a></li>
 						<?php } ?>
 						<?php if($pa['userGroups']) { ?>
 						<li <?php if($ui->smallletters('w',255,'get')=='ug') echo 'class="active"';?>><a href="admin.php?w=ug"><i class="fa fa-group"></i> <?php echo $gsprache->groups;?></a></li>

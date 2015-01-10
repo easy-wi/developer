@@ -37,7 +37,6 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-
 if (!defined('AJAXINCLUDED')) {
     die('Do not access directly!');
 }
@@ -97,14 +96,14 @@ if ($sSearch) {
 }
 
 $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `type`='gs' AND (`status` IS NULL OR `status`=1) ORDER BY `jobID` DESC LIMIT 1");
+$query3 = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-    $tobeActive = false;
     $jobPending = $gsprache->no;
     $statusMessage = $gsprache->status_ok;
 
-    if (isset($row['jobPending']) and $row['jobPending'] == 'Y') {
+    if ($row['jobPending'] == 'Y') {
 
         $query2->execute(array($row['id'], $resellerLockupID));
         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
@@ -118,7 +117,11 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             }
 
             $json = @json_decode($row2['extraData']);
-            $tobeActive = (is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
+            $row['status'] = ((is_object($json) and isset($json->newActive) and $json->newActive == 'N')) ? 2 : 0;
+        }
+
+        if ($query2->rowCount() == 0) {
+            $query3->execute(array($row['id'], $resellerLockupID));
         }
     }
 

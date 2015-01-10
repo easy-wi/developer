@@ -2,6 +2,7 @@
     <h1>Social Auth Provider</h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><i class="fa fa-user"></i> <?php echo $gsprache->user;?></li>
         <li><i class="fa fa-cloud"></i> Social Auth Provider</li>
         <li class="active"><?php echo $gsprache->overview;?></li>
     </ol>
@@ -24,7 +25,7 @@
                         <thead>
                         <tr>
                             <th>Service Provider</th>
-                            <th><?php echo $gsprache->status;?></th>
+                            <th><?php echo $gsprache->active;?></th>
                             <th><?php echo $gsprache->action;?></th>
                         </tr>
                         </thead>
@@ -32,7 +33,7 @@
                         <?php foreach ($table as $table_row) { ?>
                         <tr>
                             <td><?php echo $table_row['name'];?></a></td>
-                            <td><i class="fa <?php if($table_row['active']=='Y') echo 'fa-check-circle-o'; else echo 'fa-ban';?>"></i></td>
+                            <td><?php echo ($table_row['active']=='Y') ? $gsprache->yes : $gsprache->no;?></td>
                             <td>
                                 <a href="admin.php?w=up&amp;d=dl&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> <?php echo $gsprache->del;?></span></a>
                                 <a href="admin.php?w=up&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o"></i> <?php echo $gsprache->mod;?></span></a>
@@ -43,7 +44,7 @@
                         <tfoot>
                         <tr>
                             <th>Service Provider</th>
-                            <th><?php echo $gsprache->status;?></th>
+                            <th><?php echo $gsprache->active;?></th>
                             <th><?php echo $gsprache->action;?></th>
                         </tr>
                         </tfoot>

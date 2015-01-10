@@ -55,13 +55,14 @@ if (!function_exists('removeUser')) {
     }
 }
 
-$query = $sql->prepare("SELECT * FROM `jobs` j WHERE `status`='4' AND `type`='us' AND `action` IN ('dl','md') AND NOT EXISTS (SELECT 1 FROM `jobs` WHERE `userID`=j.`userID` AND (`status`=1 OR `status` IS NULL) AND `type`!='us' LIMIT 1)");
+$query = $sql->prepare("SELECT j.* FROM `jobs` AS j WHERE `status`='4' AND `type`='us' AND `action` IN ('dl','md') AND NOT EXISTS (SELECT 1 FROM `jobs` WHERE `userID`=j.`userID` AND (`status`=1 OR `status` IS NULL) AND `type`!='us' LIMIT 1)");
 $query->execute();
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $ok = true;
 
     if ($row['action'] == 'dl') {
+
         $query2 = $sql->prepare("SELECT `accounttype`,`resellerid` FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
@@ -108,7 +109,6 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     'voice_masterserver' => 'resellerid',
                     'translations' => 'resellerID',
                     'voice_server_stats' => 'resellerid',
-                    'voice_stats_settings' => 'resellerid',
                     'mysql_external_servers' => 'resellerid',
                     'mysql_external_dbs' => 'resellerid',
                     'usergroups' => 'resellerid',
@@ -117,6 +117,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     'voice_tsdns' => 'resellerid',
                     'voice_dns' => 'resellerID'
                 );
+
                 removeUser($row['affectedID'],$tables);
 
                 if ($row2['resellerid'] == $row['affectedID']) {
@@ -140,7 +141,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $query2 = $sql->prepare("DELETE FROM `userdata` WHERE `id`=? LIMIT 1");
         $query2->execute(array($row['affectedID']));
 
-        $command = $gsprache->del.' userID: ' . $row['affectedID'] . ' name:' . $row['name'];
+        $command = $gsprache->del . ' userID: ' . $row['affectedID'] . ' name:' . $row['name'];
 
     } else {
 
@@ -177,7 +178,7 @@ $sql->exec("DELETE o.* FROM `userdata_substitutes_servers` o LEFT JOIN `userdata
 $sql->exec("DELETE s.* FROM `userdata_social_identities` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE u.`id` IS NULL");
 $sql->exec("DELETE s.* FROM `userdata_social_identities_substitutes` s LEFT JOIN `userdata_substitutes` u ON s.`userID`=u.`sID` WHERE u.`sID` IS NULL");
 $sql->exec("DELETE g.* FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE u.`id` IS NULL");
-$sql->exec("DELETE FROM `gsswitch` WHERE NOT EXISTS (SELECT 1 FROM `serverlist` WHERE `switchID`=`gsswitch`.`id`)");
+#$sql->exec("DELETE FROM `gsswitch` WHERE NOT EXISTS (SELECT 1 FROM `serverlist` WHERE `switchID`=`gsswitch`.`id`)");
 $sql->exec("DELETE s.* FROM `serverlist` s LEFT JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE g.`id` IS NULL");
 $sql->exec("DELETE a.* FROM `addons_installed` a LEFT JOIN `serverlist` s ON a.`serverid`=s.`id` WHERE s.`id` IS NULL");
 $sql->exec("DELETE a.* FROM `addons_installed` a LEFT JOIN `userdata` u ON a.`userid`=u.`id` WHERE u.`id` IS NULL");

@@ -88,7 +88,8 @@ if ($ui->st('d', 'get') == 'pw') {
     if (!$ui->smallletters('action',2, 'post')) {
         $template_file = ($logusertype == 'user') ? 'userpanel_pass.tpl' : 'admin_user_own_pass.tpl';
 
-    } else if ($ui->smallletters('action',2, 'post') == 'md'){
+    } else if ($ui->smallletters('action',2, 'post') == 'md') {
+
         $errors = array();
 
         if (!$ui->password('password', 255, 'post')) {
