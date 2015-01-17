@@ -582,7 +582,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
         $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
 
-        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lua', 'props', 'properties', 'json', 'example');
+        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lua', 'props', 'properties', 'json', 'example', 'html');
 
         if ($standalone and isset($scriptName)) {
             $script = $this->shellScriptHeader;
@@ -601,7 +601,7 @@ class AppServer {
 
             $script .= 'if [ ! -d "' . $absoluteTargetTemplatePath . '" ]; then mkdir -p "' . $absoluteTargetTemplatePath . '"; fi' . "\n";
             $script .= 'cd ' . $absoluteSourceTemplatePath . "\n";
-            $script .= 'FDLFILEFOUND=(`find -mindepth 1 -type f -name "*.' . implode('" -o -name "*.', $copyFileExtensions) . '" | grep -v "$PATTERN"`)' . "\n";
+            $script .= 'FDLFILEFOUND=(`find -mindepth 1 -type f \( -iname "*.' . implode('" -or -iname "*.', $copyFileExtensions) . '" \) | grep -v "$PATTERN"`)' . "\n";
             $script .= 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do' . "\n";
             $script .= 'FOLDERNAME=`dirname "$FILTEREDFILES"`' . "\n";
             $script .= 'if ([[ `find "$FOLDERNAME" -maxdepth 0 -type d` ]] && [[ ! -d "' . $absoluteTargetTemplatePath . '$FOLDERNAME" ]]); then mkdir -p "' . $absoluteTargetTemplatePath . '$FOLDERNAME"; fi' . "\n";
