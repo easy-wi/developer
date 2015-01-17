@@ -196,9 +196,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else {
 
-        $htmlExtraInformation['css'][] = '<link href="css/adminlte/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
-        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
-        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
+        $htmlExtraInformation['css'][] = '<link href="css/default/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
+        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
 
         $lendGameServers = array();
         $lendVoiceServers = array();

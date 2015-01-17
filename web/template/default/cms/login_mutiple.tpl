@@ -19,7 +19,7 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Theme style -->
-    <link href="css/adminlte/AdminLTE.css" rel="stylesheet" type="text/css" />
+    <link href="css/default/AdminLTE.css" rel="stylesheet" type="text/css" />
 
     <?php echo implode('',$htmlExtraInformation['css']);?>
 

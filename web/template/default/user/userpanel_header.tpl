@@ -18,7 +18,7 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Theme style -->
-    <link href="css/adminlte/AdminLTE.css" rel="stylesheet" type="text/css" />
+    <link href="css/default/AdminLTE.css" rel="stylesheet" type="text/css" />
 
     <!-- Easy-Wi custom styles -->
     <link href="css/default/easy-wi.css" rel="stylesheet" type="text/css" />
@@ -32,10 +32,10 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js" type="text/javascript"></script>
 
     <!-- AdminLTE App -->
-    <script src="js/adminlte/app.js" type="text/javascript"></script>
+    <script src="js/default/app.js" type="text/javascript"></script>
 
     <!-- Easy-Wi -->
-    <script src="js/adminlte/easy-wi.js" type="text/javascript"></script>
+    <script src="js/default/easy-wi.js" type="text/javascript"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
