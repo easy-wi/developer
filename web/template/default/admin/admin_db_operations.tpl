@@ -1,54 +1,51 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li class="active">Easy-WI <?php echo $gsprache->databases;?></li>
-        </ul>
-    </div>
-</div>
-<?php if($reseller_id==0){ ?>
-<div class="row-fluid">
-    <div class="span11">
-        <form class="form-horizontal" action="admin.php?w=bu&amp;d=bu" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-            <input type="hidden" name="action" value="bu">
-            <div class="control-group">
-                <label class="control-label" for="inputUpdate"><?php echo $gsprache->backup;?></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputUpdate" type="submit"><i class="icon-download icon-white"></i></button>
+<section class="content-header">
+    <h1>Easy-WI <?php echo $gsprache->databases;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li class="active"><i class="fa fa-database"></i> Easy-WI <?php echo $gsprache->databases;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+
+                <div class="box-header">
+                    <h3 class="box-title">Easy-WI <?php echo $gsprache->databases;?></h3>
                 </div>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span11">
-        <form class="form-horizontal" action="admin.php?w=bu&amp;d=rp&amp;r=bu" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-            <input type="hidden" name="action" value="rp">
-            <div class="control-group">
-                <label class="control-label" for="inputUpdate"><?php echo $gsprache->database.' '.$gsprache->repair;?></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputUpdate" type="submit"><i class="fa fa-refresh"></i></button>
+
+                <div class="box-body">
+
+                    <?php if($reseller_id==0){ ?>
+                    <form role="form" action="admin.php?w=bu&amp;d=bu" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                        <input type="hidden" name="action" value="bu">
+                        <div class="form-group">
+                            <label for="inputUpdate"><?php echo $gsprache->backup;?></label>
+                            <button class="btn btn-success btn-sm" id="inputUpdate" type="submit"><i class="fa fa-download"></i></button>
+                        </div>
+                    </form>
+
+                    <form role="form" action="admin.php?w=bu&amp;d=rp&amp;r=bu" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                        <input type="hidden" name="action" value="rp">
+                        <div class="form-group">
+                            <label  for="inputUpdate"><?php echo $gsprache->database.' '.$gsprache->repair;?></label>
+                            <button class="btn btn-warning btn-sm" id="inputUpdate" type="submit"><i class="fa fa-refresh"></i></button>
+                    </form>
+                    <?php } ?>
                 </div>
-            </div>
-        </form>
-    </div>
-</div>
-<?php } ?>
-<div class="row-fluid">
-    <div class="span11">
-        <div class="form-horizontal">
-            <div class="control-group">
-                <label class="control-label" for="inputGS"><?php echo $gsprache->gameserver.' '.$gsprache->template;?></label>
-                <div class="controls">
-                    <a href="admin.php?w=bu&amp;d=rg" id="inputGS"><button class="btn btn-primary" id="inputGS" type="submit"><i class="fa fa-refresh"></i></button></a>
+
+                <div class="form-group">
+                    <label for="inputGS"><?php echo $gsprache->gameserver.' '.$gsprache->template;?></label>
+                    <a href="admin.php?w=bu&amp;d=rg" id="inputGS"><button class="btn btn-warning btn-sm" id="inputGS" type="submit"><i class="fa fa-refresh"></i></button></a>
                 </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputAO"><?php echo $gsprache->gameserver.' '.$gsprache->addon;?></label>
-                <div class="controls">
-                    <a href="admin.php?w=bu&amp;d=ra" id="inputGS"><button class="btn btn-primary" id="inputAO" type="submit"><i class="fa fa-refresh"></i></button></a>
+
+                <div class="form-group">
+                    <label for="inputAO"><?php echo $gsprache->gameserver.' '.$gsprache->addon;?></label>
+                    <a href="admin.php?w=bu&amp;d=ra" id="inputGS"><button class="btn btn-warning btn-sm" id="inputAO" type="submit"><i class="fa fa-refresh"></i></button></a>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>

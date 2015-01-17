@@ -1,40 +1,69 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li class="active"><?php echo $gsprache->imprint.' '.$gsprache->settings;?></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span11">
-        <form class="form-horizontal" action="admin.php?w=si&amp;r=si" onsubmit="return confirm('<?php echo $sprache->confirm_change; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <div class="control-group">
-                <label class="control-label"><?php echo $gsprache->imprint;?></label>
-                <div class="controls">
-                    <?php foreach ($foundlanguages as $array) { ?>
-                    <label class="checkbox inline">
-                        <input type="checkbox" id="inlineCheckbox<?php echo $array['lang'];?>" name="languages[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" <?php if ($array['style']!=0) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png" class="inline"/>
-                    </label>
-                    <?php }?>
-                </div>
-            </div>
-            <?php foreach ($foundlanguages as $array) { ?>
-            <div id="<?php echo $array['lang'];?>" class="control-group <?php if ($array['style']==0) echo 'display_none';?>">
-                <label class="control-label" for="inputImprint<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
-                <div class="controls">
-                    <textarea class="span10" id="inputImprint<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]" rows="8"><?php echo $array['imprint'];?></textarea>
-                </div>
-            </div>
-            <?php } ?>
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
+<section class="content-header">
+    <h1><?php echo $gsprache->imprint.' '.$gsprache->settings;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li class="active"><i class="fa fa-legal"></i> <?php echo $gsprache->imprint.' '.$gsprache->settings;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+
+                <form role="form" action="admin.php?w=si&amp;r=si" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
                     <input type="hidden" name="action" value="md">
-                </div>
+
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <?php foreach ($foundLanguages as $array){ ?>
+                            <label class="checkbox-inline">
+                                <input name="languages[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" type="checkbox" <?php if($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/>
+                            </label>
+                            <?php } ?>
+                        </div>
+
+                        <?php foreach ($foundLanguages as $array) { ?>
+                        <div id="<?php echo $array['lang'];?>" class="form-group  <?php if ($array['style']==0) echo 'display_none';?>">
+                            <label for="inputLangs-<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></label>
+                            <textarea class="form-control" id="inputLangs-<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]" rows="8"><?php echo $array['imprint'];?></textarea>
+                        </div>
+                        <?php } ?>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>
+
+<script type="text/javascript">
+    window.onDomReady = initReady;
+
+    function initReady(fn) {
+        if(document.addEventListener) {
+            document.addEventListener("DOMContentLoaded", fn, false);
+        } else {
+            document.onreadystatechange = function() {
+                readyState(fn);
+            }
+        }
+    }
+
+    function readyState(func) {
+        if(document.readyState == "interactive" || document.readyState == "complete") {
+            func();
+        }
+    }
+
+    window.onDomReady(onReady); function onReady() {
+        SwitchShowHideRows('init_ready');
+    }
+</script>
