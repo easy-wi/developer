@@ -243,37 +243,14 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
     die;
 
-} else if (isset($admin_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 15, 'get') == 'adminvoicestats' and $ui->st('w', 'get')) {
+} else if (isset($user_id) and $pa['usertickets'] and $ui->w('d', 20, 'get') == 'userTicketCategories' and $ui->id('topicName', 10, 'get')) {
 
-    $data = array();
+    require_once(EASYWIDIR . '/stuff/ajax/userpanel_ticket_category.php');
+    die;
 
-    if ($ui->st('w', 'get') == 'us') {
-        $query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
-        $query->execute(array($resellerLockupID));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = '<option value=' . $row['id'] . '>' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']) . '</option>';
-        }
+} else if (isset($admin_id) and $pa['voiceserverStats'] and $ui->w('d', 15, 'get') == 'adminVoiceStats' and $ui->st('w', 'get')) {
 
-    } else if ($ui->st('w', 'get') == 'se') {
-
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
-        $query->execute(array($resellerLockupID));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
-        }
-
-    } else if ($ui->st('w', 'get') == 'ma') {
-
-        $query = $sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? AND `active`='Y' ORDER BY `ssh2ip`");
-        $query->execute(array($resellerLockupID));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = '<option value=' . $row['id'] . '>' . $row['ssh2ip'] . '</option>';
-        }
-
-    }
-
-    require_once IncludeTemplate($template_to_use, 'ajax_admin_voice_stats.tpl', 'ajax');
-
+    require_once(EASYWIDIR . '/stuff/ajax/admin_voice_stats.php');
     die;
 
 } else if (isset($user_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 14, 'get') == 'uservoicestats' and $ui->st('w', 'get')) {
@@ -281,12 +258,7 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     require_once(EASYWIDIR . '/stuff/ajax/userpanel_voice_stats.php');
     die;
 
-} else if (isset($user_id) and $pa['usertickets'] and $ui->w('d', 20, 'get') == 'userTicketCategories' and $ui->id('topicName', 10, 'get')) {
-
-    require_once(EASYWIDIR . '/stuff/ajax/userpanel_ticket_category.php');
-    die;
-
-} else if (isset($user_id) and $pa['voiceserverStats'] and $ui->w('d', 14, 'get') == 'voiceUserStats') {
+} else if ($pa['voiceserverStats'] and ((isset($user_id) and $ui->w('d', 14, 'get') == 'voiceUserStats') or (isset($admin_id) and $ui->w('d', 15, 'get') == 'voiceAdminStats'))) {
 
     require_once(EASYWIDIR . '/stuff/ajax/stats_voicestats.php');
     die;

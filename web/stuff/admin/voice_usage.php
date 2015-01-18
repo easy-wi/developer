@@ -41,7 +41,8 @@ if (!isset($admin_id) or $main != 1 or (isset($admin_id) and !$pa['voiceserver']
     die;
 }
 
-$sprache = getlanguagefile('traffic',$user_language,$reseller_id);
+$sprache = getlanguagefile('traffic', $user_language, $reseller_id);
+$voSprache = getlanguagefile('voice', $user_language, $reseller_id);
 
 if ($ui->w('action', 4, 'post') and !token(true)) {
 
@@ -50,199 +51,159 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 } else if ($pa['voiceserverStats']) {
 
     $data = array();
+    $freeSlots = 0;
+    $usedSlots = 0;
+    $freeTraffic = 0;
+    $fileTraffic = 0;
+    $kind = 'al';
+    $selectedID = 0;
 
-	$display = $sprache->total;
 
-	if (!$ui->st('kind', 'post') or $ui->st('kind', 'post') == 'al') {
+    $display = $sprache->total;
 
-		$kind = 'al';
-		$whichdata = '';
+    $dateRange = ($ui->escaped('dateRange', 'post')) ? $ui->escaped('dateRange', 'post') : date('m/d/Y', strtotime("-6 days")) . ' - ' . date('m/d/Y');
+    $accuracy = (in_array($ui->st('accuracy', 'post'), array('da', 'mo'))) ? $ui->st('accuracy', 'post') : 'da';
 
-	} else if ($ui->id('what', 30, 'post') and $ui->st('kind', 'post') == 'us') {
+    @list($startDate, $endDate) = explode('-', str_replace(' ', '', $dateRange));
+    @list($startMonth, $startDay, $startYear) = explode('/', $startDate);
+    @list($endMonth, $endDay, $endYear) = explode('/', $endDate);
+    $menuStart = round((strtotime("{$endYear}-{$endMonth}-{$endDay}") - strtotime("{$startYear}-{$startMonth}-{$startDay}")) / 86400);
 
-		$kind = 'us';
-        $extra = $sprache->user;
+    if ($ui->id('masterID', 10, 'post')) {
 
-		$whichdata = '&amp;distro=' . $ui->id('what', 30, 'post');
+        $selectedID = $ui->id('masterID', 10, 'post');
 
-		$query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
-        $query->execute(array($reseller_id));
-		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-			if ($ui->id('what', 30, 'post') == $row['id']) {
-				$data[] = '<option value=' . $row['id'] . ' selected="selected">' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']).'</option>';
-			} else {
-				$data[] = '<option value=' . $row['id'] . '>' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']) . '</option>';
-			}
-		}
+        $query = $sql->prepare("SELECT SUM(`slots`) AS `s`,SUM(`usedslots`) AS `u`,SUM(`maxtraffic`) AS `m`,SUM(`filetraffic`) AS `f` FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
+        $query->execute(array($ui->id('masterID', 10, 'post'), $resellerLockupID));
 
-        $query = $sql->prepare("SELECT `cname` FROM `userdata` WHERE `accounttype`='r' AND `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($ui->id('what', 30, 'post'),$reseller_id));
-		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-			$display = $extra . '  ' . $row['cname'];
-		}
+    } else if ($ui->id('userID', 10, 'post')) {
 
-	} else if ($ui->id('what', 30, 'post') and $ui->st('kind', 'post') == 'se') {
+        $selectedID = $ui->id('userID', 10, 'post');
 
-		$kind = 'se';
-		$whichdata = '&amp;shorten=' . $ui->id('what', 30, 'post');
+        $query = $sql->prepare("SELECT SUM(`slots`) AS `s`,SUM(`usedslots`) AS `u`,SUM(`maxtraffic`) AS `m`,SUM(`filetraffic`) AS `f` FROM `voice_server` WHERE `userid`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($ui->id('userID', 10, 'post'), $resellerLockupID));
 
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' LIMIT 1");
-        $query->execute(array($ui->id('what', 30, 'post'),$reseller_id));
-		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-			$display = $sprache->server . '  ' . $row['ip'] . ':' . $row['port'];
-		}
+    } else if ($ui->id('serverID', 10, 'post')) {
 
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? AND v.`active`='Y' AND m.`active`='Y' ORDER BY v.`ip`,v.`port`");
-        $query->execute(array($reseller_id));
-		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $server = $row['ip'] . ':' . $row['port'];
-			if ($ui->id('what', 30, 'post') == $row['id']) {
-				$data[] = '<option value='. $row['id'] .' selected="selected">' . $server . '</option>';
-			} else {
-				$data[] = '<option value=' . $row['id'] . '>' . $server . '</option>';
-			}
-		}
+        $selectedID = $ui->id('serverID', 10, 'post');
 
-	} else if ($ui->id('what', 30, 'post') and $ui->st('kind', 'post') == 'ma') {
+        $query = $sql->prepare("SELECT `slots` AS `s`,`usedslots` AS `u`,`maxtraffic` AS `m`,`filetraffic` AS `f` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($ui->id('serverID', 10, 'post'), $resellerLockupID));
 
-		$kind = 'ma';
-		$whichdata = '&amp;short=' . $ui->id('what', 30, 'post');
+    } else {
+        $query = $sql->prepare("SELECT SUM(`slots`) AS `s`, SUM(`usedslots`) AS `u`, SUM(`maxtraffic`) AS `m`, SUM(`filetraffic`) AS `f` FROM `voice_server` WHERE `resellerid`=?");
+        $query->execute(array($resellerLockupID));
+    }
 
-        $query = $sql->prepare("SELECT `ssh2ip` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? AND `active`='Y' LIMIT 1");
-        $query->execute(array($ui->id('what', 30, 'post'), $reseller_id));
-		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-			$display = $sprache->server . '  ' . $row['ssh2ip'];
-		}
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $freeSlots = (int) ($row['s'] - $row['u']);
+        $usedSlots = (int) $row['u'];
+        $freeTraffic = ceil($row['m'] - ($row['f'] / 1024));
+        $fileTraffic = ceil($row['f'] / 1024);
+    }
 
-        $query = $sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? AND `active`='Y' ORDER BY `ssh2ip`");
-        $query->execute(array($reseller_id));
-		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-			if ($ui->id('what', 30, 'post') == $row['id']) {
-				$data[] = '<option value=' . $row['id'] . ' selected="selected">' . $row['ssh2ip'] . '</option>';
-			} else {
-				$data[] = '<option value=' . $row['id'] . '>' . $row['ssh2ip'] . '</option>';
-			}
-		}
-	}
+    if ($ui->id('masterID', 10, 'post') and $ui->st('kind', 'post') == 'ma') {
 
-	if (!isset($ui->post['dmy'])) {
+        $kind = 'ma';
 
-		$dmy = 'da';
-		$year = date('Y',strtotime('-6 days'));
-		$month = date('m',strtotime('-6 days'));
-		$day = date('d',strtotime('-6 days'));
-		$yearstop = date('Y');
-		$monthstop = date('m');
-		$daystop = date('d');
-		$amount = 7;
+    } else if ($ui->id('serverID', 10, 'post') and $ui->st('kind', 'post') == 'us') {
 
-	} else if ($ui->post['dmy'] == 'da') {
+        $kind = 'us';
 
-		$dmy = 'da';
+    } else if ($ui->id('serverID', 10, 'post') and $ui->st('kind', 'post') == 'se') {
 
-        $year = ($ui->isinteger('yearstart', 'post') and $ui->isinteger('yearstart', 'post') <= date('Y')) ? $ui->isinteger('yearstart', 'post') : date('Y', strtotime('-6 days'));
-        $yearstop = ($ui->isinteger('yearstop', 'post') and $ui->isinteger('yearstop', 'post') <= date('Y')) ? $ui->isinteger('yearstop', 'post') : date('Y');
+        $kind = 'se';
 
-        $month = ($ui->isinteger('monthstart', 'post') and $ui->isinteger('monthstart', 'post') <= 12) ? $ui->isinteger('monthstart', 'post') : date('m', strtotime('-6 days'));
-        $monthstop = ($ui->isinteger('monthstop', 'post') and $ui->isinteger('monthstop', 'post') <= 12) ? $ui->isinteger('monthstop', 'post') : date('m');
+        $query = $sql->prepare("SELECT v.`ip`,v.`port` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
+        $query->execute(array($ui->id('serverID', 10, 'post'), $resellerLockupID));
+        $display = $query->fetchColumn();
+    }
 
-        $day = ($ui->isinteger('daystart', 'post') and $ui->isinteger('daystart', 'post') <= 31) ? $ui->isinteger('daystart', 'post') : date('d', strtotime('-6 days'));
-        $daystop = ($ui->isinteger('daystop', 'post') and $ui->isinteger('daystop', 'post') <= 31) ? $ui->isinteger('daystop', 'post') : date('d');
+    $htmlExtraInformation['css'][] = '<link href="css/default/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/daterangepicker/moment.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>';
 
-		$now = date('Y-m-d');
-		$date1 = strtotime("$year-$month-$day");
-		$date2 = strtotime("$yearstop-$monthstop-$daystop");
-		$amount = intval(($date2 - $date1) / 86400) + 1;
+    $htmlExtraInformation['js'][] = "<script type=\"text/javascript\">
+$(function() {
+    //Date range as a button
+    $('#dateRange').daterangepicker(
+        {
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                'Last 7 Days': [moment().subtract('days', 6), moment()],
+                'Last 30 Days': [moment().subtract('days', 29), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+            },
+            startDate: moment().subtract('days', {$menuStart}),
+            endDate: moment(),
+            opens: 'right'
+        },
+        function(start, end) {
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+    );
+});
+</script>";
 
-		if ($amount < 0 and "$yearstop-$monthstop-$daystop" > $now){
-			$yearstop = date('Y');
-			$monthstop = date('m');
-			$daystop = date('d');
-			$day = date('d',strtotime('-6 days'));
-			$month = date('m',strtotime('-6 days'));
-			$year = date('Y',strtotime('-6 days'));
-			$amount = 7;
-		}
+    $htmlExtraInformation['css'][] = '<link href="css/default/morris/morris.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/morris/raphael-min.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/morris/morris.min.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = "<script type=\"text/javascript\">
+$(function() {
 
-	} else if ($ui->post['dmy'] == 'mo') {
+    'use strict';
 
-		$dmy = 'mo';
-		$day = 1;
+    var line = new Morris.Area({
+        element: 'usage-chart',
+        resize: true,
+        data: [],
+        xkey: 'y',
+        ykeys: ['slots', 'traffic'],
+        labels: ['{$voSprache->slots}', '{$gsprache->traffic}'],
+        lineColors: ['#3c8dbc', '#00a65a'],
+        hideHover: 'auto'
+    });
 
-        $year = ($ui->isinteger('yearstart', 'post') and $ui->isinteger('yearstart', 'post') <= date('Y')) ? $ui->isinteger('yearstart', 'post') : date('Y', strtotime('-6 days'));
-        $yearstop = ($ui->isinteger('yearstop', 'post') and $ui->isinteger('yearstop', 'post') <= date('Y')) ? $ui->isinteger('yearstop', 'post') : date('Y');
+    var trafficDonut = new Morris.Donut({
+        element: 'traffic-chart',
+        resize: true,
+        colors: ['#00a65a', '#f56954'],
+        data: [
+            {label: '{$gsprache->free}', value: {$freeTraffic}},
+            {label: '{$gsprache->used}', value: {$fileTraffic}}
+        ],
+        hideHover: 'auto'
+    });
 
-        $month = ($ui->isinteger('monthstart', 'post') and $ui->isinteger('monthstart', 'post') <= 12) ? $ui->isinteger('monthstart', 'post') : date('m', strtotime('-6 days'));
-        $monthstop = ($ui->isinteger('monthstop', 'post') and $ui->isinteger('monthstop', 'post') <= 12) ? $ui->isinteger('monthstop', 'post') : date('m');
+    var slotsDonut = new Morris.Donut({
+        element: 'slots-chart',
+        resize: true,
+        colors: ['#00a65a', '#f56954'],
+        data: [
+            {label: '{$gsprache->free}', value: {$freeSlots}},
+            {label: '{$gsprache->used}', value: {$usedSlots}}
+        ],
+        hideHover: 'auto'
+    });
 
-		$daystop = date('t', strtotime("$yearstop-$monthstop"));
-		$now = date('Y-m');
-		$date1 = strtotime("$year-$month-$day");
-		$add = $date1;
-		$date2 = strtotime("$yearstop-$monthstop-$daystop");
-		$i = 0;
+    function changeMorrisArea() {
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: 'ajax.php',
+            data: { d: 'voiceAdminStats', dateRange: $('#dateRange').val(), accuracy: $('#inputFormat').val(), serverID: $('#inputSelect').val()}
+        }).done(function(response) {
+            if (typeof line !== 'undefined') {
+                line.setData(response);
+            }
+        });
+    }
 
-		while ($add <= $date2) {
-			$add = strtotime("+1 months", $add);
-			$i++;
-		}
+    changeMorrisArea();
+});
+</script>";
 
-		$amount = $i;
-
-		if ($amount < 0 or "$yearstop-$monthstop" > $now){
-			$yearstop = date('Y');
-			$monthstop = date('m');
-			$daystop = date('t', strtotime("$yearstop-$monthstop"));
-			$day = 1;
-			$month = date('m', strtotime('-6 months'));
-			$year = date('Y', strtotime('-6 months'));
-			$amount = 7;
-		}
-
-	} else if ($ui->post['dmy'] == 'ye') {
-
-		$dmy = 'ye';
-		$day = 1;
-
-        $year = ($ui->isinteger('yearstart', 'post') and $ui->isinteger('yearstart', 'post') <= date('Y')) ? $ui->isinteger('yearstart', 'post') : date('Y', strtotime('-6 days'));
-        $yearstop = ($ui->isinteger('yearstop', 'post') and $ui->isinteger('yearstop', 'post') <= date('Y')) ? $ui->isinteger('yearstop', 'post') : date('Y');
-
-		$month = 1;
-		$monthstop = 12;
-		$daystop = 31;
-
-		$now = date('Y');
-		$date1 = strtotime($year . '-' . $month . '-' . $day);
-		$date2 = strtotime($yearstop . '-' . $monthstop . '-' . $daystop);
-		$add = $date1;
-		$i = 0;
-
-		while ($add <= $date2) {
-			$add = strtotime('+1 year', $add);
-			$i++;
-		}
-
-		$amount = $i;
-
-		if ($amount < 0 or "$yearstop" > $now){
-			$yearstop = date('Y');
-			$monthstop = 12;
-			$daystop = 31;
-			$day = 1;
-			$month = 1;
-			$year = date('Y', strtotime('-1 year'));
-			$amount = 2;
-		}
-	}
-
-	if ($user_language == 'de') {
-		$startdate = $day . '.' . $month . '.' . $year;
-		$stopdate = $daystop . '.' . $monthstop . '.' . $yearstop;
-	} else {
-		$startdate = $year . '-' . $month . '-' . $day;
-		$stopdate = $yearstop . '-' . $monthstop . '-' . $daystop;
-	}
-
-	$getlink = "images.php?img=vo&amp;from=admin&amp;d={$dmy}&amp;p={$year}&amp;id={$day}&amp;po={$month}&amp;m={$amount}{$whichdata}";
 	$template_file = 'admin_voice_stats.tpl';
 }

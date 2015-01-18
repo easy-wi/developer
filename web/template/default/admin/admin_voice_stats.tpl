@@ -1,72 +1,104 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><?php echo $gsprache->voiceserver." ".$gsprache->stats;?></li>
-        </ul>
+<section class="content-header">
+    <h1><?php echo $gsprache->voiceserver.' '.$gsprache->stats;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"> Home</a></i></li>
+        <li><a href="admin.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><i class="fa fa-area-chart"></i> <?php echo $gsprache->stats;?></li>
+        <li class="active"><?php echo $display;?></li>
+    </ol>
+</section>
+
+
+<section class="content">
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <form role="form" action="admin.php?w=vu" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="md">
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="dateRange"><?php echo $sprache->dmy;?></label>
+                            <div class="input-prepend input-group">
+                                <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                <input type="text" name="dateRange" id="dateRange" class="form-control" value="<?php echo $dateRange;?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputFormat"><?php echo $sprache->accuracy;?></label>
+                            <select class="form-control" id="inputFormat" name="accuracy">
+                                <option value="da"><?php echo $sprache->days;?></option>
+                                <option value="mo" <?php if ($accuracy=='mo') echo 'selected="selected"'?>><?php echo $sprache->months;?></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputKind"><?php echo $gsprache->stats;?></label>
+                            <select class="form-control" id="inputKind" name="kind">
+                                <option value="al"><?php echo $sprache->all;?></option>
+                                <option value="ma" <?php if ($kind=='ma') echo 'selected="selected"'?>><?php echo $gsprache->master;?></option>
+                                <option value="se" <?php if ($kind=='se') echo 'selected="selected"'?>><?php echo $sprache->server;?></option>
+                                <option value="us" <?php if ($kind=='us') echo 'selected="selected"'?>><?php echo $sprache->user;?></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="serverSelect">
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-edit"></i> <?php echo $gsprache->mod;?></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><?php echo $voSprache->slots;?></h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div class="chart" id="slots-chart" style="height: 300px; position: relative;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><?php echo $gsprache->traffic;?></h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div class="chart" id="traffic-chart" style="height: 300px; position: relative;"></div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <dl>
-            <dt><?php echo $gsprache->voiceserver." ".$gsprache->stats." ".$display;?></dt>
-            <dd><?php echo $startdate." - ".$stopdate;?></dd>
-        </dl>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><?php echo $voSprache->slots;?> + <?php echo $gsprache->traffic;?></h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div class="chart" id="usage-chart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span11">
-        <form class="form-horizontal" action="admin.php?w=vu" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <div class="control-group">
-                <label class="control-label" for="inputFormat"><?php echo $sprache->dmy;?></label>
-                <div class="controls">
-                    <select id="inputFormat" name="dmy">
-                        <option value="da" <?php if ($dmy=='da') echo 'selected="selected"'?>><?php echo $sprache->days;?></option>
-                        <option value="mo" <?php if ($dmy=='mo') echo 'selected="selected"'?>><?php echo $sprache->months;?></option>
-                        <option value="ye" <?php if ($dmy=='ye') echo 'selected="selected"'?>><?php echo $sprache->years;?></option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputRange"><?php echo $sprache->range;?></label>
-                <div class="controls form-inline">
-                    <input class="span2" name="daystart" type="number" min="1" max="31" step="1" value="<?php echo $day; ?>">
-                    <input class="span2" name="monthstart" type="number" min="1" max="12" step="1" value="<?php echo $month; ?>">
-                    <input class="span2" name="yearstart" type="number" min="2011" max="2200" step="1" value="<?php echo $year; ?>">
-                    -
-                    <input class="span2" name="daystop" type="number" min="1" max="31" step="1" value="<?php echo $daystop; ?>">
-                    <input class="span2" name="monthstop" type="number" min="1" max="12" step="1" value="<?php echo $monthstop; ?>">
-                    <input class="span2" name="yearstop" type="number" min="2011" max="2200" step="1" value="<?php echo $yearstop; ?>">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputStats"><?php echo $gsprache->stats;?></label>
-                <div class="controls">
-                    <select id="inputStats" name="kind" onchange="getdetails('ajax.php?d=adminvoicestats&amp;w=',this.value)">
-                        <option value="al"><?php echo $sprache->all;?></option>
-                        <option value="ma" <?php if ($kind=='ma') echo 'selected="selected"'?>><?php echo $gsprache->master;?></option>
-                        <option value="se" <?php if ($kind=='se') echo 'selected="selected"'?>><?php echo $sprache->server;?></option>
-                        <option value="us" <?php if ($kind=='us') echo 'selected="selected"'?>><?php echo $sprache->user;?></option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputSelect"></label>
-                <div id="information" class="controls">
-                    <?php if($ui->st('kind','post')!='al'){ ?>
-                    <select id="inputSelect" name="what">
-                        <?php foreach ($data as $value) echo $value;?>
-                    </select>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls"><button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button></div>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span11"><img src="<?php echo $getlink; ?>" alt="Stats" /></div>
-</div>
+</section>
+
+<script type="text/javascript">
+    $(function(){
+        $('#serverSelect').load('ajax.php?d=adminVoiceStats&w=' + $("#inputKind").val() + '&selectedID=' + <?php echo $selectedID;?>);
+    });
+    $('#inputKind').on('change', function() {
+        $('#serverSelect').load('ajax.php?d=adminVoiceStats&w=' + $("#inputKind").val());
+    });
+</script>

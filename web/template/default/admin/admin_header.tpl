@@ -387,7 +387,7 @@
 						<li <?php if($ui->smallletters('w',255,'get')=='vd') echo 'class="active"';?>><a href="admin.php?w=vd"><i class="fa fa-hdd-o"></i> TSDNS <?php echo $gsprache->master;?></a></li>
 						<?php } ?>
 						<?php if($pa['voiceserverStats']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='vu') echo 'class="active"';?>><a href="admin.php?w=vu&amp;d=md"><i class="fa fa-area-chart"></i> <?php echo $gsprache->stats;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='vu') echo 'class="active"';?>><a href="admin.php?w=vu"><i class="fa fa-area-chart"></i> <?php echo $gsprache->stats;?></a></li>
 						<?php } ?>
 						<?php foreach ($customModules['vo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
