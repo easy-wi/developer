@@ -71,6 +71,7 @@ if ($ui->id('id', 10, 'get')) {
     $query = $sql->prepare("SELECT g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `decryptedftppass`,s.`servertemplate`,t.`binarydir`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $user_id, $resellerLockupID));
 	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
 		$protected = $row['protected'];
 		$servertemplate = $row['servertemplate'];
 		$rootID = $row['rootID'];
@@ -107,10 +108,12 @@ if ($ui->id('id', 10, 'get')) {
 
             $ftpConnect = new EasyWiFTP($ip, $ftpport, $username, $ftppass);
 
+            $downloadChrooted = $ftpConnect->removeSlashes($pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0');
+
             if ($ftpConnect->ftpConnection) {
 
-                if (!$ftpConnect->downloadToTemp('/' . $pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0', 32768)) {
-                    $error = 'Cannot download screenlog from /' . $ftpConnect->removeSlashes($pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0');
+                if (!$ftpConnect->downloadToTemp($downloadChrooted, 32768)) {
+                    $error = 'Cannot download screenlog from ' . $downloadChrooted;
                 }
 
             } else {

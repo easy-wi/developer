@@ -585,6 +585,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `dpftppass`,s.`anticheat`,s.`servertemplate`,t.`shorten`,t.`gamebinary`,t.`modfolder`,t.`binarydir`,u.`cname` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $aeskey,$id, $user_id, $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
         $anticheat = $row['anticheat'];
         $eacallowed = $row['eacallowed'];
         $serverip = $row['serverip'];
@@ -615,16 +616,21 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-    $query = $sql->prepare("SELECT g.`protected`,t.`configs`,s.`id` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT g.`protected`,g.`homeLabel`,t.`configs`,s.`id` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($id,$user_id,$resellerLockupID));
     $customer = getusername($user_id);
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
         $serverID = $row['id'];
         $protected = $row['protected'];
+        $homeLabel = $row['homeLabel'];
         $config_rows = explode("\r\n", $row['configs']);
+
         foreach ($config_rows as $configline) {
+
             $data_explode=explode(" ", $configline);
             $permission=(isset($data_explode[1])) ? $data_explode[1] : 'full';
+
             if ($data_explode[0] != '') {
                 $configs[] = array('permission' => $permission,'line' => $data_explode[0]);
                 $configCheck[] = $data_explode[0];
@@ -663,11 +669,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $explodeconfig = explode('/', $postconfig);
             $configname = $explodeconfig[(count($explodeconfig) - 1)];
 
-            $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `ip`,`ftpport`,`install_paths` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($rootID,$resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
                 $ftpport = $row['ftpport'];
                 $ip = $row['ip'];
+
+                $iniVars = @parse_ini_string($row['install_paths'], true);
+                $homeDir = ($iniVars and isset($iniVars[$homeLabel]['path'])) ? (string) $iniVars[$homeLabel]['path'] : '/home';
+                $homeDir .= '/' . $username;
             }
 
             if ($gamebinary == 'srcds_run'){
@@ -837,7 +848,18 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             }
                         }
                     }
-                    if ($ftp->uploadFileFromTemp($pserver . $serverip . '_' . $port . '/' . $ftpshorten . '/', $config, false)) {
+
+                    $uploaded = false;
+
+                    if ($ftp->uploadFileFromTemp($ftp->removeSlashes($pserver . $serverip . '_' . $port . '/' . $ftpshorten . '/'), $config, false)) {
+                        $uploaded = true;
+                    }
+
+                    if ($uploaded == false and $ftp->uploadFileFromTemp($ftp->removeSlashes($homeDir . '/' . $pserver . $serverip . '_' . $port . '/' . $ftpshorten . '/'), $config, false)) {
+                        $uploaded = true;
+                    }
+
+                    if ($uploaded) {
 
                         $template_file = 'Success: ' . $config;
 

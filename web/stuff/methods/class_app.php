@@ -201,6 +201,7 @@ class AppServer {
             $absoluteFTPPath .= '/' . $this->appServerDetails['template']['modfolder'] . '/';
 
             $this->appServerDetails['absoluteFTPPath'] = $this->removeSlashes($absoluteFTPPath);
+            $this->appServerDetails['absoluteFTPPathNoChroot'] = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . $this->appServerDetails['absoluteFTPPath']);
 }
 
         return ($query->rowCount() > 0) ? true : false;
@@ -971,7 +972,15 @@ class AppServer {
                     $path = $fileAndPath['path'];
                     $fileName = $fileAndPath['file'];
 
-                    $ftpObect->downloadToTemp($fileWithPath);
+                    if (!$ftpObect->downloadToTemp($fileWithPath)) {
+
+                        $fileWithPath = $this->appServerDetails['absoluteFTPPathNoChroot'] . '/' . $config;
+
+                        $fileAndPath = $this->getFileAndPathName($fileWithPath);
+
+                        $path = $fileAndPath['path'];
+                        $fileName = $fileAndPath['file'];
+                    }
 
                     $configFileContent = $ftpObect->getTempFileContent();
 
@@ -1105,7 +1114,9 @@ class AppServer {
 
                 if ($ftpObect->loggedIn === true) {
 
-                    $ftpObect->downloadToTemp($this->appServerDetails['absoluteFTPPath'] . $config);
+                    if (!$ftpObect->downloadToTemp($this->appServerDetails['absoluteFTPPath'] . $config)) {
+                        $ftpObect->downloadToTemp($this->appServerDetails['absoluteFTPPathNoChroot'] . $config);
+                    }
 
                     $configFile = $ftpObect->getTempFileContent();
 
