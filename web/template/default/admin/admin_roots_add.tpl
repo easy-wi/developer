@@ -61,7 +61,7 @@
                         </div>
                         <?php } ?>
 
-                        <div class="control-group<?php if(isset($errors['active'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['active'])) echo ' has-error';?>">
                             <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputActive" name="active">
@@ -81,7 +81,7 @@
                             </div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['ip'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['ip'])) echo ' has-error';?>">
                             <label class="control-label" for="inputIP"><?php echo $sprache->haupt_ip;?></label>
                             <div class="controls"><input class="form-control" id="inputIP" type="text" name="ip" value="<?php echo $ip?>" maxlength="15"></div>
                         </div>
@@ -96,17 +96,17 @@
                             <div class="controls"><input class="form-control" id="inputFTPPort" type="number" name="ftpport" value="<?php echo $ftpport?>" min="1" max="65535"></div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['port'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['port'])) echo ' has-error';?>">
                             <label class="control-label" for="inputSSH2Port"><?php echo $sprache->ssh_port;?></label>
                             <div class="controls"><input class="form-control" id="inputSSH2Port" type="number" name="port" value="<?php echo $port?>" min="1" max="65535"></div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['user'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['user'])) echo ' has-error';?>">
                             <label class="control-label" for="inputSSH2User"><?php echo $sprache->ssh_user;?></label>
                             <div class="controls"><input class="form-control" id="inputSSH2User" type="text" name="user" value="<?php echo $user?>"></div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['publickey'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['publickey'])) echo ' has-error';?>">
                             <label class="control-label" for="inputKeyUse"><?php echo $sprache->keyuse;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputKeyUse" name="publickey">
@@ -117,17 +117,17 @@
                             </div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['pass'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['pass'])) echo ' has-error';?>">
                             <label class="control-label" for="inputSSH2Pass"><?php echo $sprache->ssh_pass;?></label>
                             <div class="controls"><input class="form-control" id="inputSSH2Pass" type="password" name="pass" value="<?php echo $pass?>" maxlength="50"></div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['keyname'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['keyname'])) echo ' has-error';?>">
                             <label class="control-label" for="inputSSH2Key"><?php echo $sprache->keyname;?></label>
                             <div class="controls"><input class="form-control" id="inputSSH2Key" type="text" name="keyname" maxlength="20" value="<?php echo $keyname;?>"/></div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['os'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['os'])) echo ' has-error';?>">
                             <label class="control-label" for="inputOS"><?php echo $sprache->os;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputBit" name="os">
@@ -137,7 +137,7 @@
                             </div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['bit'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['bit'])) echo ' has-error';?>">
                             <label class="control-label" for="inputBit"><?php echo $sprache->os_bit;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputBit" name="bit">
@@ -147,7 +147,7 @@
                             </div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['hyperthreading'])) echo ' error';?>">
+                        <div class="control-group<?php if(isset($errors['hyperthreading'])) echo ' has-error';?>">
                             <label class="control-label" for="inputHT">Hyper Threading</label>
                             <div class="controls">
                                 <select class="form-control" id="inputHT" name="hyperthreading">
@@ -310,27 +310,3 @@
         </div>
     </div>
 </section>
-
-<script type="text/javascript">
-    window.onDomReady = initReady;
-
-    function initReady(fn) {
-        if(document.addEventListener) {
-            document.addEventListener("DOMContentLoaded", fn, false);
-        } else {
-            document.onreadystatechange = function() {
-                readyState(fn);
-            }
-        }
-    }
-
-    function readyState(func) {
-        if(document.readyState == "interactive" || document.readyState == "complete") {
-            func();
-        }
-    }
-
-    window.onDomReady(onReady); function onReady() {
-        SwitchShowHideRows('init_ready');
-    }
-</script>

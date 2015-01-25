@@ -33,7 +33,7 @@
 
                     <div class="box-body">
 
-                        <div class="form-group<?php if(isset($errors['updates'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['updates'])) echo ' has-error';?>">
                             <label class="control-label" for="inputUpdates">Autoupdate</label>
                             <div class="controls">
                                 <select class="form-control" id="inputUpdates" name="updates">
@@ -45,7 +45,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['steamgame'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['steamgame'])) echo ' has-error';?>">
                             <label class="control-label" for="inputSteamGame"><?php echo $sprache->steam;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputSteamGame" name="steamgame">
@@ -70,7 +70,7 @@
                             <div class="controls"><input class="form-control" id="inputSteamAppID" type="text" name="appID" value="<?php echo $appID;?>"></div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['gamemod'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['gamemod'])) echo ' has-error';?>">
                             <label class="control-label" for="inputMods"><?php echo $sprache->mods;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputMods" name="gamemod" onchange="SwitchShowHideRows(this.value,'switch',1);">
@@ -143,7 +143,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['shorten'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['shorten'])) echo ' has-error';?>">
                             <label class="control-label" for="inputShorten"><?php echo $sprache->abkuerz;?></label>
                             <div class="controls"><input class="form-control" id="inputShorten" type="text" name="shorten" value="<?php echo $shorten;?>"></div>
                         </div>
@@ -251,7 +251,7 @@
                             <div class="controls"><input class="form-control" id="inputPort5" type="text" name="portFive" value="<?php echo $portFive;?>"></div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['cmd'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['cmd'])) echo ' has-error';?>">
                             <label class="control-label" for="inputCmd"><?php echo $sprache->start;?></label>
                             <div class="controls"><textarea class="form-control" id="inputCmd" rows="5" name="cmd"><?php echo $cmd;?></textarea></div>
                         </div>
@@ -290,30 +290,6 @@
         </div>
     </div>
 </section>
-
-<script type="text/javascript">
-    window.onDomReady = initReady;
-
-    function initReady(fn) {
-        if(document.addEventListener) {
-            document.addEventListener("DOMContentLoaded", fn, false);
-        } else {
-            document.onreadystatechange = function() {
-                readyState(fn);
-            }
-        }
-    }
-
-    function readyState(func) {
-        if(document.readyState == "interactive" || document.readyState == "complete") {
-            func();
-        }
-    }
-
-    window.onDomReady(onReady); function onReady() {
-        SwitchShowHideRows('init_ready');
-    }
-</script>
 
 <script type="text/javascript">
     $("#inputGameQ").chosen({

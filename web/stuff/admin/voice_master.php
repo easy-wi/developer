@@ -853,10 +853,11 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     if (!$ui->w('action', 3, 'post')) {
 
-        $query = $sql->prepare("SELECT `ssh2ip`,`rootid`,`type` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `ssh2ip`,`description`,`rootid`,`type` FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ssh2ip'];
+            $description = $row['description'];
             $type = $row['type'];
 
             if ($ip==null) {
@@ -883,6 +884,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             }
         }
         if ($query->rowCount() > 0) {
+
             $query = $sql->prepare("DELETE FROM `voice_masterserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
             $query = $sql->prepare("DELETE FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
@@ -901,117 +903,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
 } else {
 
-    $table = array();
-    $o = $ui->st('o', 'get');
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=voicemasterserver');
 
-    if ($ui->st('o', 'get') == 'da') {
-        $orderby = 'm.`active` DESC';
-    } else if ($ui->st('o', 'get') == 'aa') {
-        $orderby = 'm.`active` ASC';
-    } else if ($ui->st('o', 'get') == 'pn') {
-        $orderby = 'm.`ssh2ip` DESC';
-    } else if ($ui->st('o', 'get') == 'pn') {
-        $orderby = 'm.`ssh2ip` ASC';
-    } else if ($ui->st('o', 'get') == 'dt') {
-        $orderby = 'm.`type` DESC';
-    } else if ($ui->st('o', 'get') == 'at') {
-        $orderby = 'm.`type` ASC';
-    } else if ($ui->st('o', 'get') == 'ds') {
-        $orderby = '`installedserver` DESC';
-    } else if ($ui->st('o', 'get') == 'as') {
-        $orderby = '`installedserver` ASC';
-    } else if ($ui->st('o', 'get') == 'dl') {
-        $orderby = '`installedslots` DESC';
-    } else if ($ui->st('o', 'get') == 'al') {
-        $orderby = '`installedslots` ASC';
-    } else if ($ui->st('o', 'get') == 'dd') {
-        $orderby = 'm.`defaultdns` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = 'm.`defaultdns` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = 'm.`id` DESC';
-    } else {
-        $orderby = 'm.`id` ASC';
-        $o = 'ai';
-    }
-
-    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_masterserver` WHERE `resellerid`=?");
-    $query->execute(array($reseller_id));
-    $colcount = $query->fetchColumn();
-
-    if ($start > $colcount) {
-        $start = $colcount - $amount;
-        if ($start < 0){
-            $start = 0;
-        }
-    }
-
-    // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
-    $query = $sql->prepare("SELECT m.*,COUNT(s.`id`) AS `installedserver`,SUM(s.`slots`) AS `installedslots`,SUM(s.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `voice_server` s ON m.`id`=s.`masterserver` WHERE (m.`resellerid`=? OR m.`managedForID`=?) GROUP BY m.`id` ORDER BY $orderby LIMIT $start, $amount");
-    $query2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query3 = $sql->prepare("SELECT `id`,`active`,`uptime`,`queryName`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `masterserver`=? AND `resellerid`=?");
-    $query->execute(array($reseller_id, $admin_id));
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        $id = $row['id'];
-
-        if ($id != null) {
-
-            $vs = array();
-
-            if ($row['type'] == 'ts3') {
-                $type = $sprache->ts3;
-            }
-
-            if ($row['active'] == 'Y' and $rSA['down_checks'] > $row['notified']) {
-                $imgName = '16_ok';
-                $imgAlt='ok';
-            } else if ($row['active'] == 'Y' and $rSA['down_checks'] <= $row['notified']) {
-                $imgName = '16_error';
-                $imgAlt='crashed';
-            } else {
-                $imgName = '16_bad';
-                $imgAlt='inactive';
-            }
-
-            if ($row['ssh2ip'] == null) {
-                $query2->execute(array($row['rootid'], $row['resellerid']));
-                $ip = $query2->fetchColumn();
-            } else {
-                $ip = $row['ssh2ip'];
-            }
-
-            $defaultdns=($row['usedns'] == 'Y') ? $row['defaultdns'] : null;
-            $installedslots=($row['installedslots'] == null) ? 0 : $row['installedslots'];
-            $uslots=($row['uslots'] == null) ? 0 : $row['uslots'];
-            $query3->execute(array($id, $row['resellerid']));
-            while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
-
-                if ($row3['active'] == 'N' or $row3['uptime'] == 1) {
-                    $vsStatus = 2;
-                } else if ($row3['active'] == 'Y' and $row3['uptime'] < 1) {
-                    $vsStatus = 3;
-                } else {
-                    $vsStatus = 1;
-                }
-
-                $vs[] = array('id' => $row3['id'], 'address' => $row3['address'], 'name' => $row3['queryName'], 'status' => $vsStatus);
-            }
-
-            $table[] = array('id' => $id,'active' => $row['active'], 'managedServer' => $row['managedServer'], 'img' => $imgName,'alt' => $imgAlt,'ip' => $ip, 'type' => $type, 'defaultdns' => $defaultdns, 'installedserver' => $row['installedserver'] . '/' . $row['maxserver'], 'installedslots' => $uslots . '/' . $installedslots . '/' . $row['maxslots'], 'server' => $vs);
-        }
-    }
-    $next = $start+$amount;
-    $vor=($colcount>$next) ? $start + $amount : $start;
-    $back = $start - $amount;
-    $zur = ($back >= 0) ? $start - $amount : $start;
-    $pageamount = ceil($colcount / $amount);
-    $pages[] = '<a href="admin.php?w=vm&amp;d=md&amp;a=' . (!isset($amount)) ? 20 : $amount . ($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
-    $i = 2;
-    while ($i<=$pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        $pages[] = '<a href="admin.php?w=vm&amp;d=md&amp;a=' . $amount . '&p=' . $selectpage . '"' . ($start==$selectpage) ? 'class="bold"' : '' .' >' . $i . '</a>';
-        $i++;
-    }
-    $pages = implode(', ', $pages);
-    $template_file = "admin_voicemasterserver_list.tpl";
+    $template_file = 'admin_voicemasterserver_list.tpl';
 }

@@ -28,10 +28,9 @@
                             <th><?php echo $sprache->haupt_ip;?></th>
                             <th>ID</a></th>
                             <th><?php echo $gsprache->active;?></th>
-                            <th><?php echo $sprache->os;?></th>
+                            <th><?php echo $sprache->desc;?></th>
                             <th><?php echo $sprache->maxserver;?></th>
                             <th>Ram</th>
-                            <th><?php echo $sprache->desc;?></th>
                             <th><?php echo $gsprache->action;?></th>
                         </tr>
                         </thead>
@@ -40,10 +39,9 @@
                             <th><?php echo $sprache->haupt_ip;?></th>
                             <th>ID</a></th>
                             <th><?php echo $gsprache->active;?></th>
-                            <th><?php echo $sprache->os;?></th>
+                            <th><?php echo $sprache->desc;?></th>
                             <th><?php echo $sprache->maxserver;?></th>
                             <th>Ram</th>
-                            <th><?php echo $sprache->desc;?></th>
                             <th><?php echo $gsprache->action;?></th>
                         </tr>
                         </tfoot>

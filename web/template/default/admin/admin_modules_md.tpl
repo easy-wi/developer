@@ -38,7 +38,7 @@
 
                     <div class="box-body">
 
-                        <div class="form-group<?php if(isset($errors['active'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['active'])) echo ' has-error';?>">
                             <label for="inputActive"><?php echo $sprache->active;?></label>
                             <select class="form-control" id="inputActive" name="active">
                                 <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -48,7 +48,7 @@
 
                         <?php if($type!='C'){ ?>
 
-                        <div class="form-group<?php if(isset($errors['type'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['type'])) echo ' has-error';?>">
                             <label for="inputType"><?php echo $sprache->type;?></label>
                             <select class="form-control" id="inputType" name="type">
                                 <option value="A"><?php echo $sprache->type_admin;?></option>
@@ -57,7 +57,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['sub'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['sub'])) echo ' has-error';?>">
                             <label for="inputSub"><?php echo $sprache->sub;?></label>
                             <select class="form-control" id="inputSub" name="sub">
                                 <option value="mo"><?php echo $gsprache->modules;?></option>
@@ -72,7 +72,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['file'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['file'])) echo ' has-error';?>">
                             <label for="inputFile"><?php echo $sprache->file;?></label>
                             <select class="form-control"  id="inputFile" name="file">
                                 <?php foreach($files as $row){ ?>
@@ -81,7 +81,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['get'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['get'])) echo ' has-error';?>">
                             <label for="inputGet"><?php echo $sprache->get;?></label>
                             <input class="form-control"  id=inputGet type="text" name="get" value="<?php echo $get;?>">
                         </div>

@@ -50,22 +50,22 @@
                             </select>
                         </div>
 
-                        <div class="N switch <?php if ($masterfdl=='Y') echo 'display_none'; ?> form-group<?php if(isset($errors['ftp_adresse'])) echo ' error';?>">
+                        <div class="N switch <?php if ($masterfdl=='Y') echo 'display_none'; ?> form-group<?php if(isset($errors['ftp_adresse'])) echo ' has-error';?>">
                             <label for="input_ftp_adresse"><?php echo $gameSprache->ftp_adresse;?></label>
                             <input class="form-control"  id="input_ftp_adresse" type="text" name="ftp_adresse" value="<?php echo $ftp_adresse;?>" required>
                         </div>
 
-                        <div class="N <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch form-group<?php if(isset($errors['ftp_port'])) echo ' error';?>">
+                        <div class="N <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch form-group<?php if(isset($errors['ftp_port'])) echo ' has-error';?>">
                             <label for="input_ftp_port"><?php echo $gameSprache->ftp_port;?></label>
                             <input class="form-control"  id="input_ftp_port" type="text" name="ftp_port" value="<?php echo $ftp_port;?>" required>
                         </div>
 
-                        <div class="N <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch form-group<?php if(isset($errors['ftp_user'])) echo ' error';?>">
+                        <div class="N <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch form-group<?php if(isset($errors['ftp_user'])) echo ' has-error';?>">
                             <label for="input_ftp_user"><?php echo $gameSprache->ftp_user;?></label>
                             <input class="form-control"  id="input_ftp_port" type="text" name="ftp_user" value="<?php echo $ftp_user;?>" required>
                         </div>
 
-                        <div class="N <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch form-group<?php if(isset($errors['ftp_password'])) echo ' error';?>">
+                        <div class="N <?php if ($masterfdl=='Y') echo 'display_none'; ?> switch form-group<?php if(isset($errors['ftp_password'])) echo ' has-error';?>">
                             <label for="input_ftp_password"><?php echo $gameSprache->ftp_password;?></label>
                             <input class="form-control"  id="input_ftp_port" type="text" name="ftp_password" value="<?php echo $ftp_password;?>" required>
                         </div>
@@ -84,28 +84,3 @@
         </div>
     </div>
 </section>
-
-
-<script type="text/javascript">
-    window.onDomReady = initReady;
-
-    function initReady(fn) {
-        if(document.addEventListener) {
-            document.addEventListener("DOMContentLoaded", fn, false);
-        } else {
-            document.onreadystatechange = function() {
-                readyState(fn);
-            }
-        }
-    }
-
-    function readyState(func) {
-        if(document.readyState == "interactive" || document.readyState == "complete") {
-            func();
-        }
-    }
-
-    window.onDomReady(onReady); function onReady() {
-        SwitchShowHideRows('init_ready');
-    }
-</script>

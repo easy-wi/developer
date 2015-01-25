@@ -1286,7 +1286,7 @@ class AppServer {
             $script .= 'FILESFOUND=(`find ' . $serverDir . ' -type f';
 
             if (count($this->appMasterServerDetails['configBinaries']) > 0) {
-                $script .= ' -name "*.' . implode('" -o -name "*.', $this->appMasterServerDetails['configBinaries']) . '"';
+                $script .= '\( -iname "*.' . implode('" -or -iname "*.', $this->appMasterServerDetails['configBinaries']) . '" \)';
             }
 
             if (count($this->appMasterServerDetails['configFiles']) > 0) {
@@ -1303,7 +1303,7 @@ class AppServer {
         }
 
         if ($this->appMasterServerDetails['configBadTime'] > 0 and count($this->appMasterServerDetails['configBadFiles']) > 0) {
-            $script .= '${IONICE}find ' . $serverDir . ' -type f -name "*.' . implode('" -o -name "*.', $this->appMasterServerDetails['configBadFiles']) . '" -mtime +' . $this->appMasterServerDetails['configBadTime'] . ' -delete' . "\n";
+            $script .= '${IONICE}find ' . $serverDir . ' -type f \( -iname "*.' . implode('" -or -iname "*.', $this->appMasterServerDetails['configBadFiles']) . '" \) -mtime +' . $this->appMasterServerDetails['configBadTime'] . ' -delete' . "\n";
         }
 
         if ($this->appMasterServerDetails['configDemoTime'] > 0) {
@@ -1511,6 +1511,8 @@ class AppServer {
 
         $script = '';
 
+        $script .= 'cp -sr ' . $masterAddonFolder . '* $GAMEDIR/ > /dev/null 2>&1' . "\n";
+
         if ($type == 'addon') {
             $script = 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
             $script .= 'FOLDER=`dirname $FILE`' . "\n";
@@ -1532,13 +1534,9 @@ class AppServer {
             $script .= 'if [ "$FOLDER" != "cfg/mani_admin_plugin" ]; then cp ' . $masterAddonFolder . '$FILE $GAMEDIR/$FILE; fi' . "\n";
             $script .= 'elif [ ! -f $GAMEDIR/$FILE -a ! -f "$GAMEDIR/$FOLDER/disabled/$FILENAME" ]; then' . "\n";
             $script .= 'cp ' . $masterAddonFolder . '$FILE $GAMEDIR/$FILE' . "\n";
-            $script .= 'elif [ -a ! -f $GAMEDIR/$FILE ]; then' . "\n";
-            $script .= 'cp ' . $masterAddonFolder . '$FILE $GAMEDIR/$FILE' . "\n";
             $script .= 'fi' . "\n";
             $script .= 'done' . "\n";
         }
-
-        $script .= 'cp -sr ' . $masterAddonFolder . '* $GAMEDIR/ > /dev/null 2>&1' . "\n";
 
         return $script;
     }
@@ -1660,7 +1658,7 @@ class AppServer {
 
         // Check for to be removed folders
         if (count($folders) > 0) {
-            $script .= 'find -mindepth 1 -name "' . implode('" -o -name "', $folders) . '" -print0 | xargs -0 rm -rf' . "\n";
+            $script .= 'find -mindepth 1 \( -iname "' . implode('" -or -iname "', $folders) . '"\) -print0 | xargs -0 rm -rf' . "\n";
         }
 
         return $script;

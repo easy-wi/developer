@@ -39,7 +39,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['active'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['active'])) echo ' has-error';?>">
                             <label for="inputActive"><?php echo $sprache->active;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputActive" name="active">
@@ -84,7 +84,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['mail'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['mail'])) echo ' has-error';?>">
                             <label for="inputBirthday"><?php echo $sprache->birthday;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputBirthday" type="text" name="birthday" value="<?php echo $birthday;?>">
@@ -147,14 +147,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['password'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['password'])) echo ' has-error';?>">
                             <label for="inputPassword"><?php echo $sprache->wipsw;?>*</label>
                             <div class="controls">
                                 <input class="form-control" id="inputPassword" type="text" name="password" value="<?php echo $password;?>" required>
                             </div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['accounttype'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['accounttype'])) echo ' has-error';?>">
                             <label for="inputAccounttype"><?php echo $sprache->accounttype;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputAccounttype" name="accounttype" onchange="SwitchShowHideRows(this.value)">
@@ -204,13 +204,13 @@
                         </div>
 
                         <?php if($rSA['prefix1']=='N') { ?>
-                        <div class="u switch form-group<?php if(isset($errors['cname'])) echo ' error';?>">
+                        <div class="u switch form-group<?php if(isset($errors['cname'])) echo ' has-error';?>">
                             <label for="inputUCname"><?php echo $sprache->nickname;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputUCname" type="text" name="cname" value="<?php echo $cname;?>">
                             </div>
                         </div>
-                        <div class="r display_none switch form-group<?php if(isset($errors['cname'])) echo ' error';?>">
+                        <div class="r display_none switch form-group<?php if(isset($errors['cname'])) echo ' has-error';?>">
                             <label for="inputRCname"><?php echo $sprache->nickname;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputRCname" type="text" name="rcname" value="<?php echo $cname;?>">
@@ -218,7 +218,7 @@
                         </div>
                         <?php } ?>
 
-                        <div class="a display_none switch form-grou<?php if(isset($errors['cname'])) echo ' error';?>p">
+                        <div class="a display_none switch form-grou<?php if(isset($errors['cname'])) echo ' has-error';?>p">
                             <label for="inputACname"><?php echo $sprache->nickname;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputACname" type="text" name="acname" value="<?php echo $cname;?>">
@@ -366,27 +366,3 @@
         </div>
     </div>
 </section>
-
-<script type="text/javascript">
-    window.onDomReady = initReady;
-
-    function initReady(fn) {
-        if(document.addEventListener) {
-            document.addEventListener("DOMContentLoaded", fn, false);
-        } else {
-            document.onreadystatechange = function() {
-                readyState(fn);
-            }
-        }
-    }
-
-    function readyState(func) {
-        if(document.readyState == "interactive" || document.readyState == "complete") {
-            func();
-        }
-    }
-
-    window.onDomReady(onReady); function onReady() {
-        SwitchShowHideRows('init_ready');
-    }
-</script>

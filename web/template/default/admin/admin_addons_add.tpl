@@ -86,7 +86,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['type'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['type'])) echo ' has-error';?>">
                             <label for="inputType"><?php echo $sprache->type;?></label>
                             <select class="form-control" id="inputType" name="type">
                                 <option value="tool"><?php echo $sprache->tool;?></option>
@@ -94,17 +94,17 @@
                             </select>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['addon'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['addon'])) echo ' has-error';?>">
                             <label for="inputAddon"><?php echo $sprache->addon;?></label>
                             <input class="form-control" id="inputAddon" type="text" name="addon" value="<?php echo $addon;?>">
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['menudescription'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['menudescription'])) echo ' has-error';?>">
                             <label for="inputAddon2"><?php echo $sprache->addon2;?></label>
                             <input class="form-control" id="inputAddon2" type="text" name="menudescription" value="<?php echo $menudescription;?>">
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['active'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['active'])) echo ' has-error';?>">
                             <label for="inputActive"><?php echo $sprache->active;?></label>
                             <select class="form-control" id="inputActive" name="active">
                                 <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -158,30 +158,6 @@
         </div>
     </div>
 </section>
-
-<script type="text/javascript">
-    window.onDomReady = initReady;
-
-    function initReady(fn) {
-        if(document.addEventListener) {
-            document.addEventListener("DOMContentLoaded", fn, false);
-        } else {
-            document.onreadystatechange = function() {
-                readyState(fn);
-            }
-        }
-    }
-
-    function readyState(func) {
-        if(document.readyState == "interactive" || document.readyState == "complete") {
-            func();
-        }
-    }
-
-    window.onDomReady(onReady); function onReady() {
-        SwitchShowHideRows('init_ready');
-    }
-</script>
 
 <script type="text/javascript">
     $("#inputGame2").chosen({

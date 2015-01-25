@@ -132,10 +132,15 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appserver.php');
 
-        // App server
+        // Admins, reseller and user
     } else if ($ui->smallletters('d', 4, 'get') == 'user' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and ($pa['user'] or $pa['user_users'] or $pa['userPassword'])) {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_user.php');
+
+        // Voice master
+    } else if ($ui->smallletters('d', 17, 'get') == 'voicemasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voicemasterserver']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_voicemasterserver.php');
 
         // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front without having to repeat ourselves
     } else {
