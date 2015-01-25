@@ -30,7 +30,7 @@
                     <input class="form-control" type="hidden" name="<?php echo $virtualserver_id;?>-virtualserver_port" value="<?php echo $values['virtualserver_port'];?>">
                     <input class="form-control" type="hidden" name="<?php echo $virtualserver_id;?>-virtualserver_dns" value="<?php echo $values['virtualserver_dns'];?>">
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputImport"><?php echo $sprache->import;?></label>
                         <div class="controls">
                             <select class="form-control" id="inputImport" name="<?php echo $virtualserver_id;?>-import">
@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputUser"><?php echo $gsprache->user ;?>:</label>
                         <div class="controls">
                             <select class="form-control" id="inputUser" name="<?php echo $virtualserver_id;?>-customer" onchange="SwitchShowHideRows(this.value,'<?php echo $virtualserver_id;?>-customer');">
@@ -54,19 +54,19 @@
 
                     <?php if ($rSA['prefix1']=='N') { ?>
 
-                    <div class="0 <?php echo $virtualserver_id;?>-customer control-group">
+                    <div class="0 <?php echo $virtualserver_id;?>-customer form-group">
                         <label for="inputUserName"><?php echo $sprache->user;?></label>
                         <div class="controls"><input class="form-control" id="inputUserName" type="text" name="<?php echo $virtualserver_id;?>-username"></div>
                     </div>
 
-                    <div class="0 <?php echo $virtualserver_id;?>-customer control-group">
+                    <div class="0 <?php echo $virtualserver_id;?>-customer form-group">
                         <label for="inputUserMail"><?php echo $usprache->email;?></label>
                         <div class="controls"><input class="form-control" id="inputUserMail" type="email" name="<?php echo $virtualserver_id;?>-email" value="ts3@import.mail"></div>
                     </div>
 
                     <?php } ?>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputPassword"><?php echo $sprache->password;?></label>
                         <div class="controls">
                             <select class="form-control" id="inputPassword" name="<?php echo $virtualserver_id;?>-password">
@@ -76,7 +76,7 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputForceWelcome"><?php echo $sprache->forcewelcome;?></label>
                         <div class="controls">
                             <select class="form-control" id="inputForceWelcome" name="<?php echo $virtualserver_id;?>-forcewelcome">
@@ -86,7 +86,7 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputForceBanner"><?php echo $sprache->forcebanner;?></label>
                         <div class="controls">
                             <select class="form-control" id="inputForceBanner" name="<?php echo $virtualserver_id;?>-forcebanner">
@@ -96,7 +96,7 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputForceButton"><?php echo $sprache->forcebutton;?></label>
                         <div class="controls">
                             <select class="form-control" id="inputForceButton" name="<?php echo $virtualserver_id;?>-forcebutton">
@@ -106,7 +106,7 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputForceServerTag"><?php echo $sprache->forceservertag;?></label>
                         <div class="controls">
                             <select class="form-control" id="inputForceServerTag" name="<?php echo $virtualserver_id;?>-forceservertag">
@@ -116,7 +116,7 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputFlexSlots"><?php echo $sprache->flexSlots;?></label>
                         <div class="controls">
                             <select class="form-control" id="inputFlexSlots" name="<?php echo $virtualserver_id;?>-flexSlots">
@@ -126,12 +126,12 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputFlexSlotsFree"><?php echo $sprache->flexSlotsFree;?></label>
                         <div class="controls"><input class="form-control" id="inputFlexSlotsFree" type="text" name="<?php echo $virtualserver_id;?>-flexSlotsFree" value="<?php echo $defaultFlexSlotsFree;?>"></div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="form-group">
                         <label for="inputFlexSlotsPercent"><?php echo $sprache->flexSlotsPercent;?></label>
                         <div class="controls"><input class="form-control" id="inputFlexSlotsPercent" type="text" name="<?php echo $virtualserver_id;?>-flexSlotsPercent" value="<?php echo $defaultFlexSlotsFree;?>"></div>
                     </div>

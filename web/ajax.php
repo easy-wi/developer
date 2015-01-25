@@ -142,6 +142,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_voicemasterserver.php');
 
+        // TSDNS master
+    } else if ($ui->smallletters('d', 17, 'get') == 'tsdnsmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voicemasterserver']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_tsdnsmasterserver.php');
+
         // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front without having to repeat ourselves
     } else {
 

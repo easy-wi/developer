@@ -38,7 +38,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['voiceserver'])) {
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['voicemasterserver'])) {
 	header('Location: admin.php');
 	die;
 }
@@ -472,84 +472,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 // List the available entries
 } else {
 
-    $table = array();
-    $o = $ui->st('o', 'get');
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=tsdnsmasterserver');
 
-    if ($ui->st('o', 'get') == 'da') {
-        $orderby = '`active` DESC';
-    } else if ($ui->st('o', 'get') == 'aa') {
-        $orderby = '`active` ASC';
-    } else if ($ui->st('o', 'get') == 'dp') {
-        $orderby = '`ssh2ip` DESC';
-    } else if ($ui->st('o', 'get') == 'ap') {
-        $orderby = '`ssh2ip` ASC';
-    } else if ($ui->st('o', 'get') == 'dd') {
-        $orderby = '`defaultdns` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = '`defaultdns` ASC';
-    } else if ($ui->st('o', 'get') == 'db') {
-        $orderby = '`description` DESC';
-    } else if ($ui->st('o', 'get') == 'ab') {
-        $orderby = '`description` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`id` DESC';
-    } else {
-        $orderby = '`id` ASC';
-        $o = 'ai';
-    }
-    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `voice_tsdns` WHERE `resellerid`=?");
-    $query->execute(array($reseller_id));
-    $colcount = $query->fetchColumn();
-
-    if ($start > $colcount) {
-        $start = $colcount - $amount;
-        if ($start < 0) {
-            $start = 0;
-        }
-    }
-
-    $next = $start + $amount;
-    $vor = ($colcount > $next) ? $start + $amount : $start;
-    $back = $start - $amount;
-    $zur = ($back >= 0) ? $start - $amount : $start;
-    $pageamount = ceil($colcount / $amount);
-    $pages[] = '<a href="admin.php?w=vd&amp;o=' . $o . '&amp;a=' . (!isset($amount)) ? 20 : $amount . ($start == 0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
-    $i = 2;
-    while ($i<=$pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        $pages[] = '<a href="admin.php?w=vd&amp;o=' . $o . '&amp;a=' . $amount . '&p=' . $selectpage . '"' . ($start==$selectpage) ? 'class="bold"' : '' . ' >' . $i . '</a>';
-        $i++;
-    }
-    $pages = implode(', ', $pages);
-
-    $query = $sql->prepare("SELECT * FROM `voice_tsdns` WHERE `resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
-    $query2 = $sql->prepare("SELECT `dnsID`,`active`,`dns` FROM `voice_dns` WHERE `tsdnsID`=? AND `resellerID`=?");
-    $query->execute(array($reseller_id));
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-        $i = 0;
-        $ds = array();
-
-        if ($row['active'] == 'Y') {
-            if ($row['notified']>2) {
-                $imgName = '16_error';
-                $imgAlt='16_error';
-            } else {
-                $imgName = '16_ok';
-                $imgAlt='online';
-            }
-        } else {
-            $imgName = '16_bad';
-            $imgAlt='inactive';
-        }
-
-        $query2->execute(array($row['id'], $reseller_id));
-
-        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-            $ds[] = array('id' => $row2['dnsID'], 'address' => $row2['dns'], 'status' => ($row2['active'] == 'N') ? 2 : 1);
-        }
-
-        $table[] = array('id' => $row['id'], 'active' => $row['active'], 'img' => $imgName,'alt' => $imgAlt,'ip' => $row['ssh2ip'], 'defaultdns' => $row['defaultdns'], 'description' => $row['description'], 'maxDns' => $row['max_dns'], 'dnsCount' => count($ds), 'server' => $ds);
-    }
     $template_file = 'admin_voice_tsdns_list.tpl';
 }
