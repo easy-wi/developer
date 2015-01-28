@@ -21,7 +21,7 @@
     Order deny,allow
     deny from all
 </FilesMatch>
-<FilesMatch "^(admin|api|cloud|get_password|images|index|install|jobs|login|protectioncheck|reboot|serverallocation|serverlog|statuscheck|switch|update|userpanel|lend|vorlage)\.php$">
+<FilesMatch "^(admin|ajax|api|cloud|get_password|images|index|install|jobs|login|protectioncheck|reboot|serverallocation|serverlog|statuscheck|switch|update|userpanel|lend|vorlage)\.php$">
     Order allow,deny
     allow from all
 </FilesMatch>
