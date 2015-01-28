@@ -116,21 +116,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $configFiles = ($ui->startparameter('configFiles', 'post')) ? $ui->startparameter('configFiles', 'post') : '*/cfg/valve.rc';
     $configBadFiles = ($ui->startparameter('configBadFiles', 'post')) ? $ui->startparameter('configBadFiles', 'post') : 'zip,rar,7zip,bz2';
 
-    if (!$ui->smallletters('action', 2, 'post')) {
+    if ($reseller_id == 0) {
 
-        if ($reseller_id == 0) {
-            $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `accounttype`='r' ORDER BY `id` DESC");
-            $query->execute();
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
-            }
-        } else {
-            $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='r' ORDER BY `id` DESC");
-            $query->execute(array($resellerLockupID));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
-            }
+        $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `accounttype`='r' ORDER BY `id` DESC");
+        $query->execute();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
+
+    } else {
+
+        $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='r' ORDER BY `id` DESC");
+        $query->execute(array($resellerLockupID));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
+        }
+    }
+
+    if (!$ui->smallletters('action', 2, 'post')) {
 
         if ($ui->st('d', 'get') == 'ad' and $reseller_id == 0) {
 
