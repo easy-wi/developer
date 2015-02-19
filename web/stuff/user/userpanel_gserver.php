@@ -71,7 +71,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($ui->st('d', 'get') == 'wf' and $ui->id('id', 10, 'get') and ($pa['ftpaccess'] or $pa['miniroot'])) {
 
-    $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,u.`cname`,r.`ftpport`,s.`servertemplate`,t.`shorten` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? AND g.`protected`='N' AND t.`ftpAccess`='Y' LIMIT 1");
+    $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,u.`cname`,r.`ftpport`,s.`servertemplate`,t.`shorten` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? AND t.`ftpAccess`='Y' LIMIT 1");
     $query->execute(array($aeskey, $ui->id('id', 10, 'get'), $user_id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $ftpIP = $row['serverip'];
