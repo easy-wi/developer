@@ -474,18 +474,18 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
 		apt-get install proftpd
 		
 		if [ -f /etc/proftpd/modules.conf ]; then
-			mv /etc/proftpd/modules.conf /etc/proftpd/modules.conf.backup
-			sed 's/.*LoadModule mod_tls_memcache.c.*/#LoadModule mod_tls_memcache.c/g' /etc/proftpd/modules.conf.backup > /etc/proftpd/modules.conf
+			mv /etc/proftpd/modules.conf /etc/proftpd/modules.conf.easy-install.backup
+			sed 's/.*LoadModule mod_tls_memcache.c.*/#LoadModule mod_tls_memcache.c/g' /etc/proftpd/modules.conf.easy-install.backup > /etc/proftpd/modules.conf
 		fi
 
 		if [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" != 'GS' ]; then
 
-			mv /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.backup
-			sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.backup | sed 's/Umask.*/Umask 037 027/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' | sed 's/# RequireValidShell.*/RequireValidShell off/g' > /etc/proftpd/proftpd.conf
+			mv /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.easy-install.backup
+			sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.easy-install.backup | sed 's/Umask.*/Umask 037 027/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' | sed 's/# RequireValidShell.*/RequireValidShell off/g' > /etc/proftpd/proftpd.conf
 
 		elif [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" == 'GS' ]; then
 
-			sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.backup | sed 's/Umask.*/Umask 077 077/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' > /etc/proftpd/proftpd.conf
+			sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.easy-install.backup | sed 's/Umask.*/Umask 077 077/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' > /etc/proftpd/proftpd.conf
 
 			echo " "
 			echo "Install/Update ProFTPD Rules?"
@@ -773,8 +773,8 @@ if [ "$INSTALL" == 'WR' ]; then
 			mv /etc/nginx/sites-available/default /home/$MASTERUSER/sites-enabled/
 		fi
 
-		mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
-		sed "s/\/etc\/nginx\/sites-enabled\/\*;/\/home\/$MASTERUSER\/sites-enabled\/\*;/g" /etc/nginx/nginx.conf.backup > /etc/nginx/nginx.conf
+		mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.easy-install.backup
+		sed "s/\/etc\/nginx\/sites-enabled\/\*;/\/home\/$MASTERUSER\/sites-enabled\/\*;/g" /etc/nginx/nginx.conf.easy-install.backup > /etc/nginx/nginx.conf
 
 	elif [ "$WEBSERVER" == "Lighttpd" ]; then
 
@@ -782,7 +782,7 @@ if [ "$INSTALL" == 'WR' ]; then
 			mv /etc/lighttpd/sites-available/default /home/$MASTERUSER/sites-enabled/
 		fi
 
-		cp /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.backup
+		cp /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.easy-install.backup
 		echo "include_shell \"find /home/$MASTERUSER/sites-enabled/ -maxdepth 1 -type f -exec cat {} \;\"" >> /etc/lighttpd/lighttpd.conf
 
 	elif [ "$WEBSERVER" == "Apache" ]; then
@@ -795,8 +795,8 @@ if [ "$INSTALL" == 'WR' ]; then
 			mv /etc/apache2/sites-available/default-ssl /home/$MASTERUSER/sites-enabled/
 		fi
 
-		mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.backup
-		sed "s/Include sites-enabled\//Include \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf.backup | sed "s/Include \/etc\/apache2\/sites-enabled\//\/home\/$MASTERUSER\/sites-enabled\//g" > /etc/apache2/apache2.conf
+		mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.easy-install.backup
+		sed "s/Include sites-enabled\//Include \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf.easy-install.backup | sed "s/Include \/etc\/apache2\/sites-enabled\//\/home\/$MASTERUSER\/sites-enabled\//g" > /etc/apache2/apache2.conf
 
 	fi
 fi
