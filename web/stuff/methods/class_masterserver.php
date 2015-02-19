@@ -689,8 +689,11 @@ class masterServer {
                     $removeLogs = $this->removeUpdateLogs();
 
                     if ($removeLogs !== false) {
+
                         $sftpObject->put('/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh', $removeLogs);
                         $sftpObject->chmod(0700, '/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh');
+
+                        $sshObject->exec('/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh & ');
                     }
                 }
 

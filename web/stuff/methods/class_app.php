@@ -1525,7 +1525,7 @@ class AppServer {
         $script .= 'cp -sr ' . $masterAddonFolder . '* $GAMEDIR/ > /dev/null 2>&1' . "\n";
 
         if ($type == 'addon') {
-            $script = 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
+            $script .= 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
             $script .= 'FOLDER=`dirname $FILE`' . "\n";
             $script .= 'FILENAME=`basename $FILE`' . "\n";
             $script .= 'if [ ! -d $GAMEDIR/$FOLDER ]; then mkdir -p $GAMEDIR/$FOLDER/; fi' . "\n";
@@ -1907,8 +1907,8 @@ class AppServer {
 
         global $resellerLockupID;
 
-        $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/backup/');
-        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
+        $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] .'/' . $this->appServerDetails['userName'] . '/backup/');
+        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] .'/' . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-create-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
