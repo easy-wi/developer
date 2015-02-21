@@ -73,7 +73,7 @@
                         </div>
 
                         <div class="control-group">
-                            <label class="control-label" for="inputConnectIpOnly"><?php echo $sprache->connect_ip_only;?></label>
+                            <label class="control-label" for="inputConnectIpOnly"><?php echo $gsprache->connect_ip_only;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputConnectIpOnly" name="connectIpOnly">
                                     <option value="N"><?php echo $gsprache->no;?></option>

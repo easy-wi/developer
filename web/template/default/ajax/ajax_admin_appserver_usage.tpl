@@ -8,9 +8,15 @@
     <input class="form-control" id="inputSlotsInstalled" type="text" name="slotsInstalled" value="<?php echo $installedSlots.'/'.$maxSlots;?>" disabled="disabled">
 </div>
 
+
 <div class="form-group">
+
     <label for="inputRamUsed"><?php echo $sprache->raminstalled;?></label>
-    <input class="form-control" id="inputRamUsed" type="text" name="ramUsed" value="<?php echo $installedRam.'/'.$maxRam;?>" disabled="disabled">
+
+    <div class="input-group">
+        <input class="form-control" id="inputRamUsed" type="text" name="ramUsed" value="<?php echo $installedRam.'/'.$maxRam;?>" disabled="disabled">
+        <span class="input-group-addon">MB</span>
+    </div>
 </div>
 
 <?php if($quotaActive=='Y'){ ?>
@@ -69,8 +75,13 @@
 
 <?php if($quotaActive=='Y'){ ?>
 <div class="form-group">
+
     <label for="inputHdd"><?php echo $sprache->hdd;?></label>
-    <div class="controls"><input class="form-control" id="inputHdd" type="number" name="hdd" value="<?php echo $hdd;?>" min="0"></div>
+
+    <div class="input-group">
+        <input class="form-control" id="inputHdd" type="number" name="hdd" value="<?php echo $hdd;?>" min="0">
+        <span class="input-group-addon">MB</span>
+    </div>
 </div>
 <?php } ?>
 

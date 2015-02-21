@@ -154,13 +154,23 @@
                         </div>
 
                         <div class="form-group">
+
                             <label for="inputMinRam">Min Ram</label>
-                            <div class="controls"><input class="form-control" id="inputMinRam" type="number" name="minRam" value="512"></div>
+
+                            <div class="input-group">
+                                <input class="form-control" id="inputMinRam" type="number" name="minRam" value="512">
+                                <span class="input-group-addon">MB</span>
+                            </div>
                         </div>
 
                         <div class="form-group">
+
                             <label for="inputMaxRam">Max Ram</label>
-                            <div class="controls"><input class="form-control" id="inputMaxRam" type="number" name="maxRam" value="1024"></div>
+
+                            <div class="input-group">
+                                <input class="form-control" id="inputMaxRam" type="number" name="maxRam" value="1024">
+                                <span class="input-group-addon">MB</span>
+                            </div>
                         </div>
 
                         <?php foreach(customColumns('G') as $row){ ?>
@@ -218,14 +228,6 @@
     $('#inputRoot').on('change', function() {
         loadRootDetails();
     });
-
-    function toggleID (id, value) {
-        if (value == 'Y') {
-            $(id).show();
-        } else {
-            $(id).hide();
-        }
-    }
 
     function gameDetails () {
 

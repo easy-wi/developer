@@ -154,16 +154,26 @@
                         </div>
 
                         <div class="form-group">
+
                             <label for="inputMinRam">Min Ram</label>
-                            <div class="controls"><input class="form-control" id="inputMinRam" type="number" name="minRam" value="<?php echo $minRam;?>"></div>
+
+                            <div class="input-group">
+                                <input class="form-control" id="inputMinRam" type="number" name="minRam" value="<?php echo $minRam;?>">
+                                <span class="input-group-addon">MB</span>
+                            </div>
                         </div>
 
                         <div class="form-group">
+
                             <label for="inputMaxRam">Max Ram</label>
-                            <div class="controls"><input class="form-control" id="inputMaxRam" type="number" name="maxRam" value="<?php echo $maxRam;?>"></div>
+
+                            <div class="input-group">
+                                <input class="form-control" id="inputMaxRam" type="number" name="maxRam" value="<?php echo $maxRam;?>">
+                                <span class="input-group-addon">MB</span>
+                            </div>
                         </div>
 
-                        <?php foreach(customColumns('G') as $row){ ?>
+                        <?php foreach(customColumns('G', $id) as $row){ ?>
                         <div class="form-group">
                             <label for="inputCustom-<?php echo $row['customID'];?>"><?php echo $row['menu'];?></label>
                             <div class="controls"><input class="form-control" id="inputCustom-<?php echo $row['customID'];?>" type="<?php echo $row['type']=='V' ? 'text' : 'number';?>" name="<?php echo $row['name'];?>" value="<?php echo $row['value'];?>" maxlength="<?php echo $row['length'];?>"></div>
