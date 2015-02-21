@@ -335,8 +335,10 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
                     if ($ui->st('action', 'post') == 'ad' and $dns == strtolower($username . '.' . $masterServerData['defaultdns']) or $dns == $masterServerData['defaultdns']) {
 
+                        $dns = strtolower($id . '.' . $masterServerData['defaultdns']);
+
                         $query = $sql->prepare("UPDATE `voice_server` SET `dns`=? WHERE `id`=? LIMIT 1");
-                        $query->execute(array(strtolower($id . '.' . $masterServerData['defaultdns']), $id));
+                        $query->execute(array($dns, $id));
 
                         $rowCount += $query->rowCount();
                     }
