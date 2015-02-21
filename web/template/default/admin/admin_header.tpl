@@ -15,7 +15,7 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Theme style -->
     <link href="css/default/AdminLTE.css" rel="stylesheet" type="text/css" />
@@ -257,7 +257,7 @@
                     </a>
                     <ul class="treeview-menu">
 						<li <?php if($ui->smallletters('w',255,'get')=='wv') echo 'class="active"';?>><a href="admin.php?w=wv"><i class="fa fa-columns"></i> Vhosts <?php echo $gsprache->overview;?></a></li>
-						<li <?php if($ui->smallletters('w',255,'get')=='wm') echo 'class="active"';?>><a href="admin.php?w=wm"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->master;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='wm') echo 'class="active"';?>><a href="admin.php?w=wm"><i class="fa fa-server"></i> <?php echo $gsprache->master;?></a></li>
 						<?php foreach ($customModules['ws'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
 					</ul>
                 </li>
@@ -275,7 +275,7 @@
 						<li <?php if($ui->smallletters('w',255,'get')=='my' and !in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my"><i class="fa fa-columns"></i> <?php echo $gsprache->databases.' '.$gsprache->overview;?></a></li>
 						<?php } ?>
 						<?php if($pa['mysql_settings']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='my' and in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my&amp;d=ms"><i class="fa fa-hdd-o"></i> Server</a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='my' and in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my&amp;d=ms"><i class="fa fa-server"></i> Server</a></li>
 						<?php } ?>
 						<?php foreach ($customModules['my'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
 					</ul>
@@ -378,13 +378,13 @@
 						<li <?php if($ui->smallletters('w',255,'get')=='vo') echo 'class="active"';?>><a href="admin.php?w=vo"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
 						<?php } ?>
 						<?php if($pa['voicemasterserver']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='vm') echo 'class="active"';?>><a href="admin.php?w=vm"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->master;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='vm') echo 'class="active"';?>><a href="admin.php?w=vm"><i class="fa fa-server"></i> <?php echo $gsprache->master;?></a></li>
 						<?php } ?>
 						<?php if($pa['voiceserver']) { ?>
 						<li <?php if($ui->smallletters('w',255,'get')=='vr') echo 'class="active"';?>><a href="admin.php?w=vr"><i class="fa fa-columns"></i> TSDNS <?php echo $gsprache->overview;?></a></li>
 						<?php } ?>
 						<?php if($pa['voicemasterserver']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='vd') echo 'class="active"';?>><a href="admin.php?w=vd"><i class="fa fa-hdd-o"></i> TSDNS <?php echo $gsprache->master;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='vd') echo 'class="active"';?>><a href="admin.php?w=vd"><i class="fa fa-server"></i> TSDNS <?php echo $gsprache->master;?></a></li>
 						<?php } ?>
 						<?php if($pa['voiceserverStats']) { ?>
 						<li <?php if($ui->smallletters('w',255,'get')=='vu') echo 'class="active"';?>><a href="admin.php?w=vu"><i class="fa fa-area-chart"></i> <?php echo $gsprache->stats;?></a></li>
@@ -437,7 +437,7 @@
                     <ul class="treeview-menu">
 						<?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?><li <?php if($ui->smallletters('w',255,'get')=='vs') echo 'class="active"';?>><a href="admin.php?w=vs&amp;d=md"><i class="fa fa-cloud"></i> <?php echo $gsprache->virtual;?></a></li><?php } ?>
 						<?php if($pa['dedicatedServer']) { ?><li <?php if($ui->smallletters('w',255,'get')=='rh') echo 'class="active"';?>><a href="admin.php?w=rh"><i class="fa fa-laptop"></i> <?php echo $gsprache->dedicated;?></a></li><?php } ?>
-						<?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='vh') echo 'class="active"';?>><a href="admin.php?w=vh"><i class="fa fa-hdd-o"></i> ESX(I) Host</a></li><?php } ?>
+						<?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='vh') echo 'class="active"';?>><a href="admin.php?w=vh"><i class="fa fa-server"></i> ESX(I) Host</a></li><?php } ?>
 						<?php if($pa['resellertemplates'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='ot') echo 'class="active"';?>><a href="admin.php?w=ot"><i class="fa fa-file-text-o"></i> <?php echo $gsprache->template;?></a></li><?php } ?>
 						<?php foreach ($customModules['ro'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
