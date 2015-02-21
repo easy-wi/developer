@@ -26,7 +26,7 @@
         <div class="col-md-12">
             <div class="box box-success">
 
-                <form role="form" action="admin.php?w=vd&amp;d=ad&amp;id=<?php echo $id;?>" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="admin.php?w=vd&amp;d=ad" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
                     <input class="form-control" type="hidden" name="token" value="<?php echo token();?>">
                     <input class="form-control" type="hidden" name="action" value="ad">

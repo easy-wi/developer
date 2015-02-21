@@ -334,6 +334,7 @@ if (!function_exists('passwordgenerate')) {
 
         return array('left' => $left, 'count' => $count, 'gsCount' => $gsCount, 'vCount' => $vCount, 'voCount' => $voCount, 'dCount' => $dCount, 'mG' => $mG, 'mVs' => $mVs, 'mVo' => $mVo, 'mD' => $mD, 'lG' => $lG, 'lVs' => $lVs, 'lVo' => $lVo, 'lD' => $lD, 'p' => $json->p, 'b' => $json->b, 't' => $json->t, 'u' => $json->u, 'c' => $json->c, 'v' => $json->v);
     }
+
     function getusername($userid) {
 
         global $sql;

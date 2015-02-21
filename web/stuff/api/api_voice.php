@@ -147,7 +147,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             }
 
             $query2 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-            $query3 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query3 = $sql->prepare("SELECT `ip`,`altips`,`connect_ip_only` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 
             $query = $sql->prepare("SELECT m.`id` AS `hostID`,m.*,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING `active`='Y' AND $inSQLArray (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND ((`maxslots`-`installedslots`)>? OR `installedslots` IS NULL) AND `active`='Y' AND `resellerid`=?) ORDER BY `slotpercent`,`serverpercent` ASC LIMIT 1");
             $query->execute(array($slots, $resellerID));
@@ -181,7 +181,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                         $query3->execute(array($row['rootid'], $resellerID));
                         while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
-                            $ips[] = $row3['ip'];
+                            $ips = ($row3['connect_ip_only'] == 'Y') ? array() : array($row['ip']);
 
                             foreach (preg_split('/\r\n/', $row3['altips'], -1, PREG_SPLIT_NO_EMPTY) as $ip) {
                                 $ips[] = $ip;
@@ -190,7 +190,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
                     } else {
 
-                        $ips[] = $row['ssh2ip'];
+                        $ips = ($row['connect_ip_only'] == 'Y') ? array() : array($row['ip']);
 
                         foreach (preg_split('/\r\n/', $row['ips'], -1, PREG_SPLIT_NO_EMPTY) as $ip) {
                             $ips[] = $ip;

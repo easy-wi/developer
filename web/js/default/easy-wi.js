@@ -108,6 +108,14 @@ function textdrop(id) {
     }
 }
 
+function toggleID (id, value) {
+    if (value == 'Y') {
+        $(id).show();
+    } else {
+        $(id).hide();
+    }
+}
+
 window.onDomReady = initReady;
 
 function initReady(fn) {

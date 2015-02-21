@@ -576,3 +576,18 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
 
     return false;
 }
+
+function getVoiceMasterList ($resellerID, $adminID) {
+
+    $table = array();
+
+    global $sql;
+
+    $query = $sql->prepare("SELECT m.`id`,m.`ssh2ip`,m.`description`,m.`maxserver`,m.`maxslots`,m.`active`,m.`resellerid`,m.`managedForID`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND `active`='Y' AND (`resellerid`=? OR m.`managedForID`=?)) ORDER BY `slotpercent`,`serverpercent` ASC");
+    $query->execute(array($resellerID, $adminID));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $table[$row['id']] = ($row['description'] != null and $row['description'] != '') ? $row['ssh2ip'] . ' ' . $row['description'] : $row['ssh2ip'];
+    }
+
+    return $table;
+}

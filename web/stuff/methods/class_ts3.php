@@ -44,13 +44,16 @@ class TS3 {
     public $errorcode = false, $socketConnected = false;
 
     public function ReplaceToTS3 ($value) {
-        $return = str_replace(array('\\', '/', ' ', '|'), array('\\\\', '\/', '\s', '\p'), $value);
-        return $return;
+
+        if ($value === false or $value === null) {
+            $value = '';
+        }
+
+        return str_replace(array('\\', '/', ' ', '|'), array('\\\\', '\/', '\s', '\p'), $value);
     }
 
     private function ReplaceFromTS3 ($value) {
-        $return = str_replace(array('\\\\', '\/', '\s', '\p'), array('\\', '/', ' ', '|'), $value);
-        return $return;
+        return str_replace(array('\\\\', '\/', '\s', '\p'), array('\\', '/', ' ', '|'), $value);
     }
 
     public function SendCommand ($value) {

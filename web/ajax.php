@@ -46,11 +46,13 @@ if (is_dir(EASYWIDIR . '/install')) {
     die('Please remove the "install" folder');
 }
 
-include(EASYWIDIR . '/stuff/methods/functions.php');
-include(EASYWIDIR . '/stuff/methods/class_validator.php');
-include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/config.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/class_ts3.php');
+include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
 
 if (!isset($admin_id) and !isset($user_id)) {
@@ -166,11 +168,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         if ($ui->smallletters('d', 10, 'get') == 'gameserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gserver']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_gameserver.php');
-/*
-        } else if ($ui->smallletters('d', 10, 'get') == 'voiceserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gserver']) {
+
+        } else if ($ui->smallletters('d', 11, 'get') == 'voiceserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voiceserver']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_voiceserver.php');
-*/
+
         }
     }
 
@@ -205,6 +207,20 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 } else if ($ui->smallletters('d', 19, 'get') == 'appmasterappdetails' and isset($admin_id) and $pa['gserver']) {
 
     require_once(EASYWIDIR . '/stuff/ajax/app_master_app_details.php');
+    die;
+
+} else if (isset($admin_id) and $pa['voiceserver'] and $ui->smallletters('d', 16, 'get') == 'voicemasterusage') {
+
+    if ($ui->id('id', 10, 'get')) {
+        require_once(EASYWIDIR . '/stuff/ajax/voice_master_usage.php');
+    }
+    die;
+
+} else if ($ui->smallletters('d', 20, 'get') == 'voicemasterportusage' and isset($admin_id) and $pa['voiceserver']) {
+
+    if ($ui->ip4('ip', 'get')) {
+        require_once(EASYWIDIR . '/stuff/ajax/voice_master_port_usage.php');
+    }
     die;
 
 } else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {

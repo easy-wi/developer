@@ -238,8 +238,18 @@
                         </div>
 
                         <div class="control-group">
+                            <label class="control-label" for="inputAssignToReseller"><?php echo $gsprache->connect_ip_only;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputAssignToReseller" name="assignToReseller">
+                                    <option value="N"><?php echo $gsprache->no;?></option>
+                                    <option value="Y" <?php if ($assignToReseller=='Y') echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
                             <label for="inputIps"><?php echo $sprache->ips;?></label>
-                            <div class="controls"><textarea class="form-control" id="inputIps" name="ips" rows="5" cols="23" ><?php echo $ips;?></textarea></div>
+                            <div class="controls"><input class="form-control" id="inputIps" name="ips" type="text" value="<?php echo $ips;?>"></div>
                         </div>
 
                         <div class="control-group<?php if(isset($errors['port'])) echo ' has-error';?>">
