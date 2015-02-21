@@ -69,7 +69,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $dns = $row['dns'];
             $ip = $row['ip'];
             $port = $row['port'];
-            $defaultdns = strtolower($row['dnsID'] . '-' . getusername($user_id).$row['defaultdns']);
+            $defaultdns = strtolower($row['dnsID'] . '-' . getusername($user_id) . $row['defaultdns']);
         }
 
         $template_file = (isset($dns)) ? 'userpanel_voiceserver_dns_md.tpl' : 'userpanel_404.tpl';

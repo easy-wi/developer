@@ -12,7 +12,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <?php echo $gsprache->voice.' '.$gsprache->master;?> <a href="admin.php?w=vd&amp;d=ad"><span class="btn btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
+            TSDNS <?php echo $gsprache->master;?> <a href="admin.php?w=vd&amp;d=ad"><span class="btn btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
         </div>
     </div>
 

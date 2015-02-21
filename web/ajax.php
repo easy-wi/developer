@@ -173,6 +173,10 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_voiceserver.php');
 
+        } else if ($ui->smallletters('d', 5, 'get') == 'tsdns' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voiceserver']) {
+
+            require_once(EASYWIDIR . '/stuff/ajax/datatable_tsdns.php');
+
         }
     }
 
@@ -221,6 +225,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     if ($ui->ip4('ip', 'get')) {
         require_once(EASYWIDIR . '/stuff/ajax/voice_master_port_usage.php');
     }
+    die;
+
+} else if ($ui->smallletters('d', 16, 'get') == 'tsdnsmasterusage' and isset($admin_id) and $pa['voiceserver']) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/tsdns_master_usage.php');
     die;
 
 } else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {

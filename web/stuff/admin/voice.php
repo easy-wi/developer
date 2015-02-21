@@ -97,11 +97,6 @@ if ($password == 'N') {
     $initialpassword = ($ui->password('initialpassword', 50, 'post')) ? $ui->password('initialpassword', 50, 'post') : passwordgenerate(10);
 }
 
-// Add jQuery plugin chosen to the header
-$htmlExtraInformation['css'][] = '<link href="css/default/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
-$htmlExtraInformation['js'][] = '<script src="js/default/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
-
-
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action', 4, 'post') and !token(true)) {
 
@@ -119,6 +114,10 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
 // Add and modify entries. Same validation can be used.
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
+
+    // Add jQuery plugin chosen to the header
+    $htmlExtraInformation['css'][] = '<link href="css/default/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
 
     if ($ui->st('d', 'get') == 'md' and $id) {
 
@@ -177,7 +176,23 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         }
     }
 
-    if (count($errors) == 0 and $ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad' and isset($masterServerData)) {
+    if (count($errors) == 0 and ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') and isset($masterServerData)) {
+
+        if ($ui->st('action', 'post') == 'ad') {
+            if (!$userID) {
+
+                $error['userID'] = $sprache->user;
+
+            } else {
+
+                $query = $sql->prepare("SELECT 1 FROM `userdata` WHERE `id`=? AND `resellerid`=? AND `accounttype`='u' LIMIT 1");
+                $query->execute(array($userID, $resellerLockupID));
+
+                if ($query->rowCount() == 0) {
+                    $error['userID'] = $sprache->user;
+                }
+            }
+        }
 
         if (!$active) {
             $errors['active'] = $sprache->active;
@@ -374,7 +389,6 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         }
     }
 
-
     // An error occurred during validation
     // unset the redirect information and display the form again
     if (!$ui->smallletters('action', 2, 'post') or count($errors) != 0) {
@@ -421,7 +435,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
     $serverFound = $query->rowCount();
 
-    if ($ui->st('action', 'post') == 'dl' and count($errors) == 0) {
+    if ($ui->st('action', 'post') == 'dl' and count($errors) == 0 and $serverFound > 0) {
 
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $rootID,':reseller_id' => $resellerLockupID,':managedForID' => $admin_id));
@@ -473,6 +487,11 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
             customColumns('T', $id,'del');
 
+            $query = $sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE v.`id` IS NULL");
+            $query->execute();
+
+            tsbackup('delete', $ssh2user, $serverdir, $rootID, $localserverid, '*');
+
             $template_file = $spracheResponse->table_del;
             $loguseraction = '%del% %voserver% ' . $ip . ':' . $port;
             $insertlog->execute();
@@ -496,11 +515,6 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 }
 
                 tsdns('dl', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion, array($ip), array($port), array($dns), $resellerLockupID);
-
-                tsbackup('delete', $ssh2user, $serverdir, $rootID, $localserverid, '*');
-
-                $query = $sql->prepare("DELETE b.* FROM `voice_server_backup` b LEFT JOIN `voice_server` v ON b.`sid`=v.`id` WHERE v.`id` IS NULL");
-                $query->execute();
             }
 
         } else if ( $ui->w('safeDelete',1, 'post') == 'S' and (!isset($errorcode) or strpos($errorcode,'error id=0') === false)) {

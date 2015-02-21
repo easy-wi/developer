@@ -132,7 +132,11 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
             $sshpw->setPassword($sshpw);
         }
 
-        $sshpw->loadKey(file_get_contents($privateKey));
+        $keyContent = @file_get_contents($privateKey);
+
+        if ($keyContent) {
+            $sshpw->loadKey($keyContent);
+        }
     }
 
     if ($sshSftpObject->login($sshuser, $sshpw)) {
