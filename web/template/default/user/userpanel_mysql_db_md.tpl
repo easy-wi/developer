@@ -4,7 +4,7 @@
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="userpanel.php?w=my"><i class="fa fa-database"></i> MySQL <?php echo $gsprache->databases;?></a></li>
         <li><i class="fa fa-cog"></i> <?php echo $gsprache->settings;?></li>
-		<li class="active"><?php echo $dbname.' ('.$ip.' )';?></li>
+		<li class="active"><?php echo $dbname.' ('.$address.' )';?></li>
     </ol>
 </section>
 

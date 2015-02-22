@@ -684,7 +684,7 @@ $query = "CREATE TABLE IF NOT EXISTS `mysql_external_servers` (
   `user` varchar(255) NOT NULL,
   `password` blob,
   `connect_ip_only` enum('Y','N') NOT NULL DEFAULT 'N',
-  `alt_ips` text CHARACTER SET utf8,
+  `external_address` varchar(255) NULL,
   `max_databases` bigint(19) unsigned DEFAULT '100',
   `interface` varchar(255) DEFAULT NULL,
   `max_queries_per_hour` bigint(19) unsigned DEFAULT 0,

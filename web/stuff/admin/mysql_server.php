@@ -70,6 +70,8 @@ $max_queries_per_hour = ($ui->id('max_queries_per_hour', 255, 'post')) ? $ui->id
 $max_updates_per_hour = ($ui->id('max_updates_per_hour', 255, 'post')) ? $ui->id('max_updates_per_hour', 255, 'post') : 0;
 $max_connections_per_hour = ($ui->id('max_connections_per_hour', 255, 'post')) ? $ui->id('max_connections_per_hour', 255, 'post') : 0;
 $max_userconnections_per_hour = ($ui->id('max_userconnections_per_hour', 255, 'post')) ? $ui->id('max_userconnections_per_hour', 255, 'post') : 0;
+$connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'Y';
+$externalAddress = ($ui->ip('externalAddress', 'post')) ? $ui->ip('externalAddress', 'post') : $ui->domain('externalAddress', 'post');
 
 // At this point all variables are defined that can come from the user
 
@@ -114,16 +116,16 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `mysql_external_servers` (`externalID`,`active`,`ip`,`port`,`user`,`password`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`resellerid`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
-                $query->execute(array($externalID, $active, $ip, $port, $user, $password, $aeskey, $max_databases, $interface, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `mysql_external_servers` (`externalID`,`active`,`ip`,`port`,`user`,`password`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`connect_ip_only`,`external_address`,`resellerid`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?)");
+                $query->execute(array($externalID, $active, $ip, $port, $user, $password, $aeskey, $max_databases, $interface, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $connectIpOnly, $externalAddress, $resellerLockupID));
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%add% MySQL Server ' . $ip;
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `mysql_external_servers` SET `externalID`=?,`active`=?,`ip`=?,`port`=?,`user`=?,`password`=AES_ENCRYPT(?,?),`max_databases`=?,`interface`=?,`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($externalID, $active, $ip, $port, $user, $password, $aeskey, $max_databases, $interface, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `mysql_external_servers` SET `externalID`=?,`active`=?,`ip`=?,`port`=?,`user`=?,`password`=AES_ENCRYPT(?,?),`max_databases`=?,`interface`=?,`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=?,`connect_ip_only`=?,`external_address`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($externalID, $active, $ip, $port, $user, $password, $aeskey, $max_databases, $interface, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $connectIpOnly, $externalAddress, $id, $resellerLockupID));
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%mod% MySQL Server ' . $ip;
@@ -155,7 +157,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             // Gather data for modding in case we have an ID and define mod template
         } else if ($ui->st('d', 'get') == 'md' and $id) {
 
-            $query = $sql->prepare("SELECT `active`,`ip`,`externalID`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT *,AES_DECRYPT(`password`,?) AS `decryptedpassword`FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $active = $row['active'];
@@ -170,6 +172,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 $max_updates_per_hour = $row['max_updates_per_hour'];
                 $max_connections_per_hour = $row['max_connections_per_hour'];
                 $max_userconnections_per_hour = $row['max_userconnections_per_hour'];
+                $connectIpOnly = $row['connect_ip_only'];
+                $externalAddress = $row['external_address'];
             }
 
             // Check if database entry exists and if not display 404 page

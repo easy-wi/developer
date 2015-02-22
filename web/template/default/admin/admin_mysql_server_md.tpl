@@ -58,6 +58,23 @@
                             </div>
                         </div>
 
+                        <div class="control-group">
+                            <label class="control-label" for="inputConnectIpOnly"><?php echo $gsprache->connect_ip_only;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputConnectIpOnly" name="connectIpOnly">
+                                    <option value="N"><?php echo $gsprache->no;?></option>
+                                    <option value="Y" <?php if ($connectIpOnly=='Y') echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputExternalAddress"><?php echo $gsprache->externalIP;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputExternalAddress" name="externalAddress" type="text" value="<?php echo $externalAddress;?>">
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label for="inputPort">Port</label>
                             <div class="controls">

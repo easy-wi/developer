@@ -16,7 +16,7 @@
     <chosenSelect>Please make a selection</chosenSelect>
     <columns>Custom columns</columns>
     <comments>Comments</comments>
-    <connect_ip_only>SSH2 IP for administration only (DMZ), additional for external connects</connect_ip_only>
+    <connect_ip_only>Primary IP/Domain for administration only (DMZ), additional for external connects</connect_ip_only>
 	<databases>Databases</databases>
     <dataTablesFirst>First</dataTablesFirst>
     <dataTablesEmpty>No entries to show</dataTablesEmpty>
