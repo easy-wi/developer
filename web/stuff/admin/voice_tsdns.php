@@ -84,7 +84,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $active = $ui->active('active', 'post');
     $description = $ui->escaped('description', 'post');
     $autorestart = $ui->active('autorestart', 'post');
-    $defaultdns=strtolower($ui->domain('defaultdns', 'post'));
+    $defaultdns = strtolower($ui->domain('defaultdns', 'post'));
     $ssh2ip = $ui->ip('ip', 'post');
     $ssh2port = $ui->port('port', 'post');
     $ssh2user = $ui->username('user', 255, 'post');
@@ -92,6 +92,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $serverdir = $ui->folder('serverdir', 'post');
     $keyname = $ui->startparameter('keyname', 'post');
     $bit = $ui->id('bit',2, 'post');
+    $connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'Y';
+    $externalIp = $ui->ip('externalIp', 'post');
     $maxDns = ($ui->id('maxDns', 10, 'post')) ? $ui->id('maxDns', 10, 'post') : 500;
 
     // Default variables. Mostly needed for the add operation
@@ -123,6 +125,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $serverdir = $row['serverdir'];
                 $keyname = $row['keyname'];
                 $bit = $row['bitversion'];
+                $connectIpOnly = $row['connect_ip_only'];
+                $externalIp = $row['external_ip'];
                 $maxDns = $row['max_dns'];
             }
 
@@ -194,8 +198,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `voice_tsdns` (`externalID`,`max_dns`,`active`,`bitversion`,`defaultdns`,`publickey`,`ssh2ip`,`ssh2port`,`ssh2user`,`ssh2password`,`serverdir`,`keyname`,`autorestart`,`description`,`resellerid`) VALUES (:externalID,:maxDns,:active,:bit,:defaultdns,:publickey,:ssh2ip,AES_ENCRYPT(:ssh2port,:aeskey),AES_ENCRYPT(:ssh2user,:aeskey),AES_ENCRYPT(:ssh2password,:aeskey),:serverdir,:keyname,:autorestart,:description,:reseller_id)");
-                $query->execute(array(':externalID' => $externalID,':maxDns' => $maxDns,':aeskey' => $aeskey,':active' => $active,':bit' => $bit,':defaultdns' => $defaultdns,':publickey' => $publickey,':ssh2ip' => $ssh2ip,':ssh2port' => $ssh2port,':ssh2user' => $ssh2user,':ssh2password' => $ssh2password,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':description' => $description,':reseller_id' => $reseller_id));
+                $query = $sql->prepare("INSERT INTO `voice_tsdns` (`externalID`,`max_dns`,`active`,`bitversion`,`defaultdns`,`publickey`,`ssh2ip`,`ssh2port`,`ssh2user`,`ssh2password`,`serverdir`,`keyname`,`autorestart`,`description`,`connect_ip_only`,`external_ip`,`resellerid`) VALUES (:externalID,:maxDns,:active,:bit,:defaultdns,:publickey,:ssh2ip,AES_ENCRYPT(:ssh2port,:aeskey),AES_ENCRYPT(:ssh2user,:aeskey),AES_ENCRYPT(:ssh2password,:aeskey),:serverdir,:keyname,:autorestart,:description,:connect_ip_only,:external_ip,:reseller_id)");
+                $query->execute(array(':externalID' => $externalID,':maxDns' => $maxDns,':aeskey' => $aeskey,':active' => $active,':bit' => $bit,':defaultdns' => $defaultdns,':publickey' => $publickey,':ssh2ip' => $ssh2ip,':ssh2port' => $ssh2port,':ssh2user' => $ssh2user,':ssh2password' => $ssh2password,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':description' => $description,':connect_ip_only' => $connectIpOnly,':external_ip' => $externalIp,':reseller_id' => $reseller_id));
 
                 $rowCount = $query->rowCount();
 
@@ -205,8 +209,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             } else if ($ui->st('action', 'post') == 'md') {
 
-                $query = $sql->prepare("UPDATE `voice_tsdns` SET `externalID`=:externalID,`max_dns`=:maxDns,`active`=:active,`bitversion`=:bit,`defaultdns`=:defaultdns,`publickey`=:publickey,`ssh2ip`=:ssh2ip,`ssh2port`=AES_ENCRYPT(:ssh2port,:aeskey),`ssh2user`=AES_ENCRYPT(:ssh2user,:aeskey),`ssh2password`=AES_ENCRYPT(:ssh2password,:aeskey),`serverdir`=:serverdir,`keyname`=:keyname,`autorestart`=:autorestart,`description`=:description WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':externalID' => $externalID,':maxDns' => $maxDns,':aeskey' => $aeskey,':active' => $active,':bit' => $bit,':defaultdns' => $defaultdns,':publickey' => $publickey,':ssh2ip' => $ssh2ip,':ssh2port' => $ssh2port,':ssh2user' => $ssh2user,':ssh2password' => $ssh2password,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':description' => $description,':id' => $id,':reseller_id' => $reseller_id));
+                $query = $sql->prepare("UPDATE `voice_tsdns` SET `externalID`=:externalID,`max_dns`=:maxDns,`active`=:active,`bitversion`=:bit,`defaultdns`=:defaultdns,`publickey`=:publickey,`ssh2ip`=:ssh2ip,`ssh2port`=AES_ENCRYPT(:ssh2port,:aeskey),`ssh2user`=AES_ENCRYPT(:ssh2user,:aeskey),`ssh2password`=AES_ENCRYPT(:ssh2password,:aeskey),`serverdir`=:serverdir,`keyname`=:keyname,`autorestart`=:autorestart,`description`=:description,`connect_ip_only`=:connect_ip_only,`external_ip`=:external_ip WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+                $query->execute(array(':externalID' => $externalID,':maxDns' => $maxDns,':aeskey' => $aeskey,':active' => $active,':bit' => $bit,':defaultdns' => $defaultdns,':publickey' => $publickey,':ssh2ip' => $ssh2ip,':ssh2port' => $ssh2port,':ssh2user' => $ssh2user,':ssh2password' => $ssh2password,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':description' => $description,':connect_ip_only' => $connectIpOnly,':external_ip' => $externalIp,':id' => $id,':reseller_id' => $reseller_id));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %voserver% %tsdns% ' . $ssh2ip;

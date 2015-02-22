@@ -44,6 +44,8 @@
 	<ftpport>FTP Port</ftpport>
 	<generate>Generieren</generate>
 	<groupname>Gruppenname</groupname>
+    <help_tsdns_default_dns>Diese Sub Domain können Sie jederzeit als aktuelle eintragen. Wenn sie nicht unter aktuell eingetragen ist, wird sie deaktiviert.</help_tsdns_default_dns>
+    <help_tsdns_external_ip>Wenn Sie eine andere (Sub)Domain, als unsere standard TSDNS Domain nutzen wollen, geben Sie bitte diese IP in Ihrem CNAME an.</help_tsdns_external_ip>
     <help_voiceserver_list>
     <![CDATA[
 	In dieser Übersicht werden alle Voiceserver mit Zusatzinformationen aufgelistet. Hier können Sie die wichtigsten Funktionen direkt aufrufen, dies beinhaltet unter anderem die Voiceserver-<em>Einstellungen</em> und die <em>Token</em>-Verwaltung.

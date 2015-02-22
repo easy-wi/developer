@@ -19,9 +19,25 @@
                     <input type="hidden" name="action" value="md">
 
                     <div class="box-body">
+
+                        <div class="form-group">
+                            <label for="dnsIP"><?php echo $gsprache->externalIP;?></label>
+                            <div class="controls">
+                                <input id="dnsIP" type="text" class="form-control" value="<?php echo $dnsIp;?>" readonly>
+                                <span class="help-block alert alert-info">
+                                    <?php echo $sprache->help_tsdns_external_ip;?>
+                                </span>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label for="defaultDNS"><?php echo $sprache->defaultdns;?></label>
-                            <input id="defaultDNS" type="text" class="form-control" placeholder="<?php echo $defaultdns;?>" disabled/>
+                            <div class="controls">
+                                <input id="defaultDNS" type="text" class="form-control" value="<?php echo $defaultdns;?>" readonly>
+                                <span class="help-block alert alert-info">
+                                    <?php echo $sprache->help_tsdns_default_dns;?>
+                                </span>
+                            </div>
                         </div>
 
                         <div class="form-group">

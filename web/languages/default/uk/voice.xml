@@ -44,6 +44,8 @@
     <ftpport>FTP port</ftpport>
     <generate>generate</generate>
     <groupname>Group name</groupname>
+    <help_tsdns_default_dns>This sub domain can be entered at current domain. In case another (sub)domain is maintained at current domain, the default one is deactivated.</help_tsdns_default_dns>
+    <help_tsdns_external_ip>If you want to use your own (sub)domain instead of our default TSNDS, please use this IP for your CNAME entry.</help_tsdns_external_ip>
     <help_voiceserver_list>In the voice server overview all your servers are listed with detailed information. The most important voice server functions can be accessed directly via the interface. This includes the configuration of important settings and the token management.</help_voiceserver_list>
     <help_voiceserver_backup>We create one backup for each voice server every day. This allows you to switch back to previous settings and to restore previous channel or user permissions. In addition to this, you can create your own backups.</help_voiceserver_backup>
     <help_voiceserver_key>With a token you can access your server yourself or even allow others to get server permissions. Tokens can be managed via the web interface or directly in the TeamSpeak client. A token can be used only once and will be removed after usage.</help_voiceserver_key>

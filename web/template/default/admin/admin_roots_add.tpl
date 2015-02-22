@@ -258,7 +258,12 @@
                         </div>
                         <div class="Y quotaSwitch form-group<?php if($quotaActive=='N') echo ' display_none';?>">
                             <label class="control-label" for="inputBlocksize"><?php echo $sprache->blocksize;?></label>
-                            <div class="controls"><input id="inputBlocksize" class="form-control" type="number" name="blocksize" value="<?php echo $blocksize;?>"><span class="help-block alert alert-info"><?php echo $sprache->help_blocksize;?></span></div>
+                            <div class="controls">
+                                <input id="inputBlocksize" class="form-control" type="number" name="blocksize" value="<?php echo $blocksize;?>">
+                                <span class="help-block alert alert-info">
+                                    <?php echo $sprache->help_blocksize;?>
+                                </span>
+                            </div>
                         </div>
                         <div class="Y quotaSwitch form-group<?php if($quotaActive=='N') echo ' display_none';?>">
                             <label class="control-label" for="inputInodeBlockRatio"><?php echo $sprache->inodeBlockRatio;?></label>

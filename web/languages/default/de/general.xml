@@ -41,6 +41,7 @@
     <exec>Ausführen</exec>
     <export>Exportieren</export>
     <externalID>Externe ID</externalID>
+    <externalIP>Externe IP</externalIP>
     <fastdownload>Fastdownload</fastdownload>
     <feeds>Feeds</feeds>
     <file>Datei</file>

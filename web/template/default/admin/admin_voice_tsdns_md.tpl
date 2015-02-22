@@ -74,6 +74,21 @@
                             <div class="controls"><input class="form-control" id="inputSshIP" type="text" name="ip" maxlength="15" value="<?php echo $ssh2ip;?>"></div>
                         </div>
 
+                        <div class="control-group">
+                            <label class="control-label" for="inputConnectIpOnly"><?php echo $gsprache->connect_ip_only;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputConnectIpOnly" name="connectIpOnly">
+                                    <option value="N"><?php echo $gsprache->no;?></option>
+                                    <option value="Y" <?php if ($connectIpOnly=='Y') echo 'selected="selected"'; ?>><?php echo $gsprache->yes;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputExternalIp"><?php echo $gsprache->externalIP;?></label>
+                            <div class="controls"><input class="form-control" id="inputExternalIp" name="externalIp" type="text" value="<?php echo $externalIp;?>"></div>
+                        </div>
+
                         <div class="form-group<?php if(isset($errors['port'])) echo ' has-error';?>">
                             <label for="inputSshPort"><?php echo $sprache->ssh_port;?></label>
                             <div class="controls"><input class="form-control" id="inputSshPort" type="text" name="port" maxlength="5" value="<?php echo $ssh2port;?>"></div>

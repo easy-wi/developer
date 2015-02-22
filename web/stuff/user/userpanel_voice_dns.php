@@ -63,9 +63,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     if (!$ui->smallletters('action', 2, 'post')) {
 
-        $query = $sql->prepare("SELECT d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns`,CASE WHEN t.`connect_ip_only`='Y' THEN `external_ip` ELSE `ssh2ip` END AS `dns_ip` FROM `voice_dns` d INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $dnsIp = $row['dns_ip'];
             $dns = $row['dns'];
             $ip = $row['ip'];
             $port = $row['port'];
@@ -76,7 +77,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else if ($ui->smallletters('action', 2, 'post') == 'md') {
 
-        $query = $sql->prepare("SELECT d.`tsdnsID`,d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
+        $query = $sql->prepare("SELECT d.`tsdnsID`,d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $tsdnsID = $row['tsdnsID'];

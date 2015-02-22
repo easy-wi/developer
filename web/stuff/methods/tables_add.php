@@ -1757,7 +1757,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_tsdns` (
   `ssh2user` blob,
   `ssh2password` blob,
   `connect_ip_only` enum('Y','N') NOT NULL DEFAULT 'N',
-  `alt_ips` text CHARACTER SET utf8,
+  `external_ip` varchar(15) DEFAULT NULL,
   `bitversion` smallint(2) unsigned NOT NULL,
   `serverdir` varchar(255) DEFAULT NULL,
   `keyname` varchar(50) DEFAULT NULL,
