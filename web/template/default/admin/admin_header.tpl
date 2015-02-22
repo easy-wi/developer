@@ -264,7 +264,7 @@
                 <?php } ?>
 
                 <?php if($easywiModules['my'] and ($pa['mysql_settings'] or $pa['mysql'])) { ?>
-                <li class="treeview <?php if($w=='my' or isset($customModules['my'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
+                <li class="treeview <?php if(in_array($w,array('my','md')) or isset($customModules['my'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                     <a href="#">
                         <i class="fa fa-database fa-fw"></i>
                         <span>MySQL</span>
@@ -272,10 +272,10 @@
                     </a>
                     <ul class="treeview-menu">
 						<?php if($pa['mysql']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='my' and !in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my"><i class="fa fa-columns"></i> <?php echo $gsprache->databases.' '.$gsprache->overview;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='md') echo 'class="active"';?>><a href="admin.php?w=md"><i class="fa fa-columns"></i> <?php echo $gsprache->databases.' '.$gsprache->overview;?></a></li>
 						<?php } ?>
 						<?php if($pa['mysql_settings']) { ?>
-						<li <?php if($ui->smallletters('w',255,'get')=='my' and in_array($d,array('ms','as','ds','rs'))) echo 'class="active"';?>><a href="admin.php?w=my&amp;d=ms"><i class="fa fa-server"></i> Server</a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='my') echo 'class="active"';?>><a href="admin.php?w=my"><i class="fa fa-server"></i> <?php echo $gsprache->master;?></a></li>
 						<?php } ?>
 						<?php foreach ($customModules['my'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
 					</ul>

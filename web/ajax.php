@@ -149,6 +149,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_tsdnsmasterserver.php');
 
+        // MySQL server
+    } else if ($ui->smallletters('d', 11, 'get') == 'mysqlserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['mysql_settings']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_mysqlserver.php');
+
         // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front without having to repeat ourselves
     } else {
 
@@ -176,6 +181,10 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         } else if ($ui->smallletters('d', 5, 'get') == 'tsdns' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voiceserver']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_tsdns.php');
+
+        } else if ($ui->smallletters('d', 7, 'get') == 'mysqldb' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['mysql']) {
+
+            require_once(EASYWIDIR . '/stuff/ajax/datatable_mysqldb.php');
 
         }
     }
@@ -230,6 +239,13 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 } else if ($ui->smallletters('d', 16, 'get') == 'tsdnsmasterusage' and isset($admin_id) and $pa['voiceserver']) {
 
     require_once(EASYWIDIR . '/stuff/ajax/tsdns_master_usage.php');
+    die;
+
+} else if (isset($admin_id) and $ui->smallletters('d', 16, 'get') == 'mysqlmasterusage' and $pa['mysql']) {
+
+    if ($ui->id('id', 10, 'get')) {
+        require_once(EASYWIDIR . '/stuff/ajax/mysql_master_usage.php');
+    }
     die;
 
 } else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {

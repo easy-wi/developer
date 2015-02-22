@@ -173,6 +173,7 @@ if ($easywiModules['ws'] === true) {
 }
 
 if ($easywiModules['my'] === true) {
+    $what_to_be_included_array['md'] = 'mysql_db.php';
     $what_to_be_included_array['my'] = 'mysql_server.php';
 }
 
