@@ -24,7 +24,7 @@
                     </p>
                 </div>
                 <div class="icon">
-                    <i class="fa fa-hdd-o"></i>
+                    <i class="fa fa-server"></i>
                 </div>
                 <a href="admin.php?w=ro" class="small-box-footer">
                     <?php echo $gsprache->moreInfo;?> <i class="fa fa-arrow-circle-right"></i>

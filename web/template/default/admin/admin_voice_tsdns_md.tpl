@@ -3,7 +3,7 @@
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="admin.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
-        <li><a href="admin.php?w=vd"><i class="fa fa-hdd-o"></i> TSDNS <?php echo $gsprache->master;?></a></li>
+        <li><a href="admin.php?w=vd"><i class="fa fa-server"></i> TSDNS <?php echo $gsprache->master;?></a></li>
         <li><?php echo $gsprache->mod;?></li>
         <li class="active"><?php echo $ssh2ip;?></li>
     </ol>

@@ -3,7 +3,7 @@
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="admin.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
-        <li><a href="admin.php?w=vm"><i class="fa fa-hdd-o"></i> <?php echo $gsprache->voiceserver.' '.$gsprache->master;?></a></li>
+        <li><a href="admin.php?w=vm"><i class="fa fa-server"></i> <?php echo $gsprache->voiceserver.' '.$gsprache->master;?></a></li>
         <li class="active"><?php echo $gsprache->add.'/'.$sprache->import;?></li>
     </ol>
 </section>
