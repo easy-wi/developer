@@ -737,7 +737,6 @@ class AppServer {
 
         $script .= 'screen -wipe > /dev/null 2>&1' . "\n";
         $script .= 'if [[ `screen -ls | grep ' . $screenName . '` ]]; then' . "\n";
-        $script .= 'if [ "`screen -ls | grep ' . $screenName . ' | wc -l`" == "1" ]; then screen -r ' . $screenName . ' -X quit; fi' . "\n";
 
         if ($this->appServerDetails['template']['gameq'] == 'minecraft') {
             $script .= $this->linuxMcWorldSave(false);
@@ -750,6 +749,8 @@ class AppServer {
             $script .= 'screen -p 0 -S ' . $screenName . ' -X stuff "tv_stoprecord"' . "\n";
             $script .= 'screen -p 0 -S ' . $screenName . ' -X stuff $\'\n\'' . "\n";
         }
+
+        $script .= 'if [ "`screen -ls | grep ' . $screenName . ' | wc -l`" == "1" ]; then screen -r ' . $screenName . ' -X quit; fi' . "\n";
 
         $script .= 'fi' . "\n";
 

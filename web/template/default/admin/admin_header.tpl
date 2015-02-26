@@ -12,7 +12,7 @@
     <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php if(isset($ewCfg['title'])) echo $ewCfg['title']; ?>">
 
     <!-- Bootstrap CSS -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
@@ -102,8 +102,8 @@
                                 <?php if($statsArray['gameserverNoTag']>0){ ?><li><a href="admin.php?w=gs"><i class="fa fa-warning warning"></i> <?php echo $statsArray['gameserverNoTag'].' '.$sprache_bad->gserver_tag_removed;?></a></li><?php }?>
                                 <?php }?>
 
-                                <?php if($pa['voiceserver'] and $statsArray['voiceserverCrashed']>0 and $easywiModules['vo']) { ?><li><a href="admin.php?w=vo&amp;d=md"><i class="fa fa-warning danger"></i> <?php echo $statsArray['voiceserverCrashed'].' '.$sprache_bad->voice_crashed;?></a></li><?php }?>
-                                <?php if($pa['voicemasterserver'] and $statsArray['voiceMasterCrashed']>0 and $easywiModules['vo']) { ?><li><a href="admin.php?w=vo&amp;d=md"><i class="fa fa-warning danger"></i><?php echo $statsArray['voiceMasterCrashed'].' '.$sprache_bad->ts3master_crashed;?></a></li><?php }?>
+                                <?php if($pa['voiceserver'] and $statsArray['voiceserverCrashed']>0 and $easywiModules['vo']) { ?><li><a href="admin.php?w=vo"><i class="fa fa-warning danger"></i> <?php echo $statsArray['voiceserverCrashed'].' '.$sprache_bad->voice_crashed;?></a></li><?php }?>
+                                <?php if($pa['voicemasterserver'] and $statsArray['voiceMasterCrashed']>0 and $easywiModules['vo']) { ?><li><a href="admin.php?w=vo"><i class="fa fa-warning danger"></i><?php echo $statsArray['voiceMasterCrashed'].' '.$sprache_bad->ts3master_crashed;?></a></li><?php }?>
                                 <?php if($pa['roots'] and $statsArray['gameMasterCrashed']>0 and $easywiModules['gs']) { ?><li><a href="admin.php?w=ro"><i class="fa fa-warning danger"></i><?php echo $statsArray['gameMasterCrashed'].' '.$sprache_bad->ts3master_crashed;?></a></li><?php }?>
                             </ul>
                         </li>

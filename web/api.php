@@ -78,6 +78,8 @@ if (isset($resellerIDs) and count($resellerIDs) == 1 and isset($type)) {
 
     $data = array();
     $resellerID = $resellerIDs[0];
+    $reseller_id = $resellerID;
+    $resellerLockupID = $resellerID;
     $licenceDetails = serverAmount($resellerID);
 
     if (is_numeric($licenceDetails['left']) and (0 > $licenceDetails['left'] or 0 > $licenceDetails['lG'] or 0 > $licenceDetails['lVo'] or 0 > $licenceDetails['lVs'] or 0 > $licenceDetails['lD'])) {

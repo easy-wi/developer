@@ -348,9 +348,11 @@ if (isset($servertype)) {
                 $connection->CloseConnection();
             }
         } else {
+
             $rcon = $row['rcon'];
             $password = $row['password'];
             $slots = $row['slots'];
+
             if ($servertype == 'g') {
 
                 if (!$ui->id('xml', 1, 'post') and (!isset($_SESSION['lend']['gs']) or $_SESSION['lend']['gs'] != $serverid)) {
@@ -925,6 +927,8 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                     echo $xml->saveXML();
 
                 } else {
+
+                    $debug = (isset($dbConnect['debug']) and $dbConnect['debug'] == 1)  ? '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>' : '';
 
                     if (!isset($nextfree)) {
                         $nextfree = 0;

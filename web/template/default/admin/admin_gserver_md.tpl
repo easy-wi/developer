@@ -88,7 +88,7 @@
                             <div class="controls">
                                 <select class="form-control" id="inputLend" name="lendserver">
                                     <option value="N"><?php echo $gsprache->no;?></option>
-                                    <option value="Y" <?php if($lendserver=='N') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                                    <option value="Y" <?php if($lendServer=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
                                 </select>
                             </div>
                         </div>

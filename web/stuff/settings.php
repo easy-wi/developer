@@ -231,7 +231,7 @@ if (isset($reseller_id)) {
     $logdate = date('Y-m-d H:i:s');
 }
 
-if ($loguserip!='localhost') {
+if ($loguserip != 'localhost') {
 
     if (isset($_SESSION['language'])) {
         $user_language = $_SESSION['language'];
@@ -466,4 +466,12 @@ foreach ($dirs as $row) {
 
 if ($ui->escaped('HTTP_REFERER', 'server')) {
     $referrer = $ui->escaped('HTTP_REFERER', 'server');
+}
+
+if (!isset($reseller_id)) {
+    $reseller_id = 0;
+}
+
+if (!isset($resellerLockupID)) {
+    $resellerLockupID = $reseller_id;
 }
