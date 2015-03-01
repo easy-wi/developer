@@ -92,7 +92,7 @@ if ($serverType == 'N') {
 
 $externalID = $ui->pregw('externalID', 255, 'post');
 $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
-$usageType = ($ui->w('usageType', 1, 'post')) ? $ui->w('usageType', 1, 'post') : 'F';
+$usageType = (in_array($ui->w('usageType', 1, 'post'), array('F','W'))) ? $ui->w('usageType', 1, 'post') : 'F';
 $keyname = $ui->startparameter('keyname', 'post');
 $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
 $ip = $ui->ip('ip', 'post');
@@ -168,82 +168,24 @@ if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
     }
 }
 
+// Error handling. Check if required attributes are set and can be validated
+$errors = array();
+
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action',4, 'post') and !token(true)) {
 
     unset($header, $text);
 
     $errors = array($spracheResponse->token);
-
-    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_web_master_add.tpl' : 'admin_web_master_md.tpl';
+}
 
 // Add and modify entries. Same validation can be used.
-} else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
+if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
-    // Error handling. Check if required attributes are set and can be validated
-    $errors = array();
+    $htmlExtraInformation['js'][] = '<script src="js/default/httpd_default_values.js" type="text/javascript"></script>';
 
-    // Add or mod is opened
-    if (!$ui->smallletters('action', 2, 'post')) {
-
-        $htmlExtraInformation['js'][] = '<script src="js/default/httpd_default_values.js" type="text/javascript"></script>';
-
-        // Gather data for adding if needed and define add template
-        if ($ui->st('d', 'get') == 'ad') {
-
-            $template_file = 'admin_web_master_add.tpl';
-
-            // Gather data for modding in case we have an ID and define mod template
-        } else if ($ui->st('d', 'get') == 'md' and $id) {
-
-            $query = $sql->prepare("SELECT *,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `webMaster` WHERE `webMasterID`=:id AND `resellerID`=:reseller_id LIMIT 1");
-            $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':reseller_id' => $resellerLockupID));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $externalID = $row['externalID'];
-                $active = $row['active'];
-                $ip = $row['ip'];
-                $port = $row['port'];
-                $user = $row['decrypteduser'];
-                $pass = $row['decryptedpass'];
-                $description = $row['description'];
-                $ftpIP = $row['ftpIP'];
-                $ftpPort = $row['ftpPort'];
-                $publickey = $row['publickey'];
-                $keyname = $row['keyname'];
-                $maxVhost = $row['maxVhost'];
-                $maxHDD = $row['maxHDD'];
-                $hddOverbook = $row['hddOverbook'];
-                $overbookPercent = $row['overbookPercent'];
-                $defaultdns = $row['defaultdns'];
-                $quotaActive = $row['quotaActive'];
-                $quotaCmd = $row['quotaCmd'];
-                $repquotaCmd = $row['repquotaCmd'];
-                $usageType = $row['usageType'];
-                $blocksize = $row['blocksize'];
-                $inodeBlockRatio = $row['inodeBlockRatio'];
-                $serverType = $row['serverType'];
-                $dirHttpd = $row['dirHttpd'];
-                $dirLogs = $row['dirLogs'];
-                $httpdCmd = $row['httpdCmd'];
-                $userGroup = $row['userGroup'];
-                $userAddCmd = $row['userAddCmd'];
-                $userModCmd = $row['userModCmd'];
-                $userDelCmd = $row['userDelCmd'];
-                $vhostStoragePath = $row['vhostStoragePath'];
-                $vhostConfigPath = $row['vhostConfigPath'];
-                $vhostTemplate = $row['vhostTemplate'];
-            }
-
-            // Check if database entry exists and if not display 404 page
-            $template_file = ($query->rowCount() > 0) ? 'admin_web_master_md.tpl' : 'admin_404.tpl';
-
-            // Show 404 if GET parameters did not add up or no ID was given with mod
-        } else {
-            $template_file = 'admin_404.tpl';
-        }
-
-        // Form is submitted
-    } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
+    // Form is submitted
+    if (count($errors) == 0 and ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad')) {
 
         if (!$ip) {
             $errors['ip'] = $dedicatedLanguage->ssh_ip;
@@ -358,11 +300,66 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             }
 
             // An error occurred during validation unset the redirect information and display the form again
+        }
+    }
+
+    // Add or mod is opened
+    if (!$ui->smallletters('action', 2, 'post') or count($errors) > 0) {
+
+        // Gather data for adding if needed and define add template
+        if ($ui->st('d', 'get') == 'ad') {
+
+            $template_file = 'admin_web_master_add.tpl';
+
+            // Gather data for modding in case we have an ID and define mod template
+        } else if ($ui->st('d', 'get') == 'md' and $id) {
+
+            $query = $sql->prepare("SELECT *,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `webMaster` WHERE `webMasterID`=:id AND `resellerID`=:reseller_id LIMIT 1");
+            $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':reseller_id' => $resellerLockupID));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                if (!$ui->st('action', 'post')) {
+                    $externalID = $row['externalID'];
+                    $active = $row['active'];
+                    $ip = $row['ip'];
+                    $port = $row['port'];
+                    $user = $row['decrypteduser'];
+                    $pass = $row['decryptedpass'];
+                    $description = $row['description'];
+                    $ftpIP = $row['ftpIP'];
+                    $ftpPort = $row['ftpPort'];
+                    $publickey = $row['publickey'];
+                    $keyname = $row['keyname'];
+                    $maxVhost = $row['maxVhost'];
+                    $maxHDD = $row['maxHDD'];
+                    $hddOverbook = $row['hddOverbook'];
+                    $overbookPercent = $row['overbookPercent'];
+                    $defaultdns = $row['defaultdns'];
+                    $quotaActive = $row['quotaActive'];
+                    $quotaCmd = $row['quotaCmd'];
+                    $repquotaCmd = $row['repquotaCmd'];
+                    $usageType = $row['usageType'];
+                    $blocksize = $row['blocksize'];
+                    $inodeBlockRatio = $row['inodeBlockRatio'];
+                    $serverType = $row['serverType'];
+                    $dirHttpd = $row['dirHttpd'];
+                    $dirLogs = $row['dirLogs'];
+                    $httpdCmd = $row['httpdCmd'];
+                    $userGroup = $row['userGroup'];
+                    $userAddCmd = $row['userAddCmd'];
+                    $userModCmd = $row['userModCmd'];
+                    $userDelCmd = $row['userDelCmd'];
+                    $vhostStoragePath = $row['vhostStoragePath'];
+                    $vhostConfigPath = $row['vhostConfigPath'];
+                    $vhostTemplate = $row['vhostTemplate'];
+                }
+            }
+
+            // Check if database entry exists and if not display 404 page
+            $template_file = ($query->rowCount() > 0) ? 'admin_web_master_md.tpl' : 'admin_404.tpl';
+
+            // Show 404 if GET parameters did not add up or no ID was given with mod
         } else {
-
-            unset($header, $text);
-
-            $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_web_master_add.tpl' : 'admin_web_master_md.tpl';
+            $template_file = 'admin_404.tpl';
         }
     }
 
@@ -377,7 +374,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     }
 
     // Nothing submitted yet, display the delete form
-    if (!$ui->st('action', 'post')) {
+    if (!$ui->st('action', 'post') or count($errors) > 0) {
 
         // Check if we could find an entry and if not display 404 page
         $template_file = ($query->rowCount() > 0) ? 'admin_web_master_dl.tpl' : 'admin_404.tpl';
@@ -410,7 +407,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
 } else if ($ui->st('d', 'get') == 'ri' and $id) {
 
-    if (!$ui->st('action', 'post')) {
+    if (!$ui->st('action', 'post') or count($errors) > 0) {
 
         $table = array();
 
@@ -429,6 +426,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     } else if ($ui->st('action', 'post') == 'ri') {
 
         $insertCount = 0;
+        $reinstalledVhosts = array();
         $ids = (array) $ui->id('dnsID', 10, 'post');
 
         $query = $sql->prepare("SELECT `userID`,`dns` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=?");
@@ -439,68 +437,21 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $query->execute(array($v, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
+                $reinstalledVhosts[] = $row['dns'];
+
                 $query2->execute(array($admin_id, $v, $id, $row['userID'], $row['dns'], $resellerLockupID));
 
                 $insertCount += $query2->rowCount();
             }
         }
 
-        if ($insertCount > 0) {
-            $template_file = $spracheResponse->table_add;
-        } else {
-            $template_file = $spracheResponse->error_table;
-        }
+        $template_file = ($insertCount > 0) ? $spracheResponse->reinstall_success . ': ' . implode(', ', $reinstalledVhosts) : 'admin_404.tpl';
     }
 
 // List the available entries
 } else {
 
-    $table = array();
-
-    $o = $ui->st('o', 'get');
-
-    if ($ui->st('o', 'get') == 'dd') {
-        $orderby = '`description` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = '`description` ASC';
-    } else if ($ui->st('o', 'get') == 'dp') {
-        $orderby = '`ip` DESC';
-    } else if ($ui->st('o', 'get') == 'ap') {
-        $orderby = '`ip` ASC';
-    } else if ($ui->st('o', 'get') == 'ds') {
-        $orderby = '`active` DESC,`notified` DESC';
-    } else if ($ui->st('o', 'get') == 'as') {
-        $orderby = '`active` ASC,`notified` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`webMasterID` DESC';
-    } else {
-        $orderby = '`webMasterID` ASC';
-        $o = 'ai';
-    }
-
-    $query = $sql->prepare("SELECT `active`,`webMasterID`,`ip`,`maxVhost`,`maxHDD`,`description` FROM `webMaster` WHERE `resellerID`=? ORDER BY " . $orderby);
-    $query2 = $sql->prepare("SELECT `webVhostID`,`active`,`dns`,`hdd`,`hddUsage` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
-
-    $query->execute(array($resellerLockupID));
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-        $table2 = array();
-        $hddSum = 0;
-        $hddUsage = 0;
-        $vhostCount = 0;
-
-        $query2->execute(array($row['webMasterID'], $resellerLockupID));
-        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-            $hddSum += $row2['hdd'];
-            $hddUsage += $row2['hddUsage'];
-            $vhostCount++;
-
-            $table2[] = array('id' => $row2['webVhostID'], 'active' => $row2['active'], 'dns' => $row2['dns']);
-        }
-
-        $table[] = array('id' => $row['webMasterID'], 'active' => $row['active'], 'ip' => $row['ip'], 'description' => $row['description'], 'dns' => $table2, 'hddUsage' => $hddUsage, 'maxHDD' =>  $hddSum . '/' . $row['maxHDD'], 'maxVhost' => $vhostCount . '/' . $row['maxVhost']);
-
-    }
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=webmasterserver');
 
     $template_file = 'admin_web_master_list.tpl';
 }
