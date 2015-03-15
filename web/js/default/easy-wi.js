@@ -36,6 +36,7 @@
 
 function SwitchShowHideRows (Element, change, showNotIfEmpty) {
 
+    var x, TheClass;
     var TheRest = document.getElementsByTagName('div');
     var amount = TheRest.length;
     var ElementLenght = Element.length;
@@ -45,9 +46,9 @@ function SwitchShowHideRows (Element, change, showNotIfEmpty) {
         change = 'switch';
     }
 
-    for(var x=0; x<amount; x++) {
+    for(x = 0; x < amount; x++) {
 
-        var TheClass = TheRest[x].getAttribute('class');
+        TheClass = TheRest[x].getAttribute('class');
 
         if (TheClass != null) {
             if (Element == 'init_ready' || Element == '') {
@@ -76,7 +77,7 @@ function SwitchShowHideRows (Element, change, showNotIfEmpty) {
     }
 
     if (Element != 'init_ready' && foundAmount == 0 && showNotIfEmpty != 1) {
-        for(x=0; x<amount; x++) {
+        for(x = 0; x < amount; x++) {
             TheClass = TheRest[x].getAttribute('class');
             if (TheClass != null) {
                 if (TheClass.indexOf(change)!= -1) {

@@ -258,25 +258,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = "Error: Topic";
         }
     } else {
-        $o = $ui->st('o', 'get');
-        if ($ui->st('o', 'get') == 'dn') {
-            $orderby = 'l.`text` DESC';
-        } else if ($ui->st('o', 'get') == 'an') {
-            $orderby = 'l.`text` ASC';
-        } else if ($ui->st('o', 'get') == 'dp') {
-            $orderby = '`priority` DESC';
-        } else if ($ui->st('o', 'get') == 'ap') {
-            $orderby = '`priority` ASC';
-        } else if ($ui->st('o', 'get') == 'di') {
-            $orderby = '`id` DESC';
-        } else if ($ui->st('o', 'get') == 'ai') {
-            $orderby = '`id` ASC';
-        } else {
-            $o = 'an';
-            $orderby = 't.`maintopic`,t.`id` ASC';
-        }
+
         $table = array();
-        $query2 = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject` FROM `ticket_topics` t LEFT JOIN `translations` l ON t.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? WHERE t.`resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
+
+        $query2 = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject` FROM `ticket_topics` t LEFT JOIN `translations` l ON t.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? WHERE t.`resellerid`=? ORDER BY t.`id` ASC");
         $query2->execute(array($user_language,$rSA['language'],$resellerLockupID));
         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $priority = '';
@@ -316,45 +301,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
             $table[] = array('id' => $row2['id'], 'topic' => $topic,'maintopic' => $maintopic,'mTopic' => $mTopic,'priority' => $priority);
         }
-        $next = $start+$amount;
-        $countp = $sql->prepare("SELECT `id` FROM `ticket_topics` WHERE `resellerid`=?");
-        $countp->execute(array($resellerLockupID));
-        $colcount = $countp->rowCount();
-        if ($colcount>$next) {
-            $vor = $start+$amount;
-        } else {
-            $vor = $start;
-        }
-        $back = $start - $amount;
-        if ($back>=0){
-            $zur = $start - $amount;
-        } else {
-            $zur = $start;
-        }
-        $pageamount = ceil($colcount / $amount);
-        $link='<a href="admin.php?w=ti&amp;d=mt&amp;o='.$o.'&amp;a=';
-        if (!isset($amount)) {
-            $link .="20";
-        } else {
-            $link .= $amount;
-        }
-        if ($start==0) {
-            $link .= '&p=0" class="bold">1</a>';
-        } else {
-            $link .= '&p=0">1</a>';
-        }
-        $pages[] = $link;
-        $i = 2;
-        while ($i<=$pageamount) {
-            $selectpage = ($i - 1) * $amount;
-            if ($start==$selectpage) {
-                $pages[] = '<a href="admin.php?w=ti&amp;d=mt&amp;a=' . $amount . '&p=' . $selectpage . '&amp;o='.$o.'" class="bold">' . $i . '</a>';
-            } else {
-                $pages[] = '<a href="admin.php?w=ti&amp;d=mt&amp;a=' . $amount . '&p=' . $selectpage . '&amp;o='.$o.'">' . $i . '</a>';
-            }
-            $i++;
-        }
-        $pages = implode(', ',$pages);
+
+        configureDateTables('-1', '1, "ASC"');
+
         $template_file = "admin_ticket_topic_list.tpl";
     }
 } else if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get')) {

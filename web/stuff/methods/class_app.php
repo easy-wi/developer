@@ -195,14 +195,16 @@ class AppServer {
             // We deliberately let admins that failed to setup a chrooted FTP environment run into errors
             $absoluteFTPPath = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/' : '/server/';
             $absoluteFTPPath .= $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'];
+
             if ($this->getGameType() == 'hl2') {
                 $absoluteFTPPath .= '/' . $this->appServerDetails['template']['binarydir'];
             }
+
             $absoluteFTPPath .= '/' . $this->appServerDetails['template']['modfolder'] . '/';
 
             $this->appServerDetails['absoluteFTPPath'] = $this->removeSlashes($absoluteFTPPath);
             $this->appServerDetails['absoluteFTPPathNoChroot'] = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . $this->appServerDetails['absoluteFTPPath']);
-}
+        }
 
         return ($query->rowCount() > 0) ? true : false;
     }

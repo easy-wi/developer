@@ -420,8 +420,8 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-						<li <?php if($ui->smallletters('w',255,'get')=='ti' and $d!='mt') echo 'class="active"';?>><a href="admin.php?w=ti"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
-						<li <?php if($ui->smallletters('w',255,'get')=='ti' and $d=='mt') echo 'class="active"';?>><a href="admin.php?w=ti&amp;d=mt"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='ti' and !in_array($d,array('at','mt','dt'))) echo 'class="active"';?>><a href="admin.php?w=ti"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
+						<li <?php if($ui->smallletters('w',255,'get')=='ti' and in_array($d,array('at','mt','dt'))) echo 'class="active"';?>><a href="admin.php?w=ti&amp;d=mt"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
 						<?php foreach ($customModules['ti'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
                     </ul>
                 </li>

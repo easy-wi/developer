@@ -33,8 +33,8 @@
 
                     <div class="box-body">
 
-                        <div class="control-group<?php if(isset($errors['active'])) echo ' has-error';?>">
-                            <label class="control-label" for="inputActive"><?php echo $gsprache->active;?></label>
+                        <div class="form-group<?php if(isset($errors['active'])) echo ' has-error';?>">
+                            <label for="inputActive"><?php echo $gsprache->active;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputActive" name="active">
                                     <option value="N"><?php echo $gsprache->no;?></option>
@@ -43,8 +43,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['name'])) echo ' has-error';?>">
-                            <label class="control-label" for="inputName">Social Auth Provider</label>
+                        <div class="form-group<?php if(isset($errors['name'])) echo ' has-error';?>">
+                            <label for="inputName">Social Auth Provider</label>
                             <div class="controls">
                                 <select class="form-control" id="inputName" name="name">
                                     <?php foreach($serviceProviders as $sp){ ?>
@@ -54,15 +54,15 @@
                             </div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['keyID'])) echo ' has-error';?>">
-                            <label class="control-label" for="inputKeyID">ID/Key</label>
+                        <div class="form-group<?php if(isset($errors['keyID'])) echo ' has-error';?>">
+                            <label for="inputKeyID">ID/Key</label>
                             <div class="controls">
                                 <input class="form-control" id="inputKeyID" type="text" name="keyID" value="<?php echo $keyID;?>">
                             </div>
                         </div>
 
-                        <div class="control-group<?php if(isset($errors['providerToken'])) echo ' has-error';?>">
-                            <label class="control-label" for="inputToken">Token</label>
+                        <div class="form-group<?php if(isset($errors['providerToken'])) echo ' has-error';?>">
+                            <label for="inputToken">Token</label>
                             <div class="controls">
                                 <input class="form-control" id="inputToken" type="text" name="providerToken" value="<?php echo $providerToken;?>">
                             </div>
