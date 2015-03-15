@@ -1,34 +1,46 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=wv"><?php echo $gsprache->webspace;?> Vhost</a> <span class="divider">/</span></li>
-            <li><?php echo $dedicatedLanguage->reinstall;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $dns;?></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <dl class="dl-horizontal">
-            <dt><?php echo $sprache->dns?></dt>
-            <dd><?php echo $dns;?></dd>
-            <dt><?php echo $dedicatedLanguage->user?></dt>
-            <dd><?php echo $user;?></dd>
-        </dl>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span8">
-        <form class="form-horizontal" action="admin.php?w=wv&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="ri">
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-refresh"></i> <?php echo $dedicatedLanguage->reinstall;?></button>
-                </div>
+<section class="content-header">
+    <h1><?php echo $gsprache->webspace;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=wv"><i class="fa fa-cubes"></i> <?php echo $gsprache->webspace;?></a></li>
+        <li><?php echo $gsprache->reinstall;?></li>
+        <li class="active"><?php echo $dns;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-warning">
+
+                <form role="form" action="admin.php?w=wv&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post" >
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="ri">
+
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label for="inputDns"><?php echo $sprache->dns;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputDns" type="text" name="dns" value="<?php echo $dns;?>" readonly="readonly">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputUser"><?php echo $dedicatedLanguage->user;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputUser" type="text" name="user" value="<?php echo $user;?>" readonly="readonly">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-warning" id="inputReinstall" type="submit"><i class="fa fa-refresg">&nbsp;<?php echo $gsprache->reinstall;?></i></button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>

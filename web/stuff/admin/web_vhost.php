@@ -61,6 +61,7 @@ if ($reseller_id == 0) {
 }
 
 // Define the ID variable which will be used at the form and SQLs
+$externalID = $ui->externalID('externalID', 'post');
 $id = $ui->id('id', 10, 'get');
 $webMasterID = $ui->id('webMasterID', 10, 'post');
 $userID = $ui->id('userID', 10, 'post');
@@ -84,23 +85,21 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 // Add and modify entries. Same validation can be used.
 if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
+    // Add jQuery plugin chosen to the header
+    $htmlExtraInformation['css'][] = '<link href="css/default/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
+
     // Error handling. Check if required attributes are set and can be validated
     $errors = array();
 
     // Add or mod is opened
     if (!$ui->smallletters('action', 2, 'post')) {
 
+        $table = array();
+        $table2 = array();
+
         // Gather data for adding if needed and define add template
         if ($ui->st('d', 'get') == 'ad') {
-
-            $table = array();
-            $table2 = array();
-
-            $maxVhost = 0;
-            $maxHDD = 0;
-            $totalVhosts = 0;
-            $leftHDD = 0;
-            $quotaActive = 'N';
 
             // Get useraccounts
             $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' AND `active`='Y' ORDER BY `id` DESC");
@@ -110,28 +109,10 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             }
 
             // Get masterserver. Sort by usage.
-
             $query = $sql->prepare("SELECT m.`webMasterID`,m.`ip`,m.`description`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC");
             $query->execute(array($resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $table2[$row['webMasterID']] = trim($row['ip'] . ' ' . $row['description']);
-            }
-
-            if (count($table2) > 0) {
-
-                $bestID = key($table2);
-
-                $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
-                $query->execute(array($bestID, $resellerLockupID));
-                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    $vhostTemplate = $row['vhostTemplate'];
-                    $maxVhost = (int) $row['maxVhost'];
-                    $maxHDD = (int) $row['maxHDD'];
-                    $totalVhosts = (int) $row['totalVhosts'];
-                    $leftHDD = (int) $row['maxHDD'] - $row['totalHDD'];
-                    $quotaActive = $row['quotaActive'];
-                    $dns = $row['defaultdns'];
-                }
             }
 
             $template_file = 'admin_web_vhost_add.tpl';
@@ -139,22 +120,16 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             // Gather data for modding in case we have an ID and define mod template
         } else if ($ui->st('d', 'get') == 'md' and $id) {
 
-            $query = $sql->prepare("SELECT v.*,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`description`,m.`maxHDD`,m.`quotaActive`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
+            $query = $sql->prepare("SELECT v.*,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 // Userdata from JOIN, trim in case attributes are not provided
-                $userName = trim($row['cname'] . ' ' . trim($row['vname'] . ' ' . $row['name']));
-
-                // Masterserver from JOIN. Display FTP IP in case it is provided
-                $ftpServer = (isip($row['ftpIP'], 'ip4')) ? $row['ftpIP'] : $row['ip'];
-                $ftpServer .= ':' . $row['ftpPort'];
-                $description = $row['description'];
-                $maxHDD = (int) $row['maxHDD'];
-                $leftHDD = (int) $row['maxHDD'] - $row['totalHDD'];
-                $quotaActive = $row['quotaActive'];
+                $table = array($row['userID'] => trim($row['cname'] . ' ' . trim($row['vname'] . ' ' . $row['name'])));
 
                 // Vhost data
+                $externalID = $row['externalID'];
+                $userID = $row['userID'];
                 $active = $row['active'];
                 $hdd = $row['hdd'];
                 $hddUsage = (int) $row['hddUsage'];
@@ -162,6 +137,13 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 $ftpPassword = $row['decryptedFTPPass'];
                 $ownVhost = $row['ownVhost'];
                 $vhostTemplate = $row['vhostTemplate'];
+
+                // Get masterserver. Sort by usage.
+                $query2 = $sql->prepare("SELECT m.`ip`,m.`description` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`webMasterID`=? AND m.`resellerID`=?");
+                $query2->execute(array($row['webMasterID'], $resellerLockupID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    $table2[$row['webMasterID']] = trim($row2['ip'] . ' ' . $row2['description']);
+                }
             }
 
             // Check if database entry exists and if not display 404 page
@@ -242,7 +224,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $query->execute(array($webMasterID, $resellerLockupID));
             $maxHDD = (int) $query->fetchColumn();
 
-            $query = $sql->prepare("SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
+            $query = $sql->prepare("SELECT SUM(`hdd`) AS `a` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
             $query->execute(array($id, $resellerLockupID));
 
             if (($maxHDD + $oldHDD - $query->fetchColumn() - $hdd) < 0) {
@@ -256,8 +238,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?)");
-                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`externalID`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?)");
+                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $externalID, $resellerLockupID));
 
                 $id = (int) $sql->lastInsertId();
 
@@ -276,8 +258,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`dns`=?,`ftpPassword`=AES_ENCRYPT(?,?),`ownVhost`=?,`vhostTemplate`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
-                $query->execute(array($active, $hdd, $dns, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`dns`=?,`ftpPassword`=AES_ENCRYPT(?,?),`ownVhost`=?,`vhostTemplate`=?,`externalID`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query->execute(array($active, $hdd, $dns, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $externalID, $id, $resellerLockupID));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %webvhost% ' . $dns;
@@ -472,106 +454,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 // List the available entries
 } else {
 
-    $table = array();
-
-    $query = $sql->prepare("SELECT COUNT(`webVhostID`) AS `amount` FROM `webVhost` WHERE `resellerID`=?");
-    $query->execute(array($resellerLockupID));
-    $colcount = $query->fetchColumn();
-
-    if (!isset($start)) {
-        $start = 0;
-    }
-
-    if (!isset($amount)) {
-        $amount = 20;
-    }
-
-    if ($start > $colcount) {
-        $start = $colcount - $amount;
-    }
-
-    if ($start < 0) {
-        $start = 0;
-    }
-
-    $next = $start + $amount;
-    $vor = ($colcount > $next) ? $start + $amount : $start;
-    $back = $start - $amount;
-    $zur = ($back >= 0) ? $start - $amount : $start;
-
-    $o = (string) $ui->st('o', 'get');
-
-    if ($ui->st('o', 'get') == 'dd') {
-        $orderby = 'v.`dns` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = 'v.`dns` ASC';
-    } else if ($ui->st('o', 'get') == 'dc') {
-        $orderby = 'u.`cname` DESC';
-    } else if ($ui->st('o', 'get') == 'ac') {
-        $orderby = 'u.`cname` ASC';
-    } else if ($ui->st('o', 'get') == 'ds') {
-        $orderby = 'v.`active` DESC';
-    } else if ($ui->st('o', 'get') == 'as') {
-        $orderby = 'v.`active` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = 'v.`webVhostID` DESC';
-    } else {
-        $orderby = 'v.`webVhostID` ASC';
-        $o = 'ai';
-    }
-
-    $query = $sql->prepare("SELECT v.*,u.`cname` FROM `webVhost` AS v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE v.`resellerID`=? ORDER BY " . $orderby . " LIMIT " . $start . "," . $amount);
-    $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='wv' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
-
-    $query->execute(array($resellerLockupID));
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-        $jobPending = $gsprache->no;
-
-        if ($row['jobPending'] == 'Y') {
-            $query2->execute(array($row['webVhostID']));
-            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-
-                if ($row2['action'] == 'ad') {
-                    $jobPending = $gsprache->add;
-                } else if ($row2['action'] == 'dl') {
-                    $jobPending = $gsprache->del;
-                } else {
-                    $jobPending = $gsprache->mod;
-                }
-
-                $json = @json_decode($row2['extraData']);
-                $tobeActive = (is_object($json) and isset($json->newActive)) ? $json->newActive : 'N';
-            }
-        }
-
-        $active = 'Y';
-
-        if ($row['jobPending'] == 'Y' and isset($tobeActive) and $tobeActive == 'Y') {
-            $active = 'Y';
-        } else if ($row['active'] == 'N') {
-            $active = 'N';
-        }
-
-        $table[] = array('id' => $row['webVhostID'], 'active' => $row['active'], 'dns' => $row['dns'], 'hdd' => $row['hdd'], 'hddUsage' => $row['hddUsage'], 'jobPending' => $jobPending, 'userID' => $row['userID'], 'cname' => $row['cname']);
-    }
-
-    $pageamount = ceil($colcount / $amount);
-
-    $link = '<a href="admin.php?w=fv&amp;o=' . $o . '&amp;a=' . $amount;
-    $link .= ($start == 0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
-
-    $pages[] = $link;
-
-    $i = 2;
-
-    while ($i <= $pageamount) {
-        $selectpage = ($i - 1) * $amount;
-        $pages[] = ($start == $selectpage) ? '<a href="admin.php?w=fv&amp;o=' . $o . '&amp;a=' . $amount . '&p=' . $selectpage . '" class="bold">' . $i . '</a>' : '<a href="admin.php?w=fv&amp;o=' . $o . '&amp;a=' . $amount . '&p=' . $selectpage . '">' . $i . '</a>';
-        $i++;
-    }
-
-    $pages = implode(', ',$pages);
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=webvhost');
 
     $template_file = 'admin_web_vhost_list.tpl';
 }

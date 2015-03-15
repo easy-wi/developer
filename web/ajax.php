@@ -191,6 +191,10 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_mysqldb.php');
 
+        } else if ($ui->smallletters('d', 8, 'get') == 'webvhost' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['webmaster']) {
+
+            require_once(EASYWIDIR . '/stuff/ajax/datatable_webvhost.php');
+
         }
     }
 
@@ -270,33 +274,9 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
     die;
 
-} else if (isset($admin_id) and $pa['fastdl'] and $ui->smallletters('d', 8, 'get') == 'webmaster' and $ui->id('id', 10, 'get')) {
+} else if (isset($admin_id) and $pa['fastdl'] and $ui->smallletters('d', 9, 'get') == 'webmaster' and $ui->id('id', 10, 'get')) {
 
-    $sprache = getlanguagefile('web', $user_language, $resellerLockupID);
-
-    $maxVhost = 0;
-    $maxHDD = 0;
-    $webVhosts = 0;
-    $leftHDD = 0;
-    $totalHDD = 0;
-    $totalVhosts = 0;
-    $quotaActive = 'N';
-    $dns = '';
-
-    $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
-    $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        $vhostTemplate = $row['vhostTemplate'];
-        $maxVhost = (int) $row['maxVhost'];
-        $maxHDD = (int) $row['maxHDD'];
-        $totalVhosts = (int) $row['totalVhosts'];
-        $leftHDD = (int) $row['maxHDD'] - $row['totalHDD'];
-        $quotaActive = $row['quotaActive'];
-        $dns = $row['defaultdns'];
-    }
-
-    require_once IncludeTemplate($template_to_use, 'ajax_admin_web_master.tpl', 'ajax');
-
+    require_once(EASYWIDIR . '/stuff/ajax/web_master_usage.php');
     die;
 
 } else if (isset($user_id) and $pa['usertickets'] and $ui->w('d', 20, 'get') == 'userTicketCategories' and $ui->id('topicName', 10, 'get')) {
