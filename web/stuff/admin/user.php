@@ -299,7 +299,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             if ($rSA['prefix1'] == 'Y' and $accountType != 'a') {
 
-                $cname = $prefix2;
+                $cname = $rSA['prefix2'];
 
             } else {
 
