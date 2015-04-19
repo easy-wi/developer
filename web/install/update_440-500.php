@@ -138,6 +138,9 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("UPDATE `servertypes` SET `useQueryPort`=2 WHERE `gameq` IN ('armedassault2', 'armedassault2oa', 'armedassault3', 'bf2', 'cube2', 'mta', 'ut', 'ut2004', 'ut3')");
     $query->execute();
 
+    $query = $sql->prepare("UPDATE `servertypes` SET `cmd`='./%binary% -n' WHERE `shorten`='mtasa' AND `cmd`='./%binary%'");
+    $query->execute();
+
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
 }
