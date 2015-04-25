@@ -38,8 +38,28 @@
  */
 
 if (isset($include) and $include == true) {
+
+    if (!isset($displayToUser)) {
+        $displayToUser = '';
+    }
+
+    $response->add('Adding tables if needed.');
+    include(EASYWIDIR . '/stuff/methods/tables_add.php');
+
+    $query = $sql->prepare("DROP TABLE IF EXISTS `voice_stats_settings`");
+    $query->execute();
+
+    $response->add('Repairing tables if needed.');
+    include(EASYWIDIR . '/stuff/methods/tables_repair.php');
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `useQueryPort`=2 WHERE `gameq` IN ('armedassault2', 'armedassault2oa', 'armedassault3', 'bf2', 'cube2', 'mta', 'ut', 'ut2004', 'ut3')");
+    $query->execute();
+
+    $query = $sql->prepare("UPDATE `servertypes` SET `cmd`='./%binary% -n' WHERE `shorten`='mtasa' AND `cmd`='./%binary%'");
+    $query->execute();
+
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('5.40','<div align=\"right\">10.05.2014</div>
+('5.00','<div align=\"right\">10.05.2014</div>
 <b>Änderungen:</b><br/>
 <ul>
 <li>Generell:
@@ -121,25 +141,6 @@ if (isset($include) and $include == true) {
     $query->execute();
     $response->add('Action: insert_easywi_version done: ');
     $query->closecursor();
-
-    if (!isset($displayToUser)) {
-        $displayToUser = '';
-    }
-
-    $response->add('Adding tables if needed.');
-    include(EASYWIDIR . '/stuff/methods/tables_add.php');
-
-    $query = $sql->prepare("DROP TABLE IF EXISTS `voice_stats_settings`");
-    $query->execute();
-
-    $response->add('Repairing tables if needed.');
-    include(EASYWIDIR . '/stuff/methods/tables_repair.php');
-
-    $query = $sql->prepare("UPDATE `servertypes` SET `useQueryPort`=2 WHERE `gameq` IN ('armedassault2', 'armedassault2oa', 'armedassault3', 'bf2', 'cube2', 'mta', 'ut', 'ut2004', 'ut3')");
-    $query->execute();
-
-    $query = $sql->prepare("UPDATE `servertypes` SET `cmd`='./%binary% -n' WHERE `shorten`='mtasa' AND `cmd`='./%binary%'");
-    $query->execute();
 
 } else {
     echo "Error: this file needs to be included by the updater!<br />";

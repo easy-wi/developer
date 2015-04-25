@@ -353,7 +353,7 @@ if ($apiType == 'xml') {
     header("Content-type: text/xml; charset=UTF-8");
 
     $responsexml = new DOMDocument('1.0', 'utf-8');
-    $element = $responsexml->createElement('voice');
+    $element = $responsexml->createElement('mysql');
 
     $server = $responsexml->createElement('action', $action);
     $element->appendChild($server);
