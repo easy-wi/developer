@@ -38,13 +38,14 @@
 
 class PageSettings {
 
-	public $seo='', $language, $about, $canurl, $pageurl, $title, $keywords = array(), $lastnews, $tags, $pages, $hiddenPages, $last_news = array(), $MSIE = false, $lendactive, $lendactiveGS, $lendactiveVS, $lendGS = false, $lendVS = false, $protectioncheck, $pages_array = array(), $languageLinks = array();
+	public $seo='', $language, $about, $canurl, $pageurl, $defaultUrl, $title, $keywords = array(), $lastnews, $tags, $pages, $hiddenPages, $last_news = array(), $MSIE = false, $lendactive, $lendactiveGS, $lendactiveVS, $lendGS = false, $lendVS = false, $protectioncheck, $pages_array = array(), $languageLinks = array();
 
 	function __construct($user_language, $pageurl, $seo) {
 		$this->language = $user_language;
 		$this->pageurl = $pageurl;
 		$this->seo = $seo;
 		$this->canurl = $this->pageurl . '/';
+        $this->defaultUrl = $this->canurl;
 	}
 
 	private function NameToLink ($value) {
@@ -272,19 +273,26 @@ class PageSettings {
     // https://github.com/easy-wi/developer/issues/62
     public function langLinks ($links = array()) {
 
-        global $languages;
+        global $languages, $rSA;
+
+        $languages['default'] = $rSA['language'];
 
         foreach ($languages as $l) {
 
             if ($this->seo == 'Y') {
-                $this->languageLinks[$l] = (isset($links[$l])) ? $this->pageurl. '/' . $l. '/' . $links[$l] . '/' : $this->pageurl. '/' . $l . '/';
+                $link = (isset($links[$l])) ? $this->pageurl. '/' . $l. '/' . $links[$l] . '/' : $this->pageurl. '/' . $l . '/';
             } else {
-                $this->languageLinks[$l] = (isset($links[$l])) ? $this->pageurl . '/index.php' . $links[$l] . '&amp;l=' . $l : $this->pageurl . '/index.php?l=' . $l;
+                $link = (isset($links[$l])) ? $this->pageurl . '/index.php' . $links[$l] . '&amp;l=' . $l : $this->pageurl . '/index.php?l=' . $l;
             }
 
-            $this->languageLinks[$l] = removeDoubleSlashes($this->languageLinks[$l]);
+            $this->languageLinks[$l] = removeDoubleSlashes($link);
 
+            if ($l == $rSA['language']) {
+                $this->defaultUrl = removeDoubleSlashes($link);
+            }
         }
+
+        unset($languages['default']);
     }
 
     public function getLangLinks () {
@@ -294,7 +302,10 @@ class PageSettings {
         }
 
         return $this->languageLinks;
+    }
 
+    public function getDefaultUrl () {
+        return removeDoubleSlashes($this->defaultUrl);
     }
 
 	function __destruct() {

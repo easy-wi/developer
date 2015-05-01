@@ -55,7 +55,7 @@ if (isset($page_id) and is_numeric($page_id)) {
         return str_replace($m[1], htmlentities($m[1]), $m[0]);
     }
 
-	$query = $sql->prepare("SELECT t.`title`,t.`text`,t.`id`,p.`subpage` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='page' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
+	$query = $sql->prepare("SELECT t.`title`,t.`text`,t.`id`,p.`subpage` FROM `page_pages` p INNER JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='page' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
 	$query->execute(array($page_id ,$user_language));
 	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -347,9 +347,7 @@ if (isset($s) and $s == 'page') {
         $tempLanguage = getlanguagefile('page', $l, 0);
 
         $langLinks[$l] = ($page_data->seo== 'Y') ? szrp($tempLanguage->$s)  : '?s=' . $s;
-
     }
-
 }
 
 $page_data->langLinks($langLinks);
