@@ -137,8 +137,8 @@
                             <div class="controls">
                                 <select class="form-control" id="inputOS" name="os">
                                     <option value="L">Linux</option>
-                                    <option value="W" <?php if($os=='W') echo 'selected="selected"';?>>Windows</option>
-                                    <option value="B" <?php if($os=='B') echo 'selected="selected"';?>>Linux + Windows</option>
+                                    <!--<option value="W" <?php if($os=='W') echo 'selected="selected"';?>>Windows</option>
+                                    <option value="B" <?php if($os=='B') echo 'selected="selected"';?>>Linux + Windows</option>-->
                                 </select>
                             </div>
                         </div>

@@ -132,7 +132,7 @@
                             <div class="controls">
                                 <select class="form-control" id="inputBit" name="os">
                                     <option value="L">Linux</option>
-                                    <option value="W" <?php if ($os=="W") echo 'selected="selected"'; ?>>Windows</option>
+                                    <!--<option value="W" <?php if ($os=="W") echo 'selected="selected"'; ?>>Windows</option>-->
                                 </select>
                             </div>
                         </div>
