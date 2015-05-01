@@ -49,7 +49,7 @@ if (isset($newsInclude) and $newsInclude == true) {
 
     @ini_set('user_agent', 'easy-wi.com');
 
-    if (isset($lookUpID)) {
+    if (!isset($lookUpID)) {
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
         $query->execute(array($lookUpID));
 
@@ -75,7 +75,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                     $json = cleanFsockOpenRequest($json, '{', '}');
                     $json = @json_decode($json);
 
-                    if ($json and isset($json->appnews->newsitems) and $json->appnews->appid == $lookUpAppID) {
+                    if ($json and $json->appnews->appid == $lookUpAppID) {
 
                         $theCount = 0;
 
@@ -84,7 +84,8 @@ if (isset($newsInclude) and $newsInclude == true) {
                         }
 
                         foreach ($json->appnews->newsitems as $item) {
-                            if ($item->is_external_url == false and $theCount < $newsAmount) {
+
+                            if ($theCount < $newsAmount) {
 
                                 $steamNews[$lookUpAppID][] = array(
                                     'title' => $item->title,
