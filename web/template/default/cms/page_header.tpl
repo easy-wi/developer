@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index,follow,noodp,noydir" />
     <meta name="description" content="">
-    <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php echo $page_data->title; ?>">
+    <meta name="author" content="2012 - <?php echo date('Y'); ?> Ulrich Block">
 
     <link rel="canonical" href="<?php echo $page_data->canurl;?>" />
     <link href="<?php echo $page_data->getDefaultUrl();?>" hreflang="x-default" rel="alternate">

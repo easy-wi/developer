@@ -1215,12 +1215,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'st') {
 
         $query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`resellerid`,u.`accounttype`,s.`brandname` FROM `userdata` AS u LEFT JOIN `settings` AS s ON u.`resellerid`=s.`resellerid` WHERE u.`active`='Y'");
-
-        $query3 = $sql->prepare("INSERT INTO `easywi_statistics` (`gameMasterInstalled`,`gameMasterActive`,`gameMasterSlotsAvailable`,`gameserverInstalled`,`gameserverActive`,`gameserverSlotsInstalled`,`gameserverSlotsActive`,`gameserverSlotsUsed`,`gameserverNoPassword`,`gameserverNoTag`,`gameserverNotRunning`,`ticketsCompleted`,`ticketsInProcess`,`ticketsNew`,`userAmount`,`userAmountActive`,`virtualMasterInstalled`,`virtualMasterActive`,`virtualMasterVserverAvailable`,`virtualInstalled`,`virtualActive`,`voiceMasterInstalled`,`voiceMasterActive`,`voiceMasterSlotsAvailable`,`voiceserverInstalled`,`voiceserverActive`,`voiceserverSlotsInstalled`,`voiceserverSlotsActive`,`voiceserverSlotsUsed`,`voiceserverTrafficAllowed`,`voiceserverTrafficUsed`,`webMasterInstalled`,`webMasterActive`,`webMasterSlotsAvailable`,`webspaceInstalled`,`webspaceActive`,`webspaceSpaceGiven`,`webspaceSpaceUsed`,`userID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-        $query4 = $sql->prepare("UPDATE `easywi_statistics_current` SET `gameMasterInstalled`=?,`gameMasterActive`=?,`gameMasterSlotsAvailable`=?,`gameserverInstalled`=?,`gameserverActive`=?,`gameserverSlotsInstalled`=?,`gameserverSlotsActive`=?,`gameserverSlotsUsed`=?,`gameserverNoPassword`=?,`gameserverNoTag`=?,`gameserverNotRunning`=?,`ticketsCompleted`=?,`ticketsInProcess`=?,`ticketsNew`=?,`userAmount`=?,`userAmountActive`=?,`virtualMasterInstalled`=?,`virtualMasterActive`=?,`virtualMasterVserverAvailable`=?,`virtualInstalled`=?,`virtualActive`=?,`voiceMasterInstalled`=?,`voiceMasterActive`=?,`voiceMasterSlotsAvailable`=?,`voiceserverInstalled`=?,`voiceserverActive`=?,`voiceserverSlotsInstalled`=?,`voiceserverSlotsActive`=?,`voiceserverSlotsUsed`=?,`voiceserverTrafficAllowed`=?,`voiceserverTrafficUsed`=?,`webMasterInstalled`=?,`webMasterActive`=?,`webMasterSlotsAvailable`=?,`webspaceInstalled`=?,`webspaceActive`=?,`webspaceSpaceGiven`=?,`webspaceSpaceUsed`=? WHERE `userID`=? LIMIT 1");
-
         $query->execute();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
             if (($row['accounttype'] == 'a' and !isset($adminStatsCollected)) or $row['accounttype'] != 'a') {
 
                 echo "Gathering statistics for user " . $row['cname'] . " with ID " . $row['id'] . " \r\n";
@@ -1525,7 +1522,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $query2 = $sql->prepare("UPDATE `easywi_statistics_current` SET " . $updateString . " WHERE `userID`= " . $insertID . " LIMIT 1");
                     $query2->execute();
 
-                    $query2 = $sql->prepare("INSERT INTO `easywi_statistics` (" . $insertColumns . ",`userID`,`statDate`,`countUpdates`) VALUES (" . implode(',', $statsArray) . "," . $insertID . ",'" . date('Y-m-d H:00:00') . "',1) ON DUPLICATE KEY UPDATE " . $duplicateString . ",`countUpdates`=`countUpdates`+1");
+                    $query2 = $sql->prepare("INSERT INTO `easywi_statistics` (" . $insertColumns . ",`userID`,`statDate`,`countUpdates`) VALUES (" . implode(',', $statsArray) . "," . $insertID . ",CURDATE(),1) ON DUPLICATE KEY UPDATE " . $duplicateString . ",`countUpdates`=`countUpdates`+1");
                     $query2->execute();
                 }
             }

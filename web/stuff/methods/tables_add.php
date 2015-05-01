@@ -260,7 +260,7 @@ $query = "CREATE TABLE IF NOT EXISTS `easywi_statistics` (
   `webspaceSpaceGivenActive` int(10) unsigned DEFAULT 0,
   `webspaceSpaceUsed` int(10) unsigned DEFAULT 0,
   `userID` int(10) unsigned NOT NULL DEFAULT 0,
-  `statDate` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `statDate` date NOT NULL,
   `countUpdates` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`userID`,`statDate`)
 ) ENGINE=InnoDB";

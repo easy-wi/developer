@@ -49,6 +49,9 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("DROP TABLE IF EXISTS `voice_stats_settings`");
     $query->execute();
 
+    $query = $sql->prepare("DELETE FROM `easywi_statistics`");
+    $query->execute();
+
     $response->add('Repairing tables if needed.');
     include(EASYWIDIR . '/stuff/methods/tables_repair.php');
 

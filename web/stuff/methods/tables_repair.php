@@ -299,7 +299,7 @@ $defined['easywi_statistics'] = array(
     'webspaceSpaceGivenActive' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'webspaceSpaceUsed' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
-    'statDate' => array("Type"=>"timestamp","Null"=>"NO","Key"=>"PRI","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
+    'statDate' => array("Type"=>"date","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'countUpdates' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>"")
 );
 
@@ -1613,7 +1613,7 @@ foreach ($defined as $table => $t_p) {
                 $properties = $t_p[$Field];
 
                 foreach ($row as $key => $value) {
-                    if ($key != 'Field' and $key != 'Key' and !in_array($Field, $key_differ) and $properties[$key] != $value) {
+                    if ($key != 'Field' and $key != 'Key' and !in_array($Field, $key_differ) and strtolower($properties[$key]) != strtolower($value)) {
                         $key_differ[] = $Field;
                     } else if ($key == 'Key' and $value == '' and $properties['Key'] == 'MUL') {
                         $addIndex[] = $Field;
@@ -1630,7 +1630,7 @@ foreach ($defined as $table => $t_p) {
         foreach ($key_differ as $key) {
 
             $NULL = ($t_p[$key]['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
-            $extra = ($t_p[$key]['Extra'] == '') ? ' ' . strtoupper($t_p[$key]['Extra']) : '';
+            $extra = ($t_p[$key]['Extra'] != '') ? ' ' . strtoupper($t_p[$key]['Extra']) : '';
 
             if ($t_p[$key]['Default'] == 'CURRENT_TIMESTAMP') {
                 $DEFAULT = 'DEFAULT CURRENT_TIMESTAMP';
