@@ -218,11 +218,19 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             }
         }
 
+        $phpConfiguration = array();
+        $phpConfigurationMaster = array();
+
         if ($webMasterID) {
 
-            $query = $sql->prepare("SELECT IF(`hddOverbook`='Y',(`maxHDD`/100) * (100+`overbookPercent`),`maxHDD`) AS `maxHDD` FROM `webMaster` WHERE `webMasterID`=? AND `resellerID`=? LIMIT 1");
+            $maxHDD = 0;
+
+            $query = $sql->prepare("SELECT `phpConfiguration`,IF(`hddOverbook`='Y',(`maxHDD`/100) * (100+`overbookPercent`),`maxHDD`) AS `maxHDD` FROM `webMaster` WHERE `webMasterID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($webMasterID, $resellerLockupID));
-            $maxHDD = (int) $query->fetchColumn();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $maxHDD = (int) $row['maxHDD'];
+                $phpConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
+            }
 
             $query = $sql->prepare("SELECT SUM(`hdd`) AS `a` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
             $query->execute(array($id, $resellerLockupID));
@@ -235,11 +243,25 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
         // Submitted values are OK
         if (count($errors) == 0) {
 
+            foreach ($phpConfigurationMaster as $groupName => $array) {
+
+                $groupNameSelect = $ui->escaped(str_replace(' ', '', $groupName), 'post');
+
+                if ($groupNameSelect and isset($phpConfigurationMaster[$groupName][$groupNameSelect])) {
+                    $phpConfiguration[$groupName] = $groupNameSelect;
+                } else {
+                    reset($phpConfigurationMaster[$groupName]);
+                    $phpConfiguration[$groupName] = key($phpConfigurationMaster[$groupName]);
+                }
+            }
+
+            $phpConfiguration = @json_encode($phpConfiguration);
+
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`externalID`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?)");
-                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $externalID, $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`phpConfiguration`,`externalID`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?)");
+                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $phpConfiguration, $externalID, $resellerLockupID));
 
                 $id = (int) $sql->lastInsertId();
 
@@ -258,8 +280,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`dns`=?,`ftpPassword`=AES_ENCRYPT(?,?),`ownVhost`=?,`vhostTemplate`=?,`externalID`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
-                $query->execute(array($active, $hdd, $dns, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $externalID, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`dns`=?,`ftpPassword`=AES_ENCRYPT(?,?),`ownVhost`=?,`vhostTemplate`=?,`phpConfiguration`=?,`externalID`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query->execute(array($active, $hdd, $dns, $ftpPassword, $aeskey, $ownVhost, $vhostTemplate, $phpConfiguration, $externalID, $id, $resellerLockupID));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %webvhost% ' . $dns;

@@ -331,6 +331,7 @@ $query = "CREATE TABLE IF NOT EXISTS `webMaster` (
   `webMasterID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
   `usageType` enum('F','W') DEFAULT 'F',
+  `phpConfiguration` text,
   `ip` varchar(15),
   `port` int(5) unsigned,
   `user` blob,
@@ -383,6 +384,7 @@ $query = "CREATE TABLE IF NOT EXISTS `webVhost` (
   `ftpPassword` blob,
   `ownVhost` enum('Y','N') DEFAULT 'N',
   `vhostTemplate` text,
+  `phpConfiguration` text,
   `externalID` varchar(255) DEFAULT '',
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`webVhostID`),KEY(`webMasterID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)

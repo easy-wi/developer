@@ -31,6 +31,19 @@
     </div>
 </div>
 
+<?php foreach($phpConfigurationMaster as $groupName => $array) { ?>
+<div class="form-group">
+    <label for="input<?php echo str_replace(' ', '', $groupName);?>"><?php echo $groupName;?></label>
+    <div class="controls">
+        <select class="form-control" id="input<?php echo str_replace(' ', '', $groupName);?>" name="<?php echo str_replace(' ', '', $groupName);?>">
+            <?php foreach($array as $key => $value) { ?>
+            <?php echo ($phpConfigurationVhost->$groupName == $key) ? '<option value="' . $key . '" selected="selected">' . $value . '</option>' : '<option value="' . $key . '">' . $value . '</option>'; ?>
+            <?php } ?>
+        </select>
+    </div>
+</div>
+<?php } ?>
+
 <div class="form-group<?php if(isset($errors['ownVhost'])) echo ' has-error';?>">
     <label for="inputOwnVhost"><?php echo $sprache->ownVhost;?></label>
     <div class="controls">

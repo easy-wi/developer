@@ -64,7 +64,7 @@ if ($reseller_id == 0) {
 // Define the ID variable which will be used at the form and SQLs
 $id = $ui->id('id', 10, 'get');
 
-$serverType = ($ui->w('serverType', 1, 'post') and in_array($ui->w('serverType', 1, 'post'), array('A','H','L','N','O'))) ? $ui->w('serverType', 1, 'post') : 'N';
+$serverType = ($ui->w('serverType', 1, 'post') and in_array($ui->w('serverType', 1, 'post'), array('A','H','L','N','O'))) ? $ui->w('serverType', 1, 'post') : 'A';
 $dirHttpd = ($ui->startparameter('dirHttpd', 'post')) ? $ui->startparameter('dirHttpd', 'post') : 'htdocs';
 $dirLogs = ($ui->startparameter('dirLogs', 'post')) ? $ui->startparameter('dirLogs', 'post') : 'logs';
 
@@ -93,6 +93,7 @@ if ($serverType == 'N') {
 $externalID = $ui->pregw('externalID', 255, 'post');
 $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
 $usageType = (in_array($ui->w('usageType', 1, 'post'), array('F','W'))) ? $ui->w('usageType', 1, 'post') : 'F';
+$phpConfiguration = $ui->escaped('phpConfiguration', 'post');
 $keyname = $ui->startparameter('keyname', 'post');
 $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
 $ip = $ui->ip('ip', 'post');
@@ -120,6 +121,32 @@ $userDelCmd = ($ui->startparameter('userDelCmd', 'post')) ? $ui->startparameter(
 $vhostStoragePath = ($ui->startparameter('vhostStoragePath', 'post')) ? $ui->startparameter('vhostStoragePath', 'post') : '/home/';
 $vhostConfigPath = ($ui->startparameter('vhostConfigPath', 'post')) ? $ui->startparameter('vhostConfigPath', 'post') : '/home/YourMasterUser/sites-enabled/';
 $vhostTemplate = $ui->escaped('vhostTemplate', 'post');
+
+if (!$phpConfiguration or strlen($phpConfiguration) < 2 or !@parse_ini_string($phpConfiguration, true)) {
+    $phpConfiguration = '[Upload Filesize]
+php_admin_value upload_max_size 1M = 1MB
+php_admin_value upload_max_size 2M = 2MB
+php_admin_value upload_max_size 4M = 4MB
+php_admin_value upload_max_size 8M = 8MB
+php_admin_value upload_max_size 16M = 16MB
+php_admin_value upload_max_size 32M = 32MB
+
+[Memory Limit]
+php_admin_value memory_limit 8M = 8MB
+php_admin_value memory_limit 16M = 16MB
+
+[Error Reporting]
+php_admin_flag display_errors off = OFF
+php_admin_flag display_errors on = ON
+
+[Log Errors]
+php_admin_flag log_errors off = OFF
+php_admin_flag log_errors on = ON
+
+[Mod Rewrite]
+php_admin_flag mod_rewrite on = ON
+php_admin_flag mod_rewrite off = OFF';
+}
 
 if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
     if ($serverType == 'N') {
@@ -253,8 +280,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `webMaster` (`externalID`,`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`ftpIP`,`ftpPort`,`maxVhost`,`maxHDD`,`hddOverbook`,`overbookPercent`,`defaultdns`,`httpdCmd`,`serverType`,`dirHttpd`,`dirLogs`,`vhostStoragePath`,`vhostConfigPath`,`vhostTemplate`,`quotaActive`,`quotaCmd`,`repquotaCmd`,`description`,`userGroup`,`userAddCmd`,`userModCmd`,`userDelCmd`,`usageType`,`blocksize`,`inodeBlockRatio`,`resellerID`) VALUES (:externalID,:active,:ip,:port,AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:ftpIP,:ftpPort,:maxVhost,:maxHDD,:hddOverbook,:overbookPercent,:defaultdns,:httpdCmd,:serverType,:dirHttpd,:dirLogs,:vhostStoragePath,:vhostConfigPath,:vhostTemplate,:quotaActive,:quotaCmd,:repquotaCmd,:description,:userGroup,:userAddCmd,:userModCmd,:userDelCmd,:usageType,:blocksize,:inodeBlockRatio,:resellerID)");
-                $query->execute(array(':externalID' => $externalID, ':active' => $active, ':ip' => $ip, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':publickey' => $publickey, ':keyname' => $keyname, ':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort, ':maxVhost' => $maxVhost, ':maxHDD' => $maxHDD, ':hddOverbook' => $hddOverbook, ':overbookPercent' => $overbookPercent, ':defaultdns' => $defaultdns, ':httpdCmd' => $httpdCmd, ':serverType' => $serverType, ':dirHttpd' => $dirHttpd, ':dirLogs' => $dirLogs, ':vhostStoragePath' => $vhostStoragePath, ':vhostConfigPath' => $vhostConfigPath, ':vhostTemplate' => $vhostTemplate, ':quotaActive' => $quotaActive, ':quotaCmd' => $quotaCmd, ':repquotaCmd' => $repquotaCmd, ':description' => $description, ':userGroup' => $userGroup, ':userAddCmd' => $userAddCmd, ':userModCmd' => $userModCmd, ':userDelCmd' => $userDelCmd, ':usageType' => $usageType, ':blocksize' => $blocksize, ':inodeBlockRatio' => $inodeBlockRatio, ':resellerID' => $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `webMaster` (`externalID`,`active`,`ip`,`port`,`user`,`pass`,`publickey`,`keyname`,`ftpIP`,`ftpPort`,`maxVhost`,`maxHDD`,`hddOverbook`,`overbookPercent`,`defaultdns`,`httpdCmd`,`serverType`,`dirHttpd`,`dirLogs`,`vhostStoragePath`,`vhostConfigPath`,`vhostTemplate`,`quotaActive`,`quotaCmd`,`repquotaCmd`,`description`,`userGroup`,`userAddCmd`,`userModCmd`,`userDelCmd`,`usageType`,`phpConfiguration`,`blocksize`,`inodeBlockRatio`,`resellerID`) VALUES (:externalID,:active,:ip,:port,AES_ENCRYPT(:user,:aeskey),AES_ENCRYPT(:pass,:aeskey),:publickey,:keyname,:ftpIP,:ftpPort,:maxVhost,:maxHDD,:hddOverbook,:overbookPercent,:defaultdns,:httpdCmd,:serverType,:dirHttpd,:dirLogs,:vhostStoragePath,:vhostConfigPath,:vhostTemplate,:quotaActive,:quotaCmd,:repquotaCmd,:description,:userGroup,:userAddCmd,:userModCmd,:userDelCmd,:usageType,:phpConfiguration,:blocksize,:inodeBlockRatio,:resellerID)");
+                $query->execute(array(':externalID' => $externalID, ':active' => $active, ':ip' => $ip, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':publickey' => $publickey, ':keyname' => $keyname, ':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort, ':maxVhost' => $maxVhost, ':maxHDD' => $maxHDD, ':hddOverbook' => $hddOverbook, ':overbookPercent' => $overbookPercent, ':defaultdns' => $defaultdns, ':httpdCmd' => $httpdCmd, ':serverType' => $serverType, ':dirHttpd' => $dirHttpd, ':dirLogs' => $dirLogs, ':vhostStoragePath' => $vhostStoragePath, ':vhostConfigPath' => $vhostConfigPath, ':vhostTemplate' => $vhostTemplate, ':quotaActive' => $quotaActive, ':quotaCmd' => $quotaCmd, ':repquotaCmd' => $repquotaCmd, ':description' => $description, ':userGroup' => $userGroup, ':userAddCmd' => $userAddCmd, ':userModCmd' => $userModCmd, ':userDelCmd' => $userDelCmd, ':usageType' => $usageType, ':phpConfiguration' => $phpConfiguration, ':blocksize' => $blocksize, ':inodeBlockRatio' => $inodeBlockRatio, ':resellerID' => $resellerLockupID));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%add% %webmaster% ' . $ip;
@@ -282,8 +309,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                     $query->execute(array($active, $id, $resellerLockupID));
                 }
 
-                $query = $sql->prepare("UPDATE `webMaster` SET `externalID`=:externalID,`active`=:active,`ip`=:ip,`port`=:port,`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`ftpIP`=:ftpIP,`ftpPort`=:ftpPort,`maxVhost`=:maxVhost,`maxHDD`=:maxHDD,`hddOverbook`=:hddOverbook,`overbookPercent`=:overbookPercent,`defaultdns`=:defaultdns,`httpdCmd`=:httpdCmd,`serverType`=:serverType,`dirHttpd`=:dirHttpd,`dirLogs`=:dirLogs,`vhostStoragePath`=:vhostStoragePath,`vhostConfigPath`=:vhostConfigPath,`vhostTemplate`=:vhostTemplate,`quotaActive`=:quotaActive,`quotaCmd`=:quotaCmd,`repquotaCmd`=:repquotaCmd,`description`=:description,`userGroup`=:userGroup,`userAddCmd`=:userAddCmd,`userModCmd`=:userModCmd,`userDelCmd`=:userDelCmd,`usageType`=:usageType,`blocksize`=:blocksize,`inodeBlockRatio`=:inodeBlockRatio WHERE `webMasterID`=:id AND `resellerID`=:resellerID LIMIT 1");
-                $query->execute(array(':externalID' => $externalID, ':active' => $active, ':ip' => $ip, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':publickey' => $publickey, ':keyname' => $keyname, ':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort, ':maxVhost' => $maxVhost, ':maxHDD' => $maxHDD, ':hddOverbook' => $hddOverbook, ':overbookPercent' => $overbookPercent, ':defaultdns' => $defaultdns, ':httpdCmd' => $httpdCmd, ':serverType' => $serverType, ':dirHttpd' => $dirHttpd, ':dirLogs' => $dirLogs, ':vhostStoragePath' => $vhostStoragePath, ':vhostConfigPath' => $vhostConfigPath, ':vhostTemplate' => $vhostTemplate, ':quotaActive' => $quotaActive, ':quotaCmd' => $quotaCmd, ':repquotaCmd' => $repquotaCmd, ':description' => $description, ':userGroup' => $userGroup, ':userAddCmd' => $userAddCmd, ':userModCmd' => $userModCmd, ':userDelCmd' => $userDelCmd, ':usageType' => $usageType, ':blocksize' => $blocksize, ':inodeBlockRatio' => $inodeBlockRatio, ':id' => $id, ':resellerID' => $resellerLockupID));
+                $query = $sql->prepare("UPDATE `webMaster` SET `externalID`=:externalID,`active`=:active,`ip`=:ip,`port`=:port,`user`=AES_ENCRYPT(:user,:aeskey),`pass`=AES_ENCRYPT(:pass,:aeskey),`publickey`=:publickey,`keyname`=:keyname,`ftpIP`=:ftpIP,`ftpPort`=:ftpPort,`maxVhost`=:maxVhost,`maxHDD`=:maxHDD,`hddOverbook`=:hddOverbook,`overbookPercent`=:overbookPercent,`defaultdns`=:defaultdns,`httpdCmd`=:httpdCmd,`serverType`=:serverType,`dirHttpd`=:dirHttpd,`dirLogs`=:dirLogs,`vhostStoragePath`=:vhostStoragePath,`vhostConfigPath`=:vhostConfigPath,`vhostTemplate`=:vhostTemplate,`quotaActive`=:quotaActive,`quotaCmd`=:quotaCmd,`repquotaCmd`=:repquotaCmd,`description`=:description,`userGroup`=:userGroup,`userAddCmd`=:userAddCmd,`userModCmd`=:userModCmd,`userDelCmd`=:userDelCmd,`usageType`=:usageType,`phpConfiguration`=:phpConfiguration,`blocksize`=:blocksize,`inodeBlockRatio`=:inodeBlockRatio WHERE `webMasterID`=:id AND `resellerID`=:resellerID LIMIT 1");
+                $query->execute(array(':externalID' => $externalID, ':active' => $active, ':ip' => $ip, ':port' => $port, ':aeskey' => $aeskey, ':user' => $user, ':pass' => $pass, ':publickey' => $publickey, ':keyname' => $keyname, ':ftpIP' => $ftpIP, ':ftpPort' => $ftpPort, ':maxVhost' => $maxVhost, ':maxHDD' => $maxHDD, ':hddOverbook' => $hddOverbook, ':overbookPercent' => $overbookPercent, ':defaultdns' => $defaultdns, ':httpdCmd' => $httpdCmd, ':serverType' => $serverType, ':dirHttpd' => $dirHttpd, ':dirLogs' => $dirLogs, ':vhostStoragePath' => $vhostStoragePath, ':vhostConfigPath' => $vhostConfigPath, ':vhostTemplate' => $vhostTemplate, ':quotaActive' => $quotaActive, ':quotaCmd' => $quotaCmd, ':repquotaCmd' => $repquotaCmd, ':description' => $description, ':userGroup' => $userGroup, ':userAddCmd' => $userAddCmd, ':userModCmd' => $userModCmd, ':userDelCmd' => $userDelCmd, ':usageType' => $usageType, ':phpConfiguration' => $phpConfiguration, ':blocksize' => $blocksize, ':inodeBlockRatio' => $inodeBlockRatio, ':id' => $id, ':resellerID' => $resellerLockupID));
 
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %webmaster% ' . $ip;
@@ -338,6 +365,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                     $quotaCmd = $row['quotaCmd'];
                     $repquotaCmd = $row['repquotaCmd'];
                     $usageType = $row['usageType'];
+                    $phpConfiguration = $row['phpConfiguration'];
                     $blocksize = $row['blocksize'];
                     $inodeBlockRatio = $row['inodeBlockRatio'];
                     $serverType = $row['serverType'];

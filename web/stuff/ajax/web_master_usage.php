@@ -53,8 +53,10 @@ $maxHDD = 1000;
 $quotaActive = 'N';
 $ownVhost = 'N';
 $dns = '';
+$phpConfigurationMaster = array();
+$phpConfigurationVhost = new stdClass();
 
-$query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
+$query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,m.`usageType`,m.`phpConfiguration`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
 $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $vhostTemplate = $row['vhostTemplate'];
@@ -64,18 +66,20 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $leftHDD = (int) $row['maxHDD'] - $row['totalHDD'];
     $quotaActive = $row['quotaActive'];
     $dns = $row['defaultdns'];
+    $phpConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
 }
 
 // Edit mode will provide the webhost ID
 if ($ui->id('serverID', 10, 'get')) {
 
-    $query = $sql->prepare("SELECT `ownVhost`,`vhostTemplate`,`dns`,`hdd` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `ownVhost`,`vhostTemplate`,`dns`,`hdd`,`phpConfiguration` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($ui->id('serverID', 10, 'get'), $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $ownVhost = $row['ownVhost'];
         $vhostTemplate = $row['vhostTemplate'];
         $dns = $row['dns'];
         $maxHDD = $row['hdd'];
+        $phpConfigurationVhost = @json_decode($row['phpConfiguration']);
     }
 }
 

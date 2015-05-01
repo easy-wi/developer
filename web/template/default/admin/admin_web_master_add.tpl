@@ -41,10 +41,17 @@
                         <div class="form-group">
                             <label for="inputUsageType"><?php echo $sprache->usageType;?></label>
                             <div class="controls">
-                                <select class="form-control" id="inputUsageType" class="span11" name="usageType">
+                                <select class="form-control" id="inputUsageType" class="span11" name="usageType" onchange="loadServerSettings($('#inputServerType').val(), this.value);textdrop('inputPhpConfiguration');">
                                     <option value="F"><?php echo $gsprache->fastdownload;?></option>
                                     <option value="W"><?php echo $gsprache->webspace;?></option>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group<?php if($usageType=='F') echo ' display_none';?>" id="inputPhpConfiguration">
+                            <label for="inputPhpConfiguration"><?php echo $sprache->phpConfiguration;?></label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inputPhpConfiguration" class="span11" name="phpConfiguration" rows="10"><?php echo $phpConfiguration;?></textarea>
                             </div>
                         </div>
 
@@ -172,7 +179,7 @@
                         <div class="form-group<?php if(isset($errors['publickey'])) echo ' error';?>">
                             <label for="inputServerType"><?php echo $sprache->serverType;?></label>
                             <div class="controls">
-                                <select class="form-control" id="inputServerType" class="span11" name="serverType" onchange="loadServerSettings(this.value);">
+                                <select class="form-control" id="inputServerType" class="span11" name="serverType" onchange="loadServerSettings(this.value, $('#inputUsageType').val());">
                                     <option value="N">Nginx</option>
                                     <option value="L" <?php if ($serverType=='L') echo 'selected="selected"';?>>Lighttpd</option>
                                     <option value="H" <?php if ($serverType=='H') echo 'selected="selected"'; ?>>Hiawatha</option>
