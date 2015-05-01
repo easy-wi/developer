@@ -31,6 +31,7 @@
     </div>
 </div>
 
+<?php if ($usageType == 'W') { ?>
 <?php foreach($phpConfigurationMaster as $groupName => $array) { ?>
 <div class="form-group">
     <label for="input<?php echo str_replace(' ', '', $groupName);?>"><?php echo $groupName;?></label>
@@ -42,6 +43,7 @@
         </select>
     </div>
 </div>
+<?php } ?>
 <?php } ?>
 
 <div class="form-group<?php if(isset($errors['ownVhost'])) echo ' has-error';?>">

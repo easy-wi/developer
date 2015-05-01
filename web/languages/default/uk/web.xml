@@ -32,6 +32,7 @@
     <other>Other</other>
     <overbookPercent>Overbook</overbookPercent>
     <ownVhost>Own Vhost Template</ownVhost>
+    <phpConfiguration>PHP Configuration</phpConfiguration>
     <quotaActive>Activate Quotas</quotaActive>
     <quotaCmd>Quota Command</quotaCmd>
     <quotaWarning>Warning! Whithout Quotas user can upload data until the disk is full!</quotaWarning>

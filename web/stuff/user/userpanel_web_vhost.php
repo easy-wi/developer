@@ -62,13 +62,16 @@ if (isset($admin_id)) {
     $logsubuser = 0;
 }
 
-if ($ui->id('id', 10, 'get') and in_array($ui->st('d', 'get'), array('if', 'pw', 'ri'))) {
+if ($ui->id('id', 10, 'get') and in_array($ui->st('d', 'get'), array('if', 'pw', 'ri', 'md'))) {
 
-    $query = $sql->prepare("SELECT `dns`,`webMasterID` FROM `webVhost` WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? AND `active`='Y'");
+    $query = $sql->prepare("SELECT v.`dns`,v.`webMasterID`,v.`phpConfiguration`,v.`phpConfiguration`,m.`usageType`,m.`phpConfiguration` AS `phpMasterConfiguration` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`webVhostID`=? AND v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
     $query->execute(array($ui->id('id', 10, 'get'), $user_id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $dns = $row['dns'];
         $webMasterID = $row['webMasterID'];
+        $usageType = $row['usageType'];
+        $phpConfigurationVhost = @json_decode($row['phpConfiguration']);
+        $phpConfigurationMaster = @parse_ini_string($row['phpMasterConfiguration'], true, INI_SCANNER_RAW);
     }
 }
 
@@ -109,10 +112,6 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
 
         } else {
 
-            $query = $sql->prepare("SELECT `webMasterID` FROM `webVhost` WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? AND `active`='Y' LIMIT 1");
-            $query->execute(array($id, $user_id, $reseller_id));
-            $webMasterID = $query->fetchColumn();
-
             $vhostObject = new HttpdManagement($webMasterID, $reseller_id);
 
             if ($vhostObject != false and $vhostObject->ssh2Connect()) {
@@ -125,6 +124,58 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
 
     } else {
         $template_file = 'userpanel_web_vhost_pw.tpl';
+    }
+
+} else if (isset($webMasterID, $dns, $usageType, $phpConfigurationMaster) and $usageType == 'W' and $ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
+
+    $id = $ui->id('id', 10, 'get');
+
+    if ($ui->st('action', 'post') == 'md') {
+
+        $phpConfiguration = array();
+
+        if ($phpConfigurationMaster) {
+
+            foreach ($phpConfigurationMaster as $groupName => $array) {
+
+                $groupNameSelect = $ui->escaped(str_replace(' ', '', $groupName), 'post');
+
+                if ($groupNameSelect and isset($phpConfigurationMaster[$groupName][$groupNameSelect])) {
+                    $phpConfiguration[$groupName] = $groupNameSelect;
+                } else {
+                    reset($phpConfigurationMaster[$groupName]);
+                    $phpConfiguration[$groupName] = key($phpConfigurationMaster[$groupName]);
+                }
+            }
+        }
+
+        $phpConfiguration = @json_encode($phpConfiguration);
+
+        $query = $sql->prepare("UPDATE `webVhost` SET `phpConfiguration`=? WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
+        $query->execute(array($phpConfiguration, $id, $user_id, $reseller_id));
+
+        $vhostObject = new HttpdManagement($webMasterID, $reseller_id);
+
+        if ($query->rowCount() and $vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+
+            $vhostObject->vhostMod($id);
+            $vhostObject->restartHttpdServer();
+
+            $template_file = $spracheResponse->table_add;
+            $loguseraction = '%md% %webvhost% ' . $dns;
+            $insertlog->execute();
+
+        } else {
+            $template_file = $spracheResponse->error_table;
+        }
+
+    } else if (!$ui->st('action', 'post')) {
+
+        $template_file = 'userpanel_web_vhost_md.tpl';
+
+    // Request did not add up. Display 404 error.
+    } else {
+        $template_file = 'userpanel_404.tpl';
     }
 
 } else if (isset($webMasterID, $dns) and $ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
@@ -155,7 +206,7 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
             $template_file = $spracheResponse->error_table;
         }
 
-        // GET Request did not add up. Display 404 error.
+        // Request did not add up. Display 404 error.
     } else {
         $template_file = 'userpanel_404.tpl';
     }

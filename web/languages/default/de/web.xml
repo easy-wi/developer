@@ -32,6 +32,7 @@
     <other>Andere</other>
     <overbookPercent>Überbuchen um</overbookPercent>
     <ownVhost>Eigenes Vhosttemplate</ownVhost>
+    <phpConfiguration>PHP Konfiguration</phpConfiguration>
     <quotaActive>Quotas Aktivieren</quotaActive>
     <quotaCmd>Quota Befehl</quotaCmd>
     <quotaWarning>Achtung! Ohne Quotas kann der User unbegrenzt Dateien hochladen!</quotaWarning>

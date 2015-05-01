@@ -52,6 +52,7 @@ $totalVhosts = 0;
 $maxHDD = 1000;
 $quotaActive = 'N';
 $ownVhost = 'N';
+$usageType = 'F';
 $dns = '';
 $phpConfigurationMaster = array();
 $phpConfigurationVhost = new stdClass();
@@ -66,6 +67,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $leftHDD = (int) $row['maxHDD'] - $row['totalHDD'];
     $quotaActive = $row['quotaActive'];
     $dns = $row['defaultdns'];
+    $usageType = $row['usageType'];
     $phpConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
 }
 

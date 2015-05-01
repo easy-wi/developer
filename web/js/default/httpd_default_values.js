@@ -35,7 +35,10 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-function loadServerSettings (serverType) {
+function loadServerSettings (serverType, usageType) {
+
+    var defaultRestartCMD = '';
+    var defaultVhostTemplate = '';
 
     if (serverType == 'N') {
 
@@ -48,9 +51,35 @@ function loadServerSettings (serverType) {
         defaultVhostTemplate += '   access_log %vhostpath%/%user%/%logDir%/access.log;\r\n';
         defaultVhostTemplate += '   error_log %vhostpath%/%user%/%logDir%/error.log;\r\n';
         defaultVhostTemplate += '   root %vhostpath%/%user%/%htdocs%/;\r\n';
-        defaultVhostTemplate += '   location / {\r\n';
-        defaultVhostTemplate += '      index index.html index.htm;\r\n';
-        defaultVhostTemplate += '   }\r\n';
+
+        if (usageType == 'W') {
+
+            defaultVhostTemplate += '   index index.php index.html index.htm;\r\n';
+            defaultVhostTemplate += '   location / {\r\n';
+            defaultVhostTemplate += '      try_files $uri $uri/ =404;\r\n';
+            defaultVhostTemplate += '   }\r\n';
+
+            defaultVhostTemplate += '   location ~ \.php$ {\r\n';
+            defaultVhostTemplate += '      #       fastcgi_split_path_info ^(.+\.php)(/.+)$;\r\n';
+            defaultVhostTemplate += '      #       # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini\r\n';
+            defaultVhostTemplate += '      #\r\n';
+            defaultVhostTemplate += '      #       # With php5-cgi alone:\r\n';
+            defaultVhostTemplate += '      #       fastcgi_pass 127.0.0.1:9000;\r\n';
+            defaultVhostTemplate += '      #       # With php5-fpm:\r\n';
+            defaultVhostTemplate += '      fastcgi_pass unix:/var/run/php5-fpm.sock;\r\n';
+            defaultVhostTemplate += '      fastcgi_index index.php;\r\n';
+            defaultVhostTemplate += '      include fastcgi_params;\r\n';
+            defaultVhostTemplate += '      fastcgi_param  PHP_VALUE "open_basedir=%vhostpath%/%user%/%htdocs%\nsession.save_path=%vhostpath%/%user%/sessions\nupload_tmp_dir=%vhostpath%/%user%/tmp\nallow_url_fopen=Off\nallow_url_include=Off\n%phpConfiguration%";\r\n';
+            defaultVhostTemplate += '   }\r\n';
+
+        } else {
+
+            defaultVhostTemplate += '   location / {\r\n';
+            defaultVhostTemplate += '      index index.html index.htm;\r\n';
+            defaultVhostTemplate += '   }\r\n';
+
+        }
+
         defaultVhostTemplate += '}';
 
     } else if (serverType == 'A') {
@@ -63,6 +92,24 @@ function loadServerSettings (serverType) {
         defaultVhostTemplate += '    ServerName %url%\r\n';
         defaultVhostTemplate += '    ErrorLog "%vhostpath%/%user%/%logDir%/error.log"\r\n';
         defaultVhostTemplate += '    CustomLog "%vhostpath%/%user%/%logDir%/access.log" common\r\n';
+
+        if (usageType == 'W') {
+
+            defaultVhostTemplate += '    DirectoryIndex index.php index.html\r\n';
+            defaultVhostTemplate += '    <IfModule mpm_itk_module>\r\n';
+            defaultVhostTemplate += '       AssignUserId %user% %group%\r\n';
+            defaultVhostTemplate += '       MaxClientsVHost 50\r\n';
+            defaultVhostTemplate += '       NiceValue 10\r\n';
+            defaultVhostTemplate += '       php_admin_value open_basedir "%vhostpath%/%user%/%htdocs%"\r\n';
+            defaultVhostTemplate += '       php_admin_value session.save_path "%vhostpath%/%user%/sessions"\r\n';
+            defaultVhostTemplate += '       php_admin_value upload_tmp_dir "%vhostpath%/%user%/tmp"\r\n';
+            defaultVhostTemplate += '       php_admin_flag allow_url_fopen Off\r\n';
+            defaultVhostTemplate += '       php_admin_flag allow_url_include Off\r\n';
+            defaultVhostTemplate += '       %phpConfiguration%\r\n';
+            defaultVhostTemplate += '    </IfModule>\r\n';
+
+        }
+
         defaultVhostTemplate += '    <Directory %vhostpath%/%user%/%htdocs%>\r\n';
         defaultVhostTemplate += '        Options -Indexes FollowSymLinks Includes\r\n';
         defaultVhostTemplate += '        AllowOverride All\r\n';
