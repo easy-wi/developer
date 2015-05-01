@@ -386,7 +386,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
     } else {
-        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND (`resellerid`=? OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=? AND `id`=r.`resellerid`)) LIMIT 1");
+        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` AS r WHERE `id`=? AND (`resellerid`=? OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=? AND `id`=r.`resellerid`)) LIMIT 1");
         $query->execute(array($id, $resellerLockupID, $resellerLockupID));
     }
 
