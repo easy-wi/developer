@@ -21,6 +21,7 @@
                         <a href="userpanel.php?w=wv&amp;d=if&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-sm btn-info"><i class="fa fa-info-circle"></i> <?php echo $sprache->fdlInfo;?></span></a>
                         <?php } else { ?>
                         <a href="userpanel.php?w=wv&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-sm btn-primary"><i class="fa fa-cog"></i> <?php echo $gsprache->settings;?></span></a>
+                        <a href="userpanel.php?w=wv&amp;d=dm&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-sm btn-primary"><i class="fa fa-list"></i> <?php echo $gsprache->domains;?></span></a>
                         <?php } ?>
                         <a href="userpanel.php?w=wv&amp;d=pw&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-sm btn-primary"><i class="fa fa-lock"></i> <?php echo $sprache->ftpPassword;?></span></a>
                         <a href="userpanel.php?w=wv&amp;d=ri&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-sm btn-warning"><i class="fa fa-refresh"></i> <?php echo $dedicatedLanguage->reinstall;?></span></a>

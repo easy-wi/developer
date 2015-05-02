@@ -23,12 +23,13 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-success">
 
-                <form role="form" action="admin.php?w=wv&amp;d=ad&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+            <form role="form" action="admin.php?w=wv&amp;d=ad&amp;r=wv" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
-                    <input type="hidden" name="token" value="<?php echo token();?>">
-                    <input type="hidden" name="action" value="ad">
+                <input type="hidden" name="token" value="<?php echo token();?>">
+                <input type="hidden" name="action" value="ad">
+
+                <div class="box box-success">
 
                     <div class="box-body">
 
@@ -91,8 +92,9 @@
                     <div class="box-footer">
                         <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-plus-circle">&nbsp;<?php echo $gsprache->add;?></i></button>
                     </div>
-                </form>
-            </div>
+                </div>
+
+            </form>
         </div>
     </div>
 </section>

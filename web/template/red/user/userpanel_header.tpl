@@ -19,7 +19,7 @@
 
     <!-- Theme style -->
     <link href="css/default/AdminLTE.css" rel="stylesheet" type="text/css" />
-    <link href="css/default/skin-blue.css" rel="stylesheet" type="text/css" />
+    <link href="css/red/skin-red.css" rel="stylesheet" type="text/css" />
 
     <!-- Easy-Wi custom styles -->
     <link href="css/default/easy-wi.css" rel="stylesheet" type="text/css" />
@@ -49,7 +49,7 @@
 
 </head>
 
-<body class="skin-blue" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
+<body class="skin-red" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 
 <div class="wrapper">
 
