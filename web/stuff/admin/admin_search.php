@@ -96,14 +96,15 @@ if (isset($ui->get['q'])) {
                 break;
             case(ipport($s)):
                 $addresses[] = $s;
+                list($ips[], $ports[]) = explode(':' , preg_replace('/\s+/', '', $s));
                 $q[] = $s;
                 break;
-            case(names($s,strlen($s))):
+            default:
                 $words[]=strtolower($s);
                 $q[] = $s;
-                break;
         }
     }
+
     $ips=array_unique($ips);
     $addresses=array_unique($addresses);
     $words=array_unique($words);
@@ -314,5 +315,8 @@ if (isset($ui->get['q'])) {
         }
     }
 }
+
+configureDateTables('-1', '1, "DESC"');
+
 $q=implode(' ',$q);
 $template_file = 'admin_search.tpl';
