@@ -201,6 +201,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
 } else {
 
+    $serviceProviders = getServiceProviders();
     $serviceProvider = (string) $ui->w('serviceProvider', 255, 'get');
 
     if ($serviceProvider and file_exists(EASYWIDIR . '/third_party/hybridauth/Hybrid/Providers/' . $serviceProvider . '.php')) {

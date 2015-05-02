@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="bg-black">
+<html>
 <head>
     <meta charset="UTF-8">
 
@@ -12,11 +12,11 @@
     <meta name="robots" content="noindex">
 
 
-    <!-- bootstrap 3.0.2 -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- bootstrap -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- font Awesome -->
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Theme style -->
     <link href="css/default/AdminLTE.css" rel="stylesheet" type="text/css" />
@@ -34,39 +34,43 @@
 
 </head>
 
-<body class="bg-black" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
+<body class="login-page" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 
-<div class="form-box" id="login-box">
+<div class="login-box">
 
-    <div class="header"><?php echo $sprache->multipleHeader;?></div>
+    <!--
+        <div class="login-logo">
+            <a href="../../index2.html"><b>Admin</b>LTE</a>
+        </div> /.login-logo
+    -->
 
-    <div class="body bg-gray">
+    <div class="login-box-body">
+
         <div class="callout callout-info">
             <?php echo $sprache->multipleHelper;?>
         </div>
 
-        <div class="box box-solid">
-            <div class="box-body">
-                <ul>
-                    <?php foreach($connectedUsers as $k=>$v){ ?>
-                    <li><a href="login.php?serviceProvider=<?php echo $serviceProvider;?>&amp;loginUserId=<?php echo $k;?>"><?php echo $v;?></a></li>
-                    <?php }?>
-                    <?php foreach($connectedSubstitutes as $k=>$v){ ?>
-                    <li><a href="login.php?serviceProvider=<?php echo $serviceProvider;?>&amp;loginSubstituteId=<?php echo $k;?>"><?php echo $v;?></a></li>
-                    <?php }?>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="footer">
+        <div class="social-auth-links text-center">
+
+            <?php foreach($connectedUsers as $k=>$v){ ?>
+            <a href="login.php?serviceProvider=<?php echo $serviceProvider;?>&amp;loginUserId=<?php echo $k;?>" class="btn btn-block btn-social btn-<?php echo $serviceProviders[$serviceProvider];?> btn-flat"><i class="fa fa-<?php echo $serviceProviders[$serviceProvider];?>"></i> <?php echo $v;?></a>
+            <?php }?>
+            <?php foreach($connectedSubstitutes as $k=>$v){ ?>
+            <a href="login.php?serviceProvider=<?php echo $serviceProvider;?>&amp;loginSubstituteId=<?php echo $k;?>" class="btn btn-block btn-social btn-<?php echo $serviceProviders[$serviceProvider];?> btn-flat"><i class="fa fa-<?php echo $serviceProviders[$serviceProvider];?>"></i> <?php echo $v;?></a>
+            <?php }?>
+        </div><!-- /.social-auth-links -->
+
+    </div><!-- /.login-box-body -->
+
+    <div>
         &copy; <a href="https://easy-wi.com" target="_blank" title="free gameserver, voiceserver, dedicated and virtualserver webinterface easy-wi.com">Easy-WI.com</a> 2011 - <?php echo date('Y'); ?>
     </div>
 </div>
 
 <!-- jQuery 2.0.2 -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <!-- Bootstrap -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js" type="text/javascript"></script>
 
 </body>
 </html>
