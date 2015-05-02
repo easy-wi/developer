@@ -134,14 +134,25 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 $inSQLArray = 'm.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
             }
 
-            $query = $sql->prepare("SELECT m.`webMasterID`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING $inSQLArray (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC LIMIT 1");
+            $phpConfiguration = array();
+
+            $query = $sql->prepare("SELECT m.`webMasterID`,m.`defaultdns`,m.`phpConfiguration`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING $inSQLArray (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC LIMIT 1");
             $query->execute(array($resellerID));
 
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $webMasterID = $row['webMasterID'];
                 $hostExternalID = $row['externalID'];
-                $defaultdns = $row['defaultdns'];
+                $defaultDns = $row['defaultdns'];
+
+                $phpConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
+
+                foreach ($phpConfigurationMaster as $groupName => $array) {
+                    reset($phpConfigurationMaster[$groupName]);
+                    $phpConfiguration[$groupName] = key($phpConfigurationMaster[$groupName]);
+                }
             }
+
+            $phpConfiguration = @json_encode($phpConfiguration);
 
             if (!isid($webMasterID, 10)) {
                 $success['false'][] = 'No free host';
@@ -152,24 +163,19 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             $password = (isset($data['password']) and strlen($data['password']) > 0) ? $data['password'] : passwordgenerate(10);
 
-            $query = $sql->prepare("INSERT INTO `webVhost` (`externalID`,`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`jobPending`,`resellerID`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,'Y',?)");
-            $query->execute(array($externalServerID, $webMasterID, $localUserLookupID, $active, $hdd, $password, $aeskey, $ownVhost, $vhostTemplate, $resellerID));
+            $query = $sql->prepare("INSERT INTO `webVhost` (`externalID`,`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`phpConfiguration`,`jobPending`,`resellerID`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,?,'Y',?)");
+            $query->execute(array($externalServerID, $webMasterID, $localUserLookupID, $active, $hdd, $password, $aeskey, $ownVhost, $vhostTemplate, $phpConfiguration, $resellerID));
 
             $localServerID = (int) $sql->lastInsertId();
 
-            $query = $sql->prepare("SELECT `defaultdns` FROM `webMaster` WHERE `webMasterID`=? AND `resellerID`=? LIMIT 1");
-            $query->execute(array($webMasterID, $resellerID));
-            $defaultDns = (string) $query->fetchColumn();
-
-            $localUserCname .= '-' . $localServerID;
             $ftpUser = 'web-' . $localServerID;
 
             if ($defaultDns == $dns or $dns == '') {
-                $dns = str_replace('..', '.', $localUserCname . '.' .$defaultDns);
+                $dns = str_replace('..', '.', $ftpUser . '.' .$defaultDns);
             }
 
-            $query = $sql->prepare("UPDATE `webVhost` SET `dns`=?,`ftpUser`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
-            $query->execute(array($dns, $ftpUser, $localServerID, $resellerID));
+            $query = $sql->prepare("UPDATE `webVhost` SET `ftpUser`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+            $query->execute(array($ftpUser, $localServerID, $resellerID));
 
             $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`affectedID`,`invoicedByID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','wv',?,?,?,?,?,NULL,NOW(),'ad','',?)");
             $query->execute(array($localServerID, $resellerID, $webMasterID, $localUserLookupID, $dns, $resellerID));

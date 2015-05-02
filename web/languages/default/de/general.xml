@@ -35,6 +35,7 @@
     <delSafe>Sicheres Löschen</delSafe>
     <delAny>In jedem Fall Löschen</delAny>
     <delDB>Aus der Datenbank Löschen</delDB>
+    <domains>Domains</domains>
     <downloads>Downloads</downloads>
     <edit>Bearbeiten</edit>
     <errors>Fehler</errors>

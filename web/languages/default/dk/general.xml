@@ -23,6 +23,7 @@
     <delSafe>Sikker Slat</delSafe>
     <delAny>Slet i hvert fald</delAny>
     <delDB>Fjern fra database</delDB>
+    <domains>Domains</domains>
     <feeds>Feeds</feeds>
 	<edit>Rediger</edit>
     <errors></errors>
