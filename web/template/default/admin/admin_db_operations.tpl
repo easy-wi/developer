@@ -12,10 +12,6 @@
         <div class="col-md-12">
             <div class="box box-primary">
 
-                <div class="box-header">
-                    <h3 class="box-title">Easy-WI <?php echo $gsprache->databases;?></h3>
-                </div>
-
                 <div class="box-body">
 
                     <?php if($reseller_id==0){ ?>
@@ -32,18 +28,19 @@
                         <div class="form-group">
                             <label  for="inputUpdate"><?php echo $gsprache->database.' '.$gsprache->repair;?></label>
                             <button class="btn btn-warning btn-sm" id="inputUpdate" type="submit"><i class="fa fa-refresh"></i></button>
+                        </div>
                     </form>
                     <?php } ?>
-                </div>
 
-                <div class="form-group">
-                    <label for="inputGS"><?php echo $gsprache->gameserver.' '.$gsprache->template;?></label>
-                    <a href="admin.php?w=bu&amp;d=rg" id="inputGS"><button class="btn btn-warning btn-sm" id="inputGS" type="submit"><i class="fa fa-refresh"></i></button></a>
-                </div>
+                    <div class="form-group">
+                        <label for="inputGS"><?php echo $gsprache->gameserver.' '.$gsprache->template;?></label>
+                        <a href="admin.php?w=bu&amp;d=rg" id="inputGS"><button class="btn btn-warning btn-sm" id="inputGS" type="submit"><i class="fa fa-refresh"></i></button></a>
+                    </div>
 
-                <div class="form-group">
-                    <label for="inputAO"><?php echo $gsprache->gameserver.' '.$gsprache->addon;?></label>
-                    <a href="admin.php?w=bu&amp;d=ra" id="inputGS"><button class="btn btn-warning btn-sm" id="inputAO" type="submit"><i class="fa fa-refresh"></i></button></a>
+                    <div class="form-group">
+                        <label for="inputAO"><?php echo $gsprache->gameserver.' '.$gsprache->addon;?></label>
+                        <a href="admin.php?w=bu&amp;d=ra" id="inputGS"><button class="btn btn-warning btn-sm" id="inputAO" type="submit"><i class="fa fa-refresh"></i></button></a>
+                    </div>
                 </div>
             </div>
         </div>
