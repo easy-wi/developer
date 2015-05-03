@@ -301,12 +301,8 @@ if (isset($ui->get['q'])) {
                 $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE $notIN (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
                 $query->execute(array(':word' => $word));
             } else {
-                $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE `resellerid`=? ".notIN($usIDs,'`id`')." AND (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
-                if ($admin_id==$reseller_id) {
-                    $query->execute(array(':resellerID' => $reseller_id,':word' => $word));
-                } else {
-                    $query->execute(array(':resellerID' => $admin_id,':word' => $word));
-                }
+                $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE `resellerid`=:resellerID ".notIN($usIDs,'`id`')." AND (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
+                $query->execute(array(':resellerID' => ($admin_id == $reseller_id) ? $reseller_id : $admin_id, ':word' => $word));
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usIDs[] = $row['id'];
