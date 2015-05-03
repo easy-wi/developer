@@ -16,7 +16,7 @@ class Hybrid_Providers_XING extends Hybrid_Provider_Model_OAuth1 {
      * Initialize.
      */
     function initialize() {
-        if (!$this->config['keys']['id'] || !$this->config['keys']['secret']) {
+        if (!$this->config['keys']['key'] || !$this->config['keys']['secret']) {
             throw new Exception('You need a consumer key and secret to connect to ' . $this->providerId . '.');
         }
 

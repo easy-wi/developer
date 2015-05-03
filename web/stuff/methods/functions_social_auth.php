@@ -60,7 +60,7 @@ function getServiceProviders () {
 
     }
 
-    if (count($serviceProviders) > 0) {
+	if (count($serviceProviders) > 0) {
         $htmlExtraInformation['css'][] = (is_file(EASYWIDIR . '/css/' . $template_to_use . '/social_buttons.css')) ? '<link href="css/' . $template_to_use . '/social_buttons.css" rel="stylesheet">' : '<link href="css/default/social_buttons.css" rel="stylesheet">';
     }
 
