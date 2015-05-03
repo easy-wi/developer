@@ -301,21 +301,6 @@
                     </li>
                     <?php } ?>
 
-                    <?php if($easywiModules['ti'] and $pa['usertickets'] and $reseller_id!=0) { ?>
-                    <li class="treeview <?php if($w=='ti' or isset($customModules['ti'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
-                        <a href="#">
-                            <i class="fa fa-life-ring fa-fw"></i>
-                            <span><?php echo $gsprache->support;?></span>
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li <?php if($ui->smallletters('w',255,'get')=='tr' and $ui->smallletters('d',255,'get')!='ad') echo 'class="active"';?>><a href="admin.php?w=tr"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
-                            <li <?php if($ui->smallletters('w',255,'get')=='ti' and $ui->smallletters('d',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=tr&amp;d=ad"><i class="fa fa-pencil-square-o"></i> <?php echo $gsprache->support2;?></a></li>
-                            <?php foreach ($customModules['ti'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
-                        </ul>
-                    </li>
-                    <?php } ?>
-
                     <?php if($pa['user'] or $pa['user_users'] or $pa['userGroups'] ) { ?>
                     <li class="treeview <?php if(in_array($w,array('us','ug','up')) or isset($customModules['us'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                         <a href="#">
@@ -427,6 +412,20 @@
                             <?php if($pa['lendserverSettings']) { ?>
                             <li <?php if($ui->smallletters('w',255,'get')=='le' and $d=='se') echo 'class="active"';?>><a href="admin.php?w=le&amp;d=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
                             <?php } ?>
+                        </ul>
+                    </li>
+                    <?php } ?>
+
+                    <?php if($easywiModules['ti'] and $pa['usertickets'] and $reseller_id!=0) { ?>
+                    <li class="treeview <?php if($w=='tr' or isset($customModules['tr'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
+                        <a href="#">
+                            <i class="fa fa-life-ring fa-fw"></i>
+                            <span><?php echo $gsprache->reseller.' '.$gsprache->support;?></span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li <?php if($ui->smallletters('w',255,'get')=='tr' and $ui->smallletters('d',255,'get')!='ad') echo 'class="active"';?>><a href="admin.php?w=tr"><i class="fa fa-columns"></i> <?php echo $gsprache->overview;?></a></li>
+                            <li <?php if($ui->smallletters('w',255,'get')=='tr' and $ui->smallletters('d',255,'get')=='ad') echo 'class="active"';?>><a href="admin.php?w=tr&amp;d=ad"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->support2;?></a></li>
                         </ul>
                     </li>
                     <?php } ?>

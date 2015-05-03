@@ -284,6 +284,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     require_once(EASYWIDIR . '/stuff/ajax/userpanel_ticket_category.php');
     die;
 
+} else if (isset($user_id) and $pa['usertickets'] and $ui->w('d', 24, 'get') == 'resellerTicketCategories' and $ui->id('topicName', 10, 'get')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/reseller_ticket_category.php');
+    die;
+
 } else if (isset($admin_id) and $pa['voiceserverStats'] and $ui->w('d', 15, 'get') == 'adminVoiceStats' and $ui->st('w', 'get')) {
 
     require_once(EASYWIDIR . '/stuff/ajax/admin_voice_stats.php');
