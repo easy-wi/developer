@@ -202,6 +202,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
 
+    $table = array();
+
     $query = $sql->prepare("SELECT * FROM `api_import` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
 

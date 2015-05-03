@@ -27,7 +27,7 @@
                         <tr>
                             <th><?php echo $sprache->ssh_ip;?></th>
                             <th>ID</th>
-                            <th><?php echo $gsprache->active;?></th>
+                            <th><?php echo $gsprache->status;?></th>
                             <th><?php echo $sprache->description;?></th>
                             <th><?php echo $sprache->installedserver;?></th>
                             <th><?php echo $sprache->installedslots;?></th>
@@ -40,7 +40,7 @@
                         <tr>
                             <th><?php echo $sprache->ssh_ip;?></th>
                             <th>ID</th>
-                            <th><?php echo $gsprache->active;?></th>
+                            <th><?php echo $gsprache->status;?></th>
                             <th><?php echo $sprache->description;?></th>
                             <th><?php echo $sprache->installedserver;?></th>
                             <th><?php echo $sprache->installedslots;?></th>

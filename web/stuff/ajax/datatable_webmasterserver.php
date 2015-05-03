@@ -78,7 +78,7 @@ if ($sSearch) {
 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-    $status = 0;
+    $status = 4;
     $statusMessage = $gsprache->status_ok;
 
     if ($row['active'] == 'N') {

@@ -96,7 +96,7 @@ $query3 = $sql->prepare("UPDATE `mysql_external_dbs` SET `jobPending`='N' WHERE 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $jobPending = $gsprache->no;
-    $status = 0;
+    $status = 4;
     $statusMessage = $gsprache->status_ok;
 
     if ($row['jobPending'] == 'Y') {

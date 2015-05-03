@@ -77,5 +77,14 @@ if ($sSearch) {
 }
 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-    $array['aaData'][] = array($row['ssh2ip'], $row['id'], ($row['active'] == 'Y') ? (string) $gsprache->yes : (string) $gsprache->no, $row['description'], $row['defaultdns'], $row['installed_dns'] . '/' . $row['max_dns'], returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'vd', 'ip', $row['id'], $sprache->import) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'vd', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'vd', 'md', $row['id'], $gsprache->mod));
+
+    $status = 4;
+    $statusMessage = $gsprache->status_ok;
+
+    if ($row['active'] == 'N') {
+        $status = 3;
+        $statusMessage = $gsprache->status_inactive;
+    }
+
+    $array['aaData'][] = array($row['ssh2ip'], $row['id'], returnButton($template_to_use, 'ajax_admin_show_status.tpl', '', '', $status, (string) $statusMessage), $row['description'], $row['defaultdns'], $row['installed_dns'] . '/' . $row['max_dns'], returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'vd', 'ip', $row['id'], $sprache->import) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'vd', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'vd', 'md', $row['id'], $gsprache->mod));
 }

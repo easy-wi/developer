@@ -78,9 +78,17 @@ if ($sSearch) {
 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
+    $status = 4;
+    $statusMessage = $gsprache->status_ok;
+
+    if ($row['active'] == 'N') {
+        $status = 3;
+        $statusMessage = $gsprache->status_inactive;
+    }
+
     $installedslots = ($row['installedslots'] == null) ? 0 : $row['installedslots'];
 
-    $aaDataArray = array($row['ssh2ip'], $row['id'], ($row['active'] == 'Y') ? (string) $gsprache->yes : (string) $gsprache->no, $row['description'], $row['installedserver'] . '/' . $row['maxserver'], $installedslots . '/' . $row['maxslots']);
+    $aaDataArray = array($row['ssh2ip'], $row['id'], returnButton($template_to_use, 'ajax_admin_show_status.tpl', '', '', $status, (string) $statusMessage), $row['description'], $row['installedserver'] . '/' . $row['maxserver'], $installedslots . '/' . $row['maxslots']);
     $aaDataArray[] = ($row['managedServer'] == 'N' or $reseller_id == 0) ? returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'vm', 'ri', $row['id'], $sprache->import) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'vm', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'vm', 'md', $row['id'], $gsprache->mod) : '';
 
     $array['aaData'][] = $aaDataArray;
