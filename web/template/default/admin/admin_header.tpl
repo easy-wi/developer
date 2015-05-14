@@ -108,7 +108,7 @@
 
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="glyphicon glyphicon-user"></i>
+                            <i class="fa fa-user"></i>
                             <span><?php echo $great_user;?> <i class="caret"></i></span>
                         </a>
                         <ul class="dropdown-menu">
