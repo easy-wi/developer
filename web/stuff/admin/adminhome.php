@@ -87,6 +87,7 @@ $statsArray = array(
     'voiceserverCrashed' => 0,
     'webMasterInstalled' => 0,
     'webMasterActive' => 0,
+    'webMasterCrashed' => 0,
     'webMasterSpaceAvailable' => 0,
     'webMasterVhostAvailable' => 0,
     'webspaceInstalled' => 0,
@@ -118,20 +119,22 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
     $statsArray['gameserverActivePercent'] = ($statsArray['gameserverInstalled'] > 0) ? round($statsArray['gameserverActive'] / ($statsArray['gameserverInstalled'] / 100), 2) : 0;
     $statsArray['gameserverSlotsUsedPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverSlotsUsed'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
     $statsArray['gameserverCrashedPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverNotRunning'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
-    $statsArray['gameserverTagPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverNoTag'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
-    $statsArray['gameserverPasswordPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverNoPassword'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['gameserverTagPercent'] = ($statsArray['gameserverActive'] > 0) ? round($statsArray['gameserverNoTag'] / ($statsArray['gameserverActive'] / 100), 2) : 0;
+    $statsArray['gameserverPasswordPercent'] = ($statsArray['gameserverActive'] > 0) ? round($statsArray['gameserverNoPassword'] / ($statsArray['gameserverActive'] / 100), 2) : 0;
+    $statsArray['gameserverRuleBreakPercent'] = ($statsArray['gameserverActive'] > 0) ? round(($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']) / ($statsArray['gameserverActive'] / 100), 2) : 0;
 
     $statsArray['voiceMasterActivePercent'] = ($statsArray['voiceMasterInstalled'] > 0) ? round($statsArray['voiceMasterActive'] / ($statsArray['voiceMasterInstalled'] / 100), 2) : 0;
     $statsArray['voiceMasterCrashedPercent'] = ($statsArray['voiceMasterActive'] > 0) ? round($statsArray['voiceMasterCrashed'] / ($statsArray['voiceMasterActive'] / 100), 2) : 0;
-    $statsArray['voiceMasterServerPercent'] = ($statsArray['voiceMasterServerAvailable'] > 0) ? round($statsArray['voiceserverActive'] / ($statsArray['voiceMasterServerAvailable'] / 100), 2) : 0;
+    $statsArray['voiceMasterServerPercent'] = ($statsArray['voiceMasterServerAvailable'] > 0) ? round($statsArray['voiceserverInstalled'] / ($statsArray['voiceMasterServerAvailable'] / 100), 2) : 0;
     $statsArray['voiceMasterSlotsPercent'] = ($statsArray['voiceMasterSlotsAvailable'] > 0) ? round($statsArray['voiceserverSlotsInstalled'] / ($statsArray['voiceMasterSlotsAvailable'] / 100), 2) : 0;
 
     $statsArray['voiceserverActivePercent'] = ($statsArray['voiceserverInstalled'] > 0) ? round($statsArray['voiceserverActive'] / ($statsArray['voiceserverInstalled'] / 100), 2) : 0;
     $statsArray['voiceserverSlotsUsedPercent'] = ($statsArray['voiceserverSlotsActive'] > 0) ? round($statsArray['voiceserverSlotsUsed'] / ($statsArray['voiceserverSlotsActive'] / 100), 2) : 0;
-    $statsArray['voiceserverCrashedPercent'] = ($statsArray['voiceserverSlotsActive'] > 0) ? round($statsArray['voiceserverCrashed'] / ($statsArray['voiceserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['voiceserverCrashedPercent'] = ($statsArray['voiceserverSlotsActive'] > 0) ? round($statsArray['voiceserverCrashed'] / ($statsArray['voiceserverActive'] / 100), 2) : 0;
     $statsArray['voiceserverTrafficPercent'] = ($statsArray['voiceserverTrafficAllowed'] > 0) ? round($statsArray['voiceserverTrafficUsed'] / ($statsArray['voiceserverTrafficAllowed'] / 100), 2) : 0;
 
     $statsArray['webMasterActivePercent'] = ($statsArray['webMasterInstalled'] > 0) ? round($statsArray['webMasterActive'] / ($statsArray['webMasterInstalled'] / 100), 2) : 0;
+    $statsArray['webMasterCrashedPercent'] = ($statsArray['webMasterCrashed'] > 0) ? round($statsArray['webMasterCrashed'] / ($statsArray['webMasterActive'] / 100), 2) : 0;
     $statsArray['webMasterVhostPercent'] = ($statsArray['webMasterVhostAvailable'] > 0) ? round($statsArray['webspaceInstalled'] / ($statsArray['webMasterVhostAvailable'] / 100), 2) : 0;
     $statsArray['webMasterSpaceUsedPercent'] = ($statsArray['webMasterSpaceAvailable'] > 0) ? round($statsArray['webspaceSpaceGiven'] / ($statsArray['webMasterSpaceAvailable'] / 100), 2) : 0;
 
@@ -139,6 +142,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
     $statsArray['webspaceSpaceUsedPercent'] = ($statsArray['webspaceSpaceGiven'] > 0) ? round($statsArray['webspaceSpaceUsed'] / ($statsArray['webspaceSpaceGiven'] / 100), 2) : 0;
 
     $statsArray['mysqlMasterActivePercent'] = ($statsArray['mysqlMasterInstalled'] > 0) ? round($statsArray['mysqlMasterActive'] / ($statsArray['mysqlMasterInstalled'] / 100), 2) : 0;
+    $statsArray['mysqlMasterCrashedPercent'] = ($statsArray['mysqlMasterCrashed'] > 0) ? round($statsArray['mysqlMasterCrashed'] / ($statsArray['mysqlMasterActive'] / 100), 2) : 0;
     $statsArray['mysqlMasterDBPercent'] = ($statsArray['mysqlMasterDBAvailable'] > 0) ? round($statsArray['mysqlDBInstalled'] / ($statsArray['mysqlMasterDBAvailable'] / 100), 2) : 0;
 
     $statsArray['mysqlActivePercent'] = ($statsArray['mysqlDBInstalled'] > 0) ? round($statsArray['mysqlDBActive'] / ($statsArray['mysqlDBInstalled'] / 100), 2) : 0;

@@ -19,117 +19,111 @@
     </div>
 	<?php } ?>
 
+    <?php if($easywiModules['gs'] and $gscount>0 and $pa['restart']) { ?>
     <div class="row">
 
-        <?php if($easywiModules['ti'] and $pa['usertickets']) { ?>
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-blue">
-                <div class="inner">
-                    <h3>
-                        <?php echo $gsprache->support;?>
-                    </h3>
-                    <p>
-                        <?php echo $statsArray['ticketsInProcess'].'/'.$statsArray['ticketsTotal'];?> <?php echo $sprache_bad->tickets_open;?><br><br><br>
-                    </p>
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="info-box bg-red">
+                <span class="info-box-icon"><i class="fa fa-heartbeat"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><?php echo $gsprache->gameserver;?></span>
+                    <span class="info-box-number"><?php echo $statsArray['gameserverNotRunning'].'/'.$statsArray['gameserverActive'];?></span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: <?php echo $statsArray['gameserverCrashedPercent'];?>%"></div>
+                    </div>
+                    <span class="progress-description">
+                        <?php echo $statsArray['gameserverCrashedPercent'].'% '.$sprache_bad->crashed;?>
+                    </span>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-support"></i>
-                </div>
-                <a href="userpanel.php?w=ti" class="small-box-footer">
-                    <?php echo $gsprache->moreInfo;?> <i class="fa fa-arrow-circle-right"></i>
-                </a>
             </div>
         </div>
-        <?php } ?>
 
-        <?php if($easywiModules['ws'] and $vhostcount>0 and $pa['webvhost']) { ?>
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-blue">
-                <div class="inner">
-                    <h3>
-                        <?php echo $gsprache->webspace;?>
-                    </h3>
-                    <p>
-                        <?php echo $statsArray['webspaceSpaceUsed'].'/'.$statsArray['webspaceSpaceGivenActive'];?> MB<br><br><br>
-                    </p>
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="info-box bg-yellow">
+                <span class="info-box-icon"><i class="fa fa-gavel"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><?php echo $gsprache->gameserver;?></span>
+                    <span class="info-box-number"><?php echo ($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']).'/'.$statsArray['gameserverActive'];?></span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: <?php echo $statsArray['gameserverRuleBreakPercent'];?>%"></div>
+                    </div>
+                    <span class="progress-description">
+                        <?php echo $statsArray['gameserverRuleBreakPercent'].'% '.$sprache_bad->rulebreak;?>
+                    </span>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-cubes"></i>
-                </div>
-                <a href="userpanel.php?w=wv" class="small-box-footer">
-                    <?php echo $gsprache->moreInfo;?> <i class="fa fa-arrow-circle-right"></i>
-                </a>
             </div>
         </div>
-        <?php } ?>
 
-        <?php if($easywiModules['my'] and $dbcount>0 and $pa['mysql']) { ?>
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-blue">
-                <div class="inner">
-                    <h3>
-                        MySQL
-                    </h3>
-                    <p>
-                        <?php echo $statsArray['mysqlDBSpaceUsed'];?> MB<br><br><br>
-                    </p>
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="info-box bg-aqua">
+                <span class="info-box-icon"><i class="fa fa-plug"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><?php echo $gsprache->gameserver;?></span>
+                    <span class="info-box-number"><?php echo $statsArray['gameserverSlotsUsed'].'/'.$statsArray['gameserverSlotsActive'];?></span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: <?php echo $statsArray['gameserverSlotsUsedPercent'];?>%"></div>
+                    </div>
+                    <span class="progress-description">
+                        <?php echo $statsArray['gameserverSlotsUsedPercent'].'% '.$sprache_bad->usage_slots;?>
+                    </span>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-database"></i>
-                </div>
-                <a href="userpanel.php?w=my" class="small-box-footer">
-                    <?php echo $gsprache->moreInfo;?> <i class="fa fa-arrow-circle-right"></i>
-                </a>
             </div>
         </div>
-        <?php } ?>
-
-        <?php if($easywiModules['gs'] and $gscount>0 and $pa['restart']) { ?>
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-blue">
-                <div class="inner">
-                    <h3>
-                        <?php echo $gsprache->gameserver;?>
-                    </h3>
-                    <p>
-                        <?php echo $statsArray['gameserverSlotsUsed'].'/'.$statsArray['gameserverSlotsActive'];?> <?php echo $sprache_bad->usage_slots;?><br>
-                        <?php echo $statsArray['gameserverNotRunning'].'/'.$statsArray['gameserverActive'];?> <?php echo $sprache_bad->crashed;?><br>
-                        <?php if(($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword'])> 0){ echo ($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']).'/'.$statsArray['gameserverActive'];?> <?php echo $sprache_bad->rulebreak;}?><br>
-                    </p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-gamepad"></i>
-                </div>
-                <a href="userpanel.php?w=gs" class="small-box-footer">
-                    <?php echo $gsprache->moreInfo;?> <i class="fa fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-        <?php } ?>
-
-        <?php if($easywiModules['vo'] and ($voicecount>0) and $pa['voiceserver']) { ?>
-        <div class="col-lg-3 col-xs-6">
-            <div class="small-box bg-blue">
-                <div class="inner">
-                    <h3>
-                        <?php echo $gsprache->voiceserver;?>
-                    </h3>
-                    <p>
-                        <?php echo $statsArray['voiceserverSlotsUsed'].'/'.$statsArray['voiceserverSlotsActive'];?> <?php echo $sprache_bad->usage_slots;?><br>
-                        <?php echo $statsArray['voiceserverCrashed'].'/'.$statsArray['voiceserverActive'];?> <?php echo $sprache_bad->crashed;?><br>
-                        <?php echo $statsArray['voiceserverTrafficUsed'].'/'.$statsArray['voiceserverTrafficAllowed'];?> <?php echo $sprache_bad->traffic;?>
-                    </p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-microphone"></i>
-                </div>
-                <a href="userpanel.php?w=vo" class="small-box-footer">
-                    <?php echo $gsprache->moreInfo;?> <i class="fa fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-        <?php } ?>
     </div>
+
+    <?php }?>
+
+    <?php if($easywiModules['vo'] and ($voicecount>0) and $pa['voiceserver']) { ?>
+    <div class="row">
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="info-box bg-red">
+                <span class="info-box-icon"><i class="fa fa-heartbeat"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><?php echo $gsprache->voiceserver;?></span>
+                    <span class="info-box-number"><?php echo $statsArray['voiceserverCrashed'].'/'.$statsArray['voiceserverActive'];?></span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: <?php echo $statsArray['voiceserverCrashedPercent'];?>%"></div>
+                    </div>
+                    <span class="progress-description">
+                        <?php echo $statsArray['voiceserverCrashedPercent'].'% '.$sprache_bad->crashed;?>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="info-box bg-aqua">
+                <span class="info-box-icon"><i class="fa fa-signal"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><?php echo $gsprache->voiceserver;?></span>
+                    <span class="info-box-number"><?php echo $statsArray['voiceserverTrafficUsed'].'/'.$statsArray['voiceserverTrafficAllowed'];?></span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: <?php echo $statsArray['voiceserverTrafficPercent'];?>%"></div>
+                    </div>
+                    <span class="progress-description">
+                        <?php echo $statsArray['voiceserverTrafficPercent'].'% '.$sprache_bad->traffic;?>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="info-box bg-aqua">
+                <span class="info-box-icon"><i class="fa fa-plug"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><?php echo $gsprache->voiceserver;?></span>
+                    <span class="info-box-number"><?php echo $statsArray['voiceserverSlotsUsed'].'/'.$statsArray['voiceserverSlotsActive'];?></span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: <?php echo $statsArray['voiceserverSlotsUsedPercent'];?>%"></div>
+                    </div>
+                    <span class="progress-description">
+                        <?php echo $statsArray['voiceserverSlotsUsedPercent'].'% '.$sprache_bad->usage_slots;?>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
 
     <?php if(count($feedArray)>0) { ?>
 

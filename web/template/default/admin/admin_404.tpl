@@ -8,7 +8,6 @@
     </ol>
 </section>
 
-<!-- Main content -->
 <section class="content">
 
     <div class="error-page">
@@ -36,6 +35,6 @@
                     </span>
                 </div>
             </form>
-        </div><!-- /.error-content -->
-    </div><!-- /.error-page -->
-</section><!-- /.content -->
+        </div>
+    </div>
+</section>
