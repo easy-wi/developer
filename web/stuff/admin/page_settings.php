@@ -94,28 +94,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $about_id = $query->fetchColumn();
 
     if (count($posted_languages) > 0) {
+
         $query = $sql->prepare("SELECT `language` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=?");
-        $query2 = $sql->prepare("UPDATE `page_pages_text` SET `text`=? WHERE `pageid`=? AND `language`=? AND `resellerid`=? LIMIT 1");
-        $query3 = $sql->prepare("DELETE FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($about_id,$reseller_id));
-        $lang_exist = array();
+        $query2 = $sql->prepare("DELETE FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($about_id, $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $lang_exist[] = $row['language'];
-            if (in_array($row['language'],$posted_languages)) {
-                $query2->execute(array($ui->escaped('about', 'post', $row['language']),$about_id, $row['language'],$reseller_id));
-                $queryAffected += $query2->rowCount();
-            } else {
-                $query3->execute(array($about_id, $row['language'],$reseller_id));
+
+            if (!in_array($row['language'],$posted_languages)) {
+                $query2->execute(array($about_id, $row['language'], $reseller_id));
                 $queryAffected += $query3->rowCount();
             }
         }
-        $query = $sql->prepare("INSERT INTO `page_pages_text` (`pageid`,`language`,`text`,`resellerid`) VALUES (?,?,?,?)");
+
+        $query = $sql->prepare("INSERT INTO `page_pages_text` (`pageid`,`language`,`text`,`resellerid`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
         $queryAffected += $query->rowCount();
         foreach ($posted_languages as $lg) {
-            if (!in_array($lg,$lang_exist)) {
-                $query->execute(array($about_id,$lg,nl2br($ui->escaped('about', 'post',$lg)),$reseller_id));
-            }
+            $query->execute(array($about_id, $lg, nl2br((string) $ui->escaped('about', 'post', $lg)), $reseller_id));
         }
+
     } else {
         $query = $sql->prepare("DELETE FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=?");
         $query->execute(array($about_id,$reseller_id));

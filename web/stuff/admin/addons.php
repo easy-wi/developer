@@ -271,9 +271,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 foreach($array as $language) {
                     if (small_letters_check($language, 2)) {
-                        $description = $ui->description('description', 'post', $language);
-                        $query->execute(array($id, $language, $description, $reseller_id));
-
+                        $query->execute(array($id, $language, $ui->description('description', 'post', $language), $reseller_id));
                         $rowCount += $query->rowCount();
                     }
                 }
@@ -357,27 +355,27 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     }
 
     $query = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
-    foreach ($languages as $row) {
-        if (small_letters_check($row, 2)) {
+    foreach ($languages as $lg) {
+        if (small_letters_check($lg, 2)) {
             unset($lang);
             $description = '';
 
-            $query->execute(array($id, $row,$reseller_id));
-            while ($row2 = $query->fetch(PDO::FETCH_ASSOC)) {
-                $lang = $row2['lang'];
-                $description = $row2['text'];
+            $query->execute(array($id, $lg, $reseller_id));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $lang = $row['lang'];
+                $description = $row['text'];
             }
 
             if (isset($lang)) {
                 $style = '';
                 $displayNone = '';
-                $definedLanguages[] = $row;
+                $definedLanguages[] = $lg;
             } else {
                 $displayNone = 'display_none';
                 $style = 'style="display: none;"';
             }
 
-            $foundLanguages[] = array('style' => $style, 'lang' => $row, 'description' => $description, 'display' => $displayNone);
+            $foundLanguages[] = array('style' => $style, 'lang' => $lg, 'description' => $description, 'display' => $displayNone);
         }
     }
 

@@ -115,7 +115,7 @@
                         <?php foreach ($foundLanguages as $array) { ?>
                         <div id="<?php echo $array['lang'];?>" class="form-group <?php echo $array['display'];?>">
                             <label for="inputLangs-<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></label>
-                            <textarea class="form-control" id="inputLangs-<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]"></textarea>
+                            <textarea class="form-control" id="inputLangs-<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]"><?php echo $array['description'];?></textarea>
                         </div>
                         <?php } ?>
                     </div>
