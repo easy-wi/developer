@@ -15,7 +15,7 @@
     <link href="css/default/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link href="css/default/font-awesome.css" rel="stylesheet">
+    <link href="css/default/font-awesome.min.css" rel="stylesheet">
 
     <!-- Theme style -->
     <link href="css/default/AdminLTE.css" rel="stylesheet" type="text/css" />
