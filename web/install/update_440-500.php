@@ -52,6 +52,19 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("DELETE FROM `easywi_statistics`");
     $query->execute();
 
+    $query = $sql->prepare("SELECT `webVhostID`,`userID`,`resellerID`,`dns`,`ownVhost`,`vhostTemplate` FROM `webVhost`");
+    $query->execute();
+    $query2 = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,'',?,?)");
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        // Try catch as some admins might have maintained domains not be so unique
+        try {
+            $query2->execute(array($row['webVhostID'], $row['userID'], $row['resellerID'], $row['dns'], $row['ownVhost'], $row['vhostTemplate']));
+            $response->add('Migrated ' . $row['dns'] . ' to new table.');
+        } catch(PDOException $error) {
+            $response->add($error->getMessage());
+        }
+    }
+
     $response->add('Repairing tables if needed.');
     include(EASYWIDIR . '/stuff/methods/tables_repair.php');
 

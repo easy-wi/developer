@@ -46,11 +46,12 @@ function loadServerSettings (serverType, usageType) {
 
         defaultVhostTemplate = 'server {\r\n';
         defaultVhostTemplate += '   listen 80;\r\n';
-        defaultVhostTemplate += '   server_name %url%;\r\n';
+        defaultVhostTemplate += '   server_name %domain%;\r\n';
         defaultVhostTemplate += '   autoindex off;\r\n';
-        defaultVhostTemplate += '   access_log %vhostpath%/%user%/%logDir%/access.log;\r\n';
-        defaultVhostTemplate += '   error_log %vhostpath%/%user%/%logDir%/error.log;\r\n';
-        defaultVhostTemplate += '   root %vhostpath%/%user%/%htdocs%/;\r\n';
+        defaultVhostTemplate += '   access_log %vhostpath%/%user%/%logDir%/access_%domain%.log;\r\n';
+        defaultVhostTemplate += '   error_log %vhostpath%/%user%/%logDir%/error_%domain%.log;\r\n';
+
+        defaultVhostTemplate += '   root %vhostpath%/%user%/%htdocs%/%path%/;\r\n';
 
         if (usageType == 'W') {
 
@@ -69,7 +70,7 @@ function loadServerSettings (serverType, usageType) {
             defaultVhostTemplate += '      fastcgi_pass unix:/var/run/php5-fpm.sock;\r\n';
             defaultVhostTemplate += '      fastcgi_index index.php;\r\n';
             defaultVhostTemplate += '      include fastcgi_params;\r\n';
-            defaultVhostTemplate += '      fastcgi_param  PHP_VALUE "open_basedir=%vhostpath%/%user%/%htdocs%\nsession.save_path=%vhostpath%/%user%/sessions\nupload_tmp_dir=%vhostpath%/%user%/tmp\nallow_url_fopen=Off\nallow_url_include=Off\n%phpConfiguration%";\r\n';
+            defaultVhostTemplate += '      fastcgi_param  PHP_VALUE "open_basedir=%vhostpath%/%user%/%htdocs%/%path%\nsession.save_path=%vhostpath%/%user%/sessions\nupload_tmp_dir=%vhostpath%/%user%/tmp\nallow_url_fopen=Off\nallow_url_include=Off\n%phpConfiguration%";\r\n';
             defaultVhostTemplate += '   }\r\n';
 
         } else {
@@ -88,10 +89,10 @@ function loadServerSettings (serverType, usageType) {
 
         defaultVhostTemplate = '<VirtualHost *:80>\r\n';
         defaultVhostTemplate += '    ServerAdmin %email%\r\n';
-        defaultVhostTemplate += '    DocumentRoot "%vhostpath%/%user%/%htdocs%"\r\n';
-        defaultVhostTemplate += '    ServerName %url%\r\n';
-        defaultVhostTemplate += '    ErrorLog "%vhostpath%/%user%/%logDir%/error.log"\r\n';
-        defaultVhostTemplate += '    CustomLog "%vhostpath%/%user%/%logDir%/access.log" common\r\n';
+        defaultVhostTemplate += '    DocumentRoot "%vhostpath%/%user%/%htdocs%/%path%"\r\n';
+        defaultVhostTemplate += '    ServerName %domain%\r\n';
+        defaultVhostTemplate += '    ErrorLog "%vhostpath%/%user%/%logDir%/error_%domain%.log"\r\n';
+        defaultVhostTemplate += '    CustomLog "%vhostpath%/%user%/%logDir%/access_%domain%.log" common\r\n';
 
         if (usageType == 'W') {
 
@@ -100,7 +101,7 @@ function loadServerSettings (serverType, usageType) {
             defaultVhostTemplate += '       AssignUserId %user% %group%\r\n';
             defaultVhostTemplate += '       MaxClientsVHost 50\r\n';
             defaultVhostTemplate += '       NiceValue 10\r\n';
-            defaultVhostTemplate += '       php_admin_value open_basedir "%vhostpath%/%user%/%htdocs%"\r\n';
+            defaultVhostTemplate += '       php_admin_value open_basedir "%vhostpath%/%user%/%htdocs%/%path%"\r\n';
             defaultVhostTemplate += '       php_admin_value session.save_path "%vhostpath%/%user%/sessions"\r\n';
             defaultVhostTemplate += '       php_admin_value upload_tmp_dir "%vhostpath%/%user%/tmp"\r\n';
             defaultVhostTemplate += '       php_admin_flag allow_url_fopen Off\r\n';
@@ -110,7 +111,7 @@ function loadServerSettings (serverType, usageType) {
 
         }
 
-        defaultVhostTemplate += '    <Directory %vhostpath%/%user%/%htdocs%>\r\n';
+        defaultVhostTemplate += '    <Directory %vhostpath%/%user%/%htdocs%/%path%>\r\n';
         defaultVhostTemplate += '        Options -Indexes FollowSymLinks Includes\r\n';
         defaultVhostTemplate += '        AllowOverride All\r\n';
         defaultVhostTemplate += '        Order allow,deny\r\n';
@@ -122,10 +123,10 @@ function loadServerSettings (serverType, usageType) {
 
         defaultRestartCMD = 'sudo /etc/init.d/lighttpd reload';
 
-        defaultVhostTemplate = '$HTTP["host"] == "%url%" {\r\n';
-        defaultVhostTemplate += '    server.document-root = "%vhostpath%/%user%/%htdocs%"\r\n';
-        defaultVhostTemplate += '    server.errorlog = "%vhostpath%/%user%/%logDir%/error.log"\r\n';
-        defaultVhostTemplate += '    accesslog.filename = "%vhostpath%/%user%/%logDir%/access.log"\r\n';
+        defaultVhostTemplate = '$HTTP["host"] == "%domain%" {\r\n';
+        defaultVhostTemplate += '    server.document-root = "%vhostpath%/%user%/%htdocs%/%path%"\r\n';
+        defaultVhostTemplate += '    server.errorlog = "%vhostpath%/%user%/%logDir%/error_%domain%.log"\r\n';
+        defaultVhostTemplate += '    accesslog.filename = "%vhostpath%/%user%/%logDir%/access_%domain%.log"\r\n';
         defaultVhostTemplate += '    dir-listing.activate = "disable""\r\n';
         defaultVhostTemplate += '}';
 
@@ -134,10 +135,10 @@ function loadServerSettings (serverType, usageType) {
         defaultRestartCMD = 'sudo /etc/init.d/hiawatha reload';
 
         defaultVhostTemplate = 'VirtualHost {\r\n';
-        defaultVhostTemplate += '    Hostname = %url%\r\n';
-        defaultVhostTemplate += '    WebsiteRoot = %vhostpath%/%user%/%htdocs%\r\n';
-        defaultVhostTemplate += '    AccessLogfile = %vhostpath%/%user%/%logDir%/access.log\r\n';
-        defaultVhostTemplate += '    ErrorLogfile = %vhostpath%/%user%/%logDir%/error.log\r\n';
+        defaultVhostTemplate += '    Hostname = %domain%\r\n';
+        defaultVhostTemplate += '    WebsiteRoot = %vhostpath%/%user%/%htdocs%/%path%\r\n';
+        defaultVhostTemplate += '    AccessLogfile = %vhostpath%/%user%/%logDir%/access_%domain%.log\r\n';
+        defaultVhostTemplate += '    ErrorLogfile = %vhostpath%/%user%/%logDir%/error_%domain%.log\r\n';
         defaultVhostTemplate += '    ShowIndex = No\r\n';
         defaultVhostTemplate += '}';
 

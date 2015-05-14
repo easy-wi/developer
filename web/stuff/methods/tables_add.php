@@ -252,6 +252,7 @@ $query = "CREATE TABLE IF NOT EXISTS `easywi_statistics` (
   `voiceserverCrashed` int(10) unsigned DEFAULT 0,
   `webMasterInstalled` int(10) unsigned DEFAULT 0,
   `webMasterActive` int(10) unsigned DEFAULT 0,
+  `webMasterCrashed` int(10) unsigned DEFAULT 0,
   `webMasterSpaceAvailable` int(10) unsigned DEFAULT 0,
   `webMasterVhostAvailable` int(10) unsigned DEFAULT 0,
   `webspaceInstalled` int(10) unsigned DEFAULT 0,
@@ -313,6 +314,7 @@ $query = "CREATE TABLE IF NOT EXISTS `easywi_statistics_current` (
   `voiceserverCrashed` int(10) unsigned DEFAULT 0,
   `webMasterInstalled` int(10) unsigned DEFAULT 0,
   `webMasterActive` int(10) unsigned DEFAULT 0,
+  `webMasterCrashed` int(10) unsigned DEFAULT 0,
   `webMasterSpaceAvailable` int(10) unsigned DEFAULT 0,
   `webMasterVhostAvailable` int(10) unsigned DEFAULT 0,
   `webspaceInstalled` int(10) unsigned DEFAULT 0,
@@ -379,15 +381,25 @@ $query = "CREATE TABLE IF NOT EXISTS `webVhost` (
   `jobPending` enum('Y','N') DEFAULT 'N',
   `hdd` int(10) unsigned DEFAULT 0,
   `hddUsage` int(10) unsigned DEFAULT 0,
-  `dns` varchar(255),
   `ftpUser` varchar(255),
   `ftpPassword` blob,
-  `ownVhost` enum('Y','N') DEFAULT 'N',
-  `vhostTemplate` text,
   `phpConfiguration` text,
   `externalID` varchar(255) DEFAULT '',
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`webVhostID`),KEY(`webMasterID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)
+) ENGINE=InnoDB";
+$add = $sql->prepare($query);
+$add->execute();
+
+$query = "CREATE TABLE IF NOT EXISTS `webVhostDomain` (
+  `webVhostID` int(10) unsigned NOT NULL,
+  `userID` int(10) unsigned NOT NULL,
+  `resellerID` int(10) unsigned DEFAULT 0,
+  `domain` varchar(255) NOT NULL,
+  `path` varchar(255)NOT NULL,
+  `ownVhost` enum('Y','N') DEFAULT 'N',
+  `vhostTemplate` text,
+  PRIMARY KEY(`domain`,`webVhostID`),KEY(`userID`),KEY(`resellerID`)
 ) ENGINE=InnoDB";
 $add = $sql->prepare($query);
 $add->execute();

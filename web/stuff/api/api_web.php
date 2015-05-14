@@ -136,13 +136,14 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             $phpConfiguration = array();
 
-            $query = $sql->prepare("SELECT m.`webMasterID`,m.`defaultdns`,m.`phpConfiguration`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING $inSQLArray (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC LIMIT 1");
+            $query = $sql->prepare("SELECT m.`webMasterID`,m.`defaultdns`,m.`phpConfiguration`,m.`vhostTemplate`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING $inSQLArray (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC LIMIT 1");
             $query->execute(array($resellerID));
 
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $webMasterID = $row['webMasterID'];
                 $hostExternalID = $row['externalID'];
                 $defaultDns = $row['defaultdns'];
+                $vhostTemplate = $row['vhostTemplate'];
 
                 $phpConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
 
@@ -163,8 +164,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             $password = (isset($data['password']) and strlen($data['password']) > 0) ? $data['password'] : passwordgenerate(10);
 
-            $query = $sql->prepare("INSERT INTO `webVhost` (`externalID`,`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`phpConfiguration`,`jobPending`,`resellerID`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,?,'Y',?)");
-            $query->execute(array($externalServerID, $webMasterID, $localUserLookupID, $active, $hdd, $password, $aeskey, $ownVhost, $vhostTemplate, $phpConfiguration, $resellerID));
+            $query = $sql->prepare("INSERT INTO `webVhost` (`externalID`,`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`phpConfiguration`,`jobPending`,`resellerID`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,'Y',?)");
+            $query->execute(array($externalServerID, $webMasterID, $localUserLookupID, $active, $hdd, $password, $aeskey, $phpConfiguration, $resellerID));
 
             $localServerID = (int) $sql->lastInsertId();
 
@@ -173,6 +174,9 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             if ($defaultDns == $dns or $dns == '') {
                 $dns = str_replace('..', '.', $ftpUser . '.' .$defaultDns);
             }
+
+            $query = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `path`=VALUES(`path`),`ownVhost`=VALUES(`ownVhost`),`vhostTemplate`=VALUES(`vhostTemplate`)");
+            $query->execute(array($id, $localUserLookupID, $resellerID, $dns, $dns, $ownVhost, $vhostTemplate));
 
             $query = $sql->prepare("UPDATE `webVhost` SET `ftpUser`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($ftpUser, $localServerID, $resellerID));
@@ -194,7 +198,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $changedCount = 0;
 
-        $query = $sql->prepare("SELECT w.*,c.`cname` FROM `webVhost` AS w INNER JOIN `userdata` AS u ON u.`id`=w.`userID` WHERE w.`" . $from[$data['identify_server_by']] . "`=? AND w.`resellerID`=?");
+        $query = $sql->prepare("SELECT w.*,u.`cname`,m.`vhostTemplate` FROM `webVhost` AS w INNER JOIN `userdata` AS u ON u.`id`=w.`userID` INNER JOIN `webMaster` AS m ON m.`webMasterID`=w.`webMasterID` WHERE w.`" . $from[$data['identify_server_by']] . "`=? AND w.`resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -211,16 +215,38 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $userID = $row['userID'];
             $oldHDD = $row['hdd'];
 
-            $dns = $row['dns'];
             $active = $row['active'];
             $private = $row['password'];
             $hdd = $row['hdd'];
-            $ownVhost = $row['ownVhost'];
 
-            $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='wv' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
-            $query->execute(array($localServerID));
-            if ($query->fetchColumn() > 0) {
+            $domainRowCount = 0;
+
+            $query2 = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='wv' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
+            $query2->execute(array($localServerID));
+
+            if ($query2->fetchColumn() > 0) {
+
                 $success['false'][] = 'Server is marked for deletion';
+
+            } else if (isdomain($dns)) {
+
+                $oldDomains = array();
+
+                $query2 = $sql->prepare("SELECT `domain` FROM `webVhostDomain` WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=?");
+                $query2->execute(array($localServerID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    $oldDomains[] = $row2['domain'];
+                }
+
+                if (count($oldDomains) == 1) {
+                    $query2 = $sql->prepare("UPDATE `webVhostDomain` SET `domain`=?,`ownVhost`=? WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
+                    $query2->execute(array($dns, $ownVhost, $localServerID, $userID, $resellerID));
+                } else {
+                    $query2 = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,'',?,?) ON DUPLICATE KEY UPDATE `ownVhost`=VALUES(`ownVhost`)");
+                    $query2->execute(array($localServerID, $userID, $resellerID, $dns, $ownVhost, $row['vhostTemplate']));
+                }
+
+                $domainRowCount = $query2->rowCount();
             }
 
             $updateArray = array();
@@ -230,12 +256,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 $updateArray[] = $data['active'];
                 $eventualUpdate .= ',`active`=?';
                 $active = $data['active'];
-            }
-
-            if (isset($data['dns']) and isdomain($data['dns'])) {
-                $updateArray[] = $data['dns'];
-                $eventualUpdate .= ',`dns`=?';
-                $dns = $data['dns'];
             }
 
             if (isset($data['password']) and is_password($data['password'], 255)) {
@@ -263,18 +283,12 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 }
             }
 
-            if (isset($data['ownVhost']) and active_check($data['ownVhost'])) {
-                $updateArray[] = $data['ownVhost'];
-                $eventualUpdate .= ',`ownVhost`=?';
-                $ownVhost = $data['ownVhost'];
-            }
-
             if (isExternalID($data['server_external_id']) and $data['identify_server_by'] == 'server_local_id') {
                 $updateArray[] = $data['server_external_id'];
                 $eventualUpdate .= ',`externalID`=?';
             }
 
-            if (count($updateArray) > 0 and count($success['false']) == 0) {
+            if (($domainRowCount > 0 or count($updateArray) > 0) and count($success['false']) == 0) {
 
                 $eventualUpdate = trim($eventualUpdate,',');
                 $eventualUpdate .= ',';
@@ -362,9 +376,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $webMasterID = $row['webMasterID'];
             $externalServerID = $row['externalID'];
             $active = $row['active'];
-            $dns = $row['dns'];
             $hdd = $row['hdd'];
-            $ownVhost = $row['ownVhost'];
 
             $localUserID = $row['userID'];
             $externalUserID = $row['userExternalID'];

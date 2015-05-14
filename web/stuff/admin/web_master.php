@@ -150,44 +150,115 @@ php_admin_flag mod_rewrite off = OFF';
 
 if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
     if ($serverType == 'N') {
-        $vhostTemplate = 'server {
+
+        if ($usageType == 'F') {
+
+            $vhostTemplate = 'server {
     listen 80;
-    server_name %url%;
+    server_name %domain%;
     autoindex off;
-    access_log %vhostpath%/%user%/%logDir%/access.log;
-    error_log %vhostpath%/%user%/%logDir%/error.log;
-    root %vhostpath%/%user%/%htdocs%/;
+    access_log %vhostpath%/%user%/%logDir%/access_%domain%.log;
+    error_log %vhostpath%/%user%/%logDir%/error_%domain%.log;
+    root %vhostpath%/%user%/%htdocs%/%path%/;
     location / {
         index index.html index.htm;
     }
 }';
+
+        } else {
+
+            $vhostTemplate = 'server {
+   listen 80;
+   server_name %domain%;
+   autoindex off;
+   access_log %vhostpath%/%user%/%logDir%/access_%domain%.log;
+   error_log %vhostpath%/%user%/%logDir%/error_%domain%.log;
+   root %vhostpath%/%user%/%htdocs%/%path%/;
+   index index.php index.html index.htm;
+   location / {
+      try_files $uri $uri/ =404;
+   }
+   location ~ .php$ {
+      #       fastcgi_split_path_info ^(.+.php)(/.+)$;
+      #       # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+      #
+      #       # With php5-cgi alone:
+      #       fastcgi_pass 127.0.0.1:9000;
+      #       # With php5-fpm:
+      fastcgi_pass unix:/var/run/php5-fpm.sock;
+      fastcgi_index index.php;
+      include fastcgi_params;
+      fastcgi_param  PHP_VALUE "open_basedir=%vhostpath%/%user%/%htdocs%/%path%
+session.save_path=%vhostpath%/%user%/sessions
+upload_tmp_dir=%vhostpath%/%user%/tmp
+allow_url_fopen=Off
+allow_url_include=Off
+%phpConfiguration%";
+   }
+}';
+
+        }
+
     } else if ($serverType == 'A') {
-        $vhostTemplate = '<VirtualHost *:80>
+
+        if ($usageType == 'F') {
+
+            $vhostTemplate = '<VirtualHost *:80>
     ServerAdmin %email%
-    DocumentRoot "%vhostpath%/%user%/%htdocs%"
-    ServerName %url%
-    ErrorLog "%vhostpath%/%user%/%logDir%/error.log"
-    CustomLog "%vhostpath%/%user%/%logDir%/access.log" common
-    <Directory %vhostpath%/%user%/%htdocs%>
+    DocumentRoot "%vhostpath%/%user%/%htdocs%/%path%"
+    ServerName %domain%
+    ErrorLog "%vhostpath%/%user%/%logDir%/error_%domain%.log"
+    CustomLog "%vhostpath%/%user%/%logDir%/access_%domain%.log" common
+    <Directory %vhostpath%/%user%/%htdocs%/%path%>
         Options -Indexes FollowSymLinks Includes
         AllowOverride All
         Order allow,deny
         Allow from all
     </Directory>
 </VirtualHost>';
+
+        } else {
+
+            $vhostTemplate = '<VirtualHost *:80>
+    ServerAdmin %email%
+    DocumentRoot "%vhostpath%/%user%/%htdocs%/%path%"
+    ServerName %domain%
+    ErrorLog "%vhostpath%/%user%/%logDir%/error_%domain%.log"
+    CustomLog "%vhostpath%/%user%/%logDir%/access_%domain%.log" common
+    DirectoryIndex index.php index.html
+    <IfModule mpm_itk_module>
+       AssignUserId %user% %group%
+       MaxClientsVHost 50
+       NiceValue 10
+       php_admin_value open_basedir "%vhostpath%/%user%/%htdocs%/%path%"
+       php_admin_value session.save_path "%vhostpath%/%user%/sessions"
+       php_admin_value upload_tmp_dir "%vhostpath%/%user%/tmp"
+       php_admin_flag allow_url_fopen Off
+       php_admin_flag allow_url_include Off
+       %phpConfiguration%
+    </IfModule>
+    <Directory %vhostpath%/%user%/%htdocs%/%path%>
+        Options -Indexes FollowSymLinks Includes
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>';
+        }
+
     } else if ($serverType == 'L') {
-        $vhostTemplate = '$HTTP["host"] == "%url%" {
-    server.document-root = "%vhostpath%/%user%/%htdocs%"
-    server.errorlog = "%vhostpath%/%user%/%logDir%/error.log"
-    accesslog.filename = "%vhostpath%/%user%/%logDir%/access.log"
+        $vhostTemplate = '$HTTP["host"] == "%domain%" {
+    server.document-root = "%vhostpath%/%user%/%htdocs%/%path%"
+    server.errorlog = "%vhostpath%/%user%/%logDir%/error_%domain%.log"
+    accesslog.filename = "%vhostpath%/%user%/%logDir%/access_%domain%.log"
     dir-listing.activate = "disable"
 }';
     } else if ($serverType == 'H') {
         $vhostTemplate = 'VirtualHost {
-    Hostname = %url%
-    WebsiteRoot = %vhostpath%/%user%/%htdocs%
-    AccessLogfile = %vhostpath%/%user%/%logDir%/access.log
-    ErrorLogfile = %vhostpath%/%user%/%logDir%/error.log
+    Hostname = %domain%
+    WebsiteRoot = %vhostpath%/%user%/%htdocs%/%path%
+    AccessLogfile = %vhostpath%/%user%/%logDir%/access_%domain%.log
+    ErrorLogfile = %vhostpath%/%user%/%logDir%/error_%domain%.log
     ShowIndex = No
 }';
     } else {
@@ -291,15 +362,15 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 // In case the template has been changed we need to add change jobs for every vhost that uses the global template.
                 if ($oldVhostTemplate != $vhostTemplate) {
 
-                    $query = $sql->prepare("SELECT `webVhostID`,`webMasterID`,`userID`,`dns` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=? AND `ownVhost`='N'");
+                    $query = $sql->prepare("SELECT `webVhostID`,`webMasterID`,`userID` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=? AND `ownVhost`='N'");
                     $query2 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','wv',?,?,?,?,?,NULL,NOW(),'md','',?)");
 
                     $query->execute(array($id, $resellerLockupID));
                     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                        $query2->execute(array($admin_id, $row['webVhostID'], $row['webMasterID'], $row['userID'], $row['dns'], $resellerLockupID));
+                        $query2->execute(array($admin_id, $row['webVhostID'], $row['webMasterID'], $row['userID'], 'web-' . $row['webVhostID'], $resellerLockupID));
                     }
 
-                    $query = $sql->prepare("UPDATE `webVhost` SET `vhostTemplate`=? WHERE `webMasterID`=? AND `resellerID`=? AND `ownVhost`='N'");
+                    $query = $sql->prepare("UPDATE `webVhostDomain` SET `vhostTemplate`=? WHERE `ownVhost`='N' AND `webVhostID` IN (SELECT `webVhostID` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?)");
                     $query->execute(array($vhostTemplate, $id, $resellerLockupID));
                 }
 
@@ -443,10 +514,10 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
         $query->execute(array($id, $resellerLockupID));
         $ip = $query->fetchColumn();
 
-        $query = $sql->prepare("SELECT `webVhostID`,`dns` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
+        $query = $sql->prepare("SELECT `webVhostID` FROM `webVhost` WHERE `webMasterID`=? AND `resellerID`=?");
         $query->execute(array($id, $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $table[$row['webVhostID']] = $row['dns'];
+            $table[$row['webVhostID']] = 'web-' . $row['webVhostID'];
         }
 
         $template_file = 'admin_web_master_ri.tpl';
@@ -457,7 +528,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
         $reinstalledVhosts = array();
         $ids = (array) $ui->id('dnsID', 10, 'post');
 
-        $query = $sql->prepare("SELECT `userID`,`dns` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=?");
+        $query = $sql->prepare("SELECT `userID` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=?");
         $query2 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','wv',?,?,?,?,?,NULL,NOW(),'ri','',?)");
 
         foreach ($ids as $v) {
@@ -465,9 +536,9 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $query->execute(array($v, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-                $reinstalledVhosts[] = $row['dns'];
+                $reinstalledVhosts[] = 'web-' . $v;
 
-                $query2->execute(array($admin_id, $v, $id, $row['userID'], $row['dns'], $resellerLockupID));
+                $query2->execute(array($admin_id, $v, $id, $row['userID'], 'web-' . $v, $resellerLockupID));
 
                 $insertCount += $query2->rowCount();
             }

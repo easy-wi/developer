@@ -9,7 +9,7 @@
     <api>API</api>
     <apiAuth>Externe Authentifizierung</apiAuth>
     <appMaster>App Master</appMaster>
-    <appRoot>App Server</appRoot>
+    <appRoot>App/Game Master</appRoot>
 	<backup>Backup</backup>
 	<change>ändern</change>
     <chosenNoResult>Kein Suchergebnis für</chosenNoResult>

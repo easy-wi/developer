@@ -194,5 +194,6 @@ $sql->exec("DELETE v.* FROM `voice_server` v LEFT JOIN `userdata` u ON v.`userid
 $sql->exec("DELETE v.* FROM `voice_server_backup` v LEFT JOIN `userdata` u ON v.`uid`=u.`id` WHERE u.`id` IS NULL");
 $sql->exec("DELETE v.* FROM `webVhost` v LEFT JOIN `userdata` u ON v.`userID`=u.`id` WHERE u.`id` IS NULL");
 $sql->exec("DELETE v.* FROM `webVhost` v LEFT JOIN `webMaster` m ON v.`webMasterID`=m.`webMasterID` WHERE m.`webMasterID` IS NULL");
+$sql->exec("DELETE d.* FROM `webVhostDomain` d LEFT JOIN `webVhost` v ON d.`webVhostID`=v.`webVhostID` WHERE v.`webVhostID` IS NULL");
 $sql->exec("DELETE s.* FROM `easywi_statistics_current` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE s.`userID`!=0 AND u.`id` IS NULL");
 $sql->exec("DELETE s.* FROM `easywi_statistics` s LEFT JOIN `userdata` u ON s.`userID`=u.`id` WHERE s.`userID`!=0 AND u.`id` IS NULL");

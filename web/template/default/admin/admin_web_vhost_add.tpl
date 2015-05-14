@@ -93,7 +93,6 @@
                         <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-plus-circle">&nbsp;<?php echo $gsprache->add;?></i></button>
                     </div>
                 </div>
-
             </form>
         </div>
     </div>
