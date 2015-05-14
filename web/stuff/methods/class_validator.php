@@ -119,7 +119,9 @@ class ValidateUserinput {
 
     private function loop ($check, $function, $type, $length = null) {
 
-        if (is_string($check) and $length == null and $this->$function($check, $type)) {
+        if ($type == 'checkDirect') {
+
+        } else if (is_string($check) and $length == null and $this->$function($check, $type)) {
 
             return $this->$function($check, $type);
 
@@ -132,7 +134,16 @@ class ValidateUserinput {
             $stdClass = new stdClass();
 
             foreach ($check as $key => $value) {
-                $stdClass->$key = (is_string($value)) ? $value : $this->loop($value, $function, $type, $length);
+
+                if (is_string($value)) {
+
+                    if (($length and $this->$function($value, $length, 'checkDirect')) or (!$length and $this->$function($value, 'checkDirect'))) {
+                        $stdClass->$key = $value;
+                    }
+
+                } else {
+                    $stdClass->$key = $this->loop($value, $function, $type, $length);
+                }
             }
 
             return $stdClass;
@@ -141,26 +152,31 @@ class ValidateUserinput {
         return false;
     }
 
-    private function if_obj_or_str ($value, $type, $object) {
+    private function if_obj_or_str ($value, $type, $objectKey) {
 
-        if ($object == false and is_string($value) and !isset($this->$type)) {
-
+        if ($type == 'checkDirect') {
             return $value;
+        }
 
-        } else if ($object == false and isset($this->$type)) {
+        if ($objectKey == false and is_string($value) and !isset($this->$type)) {
+            return $value;
+        }
+
+        if ($objectKey == false and isset($this->$type)) {
 
             $check = $this->$type;
 
             if (isset($check[$value])) {
                 return $check[$value];
             }
+        }
 
-        } else if ($object != false and isset($this->$type)) {
+        if ($objectKey != false and isset($this->$type)) {
 
             $check = $this->$type;
 
-            if (isset($check[$value]->$object)) {
-                return $check[$value]->$object;
+            if (isset($check[$value]->$objectKey)) {
+                return $check[$value]->$objectKey;
             }
         }
 
