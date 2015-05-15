@@ -159,6 +159,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_webmasterserver.php');
 
+        // Page comments
+    } else if ($ui->smallletters('d', 12, 'get') == 'pagecomments' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['cms_pages']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_pagecomments.php');
+
         // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front without having to repeat ourselves
     } else {
 
