@@ -63,7 +63,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             unset($lang);
             if ($ui->id('id', 10, 'get')) {
                 $query->execute(array($id, $row,$reseller_id));
-                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                while ($row2 = $query->fetch(PDO::FETCH_ASSOC)) {
                     $lang = $row2['lang'];
                     $description = $row2['text'];
                 }
@@ -115,28 +115,37 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($query->rowCount() > 0) $changed = true;
         }
         if ($id) {
-            if ($_FILES["upload"]["error"]===0) {
-                $allowedTypes=array('pdf' => array('application/pdf','application/x-download'),'xls' => array('application/excel','application/vnd.ms-excel'),
-                    'ppt' => 'application/powerpoint',
+
+            if (isset($_FILES['upload']) and $_FILES['upload']['error'] == 0) {
+
+                $allowedTypes = array(
+                    'avi' => 'video/x-msvideo',
+                    'doc' => 'application/msword',
                     'gz' => 'application/x-gzip',
-                    'tar' => 'application/x-tar',
-                    'tgz' => 'application/x-tar',
-                    'zip' => array('application/x-zip','application/zip','application/x-zip-compressed','application/octet-stream'),
-                    'xml' => 'text/xml',
-                    'xsl' => 'text/xml',
+                    'mov' => 'video/quicktime',
+                    'movie' => 'video/x-sgi-movie',
+                    'mpe' => 'video/mpeg',
                     'mpeg' => 'video/mpeg',
                     'mpg' => 'video/mpeg',
-                    'mpe' => 'video/mpeg',
+                    'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+                    'pdf' => array('application/pdf','application/x-download'),
+                    'ppt' => 'application/powerpoint',
                     'qt' => 'video/quicktime',
-                    'mov' => 'video/quicktime',
-                    'avi' => 'video/x-msvideo',
-                    'movie' => 'video/x-sgi-movie',
-                    'doc' => 'application/msword',
+                    'rar' => 'application/x-rar-compressed',
+                    'tar' => 'application/x-tar',
+                    'tgz' => 'application/x-tar',
+                    'txt' => 'text/plain',
                     'word' => array('application/msword','application/octet-stream'),
                     'xl' => 'application/excel',
-                    'rar' => 'application/x-rar-compressed');
-                $exploded=explode('.',$_FILES["upload"]["name"]);
+                    'xls' => array('application/excel','application/vnd.ms-excel'),
+                    'xml' => 'text/xml',
+                    'xsl' => 'text/xml',
+                    'zip' => array('application/x-zip','application/zip','application/x-zip-compressed','application/octet-stream')
+                );
+
+                $exploded=explode('.',$_FILES['upload']['name']);
                 $extension = $exploded[count($exploded)-1];
+
                 if (isset($allowedTypes[$extension]) and ((is_array($allowedTypes[$extension]) and in_array($_FILES["upload"]["type"],$allowedTypes[$extension])) or (!is_array($allowedTypes[$extension]) and $_FILES["upload"]["type"] == $allowedTypes[$extension])) ) {
                     if (move_uploaded_file($_FILES["upload"]["tmp_name"],EASYWIDIR . '/downloads/'.$id . '.' . $extension)) {
                         $changed = true;
@@ -145,6 +154,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     }
                 }
             }
+
             if ($ui->smallletters('language',2, 'post')) {
                 $array=(array)$ui->smallletters('language',2, 'post');
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('pd',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
@@ -178,49 +188,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $template_file = ($query->rowCount() > 0) ? $spracheResponse->table_del : 'admin_404.tpl';
         $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
         $query->execute(array($id,$reseller_id));
-        unlink(EASYWIDIR . "/downloads/${id}/${fileExtension}");
+        @unlink(EASYWIDIR . "/downloads/${id}/${fileExtension}");
         $template_file = $spracheResponse->table_del;
     }
 } else {
+
     if ($ui->w('downloadOrder',4, 'post') == 'true') {
+
         $query = $sql->prepare("UPDATE `page_downloads` SET `order`=? WHERE `fileID`=? LIMIT 1");
-        foreach ($ui->id('downloadID',10, 'post') as $id => $order) $query->execute(array($order,$id));
+
+        foreach ($ui->id('downloadID',10, 'post') as $id => $order) {
+            $query->execute(array($order,$id));
+        }
     }
-    $o = $ui->st('o', 'get');
-    if ($ui->st('o', 'get') == 'dt') $orderby = '`description` DESC';
-    else if ($ui->st('o', 'get') == 'at') $orderby = '`description` ASC';
-    else if ($ui->st('o', 'get') == 'dc') $orderby = '`count` DESC';
-    else if ($ui->st('o', 'get') == 'ac') $orderby = '`count` ASC';
-    else if ($ui->st('o', 'get') == 'ds') $orderby = '`order` DESC';
-    else if ($ui->st('o', 'get') == 'as') $orderby = '`order` ASC';
-    else if ($ui->st('o', 'get') == 'di') $orderby = '`fileID` DESC';
-    else{
-        $o = 'ai';
-        $orderby = '`fileID` ASC';
-    }
-    $query = $sql->prepare("SELECT COUNT(`fileID`) AS `amount` FROM `page_downloads` WHERE `resellerID`=?");
-    $query->execute(array($reseller_id));
-    $colcount = $query->fetchColumn();
-    $start=($ui->isinteger('p', 'get')>0) ? $ui->isinteger('p', 'get') : 0;
-    $a=($ui->isinteger('a', 'get')>$colcount) ? $colcount : $ui->isinteger('a', 'get');
-    $next = $start+$a;
-    $vor=($colcount>$next) ? $start+$a : $start;
-    $back = $start-$a;
-    $zur = ($back >= 0) ? $start-$a : $start;
-    $pageamount=($a>0) ? ceil($colcount/$a) : 1;
-    $pages[] = '<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a=' . (!isset($a)) ? 20 : $a . ($start==0) ? '&p=0" class="bold">1</a>' : '&p=0">1</a>';
-    $i = 2;
-    while ($i<=$pageamount) {
-        $selectpage=($i-1)*$a;
-        $pages[]=($start==$selectpage) ? '<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a='.$a.'&p=' . $selectpage . '" class="bold">' . $i . '</a>' : '<a href="admin.php?w=vo&amp;d=md&amp;o='.$o.'&amp;a='.$a.'&p=' . $selectpage . '">' . $i . '</a>';
-        $i++;
-    }
-    $pages=implode(', ',$pages);
     $table = array();
-    $query = $sql->prepare("SELECT `fileID`,`description`,`order`,`count` FROM `page_downloads` WHERE `resellerID`=? ORDER BY ${orderby}");
+
+    $query = $sql->prepare("SELECT `fileID`,`description`,`order`,`count` FROM `page_downloads` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $table[] = array('id' => $row['fileID'], 'description' => $row['description'], 'order' => $row['order'], 'count' => $row['count']);
     }
+
+    configureDateTables('-1, -2', '1, "asc"');
+
     $template_file = 'admin_page_downloads_list.tpl';
 }

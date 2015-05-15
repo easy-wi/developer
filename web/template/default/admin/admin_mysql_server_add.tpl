@@ -8,7 +8,6 @@
     </ol>
 </section>
 
-
 <section class="content">
 
     <?php if (count($errors)>0){ ?>
