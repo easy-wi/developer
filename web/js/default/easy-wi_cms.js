@@ -49,7 +49,7 @@ function post_data (language) {
 
     userInput = document.createElement('input');
     userInput.setAttribute('name', 'text[' + language + ']');
-    userInput.setAttribute('value', CKEDITOR.instances['text-' + language].getData());
+    userInput.setAttribute('value', $('#text-' + language).text());
     invisibleTempForm.appendChild(userInput);
 
     document.body.appendChild(invisibleTempForm);
@@ -57,6 +57,19 @@ function post_data (language) {
     invisibleTempForm.submit();
 
     document.body.removeChild(invisibleTempForm);
+}
+
+function submitToForm() {
+
+    var language, checkbox;
+
+    $( "input[name='language[]']" ).each(function() {
+
+        checkbox = $(this);
+        language = checkbox.val();
+
+        $('#textValue-' + language).html($('#text-' + language).code());
+    });
 }
 
 function trim(Trim) {
