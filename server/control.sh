@@ -319,6 +319,12 @@ echo '	HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
                 AllowAll
         </Limit>
 </Directory>
+<Directory ~/server/*/projectcars*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
 <Directory ~/server/*/mc*/*>
         Umask 077 077
         <Limit RNFR RNTO STOR DELE MKD RMD>
