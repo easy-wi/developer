@@ -88,7 +88,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         // Add jQuery plugin chosen to the header
         $htmlExtraInformation['css'][] = '<link href="css/default/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
         $htmlExtraInformation['js'][] = '<script src="js/default/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
-        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>';
+        $htmlExtraInformation['css'][] = '<link href="css/default/summernote/summernote.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/summernote/summernote.min.js" type="text/javascript"></script>';
+        #$htmlExtraInformation['js'][] = '<script src="js/default/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>';
         $htmlExtraInformation['js'][] = '<script src="js/default/easy-wi_cms.js" type="text/javascript"></script>';
 
         $subpage = array();

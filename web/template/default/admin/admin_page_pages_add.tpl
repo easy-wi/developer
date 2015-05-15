@@ -11,7 +11,7 @@
 
 <section class="content">
 
-    <form role="form" action="admin.php?w=pp&amp;d=ad&amp;r=pp" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post" >
+    <form role="form" action="admin.php?w=pp&amp;d=ad&amp;r=pp" onsubmit="submitToForm(); return confirm('<?php echo $gsprache->sure;?>');" method="post" >
 
         <input type="hidden" name="token" value="<?php echo token();?>">
         <input type="hidden" name="action" value="ad">
@@ -85,6 +85,11 @@
         </div>
 
         <?php foreach ($lang_avail as $lg) { ?>
+
+        <div class="display_none">
+            <textarea id="textValue-<?php echo $lg;?>" name="text[<?php echo $lg;?>]"><?php echo $table[$lg]['text'];?></textarea>
+        </div>
+
         <div id="<?php echo $lg;?>" class="row <?php if($lg!=$default_language) echo 'display_none';?>">
             <div class="col-md-9">
 
@@ -105,7 +110,8 @@
                         <div class="form-group">
                             <label for="text-<?php echo $lg;?>"></label>
                             <div class="controls">
-                                <textarea class="form-control" name="text[<?php echo $lg;?>]" id="text-<?php echo $lg;?>" lang="<?php echo $lg;?>" rows="10"></textarea>
+                                <input type="hidden" id="textValue-<?php echo $lg;?>" name="text[<?php echo $lg;?>]" lang="<?php echo $lg;?>" value="">
+                                <div id="text-<?php echo $lg;?>"></div>
                             </div>
                         </div>
 
@@ -161,6 +167,6 @@
 
 <script type="text/javascript">
     $(function () {
-        <?php foreach ($lang_avail as $lg) echo "CKEDITOR.replace('text-$lg');"; ?>
+        <?php foreach ($lang_avail as $lg) echo "$('#text-$lg').summernote({height: 300});"; ?>
     });
 </script>
