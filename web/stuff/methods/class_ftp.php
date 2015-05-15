@@ -188,6 +188,7 @@ class EasyWiFTP {
     }
 
     public function uploadFileFromTemp ($folders, $file = '', $secondConnection = true) {
+
         $useConnection = ($secondConnection === true) ? 'ftpSecondConnection' : 'ftpConnection';
 
         if (($secondConnection === false and $this->loggedIn) or ($secondConnection === true and $this->secondLoggedIn)) {

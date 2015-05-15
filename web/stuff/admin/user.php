@@ -279,7 +279,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             $errors['mail'] = $sprache->error_mail;
         } else {
 
-            $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userdata` WHERE `mail`=? AND `id`!=? LIMIT 1");
+            $query = $sql->prepare("SELECT 1 FROM `userdata` WHERE `mail`=? AND `id`!=? LIMIT 1");
             $query->execute(array($mail, $id));
 
             if ($query->fetchColumn() > 0) {

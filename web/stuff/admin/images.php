@@ -547,7 +547,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else {
 
-    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=gameimages');
+    configureDateTables('-1', '0, "asc"', 'ajax.php?w=datatable&d=gameimages');
 
     $template_file = 'admin_images_list.tpl';
 }

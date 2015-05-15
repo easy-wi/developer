@@ -828,6 +828,7 @@ class AppServer {
 
         $cvarProtectArray = array();
         $lendServerReplaceMents = array();
+        $debugger= array();
 
         $replaceSettings = $this->getReplacements();
 
@@ -835,7 +836,7 @@ class AppServer {
 
             $line = str_replace(array("\r"), '', $line);
 
-            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json))$/', $line)) {
+            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot))$/', $line)) {
 
                 $exploded = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -853,15 +854,11 @@ class AppServer {
 
                     $splitLine = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
-                } else if ($cvarProtectArray[$configPathAndFile]['type'] == 'ini') {
+                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('ini','lua'))) {
 
                     $splitLine = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
-                } else if ($cvarProtectArray[$configPathAndFile]['type'] == 'lua') {
-
-                    $splitLine = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
-
-                } else if ($cvarProtectArray[$configPathAndFile]['type'] == 'json') {
+                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('json','ddot'))) {
 
                     $splitLine = preg_split("/:/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -878,6 +875,8 @@ class AppServer {
 
                         $splitLine = array($key, $value);
                     }
+                } else {
+                    $debugger[] = 'Type not known yet: '. $line;
                 }
 
                 if (isset($splitLine[1])) {
@@ -889,7 +888,11 @@ class AppServer {
                     }
 
                     $cvarProtectArray[$configPathAndFile]['cvars'][$splitLine[0]] = $replacedLine;
+                } else {
+                    $debugger[] = 'no second part for ' . $splitLine[0];
                 }
+            } else {
+                $debugger[] = 'The sorry rest: ' . $line;
             }
         }
 
@@ -1027,6 +1030,14 @@ class AppServer {
 
                                 $ftpObect->writeContentToTemp($cvar . '=' . $value);
 
+                            } else if ($values['type'] == 'ddot' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '[\s+]{0,}\:[\s+]{0,}(.*)$/', $loweredSingleLine)) {
+
+                                $edited = true;
+
+                                unset($cvarsNotFound[$cvar]);
+
+                                $ftpObect->writeContentToTemp($cvar . ':' . $value);
+
                             } else if ($values['type'] == 'lua' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)[\,]$/", $loweredSingleLine)) {
 
                                 $edited = true;
@@ -1072,6 +1083,8 @@ class AppServer {
                         $i++;
                     }
 
+                    $debug = array();
+
                     // In case of ini or CFG files we can add entries, which are missing from the file and should be protected
                     foreach ($cvarsNotFound as $cvar => $value) {
 
@@ -1082,6 +1095,13 @@ class AppServer {
                         } else if ($values['type'] == 'ini') {
 
                             $ftpObect->writeContentToTemp($cvar . '=' . $value . "\r\n");
+
+                        } else if ($values['type'] == 'ddot') {
+
+                            $ftpObect->writeContentToTemp($cvar . ':' . $value . "\r\n");
+
+                        } else {
+                            $debug[] = 'Type is: ' . $values['type'] . ' and key value: ' . $cvar . '=>' . $value;
                         }
                     }
 
