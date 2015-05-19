@@ -39,23 +39,6 @@
 <?php } ?>
 <?php } ?>
 
-<div class="form-group<?php if(isset($errors['ownVhost'])) echo ' has-error';?>">
-    <label for="inputOwnVhost"><?php echo $sprache->ownVhost;?></label>
-    <div class="controls">
-        <select class="form-control" id="inputOwnVhost" name="ownVhost" onchange="SwitchShowHideRows(this.value,'switch',1);">
-            <option value="N"><?php echo $gsprache->no;?></option>
-            <option value="Y" <?php if ($ownVhost=='Y') echo 'selected="selected";'?>><?php echo $gsprache->yes;?></option>
-        </select>
-    </div>
-</div>
-
-<div class="Y switch form-group <?php if($ownVhost=='N') echo 'display_none';?>">
-    <label for="inputvhostTemplate"><?php echo $sprache->vhostTemplate;?></label>
-    <div class="controls">
-        <textarea class="form-control" id="inputvhostTemplate" name="vhostTemplate" rows="20"><?php echo $vhostTemplate;?></textarea>
-    </div>
-</div>
-
 <hr>
 <h3><?php echo $gsprache->domains;?> <span class="btn btn-success btn-sm" onclick="addRow();"><i class="fa fa-plus-circle"></i></span></h3>
 <div id="domains">
