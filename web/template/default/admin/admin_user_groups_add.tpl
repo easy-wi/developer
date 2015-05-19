@@ -436,6 +436,12 @@
                         </div>
                         <div class="u switch checkbox">
                             <label>
+                                <input id="inputMYSQL" type="checkbox" name="umysql" value="Y">
+                                MySQL <?php echo $gsprache->databases;?>
+                            </label>
+                        </div>
+                        <div class="u switch checkbox">
+                            <label>
                                 <input id="inputUserSettings" type="checkbox" name="usersettings" value="Y">
                                 <?php echo $sprache->usersettings;?>
                             </label>

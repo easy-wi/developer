@@ -26,12 +26,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="inputLanguages"><?php echo $gsprache->languages;?></label>
-                            <div class="controls"><input class="form-control" id="inputCount" type="text" name="inputLanguages" value="<?php echo implode(', ',$p_languages);?>" readonly="readonly"></div>
+                            <label for="inputLanguages"><?php echo $sprache->languages;?></label>
+                            <div class="controls"><input class="form-control" id="inputLanguages" type="text" name="inputLanguages" value="<?php echo implode(', ',$p_languages);?>" readonly="readonly"></div>
                         </div>
 
                         <div class="form-group">
-                            <label for="inputReleased"><?php echo $gsprache->released;?></label>
+                            <label for="inputReleased"><?php echo $sprache->released;?></label>
                             <div class="controls"><input class="form-control" id="inputReleased" type="text" name="released" value="<?php echo $page_active;?>" readonly="readonly"></div>
                         </div>
                     </div>

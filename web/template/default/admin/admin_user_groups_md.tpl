@@ -437,6 +437,12 @@
                         </div>
                         <div class="u <?php if ($grouptype!='u') echo 'display_none';?> switch checkbox">
                             <label>
+                                <input id="inputMYSQL" type="checkbox" name="umysql" value="Y" <?php if ($mysql=='Y') echo 'checked="checked"'; ?>>
+                                MySQL <?php echo $gsprache->databases;?>
+                            </label>
+                        </div>
+                        <div class="u <?php if ($grouptype!='u') echo 'display_none';?> switch checkbox">
+                            <label>
                                 <input id="inputUserSettings" type="checkbox" name="usersettings" value="Y" <?php if ($usersettings=='Y') echo 'checked="checked"'; ?>>
                                 <?php echo $sprache->usersettings;?>
                             </label>
