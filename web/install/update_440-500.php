@@ -74,6 +74,34 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("UPDATE `servertypes` SET `cmd`='./%binary% -n' WHERE `shorten`='mtasa' AND `cmd`='./%binary%'");
     $query->execute();
 
+    // Add new games if not existing
+    include(EASYWIDIR . '/stuff/methods/gameslist.php');
+
+    $addGames = array('nmrih');
+
+    $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=0 LIMIT 1");
+    $query2 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`resellerid`) VALUES (:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:resellerid)");
+
+    foreach ($gameImages as $image) {
+
+        if (in_array($image[':shorten'], $addGames) and count($image) == 33) {
+
+            $image[':resellerid'] = 0;
+
+            $query->execute(array($image[':shorten'], 0));
+            $imageExists = (int) $query->fetchColumn();
+
+            if ($imageExists == 0) {
+
+                $query2->execute($image);
+
+                if ($query2->rowCount() > 0) {
+                    $response->add($gsprache->add . ': ' . $image[':description']);
+                }
+            }
+        }
+    }
+
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
 ('5.00','<div align=\"right\">10.05.2014</div>
 <b>Änderungen:</b><br/>
