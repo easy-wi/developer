@@ -118,9 +118,11 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
         }
 
         if ($ui->st('action', 'post') == 'md') {
+
             $query = $sql->prepare("SELECT `sid` FROM `mysql_external_dbs` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $resellerLockupID));
             $rootID = $query->fetchColumn();
+
         }
 
         if (!isid($rootID, 10)) {
@@ -160,7 +162,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 $loguseraction = '%add% MySQL DB ' . $dbName . ' (' . $mysqlServer['ip'] .')';
 
-            } else if ($ui->st('action', 'post') == 'md' and $id and isset($rootServer)) {
+            } else if ($ui->st('action', 'post') == 'md' and $id) {
 
                 $dbName = 'sql' . $id;
 
