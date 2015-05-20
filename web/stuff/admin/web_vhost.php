@@ -468,12 +468,12 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
 } else if (!isset($tokenError) and $ui->st('d', 'get') == 'ri' and $id) {
 
-    $query = $sql->prepare("SELECT `webMasterID` FROM `webVhost` WHERE`webVhostID`=? AND `resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT v.`webMasterID`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
     $query->execute(array($id, $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $webMasterID = $row['webMasterID'];
+        $user = trim($row['cname'] . ' ' . trim($row['vname'] . ' ' . $row['name']));
     }
-
 
     // Nothing submitted yet, display the delete form
     if (!$ui->st('action', 'post')) {
