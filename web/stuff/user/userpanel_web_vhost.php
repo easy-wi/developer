@@ -64,13 +64,14 @@ if (isset($admin_id)) {
 
 if ($ui->id('id', 10, 'get') and in_array($ui->st('d', 'get'), array('if', 'pw', 'ri', 'md','dm'))) {
 
-    $query = $sql->prepare("SELECT v.`webMasterID`,v.`phpConfiguration`,v.`phpConfiguration`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only`,m.`ftpIP`,m.`ip`,m.`phpConfiguration` AS `phpMasterConfiguration` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`webVhostID`=? AND v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
+    $query = $sql->prepare("SELECT v.`webMasterID`,v.`phpConfiguration`,v.`phpConfiguration`,m.`vhostTemplate`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only`,m.`ftpIP`,m.`ip`,m.`phpConfiguration` AS `phpMasterConfiguration` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`webVhostID`=? AND v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
     $query->execute(array($ui->id('id', 10, 'get'), $user_id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $defaultDns = 'web-' . $ui->id('id', 10, 'get') . '.' . $row['defaultdns'];
         $dns = 'web-' . $ui->id('id', 10, 'get');
         $webMasterID = $row['webMasterID'];
         $usageType = $row['usageType'];
+        $vhostTemplate = $row['vhostTemplate'];
         $phpConfigurationVhost = @json_decode($row['phpConfiguration']);
         $phpConfigurationMaster = @parse_ini_string($row['phpMasterConfiguration'], true, INI_SCANNER_RAW);
         $serverIP = ($row['connect_ip_only'] == 'Y') ? $row['ftpIP'] : $row['ip'];
@@ -127,7 +128,7 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
     } else {
         $template_file = 'userpanel_web_vhost_pw.tpl';
     }
-} else if (isset($webMasterID, $dns, $usageType, $phpConfigurationMaster) and $usageType == 'W' and $ui->st('d', 'get') == 'dm' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
+} else if (isset($webMasterID, $dns, $usageType, $phpConfigurationMaster, $vhostTemplate) and $usageType == 'W' and $ui->st('d', 'get') == 'dm' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
 
     $id = $ui->id('id', 10, 'get');
 
@@ -150,8 +151,6 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
             $query = $sql->prepare("SELECT 1 FROM `webVhostDomain` WHERE `webVhostID`!=? AND `domain`=? AND `resellerID`=? LIMIT 1");
 
             $paths = $ui->path('path', 'post');
-            $ownVhosts = $ui->active('ownVhost', 'post');
-            $vhostTemplates = $ui->escaped('vhostTemplate', 'post');
 
             foreach($domains as $index => $domain) {
 
@@ -205,7 +204,7 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
         $query = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,?,'N',?) ON DUPLICATE KEY UPDATE `path`=VALUES(`path`)");
         foreach($domainConfigurations as $domain => $path) {
 
-            $query->execute(array($id, $user_id, $reseller_id, $domain, $path, $path['vhostTemplate']));
+            $query->execute(array($id, $user_id, $reseller_id, $domain, $path, $vhostTemplate));
             $rowCount += $query->rowCount();
 
             unset($domainRemove[$domain]);
