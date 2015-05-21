@@ -1317,7 +1317,7 @@ class AppServer {
 
         if (count($this->appMasterServerDetails['configBinaries']) > 0 or count($this->appMasterServerDetails['configFiles']) > 0 ) {
 
-            $script .= 'FILESFOUND=(`find ' . $serverDir . ' -type f';
+            $script .= 'FILESFOUND=(`find ' . $serverDir . ' -type f ';
 
             if (count($this->appMasterServerDetails['configBinaries']) > 0) {
                 $script .= '\( -iname "*.' . implode('" -or -iname "*.', $this->appMasterServerDetails['configBinaries']) . '" \)';
