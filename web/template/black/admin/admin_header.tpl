@@ -344,7 +344,7 @@
                     </li>
                     <?php } ?>
 
-                    <?php if($pa['roots'] or $pa['masterServer']) { ?>
+                    <?php if($easywiModules['gs'] and ($pa['roots'] or $pa['masterServer'])) { ?>
                     <li class="treeview <?php if(in_array($w,array('ro','ma'))) echo 'active';?>">
                         <a href="#">
                             <i class="fa fa-hdd-o fa-fw"></i>
