@@ -150,12 +150,12 @@ if ($ui->ipport('serveraddress', 'post')) {
 
     } else {
 
-        if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl')) {
-            include(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl');
+        if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/standalone/protectioncheck.tpl')) {
+            include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/protectioncheck.tpl');
         } else if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
             include(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl');
-        } else if (is_file(EASYWIDIR . '/template/default/cms/protectioncheck.tpl')) {
-            include(EASYWIDIR . '/template/default/cms/protectioncheck.tpl');
+        } else if (is_file(EASYWIDIR . '/template/default/standalone/protectioncheck.tpl')) {
+            include(EASYWIDIR . '/template/default/standalone/protectioncheck.tpl');
         } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
             include(EASYWIDIR . '/template/default/protectioncheck.tpl');
         } else {
@@ -232,12 +232,12 @@ XML;
     $template_file = 'page_protectioncheck.tpl';
 
 } else {
-    if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl')) {
-        include(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl');
+    if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/standalone/protectioncheck.tpl')) {
+        include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/protectioncheck.tpl');
     } else if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl');
-    } else if (is_file(EASYWIDIR . '/template/default/cms/protectioncheck.tpl')) {
-        include(EASYWIDIR . '/template/default/cms/protectioncheck.tpl');
+    } else if (is_file(EASYWIDIR . '/template/default/standalone/protectioncheck.tpl')) {
+        include(EASYWIDIR . '/template/default/standalone/protectioncheck.tpl');
     } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
         include(EASYWIDIR . '/template/default/protectioncheck.tpl');
     } else {

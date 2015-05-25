@@ -22,13 +22,6 @@
 
     <?php echo implode('',$htmlExtraInformation['css']);?>
 
-
-
-    <!--[if lt IE 9]>
-
-
-    <![endif]-->
-
     <?php echo implode('',$htmlExtraInformation['js']);?>
 
 </head>

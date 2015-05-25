@@ -728,8 +728,8 @@ if ($ui->st('w', 'get') == 'lo') {
 }
 
 if (isset($include) and isset($template_to_use)) {
-    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $include)) {
-        include(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $include);
+    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/standalone/' . $include)) {
+        include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/' . $include);
     } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $include)) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/' . $include);
     } else if (is_file(EASYWIDIR . '/template/default/cms/' . $include)) {

@@ -21,31 +21,12 @@
         .form-signin input[type="text"],
         .form-signin input[type="password"] { margin-bottom: 15px;padding: 7px 9px;}
     </style>
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
 </head>
 <body>
 <div class="container">
-    <?php if(isset($header)) echo '<div><img src="images/16_notice.png" alt="notice" />'.$text.'</div>'; ?>
     <div class="form-signin">
-        <?php if ($servertype=='g' and $gslallowed==true) { ?>
-        <?php if ($volallowed==true) { ?><h3><a href="lend.php?w=vo"><?php echo $gsprache->voiceserver;?></a></h3><?php } ?>
-        <p><?php echo $gssprache->game.' '.$description;?></p>
-        <p><?php echo $gssprache->server;?> <a href="steam://connect/<?php echo $serverip.':'.$port.'/'.$password;?>">connect <?php echo $serverip.':'.$port.'; password '.$password;?></a></p>
-        <p><?php echo $gssprache->slots.' '.$slots;?></p>
-        <p><?php echo $sprache->timeleft.' '.$timeleft.'/'.$lendtime.' '.$sprache->minutes;?></p>
-        <p><?php echo $gssprache->rcon.' '.$rcon;?></p>
-        <p><?php echo $gssprache->password.' '.$password;?></p>
-        <?php } else if ($volallowed==true) { ?>
-        <?php if ($gslallowed==true) { ?><h3 class="middle"><a href="lend.php?w=gs"><?php echo $gsprache->gameserver;?></a></h3><?php } ?>
-        <p><?php echo $gssprache->server;?> <a href="ts3server://<?php echo $server.'?password='.$password;?>"><?php echo $server;?></a></p>
-        <p><?php echo $gssprache->slots.' '.$slots;?></p>
-        <p><?php echo $sprache->timeleft.' '.$timeleft.'/'.$lendtime.' '.$sprache->minutes;?></p>
-        <p>Token <?php echo $rcon;?></p>
-        <p><?php echo $gssprache->password.' '.$password;?></p>
-        <?php } ?>
+        <h2 class="form-signin-heading">>Error:</h2>
+        <p><?php echo $sprache->ipblock;?></p>
     </div>
 </div>
 <hr>
