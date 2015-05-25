@@ -49,9 +49,8 @@
     <!-- header logo: style can be found in header.less -->
     <header class="main-header">
     <a href="https://easy-wi.com" class="logo" target="_blank">
-        <!-- Add the class icon to your logo image or logo icon to add the margining -->
-        <img src="images/logo_180px.png" title="Easy-Wi" width="32">
-        Easy-Wi
+        <img src="images/<?php echo $rSA['header_icon'];?>" title="<?php echo $rSA['header_text'];?>" width="32">
+        <?php echo $rSA['header_text'];?>
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->

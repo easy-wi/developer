@@ -1127,6 +1127,8 @@ $add->execute();
 $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `version` decimal(4,2) DEFAULT '4.40',
+  `header_icon` varchar(255) DEFAULT 'logo_180px.png',
+  `header_text` varchar(255) DEFAULT 'Easy-Wi',
   `releasenotesDE` INT(11) unsigned NULL,
   `releasenotesEN` INT(11) unsigned NULL,
   `language` varchar(2) NOT NULL,
@@ -1165,7 +1167,7 @@ $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `emailuseradd` blob,
   `emailvinstall` blob,
   `emailvrescue` blob,
-  `supportnumber` varchar(50) DEFAULT NULL,
+  `supportnumber` varchar(255) DEFAULT NULL,
   `noservertag` smallint(1) unsigned NOT NULL DEFAULT '1',
   `nopassword` smallint(1) unsigned NOT NULL DEFAULT '1',
   `tohighslots` smallint(1) unsigned NOT NULL DEFAULT '1',

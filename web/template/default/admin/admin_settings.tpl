@@ -18,8 +18,8 @@
 
                     <div class="box-body">
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputLanguage"><?php echo $sprache->language;?></label>
+                        <div class="form-group">
+                            <label for="inputLanguage"><?php echo $sprache->language;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputLanguage" name="language">
                                     <?php foreach ($selectlanguages as $la) { ?>
@@ -29,8 +29,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputTemplate">Template</label>
+                        <div class="form-group">
+                            <label for="inputTemplate">Template</label>
                             <div class="controls">
                                 <select class="form-control" id="inputTemplate" name="template">
                                     <?php foreach ($templates as $tp) { ?>
@@ -40,8 +40,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputTime"><?php echo $sprache->timezone."<br />".$servertime;?></label>
+                        <div class="form-group">
+                            <label for="inputTime"><?php echo $sprache->timezone;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputTime" name="timezone">
                                     <option <?php if($timezone=="-24") echo 'selected="selected"'; ?>>-24</option>
@@ -97,10 +97,24 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputPhone"><?php echo $sprache->supportnumber;?></label>
+                        <div class="form-group">
+                            <label for="inputPhone"><?php echo $sprache->supportnumber;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputPhone" type="tel" name="supportnumber" value="<?php echo $supportnumber;?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputHeaderIcon">Header Icon</label>
+                            <div class="controls">
+                                <input class="form-control" id="inputHeaderIcon" type="text" name="headerIcon" value="<?php echo $headerIcon;?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputHeaderText">Header Text</label>
+                            <div class="controls">
+                                <input class="form-control" id="inputHeaderText" type="text" name="headerText" value="<?php echo $headerText;?>">
                             </div>
                         </div>
 
@@ -108,15 +122,15 @@
 
                         <h4><?php echo $gsprache->user;?></h4>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputLogins"><?php echo $sprache->faillogins;?></label>
+                        <div class="form-group">
+                            <label for="inputLogins"><?php echo $sprache->faillogins;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputLogins" type="number" name="faillogins" value="<?php echo $faillogins;?>" required>
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputPrefix1"><?php echo $sprache->prefix1;?></label>
+                        <div class="form-group">
+                            <label for="inputPrefix1"><?php echo $sprache->prefix1;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputPrefix1" name="prefix1" onchange="textdrop('prefix');">
                                     <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -125,8 +139,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group <?php if ($prefix1=='N') echo 'display_none';?>" id="prefix">
-                            <label class="control-label" for="inputPrefix2"><?php echo $sprache->prefix3;?></label>
+                        <div class="form-group <?php if ($prefix1=='N') echo 'display_none';?>" id="prefix">
+                            <label for="inputPrefix2"><?php echo $sprache->prefix3;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputPrefix2" type="text" name="prefix2" value="<?php echo $prefix2;?>">
                             </div>
@@ -136,15 +150,15 @@
 
                         <h4><?php echo $gsprache->gameserver.' + '.$gsprache->voiceserver;?></h4>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputDown"><?php echo $sprache->down_checks;?></label>
+                        <div class="form-group">
+                            <label for="inputDown"><?php echo $sprache->down_checks;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputDown" type="number" name="down_checks" value="<?php echo $down_checks;?>" required>
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputBrandname"><?php echo $sprache->brandname;?></label>
+                        <div class="form-group">
+                            <label for="inputBrandname"><?php echo $sprache->brandname;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputBrandname" type="text" name="brandname" value="<?php echo $brandname;?>">
                             </div>
@@ -154,8 +168,8 @@
 
                         <h4><?php echo $gsprache->gameserver;?></h4>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputServertag"><?php echo $sprache->noservertag;?></label>
+                        <div class="form-group">
+                            <label for="inputServertag"><?php echo $sprache->noservertag;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputServertag" name="noservertag">
                                     <option value="1"><?php echo $sprache->shutdown;?></option>
@@ -164,8 +178,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputNoPass"><?php echo $sprache->nopassword;?></label>
+                        <div class="form-group">
+                            <label for="inputNoPass"><?php echo $sprache->nopassword;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputNoPass" name="nopassword">
                                     <option value="1"><?php echo $sprache->shutdown;?></option>
@@ -174,8 +188,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputSlots"><?php echo $sprache->tohighslots;?></label>
+                        <div class="form-group">
+                            <label for="inputSlots"><?php echo $sprache->tohighslots;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputSlots" name="tohighslots">
                                     <option value="1"><?php echo $sprache->shutdown;?></option>
@@ -184,8 +198,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputImageServer"><?php echo $sprache->image_server2;?></label>
+                        <div class="form-group">
+                            <label for="inputImageServer"><?php echo $sprache->image_server2;?></label>
                             <div class="controls">
                                 <textarea class="form-control" id="inputImageServer" name="imageserver" rows="5"><?php echo $imageserver;?></textarea>
                             </div>
@@ -195,15 +209,15 @@
 
                         <h4><?php echo $gsprache->voiceserver;?></h4>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputBackups"><?php echo $sprache->maxbackups;?></label>
+                        <div class="form-group">
+                            <label for="inputBackups"><?php echo $sprache->maxbackups;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputBackups" type="number" name="voice_maxbackup" value="<?php echo $voice_maxbackup;?>">
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputAutoBackup">Voice Autobackup</label>
+                        <div class="form-group">
+                            <label for="inputAutoBackup">Voice Autobackup</label>
                             <div class="controls">
                                 <select class="form-control" id="inputAutoBackup" name="voice_autobackup" onchange="textdrop('voice_autobackup');">
                                     <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -212,8 +226,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group <?php if ($voice_autobackup=='N') echo 'display_none';?>" id="voice_autobackup">
-                            <label class="control-label" for="inputAutoBackup2"><?php echo $sprache->eachday;?></label>
+                        <div class="form-group <?php if ($voice_autobackup=='N') echo 'display_none';?>" id="voice_autobackup">
+                            <label for="inputAutoBackup2"><?php echo $sprache->eachday;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputAutoBackup2" type="number" name="voice_autobackup_intervall" value="<?php echo $voice_autobackup_intervall;?>">
                             </div>
@@ -223,8 +237,8 @@
 
                         <h4>Cronjobs</h4>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputlastCronWarnStatus"><?php echo $sprache->lastCronWarnStatus;?></label>
+                        <div class="form-group">
+                            <label for="inputlastCronWarnStatus"><?php echo $sprache->lastCronWarnStatus;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputlastCronWarnStatus" name="lastCronWarnStatus">
                                     <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -233,8 +247,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputlastCronWarnReboot"><?php echo $sprache->lastCronWarnReboot;?></label>
+                        <div class="form-group">
+                            <label for="inputlastCronWarnReboot"><?php echo $sprache->lastCronWarnReboot;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputlastCronWarnReboot" name="lastCronWarnReboot">
                                     <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -243,8 +257,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputlastCronWarnUpdates"><?php echo $sprache->lastCronWarnUpdates;?></label>
+                        <div class="form-group">
+                            <label for="inputlastCronWarnUpdates"><?php echo $sprache->lastCronWarnUpdates;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputlastCronWarnUpdates" name="lastCronWarnUpdates">
                                     <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -253,8 +267,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputlastCronWarnJobs"><?php echo $sprache->lastCronWarnJobs;?></label>
+                        <div class="form-group">
+                            <label for="inputlastCronWarnJobs"><?php echo $sprache->lastCronWarnJobs;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputlastCronWarnJobs" name="lastCronWarnJobs">
                                     <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -263,8 +277,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputlastCronWarnCloud"><?php echo $sprache->lastCronWarnCloud;?></label>
+                        <div class="form-group">
+                            <label for="inputlastCronWarnCloud"><?php echo $sprache->lastCronWarnCloud;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputlastCronWarnCloud" name="lastCronWarnCloud">
                                     <option value="Y"><?php echo $gsprache->yes;?></option>
@@ -273,8 +287,8 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="inputCronjobIPs">Cronjob IPs</label>
+                        <div class="form-group">
+                            <label for="inputCronjobIPs">Cronjob IPs</label>
                             <div class="controls">
                                 <textarea class="form-control" id="inputCronjobIPs" name="cronjobIPs" rows="8"><?php echo $cronjobIPs;?></textarea>
                             </div>

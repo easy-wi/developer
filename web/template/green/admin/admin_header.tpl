@@ -50,9 +50,8 @@
     <header class="main-header">
 
         <a href="https://easy-wi.com" class="logo" target="_blank">
-            <!-- Add the class icon to your logo image or logo icon to add the margining -->
-            <img src="images/logo_180px.png" title="Easy-Wi" width="32">
-            Easy-Wi
+            <img src="images/<?php echo $rSA['header_icon'];?>" title="<?php echo $rSA['header_text'];?>" width="32">
+            <?php echo $rSA['header_text'];?>
         </a>
 
         <!-- Header Navbar: style can be found in header.less -->
@@ -160,10 +159,10 @@
                         </span>
                     </div>
                 </form>
-                <!-- sidebar menu: : style can be found in sidebar.less -->
+
                 <ul class="sidebar-menu">
 
-                    <li class="treeview <?php if(in_array($w,array('da','ho','ib','lo','ml','ip')) or isset($customModules['ip'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
+                    <li class="treeview <?php if(in_array($w,array('da','ho','ib','ip','lo','ml','sc')) or isset($customModules['ip'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                         <a href="#">
                             <i class="fa fa-home fa-fw"></i>
                             <span>Home</span>
@@ -177,6 +176,7 @@
                             <li <?php if($ui->smallletters('w',255,'get')=='ml') echo 'class="active"';?>><a href="admin.php?w=ml"><i class="fa fa-envelope"></i> Mail <?php echo $gsprache->logs;?></a></li>
                             <?php } ?>
                             <?php if($easywiModules['ip']) { ?><li <?php if($ui->smallletters('w',255,'get')=='ip') echo 'class="active"';?>><a href="admin.php?w=ip"><i class="fa fa-legal"></i> <?php echo $gsprache->imprint;?></a></li><?php }?>
+                            <?php if($pa['settings'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='sc') echo 'class="active"';?>><a href="admin.php?w=sc"><i class="fa fa-heartbeat"></i> <?php echo $gsprache->system_check;?></a></li><?php } ?>
                         </ul>
                     </li>
 
@@ -438,7 +438,7 @@
                     </li>
                     <?php } ?>
 
-                    <?php if($easywiModules['ro'] and ($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver'] or $pa['dedicatedServer'] or ($pa['vserverhost'] and $reseller_id==0)) or ($pa['resellertemplates'] and $reseller_id==0)) { ?>
+                    <?php if($easywiModules['ro'] and (($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver'] or $pa['dedicatedServer'] or ($pa['vserverhost'] and $reseller_id==0)) or ($pa['resellertemplates'] and $reseller_id==0))) { ?>
                     <li class="treeview <?php if(in_array($w,array('vs','rh','vh','ot')) or isset($customModules['ro'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
                         <a href="#">
                             <i class="fa fa-laptop fa-fw"></i>
