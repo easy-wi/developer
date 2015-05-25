@@ -52,17 +52,22 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("DELETE FROM `easywi_statistics`");
     $query->execute();
 
-    $query = $sql->prepare("SELECT `webVhostID`,`userID`,`resellerID`,`dns`,`ownVhost`,`vhostTemplate` FROM `webVhost`");
-    $query->execute();
-    $query2 = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,'',?,?)");
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        // Try catch as some admins might have maintained domains not be so unique
-        try {
-            $query2->execute(array($row['webVhostID'], $row['userID'], $row['resellerID'], $row['dns'], $row['ownVhost'], $row['vhostTemplate']));
-            $response->add('Migrated ' . $row['dns'] . ' to new table.');
-        } catch(PDOException $error) {
-            $response->add($error->getMessage());
+    // Try catch as some admins upgrade vom DEV to stable
+    try {
+        $query = $sql->prepare("SELECT `webVhostID`,`userID`,`resellerID`,`dns`,`ownVhost`,`vhostTemplate` FROM `webVhost`");
+        $query->execute();
+        $query2 = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,'',?,?)");
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            // Try catch as some admins might have maintained domains not be so unique
+            try {
+                $query2->execute(array($row['webVhostID'], $row['userID'], $row['resellerID'], $row['dns'], $row['ownVhost'], $row['vhostTemplate']));
+                $response->add('Migrated ' . $row['dns'] . ' to new table.');
+            } catch(PDOException $error) {
+                $response->add($error->getMessage());
+            }
         }
+    } catch (PDOException $error) {
+        $response->add($error->getMessage());
     }
 
     $query = $sql->prepare("SELECT `id` FROM `modules` WHERE `get`='ro' LIMIT 1");
@@ -100,7 +105,7 @@ if (isset($include) and $include == true) {
 
             $image[':resellerid'] = 0;
 
-            $query->execute(array($image[':shorten'], 0));
+            $query->execute(array($image[':shorten']));
             $imageExists = (int) $query->fetchColumn();
 
             if ($imageExists == 0) {
@@ -108,7 +113,7 @@ if (isset($include) and $include == true) {
                 $query2->execute($image);
 
                 if ($query2->rowCount() > 0) {
-                    $response->add($gsprache->add . ': ' . $image[':description']);
+                    $response->add('Added : ' . $image[':description']);
                 }
             }
         }
@@ -260,7 +265,7 @@ if (isset($include) and $include == true) {
 <li>Added MySQL master list</li>
 <li>Generated user name is returned in case none is send</li>
 <li>Added user list</li>
-<li>New operation clean user's externalID</li>
+<li>New operation clean users externalID</li>
 </ul></li>
 <li>CMS:
 <ul>
