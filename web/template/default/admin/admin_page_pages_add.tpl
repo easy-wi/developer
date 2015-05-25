@@ -87,7 +87,7 @@
         <?php foreach ($lang_avail as $lg) { ?>
 
         <div class="display_none">
-            <textarea id="textValue-<?php echo $lg;?>" name="text[<?php echo $lg;?>]"><?php echo $table[$lg]['text'];?></textarea>
+            <textarea id="textValue-<?php echo $lg;?>" name="text[<?php echo $lg;?>]"></textarea>
         </div>
 
         <div id="<?php echo $lg;?>" class="row <?php if($lg!=$default_language) echo 'display_none';?>">
@@ -110,7 +110,6 @@
                         <div class="form-group">
                             <label for="text-<?php echo $lg;?>"></label>
                             <div class="controls">
-                                <input type="hidden" id="textValue-<?php echo $lg;?>" name="text[<?php echo $lg;?>]" lang="<?php echo $lg;?>" value="">
                                 <div id="text-<?php echo $lg;?>"></div>
                             </div>
                         </div>

@@ -34,31 +34,6 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-
-function post_data (language) {
-
-    var invisibleTempForm = document.createElement('form');
-    invisibleTempForm.method = 'post';
-    invisibleTempForm.action = 'index.php?site=news&preview=true';
-    invisibleTempForm.setAttribute('target', 'text-' + language);
-
-    var userInput = document.createElement('input') ;
-    userInput.setAttribute('name', 'title[' + language + ']');
-    userInput.setAttribute('value', $('#title-' + language).val());
-    invisibleTempForm.appendChild(userInput);
-
-    userInput = document.createElement('input');
-    userInput.setAttribute('name', 'text[' + language + ']');
-    userInput.setAttribute('value', $('#text-' + language).text());
-    invisibleTempForm.appendChild(userInput);
-
-    document.body.appendChild(invisibleTempForm);
-
-    invisibleTempForm.submit();
-
-    document.body.removeChild(invisibleTempForm);
-}
-
 function submitToForm() {
 
     var language, checkbox;
@@ -72,13 +47,36 @@ function submitToForm() {
     });
 }
 
+function post_data(language) {
+
+    var invisibleTempForm = document.createElement('form');
+    invisibleTempForm.method = 'post';
+    invisibleTempForm.action = 'index.php?site=news&preview=true';
+    invisibleTempForm.setAttribute('target', 'text-' + language);
+
+    var userInput = document.createElement('input') ;
+    userInput.setAttribute('name', 'title[' + language + ']');
+    userInput.setAttribute('value', $('#title-' + language).val());
+    invisibleTempForm.appendChild(userInput);
+
+    userInput = document.createElement('input');
+    userInput.setAttribute('name', 'text[' + language + ']');
+    userInput.setAttribute('value', $('#text-' + language).code());
+    invisibleTempForm.appendChild(userInput);
+
+    document.body.appendChild(invisibleTempForm);
+
+    invisibleTempForm.submit();
+
+    document.body.removeChild(invisibleTempForm);
+}
+
 function trim(Trim) {
     return Trim.replace(/^\s+|\s+$/g,'');
 }
 
 function AddKey(clickedObject, target) {
 
-    console.log(target);
     var targetObject = $('#' + target);
     var keys = targetObject.val().split(',');
     var exists = false;
@@ -99,4 +97,42 @@ function AddKey(clickedObject, target) {
     }
 
     clickedObject.remove();
+}
+
+function textToHtml(Text) {
+    Text = Text.replace(/\</g,"&lt;");
+    Text = Text.replace(/\>/g,"&gt");
+    return Text;
+}
+
+function addCategory(useFrom, target, language) {
+
+    var exists = false;
+    var catlist = document.getElementById(target);
+    var cats = document.getElementsByName('categories[' + language + '][]');
+    var newcatInput = document.getElementById(useFrom);
+    var newcat = newcatInput.value;
+
+    if (newcat != "") {
+
+        var i;
+        var length = cats.length;
+
+        for (i = 0; i < length; i++) {
+            if (trim(cats[i].value).toLowerCase() == newcat.toLowerCase()) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (exists === false) {
+
+            var newRow = catlist.insertRow(-1);
+            var newCell = newRow.insertCell(0);
+
+            newCell.innerHTML += '<input type="checkbox" name="categories[' + language + '][]" value="'+newcat+'" checked="checked"> ' + textToHtml(newcat);
+
+            newcatInput.value = '';
+        }
+    }
 }
