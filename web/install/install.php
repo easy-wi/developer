@@ -921,6 +921,19 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
 if ($currentStep == 9 and count($systemCheckError) == 0) {
 
+    // Root module is not used at the moment and needs to be rewritten
+    $query = $sql->prepare("SELECT `id` FROM `modules` WHERE `get`='ro' LIMIT 1");
+    $query->execute();
+    $rootModuleId = (int) $query->fetchColumn();
+
+    if ($rootModuleId > 0) {
+        $query = $sql->prepare("UPDATE `modules` SET `active`='N' WHERE `id`=? LIMIT 1");
+        $query->execute(array($rootModuleId));
+    } else {
+        $query = $sql->prepare("INSERT INTO `modules` (`get`,`sub`,`file`,`active`,`type`) VALUES ('ro','ro','','N','C')");
+        $query->execute();
+    }
+
     function rmr($dir) {
 
         if (is_dir($dir)) {
@@ -1003,8 +1016,8 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
     <title>Easy-WI Installer</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="../css/default/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/default/font-awesome.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <style type="text/css">
@@ -1062,13 +1075,6 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
             }
         }
     </style>
-
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js" type="text/javascript"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js" type="text/javascript"></script>
-    <![endif]-->
 </head>
 
 <body>
@@ -1121,7 +1127,7 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
 
 
 <!-- Bootstrap core JavaScript Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../js/default/jquery.min.js" type="text/javascript"></script>
+<script src="../js/default/bootstrap.min.js" type="text/javascript"></script>
 </body>
 </html>
