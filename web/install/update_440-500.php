@@ -65,6 +65,18 @@ if (isset($include) and $include == true) {
         }
     }
 
+    $query = $sql->prepare("SELECT `id` FROM `modules` WHERE `get`='ro' LIMIT 1");
+    $query->execute();
+    $rootModuleId = (int) $query->fetchColumn();
+
+    if ($rootModuleId > 0) {
+        $query = $sql->prepare("UPDATE `modules` SET `active`='N' WHERE `id`=? LIMIT 1");
+        $query->execute(array($rootModuleId));
+    } else {
+        $query = $sql->prepare("INSERT INTO `modules` (`get`,`sub`,`file`,`active`,`type`) VALUES ('ro','ro','','N','C')");
+        $query->execute();
+    }
+
     $response->add('Repairing tables if needed.');
     include(EASYWIDIR . '/stuff/methods/tables_repair.php');
 
@@ -77,7 +89,7 @@ if (isset($include) and $include == true) {
     // Add new games if not existing
     include(EASYWIDIR . '/stuff/methods/gameslist.php');
 
-    $addGames = array('nmrih');
+    $addGames = array('nmrih', 'projectcars');
 
     $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=0 LIMIT 1");
     $query2 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`resellerid`) VALUES (:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:resellerid)");
