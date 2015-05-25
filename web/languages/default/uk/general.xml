@@ -109,6 +109,7 @@
 	<support>Support</support>
 	<sure>Are you sure?</sure>
     <sure_delete>Are you sure? All Data at the target server will be deleted!</sure_delete>
+    <system_check>System Check</system_check>
 	<template>Template</template>
 	<templates>Images/Templates</templates>
 	<traffic>Traffic</traffic>

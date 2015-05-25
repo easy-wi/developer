@@ -105,6 +105,7 @@
 	<support>Support</support>
 	<sure>Sind Sie sicher?</sure>
     <sure_delete>Sind Sie sicher? Alle Daten werden beim Zielserver gelöscht!</sure_delete>
+    <system_check>System Check</system_check>
 	<template>Template</template>
 	<templates>Images/Templates</templates>
 	<traffic>Traffic</traffic>

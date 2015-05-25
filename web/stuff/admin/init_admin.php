@@ -87,6 +87,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
 # https://github.com/easy-wi/developer/issues/61 modules management
 $what_to_be_included_array = array(
+    'sc' => 'system_check.php',
     'fe' => 'feeds.php', 'fn' => 'feeds_entries.php',
     'ap' => 'api_settings.php', 'aa' => 'api_external_auth.php', 'ui' => 'api_import_users.php', 'jb' => 'jobs_list.php', 'bu' => 'mysql_root.php',
     'vc' => 'versioncheck.php', 'ib' => 'ip_bans.php', 'se' => 'panel_settings.php', 'cc' => 'panel_settings_columns.php', 'sm' => 'panel_settings_email.php', 'lo' => 'logdata.php', 'ml' => 'maillog.php', 'sr' => 'admin_search.php',
