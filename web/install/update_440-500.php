@@ -115,7 +115,7 @@ if (isset($include) and $include == true) {
     }
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('5.00','<div align=\"right\">10.05.2014</div>
+('5.00','<div align=\"right\">25.05.2014</div>
 <b>Änderungen:</b><br/>
 <ul>
 <li>API:
@@ -238,7 +238,7 @@ if (isset($include) and $include == true) {
 <li>E-Mail Template von Useradd und Registration nicht bearbeitbar</li>
 <li>DB Dump kann nicht gedownloaded werden</li>
 </ul>
-','<div align=\"right\">05.10.2014</div>
+','<div align=\"right\">05.25.2014</div>
 <b>Changes:</b><br/>
 <ul>
 <li>API:

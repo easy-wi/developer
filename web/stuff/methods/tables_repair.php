@@ -971,7 +971,7 @@ $defined['servertypes'] = array(
 
 $defined['settings'] = array(
     'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'version' => array("Type"=>"decimal(4,2)","Null"=>"YES","Key"=>"","Default"=>"4.40","Extra"=>""),
+    'version' => array("Type"=>"decimal(4,2)","Null"=>"YES","Key"=>"","Default"=>"5.00","Extra"=>""),
     'releasenotesDE' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'releasenotesEN' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'header_icon' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"logo_180px.png","Extra"=>""),

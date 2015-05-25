@@ -241,6 +241,9 @@ if (versioncheck ($version, '4.30', 'update_420-430.php', $response)) {
 if (versioncheck ($version, '4.40', 'update_430-440.php', $response)) {
     $version = '4.40';
 }
+if (versioncheck ($version, '5.00', 'update_440-500.php', $response)) {
+    $version = '5.00';
+}
 
 $response->add('Repairing tables if needed.');
 
