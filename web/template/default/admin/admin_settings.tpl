@@ -118,6 +118,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <label for="inputHeaderHref">Header href</label>
+                            <div class="controls">
+                                <input class="form-control" id="inputHeaderHref" type="text" name="headerHref" value="<?php echo $headerHref;?>">
+                            </div>
+                        </div>
+
                         <hr>
 
                         <h4><?php echo $gsprache->user;?></h4>

@@ -976,6 +976,7 @@ $defined['settings'] = array(
     'releasenotesEN' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'header_icon' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"logo_180px.png","Extra"=>""),
     'header_text' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"Easy-Wi","Extra"=>""),
+    'header_href' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"https://easy-wi.com","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'template' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"default","Extra"=>""),
     'imageserver' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),

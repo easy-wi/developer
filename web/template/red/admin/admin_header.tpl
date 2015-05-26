@@ -49,7 +49,7 @@
     <!-- header logo: style can be found in header.less -->
     <header class="main-header">
 
-        <a href="https://easy-wi.com" class="logo" target="_blank">
+        <a href="<?php echo $rSA['header_href'];?>" class="logo" target="_blank">
             <img src="images/<?php echo $rSA['header_icon'];?>" title="<?php echo $rSA['header_text'];?>" width="32">
             <?php echo $rSA['header_text'];?>
         </a>

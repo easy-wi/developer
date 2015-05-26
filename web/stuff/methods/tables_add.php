@@ -1129,6 +1129,7 @@ $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `version` decimal(4,2) DEFAULT '5.00',
   `header_icon` varchar(255) DEFAULT 'logo_180px.png',
   `header_text` varchar(255) DEFAULT 'Easy-Wi',
+  `header_href` varchar(255) DEFAULT 'https://easy-wi.com',
   `releasenotesDE` INT(11) unsigned NULL,
   `releasenotesEN` INT(11) unsigned NULL,
   `language` varchar(2) NOT NULL,
