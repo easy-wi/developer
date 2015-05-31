@@ -24,8 +24,8 @@
                             <div class="controls">
                                 <select class="form-control" id="inputType" name="email_settings_type" onchange="SwitchShowHideRows(this.value,'switch',1);">
                                     <option value="P">PHP Mail</option>
-                                    <option value="S" <?php if($email_settings_type=='S') echo 'selected="selected"';?>>SMTP</option>
-                                    <option value="D" <?php if($email_settings_type=='D') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                    <option value="S" <?php if($email_settings['email_settings_type']=='S') echo 'selected="selected"';?>>SMTP</option>
+                                    <option value="D" <?php if($email_settings['email_settings_type']=='D') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
                                 </select>
                             </div>
                         </div>
@@ -33,60 +33,60 @@
                         <div class="form-group">
                             <label class="control-label" for="inputEmail"><?php echo $sprache->email;?></label>
                             <div class="controls">
-                                <input class="form-control" id="inputEmail" type="email" name="email" value="<?php echo $email;?>">
+                                <input class="form-control" id="inputEmail" type="email" name="email" value="<?php echo $email_settings['email'];?>">
                             </div>
                         </div>
 
-                        <div class="S switch form-group <?php if($email_settings_type!='S') echo 'display_none';?>">
+                        <div class="S switch form-group <?php if($email_settings['email_settings_type']!='S') echo 'display_none';?>">
                             <label class="control-label" for="inputSSL">SSL/TLS</label>
                             <div class="controls">
                                 <select class="form-control" id="inputSSL" name="email_settings_ssl">
                                     <option value="N"><?php echo $gsprache->no;?></option>
-                                    <option value="S" <?php if($email_settings_ssl=='S') echo 'selected="selected"';?>>SSL</option>
-                                    <option value="T" <?php if($email_settings_ssl=='T') echo 'selected="selected"';?>>TLS</option>
+                                    <option value="S" <?php if($email_settings['email_settings_ssl']=='S') echo 'selected="selected"';?>>SSL</option>
+                                    <option value="T" <?php if($email_settings['email_settings_ssl']=='T') echo 'selected="selected"';?>>TLS</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="S switch form-group <?php if($email_settings_type!='S') echo 'display_none';?>">
+                        <div class="S switch form-group <?php if($email_settings['email_settings_type']!='S') echo 'display_none';?>">
                             <label class="control-label" for="inputHost">Host</label>
                             <div class="controls">
-                                <input class="form-control" id="inputHost" type="text" name="email_settings_host" value="<?php echo $email_settings_host;?>">
+                                <input class="form-control" id="inputHost" type="text" name="email_settings_host" value="<?php echo $email_settings['email_settings_host'];?>">
                             </div>
                         </div>
 
-                        <div class="S switch form-group <?php if($email_settings_type!='S') echo 'display_none';?>">
+                        <div class="S switch form-group <?php if($email_settings['email_settings_type']!='S') echo 'display_none';?>">
                             <label class="control-label" for="inputPassword">Port</label>
                             <div class="controls">
-                                <input class="form-control" id="inputPassword" type="text" name="email_settings_port" value="<?php echo $email_settings_port;?>">
+                                <input class="form-control" id="inputPassword" type="text" name="email_settings_port" value="<?php echo $email_settings['email_settings_port'];?>">
                             </div>
                         </div>
 
-                        <div class="S switch form-group <?php if($email_settings_type!='S') echo 'display_none';?>">
+                        <div class="S switch form-group <?php if($email_settings['email_settings_type']!='S') echo 'display_none';?>">
                             <label class="control-label" for="inputUser"><?php echo $gsprache->user;?></label>
                             <div class="controls">
-                                <input class="form-control" id="inputUser" type="text" name="email_settings_user" value="<?php echo $email_settings_user;?>">
+                                <input class="form-control" id="inputUser" type="text" name="email_settings_user" value="<?php echo $email_settings['email_settings_user'];?>">
                             </div>
                         </div>
 
-                        <div class="S switch form-group <?php if($email_settings_type!='S') echo 'display_none';?>">
+                        <div class="S switch form-group <?php if($email_settings['email_settings_type']!='S') echo 'display_none';?>">
                             <label class="control-label" for="inputPassword"><?php echo $sprache->password;?></label>
                             <div class="controls">
-                                <input class="form-control" id="inputPassword" type="text" name="email_settings_password" value="<?php echo $email_settings_password;?>">
+                                <input class="form-control" id="inputPassword" type="text" name="email_settings_password" value="<?php echo $email_settings['email_settings_password'];?>">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label" for="inputEmailRegards"><?php echo $sprache->emailregards;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inputEmailRegards" name="emailregards" rows="8"><?php echo $emailregards;?></textarea>
+                                <textarea class="form-control" id="inputEmailRegards" name="emailregards" rows="8"><?php echo $email_settings['emailregards'];?></textarea>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label" for="inputEmailFooter"><?php echo $sprache->emailfooter;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inputEmailFooter" name="emailfooter" rows="8"><?php echo $emailfooter;?></textarea>
+                                <textarea class="form-control" id="inputEmailFooter" name="emailfooter" rows="8"><?php echo $email_settings['emailfooter'];?></textarea>
                             </div>
                         </div>
 
@@ -114,7 +114,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineCheckboxBackupCreateTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineCheckboxBackupCreateTemplate" name="emailbackup" rows="8"><?php echo $emailbackup;?></textarea>
+                                <textarea class="form-control" id="inlineCheckboxBackupCreateTemplate" name="emailbackup" rows="8"><?php echo $email_settings['emailbackup'];?></textarea>
                             </div>
                         </div>
 
@@ -142,7 +142,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineCheckboxBackupRestoreTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineCheckboxBackupRestoreTemplate" name="emailbackuprestore" rows="8"><?php echo $emailbackuprestore;?></textarea>
+                                <textarea class="form-control" id="inlineCheckboxBackupRestoreTemplate" name="emailbackuprestore" rows="8"><?php echo $email_settings['emailbackuprestore'];?></textarea>
                             </div>
                         </div>
 
@@ -170,7 +170,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineCheckboxBackupRestoreTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineCheckboxBackupRestoreTemplate" name="emaildown" rows="8"><?php echo $emaildown;?></textarea>
+                                <textarea class="form-control" id="inlineCheckboxBackupRestoreTemplate" name="emaildown" rows="8"><?php echo $email_settings['emaildown'];?></textarea>
                             </div>
                         </div>
 
@@ -198,7 +198,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineCheckboxDownRestartTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineCheckboxDownRestartTemplate" name="emaildownrestart" rows="8"><?php echo $emaildownrestart;?></textarea>
+                                <textarea class="form-control" id="inlineCheckboxDownRestartTemplate" name="emaildownrestart" rows="8"><?php echo $email_settings['emaildownrestart'];?></textarea>
                             </div>
                         </div>
 
@@ -226,7 +226,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineGserverUpdateTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineGserverUpdateTemplate" name="emailgserverupdate" rows="8"><?php echo $emailgserverupdate;?></textarea>
+                                <textarea class="form-control" id="inlineGserverUpdateTemplate" name="emailgserverupdate" rows="8"><?php echo $email_settings['emailgserverupdate'];?></textarea>
                             </div>
                         </div>
 
@@ -254,7 +254,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlinePWDRecoveryTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlinePWDRecoveryTemplate" name="emailpwrecovery" rows="8"><?php echo $emailpwrecovery;?></textarea>
+                                <textarea class="form-control" id="inlinePWDRecoveryTemplate" name="emailpwrecovery" rows="8"><?php echo $email_settings['emailpwrecovery'];?></textarea>
                             </div>
                         </div>
 
@@ -282,7 +282,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineEmailNewTicketTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineEmailNewTicketTemplate" name="emailnewticket" rows="8"><?php echo $emailnewticket;?></textarea>
+                                <textarea class="form-control" id="inlineEmailNewTicketTemplate" name="emailnewticket" rows="8"><?php echo $email_settings['emailnewticket'];?></textarea>
                             </div>
                         </div>
 
@@ -310,7 +310,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineEmailSecurityBreachTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineEmailSecurityBreachTemplate" name="emailsecuritybreach" rows="8"><?php echo $emailsecuritybreach;?></textarea>
+                                <textarea class="form-control" id="inlineEmailSecurityBreachTemplate" name="emailsecuritybreach" rows="8"><?php echo $email_settings['emailsecuritybreach'];?></textarea>
                             </div>
                         </div>
 
@@ -338,7 +338,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineEmailUserAddTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineEmailUserAddTemplate" name="emailuseradd" rows="8"><?php echo $emailuseradd;?></textarea>
+                                <textarea class="form-control" id="inlineEmailUserAddTemplate" name="emailuseradd" rows="8"><?php echo $email_settings['emailuseradd'];?></textarea>
                             </div>
                         </div>
 
@@ -366,7 +366,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineEmailRegisterTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineEmailRegisterTemplate" name="emailregister" rows="8"><?php echo $emailregister;?></textarea>
+                                <textarea class="form-control" id="inlineEmailRegisterTemplate" name="emailregister" rows="8"><?php echo $email_settings['emailregister'];?></textarea>
                             </div>
                         </div>
 
@@ -394,7 +394,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineEmailVinstallTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineEmailVinstallTemplate" name="emailvinstall" rows="8"><?php echo $emailvinstall;?></textarea>
+                                <textarea class="form-control" id="inlineEmailVinstallTemplate" name="emailvinstall" rows="8"><?php echo $email_settings['emailvinstall'];?></textarea>
                             </div>
                         </div>
 
@@ -422,7 +422,7 @@
                         <div class="form-group">
                             <label class="control-label" for="inlineEmailVRescueTemplate"><?php echo $gsprache->template;?></label>
                             <div class="controls">
-                                <textarea class="form-control" id="inlineEmailVRescueTemplate" name="emailvrescue" rows="8"><?php echo $emailvrescue;?></textarea>
+                                <textarea class="form-control" id="inlineEmailVRescueTemplate" name="emailvrescue" rows="8"><?php echo $email_settings['emailvrescue'];?></textarea>
                             </div>
                         </div>
                     </div>

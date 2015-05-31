@@ -85,7 +85,7 @@
                                 <input class="form-control" id="inputBirthday" type="text" name="birthday" value="<?php echo $birthday;?>">
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group<?php if(isset($errors['mail'])) echo ' has-error';?>">
                             <label for="inputMail"><?php echo $sprache->email;?>*</label>
                             <div class="controls">
                                 <input class="form-control" id="inputMail" type="email" name="mail" value="<?php echo $mail;?>" required>

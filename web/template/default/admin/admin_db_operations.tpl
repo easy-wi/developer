@@ -33,13 +33,18 @@
                     <?php } ?>
 
                     <div class="form-group">
+                        <label for="inputEMail"><?php echo 'E-Mail '.$gsprache->template;?></label>
+                        <a href="admin.php?w=bu&amp;d=re"><button class="btn btn-warning btn-sm" id="inputEMail" type="submit"><i class="fa fa-refresh"></i></button></a>
+                    </div>
+
+                    <div class="form-group">
                         <label for="inputGS"><?php echo $gsprache->gameserver.' '.$gsprache->template;?></label>
-                        <a href="admin.php?w=bu&amp;d=rg" id="inputGS"><button class="btn btn-warning btn-sm" id="inputGS" type="submit"><i class="fa fa-refresh"></i></button></a>
+                        <a href="admin.php?w=bu&amp;d=rg"><button class="btn btn-warning btn-sm" id="inputGS" type="submit"><i class="fa fa-refresh"></i></button></a>
                     </div>
 
                     <div class="form-group">
                         <label for="inputAO"><?php echo $gsprache->gameserver.' '.$gsprache->addon;?></label>
-                        <a href="admin.php?w=bu&amp;d=ra" id="inputGS"><button class="btn btn-warning btn-sm" id="inputAO" type="submit"><i class="fa fa-refresh"></i></button></a>
+                        <a href="admin.php?w=bu&amp;d=ra"><button class="btn btn-warning btn-sm" id="inputAO" type="submit"><i class="fa fa-refresh"></i></button></a>
                     </div>
                 </div>
             </div>
