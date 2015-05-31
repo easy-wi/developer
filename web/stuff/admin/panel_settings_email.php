@@ -193,7 +193,28 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         return array('style' => $style, 'lang' => $language, 'xml' => $xml);
     }
 
-    $email_settings = array();
+    $email_settings = array(
+        'emailbackup' => '',
+        'emaildown' => '',
+        'emaildownrestart' => '',
+        'emailgserverupdate' => '',
+        'emailpwrecovery' => '',
+        'emailsecuritybreach' => '',
+        'emailnewticket' => '',
+        'emailuseradd' => '',
+        'emailvinstall' => '',
+        'emailvrescue' => '',
+        'emailregister' => '',
+        'email' => '',
+        'emailregards' => '',
+        'emailfooter' => '',
+        'email_settings_host' => '',
+        'email_settings_password' => '',
+        'email_settings_port' => '',
+        'email_settings_ssl' => '',
+        'email_settings_type' => '',
+        'email_settings_user' => ''
+    );
 
     $query = $sql->prepare("SELECT `email_setting_name`,`email_setting_value` FROM `settings_email` WHERE `reseller_id`=?");
     $query->execute(array($reseller_id));
