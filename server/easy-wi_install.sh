@@ -52,10 +52,11 @@ fi
 # Debian and its derivatives store their version at /etc/debian_version
 if [ -f /etc/debian_version ]; then
 
-        DISTRIBUTORID=`lsb_release -a 2> /dev/null | grep 'Distributor' | awk '{print $3}'`
+        DISTRIBUTORID=`lsb_release -i 2> /dev/null | grep 'Distributor' | awk '{print $2}'`
+		OSVERSION=`lsb_release -r 2> /dev/null | grep 'Release' | awk '{print $2}'`
 
         if [ "$DISTRIBUTORID" == "Ubuntu" ]; then
-			OSBRANCH=`lsb_release -a 2> /dev/null | grep 'Codename' | awk '{print $2}'`
+			OSBRANCH=`lsb_release -c 2> /dev/null | grep 'Codename' | awk '{print $2}'`
             OS='ubuntu'
         else
 			OSBRANCH=`cat /etc/*release | grep 'VERSION=' | awk '{print $2}' | tr -d '()"'`
@@ -537,6 +538,12 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
                 AllowAll
         </Limit>
 </Directory>
+<Directory ~/server/*/projectcars*/*>
+        Umask 077 077
+        <Limit RNFR RNTO STOR DELE MKD RMD>
+                AllowAll
+        </Limit>
+</Directory>
 <Directory ~/server/*/mc*/*>
         Umask 077 077
         <Limit RNFR RNTO STOR DELE MKD RMD>
@@ -611,7 +618,7 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
 </Directory>
 <Directory ~/server/*/*/garrysmod/*>
     Umask 077 077
-    <Limit RNFR RNTO STOR DELE>
+    <Limit RNFR RNTO STOR DELE MKD RMD>
         AllowAll
     </Limit>
 </Directory>
@@ -912,7 +919,11 @@ if [ "$INSTALL" == 'GS' ]; then
 		apt-get install wget wput screen bzip2 sudo rsync
 
 		if [ "`uname -m`" == "x86_64" ]; then
-			apt-get install ia32-libs lib32readline5 lib32ncursesw5
+			if [ "$OS" == "debian" -a "`echo $OSVERSION'>='8.0 | bc -l`" == "1" ]; then
+				apt-get install lib32readline5 lib32ncursesw5
+			else
+				apt-get install ia32-libs lib32readline5 lib32ncursesw5
+			fi
 		else
 			apt-get install libreadline5 libncursesw5
 		fi
