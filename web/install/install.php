@@ -63,7 +63,7 @@ if ($currentStep == 0) {
     $licencecode = cleanFsockOpenRequest($licencecode, '{', '}');
     $json = @json_decode($licencecode);
 
-    if (!$json or $json->v >= '5.00') {
+    if (!$json or '5.00' != $json->v) {
         $displayToUser = "<div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
     } else {
         $displayToUser = "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://easy-wi.com/uk/downloads/' target='_blank'>{$json->v}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
@@ -577,7 +577,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
         $brandname = $row['brandname'];
     }
 
-    $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `resellerid`=0 AND `email_setting_name`='email' LIMIT 1");
+    $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=0 AND `email_setting_name`='email' LIMIT 1");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $email = $row['email_setting_value'];
