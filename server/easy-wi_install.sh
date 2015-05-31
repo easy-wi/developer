@@ -285,12 +285,11 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 		echo "Please note that Easy-Wi requires a MySQL or MariaDB installed."
 	fi
 
-	OPTIONS=("MySQL" "MariaDB 5.5" "MariaDB 10.0" "None" "Quit")
+	OPTIONS=("MySQL" "MariaDB" "None" "Quit")
 	select SQL in "${OPTIONS[@]}"; do
 		case "$REPLY" in
 			1 ) break;;
 			2 ) break;;
-			3 ) break;;
 			4 ) break;;
 			5 ) echo "Exit now!"; exit 0;;
 			*) echo "Invalid option.";continue;;
@@ -301,23 +300,14 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 
 		apt-get install mysql-server mysql-client mysql-common
 
-	elif [ "$SQL" == "MariaDB 5.5" -o "$SQL" == "MariaDB 10.0" ]; then
+	elif [ "$SQL" == "MariaDB" ]; then
 
-		if [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]; then
+		if ([ "`echo $OSVERSION'>='8.0 | bc -l`" == "0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
 
 			apt-get install python-software-properties
 			apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db
 
-			if [ "$SQL" == "MariaDB 5.5" -a "`apt-cache search mariadb-server-5.5`" == "" ]; then
-
-				if [ "$OS" == "debian" ]; then
-					add-apt-repository "deb http://mirror.netcologne.de/mariadb/repo/5.5/debian $OSBRANCH main"
-				elif [ "$OS" == "ubuntu" ]; then
-					add-apt-repository "deb http://mirror.netcologne.de/mariadb/repo/5.5/ubuntu $OSBRANCH main"
-				fi
-
-			elif [ "$SQL" == "MariaDB 10.0" -a "`apt-cache search mariadb-server-10.0`" == "" ]; then
-
+			if [ "$SQL" == "MariaDB" -a "`apt-cache search mariadb-server-10.0`" == "" ]; then
 				if [ "$OS" == "debian" ]; then
 					add-apt-repository "deb http://mirror.netcologne.de/mariadb/repo/10.0/debian $OSBRANCH main"
 				elif [ "$OS" == "ubuntu" ]; then
@@ -333,7 +323,12 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 		fi
 
 		apt-get update
-		apt-get install mariadb-server mariadb-client mysql-common
+
+		if ([ "`echo $OSVERSION'>='8.0 | bc -l`" == "0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
+			apt-get install mariadb-server mariadb-client mysql-common
+		else
+			apt-get install mariadb-server mariadb-client mariadb-common
+		fi
 	fi
 
 	if [ "$INSTALL" == 'EW' -a "`ps x | grep mysql | grep -v grep`" == "" ]; then
@@ -869,7 +864,7 @@ if [ "$INSTALL" == 'WR' ]; then
 	echo "sudo $HTTPDSCRIPT reload"
 fi
 
-if ([ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ] && [ -a "$QUOTAINSTALL" == "Yes" ]); then
+if ([ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ] && [ "$QUOTAINSTALL" == "Yes" ]); then
 	echo "The setquota command is:"
 	echo "sudo `which setquota` %cmd%"
 fi
@@ -920,7 +915,7 @@ if [ "$INSTALL" == 'GS' ]; then
 
 		if [ "`uname -m`" == "x86_64" ]; then
 			if [ "$OS" == "debian" -a "`echo $OSVERSION'>='8.0 | bc -l`" == "1" ]; then
-				apt-get install lib32readline5 lib32ncursesw5
+				apt-get install libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386
 			else
 				apt-get install ia32-libs lib32readline5 lib32ncursesw5
 			fi
