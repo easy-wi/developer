@@ -170,6 +170,7 @@ if (versioncheck ($version, '2.10', 'update_209-210.php', $response)) {
     $version = '2.10';
 }
 
+$response->add('Adding tables if needed.');
 include(EASYWIDIR . '/stuff/methods/tables_add.php');
 
 if (versioncheck ($version, '2.11', 'update_210-211.php', $response)) {

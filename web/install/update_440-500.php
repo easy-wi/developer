@@ -43,8 +43,7 @@ if (isset($include) and $include == true) {
         $displayToUser = '';
     }
 
-    $response->add('Adding tables if needed.');
-    include(EASYWIDIR . '/stuff/methods/tables_add.php');
+    include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
     $query = $sql->prepare("DROP TABLE IF EXISTS `voice_stats_settings`");
     $query->execute();
