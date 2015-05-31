@@ -1,9 +1,9 @@
 <?php
 
 /**
- * File: update_430-440.php.
+ * File: update_450-500.php.
  * Author: Ulrich Block
- * Date: 02.02.14
+ * Date: 13.09.14
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
