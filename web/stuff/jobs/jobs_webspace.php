@@ -79,7 +79,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $query4->execute(array($row2['affectedID']));
                 $active = $query4->fetchColumn();
 
-                if ($active == 'N' or $extraData->newActive == 'N') {
+                if ($active == 'N' or (property_exists($extraData, 'newActive') and $extraData->newActive == 'N')) {
                     $vhostObject->setInactive($row2['affectedID']);
                 } else {
                     $vhostObject->vhostMod($row2['affectedID']);

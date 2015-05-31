@@ -52,6 +52,34 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("DELETE FROM `easywi_statistics`");
     $query->execute();
 
+    // move email related stuff from global settings into own table
+    $query2 = $sql->prepare("INSERT INTO `settings_email` (`reseller_id`,`email_setting_name`,`email_setting_value`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `email_setting_value`=VALUES(`email_setting_value`)");
+    $query = $sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings`");
+    $query->execute(array($aeskey));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $query2->execute(array($row['resellerid'], 'emailbackup', @gzuncompress($row['emailbackup'])));
+        $query2->execute(array($row['resellerid'], 'emailbackuprestore', @gzuncompress($row['emailbackuprestore'])));
+        $query2->execute(array($row['resellerid'], 'emaildown', @gzuncompress($row['emaildown'])));
+        $query2->execute(array($row['resellerid'], 'emaildownrestart', @gzuncompress($row['emaildownrestart'])));
+        $query2->execute(array($row['resellerid'], 'emailgserverupdate', @gzuncompress($row['emailgserverupdate'])));
+        $query2->execute(array($row['resellerid'], 'emailpwrecovery', @gzuncompress($row['emailpwrecovery'])));
+        $query2->execute(array($row['resellerid'], 'emailsecuritybreach', @gzuncompress($row['emailsecuritybreach'])));
+        $query2->execute(array($row['resellerid'], 'emailnewticket', @gzuncompress($row['emailnewticket'])));
+        $query2->execute(array($row['resellerid'], 'emailuseradd', @gzuncompress($row['emailuseradd'])));
+        $query2->execute(array($row['resellerid'], 'emailvinstall', @gzuncompress($row['emailvinstall'])));
+        $query2->execute(array($row['resellerid'], 'emailvrescue', @gzuncompress($row['emailvrescue'])));
+        $query2->execute(array($row['resellerid'], 'emailregister', @gzuncompress($row['emailregister'])));
+        $query2->execute(array($row['resellerid'], 'email', $row['email']));
+        $query2->execute(array($row['resellerid'], 'emailregards', $row['emailregards']));
+        $query2->execute(array($row['resellerid'], 'emailfooter', $row['emailfooter']));
+        $query2->execute(array($row['resellerid'], 'email_settings_host', $row['email_settings_host']));
+        $query2->execute(array($row['resellerid'], 'email_settings_password', $row['decryptedpassword']));
+        $query2->execute(array($row['resellerid'], 'email_settings_port', $row['email_settings_port']));
+        $query2->execute(array($row['resellerid'], 'email_settings_ssl', $row['email_settings_ssl']));
+        $query2->execute(array($row['resellerid'], 'email_settings_type', $row['email_settings_type']));
+        $query2->execute(array($row['resellerid'], 'email_settings_user', $row['email_settings_user']));
+    }
+
     // Try catch as some admins upgrade vom DEV to stable
     try {
         $query = $sql->prepare("SELECT `webVhostID`,`userID`,`resellerID`,`dns`,`ownVhost`,`vhostTemplate` FROM `webVhost`");

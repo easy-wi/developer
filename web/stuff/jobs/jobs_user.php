@@ -77,11 +77,11 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $insert->execute(array($row['invoicedByID'], $row2['id'], $row2['sid'], $row['affectedID'], $row2['dbname'], $row['action'], $row['extraData'], $row2['resellerid']));
     }
 
-    $query2 = $sql->prepare("SELECT `webVhostID`,`webMasterID`,`dns`,`resellerID` FROM `webVhost` WHERE `userID`=?");
+    $query2 = $sql->prepare("SELECT `webVhostID`,`webMasterID`,`resellerID` FROM `webVhost` WHERE `userID`=?");
     $query2->execute(array($row['affectedID']));
     $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','wv',?,?,?,?,?,NULL,NOW(),?,?,?)");
     while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-        $insert->execute(array($row['invoicedByID'], $row2['webVhostID'], $row2['webMasterID'], $row['affectedID'], $row2['dns'], $row['action'], $row['extraData'], $row2['resellerID']));
+        $insert->execute(array($row['invoicedByID'], $row2['webVhostID'], $row2['webMasterID'], $row['affectedID'], 'web-' . $row2['webVhostID'], $row['action'], $row['extraData'], $row2['resellerID']));
     }
 
     $query2 = $sql->prepare("UPDATE `jobs` SET `status`='4' WHERE `jobID`=? LIMIT 1");

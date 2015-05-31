@@ -682,41 +682,36 @@ if (!function_exists('passwordgenerate')) {
             $resellersid = $resellerid;
         }
 
-        $query = $sql->prepare("SELECT *,AES_DECRYPT(`email_settings_password`,?) AS `decryptedpassword` FROM `settings` WHERE `resellerid`=? LIMIT 1");
-        $query->execute(array($aeskey, $resellersid));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? LIMIT 1");
+        $query->execute(array($resellersid, 'email_settings_type'));
+        $email_settings_type = $query->fetchColumn();
 
-            $emailregards = nl2br($row['emailregards']);
-            $emailfooter = nl2br($row['emailfooter']);
+        if ($email_settings_type and $email_settings_type != 'N') {
 
-            $resellersmail = $row['email'];
-            $resellerLanguage = $row['language'];
-            $email_settings_type = $row['email_settings_type'];
+            $query->execute(array($resellersid, 'emailregards'));
+            $emailregards = nl2br($query->fetchColumn());
 
-            if ($email_settings_type == 'S'){
-                $email_settings_ssl = $row['email_settings_ssl'];
-                $email_settings_host = $row['email_settings_host'];
-                $email_settings_port = $row['email_settings_port'];
-                $email_settings_user = $row['email_settings_user'];
-                $email_settings_password = $row['decryptedpassword'];
-            }
-        }
+            $query->execute(array($resellersid, 'emailfooter'));
+            $emailfooter = nl2br($query->fetchColumn());
 
-        if (isset($email_settings_type) and $email_settings_type != 'N') {
+            $query->execute(array($resellersid, 'email'));
+            $resellersmail = $query->fetchColumn();
 
-            $query = $sql->prepare("SELECT `email`,`timezone` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+            $query->execute(array($resellersid, 'email'));
+            $resellermail = $query->fetchColumn();
+
+            $query = $sql->prepare("SELECT `timezone`,`language` FROM `settings` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($resellerid));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $resellerLanguage = $row['language'];
                 $resellerstimezone = $row['timezone'];
-                $resellermail = $row['email'];
             }
 
-            if (!isset($resellerstimezone)) {
+            if (!isset($resellerstimezone) or $resellerstimezone == null) {
                 $resellerstimezone = 0;
             }
 
-
-            $maildate = date('Y-m-d H:i:s',strtotime("$resellerstimezone hour"));
+            $maildate = date('Y-m-d H:i:s', strtotime("$resellerstimezone hour"));
 
             if ($template == 'contact') {
 
@@ -739,27 +734,28 @@ if (!function_exists('passwordgenerate')) {
 
                 $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($userLanguage, $template, $lookupID));
-                $sprache = @simplexml_load_string($query->fetchColumn());
+                $sprache = @simplexml_load_string(utf8_encode(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)))));
 
                 if (!$sprache) {
                     $query->execute(array($resellerLanguage, $template, $lookupID));
-                    $sprache = @simplexml_load_string($query->fetchColumn());
+                    $sprache = @simplexml_load_string(utf8_encode(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)))));
                 }
 
                 if (!$sprache) {
                     $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `transID`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($template, $lookupID));
-                    $sprache = @simplexml_load_string($query->fetchColumn());
+                    $sprache = @simplexml_load_string(utf8_encode(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)))));
                 }
 
-                $query = $sql->prepare("SELECT `$template` FROM `settings` WHERE `resellerid`=? LIMIT 1");
-                $query->execute(array($lookupID));
-                $mailtext = @gzuncompress($query->fetchColumn());
+                $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? LIMIT 1");
+                $query->execute(array($lookupID, $template));
+                $mailtext = $query->fetchColumn();
 
                 $keys = array('%server%', '%username%', '%date%', '%shorten%', '%emailregards%', '%emailfooter%');
                 $replacements = array($server, $username, $maildate, $shorten, $emailregards, $emailfooter);
 
                 if ($sprache) {
+
                     $topic = $sprache->topic;
 
                     $sprache = (array) $sprache;
@@ -786,7 +782,7 @@ if (!function_exists('passwordgenerate')) {
 
             }
 
-            if (isset($startMail)) {
+            if (isset($startMail) and isset($topic)) {
 
                 $mail = new PHPMailer();
 
@@ -802,9 +798,16 @@ if (!function_exists('passwordgenerate')) {
 
                     $mail->isSMTP();
 
-                    $mail->Host = $email_settings_host;
+                    $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? LIMIT 1");
 
-                    $mail->Port = $email_settings_port;
+                    $query->execute(array($resellersid, 'email_settings_host'));
+                    $mail->Host = $query->fetchColumn();
+
+                    $query->execute(array($resellersid, 'email_settings_port'));
+                    $mail->Port = $query->fetchColumn();
+
+                    $query->execute(array($resellersid, 'email_settings_ssl'));
+                    $email_settings_ssl = $query->fetchColumn();
 
                     if ($email_settings_ssl == 'T') {
                         $mail->SMTPSecure = 'tls';
@@ -814,13 +817,14 @@ if (!function_exists('passwordgenerate')) {
 
                     $mail->SMTPAuth = true;
 
-                    $mail->Username = $email_settings_user;
+                    $query->execute(array($resellersid, 'email_settings_user'));
+                    $mail->Username = $query->fetchColumn();
 
-                    $mail->Password = $email_settings_password;
-
+                    $query->execute(array($resellersid, 'email_settings_password'));
+                    $mail->Password = $query->fetchColumn();
                 }
 
-                if ($mail->send() and $template != 'contact') {
+                if ($mail->send()) {
                     $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
 
                     if ($resellerid == $userid) {
@@ -829,9 +833,15 @@ if (!function_exists('passwordgenerate')) {
                     } else {
                         $query->execute(array($userid, $topic, $resellerid));
                     }
+
+                    return true;
                 }
             }
+
+            return false;
         }
+
+        return true;
     }
 
     function IncludeTemplate($use, $file, $location = 'admin') {

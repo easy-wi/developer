@@ -567,15 +567,20 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     $query->execute();
     $email = $query->fetchColumn();
 
-    $query = $sql->prepare("SELECT `language`,`email`,`prefix1`,`prefix2`,`faillogins`,`brandname` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+    $query = $sql->prepare("SELECT `language`,`prefix1`,`prefix2`,`faillogins`,`brandname` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $language = $row['language'];
-        $email = $row['email'];
         $prefix1 = $row['prefix1'];
         $prefix2 = $row['prefix2'];
         $faillogins = $row['faillogins'];
         $brandname = $row['brandname'];
+    }
+
+    $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `resellerid`=0 AND `email_setting_name`='email' LIMIT 1");
+    $query->execute();
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $email = $row['email_setting_value'];
     }
 
     if (isset($_POST['email'])) {
@@ -708,8 +713,11 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `page_settings` (`id`,`pageurl`,`resellerid`) VALUES (1,?,0) ON DUPLICATE KEY UPDATE `pageurl`=VALUES(`pageurl`)");
             $query->execute(array($_POST['installUrl']));
 
-            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`email`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`resellerid`) VALUES (1,'default',?,?,?,?,?,?,0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`email`=VALUES(`email`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`)");
-            $query->execute(array($_POST['language'], $_POST['email'], $_POST['prefix1'], $_POST['prefix2'], $_POST['faillogins'], $_POST['brandname']));
+            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`resellerid`) VALUES (1,'default',?,?,?,?,?,0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`email`=VALUES(`email`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`)");
+            $query->execute(array($_POST['language'], $_POST['prefix1'], $_POST['prefix2'], $_POST['faillogins'], $_POST['brandname']));
+
+            $query = $sql->prepare("INSERT INTO `settings_email` (`reseller_id`,`email_setting_name`,`email_setting_value`) VALUES (0,'email',?) ON DUPLICATE KEY UPDATE `email_setting_value`=VALUES(`email_setting_value`)");
+            $query->execute(array($_POST['email']));
 
             $query = $sql->prepare("INSERT INTO `eac` (`id`,`resellerid`) VALUES (1,0) ON DUPLICATE KEY UPDATE `resellerid`=`resellerid`");
             $query->execute();

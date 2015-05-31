@@ -991,27 +991,6 @@ $defined['settings'] = array(
     'faillogins' => array("Type"=>"smallint(2) unsigned","Null"=>"NO","Key"=>"","Default"=>"5","Extra"=>""),
     'brandname' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'timezone' => array("Type"=>"varchar(3)","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
-    'email' => array("Type"=>"varchar(50)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'email_settings_host' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'email_settings_password' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'email_settings_port' => array("Type"=>"int(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"143","Extra"=>""),
-    'email_settings_ssl' => array("Type"=>"enum('N','S','T')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
-    'email_settings_type' => array("Type"=>"enum('P','S','D')","Null"=>"YES","Key"=>"","Default"=>"P","Extra"=>""),
-    'email_settings_user' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailregards' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailfooter' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailbackup' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailbackuprestore' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emaildown' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emaildownrestart' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailgserverupdate' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailpwrecovery' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailregister' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailsecuritybreach' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailnewticket' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailuseradd' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailvinstall' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'emailvrescue' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'supportnumber' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'noservertag' => array("Type"=>"smallint(1) unsigned","Null"=>"NO","Key"=>"","Default"=>"1","Extra"=>""),
     'nopassword' => array("Type"=>"smallint(1) unsigned","Null"=>"NO","Key"=>"","Default"=>"1","Extra"=>""),
@@ -1030,6 +1009,12 @@ $defined['settings'] = array(
     'lastCronCloud' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'lastCronWarnCloud' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
+);
+
+$defined['settings_email'] = array(
+    'reseller_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
+    'email_setting_name' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'email_setting_value' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );
 
 $defined['tickets'] = array(
