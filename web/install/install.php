@@ -63,7 +63,7 @@ if ($currentStep == 0) {
     $licencecode = cleanFsockOpenRequest($licencecode, '{', '}');
     $json = @json_decode($licencecode);
 
-    if (!$json or '5.00' != $json->v) {
+    if (!$json or '5.00' == $json->v) {
         $displayToUser = "<div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
     } else {
         $displayToUser = "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://easy-wi.com/uk/downloads/' target='_blank'>{$json->v}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
