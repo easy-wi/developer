@@ -461,12 +461,14 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
         $removedCount = 0;
 
-        $query = $sql->prepare("SELECT t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`resellerid`=?");
-        $query2 = $sql->prepare("UPDATE `page_terms` SET `count`=`count`-1 WHERE `name`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT t.`name`,t.`count` FROM `page_terms_used` u INNER JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`resellerid`=?");
+        $query2 = $sql->prepare("UPDATE `page_terms` SET `count`=(`count` - 1) WHERE `name`=? AND `resellerid`=? AND `count`!=0 LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $query2->execute(array($row['name'], $resellerLockupID));
-            $removedCount += $query2->rowCount();
+            if (strlen($row['name']) > 0 and $row['count'] > 0) {
+                $query2->execute(array($row['name'], $resellerLockupID));
+                $removedCount += $query2->rowCount();
+            }
         }
 
         $removedCount += $query->rowCount();
