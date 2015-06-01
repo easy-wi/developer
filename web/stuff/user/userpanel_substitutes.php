@@ -80,10 +80,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $gs[$row['id']] = $row['address'];
         }
 
-        $query = $sql->prepare("SELECT `webVhostID`,`dns` FROM `webVhost` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
+        $query = $sql->prepare("SELECT `webVhostID` FROM `webVhost` WHERE `userID`=? AND `resellerID`=? AND `active`='Y'");
         $query->execute(array($user_id,$reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $wv[$row['webVhostID']] = $row['dns'];
+            $wv[$row['webVhostID']] = 'web-' . $row['webVhostID'];
         }
 
         $query = $sql->prepare("SELECT `id`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `userid`=? AND `resellerid`=? AND `active`='Y'");
