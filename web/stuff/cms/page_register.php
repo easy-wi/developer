@@ -40,7 +40,7 @@
 
 include(EASYWIDIR . '/third_party/password_compat/password.php');
 
-if (!isset($page_include) or (isset($user_id)) or isset($admin_id) or isset($reseller_id)) {
+if (!isset($page_include) or (isset($user_id)) or isset($admin_id)) {
     if (isset($page_data->canurl)) {
         header('Location: ' . $page_data->canurl);
     } else {

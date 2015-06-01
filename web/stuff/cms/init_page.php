@@ -53,8 +53,8 @@ if (isset($page_active) and $page_active == 'Y') {
     $customFiles = array();
 
     $what_to_be_included_array = array('news' => 'page_news.php','contact' => 'page_contact.php',
-        'page' => 'page_page.php','home' => 'page_page.php','about' => 'page_page.php','gallery' => 'page_page.php','sitemap' => 'page_page.php','search' => 'page_page.php',
-        'tag' => 'page_tag.php','categories' => 'page_tag.php','downloads' => 'page_download.php',
+        'page' => 'page_page.php', 'home' => 'page_page.php', 'about' => 'page_page.php', 'gallery' => 'page_page.php', 'sitemap' => 'page_page.php', 'search' => 'page_page.php',
+        'tag' => 'page_tag.php','categories' => 'page_tag.php', 'downloads' => 'page_download.php',
         'protectioncheck' => 'protectioncheck.php',
         'register' => 'page_register.php'
     );
@@ -110,6 +110,7 @@ if (isset($page_active) and $page_active == 'Y') {
 
     $query = $sql->prepare("SELECT p.`id`,p.`subpage`,p.`naviDisplay`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`released`='1' AND p.`type`='page' AND t.`language`=? AND p.`resellerid`='0' ORDER BY `subpage`,`sort`");
     $query->execute(array($user_language));
+
     if ($seo == 'Y') {
         $page_data->SetMenu($gsprache->news, $gsprache->news,'news');
 
@@ -165,6 +166,7 @@ if (isset($page_active) and $page_active == 'Y') {
         }
 
     } else {
+
         $page_data->SetMenu($gsprache->news, array('site' => 'news'), 'news');
 
         if ($protectioncheck== 'Y') {
@@ -213,6 +215,7 @@ if (isset($page_active) and $page_active == 'Y') {
     }
 
     if (isset($page_category)) {
+
         if ($page_category == szrp($gsprache->imprint)) {
             $s = 'imprint';
         } else if ($page_category == szrp($page_sprache->contact)) {
@@ -254,6 +257,7 @@ if (isset($page_active) and $page_active == 'Y') {
     }
 
     if (isset($admin_id)) {
+
         $page_lookupid = $admin_id;
 
     } else if (isset($user_id)) {
