@@ -63,7 +63,7 @@ if ($sSearch) {
 
     $statusQuery = (count($statusQuery) > 0) ? implode(' ', $statusQuery) : '';
 
-    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=:reseller_id AND (v.`webVhostID` LIKE :search OR v.`dns` LIKE :search {$userInQuery} {$statusQuery})");
+    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=:reseller_id AND (v.`webVhostID` LIKE :search {$userInQuery} {$statusQuery})");
     $query->execute(array(':search' => '%' . $sSearch . '%', ':reseller_id' => $resellerLockupID));
     $array['iTotalDisplayRecords'] = $query->fetchColumn();
 
@@ -71,7 +71,7 @@ if ($sSearch) {
     $array['iTotalDisplayRecords'] = $array['iTotalRecords'];
 }
 
-$orderFields = array(0 => 'v.`dns`', 1 => 'v.`webVhostID`', 2 => 'v.`active`', 3 => 'd.`description`', 4 => 'u.`cname`', 5 => 'v.`jobPending`');
+$orderFields = array(0 => 'v.`webVhostID`', 1 => 'v.`webVhostID`', 2 => 'v.`active`', 3 => 'd.`description`', 4 => 'u.`cname`', 5 => 'v.`jobPending`');
 
 if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
     $orderBy = implode(' ' . $sSortDir . ', ', $orderFields[$iSortCol]) . ' ' . $sSortDir;
@@ -83,7 +83,7 @@ if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
 
 
 if ($sSearch) {
-    $query = $sql->prepare("SELECT v.`webVhostID`,v.`active`,v.`jobPending`,v.`hdd`,v.`hddUsage`,v.`userID`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=:reseller_id AND (v.`webVhostID` LIKE :search OR v.`dns` LIKE :search {$userInQuery} {$statusQuery}) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
+    $query = $sql->prepare("SELECT v.`webVhostID`,v.`active`,v.`jobPending`,v.`hdd`,v.`hddUsage`,v.`userID`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=:reseller_id AND (v.`webVhostID` LIKE :search {$userInQuery} {$statusQuery}) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
     $query->execute(array(':search' => '%' . $sSearch . '%', ':reseller_id' => $resellerLockupID));
 } else {
     $query = $sql->prepare("SELECT v.`webVhostID`,v.`active`,v.`jobPending`,v.`hdd`,v.`hddUsage`,v.`userID`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=? ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
