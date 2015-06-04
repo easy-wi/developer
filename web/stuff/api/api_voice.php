@@ -201,6 +201,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                     $success['false'][] = 'Host is inactive. Internal ID is: '.$row['hostID'];
                 }
             }
+
             if (!isset($success) and !isset($hostID)) {
                 $success['false'][] = 'No free host';
             }
@@ -321,7 +322,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $oldActive = $row['active'];
 
             $ip = $row['ip'];
-            $private = $row['private'];
+            $private = $row['password'];
             $port = $row['port'];
             $active = $row['active'];
             $slots = $row['slots'];
@@ -337,7 +338,6 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
             $flexSlots = $row['flexSlots'];
             $flexSlotsFree = $row['flexSlotsFree'];
             $flexSlotsPercent = $row['flexSlotsPercent'];
-            $tsdns = $row['tsdns'];
             $dns = $row['dns'];
             $autoRestart = $row['autoRestart'];
 
@@ -489,9 +489,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
                 $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerID`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'md',?)");
                 $query->execute(array($hostID, $resellerID, $localID, $userID, $name, $resellerID));
-
             }
-
         }
 
         if (!isset($oldSlots)) {
