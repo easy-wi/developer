@@ -190,7 +190,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
 
                     } else {
 
-                        $ips = ($row['connect_ip_only'] == 'Y') ? array() : array($row['ip']);
+                        $ips = ($row['connect_ip_only'] == 'Y') ? array() : array($row['ssh2ip']);
 
                         foreach (preg_split('/\r\n/', $row['ips'], -1, PREG_SPLIT_NO_EMPTY) as $ip) {
                             $ips[] = $ip;
@@ -240,6 +240,8 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                 $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`lendserver`,`backup`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`maxtraffic`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`externalID`,`jobPending`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'Y',NOW(),?,?,?,?,?)");
                 $query->execute(array($active,$lendserver,$backup,$localUserLookupID,$hostID,$ip,$port,$slots,$initialpassword,$private,$max_download_total_bandwidth,$max_upload_total_bandwidth,$maxtraffic,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$externalServerID,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$autoRestart,$resellerID));
 
+                $errorString = implode(', ', $query->errorInfo());
+
                 $localID = $sql->lastInsertId();
                 $localServerID = $localID;
 
@@ -267,7 +269,7 @@ if (!isset($success['false']) and array_value_exists('action','add',$data) and $
                     $query->execute(array($hostID,$resellerID,$localID,$localUserLookupID,$ip . ':' . $port,$resellerID));
 
                 } else {
-                    $success['false'][] = 'Could not write voice server to database';
+                    $success['false'][] = 'Could not write voice server to database: ' . $errorString;
                 }
             } else {
                 $success['false'][] = 'Error: could not determine IP and Port or given data was already in use';
