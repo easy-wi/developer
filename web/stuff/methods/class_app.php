@@ -655,7 +655,7 @@ class AppServer {
 
         $script = $this->shellScriptHeader;
         $script .= 'rm ' . $scriptName . "\n";
-        $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/') . "\n";
+        $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/') . "\n";
 
         foreach ($templates as $template) {
             $script .= 'if [ -d "' . $template . '" ]; then ${IONICE}rm -rf "' . $template . '"; fi' . "\n";
