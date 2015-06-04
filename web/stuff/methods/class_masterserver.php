@@ -154,10 +154,12 @@ class masterServer {
             $allServer = $preferedServer;
         }
 
-        if (count($allServer) > 0) {
-            $imageserverCount = count($allServer) - 1;
+        $serverAmount = count($allServer);
+
+        if ($serverAmount > 0) {
+            $imageserverCount = $serverAmount - 1;
             $arrayEntry = rand(0, $imageserverCount);
-            return $imageserverCount[$arrayEntry];
+            return $allServer[$arrayEntry];
         }
 
         return false;
@@ -173,6 +175,7 @@ class masterServer {
         $splitImageservers = preg_split('/\r\n/', $query->fetchColumn(), -1, PREG_SPLIT_NO_EMPTY);
         $rsyncServers = array();
         $ftpServers = array();
+
 
         foreach ($splitImageservers as $server) {
             if (isurl($server)) {
@@ -199,6 +202,7 @@ class masterServer {
         }
 
         if (!isset($imageServer) and count($ftpServers) > 0) {
+
             foreach ($ftpServers as $server) {
 
                 $imageServer = $this->checkIfImageServerIsInSameSubnet('ftp', $server);
