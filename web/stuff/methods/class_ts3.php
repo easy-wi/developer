@@ -404,7 +404,7 @@ class TS3 {
             $servergroups = $this->SendCommand('servergrouplist');
 
             foreach ($servergroups as $servegroups) {
-                if ($this->ReplaceFromTS3($servegroups['type']) == 1) {
+                if (isset($servegroups['type']) && $this->ReplaceFromTS3($servegroups['type']) == 1) {
 
                     $newcount = count($this->SendCommand('servergrouppermlist sgid=' . $servegroups['sgid']));
 
