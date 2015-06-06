@@ -190,7 +190,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
     if ($ui->st('action', 'post') == 'ra') {
 
         $template_file = '';
-        $array = (array) $ui->pregw('addons', 255, 'post');
+        $array = (array) $ui->gamestring('addons', 'post');
 
         $query = $sql->prepare("SELECT `id` FROM `addons` WHERE `addon`=? AND `resellerid`=? LIMIT 1");
         $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`depending`,`paddon`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`rmcmd`,`resellerid`) VALUES ('Y',?,?,?,?,?,?,?,?,?,?)");
@@ -200,7 +200,6 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
         $query6 = $sql->prepare("DELETE FROM `addons_allowed` WHERE `addon_id`=? AND `reseller_id`=?");
 
         foreach ($gameAddons as $addon) {
-
 
             if (in_array($addon[':addon'], $array) and count($addon) == 10) {
 
@@ -262,7 +261,6 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
                     $template_file .= 'Skipped: ' . $addon[':menudescription'] .'<br>';
                 }
             }
-
         }
     } else {
 
