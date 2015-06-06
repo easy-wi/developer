@@ -37,25 +37,25 @@
 */5 * * * * cd <?php echo EASYWIDIR;?> && timeout 290 php ./statuscheck.php >/dev/null 2>&1
 */1 * * * * cd <?php echo EASYWIDIR;?> && timeout 290 php ./startupdates.php >/dev/null 2>&1
 */5 * * * * cd <?php echo EASYWIDIR;?> && timeout 290 php ./jobs.php >/dev/null 2>&1
-*/10 * * * *cd <?php echo EASYWIDIR;?> && timeout 290 php ./cloud.php >/dev/null 2>&1
+*/10 * * * * cd <?php echo EASYWIDIR;?> && timeout 290 php ./cloud.php >/dev/null 2>&1
                     </pre>
 
                     <h4><?php echo $sprache->cron_external;?> (/etc/crontab)</h4>
                     <pre>
 0 */1 * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>reboot.php >/dev/null 2>&1
-/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>statuscheck.php >/dev/null 2>&1
-/1 * * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>startupdates.php >/dev/null 2>&1
-/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>jobs.php >/dev/null 2>&1
-/10 * * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>cloud.php >/dev/null 2>&1
+*/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>statuscheck.php >/dev/null 2>&1
+*/1 * * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>startupdates.php >/dev/null 2>&1
+*/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>jobs.php >/dev/null 2>&1
+*/10 * * * * ExternalSSH2User wget -q --no-check-certificate -O - <?php echo $pageUrl;?>cloud.php >/dev/null 2>&1
                     </pre>
 
                     <h4><?php echo $sprache->cron_external;?> (crontab -e)</h4>
                     <pre>
 0 */1 * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>reboot.php >/dev/null 2>&1
-/5 * * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>statuscheck.php >/dev/null 2>&1
-/1 * * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>startupdates.php >/dev/null 2>&1
-/5 * * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>jobs.php >/dev/null 2>&1
-/10 * * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>cloud.php >/dev/null 2>&1
+*/5 * * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>statuscheck.php >/dev/null 2>&1
+*/1 * * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>startupdates.php >/dev/null 2>&1
+*/5 * * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>jobs.php >/dev/null 2>&1
+*/10 * * * * wget -q --no-check-certificate -O - <?php echo $pageUrl;?>cloud.php >/dev/null 2>&1
                     </pre>
                 </div>
             </div>
