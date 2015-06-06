@@ -184,7 +184,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                     $rowCount += $query->rowCount();
                 }
 
-                $loguseraction = '%add% %voserver% ' . $ip . ':' . $port . ' ' . $dns;
+                $loguseraction = '%add% %tsdns% ' . $ip . ':' . $port . ' ' . $dns;
 
             } else if ($ui->st('action', 'post') == 'md' and $id and isset($rootServer)) {
 
@@ -192,7 +192,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 $query->execute(array($active, $dns, $ip, $port, $externalID, $id, $resellerLockupID));
                 $rowCount = $query->rowCount();
 
-                $loguseraction = '%mod% %voserver% ' . $ip . ':' . $port . ' ' . $dns;
+                $loguseraction = '%mod% %tsdns% ' . $ip . ':' . $port . ' ' . $dns;
             }
 
             if (isset($rowCount) and $rowCount > 0) {
@@ -220,7 +220,19 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                     $template_file = $serverReturn;
 
                 } else {
+
+                    if ($ui->st('action', 'post') == 'ad') {
+
+                        $mailConnectInfo = array(
+                            'ip' => $ip,
+                            'port' => $port
+                        );
+
+                        sendmail('emailserverinstall', $userID, $dns, $dns, $mailConnectInfo);
+                    }
+
                     $insertlog->execute();
+
                     $template_file = $spracheResponse->table_add;
                 }
 
@@ -290,7 +302,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         if ($query->rowCount() > 0) {
 
-            $loguseraction = '%del% %voserver% %dns% ' . $deleteDNS;
+            $loguseraction = '%del% %tsdns% %dns% ' . $deleteDNS;
             $insertlog->execute();
 
             $template_file = $spracheResponse->table_del;
