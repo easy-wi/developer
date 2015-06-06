@@ -221,7 +221,7 @@ if ($currentStep == 1) {
 
 if ($currentStep == 2 and count($systemCheckError) == 0) {
 
-    $host = '';
+    $host = 'localhost';
     $db = '';
     $user = '';
     $pwd = '';
@@ -554,14 +554,14 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     $installUrl = (string) $query->fetchColumn();
 
     if (strlen($installUrl) == 0) {
-        $installUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/' . str_replace('install/install.php', '', $_SERVER['SCRIPT_NAME']);
+        $installUrl = str_replace(array('&language=de', '&language=en', '&language=dk'), '', str_replace('install/install.php?step=7', '', $_SERVER['HTTP_REFERER']));
     }
-
 
     while (substr($installUrl, -2) == '//') {
         $installUrl = substr($installUrl, 0, strlen($installUrl) -1 );
     }
 
+    $defaultTimeZone = (@ini_get('date.timezone') != "") ? ini_get('date.timezone') : 'Europe/Berlin';
 
     $query = $sql->prepare("SELECT `mail` FROM `userdata` WHERE `id`=1");
     $query->execute();
@@ -625,11 +625,10 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
   <div class='form-group'>
     <label for='inputInstallTimezone' class='col-sm-2 control-label'>{$languageObject->timezone}</label>
     <div class='col-sm-10'>
-    <select id='inputInstallTimezone' name='timezone'>";
+    <select id='inputInstallTimezone' class='form-control' name='timezone'>";
 
-        $timezoneDefined = ini_get('date.timezone');
         foreach (timezone_identifiers_list() as $time) {
-            $displayToUser .= ($time == $timezoneDefined) ? "<option selected='selected'>{$time}</option>" : "<option>{$time}</option>";
+            $displayToUser .= ($time == $defaultTimeZone) ? "<option selected='selected'>{$time}</option>" : "<option>{$time}</option>";
         }
 
         $displayToUser .= "
