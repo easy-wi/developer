@@ -49,7 +49,7 @@ if (isset($newsInclude) and $newsInclude == true) {
 
     @ini_set('user_agent', 'easy-wi.com');
 
-    if (!isset($lookUpID)) {
+    if (isset($lookUpID)) {
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
         $query->execute(array($lookUpID));
 
