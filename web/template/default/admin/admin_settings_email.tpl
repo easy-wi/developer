@@ -204,6 +204,34 @@
 
                         <hr>
 
+                        <h3><?php echo $gsprache->gameserver.'/'.$gsprache->voiceserver.'/'.$gsprache->webspace.'/TSDNS/MySQL '.$gsprache->add;?></h3>
+
+                        <div class="form-group">
+                            <?php foreach ($emailserverinstall_xml as $array){ ?>
+                            <label class="checkbox-inline">
+                                <input id="inputCheckboxVoiceUpdate<?php echo $array['lang'];?>" name="languages-emailserverinstall[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailserverinstall');" type="checkbox" <?php if($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/>
+                            </label>
+                            <?php } ?>
+                        </div>
+
+                        <?php foreach ($emailserverinstall_xml as $array) { ?>
+                        <div id="<?php echo $array['lang'].'-emailserverinstall';?>" class="form-group <?php if ($array['style']==0) echo 'display_none';?>">
+                            <label class="control-label" for="inputServerAdd<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inputServerAdd<?php echo $array['lang'];?>" name="emailserverinstall_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
+                            </div>
+                        </div>
+                        <?php }?>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inlineServerAddTemplate"><?php echo $gsprache->template;?></label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inlineServerAddTemplate" name="emailserverinstall" rows="8"><?php echo $email_settings['emailserverinstall'];?></textarea>
+                            </div>
+                        </div>
+
+                        <hr>
+
                         <h3><?php echo $gsprache->gameserver.' '.$gsprache->master.' '.$gsprache->update;?></h3>
 
                         <div class="form-group">

@@ -128,6 +128,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $changeCount += $query->rowCount();
     $query->execute(array($reseller_id, 'emailsecuritybreach', $ui->escaped('emailsecuritybreach', 'post')));
     $changeCount += $query->rowCount();
+    $query->execute(array($reseller_id, 'emailserverinstall', $ui->escaped('emailserverinstall', 'post')));
+    $changeCount += $query->rowCount();
     $query->execute(array($reseller_id, 'emailnewticket', $ui->escaped('emailnewticket', 'post')));
     $changeCount += $query->rowCount();
     $query->execute(array($reseller_id, 'emailuseradd', $ui->escaped('emailuseradd', 'post')));
@@ -165,6 +167,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $changeCount += updateMailXML('emailvoicemasterold', $ui->post);
     $changeCount += updateMailXML('emailpwrecovery', $ui->post);
     $changeCount += updateMailXML('emailsecuritybreach', $ui->post);
+    $changeCount += updateMailXML('emailserverinstall', $ui->post);
     $changeCount += updateMailXML('emailnewticket', $ui->post);
     $changeCount += updateMailXML('emailuseradd', $ui->post);
     $changeCount += updateMailXML('emailvinstall', $ui->post);
@@ -204,6 +207,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         'emailpwrecovery' => '',
         'emailregister' => '',
         'emailsecuritybreach' => '',
+        'emailserverinstall' => '',
         'emailnewticket' => '',
         'emailuseradd' => '',
         'emailvinstall' => '',
@@ -233,6 +237,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $emailgserverupdate_xml = array();
     $emailpwrecovery_xml = array();
     $emailsecuritybreach_xml = array();
+    $emailserverinstall_xml = array();
     $emailnewticket_xml = array();
     $emailuseradd_xml = array();
     $emailvinstall_xml = array();
@@ -248,11 +253,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $emailgserverupdate_xml[] = getMailXML('emailgserverupdate', $row);
             $emailpwrecovery_xml[] = getMailXML('emailpwrecovery', $row);
             $emailsecuritybreach_xml[] = getMailXML('emailsecuritybreach', $row);
+            $emailserverinstall_xml[] = getMailXML('emailserverinstall', $row);
             $emailnewticket_xml[] = getMailXML('emailnewticket', $row);
             $emailuseradd_xml[] = getMailXML('emailuseradd', $row);
             $emailvinstall_xml[] = getMailXML('emailvinstall', $row);
             $emailvrescue_xml[] = getMailXML('emailvrescue', $row);
-            $emailgserverupdate_xml[] = getMailXML('emailvoicemasterold', $row);
+            $emailvoicemasterold_xml[] = getMailXML('emailvoicemasterold', $row);
             $emailregister_xml[] = getMailXML('emailregister', $row);
         }
     }

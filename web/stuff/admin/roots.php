@@ -446,7 +446,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                     $started[] = $row['serverip'] . ':' . $row['port'];
 
-                    $appServer->addApp();
+                    $appServer->addApp(array(), true);
                 }
             }
 

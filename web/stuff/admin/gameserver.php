@@ -501,7 +501,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $loguseraction .= ', %add%: ' . implode(', ', $gamesToBeInstalled);
 
                     if ($ui->st('action', 'post') == 'ad') {
-                        $appServer->addApp($gamesToBeInstalled);
+                        $appServer->addApp($gamesToBeInstalled, true);
                     }
                 }
 
@@ -698,7 +698,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $loguseraction = "%resync% %gserver% {$serverip}:{$port}";
             }
 
-            $appServer->addApp($templates);
+            $appServer->addApp($templates, true);
 
             $appServer->execute();
 

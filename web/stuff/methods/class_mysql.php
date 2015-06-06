@@ -98,7 +98,9 @@ class ExternalSQL {
         }
 	}
 
-    public function AddDB ($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+    public function AddDB ($mailData, $dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+
+        global $sql;
 
 		if ($this->error != 'ok') {
 			return $this->error;
@@ -143,6 +145,8 @@ class ExternalSQL {
         } catch (PDOException $error) {
             return $error->getMessage();
         }
+
+        sendmail('emailserverinstall', $mailData['userId'], $mailData['name'], 'MySQL', $mailData['mailConnectInfo']);
 
         return 'ok';
 	}

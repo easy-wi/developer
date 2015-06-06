@@ -54,6 +54,13 @@
 
                             <div class="checkbox">
                                 <label>
+                                    <input type="checkbox" id="inputTemplate-emailserverinstall" name="templates[]" value="emailserverinstall">
+                                    <?php echo $gsprache->gameserver.'/'.$gsprache->voiceserver.'/'.$gsprache->webspace.'/TSDNS/MySQL '.$gsprache->add;?>
+                                </label>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
                                     <input type="checkbox" id="inputTemplate-emailgserverupdate" name="templates[]" value="emailgserverupdate">
                                     <?php echo $gsprache->gameserver.' '.$gsprache->master.' '.$gsprache->update;?>
                                 </label>

@@ -148,6 +148,7 @@ class AppServer {
             $this->appServerDetails['app']['id'] = $row['serverid'];
 
             $this->appServerDetails['id'] = (int) $row['id'];
+            $this->appServerDetails['userid'] = (int) $row['userid'];
             $this->appServerDetails['type'] = (string) $row['type'];
             $this->appServerDetails['lendServer'] = (string) $row['lendserver'];
             $this->appServerDetails['protectionModeAllowed'] = ($this->appServerDetails['template']['protectedApp'] == 'Y') ? (string) $row['pallowed'] : 'N';
@@ -634,10 +635,49 @@ class AppServer {
         return $script;
     }
 
-    public function addApp ($templates = array()) {
+    private function getAllAllowedGames($names = false) {
+
+        global $sql;
+
+        $returnArray = array();
+
+        if ($this->appServerDetails) {
+
+            if ($names) {
+                $query = $sql->prepare("SELECT DISTINCT(t.`shorten`) AS `name` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`switchID`=?");
+            } else {
+                $query = $sql->prepare("SELECT DISTINCT(t.`description `) AS `name` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`switchID`=?");
+            }
+
+            $query->execute(array($this->appServerDetails['id']));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $returnArray[] = $row['name'];
+            }
+        }
+
+        return $returnArray;
+    }
+
+    public function addApp ($templates = array(), $sendMail = false) {
 
         if (count($templates) == 0) {
             $templates = array($this->appServerDetails['app']['templateChoosen']);
+        }
+
+        if ($sendMail === true) {
+
+            $mailConnectInfo = array(
+                'ip' => $this->appServerDetails['serverIP'],
+                'port' => $this->appServerDetails['port']
+            );
+
+            for ($i = 2; $i < 6; $i++) {
+                if ($this->appServerDetails["port{$i}"] > 0) {
+                    $mailConnectInfo["port{$i}"] = $this->appServerDetails["port{$i}"];
+                }
+            }
+
+            sendmail('emailserverinstall', $this->appServerDetails['userid'], $this->appServerDetails['serverIP'] . ':' . $this->appServerDetails['port'], implode(', ', $this->getAllAllowedGames(true)), $mailConnectInfo);
         }
 
         if ($this->appServerDetails) {

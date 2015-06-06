@@ -98,7 +98,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     if ($installGames == 'P') {
 
-                        $appServer->addApp();
+                        $appServer->addApp(array(), true);
 
                     } else if ($installGames == 'A') {
 
@@ -111,7 +111,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $templates[] = $row['shorten'] . '-3';
                         }
 
-                        $appServer->addApp($templates);
+                        $appServer->addApp($templates, true);
                     }
 
                     $command = $gsprache->add . ' gsswitchID: ' . $row2['affectedID'] . ' name:' . $row2['name'] . ' gsswitchID:' . $row2['affectedID'];

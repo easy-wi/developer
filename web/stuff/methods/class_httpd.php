@@ -144,15 +144,17 @@ class HttpdManagement {
 
         if ($this->vhostData == false) {
 
-            $query = $this->sql->prepare("SELECT v.`active`,v.`userID`,v.`hdd`,v.`ftpUser`,v.`phpConfiguration`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,u.`mail` FROM `webVhost` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
+            $query = $this->sql->prepare("SELECT v.`active`,v.`userID`,v.`description`,v.`hdd`,v.`ftpUser`,v.`phpConfiguration`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,u.`mail` FROM `webVhost` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
             $query->execute(array($this->aeskey, $vhostID, $this->resellerID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
+                $this->vhostData['userID'] = $row['userID'];
                 $this->vhostData['hdd'] = $row['hdd'];
                 $this->vhostData['ftpUser'] = $row['ftpUser'];
                 $this->vhostData['ftpPassword'] = $row['decryptedFTPPass'];
                 $this->vhostData['vhostConfigFile'] = $this->removeNotNeededSlashes($this->hostData['vhostConfigPath'] . '/' . $this->vhostData['ftpUser']) . '.conf';
                 $this->vhostData['vhostHomeDir'] = $this->removeNotNeededSlashes($this->hostData['vhostStoragePath'] . '/' . $this->vhostData['ftpUser']);
+                $this->vhostData['description'] = (strlen($row['description']) > 0) ? $row['description'] : 'web-' . $vhostID;
 
                 $this->vhostData['defaultDomain'] = 'web-' . $vhostID . '.' . $this->hostData['defaultdns'];
 
@@ -179,6 +181,8 @@ class HttpdManagement {
                 $query2 = $this->sql->prepare("SELECT `path`,`domain`,`ownVhost`,`vhostTemplate` FROM `webVhostDomain` WHERE `webVhostID`=?");
                 $query2->execute(array($vhostID));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
+                    $this->vhostData['dns'][] = $row2['domain'];
 
                     $templateFileContentTemp = ($row2['ownVhost'] == 'Y') ? $row2['vhostTemplate'] : $this->hostData['vhostTemplate'];
 
@@ -223,6 +227,13 @@ class HttpdManagement {
             if ($this->ssh2Object != false) {
 
                 if ($fullAdd == true) {
+
+                    $mailConnectInfo = array(
+                        'ip' => $this->hostData['ftpIP'],
+                        'port' => $this->hostData['ftpPort']
+                    );
+
+                    sendmail('emailserverinstall', $this->vhostData['userID'], $this->vhostData['description'], implode(', ', $this->vhostData['dns']), $mailConnectInfo);
 
                     $removeCmd = '';
 

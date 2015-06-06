@@ -626,7 +626,7 @@ if (!function_exists('passwordgenerate')) {
         return $paneldomain;
     }
 
-    function sendmail($template, $userid, $server, $shorten) {
+    function sendmail($template, $userid, $server, $shorten, $connectInfo = array()) {
 
         global $sql, $rSA;
 
@@ -751,8 +751,45 @@ if (!function_exists('passwordgenerate')) {
                 $query->execute(array($lookupID, $template));
                 $mailtext = $query->fetchColumn();
 
-                $keys = array('%server%', '%username%', '%date%', '%shorten%', '%emailregards%', '%emailfooter%');
+                $keys = array('%server%', '%username%', '%date%', '%shorten%', '%emailregards%', '%emailfooter%', '%ip%', '%port%', '%port2%', '%port3%', '%port4%', '%port5%', '%ports%');
                 $replacements = array($server, $username, $maildate, $shorten, $emailregards, $emailfooter);
+
+                if (is_array($connectInfo) and count($connectInfo) > 0 and isset($connectInfo['ip'])) {
+
+                    $replacements[] = $connectInfo['ip'];
+
+                    $ports = array();
+
+                    if ((isset($connectInfo['port']))) {
+
+                        $ports[] = $connectInfo['port'];
+
+                        $replacements[] = $connectInfo['port'];
+
+                    } else {
+                        $replacements[] = '';
+                    }
+
+                    for ($i = 2; $i < 6; $i++) {
+
+                        if (isset($connectInfo["port{$i}"])) {
+
+                            $ports[] = $connectInfo["port{$i}"];
+
+                            $replacements[] = $connectInfo["port{$i}"];
+
+                        } else {
+                            $replacements[] = '';
+                        }
+                    }
+
+                    $replacements[] = implode(', ', $ports);
+
+                } else {
+                    for ($i = 0; $i < 8; $i++) {
+                        $replacements[] = '';
+                    }
+                }
 
                 if ($sprache) {
 

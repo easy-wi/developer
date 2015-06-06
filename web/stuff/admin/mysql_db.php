@@ -119,10 +119,12 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         if ($ui->st('action', 'post') == 'md') {
 
-            $query = $sql->prepare("SELECT `sid` FROM `mysql_external_dbs` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `sid`,`uid` FROM `mysql_external_dbs` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $resellerLockupID));
-            $rootID = $query->fetchColumn();
-
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $rootID = $row['sid'];
+                $userID = $row['uid'];
+            }
         }
 
         if (!isid($rootID, 10)) {
@@ -131,7 +133,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         } else {
 
-            $query = $sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `ip`,`port`,`user`,AES_DECRYPT(`password`,?) AS `decryptedpassword`,CASE WHEN `connect_ip_only`='Y' THEN `external_address` ELSE `ip` END AS `user_connect_ip` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $rootID, $reseller_id));
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $mysqlServer) {
                 $mysqlServerFount = true;
@@ -186,7 +188,17 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                     }
 
                     if ($ui->st('action', 'post') == 'ad') {
-                        $remotesql->AddDB($dbName, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
+
+                        $mailData = array(
+                            'userId' => $userID,
+                            'name' => (strlen($description) > 0) ? $description : $dbName,
+                            'mailConnectInfo' => array(
+                                'ip' => $mysqlServer['user_connect_ip'],
+                                'port' => $mysqlServer['port']
+                            )
+                        );
+
+                        $remotesql->AddDB($mailData, $dbName, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
                     }
 
                     if ($ui->st('action', 'post') == 'md') {
@@ -266,7 +278,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
     if (($ui->st('action', 'post') == 'ri' or $ui->st('action', 'post') == 'dl') and count($errors) == 0 and $serverFound > 0) {
 
-        $query = $sql->prepare("SELECT e.`dbname`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT e.`uid`,e.`dbname`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,CASE WHEN s.`connect_ip_only`='Y' THEN s.`external_address` ELSE s.`ip` END AS `user_connect_ip` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $aeskey, $id, $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -279,7 +291,16 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 if ($ui->st('action', 'post') == 'ri') {
 
-                    $remotesql->AddDB($row['dbname'], $row['decryptedpassword'], $row['ips'], $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
+                    $mailData = array(
+                        'userId' => $row['uid'],
+                        'name' => (strlen($description) > 0) ? $description : $row['dbname'],
+                        'mailConnectInfo' => array(
+                            'ip' => $row['user_connect_ip'],
+                            'port' => $row['port']
+                        )
+                    );
+
+                    $remotesql->AddDB($mailData, $row['dbname'], $row['decryptedpassword'], $row['ips'], $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
 
                     $loguseraction = '%ri% MYSQL DB ' . $row['dbname'] . ' (' . $row['ip'] . ')';
 

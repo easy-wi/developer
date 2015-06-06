@@ -225,7 +225,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
 } else if ($ui->st('d', 'get') == 'ri' and $id) {
 
-    $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`password`,?) AS `decryptedpassword2`,`port`,`user` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `ip`,AES_DECRYPT(`password`,?) AS `decryptedpassword2`,`port`,`user`,CASE WHEN `connect_ip_only`='Y' THEN `external_address` ELSE `ip` END AS `user_connect_ip` FROM `mysql_external_servers` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $id, $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -241,17 +241,27 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 $reinstalledDBs = array();
 
-                $query2 = $sql->prepare("SELECT `dbname`,`ips`,`max_queries_per_hour`,`max_connections_per_hour`,`max_updates_per_hour`,`max_userconnections_per_hour`,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_dbs` WHERE `id`=? AND `sid`=? LIMIT 1");
+                $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`password`,?) AS `decryptedpassword` FROM `mysql_external_dbs` WHERE `id`=? AND `sid`=? LIMIT 1");
 
                 foreach ((array) $ui->id('db', 10, 'post') as $dbID) {
 
                     if (isid($dbID, 10)) {
                         $query2->execute(array($aeskey, $dbID, $id));
                         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
                             $remotesql->DelDB($row2['dbname']);
                             $remotesql->DelUser($row2['dbname']);
 
-                            $remotesql->AddDB($row2['dbname'], $row2['decryptedpassword'], $row2['ips'], $row2['max_queries_per_hour'], $row2['max_connections_per_hour'], $row2['max_updates_per_hour'], $row2['max_userconnections_per_hour']);
+                            $mailData = array(
+                                'userId' => $row2['uid'],
+                                'name' => (strlen($row2['description']) > 0) ? $row2['description'] : $row2['dbname'],
+                                'mailConnectInfo' => array(
+                                    'ip' => $row['user_connect_ip'],
+                                    'port' => $row['port']
+                                )
+                            );
+
+                            $remotesql->AddDB($mailData, $row2['dbname'], $row2['decryptedpassword'], $row2['ips'], $row2['max_queries_per_hour'], $row2['max_connections_per_hour'], $row2['max_updates_per_hour'], $row2['max_userconnections_per_hour']);
 
                             $reinstalledDBs[] = $row2['dbname'];
 
