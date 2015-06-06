@@ -39,39 +39,39 @@
 
 $gameAddons = array(
     array(
-        ':paddon' => 'Y',
-        ':addon' => 'css-esl',
-        ':type' => 'tool',
-        ':folder' => '',
-        ':menudescription' => 'ESL Plugin',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'css'
-        )
-    ),
-    array(
-        ':paddon' => 'Y',
-        ':addon' => 'csgo-esl',
-        ':type' => 'tool',
-        ':folder' => '',
-        ':menudescription' => 'ESL Plugin',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'csgo'
-        )
-    ),
-    array(
         ':paddon' => 'N',
         ':addon' => 'metamod',
         ':type' => 'tool',
         ':folder' => 'metamod',
         ':menudescription' => 'Metamod Source',
+        ':configs' => "",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => '',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
+        ':paddon' => 'N',
+        ':addon' => 'metamod-latest-1.10',
+        ':type' => 'tool',
+        ':folder' => 'metamod',
+        ':menudescription' => 'Metamod Source Latest 1.10',
+        ':configs' => "",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => '',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
+        ':paddon' => 'N',
+        ':addon' => 'metamod-latest-1.11',
+        ':type' => 'tool',
+        ':folder' => 'metamod',
+        ':menudescription' => 'Metamod Source Latest 1.11',
         ':configs' => "",
         ':cmd' => null,
         ':rmcmd' => null,
@@ -90,6 +90,34 @@ $gameAddons = array(
         ':cmd' => null,
         ':rmcmd' => null,
         ':depends' => 'metamod',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
+        ':paddon' => 'N',
+        ':addon' => 'sourcemod-latest_1.7',
+        ':type' => 'tool',
+        ':folder' => 'sourcemod',
+        ':menudescription' => 'SourceMod Latest 1.7',
+        ':configs' => "cfg/sourcemod/sourcemod.cfg both\r\ncfg/sourcemod/sm_warmode_on.cfg full\r\ncfg/sourcemod/sm_warmode_off.cfg full\r\ncfg/sourcemod/funcommands.cfg both\r\ncfg/sourcemod/mapchooser.cfg both\r\ncfg/sourcemod/randomcycle.cfg both\r\ncfg/sourcemod/rtv.cfg both",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => 'metamod-latest-1.10',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
+        ':paddon' => 'N',
+        ':addon' => 'sourcemod-latest_1.8',
+        ':type' => 'tool',
+        ':folder' => 'sourcemod',
+        ':menudescription' => 'SourceMod Latest 1.8',
+        ':configs' => "cfg/sourcemod/sourcemod.cfg both\r\ncfg/sourcemod/sm_warmode_on.cfg full\r\ncfg/sourcemod/sm_warmode_off.cfg full\r\ncfg/sourcemod/funcommands.cfg both\r\ncfg/sourcemod/mapchooser.cfg both\r\ncfg/sourcemod/randomcycle.cfg both\r\ncfg/sourcemod/rtv.cfg both",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => 'metamod-latest-1.11',
         ':supported' => array(
             'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
         )
