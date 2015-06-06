@@ -96,7 +96,7 @@ $gameAddons = array(
     ),
     array(
         ':paddon' => 'N',
-        ':addon' => 'sourcemod-latest_1.7',
+        ':addon' => 'sourcemod-latest-1.7',
         ':type' => 'tool',
         ':folder' => 'sourcemod',
         ':menudescription' => 'SourceMod Latest 1.7 Snapshot',
@@ -110,7 +110,7 @@ $gameAddons = array(
     ),
     array(
         ':paddon' => 'N',
-        ':addon' => 'sourcemod-latest_1.8',
+        ':addon' => 'sourcemod-latest-1.8',
         ':type' => 'tool',
         ':folder' => 'sourcemod',
         ':menudescription' => 'SourceMod Latest 1.8 Snapshot',
