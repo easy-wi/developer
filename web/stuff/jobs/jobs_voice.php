@@ -96,6 +96,8 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         } else {
 
+            $localserverid = false;
+
             $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='vo' AND `hostID`=?");
             $query2->execute(array($row['hostID']));
             while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
@@ -106,6 +108,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $query3->execute(array($row2['affectedID'], $row2['resellerID']));
                 while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
+                    $userId = $row3['userid'];
                     $active = $row3['active'];
                     $localserverid = $row3['localserverid'];
                     $backup = $row3['backup'];
@@ -127,7 +130,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $masterserver = $row3['masterserver'];
                 }
 
-                if ($row2['action'] == 'dl' and isset($localserverid) and isid($localserverid, 30)) {
+                if ($row2['action'] == 'dl' and isid($localserverid, 30)) {
 
                     $command = $gsprache->del . ' voiceserverID: ' . $row2['affectedID'] . ' name:'.$row2['name'];
                     $connection->DelServer($localserverid);
@@ -173,12 +176,24 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $query3 = $sql->prepare("UPDATE `voice_server` SET `localserverid`=?,`jobPending`='N' WHERE `id`=? LIMIT 1");
                             $query3->execute(array($virtualserver_id, $row2['affectedID']));
 
+                            $serverName = $ip . ':' . $port;
+                            $addressList = $serverName;
+
                             if ($usedns == 'Y') {
+
+                                $addressList .= ', ' . $dns;
                                 $template_file = tsdns('md', $queryip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, $mnotified, $serverdir, $bitversion, array($ip), array($port), array($dns), $row['resellerID']);
                             }
 
                             $query3 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `affectedID`=? AND `type`='vo' LIMIT 1");
                             $query3->execute(array($row2['affectedID']));
+
+                            $mailConnectInfo = array(
+                                'ip' => $ip,
+                                'port' => $port
+                            );
+
+                            sendmail('emailserverinstall', $userId, $serverName, $addressList, $mailConnectInfo);
 
                         } else {
 
@@ -189,7 +204,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         }
                     }
 
-                } else if ($row2['action'] == 'md' and isset($localserverid) and isid($localserverid, 30)) {
+                } else if ($row2['action'] == 'md' and isid($localserverid, 30)) {
 
                     $command = $gsprache->mod . ' voiceserverID: ' . $row2['affectedID'] . ' name:' . $row2['name'];
 

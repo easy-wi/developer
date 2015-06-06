@@ -346,11 +346,16 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                     $connection->StartServer($localServerID);
                 }
 
+                $serverName = $ip . ':' . $port;
+                $connectList = array($serverName);
+
                 if ($masterServerData['usedns'] == 'Y') {
 
                     if ($ui->st('action', 'post') == 'ad' and $dns == strtolower($username . '.' . $masterServerData['defaultdns']) or $dns == $masterServerData['defaultdns']) {
 
                         $dns = strtolower($id . '.' . $masterServerData['defaultdns']);
+                        $serverName = $dns;
+                        $connectList[] = $dns;
 
                         $query = $sql->prepare("UPDATE `voice_server` SET `dns`=? WHERE `id`=? LIMIT 1");
                         $query->execute(array($dns, $id));
@@ -369,6 +374,16 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                     } else {
                         tsdns('md', $masterServerData['ssh2ip'], $masterServerData['decryptedssh2port'], $masterServerData['decryptedssh2user'], $masterServerData['publickey'], $masterServerData['keyname'], $masterServerData['decryptedssh2password'], 0, $masterServerData['serverdir'], $masterServerData['bitversion'], array($ip), array($port), array($dns), $resellerLockupID);
                     }
+                }
+
+                if ($ui->st('action', 'post') == 'ad') {
+
+                    $mailConnectInfo = array(
+                        'ip' => $ip,
+                        'port' => $port
+                    );
+
+                    sendmail('emailserverinstall', $userID, $serverName, implode(', ', $connectList), $mailConnectInfo);
                 }
             }
 
