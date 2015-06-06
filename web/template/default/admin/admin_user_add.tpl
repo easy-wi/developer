@@ -49,23 +49,19 @@
                             </div>
                         </div>
 
+                        <div class="form-group<?php if(isset($errors['mail'])) echo ' has-error';?>">
+                            <label for="inputMail"><?php echo $sprache->email;?>*</label>
+                            <div class="controls">
+                                <input class="form-control" id="inputMail" type="email" name="mail" value="<?php echo $mail;?>" required>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label for="inputSalutation"><?php echo $sprache->salutation;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputSalutation" name="salutation">
                                     <option value="1"><?php echo $sprache->salutation2;?></option>
                                     <option value="2" <?php if ($salutation==2) echo 'selected="selected"';?>><?php echo $sprache->salutation3;?></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="inputCountry"><?php echo $sprache->country;?></label>
-                            <div class="controls">
-                                <select class="form-control" id="inputCountry" name="flagmenu">
-                                    <?php foreach ($selectlanguages as $la) { ?>
-                                    <option value="<?php echo $la;?>" <?php if ($la==$country) echo 'selected="selected"'; ?>><?php echo $la;?></option>
-                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -85,16 +81,20 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="inputBirthday"><?php echo $sprache->birthday;?></label>
+                            <label for="inputCountry"><?php echo $sprache->country;?></label>
                             <div class="controls">
-                                <input class="form-control" id="inputBirthday" type="text" name="birthday" value="<?php echo $birthday;?>">
+                                <select class="form-control" id="inputCountry" name="flagmenu">
+                                    <?php foreach ($selectlanguages as $la) { ?>
+                                    <option value="<?php echo $la;?>" <?php if ($la==$country) echo 'selected="selected"'; ?>><?php echo $la;?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['mail'])) echo ' has-error';?>">
-                            <label for="inputMail"><?php echo $sprache->email;?>*</label>
+                        <div class="form-group">
+                            <label for="inputBirthday"><?php echo $sprache->birthday;?></label>
                             <div class="controls">
-                                <input class="form-control" id="inputMail" type="email" name="mail" value="<?php echo $mail;?>" required>
+                                <input class="form-control" id="inputBirthday" type="text" name="birthday" value="<?php echo $birthday;?>">
                             </div>
                         </div>
 
