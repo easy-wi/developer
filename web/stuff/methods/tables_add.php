@@ -384,6 +384,7 @@ $query = "CREATE TABLE IF NOT EXISTS `webVhost` (
   `ftpUser` varchar(255),
   `ftpPassword` blob,
   `phpConfiguration` text,
+  `description` varchar(255),
   `externalID` varchar(255) DEFAULT '',
   `resellerID` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`webVhostID`),KEY(`webMasterID`),KEY(`userID`),KEY(`externalID`),KEY(`resellerID`)

@@ -64,11 +64,12 @@ if (isset($admin_id)) {
 
 if ($ui->id('id', 10, 'get') and in_array($ui->st('d', 'get'), array('if', 'pw', 'ri', 'md','dm'))) {
 
-    $query = $sql->prepare("SELECT v.`webMasterID`,v.`phpConfiguration`,v.`phpConfiguration`,m.`vhostTemplate`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only`,m.`ftpIP`,m.`ip`,m.`phpConfiguration` AS `phpMasterConfiguration` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`webVhostID`=? AND v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
+    $query = $sql->prepare("SELECT v.`webMasterID`,v.`description`,v.`phpConfiguration`,v.`phpConfiguration`,m.`vhostTemplate`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only`,m.`ftpIP`,m.`ip`,m.`phpConfiguration` AS `phpMasterConfiguration` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`webVhostID`=? AND v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
     $query->execute(array($ui->id('id', 10, 'get'), $user_id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $description = $row['description'];
         $defaultDns = 'web-' . $ui->id('id', 10, 'get') . '.' . $row['defaultdns'];
-        $dns = 'web-' . $ui->id('id', 10, 'get');
+        $dns = (strlen($row['description']) == 0) ? 'web-' . $ui->id('id', 10, 'get') : $row['description'];
         $webMasterID = $row['webMasterID'];
         $usageType = $row['usageType'];
         $vhostTemplate = $row['vhostTemplate'];
@@ -277,8 +278,8 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
 
         $phpConfiguration = @json_encode($phpConfiguration);
 
-        $query = $sql->prepare("UPDATE `webVhost` SET `phpConfiguration`=? WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
-        $query->execute(array($phpConfiguration, $id, $user_id, $reseller_id));
+        $query = $sql->prepare("UPDATE `webVhost` SET `description`=?,`phpConfiguration`=? WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
+        $query->execute(array($ui->names('description', 255, 'post'), $phpConfiguration, $id, $user_id, $reseller_id));
 
         $vhostObject = new HttpdManagement($webMasterID, $reseller_id);
 
@@ -354,11 +355,11 @@ set sv_wwwDownload "1"';
 
     $table = array();
 
-    $query = $sql->prepare("SELECT v.`webVhostID`,v.`hdd`,v.`hddUsage`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`quotaActive`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
+    $query = $sql->prepare("SELECT v.`webVhostID`,v.`description`,v.`hdd`,v.`hddUsage`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`quotaActive`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
     $query->execute(array($aeskey, $user_id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($_SESSION['sID']) or in_array($row['webVhostID'], $substituteAccess['ws'])) {
-            $table[] = array('id' => $row['webVhostID'], 'dns' => 'web-' . $row['webVhostID'], 'hdd' => $row['hdd'], 'hddUsage' => $row['hddUsage'], 'quotaActive' => $row['quotaActive'], 'ftpIP' => ($row['connect_ip_only'] == 'Y') ? $row['ftpIP'] : $row['ip'], 'ftpPort' => $row['ftpPort'], 'ftpUser' => $row['ftpUser'], 'ftpPass' => $row['decryptedFTPPass'], 'usageType' => $row['usageType']);
+            $table[] = array('id' => $row['webVhostID'], 'dns' => (strlen($row['description']) == 0) ? 'web-' . $row['webVhostID'] : $row['description'], 'hdd' => $row['hdd'], 'hddUsage' => $row['hddUsage'], 'quotaActive' => $row['quotaActive'], 'ftpIP' => ($row['connect_ip_only'] == 'Y') ? $row['ftpIP'] : $row['ip'], 'ftpPort' => $row['ftpPort'], 'ftpUser' => $row['ftpUser'], 'ftpPass' => $row['decryptedFTPPass'], 'usageType' => $row['usageType']);
         }
     }
 

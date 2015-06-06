@@ -69,6 +69,7 @@ $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
 $hdd = ($ui->id('hdd', 10, 'post')) ? $ui->id('hdd', 10, 'post') : 1000;
 $ftpPassword = ($ui->password('ftpPassword', 255, 'post')) ? $ui->password('ftpPassword', 255, 'post') : passwordgenerate(10);
 $vhostTemplate = $ui->escaped('vhostTemplate', 'post');
+$description = $ui->names('description', 255, 'post');
 $ownVhost = ($ui->active('ownVhost', 'post')) ? $ui->active('ownVhost', 'post') : 'N';
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
@@ -133,7 +134,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 $hdd = $row['hdd'];
                 $hddUsage = (int) $row['hddUsage'];
                 $ftpPassword = $row['decryptedFTPPass'];
-                $dns = 'web-' . $id;
+                $description = $row['description'];
+                $dns = (strlen($row['description']) == 0) ? 'web-' . $row['webVhostID'] : $row['description'];
 
                 // Get masterserver. Sort by usage.
                 $query2 = $sql->prepare("SELECT m.`ip`,m.`description` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`webMasterID`=? AND m.`resellerID`=?");
@@ -246,8 +248,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`phpConfiguration`,`externalID`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?)");
-                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $phpConfiguration, $externalID, $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`phpConfiguration`,`description`,`externalID`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?)");
+                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $phpConfiguration, $description, $externalID, $resellerLockupID));
 
                 $id = (int) $sql->lastInsertId();
 
@@ -263,8 +265,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 $ftpUser = 'web-' . $id;
 
-                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`ftpPassword`=AES_ENCRYPT(?,?),`phpConfiguration`=?,`externalID`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
-                $query->execute(array($active, $hdd, $ftpPassword, $aeskey, $phpConfiguration, $externalID, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`ftpPassword`=AES_ENCRYPT(?,?),`phpConfiguration`=?,`description`=?,`externalID`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query->execute(array($active, $hdd, $ftpPassword, $aeskey, $phpConfiguration, $description, $externalID, $id, $resellerLockupID));
 
                 // Needs to be set for domain inserts
                 $userID = $oldUserID;
@@ -416,17 +418,16 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 // Remove entries in case we have an ID given with the GET request
 } else if (!isset($tokenError) and $ui->st('d', 'get') == 'dl' and $id) {
 
-    $query = $sql->prepare("SELECT v.`webMasterID`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT v.`webMasterID`,v.`description`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
     $query->execute(array($id, $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $webMasterID = $row['webMasterID'];
         $user = trim($row['cname'] . ' ' . trim($row['vname'] . ' ' . $row['name']));
+        $dns = (strlen($row['description']) == 0) ? 'web-' . $id : $row['description'];
     }
 
     // Nothing submitted yet, display the delete form
     if (!$ui->st('action', 'post') and isset($user)) {
-
-        $dns = 'web-' . $id;
 
         // Check if we could find an entry and if not display 404 page
         $template_file = ($query->rowCount() > 0) ? 'admin_web_vhost_dl.tpl' : 'admin_404.tpl';
@@ -453,7 +454,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
         if ($query->rowCount() > 0) {
 
             $template_file = $spracheResponse->table_del;
-            $loguseraction = '%del% %webvhost% web-' . $id;
+            $loguseraction = '%del% %webvhost% ' . $dns;
             $insertlog->execute();
 
             // Nothing was deleted, display an error
@@ -468,17 +469,16 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
 } else if (!isset($tokenError) and $ui->st('d', 'get') == 'ri' and $id) {
 
-    $query = $sql->prepare("SELECT v.`webMasterID`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT v.`webMasterID`,v.`description`,u.`cname`,u.`vname`,u.`name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
     $query->execute(array($id, $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $webMasterID = $row['webMasterID'];
         $user = trim($row['cname'] . ' ' . trim($row['vname'] . ' ' . $row['name']));
+        $dns = (strlen($row['description']) == 0) ? 'web-' . $id : $row['description'];
     }
 
     // Nothing submitted yet, display the delete form
     if (!$ui->st('action', 'post')) {
-
-        $dns = 'web-' . $id;
 
         // Check if we could find an entry and if not display 404 page
         $template_file = ($query->rowCount() > 0) ? 'admin_web_vhost_ri.tpl' : 'admin_404.tpl';
@@ -494,7 +494,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $vhostObject->restartHttpdServer();
 
             $template_file = $spracheResponse->table_del;
-            $loguseraction = '%ri% %webvhost% web-' . $id;
+            $loguseraction = '%ri% %webvhost% ' . $dns;
             $insertlog->execute();
 
         } else {

@@ -21,6 +21,13 @@
 
                     <div class="box-body">
 
+                        <div class="form-group">
+                            <label for="inputDescription"><?php echo $dedicatedLanguage->description;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputDescription" type="text" name="description" value="<?php echo $description;?>">
+                            </div>
+                        </div>
+
                         <?php foreach($phpConfigurationMaster as $groupName => $array) { ?>
                         <div class="form-group">
                             <label for="input<?php echo str_replace(' ', '', $groupName);?>"><?php echo $groupName;?></label>

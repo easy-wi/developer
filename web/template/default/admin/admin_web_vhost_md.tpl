@@ -81,6 +81,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <label for="inputDescription"><?php echo $dedicatedLanguage->description;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputDescription" type="text" name="description" value="<?php echo $description;?>">
+                            </div>
+                        </div>
+
                         <?php foreach(customColumns('T', $id) as $row){ ?>
                         <div class="form-group">
                             <label for="inputCustom-<?php echo $row['customID'];?>"><?php echo $row['menu'];?></label>

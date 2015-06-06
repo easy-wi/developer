@@ -52,6 +52,10 @@ if ($sSearch) {
 
     $toLower = strtolower($sSearch);
 
+    if (strpos('web-', $toLower) !== false or isid(str_replace('web-', '', $toLower), 10)) {
+        $sSearch = preg_replace('/[a-zA-Z\-]/', '', $sSearch);
+    }
+
     $statusQuery = array();
 
     if (strpos(strtolower($gsprache->status_inactive), $toLower) !== false or strpos(strtolower($gsprache->status_stop), $toLower) !== false) {
@@ -63,7 +67,7 @@ if ($sSearch) {
 
     $statusQuery = (count($statusQuery) > 0) ? implode(' ', $statusQuery) : '';
 
-    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=:reseller_id AND (v.`webVhostID` LIKE :search {$userInQuery} {$statusQuery})");
+    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=:reseller_id AND (v.`webVhostID` LIKE :search OR v.`description` LIKE :search {$userInQuery} {$statusQuery})");
     $query->execute(array(':search' => '%' . $sSearch . '%', ':reseller_id' => $resellerLockupID));
     $array['iTotalDisplayRecords'] = $query->fetchColumn();
 
@@ -71,7 +75,7 @@ if ($sSearch) {
     $array['iTotalDisplayRecords'] = $array['iTotalRecords'];
 }
 
-$orderFields = array(0 => 'v.`webVhostID`', 1 => 'v.`webVhostID`', 2 => 'v.`active`', 3 => 'd.`description`', 4 => 'u.`cname`', 5 => 'v.`jobPending`');
+$orderFields = array(0 => array('v.`description`','v.`webVhostID`'), 1 => 'v.`webVhostID`', 2 => 'v.`active`', 3 => '`full_name`', 4 => 'u.`cname`', 5 => 'v.`jobPending`');
 
 if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
     $orderBy = implode(' ' . $sSortDir . ', ', $orderFields[$iSortCol]) . ' ' . $sSortDir;
@@ -83,10 +87,10 @@ if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
 
 
 if ($sSearch) {
-    $query = $sql->prepare("SELECT v.`webVhostID`,v.`active`,v.`jobPending`,v.`hdd`,v.`hddUsage`,v.`userID`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=:reseller_id AND (v.`webVhostID` LIKE :search {$userInQuery} {$statusQuery}) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
+    $query = $sql->prepare("SELECT v.`webVhostID`,v.`description`,v.`active`,v.`jobPending`,v.`hdd`,v.`hddUsage`,v.`userID`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=:reseller_id AND (v.`webVhostID` LIKE :search OR v.`description` LIKE :search {$userInQuery} {$statusQuery}) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
     $query->execute(array(':search' => '%' . $sSearch . '%', ':reseller_id' => $resellerLockupID));
 } else {
-    $query = $sql->prepare("SELECT v.`webVhostID`,v.`active`,v.`jobPending`,v.`hdd`,v.`hddUsage`,v.`userID`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=? ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
+    $query = $sql->prepare("SELECT v.`webVhostID`,v.`description`,v.`active`,v.`jobPending`,v.`hdd`,v.`hddUsage`,v.`userID`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `webVhost` AS v LEFT JOIN `userdata` AS u ON v.`userID`=u.`id` WHERE v.`resellerID`=? ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
     $query->execute(array($resellerLockupID));
 }
 
@@ -126,5 +130,5 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $statusMessage = $gsprache->status_inactive;
     }
 
-    $array['aaData'][] = array('web-' . $row['webVhostID'], $row['webVhostID'], returnButton($template_to_use, 'ajax_admin_show_status.tpl', '', '', $status, (string) $statusMessage), returnButton($template_to_use, 'ajax_admin_user_switch.tpl', $row['cname'], $row['full_name'], $row['userID'], ''), (int) $row['hddUsage'] . '/' . (int) $row['hdd'], (string) $jobPending, returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'wv', 'ri', $row['webVhostID'], $gsprache->reinstall) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'wv', 'dl', $row['webVhostID'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'wv', 'md', $row['webVhostID'], $gsprache->mod));
+    $array['aaData'][] = array((strlen($row['description']) == 0) ? 'web-' . $row['webVhostID'] : $row['description'], $row['webVhostID'], returnButton($template_to_use, 'ajax_admin_show_status.tpl', '', '', $status, (string) $statusMessage), returnButton($template_to_use, 'ajax_admin_user_switch.tpl', $row['cname'], $row['full_name'], $row['userID'], ''), (int) $row['hddUsage'] . '/' . (int) $row['hdd'], (string) $jobPending, returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'wv', 'ri', $row['webVhostID'], $gsprache->reinstall) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'wv', 'dl', $row['webVhostID'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'wv', 'md', $row['webVhostID'], $gsprache->mod));
 }
