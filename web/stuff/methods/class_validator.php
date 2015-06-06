@@ -746,4 +746,10 @@ class ValidateUserinput {
 
         return false;
     }
+
+    public function demoMode () {
+        if (isset($this->post['action'])) {
+            unset($this->post['action']);
+        }
+    }
 }

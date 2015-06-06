@@ -61,6 +61,10 @@ $dbConnect['user'] = $user;
 $dbConnect['pwd'] = $pwd;
 $dbConnect['db'] = $db;
 
+if (isset($demo) and $demo == 1) {
+    $ui->demoMode();
+}
+
 if (isset($debug) and $debug == 1) {
 
     $dbConnect['debug'] = 1;
