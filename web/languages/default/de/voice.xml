@@ -83,6 +83,7 @@
 	<name>Servername</name>
 	<newuser>Neuer User</newuser>
     <noVoiceServer>Keine in Easy-Wi unbekannten TS3 Server gefunden</noVoiceServer>
+    <old_version>Veralterte Version</old_version>
 	<os_bit>Bitversion</os_bit>
 	<password>Private Server</password>
 	<port>Port</port>

@@ -55,7 +55,14 @@
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" id="inputTemplate-emailgserverupdate" name="templates[]" value="emailgserverupdate">
-                                    <?php echo $gsprache->master.' '.$gsprache->update;?>
+                                    <?php echo $gsprache->gameserver.' '.$gsprache->master.' '.$gsprache->update;?>
+                                </label>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="inputTemplate-emailvoicemasterold" name="templates[]" value="emailvoicemasterold">
+                                    <?php echo $gsprache->voiceserver.' '.$gsprache->master.' '.$gsprache->update;?>
                                 </label>
                             </div>
 

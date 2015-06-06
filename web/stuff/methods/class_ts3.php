@@ -574,7 +574,6 @@ class TS3 {
         }
 
         return $serverdetails;
-
     }
 
     public function ServerDetails ($virtualserver_id) {
@@ -1047,4 +1046,10 @@ class TS3 {
         return false;
     }
 
+    public function getServerVersion() {
+
+        $array = $this->SendCommand('version');
+
+        return (is_array($array) and isset($array[0]['version'])) ? $array[0]['version'] : false;
+    }
 }

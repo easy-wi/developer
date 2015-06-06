@@ -55,6 +55,7 @@ include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_app.php');
 include(EASYWIDIR . '/stuff/methods/class_masterserver.php');
+include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/queries_updates.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -73,16 +74,31 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $now = date('Y-m-d', strtotime('now'));
     $sprache = getlanguagefile('gserver', 'uk', 0);
 
+    echo "Fetch version for Teamspeak 3 Server\r\n";
+
+    $query = $sql->prepare("UPDATE `voice_masterserver` SET `latest_version`=? WHERE `bitversion`=?");
+
+    $ts3MasterVersion32 = getTS3Version('server', 'linux', 32);
+    $query->execute(array($ts3MasterVersion32['version'], '32'));
+
+    $ts3MasterVersion64 = getTS3Version('server', 'linux', 64);
+    $query->execute(array($ts3MasterVersion64['version'], '64'));
+
+    echo "Current versions for Teamspeak 3 Server are {$ts3MasterVersion32['version']} (32bit) and {$ts3MasterVersion64['version']} (64bit)\r\n";
+
     echo "Fetch version for Minecraft and Bukkit Server\r\n";
 
     $query = $sql->prepare("SELECT t.`shorten` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`gameq`='minecraft' GROUP BY t.`shorten` ORDER BY t.`shorten`");
     $query2 = $sql->prepare("UPDATE `servertypes` SET `steamVersion`=?,`downloadPath`=? WHERE `shorten`=?");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
         echo 'Retrieving Version for ' . $row['shorten'] . "\r\n";
+
         $reply = ($row['shorten'] == 'bukkit') ? getCraftBukkitVersion () : getMinecraftVersion();
 
         if (is_array($reply)) {
+
             echo 'Version for ' . $row['shorten'] . ' is: ' . $reply['version'] . "\r\n";
 
             if (strlen($reply['version']) > 1) {
@@ -93,10 +109,12 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     echo "Fetch version for valves appIDs\r\n";
 
-    $query = $sql->prepare("SELECT t.`appID`,t.`shorten` FROM `servertypes` t INNER JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
-    $query2 = $sql->prepare("UPDATE `servertypes` SET `steamVersion`=? WHERE `appID`=?");
-    $query->execute();
     $steamVersion = array();
+
+    $query2 = $sql->prepare("UPDATE `servertypes` SET `steamVersion`=? WHERE `appID`=?");
+
+    $query = $sql->prepare("SELECT t.`appID`,t.`shorten` FROM `servertypes` t INNER JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
+    $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         
         if (!in_array($row['appID'], array(null,'', false))) {
@@ -119,6 +137,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     }
 
     $webhostdomain = webhostdomain(0);
+
     $query = $sql->prepare("SELECT `timezone`,`voice_autobackup`,`voice_autobackup_intervall`,`voice_maxbackup`,`down_checks`,`resellerid` FROM `settings`");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -487,6 +506,22 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query->execute();
 
     if (date('G') == 5) {
+
+        $query = $sql->prepare("SELECT `ssh2ip`,`description`,`resellerid` FROM `voice_masterserver` WHERE `active`='Y' AND `latest_version`!=`local_version`");
+        $query->execute();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            $serverName = (strlen($row['description']) == 0) ? $row['ssh2ip'] : $row['ssh2ip'] . ' ' . $row['description'];
+
+            print "Sending TS3 update information for server $serverName\r\n";
+
+            $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
+            $query2->execute(array($row['resellerid'], $row['resellerid']));
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                sendmail('emailvoicemasterold', $row2['id'], $serverName, '');
+            }
+        }
+
         print "Reparing tables\r\n";
         $query = $sql->prepare("REPAIR TABLE `addons`,`addons_installed`,`api_external_auth`,`api_ips`,`api_settings`,`badips`,`dhcpdata`,`eac`,`easywi_version`,`gserver_restarts`,`gsstatus`,`gsswitch`,`imprints`,`jobs`,`lendedserver`,`lendsettings`,`lendstats`,`mail_log`,`mysql_external_dbs`,`mysql_external_servers`,`page_pages`,`page_pages_text`,`page_settings`,`page_terms`,`page_terms_used`,`resellerdata`,`resellerimages`,`rserverdata`,`rservermasterg`,`serverlist`,`servertypes`,`settings`,`test`,`tickets`,`ticket_topics`,`traffic_data`,`traffic_data_day`,`traffic_settings`,`userdata`,`usergroups`,`userlog`,`userpermissions`,`virtualcontainer`,`virtualhosts`,`voice_masterserver`,`voice_server`,`voice_server_backup`,`voice_server_stats`,`voice_stats_settings`");
         $query->execute();

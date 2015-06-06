@@ -481,6 +481,10 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
 
 }
 
+/*
+ * They probably do not expect scripts like this on the mirror side
+ * But so what as long as it works...
+ */
 function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null) {
 
     // check if entered parameters are correct

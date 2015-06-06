@@ -81,6 +81,11 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $status = 4;
     $statusMessage = $gsprache->status_ok;
 
+    if ($row['local_version'] != $row['latest_version']) {
+        $status = 2;
+        $statusMessage = $sprache->old_version . ' ' . $row['local_version'];
+    }
+
     if ($row['active'] == 'N') {
         $status = 3;
         $statusMessage = $gsprache->status_inactive;

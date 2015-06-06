@@ -106,7 +106,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             print 'Getting MySQL DB sizes' . "\r\n";
         }
     } else {
-        $checkTypeOfServer='all';
+        $checkTypeOfServer = 'all';
         print 'Checking Gameserver, Voiceserver MySQL DB sizes and Web Quotas' . "\r\n";
     }
 
@@ -540,7 +540,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     # Voice Server
     if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'vs') {
-        #voice_tsdns
+
+        # voice_tsdns
 
         print 'Checking TSDNS' . "\r\n";
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y'");
@@ -645,6 +646,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $querypassword = $vrow['decryptedquerypassword'];
             $resellerid = $vrow['resellerid'];
             $autorestart = $vrow['autorestart'];
+            $latestVersion = $vrow['latest_version'];
 
             if ($addedby == 1) {
                 $vselect2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -797,6 +799,20 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     if ($ts3masternotified > 0) {
                         $pupdate = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `id`=? LIMIT 1");
                         $pupdate->execute(array($ts3masterid));
+                    }
+
+                    $serverVersion = $connection->getServerVersion();
+
+                    if ($serverVersion) {
+
+                        if ($serverVersion == $latestVersion) {
+                            echo "TS3 server version is running up to date version $serverVersion\r\n";
+                        } else {
+                            echo "TS3 server version is running outdated version $serverVersion. Latest is $latestVersion\r\n";
+                        }
+
+                        $pupdate = $sql->prepare("UPDATE `voice_masterserver` SET `local_version`=? WHERE `id`=? LIMIT 1");
+                        $pupdate->execute(array($serverVersion, $ts3masterid));
                     }
 
                     $serverlist = $connection->ServerList();

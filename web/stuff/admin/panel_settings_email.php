@@ -122,6 +122,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $changeCount += $query->rowCount();
     $query->execute(array($reseller_id, 'emailgserverupdate', $ui->escaped('emailgserverupdate', 'post')));
     $changeCount += $query->rowCount();
+    $query->execute(array($reseller_id, 'emailvoicemasterold', $ui->escaped('emailvoicemasterold', 'post')));
+    $changeCount += $query->rowCount();
     $query->execute(array($reseller_id, 'emailpwrecovery', $ui->escaped('emailpwrecovery', 'post')));
     $changeCount += $query->rowCount();
     $query->execute(array($reseller_id, 'emailsecuritybreach', $ui->escaped('emailsecuritybreach', 'post')));
@@ -160,6 +162,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $changeCount += updateMailXML('emaildown', $ui->post);
     $changeCount += updateMailXML('emaildownrestart', $ui->post);
     $changeCount += updateMailXML('emailgserverupdate', $ui->post);
+    $changeCount += updateMailXML('emailvoicemasterold', $ui->post);
     $changeCount += updateMailXML('emailpwrecovery', $ui->post);
     $changeCount += updateMailXML('emailsecuritybreach', $ui->post);
     $changeCount += updateMailXML('emailnewticket', $ui->post);
@@ -199,12 +202,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         'emaildownrestart' => '',
         'emailgserverupdate' => '',
         'emailpwrecovery' => '',
+        'emailregister' => '',
         'emailsecuritybreach' => '',
         'emailnewticket' => '',
         'emailuseradd' => '',
         'emailvinstall' => '',
         'emailvrescue' => '',
-        'emailregister' => '',
+        'emailvoicemasterold' => '',
         'email' => '',
         'emailregards' => '',
         'emailfooter' => '',
@@ -232,6 +236,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $emailnewticket_xml = array();
     $emailuseradd_xml = array();
     $emailvinstall_xml = array();
+    $emailvoicemasterold_xml = array();
     $emailvrescue_xml = array();
 
     if (isset($template_to_use)) {
@@ -247,6 +252,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $emailuseradd_xml[] = getMailXML('emailuseradd', $row);
             $emailvinstall_xml[] = getMailXML('emailvinstall', $row);
             $emailvrescue_xml[] = getMailXML('emailvrescue', $row);
+            $emailgserverupdate_xml[] = getMailXML('emailvoicemasterold', $row);
             $emailregister_xml[] = getMailXML('emailregister', $row);
         }
     }

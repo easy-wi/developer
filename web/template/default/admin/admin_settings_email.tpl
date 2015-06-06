@@ -204,7 +204,7 @@
 
                         <hr>
 
-                        <h3><?php echo $gsprache->master.' '.$gsprache->update;?></h3>
+                        <h3><?php echo $gsprache->gameserver.' '.$gsprache->master.' '.$gsprache->update;?></h3>
 
                         <div class="form-group">
                             <?php foreach ($emailgserverupdate_xml as $array){ ?>
@@ -219,6 +219,34 @@
                             <label class="control-label" for="inputGserverUpdate<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
                             <div class="controls">
                                 <textarea class="form-control" id="inputGserverUpdate<?php echo $array['lang'];?>" name="emailgserverupdate_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
+                            </div>
+                        </div>
+                        <?php }?>
+
+                        <div class="form-group">
+                            <label class="control-label" for="inlineGserverUpdateTemplate"><?php echo $gsprache->template;?></label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inlineGserverUpdateTemplate" name="emailgserverupdate" rows="8"><?php echo $email_settings['emailgserverupdate'];?></textarea>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h3><?php echo $gsprache->voiceserver.' '.$gsprache->master.' '.$gsprache->update;?></h3>
+
+                        <div class="form-group">
+                            <?php foreach ($emailvoicemasterold_xml as $array){ ?>
+                            <label class="checkbox-inline">
+                                <input id="inputCheckboxVoiceUpdate<?php echo $array['lang'];?>" name="languages-emailvoicemasterold[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailvoicemasterold');" type="checkbox" <?php if($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/>
+                            </label>
+                            <?php } ?>
+                        </div>
+
+                        <?php foreach ($emailvoicemasterold_xml as $array) { ?>
+                        <div id="<?php echo $array['lang'].'-emailvoicemasterold';?>" class="form-group <?php if ($array['style']==0) echo 'display_none';?>">
+                            <label class="control-label" for="inputVoiceServerUpdate<?php echo $array['lang'];?>">XML <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: <?php echo $array['lang'];?>.png"/></label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inputVoiceServerUpdate<?php echo $array['lang'];?>" name="emailvoicemasterold_xml_<?php echo $array['lang'];?>" rows="8"><?php echo $array['xml'];?></textarea>
                             </div>
                         </div>
                         <?php }?>
