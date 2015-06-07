@@ -32,17 +32,79 @@
 #    Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
 #    Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
 
-function update {
+function greenMessage {
+	echo -e "\\033[32;1m${@}\033[0m"
+}
 
-    echo "Searching updates for $1 ($3) and revision $2"
+function cyanMessage {
+	echo -e "\\033[36;1m${@}\033[0m"
+}
 
-	if [ -d $HOME/versions ]; then
+function checkCreateVersionFile {
+    if [ ! -f $HOME/versions/$1 ]; then
+        touch $HOME/versions/$1
+    fi
+}
+
+function checkCreateVersionFolder {
+	if [ ! -d $HOME/versions ]; then
 		mkdir -p $HOME/versions
 	fi
+}
 
-    if [ ! -f $HOME/versions/${1}_version_${3}.txt ]; then
-        touch $HOME/versions/${1}_version_${3}.txt
+function checkCreateVersionFile {
+    if [ ! -f $HOME/versions/$1 ]; then
+        touch $HOME/versions/$1
     fi
+}
+
+function downloadExtractFile {
+
+    if [ ! -d $HOME/masteraddons/$1/ ]; then
+        mkdir -p $HOME//masteraddons/$1/
+    fi
+
+    cd $HOME/masteraddons/$1/
+
+    if [ -f $2 ]; then
+       rm $2
+    fi
+
+    wget $3
+
+    if [ -f $2 ]; then
+
+        tar xfv $2
+        rm $2
+
+        find -type f ! -perm -750 -exec chmod 640 {} \;
+        find -type d -exec chmod 750 {} \;
+    fi
+}
+
+function updateAddons {
+
+    FILE_NAME=`echo $2 | egrep -o '(sourcemod|mmsource)-[[:digit:]].*$' | tail -1`
+    LOCAL_VERSION=`cat $HOME/versions/$1 | tail -1`
+    CURRENT_VERSION=`echo $2 | egrep -o '(mmsource|sourcemod)-[0-9a-z.-]{1,}[0-9]' | tail -1`
+
+    if ([ "$CURRENT_VERSION" != "$LOCAL_VERSION" -o "$LOCAL_VERSION" == "" ] && [ "$CURRENT_VERSION" != "" ]); then
+
+	    greenMessage "Updating $1 from $LOCAL_VERSION to $CURRENT_VERSION. Name of file is $FILE_NAME"
+
+        downloadExtractFile $3 $FILE_NAME $2
+        echo "$CURRENT_VERSION" > $HOME/versions/$1
+
+    else
+        cyanMessage "Already up to date. Local version is $LOCAL_VERSION. Most recent version is $CURRENT_VERSION"
+    fi
+}
+
+function updatesAddonSnapshots {
+
+    cyanMessage "Searching snapshot updates for $1 ($3) and revision $2"
+
+    checkCreateVersionFile ${1}_snapshot_${3}.txt
 
     if [ "$1" == "sourcemod" ]; then
         DOWNLOAD_URL=`lynx -dump "http://www.sourcemod.net/smdrop/$2/" | egrep -o "http:.*sourcemod-.*-linux.*" | tail -1`
@@ -50,43 +112,33 @@ function update {
         DOWNLOAD_URL=`lynx -dump "http://www.metamodsource.net/mmsdrop/$2/" | egrep -o "http:.*mmsource-.*-linux.*" | tail -1`
     fi
 
-    FILE_NAME=`echo $DOWNLOAD_URL | egrep -o '(sourcemod|mmsource)-[[:digit:]].*$' | tail -1`
-    LOCAL_VERSION=`cat $HOME/versions/${1}_version_${3}.txt | tail -1`
-    CURRENT_VERSION=`echo $DOWNLOAD_URL | egrep -o '(git|hg)[0-9]{1,}' | tail -1 | sed 's/[^0-9]*//g'`
-
-    echo "local version is $LOCAL_VERSION. Most recent version is $CURRENT_VERSION"
-
-    if [ "$CURRENT_VERSION" != "$LOCAL_VERSION" -a "$CURRENT_VERSION" != "" ]; then
-
-        if [ ! -d $HOME/masteraddons/${1}-${3}/ ]; then
-            mkdir -p $HOME//masteraddons/${1}-${3}/
-        fi
-
-        cd $HOME/masteraddons/${1}-${3}/
-
-        if [ -f $FILE_NAME ]; then
-           rm $FILE_NAME
-        fi
-
-        wget $DOWNLOAD_URL
-
-        if [ -f $FILE_NAME ]; then
-
-            tar xfv $FILE_NAME
-            rm $FILE_NAME
-
-            find -type f ! -perm -750 -exec chmod 640 {} \;
-            find -type d -exec chmod 750 {} \;
-        fi
-
-	echo "Updated $1 $2 from $LOCAL_VERSION to $CURRENT_VERSION"
-        echo "$CURRENT_VERSION" > $HOME/versions/${1}_version_${3}.txt
-    fi
+    updateAddons ${1}_snapshot_${3}.txt $DOWNLOAD_URL ${1}-${3}
 }
 
-update "metamod" "1.10" "stable"
-update "metamod" "1.11" "dev"
-update "sourcemod" "1.7" "stable"
-update "sourcemod" "1.8" "dev"
+function updatesAddonSstables {
+
+    cyanMessage "Searching updates for $1 stable"
+
+    checkCreateVersionFile ${1}_stable.txt
+
+    if [ "$1" == "sourcemod" ]; then
+        PAGE_URL=`lynx -dump www.sourcemod.net/downloads.php | egrep -o "http:.*sourcemod-.*-linux.*" | tail -1`
+    else
+        PAGE_URL=`lynx -dump www.metamodsource.net/ | egrep -o "http:.*mmsource-.*-linux.*" | tail -1`
+    fi
+
+    DOWNLOAD_URL=`lynx -dump $PAGE_URL | grep -v "www.sourcemod.net|www.metamodsource.net" | egrep -o "http:.*sourcemod-.*-linux.*|http:.*mmsource-.*-linux.*" | tail -1`
+
+    updateAddons ${1}_stable.txt $DOWNLOAD_URL $1
+}
+
+checkCreateVersionFolder
+
+updatesAddonSstables "sourcemod"
+updatesAddonSstables "metamod"
+updatesAddonSnapshots "metamod" "1.10" "stable"
+updatesAddonSnapshots "metamod" "1.11" "dev"
+updatesAddonSnapshots "sourcemod" "1.7" "stable"
+updatesAddonSnapshots "sourcemod" "1.8" "dev"
 
 exit 0
