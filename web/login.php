@@ -732,6 +732,8 @@ if (isset($include) and isset($template_to_use)) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/' . $include);
     } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $include)) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/' . $include);
+    } else if (is_file(EASYWIDIR . '/template/default/standalone/' . $include)) {
+        include(EASYWIDIR . '/template/default/standalone/' . $include);
     } else if (is_file(EASYWIDIR . '/template/default/cms/' . $include)) {
         include(EASYWIDIR . '/template/default/cms/' . $include);
     } else if (is_file(EASYWIDIR . '/template/default/' . $include)) {
