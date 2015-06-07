@@ -47,9 +47,9 @@ function checkCreateVersionFile {
 }
 
 function checkCreateFolder {
-	if [ ! -d "$1" -a "$1" != "" ]; then
-		mkdir -p "$1"
-	fi
+    if [ ! -d "$1" -a "$1" != "" ]; then
+        mkdir -p "$1"
+    fi
 }
 
 function removeFile {
