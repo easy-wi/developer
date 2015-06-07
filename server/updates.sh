@@ -201,7 +201,9 @@ function updateMTA {
     DOWNLOAD_URL=`lynx -dump http://linux.mtasa.com/ | egrep -o "http:.*baseconfig-(.*).tar.gz" | tail -1`
     update server_mta_baseconfig.txt "$DOWNLOAD_URL" "mtasa" "masterserver"
 
-    fileUpdate server_mta_resources.txt "http://mirror.mtasa.com/mtasa/resources/mtasa-resources-latest.zip" "mtasa" "masterserver"
+    if [ "`date +'%H'`" == "00" ]; then
+        fileUpdate server_mta_resources.txt "http://mirror.mtasa.com/mtasa/resources/mtasa-resources-latest.zip" "mtasa" "masterserver"
+    fi
 }
 
 checkCreateFolder $HOME/versions
