@@ -34,10 +34,14 @@
 
 function update {
 
-    echo "Searching updates for $1 and revision $2"
+    echo "Searching updates for $1 ($3) and revision $2"
 
-    if [ ! -f $HOME/${1}_version.txt ]; then
-        touch $HOME/${1}_version_$2.txt
+	if [ -d $HOME/versions ]; then
+		mkdir -p $HOME/versions
+	fi
+
+    if [ ! -f $HOME/versions/${1}_version_${3}.txt ]; then
+        touch $HOME/versions/${1}_version_${3}.txt
     fi
 
     if [ "$1" == "sourcemod" ]; then
@@ -47,18 +51,18 @@ function update {
     fi
 
     FILE_NAME=`echo $DOWNLOAD_URL | egrep -o '(sourcemod|mmsource)-[[:digit:]].*$' | tail -1`
-    LOCAL_VERSION=`cat /home/imageserver/${1}_version_$2.txt | tail -1`
+    LOCAL_VERSION=`cat $HOME/versions/${1}_version_${3}.txt | tail -1`
     CURRENT_VERSION=`echo $DOWNLOAD_URL | egrep -o '(git|hg)[0-9]{1,}' | tail -1 | sed 's/[^0-9]*//g'`
 
     echo "local version is $LOCAL_VERSION. Most recent version is $CURRENT_VERSION"
 
     if [ "$CURRENT_VERSION" != "$LOCAL_VERSION" -a "$CURRENT_VERSION" != "" ]; then
 
-        if [ ! -d $HOME/masteraddons/${1}-latest-$2/ ]; then
-            mkdir -p $HOME//masteraddons/${1}-latest-$2/
+        if [ ! -d $HOME/masteraddons/${1}-${3}/ ]; then
+            mkdir -p $HOME//masteraddons/${1}-${3}/
         fi
 
-        cd $HOME/masteraddons/${1}-latest-$2/
+        cd $HOME/masteraddons/${1}-${3}/
 
         if [ -f $FILE_NAME ]; then
            rm $FILE_NAME
@@ -76,13 +80,13 @@ function update {
         fi
 
 	echo "Updated $1 $2 from $LOCAL_VERSION to $CURRENT_VERSION"
-        echo "$CURRENT_VERSION" > $HOME/${1}_version_$2.txt
+        echo "$CURRENT_VERSION" > $HOME/versions/${1}_version_${3}.txt
     fi
 }
 
-update "metamod" "1.10"
-update "metamod" "1.11"
-update "sourcemod" "1.7"
-update "sourcemod" "1.8"
+update "metamod" "1.10" "stable"
+update "metamod" "1.11" "dev"
+update "sourcemod" "1.7" "stable"
+update "sourcemod" "1.8" "dev"
 
 exit 0
