@@ -1395,7 +1395,7 @@ class AppServer {
         $script .= 'cd ' . $this->appServerDetails['absolutePath'] . "\n";
 
 		if (strlen($this->appServerDetails['template']['binarydir']) > 0) {
-			$script .= 'BINARY_DIR=`find "' . $this->appServerDetails['template']['binarydir'] . '" -type d -name "' . $this->appServerDetails['template']['binarydir'] . '" | head -n 1`' . "\n";
+			$script .= 'BINARY_DIR=`find "' . $this->appServerDetails['template']['binarydir'] . '" -type d | head -n 1`' . "\n";
             $script .= 'if [ "$BINARY_DIR" != "" ]; then cd "$BINARY_DIR"; fi' . "\n";
 		}
 
