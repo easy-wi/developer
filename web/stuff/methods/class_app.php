@@ -1392,10 +1392,11 @@ class AppServer {
             $script .= '${IONICE}find ' . $serverTemplateDir . ' -type f -name "*.ztmp"  -mtime +' . $this->appMasterServerDetails['configZtmpTime'] . ' -delete' . "\n";
         }
 
+        $script .= 'cd ' . $this->appServerDetails['absolutePath'] . "\n";
+
 		if (strlen($this->appServerDetails['template']['binarydir']) > 0) {
-			$script .= 'cd ' . $this->appServerDetails['absolutePath'] . $this->appServerDetails['template']['binarydir'] . "\n";
-		} else {
-			$script .= 'cd ' . $this->appServerDetails['absolutePath'] . "\n";
+			$script .= 'BINARY_DIR=`find "' . $this->appServerDetails['template']['binarydir'] . '" -type d -name "' . $this->appServerDetails['template']['binarydir'] . '" | head -n 1`' . "\n";
+            $script .= 'if [ "$BINARY_DIR" != "" ]; then cd "$BINARY_DIR"; fi' . "\n";
 		}
 
         $script .= 'if [ -f screenlog.0 ]; then rm screenlog.0; fi' . "\n";
