@@ -830,9 +830,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $vs = $server['virtualserver_status'];
                             $uptime = (isset($server['virtualserver_uptime'])) ? $server['virtualserver_uptime'] : 0;
 
-                            $vselect2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `localserverid`=? AND `masterserver`=? AND `resellerid`=? AND `autoRestart`='Y' LIMIT 1");
+                            $vselect2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `localserverid`=? AND `masterserver`=? AND `resellerid`=? LIMIT 1");
                             $vselect2->execute(array($virtualserver_id, $vrow['id'], $resellerid));
                             foreach ($vselect2->fetchall(PDO::FETCH_ASSOC) as $vrow2) {
+                                $autoRestart = $vrow2['autoRestart'];
                                 $queryName = $vrow2['queryName'];
                                 $lendserver = $vrow2['lendserver'];
                                 $ts3id = $vrow2['id'];
@@ -1067,6 +1068,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                     $pupdate2 = $sql->prepare("UPDATE `voice_server` SET `notified`='1' WHERE `id`=? LIMIT 1");
                                     $pupdate2->execute(array($ts3id));
                                 }
+
                                 if (isset($ts3id) and $lendserver == 'Y' and $resellersettings[$resellerid]['shutdownempty'] == 'Y') {
                                     $stop = false;
                                     $dataloss = true;
@@ -1100,38 +1102,56 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                         $connection->StopServer($virtualserver_id);
                                     }
                                 }
+
                                 $query = $sql->prepare("INSERT INTO `voice_server_stats` (`sid`,`mid`,`installed`,`used`,`traffic`,`date`,`uid`,`resellerid`) VALUES (?,?,?,?,?,CURRENT_DATE(),?,?) ON DUPLICATE KEY UPDATE `traffic`=`traffic`+VALUES(`traffic`),`used`=(`used`*(`count`/(`count`+1))+(VALUES(`used`)*(1/(`count`+1)))),`installed`=(`installed`*(`count`/(`count`+1))+(VALUES(`installed`)*(1/(`count`+1)))),`count`=`count`+1");
                                 $query->execute(array($ts3id, $ts3masterid, $server['virtualserver_maxclients'], $usedslots, $addedtraffic, $userid, $resellerid));
+
                             } else if (isset($ts3id)) {
+
                                 $uptime = 1;
                                 $usedslots = 0;
+
                                 if ($lendserver == 'Y' and $lendActive == 'Y') {
+
                                     $removedeadvoiceserver = $sql->prepare("DELETE FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
                                     $removedeadvoiceserver->execute(array($ts3id));
-                                } else if ($active == 'Y' and $vs != 'online' and $olduptime>1 and $olduptime != null) {
+
+                                } else if ($active == 'Y' and $vs != 'online' and $olduptime > 1 and $olduptime != null and $autoRestart == 'Y') {
+
                                     $notified++;
-                                    if ($notified>=$ts3masternotified == $resellersettings[$resellerid]['down_checks']){
+
+                                    if ($notified >= $ts3masternotified == $resellersettings[$resellerid]['down_checks']){
                                         print "TS3 server $address not running. Starting it.\r\n";
                                         $connection->StartServer($virtualserver_id);
                                     }
+
                                     if ($notified == $resellersettings[$resellerid]['down_checks']) {
+
                                         $query2 = $sql->prepare("SELECT `mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
                                         $query2->execute(array($userid));
                                         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-                                            if ($row2['mail_serverdown'] == 'Y') sendmail('emaildownrestart', $userid, $address,'');
+                                            if ($row2['mail_serverdown'] == 'Y') {
+                                                sendmail('emaildownrestart', $userid, $address,'');
+                                            }
                                         }
+
                                         $newnotified = $notified;
                                     }
                                 }
                             }
+
                             if (isset($ts3id)) {
+
                                 $flagPassword = 'N';
+
                                 if (isset($sd['virtualserver_flag_password']) and $sd['virtualserver_flag_password'] == 1) {
                                     $flagPassword = 'Y';
                                 }
+
                                 $query2 = $sql->prepare("UPDATE `voice_server` SET `usedslots`=?,`uptime`=?,`notified`=?,`filetraffic`=?,`lastfiletraffic`=?,`queryName`=?,`queryNumplayers`=?,`queryMaxplayers`=?,`queryPassword`=?,`queryUpdatetime`=NOW() WHERE `id`=? AND `resellerid`=? LIMIT 1");
                                 $query2->execute(array($usedslots, $uptime, $newnotified, $newtraffic, $newtrafficdata, $queryName,((isset($server['virtualserver_clientsonline'])) ? $server['virtualserver_clientsonline'] : 0 - 1),(isset($server['virtualserver_maxclients'])) ? $server['virtualserver_maxclients'] : 0, $flagPassword, $ts3id, $resellerid));
                             }
+
                             if (isset($args['coolDown'])) {
 
                                 $nano = time_nanosleep(0, $args['coolDown']);
