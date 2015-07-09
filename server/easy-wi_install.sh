@@ -300,6 +300,8 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 
 		apt-get install mysql-server mysql-client mysql-common
 
+		mysql_secure_installation
+
 	elif [ "$SQL" == "MariaDB" ]; then
 
 		if ([ "`echo $OSVERSION'>='8.0 | bc -l`" == "0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
@@ -329,6 +331,8 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 		else
 			apt-get install mariadb-server mariadb-client mariadb-common
 		fi
+
+		mysql_secure_installation
 	fi
 
 	if [ "$INSTALL" == 'EW' -a "`ps x | grep mysql | grep -v grep`" == "" ]; then
@@ -744,26 +748,28 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
 			mv /root/tempfstab /etc/fstab
 		fi
 
-		cat /root/tempmountpoints | while read LINE; do
-
-			quotaoff -ugv $LINE
-
-			if [ -f $LINE/aquota.user ]; then
-				rm $LINE/aquota.user
-			fi
-
-			echo "Remounting $LINE"
-			mount -o remount $LINE
-
-			quotacheck -vumc $LINE
-			quotaon -uv $LINE
-		done
-
 		if [ -f /root/tempfstab ]; then
 			rm /root/tempfstab
 		fi
+
 		if [ -f /root/tempmountpoints ]; then
-			rm /root/tempmountpoints
+        
+            cat /root/tempmountpoints | while read LINE; do
+
+                quotaoff -ugv $LINE
+
+                if [ -f $LINE/aquota.user ]; then
+                    rm $LINE/aquota.user
+                fi
+
+                echo "Remounting $LINE"
+                mount -o remount $LINE
+
+                quotacheck -vumc $LINE
+                quotaon -uv $LINE
+            done
+
+            rm /root/tempmountpoints
 		fi
 	fi
 fi
@@ -917,7 +923,7 @@ if [ "$INSTALL" == 'GS' ]; then
 			if [ "$OS" == "debian" -a "`echo $OSVERSION'>='8.0 | bc -l`" == "1" ]; then
 				apt-get install libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386
 			else
-				apt-get install ia32-libs lib32readline5 lib32ncursesw5
+				apt-get install ia32-libs lib32readline5 lib32ncursesw5 lib32stdc++6
 			fi
 		else
 			apt-get install libreadline5 libncursesw5
