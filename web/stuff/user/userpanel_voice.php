@@ -70,7 +70,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
         if ($row['type'] == 'ts3') {
             $type = $sprache->ts3;
-            $server=($row['usedns'] == 'N' or $row['dns']==null or $row['dns'] == '') ? $row['ip'] . ':' . $row['port'] : $row['dns'] . ' (' . $row['ip'] . ':' . $row['port'] . ')';
+            $server=($row['usedns'] == 'N' or $row['dns'] == null or $row['dns'] == '') ? $row['ip'] . ':' . $row['port'] : $row['dns'] . ' (' . $row['ip'] . ':' . $row['port'] . ')';
         }
 
         $dns = $row['dns'];
@@ -546,7 +546,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             $template_file = 'userpanel_404.tpl';
         }
 
-    } else if ($ui->smallletters('action', 2, 'post') == 'md' and token(true)){
+    } else if ($ui->smallletters('action', 2, 'post') == 'md' and token(true)) {
 
         unset ($active);
         $errors = array();
@@ -572,6 +572,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         }
 
         if (isset($active) and $active == 'Y') {
+
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR (`managedServer`='Y' AND `managedForID`=:reseller_id)) LIMIT 1");
             $query->execute(array(':aeskey' => $aeskey,':id' => $masterserver,':reseller_id' => $reseller_id));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -615,19 +616,20 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
                 if ($usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck !== false) {
 
-                    if (isset($tsdnsServerID) and isid($tsdnsServerID,10) and isset($resellerToUse)) {
+                    if (isset($tsdnsServerID) and isid($tsdnsServerID, 10) and isset($resellerToUse)) {
+
                         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                         $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $resellerToUse));
                         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $publickey = $row['publickey'];
-                            $ip = $row['ssh2ip'];
-                            $port = $row['decryptedssh2port'];
-                            $user = $row['decryptedssh2user'];
-                            $pass = $row['decryptedssh2password'];
+                            $queryip = $row['ssh2ip'];
+                            $ssh2port = $row['decryptedssh2port'];
+                            $ssh2user = $row['decryptedssh2user'];
+                            $ssh2password = $row['decryptedssh2password'];
                             $serverdir = $row['serverdir'];
                             $keyname = $row['keyname'];
                             $bit = $row['bitversion'];
-                            $slots = $row['slots'];
+                            $bitversion = $row['bitversion'];
                         }
                     }
 
