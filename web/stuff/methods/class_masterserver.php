@@ -155,7 +155,7 @@ class masterServer {
         }
 
         $serverAmount = count($allServer);
-
+        
         if ($serverAmount > 0) {
             $imageserverCount = $serverAmount - 1;
             $arrayEntry = rand(0, $imageserverCount);
@@ -325,7 +325,7 @@ class masterServer {
         $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.manifest" -or -iname "*.map" -or -iname "*.mapRACE" -or -iname "*.mdl" -or -iname "*.mix" -or -iname "*.mp3" -or -iname "*.nav" -or -iname "*.nod" -or -iname "*.nut" -or -iname "*.pak" -or -iname "*.pcx" -or -iname "*.pem" -or -iname "*.pl" \) -exec chmod 640 {} \;' . "\n";
         $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.png" -or -iname "*.properties" -or -iname "*.psd" -or -iname "*.pwn" -or -iname "*.rad" -or -iname "*.raw" -or -iname "*.rc" -or -iname "*.rec" -or -iname "*.res" -or -iname "*.rules" -or -iname "*.sc" -or -iname "*.scr" -or -iname "*.sfk" \) -exec chmod 640 {} \;' . "\n";
         $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.sln" -or -iname "*.so" -or -iname "*.spr" -or -iname "*.suo" -or -iname "*.swf" -or -iname "*.tar" -or -iname "*.tga" -or -iname "*.ttf" -or -iname "*.txd" -or -iname "*.txt" -or -iname "*.vbf" -or -iname "*.vcproj" -or -iname "*.vcs" -or -iname "*.vdf" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.vfe" -or -iname "*.vfont" -or -iname "*.vmf" -or -iname "*.vmt" -or -iname "*.vpk" -or -iname "*.vtf" -or -iname "*.wad" -or -iname "*.wav" -or -iname "*.wv" -or -iname "*.xml" -or -iname "*.xsc" -or -iname "*.zip" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.vfe" -or -iname "*.vfont" -or -iname "*.vmf" -or -iname "*.vmt" -or -iname "*.vpk" -or -iname "*.vtf" -or -iname "*.wad" -or -iname "*.wav" -or -iname "*.wv" -or -iname "*.xml" -or -iname "*.xsc" -or -iname "*.yml" -or -iname "*.zip" \) -exec chmod 640 {} \;' . "\n";
         $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f -name "srcds_*" -o -name "hlds_*" -o -name "*.run" -o -name "*.sh" -o -name "*.jar" -exec chmod 750 {} \;' . "\n";
         $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f ! -perm -750 ! -perm -755 -exec chmod 640 {} \;' . "\n";
         $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type d -exec chmod 750 {} \;' . "\n";

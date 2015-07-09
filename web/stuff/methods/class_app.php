@@ -586,7 +586,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
         $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
 
-        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lua', 'props', 'properties', 'json', 'example', 'html');
+        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml');
 
         if ($standalone and isset($scriptName)) {
             $script = $this->shellScriptHeader;
@@ -876,7 +876,7 @@ class AppServer {
 
             $line = str_replace(array("\r"), '', $line);
 
-            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot))$/', $line)) {
+            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot|yml))$/', $line)) {
 
                 $exploded = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -894,7 +894,11 @@ class AppServer {
 
                     $splitLine = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
-                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('ini','lua'))) {
+                }  else if ($cvarProtectArray[$configPathAndFile]['type'] == 'yml') {
+
+                    $splitLine = preg_split("/(?:(?<!-))\s+/", $line);
+
+                 } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('ini','lua'))) {
 
                     $splitLine = preg_split("/\=/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -1062,7 +1066,17 @@ class AppServer {
 
                                 $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
 
-                            } else if ($values['type'] == 'ini' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '[\s+]{0,}\=[\s+]{0,}(.*)$/', $loweredSingleLine)) {
+                            } else if ($values['type'] == 'yml' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '\s+(.*)$/', $loweredSingleLine)) {
+
+                                $edited = true;
+
+                                unset($cvarsNotFound[$cvar]);
+
+                                $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
+
+                                $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
+
+                             } else if ($values['type'] == 'ini' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '[\s+]{0,}\=[\s+]{0,}(.*)$/', $loweredSingleLine)) {
 
                                 $edited = true;
 
@@ -1594,7 +1608,7 @@ class AppServer {
         $script .= 'cp -sr ' . $masterAddonFolder . '* $GAMEDIR/ > /dev/null 2>&1' . "\n";
 
         if ($type == 'addon') {
-            $script .= 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
+            $script .= 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json|yml)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
             $script .= 'FOLDER=`dirname $FILE`' . "\n";
             $script .= 'FILENAME=`basename $FILE`' . "\n";
             $script .= 'if [ ! -d $GAMEDIR/$FOLDER ]; then mkdir -p $GAMEDIR/$FOLDER/; fi' . "\n";
