@@ -200,7 +200,7 @@ class ValidateUserinput {
 
         $check = $this->if_obj_or_str($value, $type, $object);
 
-        if ($check and is_string($check) and preg_match("/^[\w\d+\-\.]+\.[a-z]{1,5}$/", $check)) {
+        if ($check and is_string($check) and preg_match("/^[\w\d+\-\.]+\.[a-z]{1,10}$/", $check)) {
             return $check;
         } else if ($check) {
             return $this->loop($check, 'domain', $type);

@@ -72,7 +72,7 @@ function isurl($value) {
 }
 
 function isdomain($value) {
-    return (preg_match("/^[a-z0-9\-\.]+\.[a-z]{1,5}$/", $value) !== false) ? $value : false;
+    return (preg_match("/^[a-z0-9\-\.]+\.[a-z]{1,10}$/", $value) !== false) ? $value : false;
 }
 
 function isRsync($value) {
