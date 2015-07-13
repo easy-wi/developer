@@ -195,7 +195,7 @@ if [ "$INSTALL" != 'EW' ]; then
 	if [ "$OPTION" == "Create key" ]; then
 
 		if [ -d /home/$MASTERUSER/.ssh ]; then
-			rm -r /home/$MASTERUSER/.ssh
+			rm -rf /home/$MASTERUSER/.ssh
 		fi
 
 		echo " "
@@ -247,7 +247,7 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
 							add-apt-repository "deb-src http://packages.dotdeb.org $OSBRANCH all"
 							wget http://www.dotdeb.org/dotdeb.gpg
 							apt-key add dotdeb.gpg
-							rm dotdeb.gpg
+							rm -f dotdeb.gpg
 							apt-get update
 					fi
 			fi
@@ -711,10 +711,10 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
 		echo " "
 		echo " "
 		if [ -f /root/tempfstab ]; then
-			rm /root/tempfstab
+			rm -f /root/tempfstab
 		fi
 		if [ -f /root/tempmountpoints ]; then
-			rm /root/tempmountpoints
+			rm -f /root/tempmountpoints
 		fi
 
 		cat /etc/fstab | while read LINE; do
@@ -749,7 +749,7 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
 		fi
 
 		if [ -f /root/tempfstab ]; then
-			rm /root/tempfstab
+			rm -f /root/tempfstab
 		fi
 
 		if [ -f /root/tempmountpoints ]; then
@@ -759,7 +759,7 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
                 quotaoff -ugv $LINE
 
                 if [ -f $LINE/aquota.user ]; then
-                    rm $LINE/aquota.user
+                    rm -f $LINE/aquota.user
                 fi
 
                 echo "Remounting $LINE"
@@ -769,7 +769,7 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
                 quotaon -uv $LINE
             done
 
-            rm /root/tempmountpoints
+            rm -f /root/tempmountpoints
 		fi
 	fi
 fi
@@ -939,7 +939,7 @@ if [ "$INSTALL" == 'GS' ]; then
 
 	if [ -f steamcmd_linux.tar.gz ]; then
 		tar xfvz steamcmd_linux.tar.gz
-		rm steamcmd_linux.tar.gz
+		rm -f steamcmd_linux.tar.gz
 		chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER/masterserver/steamCMD
 		su -c "./steamcmd.sh +login anonymous +quit" $MASTERUSER
 	fi

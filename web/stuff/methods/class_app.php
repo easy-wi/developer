@@ -108,7 +108,7 @@ class AppServer {
             if ($this->appMasterServerDetails['os'] == 'L') {
                 $this->shellScriptHeader = "#!/bin/bash\n";
                 $this->shellScriptHeader .= "if ionice -c3 true 2>/dev/null; then IONICE='ionice -n 7 '; fi\n";
-                $this->shellScripts['user'] = $this->shellScriptHeader . 'rm /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh' . "\n";
+                $this->shellScripts['user'] = $this->shellScriptHeader . 'rm -f /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh' . "\n";
             }
         }
 
@@ -557,7 +557,7 @@ class AppServer {
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/move-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-' . $oldIP . '-' . $oldPort . '.sh');
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/server') . "\n";
         $script .= 'if [ -d "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']. '" ]; then rm -rf "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '"; fi' . "\n";
         $script .= 'mv ' . $oldIP . '_' . $oldPort . ' ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . "\n";
@@ -590,7 +590,7 @@ class AppServer {
 
         if ($standalone and isset($scriptName)) {
             $script = $this->shellScriptHeader;
-            $script .= 'rm ' . $scriptName . "\n";
+            $script .= 'rm -f ' . $scriptName . "\n";
         } else {
             $script = '';
         }
@@ -694,7 +694,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/') . "\n";
 
         foreach ($templates as $template) {
@@ -728,7 +728,7 @@ class AppServer {
         if ($standalone === true) {
 
             $script = $this->shellScriptHeader;
-            $script .= 'rm ' . $scriptName . "\n";
+            $script .= 'rm -f ' . $scriptName . "\n";
 
         } else {
             $script = '';
@@ -771,7 +771,7 @@ class AppServer {
             $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/stop-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
             $script = $this->shellScriptHeader;
-            $script .= 'rm ' . $scriptName . "\n";
+            $script .= 'rm -f ' . $scriptName . "\n";
 
         } else {
             $script = '';
@@ -841,7 +841,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/hardstop-' . $userName . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
 
         $script .= 'crontab -r' . "\n";
         $script .= 'screen -wipe > /dev/null 2>&1' . "\n";
@@ -1353,7 +1353,7 @@ class AppServer {
         $serverTemplateDir = $this->removeSlashes($serverDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
 
         $script .= $this->linuxStopApp(false, $scriptName);
 
@@ -1385,7 +1385,7 @@ class AppServer {
 
             $script .= 'for BADFILE in ${FILESFOUND[@]}; do' . "\n";
             $script .= 'chmod 666 $BADFILE > /dev/null 2>&1' . "\n";
-            $script .= 'rm $BADFILE > /dev/null 2>&1' . "\n";
+            $script .= 'rm -f $BADFILE > /dev/null 2>&1' . "\n";
             $script .= 'if [ -f $BADFILE ]; then exit 0; fi' . "\n";
             $script .= 'done' . "\n";
         }
@@ -1413,7 +1413,7 @@ class AppServer {
             $script .= 'if [ "$BINARY_DIR" != "" ]; then cd "$BINARY_DIR"; fi' . "\n";
 		}
 
-        $script .= 'if [ -f screenlog.0 ]; then rm screenlog.0; fi' . "\n";
+        $script .= 'if [ -f screenlog.0 ]; then rm -f screenlog.0; fi' . "\n";
         $script .= $this->generateStartCommand() . "\n";
 
         if ($this->getGameType() == 'hl2' and $this->appServerDetails['tvAllowed'] == 'Y' and in_array($this->appServerDetails['app']['upload'], array(4, 5)) and $this->appServerDetails['app']['uploadDir']) {
@@ -1463,7 +1463,7 @@ class AppServer {
 
         if ($standalone == true) {
             $script = $this->shellScriptHeader;
-            $script .= 'rm ' . $scriptName . "\n";
+            $script .= 'rm -f ' . $scriptName . "\n";
         } else {
             $script = '';
         }
@@ -1537,7 +1537,7 @@ class AppServer {
                 $screenScriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/demo-start-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
                 $script = $this->shellScriptHeader;
-                $script .= 'rm ' . $screenScriptName . "\n";
+                $script .= 'rm -f ' . $screenScriptName . "\n";
 
                 // Kill any screen that is running with the same name
                 $script .= 'ps fx | grep \'SCREEN\' | grep \'demo_' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '\' | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
@@ -1640,7 +1640,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/addons-add-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
 
         if ($id === false) {
 
@@ -1735,13 +1735,13 @@ class AppServer {
         $script .= 'mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES' . "\n";
         $script .= 'elif [ "`basename $FILES`" == "plugins.ini" ]; then' . "\n";
 
-        $script .= 'if [ -f /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp ]; then rm /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp; fi' . "\n";
+        $script .= 'if [ -f /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp ]; then rm -f /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp; fi' . "\n";
 
         $script .= 'cat $GAMEDIR/$FILES | while read LINE; do' . "\n";
         $script .= 'if [[ `grep "$LINE" $FILES` == "" ]]; then  echo "$LINE" >> /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp; fi' . "\n";
         $script .= 'done' . "\n";
         $script .= 'cp /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp $GAMEDIR/$FILES' . "\n";
-        $script .= 'rm /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp' . "\n";
+        $script .= 'rm -f /home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/$USER.pluginlist.temp' . "\n";
         $script .= 'else' . "\n";
         $script .= 'rm -rf "$GAMEDIR/$FILES" > /dev/null 2>&1' . "\n";
         $script .= 'if [ "$FILES" == "liblist.gam" ]; then mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES > /dev/null 2>&1; fi' . "\n";
@@ -1765,7 +1765,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/addons-del-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
         $script .= 'USER=`id -un`' . "\n";
 
         foreach ($ids as $id) {
@@ -1823,7 +1823,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/migrate-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
         $script .= 'if [ -d "' . $serverDir . '" ]; then ${IONICE}rm -rf "' . $serverDir . '"; fi' . "\n";
 
         $script .= $this->linuxAddApp(array($targetTemplate), false);
@@ -1869,7 +1869,7 @@ class AppServer {
             $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/fdl-sync-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
             $script = $this->shellScriptHeader;
-            $script .= 'rm ' . $scriptName . "\n";
+            $script .= 'rm -f ' . $scriptName . "\n";
             $script .= 'USERNAME=`id -un`' . "\n";
 
             $script .= 'if [ -f "' . $fdlFileList . '" ]; then' . "\n";
@@ -1996,7 +1996,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-create-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
 
         $script .= 'if [ ! -d "' . $backupDir . '" ]; then mkdir -p "' . $backupDir . '"; fi' . "\n";
         $script .= 'find "' . $backupDir . '" -maxdepth 1 -type f -name "*.tar.bz2" -delete' . "\n";
@@ -2033,7 +2033,7 @@ class AppServer {
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-deploy-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
         $script = $this->shellScriptHeader;
-        $script .= 'rm ' . $scriptName . "\n";
+        $script .= 'rm -f ' . $scriptName . "\n";
 
         if (strlen($ftpDownloadString) > 0) {
             $script .= 'if [ ! -d "' . $backupDir . '" ]; then mkdir -p "' . $backupDir . '"; fi' . "\n";
@@ -2041,7 +2041,7 @@ class AppServer {
             $script .= 'mv "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . '" "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . "\n";
             $script .= 'wget -q --timeout=10 --no-check-certificate ' . $ftpDownloadString . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2' . "\n";
             $script .= 'if [ -f "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . '" ]; then' . "\n";
-            $script .= 'rm "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . "\n";
+            $script .= 'rm -f "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . "\n";
             $script .= 'else' . "\n";
             $script .= 'mv "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . '" "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . "\n";
             $script .= 'fi' . "\n";

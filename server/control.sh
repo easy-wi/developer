@@ -80,7 +80,7 @@ function wget_remove {
 			RETRY=$[RETRY+1]
 		done
 		if [ "$RETRY" -lt 10 ]; then
-			rm wget-log > /dev/null 2>&1
+			rm -f wget-log > /dev/null 2>&1
 			find $HOMEFOLDER -maxdepth 1 -name "control_new.*" -delete
 			find $HOMEFOLDER \( -iname "wget-*" \) -delete
 			find $HOMEFOLDER/conf/ -maxdepth 1 -name "wget-*" -delete
@@ -101,11 +101,11 @@ function updatecheck {
 		CURRENTFDLVERSION=`wget -q --timeout=10 -O - http://update.easy-wi.com/if_version.php | sed 's/^\xef\xbb\xbf//g'`
 		if [ -z $CURRENTFDLVERSION ]; then
 			cd $HOMEFOLDER
-			if [ -f $HOMEFOLDER/control_new.tar ]; then rm $HOMEFOLDER/control_new.tar; fi
+			if [ -f $HOMEFOLDER/control_new.tar ]; then rm -f $HOMEFOLDER/control_new.tar; fi
 		elif [ "$CVERSION" != "$CURRENTFDLVERSION" ]; then
 			if [ "$ISROOT" == "1" ]; then echo "control.sh is outdated fetching update"; fi
 			cd $HOMEFOLDER
-			if [ -f $HOMEFOLDER/control_new.tar ]; then rm $HOMEFOLDER/control_new.tar; fi
+			if [ -f $HOMEFOLDER/control_new.tar ]; then rm -f $HOMEFOLDER/control_new.tar; fi
 			wget -q --timeout=10 http://update.easy-wi.com/programs/bash/control_new.tar
 			if [ -f $HOMEFOLDER/control_new.tar ]; then
 				tar xfp control_new.tar
@@ -123,11 +123,11 @@ function updatecheck {
 					OLDVERSION=`ls $HOMEFOLDER/control.old.*.sh | sort -f -r | head -n1`
 					if [ "$OLDVERSION" != "" ]; then mv $OLDVERSION $HOMEFOLDER/control.sh; fi
 				fi
-				rm control_new.tar control_new.tar.* control_new.sh control.tar.* control.old.2.3.* 2> /dev/null
+				rm -f control_new.tar control_new.tar.* control_new.sh control.tar.* control.old.2.3.* 2> /dev/null
 			fi
 			if [ "$ISROOT" == "1" ]; then echo "control.sh has been updated to version $CURRENTFDLVERSION."; fi
 		fi
-		rm $HOMEFOLDER/.updateLock
+		rm -f $HOMEFOLDER/.updateLock
 	fi
 }
 if [ "$NOUPDATES" != "1" -a "$SCRIPTNAME" != "control_new.sh" -a "$VARIABLE1" != "fixpermissions" ]; then
@@ -138,7 +138,7 @@ if [ "$NOUPDATES" != "1" -a "$SCRIPTNAME" != "control_new.sh" -a "$VARIABLE1" !=
 		ISROOT=1
 		updatecheck
 		if [ "`find -maxdepth 1 -name \"control.old.*\"`" != "" ]; then
-			rm control.old.*
+			rm -f control.old.*
 		fi
 	fi
 fi
@@ -488,7 +488,7 @@ cd /home/$INSTALLMASTER/masterserver/steamCMD/
 wget -q --timeout=10 http://media.steampowered.com/client/steamcmd_linux.tar.gz
 if [ -f steamcmd_linux.tar.gz ]; then
 	tar xfvz steamcmd_linux.tar.gz
-	rm steamcmd_linux.tar.gz
+	rm -f steamcmd_linux.tar.gz
 	chown -R $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER/
 	su -c "./steamcmd.sh +login anonymous +quit" $INSTALLMASTER
 fi
@@ -573,7 +573,7 @@ function publicKeyGenerate {
 		INSTALLMASTER=`whoami`
 	fi
 	if [ "$INSTALLMASTER" != "" ]; then
-		if [ -d /home/$INSTALLMASTER/.ssh ]; then rm -r /home/$INSTALLMASTER/.ssh; fi
+		if [ -d /home/$INSTALLMASTER/.ssh ]; then rm -rf /home/$INSTALLMASTER/.ssh; fi
 		if [ "`id -u`" == "0" ]; then
 			su -c 'ssh-keygen -t rsa' $INSTALLMASTER
 		else
@@ -598,7 +598,7 @@ function fdlList {
 	echo "PATTERN=$PATTERN" >> $1
 	echo "SED=\"sed \"'s/\.\///g'\"\"" >> $1
 	echo "if [ -f $HOMEFOLDER/conf/fdl-$UPDATE.list ]; then" >> $1
-	echo "	rm $HOMEFOLDER/conf/fdl-$UPDATE.list" >> $1
+	echo "	rm -f $HOMEFOLDER/conf/fdl-$UPDATE.list" >> $1
 	echo 'fi' >> $1
 	echo "touch $HOMEFOLDER/conf/fdl-$UPDATE.list" >> $1
 	echo "cd $MASTERSERVERDIR/$UPDATE" >> $1
@@ -634,7 +634,7 @@ ps x | grep 'SteamCmdUpdate-Screen'  | grep -v 'grep' | awk '{print $1}' | while
 done
 cat > $TEMPFOLDER/updateSteamCmd.sh << EOF
 #!/bin/bash
-rm $TEMPFOLDER/updateSteamCmd.sh
+rm -f $TEMPFOLDER/updateSteamCmd.sh
 VARIABLE3="$VARIABLE3"
 VARIABLE4="$VARIABLE4"
 VARIABLE5="$VARIABLE5"
@@ -653,7 +653,7 @@ if [ ! -d "$MASTERSERVERDIR/steamCMD/" ]; then
 		wget -q --timeout=10 http://media.steampowered.com/client/steamcmd_linux.tar.gz
 		if [ -f steamcmd_linux.tar.gz ]; then
 			tar xfz steamcmd_linux.tar.gz
-			rm steamcmd_linux.tar.gz
+			rm -f steamcmd_linux.tar.gz
 			chmod +x steamcmd.sh
 			./steamcmd.sh +login anonymous +quit
 		fi
@@ -781,7 +781,7 @@ for UPDATE in $VARIABLE3; do
 	if [[ ! `screen -ls | grep $UPDATE.update` ]]; then
 cat > $TEMPFOLDER/update_$UPDATE.sh << EOF
 #!/bin/bash
-rm $TEMPFOLDER/update_$UPDATE.sh
+rm -f $TEMPFOLDER/update_$UPDATE.sh
 VARIABLE4="$VARIABLE4"
 VARIABLE5="$VARIABLE5"
 LOGDIR="$LOGDIR"
@@ -950,7 +950,7 @@ echo "`date`: User $VARIABLE2 created" >> $LOGDIR/update.log
 
 function customerDelete {
 echo "#!/bin/bash
-rm $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
+rm -f $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
 #${IONICE}nice -n +19 sudo /usr/sbin/deluser --remove-all-files ${VARIABLE2}-p
 #${IONICE}nice -n +19 sudo /usr/sbin/deluser --remove-all-files ${VARIABLE2}
 ${IONICE}nice -n +19 sudo /usr/sbin/userdel -fr ${VARIABLE2}-p
@@ -963,7 +963,7 @@ echo "`date`: User $VARIABLE2 deleted" >> $LOGDIR/update.log
 function user_single_delete {
 if [ "`id ${VARIABLE2} 2>/dev/null`" != "" ]; then
 echo "#!/bin/bash
-rm $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
+rm -f $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
 ${IONICE}nice -n +19 sudo /usr/sbin/userdel -fr ${VARIABLE2}" > $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
 chmod +x $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
 screen -d -m -S del-user-${VARIABLE2} $HOMEFOLDER/temp/del-user-${VARIABLE2}.sh
@@ -1060,7 +1060,7 @@ SERVERDIR=`echo $SERVERDIR | sed 's/\/\//\//g'`
 echo "#!/bin/bash
 
 HOMEFOLDER=$HOMEFOLDER
-rm $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
+rm -f $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
 VARIABLE2=$VARIABLE2
 VARIABLE4=$VARIABLE4
 SERVERDIR=$SERVERDIR" > $HOMEFOLDER/temp/del-$VARIABLE2-$VARIABLE4.sh
@@ -1122,7 +1122,7 @@ if [ "$VARIABLE1" != "migrateserver" ]; then
 echo "#!/bin/bash
 
 HOMEFOLDER=$HOMEFOLDER
-rm $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+rm -f $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 VARIABLE2=$VARIABLE2
 VARIABLE4=$VARIABLE4
 SERVERDIR=$SERVERDIR
@@ -1211,7 +1211,7 @@ function migration {
 echo "#!/bin/bash
 
 HOMEFOLDER=$HOMEFOLDER
-rm $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
+rm -f $HOMEFOLDER/temp/add-$VARIABLE2-$VARIABLE4.sh
 VARIABLE2=$VARIABLE2
 VARIABLE4=$VARIABLE4
 VARIABLE9=$VARIABLE9
@@ -1250,7 +1250,7 @@ VARIABLE2=$VARIABLE2
 VARIABLE3=$VARIABLE3
 VARIABLE4=$VARIABLE4
 VARIABLE5=$VARIABLE5
-rm $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh" > $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
+rm -f $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh" > $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
 echo 'while [[ `screen -ls | grep "del-$VARIABLE2-$VARIABLE3"` ]]; do
 	sleep 1
 done' >> $HOMEFOLDER/temp/move-$VARIABLE2-$VARIABLE4.sh
@@ -1302,7 +1302,7 @@ function map_list {
 			elif [[ `find -name da2` ]]; then
 				cd `find -name da2`
 			fi
-			if [ -f maplist.txt ]; then rm maplist.txt; fi
+			if [ -f maplist.txt ]; then rm -f maplist.txt; fi
 			if [ "$MAPTYPE" == "bsp" ]; then
 				cd `find -maxdepth 3 -type d -name "maps" | head -n 1`
 			elif [ "$MAPTYPE" == "rom" ]; then
@@ -1347,7 +1347,7 @@ function backup_servers {
 	BACKUPDIR="$USERHOME/$USERNAME/backup"
 	echo "#!/bin/bash
 
-rm $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
+rm -f $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
 BACKUPDIR=$BACKUPDIR
 USERNAME=$USERNAME
 USERHOME=$USERHOME" > $HOMEFOLDER/temp/backup-$VARIABLE2-$USERNAME.sh
@@ -1388,7 +1388,7 @@ function restore_backup {
 	SCREENNAME=restorerestore-$VARIABLE2-$VARIABLE3
 	if ([[ ! `screen -ls | grep "$SCREENNAME"` ]] && [[ ! `screen -ls | grep "backup-$VARIABLE2-$SHORTEN"` ]]); then
 		echo "#!/bin/bash" > $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-		echo "rm $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+		echo "rm -f $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		echo "USERHOME=$USERHOME" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 		if [ "$VARIABLE5" != "" -a "$VARIABLE5" != "none" ]; then
 			echo "if [ ! -f $USERHOME/$USERNAME/backup/ ]; then mkdir -p $USERHOME/$USERNAME/backup/; fi" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
@@ -1396,7 +1396,7 @@ function restore_backup {
 			echo "mv $USERHOME/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 $USERHOME/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "wget -q --timeout=10 --no-check-certificate $VARIABLE5/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "if [ -f $USERHOME/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2 ]; then" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
-			echo "	rm $USERHOME/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
+			echo "	rm -f $USERHOME/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "else" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "	mv $USERHOME/$USERNAME/backup/$VARIABLE2-${VARIABLE3}_old.tar.bz2 $USERHOME/$USERNAME/backup/$VARIABLE2-$VARIABLE3.tar.bz2" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
 			echo "fi" >> $HOMEFOLDER/temp/restore-$VARIABLE2-$VARIABLE3-$USERNAME.sh
@@ -1530,7 +1530,7 @@ for ISFILE in $DONOTTOUCH; do
 		MASTERPATH=`echo "$HOMEFOLDER/masterserver/$MASTERGAME/$MASTERGAMEFOLDER/$BADFILE" | sed 's/\/\//\//g'`
 		BADFILEPATH=`echo "$SERVERDIR/$BADFILE" | sed 's/\/\//\//g'`
 		chmod 666 $BADFILE
-		rm $BADFILE
+		rm -f $BADFILE
 		if [ -f $BADFILE ]; then
 			exit 0
 		fi
@@ -1542,7 +1542,7 @@ for ISFILE in $DONOTTOUCH; do
 		MASTERPATH=`echo "$HOMEFOLDER/masterserver/$MASTERGAME/$MASTERGAMEFOLDER/$BADFILE" | sed 's/\/\//\//g'`
 		BADFILEPATH=`echo "$SERVERDIR/$BADFILE" | sed 's/\/\//\//g'`
 		if [ "`ls -la $BADFILE | awk '{print $11}'`" != "$MASTERPATH" ]; then
-			rm $BADFILE
+			rm -f $BADFILE
 			if [ -f $BADFILE ]; then
 				exit 0
 			fi
@@ -1604,7 +1604,7 @@ else
 		fi
 		if [ ! -f $STARTFILE ]; then
 		echo '#!/bin/bash' > $STARTFILE
-		echo "rm $STARTFILE" >> $STARTFILE
+		echo "rm -f $STARTFILE" >> $STARTFILE
 		echo 'while [ "`ps x | grep '"'add-${VARIABLE2}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
 		echo 'sleep 0.5' >> $STARTFILE
 		echo 'done' >> $STARTFILE
@@ -1637,7 +1637,7 @@ else
 		echo 'if [ "`find orangebox/ css/ -type f 2> /dev/null | wc -l`" == "0" ]; then rm -rf orangebox/ css/ 2> /dev/null; fi' >> $STARTFILE
 		echo 'fi' >> $STARTFILE
 		# Steampipe Fix Ende
-		echo "if [ -f screenlog.0 ]; then rm screenlog.0; fi" >> $STARTFILE
+		echo "if [ -f screenlog.0 ]; then rm -f screenlog.0; fi" >> $STARTFILE
 		echo "${TASKSET} screen -A -m -d -L -S $SCREENNAME $VARIABLE4" >> $STARTFILE
 		chmod +x $STARTFILE
 		$STARTFILE > /dev/null 2>&1 &
@@ -1684,7 +1684,7 @@ else
 fi
 if [ "$VARIABLE1" == "grestart" ]; then
 	echo '#!/bin/bash' > $STARTFILE
-	echo "rm $STARTFILE" >> $STARTFILE
+	echo "rm -f $STARTFILE" >> $STARTFILE
 	echo "SCREENNAME=$SCREENNAME" >> $STARTFILE
 	echo 'while [ "`ps x | egrep '"'add-${VARIABLE2}|del-${VARIABLE2}|move-${VARIABLE2}'"' | grep -v grep`" != "" ]; do' >> $STARTFILE
 	echo 'sleep 0.5' >> $STARTFILE
@@ -1692,7 +1692,7 @@ if [ "$VARIABLE1" == "grestart" ]; then
 	addStop $STARTFILE temp/start-${VARIABLE2}-p-${SCREENNAME}.sh
 else
 	echo "#!/bin/bash" > $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
-	echo "rm $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
+	echo "rm -f $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	echo "SCREENNAME=$SCREENNAME" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	addStop $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
 	echo "${IONICE}nice -n +19 find $HOMEFOLDER/temp/ -type f -user `whoami` -delete" >> $HOMEFOLDER/temp/fullstop-${VARIABLE2}-${SCREENNAME}.sh
@@ -1796,7 +1796,7 @@ function demo_upload {
 		cat > $TEMPFOLDER/$USERNAME-$SCREENNAME-upload.sh <<EOF
 #!/bin/bash
 
-rm $TEMPFOLDER/$USERNAME-$SCREENNAME-upload.sh
+rm -f $TEMPFOLDER/$USERNAME-$SCREENNAME-upload.sh
 VARIABLE3="$VARIABLE3/"
 VARIABLE4="$VARIABLE4"
 KEEP="$KEEP"
@@ -1883,7 +1883,7 @@ function copy_addon_files {
 
 function sync_addons {
 	echo "#!/bin/bash" > $HOMEFOLDER/temp/sync-addons.sh
-	echo "rm $HOMEFOLDER/temp/sync-addons.sh" >> $HOMEFOLDER/temp/sync-addons.sh
+	echo "rm -f $HOMEFOLDER/temp/sync-addons.sh" >> $HOMEFOLDER/temp/sync-addons.sh
 	if [ "$VARIABLE3" != "maps" ]; then
 		echo "cd $MAPDIR/" >> $HOMEFOLDER/temp/sync-addons.sh
 		for MAPPACKAGE in $VARIABLE3; do
@@ -1920,7 +1920,7 @@ function sync_addons {
 
 function sync_server {
 	echo "#!/bin/bash" > $TEMPFOLDER/sync-server.sh
-	echo "rm $TEMPFOLDER/sync-server.sh" >> $TEMPFOLDER/sync-server.sh
+	echo "rm -f $TEMPFOLDER/sync-server.sh" >> $TEMPFOLDER/sync-server.sh
 	echo "cd $MASTERSERVERDIR/" >> $TEMPFOLDER/sync-server.sh
 	echo "BOMRM=\"sed \"'s/^\xef\xbb\xbf//g'\"\"" >> $TEMPFOLDER/sync-server.sh
 	for SERVER in $VARIABLE3; do
@@ -2006,12 +2006,12 @@ function del_addon_files {
 		if [ "`basename $FILES`" == "liblist.gam" ]; then
 			mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES
 		elif [ "`basename $FILES`" == "plugins.ini" ]; then
-			if [ -f $HOMEFOLDER/temp/$USER.pluginlist.temp ]; then rm $HOMEFOLDER/temp/$USER.pluginlist.temp; fi
+			if [ -f $HOMEFOLDER/temp/$USER.pluginlist.temp ]; then rm -f $HOMEFOLDER/temp/$USER.pluginlist.temp; fi
 			cat $GAMEDIR/$FILES | while read LINE; do
 				if [[ `grep "$LINE" $FILES` == "" ]]; then  echo "$LINE" >> $HOMEFOLDER/temp/$USER.pluginlist.temp; fi
 			done
 			cp $HOMEFOLDER/temp/$USER.pluginlist.temp $GAMEDIR/$FILES
-			rm $HOMEFOLDER/temp/$USER.pluginlist.temp
+			rm -f $HOMEFOLDER/temp/$USER.pluginlist.temp
 		else
 			rm -rf "$GAMEDIR/$FILES" > /dev/null 2>&1
 			if [ "$FILES" == "liblist.gam" ]; then mv $GAMEDIR/$FILES.old $GAMEDIR/$FILES > /dev/null 2>&1; fi
@@ -2098,11 +2098,11 @@ function fdl_update {
 			SERVERDIR=`readlink -f $GSMODFOLDER`
 		fi
 		if [ -f $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh ]; then
-			rm $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
+			rm -f $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 		fi
 		PATTERN="\.log\|\.txt\|\.cfg\|\.vdf\|\.db\|\.dat\|\.ztmp\|\.blib\|log\/\|logs\/\|downloads\/\|DownloadLists\/\|metamod\/\|amxmodx\/\|hl\/\|hl2\/\|cfg\/\|addons\/\|bin\/\|classes/"
 		echo "#!/bin/bash" > $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
-		echo "rm $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
+		echo "rm -f $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 		echo "GAMETYPE=$GAMETYPE" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 		echo "HOMEFOLDER=$HOMEFOLDER" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 		echo "VARIABLE2=$VARIABLE2" >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
@@ -2142,7 +2142,7 @@ function fdl_update {
 			echo '			if [ "`head -n 1 \"$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat\"`" != "`'"${IONICE}"'nice -n +19 md5sum \"$FILTEREDFILES\" | awk '"'"'{print $1}'"'"'`" ]; then' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				'"${IONICE}"'nice -n +19 md5sum "$FILTEREDFILES" | awk '"'"'{print $1}'"'"' > "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				if [ -f "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2" ]; then' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
-			echo '					'"${IONICE}"'nice -n +19 rm "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
+			echo '					'"${IONICE}"'nice -n +19 rm -f "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				fi' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				'"${IONICE}"'nice -n +19 bzip2 -k -s -q -9 "$FILTEREDFILES"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				'"${IONICE}"'nice -n +19 mv "$FILTEREDFILES.bz2" "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
@@ -2180,9 +2180,9 @@ function fdl_update {
 			echo '		if [ -f "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat" ]; then' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '			if [ "`head -n 1 \"$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat\"`" != "`'"${IONICE}"'nice -n +19 md5sum \"$FILTEREDFILES\" | awk '"'"'{print $1}'"'"'`" ]; then' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				'"${IONICE}"'nice -n +19 md5sum "$FILTEREDFILES" | awk '"'"'{print $1}'"'"' > "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
-			echo '				'"${IONICE}"'nice -n +19 rm "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
+			echo '				'"${IONICE}"'nice -n +19 rm -f "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				if [ -f "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2" ]; then' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
-			echo '					'"${IONICE}"'nice -n +19 rm "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
+			echo '					'"${IONICE}"'nice -n +19 rm -f "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				fi' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				'"${IONICE}"'nice -n +19 cp "$FILTEREDFILES" "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '				'"${IONICE}"'nice -n +19 bzip2 -s -q -9 "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
@@ -2198,7 +2198,7 @@ function fdl_update {
 			echo '		else' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '			'"${IONICE}"'nice -n +19 md5sum "$FILTEREDFILES" | awk '"'"'{print $1}'"'"' > "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '			'"${IONICE}"'nice -n +19 cp "$FILTEREDFILES" "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
-			echo '			rm "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
+			echo '			rm -f "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '			'"${IONICE}"'nice -n +19 bzip2 -s -q -9 "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '			chmod 660 "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.bz2" "$DATADIR/$GAMETYPE/$SHORTEN/$FILTEREDFILES.stat"' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
 			echo '			cd $DATADIR/$GAMETYPE/$SHORTEN' >> $HOMEFOLDER/temp/$VARIABLE2-$SPORT-$SHORTEN.sh
