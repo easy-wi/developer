@@ -54,7 +54,7 @@ function checkCreateFolder {
 
 function removeFile {
     if [ -f "$1" ]; then
-       rm "$1"
+       rm -f "$1"
     fi
 }
 
@@ -71,7 +71,7 @@ function downloadExtractFile {
     if [ -f "$2" ]; then
 
         tar xfv "$2"
-        rm "$2"
+        rm -f "$2"
 
         moveFilesFolders "$2" "$4" "$1"
 
@@ -187,7 +187,7 @@ function fileUpdate {
             cyanMessage "$3 already up to date. Local version is $LOCAL_VERSION. Most recent version is $CURRENT_VERSION"
         fi
 
-        rm "$FILE_NAME"
+        rm -f "$FILE_NAME"
     fi
 }
 

@@ -249,7 +249,7 @@ class masterServer {
         $this->uniqueHex = dechex(mt_rand());
 
         $this->shellScript = "#!/bin/bash\n";
-        $this->shellScript .= 'rm /home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh' . "\n";
+        $this->shellScript .= 'rm -f /home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh' . "\n";
         $this->shellScript .= "if ionice -c3 true 2>/dev/null; then IONICE='ionice -n 7 '; else IONICE=''; fi\n";
         $this->shellScript .= 'UPDATESTATUS=""' . "\n";
         $this->shellScript .= 'BOMRM="sed \"\'s/^\xef\xbb\xbf//g\'\""' . "\n";
@@ -283,7 +283,7 @@ class masterServer {
         $this->shellScript .= 'wget -q --timeout=10 http://media.steampowered.com/client/steamcmd_linux.tar.gz' . "\n";
         $this->shellScript .= 'if [ -f steamcmd_linux.tar.gz ]; then' . "\n";
         $this->shellScript .= 'tar xfz steamcmd_linux.tar.gz' . "\n";
-        $this->shellScript .= 'rm steamcmd_linux.tar.gz' . "\n";
+        $this->shellScript .= 'rm -f steamcmd_linux.tar.gz' . "\n";
         $this->shellScript .= 'chmod +x steamcmd.sh' . "\n";
         $this->shellScript .= './steamcmd.sh +login anonymous +quit' . "\n";
         $this->shellScript .= 'fi' . "\n";
@@ -343,7 +343,7 @@ class masterServer {
 
         $fastDownloadList = '/home/' . $this->sshuser . '/conf/fdl-' . $row['shorten'] . '.list';
 
-        $this->shellScript .= 'if [ -f ' . $fastDownloadList . ' ]; then rm ' . $fastDownloadList . '; fi' . "\n";
+        $this->shellScript .= 'if [ -f ' . $fastDownloadList . ' ]; then rm -f ' . $fastDownloadList . '; fi' . "\n";
         $this->shellScript .= 'touch ' . $fastDownloadList . "\n";
         $this->shellScript .= 'cd "' . $this->masterserverDir . '$UPDATE"' . "\n";
         $this->shellScript .= 'SEARCH=0' . "\n";
@@ -609,10 +609,10 @@ class masterServer {
         if (count($this->removeLogs) > 0) {
 
             $shellScript = '#!/bin/bash'. "\n";
-            $shellScript .= 'rm /home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh'. "\n";
+            $shellScript .= 'rm -f /home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh'. "\n";
 
             foreach ($this->removeLogs as $log) {
-                $shellScript .= 'if [ -f "' . $log . '" ]; then rm "' . $log . '"; fi' . "\n";
+                $shellScript .= 'if [ -f "' . $log . '" ]; then rm -f "' . $log . '"; fi' . "\n";
             }
 
             return $shellScript;
