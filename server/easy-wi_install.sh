@@ -485,6 +485,7 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
 
 		elif [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" == 'GS' ]; then
 
+			mv /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.easy-install.backup
 			sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.easy-install.backup | sed 's/Umask.*/Umask 077 077/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' > /etc/proftpd/proftpd.conf
 
 			echo " "
