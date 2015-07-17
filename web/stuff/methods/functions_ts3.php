@@ -182,8 +182,6 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
             $data = str_replace(array("\0", "\b", "\r", "\Z"), '', $data);
         }
 
-
-
         if ($action != 'rs' and $action != 'mw') {
 
             $edited = false;
@@ -466,7 +464,8 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
         }
 
         $ex = explode('-', $first);
-        if ($type == 'dns' and isset($partCount) and $partCount==$dnsPartCount and $ex[0] != $id) {
+
+        if ($type == 'dns' and isset($partCount) and $partCount == $dnsPartCount and isid($ex[0], 10) and $ex[0] != $id) {
             return false;
         }
 
