@@ -159,10 +159,7 @@ class ExternalSQL {
 
         try {
 
-            $query = $this->remotesql->prepare("SET PASSWORD FOR ?@'' = PASSWORD(?)");
-            $query->execute(array($dbname, $password));
-
-            $this->remotesql->exec("GRANT USAGE ON * . * TO '$dbname'@'' WITH MAX_QUERIES_PER_HOUR " . $max_queries_per_hour . " MAX_CONNECTIONS_PER_HOUR " . $max_connections_per_hour . " MAX_UPDATES_PER_HOUR " . $max_updates_per_hour . " MAX_USER_CONNECTIONS " . $max_userconnections_per_hour);
+            $this->remotesql->exec("GRANT USAGE ON *.* TO '$dbname'@'' WITH MAX_QUERIES_PER_HOUR " . $max_queries_per_hour . " MAX_CONNECTIONS_PER_HOUR " . $max_connections_per_hour . " MAX_UPDATES_PER_HOUR " . $max_updates_per_hour . " MAX_USER_CONNECTIONS " . $max_userconnections_per_hour);
 
             $query = $this->remotesql->prepare("GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,INDEX,ALTER,CREATE TEMPORARY TABLES,LOCK TABLES,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,EXECUTE ON `" . $dbname . "`.* TO ?@''");
             $query->execute(array($dbname));
@@ -177,6 +174,7 @@ class ExternalSQL {
             }
 
             $query = $this->remotesql->prepare("INSERT INTO `mysql`.`host` (`host`,`db`,`Select_priv`,`Insert_priv`,`Update_priv`,`Delete_priv`,`Create_priv`,`Drop_priv`,`Alter_priv`) VALUES (?,?,'Y','Y','Y','Y','Y','Y','Y')");
+
             foreach ($iparray as $ip) {
                 if (!in_array($ip, $allowedips)) {
                     $query->execute(array($ip, $dbname));
@@ -189,6 +187,9 @@ class ExternalSQL {
                     $query->execute(array($ip, $dbname));
                 }
             }
+
+            $query = $this->remotesql->prepare("UPDATE `mysql`.`user` SET `Password`=PASSWORD(?) WHERE `User`=?");
+            $query->execute(array($password, $dbname));
 
             $this->remotesql->exec("FLUSH PRIVILEGES; FLUSH HOSTS;");
 
