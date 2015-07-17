@@ -326,7 +326,7 @@ $aeskey = "' . $_POST['aeskey'] . '";
 
         } catch(PDOException $error) {
 
-            $systemCheckError['config.php'] = "<div class='alert alert-danger'>{$error->getMessage()}</div>";
+            $systemCheckError['db_connect'] = "<div class='alert alert-danger'>{$error->getMessage()}</div>";
 
         }
 
@@ -352,20 +352,20 @@ $aeskey = "' . $_POST['aeskey'] . '";
 
                 } catch(PDOException $error) {
 
-                    $systemCheckError['config.php'] = "<div class='alert alert-danger'>{$error->getMessage()}</div>";
+                    $systemCheckError['db_connect'] = "<div class='alert alert-danger'>{$error->getMessage()}</div>";
 
                 }
 
             } else {
-                $systemCheckError['config.php'] = "<div class='alert alert-danger'>{$languageObject->error_config_php_data}</div>";
+                $systemCheckError['db_connect'] = "<div class='alert alert-danger'>{$languageObject->error_config_php_data}</div>";
             }
 
         } else {
 
             if (isset($_POST['db'])) {
-                $systemCheckError['config.php'] = "<div class='alert alert-danger'>{$languageObject->error_keyphrase_php_create}</div>";
+                $systemCheckError['db_connect'] = "<div class='alert alert-danger'>{$languageObject->error_keyphrase_php_create}</div>";
             } else {
-                $systemCheckError['config.php'] = "<div class='alert alert-danger'>{$languageObject->error_config_keyphrase_php_missing}</div>";
+                $systemCheckError['db_connect'] = "<div class='alert alert-danger'>{$languageObject->error_config_keyphrase_php_missing}</div>";
             }
         }
     }
