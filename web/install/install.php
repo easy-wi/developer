@@ -307,6 +307,8 @@ if ($currentStep == 2 and count($systemCheckError) == 0) {
 
                 fclose($configFp);
 
+            } else {
+                $systemCheckError['config.php'] = "<div class='alert alert-danger'>{$languageObject->error_config_php_data}</div>";
             }
 
             $keyFp = @fopen(EASYWIDIR . '/stuff/keyphrasefile.php', "w+");
@@ -322,6 +324,8 @@ $aeskey = "' . $_POST['aeskey'] . '";
                 @fwrite($keyFp, $configdata);
 
                 fclose($keyFp);
+            } else {
+                $systemCheckError['keyphrasefile.php'] = "<div class='alert alert-danger'>{$languageObject->error_keyphrase_php_create}</div>";
             }
 
         } catch(PDOException $error) {
@@ -357,15 +361,15 @@ $aeskey = "' . $_POST['aeskey'] . '";
                 }
 
             } else {
-                $systemCheckError['db_connect'] = "<div class='alert alert-danger'>{$languageObject->error_config_php_data}</div>";
+                $systemCheckError['config.php'] = "<div class='alert alert-danger'>{$languageObject->error_config_php_data}</div>";
             }
 
         } else {
 
             if (isset($_POST['db'])) {
-                $systemCheckError['db_connect'] = "<div class='alert alert-danger'>{$languageObject->error_keyphrase_php_create}</div>";
+                $systemCheckError['keyphrasefile.php'] = "<div class='alert alert-danger'>{$languageObject->error_keyphrase_php_create}</div>";
             } else {
-                $systemCheckError['db_connect'] = "<div class='alert alert-danger'>{$languageObject->error_config_keyphrase_php_missing}</div>";
+                $systemCheckError['config.php'] = "<div class='alert alert-danger'>{$languageObject->error_config_keyphrase_php_missing}</div>";
             }
         }
     }
