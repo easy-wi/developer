@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="inputDefaultDomain"><?php echo $sprache->dns;?></label>
+                            <label for="inputDefaultDomain"><?php echo $sprache->defaultDns;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputDefaultDomain" type="text" name="defaultDomain" value="<?php echo $defaultDomain;?>">
                             </div>

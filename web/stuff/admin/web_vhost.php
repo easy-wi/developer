@@ -70,7 +70,7 @@ $hdd = ($ui->id('hdd', 10, 'post')) ? $ui->id('hdd', 10, 'post') : 1000;
 $ftpPassword = ($ui->password('ftpPassword', 255, 'post')) ? $ui->password('ftpPassword', 255, 'post') : passwordgenerate(10);
 $vhostTemplate = $ui->escaped('vhostTemplate', 'post');
 $description = $ui->names('description', 255, 'post');
-$defaultDomain = $ui->domain('defaultDomain', 255, 'post');
+$defaultDomain = $ui->domain('defaultDomain', 'post');
 $ownVhost = ($ui->active('ownVhost', 'post')) ? $ui->active('ownVhost', 'post') : 'N';
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
@@ -336,11 +336,6 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                         'vhostTemplate' => $vhostTemplate
                     );
                 }
-            }
-
-            // Insert/Delete of the domain configuration(s) Unique key is the domain
-            if (count($domainConfigurations) == 0) {
-                $domainConfigurations[str_replace('..', '.', $ftpUser . '.' . $defaultDns)] = '';
             }
 
             $query = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `path`=VALUES(`path`),`ownVhost`=VALUES(`ownVhost`),`vhostTemplate`=VALUES(`vhostTemplate`)");
