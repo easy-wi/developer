@@ -455,7 +455,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
         $query->execute(array($id, $resellerLockupID));
         $queryCount = $query->rowCount();
 
-        $$query = $sql->prepare("DELETE d.* FROM `webVhostDomain` d LEFT JOIN `webVhost` v ON d.`webVhostID`=v.`webVhostID` WHERE v.`webVhostID` IS NULL");
+        $query = $sql->prepare("DELETE d.* FROM `webVhostDomain` d LEFT JOIN `webVhost` v ON d.`webVhostID`=v.`webVhostID` WHERE v.`webVhostID` IS NULL");
         $query->execute();
         $queryCount += $query->rowCount();
 
