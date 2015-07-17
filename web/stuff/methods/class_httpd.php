@@ -391,7 +391,7 @@ class HttpdManagement {
 
         if ($this->ssh2Object != false and isset($this->hostData['repquotaCmd']) and strlen($this->hostData['repquotaCmd']) > 0) {
 
-            $cmd = 'for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . '-u -v -s / | grep \'web\' | awk \'{print $1":"$3}\'`; do USERS="$USERS;$USER"; done; echo $USERS';
+            $cmd = 'for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . '-u -v -s / | grep \'web\' | awk \'{print $1":"$3}\'`; do USERS="$USERS;$USER"; done; echo "$USERS;"';
 
             $return = $this->ssh2Object->exec($cmd);
 
@@ -400,7 +400,7 @@ class HttpdManagement {
                 echo "Command returns: {$return}\r\n";
             }
 
-            $splitIntoHosts = preg_split('/;/', $return, -1, PREG_SPLIT_NO_EMPTY);
+            $splitIntoHosts = preg_split('/;/', trim(preg_replace('/\s+/', '', $return)), -1, PREG_SPLIT_NO_EMPTY);
 
             $query = $this->sql->prepare("UPDATE `webVhost` SET `hddUsage`=? WHERE `webVhostID`=? LIMIT 1");
 
@@ -416,13 +416,13 @@ class HttpdManagement {
                     $webVhostID = (int) $webVhostID;
 
                     if (substr($usage, -1) == 'K') {
-                        $usage = ((int) substr($usage, 0, (strlen($usage) - 1))) / 1000;
+                        $usage = round(((int) substr($usage, 0, (strlen($usage) - 1))) / 1000);
                     } else if  (substr($usage, -1) == 'M') {
                         $usage = (int) substr($usage, 0, (strlen($usage) - 1));
                     } else if  (substr($usage, -1) == 'G') {
                         $usage = ((int) substr($usage, 0, (strlen($usage) - 1))) * 1000;
                     } else {
-                        $usage = (int) $usage;
+                        $usage = 0;
                     }
 
                     $query->execute(array($usage, $webVhostID));
