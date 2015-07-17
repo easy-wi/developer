@@ -740,7 +740,9 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         } else {
 
             if ($ui->smallletters('action', 2, 'get') == 're') {
+
                 $uptime = 2;
+
                 $reply = $connection->StopServer($volocalserverid);
                 $reply = $connection->StartServer($volocalserverid);
 
@@ -748,7 +750,9 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $insertlog->execute();
 
             } else if ($ui->smallletters('action', 2, 'get') == 'so') {
+
                 $uptime = 1;
+
                 $reply = $connection->StopServer($volocalserverid);
 
                 $loguseraction = '%stop% %voserver% ' . $row['ip'] . ':' . $row['port'];
@@ -756,6 +760,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             }
 
             if (isset($reply)) {
+
                 $query2 = $sql->prepare("UPDATE `voice_server` SET `uptime`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query2->execute(array($uptime, $id, $reseller_id));
                 $template_file = $spracheResponse->ts_query_success . $reply[0]['msg'];

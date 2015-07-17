@@ -5,6 +5,7 @@
     <defaultdns>Standard Domain</defaultdns>
     <dirHttpd>Htdocs Verzeichnis</dirHttpd>
     <dirLogs>Logs Verzeichnis</dirLogs>
+    <defaultDns>Standard Domain</defaultDns>
     <dns>Domain</dns>
     <domainNotUsed>Unzulässige Domain %domain% verworfen</domainNotUsed>
     <error_password_not_match>FTP Passwörter stimmen nicht überein</error_password_not_match>

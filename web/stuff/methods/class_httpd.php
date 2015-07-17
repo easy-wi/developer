@@ -144,7 +144,7 @@ class HttpdManagement {
 
         if ($this->vhostData == false) {
 
-            $query = $this->sql->prepare("SELECT v.`active`,v.`userID`,v.`description`,v.`hdd`,v.`ftpUser`,v.`phpConfiguration`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,u.`mail` FROM `webVhost` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
+            $query = $this->sql->prepare("SELECT v.`active`,v.`userID`,v.`description`,v.`hdd`,v.`ftpUser`,v.`phpConfiguration`,v.`defaultDomain`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,u.`mail` FROM `webVhost` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
             $query->execute(array($this->aeskey, $vhostID, $this->resellerID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -156,7 +156,7 @@ class HttpdManagement {
                 $this->vhostData['vhostHomeDir'] = $this->removeNotNeededSlashes($this->hostData['vhostStoragePath'] . '/' . $this->vhostData['ftpUser']);
                 $this->vhostData['description'] = (strlen($row['description']) > 0) ? $row['description'] : 'web-' . $vhostID;
 
-                $this->vhostData['defaultDomain'] = 'web-' . $vhostID . '.' . $this->hostData['defaultdns'];
+                $this->vhostData['defaultDomain'] = (isdomain($row['defaultDomain'])) ? $row['defaultDomain'] : 'web-' . $vhostID . '.' . $this->hostData['defaultdns'];
 
                 $phpConfigurationVhost = @json_decode($row['phpConfiguration']);
                 $this->vhostData['dns'] = array();

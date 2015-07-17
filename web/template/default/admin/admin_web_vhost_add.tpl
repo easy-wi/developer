@@ -79,6 +79,13 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="inputDefaultDomain"><?php echo $sprache->dns;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputDefaultDomain" type="text" name="defaultDomain" value="<?php echo $defaultDomain;?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="inputDescription"><?php echo $dedicatedLanguage->description;?></label>
                             <div class="controls">
                                 <input class="form-control" id="inputDescription" type="text" name="description" value="<?php echo $description;?>">

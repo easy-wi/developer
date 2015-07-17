@@ -70,6 +70,7 @@ $hdd = ($ui->id('hdd', 10, 'post')) ? $ui->id('hdd', 10, 'post') : 1000;
 $ftpPassword = ($ui->password('ftpPassword', 255, 'post')) ? $ui->password('ftpPassword', 255, 'post') : passwordgenerate(10);
 $vhostTemplate = $ui->escaped('vhostTemplate', 'post');
 $description = $ui->names('description', 255, 'post');
+$defaultDomain = $ui->domain('defaultDomain', 255, 'post');
 $ownVhost = ($ui->active('ownVhost', 'post')) ? $ui->active('ownVhost', 'post') : 'N';
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
@@ -135,7 +136,13 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 $hddUsage = (int) $row['hddUsage'];
                 $ftpPassword = $row['decryptedFTPPass'];
                 $description = $row['description'];
+                $defaultDomain = $row['defaultDomain'];
+
                 $dns = (strlen($row['description']) == 0) ? 'web-' . $row['webVhostID'] : $row['description'];
+
+                if (strlen($defaultDomain) > 0) {
+                    $dns = $defaultDomain . '( ' . $defaultDomain . ' )';
+                }
 
                 // Get masterserver. Sort by usage.
                 $query2 = $sql->prepare("SELECT m.`ip`,m.`description` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`webMasterID`=? AND m.`resellerID`=?");
@@ -274,6 +281,13 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %webvhost% ' . $ftpUser;
             }
+
+            if (!$defaultDomain or $defaultDomain == $defaultDns) {
+                $defaultDomain = str_replace('..', '.', $ftpUser . '.' . $defaultDns);
+            }
+
+            $query = $sql->prepare("UPDATE `webVhost` SET `defaultDomain`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+            $query->execute(array($defaultDomain, $id, $resellerLockupID));
 
             $domainRemove = array();
 
@@ -462,7 +476,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $template_file = $spracheResponse->error_table;
         }
 
-        // GET Request did not add up. Display 404 error.
+    // GET Request did not add up. Display 404 error.
     } else {
         $template_file = 'admin_404.tpl';
     }

@@ -5,6 +5,7 @@
     <defaultdns>Default Domain</defaultdns>
     <dirHttpd>Htdocs Folder</dirHttpd>
     <dirLogs>Logs Folder</dirLogs>
+    <defaultDns>Default Domain</defaultDns>
     <dns>Domain</dns>
     <domainNotUsed>Skipped not allowed domain %domain%</domainNotUsed>
     <error_password_not_match>FTP passwords does not match</error_password_not_match>

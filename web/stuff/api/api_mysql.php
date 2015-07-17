@@ -164,6 +164,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $externalServerID = isExternalID($data['server_external_id']);
         $success['false'][] = 'Can not identify user or bad email';
     }
+
 } else if (!isset($success['false']) and array_value_exists('action', 'mod', $data)) {
 
     $active = active_check($data['active']);

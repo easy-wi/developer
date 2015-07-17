@@ -151,12 +151,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                     if ($query2->rowCount() > 0) {
 
-                        $remotesql->ModDB($row['dbname'], $ui->password('password', 255, 'post'), $ips, $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
+                        $template_file = $spracheResponse->table_add;
+
+                        $dbReturn = $remotesql->ModDB($row['dbname'], $ui->password('password', 255, 'post'), $ips, $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
+
+                        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                            $template_file .= '<br>' . $dbReturn;
+                        }
 
                         $loguseraction = '%mod% MYSQL DB ' . $row['dbname'] . ' (' . $row['address'] . ')';
                         $insertlog->execute();
-
-                        $template_file = $spracheResponse->table_add;
 
                     } else {
                         $template_file = $spracheResponse->error_table;

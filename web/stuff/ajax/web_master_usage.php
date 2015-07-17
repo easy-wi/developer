@@ -66,7 +66,6 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $totalVhosts = (int) $row['totalVhosts'];
     $leftHDD = (int) $row['maxHDD'] - $row['totalHDD'];
     $quotaActive = $row['quotaActive'];
-    $dns[] = array('domain' => $row['defaultdns'], 'path' => '', 'ownVhost' => 'N', 'vhostTemplate' => $row['vhostTemplate']);
     $usageType = $row['usageType'];
     $phpConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
 }
@@ -85,13 +84,6 @@ if ($ui->id('serverID', 10, 'get')) {
     $query->execute(array($ui->id('serverID', 10, 'get'), $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $dns[] = array('domain' => $row['domain'], 'path' => $row['path'], 'ownVhost' => $row['ownVhost'], 'vhostTemplate' => $row['vhostTemplate']);
-    }
-
-    // Remove the first default entry, if others are given
-    if (count($dns) > 1) {
-        unset($dns[0]);
-    } else {
-        $dns[0]['domain'] = 'web-' . $ui->id('serverID', 10, 'get') . '.' . $dns[0]['domain'];
     }
 }
 

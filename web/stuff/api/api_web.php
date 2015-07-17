@@ -91,6 +91,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']], $resellerID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
             $localUserLookupID = $row['id'];
             $localUserCname = $row['cname'];
 
@@ -140,6 +141,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $query->execute(array($resellerID));
 
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
                 $webMasterID = $row['webMasterID'];
                 $hostExternalID = $row['externalID'];
                 $defaultDns = $row['defaultdns'];
@@ -175,8 +177,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 $dns = str_replace('..', '.', $ftpUser . '.' .$defaultDns);
             }
 
-            $query = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `path`=VALUES(`path`),`ownVhost`=VALUES(`ownVhost`),`vhostTemplate`=VALUES(`vhostTemplate`)");
-            $query->execute(array($id, $localUserLookupID, $resellerID, $dns, $dns, $ownVhost, $vhostTemplate));
+            $query = $sql->prepare("UPDATE `webVhost` SET `defaultDomain`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+            $query->execute(array($dns, $localServerID, $resellerID));
 
             $query = $sql->prepare("UPDATE `webVhost` SET `ftpUser`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
             $query->execute(array($ftpUser, $localServerID, $resellerID));
@@ -230,23 +232,10 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             } else if (isdomain($dns)) {
 
-                $oldDomains = array();
+                $query = $sql->prepare("UPDATE `webVhost` SET `defaultDomain`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query->execute(array($dns, $localServerID, $resellerID));
 
-                $query2 = $sql->prepare("SELECT `domain` FROM `webVhostDomain` WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=?");
-                $query2->execute(array($localServerID));
-                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-                    $oldDomains[] = $row2['domain'];
-                }
-
-                if (count($oldDomains) == 1) {
-                    $query2 = $sql->prepare("UPDATE `webVhostDomain` SET `domain`=?,`ownVhost`=? WHERE `webVhostID`=? AND `userID`=? AND `resellerID`=? LIMIT 1");
-                    $query2->execute(array($dns, $ownVhost, $localServerID, $userID, $resellerID));
-                } else {
-                    $query2 = $sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,'',?,?) ON DUPLICATE KEY UPDATE `ownVhost`=VALUES(`ownVhost`)");
-                    $query2->execute(array($localServerID, $userID, $resellerID, $dns, $ownVhost, $row['vhostTemplate']));
-                }
-
-                $domainRowCount = $query2->rowCount();
+                $domainRowCount = $query->rowCount();
             }
 
             $updateArray = array();

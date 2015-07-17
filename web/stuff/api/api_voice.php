@@ -40,8 +40,8 @@
 
 
 foreach (array('active','action','private','slots','shorten','identify_server_by','server_local_id','server_external_id','identify_user_by','user_localid','user_externalid','username') as $key) {
-    if (!array_key_exists($key,$data)) {
-        $success['false'][] = 'Data key does not exist: '.$key;
+    if (!array_key_exists($key, $data)) {
+        $success['false'][] = 'Data key does not exist: ' . $key;
     }
 }
 
@@ -78,13 +78,13 @@ $tsdns = '';
 $dns = '';
 $autoRestart = '';
 
-if (!isset($success['false']) and array_value_exists('action','add',$data) and $data['shorten'] == 'ts3' and 1 > $licenceDetails['lVo']) {
+if (!isset($success['false']) and array_value_exists('action','add', $data) and $data['shorten'] == 'ts3' and 1 > $licenceDetails['lVo']) {
 
     $success['false'][] = 'licence limit reached';
 
-} else if (!isset($success['false']) and array_value_exists('action','add',$data) and $data['shorten'] == 'ts3' and $licenceDetails['lVo'] > 0) {
+} else if (!isset($success['false']) and array_value_exists('action', 'add', $data) and $data['shorten'] == 'ts3' and $licenceDetails['lVo'] > 0) {
 
-    if (dataExist('identify_user_by',$data) and isid($data['slots'], 11)) {
+    if (dataExist('identify_user_by', $data) and isid($data['slots'], 11)) {
 
         $from = array('user_localid' => 'id', 'username' => 'cname', 'user_externalid' => 'externalID', 'email' => 'mail');
 

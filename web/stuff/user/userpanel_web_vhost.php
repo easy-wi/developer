@@ -64,11 +64,11 @@ if (isset($admin_id)) {
 
 if ($ui->id('id', 10, 'get') and in_array($ui->st('d', 'get'), array('if', 'pw', 'ri', 'md','dm'))) {
 
-    $query = $sql->prepare("SELECT v.`webMasterID`,v.`description`,v.`phpConfiguration`,v.`phpConfiguration`,m.`vhostTemplate`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only`,m.`ftpIP`,m.`ip`,m.`phpConfiguration` AS `phpMasterConfiguration` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`webVhostID`=? AND v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
+    $query = $sql->prepare("SELECT v.`webMasterID`,v.`description`,v.`phpConfiguration`,v.`phpConfiguration`,v.`defaultDomain`,m.`vhostTemplate`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only`,m.`ftpIP`,m.`ip`,m.`phpConfiguration` AS `phpMasterConfiguration` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`webVhostID`=? AND v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
     $query->execute(array($ui->id('id', 10, 'get'), $user_id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $description = $row['description'];
-        $defaultDns = 'web-' . $ui->id('id', 10, 'get') . '.' . $row['defaultdns'];
+        $defaultDns = (isdomain($row['defaultDomain'])) ? $row['defaultDomain'] : 'web-' . $ui->id('id', 10, 'get') . '.' . $row['defaultdns'];
         $dns = (strlen($row['description']) == 0) ? 'web-' . $ui->id('id', 10, 'get') : $row['description'];
         $webMasterID = $row['webMasterID'];
         $usageType = $row['usageType'];
