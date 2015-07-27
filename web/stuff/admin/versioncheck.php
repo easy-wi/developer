@@ -103,19 +103,26 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
             $opts = stream_context_create(array('http' => array('method' => 'GET','header' => "Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
 
+            $response->add('Downloading: '. $licenceDetails['v'] . '.zip');
+
             $fp = @fopen('http://update.easy-wi.com/ew/' . $licenceDetails['v'] . '.zip', 'rb', false, $opts);
             $zip = @fopen(EASYWIDIR . '/tmp/' . $licenceDetails['v'] . '.zip', 'wb');
 
             if ($fp == true and $zip == true) {
+
                 while (!feof($fp)){
                     fwrite($zip, fread($fp, 8192));
                 }
+
                 fclose($fp);
                 fclose($zip);
+
+                $response->add('Unpacking archive: '. $licenceDetails['v'] . '.zip');
 
                 $zo = @zip_open(EASYWIDIR . '/tmp/'. $licenceDetails['v'] . '.zip');
 
                 if (is_resource($zo)) {
+
                     while ($ze = zip_read($zo)) {
 
                         $name = zip_entry_name($ze);
