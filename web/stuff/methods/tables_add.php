@@ -1128,7 +1128,7 @@ $add->execute();
 
 $query = "CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `version` decimal(4,2) DEFAULT '5.00',
+  `version` decimal(4,2) DEFAULT '5.10',
   `header_icon` varchar(100) DEFAULT 'logo_180px.png',
   `header_text` varchar(100) DEFAULT 'Easy-Wi',
   `header_href` varchar(100) DEFAULT 'https://easy-wi.com',

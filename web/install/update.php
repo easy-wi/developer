@@ -245,11 +245,13 @@ if (versioncheck ($version, '4.40', 'update_430-440.php', $response)) {
 if (versioncheck ($version, '5.00', 'update_440-500.php', $response)) {
     $version = '5.00';
 }
+if (versioncheck ($version, '5.10', 'update_500-510.php', $response)) {
+    $version = '5.10';
+}
 
 $response->add('Repairing tables if needed.');
 
 include(EASYWIDIR . '/stuff/methods/tables_repair.php');
-
 include(EASYWIDIR . '/stuff/methods/tables_entries_repair.php');
 
 # Ende
