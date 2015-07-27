@@ -254,6 +254,7 @@ if [ -f /etc/debian_version ]; then
 					apt-get update
 				fi
 				apt-get install ia32-libs lib32readline5 lib32ncursesw5
+				apt-get install lib32gcc1 libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386
 			else
 				apt-get install libreadline5 libncursesw5
 			fi
