@@ -578,11 +578,18 @@ class AppServer {
 
     private function copyArkStartFile($sourcePath, $targetPath) {
 
-        $script = 'if [ -f "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '" ]; then' . "\n";
-        $script .= 'if [ ! -d "' . $this->removeSlashes($sourcePath . '/ShooterGame/Binaries/Linux/') . '" ]; then mkdir -p "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/') . '"; fi' . "\n";
-        $script .= 'chmod 700 "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '"' . "\n";
-        $script .= 'cp -f "' . $this->removeSlashes($sourcePath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '" "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '"'. "\n";
-        $script .= 'chmod 700 "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '"' . "\n";
+        $targetPath = $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/');
+        $sourceFile = $this->removeSlashes($sourcePath . '/ShooterGame/Binaries/Linux/ShooterGameServer');
+        $targetFile = $this->removeSlashes($targetPath . 'ShooterGameServer');
+
+        $script = 'if [ -f "' . $sourceFile . '" ]; then' . "\n";
+        $script .= 'if [ ! -d "' . $targetPath . '" ]; then mkdir -p "' . $targetPath . '"; fi' . "\n";
+        $script .= 'if [ -f "' . $targetFile . '" ]; then' . "\n";
+        $script .= 'chmod 700 "' . $targetFile . '"' . "\n";
+        $script .= 'rm -f "' . $targetFile . '"' . "\n";
+        $script .= 'fi' . "\n";
+        $script .= 'cp -f "' . $sourceFile . '" "' . $targetFile . '"'. "\n";
+        $script .= 'chmod 700 "' . $targetFile . '"' . "\n";
         $script .= 'fi' . "\n";
 
         return $script;
@@ -638,7 +645,7 @@ class AppServer {
             $fileChmod = 640;
         }
         $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
-        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
         $script .= '${IONICE}nice -n +19 find -L ' . $absolutePath . '/ -type l -delete' . "\n";
 
         if ($standalone and isset($scriptName)) {
@@ -1377,7 +1384,7 @@ class AppServer {
             $script .= '${IONICE}nice -n +19 ' . $serverDir . ' -type f -print0 | xargs -0 chmod 640' . "\n";
         } else {
             $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod 700' . "\n";
-            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f -print0 | xargs -0 chmod 600' . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 600' . "\n";
             $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete' . "\n";
             $script .= '${IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name \"*.bz2\" -delete' . "\n";
         }
