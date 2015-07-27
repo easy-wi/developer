@@ -576,6 +576,18 @@ class AppServer {
         }
     }
 
+    private function copyArkStartFile($sourcePath, $targetPath) {
+
+        $script = 'if [ -f "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '" ]; then' . "\n";
+        $script .= 'if [ ! -d "' . $this->removeSlashes($sourcePath . '/ShooterGame/Binaries/Linux/') . '" ]; then mkdir -p "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/') . '"; fi' . "\n";
+        $script .= 'chmod 700 "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '"' . "\n";
+        $script .= 'cp -f "' . $this->removeSlashes($sourcePath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '" "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '"'. "\n";
+        $script .= 'chmod 700 "' . $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/ShooterGameServer') . '"' . "\n";
+        $script .= 'fi' . "\n";
+
+        return $script;
+    }
+
     // Function that generated the script for adding an app
     private function linuxAddApp ($templates, $standalone = true) {
 
@@ -605,6 +617,7 @@ class AppServer {
 
             $script .= 'if [ ! -d "' . $absoluteTargetTemplatePath . '" ]; then mkdir -p "' . $absoluteTargetTemplatePath . '"; fi' . "\n";
             $script .= 'cd ' . $absoluteSourceTemplatePath . "\n";
+            $script .= $this->copyArkStartFile($absoluteSourceTemplatePath, $absoluteTargetTemplatePath);
             $script .= 'FDLFILEFOUND=(`find -mindepth 1 -type f \( -iname "*.' . implode('" -or -iname "*.', $copyFileExtensions) . '" \) | grep -v "$PATTERN"`)' . "\n";
             $script .= 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do' . "\n";
             $script .= 'FOLDERNAME=`dirname "$FILTEREDFILES"`' . "\n";
