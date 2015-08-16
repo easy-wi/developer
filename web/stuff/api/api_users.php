@@ -230,7 +230,7 @@ if (array_value_exists('action', 'add', $data)) {
         if (!isset($success['false']) and count($userGroupIDs) > 0) {
 
             $query = $sql->prepare("INSERT INTO `userdata` (`creationTime`,`updateTime`,`accounttype`,`active`,`cname`,`vname`,`name`,`mail`,`salt`,`phone`,`handy`,`fax`,`city`,`cityn`,`street`,`streetn`,`salutation`,`birthday`,`country`,`fdlpath`,`mail_backup`,`mail_gsupdate`,`mail_securitybreach`,`mail_serverdown`,`mail_ticket`,`mail_vserver`,`externalID`,`sourceSystemID`,`resellerid`) VALUES (NOW(),NOW(),'u',?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            $query->execute(array($active, $tmpName, $vname, $name, $email, $salt, $phone, $handy, $fax, $city, $cityn, $street, $streetn, $salutation, $birthday, $country, $fdlpath, $mail_backup, $mail_gsupdate, $mail_securitybreach, $mail_serverdown, $mail_ticket, $mail_vserver, $externalID,json_encode(array('A' => $apiIP)), $resellerID));
+            $query->execute(array($active, $tmpName, $vname, $name, $email, $salt, $phone, $handy, $fax, $city, $cityn, $street, $streetn, $salutation, $birthday, $country, $fdlpath, $mail_backup, $mail_gsupdate, $mail_securitybreach, $mail_serverdown, $mail_ticket, $mail_vserver, $externalID,json_encode(array('A' => $ui->ip4('REMOTE_ADDR', 'server'))), $resellerID));
 
             $localID = $sql->lastInsertId();
 
