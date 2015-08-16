@@ -80,7 +80,6 @@ if (array_value_exists('action', 'add', $data)) {
         $username = (isset($data['username'])) ? $data['username'] : '';
         $externalID = isExternalID($data['external_id']);
         $active = active_check($data['active']);
-        $password = isset($data['password']) ? $data['password'] : passwordgenerate(10);
 
         $query = $sql->prepare("SELECT `mail`,`cname` FROM `userdata` WHERE `mail`=? OR `cname`=? LIMIT 1");
         $query->execute(array($email, $username));
