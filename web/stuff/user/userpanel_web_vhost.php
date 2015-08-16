@@ -358,7 +358,7 @@ set sv_wwwDownload "1"';
     $query = $sql->prepare("SELECT v.`webVhostID`,v.`description`,v.`hdd`,v.`hddUsage`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,m.`ip`,m.`ftpIP`,m.`ftpPort`,m.`quotaActive`,m.`usageType`,m.`defaultdns`,m.`connect_ip_only` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` WHERE v.`userID`=? AND v.`resellerID`=? AND v.`active`='Y'");
     $query->execute(array($aeskey, $user_id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        if (!isset($_SESSION['sID']) or in_array($row['webVhostID'], $substituteAccess['ws'])) {
+        if (!isset($_SESSION['sID']) or in_array($row['webVhostID'], $substituteAccess['wv'])) {
             $table[] = array('id' => $row['webVhostID'], 'dns' => (strlen($row['description']) == 0) ? 'web-' . $row['webVhostID'] : $row['description'], 'hdd' => $row['hdd'], 'hddUsage' => $row['hddUsage'], 'quotaActive' => $row['quotaActive'], 'ftpIP' => ($row['connect_ip_only'] == 'Y') ? $row['ftpIP'] : $row['ip'], 'ftpPort' => $row['ftpPort'], 'ftpUser' => $row['ftpUser'], 'ftpPass' => $row['decryptedFTPPass'], 'usageType' => $row['usageType']);
         }
     }
