@@ -1372,7 +1372,7 @@ class AppServer {
 
             // For 30 seconds check every half second if the world save is done and a restart can be performed
             $script = 'I=0' . "\n";
-            $script .= 'while [ "`ps fx | grep \'./ShooterGameServer\' | grep -v grep | head -n 1 | awk \'{print $5}\' | sed \'s/.\///g\'`" != "" -a $I -lt 60 ]; do' . "\n";
+            $script .= 'while [ "`ps fx | grep \'./ShooterGameServer\' | grep -v grep | head -n 1`" != "" -a $I -lt 60 ]; do' . "\n";
             $script .= 'sleep 0.5' . "\n";
             $script .= 'let I=I+1' . "\n";
             $script .= 'done' . "\n";
