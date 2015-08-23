@@ -830,6 +830,8 @@ class AppServer {
             $script .= $this->linuxDemoUpload(false);
         }
 
+        $script .= $this->arkCheckSleep();
+
         if ($standalone === true) {
             $this->addLinuxScript($scriptName, $script);
             $this->addLogline('app_server.log', 'App ' . $screenName . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' stopped');
@@ -1363,6 +1365,29 @@ class AppServer {
         return $shellCommand;
     }
 
+    private function arkCheckSleep () {
+
+        // Loop used for ARK only. Ensures enough time has elapsed for worl save
+        if ($this->appServerDetails['template']['gameBinary'] == 'ShooterGameServer') {
+
+            // For 30 seconds check every half second if the world save is done and a restart can be performed
+            $script = 'I=0' . "\n";
+            $script .= 'while [ "`ps fx | grep \'./ShooterGameServer\' | grep -v grep | head -n 1 | awk \'{print $5}\' | sed \'s/.\///g\'`" != "" -a $I -lt 60 ]; do' . "\n";
+            $script .= 'sleep 0.5' . "\n";
+            $script .= 'let I=I+1' . "\n";
+            $script .= 'done' . "\n";
+
+            // If a process is still running, kill it hard
+            $script .= 'ps fx | grep \'./ShooterGameServer\' | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
+            $script .= 'kill $PID' . "\n";
+            $script .= 'done' . "\n";
+
+            return $script;
+        }
+
+        return '';
+    }
+
     private function linuxStartApp () {
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/start-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
@@ -1432,6 +1457,25 @@ class AppServer {
 			$script .= 'BINARY_DIR=`find "' . $this->appServerDetails['template']['binarydir'] . '" -type d | head -n 1`' . "\n";
             $script .= 'if [ "$BINARY_DIR" != "" ]; then cd "$BINARY_DIR"; fi' . "\n";
 		}
+
+        // Loop used for ARK only. Ensures enough time has elapsed for worl save
+        if ($this->appServerDetails['template']['gameBinary'] == 'ShooterGameServer') {
+
+            // For 30 seconds check every half second if the world save is done and a restart can be performed
+            $script .= 'I=0' . "\n";
+            $script .= 'while [ "`ps fx | grep \'./ShooterGameServer\' | grep -v grep | head -n 1 | awk \'{print $5}\' | sed \'s/.\///g\'`" != "ShooterGameServer" -a $I -lt 60 ]; do' . "\n";
+            $script .= 'sleep 0.5' . "\n";
+            $script .= 'let I=I+1' . "\n";
+            $script .= 'done' . "\n";
+
+            // If a process is still running, kill it hard
+            $script .= 'ps fx | grep \'./ShooterGameServer\' | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
+            $script .= 'kill $PID' . "\n";
+            $script .= 'done' . "\n";
+            //
+        }
+
+        $script .= $this->arkCheckSleep();
 
         $script .= 'if [ -f screenlog.0 ]; then rm -f screenlog.0; fi' . "\n";
         $script .= $this->generateStartCommand() . "\n";
