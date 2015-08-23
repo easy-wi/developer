@@ -271,6 +271,7 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
                 } else {
                     $success['false'][] = 'Could not write voice server to database: ' . $errorString;
                 }
+
             } else {
                 $success['false'][] = 'Error: could not determine IP and Port or given data was already in use';
             }

@@ -452,9 +452,29 @@ class masterServer {
 
                 } else if ($row['steamgame'] == 'N' and ($row['shorten'] == 'mc')) {
 
-                    $this->shellScript .= 'cd ' . $absoluteGamePath . "\n";
-                    $this->shellScript .= 'wget ' . $row['downloadPath'] . ' --output-document ' . $row['gamebinary'] . "\n";
-                    $this->shellScript .= 'chmod 750 ' . $row['gamebinary'] . "\n";
+                    if (!isurl($row['downloadPath'])) {
+
+                        if (!function_exists('getMinecraftVersion')) {
+                            require_once(EASYWIDIR . '/stuff/methods/queries_updates.php');
+                        }
+
+                        $mcVersion = getMinecraftVersion();
+
+                        if (isset($mcVersion['downloadPath']) and isurl($mcVersion['downloadPath'])) {
+                            $row['downloadPath'] = $mcVersion['downloadPath'];
+                        }
+                    }
+
+                    if (isurl($row['downloadPath'])) {
+                        $this->shellScript .= 'cd ' . $absoluteGamePath . "\n";
+                        $this->shellScript .= 'wget -q ' . $row['downloadPath'] . ' --output-document ' . $row['gamebinary'] . '.new' . "\n";
+                        $this->shellScript .= 'if [ `stat -c %s ' . $row['gamebinary'] . '.new` -gt 0 ]; then'. "\n";
+                        $this->shellScript .= 'mv ' . $row['gamebinary'] . '.new ' . $row['gamebinary'] . "\n";
+                        $this->shellScript .= 'else' . "\n";
+                        $this->shellScript .= 'rm -f ' . $row['gamebinary'] . '.new ' . "\n";
+                        $this->shellScript .= 'fi' . "\n";
+                        $this->shellScript .= 'chmod 750 ' . $row['gamebinary'] . "\n";
+                    }
                 }
             }
 

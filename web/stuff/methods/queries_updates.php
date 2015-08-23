@@ -115,5 +115,5 @@ function getMinecraftVersion($release = 'release') {
 
     $json = @json_decode(cleanFsockOpenRequest($responseBody, '{', '}'));
 
-    return ($json) ? array('version' => $json->latest->$release, 'downloadPath' => 'http://s3.amazonaws.com/Minecraft.Download/versions/' . $json->latest->$release . '/minecraft_server.' . $json->latest->$release . '.jar') : array('version' => '', 'downloadPath' => '');
+    return ($json) ? array('version' => $json->latest->$release, 'downloadPath' => 'https://s3.amazonaws.com/Minecraft.Download/versions/' . $json->latest->$release . '/minecraft_server.' . $json->latest->$release . '.jar') : array('version' => '', 'downloadPath' => '');
 }
