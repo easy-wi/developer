@@ -50,6 +50,7 @@ if (isset($resellerLockupID)) {
 }
 
 $sprache = getlanguagefile('gserver', $user_language, $reseller_id);
+$imageSprache = getlanguagefile('images', $user_language, $reseller_id);
 $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
@@ -72,7 +73,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 } else if ($ui->st('d', 'get') == 'wf' and $ui->id('id', 10, 'get') and ($pa['ftpaccess'] or $pa['miniroot'])) {
 
     $query = $sql->prepare("SELECT g.*,AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,u.`cname`,r.`ftpport`,s.`servertemplate`,t.`shorten` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? AND t.`ftpAccess`='Y' LIMIT 1");
-    $query->execute(array($aeskey, $ui->id('id', 10, 'get'), $user_id, $reseller_id));
+    $query->execute(array($aeskey, $ui->id('id', 10, 'get'), $user_id, $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $ftpIP = $row['serverip'];
         $ftpPort = $row['ftpport'];
@@ -85,14 +86,35 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 
     if ($query->rowCount() > 0) {
+
         $userPanelInclude = true;
+
         include(EASYWIDIR . '/third_party/monstaftp/class_monstaftp.php');
         include(EASYWIDIR . '/third_party/monstaftp/monstaftp.php');
+
     } else {
         $template_file = 'userpanel_404.tpl';
     }
 
-} else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['gs']))) {
+} else if ($ui->st('d', 'get') == 'sl' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['gs']))) {
+
+    $id = $ui->id('id', 10, 'get');
+
+    $query = $sql->prepare("SELECT g.`serverip`,g.`port`,t.`liveConsole` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+    $query->execute(array($id, $user_id, $resellerLockupID));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $serverIp = $row['serverip'];
+        $port = $row['port'];
+        $liveConsole = $row['liveConsole'];
+    }
+
+    if ($query->rowCount() > 0) {
+        $template_file = 'userpanel_gserver_log.tpl';
+    } else {
+        $template_file = 'userpanel_404.tpl';
+    }
+
+} else if ($ui->st('d', 'get') == 'ri' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['gs']))) {
 
     $id = (int) $ui->id('id', 10, 'get');
 

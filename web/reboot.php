@@ -95,7 +95,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
         echo 'Retrieving Version for ' . $row['shorten'] . "\r\n";
 
-        $reply = ($row['shorten'] == 'bukkit') ? getCraftBukkitVersion () : getMinecraftVersion();
+        $reply = ($row['shorten'] == 'bukkit') ? getCraftBukkitVersion() : getMinecraftVersion();
 
         if (is_array($reply)) {
 

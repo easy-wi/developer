@@ -163,6 +163,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="control-label" for="inputLiveConsole"><?php echo $sprache->liveConsole;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputLiveConsole" name="liveConsole">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($liveConsole=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="inputOS"><?php echo $rsprache->os;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputOS" name="os">

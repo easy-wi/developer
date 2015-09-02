@@ -8,7 +8,6 @@
     </ol>
 </section>
 
-
 <section class="content">
 
 	<?php if($userWantsHelpText=='Y'){ ?>

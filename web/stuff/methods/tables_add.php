@@ -1120,6 +1120,7 @@ $query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `workShop` enum('Y','N') DEFAULT 'N',
   `os` enum('B','L','W') DEFAULT 'L',
   `downloadPath` text,
+  `liveConsole` enum('Y','N') NOT NULL DEFAULT 'Y',
   `resellerid` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),KEY(`appID`),KEY(`resellerid`)
 ) ENGINE=InnoDB";

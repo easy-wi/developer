@@ -51,6 +51,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
+include(EASYWIDIR . '/stuff/methods/class_ftp.php');
 include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
@@ -203,7 +204,6 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         }
     }
 
-
     die(json_encode($array));
 
 // App master server updates. Triggered asyncronous with ajax to avoid 5xx errors
@@ -307,6 +307,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 } else if ($pa['voiceserverStats'] and ((isset($user_id) and $ui->w('d', 14, 'get') == 'voiceUserStats') or (isset($admin_id) and $ui->w('d', 15, 'get') == 'voiceAdminStats'))) {
 
     require_once(EASYWIDIR . '/stuff/ajax/stats_voicestats.php');
+    die;
+
+} else if (($pa['gserver'] or $pa['restart']) and (isset($user_id) or isset($admin_id)) and $ui->w('d', 9, 'get') == 'serverLog' and $ui->id('id', 10, 'get')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/server_log.php');
     die;
 
 } else if (isset($user_id) and ($pa['gserver'] or $pa['restart']) and $ui->username('mapgroup', 50, 'get')) {

@@ -34,6 +34,7 @@
 	<heading_template>Spilserver skabeloner</heading_template>
 	<ip>SpilServer IP-adresse</ip>
     <iptables>IP Tabeller</iptables>
+    <liveConsole>Live Console</liveConsole>
 	<map>Kort Pakke</map>
 	<maps>Kort Pakker</maps>
 	<mod>Modmappe (for eksempel cstrike and dod)</mod>

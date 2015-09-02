@@ -104,7 +104,6 @@ class AppServer {
             $this->appMasterServerDetails['configUserID'] = ($row['config_user_id'] > 0) ? (int) $row['config_user_id'] : 1000;
             $this->appMasterServerDetails['configZtmpTime'] = (int) $row['config_ztmp_time'];
 
-
             if ($this->appMasterServerDetails['os'] == 'L') {
                 $this->shellScriptHeader = "#!/bin/bash\n";
                 $this->shellScriptHeader .= "if ionice -c3 true 2>/dev/null; then IONICE='ionice -n 7 '; fi\n";

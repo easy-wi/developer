@@ -40,7 +40,7 @@
 class EasyWiFTP {
 
     // define vars
-    public $ftpConnection = false, $ftpSecondConnection = false, $loggedIn = false, $secondLoggedIn = false, $tempHandle = null;
+    public $ftpConnection = false, $ftpSecondConnection = false, $loggedIn = false, $secondLoggedIn = false, $tempHandle = null, $lastFileSize = 0;
 
     function __construct($ip, $port, $user, $pwd, $ssl = 'N') {
 
@@ -82,7 +82,7 @@ class EasyWiFTP {
         return false;
     }
 
-    public function downloadToTemp ($pathAndFile, $startAt = 0, $files = false) {
+    public function downloadToTemp ($pathAndFile, $lastBytes = 0, $files = false, $startAt = false) {
 
         $pathAndFile = $this->removeSlashes($pathAndFile);
 
@@ -95,6 +95,7 @@ class EasyWiFTP {
                 $arrayCombined = $this->removeSlashes($pathAndFile . '/' . $file);
 
                 $fileSize = @ftp_size($this->ftpConnection, $arrayCombined);
+                $this->lastFileSize = $fileSize;
 
                 if ($fileSize != -1) {
                     $this->tempHandle[$file] = tmpfile();
@@ -107,10 +108,20 @@ class EasyWiFTP {
         }  else {
 
             $fileSize = @ftp_size($this->ftpConnection, $pathAndFile);
+            $this->lastFileSize = $fileSize;
 
             if ($fileSize != -1) {
 
-                $startAtSize = ($startAt != 0 and $fileSize > $startAt) ? ($fileSize - $startAt) : 0;
+                if ($fileSize === $startAt) {
+                    return true;
+                }
+
+                $startAtSize = ($lastBytes != 0 and $fileSize > $lastBytes) ? ($fileSize - $lastBytes) : 0;
+
+                if ($startAt !== false and $startAt !== null and $fileSize > $startAt and ($fileSize - $startAt) > 0 and ($fileSize - $startAt) <= $lastBytes) {
+                    $startAtSize = $startAt;
+                }
+
                 $this->tempHandle = tmpfile();
 
                 $download = @ftp_fget($this->ftpConnection, $this->tempHandle, $pathAndFile, FTP_BINARY, $startAtSize);
@@ -120,11 +131,14 @@ class EasyWiFTP {
                 if ($download) {
                     return true;
                 }
-
             }
         }
 
         return false;
+    }
+
+    public function getLastFileSize() {
+        return $this->lastFileSize;
     }
 
     public function getTempFileContent () {

@@ -35,6 +35,7 @@
     <help_addons>Über unser Webinterface können Sie jederzeit die aktuellsten Plugins, Addons, Configs und Mappackages zu Ihrem Gameserver hinzufügen. Diese werden von uns immer aktuell gehalten, um Ihren Administrationsaufwand möglichst gering zu halten.</help_addons>
     <ip>Gameserver IP Adresse</ip>
     <iptables>IP Tables</iptables>
+    <liveConsole>Live Konsole</liveConsole>
 	<map>Mappackage</map>
 	<maps>Mappackages</maps>
 	<mod>Modverzeichnis (z.B. cstrike und dod)</mod>
