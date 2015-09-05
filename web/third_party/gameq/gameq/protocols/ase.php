@@ -3,162 +3,206 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+use GameQ\Buffer;
+use GameQ\Result;
+
 /**
- * All-Seeing Eye Protocol Class
- *
- * This class is used as the basis for all game servers
- * that use the All-Seeing Eye (ASE) protocol for querying
- * server status.
- *
- * Most of the logic is taken from the original GameQ
- * by Tom Buskens <t.buskens@deviation.nl>
+ * All-Seeing Eye Protocol class
  *
  * @author Marcel Bößendörfer <m.boessendoerfer@marbis.net>
  * @author Austin Bischoff <austin@codebeard.com>
  */
-abstract class GameQ_Protocols_ASE extends GameQ_Protocols
+class Ase extends Protocol
 {
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_ALL => "s",
-	);
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_all",
-	);
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_ALL => "s",
+    ];
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 1; // Default port, used if not set when instanced
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'ase';
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'ase';
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'ase';
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'ase';
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "All-Seeing Eye";
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "All-Seeing Eye";
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = null;
 
-	/*
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'dedicated'  => 'dedicated',
+            'gametype'   => 'gametype',
+            'hostname'   => 'servername',
+            'mapname'    => 'map',
+            'maxplayers' => 'max_players',
+            'mod'        => 'game_dir',
+            'numplayers' => 'num_players',
+            'password'   => 'password',
+        ],
+        // Individual
+        'player'  => [
+            'name'  => 'name',
+            'score' => 'score',
+            'team'  => 'team',
+            'ping'  => 'ping',
+            'time'  => 'time',
+        ],
+    ];
+
+    /**
+     * Process the response
+     *
+     * @return array
+     * @throws \GameQ\Exception\Protocol
+     */
+    public function processResponse()
+    {
+
+        // Create a new buffer
+        $buffer = new Buffer(implode('', $this->packets_response));
+
+        // Burn the header
+        $buffer->skip(4);
+
+        // Create a new result
+        $result = new Result();
+
+        // Variables
+        $result->add('gamename', $buffer->readPascalString(1, true));
+        $result->add('port', $buffer->readPascalString(1, true));
+        $result->add('servername', $buffer->readPascalString(1, true));
+        $result->add('gametype', $buffer->readPascalString(1, true));
+        $result->add('map', $buffer->readPascalString(1, true));
+        $result->add('version', $buffer->readPascalString(1, true));
+        $result->add('password', $buffer->readPascalString(1, true));
+        $result->add('num_players', $buffer->readPascalString(1, true));
+        $result->add('max_players', $buffer->readPascalString(1, true));
+        $result->add('dedicated', 1);
+
+        // Offload the key/value pair processing
+        $this->processKeyValuePairs($buffer, $result);
+
+        // Offload processing player and team info
+        $this->processPlayersAndTeams($buffer, $result);
+
+        unset($buffer);
+
+        return $result->fetch();
+    }
+
+    /*
      * Internal methods
      */
 
-	protected function process_all()
-	{
-        if(!$this->hasValidResponse(self::PACKET_ALL))
-        {
-            return array();
-        }
-        $data = $this->packets_response[self::PACKET_ALL][0];
-
-        $buf = new GameQ_Buffer($data);
-
-        $result = new GameQ_Result();
-
-        // Grab the header
-        $header = $buf->read(4);
-
-        // Header does not match
-        if ($header !== 'EYE1')
-        {
-            throw new GameQException("Exepcted header to be 'EYE1' but got '{$header}' instead.");
-        }
-
-        // Variables
-        $result->add('gamename',    $buf->readPascalString(1, true));
-        $result->add('port',        $buf->readPascalString(1, true));
-        $result->add('servername',  $buf->readPascalString(1, true));
-        $result->add('gametype',    $buf->readPascalString(1, true));
-        $result->add('map',         $buf->readPascalString(1, true));
-        $result->add('version',     $buf->readPascalString(1, true));
-        $result->add('password',    $buf->readPascalString(1, true));
-        $result->add('num_players', $buf->readPascalString(1, true));
-        $result->add('max_players', $buf->readPascalString(1, true));
+    /**
+     * Handles processing the extra key/value pairs for server settings
+     *
+     * @param \GameQ\Buffer $buffer
+     * @param \GameQ\Result $result
+     */
+    protected function processKeyValuePairs(Buffer &$buffer, Result &$result)
+    {
 
         // Key / value pairs
-        while($buf->getLength())
-        {
-            // If we have an empty key, we've reached the end
-            $key = $buf->readPascalString(1, true);
+        while ($buffer->getLength()) {
+            $key = $buffer->readPascalString(1, true);
 
-            if (empty($key))
-            {
+            // If we have an empty key, we've reached the end
+            if (empty($key)) {
                 break;
             }
 
             // Otherwise, add the pair
             $result->add(
                 $key,
-                $buf->readPascalString(1, true)
+                $buffer->readPascalString(1, true)
             );
         }
 
-        // Players
-        while ($buf->getLength())
-        {
+        unset($key);
+    }
+
+    /**
+     * Handles processing the player and team data into a usable format
+     *
+     * @param \GameQ\Buffer $buffer
+     * @param \GameQ\Result $result
+     */
+    protected function processPlayersAndTeams(Buffer &$buffer, Result &$result)
+    {
+
+        // Players and team info
+        while ($buffer->getLength()) {
             // Get the flags
-            $flags = $buf->readInt8();
+            $flags = $buffer->readInt8();
 
             // Get data according to the flags
             if ($flags & 1) {
-                $result->addPlayer('name', $buf->readPascalString(1, true));
+                $result->addPlayer('name', $buffer->readPascalString(1, true));
             }
             if ($flags & 2) {
-                $result->addPlayer('team', $buf->readPascalString(1, true));
+                $result->addPlayer('team', $buffer->readPascalString(1, true));
             }
             if ($flags & 4) {
-                $result->addPlayer('skin', $buf->readPascalString(1, true));
+                $result->addPlayer('skin', $buffer->readPascalString(1, true));
             }
             if ($flags & 8) {
-                $result->addPlayer('score', $buf->readPascalString(1, true));
+                $result->addPlayer('score', $buffer->readPascalString(1, true));
             }
             if ($flags & 16) {
-                $result->addPlayer('ping', $buf->readPascalString(1, true));
+                $result->addPlayer('ping', $buffer->readPascalString(1, true));
             }
             if ($flags & 32) {
-                $result->addPlayer('time', $buf->readPascalString(1, true));
+                $result->addPlayer('time', $buffer->readPascalString(1, true));
             }
         }
-
-        return $result->fetch();
-	}
+    }
 }

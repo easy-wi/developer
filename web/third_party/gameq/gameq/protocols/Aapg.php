@@ -19,48 +19,24 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayz
+ * Class Aapg
  *
  * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class Dayz extends Source
+class Aapg extends Aa3
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'dayz';
+    protected $name = 'aapg';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "DayZ Standalone";
-
-    /**
-     * Overload the math used to guess at the Query Port
-     *
-     * @param int $clientPort
-     *
-     * @return int
-     */
-    public function findQueryPort($clientPort)
-    {
-
-        /*
-         * Port layout:
-         * 2302 - 27016
-         * 2402 - 27017
-         * 2502 - 27018
-         * 2602 - 27019
-         * 2702 - 27020
-         * ...
-         */
-
-        return 27016 + (($clientPort - 2302) / 100);
-    }
+    protected $name_long = "America's Army: Proving Grounds";
 }

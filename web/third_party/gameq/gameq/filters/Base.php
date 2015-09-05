@@ -16,51 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace GameQ\Protocols;
+namespace GameQ\Filters;
+
+use GameQ\Server;
 
 /**
- * Class Dayz
+ * Abstract base class which all filters must inherit
  *
- * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class Dayz extends Source
+abstract class Base
 {
 
     /**
-     * String name of this protocol class
+     * Holds the options for this instance of the filter
      *
-     * @type string
+     * @type array
      */
-    protected $name = 'dayz';
+    protected $options = [ ];
 
     /**
-     * Longer string name of this protocol class
+     * Construct
      *
-     * @type string
+     * @param array $options
      */
-    protected $name_long = "DayZ Standalone";
-
-    /**
-     * Overload the math used to guess at the Query Port
-     *
-     * @param int $clientPort
-     *
-     * @return int
-     */
-    public function findQueryPort($clientPort)
+    public function __construct($options = [ ])
     {
 
-        /*
-         * Port layout:
-         * 2302 - 27016
-         * 2402 - 27017
-         * 2502 - 27018
-         * 2602 - 27019
-         * 2702 - 27020
-         * ...
-         */
-
-        return 27016 + (($clientPort - 2302) / 100);
+        $this->options = $options;
     }
+
+    /**
+     * Apply the filter to the data
+     *
+     * @param array         $data
+     * @param \GameQ\Server $server
+     *
+     * @return mixed
+     */
+    abstract public function apply(array $data, Server $server);
 }

@@ -14,32 +14,17 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
  */
 
-namespace GameQ\Protocols;
+namespace GameQ\Exception;
 
 /**
- * Class Dod
+ * Exception
  *
- * Based off of CS 1.6
- *
- * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class Dod extends Cs16
+class Query extends \Exception
 {
-
-    /**
-     * String name of this protocol class
-     *
-     * @type string
-     */
-    protected $name = 'dod';
-
-    /**
-     * Longer string name of this protocol class
-     *
-     * @type string
-     */
-    protected $name_long = "Day of Defeat";
 }

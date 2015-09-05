@@ -16,30 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace GameQ\Protocols;
+namespace GameQ\Filters;
+
+use GameQ\Server;
 
 /**
- * Class Dod
+ * Class Test
  *
- * Based off of CS 1.6
+ * This is a test filter to be used for testing purposes only.
  *
- * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Filters
  */
-class Dod extends Cs16
+class Test extends Base
 {
-
     /**
-     * String name of this protocol class
+     * Apply the filter.  For this we just return whatever is sent
      *
-     * @type string
+     * @SuppressWarnings(PHPMD)
+     *
+     * @param array         $result
+     * @param \GameQ\Server $server
+     *
+     * @return array
      */
-    protected $name = 'dod';
+    public function apply(array $result, Server $server)
+    {
 
-    /**
-     * Longer string name of this protocol class
-     *
-     * @type string
-     */
-    protected $name_long = "Day of Defeat";
+        return $result;
+    }
 }

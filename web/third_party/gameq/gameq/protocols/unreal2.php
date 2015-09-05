@@ -3,300 +3,263 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+use GameQ\Buffer;
+use GameQ\Result;
+use GameQ\Exception\Protocol as Exception;
+
 /**
- * Unreal 2 Protocol Class
+ * Unreal 2 Protocol class
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-abstract class GameQ_Protocols_Unreal2 extends GameQ_Protocols
+abstract class Unreal2 extends Protocol
 {
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_DETAILS => "\x79\x00\x00\x00\x00",
-		self::PACKET_RULES => "\x79\x00\x00\x00\x01",
-		self::PACKET_PLAYERS => "\x79\x00\x00\x00\x02",
-	);
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_details",
-		"process_rules",
-		"process_players",
-	);
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_DETAILS => "\x79\x00\x00\x00\x00",
+        self::PACKET_RULES   => "\x79\x00\x00\x00\x01",
+        self::PACKET_PLAYERS => "\x79\x00\x00\x00\x02",
+    ];
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 1; // Default port, used if not set when instanced
+    /**
+     * Use the response flag to figure out what method to run
+     *
+     * @type array
+     */
+    protected $responses = [
+        "\x80\x00\x00\x00\x00" => "processDetails", // 0
+        "\x80\x00\x00\x00\x01" => "processRules", // 1
+        "\x80\x00\x00\x00\x02" => "processPlayers", // 2
+    ];
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'unreal2';
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'unreal2';
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'unreal2';
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'unreal2';
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Unreal 2";
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Unreal 2";
+
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'dedicated'  => 'ServerMode',
+            'gametype'   => 'gametype',
+            'hostname'   => 'servername',
+            'mapname'    => 'mapname',
+            'maxplayers' => 'maxplayers',
+            'numplayers' => 'numplayers',
+            'password'   => 'password',
+        ],
+        // Individual
+        'player'  => [
+            'name'  => 'name',
+            'score' => 'score',
+        ],
+    ];
+
+    /**
+     * Parse the challenge response and apply it to all the packet types
+     *
+     * @param \GameQ\Buffer $challenge_buffer
+     *
+     * @return bool
+     * @throws \GameQ\Exception\Protocol
+     */
+    public function challengeParseAndApply(Buffer $challenge_buffer)
+    {
+
+        // Skip the header
+        $challenge_buffer->skip(5);
+
+        // Apply the challenge and return
+        return $this->challengeApply($challenge_buffer->read(4));
+    }
+
+    /**
+     * Process the response
+     *
+     * @return array
+     * @throws \GameQ\Exception\Protocol
+     */
+    public function processResponse()
+    {
+
+        // Will hold the packets after sorting
+        $packets = [ ];
+
+        // We need to pre-sort these for split packets so we can do extra work where needed
+        foreach ($this->packets_response as $response) {
+            $buffer = new Buffer($response);
+
+            // Pull out the header
+            $header = $buffer->read(5);
+
+            // Add the packet to the proper section, we will combine later
+            $packets[$header][] = $buffer->getBuffer();
+        }
+
+        unset($buffer);
+
+        $results = [ ];
+
+        // Now let's iterate and process
+        foreach ($packets as $header => $packetGroup) {
+            // Figure out which packet response this is
+            if (!array_key_exists($header, $this->responses)) {
+                throw new Exception(__METHOD__ . " response type '{$header}' is not valid");
+            }
+
+            // Now we need to call the proper method
+            $results = array_merge(
+                $results,
+                call_user_func_array([ $this, $this->responses[$header] ], [ new Buffer(implode($packetGroup)) ])
+            );
+        }
+
+        unset($packets);
+
+        return $results;
+    }
 
     /*
      * Internal methods
      */
 
     /**
-     * Preprocess the server details packet(s)
+     * Handles processing the details data into a usable format
      *
-     * @param array $packets
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return mixed
+     * @throws \GameQ\Exception\Protocol
      */
-    protected function preProcess_details($packets=array())
+    protected function processDetails(Buffer $buffer)
     {
-		// Only one return so no need for work
-		if(count($packets) == 1)
-		{
-			return substr($packets[0], 5);
-		}
 
-		// Loop all the packets and rip off the header
-		foreach($packets AS $id => $packet)
-		{
-			$packets[$id] = substr($packet, 5);
-		}
+        // Set the result to a new result instance
+        $result = new Result();
 
-		// Return the data appended
-		return implode('', $packets);
+        $result->add('serverid', $buffer->readInt32()); // 0
+        $result->add('serverip', $buffer->readPascalString(1)); // empty
+        $result->add('gameport', $buffer->readInt32());
+        $result->add('queryport', $buffer->readInt32()); // 0
+        $result->add('servername', $buffer->readPascalString(1));
+        $result->add('mapname', $buffer->readPascalString(1));
+        $result->add('gametype', $buffer->readPascalString(1));
+        $result->add('numplayers', $buffer->readInt32());
+        $result->add('maxplayers', $buffer->readInt32());
+        $result->add('ping', $buffer->readInt32()); // 0
+
+        unset($buffer);
+
+        return $result->fetch();
     }
 
-	protected function process_details()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_DETAILS))
-		{
-			return array();
-		}
+    /**
+     * Handles processing the player data into a usable format
+     *
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return mixed
+     */
+    protected function processPlayers(Buffer $buffer)
+    {
 
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
+        // Set the result to a new result instance
+        $result = new Result();
 
-		// Let's preprocess the rules
-		$data = $this->preProcess_details($this->packets_response[self::PACKET_DETAILS]);
+        // Parse players
+        while ($buffer->getLength()) {
+            // Player id
+            if (($id = $buffer->readInt32()) === 0) {
+                break;
+            }
 
-		// Create a buffer
-		$buf = new GameQ_Buffer($data);
+            $result->addPlayer('id', $id);
+            $result->addPlayer('name', utf8_encode($buffer->readPascalString(1)));
+            $result->addPlayer('ping', $buffer->readInt32());
+            $result->addPlayer('score', $buffer->readInt32());
 
-		$result->add('serverid',    $buf->readInt32());          // 0
-		$result->add('serverip',    $buf->readPascalString(1));  // empty
-		$result->add('gameport',    $buf->readInt32());
-		$result->add('queryport',   $buf->readInt32());          // 0
-		$result->add('servername',  $buf->readPascalString(1));
-		$result->add('mapname',     $buf->readPascalString(1));
-		$result->add('gametype',    $buf->readPascalString(1));
-		$result->add('playercount', $buf->readInt32());
-		$result->add('maxplayers',  $buf->readInt32());
-		$result->add('ping',        $buf->readInt32());          // 0
+            // Skip the next 4, unsure what they are for
+            $buffer->skip(4);
+        }
 
-		unset($buf);
+        unset($buffer, $id);
 
-		// Return the result
-		return $result->fetch();
-	}
+        return $result->fetch();
+    }
 
-	/**
-	 * Preprocess the rules packet(s)
-	 *
-	 * @param array $packets
-	 */
-	protected function preProcess_rules($packets=array())
-	{
-		// Only one return so no need for work
-		if(count($packets) == 1)
-		{
-			return substr($packets[0], 5);
-		}
+    /**
+     * Handles processing the rules data into a usable format
+     *
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return mixed
+     */
+    protected function processRules(Buffer $buffer)
+    {
 
-		// Loop all the packets and rip off the header
-		foreach($packets AS $id => $packet)
-		{
-			$packets[$id] = substr($packet, 5);
-		}
+        // Set the result to a new result instance
+        $result = new Result();
 
-		// Return the data appended
-		return implode('', $packets);
-	}
+        // Named values
+        $inc = -1;
+        while ($buffer->getLength()) {
+            // Grab the key
+            $key = $buffer->readPascalString(1);
 
-	/**
-	 * Process the Rules packet(s)
-	 */
-	protected function process_rules()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_RULES))
-		{
-			return array();
-		}
+            // Make sure mutators don't overwrite each other
+            if ($key === 'Mutator') {
+                $key .= ++$inc;
+            }
 
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
+            $result->add(strtolower($key), utf8_encode($buffer->readPascalString(1)));
+        }
 
-		// Let's preprocess the rules
-		$data = $this->preProcess_rules($this->packets_response[self::PACKET_RULES]);
+        unset($buffer);
 
-		// Make a new buffer
-		$buf = new GameQ_Buffer($data);
-
-		// Named values
-		$i = -1;
-		while ($buf->getLength())
-		{
-			$key = $buf->readPascalString(1);
-
-			// Make sure mutators don't overwrite each other
-			if ($key === 'Mutator')
-			{
-				$key .= ++$i;
-			}
-
-			$result->add($key, $buf->readPascalString(1));
-		}
-
-		unset($buf, $i, $key);
-
-		// Return the result
-		return $result->fetch();
-	}
-
-	/**
-	 * Preprocess the player packet(s) returned
-	 *
-	 * @param array $packets
-	 */
-	protected function preProcess_players($packets=array())
-	{
-		// Only one return so no need for work
-		if(count($packets) == 1)
-		{
-			return substr($packets[0], 5);
-		}
-
-		// Loop all the packets and rip off the header
-		foreach($packets AS $id => $packet)
-		{
-			$packets[$id] = substr($packet, 5);
-		}
-
-		// Return the data appended
-		return implode('', $packets);
-	}
-
-	/**
-	 * Process the player return data
-	 */
-	protected function process_players()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_PLAYERS))
-		{
-			return array();
-		}
-
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
-
-		// Let's preprocess the rules
-		$data = $this->preProcess_players($this->packets_response[self::PACKET_PLAYERS]);
-
-		// Make a new buffer
-		$buf = new GameQ_Buffer($data);
-
-		// Parse players
-		while ($buf->getLength())
-		{
-
-			// Player id
-			if (($id = $buf->readInt32()) === 0)
-			{
-				break;
-			}
-
-			$result->addPlayer('id', $id);
-			$result->addPlayer('name',  $this->_readUnrealString($buf));
-			$result->addPlayer('ping',  $buf->readInt32());
-			$result->addPlayer('score', $buf->readInt32());
-			$buf->skip(4);
-		}
-
-		unset($buf, $id);
-
-		// Return the result
-		return $result->fetch();
-	}
-
-	/**
-	 * Read an Unreal Engine 2 string
-	 *
-	 * Adapted from original GameQ code
-	 *
-	 * @param GameQ_Buffer $buf
-	 * @return string <string, mixed>
-	 */
-	private function _readUnrealString(GameQ_Buffer &$buf)
-	{
-		// Normal pascal string
-		if (ord($buf->lookAhead(1)) < 129)
-		{
-			return $buf->readPascalString(1);
-		}
-
-		// UnrealEngine2 color-coded string
-		$length = ($buf->readInt8() - 128) * 2 - 3;
-		$encstr = $buf->read($length);
-		$buf->skip(3);
-
-		// Remove color-code tags
-		$encstr = preg_replace('~\x5e\\0\x23\\0..~s', '', $encstr);
-
-		// Remove every second character
-		// The string is UCS-2, this approximates converting to latin-1
-		$str = '';
-		for ($i = 0, $ii = strlen($encstr); $i < $ii; $i += 2)
-		{
-			$str .= $encstr{$i};
-		}
-
-		return $str;
-	}
+        return $result->fetch();
+    }
 }

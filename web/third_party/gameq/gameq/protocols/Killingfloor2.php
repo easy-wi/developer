@@ -19,12 +19,12 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayz
+ * Class Killing floor
  *
  * @package GameQ\Protocols
  * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Dayz extends Source
+class Killingfloor2 extends Source
 {
 
     /**
@@ -32,35 +32,20 @@ class Dayz extends Source
      *
      * @type string
      */
-    protected $name = 'dayz';
+    protected $name = 'killing floor 2';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "DayZ Standalone";
+    protected $name_long = "Killing Floor 2";
 
     /**
-     * Overload the math used to guess at the Query Port
+     * query_port = client_port + 19238
+     * 27015 = 7777 + 19238
      *
-     * @param int $clientPort
-     *
-     * @return int
+     * @type int
      */
-    public function findQueryPort($clientPort)
-    {
-
-        /*
-         * Port layout:
-         * 2302 - 27016
-         * 2402 - 27017
-         * 2502 - 27018
-         * 2602 - 27019
-         * 2702 - 27020
-         * ...
-         */
-
-        return 27016 + (($clientPort - 2302) / 100);
-    }
+    protected $port_diff = 19238;
 }

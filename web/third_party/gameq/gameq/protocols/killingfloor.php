@@ -3,76 +3,94 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Buffer;
+use GameQ\Result;
+
 /**
- * Killing floor Protocol Class
+ * Class Killing floor
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Protocols
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Killingfloor extends GameQ_Protocols_Unreal2
+class Killingfloor extends Unreal2
 {
-	protected $name = "killingfloor";
-	protected $name_long = "Killing Floor";
 
-	protected $port = 7708;
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'killing floor';
 
-	/**
-	 * Overloaded for Killing Floor servername issue, could be all unreal2 games though
-	 *
-	 * @see GameQ_Protocols_Unreal2::process_details()
-	 */
-	protected function process_details()
-	{
-	    // Make sure we have a valid response
-	    if(!$this->hasValidResponse(self::PACKET_DETAILS))
-	    {
-	        return array();
-	    }
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Killing Floor";
 
-	    // Set the result to a new result instance
-	    $result = new GameQ_Result();
+    /**
+     * query_port = client_port + 1
+     *
+     * @type int
+     */
+    protected $port_diff = 1;
 
-	    // Let's preprocess the rules
-	    $data = $this->preProcess_details($this->packets_response[self::PACKET_DETAILS]);
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = "steam://connect/%s:%d/";
 
-	    // Create a buffer
-	    $buf = new GameQ_Buffer($data);
+    /**
+     * Overload the default detail process since this version is different
+     *
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processDetails(Buffer $buffer)
+    {
 
-	    $result->add('serverid',    $buf->readInt32());          // 0
-	    $result->add('serverip',    $buf->readPascalString(1));  // empty
-	    $result->add('gameport',    $buf->readInt32());
-	    $result->add('queryport',   $buf->readInt32()); // 0
+        // Set the result to a new result instance
+        $result = new Result();
 
-	    // We burn the first char since it is not always correct with the hostname
-	    $buf->skip(1);
+        $result->add('serverid', $buffer->readInt32()); // 0
+        $result->add('serverip', $buffer->readPascalString(1)); // empty
+        $result->add('gameport', $buffer->readInt32());
+        $result->add('queryport', $buffer->readInt32()); // 0
 
-	    // Read as a regular string since the length is incorrect (what we skipped earlier)
-	    $result->add('servername',  $buf->readString());
+        // We burn the first char since it is not always correct with the hostname
+        $buffer->skip(1);
+
+        // Read as a regular string since the length is incorrect (what we skipped earlier)
+        $result->add('servername', utf8_encode($buffer->readString()));
 
         // The rest is read as normal
-	    $result->add('mapname',     $buf->readPascalString(1));
-	    $result->add('gametype',    $buf->readPascalString(1));
-	    $result->add('playercount', $buf->readInt32());
-	    $result->add('maxplayers',  $buf->readInt32());
-	    $result->add('ping',        $buf->readInt32());          // 0
+        $result->add('mapname', utf8_encode($buffer->readPascalString(1)));
+        $result->add('gametype', $buffer->readPascalString(1));
+        $result->add('numplayers', $buffer->readInt32());
+        $result->add('maxplayers', $buffer->readInt32());
+        $result->add('currentwave', $buffer->readInt32());
 
-	    // @todo: There is extra data after this point (~9 bytes), cant find any reference on what it is
+        unset($buffer);
 
-	    unset($buf);
-
-	    // Return the result
-	    return $result->fetch();
-	}
+        return $result->fetch();
+    }
 }

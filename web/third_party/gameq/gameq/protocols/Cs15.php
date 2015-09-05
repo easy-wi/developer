@@ -19,12 +19,14 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayz
+ * Counter-Strike 1.5 Protocol Class
+ *
+ * @author  Nikolay Ipanyuk <rostov114@gmail.com>
+ * @author  Austin Bischoff <austin@codebeard.com>
  *
  * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Dayz extends Source
+class Cs15 extends Won
 {
 
     /**
@@ -32,35 +34,12 @@ class Dayz extends Source
      *
      * @type string
      */
-    protected $name = 'dayz';
+    protected $name = 'cs15';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "DayZ Standalone";
-
-    /**
-     * Overload the math used to guess at the Query Port
-     *
-     * @param int $clientPort
-     *
-     * @return int
-     */
-    public function findQueryPort($clientPort)
-    {
-
-        /*
-         * Port layout:
-         * 2302 - 27016
-         * 2402 - 27017
-         * 2502 - 27018
-         * 2602 - 27019
-         * 2702 - 27020
-         * ...
-         */
-
-        return 27016 + (($clientPort - 2302) / 100);
-    }
+    protected $name_long = "Counter-Strike 1.5";
 }

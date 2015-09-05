@@ -3,327 +3,345 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+use GameQ\Buffer;
+use GameQ\Result;
+use GameQ\Exception\Protocol as Exception;
 
 /**
  * Battlefield 3 Protocol Class
  *
  * Good place for doc status and info is http://www.fpsadmin.com/forum/showthread.php?t=24134
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Protocols
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Bf3 extends GameQ_Protocols
+class Bf3 extends Protocol
 {
-	/**
-	 * Normalization for this protocol class
-	 *
-	 * @var array
-	 */
-	protected $normalize = array(
-		// General
-		'general' => array(
-			'dedicated' => array('dedicated'),
-			'hostname' => array('hostname'),
-			'password' => array('password'),
-			'numplayers' => array('numplayers'),
-			'maxplayers' => array('maxplayers'),
-			'mapname' => array('map'),
-			'gametype' => array('gametype'),
-	        'players' => array('players'),
-			'teams' => array('team'),
-		),
 
-		// Player
-		'player' => array(
-	        'score' => array('score'),
-		),
+    /**
+     * Array of packets we want to query.
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_STATUS  => "\x00\x00\x00\x21\x1b\x00\x00\x00\x01\x00\x00\x00\x0a\x00\x00\x00serverInfo\x00",
+        self::PACKET_VERSION => "\x00\x00\x00\x22\x18\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00version\x00",
+        self::PACKET_PLAYERS =>
+        "\x00\x00\x00\x23\x24\x00\x00\x00\x02\x00\x00\x00\x0b\x00\x00\x00listPlayers\x00\x03\x00\x00\x00\x61ll\x00",
+    ];
 
-		// Team
-		'team' => array(
-			'score' => array('tickets'),
-		),
-	);
+    /**
+     * Use the response flag to figure out what method to run
+     *
+     * @type array
+     */
+    protected $responses = [
+        1627389952 => "processDetails", // a
+        1644167168 => "processVersion", // b
+        1660944384 => "processPlayers", // c
+    ];
 
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_STATUS => "\x00\x00\x00\x00\x1b\x00\x00\x00\x01\x00\x00\x00\x0a\x00\x00\x00serverInfo\x00",
-		self::PACKET_VERSION => "\x00\x00\x00\x00\x18\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00version\x00",
-		self::PACKET_PLAYERS => "\x00\x00\x00\x00\x24\x00\x00\x00\x02\x00\x00\x00\x0b\x00\x00\x00listPlayers\x00\x03\x00\x00\x00\x61ll\x00",
-	);
+    /**
+     * The transport mode for this protocol is TCP
+     *
+     * @type string
+     */
+    protected $transport = self::TRANSPORT_TCP;
 
-	/**
-	 * Set the transport to use TCP
-	 *
-	 * @var string
-	 */
-	protected $transport = self::TRANSPORT_TCP;
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'bf3';
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_status",
-		"process_version",
-		"process_players",
-	);
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'bf3';
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 47200; // Default port, used if not set when instanced
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Battlefield 3";
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'bf3';
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = null;
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'bf3';
+    /**
+     * query_port = client_port + 22000
+     * 47200 = 25200 + 22000
+     *
+     * @type int
+     */
+    protected $port_diff = 22000;
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Battlefield 3";
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'dedicated'  => 'dedicated',
+            'hostname'   => 'hostname',
+            'maxplayers' => 'max_players',
+            'numplayers' => 'num_players',
+            'password'   => 'password',
+        ],
+        'player'  => [
+            'name'  => 'name',
+            'score' => 'score',
+            'ping' => 'ping',
+        ],
+        'team'    => [
+            'score' => 'tickets',
+        ],
+    ];
 
-	/*
-	* Internal methods
-	*/
-	protected function preProcess_status($packets=array())
-	{
-		// Implode and return
-		return implode('', $packets);
-	}
-
-    protected function process_status()
+    /**
+     * Process the response for the StarMade server
+     *
+     * @return array
+     * @throws \GameQ\Exception\Protocol
+     */
+    public function processResponse()
     {
-    	// Make sure we have a valid response
-    	if(!$this->hasValidResponse(self::PACKET_STATUS))
-    	{
-    		return array();
-    	}
 
-    	// Make buffer for data
-    	$buf = new GameQ_Buffer($this->preProcess_status($this->packets_response[self::PACKET_STATUS]));
+        // Holds the results sent back
+        $results = [ ];
 
-    	$buf->skip(8); /* skip header */
+        // Holds the processed packets after having been reassembled
+        $processed = [ ];
 
-    	// Decode the words into an array so we can use this data
-    	$words = $this->decodeWords($buf);
+        // Start up the index for the processed
+        $sequence_id_last = 0;
 
-    	// Make sure we got OK
-    	if (!isset ($words[0]) || $words[0] != 'OK')
-    	{
-    		throw new GameQ_ProtocolsException('Packet Response was not OK! Buffer:'.$buf->getBuffer());
-    	}
+        foreach ($this->packets_response as $packet) {
+            // Create a new buffer
+            $buffer = new Buffer($packet);
 
-    	// Set the result to a new result instance
-    	$result = new GameQ_Result();
+            // Each "good" packet begins with sequence_id (32-bit)
+            $sequence_id = $buffer->readInt32();
 
-    	// Server is always dedicated
-    	$result->add('dedicated', TRUE);
+            // Sequence id is a response
+            if (array_key_exists($sequence_id, $this->responses)) {
+                $processed[$sequence_id] = $buffer->getBuffer();
+                $sequence_id_last = $sequence_id;
+            } else {
+                // This is a continuation of the previous packet, reset the buffer and append
+                $buffer->jumpto(0);
 
-    	// No mods, as of yet
-    	$result->add('mod', FALSE);
+                // Append
+                $processed[$sequence_id_last] .= $buffer->getBuffer();
+            }
+        }
 
-    	// These are the same no matter what mode the server is in
-    	$result->add('hostname', $words[1]);
-    	$result->add('numplayers', $words[2]);
-    	$result->add('maxplayers', $words[3]);
-    	$result->add('gametype', $words[4]);
-    	$result->add('map', $words[5]);
+        unset($buffer, $sequence_id_last, $sequence_id);
 
-    	$result->add('roundsplayed', $words[6]);
-    	$result->add('roundstotal', $words[7]);
+        // Iterate over the combined packets and do some work
+        foreach ($processed as $sequence_id => $data) {
+            // Create a new buffer
+            $buffer = new Buffer($data);
 
-    	// Figure out the number of teams
-    	$num_teams = intval($words[8]);
+            // Get the length of the packet
+            $packetLength = $buffer->getLength();
 
-    	// Set the current index
-    	$index_current = 9;
+            // Check to make sure the expected length matches the real length
+            // Subtract 4 for the sequence_id pulled out earlier
+            if ($packetLength != ($buffer->readInt32() - 4)) {
+                throw new Exception(__METHOD__ . " packet length does not match expected length!");
+            }
 
-    	// Loop for the number of teams found, increment along the way
-    	for($id=1; $id<=$num_teams; $id++)
-    	{
-    		$result->addSub('teams', 'tickets', $words[$index_current]);
-    		$result->addSub('teams', 'id', $id);
+            // Now we need to call the proper method
+            $results = array_merge(
+                $results,
+                call_user_func_array([ $this, $this->responses[$sequence_id] ], [ $buffer ])
+            );
+        }
 
-    		// Increment
-    		$index_current++;
-    	}
-
-    	// Get and set the rest of the data points.
-    	$result->add('targetscore', $words[$index_current]);
-    	$result->add('online', TRUE); // Forced TRUE, it seems $words[$index_current + 1] is always empty
-    	$result->add('ranked', $words[$index_current + 2] === 'true');
-    	$result->add('punkbuster', $words[$index_current + 3] === 'true');
-    	$result->add('password', $words[$index_current + 4] === 'true');
-    	$result->add('uptime', $words[$index_current + 5]);
-    	$result->add('roundtime', $words[$index_current + 6]);
-
-    	// Added in R9
-	    $result->add('ip_port', $words[$index_current + 7]);
-	    $result->add('punkbuster_version', $words[$index_current + 8]);
-    	$result->add('join_queue', $words[$index_current + 9] === 'true');
-    	$result->add('region', $words[$index_current + 10]);
-    	$result->add('pingsite', $words[$index_current + 11]);
-    	$result->add('country', $words[$index_current + 12]);
-
-    	// Added in R29, No docs as of yet
-    	$result->add('quickmatch', $words[$index_current + 13] === 'true'); // Guessed from research
-
-    	unset($buf, $words);
-
-    	return $result->fetch();
+        return $results;
     }
 
-    protected function preProcess_version($packets=array())
+    /*
+     * Internal Methods
+     */
+
+    /**
+     * Decode the buffer into a usable format
+     *
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
+     */
+    protected function decode(Buffer $buffer)
     {
-    	// Implode and return
-    	return implode('', $packets);
-    }
 
-    protected function process_version()
-    {
-    	// Make sure we have a valid response
-    	if(!$this->hasValidResponse(self::PACKET_VERSION))
-    	{
-    		return array();
-    	}
+        $items = [ ];
 
-    	// Set the result to a new result instance
-    	$result = new GameQ_Result();
+        // Get the number of words in this buffer
+        $itemCount = $buffer->readInt32();
 
-    	// Make buffer for data
-    	$buf = new GameQ_Buffer($this->preProcess_version($this->packets_response[self::PACKET_VERSION]));
+        // Loop over the number of items
+        for ($i = 0; $i < $itemCount; $i++) {
+            // Length of the string
+            $buffer->readInt32();
 
-    	$buf->skip(8); /* skip header */
+            // Just read the string
+            $items[$i] = $buffer->readString();
+        }
 
-    	$words = $this->decodeWords($buf);
-
-    	// Not too important if version is missing
-    	if (!isset ($words[0]) || $words[0] != 'OK')
-    	{
-    		return array();
-    	}
-
-    	$result->add('version', $words[2]);
-
-    	unset($buf, $words);
-
-    	return $result->fetch();
-    }
-
-    protected function preProcess_players($packets=array())
-    {
-    	// Implode and return
-    	return implode('', $packets);
-    }
-
-    protected function process_players()
-    {
-    	// Make sure we have a valid response
-    	if(!$this->hasValidResponse(self::PACKET_PLAYERS))
-    	{
-    		return array();
-    	}
-
-    	// Set the result to a new result instance
-    	$result = new GameQ_Result();
-
-    	// Make buffer for data
-    	$buf = new GameQ_Buffer($this->preProcess_players($this->packets_response[self::PACKET_PLAYERS]));
-
-    	$buf->skip(8); /* skip header */
-
-    	$words = $this->decodeWords($buf);
-
-    	// Not too important if players are missing.
-    	if (!isset ($words[0]) || $words[0] != 'OK')
-    	{
-    		return array();
-    	}
-
-    	// Count the number of words and figure out the highest index.
-    	$words_total = count($words)-1;
-
-    	// The number of player info points
-    	$num_tags = $words[1];
-
-    	// Pull out the tags, they start at index=3, length of num_tags
-		$tags = array_slice($words, 2, $num_tags);
-
-		// Just incase this changed between calls.
-		$result->add('numplayers', $words[9]);
-
-		// Loop until we run out of positions
-		for($pos=(3+$num_tags);$pos<=$words_total;$pos+=$num_tags)
-		{
-			// Pull out this player
-			$player = array_slice($words, $pos, $num_tags);
-
-			// Loop the tags and add the proper value for the tag.
-			foreach($tags AS $tag_index => $tag)
-			{
-				$result->addPlayer($tag, $player[$tag_index]);
-			}
-
-			// No pings in this game
-			$result->addPlayer('ping', FALSE);
-		}
-
-		// @todo: Add some team definition stuff
-
-    	unset($buf, $tags, $words, $player);
-
-    	return $result->fetch();
+        return $items;
     }
 
     /**
-     * Decode words from the response
+     * Process the server details
      *
-     * @param GameQ_Buffer $buf
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
      */
-    protected function decodeWords(GameQ_Buffer &$buf)
+    protected function processDetails(Buffer $buffer)
     {
-    	$result = array();
 
-    	$num_words = $buf->readInt32();
+        // Decode into items
+        $items = $this->decode($buffer);
 
-    	for ($i = 0; $i < $num_words; $i++)
-    	{
-	    	$len = $buf->readInt32();
-	    	$result[] = $buf->read($len);
-	    	$buf->read(1); /* 0x00 string ending */
-    	}
+        // Set the result to a new result instance
+        $result = new Result();
 
-    	return $result;
+        // Server is always dedicated
+        $result->add('dedicated', 1);
+
+        // These are the same no matter what mode the server is in
+        $result->add('hostname', $items[1]);
+        $result->add('num_players', (int) $items[2]);
+        $result->add('max_players', (int) $items[3]);
+        $result->add('gametype', $items[4]);
+        $result->add('map', $items[5]);
+        $result->add('roundsplayed', (int) $items[6]);
+        $result->add('roundstotal', (int) $items[7]);
+        $result->add('num_teams', (int) $items[8]);
+
+        // Set the current index
+        $index_current = 9;
+
+        // Pull the team count
+        $teamCount = $result->get('num_teams');
+
+        // Loop for the number of teams found, increment along the way
+        for ($id = 1; $id <= $teamCount; $id++, $index_current++) {
+            // Shows the tickets
+            $result->addTeam('tickets', $items[$index_current]);
+            // We add an id so we know which team this is
+            $result->addTeam('id', $id);
+        }
+
+        // Get and set the rest of the data points.
+        $result->add('targetscore', (int) $items[$index_current]);
+        $result->add('online', 1); // Forced true, it seems $words[$index_current + 1] is always empty
+        $result->add('ranked', (int) $items[$index_current + 2]);
+        $result->add('punkbuster', (int) $items[$index_current + 3]);
+        $result->add('password', (int) $items[$index_current + 4]);
+        $result->add('uptime', (int) $items[$index_current + 5]);
+        $result->add('roundtime', (int) $items[$index_current + 6]);
+        // Added in R9
+        $result->add('ip_port', $items[$index_current + 7]);
+        $result->add('punkbuster_version', $items[$index_current + 8]);
+        $result->add('join_queue', (int) $items[$index_current + 9]);
+        $result->add('region', $items[$index_current + 10]);
+        $result->add('pingsite', $items[$index_current + 11]);
+        $result->add('country', $items[$index_current + 12]);
+        // Added in R29, No docs as of yet
+        $result->add('quickmatch', (int) $items[$index_current + 13]); // Guessed from research
+
+        unset($items, $index_current, $teamCount, $buffer);
+
+        return $result->fetch();
+    }
+
+    /**
+     * Process the server version
+     *
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processVersion(Buffer $buffer)
+    {
+
+        // Decode into items
+        $items = $this->decode($buffer);
+
+        // Set the result to a new result instance
+        $result = new Result();
+
+        $result->add('version', $items[2]);
+
+        unset($buffer, $items);
+
+        return $result->fetch();
+    }
+
+    /**
+     * Process the players
+     *
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processPlayers(Buffer $buffer)
+    {
+
+        // Decode into items
+        $items = $this->decode($buffer);
+
+        // Set the result to a new result instance
+        $result = new Result();
+
+        // Number of data points per player
+        $numTags = $items[1];
+
+        // Grab the tags for each player
+        $tags = array_slice($items, 2, $numTags);
+
+        // Get the player count
+        $playerCount = $items[$numTags + 2];
+
+        // Iterate over the index until we run out of players
+        for ($i = 0, $x = $numTags + 3; $i < $playerCount; $i++, $x += $numTags) {
+            // Loop over the player tags and extract the info for that tag
+            foreach ($tags as $index => $tag) {
+                $result->addPlayer($tag, $items[($x + $index)]);
+            }
+        }
+
+        return $result->fetch();
     }
 }

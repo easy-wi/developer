@@ -19,48 +19,48 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayz
+ * World Opponent Network (WON) class
+ *
+ * Pre-cursor to the A2S (source) protocol system
+ *
+ * @author  Nikolay Ipanyuk <rostov114@gmail.com>
+ * @author  Austin Bischoff <austin@codebeard.com>
  *
  * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Dayz extends Source
+class Won extends Source
 {
+
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_DETAILS => "\xFF\xFF\xFF\xFFdetails\x00",
+        self::PACKET_PLAYERS => "\xFF\xFF\xFF\xFFplayers",
+        self::PACKET_RULES   => "\xFF\xFF\xFF\xFFrules",
+    ];
+
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'won';
 
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'dayz';
+    protected $name = 'won';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "DayZ Standalone";
-
-    /**
-     * Overload the math used to guess at the Query Port
-     *
-     * @param int $clientPort
-     *
-     * @return int
-     */
-    public function findQueryPort($clientPort)
-    {
-
-        /*
-         * Port layout:
-         * 2302 - 27016
-         * 2402 - 27017
-         * 2502 - 27018
-         * 2602 - 27019
-         * 2702 - 27020
-         * ...
-         */
-
-        return 27016 + (($clientPort - 2302) / 100);
-    }
+    protected $name_long = "World Opponent Network";
 }

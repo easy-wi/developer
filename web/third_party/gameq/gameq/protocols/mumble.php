@@ -3,193 +3,192 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+use GameQ\Result;
+use GameQ\Exception\Protocol as Exception;
+
 /**
- * Mumble Protocol Class
+ * Mumble Protocol class
  *
  * References:
  * https://github.com/edmundask/MurmurQuery - Thanks to skylord123
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Mumble extends GameQ_Protocols
+class Mumble extends Protocol
 {
+
     /**
-     * Normalization for this protocol class
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
      *
-     * @var array
+     * @type array
      */
-    protected $normalize = array(
-            // General
-            'general' => array(
-                    'dedicated' => array('dedicated'),
-                    'numplayers' => array(),
-                    'maxplayers' => array('xgtmurmurmaxusers'),
-                    'joinlink' => array('xconnecturl'),
-                    'players' => array('players'),
-                    'teams' => array('teams'),
-            ),
+    protected $packets = [
+        self::PACKET_ALL => "\x6A\x73\x6F\x6E", // JSON packet
+    ];
 
-            // Player
-            'player' => array(
-                    'ping' => array('tcpPing'),
-                    'team' => array('channel'),
-            ),
-    );
+    /**
+     * The transport mode for this protocol is TCP
+     *
+     * @type string
+     */
+    protected $transport = self::TRANSPORT_TCP;
 
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_ALL => "\x6A\x73\x6F\x6E", // JSON packet
-	);
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'mumble';
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_all",
-	);
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'mumble';
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 27800; // Default port, used if not set when instanced
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Mumble Server";
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'mumble';
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = "mumble://%s:%d/";
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'mumble';
+    /**
+     * 27800 = 64738 - 36938
+     *
+     * @type int
+     */
+    protected $port_diff = -36938;
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Mumble";
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            'dedicated'  => 'dedicated',
+            'gametype'   => 'gametype',
+            'hostname'   => 'name',
+            'numplayers' => 'numplayers',
+            'maxplayers' => 'x_gtmurmur_max_users',
+        ],
+        // Player
+        'player'  => [
+            'name' => 'name',
+            'ping' => 'tcpPing',
+            'team' => 'channel',
+            'time' => 'onlinesecs',
+        ],
+        // Team
+        'team'    => [
+            'name'  => 'name',
+        ],
+    ];
 
-	/**
-	 * Transport protocol
-	 *
-	 * @var string
-	 */
-	protected $transport = self::TRANSPORT_TCP;
+    /**
+     * Process the response
+     *
+     * @return array
+     * @throws \GameQ\Exception\Protocol
+     */
+    public function processResponse()
+    {
 
-	/*
+        // Try to json_decode, make it into an array
+        if (($data = json_decode(implode('', $this->packets_response), true)) === null) {
+            throw new Exception(__METHOD__ . " Unable to decode JSON data.");
+        }
+
+        // Set the result to a new result instance
+        $result = new Result();
+
+        // Always dedicated
+        $result->add('dedicated', 1);
+
+        // Let's iterate over the response items, there are a lot
+        foreach ($data as $key => $value) {
+            // Ignore root for now, that is where all of the channel/player info is housed
+            if (in_array($key, [ 'root' ])) {
+                continue;
+            }
+
+            // Add them as is
+            $result->add($key, $value);
+        }
+
+        // Offload the channel and user parsing
+        $this->processChannelsAndUsers($data['root'], $result);
+
+        unset($data);
+
+        // Manually set the number of players
+        $result->add('numplayers', count($result->get('players')));
+
+        return $result->fetch();
+    }
+
+    /*
      * Internal methods
      */
 
-	public function preProcess_all($packets=array())
-	{
-	    return implode('', $packets);
-	}
+    /**
+     * Handles processing the the channels and user info
+     *
+     * @param array         $data
+     * @param \GameQ\Result $result
+     */
+    protected function processChannelsAndUsers(array $data, Result &$result)
+    {
 
-	protected function process_all()
-	{
-	    if(!$this->hasValidResponse(self::PACKET_ALL))
-	    {
-	        return array();
-	    }
+        // Let's add all of the channel information
+        foreach ($data as $key => $value) {
+            // We will handle these later
+            if (in_array($key, [ 'channels', 'users' ])) {
+                // skip
+                continue;
+            }
 
-	    // Let's preprocess the status, JSON is the response
-	    $json = $this->preProcess_all($this->packets_response[self::PACKET_ALL]);
+            // Add the channel property as a team
+            $result->addTeam($key, $value);
+        }
 
-	    // Try to json_decode, make it into an array
-	    if(($data = json_decode($json, TRUE)) === NULL)
-	    {
-	        throw new GameQ_ProtocolsException("Unable to decode JSON data.");
-	    }
+        // Itereate over the users in this channel
+        foreach ($data['users'] as $user) {
+            foreach ($user as $key => $value) {
+                $result->addPlayer($key, $value);
+            }
+        }
 
-	    // Set the result to a new result instance
-	    $result = new GameQ_Result();
-
-	    // Always dedicated
-	    $result->add('dedicated', TRUE);
-
-	    $result->add('maxplayers', 0);
-
-	    // Let's iterate over the response items, there are alot
-	    foreach($data AS $key => $value)
-	    {
-	        // Ignore root for now, that is where all of the channel/player info is housed
-	        if(in_array($key, array('root')))
-	        {
-	            continue;
-	        }
-
-	        // Add them as is
-	        $result->add($key, $value);
-	    }
-
-	    // Now let's parse the channel/user info
-	    $this->process_channels_users($result, $data['root']);
-
-        return $result->fetch();
-	}
-
-	/**
-	 * Process the channel and user information
-	 *
-	 * @param GameQ_Result $result
-	 * @param array $item
-	 */
-	protected function process_channels_users(GameQ_Result &$result, $item)
-	{
-	    // Let's add all of the channel information
-	    foreach($item AS $key => $value)
-	    {
-	        // We will handle these later
-	        if(in_array($key, array('channels', 'users')))
-	        {
-	            // skip
-	            continue;
-	        }
-
-	        // Add the channel property as a team
-	        $result->addTeam($key, $value);
-	    }
-
-	    // Itereate over the users in this channel
-	    foreach($item['users'] AS $user)
-	    {
-	        foreach($user AS $key => $value)
-	        {
-	            $result->addPlayer($key, $value);
-	        }
-	    }
-
-	    // Offload more channels to parse
-	    foreach($item['channels'] AS $channel)
-	    {
-	        $this->process_channels_users($result, $channel);
-	    }
-	}
+        // Offload more channels to parse
+        foreach ($data['channels'] as $channel) {
+            $this->processChannelsAndUsers($channel, $result);
+        }
+    }
 }
