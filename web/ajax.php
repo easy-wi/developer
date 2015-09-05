@@ -50,8 +50,9 @@ include(EASYWIDIR . '/stuff/config.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
-include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
+include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
@@ -309,7 +310,7 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     require_once(EASYWIDIR . '/stuff/ajax/stats_voicestats.php');
     die;
 
-} else if (($pa['gserver'] or $pa['restart']) and (isset($user_id) or isset($admin_id)) and $ui->w('d', 9, 'get') == 'serverLog' and $ui->id('id', 10, 'get')) {
+} else if (($pa['gserver'] or $pa['restart']) and isset($user_id) and $ui->w('d', 9, 'get') == 'serverLog' and $ui->id('id', 10, 'get')) {
 
     require_once(EASYWIDIR . '/stuff/ajax/server_log.php');
     die;

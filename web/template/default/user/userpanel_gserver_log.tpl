@@ -18,11 +18,11 @@
                 </div>
 
                 <div class="box-footer">
-                    <?php if ($liveConsole=='Z') { ?>
+                    <?php if ($liveConsole=='Y') { ?>
                     <div class="input-group">
-                        <input id="inputCommand" type="text" class="form-control" name="command" value="">
+                        <input id="inputCommand" type="text" class="form-control" name="command" value="" onkeydown="enterUsed(event)">
                         <span class="input-group-btn">
-                            <button class="btn btn-primary btn-flat" type="button" onclick="submitForm();"><i class="fa fa-play-circle"></i></button>
+                            <button class="btn btn-primary btn-flat" type="button" onclick="submitForm()"><i class="fa fa-play-circle"></i></button>
                         </span>
                     </div>
                     <?php } ?>
@@ -34,33 +34,65 @@
 <script type='text/javascript'>
 
     var lastLog = 0;
+    var getRequestStarted = false;
+
+    function enterUsed(event) {
+        if (event.keyCode === 13) {
+            submitForm();
+        }
+    }
 
     function submitForm() {
 
-        $('#inputCommand').val('');
+        var inputCommand = $('#inputCommand');
 
         $.ajax({
-            url: 'ajax.php?d=serverLog&id=<?php echo $id;?>&lastLog=' + lastLog,
-            cache: false
-        }).done(function(jsonReturn) {
-
-            var jsonParsed = JSON.parse(jsonReturn);
-
-            if (jsonParsed.error) {
-
-                alert(jsonParsed.error);
-
-            } else {
-
-                lastLog = jsonParsed.lastLog;
-
-                if (jsonParsed.log.length > 0) {
-                    var boxBody = $('#boxBody');
-                    boxBody.append(jsonParsed.log);
-                    boxBody.scrollTop(boxBody.prop("scrollHeight"));
-                }
+            url: 'ajax.php?d=serverLog&id=<?php echo $id;?>',
+            cache: false,
+            method: 'POST',
+            data: {
+                cmd: inputCommand.val()
             }
+        }).done(function(jsonReturn) {
+            setTimeout(function(){getLog()},1000);
         });
+
+        inputCommand.val('');
+
+        return false;
+    }
+
+    function getLog() {
+
+        if (getRequestStarted === false) {
+
+            getRequestStarted = true;
+
+            $.ajax({
+                url: 'ajax.php?d=serverLog&id=<?php echo $id;?>&lastLog=' + lastLog,
+                cache: false
+            }).done(function(jsonReturn) {
+
+                getRequestStarted = false;
+
+                var jsonParsed = JSON.parse(jsonReturn);
+
+                if (jsonParsed.error) {
+
+                    alert(jsonParsed.error);
+
+                } else {
+
+                    lastLog = jsonParsed.lastLog;
+
+                    if (jsonParsed.log.length > 0) {
+                        var boxBody = $('#boxBody');
+                        boxBody.append(jsonParsed.log);
+                        boxBody.scrollTop(boxBody.prop("scrollHeight"));
+                    }
+                }
+            });
+        }
     }
 
     function resizeHeigth() {
@@ -74,8 +106,8 @@
 
     $(function(){
         resizeHeigth();
-        submitForm();
+        getLog();
 
-        setInterval(function(){submitForm()},3000);
+        setInterval(function(){getLog()},3000);
     });
 </script>

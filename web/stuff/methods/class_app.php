@@ -2131,6 +2131,34 @@ class AppServer {
         }
     }
 
+    private function shellCommandLinux($command) {
+
+        $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/execute-cmd-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
+        $screenName = $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'];
+
+        $script = $this->shellScriptHeader;
+        $script .= 'rm -f ' . $scriptName . "\n";
+
+        $script .= 'screen -S ' . $screenName . ' -X stuff $\'' . $command . '\n\'';
+
+        $this->addLinuxScript($scriptName, $script);
+
+        $this->addLogline('app_server.log', 'App console command' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' executed');
+
+        return true;
+    }
+
+    public function shellCommand($command) {
+
+        // Linux and Windows deamon are reached via SSH2.
+
+        if ($this->appMasterServerDetails['os'] == 'L') {
+            return $this->shellCommandLinux($command);
+        }
+
+        return false;
+    }
+
     private function getKeyAndOrPassword () {
 
         if ($this->appMasterServerDetails['ssh2Publickey'] != 'N' and file_exists($this->appMasterServerDetails['privateKey'])) {

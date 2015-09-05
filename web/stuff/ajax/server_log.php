@@ -45,63 +45,39 @@ if (!isset($resellerLockupID)) {
     $resellerLockupID = $reseller_id;
 }
 
+$array = array('lastLog' => 0, 'log' => '');
 
-if (isset($admin_id)) {
-
-    $query = $sql->prepare("SELECT u.`id`,u.`cname` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
-    $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        $username = $row['cname'];
-        $user_id = $row['id'];
-    }
-
-} else {
-    $username = getusername($user_id);
-}
-
-$query = $sql->prepare("SELECT g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `decryptedftppass`,s.`servertemplate`,t.`binarydir`,t.`shorten` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+$query = $sql->prepare("SELECT r.`ip` AS `ftp_ip`,r.`ftpport`,u.`cname`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `dftppass`,AES_DECRYPT(g.`ppassword`,?) AS `decryptedftppass`,s.`servertemplate`,t.`binarydir`,t.`shorten` FROM `gsswitch` AS g INNER JOIN `userdata` AS u ON u.`id`=g.`userid` INNER JOIN `rserverdata` AS r ON r.`id`=g.`rootID` INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
 $query->execute(array($aeskey, $aeskey, $ui->id('id', 10, 'get'), $user_id, $resellerLockupID));
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-    $protected = $row['protected'];
-    $servertemplate = $row['servertemplate'];
-    $rootID = $row['rootID'];
-    $serverip = $row['serverip'];
-    $port = $row['port'];
-    $shorten = $row['shorten'];
-    $binarydir = $row['binarydir'];
-    $ftppass = $row['dftppass'];
+    if ($ui->escaped('cmd', 'post')) {
 
-    if ($row['newlayout'] == 'Y') {
-        $username .= '-' . $row['id'];
-    }
+        $appServer = new AppServer($row['rootID']);
+        $appServer->getAppServerDetails($ui->id('id', 10, 'get'));
+        $appServer->shellCommand($ui->escaped('cmd', 'post'));
+        $appServer->execute();
 
-    if ($protected == 'N' and $servertemplate > 1) {
-        $shorten .= '-' . $servertemplate;
-        $pserver = 'server/';
-    } else if ($protected == 'Y') {
-        $username .= '-p';
-        $ftppass = $row['decryptedftppass'];
-        $pserver = '';
     } else {
-        $pserver = 'server/';
-    }
-}
 
-$array = array('lastLog' => 0, 'log' => '');
+        $shorten = $row['shorten'];
+        $ftppass = $row['dftppass'];
+        $username = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $row['id'] : $row['cname'];
 
-if (isset($rootID)) {
+        if ($row['protected'] == 'N' and $row['servertemplate'] > 1) {
+            $shorten .= '-' . $row['servertemplate'];
+            $pserver = 'server/';
+        } else if ($row['protected'] == 'Y') {
+            $username .= '-p';
+            $ftppass = $row['decryptedftppass'];
+            $pserver = '';
+        } else {
+            $pserver = 'server/';
+        }
 
-    $query = $sql->prepare("SELECT `ip`,`ftpport` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query->execute(array($rootID, $resellerLockupID));
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $ftpConnect = new EasyWiFTP($row['ftp_ip'], $row['ftpport'], $username, $ftppass);
 
-        $ftpport = $row['ftpport'];
-        $ip = $row['ip'];
-
-        $ftpConnect = new EasyWiFTP($ip, $ftpport, $username, $ftppass);
-
-        $downloadChrooted = $ftpConnect->removeSlashes($pserver . $serverip . '_' . $port . '/' . $shorten . '/' . $binarydir . '/screenlog.0');
+        $downloadChrooted = $ftpConnect->removeSlashes($pserver . $row['serverip'] . '_' . $row['port'] . '/' . $shorten . '/' . $row['binarydir'] . '/screenlog.0');
 
         if ($ftpConnect->ftpConnection) {
 
@@ -113,20 +89,12 @@ if (isset($rootID)) {
             }
 
         } else {
-            $array['error'] = 'Cannot connect to FTP Server ' . $ip . ':' . $ftpport;
+            $array['error'] = 'Cannot connect to FTP Server ' . $row2['ip'] . ':' . $row2['ftpport'];
         }
     }
+}
 
-    if ($query->rowCount() > 0) {
-
-        $ftpConnect->tempHandle = null;
-        $ftpConnect = null;
-
-    } else {
-        $array['error'] = 'Error: wrong rootID';
-    }
-
-} else {
+if ($query->rowCount() < 1) {
     $array['error'] = 'Error: No rootID';
 }
 

@@ -218,7 +218,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $port = $row['port'];
 
         $appServer = new AppServer($row['rootID']);
-
         $appServer->getAppServerDetails($id);
 
         if ($ui->st('d', 'get') == 'rs') {
