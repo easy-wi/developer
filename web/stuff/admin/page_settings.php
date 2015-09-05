@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['cms_settings']) or $reseller_id != 0) {
     header('Location: admin.php');
-    die('No acces');
+    die('No access);
 }
 $sprache = getlanguagefile('page',$user_language,$reseller_id);
 $loguserid = $admin_id;

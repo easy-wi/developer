@@ -38,7 +38,7 @@
 
 if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['fastdl'])) {
 	header('Location: userpanel.php');
-	die('No acces');
+	die('No access);
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
