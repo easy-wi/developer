@@ -37,7 +37,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['log'])) {
 	header('Location: admin.php');
-	die('No access);
+	die('No access');
 }
 
 $sprache = getlanguagefile('logs', $user_language,$reseller_id);

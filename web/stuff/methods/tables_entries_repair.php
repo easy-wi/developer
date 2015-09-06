@@ -40,7 +40,7 @@
 
 if (!isset($displayToUser) and (!isset($admin_id) or $main != 1 or $reseller_id != 0)) {
     header('Location: admin.php');
-    die('No access);
+    die('No access');
 }
 
 $query = $sql->prepare("SELECT DISTINCT(`id`) FROM `userdata` u WHERE `accounttype`='r' AND NOT EXISTS (SELECT 1 FROM `settings` WHERE `resellerid`=u.`id`)");

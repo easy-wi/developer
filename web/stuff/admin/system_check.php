@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and (!isset($reseller_id) or $reseller_id != 0)) or !$pa['settings']) {
     header('Location: admin.php');
-    die('No access);
+    die('No access');
 }
 
 $sprache = getlanguagefile('system_check', $user_language, $reseller_id);
