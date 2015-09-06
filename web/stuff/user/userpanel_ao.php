@@ -43,7 +43,7 @@ include(EASYWIDIR . '/stuff/methods/class_app.php');
 
 if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['useraddons'])) {
 	header('Location: userpanel.php');
-	die('No acces');
+	die('No access);
 }
 
 $sprache = getlanguagefile('images', $user_language, $resellerLockupID);

@@ -39,7 +39,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['root'])) {
     header('Location: admin.php');
-    die('No acces');
+    die('No access);
 }
 
 $loguserid = $admin_id;

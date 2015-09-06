@@ -66,7 +66,7 @@ include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/class_app.php');
 
-$validacces = false;
+$validaccess= false;
 
 if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post') and !isset($page_include)) {
 
@@ -82,16 +82,16 @@ if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post') and !i
 
         if (isset($resellerIDs) and count($resellerIDs) == 1 and passwordhash($ui->password('pwd', 255, 'post'), $salt) == $pwd) {
             $reseller_id = $resellerIDs[0];
-            $validacces = true;
+            $validaccess= true;
         }
     }
 
 } else {
     $reseller_id = 0;
-    $validacces = true;
+    $validaccess= true;
 }
 
-if ($validacces == false) {
+if ($validaccess== false) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: Access data not valid');
 }
