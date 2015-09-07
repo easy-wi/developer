@@ -38,7 +38,7 @@
  */
 if ($main != 1 or !isset($admin_id) or (isset($admin_id) and !$pa['apiSettings'])) {
     header('Location: admin.php');
-    die('No access');
+    die('No access);
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache = getlanguagefile('api',$user_language,$reseller_id);

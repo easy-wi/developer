@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['roots'])) {
     header('Location: admin.php');
-    die('No access');
+    die('No access);
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
