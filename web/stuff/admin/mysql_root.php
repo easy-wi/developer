@@ -39,7 +39,7 @@
 
 if (!isset($admin_id) or $main != 1 or !isset($reseller_id) or !$pa['root']) {
     header('Location: admin.php');
-    die('No access');
+    die('No access);
 }
 
 
