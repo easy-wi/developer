@@ -38,7 +38,7 @@
  */
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !isanyadmin($admin_id) and !rsellerpermisions($admin_id)) or (!isset($pa))) {
     header('Location: login.php');
-    die('No access');
+    die('No acces');
 }
 $sprache = getlanguagefile('search',$user_language,$reseller_id);
 $results = array();

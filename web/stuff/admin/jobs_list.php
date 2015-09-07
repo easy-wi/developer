@@ -40,7 +40,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['jobs'])) {
     header('Location: admin.php');
-    die('No access');
+    die('No acces');
 }
 $sprache = getlanguagefile('api', $user_language, $reseller_id);
 

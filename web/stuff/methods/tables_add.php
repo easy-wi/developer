@@ -40,7 +40,7 @@
 
 if (!isset($displayToUser) and (!isset($admin_id) or !isset($reseller_id) or $main != 1 or $reseller_id != 0)) {
     header('Location: admin.php');
-    die('No access');
+    die('No Acces');
 }
 
 $query = "CREATE TABLE IF NOT EXISTS `addons` (
@@ -1636,6 +1636,7 @@ $query = "CREATE TABLE IF NOT EXISTS `voice_masterserver` (
   `latest_version` varchar(10) DEFAULT NULL,
   `active` enum('Y','N') DEFAULT 'Y',
   `description` varchar(255) DEFAULT NULL,
+  `iniConfiguration` text,
   `type` varchar(30) NOT NULL DEFAULT 'ts3',
   `usedns` enum('Y','N') DEFAULT 'Y',
   `tsdnsServerID` int(10) unsigned DEFAULT NULL,
@@ -1683,6 +1684,7 @@ $add->execute();
 $query = "CREATE TABLE IF NOT EXISTS `voice_server` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active` enum('Y','N') DEFAULT 'Y',
+  `iniConfiguration` text,
   `autoRestart` enum('Y','N') DEFAULT 'Y',
   `backup` enum('Y','N') DEFAULT 'Y',
   `lendserver` enum('Y','N') NOT NULL DEFAULT 'N',

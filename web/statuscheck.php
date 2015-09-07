@@ -74,7 +74,7 @@ include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_app.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
-include(EASYWIDIR . '/third_party/gameq/GameQ.php');
+include(EASYWIDIR . '/third_party/gameq/GameQ/Autoloader.php');
 include(EASYWIDIR . '/stuff/methods/class_mysql.php');
 include(EASYWIDIR . '/stuff/methods/class_httpd.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -216,21 +216,19 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 // without the gameq value we cannot query. So this results need to be sorted out.
                 if (!in_array($row2['gameq'], array('', null, false))) {
 
-                    $checkAtIPPort = $row2['serverip'] . ':';
-
                     if ($row2['useQueryPort'] == 5) {
-                        $checkAtIPPort .= $row2['port5'];
+                        $queryPort = $row2['port5'];
                     } else if ($row2['useQueryPort'] == 4) {
-                        $checkAtIPPort .= $row2['port4'];
+                        $queryPort = $row2['port4'];
                     } else if ($row2['useQueryPort'] == 3) {
-                        $checkAtIPPort .= $row2['port3'];
+                        $queryPort = $row2['port3'];
                     } else if ($row2['useQueryPort'] == 2) {
-                        $checkAtIPPort .= $row2['port2'];
+                        $queryPort = $row2['port2'];
                     } else {
-                        $checkAtIPPort .= $row2['port'];
+                        $queryPort = $row2['port'];
                     }
 
-                    $serverBatchArray[] = array('id' => $row2['id'], 'type' => $row2['gameq'], 'host' => $checkAtIPPort);
+                    $serverBatchArray[] = array('id' => $row2['id'], 'type' => $row2['gameq'], 'host' => $row2['serverip'] . ':' . $row2['port'], 'options' => array('query_port' => $queryPort));
                     $i++;
 
                     if ($i == 5) {
@@ -256,17 +254,18 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
         foreach ($allServersArray as $servers) {
 
-            $gq = new GameQ();
+            $gq = new \GameQ\GameQ();
+            $gq->addServers($servers);
             $gq->setOption('timeout', 60);
 
             if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
                 $gq->setOption('debug', true);
             }
 
-            $gq->setFilter('normalise');
-            $gq->addServers($servers);
+            $gq->addFilter('normalise');
+            $gq->addFilter('stripcolor');
 
-            foreach($gq->requestData() as $switchID => $v) {
+            foreach($gq->process() as $switchID => $v) {
 
                 unset($userid, $resellerid, $lendserver, $stopserver, $doNotRestart);
 

@@ -53,7 +53,7 @@
 
 if (!isset($userPanelInclude)) {
     header('Location: userpanel.php');
-    die('No access');
+    die('No acces');
 }
 
 // Include the language file
