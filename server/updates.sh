@@ -33,11 +33,11 @@
 #    Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
 
 function greenMessage {
-	echo -e "\\033[32;1m${@}\033[0m"
+    echo -e "\\033[32;1m${@}\033[0m"
 }
 
 function cyanMessage {
-	echo -e "\\033[36;1m${@}\033[0m"
+    echo -e "\\033[36;1m${@}\033[0m"
 }
 
 function checkCreateVersionFile {
@@ -120,13 +120,15 @@ function update {
 
     if ([ "$CURRENT_VERSION" != "$LOCAL_VERSION" -o "$LOCAL_VERSION" == "" ] && [ "$CURRENT_VERSION" != "" ]); then
 
-	    greenMessage "Updating $1 from $LOCAL_VERSION to $CURRENT_VERSION. Name of file is $FILE_NAME"
+        greenMessage "Updating $1 from $LOCAL_VERSION to $CURRENT_VERSION. Name of file is $FILE_NAME"
 
         downloadExtractFile "$3" "$FILE_NAME" "$2" "$4"
         echo "$CURRENT_VERSION" > "$HOME/versions/$1"
 
+    elif [ "$CURRENT_VERSION" == "" ]; then
+        cyanMessage "Could not detect current version for ${1}. Local version is $LOCAL_VERSION."
     else
-        cyanMessage "$1 already up to date. Local version is $LOCAL_VERSION. Most recent version is $CURRENT_VERSION"
+        cyanMessage "${1} already up to date. Local version is $LOCAL_VERSION. Most recent version is $CURRENT_VERSION"
     fi
 }
 
@@ -137,7 +139,7 @@ function updatesAddonSnapshots {
     if [ "$1" == "sourcemod" ]; then
         DOWNLOAD_URL=`lynx -dump "http://www.sourcemod.net/smdrop/$2/" | egrep -o "http:.*sourcemod-.*-linux.*" | tail -1`
     else
-        DOWNLOAD_URL=`lynx -dump "http://www.metamodsource.net/mmsdrop/$2/" | egrep -o "http:.*mmsource-.*-linux.*" | tail -1`
+        DOWNLOAD_URL=`lynx -dump "http://www.metamodsource.net/mmsdrop/$2/" | egrep -o "http:.*mmsource-.*-git.*-linux.*" | tail -1`
     fi
 
     update "${1}_snapshot_${3}.txt" "$DOWNLOAD_URL" "${1}-${3}" "masteraddons"
@@ -148,12 +150,12 @@ function updatesAddonStables {
     cyanMessage "Searching updates for $1 stable"
 
     if [ "$1" == "sourcemod" ]; then
-        PAGE_URL=`lynx -dump www.sourcemod.net/downloads.php | egrep -o "http:.*sourcemod-.*-linux.*" | tail -1`
+        DOWNLOAD_URL=`lynx -dump www.sourcemod.net/downloads-new.php?branch=stable | egrep -o "http:.*sourcemod-.*-linux.*" | sort -n | tail -1`
     else
         PAGE_URL=`lynx -dump www.metamodsource.net/ | egrep -o "http:.*mmsource-.*-linux.*" | tail -1`
+        DOWNLOAD_URL=`lynx -dump $PAGE_URL | grep -v "www.sourcemod.net|www.metamodsource.net" | egrep -o "http:.*sourcemod-.*-linux.*|http:.*mmsource-.*-linux.*" | tail -1`
     fi
 
-    DOWNLOAD_URL=`lynx -dump $PAGE_URL | grep -v "www.sourcemod.net|www.metamodsource.net" | egrep -o "http:.*sourcemod-.*-linux.*|http:.*mmsource-.*-linux.*" | tail -1`
     update ${1}_stable.txt "$DOWNLOAD_URL" "$1" "masteraddons"
 }
 
@@ -208,12 +210,15 @@ function updateMTA {
 
 checkCreateFolder $HOME/versions
 
-updateMTA
-updatesAddonStables "metamod"
-updatesAddonStables "sourcemod"
-updatesAddonSnapshots "metamod" "1.10" "stable"
-updatesAddonSnapshots "metamod" "1.11" "dev"
-updatesAddonSnapshots "sourcemod" "1.7" "stable"
-updatesAddonSnapshots "sourcemod" "1.8" "dev"
+case $1 in
+    "mta") updateMTA;;
+    "mms") updatesAddonStables "metamod";;
+    "mms_snapshot") updatesAddonSnapshots "metamod" "1.10" "stable";;
+    "mms_dev") updatesAddonSnapshots "metamod" "1.11" "dev";;
+    "sm") updatesAddonStables "sourcemod";;
+    "sm_snapshot") updatesAddonSnapshots "sourcemod" "1.7" "stable";;
+    "sm_dev") updatesAddonSnapshots "sourcemod" "1.8" "dev";;
+    *) cyanMessage "Usage: ${0} mta|mms|mms_snapshot|mms_dev|sm|sm_snapshot|sm_dev";;
+esac
 
 exit 0
