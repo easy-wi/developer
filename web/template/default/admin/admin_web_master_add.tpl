@@ -48,7 +48,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group<?php if($usageType=='F') echo ' display_none';?>" id="inputPhpConfiguration">
+                        <div class="form-group<?php if($usageType=='F') echo ' display_none';?>">
                             <label for="inputPhpConfiguration"><?php echo $sprache->phpConfiguration;?></label>
                             <div class="controls">
                                 <textarea class="form-control" id="inputPhpConfiguration" class="span11" name="phpConfiguration" rows="10"><?php echo $phpConfiguration;?></textarea>
