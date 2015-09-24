@@ -178,6 +178,7 @@ if ($easywiModules['my'] === true) {
     $what_to_be_included_array['my'] = 'mysql_server.php';
 }
 
+/*
 if ($easywiModules['ro'] === true) {
     $what_to_be_included_array['rh'] = 'root_dedicated.php';
     $what_to_be_included_array['vs'] = 'root_virtual_server.php';
@@ -191,6 +192,7 @@ if ($easywiModules['ro'] === true) {
         $what_to_be_included_array['sn'] = 'roots_subnets.php';
     }
 }
+*/
 
 if ($easywiModules['ti'] === true) {
     $what_to_be_included_array['ti'] = 'tickets.php';
