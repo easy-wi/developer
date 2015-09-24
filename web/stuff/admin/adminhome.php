@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !isanyadmin($admin_id) and !rsellerpermisions($admin_id))) {
 	header('Location: login.php');
-	die('No acces');
+	die('No Access');
 }
 
 $sprache_bad = getlanguagefile('home', $user_language, $reseller_id);

@@ -40,7 +40,7 @@
 
 if ((!isset($main) or $main != 1) or (!isset($user_id) or (isset($user_id) and !$pa['restart']))) {
     header('Location: userpanel.php');
-    die('No acces');
+    die('No Access');
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');

@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['gimages'])) {
 	header('Location: admin.php');
-	die('No acces');
+	die('No Access');
 }
 include(EASYWIDIR . '/third_party/gameq/GameQ/Autoloader.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
