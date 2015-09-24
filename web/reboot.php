@@ -79,10 +79,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query = $sql->prepare("UPDATE `voice_masterserver` SET `latest_version`=? WHERE `bitversion`=?");
 
     $ts3MasterVersion32 = getTS3Version('server', 'linux', 32);
-    $query->execute(array($ts3MasterVersion32['version'], '32'));
+    if (isset($ts3MasterVersion32['version']) and preg_match('/^([\d]{1,2}.)*[\d]{1,2}$/', $ts3MasterVersion32['version'])) {
+        $query->execute(array($ts3MasterVersion32['version'], '32'));
+    }
 
     $ts3MasterVersion64 = getTS3Version('server', 'linux', 64);
-    $query->execute(array($ts3MasterVersion64['version'], '64'));
+    if (isset($ts3MasterVersion64['version']) and preg_match('/^([\d]{1,2}.)*[\d]{1,2}$/', $ts3MasterVersion64['version'])) {
+        $query->execute(array($ts3MasterVersion64['version'], '64'));
+    }
 
     echo "Current versions for Teamspeak 3 Server are {$ts3MasterVersion32['version']} (32bit) and {$ts3MasterVersion64['version']} (64bit)\r\n";
 
@@ -507,18 +511,21 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     if (date('G') == 5) {
 
-        $query = $sql->prepare("SELECT `ssh2ip`,`description`,`resellerid` FROM `voice_masterserver` WHERE `active`='Y' AND `latest_version`!=`local_version`");
+        $query = $sql->prepare("SELECT `ssh2ip`,`description`,`resellerid`,`latest_version`,`local_version` FROM `voice_masterserver` WHERE `active`='Y' AND `latest_version`!=`local_version`");
         $query->execute();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-            $serverName = (strlen($row['description']) == 0) ? $row['ssh2ip'] : $row['ssh2ip'] . ' ' . $row['description'];
+            if (preg_match('/^([\d]{1,2}.)*[\d]{1,2}$/', $row['local_version']) and preg_match('/^([\d]{1,2}.)*[\d]{1,2}$/', $row['latest_version'])) {
 
-            print "Sending TS3 update information for server $serverName\r\n";
+                $serverName = (strlen($row['description']) == 0) ? $row['ssh2ip'] : $row['ssh2ip'] . ' ' . $row['description'];
 
-            $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
-            $query2->execute(array($row['resellerid'], $row['resellerid']));
-            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-                sendmail('emailvoicemasterold', $row2['id'], $serverName, '');
+                print "Sending TS3 update information for server $serverName\r\n";
+
+                $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
+                $query2->execute(array($row['resellerid'], $row['resellerid']));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                    sendmail('emailvoicemasterold', $row2['id'], $serverName, '');
+                }
             }
         }
 

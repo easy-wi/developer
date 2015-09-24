@@ -81,7 +81,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $status = 4;
     $statusMessage = $gsprache->status_ok;
 
-    if ($row['local_version'] != $row['latest_version']) {
+    if (preg_match('/^([\d]{1,2}.)*[\d]{1,2}$/', $row['local_version']) and preg_match('/^([\d]{1,2}.)*[\d]{1,2}$/', $row['latest_version']) and $row['local_version'] != $row['latest_version']) {
         $status = 2;
         $statusMessage = $sprache->old_version . ' ' . $row['local_version'];
     }

@@ -802,7 +802,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                     $serverVersion = $connection->getServerVersion();
 
-                    if ($serverVersion) {
+                    if ($serverVersion and preg_match('/^([\d]{1,2}.)*[\d]{1,2}$/', $serverVersion)) {
 
                         if ($serverVersion == $latestVersion) {
                             echo "TS3 server version is running up to date version $serverVersion\r\n";
