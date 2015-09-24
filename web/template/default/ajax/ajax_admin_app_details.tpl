@@ -29,7 +29,7 @@
     </label>
 </div>
 <?php }else{ ?>
-<input type="hidden" name="upload[<?php echo $table_row['id'];?>]" value="0">
+<input type="hidden" name="upload[<?php echo $row['id'];?>]" value="0">
 <?php }?>
 
 <?php if(strlen($row['fps'])>0){ ?>
