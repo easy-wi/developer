@@ -34,8 +34,8 @@
                             <label for="template"><?php echo $gsprache->template;?></label>
                             <select class="form-control" id="template" name="template">
                                 <option id="template1" value="1"><?php echo $shorten;?></option>
-                                <option id="template2" value="2" <?php echo $selected2;?>><?php echo $shorten;?>-2</option>
-                                <option id="template3" value="3" <?php echo $selected3;?>><?php echo $shorten;?>-3</option>
+                                <option id="template2" value="2"><?php echo $shorten;?>-2</option>
+                                <option id="template3" value="3"><?php echo $shorten;?>-3</option>
                                 <option value="4"><?php echo $gsprache->all;?></option>
                             </select>
                         </div>
