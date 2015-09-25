@@ -303,7 +303,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $table[] = array('id' => $row2['id'], 'topic' => $topic,'maintopic' => $maintopic,'mTopic' => $mTopic,'priority' => $priority);
         }
 
-        configureDateTables('-1', '1, "ASC"');
+        configureDateTables('-1', '1, "asc"');
 
         $template_file = "admin_ticket_topic_list.tpl";
     }
@@ -492,7 +492,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $table[] = array('id' => $row['id'], 'priority' => $priority,'userPriority' => $userPriority,'writedate' => $row['writedate'],'supporter' => (trim($row['supportername']) != '') ? trim($row['supportername']) : $row['supporter'], 'user_id' => $row['userid'], 'user' => (trim($row['username']) != '') ? trim($row['username']) : $row['cname'], 'subject' => $topic,'status' => $status,'rawState' => $row['state']);
     }
 
-    configureDateTables('-1', '1, "DESC"');
+    configureDateTables('-1', '1, "desc"');
 
     $template_file = "admin_tickets_list.tpl";
 }

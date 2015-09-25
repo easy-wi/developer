@@ -312,7 +312,7 @@ if (isset($ui->get['q'])) {
     }
 }
 
-configureDateTables('-1', '1, "DESC"');
+configureDateTables('-1', '1, "desc"');
 
 $q=implode(' ',$q);
 $template_file = 'admin_search.tpl';
