@@ -19,6 +19,7 @@
 	<bin_folder>Binary mappe (for eksempel orangebox)</bin_folder>
 	<configs>Bruger Redigerbar configs</configs>
 	<configedit>Cvars, som brugeren må ikke ændre</configedit>
+    <copyStartBinary></copyStartBinary>
 	<del_temp>Slet skabelon</del_temp>
 	<description>Beskrivelse</description>
 	<error_exist>Fejl: Addon allerede eksisterer</error_exist>

@@ -1118,6 +1118,7 @@ $query = "CREATE TABLE IF NOT EXISTS `servertypes` (
   `ramLimited` enum('Y','N') DEFAULT 'N',
   `ftpAccess` enum('Y','N') DEFAULT 'Y',
   `workShop` enum('Y','N') DEFAULT 'N',
+  `copyStartBinary` enum('Y','N') DEFAULT 'N',
   `os` enum('B','L','W') DEFAULT 'L',
   `downloadPath` text,
   `liveConsole` enum('Y','N') NOT NULL DEFAULT 'Y',

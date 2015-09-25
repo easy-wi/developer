@@ -19,6 +19,7 @@
 	<bin_folder>Binaryverzeichnis(z.B. orangebox)</bin_folder>
 	<configs>Configs, die vom User editierbar sein sollen</configs>
 	<configedit>Cvars, die unveränderbar sein sollen</configedit>
+    <copyStartBinary>Binary Kopieren</copyStartBinary>
 	<del_temp>Template löschen</del_temp>
 	<description>Beschreibung</description>
 	<error_exist>Fehler: Das Addon existiert bereits.</error_exist>

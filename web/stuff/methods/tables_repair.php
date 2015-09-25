@@ -966,6 +966,7 @@ $defined['servertypes'] = array(
     'ramLimited' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'ftpAccess' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'workShop' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
+    'copyStartBinary' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'os' => array("Type"=>"enum('B','L','W')","Null"=>"YES","Key"=>"","Default"=>"L","Extra"=>""),
     'downloadPath' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'liveConsole' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),

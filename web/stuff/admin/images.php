@@ -141,6 +141,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $workShop = ($ui->active('workShop', 'post')) ? $ui->active('workShop', 'post') : 'N';
     $ftpAccess = ($ui->active('ftpAccess', 'post')) ? $ui->active('ftpAccess', 'post') : 'Y';
     $liveConsole = ($ui->active('liveConsole', 'post')) ? $ui->active('liveConsole', 'post') : 'Y';
+    $copyStartBinary = ($ui->active('copyStartBinary', 'post')) ? $ui->active('copyStartBinary', 'post') : 'N';
     $os = ($ui->w('os', 1, 'post')) ? $ui->w('os', 1, 'post') : 'L';
     $iptables = $ui->startparameter('iptables', 'post');
     $protectedSaveCFGs = $ui->startparameter('protectedSaveCFGs', 'post');
@@ -339,6 +340,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             if ($node->nodeName == 'liveConsole') {
                                 $liveConsole = $node->nodeValue;
                             }
+                            if ($node->nodeName == 'copyStartBinary') {
+                                $copyStartBinary = $node->nodeValue;
+                            }
                         }
                     }
                 } catch(Exception $error) {
@@ -391,6 +395,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $steamAccount = $row['steamAcc'];
                 $steamPassword = $row['steamPwd'];
                 $liveConsole = $row['liveConsole'];
+                $copyStartBinary = $row['copyStartBinary'];
             }
 
             if ($query->rowCount() > 0) {
@@ -482,14 +487,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
 
                 $query = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-                $query2 = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`map`,`mapGroup`,`workShop`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`protected`,`ramLimited`,`ftpAccess`,`os`,`steam_account`,`steam_password`,`liveConsole`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,?)");
+                $query2 = $sql->prepare("INSERT INTO `servertypes` (`iptables`,`protectedSaveCFGs`,`steamgame`,`updates`,`shorten`,`description`,`type`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`map`,`mapGroup`,`workShop`,`cmd`,`modcmds`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`appID`,`portMax`,`portStep`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`protected`,`ramLimited`,`ftpAccess`,`os`,`steam_account`,`steam_password`,`liveConsole`,`copyStartBinary`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,?,?)");
 
                 foreach ($resellerInsertIDs as $rID) {
 
                     $query->execute(array($shorten, $rID));
 
                     if ($query->rowCount() == 0) {
-                        $query2->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $gamebinaryWin, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $useQueryPort, $protected, $ramLimited, $ftpAccess, $os, $steamAccount, $aeskey, $steamPassword, $aeskey, $liveConsole, $rID));
+                        $query2->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, 'gserver', $gamebinary, $gamebinaryWin, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $useQueryPort, $protected, $ramLimited, $ftpAccess, $os, $steamAccount, $aeskey, $steamPassword, $aeskey, $liveConsole, $copyStartBinary, $rID));
                         $rowCount += $query2->rowCount();
                     }
 
@@ -500,8 +505,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             } else if ($ui->st('action', 'post') == 'md') {
                 
-                $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`gamebinaryWin`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`workShop`=?,`cmd`=?,`modcmds`=?,`gameq`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`useQueryPort`=?,`protected`=?,`ramLimited`=?,`ftpAccess`=?,`os`=?,`steam_account`=AES_ENCRYPT(?,?),`steam_password`=AES_ENCRYPT(?,?),`liveConsole`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $gamebinaryWin, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $useQueryPort, $protected, $ramLimited, $ftpAccess, $os, $steamAccount, $aeskey, $steamPassword, $aeskey, $liveConsole, $ui->id('id', 10, 'get'), $resellerLockupID));
+                $query = $sql->prepare("UPDATE `servertypes` SET `iptables`=?,`protectedSaveCFGs`=?,`steamgame`=?,`updates`=?,`shorten`=?,`description`=?,`gamebinary`=?,`gamebinaryWin`=?,`binarydir`=?,`modfolder`=?,`map`=?,`mapGroup`=?,`workShop`=?,`cmd`=?,`modcmds`=?,`gameq`=?,`gamemod`=?,`gamemod2`=?,`configs`=?,`configedit`=?,`appID`=?,`portMax`=?,`portStep`=?,`portOne`=?,`portTwo`=?,`portThree`=?,`portFour`=?,`portFive`=?,`useQueryPort`=?,`protected`=?,`ramLimited`=?,`ftpAccess`=?,`os`=?,`steam_account`=AES_ENCRYPT(?,?),`steam_password`=AES_ENCRYPT(?,?),`liveConsole`=?,`copyStartBinary`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($iptables, $protectedSaveCFGs, $steamgame, $updates, $shorten, $description, $gamebinary, $gamebinaryWin, $binarydir, $modfolder, $map, $mapGroup, $workShop, $cmd, $modcmds, $gameq, $gamemod, $gamemod2, $configs, $configedit, $appID, $portMax, $portStep, $portOne, $portTwo, $portThree, $portFour, $portFive, $useQueryPort, $protected, $ramLimited, $ftpAccess, $os, $steamAccount, $aeskey, $steamPassword, $aeskey, $liveConsole, $copyStartBinary, $ui->id('id', 10, 'get'), $resellerLockupID));
                 $rowCount = $query->rowCount();
                 $loguseraction = '%mod% %template% ' . $shorten;
 

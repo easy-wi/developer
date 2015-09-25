@@ -214,7 +214,7 @@ class AppServer {
 
         global $sql, $aeskey;
 
-        $query = $sql->prepare("SELECT t.`id` AS `template_id`,t.`gameq`,t.`shorten`,t.`protected`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`modfolder`,t.`cmd` AS `template_cmd`,t.`modcmds` AS `template_modcmds`,`configedit`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `d_uploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `d_webapiauthkey` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`id`=:id AND s.`switchID`=:appServerID LIMIT 1");
+        $query = $sql->prepare("SELECT t.`id` AS `template_id`,t.`gameq`,t.`shorten`,t.`protected`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`modfolder`,t.`copyStartBinary`,t.`cmd` AS `template_cmd`,t.`modcmds` AS `template_modcmds`,`configedit`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `d_uploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `d_webapiauthkey` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`id`=:id AND s.`switchID`=:appServerID LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':appServerID' => $appServerID));
 
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -230,6 +230,7 @@ class AppServer {
             $this->appServerDetails['template']['modfolder'] = (string) $row['modfolder'];
             $this->appServerDetails['template']['modcmds'] = (string) $row['template_modcmds'];
             $this->appServerDetails['template']['configedit'] = $row['configedit'];
+            $this->appServerDetails['template']['copyStartBinary'] = $row['copyStartBinary'];
 
             // second block will be specific app settings
             $this->appServerDetails['app']['anticheat'] = (int) $row['anticheat'];
@@ -575,11 +576,11 @@ class AppServer {
         }
     }
 
-    private function copyArkStartFile($sourcePath, $targetPath) {
+    private function copyStartFile($sourcePath, $targetPath) {
 
-        $targetPath = $this->removeSlashes($targetPath . '/ShooterGame/Binaries/Linux/');
-        $sourceFile = $this->removeSlashes($sourcePath . '/ShooterGame/Binaries/Linux/ShooterGameServer');
-        $targetFile = $this->removeSlashes($targetPath . 'ShooterGameServer');
+        $targetPath = $this->removeSlashes($targetPath . $this->appServerDetails['template']['binarydir']);
+        $sourceFile = $this->removeSlashes($sourcePath . $this->appServerDetails['template']['binarydir'] . '/' . $this->appServerDetails['template']['gameBinary']);
+        $targetFile = $this->removeSlashes($targetPath . '/' . $this->appServerDetails['template']['gameBinary']);
 
         $script = 'if [ -f "' . $sourceFile . '" ]; then' . "\n";
         $script .= 'if [ ! -d "' . $targetPath . '" ]; then mkdir -p "' . $targetPath . '"; fi' . "\n";
@@ -623,7 +624,11 @@ class AppServer {
 
             $script .= 'if [ ! -d "' . $absoluteTargetTemplatePath . '" ]; then mkdir -p "' . $absoluteTargetTemplatePath . '"; fi' . "\n";
             $script .= 'cd ' . $absoluteSourceTemplatePath . "\n";
-            $script .= $this->copyArkStartFile($absoluteSourceTemplatePath, $absoluteTargetTemplatePath);
+
+            if ($this->appServerDetails['template']['copyStartBinary'] == 'Y') {
+                $script .= $this->copyStartFile($absoluteSourceTemplatePath, $absoluteTargetTemplatePath);
+            }
+
             $script .= 'FDLFILEFOUND=(`find -mindepth 1 -type f \( -iname "*.' . implode('" -or -iname "*.', $copyFileExtensions) . '" \) | grep -v "$PATTERN"`)' . "\n";
             $script .= 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do' . "\n";
             $script .= 'FOLDERNAME=`dirname "$FILTEREDFILES"`' . "\n";

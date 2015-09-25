@@ -72,7 +72,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -107,7 +108,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -142,7 +144,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -177,7 +180,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -212,7 +216,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'main/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -247,7 +252,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -282,7 +288,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -317,7 +324,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -352,7 +360,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -387,7 +396,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -422,7 +432,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -457,7 +468,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -492,7 +504,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -527,7 +540,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' =>  'S',
@@ -562,7 +576,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -597,7 +612,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -632,7 +648,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -667,7 +684,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -702,7 +720,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -737,7 +756,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -772,7 +792,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -807,7 +828,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -842,7 +864,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -877,7 +900,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -912,7 +936,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -947,7 +972,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -982,7 +1008,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1017,7 +1044,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1052,7 +1080,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1087,7 +1116,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1122,7 +1152,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1157,7 +1188,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1192,7 +1224,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1227,7 +1260,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -1262,7 +1296,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -1297,6 +1332,7 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'Y'
     )
 );

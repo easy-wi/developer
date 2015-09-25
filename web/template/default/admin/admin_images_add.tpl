@@ -221,6 +221,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="control-label" for="inputCopyStartBinary"><?php echo $sprache->copyStartBinary;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputCopyStartBinary" name="copyStartBinary">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($copyStartBinary=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="inputModfolder"><?php echo $sprache->mod;?></label>
                             <div class="controls"><input class="form-control" id="inputModfolder" type="text" name="modfolder" value="<?php echo $modfolder;?>"></div>
                         </div>
