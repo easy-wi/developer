@@ -156,7 +156,6 @@ done
 
 if [ "$OPTION" == "Easy-WI Webpanel" ]; then
     INSTALL="EW"
-#    errorAndExit "Not supported yet!"
 elif [ "$OPTION" == "Gameserver Root" ]; then
     INSTALL="GS"
 elif [ "$OPTION" == "Voicemaster" ]; then
@@ -1239,12 +1238,12 @@ php_admin_value[memory_limit] = 32M
     fi
 
     if [ "`grep reboot.php /etc/crontab`" == "" ]; then
-        echo '0 */1 * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1" easywi_web
-0 */1 * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1" easywi_web
-*/5 * * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 290 php ./statuscheck.php >/dev/null 2>&1" easywi_web
-*/1 * * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 290 php ./startupdates.php >/dev/null 2>&1" easywi_web
-*/5 * * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 290 php ./jobs.php >/dev/null 2>&1" easywi_web
-*/10 * * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 290 php ./cloud.php >/dev/null 2>&1" easywi_web' >> /etc/crontab
+        echo '0 */1 * * * root cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1
+0 */1 * * * root cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1
+*/5 * * * * root cd /home/easywi_web/htdocs && timeout 290 php ./statuscheck.php >/dev/null 2>&1
+*/1 * * * * root cd /home/easywi_web/htdocs && timeout 290 php ./startupdates.php >/dev/null 2>&1
+*/5 * * * * root cd /home/easywi_web/htdocs && timeout 290 php ./jobs.php >/dev/null 2>&1
+*/10 * * * * root cd /home/easywi_web/htdocs && timeout 290 php ./cloud.php >/dev/null 2>&1' >> /etc/crontab
     fi
 
     /etc/init.d/cron restart
