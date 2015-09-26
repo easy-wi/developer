@@ -58,13 +58,33 @@ function errorAndContinue {
     continue
 }
 
-INSTALLER_VERSION='1.0'
-OS=''
+function runSpinner {
+
+    SEQUENCE_END=`echo $1/0.4 | bc`
+    SPINNER=("-" "\\" "|" "/")
+
+    for SEQUENCE in `seq 1 $SEQUENCE_END`; do
+        for I in "${SPINNER[@]}"; do
+            echo -ne "\b$I"
+            sleep 0.1
+        done
+    done
+}
+
+INSTALLER_VERSION="1.0"
+OS=""
 USERADD=`which useradd`
 USERMOD=`which usermod`
 USERDEL=`which userdel`
 GROUPADD=`which groupadd`
 MACHINE=`uname -m`
+LOCAL_IP=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v '127.0.0.1' | head -n 1`
+
+if [ "$LOCAL_IP" == "" ]; then
+    HOST_NAME=`hostname -f | awk '{print tolower($0)}'`
+else
+    HOST_NAME=`getent hosts $LOCAL_IP | awk '{print tolower($2)}' | head -n 1`
+fi
 
 cyanMessage "Checking for the latest latest installer"
 LATEST_VERSION=`wget -q --timeout=30 -O - http://l.easy-wi.com/installer_version.php | sed 's/^\xef\xbb\xbf//g'`
@@ -88,20 +108,20 @@ fi
 # Debian and its derivatives store their version at /etc/debian_version
 if [ -f /etc/debian_version ]; then
 
-    DISTRIBUTORID=`lsb_release -i 2> /dev/null | grep 'Distributor' | awk '{print $2}'`
+    DISTRIBUTORID=`lsb_release -i 2> /dev/null | grep 'Distributor' | awk '{print $3}'`
     OSVERSION=`lsb_release -r 2> /dev/null | grep 'Release' | awk '{print $2}'`
 
     if [ "$DISTRIBUTORID" == "Ubuntu" ]; then
         OSBRANCH=`lsb_release -c 2> /dev/null | grep 'Codename' | awk '{print $2}'`
-        OS='ubuntu'
+        OS="ubuntu"
     else
         OSBRANCH=`cat /etc/*release | grep 'VERSION=' | awk '{print $2}' | tr -d '()"'`
-        OS='debian'
+        OS="debian"
     fi
 fi
 
 if [ "$OS" == "" ]; then
-    errorAndExit "Error: Could not detect OS. Aborting"
+    errorAndExit "Error: Could not detect OS. Currently only Debian and Ubuntuu are supported. Aborting!"
 else
     greenMessage "Detected OS $OS"
 fi
@@ -129,18 +149,49 @@ select OPTION in "${OPTIONS[@]}"; do
 done
 
 if [ "$OPTION" == "Easy-WI Webpanel" ]; then
-    INSTALL='EW'
-    errorAndExit "Error: Not Supported yet"
+    INSTALL="EW"
+    errorAndExit "Not supported yet!"
 elif [ "$OPTION" == "Gameserver Root" ]; then
-    INSTALL='GS'
+    INSTALL="GS"
 elif [ "$OPTION" == "Voicemaster" ]; then
-    INSTALL='VS'
+    INSTALL="VS"
 elif [ "$OPTION" == "Webspace Root" ]; then
-    INSTALL='WR'
+    INSTALL="WR"
 fi
 
-# Run the server detect up front to avoid user executing steps first and fail at download last.
-if [ "$INSTALL" == 'VS' ]; then
+# Run the domain/IP check up front to avoid late error out.
+if [ "$INSTALL" == "EW" ]; then
+
+    cyanMessage " "
+    cyanMessage "At which URL/Domain should Easy-Wi be placed?"
+    OPTIONS=("$HOST_NAME" "$LOCAL_IP" "Other" "Quit")
+    select OPTION in "${OPTIONS[@]}"; do
+        case "$REPLY" in
+            1 ) break;;
+            2 ) break;;
+            3 ) break;;
+            4 ) errorAndQuit;;
+            *) errorAndContinue;;
+        esac
+    done
+
+    if [ "$OPTION" == "Other" ]; then
+
+        cyanMessage " "
+        cyanMessage "Please specify the IP or domain Easy-Wi should run at."
+        read IP_DOMAIN
+
+    else
+        IP_DOMAIN=$OPTION
+    fi
+
+    if [ "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $IP_DOMAIN`" == "" -a "`grep -E '^(([a-zA-Z](-?[a-zA-Z0-9])*)\.)*[a-zA-Z](-?[a-zA-Z0-9])+\.[a-zA-Z]{2,}$' <<< $IP_DOMAIN`" == "" ]; then
+        errorAndExit "Error: $IP_DOMAIN is neither a domain nor an IPv4 address!"
+    fi
+fi
+
+# Run the TS3 server version detect up front to avoid user executing steps first and fail at download last.
+if [ "$INSTALL" == "VS" ]; then
 
     if [ "$MACHINE" == "x86_64" ]; then
         ARCH="amd64"
@@ -152,13 +203,13 @@ if [ "$INSTALL" == 'VS' ]; then
 
     greenMessage "Searching latest build for hardware type $MACHINE with arch $ARCH."
 
-
     for VERSION in ` wget "http://dl.4players.de/ts/releases/?C=M;O=D" -q -O -| grep -i dir | egrep -o '<a href=\".*\/\">.*\/<\/a>' | egrep -o '[0-9\.?]+'| uniq | sort -r -g -t "." -k 1,1 -k 2,2 -k 3,3 -k 4,4`; do
 
-        DOWNLOAD_URL="http://dl.4players.de/ts/releases/$VERSION/teamspeak3-server_linux-$ARCH-$VERSION.tar.gz"
-        STATUS=`wget -S --spider --tries 1 -q $DOWNLOAD_URL 2>&1 | grep "HTTP/" | awk '{print $2}'`
+        DOWNLOAD_URL_VERSION="http://dl.4players.de/ts/releases/$VERSION/teamspeak3-server_linux-$ARCH-$VERSION.tar.gz"
+        STATUS=`wget -S --spider --tries 1 -q $DOWNLOAD_URL_VERSION 2>&1 | grep "HTTP/" | awk '{print $2}'`
 
         if [ "$STATUS" == "200" ]; then
+            DOWNLOAD_URL=$DOWNLOAD_URL_VERSION
             break
         fi
     done
@@ -171,18 +222,18 @@ if [ "$INSTALL" == 'VS' ]; then
 fi
 
 cyanMessage " "
-cyanMessage "Will start installing $OPTION by updating the system packages to the latest version"
+greenMessage "Updating the system packages to the latest version."
 
 if [ "$OS" == "debian" -o  "$OS" == "ubuntu" ]; then
     apt-get update && apt-get upgrade && apt-get dist-upgrade
 fi
 
 # If we need to install and configure a webspace than we need to identify the groupID
-if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
+if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
     WEBGROUPID=`id -g www-data 2> /dev/null`
 
-    if [ "$INSTALL" == 'EW' ]; then
+    if [ "$INSTALL" == "EW" ]; then
         OPTION="Yes"
     else
         cyanMessage " "
@@ -225,7 +276,7 @@ fi
 
 if [ "`id $MASTERUSER 2> /dev/null`" == "" ]; then
 
-    if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
+    if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         $USERADD -m -b /home -s /bin/bash -g $WEBGROUPID $MASTERUSER
     else
         if [ -d /home/$MASTERUSER ]; then
@@ -237,7 +288,7 @@ if [ "`id $MASTERUSER 2> /dev/null`" == "" ]; then
         fi
     fi
 
-elif [ "$INSTALL" != 'VS' ]; then
+elif [ "$INSTALL" != "VS" ]; then
     greenMessage "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
     usermod -g $MASTERUSER $MASTERUSER
 else
@@ -248,7 +299,7 @@ cyanMessage " "
 cyanMessage "Create key or set password for login?"
 cyanMessage "Safest way of login is a password protected key."
 
-if [ "$INSTALL" == 'EW' ]; then
+if [ "$INSTALL" == "EW" ]; then
     cyanMessage "Neither is not required, when installing Easy-WI Webpanel."
 fi
 
@@ -271,7 +322,7 @@ if [ "$OPTION" == "Create key" ]; then
 
     cyanMessage " "
     cyanMessage "It is recommended but not required to set a password"
-    su -c 'ssh-keygen -t rsa' $MASTERUSER
+    su -c "ssh-keygen -t rsa" $MASTERUSER
 
     cd /home/$MASTERUSER/.ssh
 
@@ -288,13 +339,13 @@ elif [ "$OPTION" == "Set password" ]; then
 fi
 
 # only in case we want to manage webspace we need the additional skel dir
-if [ "$INSTALL" == 'WR' -o "$INSTALL" == 'EW' ]; then
+if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
     mkdir -p /home/$MASTERUSER/skel/logs
     mkdir -p /home/$MASTERUSER/skel/htdocs
     mkdir -p /home/$MASTERUSER/sites-enabled/
 fi
 
-if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
+if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
     if [ "$OS" == "debian" ]; then
 
@@ -327,7 +378,7 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
     cyanMessage " "
     cyanMessage "Please select the webserver you would like to use"
 
-    if [ "$INSTALL" == 'EW' ]; then
+    if [ "$INSTALL" == "EW" ]; then
 
         cyanMessage "Apache is recommended in case you want to run additional sites on this host."
         cyanMessage "Nginx is recommended if the server should only run the Easy-WI Web Panel."
@@ -368,7 +419,7 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
         apt-get install apache2
     fi
 
-    if [ "$INSTALL" == 'EW' ]; then
+    if [ "$INSTALL" == "EW" ]; then
 
         greenMessage "Please note that Easy-Wi requires a MySQL or MariaDB installed and will install MySQL if no DB is installed"
 
@@ -442,12 +493,12 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
         mysql_secure_installation
     fi
 
-    if [ "$INSTALL" == 'EW' -a "`ps x | grep mysql | grep -v grep`" == "" ]; then
+    if [ "$INSTALL" == "EW" -a "`ps x | grep mysql | grep -v grep`" == "" ]; then
         cyanMessage " "
         errorAndExit "Error: No SQL server running but required for Webpanel installation."
     fi
 
-    if [ "$INSTALL" == 'EW' ]; then
+    if [ "$INSTALL" == "EW" ]; then
 
         greenMessage "Please note that Easy-Wi will install required PHP packages."
         PHPINSTALL="Yes"
@@ -532,7 +583,7 @@ if [ "$INSTALL" == 'EW' -o  "$INSTALL" == 'WR' ]; then
     fi
 fi
 
-if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
+if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
 
     cyanMessage " "
     cyanMessage "Install/Update ProFTPD?"
@@ -550,21 +601,30 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
     if [ "$OPTION" == "Yes" ]; then
 
         apt-get install proftpd
-        
+
         if [ -f /etc/proftpd/modules.conf ]; then
-            mv /etc/proftpd/modules.conf /etc/proftpd/modules.conf.easy-install.backup
-            sed 's/.*LoadModule mod_tls_memcache.c.*/#LoadModule mod_tls_memcache.c/g' /etc/proftpd/modules.conf.easy-install.backup > /etc/proftpd/modules.conf
+
+            cp /etc/proftpd/modules.conf /etc/proftpd/modules.conf.easy-install.backup
+
+            sed -i 's/.*LoadModule mod_tls_memcache.c.*/#LoadModule mod_tls_memcache.c/g' /etc/proftpd/modules.conf
         fi
 
-        if [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" != 'GS' ]; then
+        if [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" != "GS" ]; then
 
-            mv /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.easy-install.backup
-            sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.easy-install.backup | sed 's/Umask.*/Umask 037 027/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' | sed 's/# RequireValidShell.*/RequireValidShell off/g' > /etc/proftpd/proftpd.conf
+            cp /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.easy-install.backup
 
-        elif [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" == 'GS' ]; then
+            sed -i 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf
+            sed -i 's/Umask.*/Umask 037 027/g' /etc/proftpd/proftpd.conf 
+            sed -i 's/.*DefaultRoot.*/DefaultRoot ~/g' /etc/proftpd/proftpd.conf
+            sed -i 's/# RequireValidShell.*/RequireValidShell off/g' /etc/proftpd/proftpd.conf
 
-            mv /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.easy-install.backup
-            sed 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf.easy-install.backup | sed 's/Umask.*/Umask 077 077/g' | sed 's/.*DefaultRoot.*/DefaultRoot ~/g' > /etc/proftpd/proftpd.conf
+        elif [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" == "GS" ]; then
+
+            cp /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.easy-install.backup
+
+            sed -i 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf
+            sed -i 's/Umask.*/Umask 077 077/g' /etc/proftpd/proftpd.conf
+            sed -i 's/.*DefaultRoot.*/DefaultRoot ~/g' /etc/proftpd/proftpd.conf
 
             cyanMessage " "
             cyanMessage "Install/Update ProFTPD Rules?"
@@ -586,7 +646,7 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
                     chmod 755 "/etc/proftpd/conf.d/"
                 fi
                 
-                echo '
+                echo "
 <Directory ~>
         HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
         PathDenyFilter (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
@@ -594,9 +654,9 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
         <Limit RNTO RNFR STOR DELE CHMOD SITE_CHMOD MKD RMD>
                 DenyAll
         </Limit>
-</Directory>' > /etc/proftpd/conf.d/easy-wi.conf
+</Directory>" > /etc/proftpd/conf.d/easy-wi.conf
                 echo "<Directory /home/$MASTERUSER>" >> /etc/proftpd/conf.d/easy-wi.conf
-                echo '    HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
+                echo "    HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
     PathDenyFilter (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
     HideNoAccess on
     Umask 137 027
@@ -765,7 +825,7 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
         AllowAll
     </Limit>
 </Directory>
-' >> /etc/proftpd/conf.d/easy-wi.conf
+" >> /etc/proftpd/conf.d/easy-wi.conf
             fi
         fi
 
@@ -775,7 +835,7 @@ if [ "$INSTALL" != 'VS' -a "$INSTALL" != 'EW' ]; then
     fi
 fi
 
-if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
+if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
 
     cyanMessage " "
     cyanMessage "Install Quota?"
@@ -859,7 +919,7 @@ if [ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ]; then
     fi
 fi
 
-if [ "$INSTALL" == 'WR' -o "$INSTALL" == 'EW' ]; then
+if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
 
     if [ "$WEBSERVER" == "Nginx" ]; then
 
@@ -867,8 +927,9 @@ if [ "$INSTALL" == 'WR' -o "$INSTALL" == 'EW' ]; then
             mv /etc/nginx/sites-available/default /home/$MASTERUSER/sites-enabled/
         fi
 
-        mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.easy-install.backup
-        sed "s/\/etc\/nginx\/sites-enabled\/\*;/\/home\/$MASTERUSER\/sites-enabled\/\*;/g" /etc/nginx/nginx.conf.easy-install.backup > /etc/nginx/nginx.conf
+        cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.easy-install.backup
+
+        sed -i "s/\/etc\/nginx\/sites-enabled\/\*;/\/home\/$MASTERUSER\/sites-enabled\/\*;/g" /etc/nginx/nginx.conf
 
     elif [ "$WEBSERVER" == "Lighttpd" ]; then
 
@@ -889,20 +950,22 @@ if [ "$INSTALL" == 'WR' -o "$INSTALL" == 'EW' ]; then
             mv /etc/apache2/sites-available/default-ssl /home/$MASTERUSER/sites-enabled/
         fi
 
-        mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.easy-install.backup
+        cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.easy-install.backup
 
         APACHE_VERSION=`apache2 -v | grep 'Server version'`
 
         if [[ $APACHE_VERSION =~ .*Apache/2.2.* ]]; then
-            sed "s/Include sites-enabled\//Include \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf.easy-install.backup | sed "s/Include \/etc\/apache2\/sites-enabled\//\/home\/$MASTERUSER\/sites-enabled\//g" > /etc/apache2/apache2.conf
+            sed -i "s/Include sites-enabled\//Include \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
+            sed -i "s/Include \/etc\/apache2\/sites-enabled\//\/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
         else
-            sed "s/IncludeOptional sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf.easy-install.backup | sed "s/IncludeOptional \/etc\/apache2\/sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" > /etc/apache2/apache2.conf
+            sed -i "s/IncludeOptional sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
+            sed -i "s/IncludeOptional \/etc\/apache2\/sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
         fi
     fi
 fi
 
 # No direct root access for masteruser. Only limited access through sudo
-if [ "$INSTALL" == 'GS' -o  "$INSTALL" == 'WR' ]; then
+if [ "$INSTALL" == "GS" -o  "$INSTALL" == "WR" ]; then
 
     cyanMessage " "
     greenMessage "Installing sudo"
@@ -919,19 +982,19 @@ if [ "$INSTALL" == 'GS' -o  "$INSTALL" == 'WR' ]; then
             echo "$MASTERUSER ALL = NOPASSWD: `which repquota`" >> /etc/sudoers
         fi
 
-        if [ "$INSTALL" == 'GS' ]; then
+        if [ "$INSTALL" == "GS" ]; then
             echo "$MASTERUSER ALL = (ALL, !root:easywi) NOPASSWD: /home/$MASTERUSER/temp/*.sh" >> /etc/sudoers
         fi
 
         if [ "$WEBSERVER" == "Nginx" ]; then
             HTTPDBIN=`which nginx`
-            HTTPDSCRIPT='/etc/init.d/nginx'
+            HTTPDSCRIPT="/etc/init.d/nginx"
         elif [ "$WEBSERVER" == "Lighttpd" ]; then
             HTTPDBIN=`which lighttpd`
-            HTTPDSCRIPT='/etc/init.d/lighttpd'
+            HTTPDSCRIPT="/etc/init.d/lighttpd"
         elif [ "$WEBSERVER" == "Apache" ]; then
             HTTPDBIN=`which apache2`
-            HTTPDSCRIPT='/etc/init.d/apache2'
+            HTTPDSCRIPT="/etc/init.d/apache2"
         fi
 
         if [ "$HTTPDBIN" != "" ]; then
@@ -941,7 +1004,7 @@ if [ "$INSTALL" == 'GS' -o  "$INSTALL" == 'WR' ]; then
     fi
 fi
 
-if [ "$INSTALL" == 'WR' ]; then
+if [ "$INSTALL" == "WR" ]; then
 
     chown -R $MASTERUSER:$WEBGROUPID /home/$MASTERUSER/
 
@@ -963,12 +1026,12 @@ if [ "$INSTALL" == 'WR' ]; then
     greenMessage "sudo $HTTPDSCRIPT reload"
 fi
 
-if ([ "$INSTALL" == 'GS' -o "$INSTALL" == 'WR' ] && [ "$QUOTAINSTALL" == "Yes" ]); then
+if ([ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ] && [ "$QUOTAINSTALL" == "Yes" ]); then
     greenMessage "The setquota command is:"
     greenMessage "sudo `which setquota` %cmd%"
 fi
 
-if [ "$INSTALL" == 'GS' ]; then
+if [ "$INSTALL" == "GS" ]; then
 
     cyanMessage " "
     cyanMessage "Java JRE will be required for running Minecraft and its mods. Shall it be installed?"
@@ -987,13 +1050,13 @@ if [ "$INSTALL" == 'GS' ]; then
     fi
 
     greenMessage "Creating folders and files"
-    CREATEDIRS=('conf' 'fdl_data/hl2' 'logs' 'masteraddons' 'mastermaps' 'masterserver' 'temp')
+    CREATEDIRS=("conf" "fdl_data/hl2" "logs" "masteraddons" "mastermaps" "masterserver" "temp")
     for CREATEDIR in ${CREATEDIRS[@]}; do
         greenMessage "Adding dir: /home/$MASTERUSER/$CREATEDIR"
         mkdir -p /home/$MASTERUSER/$CREATEDIR
     done
 
-    LOGFILES=('addons' 'hl2' 'server' 'fdl' 'update' 'fdl-hl2')
+    LOGFILES=("addons" "hl2" "server" "fdl" "update" "fdl-hl2")
     for LOGFILE in ${LOGFILES[@]}; do
         touch "/home/$MASTERUSER/logs/$LOGFILE.log"
     done
@@ -1043,7 +1106,7 @@ if [ "$INSTALL" == 'GS' ]; then
     if [ -f /etc/crontab -a "`grep 'Minecraft can easily produce 1GB' /etc/crontab`" == "" ]; then
 
         if ionice -c3 true 2>/dev/null; then
-            IONICE='ionice -n 7 '
+            IONICE="ionice -n 7 "
         fi
 
         echo "#Minecraft can easily produce 1GB+ logs within one hour" >> /etc/crontab
@@ -1057,27 +1120,22 @@ if [ "$INSTALL" == 'GS' ]; then
     fi
 fi
 
-if [ "$INSTALL" == 'EW' ]; then
+if [ "$INSTALL" == "EW" ]; then
 
     if [ -d /home/easywi_web ]; then
     
         cyanMessage " "
         cyanMessage "There is already an existing installation. Should it be removed?"
-        OPTIONS=("Yes" "No" "Quit")
+        OPTIONS=("Yes" "Quit")
         select OPTION in "${OPTIONS[@]}"; do
             case "$REPLY" in
                 1 ) break;;
-                2 ) break;;
-                3 ) errorAndQuit;;
+                2 ) errorAndQuit;;
                 *) errorAndContinue;;
             esac
         done
 
-        if [ "$REPLY" == "Yes" ]; then
-            rm -rf /home/easywi_web/*
-        else
-            errorAndExit "Will not override and need to exit now!"
-        fi
+        rm -rf /home/easywi_web/*
     fi
 
     if [ "`id easywi_web 2> /dev/null`" == "" ]; then
@@ -1093,7 +1151,7 @@ if [ "$INSTALL" == 'EW' ]; then
     fi
 
     cyanMessage "Installing required tool unzip"
-    apt-get install zip unzip -y
+    apt-get install unzip -y
 
     cd /home/easywi_web/
     wget https://easy-wi.com/uk/downloads/get/3/ -O web.zip
@@ -1110,29 +1168,30 @@ if [ "$INSTALL" == 'EW' ]; then
 
     chown -R easywi_web:www-data /home/easywi_web
 
-    # ask for domain
-    # ask how db/user should be named and the password
+    DB_PASSWORD=`< /dev/urandom tr -dc A-Za-z0-9 | head -c18`
+
+    cyanMessage "The MySQL Root password is required."
+    mysql -u root -p -Bse "CREATE DATABASE IF NOT EXISTS easy_wi; GRANT ALL ON easy_wi.* TO 'easy_wi'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;"
+
     # Depending on installation type itk or nginx create configs
-    # Add cronjobs
-
-#CREATE DATABASE easy_wi;
-#CREATE USER easy_wi;
-#GRANT ALL ON easy_wi.* TO 'easy_wi'@'localhost' IDENTIFIED BY '';
-#FLUSH PRIVILEGES;
-
-
-
    # nano /etc/php5/fpm/pool.d/www.conf # user = easywi_web
 
+   # Add cronjobs
 fi
 
-if [ "$INSTALL" == 'VS' ]; then
+if [ "$INSTALL" == "VS" ]; then
 
-    if [ ! -d /home/$MASTERUSER/teamspeak ]; then
-        mkdir -p /home/$MASTERUSER/teamspeak
-        chmod 750 /home/$MASTERUSER /home/$MASTERUSER/teamspeak
-        chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER
+    ps -u $MASTERUSER | grep ts3server | awk '{print $1}' | while read PID; do
+        kill $PID
+    done
+
+    if [ -d /home/$MASTERUSER/teamspeak ]; then
+        rm -rf /home/$MASTERUSER/teamspeak
     fi
+
+    mkdir -p /home/$MASTERUSER/teamspeak
+    chmod 750 /home/$MASTERUSER /home/$MASTERUSER/teamspeak
+    chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER
 
     if [ ! -d /home/$MASTERUSER/teamspeak ]; then
         errorAndExit "Can not create home and teamspeak dir for user $MASTERUSER! Exiting now!"
@@ -1150,7 +1209,20 @@ if [ "$INSTALL" == 'VS' ]; then
     greenMessage "Extracting TS3 server files."
     su -c "tar -xf teamspeak3-server.tar.gz --strip-components=1" $MASTERUSER
 
-    rm teamspeak3-server.tar.gz
+    rm -f teamspeak3-server.tar.gz
+
+    if [ ! -f query_ip_whitelist.txt ]; then
+        touch query_ip_whitelist.txt
+        chown $MASTERUSER.$MASTERUSER query_ip_whitelist.txt
+    fi
+
+    if [ "`grep '127.0.0.1' query_ip_whitelist.txt`" == "" ]; then
+        echo "127.0.0.1" >> query_ip_whitelist.txt
+    fi
+
+    if [ "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $LOCAL_IP`" != "" -a "`grep $LOCAL_IP query_ip_whitelist.txt`" == "" ]; then
+        echo $LOCAL_IP >> query_ip_whitelist.txt
+    fi
 
     cyanMessage " "
     cyanMessage "Please secify the IPv4 address of the Easy-WI web panel."
@@ -1160,15 +1232,29 @@ if [ "$INSTALL" == 'VS' ]; then
         echo $IP_ADDRESS >> query_ip_whitelist.txt
     fi
 
-    ps -u $MASTERUSER | grep ts3server | awk '{print $1}' | while read PID; do
-        kill $PID
-    done
-
-    greenMessage "Starting the server for the first time and shut down again."
     QUERY_PASSWORD=`< /dev/urandom tr -dc A-Za-z0-9 | head -c12`
-    su -c "(./ts3server_startscript.sh start createinifile=1 inifile=ts3server.ini serveradmin_password=$QUERY_PASSWORD & ) > /dev/null 2>&1" $MASTERUSER
 
-    greenMessage "Teamspeak 3 setup is done. TS3 Query password is $QUERY_PASSWORD."
+    greenMessage "Starting the TS3 server for the first time and shutting it down again as the password will be visible in the process tree."
+    su -c "(./ts3server_startscript.sh start createinifile=1 inifile=ts3server.ini serveradmin_password=$QUERY_PASSWORD & ) > /dev/null 2>&1" $MASTERUSER
+    runSpinner 2
+    su -c "./ts3server_startscript.sh stop" $MASTERUSER
+
+    greenMessage "Starting the TS3 server permanently."
+    su -c "./ts3server_startscript.sh start inifile=ts3server.ini" $MASTERUSER
+fi
+
+greenMessage "Removing not needed packages."
+apt-get autoremove
+
+if [ "$INSTALL" == "EW" ]; then
+    greenMessage "Easy-WI Webpanel setup is done regarding architecture. Please open http://$IP_DOMAIN/install/install.php and complete the installation dialog."
+    greenMessage "DB user and table name are \"easy_wi\". The password is \"$DB_PASSWORD\"."
+elif [ "$INSTALL" == "GS" ]; then
+    greenMessage "Gameserver Root setup is done. Please enter the above data at the webpanel at \"App/Game Master > Overview > Add\"."
+elif [ "$INSTALL" == "VS" ]; then
+    greenMessage "Teamspeak 3 setup is done. TS3 Query password is $QUERY_PASSWORD. Please enter the data at the webpanel at \"Voiceserver > Master > Add\"."
+elif [ "$INSTALL" == "WR" ]; then
+    greenMessage "Webspace Root setup is done. Please enter the above data at the webpanel at \"Webspace > Master > Add\"."
 fi
 
 exit 0
