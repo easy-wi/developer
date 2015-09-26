@@ -71,6 +71,12 @@ function runSpinner {
     done
 }
 
+function makeDir {
+    if [ "$1" != "" -a ! -d $1 ]; then
+        mkdir -p $1
+    fi
+}
+
 INSTALLER_VERSION="1.0"
 OS=""
 USERADD=`which useradd`
@@ -150,7 +156,7 @@ done
 
 if [ "$OPTION" == "Easy-WI Webpanel" ]; then
     INSTALL="EW"
-    errorAndExit "Not supported yet!"
+#    errorAndExit "Not supported yet!"
 elif [ "$OPTION" == "Gameserver Root" ]; then
     INSTALL="GS"
 elif [ "$OPTION" == "Voicemaster" ]; then
@@ -340,9 +346,9 @@ fi
 
 # only in case we want to manage webspace we need the additional skel dir
 if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
-    mkdir -p /home/$MASTERUSER/skel/logs
-    mkdir -p /home/$MASTERUSER/skel/htdocs
-    mkdir -p /home/$MASTERUSER/sites-enabled/
+    makeDir /home/$MASTERUSER/skel/logs
+    makeDir /home/$MASTERUSER/skel/htdocs
+    makeDir /home/$MASTERUSER/sites-enabled/
 fi
 
 if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
@@ -451,6 +457,8 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
         apt-get install mysql-server mysql-client mysql-common
 
+        cyanMessage " "
+        greenMessage "Securing MySQL by running \"mysql_secure\"."
         mysql_secure_installation
 
     elif [ "$SQL" == "MariaDB" ]; then
@@ -576,6 +584,9 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
                 lighttpd-enable-mod fastcgi-php
             fi
 
+            makeDir /home/$MASTERUSER/fpm-pool.d/
+            sed -i "s/include=\/etc\/php5\/fpm\/pool.d\/\*.conf/include=\/home\/$MASTERUSER\/fpm-pool.d\/\*.conf/g" /etc/php5/fpm/php-fpm.conf
+
         elif [ "$WEBSERVER" == "Apache" ]; then
             apt-get install apache2-mpm-itk libapache2-mod-php5 php5
             a2enmod php5
@@ -641,10 +652,8 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
 
             if [ "$OPTION" == "Yes" -a "`grep '<Directory \/home\/\*\/pserver\/\*>' /etc/proftpd/proftpd.conf`" == "" -a ! -f "/etc/proftpd/conf.d/easy-wi.conf" ]; then
 
-                if [ ! -d "/etc/proftpd/conf.d/" ]; then
-                    mkdir -p "/etc/proftpd/conf.d/"
-                    chmod 755 "/etc/proftpd/conf.d/"
-                fi
+                makeDir /etc/proftpd/conf.d/
+                chmod 755 /etc/proftpd/conf.d/
                 
                 echo "
 <Directory ~>
@@ -924,7 +933,7 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
     if [ "$WEBSERVER" == "Nginx" ]; then
 
         if [ -f /etc/nginx/sites-available/default ]; then
-            mv /etc/nginx/sites-available/default /home/$MASTERUSER/sites-enabled/
+            cp /etc/nginx/sites-available/default /home/$MASTERUSER/sites-enabled/
         fi
 
         cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.easy-install.backup
@@ -934,7 +943,7 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
     elif [ "$WEBSERVER" == "Lighttpd" ]; then
 
         if [ -f /etc/lighttpd/sites-available/default ]; then
-            mv /etc/lighttpd/sites-available/default /home/$MASTERUSER/sites-enabled/
+            cp /etc/lighttpd/sites-available/default /home/$MASTERUSER/sites-enabled/
         fi
 
         cp /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.easy-install.backup
@@ -943,11 +952,11 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
     elif [ "$WEBSERVER" == "Apache" ]; then
 
         if [ -f /etc/apache2/sites-available/default ]; then
-            mv /etc/apache2/sites-available/default /home/$MASTERUSER/sites-enabled/
+            cp /etc/apache2/sites-available/default /home/$MASTERUSER/sites-enabled/
         fi
 
         if [ -f /etc/apache2/sites-available/default-ssl ]; then
-            mv /etc/apache2/sites-available/default-ssl /home/$MASTERUSER/sites-enabled/
+            cp /etc/apache2/sites-available/default-ssl /home/$MASTERUSER/sites-enabled/
         fi
 
         cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.easy-install.backup
@@ -962,6 +971,8 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
             sed -i "s/IncludeOptional \/etc\/apache2\/sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
         fi
     fi
+
+    #TODO: Logrotate
 fi
 
 # No direct root access for masteruser. Only limited access through sudo
@@ -1053,7 +1064,7 @@ if [ "$INSTALL" == "GS" ]; then
     CREATEDIRS=("conf" "fdl_data/hl2" "logs" "masteraddons" "mastermaps" "masterserver" "temp")
     for CREATEDIR in ${CREATEDIRS[@]}; do
         greenMessage "Adding dir: /home/$MASTERUSER/$CREATEDIR"
-        mkdir -p /home/$MASTERUSER/$CREATEDIR
+        makeDir /home/$MASTERUSER/$CREATEDIR
     done
 
     LOGFILES=("addons" "hl2" "server" "fdl" "update" "fdl-hl2")
@@ -1090,7 +1101,7 @@ if [ "$INSTALL" == "GS" ]; then
     greenMessage "Downloading SteamCmd"
 
     cd /home/$MASTERUSER/masterserver
-    mkdir -p /home/$MASTERUSER/masterserver/steamCMD/
+    makeDir /home/$MASTERUSER/masterserver/steamCMD/
     cd /home/$MASTERUSER/masterserver/steamCMD/
     wget -q --timeout=30 http://media.steampowered.com/client/steamcmd_linux.tar.gz
 
@@ -1122,7 +1133,7 @@ fi
 
 if [ "$INSTALL" == "EW" ]; then
 
-    if [ -d /home/easywi_web ]; then
+    if [ -f /home/easywi_web/htdocs/serverallocation.php ]; then
     
         cyanMessage " "
         cyanMessage "There is already an existing installation. Should it be removed?"
@@ -1135,7 +1146,7 @@ if [ "$INSTALL" == "EW" ]; then
             esac
         done
 
-        rm -rf /home/easywi_web/*
+        rm -rf /home/easywi_web/htdocs/*
     fi
 
     if [ "`id easywi_web 2> /dev/null`" == "" ]; then
@@ -1153,7 +1164,11 @@ if [ "$INSTALL" == "EW" ]; then
     cyanMessage "Installing required tool unzip"
     apt-get install unzip -y
 
-    cd /home/easywi_web/
+    makeDir /home/easywi_web/htdocs/
+    makeDir /home/$MASTERUSER/fpm-pool.d/
+
+    cd /home/easywi_web/htdocs/
+
     wget https://easy-wi.com/uk/downloads/get/3/ -O web.zip
 
     if [ ! -f web.zip ]; then
@@ -1173,10 +1188,66 @@ if [ "$INSTALL" == "EW" ]; then
     cyanMessage "The MySQL Root password is required."
     mysql -u root -p -Bse "CREATE DATABASE IF NOT EXISTS easy_wi; GRANT ALL ON easy_wi.* TO 'easy_wi'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;"
 
-    # Depending on installation type itk or nginx create configs
-   # nano /etc/php5/fpm/pool.d/www.conf # user = easywi_web
+    if [ "$WEBSERVER" == "Nginx" ]; then
 
-   # Add cronjobs
+        FILE_NAME=${IP_DOMAIN//./_}
+
+        echo "[$FILE_NAME]
+user = easywi_web
+group = www-data
+listen = /var/run/php5-fpm-$FILE_NAME.sock
+listen.owner = easywi_web
+listen.group = www-data
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+pm.max_requests = 500
+chdir = /
+php_flag[display_errors] = off
+php_admin_value[error_log] = /home/easywi_web/log/fpm-php.log
+php_admin_flag[log_errors] = on
+php_admin_value[memory_limit] = 32M
+"> /home/$MASTERUSER/fpm-pool.d/$FILE_NAME.conf
+
+        echo 'server {
+    listen 80;
+    root /home/easywi_web/htdocs/;
+    index index.html index.htm index.php;
+    server_name "%IP_DOMAIN%";
+
+    location ^~ /(keys|stuff|template|languages|downloads|tmp)/ { deny all; }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:%SOCKET_NAME%;
+    }
+}' > /home/$MASTERUSER/sites-enabled/$FILE_NAME
+
+        sed -i "s/    server_name \"%IP_DOMAIN%\";/    server_name \"$IP_DOMAIN\";/g" /home/$MASTERUSER/sites-enabled/$FILE_NAME
+        sed -i "s/        fastcgi_pass unix:%SOCKET_NAME%;/        fastcgi_pass unix:\/var\/run\/php5-fpm-$FILE_NAME.sock;/g" /home/$MASTERUSER/sites-enabled/$FILE_NAME
+
+        chown -R $MASTERUSER:$WEBGROUPID /home/$MASTERUSER/
+
+        /etc/init.d/php5-fpm restart
+        /etc/init.d/nginx restart
+    fi
+
+    if [ "`grep reboot.php /etc/crontab`" == "" ]; then
+        echo '0 */1 * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1" easywi_web
+0 */1 * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1" easywi_web
+*/5 * * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 290 php ./statuscheck.php >/dev/null 2>&1" easywi_web
+*/1 * * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 290 php ./startupdates.php >/dev/null 2>&1" easywi_web
+*/5 * * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 290 php ./jobs.php >/dev/null 2>&1" easywi_web
+*/10 * * * * root su -s /bin/bash -c "cd /home/easywi_web/htdocs && timeout 290 php ./cloud.php >/dev/null 2>&1" easywi_web' >> /etc/crontab
+    fi
+
+    /etc/init.d/cron restart
 fi
 
 if [ "$INSTALL" == "VS" ]; then
@@ -1185,19 +1256,15 @@ if [ "$INSTALL" == "VS" ]; then
         kill $PID
     done
 
-    if [ -d /home/$MASTERUSER/teamspeak ]; then
-        rm -rf /home/$MASTERUSER/teamspeak
+    if [ -f /home/$MASTERUSER/ts3server_startscript.sh ]; then
+        rm -rf /home/$MASTERUSER/*
     fi
 
-    mkdir -p /home/$MASTERUSER/teamspeak
-    chmod 750 /home/$MASTERUSER /home/$MASTERUSER/teamspeak
+    makeDir /home/$MASTERUSER/
+    chmod 750 /home/$MASTERUSER/
     chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER
 
-    if [ ! -d /home/$MASTERUSER/teamspeak ]; then
-        errorAndExit "Can not create home and teamspeak dir for user $MASTERUSER! Exiting now!"
-    fi
-
-    cd /home/$MASTERUSER/teamspeak
+    cd /home/$MASTERUSER/
 
     greenMessage "Downloading TS3 server files."
     su -c "wget $DOWNLOAD_URL -O teamspeak3-server.tar.gz" $MASTERUSER
@@ -1235,8 +1302,8 @@ if [ "$INSTALL" == "VS" ]; then
     QUERY_PASSWORD=`< /dev/urandom tr -dc A-Za-z0-9 | head -c12`
 
     greenMessage "Starting the TS3 server for the first time and shutting it down again as the password will be visible in the process tree."
-    su -c "(./ts3server_startscript.sh start createinifile=1 inifile=ts3server.ini serveradmin_password=$QUERY_PASSWORD & ) > /dev/null 2>&1" $MASTERUSER
-    runSpinner 2
+    su -c "./ts3server_startscript.sh start serveradmin_password=$QUERY_PASSWORD createinifile=1 inifile=ts3server.ini" $MASTERUSER
+    runSpinner 10
     su -c "./ts3server_startscript.sh stop" $MASTERUSER
 
     greenMessage "Starting the TS3 server permanently."
