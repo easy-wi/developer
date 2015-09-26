@@ -558,7 +558,11 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     $installUrl = (string) $query->fetchColumn();
 
     if (strlen($installUrl) == 0) {
-        $installUrl = str_replace(array('&language=de', '&language=en', '&language=dk'), '', str_replace('install/install.php?step=7', '', $_SERVER['HTTP_REFERER']));
+        $installUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/';
+    }
+
+    if (strlen($_SERVER['SERVER_NAME']) == 0 and isset($_SERVER['HTTP_REFERER'])) {
+        $installUrl = str_replace(array('&language=de', '&language=en', '&language=dk'), '', str_replace('install/install.php?step=6', '', $_SERVER['HTTP_REFERER']));
     }
 
     while (substr($installUrl, -2) == '//') {
