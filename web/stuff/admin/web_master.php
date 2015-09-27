@@ -210,10 +210,15 @@ allow_url_include=Off
     ErrorLog "%vhostpath%/%user%/%logDir%/error_%domain%.log"
     CustomLog "%vhostpath%/%user%/%logDir%/access_%domain%.log" common
     <Directory %vhostpath%/%user%/%htdocs%/%path%>
-        Options -Indexes FollowSymLinks Includes
+        Options -Indexes +FollowSymLinks +Includes
         AllowOverride All
-        Order allow,deny
-        Allow from all
+        <IfVersion >= 2.4>
+            Require all granted
+        </IfVersion>
+        <IfVersion < 2.4>
+            Order allow,deny
+            Allow from all
+        </IfVersion>
     </Directory>
 </VirtualHost>';
 
@@ -238,10 +243,15 @@ allow_url_include=Off
        %phpConfiguration%
     </IfModule>
     <Directory %vhostpath%/%user%/%htdocs%/%path%>
-        Options -Indexes FollowSymLinks Includes
+        Options -Indexes +FollowSymLinks +Includes
         AllowOverride All
-        Order allow,deny
-        Allow from all
+        <IfVersion >= 2.4>
+            Require all granted
+        </IfVersion>
+        <IfVersion < 2.4>
+            Order allow,deny
+            Allow from all
+        </IfVersion>
     </Directory>
 </VirtualHost>';
         }

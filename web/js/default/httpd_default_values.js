@@ -112,10 +112,15 @@ function loadServerSettings (serverType, usageType) {
         }
 
         defaultVhostTemplate += '    <Directory %vhostpath%/%user%/%htdocs%/%path%>\r\n';
-        defaultVhostTemplate += '        Options -Indexes FollowSymLinks Includes\r\n';
+        defaultVhostTemplate += '        Options -Indexes +FollowSymLinks +Includes\r\n';
         defaultVhostTemplate += '        AllowOverride All\r\n';
-        defaultVhostTemplate += '        Order allow,deny\r\n';
-        defaultVhostTemplate += '        Allow from all\r\n';
+        defaultVhostTemplate += '        <IfVersion >= 2.4>\r\n';
+        defaultVhostTemplate += '            Require all granted\r\n';
+        defaultVhostTemplate += '        </IfVersion>\r\n';
+        defaultVhostTemplate += '        <IfVersion < 2.4>\r\n';
+        defaultVhostTemplate += '            Order allow,deny\r\n';
+        defaultVhostTemplate += '            Allow from all\r\n';
+        defaultVhostTemplate += '        </IfVersion>\r\n';
         defaultVhostTemplate += '    </Directory>\r\n';
         defaultVhostTemplate += '</VirtualHost>';
 
