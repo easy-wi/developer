@@ -71,9 +71,20 @@ function runSpinner {
     done
 }
 
+function okAndSleep {
+    greenMessage $1
+    sleep 1
+}
+
 function makeDir {
     if [ "$1" != "" -a ! -d $1 ]; then
         mkdir -p $1
+    fi
+}
+
+function backUpFile {
+    if [ ! -f "$1.easy-install.backup" ]; then
+        cp "$1" "$1.easy-install.backup"
     fi
 }
 
@@ -98,7 +109,7 @@ LATEST_VERSION=`wget -q --timeout=30 -O - http://l.easy-wi.com/installer_version
 if [ "$LATEST_VERSION" != "" -a "`echo $LATEST_VERSION'>'$INSTALLER_VERSION | bc -l`" == "1" ]; then
     errorAndExit "You are using the old version ${INSTALLER_VERSION}. Please upgrade to version ${LATEST_VERSION} and retry."
 else
-    greenMessage "You are using the up to date version ${INSTALLER_VERSION}."
+    okAndSleep "You are using the up to date version ${INSTALLER_VERSION}."
 fi
 
 # We need to be root to install and update
@@ -129,13 +140,13 @@ fi
 if [ "$OS" == "" ]; then
     errorAndExit "Error: Could not detect OS. Currently only Debian and Ubuntuu are supported. Aborting!"
 else
-    greenMessage "Detected OS $OS"
+    okAndSleep "Detected OS $OS"
 fi
 
 if [ "$OSBRANCH" == "" ]; then
     errorAndExit "Error: Could not detect branch of OS. Aborting"
 else
-    greenMessage "Detected branch $OSBRANCH"
+    okAndSleep "Detected branch $OSBRANCH"
 fi
 
 # Start with the install process by asking what to do
@@ -206,7 +217,7 @@ if [ "$INSTALL" == "VS" ]; then
         errorAndExit "$MACHINE is not supported!"
     fi
 
-    greenMessage "Searching latest build for hardware type $MACHINE with arch $ARCH."
+    okAndSleep "Searching latest build for hardware type $MACHINE with arch $ARCH."
 
     for VERSION in ` wget "http://dl.4players.de/ts/releases/?C=M;O=D" -q -O -| grep -i dir | egrep -o '<a href=\".*\/\">.*\/<\/a>' | egrep -o '[0-9\.?]+'| uniq | sort -r -g -t "." -k 1,1 -k 2,2 -k 3,3 -k 4,4`; do
 
@@ -220,17 +231,17 @@ if [ "$INSTALL" == "VS" ]; then
     done
 
     if [ "$STATUS" == "200" -a "$DOWNLOAD_URL" != "" ]; then
-        greenMessage "Detected latest server version as $VERSION with download URL $DOWNLOAD_URL"
+        okAndSleep "Detected latest server version as $VERSION with download URL $DOWNLOAD_URL"
     else
         errorAndExit "Could not detect latest server version"
     fi
 fi
 
 cyanMessage " "
-greenMessage "Updating the system packages to the latest version."
+okAndSleep "Updating the system packages to the latest version."
 
 if [ "$OS" == "debian" -o  "$OS" == "ubuntu" ]; then
-    apt-get update && apt-get upgrade && apt-get dist-upgrade
+    apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 fi
 
 # If we need to install and configure a webspace than we need to identify the groupID
@@ -294,10 +305,10 @@ if [ "`id $MASTERUSER 2> /dev/null`" == "" ]; then
     fi
 
 elif [ "$INSTALL" != "VS" ]; then
-    greenMessage "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
+    okAndSleep "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
     usermod -g $MASTERUSER $MASTERUSER
 else
-    greenMessage "User \"$MASTERUSER\" already exists."
+    okAndSleep "User \"$MASTERUSER\" already exists."
 fi
 
 cyanMessage " "
@@ -345,9 +356,11 @@ fi
 
 # only in case we want to manage webspace we need the additional skel dir
 if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
-    makeDir /home/$MASTERUSER/skel/logs
-    makeDir /home/$MASTERUSER/skel/htdocs
     makeDir /home/$MASTERUSER/sites-enabled/
+    makeDir /home/$MASTERUSER/skel/htdocs
+    makeDir /home/$MASTERUSER/skel/logs
+    makeDir /home/$MASTERUSER/skel/session
+    makeDir /home/$MASTERUSER/skel/tmp
 fi
 
 if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
@@ -369,7 +382,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
             if [ "$DOTDEB" == "Yes" ]; then
                     if [ "`grep 'packages.dotdeb.org' /etc/apt/sources.list`" == "" ]; then
-                            greenMessage "Adding entries to /etc/apt/sources.list"
+                            okAndSleep "Adding entries to /etc/apt/sources.list"
                             add-apt-repository "deb http://packages.dotdeb.org $OSBRANCH all"
                             add-apt-repository "deb-src http://packages.dotdeb.org $OSBRANCH all"
                             wget http://www.dotdeb.org/dotdeb.gpg
@@ -417,16 +430,16 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
     fi
 
     if [ "$WEBSERVER" == "Nginx" ]; then
-        apt-get install nginx-full
+        apt-get install nginx-full -y
     elif [ "$WEBSERVER" == "Lighttpd" ]; then
-        apt-get install lighttpd
+        apt-get install lighttpd -y
     elif [ "$WEBSERVER" == "Apache" ]; then
-        apt-get install apache2
+        apt-get install apache2 -y
     fi
 
     if [ "$INSTALL" == "EW" ]; then
 
-        greenMessage "Please note that Easy-Wi requires a MySQL or MariaDB installed and will install MySQL if no DB is installed"
+        okAndSleep "Please note that Easy-Wi requires a MySQL or MariaDB installed and will install MySQL if no DB is installed"
 
         if [ "`ps x | grep mysql | grep -v grep`" == "" ]; then
             SQL="MySQL"
@@ -454,10 +467,10 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
     if [ "$SQL" == "MySQL" ]; then
 
-        apt-get install mysql-server mysql-client mysql-common
+        apt-get install mysql-server mysql-client mysql-common -y
 
         cyanMessage " "
-        greenMessage "Securing MySQL by running \"mysql_secure\"."
+        okAndSleep "Securing MySQL by running \"mysql_secure\"."
         mysql_secure_installation
 
     elif [ "$SQL" == "MariaDB" ]; then
@@ -466,7 +479,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
         if ([ "`echo $OSVERSION'>='8.0 | bc -l`" == "0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
 
-            apt-get install python-software-properties
+            apt-get install python-software-properties -y
             apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db
 
             if [ "$SQL" == "MariaDB" -a "`apt-cache search mariadb-server-10.0`" == "" ]; then
@@ -492,9 +505,9 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         fi
 
         if ([ "`echo $OSVERSION'>='8.0 | bc -l`" == "0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
-            apt-get install mariadb-server mariadb-client mysql-common
+            apt-get install mariadb-server mariadb-client mysql-common -y
         else
-            apt-get install mariadb-server mariadb-client mariadb-common
+            apt-get install mariadb-server mariadb-client mariadb-common -y
         fi
 
         mysql_secure_installation
@@ -507,7 +520,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
     if [ "$INSTALL" == "EW" ]; then
 
-        greenMessage "Please note that Easy-Wi will install required PHP packages."
+        okAndSleep "Please note that Easy-Wi will install required PHP packages."
         PHPINSTALL="Yes"
 
     else
@@ -568,15 +581,15 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
             if [ "$DOTDEBPHPUPGRADE" == "Yes" ]; then
                 apt-get update
-                apt-get upgrade
+                apt-get upgrade -y && apt-get dist-upgrade -y
             fi
         fi
         
-        apt-get install php5-common php5-curl php5-gd php5-mcrypt php5-mysql php5-cli
+        apt-get install php5-common php5-curl php5-gd php5-mcrypt php5-mysql php5-cli -y
 
         if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
 
-            apt-get install php5-fpm
+            apt-get install php5-fpm -y
 
             if [ "$WEBSERVER" == "Lighttpd" ]; then
                 lighttpd-enable-mod fastcgi
@@ -587,7 +600,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
             sed -i "s/include=\/etc\/php5\/fpm\/pool.d\/\*.conf/include=\/home\/$MASTERUSER\/fpm-pool.d\/\*.conf/g" /etc/php5/fpm/php-fpm.conf
 
         elif [ "$WEBSERVER" == "Apache" ]; then
-            apt-get install apache2-mpm-itk libapache2-mod-php5 php5
+            apt-get install apache2-mpm-itk libapache2-mod-php5 php5 -y
             a2enmod php5
         fi
     fi
@@ -610,18 +623,18 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
 
     if [ "$OPTION" == "Yes" ]; then
 
-        apt-get install proftpd
+        apt-get install proftpd -y
 
         if [ -f /etc/proftpd/modules.conf ]; then
 
-            cp /etc/proftpd/modules.conf /etc/proftpd/modules.conf.easy-install.backup
+            backUpFile /etc/proftpd/modules.conf
 
             sed -i 's/.*LoadModule mod_tls_memcache.c.*/#LoadModule mod_tls_memcache.c/g' /etc/proftpd/modules.conf
         fi
 
         if [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" != "GS" ]; then
 
-            cp /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.easy-install.backup
+            backUpFile /etc/proftpd/proftpd.conf
 
             sed -i 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf
             sed -i 's/Umask.*/Umask 037 027/g' /etc/proftpd/proftpd.conf 
@@ -630,7 +643,7 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
 
         elif [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" == "GS" ]; then
 
-            cp /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.easy-install.backup
+            backUpFile /etc/proftpd/proftpd.conf
 
             sed -i 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf
             sed -i 's/Umask.*/Umask 077 077/g' /etc/proftpd/proftpd.conf
@@ -859,7 +872,7 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
     done
 
     if [ "$QUOTAINSTALL" == "Yes" ]; then
-        apt-get install quota
+        apt-get install quota -y
 
         cyanMessage " "
         cyanMessage " "
@@ -897,7 +910,7 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
         done
 
         if [ "$QUOTAFSTAB" == "Yes" ]; then
-            mv /etc/fstab /etc/fstab.backup
+            backUpFile /etc/fstab
             mv /root/tempfstab /etc/fstab
         fi
 
@@ -915,7 +928,7 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
                     rm -f $LINE/aquota.user
                 fi
 
-                greenMessage "Remounting $LINE"
+                okAndSleep "Remounting $LINE"
                 mount -o remount $LINE
 
                 quotacheck -vumc $LINE
@@ -935,7 +948,7 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
             cp /etc/nginx/sites-available/default /home/$MASTERUSER/sites-enabled/
         fi
 
-        cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.easy-install.backup
+        backUpFile /etc/nginx/nginx.conf
 
         sed -i "s/\/etc\/nginx\/sites-enabled\/\*;/\/home\/$MASTERUSER\/sites-enabled\/\*;/g" /etc/nginx/nginx.conf
 
@@ -945,7 +958,7 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
             cp /etc/lighttpd/sites-available/default /home/$MASTERUSER/sites-enabled/
         fi
 
-        cp /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.easy-install.backup
+        backUpFile /etc/lighttpd/lighttpd.conf
         echo "include_shell \"find /home/$MASTERUSER/sites-enabled/ -maxdepth 1 -type f -exec cat {} \;\"" >> /etc/lighttpd/lighttpd.conf
 
     elif [ "$WEBSERVER" == "Apache" ]; then
@@ -958,7 +971,20 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
             cp /etc/apache2/sites-available/default-ssl /home/$MASTERUSER/sites-enabled/
         fi
 
-        cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.easy-install.backup
+        if [ -f /etc/apache2/sites-available/000-default.conf ]; then
+            cp /etc/apache2/sites-available/000-default.conf /home/$MASTERUSER/sites-enabled/
+        fi
+
+        if [ -f /etc/apache2/sites-available/default-ssl.conf ]; then
+            cp /etc/apache2/sites-available/default-ssl.conf /home/$MASTERUSER/sites-enabled/
+        fi
+
+        backUpFile /etc/apache2/apache2.conf
+
+        if [ "`grep 'ServerName localhost' /etc/apache2/apache2.conf`" == "" ]; then
+            echo '# Added to prevent error message Could not reliably determine the servers fully qualified domain name' >> /etc/apache2/apache2.conf
+            echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+        fi
 
         APACHE_VERSION=`apache2 -v | grep 'Server version'`
 
@@ -978,8 +1004,8 @@ fi
 if [ "$INSTALL" == "GS" -o  "$INSTALL" == "WR" ]; then
 
     cyanMessage " "
-    greenMessage "Installing sudo"
-    apt-get install sudo
+    okAndSleep "Installing sudo"
+    apt-get install sudo -y
 
     if [ -f /etc/sudoers -a "`grep $MASTERUSER /etc/sudoers`" == "" ]; then
 
@@ -1056,10 +1082,10 @@ if [ "$INSTALL" == "GS" ]; then
     done
 
     if [ "$OPTION" == "Yes" ]; then
-        apt-get install default-jre
+        apt-get install default-jre -y
     fi
 
-    greenMessage "Creating folders and files"
+    okAndSleep "Creating folders and files"
     CREATEDIRS=("conf" "fdl_data/hl2" "logs" "masteraddons" "mastermaps" "masterserver" "temp")
     for CREATEDIR in ${CREATEDIRS[@]}; do
         greenMessage "Adding dir: /home/$MASTERUSER/$CREATEDIR"
@@ -1084,20 +1110,20 @@ if [ "$INSTALL" == "GS" ]; then
 
         apt-get update
 
-        apt-get install wget wput screen bzip2 sudo rsync zip unzip
+        apt-get install wget wput screen bzip2 sudo rsync zip unzip -y
 
         if [ "`uname -m`" == "x86_64" ]; then
             if [ "$OS" == "debian" -a "`echo $OSVERSION'>='8.0 | bc -l`" == "1" ]; then
-                apt-get install zlib1g lib32z1 lib32gcc1 libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386
+                apt-get install zlib1g lib32z1 lib32gcc1 libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386 -y
             else
-                apt-get install ia32-libs lib32readline5 lib32ncursesw5 lib32stdc++6
+                apt-get install ia32-libs lib32readline5 lib32ncursesw5 lib32stdc++6 -y
             fi
         else
-            apt-get install libreadline5 libncursesw5
+            apt-get install libreadline5 libncursesw5 -y
         fi
     fi
 
-    greenMessage "Downloading SteamCmd"
+    okAndSleep "Downloading SteamCmd"
 
     cd /home/$MASTERUSER/masterserver
     makeDir /home/$MASTERUSER/masterserver/steamCMD/
@@ -1149,7 +1175,7 @@ if [ "$INSTALL" == "EW" ]; then
     fi
 
     if [ "`id easywi_web 2> /dev/null`" == "" ]; then
-        $USERADD -md /home/easywi_web -g www-data -s /bin/false -k /home/easywi/skel/ easywi_web
+        $USERADD -md /home/easywi_web -g www-data -s /bin/bash -k /home/$MASTERUSER/skel/ easywi_web
     fi
 
     if [ "`id easywi_web 2> /dev/null`" == "" ]; then
@@ -1187,63 +1213,181 @@ if [ "$INSTALL" == "EW" ]; then
     cyanMessage "The MySQL Root password is required."
     mysql -u root -p -Bse "CREATE DATABASE IF NOT EXISTS easy_wi; GRANT ALL ON easy_wi.* TO 'easy_wi'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;"
 
+    cyanMessage " "
+    cyanMessage "Secure Vhost with SSL? (recommended!)"
+    OPTIONS=("Yes" "No" "Quit")
+    select SSL in "${OPTIONS[@]}"; do
+        case "$REPLY" in
+            1 ) break;;
+            2 ) break;;
+            3 ) errorAndQuit;;
+            *) errorAndContinue;;
+        esac
+    done
+
+    FILE_NAME=${IP_DOMAIN//./_}
+
+    if [ "$SSL" == "Yes" ]; then
+
+        okAndSleep "Installing openssl!"
+        apt-get install openssl -y
+
+        if [ "$WEBSERVER" == "Nginx" ]; then
+            SSL_DIR=/etc/nginx/ssl
+        elif [ "$WEBSERVER" == "Apache" ]; then
+            SSL_DIR=/etc/apache2/ssl
+        fi
+
+        makeDir $SSL_DIR
+
+        openssl genrsa -des3 -out $SSL_DIR/$FILE_NAME.key 2048
+
+        cyanMessage " "
+        cyanMessage "Please enter your domain \"$IP_DOMAIN\" at \"Common Name (e.g. server FQDN or YOUR name)\""
+        openssl req -new -key $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.csr
+
+        cp $SSL_DIR/$FILE_NAME.key $SSL_DIR/$FILE_NAME.key.org
+
+        openssl rsa -in $SSL_DIR/$FILE_NAME.key.org -out $SSL_DIR/$FILE_NAME.key
+        openssl x509 -req -days 365 -in $SSL_DIR/$FILE_NAME.csr -signkey $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.crt
+    fi
+
+    if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
+
+        FILE_NAME_POOL=/home/$MASTERUSER/fpm-pool.d/$FILE_NAME.conf
+
+        echo "[$IP_DOMAIN]" > $FILE_NAME_POOL
+        echo "user = easywi_web" >> $FILE_NAME_POOL
+        echo "group = www-data" >> $FILE_NAME_POOL
+        echo "listen = /var/run/php5-fpm-$FILE_NAME.sock" >> $FILE_NAME_POOL
+        echo "listen.owner = easywi_web" >> $FILE_NAME_POOL
+        echo "listen.group = www-data" >> $FILE_NAME_POOL
+        echo "pm = dynamic" >> $FILE_NAME_POOL
+        echo "pm.max_children = 1" >> $FILE_NAME_POOL
+        echo "pm.start_servers = 1" >> $FILE_NAME_POOL
+        echo "pm.min_spare_servers = 1" >> $FILE_NAME_POOL
+        echo "pm.max_spare_servers = 1" >> $FILE_NAME_POOL
+        echo "pm.max_requests = 500" >> $FILE_NAME_POOL
+        echo "chdir = /" >> $FILE_NAME_POOL
+        echo "access.log = /home/easywi_web/logs/fpm-access.log" >> $FILE_NAME_POOL
+        echo "php_flag[display_errors] = off" >> $FILE_NAME_POOL
+        echo "php_admin_flag[log_errors] = on" >> $FILE_NAME_POOL
+        echo "php_admin_value[error_log] = /home/easywi_web/logs/fpm-error.log" >> $FILE_NAME_POOL
+        echo "php_admin_value[memory_limit] = 32M" >> $FILE_NAME_POOL
+        echo "php_admin_value[open_basedir] = /home/easywi_web/htdocs/:/home/easywi_web/tmp/" >> $FILE_NAME_POOL
+        echo "php_admin_value[upload_tmp_dir] = /home/easywi_web/tmp" >> $FILE_NAME_POOL
+        echo "php_admin_value[session.save_path] = /home/easywi_web/session" >> $FILE_NAME_POOL
+
+        chown $MASTERUSER:www-data $FILE_NAME_POOL
+    fi
+
+    FILE_NAME_VHOST=/home/$MASTERUSER/sites-enabled/$FILE_NAME
+
     if [ "$WEBSERVER" == "Nginx" ]; then
+        echo 'server {' > $FILE_NAME_VHOST
+        echo '  listen 80;' >> $FILE_NAME_VHOST
 
-        FILE_NAME=${IP_DOMAIN//./_}
+        if [ "$SSL" == "Yes" ]; then
 
-        echo "[$FILE_NAME]
-user = easywi_web
-group = www-data
-listen = /var/run/php5-fpm-$FILE_NAME.sock
-listen.owner = easywi_web
-listen.group = www-data
-pm = dynamic
-pm.max_children = 5
-pm.start_servers = 2
-pm.min_spare_servers = 1
-pm.max_spare_servers = 3
-pm.max_requests = 500
-chdir = /
-php_flag[display_errors] = off
-php_admin_value[error_log] = /home/easywi_web/log/fpm-php.log
-php_admin_flag[log_errors] = on
-php_admin_value[memory_limit] = 32M
-"> /home/$MASTERUSER/fpm-pool.d/$FILE_NAME.conf
+            echo "    server_name \"$IP_DOMAIN\";" >> $FILE_NAME_VHOST
+            echo "    return 301 https://$IP_DOMAIN"'$request_uri;' >> $FILE_NAME_VHOST
+            echo '}' >> $FILE_NAME_VHOST
 
-        echo 'server {
-    listen 80;
-    root /home/easywi_web/htdocs/;
-    index index.html index.htm index.php;
-    server_name "%IP_DOMAIN%";
+            backUpFile /etc/nginx/nginx.conf
 
-    location ^~ /(keys|stuff|template|languages|downloads|tmp)/ { deny all; }
+            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_session_cache shared:SSL:10m;' /etc/nginx/nginx.conf
+            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_session_timeout 10m;' /etc/nginx/nginx.conf
+            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";' /etc/nginx/nginx.conf
 
-    location / {
-        try_files $uri $uri/ =404;
-    }
+            echo 'server {' >> $FILE_NAME_VHOST
+            echo '    listen 443 ssl default_server;' >> $FILE_NAME_VHOST
+            echo "    ssl_certificate /etc/nginx/ssl/$FILE_NAME.crt;" >> $FILE_NAME_VHOST
+            echo "    ssl_certificate_key /etc/nginx/ssl/$FILE_NAME.key;" >> $FILE_NAME_VHOST
+        fi
 
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:%SOCKET_NAME%;
-    }
-}' > /home/$MASTERUSER/sites-enabled/$FILE_NAME
-
-        sed -i "s/    server_name \"%IP_DOMAIN%\";/    server_name \"$IP_DOMAIN\";/g" /home/$MASTERUSER/sites-enabled/$FILE_NAME
-        sed -i "s/        fastcgi_pass unix:%SOCKET_NAME%;/        fastcgi_pass unix:\/var\/run\/php5-fpm-$FILE_NAME.sock;/g" /home/$MASTERUSER/sites-enabled/$FILE_NAME
+        echo '    root /home/easywi_web/htdocs/;' >> $FILE_NAME_VHOST
+        echo '    index index.html index.htm index.php;' >> $FILE_NAME_VHOST
+        echo "    server_name \"$IP_DOMAIN\";" >> $FILE_NAME_VHOST
+        echo '    location ~ /(keys|stuff|template|languages|downloads|tmp) { deny all; }' >> $FILE_NAME_VHOST
+        echo '    location / {' >> $FILE_NAME_VHOST
+        echo '        try_files $uri $uri/ =404;' >> $FILE_NAME_VHOST
+        echo '    }' >> $FILE_NAME_VHOST
+        echo '    location ~ \.php$ {' >> $FILE_NAME_VHOST
+        echo '        fastcgi_split_path_info ^(.+\.php)(/.+)$;' >> $FILE_NAME_VHOST
+        echo '        try_files $fastcgi_script_name =404;' >> $FILE_NAME_VHOST
+        echo '        set $path_info $fastcgi_path_info;' >> $FILE_NAME_VHOST
+        echo '        fastcgi_param PATH_INFO $path_info;' >> $FILE_NAME_VHOST
+        echo '        fastcgi_index index.php;' >> $FILE_NAME_VHOST
+        echo '        include fastcgi.conf;' >> $FILE_NAME_VHOST
+        echo "        fastcgi_pass unix:/var/run/php5-fpm-$FILE_NAME.sock;" >> $FILE_NAME_VHOST
+        echo '    }' >> $FILE_NAME_VHOST
+        echo '}' >> $FILE_NAME_VHOST
 
         chown -R $MASTERUSER:$WEBGROUPID /home/$MASTERUSER/
 
         /etc/init.d/php5-fpm restart
         /etc/init.d/nginx restart
+
+    elif [ "$WEBSERVER" == "Apache" ]; then
+
+        FILE_NAME_VHOST="$FILE_NAME_VHOST.conf"
+
+        echo '<VirtualHost *:80>' > $FILE_NAME_VHOST
+        echo "    ServerAdmin info@$IP_DOMAIN" >> $FILE_NAME_VHOST
+        echo '    DocumentRoot "/home/easywi_web/htdocs/"' >> $FILE_NAME_VHOST
+        echo "    ServerName $IP_DOMAIN" >> $FILE_NAME_VHOST
+        echo '    ErrorLog "/home/easywi_web/logs/error.log"' >> $FILE_NAME_VHOST
+        echo '    CustomLog "/home/easywi_web/logs/access.log" common' >> $FILE_NAME_VHOST
+        echo '    DirectoryIndex index.php index.html' >> $FILE_NAME_VHOST
+        echo '    <IfModule mpm_itk_module>' >> $FILE_NAME_VHOST
+        echo '       AssignUserId easywi_web www-data' >> $FILE_NAME_VHOST
+        echo '       MaxClientsVHost 50' >> $FILE_NAME_VHOST
+        echo '       NiceValue 10' >> $FILE_NAME_VHOST
+        echo '       php_admin_flag allow_url_fopen off' >> $FILE_NAME_VHOST
+        echo '       php_admin_flag allow_url_include off' >> $FILE_NAME_VHOST
+        echo '       php_admin_flag display_errors off' >> $FILE_NAME_VHOST
+        echo '       php_admin_flag log_errors on' >> $FILE_NAME_VHOST
+        echo '       php_admin_flag mod_rewrite on' >> $FILE_NAME_VHOST
+        echo '       php_admin_value open_basedir "/home/easywi_web/htdocs/"' >> $FILE_NAME_VHOST
+        echo '       php_admin_value session.save_path "/home/easywi_web/session"' >> $FILE_NAME_VHOST
+        echo '       php_admin_value upload_tmp_dir "/home/easywi_web/tmp"' >> $FILE_NAME_VHOST
+        echo '       php_admin_value upload_max_size 32M' >> $FILE_NAME_VHOST
+        echo '       php_admin_value memory_limit 32M' >> $FILE_NAME_VHOST
+        echo '    </IfModule>' >> $FILE_NAME_VHOST
+        echo '    <Directory /home/easywi_web/htdocs/>' >> $FILE_NAME_VHOST
+        echo '        Options -Indexes +FollowSymLinks +Includes' >> $FILE_NAME_VHOST
+        echo '        AllowOverride None' >> $FILE_NAME_VHOST
+        echo '        <IfVersion >= 2.4>' >> $FILE_NAME_VHOST
+        echo '            Require all granted' >> $FILE_NAME_VHOST
+        echo '        </IfVersion>' >> $FILE_NAME_VHOST
+        echo '        <IfVersion < 2.4>' >> $FILE_NAME_VHOST
+        echo '            Order allow,deny' >> $FILE_NAME_VHOST
+        echo '            Allow from all' >> $FILE_NAME_VHOST
+        echo '        </IfVersion>' >> $FILE_NAME_VHOST
+        echo '    </Directory>' >> $FILE_NAME_VHOST
+        echo '    <LocationMatch "/(keys|stuff|template|languages|downloads|tmp)">' >> $FILE_NAME_VHOST
+        echo '        <IfVersion >= 2.4>' >> $FILE_NAME_VHOST
+        echo '            Require all denied' >> $FILE_NAME_VHOST
+        echo '        </IfVersion>' >> $FILE_NAME_VHOST
+        echo '        <IfVersion < 2.4>' >> $FILE_NAME_VHOST
+        echo '            Order deny,allow' >> $FILE_NAME_VHOST
+        echo '            Deny  from all' >> $FILE_NAME_VHOST
+        echo '        </IfVersion>' >> $FILE_NAME_VHOST
+        echo '    </LocationMatch>' >> $FILE_NAME_VHOST
+        echo '</VirtualHost>' >> $FILE_NAME_VHOST
+
+        /etc/init.d/apache2 restart
     fi
+    
+    chown $MASTERUSER:www-data $FILE_NAME_VHOST
 
     if [ "`grep reboot.php /etc/crontab`" == "" ]; then
-        echo '0 */1 * * * root cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1
-0 */1 * * * root cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1
-*/5 * * * * root cd /home/easywi_web/htdocs && timeout 290 php ./statuscheck.php >/dev/null 2>&1
-*/1 * * * * root cd /home/easywi_web/htdocs && timeout 290 php ./startupdates.php >/dev/null 2>&1
-*/5 * * * * root cd /home/easywi_web/htdocs && timeout 290 php ./jobs.php >/dev/null 2>&1
-*/10 * * * * root cd /home/easywi_web/htdocs && timeout 290 php ./cloud.php >/dev/null 2>&1' >> /etc/crontab
+        echo '0 */1 * * * easywi_web cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1
+0 */1 * * * easywi_web cd /home/easywi_web/htdocs && timeout 300 php ./reboot.php >/dev/null 2>&1
+*/5 * * * * easywi_web cd /home/easywi_web/htdocs && timeout 290 php ./statuscheck.php >/dev/null 2>&1
+*/1 * * * * easywi_web cd /home/easywi_web/htdocs && timeout 290 php ./startupdates.php >/dev/null 2>&1
+*/5 * * * * easywi_web cd /home/easywi_web/htdocs && timeout 290 php ./jobs.php >/dev/null 2>&1
+*/10 * * * * easywi_web cd /home/easywi_web/htdocs && timeout 290 php ./cloud.php >/dev/null 2>&1' >> /etc/crontab
     fi
 
     /etc/init.d/cron restart
@@ -1265,14 +1409,14 @@ if [ "$INSTALL" == "VS" ]; then
 
     cd /home/$MASTERUSER/
 
-    greenMessage "Downloading TS3 server files."
+    okAndSleep "Downloading TS3 server files."
     su -c "wget $DOWNLOAD_URL -O teamspeak3-server.tar.gz" $MASTERUSER
 
     if [ ! -f teamspeak3-server.tar.gz ]; then
         errorAndExit "Download failed! Exiting now!"
     fi
 
-    greenMessage "Extracting TS3 server files."
+    okAndSleep "Extracting TS3 server files."
     su -c "tar -xf teamspeak3-server.tar.gz --strip-components=1" $MASTERUSER
 
     rm -f teamspeak3-server.tar.gz
@@ -1294,8 +1438,10 @@ if [ "$INSTALL" == "VS" ]; then
     cyanMessage "Please secify the IPv4 address of the Easy-WI web panel."
     read IP_ADDRESS
 
-    if [ "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $IP_ADDRESS`" != "" -a "`grep $IP_ADDRESS query_ip_whitelist.txt`" == "" ]; then
-        echo $IP_ADDRESS >> query_ip_whitelist.txt
+    if [ "$IP_ADDRESS" != "" ]; then
+        if [ "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $IP_ADDRESS`" != "" -a "`grep $IP_ADDRESS query_ip_whitelist.txt`" == "" ]; then
+            echo $IP_ADDRESS >> query_ip_whitelist.txt
+        fi
     fi
 
     QUERY_PASSWORD=`< /dev/urandom tr -dc A-Za-z0-9 | head -c12`
@@ -1309,13 +1455,21 @@ if [ "$INSTALL" == "VS" ]; then
     su -c "./ts3server_startscript.sh start inifile=ts3server.ini" $MASTERUSER
 fi
 
-greenMessage "Removing not needed packages."
+okAndSleep "Removing not needed packages."
 apt-get autoremove
 
 if [ "$INSTALL" == "EW" ]; then
-    greenMessage "Easy-WI Webpanel setup is done regarding architecture. Please open http://$IP_DOMAIN/install/install.php and complete the installation dialog."
+
+    if [ "$SSL" == "Yes" ]; then
+        PROTOCOL="https"
+    else
+        PROTOCOL="http"
+    fi
+
+    greenMessage "Easy-WI Webpanel setup is done regarding architecture. Please open $PROTOCOL://$IP_DOMAIN/install/install.php and complete the installation dialog."
     greenMessage "DB user and table name are \"easy_wi\". The password is \"$DB_PASSWORD\"."
-elif [ "$INSTALL" == "GS" ]; then
+
+    elif [ "$INSTALL" == "GS" ]; then
     greenMessage "Gameserver Root setup is done. Please enter the above data at the webpanel at \"App/Game Master > Overview > Add\"."
 elif [ "$INSTALL" == "VS" ]; then
     greenMessage "Teamspeak 3 setup is done. TS3 Query password is $QUERY_PASSWORD. Please enter the data at the webpanel at \"Voiceserver > Master > Add\"."
