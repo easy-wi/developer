@@ -45,6 +45,7 @@ $sprache = getlanguagefile('web', $user_language, $resellerLockupID);
 
 $maxVhost = 0;
 $maxHDD = 0;
+$hdd = 1000;
 $webVhosts = 0;
 $leftHDD = 0;
 $totalHDD = 0;
@@ -76,7 +77,7 @@ if ($ui->id('serverID', 10, 'get')) {
     $query = $sql->prepare("SELECT `hdd`,`phpConfiguration` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($ui->id('serverID', 10, 'get'), $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        $maxHDD = $row['hdd'];
+        $hdd = $row['hdd'];
         $phpConfigurationVhost = @json_decode($row['phpConfiguration']);
     }
 

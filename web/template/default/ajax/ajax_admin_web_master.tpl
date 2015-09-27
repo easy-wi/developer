@@ -17,7 +17,7 @@
     <label for="inputHDD"><?php echo $sprache->hdd;?></label>
     <div class="controls">
         <div class="input-group">
-            <input class="form-control" id="inputHDD" type="number" name="hdd" value="<?php echo $maxHDD;?>">
+            <input class="form-control" id="inputHDD" type="number" name="hdd" value="<?php echo $hdd;?>">
             <span class="input-group-addon">MB</span>
         </div>
     </div>
