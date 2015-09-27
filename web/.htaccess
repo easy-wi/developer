@@ -1,27 +1,53 @@
 <IfModule mod_rewrite.c>
-        RewriteBase /
-        RewriteRule ^index\.php$ - [L]
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteRule . /index.php [L]
+    RewriteEngine on
+    RewriteRule ^(downloads|keys|languages|stuff|template|third_party|tmp) - [F]
 </IfModule>
-<Files .htaccess>
-    Order deny,allow
-    deny from all
-</Files>
-<Files id_rsa>
-    Order deny,allow
-    deny from all
-</Files>
-<FilesMatch "\.pub$">
-    Order deny,allow
-    deny from all
-</FilesMatch>
-<FilesMatch "\.php$">
-    Order deny,allow
-    deny from all
-</FilesMatch>
-<FilesMatch "^(admin|ajax|api|cloud|get_password|images|index|install|jobs|login|protectioncheck|reboot|serverallocation|serverlog|statuscheck|switch|update|userpanel|lend|vorlage)\.php$">
-    Order allow,deny
-    allow from all
-</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteBase /
+    RewriteRule ^index\.php$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.php [L]
+</IfModule>
+
+<IfVersion >= 2.4>
+    <Files .htaccess>
+        Require all denied
+    </Files>
+    <Files id_rsa>
+       Require all denied
+    </Files>
+    <FilesMatch "\.pub$">
+        Require all denied
+    </FilesMatch>
+    <FilesMatch "\.php$">
+        Require all denied
+    </FilesMatch>
+    <FilesMatch "^(admin|ajax|api|cloud|get_password|images|index|install|jobs|login|protectioncheck|reboot|serverallocation|serverlog|statuscheck|switch|update|userpanel|lend)\.php$">
+        Require all granted
+    </FilesMatch>
+</IfVersion>
+
+<IfVersion < 2.4>
+    <Files .htaccess>
+        Order deny,allow
+        deny from all
+    </Files>
+    <Files id_rsa>
+        Order deny,allow
+        deny from all
+    </Files>
+    <FilesMatch "\.pub$">
+        Order deny,allow
+        deny from all
+    </FilesMatch>
+    <FilesMatch "\.php$">
+        Order deny,allow
+        deny from all
+    </FilesMatch>
+    <FilesMatch "^(admin|ajax|api|cloud|get_password|images|index|install|jobs|login|protectioncheck|reboot|serverallocation|serverlog|statuscheck|switch|update|userpanel|lend)\.php$">
+        Order allow,deny
+        allow from all
+    </FilesMatch>
+</IfVersion>
