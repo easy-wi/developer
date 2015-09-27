@@ -441,7 +441,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
         okAndSleep "Please note that Easy-Wi requires a MySQL or MariaDB installed and will install MySQL if no DB is installed"
 
-        if [ "`ps x | grep mysql | grep -v grep`" == "" ]; then
+        if [ "`ps ax | grep mysql | grep -v grep`" == "" ]; then
             SQL="MySQL"
         else
             SQL=""
@@ -513,7 +513,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         mysql_secure_installation
     fi
 
-    if [ "$INSTALL" == "EW" -a "`ps x | grep mysql | grep -v grep`" == "" ]; then
+    if [ "$INSTALL" == "EW" -a "`ps ax | grep mysql | grep -v grep`" == "" ]; then
         cyanMessage " "
         errorAndExit "Error: No SQL server running but required for Webpanel installation."
     fi
@@ -851,7 +851,7 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
         fi
 
         if [ -f /etc/init.d/proftpd ]; then
-            /etc/init.d/proftpd restart
+            service proftpd restart
         fi
     fi
 fi
@@ -1068,6 +1068,8 @@ fi
 if ([ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ] && [ "$QUOTAINSTALL" == "Yes" ]); then
     greenMessage "The setquota command is:"
     greenMessage "sudo `which setquota` %cmd%"
+    greenMessage "The repquota command is:"
+    greenMessage "sudo `which repquota` %cmd%"
 fi
 
 if [ "$INSTALL" == "GS" ]; then
@@ -1116,7 +1118,7 @@ if [ "$INSTALL" == "GS" ]; then
         apt-get install wget wput screen bzip2 sudo rsync zip unzip -y
 
         if [ "`uname -m`" == "x86_64" ]; then
-            if [ "$OS" == "debian" -a "`echo $OSVERSION'>='8.0 | bc -l`" == "1" ]; then
+            if ([ "$OS" == "ubuntu" ] || [ "$OS" == "debian" -a "`echo $OSVERSION'>='8.0 | bc -l`" == "1" ]); then
                 apt-get install zlib1g lib32z1 lib32gcc1 libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386 -y
             else
                 apt-get install ia32-libs lib32readline5 lib32ncursesw5 lib32stdc++6 -y
@@ -1155,7 +1157,7 @@ if [ "$INSTALL" == "GS" ]; then
         echo "*/5 * * * * root nice -n +19 $IONICE find /home/*/fdl_data/ /home/*/temp/ /tmp/ /var/run/screen/ -nouser -print0 | xargs -0 rm -rf" >> /etc/crontab
         echo "*/5 * * * * root nice -n +19 $IONICE find /var/run/screen/ -maxdepth 1 -type d -nouser -print0 | xargs -0 rm -rf" >> /etc/crontab
 
-        /etc/init.d/cron restart
+        service cron restart
     fi
 fi
 
@@ -1205,7 +1207,7 @@ if [ "$INSTALL" == "EW" ]; then
     fi
 
     okAndSleep "Unpack zipped Easy-WI archive."
-    unzip web.zip >/dev/null 2>&1
+    unzip -u web.zip >/dev/null 2>&1
     rm -f web.zip
 
     find /home/easywi_web/ -type f -print0 | xargs -0 chmod 640
@@ -1246,7 +1248,7 @@ if [ "$INSTALL" == "EW" ]; then
         makeDir $SSL_DIR
 
         cyanMessage " "
-        okAndSleep "Create a Self-Signed SSL Certificate."
+        okAndSleep "Creating a self-signed SSL certificate."
         cyanMessage "Please enter your domain \"$IP_DOMAIN\" at \"Common Name (e.g. server FQDN or YOUR name)\""
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.crt
 
@@ -1285,11 +1287,11 @@ if [ "$INSTALL" == "EW" ]; then
 
     if [ "$WEBSERVER" == "Nginx" ]; then
         echo 'server {' > $FILE_NAME_VHOST
-        echo '  listen 80;' >> $FILE_NAME_VHOST
+        echo '    listen 80;' >> $FILE_NAME_VHOST
 
         if [ "$SSL" == "Yes" ]; then
 
-            echo "    server_name \"$IP_DOMAIN\";" >> $FILE_NAME_VHOST
+            echo "    server_name $IP_DOMAIN;" >> $FILE_NAME_VHOST
             echo "    return 301 https://$IP_DOMAIN"'$request_uri;' >> $FILE_NAME_VHOST
             echo '}' >> $FILE_NAME_VHOST
 
@@ -1308,7 +1310,7 @@ if [ "$INSTALL" == "EW" ]; then
 
         echo '    root /home/easywi_web/htdocs/;' >> $FILE_NAME_VHOST
         echo '    index index.html index.htm index.php;' >> $FILE_NAME_VHOST
-        echo "    server_name \"$IP_DOMAIN\";" >> $FILE_NAME_VHOST
+        echo "    server_name $IP_DOMAIN;" >> $FILE_NAME_VHOST
         echo '    location ~ /(keys|stuff|template|languages|downloads|tmp) { deny all; }' >> $FILE_NAME_VHOST
         echo '    location / {' >> $FILE_NAME_VHOST
         echo '        try_files $uri $uri/ =404;' >> $FILE_NAME_VHOST
@@ -1319,7 +1321,13 @@ if [ "$INSTALL" == "EW" ]; then
         echo '        set $path_info $fastcgi_path_info;' >> $FILE_NAME_VHOST
         echo '        fastcgi_param PATH_INFO $path_info;' >> $FILE_NAME_VHOST
         echo '        fastcgi_index index.php;' >> $FILE_NAME_VHOST
-        echo '        include fastcgi.conf;' >> $FILE_NAME_VHOST
+
+        if [ -f /etc/nginx/fastcgi.conf ]; then
+            echo '        include /etc/nginx/fastcgi.conf;' >> $FILE_NAME_VHOST
+        elif [ -f /etc/nginx/fastcgi_params ]; then
+            echo '        include /etc/nginx/fastcgi_params;' >> $FILE_NAME_VHOST
+        fi
+
         echo "        fastcgi_pass unix:/var/run/php5-fpm-$FILE_NAME.sock;" >> $FILE_NAME_VHOST
         echo '    }' >> $FILE_NAME_VHOST
         echo '}' >> $FILE_NAME_VHOST
@@ -1412,7 +1420,7 @@ if [ "$INSTALL" == "EW" ]; then
 */10 * * * * easywi_web cd /home/easywi_web/htdocs && timeout 290 php ./cloud.php >/dev/null 2>&1' >> /etc/crontab
     fi
 
-    /etc/init.d/cron restart
+    service cron restart
 fi
 
 if [ "$INSTALL" == "VS" ]; then
