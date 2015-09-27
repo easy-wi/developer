@@ -995,6 +995,9 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
             sed -i "s/IncludeOptional sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
             sed -i "s/IncludeOptional \/etc\/apache2\/sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
         fi
+
+        okAndSleep "Aktivating Apache mod_rewrite module."
+        a2enmod rewrite
     fi
 
     #TODO: Logrotate
@@ -1186,7 +1189,7 @@ if [ "$INSTALL" == "EW" ]; then
         errorAndExit "No home dir created! Exiting now!"
     fi
 
-    cyanMessage "Installing required tool unzip"
+    okAndSleep "Installing required tool unzip"
     apt-get install unzip -y
 
     makeDir /home/easywi_web/htdocs/
@@ -1194,13 +1197,15 @@ if [ "$INSTALL" == "EW" ]; then
 
     cd /home/easywi_web/htdocs/
 
+    okAndSleep "Downloading latest Easy-WI stable."
     wget https://easy-wi.com/uk/downloads/get/3/ -O web.zip
 
     if [ ! -f web.zip ]; then
         errorAndExit "Can not download Easy-WI. Aborting!"
     fi
 
-    unzip web.zip
+    okAndSleep "Unpack zipped Easy-WI archive."
+    unzip web.zip >/dev/null 2>&1
     rm -f web.zip
 
     find /home/easywi_web/ -type f -print0 | xargs -0 chmod 640
@@ -1240,16 +1245,11 @@ if [ "$INSTALL" == "EW" ]; then
 
         makeDir $SSL_DIR
 
-        openssl genrsa -des3 -out $SSL_DIR/$FILE_NAME.key 2048
-
         cyanMessage " "
+        okAndSleep "Create a Self-Signed SSL Certificate."
         cyanMessage "Please enter your domain \"$IP_DOMAIN\" at \"Common Name (e.g. server FQDN or YOUR name)\""
-        openssl req -new -key $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.csr
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.crt
 
-        cp $SSL_DIR/$FILE_NAME.key $SSL_DIR/$FILE_NAME.key.org
-
-        openssl rsa -in $SSL_DIR/$FILE_NAME.key.org -out $SSL_DIR/$FILE_NAME.key
-        openssl x509 -req -days 365 -in $SSL_DIR/$FILE_NAME.csr -signkey $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.crt
     fi
 
     if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
@@ -1295,9 +1295,10 @@ if [ "$INSTALL" == "EW" ]; then
 
             backUpFile /etc/nginx/nginx.conf
 
+            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_ecdh_curve secp384r1;' /etc/nginx/nginx.conf
             sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_session_cache shared:SSL:10m;' /etc/nginx/nginx.conf
             sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_session_timeout 10m;' /etc/nginx/nginx.conf
-            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";' /etc/nginx/nginx.conf
+            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_ciphers EECDH+AESGCM:EDH+AESGCM:EECDH:EDH:!MD5:!RC4:!LOW:!MEDIUM:!CAMELLIA:!ECDSA:!DES:!DSS:!3DES:!NULL;' /etc/nginx/nginx.conf
 
             echo 'server {' >> $FILE_NAME_VHOST
             echo '    listen 443 ssl default_server;' >> $FILE_NAME_VHOST
@@ -1325,17 +1326,37 @@ if [ "$INSTALL" == "EW" ]; then
 
         chown -R $MASTERUSER:$WEBGROUPID /home/$MASTERUSER/
 
-        /etc/init.d/php5-fpm restart
-        /etc/init.d/nginx restart
+        okAndSleep "Restarting PHP-FPM and Nginx."
+        service php5-fpm restart
+        service nginx restart
 
     elif [ "$WEBSERVER" == "Apache" ]; then
 
         FILE_NAME_VHOST="$FILE_NAME_VHOST.conf"
 
         echo '<VirtualHost *:80>' > $FILE_NAME_VHOST
-        echo "    ServerAdmin info@$IP_DOMAIN" >> $FILE_NAME_VHOST
-        echo '    DocumentRoot "/home/easywi_web/htdocs/"' >> $FILE_NAME_VHOST
         echo "    ServerName $IP_DOMAIN" >> $FILE_NAME_VHOST
+        echo "    ServerAdmin info@$IP_DOMAIN" >> $FILE_NAME_VHOST
+
+        if [ "$SSL" == "Yes" ]; then
+
+            echo "    Redirect permanent / https://$IP_DOMAIN/" >> $FILE_NAME_VHOST
+            echo '</VirtualHost>' >> $FILE_NAME_VHOST
+
+            okAndSleep "Activating TLS/SSL related Apache modules."
+            a2enmod ssl
+            service apache2 restart
+
+            echo '<VirtualHost *:443>' >> $FILE_NAME_VHOST
+            echo "    ServerName $IP_DOMAIN" >> $FILE_NAME_VHOST
+            echo '    SSLEngine on' >> $FILE_NAME_VHOST
+            echo "    SSLCertificateFile /etc/apache2/ssl/$FILE_NAME.crt" >> $FILE_NAME_VHOST
+            echo "    SSLCertificateKeyFile /etc/apache2/ssl/$FILE_NAME.key" >> $FILE_NAME_VHOST
+
+        fi
+        
+        
+        echo '    DocumentRoot "/home/easywi_web/htdocs/"' >> $FILE_NAME_VHOST
         echo '    ErrorLog "/home/easywi_web/logs/error.log"' >> $FILE_NAME_VHOST
         echo '    CustomLog "/home/easywi_web/logs/access.log" common' >> $FILE_NAME_VHOST
         echo '    DirectoryIndex index.php index.html' >> $FILE_NAME_VHOST
@@ -1376,7 +1397,8 @@ if [ "$INSTALL" == "EW" ]; then
         echo '    </LocationMatch>' >> $FILE_NAME_VHOST
         echo '</VirtualHost>' >> $FILE_NAME_VHOST
 
-        /etc/init.d/apache2 restart
+        okAndSleep "Restarting Apache2."
+        service apache2 restart
     fi
     
     chown $MASTERUSER:www-data $FILE_NAME_VHOST
