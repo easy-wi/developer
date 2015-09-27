@@ -33,12 +33,12 @@
 
                     <div class="box-body">
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDescription"><?php echo $sprache->description;?></label>
                             <div class="controls"><input class="form-control" id="inputDescription" type="text" name="description" value="<?php echo $description;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label class="control-label<?php if(isset($errors['active'])) echo ' has-error';?>" for="inputActive"><?php echo $sprache->active;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputActive" name="active">
@@ -48,7 +48,7 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputManaged">Managed</label>
                             <div class="controls">
                                 <select class="form-control" id="inputManaged" name="managedServer" onchange="textdrop('reseller');">
@@ -67,12 +67,12 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputExternalID">externalID</label>
                             <div class="controls"><input class="form-control" id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID?>" maxlength="255"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label class="control-label<?php if(isset($errors['autorestart'])) echo ' has-error';?>" for="inputAutoRestart"><?php echo $sprache->autorestart;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputAutoRestart" name="autorestart">
@@ -82,12 +82,12 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultName"><?php echo $sprache->defaultname;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultName" type="text" name="defaultname" value="My Voiceserver <?php echo $defaultname;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputType"><?php echo $sprache->type;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputType" name="type">
@@ -96,7 +96,7 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputNewUser"><?php echo $sprache->newuser;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputNewUser" name="newuser">
@@ -121,7 +121,7 @@
                             <div class="controls"><input class="form-control" id="inputFiletransferPort" type="text" name="filetransferport" value="<?php echo $filetransferport;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label class="control-label<?php if(isset($errors['usedns'])) echo ' has-error';?>" for="inputUseDns"><?php echo $sprache->usedns;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputUseDns" name="usedns">
@@ -131,12 +131,12 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultDns"><?php echo $sprache->defaultdns;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultDns" type="text" name="defaultdns" value="<?php echo $defaultdns;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputTsdnsServerID"><?php echo $sprache->tsdnsServerID;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputTsdnsServerID" name="tsdnsServerID">
@@ -148,7 +148,7 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputExternalDefaultDNS"><?php echo $sprache->externalDefaultDNS;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputExternalDefaultDNS" name="externalDefaultDNS">
@@ -168,47 +168,54 @@
                             <div class="controls"><input class="form-control" id="inputMaxSlots" type="text" name="maxslots" value="<?php echo $maxslots;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultWelcome"><?php echo $sprache->defaultwelcome;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultWelcome" type="text" name="defaultwelcome" value="<?php echo $defaultwelcome;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultHostBannerUrl"><?php echo $sprache->defaulthostbanner_url;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultHostBannerUrl" type="url" name="defaulthostbanner_url" value="<?php echo $defaulthostbanner_url;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultHostBannerGfxUrl"><?php echo $sprache->defaulthostbanner_gfx_url;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultHostBannerGfxUrl" type="url" name="defaulthostbanner_gfx_url" value="<?php echo $defaulthostbanner_gfx_url;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultHostButtonTooltip"><?php echo $sprache->defaulthostbutton_tooltip;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultHostButtonTooltip" type="text" name="defaulthostbutton_tooltip" value="<?php echo $defaulthostbutton_tooltip;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultHostButtonUrl"><?php echo $sprache->defaulthostbutton_url;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultHostButtonUrl" type="url" name="defaulthostbutton_url" value="<?php echo $defaulthostbutton_url;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultHostButtonGfxUrl"><?php echo $sprache->defaulthostbutton_gfx_url;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultHostButtonGfxUrl" type="url" name="defaulthostbutton_gfx_url" value="<?php echo $defaulthostbutton_gfx_url;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultFlexSlotsFree"><?php echo $sprache->defaultFlexSlotsFree;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultFlexSlotsFree" type="text" name="defaultFlexSlotsFree" value="<?php echo $defaultFlexSlotsFree;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputDefaultFlexSlotsPercent"><?php echo $sprache->defaultFlexSlotsPercent;?></label>
                             <div class="controls"><input class="form-control" id="inputDefaultFlexSlotsPercent" type="text" name="defaultFlexSlotsPercent" value="<?php echo $defaultFlexSlotsPercent;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
+                            <label for="inputIniConfiguration"><?php echo $sprache->iniConfiguration;?></label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inputIniConfiguration" class="span11" name="iniConfiguration" rows="10"><?php echo $iniConfiguration;?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="inputAddType"><?php echo $sprache->addtype;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputAddType" name="addtype" onchange="details2(this.value,'details')">
@@ -218,7 +225,7 @@
                             </div>
                         </div>
 
-                        <!--<div class="control-group">
+                        <!--<div class="form-group">
                             <label for="1"><?php echo $sprache->rootserver;?></label>
                             <div class="controls">
                                 <select class="form-control" id="1" name="rootid">
@@ -227,7 +234,7 @@
                             </div>
                         </div>-->
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputServerDir"><?php echo $sprache->serverdir;?></label>
                             <div class="controls"><input class="form-control" id="inputServerDir" type="text" name="serverdir" value="<?php echo $serverdir;?>"></div>
                         </div>
@@ -237,7 +244,7 @@
                             <div class="controls"><input class="form-control" id="inputSshIP" type="text" name="ip" maxlength="15" value="<?php echo $ip;?>"></div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label class="control-label" for="inputConnectIpOnly"><?php echo $gsprache->connect_ip_only;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputConnectIpOnly" name="connectIpOnly">
@@ -247,7 +254,7 @@
                             </div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="form-group">
                             <label for="inputIps"><?php echo $sprache->ips;?></label>
                             <div class="controls"><input class="form-control" id="inputIps" name="ips" type="text" value="<?php echo $ips;?>"></div>
                         </div>

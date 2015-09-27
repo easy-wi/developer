@@ -192,6 +192,13 @@
                             <div class="controls"><input class="form-control" id="inputDefaultFlexSlotsPercent" type="text" name="defaultFlexSlotsPercent" value="<?php echo $defaultFlexSlotsPercent;?>"></div>
                         </div>
 
+                        <div class="form-group">
+                            <label for="inputIniConfiguration"><?php echo $sprache->iniConfiguration;?></label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inputIniConfiguration" class="span11" name="iniConfiguration" rows="10"><?php echo $iniConfiguration;?></textarea>
+                            </div>
+                        </div>
+
                         <?php } ; if($addedby==1) { ?>
 
                         <div class="form-group">
