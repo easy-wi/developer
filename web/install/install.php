@@ -915,6 +915,19 @@ if ($currentStep == 9 and count($systemCheckError) == 0) {
         $query->execute();
     }
 
+    // Deactivate CMS module by default
+    $query = $sql->prepare("SELECT `id` FROM `modules` WHERE `get`='pn' LIMIT 1");
+    $query->execute();
+    $cmdModuleId = (int) $query->fetchColumn();
+
+    if ($cmdModuleId > 0) {
+        $query = $sql->prepare("UPDATE `modules` SET `active`='N' WHERE `id`=? LIMIT 1");
+        $query->execute(array($cmdModuleId));
+    } else {
+        $query = $sql->prepare("INSERT INTO `modules` (`get`,`sub`,`file`,`active`,`type`) VALUES ('pn','pn','','N','C')");
+        $query->execute();
+    }
+
     function rmr($dir) {
 
         if (is_dir($dir)) {
