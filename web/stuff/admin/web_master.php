@@ -408,6 +408,9 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             }
 
             // An error occurred during validation unset the redirect information and display the form again
+        } else {
+            unset($header, $text);
+            $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_web_master_add.tpl' : 'admin_web_master_md.tpl';
         }
     }
 
