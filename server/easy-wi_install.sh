@@ -272,6 +272,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         read WEBGROUP
 
         WEBGROUPID=`id -g $WEBGROUP 2> /dev/null`
+
         if [ "$WEBGROUPID" == "" ]; then
             $GROUPADD $WEBGROUP
             WEBGROUPID=`id -g $WEBGROUP 2> /dev/null`
@@ -305,8 +306,14 @@ if [ "`id $MASTERUSER 2> /dev/null`" == "" ]; then
     fi
 
 elif [ "$INSTALL" != "VS" ]; then
+
     okAndSleep "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
-    usermod -g $MASTERUSER $MASTERUSER
+
+    if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
+        usermod -g $WEBGROUPID $MASTERUSER
+    else
+        usermod -g $MASTERUSER $MASTERUSER
+    fi
 else
     okAndSleep "User \"$MASTERUSER\" already exists."
 fi
@@ -606,6 +613,10 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
     fi
 fi
 
+if ([ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ] && [ "`grep '/bin/false' /etc/shells`" == "" ]); then
+    echo "/bin/false" >> /etc/shells
+fi
+
 if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
 
     cyanMessage " "
@@ -632,22 +643,19 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
             sed -i 's/.*LoadModule mod_tls_memcache.c.*/#LoadModule mod_tls_memcache.c/g' /etc/proftpd/modules.conf
         fi
 
+        backUpFile /etc/proftpd/proftpd.conf
+
+        sed -i 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf
+        sed -i 's/#.*DefaultRoot.*~/DefaultRoot ~/g' /etc/proftpd/proftpd.conf
+        sed -i 's/# RequireValidShell.*/RequireValidShell on/g' /etc/proftpd/proftpd.conf
+
         if [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" != "GS" ]; then
 
-            backUpFile /etc/proftpd/proftpd.conf
-
-            sed -i 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf
             sed -i 's/Umask.*/Umask 037 027/g' /etc/proftpd/proftpd.conf 
-            sed -i 's/.*DefaultRoot.*/DefaultRoot ~/g' /etc/proftpd/proftpd.conf
-            sed -i 's/# RequireValidShell.*/RequireValidShell off/g' /etc/proftpd/proftpd.conf
 
         elif [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" == "GS" ]; then
 
-            backUpFile /etc/proftpd/proftpd.conf
-
-            sed -i 's/.*UseIPv6.*/UseIPv6 off/g' /etc/proftpd/proftpd.conf
             sed -i 's/Umask.*/Umask 077 077/g' /etc/proftpd/proftpd.conf
-            sed -i 's/.*DefaultRoot.*/DefaultRoot ~/g' /etc/proftpd/proftpd.conf
 
             cyanMessage " "
             cyanMessage "Install/Update ProFTPD Rules?"
