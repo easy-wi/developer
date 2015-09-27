@@ -141,12 +141,12 @@
                             </div>
                         </div>
 
-                        <div id="overbookPercent" class="control-group <?php if ($hddOverbook=='N') echo 'display_none';?>">
+                        <div id="overbookPercent" class="form-group <?php if ($hddOverbook=='N') echo 'display_none';?>">
                             <label for="inputOverbookPercent"><?php echo $sprache->overbookPercent;?></label>
                             <div class="controls">
-                                <div class="input-append span12">
+                                <div class="input-group">
                                     <input class="form-control" id="inputOverbookPercent" class="span11" type="number" name="overbookPercent" value="<?php echo $overbookPercent;?>">
-                                    <span class="add-on">%</span>
+                                    <span class="input-group-addon">%</span>
                                 </div>
                             </div>
                         </div>
