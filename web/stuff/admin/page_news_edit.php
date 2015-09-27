@@ -564,7 +564,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     }
 
-    configureDateTables('-1, -2', '1, "asc"');
+    configureDateTables('-1', '1, "desc"');
 
     $template_file = 'admin_page_news_list.tpl';
 }
