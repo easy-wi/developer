@@ -52,7 +52,7 @@ $ip = $ui->ip('REMOTE_ADDR', 'server');
 
 if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
 
-	$query = $sql->prepare("SELECT r.`id`,r.`resellerid`,r.`installing`,r.`updating`,d.`resellerid` AS `userid`,s.`steamVersion`,r.`localVersion` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND (d.`ip`=? OR d.`altips` LIKE ?) LIMIT 1");
+	$query = $sql->prepare("SELECT r.`id`,r.`serverid`,r.`resellerid`,r.`installing`,r.`updating`,d.`resellerid` AS `userid`,s.`steamVersion`,r.`localVersion` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND (d.`ip`=? OR d.`altips` LIKE ?) LIMIT 1");
 	$query->execute(array($ui->username('shorten', 50, 'get'), $ip, '%' . $ip . '%'));
 
 	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -67,8 +67,8 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
 
             if ($steamVersion != $localVersion) {
 
-                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `active`='Y' AND `stopped`!='N' LIMIT 1");
-                $query2->execute(array($row['id']));
+                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `active`='Y' AND `stopped`='N' LIMIT 1");
+                $query2->execute(array($row['serverid']));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                     $query2 = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
