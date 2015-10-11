@@ -84,7 +84,7 @@
 
                         <div class="form-group">
                             <label for="inputDefaultName"><?php echo $sprache->defaultname;?></label>
-                            <div class="controls"><input class="form-control" id="inputDefaultName" type="text" name="defaultname" value="My Voiceserver <?php echo $defaultname;?>"></div>
+                            <div class="controls"><input class="form-control" id="inputDefaultName" type="text" name="defaultname" value="<?php echo $defaultname;?>"></div>
                         </div>
 
                         <div class="form-group">
