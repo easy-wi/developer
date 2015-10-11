@@ -120,22 +120,42 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query = $sql->prepare("SELECT t.`appID`,t.`shorten` FROM `servertypes` t INNER JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        
-        if (!in_array($row['appID'], array(null,'', false))) {
-            
-            $lookUpAppID = workAroundForValveChaos($row['appID'], $row['shorten']);
-            $json = webhostRequest('api.steampowered.com', 'easy-wi.com', '/ISteamApps/UpToDateCheck/v0001/?appid=' . $lookUpAppID . '&version=0.0.0.0&format=json');
-            $decoded = @json_decode($json);
-            
-            if ($decoded and !isset($decoded->response->error) and isset($decoded->response->required_version)) {
-                $query2->execute(array($decoded->response->required_version, $row['appID']));
-                echo 'Version for appID ' . $row['appID'] . ' is: ' . $decoded->response->required_version . "\r\n";
-                
-            } else if (isset($decoded->response->error)) {
-                echo 'Error for appID ' . $row['appID'] . ' is: ' . $decoded->response->error . "\r\n";
-                
+
+        $appID = (int) $row['appID'];
+
+        if ($appID != 0) {
+
+            if (in_array($appID, array(346110, 376030))) {
+
+                $version = webhostRequest('arkdedicated.com', 'easy-wi.com', '/version');
+
+                if ($version and strlen($version) > 0) {
+
+                    $query2->execute(array($version, $appID));
+
+                    echo 'Version for ARK with appID ' . $appID . ' is: ' . $version . "\r\n";
+
+                } else {
+                    echo 'Error for ARK with appID ' . $appID . ' is: Could not retrieve version string' . "\r\n";
+                }
+
             } else {
-                echo 'Error for appID ' . $row['appID'] . ' is: Could not retrieve JSON string' . "\r\n";
+
+                $lookUpAppID = workAroundForValveChaos($appID, $row['shorten']);
+                $json = webhostRequest('api.steampowered.com', 'easy-wi.com', '/ISteamApps/UpToDateCheck/v0001/?appid=' . $lookUpAppID . '&version=0.0.0.0&format=json');
+                $decoded = @json_decode($json);
+
+                if ($decoded and !isset($decoded->response->error) and isset($decoded->response->required_version)) {
+
+                    $query2->execute(array($decoded->response->required_version, $appID));
+
+                    echo 'Version for appID ' . $appID . ' is: ' . $decoded->response->required_version . "\r\n";
+
+                } else if (isset($decoded->response->error)) {
+                    echo 'Error for appID ' . $appID . ' is: ' . $decoded->response->error . "\r\n";
+                } else {
+                    echo 'Error for appID ' . $appID . ' is: Could not retrieve JSON string' . "\r\n";
+                }
             }
         }
     }
