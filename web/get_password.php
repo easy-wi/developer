@@ -54,23 +54,23 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
 
 	$query = $sql->prepare("SELECT r.`id`,r.`resellerid`,r.`installing`,r.`updating`,d.`resellerid` AS `userid`,s.`steamVersion`,r.`localVersion` FROM `rservermasterg` r INNER JOIN `rserverdata` d ON r.`serverid`=d.`id` INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`shorten`=? AND (d.`ip`=? OR d.`altips` LIKE ?) LIMIT 1");
 	$query->execute(array($ui->username('shorten', 50, 'get'), $ip, '%' . $ip . '%'));
+
 	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-        if ($row['installing'] == 'Y' or $row['updating'] == 'Y' or $row['installing'] == null or $row['steamVersion'] > $row['localVersion'] or $row['steamVersion'] == null or $row['steamVersion'] == '') {
+        $steamVersion = floatval($row['steamVersion']);
+        $localVersion = floatval($row['localVersion']);
 
-            if ($row['steamVersion'] == null) {
-                $query2 = $sql->prepare("UPDATE `rservermasterg` SET `installing`='N',`updating`='N' WHERE `id`=? LIMIT 1");
-                $query2->execute(array($row['id']));
-            } else {
-                $query2 = $sql->prepare("UPDATE `rservermasterg` SET `localVersion`=?,`installing`='N',`updating`='N' WHERE `id`=? LIMIT 1");
-                $query2->execute(array($row['steamVersion'], $row['id']));
-            }
+        if ($row['installing'] != 'N' or $row['updating'] != 'N') {
 
-            if ($row['installing'] == 'Y' or $row['installing'] == null or $row['steamVersion'] > $row['localVersion'] or $row['steamVersion'] == null or $row['steamVersion'] == '') {
+            $query2 = $sql->prepare("UPDATE `rservermasterg` SET `localVersion`=?,`installing`='N',`updating`='N' WHERE `id`=? LIMIT 1");
+            $query2->execute(array($row['steamVersion'], $row['id']));
 
-                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `autoRestart`='Y'");
+            if ($steamVersion != $localVersion) {
+
+                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? LIMIT 1");
                 $query2->execute(array($row['id']));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
                     $query2 = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($row2['id'], $row['resellerid']));
 
@@ -84,7 +84,7 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
                 $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
                 $query2->execute(array($row['resellerid'], $row['resellerid']));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-                    sendmail('emailgserverupdate', $row2['id'],$ip,$ui->username('shorten', 50, 'get'));
+                    sendmail('emailgserverupdate', $row2['id'], $ip, $ui->username('shorten', 50, 'get'));
                 }
             }
         }
