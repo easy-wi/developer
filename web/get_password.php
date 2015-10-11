@@ -67,7 +67,7 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
 
             if ($steamVersion != $localVersion) {
 
-                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? LIMIT 1");
+                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `active`='Y' AND `stopped`!='N' LIMIT 1");
                 $query2->execute(array($row['id']));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
