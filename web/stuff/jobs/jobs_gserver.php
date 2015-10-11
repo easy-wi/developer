@@ -189,6 +189,12 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $command = 'Error: can not find gsswitchID';
         }
 
+        $loguserid = $row2['userID'];
+
+        $reseller_id = $resellerLockupID;
+        $loguseraction = $command;
+        $insertlog->execute();
+
         $theOutput->printGraph($command);
     }
 

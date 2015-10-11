@@ -97,6 +97,13 @@ include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
 include(EASYWIDIR . '/stuff/methods/class_mysql.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
+$logreseller = 0;
+$logsubuser = 0;
+$loguserip = '127.0.0.1';
+$userHostname = 'localhost';
+$logusername = 'Cronjob';
+$logusertype = 'cron';
+
 if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
 
     $gsprache = getlanguagefile('general', 'uk', 0);

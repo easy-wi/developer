@@ -57,7 +57,7 @@ if ($adminLookup) {
     $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` WHERE `resellerid`=?");
     $query->execute(array($resellerLockupID));
 } else {
-    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=?");
+    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` WHERE `usertype` IN ('user','cron') AND `userid`=? AND `resellerid`=?");
     $query->execute(array($user_id, $reseller_id));
 }
 $array['iTotalRecords'] = $query->fetchColumn();
@@ -68,7 +68,7 @@ if ($sSearch) {
         $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search)");
         $query->execute(array(':search' => '%' . $sSearch . '%', ':resellerid' => $resellerLockupID));
     } else {
-        $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype`='user' AND l.`userid`=:userid AND l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search)");
+        $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype` IN ('user','cron') AND l.`userid`=:userid AND l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search)");
         $query->execute(array(':search' => '%' . $sSearch . '%', ':userid' => $user_id, ':resellerid' => $reseller_id));
     }
 
