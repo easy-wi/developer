@@ -601,7 +601,10 @@ class masterServer {
         // supdates = appmaster setting; updates = template setting
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-            if (($row['steamVersion'] > $row['localVersion'] and ($row['steamgame'] == 'S' or $row['gameq'] == 'minecraft' or $row['gameq'] == 'minequery')) or $force === true) {
+            $steamVersion = floatval($row['steamVersion']);
+            $localVersion = floatval($row['localVersion']);
+
+            if (($steamVersion != $localVersion and ($row['steamgame'] == 'S' or $row['gameq'] == 'minecraft' or $row['gameq'] == 'minequery')) or $force === true) {
 
                 if ($this->os == 'L') {
                     $this->linuxCollectData($row, $force, $returnSuccessInAnyCase);
