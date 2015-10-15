@@ -57,15 +57,15 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
 
 	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-        $steamVersion = floatval($row['steamVersion']);
-        $localVersion = floatval($row['localVersion']);
-
         if ($row['installing'] != 'N' or $row['updating'] != 'N') {
 
-            $query2 = $sql->prepare("UPDATE `rservermasterg` SET `localVersion`=?,`installing`='N',`updating`='N' WHERE `id`=? LIMIT 1");
+            $query2 = $sql->prepare("UPDATE `rservermasterg` SET `installing`='N',`updating`='N' WHERE `id`=? LIMIT 1");
+            $query2->execute(array($row['id']));
+
+            $query2 = $sql->prepare("UPDATE `rservermasterg` SET `localVersion`=? WHERE `id`=? LIMIT 1");
             $query2->execute(array($row['steamVersion'], $row['id']));
 
-            if ($steamVersion != $localVersion) {
+            if ($query2->rowCount() > 0) {
 
                 $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `active`='Y' AND `stopped`='N' LIMIT 1");
                 $query2->execute(array($row['serverid']));
