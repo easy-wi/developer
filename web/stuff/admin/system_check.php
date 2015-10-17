@@ -46,7 +46,7 @@ $sprache = getlanguagefile('system_check', $user_language, $reseller_id);
 $systemCheckOk = array();
 $systemCheckError = array();
 
-if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
     $systemCheckOk['php'] = $sprache->system_ok_php_version . PHP_VERSION;
 } else {
     $systemCheckError['php'] = $sprache->error_system_php_version . PHP_VERSION;
