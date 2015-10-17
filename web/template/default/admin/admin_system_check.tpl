@@ -22,8 +22,23 @@
                         <p><?php echo $sprache->cron_text;?></p>
                     </div>
 
+                    <h4><?php echo $sprache->cron_run;?></h4>
+
+                    <dl class="dl-horizontal">
+                        <dt>reboot.php</dt>
+                        <dd><?php echo date('Y-m-d H:i:s', $rSA['lastCronReboot']);?></dd>
+                        <dt>statuscheck.php</dt>
+                        <dd><?php echo date('Y-m-d H:i:s', $rSA['lastCronStatus']);?></dd>
+                        <dt>startupdates.php</dt>
+                        <dd><?php echo date('Y-m-d H:i:s', $rSA['lastCronUpdates']);?></dd>
+                        <dt>jobs.php</dt>
+                        <dd><?php echo date('Y-m-d H:i:s', $rSA['lastCronJobs']);?></dd>
+                        <dt>cloud.php</dt>
+                        <dd><?php echo date('Y-m-d H:i:s', $rSA['lastCronCloud']);?></dd>
+                    </dl>
+
                     <h4><?php echo $sprache->cron_internal;?> (/etc/crontab)</h4>
-                    <pre><?php print_r($rSA);?></pre>
+
                     <pre>
 0 */1 * * * <?php echo $displayPHPUser;?> cd <?php echo EASYWIDIR;?> && timeout 300 php ./reboot.php >/dev/null 2>&1
 */5 * * * * <?php echo $displayPHPUser;?> cd <?php echo EASYWIDIR;?> && timeout 290 php ./statuscheck.php >/dev/null 2>&1

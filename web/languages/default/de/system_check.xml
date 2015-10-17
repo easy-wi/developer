@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <cron_external>Externe Cronjobs</cron_external>
+    <cron_run>Cronjobs zuletzt ausgeführt um:</cron_run>
     <cron_text>Die empfohlende Methode sind interne Cronjobs. Falls keine Internen Cronjobs möglich sind, können die Dateien auch von extern aufgerufen werden. In diesem Fall muss man die aufrufende IP noch in den Easy-Wi Einstellungen erlauben.</cron_text>
     <cron_internal>Interne Cronjobs</cron_internal>
     <error_system_curl>curl Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_curl>
