@@ -40,13 +40,33 @@
 
 if (isset($_SERVER['REMOTE_ADDR'])) {
     $ip = $_SERVER['REMOTE_ADDR'];
+
     $timelimit = (isset($_GET['timeout']) and is_numeric($_GET['timeout'])) ? $_GET['timeout'] : ini_get('max_execution_time') - 10;
+
 } else {
     $timelimit = 600;
 }
+
+$allRoots = (isset($_GET['all_root'])) ? true : false;
+$forceUpdate = (isset($_GET['force_update'])) ? true : false;
+
+if (isset($argv)) {
+
+    $args = array();
+
+    foreach ($argv as $a) {
+        if ($a == 'all_root') {
+            $allRoots = true;
+        } else if ($a == 'force_update') {
+            $forceUpdate = true;
+        }
+    }
+}
+
 set_time_limit($timelimit);
 
 define('EASYWIDIR', dirname(__FILE__));
+
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
@@ -62,25 +82,36 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     echo "Start Syncs and Updates. Hour is ${currentHour} and minute is ${currentMinute}\r\n";
 
-    $query = $sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
-    $query->execute();
-    $lastUpdateRun = (int) $query->fetchColumn();
+    if ($allRoots) {
 
-    $query = $sql->prepare("UPDATE `settings` SET `lastUpdateRun`=? WHERE `resellerid`=0 LIMIT 1");
-    $query->execute(array($currentMinute));
+        echo "Checking for all available and active servers\r\n";
 
-    echo "Checking for servers to be updated and or synced at hour ${currentHour} and between minutes ${lastUpdateRun} and ${currentMinute}\r\n";
+        $query = $sql->prepare("SELECT `id`,`updates` FROM `rserverdata` WHERE `active`!='N'");
+        $query->execute();
 
-    // avoid less/more OR equal in SQL. We want only less/more to eliminate the OR comparison
-    $currentMinute++;
-    $lastUpdateRun--;
+    } else {
 
-    echo "Altered minutes for running a more efficient query will be  updateMinute > ${lastUpdateRun} AND updateMinute < ${currentMinute}\r\n";
+        $query = $sql->prepare("SELECT `lastUpdateRun` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+        $query->execute();
+        $lastUpdateRun = (int) $query->fetchColumn();
 
-    $query = $sql->prepare("SELECT `id`,`updates` FROM `rserverdata` WHERE (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<?");
+        $query = $sql->prepare("UPDATE `settings` SET `lastUpdateRun`=? WHERE `resellerid`=0 LIMIT 1");
+        $query->execute(array($currentMinute));
+
+        echo "Checking for servers to be updated and or synced at hour ${currentHour} and between minutes ${lastUpdateRun} and ${currentMinute}\r\n";
+
+        // avoid less/more OR equal in SQL. We want only less/more to eliminate the OR comparison
+        $currentMinute++;
+        $lastUpdateRun--;
+
+        echo "Altered minutes for running a more efficient query will be  updateMinute > ${lastUpdateRun} AND updateMinute < ${currentMinute}\r\n";
+
+        $query = $sql->prepare("SELECT `id`,`updates` FROM `rserverdata` WHERE (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<? AND  `active`!='N'");
+        $query->execute(array($currentHour, $lastUpdateRun, $currentMinute));
+    }
+
     $query2 = $sql->prepare("UPDATE `rserverdata` SET `alreadyStartedAt`=? WHERE `id`=? LIMIT 1");
 
-    $query->execute(array($currentHour, $lastUpdateRun, $currentMinute));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $rootServer = new masterServer($row['id'], $aeskey);
@@ -91,7 +122,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
         } else {
 
-            if (4 == $currentHour) {
+            if (4 == $currentHour or $forceUpdate) {
                 $rootServer->collectData(true, true, false);
             } else {
                 $rootServer->collectData();
