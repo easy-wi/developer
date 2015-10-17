@@ -198,4 +198,115 @@ if (!function_exists('eacchange')) {
 
         return $table;
     }
+
+    function getGameQ3List () {
+
+        $protocols = array();
+
+        $protocols_path = EASYWIDIR . '/third_party/gameq/GameQ/Protocols/';
+
+        // Grab the dir with all the classes available
+        $dir = dir($protocols_path);
+
+        // Now lets loop the directories
+        while (false !== ($entry = $dir->read())) {
+
+            if (!is_file($protocols_path . $entry)) {
+                continue;
+            }
+
+            // Figure out the class name
+            $class_name = ucfirst(pathinfo($entry, PATHINFO_FILENAME));
+
+            try {
+
+                require_once($protocols_path . $entry);
+
+                // Lets get some info on the class
+                $reflection = new ReflectionClass('GameQ\Protocols\\' . $class_name);
+
+                // Check to make sure we can actually load the class
+                if(!$reflection->IsInstantiable()) {
+                    continue;
+                }
+
+
+                // Load up the class so we can get info
+                $classGeneratedName = 'GameQ\Protocols\\' . $class_name;
+                $class = new $classGeneratedName;
+
+                $ReflectionName = new ReflectionProperty(get_class($class), 'name');
+                $ReflectionName->setAccessible(true);
+
+                $ReflectionNameLong = new ReflectionProperty(get_class($class), 'name_long');
+                $ReflectionNameLong->setAccessible(true);
+
+                // Add it to the list
+                $protocols[$ReflectionName->getValue($class)] = $ReflectionNameLong->getValue($class);
+
+                // Unset the class
+                unset($class, $ReflectionName, $ReflectionNameLong);
+
+            } catch (ReflectionException $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
+
+        // Close the directory
+        unset($dir);
+
+        return $protocols;
+    }
+
+    function getGameQ2List () {
+
+        $protocols = array();
+
+        // Protocol list code taken from https://github.com/Austinb/GameQ/blob/v2/examples/list.php
+        $protocols_path = GAMEQ_BASE . 'gameq/protocols/';
+
+        // Grab the dir with all the classes available
+        $dir = dir($protocols_path);
+
+        // Now lets loop the directories
+        while (false !== ($entry = $dir->read())) {
+
+            if (!is_file($protocols_path . $entry)) {
+                continue;
+            }
+
+            // Figure out the class name
+            $class_name = 'GameQ_Protocols_' . ucfirst(pathinfo($entry, PATHINFO_FILENAME));
+
+            // Lets get some info on the class
+            $reflection = new ReflectionClass($class_name);
+
+            // Check to make sure we can actually load the class
+            try {
+
+                if (!$reflection->IsInstantiable()) {
+                    continue;
+                }
+
+                // Load up the class so we can get info
+                $class = new $class_name;
+
+                // Add it to the list
+                if (!isset($protocols[$class->name()])) {
+                    $protocols[$class->name()] = $class->name_long();
+                }
+
+                // Unset the class
+                unset($class);
+
+            } catch (ReflectionException $e) {
+                $errors['reflection'] = $e->getMessage();
+            }
+        }
+
+        // Close the directory
+        unset($dir);
+
+        return $protocols;
+    }
 }
