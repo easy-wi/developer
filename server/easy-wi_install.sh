@@ -1127,7 +1127,7 @@ if [ "$INSTALL" == "GS" ]; then
 
         if [ "`uname -m`" == "x86_64" ]; then
             if ([ "$OS" == "ubuntu" ] || [ "$OS" == "debian" -a "`printf "${OSVERSION}\n8.0" | sort -V | tail -n 1`" == "$OSVERSION" ]); then
-                apt-get install zlib1g lib32z1 lib32gcc1 libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386 -y
+                apt-get install zlib1g lib32z1 lib32gcc1 libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386 lib32stdc++6 lib64stdc++6 zlib1g:i386 -y
             else
                 apt-get install ia32-libs lib32readline5 lib32ncursesw5 lib32stdc++6 -y
             fi
