@@ -23,6 +23,7 @@
                     </div>
 
                     <h4><?php echo $sprache->cron_internal;?> (/etc/crontab)</h4>
+                    <pre><?php print_r($rSA);?></pre>
                     <pre>
 0 */1 * * * <?php echo $displayPHPUser;?> cd <?php echo EASYWIDIR;?> && timeout 300 php ./reboot.php >/dev/null 2>&1
 */5 * * * * <?php echo $displayPHPUser;?> cd <?php echo EASYWIDIR;?> && timeout 290 php ./statuscheck.php >/dev/null 2>&1
