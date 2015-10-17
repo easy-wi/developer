@@ -95,7 +95,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $assignToReseller = ($ui->active('assignToReseller', 'post')) ? $ui->active('assignToReseller', 'post') : 'N';
     $connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'N';
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
-    $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 0;
+    $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 10;
     $ftpport = ($ui->port('ftpport', 'post')) ? $ui->port('ftpport', 'post') : 21;
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
     $maxserver = ($ui->id('maxserver',4, 'post')) ? $ui->id('maxserver',4, 'post') : 10;
