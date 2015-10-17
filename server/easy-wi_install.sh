@@ -60,10 +60,9 @@ function errorAndContinue {
 
 function runSpinner {
 
-    SEQUENCE_END=`echo $1/0.4 | bc`
     SPINNER=("-" "\\" "|" "/")
 
-    for SEQUENCE in `seq 1 $SEQUENCE_END`; do
+    for SEQUENCE in `seq 1 $1`; do
         for I in "${SPINNER[@]}"; do
             echo -ne "\b$I"
             sleep 0.1
@@ -106,7 +105,8 @@ fi
 cyanMessage "Checking for the latest latest installer"
 LATEST_VERSION=`wget -q --timeout=30 -O - http://l.easy-wi.com/installer_version.php | sed 's/^\xef\xbb\xbf//g'`
 
-if [ "$LATEST_VERSION" != "" -a "`echo $LATEST_VERSION'>'$INSTALLER_VERSION | bc -l`" == "1" ]; then
+ 
+if [ "`printf "${LATEST_VERSION}\n${INSTALLER_VERSION}" | sort -V | tail -n 1`" == "$INSTALLER_VERSION" ]; then
     errorAndExit "You are using the old version ${INSTALLER_VERSION}. Please upgrade to version ${LATEST_VERSION} and retry."
 else
     okAndSleep "You are using the up to date version ${INSTALLER_VERSION}."
@@ -484,7 +484,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
         RUNUPDATE=0
 
-        if ([ "`echo $OSVERSION'>='8.0 | bc -l`" == "0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
+        if ([ "`printf "${OSVERSION}\n8.0" | sort -V | tail -n 1`" == "8.0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
 
             apt-get install python-software-properties -y
             apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db
@@ -511,7 +511,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
             apt-get update
         fi
 
-        if ([ "`echo $OSVERSION'>='8.0 | bc -l`" == "0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
+        if ([ "`printf "${OSVERSION}\n8.0" | sort -V | tail -n 1`" == "8.0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
             apt-get install mariadb-server mariadb-client mysql-common -y
         else
             apt-get install mariadb-server mariadb-client mariadb-common -y
@@ -1126,7 +1126,7 @@ if [ "$INSTALL" == "GS" ]; then
         apt-get install wget wput screen bzip2 sudo rsync zip unzip -y
 
         if [ "`uname -m`" == "x86_64" ]; then
-            if ([ "$OS" == "ubuntu" ] || [ "$OS" == "debian" -a "`echo $OSVERSION'>='8.0 | bc -l`" == "1" ]); then
+            if ([ "$OS" == "ubuntu" ] || [ "$OS" == "debian" -a "`printf "${OSVERSION}\n8.0" | sort -V | tail -n 1`" == "$OSVERSION" ]); then
                 apt-get install zlib1g lib32z1 lib32gcc1 libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386 -y
             else
                 apt-get install ia32-libs lib32readline5 lib32ncursesw5 lib32stdc++6 -y
@@ -1486,7 +1486,7 @@ if [ "$INSTALL" == "VS" ]; then
 
     greenMessage "Starting the TS3 server for the first time and shutting it down again as the password will be visible in the process tree."
     su -c "./ts3server_startscript.sh start serveradmin_password=$QUERY_PASSWORD createinifile=1 inifile=ts3server.ini" $MASTERUSER
-    runSpinner 10
+    runSpinner 25
     su -c "./ts3server_startscript.sh stop" $MASTERUSER
 
     greenMessage "Starting the TS3 server permanently."
