@@ -279,7 +279,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
 
         $allServersV2Array[] = $serverBatchV2Array;
-        $allServersV3Array[] = $allServersV3Array;
+        $allServersV3Array[] = $serverBatchV3Array;
 
         $serverReplies = array();
 
