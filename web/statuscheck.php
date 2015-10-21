@@ -257,7 +257,22 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                         print "GameQ v2 support for {$row2['shorten']} {$row2['serverip']}:{$row2['port']}\r\n";
 
-                        $serverBatchV2Array[] = array('id' => $row2['id'], 'type' => $row2['gameq'], 'host' => $row2['serverip'] . ':' . $row2['port'], 'options' => array('query_port' => $queryPort));
+                        $checkAtIPPort = $row2['serverip'] . ':';
+
+                        if ($row2['useQueryPort'] == 5) {
+                            $checkAtIPPort .= $row2['port5'];
+                        } else if ($row2['useQueryPort'] == 4) {
+                            $checkAtIPPort .= $row2['port4'];
+                        } else if ($row2['useQueryPort'] == 3) {
+                            $checkAtIPPort .= $row2['port3'];
+                        } else if ($row2['useQueryPort'] == 2) {
+                            $checkAtIPPort .= $row2['port2'];
+                        } else {
+                            $checkAtIPPort .= $row2['port'];
+                        }
+
+                        $serverBatchV2Array[] = array('id' => $row2['id'], 'type' => $row2['gameq'], 'host' => $checkAtIPPort);
+
                         $iV2++;
 
                         if ($iV2 == 5) {
@@ -285,38 +300,42 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
         print "Checking $totalV3Count server(s) with GameQ v3 query\r\n";
         foreach ($allServersV3Array as $servers) {
+            if (count($servers) > 0) {
 
-            $gq = new \GameQ\GameQ();
-            $gq->addServers($servers);
-            $gq->setOption('timeout', 60);
+                $gq = new \GameQ\GameQ();
+                $gq->addServers($servers);
+                $gq->setOption('timeout', 60);
 
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $gq->setOption('debug', true);
-            }
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    $gq->setOption('debug', true);
+                }
 
-            $gq->addFilter('normalise');
-            $gq->addFilter('stripcolor');
+                $gq->addFilter('normalise');
+                $gq->addFilter('stripcolor');
 
-            foreach($gq->process() as $switchID => $v) {
-                $serverReplies[$switchID] = $v;
+                foreach($gq->process() as $switchID => $v) {
+                    $serverReplies[$switchID] = $v;
+                }
             }
         }
 
         print "Checking $totalV2Count server(s) with GameQ v2 query\r\n";
         foreach ($allServersV2Array as $servers) {
+            if (count($servers) > 0) {
 
-            $gq = new GameQ();
-            $gq->setOption('timeout', 60);
+                $gq = new GameQ();
+                $gq->setOption('timeout', 60);
 
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $gq->setOption('debug', true);
-            }
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    $gq->setOption('debug', true);
+                }
 
-            $gq->setFilter('normalise');
-            $gq->addServers($servers);
+                $gq->setFilter('normalise');
+                $gq->addServers($servers);
 
-            foreach($gq->requestData() as $switchID => $v) {
-                $serverReplies[$switchID] = $v;
+                foreach($gq->requestData() as $switchID => $v) {
+                    $serverReplies[$switchID] = $v;
+                }
             }
         }
         unset($gq);
