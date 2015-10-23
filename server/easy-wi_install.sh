@@ -123,8 +123,8 @@ if [ "`id -u`" != "0" ]; then
 fi
 
 # Debian and its derivatives store their version at /etc/debian_version
-
-if [ -f /etc/debian_version ] && if dpkg-query -s lsb_release 2>/dev/null | grep -q "installed"; then
+OSCHECK() {
+  if [ -f /etc/debian_version ]; then
     DISTRIBUTORID=`lsb_release -i 2> /dev/null | grep 'Distributor' | awk '{print $3}'`
     OSVERSION=`lsb_release -r 2> /dev/null | grep 'Release' | awk '{print $2}'`
 
@@ -135,19 +135,15 @@ if [ -f /etc/debian_version ] && if dpkg-query -s lsb_release 2>/dev/null | grep
         OSBRANCH=`cat /etc/*release | grep 'VERSION=' | awk '{print $2}' | tr -d '()"'`
         OS="debian"
     fi
+  fi
+}
+
+if dpkg-query -s lsb-release 2>/dev/null | grep -q "installed"; then
+    OSCHECK
 else
-    apt-get update && apt-get install lsb_release -y
-
-    DISTRIBUTORID=`lsb_release -i 2> /dev/null | grep 'Distributor' | awk '{print $3}'`
-    OSVERSION=`lsb_release -r 2> /dev/null | grep 'Release' | awk '{print $2}'`
-
-    if [ "$DISTRIBUTORID" == "Ubuntu" ]; then
-        OSBRANCH=`lsb_release -c 2> /dev/null | grep 'Codename' | awk '{print $2}'`
-        OS="ubuntu"
-    else
-        OSBRANCH=`cat /etc/*release | grep 'VERSION=' | awk '{print $2}' | tr -d '()"'`
-        OS="debian"
-    fi
+    apt-get update > /dev/null
+    apt-get install lsb-release > /dev/null
+    OSCHECK
 fi
 
 if [ "$OS" == "" ]; then
