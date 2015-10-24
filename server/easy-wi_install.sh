@@ -125,16 +125,15 @@ fi
 # Debian and its derivatives store their version at /etc/debian_version
 if [ -f /etc/debian_version ]; then
 
-    DISTRIBUTORID=`lsb_release -i 2> /dev/null | grep 'Distributor' | awk '{print $3}'`
-    OSVERSION=`lsb_release -r 2> /dev/null | grep 'Release' | awk '{print $2}'`
+    apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 
-    if [ "$DISTRIBUTORID" == "Ubuntu" ]; then
-        OSBRANCH=`lsb_release -c 2> /dev/null | grep 'Codename' | awk '{print $2}'`
-        OS="ubuntu"
-    else
-        OSBRANCH=`cat /etc/*release | grep 'VERSION=' | awk '{print $2}' | tr -d '()"'`
-        OS="debian"
+    if [ "`dpkg-query -s lsb_release 2>/dev/null`" == "" ]; then
+        apt-get install -y lsb-release
     fi
+
+    OS=`lsb_release -i 2> /dev/null | grep 'Distributor' | awk '{print tolower($3)}'`
+    OSVERSION=`lsb_release -r 2> /dev/null | grep 'Release' | awk '{print $2}'`
+    OSBRANCH=`lsb_release -c 2> /dev/null | grep 'Codename' | awk '{print $2}'`
 fi
 
 if [ "$OS" == "" ]; then
@@ -239,10 +238,6 @@ fi
 
 cyanMessage " "
 okAndSleep "Updating the system packages to the latest version."
-
-if [ "$OS" == "debian" -o  "$OS" == "ubuntu" ]; then
-    apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
-fi
 
 # If we need to install and configure a webspace than we need to identify the groupID
 if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
@@ -1120,8 +1115,6 @@ if [ "$INSTALL" == "GS" ]; then
     fi
 
     if [ "$OS" == "debian" -o  "$OS" == "ubuntu" ]; then
-
-        apt-get update
 
         apt-get install wget wput screen bzip2 sudo rsync zip unzip -y
 
