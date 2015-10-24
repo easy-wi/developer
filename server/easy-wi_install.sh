@@ -105,7 +105,6 @@ fi
 cyanMessage "Checking for the latest latest installer"
 LATEST_VERSION=`wget -q --timeout=30 -O - http://l.easy-wi.com/installer_version.php | sed 's/^\xef\xbb\xbf//g'`
 
- 
 if [ "`printf "${LATEST_VERSION}\n${INSTALLER_VERSION}" | sort -V | tail -n 1`" != "$LATEST_VERSION" ]; then
     errorAndExit "You are using the old version ${INSTALLER_VERSION}. Please upgrade to version ${LATEST_VERSION} and retry."
 else
@@ -126,10 +125,21 @@ fi
 if [ -f /etc/debian_version ]; then
 
     cyanMessage " "
-    okAndSleep "Updating the system packages to the latest version."
+    okAndSleep "Updating the system packages to the latest version?"
+
+    OPTIONS=("Yes" "Quit")
+    select UPDATE_UPGRADE_SYSTEM in "${OPTIONS[@]}"; do
+        case "$REPLY" in
+            1 ) break;;
+            2 ) errorAndQuit;;
+            *) errorAndContinue;;
+        esac
+    done
+
     apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 
-    if [ "`dpkg-query -s lsb_release 2>/dev/null`" == "" ]; then
+    if [ "`dpkg-query -s lsb-release 2>/dev/null`" == "" ]; then
+        okAndSleep "Installing package lsb-release"
         apt-get install -y lsb-release
     fi
 
@@ -150,7 +160,6 @@ else
     okAndSleep "Detected branch $OSBRANCH"
 fi
 
-# Start with the install process by asking what to do
 cyanMessage " "
 cyanMessage "What shall be installed/prepared?"
 
@@ -1115,11 +1124,22 @@ if [ "$INSTALL" == "GS" ]; then
 
     if [ "$OS" == "debian" -o  "$OS" == "ubuntu" ]; then
 
+        okAndSleep "Installing required packages wget wput screen bzip2 sudo rsync zip unzip"
         apt-get install wget wput screen bzip2 sudo rsync zip unzip -y
 
         if [ "`uname -m`" == "x86_64" ]; then
+
+            okAndSleep "Installing 32bit support for 64bit systems."
+
             if ([ "$OS" == "ubuntu" ] || [ "$OS" == "debian" -a "`printf "${OSVERSION}\n8.0" | sort -V | tail -n 1`" == "$OSVERSION" ]); then
-                apt-get install zlib1g lib32z1 lib32gcc1 libgcc1:i386 lib32readline5 libreadline5:i386 lib32ncursesw5 libncursesw5:i386 lib32stdc++6 lib64stdc++6 zlib1g:i386 -y
+                apt-get install zlib1g lib32z1 lib32gcc1 lib32readline5 lib32ncursesw5 -y
+                apt-get install lib32stdc++6 -y
+                apt-get install lib64stdc++6 -y
+                apt-get install libstdc++6 -y
+                apt-get install libgcc1:i386 -y
+                apt-get install libreadline5:i386 -y
+                apt-get install libncursesw5:i386 -y
+                apt-get install zlib1g:i386 -y
             else
                 apt-get install ia32-libs lib32readline5 lib32ncursesw5 lib32stdc++6 -y
             fi
