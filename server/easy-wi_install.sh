@@ -125,6 +125,8 @@ fi
 # Debian and its derivatives store their version at /etc/debian_version
 if [ -f /etc/debian_version ]; then
 
+    cyanMessage " "
+    okAndSleep "Updating the system packages to the latest version."
     apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 
     if [ "`dpkg-query -s lsb_release 2>/dev/null`" == "" ]; then
@@ -235,9 +237,6 @@ if [ "$INSTALL" == "VS" ]; then
         errorAndExit "Could not detect latest server version"
     fi
 fi
-
-cyanMessage " "
-okAndSleep "Updating the system packages to the latest version."
 
 # If we need to install and configure a webspace than we need to identify the groupID
 if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
