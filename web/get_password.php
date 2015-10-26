@@ -71,14 +71,14 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
                 $query2->execute(array($row['serverid']));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
-                    $query2 = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                    $query2->execute(array($row2['id'], $row['resellerid']));
+                    $query3 = $sql->prepare("UPDATE `gsswitch` SET `jobPending`='Y' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                    $query3->execute(array($row2['id'], $row['resellerid']));
 
-                    $query2 = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND (`action`='re' OR `action`='st') AND `affectedID`=? and `resellerID`=?");
-                    $query2->execute(array($row2['id'], $row['resellerid']));
+                    $query3 = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND (`action`='re' OR `action`='st') AND `affectedID`=? and `resellerID`=?");
+                    $query3->execute(array($row2['id'], $row['resellerid']));
 
-                    $query2 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('R','gs',?,?,?,?,?,NULL,NOW(),'re',?)");
-                    $query2->execute(array($row['serverid'], $row['resellerid'], $row2['id'], $row2['userid'], $row2['name'], $row['resellerid']));
+                    $query3 = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('R','gs',?,?,?,?,?,NULL,NOW(),'re',?)");
+                    $query3->execute(array($row['serverid'], $row['resellerid'], $row2['id'], $row2['userid'], $row2['name'], $row['resellerid']));
                 }
 
                 $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
