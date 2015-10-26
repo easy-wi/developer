@@ -215,11 +215,7 @@ class masterServer {
             $imageServer = $this->getPreferdImageServer($preferedServer, $ftpServers);
         }
 
-        if (!isset($imageServer) or !$imageServer) {
-            $imageServer = 'easywi';
-        }
-
-        if ($this->updates == 2) {
+        if (!isset($imageServer) or !$imageServer or $this->updates == 2) {
             $imageServer = 'none';
         }
 
@@ -255,17 +251,7 @@ class masterServer {
         $this->shellScript .= 'BOMRM="sed \"\'s/^\xef\xbb\xbf//g\'\""' . "\n";
         $this->shellScript .= 'PATTERN="\.log\|\.txt\|\.cfg\|\.vdf\|\.db\|\.dat\|\.ztmp\|\.blib\|log\/\|logs\/\|downloads\/\|DownloadLists\/\|metamod\/\|amxmodx\/\|hl\/\|hl2\/\|cfg\/\|addons\/\|bin\/\|classes/"' . "\n";
 
-        if ($this->imageserver == 'easywi') {
-
-            $this->shellScript .= 'if [ "`which rsync`" != "" ]; then' . "\n";
-            $this->shellScript .= 'SYNCTOOL="rsync"' . "\n";
-            $this->shellScript .= 'SYNCCMD="rsync -azuvx 84.200.78.232::easy-wi"' . "\n";
-            $this->shellScript .= 'else' . "\n";
-            $this->shellScript .= 'SYNCTOOL="wget"' . "\n";
-            $this->shellScript .= 'SYNCCMD="wget -r -N -l inf -nH --no-check-certificate --cut-dirs=1 ftp://imageuser:BMpRP4HEORkKGj@84.200.78.232"' . "\n";
-            $this->shellScript .= 'fi' . "\n";
-
-        } else if ($this->imageserver != 'none') {
+        if ($this->imageserver != 'none') {
 
             $this->shellScript .= 'if [ "`which rsync`" != "" -a "`echo ' . $this->imageserver . ' | grep -E \'^ftp(s|)\:(.*)\'`" == "" ]; then' . "\n";
             $this->shellScript .= 'SYNCTOOL="rsync"' . "\n";
