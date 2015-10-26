@@ -156,20 +156,6 @@ function updatesAddonSnapshots {
     update "${1}_snapshot_${3}.txt" "$DOWNLOAD_URL" "${1}-${3}" "masteraddons"
 }
 
-function updatesAddonStables {
-
-    cyanMessage "Searching updates for $1 stable"
-
-    if [ "$1" == "sourcemod" ]; then
-        DOWNLOAD_URL=`lynx -dump www.sourcemod.net/downloads-new.php?branch=stable | egrep -o "http:.*sourcemod-.*-linux.*" | sort -n | tail -1`
-    else
-        PAGE_URL=`lynx -dump www.metamodsource.net/ | egrep -o "http:.*mmsource-.*-linux.*" | tail -1`
-        DOWNLOAD_URL=`lynx -dump $PAGE_URL | grep -v "www.sourcemod.net|www.metamodsource.net" | egrep -o "http:.*sourcemod-.*-linux.*|http:.*mmsource-.*-linux.*" | tail -1`
-    fi
-
-    update ${1}_stable.txt "$DOWNLOAD_URL" "$1" "masteraddons"
-}
-
 function fileUpdate {
 
     checkCreateVersionFile "$1"
@@ -223,11 +209,9 @@ checkCreateFolder $HOME/versions
 
 case $1 in
     "mta") updateMTA;;
-    "mms") updatesAddonStables "metamod";;
-    "mms_snapshot") updatesAddonSnapshots "metamod" "1.10" "stable";;
+    "mms"|"mms_snapshot") updatesAddonSnapshots "metamod" "1.10" "stable";;
     "mms_dev") updatesAddonSnapshots "metamod" "1.11" "dev";;
-    "sm") updatesAddonStables "sourcemod";;
-    "sm_snapshot") updatesAddonSnapshots "sourcemod" "1.7" "stable";;
+    "sm"|"sm_snapshot") updatesAddonSnapshots "sourcemod" "1.7" "stable";;
     "sm_dev") updatesAddonSnapshots "sourcemod" "1.8" "dev";;
     *) cyanMessage "Usage: ${0} mta|mms|mms_snapshot|mms_dev|sm|sm_snapshot|sm_dev";;
 esac
