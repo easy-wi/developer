@@ -44,6 +44,10 @@ function redMessage {
     echo -e "\\033[31;1m${@}\033[0m"
 }
 
+function yellowMessage {
+	echo -e "\\033[33;1m${@}\033[0m"
+}
+
 function errorAndQuit {
     errorAndExit "Exit now!"
 }
@@ -87,6 +91,13 @@ function backUpFile {
     fi
 }
 
+function checkInstall {
+    if [ "`dpkg-query -s $1 2>/dev/null`" == "" ]; then
+        okAndSleep "Installing package $1"
+        apt-get install -y $1
+    fi
+}
+
 INSTALLER_VERSION="1.0"
 OS=""
 USERADD=`which useradd`
@@ -125,7 +136,7 @@ fi
 if [ -f /etc/debian_version ]; then
 
     cyanMessage " "
-    okAndSleep "Updating the system packages to the latest version?"
+    okAndSleep "Update the system packages to the latest version?"
 
     OPTIONS=("Yes" "Quit")
     select UPDATE_UPGRADE_SYSTEM in "${OPTIONS[@]}"; do
@@ -138,10 +149,8 @@ if [ -f /etc/debian_version ]; then
 
     apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 
-    if [ "`dpkg-query -s lsb-release 2>/dev/null`" == "" ]; then
-        okAndSleep "Installing package lsb-release"
-        apt-get install -y lsb-release
-    fi
+    checkInstall debconf-utils
+    checkInstall lsb-release
 
     OS=`lsb_release -i 2> /dev/null | grep 'Distributor' | awk '{print tolower($3)}'`
     OSVERSION=`lsb_release -r 2> /dev/null | grep 'Release' | awk '{print $2}'`
@@ -183,6 +192,38 @@ elif [ "$OPTION" == "Voicemaster" ]; then
     INSTALL="VS"
 elif [ "$OPTION" == "Webspace Root" ]; then
     INSTALL="WR"
+fi
+
+OTHER_PANEL=0
+
+if [ "$INSTALL" != "VS" ]; then
+    if [ -f /etc/init.d/psa ]; then
+        OTHER_PANEL="Plesk"
+    elif [ -f /usr/local/vesta/bin/v-change-user-password ]; then
+        OTHER_PANEL="VestaCP"
+    elif [ -d /root/confixx ]; then
+        OTHER_PANEL="Confixx"
+    elif [ "`dpkg-query -s froxlor 2>/dev/null`" != "" ]; then
+        OTHER_PANEL="Froxlor"
+    fi
+fi
+
+if [ "OTHER_PANEL" != "0" ]; then
+    if [ "$INSTALL" == "GS" ]; then
+        yellowMessage " "
+        yellowMessage "Warning an installation of the control panel $OTHER_PANEL has been detected."
+        yellowMessage "If you continue the installer might end up breaking $OTHER_PANEL or same parts of Easy-WI might not work."
+        OPTIONS=("Continue" "Quit")
+        select UPDATE_UPGRADE_SYSTEM in "${OPTIONS[@]}"; do
+            case "$REPLY" in
+                1 ) break;;
+                2 ) errorAndQuit;;
+                *) errorAndContinue;;
+            esac
+        done
+    else
+        errorAndExit "Aborting as the risk of breaking the installed panel $OTHER_PANEL is too high."
+    fi
 fi
 
 # Run the domain/IP check up front to avoid late error out.
@@ -440,11 +481,11 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
     fi
 
     if [ "$WEBSERVER" == "Nginx" ]; then
-        apt-get install nginx-full -y
+        checkInstall nginx-full
     elif [ "$WEBSERVER" == "Lighttpd" ]; then
-        apt-get install lighttpd -y
+        checkInstall lighttpd
     elif [ "$WEBSERVER" == "Apache" ]; then
-        apt-get install apache2 -y
+        checkInstall apache2
     fi
 
     if [ "$INSTALL" == "EW" ]; then
@@ -489,7 +530,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
         if ([ "`printf "${OSVERSION}\n8.0" | sort -V | tail -n 1`" == "8.0" -o "$OS" == "ubuntu" ] && [ "`grep '/mariadb/' /etc/apt/sources.list`" == "" ]); then
 
-            apt-get install python-software-properties -y
+            checkInstall python-software-properties
             apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db
 
             if [ "$SQL" == "MariaDB" -a "`apt-cache search mariadb-server-10.0`" == "" ]; then
@@ -599,7 +640,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
         if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
 
-            apt-get install php5-fpm -y
+            checkInstall php5-fpm
 
             if [ "$WEBSERVER" == "Lighttpd" ]; then
                 lighttpd-enable-mod fastcgi
@@ -637,6 +678,7 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
 
     if [ "$OPTION" == "Yes" ]; then
 
+        echo "proftpd-basic shared/proftpd/inetd_or_standalone select standalone" | debconf-set-selections
         apt-get install proftpd -y
 
         if [ -f /etc/proftpd/modules.conf ]; then
@@ -883,7 +925,8 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
     done
 
     if [ "$QUOTAINSTALL" == "Yes" ]; then
-        apt-get install quota -y
+
+        checkInstall quota
 
         cyanMessage " "
         cyanMessage " "
@@ -1017,9 +1060,7 @@ fi
 # No direct root access for masteruser. Only limited access through sudo
 if [ "$INSTALL" == "GS" -o  "$INSTALL" == "WR" ]; then
 
-    cyanMessage " "
-    okAndSleep "Installing sudo"
-    apt-get install sudo -y
+    checkInstall sudo
 
     if [ -f /etc/sudoers -a "`grep $MASTERUSER /etc/sudoers`" == "" ]; then
 
@@ -1098,7 +1139,7 @@ if [ "$INSTALL" == "GS" ]; then
     done
 
     if [ "$OPTION" == "Yes" ]; then
-        apt-get install default-jre -y
+        checkInstall default-jre
     fi
 
     okAndSleep "Creating folders and files"
@@ -1211,8 +1252,7 @@ if [ "$INSTALL" == "EW" ]; then
         errorAndExit "No home dir created! Exiting now!"
     fi
 
-    okAndSleep "Installing required tool unzip"
-    apt-get install unzip -y
+    checkInstall unzip
 
     makeDir /home/easywi_web/htdocs/
     makeDir /home/$MASTERUSER/fpm-pool.d/
@@ -1256,8 +1296,7 @@ if [ "$INSTALL" == "EW" ]; then
 
     if [ "$SSL" == "Yes" ]; then
 
-        okAndSleep "Installing openssl!"
-        apt-get install openssl -y
+        checkInstall openssl
 
         if [ "$WEBSERVER" == "Nginx" ]; then
             SSL_DIR=/etc/nginx/ssl
