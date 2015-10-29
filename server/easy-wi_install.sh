@@ -203,7 +203,7 @@ if [ "$INSTALL" != "VS" ]; then
         OTHER_PANEL="VestaCP"
     elif [ -d /root/confixx ]; then
         OTHER_PANEL="Confixx"
-    elif [ "`dpkg-query -s froxlor 2>/dev/null`" != "" ]; then
+    elif [ -d /var/www/froxlor ]; then
         OTHER_PANEL="Froxlor"
     fi
 fi
