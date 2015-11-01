@@ -269,7 +269,7 @@ if ($loguserip != 'localhost') {
             }
         }
 
-        $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=9 LIMIT 1");
+        $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `type`='C' AND `get`='pn' AND `sub`='pn' LIMIT 1");
         $query->execute();
         $page_active = $query->fetchColumn();
         $page_active = (active_check($page_active)) ? $page_active : 'Y';
