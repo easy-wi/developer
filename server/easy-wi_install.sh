@@ -116,7 +116,7 @@ fi
 cyanMessage "Checking for the latest latest installer"
 LATEST_VERSION=`wget -q --timeout=30 -O - http://l.easy-wi.com/installer_version.php | sed 's/^\xef\xbb\xbf//g'`
 
-if [ "`printf "${LATEST_VERSION}\n${INSTALLER_VERSION}" | sort -V | tail -n 1`" != "$LATEST_VERSION" ]; then
+if [ "`printf "${LATEST_VERSION}\n${INSTALLER_VERSION}" | sort -V | tail -n 1`" != "$INSTALLER_VERSION" ]; then
     errorAndExit "You are using the old version ${INSTALLER_VERSION}. Please upgrade to version ${LATEST_VERSION} and retry."
 else
     okAndSleep "You are using the up to date version ${INSTALLER_VERSION}."
