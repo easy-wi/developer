@@ -148,7 +148,7 @@ function updatesAddonSnapshots {
     cyanMessage "Searching snapshot updates for $1 ($3) and revision $2"
 
     if [ "$1" == "sourcemod" ]; then
-        DOWNLOAD_URL=`lynx -dump "http://www.sourcemod.net/smdrop/$2/" | egrep -o "http:.*sourcemod-.*-linux.*" | tail -1`
+        DOWNLOAD_URL=`lynx -dump "http://www.sourcemod.net/smdrop/$2/" | egrep -o "http:.*sourcemod-.*-linux.*" | tail -2 | head -n 1`
     else
         DOWNLOAD_URL=`lynx -dump "http://www.metamodsource.net/mmsdrop/$2/" | egrep -o "http:.*mmsource-.*-git.*-linux.*" | tail -1`
     fi
