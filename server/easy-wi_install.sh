@@ -251,11 +251,9 @@ if [ "$INSTALL" == "EW" ]; then
     done
 
     if [ "$OPTION" == "Other" ]; then
-
         cyanMessage " "
         cyanMessage "Please specify the IP or domain Easy-Wi should run at."
         read IP_DOMAIN
-
     else
         IP_DOMAIN=$OPTION
     fi
