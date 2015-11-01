@@ -338,12 +338,12 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
 
 } else if (isset($dns) and $ui->st('d', 'get') == 'if' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
 
-    $hlCfg = 'sv_downloadurl "http://' . $dns . '/"
+    $hlCfg = 'sv_downloadurl "http://' . $defaultDns . '/"
 sv_allowdownload "1"
 sv_allowupload "1"';
 
     $codCfg = 'set sv_allowDownload "1"
-set sv_wwwBaseURL "http://' . $dns . '/"
+set sv_wwwBaseURL "http://' . $defaultDns . '/"
 set sv_wwwDlDisconnected "0"
 set sv_wwwDownload "1"';
 
