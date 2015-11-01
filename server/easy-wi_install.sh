@@ -98,7 +98,7 @@ function checkInstall {
     fi
 }
 
-INSTALLER_VERSION="1.0"
+INSTALLER_VERSION="1.1"
 OS=""
 USERADD=`which useradd`
 USERMOD=`which usermod`
@@ -194,7 +194,7 @@ elif [ "$OPTION" == "Webspace Root" ]; then
     INSTALL="WR"
 fi
 
-OTHER_PANEL=0
+OTHER_PANEL=""
 
 if [ "$INSTALL" != "VS" ]; then
     if [ -f /etc/init.d/psa ]; then
@@ -216,7 +216,7 @@ if [ "$INSTALL" != "VS" ]; then
     fi
 fi
 
-if [ "OTHER_PANEL" != "0" ]; then
+if [ "$OTHER_PANEL" != "" ]; then
     if [ "$INSTALL" == "GS" ]; then
         yellowMessage " "
         yellowMessage "Warning an installation of the control panel $OTHER_PANEL has been detected."
@@ -1006,40 +1006,18 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
 
     if [ "$WEBSERVER" == "Nginx" ]; then
 
-        if [ -f /etc/nginx/sites-available/default ]; then
-            cp /etc/nginx/sites-available/default /home/$MASTERUSER/sites-enabled/
-        fi
-
         backUpFile /etc/nginx/nginx.conf
 
-        sed -i "s/\/etc\/nginx\/sites-enabled\/\*;/\/home\/$MASTERUSER\/sites-enabled\/\*;/g" /etc/nginx/nginx.conf
+        if [ "`grep '/home/$MASTERUSER/sites-enabled/' /etc/nginx/nginx.conf`" == "" ]; then
+            sed -i "\/etc\/nginx\/sites-enabled\/\*;/a \ \ \ \ \ \ \ \ include \/home\/$MASTERUSER\/sites-enabled\/\*;" /etc/nginx/nginx.conf
+        fi
 
     elif [ "$WEBSERVER" == "Lighttpd" ]; then
-
-        if [ -f /etc/lighttpd/sites-available/default ]; then
-            cp /etc/lighttpd/sites-available/default /home/$MASTERUSER/sites-enabled/
-        fi
 
         backUpFile /etc/lighttpd/lighttpd.conf
         echo "include_shell \"find /home/$MASTERUSER/sites-enabled/ -maxdepth 1 -type f -exec cat {} \;\"" >> /etc/lighttpd/lighttpd.conf
 
     elif [ "$WEBSERVER" == "Apache" ]; then
-
-        if [ -f /etc/apache2/sites-available/default ]; then
-            cp /etc/apache2/sites-available/default /home/$MASTERUSER/sites-enabled/
-        fi
-
-        if [ -f /etc/apache2/sites-available/default-ssl ]; then
-            cp /etc/apache2/sites-available/default-ssl /home/$MASTERUSER/sites-enabled/
-        fi
-
-        if [ -f /etc/apache2/sites-available/000-default.conf ]; then
-            cp /etc/apache2/sites-available/000-default.conf /home/$MASTERUSER/sites-enabled/
-        fi
-
-        if [ -f /etc/apache2/sites-available/default-ssl.conf ]; then
-            cp /etc/apache2/sites-available/default-ssl.conf /home/$MASTERUSER/sites-enabled/
-        fi
 
         backUpFile /etc/apache2/apache2.conf
 
@@ -1050,15 +1028,17 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
 
         APACHE_VERSION=`apache2 -v | grep 'Server version'`
 
-        if [[ $APACHE_VERSION =~ .*Apache/2.2.* ]]; then
-            sed -i "s/Include sites-enabled\//Include \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
-            sed -i "s/Include \/etc\/apache2\/sites-enabled\//\/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
-        else
-            sed -i "s/IncludeOptional sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
-            sed -i "s/IncludeOptional \/etc\/apache2\/sites-enabled\//IncludeOptional \/home\/$MASTERUSER\/sites-enabled\//g" /etc/apache2/apache2.conf
+        if [ "`grep '/home/$MASTERUSER/sites-enabled/' /etc/apache2/apache2.conf`" == "" ]; then
+            if [[ $APACHE_VERSION =~ .*Apache/2.2.* ]]; then
+                sed -i "/Include sites-enabled\//a Include \/home\/$MASTERUSER\/sites-enabled\/" /etc/apache2/apache2.conf
+                sed -i "/Include \/etc\/apache2\/sites-enabled\//a \/home\/$MASTERUSER\/sites-enabled\/" /etc/apache2/apache2.conf
+            else
+                sed -i "/IncludeOptional sites-enabled\//a IncludeOptional \/home\/$MASTERUSER\/sites-enabled\/*.conf" /etc/apache2/apache2.conf
+                sed -i "/IncludeOptional \/etc\/apache2\/sites-enabled\//a IncludeOptional \/home\/$MASTERUSER\/sites-enabled\/*.conf" /etc/apache2/apache2.conf
+            fi
         fi
 
-        okAndSleep "Aktivating Apache mod_rewrite module."
+        okAndSleep "Activating Apache mod_rewrite module."
         a2enmod rewrite
     fi
 
