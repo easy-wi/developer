@@ -119,16 +119,14 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
             $vhostObject = new HttpdManagement($webMasterID, $reseller_id);
 
             if ($vhostObject != false and $vhostObject->ssh2Connect()) {
-
                 $vhostObject->changePassword($id);
                 $template_file = $sprache->ftpPasswordChanged;
             }
-
         }
-
     } else {
         $template_file = 'userpanel_web_vhost_pw.tpl';
     }
+
 } else if (isset($webMasterID, $dns, $usageType, $phpConfigurationMaster, $vhostTemplate) and $usageType == 'W' and $ui->st('d', 'get') == 'dm' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['ws']))) {
 
     $id = $ui->id('id', 10, 'get');

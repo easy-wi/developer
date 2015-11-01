@@ -215,8 +215,6 @@ if ($currentStep == 1) {
         $displayToUser .= "<div class='pager'><a href='?step=2${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
     }
 
-} else if (count($systemCheckError) > 0) {
-
 }
 
 if ($currentStep == 2 and count($systemCheckError) == 0) {
@@ -385,9 +383,24 @@ if ($currentStep == 4 and count($systemCheckError) == 0) {
 
     try {
 
-        require_once(EASYWIDIR . '/stuff/methods/tables_add.php');
+        require_once(EASYWIDIR . '/stuff/methods/class_tables.php');
 
-        $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_db_tables_create}</div>";
+        $tables = new Tables($db);
+        $tables->createMissingTables();
+
+        foreach($tables->getExecutedSql() as $change){
+            $response->add($change . '<br>');
+        }
+
+        if (strlen($response->response) > 0) {
+
+            $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_db_tables_create}</div>";
+            $displayToUser .= "<div class='alert alert-success'>{$response->response}</div>";
+
+        } else {
+            $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_db_tables_create}</div>";
+        }
+
         $displayToUser .= "<div class='pager'><a href='?step=5${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
 
     } catch(PDOException $error) {
@@ -416,7 +429,16 @@ if ($currentStep == 5 and count($systemCheckError) == 0) {
 
         $response = new UpdateResponse();
 
-        require_once(EASYWIDIR . '/stuff/methods/tables_repair.php');
+        require_once(EASYWIDIR . '/stuff/methods/class_tables.php');
+
+        $tables = new Tables($db);
+        $response->add('Repairing tables if needed.<br>');
+        $tables->correctTablesStatus();
+        $tables->correctExistingTables();
+
+        foreach($tables->getExecutedSql() as $change){
+            $response->add($change . '<br>');
+        }
 
         if (strpos($response->response, 'Error: no such table:') !== false) {
 
@@ -1099,8 +1121,8 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
         <ul class="nav nav-pills pull-right">
             <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Twitter</a></li>
             <li><a href="https://github.com/easy-wi/developer" target="_blank"><i class="fa fa-github fa-fw"></i> Github</a></li>
-            <li><a href="https://easy-wi.com/forum/" target="_blank" title="easy-wi.com wiki"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
-            <li><a href="http://wiki.easy-wi.com" target="_blank" title="easy-wi.com forum"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
+            <li><a href="https://easy-wi.com/forum/" target="_blank" title="easy-wi.com forum"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
+            <li><a href="https://easy-wi.com/wiki/" target="_blank" title="easy-wi.com wiki"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
             <li><a href="?step=<?php echo $currentStep;?>&amp;language=de"><img src="../images/flags/de.png"></a></li>
             <li><a href="?step=<?php echo $currentStep;?>&amp;language=en"><img src="../images/flags/uk.png"></a></li>
             <li><a href="?step=<?php echo $currentStep;?>&amp;language=dk"><img src="../images/flags/dk.png"></a></li>
