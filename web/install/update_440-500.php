@@ -110,7 +110,7 @@ if (isset($include) and $include == true) {
     }
 
     $response->add('Repairing tables if needed.');
-    include(EASYWIDIR . '/stuff/methods/tables_repair.php');
+    $tables->correctExistingTables();
 
     $query = $sql->prepare("UPDATE `servertypes` SET `useQueryPort`=2 WHERE `gameq` IN ('armedassault2', 'armedassault2oa', 'armedassault3', 'bf2', 'cube2', 'mta', 'ut', 'ut2004', 'ut3')");
     $query->execute();
@@ -119,7 +119,7 @@ if (isset($include) and $include == true) {
     $query->execute();
 
     // Add new games if not existing
-    include(EASYWIDIR . '/stuff/methods/gameslist.php');
+    include(EASYWIDIR . '/stuff/data/gameslist.php');
 
     $addGames = array('nmrih', 'projectcars');
 

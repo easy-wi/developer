@@ -1,10 +1,9 @@
 <?php
 
 /**
- * File: tables_add.php.
+ * File: table_modules.php.
  * Author: Ulrich Block
- * Date: 07.05.12
- * Time: 20:27
+ * Date: 17.10.15
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
@@ -37,3 +36,13 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
+#https://github.com/easy-wi/developer/issues/61 add module management
+$defined['modules'] = array(
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+    'get' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'file' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'sub' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'type' => array("Type"=>"enum('A','C','P','U')","Null"=>"YES","Key"=>"","Default"=>"A","Extra"=>"")
+);

@@ -1,10 +1,9 @@
 <?php
 
 /**
- * File: tables_add.php.
+ * File: table_lendstats.php.
  * Author: Ulrich Block
- * Date: 07.05.12
- * Time: 20:27
+ * Date: 17.10.15
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
@@ -37,3 +36,12 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
+$defined['lendstats'] = array(
+    'lendDate' => array("Type"=>"datetime","Null"=>"NO","Key"=>"PRI","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
+    'serverID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
+    'serverType' => array("Type"=>"enum('v','g')","Null"=>"NO","Key"=>"PRI","Default"=>"g","Extra"=>""),
+    'lendtime' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'slots' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>"")
+);

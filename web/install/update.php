@@ -77,10 +77,11 @@ if (!isset($sql)) {
 
     include(EASYWIDIR . '/stuff/config.php');
 
+    $dbConnect['db'] = $db;
+
     try {
         $sql = new PDO("mysql:host=$host;dbname=$db", $user, $pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-    }
-    catch(PDOException $error) {
+    } catch(PDOException $error) {
         echo $error->getMessage();
         die();
     }
@@ -136,122 +137,131 @@ if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($e
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-if (versioncheck ($version, '2.00', 'update_1x-20.php', $response)) {
+if (versioncheck($version, '2.00', 'update_1x-20.php', $response)) {
     $version = '2.00';
 }
-if (versioncheck ($version, '2.01', 'update_200-201.php', $response)) {
+if (versioncheck($version, '2.01', 'update_200-201.php', $response)) {
     $version = '2.01';
 }
-if (versioncheck ($version, '2.02', 'update_201-202.php', $response)) {
+if (versioncheck($version, '2.02', 'update_201-202.php', $response)) {
     $version = '2.02';
 }
-if (versioncheck ($version, '2.03', 'update_202-203.php', $response)) {
+if (versioncheck($version, '2.03', 'update_202-203.php', $response)) {
     $version = '2.03';
 }
-if (versioncheck ($version, '2.04', 'update_203-204.php', $response)) {
+if (versioncheck($version, '2.04', 'update_203-204.php', $response)) {
     $version = '2.04';
 }
-if (versioncheck ($version, '2.05', 'update_204-205.php', $response)) {
+if (versioncheck($version, '2.05', 'update_204-205.php', $response)) {
     $version = '2.05';
 }
-if (versioncheck ($version, '2.06', 'update_205-206.php', $response)) {
+if (versioncheck($version, '2.06', 'update_205-206.php', $response)) {
     $version = '2.06';
 }
-if (versioncheck ($version, '2.07', 'update_206-207.php', $response)) {
+if (versioncheck($version, '2.07', 'update_206-207.php', $response)) {
     $version = '2.07';
 }
-if (versioncheck ($version, '2.08', 'update_207-208.php', $response)) {
+if (versioncheck($version, '2.08', 'update_207-208.php', $response)) {
     $version = '2.08';
 }
-if (versioncheck ($version, '2.09', 'update_208-209.php', $response)) {
+if (versioncheck($version, '2.09', 'update_208-209.php', $response)) {
     $version = '2.09';
 }
-if (versioncheck ($version, '2.10', 'update_209-210.php', $response)) {
+if (versioncheck($version, '2.10', 'update_209-210.php', $response)) {
     $version = '2.10';
 }
 
 $response->add('Adding tables if needed.');
-include(EASYWIDIR . '/stuff/methods/tables_add.php');
 
-if (versioncheck ($version, '2.11', 'update_210-211.php', $response)) {
+require_once(EASYWIDIR . '/stuff/methods/class_tables.php');
+
+$tables = new Tables($dbConnect['db']);
+$tables->createMissingTables();
+$tables->correctTablesStatus();
+
+if (versioncheck($version, '2.11', 'update_210-211.php', $response)) {
     $version = '2.11';
 }
-if (versioncheck ($version, '3.00', 'update_211-300.php', $response)) {
+if (versioncheck($version, '3.00', 'update_211-300.php', $response)) {
     $version = '3.00';
 }
-if (versioncheck ($version, '3.01', 'update_300-301.php', $response)) {
+if (versioncheck($version, '3.01', 'update_300-301.php', $response)) {
     $version = '3.01';
 }
-if (versioncheck ($version, '3.02', 'update_301-302.php', $response)) {
+if (versioncheck($version, '3.02', 'update_301-302.php', $response)) {
     $version = '3.02';
 }
-if (versioncheck ($version, '3.03', 'update_302-303.php', $response)) {
+if (versioncheck($version, '3.03', 'update_302-303.php', $response)) {
     $version = '3.03';
 }
-if (versioncheck ($version, '3.04', 'update_303-304.php', $response)) {
+if (versioncheck($version, '3.04', 'update_303-304.php', $response)) {
     $version = '3.04';
 }
-if (versioncheck ($version, '3.05', 'update_304-305.php', $response)) {
+if (versioncheck($version, '3.05', 'update_304-305.php', $response)) {
     $version = '3.05';
 }
-if (versioncheck ($version, '3.06', 'update_305-306.php', $response)) {
+if (versioncheck($version, '3.06', 'update_305-306.php', $response)) {
     $version = '3.06';
 }
-if (versioncheck ($version, '3.07', 'update_306-307.php', $response)) {
+if (versioncheck($version, '3.07', 'update_306-307.php', $response)) {
     $version = '3.07';
 }
-if (versioncheck ($version, '3.08', 'update_307-308.php', $response)) {
+if (versioncheck($version, '3.08', 'update_307-308.php', $response)) {
     $version = '3.08';
 }
-if (versioncheck ($version, '3.09', 'update_308-309.php', $response)) {
+if (versioncheck($version, '3.09', 'update_308-309.php', $response)) {
     $version = '3.09';
 }
-if (versioncheck ($version, '3.10', 'update_309-310.php', $response)) {
+if (versioncheck($version, '3.10', 'update_309-310.php', $response)) {
     $version = '3.10';
 }
-if (versioncheck ($version, '3.20', 'update_310-320.php', $response)) {
+if (versioncheck($version, '3.20', 'update_310-320.php', $response)) {
     $version = '3.20';
 }
-if (versioncheck ($version, '3.30', 'update_320-330.php', $response)) {
+if (versioncheck($version, '3.30', 'update_320-330.php', $response)) {
     $version = '3.30';
 }
-if (versioncheck ($version, '3.40', 'update_330-340.php', $response)) {
+if (versioncheck($version, '3.40', 'update_330-340.php', $response)) {
     $version = '3.40';
 }
-if (versioncheck ($version, '3.60', 'update_340-360.php', $response)) {
+if (versioncheck($version, '3.60', 'update_340-360.php', $response)) {
     $version = '3.60';
 }
-if (versioncheck ($version, '3.70', 'update_360-370.php', $response)) {
+if (versioncheck($version, '3.70', 'update_360-370.php', $response)) {
     $version = '3.70';
 }
-if (versioncheck ($version, '4.00', 'update_370-400.php', $response)) {
+if (versioncheck($version, '4.00', 'update_370-400.php', $response)) {
     $version = '4.00';
 }
-if (versioncheck ($version, '4.10', 'update_400-410.php', $response)) {
+if (versioncheck($version, '4.10', 'update_400-410.php', $response)) {
     $version = '4.10';
 }
-if (versioncheck ($version, '4.11', 'update_410-411.php', $response)) {
+if (versioncheck($version, '4.11', 'update_410-411.php', $response)) {
     $version = '4.11';
 }
-if (versioncheck ($version, '4.20', 'update_411-420.php', $response)) {
+if (versioncheck($version, '4.20', 'update_411-420.php', $response)) {
     $version = '4.20';
 }
-if (versioncheck ($version, '4.30', 'update_420-430.php', $response)) {
+if (versioncheck($version, '4.30', 'update_420-430.php', $response)) {
     $version = '4.30';
 }
-if (versioncheck ($version, '4.40', 'update_430-440.php', $response)) {
+if (versioncheck($version, '4.40', 'update_430-440.php', $response)) {
     $version = '4.40';
 }
-if (versioncheck ($version, '5.00', 'update_440-500.php', $response)) {
+if (versioncheck($version, '5.00', 'update_440-500.php', $response)) {
     $version = '5.00';
 }
-if (versioncheck ($version, '5.10', 'update_500-510.php', $response)) {
+if (versioncheck($version, '5.10', 'update_500-510.php', $response)) {
     $version = '5.10';
 }
 
 $response->add('Repairing tables if needed.');
+$tables->correctExistingTables();
 
-include(EASYWIDIR . '/stuff/methods/tables_repair.php');
+foreach($tables->getExecutedSql() as $change){
+    $response->add($change);
+}
+
 include(EASYWIDIR . '/stuff/methods/tables_entries_repair.php');
 
 # Ende

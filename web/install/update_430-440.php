@@ -216,9 +216,6 @@ if (isset($include) and $include == true) {
         $displayToUser = '';
     }
 
-    $response->add('Adding tables if needed.');
-    include(EASYWIDIR . '/stuff/methods/tables_add.php');
-
     $insert = $sql->prepare("INSERT INTO `easywi_statistics_current` (`userID`) VALUES (?) ON DUPLICATE KEY UPDATE `userID`=`userID`");
     $insert->execute(array(0));
 
@@ -369,7 +366,7 @@ if (isset($include) and $include == true) {
     $query->execute();
 
     $response->add('Repairing tables if needed.');
-    include(EASYWIDIR . '/stuff/methods/tables_repair.php');
+    $tables->correctExistingTables();
 
 } else {
     echo "Error: this file needs to be included by the updater!<br />";

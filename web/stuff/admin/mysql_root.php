@@ -78,14 +78,16 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
 
     $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
 
-    if (!isset($alreadyRepaired)) {
-        $response->add('Adding tables if needed.');
-        include(EASYWIDIR . '/stuff/methods/tables_add.php');
-    }
+    require_once(EASYWIDIR . '/stuff/methods/class_tables.php');
+    $tables = new Tables($dbConnect['db']);
+    $response->add('Adding tables if needed.');
+    $tables->createMissingTables();
+    $response->add('Repairing tables if needed.');
+    $tables->correctTablesStatus();
+    $tables->correctExistingTables();
 
-    if (!isset($alreadyRepaired)) {
-        $response->add('Repairing tables if needed.');
-        include(EASYWIDIR . '/stuff/methods/tables_repair.php');
+    foreach($tables->getExecutedSql() as $change){
+        $response->add($change . '<br>');
     }
 
     $response->add('Fixing data entries if needed.');
@@ -130,7 +132,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
 
 } else if ($ui->st('d', 'get') == 'rg') {
 
-    include(EASYWIDIR . '/stuff/methods/gameslist.php');
+    include(EASYWIDIR . '/stuff/data/gameslist.php');
 
     if ($ui->st('action', 'post') == 'rg') {
 
@@ -138,7 +140,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
         $array = (array) $ui->pregw('games', 255, 'post');
 
         $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-        $query2 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`copyStartBinary`,`resellerid`) VALUES (:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:copyStartBinary,:resellerid)");
+        $query2 = $sql->prepare("INSERT INTO `servertypes` (`type`,`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`copyStartBinary`,`resellerid`) VALUES ('',:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:copyStartBinary,:resellerid)");
         $query3 = $sql->prepare("UPDATE `servertypes` SET `steamgame`=:steamgame,`appID`=:appID,`updates`=:updates,`shorten`=:shorten,`description`=:description,`gamebinary`=:gamebinary,`gamebinaryWin`=:gamebinaryWin,`binarydir`=:binarydir,`modfolder`=:modfolder,`fps`=:fps,`slots`=:slots,`map`=:map,`cmd`=:cmd,`modcmds`=:modcmds,`tic`=:tic,`gameq`=:gameq,`gamemod`=:gamemod,`gamemod2`=:gamemod2,`configs`=:configs,`configedit`=:configedit,`portStep`=:portStep,`portMax`=:portMax,`portOne`=:portOne,`portTwo`=:portTwo,`portThree`=:portThree,`portFour`=:portFour,`portFive`=:portFive,`useQueryPort`=:useQueryPort,`mapGroup`=:mapGroup,`protected`=:protected,`protectedSaveCFGs`=:protectedSaveCFGs,`ramLimited`=:ramLimited,`os`=:os,`copyStartBinary`=:copyStartBinary WHERE `shorten`=:shorten AND `resellerid`=:resellerid LIMIT 1");
 
         foreach ($gameImages as $image) {
@@ -185,7 +187,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
 
 } else if ($ui->st('d', 'get') == 'ra') {
 
-    require_once(EASYWIDIR . '/stuff/methods/addonslist.php');
+    require_once(EASYWIDIR . '/stuff/data/addonslist.php');
 
     if ($ui->st('action', 'post') == 'ra') {
 

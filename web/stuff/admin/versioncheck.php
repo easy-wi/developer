@@ -205,20 +205,10 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
                 $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
 
-                if (!isset($alreadyRepaired)) {
-                    $response->add('Adding tables if needed.');
-                    include(EASYWIDIR . '/stuff/methods/tables_add.php');
-                }
-
                 if ($ewVersions['cVersion'] < $ewVersions['version'] and is_file(EASYWIDIR . '/install/update.php')) {
                     include(EASYWIDIR . '/install/update.php');
                 } else {
                     $response->addError('Can not open: '. EASYWIDIR . '/install/update.php');
-                }
-
-                if (!isset($alreadyRepaired)) {
-                    $response->add('Repairing tables if needed.');
-                    include(EASYWIDIR . '/stuff/methods/tables_repair.php');
                 }
 
             }

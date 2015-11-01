@@ -1,10 +1,9 @@
 <?php
 
 /**
- * File: tables_add.php.
+ * File: table_translations.php.
  * Author: Ulrich Block
- * Date: 07.05.12
- * Time: 20:27
+ * Date: 17.10.15
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
@@ -37,3 +36,11 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
+$defined['translations'] = array(
+    'type' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'lang' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'transID' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
+    'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
+    'text' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
+);

@@ -720,7 +720,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `page_settings` (`id`,`pageurl`,`resellerid`) VALUES (1,?,0) ON DUPLICATE KEY UPDATE `pageurl`=VALUES(`pageurl`)");
             $query->execute(array($_POST['installUrl']));
 
-            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`resellerid`) VALUES (1,'default',?,?,?,?,?,0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`)");
+            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`cronjob_ips`,`licence`,`resellerid`) VALUES (1,'default',?,?,?,?,?,'','',0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`)");
             $query->execute(array($_POST['language'], $_POST['prefix1'], $_POST['prefix2'], $_POST['faillogins'], $_POST['brandname']));
 
             $query = $sql->prepare("INSERT INTO `settings_email` (`reseller_id`,`email_setting_name`,`email_setting_value`) VALUES (0,'email',?) ON DUPLICATE KEY UPDATE `email_setting_value`=VALUES(`email_setting_value`)");
@@ -817,13 +817,13 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
         try {
 
-            include(EASYWIDIR . '/stuff/methods/gameslist.php');
+            include(EASYWIDIR . '/stuff/data/gameslist.php');
 
             $displayToUser .= "<div class='pager'><a href='?step=9${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
             $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_gameserver_data}</div>";
 
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=0 LIMIT 1");
-            $query2 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`copyStartBinary`) VALUES (:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:copyStartBinary)");
+            $query2 = $sql->prepare("INSERT INTO `servertypes` (`type`,`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`copyStartBinary`) VALUES ('',:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:copyStartBinary)");
             $query3 = $sql->prepare("UPDATE `servertypes` SET `steamgame`=:steamgame,`appID`=:appID,`updates`=:updates,`shorten`=:shorten,`description`=:description,`gamebinary`=:gamebinary,`gamebinaryWin`=:gamebinaryWin,`binarydir`=:binarydir,`modfolder`=:modfolder,`fps`=:fps,`slots`=:slots,`map`=:map,`cmd`=:cmd,`modcmds`=:modcmds,`tic`=:tic,`gameq`=:gameq,`gamemod`=:gamemod,`gamemod2`=:gamemod2,`configs`=:configs,`configedit`=:configedit,`portStep`=:portStep,`portMax`=:portMax,`portOne`=:portOne,`portTwo`=:portTwo,`portThree`=:portThree,`portFour`=:portFour,`portFive`=:portFive,`useQueryPort`=:useQueryPort,`mapGroup`=:mapGroup,`protected`=:protected,`protectedSaveCFGs`=:protectedSaveCFGs,`ramLimited`=:ramLimited,`os`=:os,`copyStartBinary`=:copyStartBinary WHERE `shorten`=:shorten AND `resellerid`=0 LIMIT 1");
 
             foreach ($gameImages as $image) {
@@ -850,7 +850,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
             }
 
-            require_once(EASYWIDIR . '/stuff/methods/addonslist.php');
+            require_once(EASYWIDIR . '/stuff/data/addonslist.php');
 
             $query = $sql->prepare("SELECT `id` FROM `addons` WHERE `addon`=? AND `resellerid`=0 LIMIT 1");
             $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`depending`,`paddon`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`rmcmd`,`resellerid`) VALUES ('Y',?,?,?,?,?,?,?,?,?,0)");
@@ -870,20 +870,25 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
                         if (strlen($addon[':depends']) > 0) {
                             $query->execute(array($addon[':depends']));
-                            $dependsID = $query->fetchColumn();
+                            $dependsID = (int) $query->fetchColumn();
                         }
 
                         $query2->execute(array($dependsID, $addon[':paddon'], $addon[':addon'], $addon[':type'], $addon[':folder'], $addon[':menudescription'], $addon[':configs'], $addon[':cmd'], $addon[':rmcmd']));
 
-                        $addonID = $sql->lastInsertId();
+                        $addonID = (int) $sql->lastInsertId();
 
-                        foreach ($addon[':supported'] as $supported) {
+                        if (preg_match('/^[\d]{1,}$/', $addonID) and $addonID != 0) {
+                            foreach ($addon[':supported'] as $supported) {
 
-                            $query3->execute(array($supported));
+                                $query3->execute(array($supported));
+                                $serverTypeID = (int) $query3->fetchColumn();
 
-                            $query4->execute(array($addonID,$query3->fetchColumn()));
-
+                                if (preg_match('/^[\d]{1,}$/', $serverTypeID) and $serverTypeID != 0) {
+                                    $query4->execute(array($addonID, $serverTypeID));
+                                }
+                            }
                         }
+
                         $displayToUser .= "<div class='alert alert-success'>{$addon[':menudescription']}</div>";
                     }
                 }

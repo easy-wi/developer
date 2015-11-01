@@ -1,10 +1,9 @@
 <?php
 
 /**
- * File: tables_add.php.
+ * File: table_voice_server_stats.php.
  * Author: Ulrich Block
- * Date: 07.05.12
- * Time: 20:27
+ * Date: 17.10.15
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
@@ -37,3 +36,15 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
+$defined['voice_server_stats'] = array(
+    'sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
+    'date' => array("Type"=>"date","Null"=>"NO","Key"=>"PRI","Default"=>"2015-01-01","Extra"=>""),
+    'mid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'installed' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"0.00","Extra"=>""),
+    'used' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"0.00","Extra"=>""),
+    'traffic' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'uid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'count' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),
+    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
+);
