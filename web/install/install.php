@@ -744,7 +744,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `page_settings` (`id`,`pageurl`,`resellerid`) VALUES (1,?,0) ON DUPLICATE KEY UPDATE `pageurl`=VALUES(`pageurl`)");
             $query->execute(array($_POST['installUrl']));
 
-            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`cronjob_ips`,`licence`,`resellerid`) VALUES (1,'default',?,?,?,?,?,'','',0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`)");
+            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`cronjob_ips`,`licence`,`imageserver`,`resellerid`) VALUES (1,'default',?,?,?,?,?,'','','ew-image.fvip.de::easy-wi',0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`),`imageserver`=VALUES(`imageserver`)");
             $query->execute(array($_POST['language'], $_POST['prefix1'], $_POST['prefix2'], $_POST['faillogins'], $_POST['brandname']));
 
             $query = $sql->prepare("INSERT INTO `settings_email` (`reseller_id`,`email_setting_name`,`email_setting_value`) VALUES (0,'email',?) ON DUPLICATE KEY UPDATE `email_setting_value`=VALUES(`email_setting_value`)");
