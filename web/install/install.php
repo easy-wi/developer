@@ -42,6 +42,19 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL|E_STRICT);
 define('EASYWIDIR', dirname(dirname(__FILE__)));
 
+class UpdateResponse {
+    public $response = '';
+    function __construct() {
+        $this->response = '';
+    }
+    function add ($newtext) {
+        $this->response .= $newtext;
+    }
+    function __destruct() {
+        unset($this->response);
+    }
+}
+
 require_once(EASYWIDIR . '/stuff/methods/functions.php');
 require_once(EASYWIDIR . '/stuff/methods/vorlage.php');
 
@@ -383,13 +396,17 @@ if ($currentStep == 4 and count($systemCheckError) == 0) {
 
     try {
 
+        $response = new UpdateResponse();
+
         require_once(EASYWIDIR . '/stuff/methods/class_tables.php');
 
         $tables = new Tables($db);
         $tables->createMissingTables();
 
         foreach($tables->getExecutedSql() as $change){
-            $response->add($change . '<br>');
+            if ($change) {
+                $response->add($change . '<br>');
+            }
         }
 
         if (strlen($response->response) > 0) {
@@ -404,28 +421,13 @@ if ($currentStep == 4 and count($systemCheckError) == 0) {
         $displayToUser .= "<div class='pager'><a href='?step=5${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
 
     } catch(PDOException $error) {
-
-        $systemCheckError['tables_add.php'] = "<div class='alert alert-danger'>{$error->getMessage()}</div>";
-
+        $systemCheckError['tables_add.php'] = "<div class='alert alert-danger'>{$error->getMessage()}" . implode("\r\n", $tables->getExecutedSql()) . "</div>";
     }
 }
 
 if ($currentStep == 5 and count($systemCheckError) == 0) {
 
     try {
-
-        class UpdateResponse {
-            public $response = '';
-            function __construct() {
-                $this->response = '';
-            }
-            function add ($newtext) {
-                $this->response .= $newtext;
-            }
-            function __destruct() {
-                unset($this->response);
-            }
-        }
 
         $response = new UpdateResponse();
 

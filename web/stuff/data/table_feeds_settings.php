@@ -49,7 +49,7 @@ $defined['feeds_settings'] = array(
     'maxChars' => array("Type"=>"int(6) unsigned","Null"=>"NO","Key"=>"","Default"=>"300","Extra"=>""),
     'newsAmount' => array("Type"=>"smallint(6) unsigned","Null"=>"NO","Key"=>"","Default"=>"4","Extra"=>""),
     'updateMinutes' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"15","Extra"=>""),
-    'lastUpdate' => array("Type"=>"datetime","Null"=>"YES","Key"=>"","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
+    'lastUpdate' => array("Type"=>"timestamp","Null"=>"YES","Key"=>"","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
     'maxKeep' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"200","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );

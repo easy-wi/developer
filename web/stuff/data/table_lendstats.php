@@ -38,7 +38,7 @@
  */
 
 $defined['lendstats'] = array(
-    'lendDate' => array("Type"=>"datetime","Null"=>"NO","Key"=>"PRI","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
+    'lendDate' => array("Type"=>"timestamp","Null"=>"NO","Key"=>"PRI","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
     'serverID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
     'serverType' => array("Type"=>"enum('v','g')","Null"=>"NO","Key"=>"PRI","Default"=>"g","Extra"=>""),
     'lendtime' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),

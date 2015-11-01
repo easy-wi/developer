@@ -46,6 +46,7 @@ class Tables {
     private $tableDefinitions = array();
     private $tableConfigurations = array();
     private $executedSql = array();
+    private $errors = array();
 
     function __construct($dbName) {
 
@@ -97,27 +98,33 @@ class Tables {
 
         foreach (array_keys($this->tableDefinitions) as $tableName) {
 
-            $query = $this->sql->prepare("SHOW COLUMNS FROM `{$tableName}`");
-            $query->execute(array($this->dbName, $tableName));
+            try {
 
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $this->tableConfigurations[$tableName][$row['Field']] = array(
-                    'Type' => $row['Type'],
-                    'Null' => $row['Null'],
-                    'Key' => $row['Key'],
-                    'Default' => $row['Default'],
-                    'Extra' => $row['Extra']
-                );
+                $query = $this->sql->prepare("SHOW COLUMNS FROM `{$tableName}`");
+                $query->execute(array($this->dbName, $tableName));
+
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                    $this->tableConfigurations[$tableName][$row['Field']] = array(
+                        'Type' => $row['Type'],
+                        'Null' => $row['Null'],
+                        'Key' => $row['Key'],
+                        'Default' => $row['Default'],
+                        'Extra' => $row['Extra']
+                    );
+                }
+
+            } catch(PDOException $error) {
+                $this->errors[] = $error;
             }
         }
     }
 
     private function executeChange($sqlStatement) {
 
+        $this->executedSql[] = $sqlStatement;
+
         $query = $this->sql->prepare($sqlStatement);
         $query->execute();
-
-        $this->executedSql[] = $sqlStatement;
     }
 
     private function correctTableStatus($tableName) {
@@ -160,19 +167,15 @@ class Tables {
             return "DEFAULT '{$definitions['Default']}'";
         }
 
-        if ($definitions['Null'] == 'NO') {
-            return true;
-        }
-
         if ($definitions['Null'] == 'YES' and $definitions['Default'] == '') {
             return "DEFAULT NULL";
         }
 
-        if ($definitions['Default'] == '' and strpos($definitions['Type'], 'char') !== false) {
+        if ($definitions['Null'] == 'NO' and $definitions['Default'] == '' and strpos($definitions['Type'], 'char') !== false) {
             return "DEFAULT ''";
         }
 
-        if ($definitions['Default'] == '' and strpos($definitions['Type'], 'int') !== false) {
+        if ($definitions['Null'] == 'NO' and $definitions['Default'] == '' and strpos($definitions['Type'], 'int') !== false) {
             return "DEFAULT 0";
         }
 
