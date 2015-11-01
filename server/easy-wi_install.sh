@@ -205,6 +205,14 @@ if [ "$INSTALL" != "VS" ]; then
         OTHER_PANEL="Confixx"
     elif [ -d /var/www/froxlor ]; then
         OTHER_PANEL="Froxlor"
+    elif [ -d /etc/imscp ]; then
+        OTHER_PANEL="i-MSCP"
+    elif [ -d /usr/local/ispconfig ]; then
+        OTHER_PANEL="ISPConfig"
+    elif [ -d /var/cpanel ]; then
+        OTHER_PANEL="cPanel"
+    elif [ -d /usr/local/directadmin ]; then
+        OTHER_PANEL="DirectAdmin"
     fi
 fi
 
