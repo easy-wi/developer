@@ -40,6 +40,10 @@ if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !isanyuser($user
 	header('Location: login.php');
 	die('No Access');
 }
+
+include(EASYWIDIR . '/third_party/Decoda/autoloader.php');
+use Decoda\Decoda;
+
 $sprache_bad = getlanguagefile('home', $user_language, $reseller_id);
 
 if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
@@ -196,6 +200,19 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
                     } else {
                         $text = $row2['twitterText'];
                     }
+                }
+
+                if (preg_match('/(\[\/img\]|\[\/url\]|\[\/b\]|\[\/h1\])/i', $text)) {
+                    $code = new \Decoda\Decoda($text);
+                    $code->addFilter(new \Decoda\Filter\DefaultFilter());
+                    $code->addFilter(new \Decoda\Filter\ImageFilter());
+                    $code->addFilter(new \Decoda\Filter\BlockFilter());
+                    $code->addFilter(new \Decoda\Filter\EmailFilter());
+                    $code->addFilter(new \Decoda\Filter\UrlFilter());
+                    $code->addFilter(new \Decoda\Filter\VideoFilter());
+                    $code->addFilter(new \Decoda\Filter\HeadLineFilter());
+                    $code->addHook(new \Decoda\Hook\ClickableHook());
+                    $text = $code->parse();
                 }
 
                 $title = $row2['newsTitle'];

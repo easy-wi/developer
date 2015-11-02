@@ -41,6 +41,9 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !isanyadmin($admi
 	die('No Access');
 }
 
+include(EASYWIDIR . '/third_party/Decoda/autoloader.php');
+use Decoda\Decoda;
+
 $sprache_bad = getlanguagefile('home', $user_language, $reseller_id);
 
 $statsArray = array(
@@ -249,6 +252,19 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
                     } else {
                         $text = $row2['twitterText'];
                     }
+                }
+
+                if (preg_match('/(\[\/img\]|\[\/url\]|\[\/b\]|\[\/h1\])/i', $text)) {
+                    $code = new \Decoda\Decoda($text);
+                    $code->addFilter(new \Decoda\Filter\DefaultFilter());
+                    $code->addFilter(new \Decoda\Filter\ImageFilter());
+                    $code->addFilter(new \Decoda\Filter\BlockFilter());
+                    $code->addFilter(new \Decoda\Filter\EmailFilter());
+                    $code->addFilter(new \Decoda\Filter\UrlFilter());
+                    $code->addFilter(new \Decoda\Filter\VideoFilter());
+                    $code->addFilter(new \Decoda\Filter\HeadLineFilter());
+                    $code->addHook(new \Decoda\Hook\ClickableHook());
+                    $text = $code->parse();
                 }
 
                 $title = $row2['newsTitle'];
