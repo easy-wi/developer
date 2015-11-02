@@ -1,57 +1,59 @@
 <?php
-
 /**
- * File: autoloader.php.
- * Author: Ulrich Block
- * Date: 02.11.15
- * Time: 21:27
- * Contact: <ulrich.block@easy-wi.com>
+ * Copyright 2014 Facebook, Inc.
  *
- * This file is part of Easy-WI.
+ * You are hereby granted a non-exclusive, worldwide, royalty-free license to
+ * use, copy, modify, and distribute this software in source code or binary
+ * form for use in connection with the web services and APIs provided by
+ * Facebook.
  *
- * Easy-WI is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * As with any software that integrates with the Facebook platform, your use
+ * of this software is subject to the Facebook Developer Principles and
+ * Policies [http://developers.facebook.com/policy/]. This copyright notice
+ * shall be included in all copies or substantial portions of the software.
  *
- * Easy-WI is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
  *
- * You should have received a copy of the GNU General Public License
- * along with Easy-WI.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Diese Datei ist Teil von Easy-WI.
- *
- * Easy-WI ist Freie Software: Sie koennen es unter den Bedingungen
- * der GNU General Public License, wie von der Free Software Foundation,
- * Version 3 der Lizenz oder (nach Ihrer Wahl) jeder spaeteren
- * veroeffentlichten Version, weiterverbreiten und/oder modifizieren.
- *
- * Easy-WI wird in der Hoffnung, dass es nuetzlich sein wird, aber
- * OHNE JEDE GEWAEHELEISTUNG, bereitgestellt; sogar ohne die implizite
- * Gewaehrleistung der MARKTFAEHIGKEIT oder EIGNUNG FUER EINEN BESTIMMTEN ZWECK.
- * Siehe die GNU General Public License fuer weitere Details.
- *
- * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
- * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-spl_autoload_register(function ($class) {
-
+/**
+ * Register the autoloader for the Decoda classes.
+ * Based off the official PSR-4 autoloader example found here:
+ * https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader-examples.md
+ *
+ * @param string $class The fully-qualified class name.
+ * @return void
+ */
+spl_autoload_register(function ($class)
+{
+    // project-specific namespace prefix
     $prefix = 'Decoda\\';
 
-    $length = strlen($prefix);
+    // base directory for the namespace prefix
+    $baseDir = defined('DECODA_SRC_DIR') ? DECODA_SRC_DIR : EASYWIDIR . '/third_party/Decoda/Decoda/';
 
-    if (strncmp($prefix, $class, $length) !== 0) {
+    // does the class use the namespace prefix?
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        // no, move to the next registered autoloader
         return;
     }
 
-    $relativeClass = substr($class, $length);
+    // get the relative class name
+    $relativeClass = substr($class, $len);
 
-    $file = EASYWIDIR . '/third_party/Decoda/Decoda/' . str_replace('\\', '/', $relativeClass) . '.php';
+    // replace the namespace prefix with the base directory, replace namespace
+    // separators with directory separators in the relative class name, append
+    // with .php
+    $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
 
+    // if the file exists, require it
     if (file_exists($file)) {
         require $file;
     }
