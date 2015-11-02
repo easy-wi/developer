@@ -649,11 +649,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         foreach ($config_rows as $configline) {
 
-            $data_explode=explode(" ", $configline);
-            $permission=(isset($data_explode[1])) ? $data_explode[1] : 'full';
+            $data_explode = explode(" ", $configline);
+            $permission = (isset($data_explode[1])) ? $data_explode[1] : 'full';
 
             if ($data_explode[0] != '') {
-                $configs[] = array('permission' => $permission,'line' => $data_explode[0]);
+                $configs[] = array('permission' => $permission, 'line' => $data_explode[0]);
                 $configCheck[] = $data_explode[0];
             }
         }
@@ -663,12 +663,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($serverID,$user_id,$resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (isset($protected) and ($protected == 'N' or $row['paddon'] == 'Y')) {
-            $config_rows=explode("\r\n", $row['configs']);
+
+            $config_rows = explode("\r\n", $row['configs']);
+
             foreach ($config_rows as $configline) {
-                $data_explode=explode(" ", $configline);
-                $permission=(isset($data_explode[1])) ? $data_explode[1] : 'full';
+
+                $data_explode = explode(" ", $configline);
+                $permission = (isset($data_explode[1])) ? $data_explode[1] : 'full';
+
                 if ($data_explode[0] != '') {
-                    $configs[] = array('permission' => $permission,'line' => $data_explode[0]);
+                    $configs[] = array('permission' => $permission, 'line' => $data_explode[0]);
                     $configCheck[] = $data_explode[0];
                 }
             }
@@ -703,12 +707,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
 
             if ($gamebinary == 'srcds_run'){
+
                 $config = $binarydir. '/' . $modfolder. '/' . $postconfig;
+
                 if ($configname == 'server.cfg' and $gamebinary == 'srcds_run') {
-                    $general_cvar=array('hostname','sv_password','sv_contact','sv_tags','motdfile','mapcyclefile','sv_downloadurl','net_maxfilesize','rcon_password','sv_rcon_minfailures','sv_rcon_maxfailures','sv_rcon_banpenalty','sv_rcon_minfailuretime','sv_pure','sv_pure_kick_clients','sv_timeout','sv_voiceenable','sv_allowdownload','sv_allowupload','sv_region','sv_friction','sv_stopspeed','sv_gravity','sv_accelerate','sv_airaccelerate','sv_wateraccelerate','sv_allow_color_correction','sv_allow_wait_command','mp_flashlight','mp_footsteps','mp_falldamage','mp_limitteams','mp_limitteams','mp_friendlyfire','mp_autokick','mp_forcecamera','mp_fadetoblack','mp_allowspectators','mp_chattime','log','sv_log_onefile','sv_logfile','sv_logbans','sv_logecho','mp_logdetail','mp_timelimit','mp_winlimit','sv_minrate','sv_maxrate','sv_minupdaterate','sv_maxupdaterate','sv_mincmdrate','sv_maxcmdrate','sv_client_cmdrate_difference','sv_client_min_interp_ratio','sv_client_max_interp_ratio','mp_fraglimit','mp_maxrounds');
+                    $general_cvar = array('hostname','sv_password','sv_contact','sv_tags','motdfile','mapcyclefile','sv_downloadurl','net_maxfilesize','rcon_password','sv_rcon_minfailures','sv_rcon_maxfailures','sv_rcon_banpenalty','sv_rcon_minfailuretime','sv_pure','sv_pure_kick_clients','sv_timeout','sv_voiceenable','sv_allowdownload','sv_allowupload','sv_region','sv_friction','sv_stopspeed','sv_gravity','sv_accelerate','sv_airaccelerate','sv_wateraccelerate','sv_allow_color_correction','sv_allow_wait_command','mp_flashlight','mp_footsteps','mp_falldamage','mp_limitteams','mp_limitteams','mp_friendlyfire','mp_autokick','mp_forcecamera','mp_fadetoblack','mp_allowspectators','mp_chattime','log','sv_log_onefile','sv_logfile','sv_logbans','sv_logecho','mp_logdetail','mp_timelimit','mp_winlimit','sv_minrate','sv_maxrate','sv_minupdaterate','sv_maxupdaterate','sv_mincmdrate','sv_maxcmdrate','sv_client_cmdrate_difference','sv_client_min_interp_ratio','sv_client_max_interp_ratio','mp_fraglimit','mp_maxrounds');
                 } else {
                     $general_cvar = array();
                 }
+
             } else if ($gamebinary == 'hlds_run'){
                 $config = $modfolder. '/' . $postconfig;
                 $general_cvar = array();
@@ -716,10 +723,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $general_cvar = array();
                 $config = $postconfig;
             }
+
             if ($shorten == 'css' and $configname == 'server.cfg') {
-                $game_cvars=array('motdfile_text','sv_disablefreezecam','sv_nonemesis','sv_nomvp','sv_nostats','sv_allowminmodels','sv_hudhint_sound','sv_competitive_minspec','sv_legacy_grenade_damage','sv_enableboost','sv_enablebunnyhopping','mp_forceautoteam','mp_enableroundwaittime','mp_startmoney','mp_roundtime','mp_buytime','mp_c4timer','mp_freezetime','mp_spawnprotectiontime','mp_hostagepenalty','mp_tkpunish');
+                $game_cvars = array('motdfile_text','sv_disablefreezecam','sv_nonemesis','sv_nomvp','sv_nostats','sv_allowminmodels','sv_hudhint_sound','sv_competitive_minspec','sv_legacy_grenade_damage','sv_enableboost','sv_enablebunnyhopping','mp_forceautoteam','mp_enableroundwaittime','mp_startmoney','mp_roundtime','mp_buytime','mp_c4timer','mp_freezetime','mp_spawnprotectiontime','mp_hostagepenalty','mp_tkpunish');
             } else if ($shorten=="dods" and $configname == 'server.cfg') {
-                $game_cvars=array('mp_limit_allies_rocket','mp_limit_axis_rocket','mp_limit_axis_mg','mp_limit_axis_sniper','mp_limit_axis_assault','mp_limit_axis_support','mp_limit_axis_rifleman','mp_limit_allies_mg','mp_limit_allies_sniper','mp_limit_allies_assault','mp_limit_allies_support','mp_limit_allies_rifleman','dod_freezecam','dod_enableroundwaittime','dod_bonusroundtime','dod_bonusround');
+                $game_cvars = array('mp_limit_allies_rocket','mp_limit_axis_rocket','mp_limit_axis_mg','mp_limit_axis_sniper','mp_limit_axis_assault','mp_limit_axis_support','mp_limit_axis_rifleman','mp_limit_allies_mg','mp_limit_allies_sniper','mp_limit_allies_assault','mp_limit_allies_support','mp_limit_allies_rifleman','dod_freezecam','dod_enableroundwaittime','dod_bonusroundtime','dod_bonusround');
             } else {
                 $game_cvars = array();
             }
@@ -748,7 +756,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 if (strlen($configfile) > 0) {
                     $configfile = str_replace(array("\0" , "\b" , "\r", "\Z"), '', $configfile);
-                    $lines = explode("\n", $configfile);
+                    $lines = explode("\r\n", $configfile);
                 }
 
                 if (isset($ui->post['update']) and $ui->post['update'] == 1 and isset($lines)) {
@@ -768,19 +776,17 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                 if ($cvar != 'exec') {
 
                                     if (isset($ui->post[$cvar])) {
+
                                         if (isset($ui->post['oldrcon']) and $cvar == 'rcon_password' and $ui->post[$cvar] != $ui->post['oldrcon'] and $configname == 'server.cfg' and in_array($anticheat, array(2, 3, 4, 5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
                                             eacchange('change',$id,$ui->post[$cvar],$resellerLockupID);
                                         }
+
                                         $newconfig .= $cvar . ' "' . $ui->post[$cvar] . '"' . "\r\n";
 
                                     } else if (isset($ui->post['oldrcon']) and $cvar == 'rcon_password' and $value != $ui->post['oldrcon'] and $configname == 'server.cfg' and in_array($anticheat, array(2, 3, 4, 5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
-
                                         eacchange('change', $id, $value, $resellerLockupID);
-
                                     } else {
-
                                         $newconfig .= $singeline . "\r\n";
-
                                     }
 
                                     array_push($setarray, $cvar);
@@ -809,13 +815,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                             $newconfig .= $cvar . ' "' . $ui->post[$cvar] . '"' . "\r\n";
 
                                         } else if (isset($ui->post['oldrcon']) and $cvar == 'rcon_password' and $value != $ui->post['oldrcon'] and $configname == 'server.cfg' and in_array($anticheat, array(2, 3, 4, 5)) and ($gamebinary == 'srcds_run' or $gamebinary == 'hlds_run') and $eacallowed == 'Y') {
-
                                             eacchange('change',$id,$value,$resellerLockupID);
-
                                         } else {
-
                                             $newconfig .= $singeline . "\r\n";
-
                                         }
 
                                         array_push($setarray, $cvar);
@@ -825,6 +827,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                     }
                                 }
                             }
+
                         } else {
                             $newconfig .= $singeline . "\r\n";
                         }
@@ -856,10 +859,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                         if (mb_strlen($ui->post['cleanedconfig'], 'UTF-8') < 16385) {
 
-                            $ftp->writeContentToTemp(stripslashes($ui->post['cleanedconfig']));
+                            $ftp->writeContentToTemp($ui->post['cleanedconfig']);
 
                         } else {
-                            $post_lines = explode('<br />', nl2br(stripslashes($ui->post['cleanedconfig'])));
+                            $post_lines = explode('<br />', nl2br($ui->post['cleanedconfig']));
                             $post_lines[] = "\r\n";
                             $post_lines[] = "\r\n";
                             $post_lines[] = "\r\n";
@@ -897,9 +900,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $unknownarray = array();
                     $cleanedconfig = '';
 
-                    foreach ($lines as $singeline) {
+                    $lineCount = count($lines);
+                    $i = 0;
 
-                        $cleanedconfig .= $singeline . "\r\n";
+                    foreach ($lines as $singeline) {
 
                         if (preg_match("/\w/", substr($singeline, 0, 1))) {
 
@@ -937,6 +941,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                 }
                             }
                         }
+
+                        $i++;
+
+                        $cleanedconfig .= ($i == $lineCount) ? $singeline : $singeline . "\r\n";
                     }
 
                     $array_keys = array_keys($unknownarray);
