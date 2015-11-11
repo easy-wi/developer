@@ -39,7 +39,7 @@
 
 $defined['gserver_restarts'] = array(
     'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'template' => array("Type"=>"smallint(1) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'template' => array("Type"=>"smallint(1) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>""),
     'anticheat' => array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),
     'protected' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),
     'backup' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"N","Extra"=>""),

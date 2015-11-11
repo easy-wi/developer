@@ -39,7 +39,7 @@
 
 $defined['rootsSubnets'] = array(
     'subnetID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'dhcpServer' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'dhcpServer' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>""),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'subnet' => array("Type"=>"varchar(11)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'subnetStart' => array("Type"=>"smallint(3) unsigned","Null"=>"NO","Key"=>"","Default"=>"1","Extra"=>""),

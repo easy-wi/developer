@@ -53,7 +53,7 @@ $defined['servertypes'] = array(
     'binarydir' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'modfolder' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'fps' => array("Type"=>"varchar(5)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'slots' => array("Type"=>"int(11) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'slots' => array("Type"=>"int(11) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>""),
     'map' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'mapGroup' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'cmd' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),

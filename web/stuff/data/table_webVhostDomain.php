@@ -39,7 +39,7 @@
 
 $defined['webVhostDomain'] = array(
     'webVhostID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
-    'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'userID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'resellerID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'domain' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>""),
     'path' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),

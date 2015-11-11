@@ -40,11 +40,11 @@
 $defined['voice_server_stats'] = array(
     'sid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"0","Extra"=>""),
     'date' => array("Type"=>"date","Null"=>"NO","Key"=>"PRI","Default"=>"2015-01-01","Extra"=>""),
-    'mid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'mid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'installed' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"0.00","Extra"=>""),
     'used' => array("Type"=>"decimal(6,2) unsigned","Null"=>"NO","Key"=>"","Default"=>"0.00","Extra"=>""),
-    'traffic' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'traffic' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>""),
     'uid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'count' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"1","Extra"=>""),
-    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
+    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );

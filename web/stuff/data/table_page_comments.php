@@ -39,7 +39,7 @@
 
 $defined['page_comments'] = array(
     'commentID' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'pageTextID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'pageTextID' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'replyTo' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'date' => array("Type"=>"timestamp","Null"=>"NO","Key"=>"","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
     'comment' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),

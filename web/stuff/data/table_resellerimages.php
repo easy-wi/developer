@@ -42,6 +42,6 @@ $defined['resellerimages'] = array(
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'distro' => array("Type"=>"varchar(50)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'description' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
-    'bitversion' => array("Type"=>"smallint(2) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'bitversion' => array("Type"=>"smallint(2) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>""),
     'pxelinux' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );

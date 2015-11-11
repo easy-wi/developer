@@ -114,7 +114,7 @@ class Tables {
                 }
 
             } catch(PDOException $error) {
-                $this->errors[] = $error;
+                $this->errors[] = $error->getMessage();
             }
         }
     }
@@ -123,8 +123,12 @@ class Tables {
 
         $this->executedSql[] = $sqlStatement;
 
-        $query = $this->sql->prepare($sqlStatement);
-        $query->execute();
+        try {
+            $query = $this->sql->prepare($sqlStatement);
+            $query->execute();
+        } catch(PDOException $error) {
+            $this->errors[] = 'Error Message: ' . $error->getMessage() . ' Executed SQL was: ' . $sqlStatement;
+        }
     }
 
     private function correctTableStatus($tableName) {
@@ -159,8 +163,16 @@ class Tables {
             return "AUTO_INCREMENT";
         }
 
-        if (in_array($definitions['Default'], array('CURRENT_TIMESTAMP', 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')) or preg_match('/^([\d]{1,}|[\d]{1,}.[\d]{1,})$/', $definitions['Default'])) {
-            return 'DEFAULT ' . $definitions['Default'];
+        if (in_array($definitions['Default'], array('CURRENT_TIMESTAMP', 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))) {
+            return "DEFAULT {$definitions['Default']}";
+        }
+
+        if ($definitions['Default'] != '' and strpos($definitions['Type'], 'int') !== false) {
+            return "DEFAULT {$definitions['Default']}";
+        }
+
+        if ($definitions['Default'] != '' and strpos($definitions['Type'], 'decimal') !== false) {
+            return "DEFAULT {$definitions['Default']}";
         }
 
         if ($definitions['Default'] != '') {
@@ -171,11 +183,11 @@ class Tables {
             return "DEFAULT NULL";
         }
 
-        if ($definitions['Null'] == 'NO' and $definitions['Default'] == '' and strpos($definitions['Type'], 'char') !== false) {
+        if ($definitions['Null'] == 'NO' and $definitions['Default'] == '' and strpos(strtolower($definitions['Type']), 'char') !== false) {
             return "DEFAULT ''";
         }
 
-        if ($definitions['Null'] == 'NO' and $definitions['Default'] == '' and strpos($definitions['Type'], 'int') !== false) {
+        if ($definitions['Null'] == 'NO' and $definitions['Default'] == '' and strpos(strtolower($definitions['Type']), 'int') !== false) {
             return "DEFAULT 0";
         }
 
@@ -280,11 +292,11 @@ class Tables {
                 return true;
             }
 
-            if ($definitions['Null'] == 'NO' or $this->tableConfigurations[$tableName][$columnName]['Default'] === null) {
+            if ($definitions['Null'] == 'YES' and $definitions['Default'] == '' and $this->tableConfigurations[$tableName][$columnName]['Default'] !== null) {
                 return true;
             }
 
-            if ($definitions['Null'] == 'YES' and $definitions['Default'] == '' and $this->tableConfigurations[$tableName][$columnName]['Default'] !== null) {
+            if ($definitions['Null'] == 'NO' and $this->tableConfigurations[$tableName][$columnName]['Default'] === null) {
                 return true;
             }
         }
@@ -346,6 +358,10 @@ class Tables {
                 $this->compareDefinitionWithConfiguration($tableName);
             }
         }
+    }
+
+    public function getErrors() {
+        return $this->errors;
     }
 
     public function getExecutedSql() {

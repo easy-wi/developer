@@ -72,7 +72,7 @@ $defined['lendsettings'] = array(
     'ftpupload' => array("Type"=>"enum('A','R','Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'ftpuploadpath' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'lendaccess' => array("Type"=>"smallint(1)","Null"=>"NO","Key"=>"","Default"=>"1","Extra"=>""),
-    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'lastcheck' => array("Type"=>"timestamp","Null"=>"NO","Key"=>"","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
     'oldcheck' => array("Type"=>"timestamp","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );

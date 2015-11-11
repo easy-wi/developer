@@ -39,13 +39,13 @@
 
 $defined['lendedserver'] = array(
     'id' => array("Type"=>"bigint(19) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'serverid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"","Extra"=>""),
+    'serverid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'servertype' => array("Type"=>"varchar(1)","Null"=>"NO","Key"=>"","Default"=>"g","Extra"=>""),
     'rcon' => array("Type"=>"varchar(60)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'password' => array("Type"=>"varchar(20)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'slots' => array("Type"=>"smallint(3) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'started' => array("Type"=>"timestamp","Null"=>"NO","Key"=>"","Default"=>"CURRENT_TIMESTAMP","Extra"=>""),
-    'lendtime' => array("Type"=>"smallint(4) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'lendtime' => array("Type"=>"smallint(4) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>""),
     'lenderip' => array("Type"=>"varchar(15)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'ftpuploadpath' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>"")

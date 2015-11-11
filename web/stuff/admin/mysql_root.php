@@ -79,12 +79,19 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
     $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
 
     require_once(EASYWIDIR . '/stuff/methods/class_tables.php');
+
     $tables = new Tables($dbConnect['db']);
+
     $response->add('Adding tables if needed.');
     $tables->createMissingTables();
+
     $response->add('Repairing tables if needed.');
     $tables->correctTablesStatus();
     $tables->correctExistingTables();
+
+    foreach($tables->getErrors() as $error){
+        $response->add($error . '<br>');
+    }
 
     foreach($tables->getExecutedSql() as $change){
         $response->add($change . '<br>');
@@ -94,6 +101,8 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
     include(EASYWIDIR . '/stuff/methods/tables_entries_repair.php');
 
     $template_file = $response->response;
+
+    unset($header, $text);
 
 } else if ($ui->st('d', 'get') == 're') {
 
